@@ -483,6 +483,13 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
       break;
 
     QgsGeometry* g1 = it->feature.geometry();
+
+    if ( g1->isGeosValid() == false )
+      {
+        qDebug() << "invalid geometry(g1) found..skipping.." << it->feature.id();
+        continue;
+      }
+
     QgsRectangle bb = g1->boundingBox();
 
     QList<QgsFeatureId> crossingIds;
@@ -515,11 +522,21 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
         continue;
       }
 
+      if ( g2->isGeosValid() == false )
+        {
+          qDebug() << "invalid geometry(g2) found..skipping.." << it->feature.id();
+          continue;
+        }
+
+
+      qDebug() << "checking overlap for" << it->feature.id();
       if (g1->overlaps(g2))
       {
         duplicate = true;
         duplicateIds->append( mFeatureMap2[*cit].feature.id() );
       }
+
+
 
       if ( duplicate )
       {
@@ -599,7 +616,30 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
     {
       continue;
     }
-    geomList.push_back( GEOSGeom_clone( g1->asGeos() ) );
+
+    if ( g1->isGeosValid() == false )
+      {
+        qDebug() << "invalid geometry found..skipping.." << it->feature.id();
+        continue;
+      }
+
+    if ( g1->isMultipart() )
+      {
+        QgsMultiPolygon polys = g1->asMultiPolygon();
+        for ( int m = 0; m < polys.count(); m++ )
+          {
+            QgsPolygon polygon = polys[m];
+
+            QgsGeometry* polyGeom = QgsGeometry::fromPolygon(polygon);
+
+            geomList.push_back( GEOSGeom_clone(polyGeom->asGeos()) );
+          }
+
+      }
+    else
+      {
+        geomList.push_back( GEOSGeom_clone( g1->asGeos() ) );
+      }
   }
 
   GEOSGeometry** geomArray = new GEOSGeometry*[geomList.size()];
@@ -629,21 +669,19 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   test.fromGeos( unionGeom );
 
 
-  qDebug() << "wktmerged - " << test.exportToWkt();
+  //qDebug() << "wktmerged - " << test.exportToWkt();
 
   QString extentWkt =  test.boundingBox().asWktPolygon();
   QgsGeometry* extentGeom = QgsGeometry::fromWkt( extentWkt );
   QgsGeometry* bufferExtent = extentGeom->buffer( 2, 3 );
 
-  qDebug() << "extent wkt - " << bufferExtent->exportToWkt();
+  //qDebug() << "extent wkt - " << bufferExtent->exportToWkt();
 
   QgsGeometry* diffGeoms = bufferExtent->difference( &test );
 
-  qDebug() << "difference gometry - " << diffGeoms->exportToWkt() ;
+  //qDebug() << "difference gometry - " << diffGeoms->exportToWkt() ;
 
   QList<QgsGeometry*> geomColl = diffGeoms->asGeometryCollection();
-
-  //QList<QgsGeometry*> geomColl = test.asGeometryCollection();
 
   QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
 
