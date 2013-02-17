@@ -651,6 +651,14 @@ void QgsComposerView::scrollContentsBy( int dx, int dy )
 void QgsComposerView::setComposition( QgsComposition* c )
 {
   setScene( c );
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->setComposition( c );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->setComposition( c );
+  }
 }
 
 QgsComposition* QgsComposerView::composition()

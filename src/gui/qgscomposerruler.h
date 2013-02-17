@@ -2,6 +2,7 @@
 #define QGSCOMPOSERRULER_H
 
 #include <QWidget>
+class QgsComposition;
 
 /**A class to show paper scale and the current cursor position*/
 class QgsComposerRuler: public QWidget
@@ -21,6 +22,9 @@ class QgsComposerRuler: public QWidget
     void setSceneTransform( const QTransform& transform );
     void updateMarker( const QPointF& pos ) { mMarkerPos = pos; repaint(); }
 
+    void setComposition( const QgsComposition* c ) { mComposition = c; }
+    const QgsComposition* composition() const { return mComposition; }
+
   protected:
     void paintEvent( QPaintEvent* event );
 
@@ -28,6 +32,7 @@ class QgsComposerRuler: public QWidget
     Direction mDirection;
     QTransform mTransform;
     QPointF mMarkerPos;
+    const QgsComposition* mComposition; //reference to composition for paper size, nPages
 };
 
 #endif // QGSCOMPOSERRULER_H

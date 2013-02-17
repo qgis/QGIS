@@ -1,11 +1,12 @@
 #include "qgscomposerruler.h"
+#include "qgscomposition.h"
 #include "qgis.h"
 #include <QPainter>
 #include <cmath>
 
 const int RULER_MIN_SIZE = 20;
 
-QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ): QWidget( 0 ), mDirection( d )
+QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ): QWidget( 0 ), mDirection( d ), mComposition( 0 )
 {
 }
 
@@ -21,6 +22,11 @@ QSize QgsComposerRuler::minimumSizeHint() const
 void QgsComposerRuler::paintEvent( QPaintEvent* event )
 {
   Q_UNUSED( event );
+  if ( !mComposition )
+  {
+    return;
+  }
+
   QPainter p( this );
 
   QTransform t = mTransform.inverted();
@@ -39,7 +45,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
     double markerPos = ( floor( startX / 10.0 ) + 1 ) * 10.0; //marker position in mm
     while ( markerPos <= endX )
     {
-      if ( markerPos >= 0 && markerPos <= 297 ) //todo: need to know paper size
+      if ( markerPos >= 0 && markerPos <= mComposition->paperWidth() ) //todo: need to know paper size
       {
         double pixelCoord = mTransform.map( QPointF( markerPos, 0 ) ).x();
         p.drawLine( pixelCoord, 0, pixelCoord, RULER_MIN_SIZE );
@@ -64,7 +70,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
     double markerPos = ( floor( startY / 10.0 ) + 1 ) * 10.0; //marker position in mm
     while ( markerPos <= endY )
     {
-      if ( markerPos >= 0 && markerPos <= 210 )
+      if ( markerPos >= 0 && markerPos <= mComposition->paperHeight() )
       {
         double pixelCoord = mTransform.map( QPointF( 0, markerPos ) ).y();
         p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
@@ -82,7 +88,6 @@ void QgsComposerRuler::setSceneTransform( const QTransform& transform )
 {
   QString debug = QString::number( transform.dx() ) + "," + QString::number( transform.dy() ) + ","
                   + QString::number( transform.m11() ) + "," + QString::number( transform.m22() );
-  qWarning( debug.toLocal8Bit().data() );
   mTransform = transform;
   update();
 }
