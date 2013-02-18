@@ -31,6 +31,21 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
 
   QTransform t = mTransform.inverted();
 
+  //find optimal ruler display scale (steps of 1, 10 or 50)
+  double pixelDiff1 = mTransform.map( QPointF( 1, 0 ) ).x() - mTransform.map( QPointF( 0, 0 ) ).x();
+  double pixelDiff10 = mTransform.map( QPointF( 10, 0 ) ).x() - mTransform.map( QPointF( 0, 0 ) ).x();
+  //double pixelDiff50 = mTransform.map( QPointF( 50, 0 ) ).x() - mTransform.map( QPointF( 5, 0 ) ).x();
+
+  double mmDisplay = 50.0;
+  if ( pixelDiff1 > 25 )
+  {
+    mmDisplay = 1.0;
+  }
+  else if ( pixelDiff10 > 25 )
+  {
+    mmDisplay = 10.0;
+  }
+
   if ( mDirection == Horizontal )
   {
     if ( doubleNear( width(), 0 ) )
@@ -42,7 +57,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
     double startX = t.map( QPointF( 0, 0 ) ).x();
     double endX = t.map( QPointF( width(), 0 ) ).x();
 
-    double markerPos = ( floor( startX / 10.0 ) + 1 ) * 10.0; //marker position in mm
+    double markerPos = ( floor( startX / mmDisplay ) + 1 ) * mmDisplay; //marker position in mm
     while ( markerPos <= endX )
     {
       if ( markerPos >= 0 && markerPos <= mComposition->paperWidth() ) //todo: need to know paper size
@@ -51,7 +66,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
         p.drawLine( pixelCoord, 0, pixelCoord, RULER_MIN_SIZE );
         p.drawText( QPointF( pixelCoord + 2, RULER_MIN_SIZE / 2.0 ), QString::number(( int )( markerPos ) ) );
       }
-      markerPos += 10.0;
+      markerPos += mmDisplay;
     }
 
     p.setPen( QColor( Qt::red ) );
@@ -66,8 +81,38 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
 
     double startY = t.map( QPointF( 0, 0 ) ).y(); //start position in mm (total including space between pages)
     double endY = t.map( QPointF( 0, height() ) ).y(); //stop position in mm (total including space between pages)
+    int startPage = ( int )( startY / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) );
+    if ( startPage < 0 )
+    {
+      startPage = 0;
+    }
+    int endPage = ( int )( endY / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) );
+    if ( endPage > ( mComposition->numPages() - 1 ) )
+    {
+      endPage = mComposition->numPages() - 1;
+    }
 
-    double markerPos = ( floor( startY / 10.0 ) + 1 ) * 10.0; //marker position in mm
+    for ( int i = startPage; i <= endPage; ++i )
+    {
+      double pageCoord = 0; //page coordinate in mm
+      //total (composition) coordinate in mm, including space between pages
+      double totalCoord = i * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
+      while ( pageCoord < mComposition->paperHeight() )
+      {
+        if ( totalCoord > endY )
+        {
+          break;
+        }
+        double pixelCoord = mTransform.map( QPointF( 0, totalCoord ) ).y();
+        p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
+        p.drawText( QPointF( 0, pixelCoord - 2.0 ), QString::number( pageCoord ) );
+        pageCoord += mmDisplay;
+        totalCoord += mmDisplay;
+      }
+    }
+
+#if 0
+    double markerPos = ( floor( startY / mmDisplay ) + 1 ) * mmDisplay; //marker position in mm
     while ( markerPos <= endY )
     {
       int page = ( int )( markerPos / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) );
@@ -79,14 +124,15 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
 
       if ( pageCoord < 0 || pageCoord > mComposition->paperHeight() ) //marker is in a page gap
       {
-        markerPos += 10.0;
+        markerPos += mmDisplay;
         continue;
       }
       double pixelCoord = mTransform.map( QPointF( 0, markerPos ) ).y();
       p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
       p.drawText( QPointF( 0, pixelCoord - 2.0 ), QString::number( pageCoord ) );
-      markerPos += 10.0;
+      markerPos += mmDisplay;
     }
+#endif //0
 
     p.setPen( QColor( Qt::red ) );
     p.drawLine( 0, mMarkerPos.y(), RULER_MIN_SIZE, mMarkerPos.y() );
