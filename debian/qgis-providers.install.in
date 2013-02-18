@@ -12,3 +12,4 @@ usr/lib/qgis/plugins/libspatialiteprovider.so
 usr/lib/qgis/plugins/libwfsprovider.so
 usr/lib/qgis/plugins/libwmsprovider.so
 usr/lib/qgis/plugins/libwcsprovider.so
+usr/lib/{DEB_BUILD_GNU_TYPE}/qt4/plugins/sqldrivers/libqsqlspatialite.so
