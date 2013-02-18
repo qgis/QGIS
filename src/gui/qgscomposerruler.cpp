@@ -1,13 +1,16 @@
 #include "qgscomposerruler.h"
 #include "qgscomposition.h"
 #include "qgis.h"
+#include <QDragEnterEvent>
+#include <QGraphicsLineItem>
 #include <QPainter>
 #include <cmath>
 
 const int RULER_MIN_SIZE = 20;
 
-QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ): QWidget( 0 ), mDirection( d ), mComposition( 0 )
+QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ): QWidget( 0 ), mDirection( d ), mComposition( 0 ), mLineSnapItem( 0 )
 {
+  setMouseTracking( true );
 }
 
 QgsComposerRuler::~QgsComposerRuler()
@@ -111,29 +114,6 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
       }
     }
 
-#if 0
-    double markerPos = ( floor( startY / mmDisplay ) + 1 ) * mmDisplay; //marker position in mm
-    while ( markerPos <= endY )
-    {
-      int page = ( int )( markerPos / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) );
-      double pageCoord = markerPos - page * ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
-      if ( page >= mComposition->numPages() )
-      {
-        break;
-      }
-
-      if ( pageCoord < 0 || pageCoord > mComposition->paperHeight() ) //marker is in a page gap
-      {
-        markerPos += mmDisplay;
-        continue;
-      }
-      double pixelCoord = mTransform.map( QPointF( 0, markerPos ) ).y();
-      p.drawLine( 0, pixelCoord, RULER_MIN_SIZE, pixelCoord );
-      p.drawText( QPointF( 0, pixelCoord - 2.0 ), QString::number( pageCoord ) );
-      markerPos += mmDisplay;
-    }
-#endif //0
-
     p.setPen( QColor( Qt::red ) );
     p.drawLine( 0, mMarkerPos.y(), RULER_MIN_SIZE, mMarkerPos.y() );
   }
@@ -145,4 +125,57 @@ void QgsComposerRuler::setSceneTransform( const QTransform& transform )
                   + QString::number( transform.m11() ) + "," + QString::number( transform.m22() );
   mTransform = transform;
   update();
+}
+
+void QgsComposerRuler::mouseMoveEvent( QMouseEvent* event )
+{
+  qWarning( "QgsComposerRuler::mouseMoveEvent" );
+  updateMarker( event->posF() );
+  setSnapLinePosition( event->posF() );
+}
+
+void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
+{
+  Q_UNUSED( event );
+  delete mLineSnapItem;
+  mLineSnapItem = 0;
+}
+
+void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
+{
+  delete mLineSnapItem;
+  mLineSnapItem = 0;
+  mLineSnapItem = createLineSnapItem();
+  mComposition->addItem( mLineSnapItem );
+  setSnapLinePosition( event->posF() );
+  mLineSnapItem->show();
+}
+
+void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
+{
+  if ( !mLineSnapItem || !mComposition )
+  {
+    return;
+  }
+
+  QPointF transformedPt = mTransform.inverted().map( pos );
+  if ( mDirection == Horizontal )
+  {
+    mLineSnapItem->setLine( QLineF( transformedPt.x(), 0, transformedPt.x(), mComposition->height() ) );
+  }
+  else //vertical
+  {
+    mLineSnapItem->setLine( QLineF( 0, transformedPt.y(), mComposition->width(), transformedPt.y() ) );
+  }
+}
+
+QGraphicsLineItem* QgsComposerRuler::createLineSnapItem()
+{
+  QGraphicsLineItem* item = new QGraphicsLineItem();
+  QPen linePen( Qt::SolidLine );
+  linePen.setColor( Qt::red );
+  linePen.setWidthF( 0.5 );
+  item->setPen( linePen );
+  item->setZValue( 100 );
+  return item;
 }

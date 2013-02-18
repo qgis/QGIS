@@ -254,6 +254,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mHorizontalRuler = new QgsComposerRuler( QgsComposerRuler::Horizontal );
   mVerticalRuler = new QgsComposerRuler( QgsComposerRuler::Vertical );
   QWidget* fake = new QWidget();
+  fake->setAttribute( Qt::WA_NoMousePropagation );
   fake->setBackgroundRole( QPalette::Window );
   fake->setFixedSize( 20, 20 );
   mViewLayout->addWidget( fake, 0, 0 );
