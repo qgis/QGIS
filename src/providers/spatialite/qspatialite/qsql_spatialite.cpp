@@ -97,7 +97,7 @@ static QSqlError qMakeError(sqlite3 *access, const QString &descr, QSqlError::Er
                             int errorCode = -1)
 {
     return QSqlError(descr,
-                     QString(reinterpret_cast<const QChar *>(sqlite3_errmsg16(access))),
+                     QString::fromUtf16( (const ushort *) sqlite3_errmsg16(access) ),
                      type, errorCode);
 }
 
@@ -165,13 +165,10 @@ void QSpatiaLiteResultPrivate::initColumns(bool emptyResultset)
     q->init(nCols);
 
     for (int i = 0; i < nCols; ++i) {
-        QString colName = QString(reinterpret_cast<const QChar *>(
-                    sqlite3_column_name16(stmt, i))
-                    ).remove(QLatin1Char('"'));
+        QString colName = QString::fromUtf16( (const ushort *) sqlite3_column_name16(stmt, i) ).remove(QLatin1Char('"'));
 
         // must use typeName for resolving the type to match QSqliteDriver::record
-        QString typeName = QString(reinterpret_cast<const QChar *>(
-                    sqlite3_column_decltype16(stmt, i)));
+        QString typeName = QString::fromUtf16( (const ushort *) sqlite3_column_decltype16(stmt, i) );
         // sqlite3_column_type is documented to have undefined behavior if the result set is empty
         int stp = emptyResultset ? -1 : sqlite3_column_type(stmt, i);
 
@@ -369,7 +366,7 @@ bool QSpatiaLiteResult::prepare(const QString &query)
                      "Unable to execute statement"), QSqlError::StatementError, res));
         d->finalize();
         return false;
-    } else if (pzTail && !QString(reinterpret_cast<const QChar *>(pzTail)).trimmed().isEmpty()) {
+    } else if (pzTail && !QString::fromUtf16( (const ushort *) pzTail ).trimmed().isEmpty()) {
         setLastError(qMakeError(d->access, QCoreApplication::translate("QSpatiaLiteResult",
             "Unable to execute multiple statements at a time"), QSqlError::StatementError, SQLITE_MISUSE));
         d->finalize();

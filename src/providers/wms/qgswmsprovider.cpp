@@ -4187,7 +4187,11 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
         QgsGml gml( featureTypeName, geometryAttribute, fields );
         // TODO: avoid converting to string and back
         int ret = gml.getFeatures( mIdentifyResultBodies.value( gmlPart ), &wkbType );
+#ifdef QGISDEBUG
         QgsDebugMsg( QString( "parsing result = %1" ).arg( ret ) );
+#else
+        Q_UNUSED( ret );
+#endif
 
         QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
         QgsDebugMsg( QString( "%1 features read" ).arg( features.size() ) );
