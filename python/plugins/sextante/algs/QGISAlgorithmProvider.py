@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4 import QtGui
 from sextante.algs.RasterLayerHistogram import RasterLayerHistogram
-#from sextante.algs.StatisticsByCategories import StatisticsByCategories
+from sextante.algs.StatisticsByCategories import StatisticsByCategories
 from sextante.algs.ftools.PointsInPolygon import PointsInPolygon
 from sextante.algs.ftools.PointsInPolygonUnique import PointsInPolygonUnique
 from sextante.algs.ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -119,10 +119,11 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         mmqgisx_select_algorithm(),
                         mmqgisx_text_to_float_algorithm(),
                         #raster
-                        CreateConstantRaster(), RasterLayerStatistics(),
+                        CreateConstantRaster(), RasterLayerStatistics()
                         #graphics
-                        VectorLayerHistogram(), VectorLayerScatterplot(), RasterLayerHistogram(),
-                        MeanAndStdDevPlot(), BarPlot(), PolarPlot()]
+                        #VectorLayerHistogram(), VectorLayerScatterplot(), RasterLayerHistogram(),
+                        #MeanAndStdDevPlot(), BarPlot(), PolarPlot()
+                        ]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
