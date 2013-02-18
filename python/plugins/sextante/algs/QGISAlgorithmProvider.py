@@ -29,8 +29,8 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
-from sextante.algs.RasterLayerHistogram import RasterLayerHistogram
-from sextante.algs.StatisticsByCategories import StatisticsByCategories
+#from sextante.algs.RasterLayerHistogram import RasterLayerHistogram
+#from sextante.algs.StatisticsByCategories import StatisticsByCategories
 from sextante.algs.ftools.PointsInPolygon import PointsInPolygon
 from sextante.algs.ftools.PointsInPolygonUnique import PointsInPolygonUnique
 from sextante.algs.ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -75,8 +75,8 @@ from sextante.algs.mmqgisx.MMQGISXAlgorithms import  (mmqgisx_delete_columns_alg
     mmqgisx_merge_algorithm, mmqgisx_select_algorithm,
     mmqgisx_text_to_float_algorithm)
 from sextante.algs.EquivalentNumField import EquivalentNumField
-from sextante.algs.VectorLayerHistogram import VectorLayerHistogram
-from sextante.algs.VectorLayerScatterplot import VectorLayerScatterplot
+#from sextante.algs.VectorLayerHistogram import VectorLayerHistogram
+#from sextante.algs.VectorLayerScatterplot import VectorLayerScatterplot
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.algs.AddTableField import AddTableField
 from sextante.algs.FieldsCalculator import FieldsCalculator
