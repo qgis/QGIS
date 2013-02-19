@@ -23,7 +23,6 @@
 #include <qgsmessagelog.h>
 #include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
-#include <qgsproject.h>
 
 #include "qgsvectorlayerimport.h"
 #include "qgsprovidercountcalcevent.h"
@@ -133,9 +132,6 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
       disconnectDb();
       return;
     }
-
-    // Enable topological editing
-    QgsProject::instance()->writeEntry( "Digitizing", "/TopologicalEditing", true );
   }
 
   mLayerExtent.setMinimal();
