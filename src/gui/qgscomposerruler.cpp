@@ -129,7 +129,7 @@ void QgsComposerRuler::setSceneTransform( const QTransform& transform )
 
 void QgsComposerRuler::mouseMoveEvent( QMouseEvent* event )
 {
-  qWarning( "QgsComposerRuler::mouseMoveEvent" );
+  //qWarning( "QgsComposerRuler::mouseMoveEvent" );
   updateMarker( event->posF() );
   setSnapLinePosition( event->posF() );
 }
@@ -137,18 +137,33 @@ void QgsComposerRuler::mouseMoveEvent( QMouseEvent* event )
 void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
 {
   Q_UNUSED( event );
-  delete mLineSnapItem;
   mLineSnapItem = 0;
 }
 
 void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
 {
-  delete mLineSnapItem;
-  mLineSnapItem = 0;
-  mLineSnapItem = createLineSnapItem();
-  mComposition->addItem( mLineSnapItem );
-  setSnapLinePosition( event->posF() );
-  mLineSnapItem->show();
+  double x = 0;
+  double y = 0;
+  if ( mDirection == Horizontal )
+  {
+    x = mTransform.inverted().map( event->pos() ).x();
+  }
+  else //vertical
+  {
+    y = mTransform.inverted().map( event->pos() ).y();
+  }
+
+  QGraphicsLineItem* line = mComposition->nearestSnapLine( x, y, 2.0 );
+  if ( !line )
+  {
+    //create new snap line
+    mLineSnapItem = createLineSnapItem();
+    mComposition->addSnapLine( mLineSnapItem );
+  }
+  else
+  {
+    mLineSnapItem = line;
+  }
 }
 
 void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
@@ -161,11 +176,11 @@ void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
   QPointF transformedPt = mTransform.inverted().map( pos );
   if ( mDirection == Horizontal )
   {
-    mLineSnapItem->setLine( QLineF( transformedPt.x(), 0, transformedPt.x(), mComposition->height() ) );
+    mLineSnapItem->setLine( QLineF( transformedPt.x(), 0, transformedPt.x(), mComposition->height() - 1 ) );
   }
   else //vertical
   {
-    mLineSnapItem->setLine( QLineF( 0, transformedPt.y(), mComposition->width(), transformedPt.y() ) );
+    mLineSnapItem->setLine( QLineF( 0, transformedPt.y(), mComposition->width() - 1, transformedPt.y() ) );
   }
 }
 

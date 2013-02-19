@@ -259,6 +259,13 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     @return snapped position or original position if no snap*/
     QPointF alignPos( const QPointF& pos, const QgsComposerItem* excludeItem, double& alignX, double& alignY );
 
+    /**Add a custom snap line (can be horizontal or vertical)*/
+    void addSnapLine( QGraphicsLineItem* line );
+    /**Remove custom snap line*/
+    void removeSnapLine( QGraphicsLineItem* line );
+    /**Get nearest snap line*/
+    QGraphicsLineItem* nearestSnapLine( double x, double y, double tolerance );
+
     /**Allocates new item command and saves initial state in it
       @param item target item
       @param commandText descriptive command text
@@ -368,6 +375,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Parameters for alignment snap*/
     bool mAlignmentSnap;
     double mAlignmentSnapTolerance;
+
+    /**Arbitraty snap lines (horizontal and vertical)*/
+    QList< QGraphicsLineItem* > mSnapLines;
 
     QUndoStack mUndoStack;
 

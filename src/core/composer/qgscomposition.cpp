@@ -1064,6 +1064,57 @@ QPointF QgsComposition::alignPos( const QPointF& pos, const QgsComposerItem* exc
   return result;
 }
 
+void QgsComposition::addSnapLine( QGraphicsLineItem* line )
+{
+  addItem( line );
+  mSnapLines.push_back( line );
+}
+
+void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
+{
+  removeItem( line );
+  mSnapLines.removeAll( line );
+}
+
+QGraphicsLineItem* QgsComposition::nearestSnapLine( double x, double y, double tolerance )
+{
+  bool xDirection = doubleNear( y, 0.0 );
+  double minSqrDist = DBL_MAX;
+  QGraphicsLineItem* item = 0;
+  double currentXCoord = 0;
+  double currentYCoord = 0;
+  double currentSqrDist = 0;
+  double sqrTolerance = tolerance * tolerance;
+
+  QList< QGraphicsLineItem* >::const_iterator it = mSnapLines.constBegin();
+  for ( ; it != mSnapLines.constEnd(); ++it )
+  {
+    currentXCoord = ( *it )->line().x1();
+    currentYCoord = ( *it )->line().y1();
+
+    if ( xDirection && !doubleNear( currentXCoord, 0.0 ) )
+    {
+      currentSqrDist = ( x - currentXCoord ) * ( x - currentXCoord );
+    }
+    else if ( !xDirection && !doubleNear( currentYCoord, 0.0 ) )
+    {
+      currentSqrDist = ( y - currentYCoord ) * ( y - currentYCoord );
+    }
+    else
+    {
+      continue;
+    }
+
+    if ( currentSqrDist < minSqrDist && currentSqrDist < sqrTolerance )
+    {
+      item = *it;
+      minSqrDist = currentSqrDist;
+    }
+  }
+
+  return item;
+}
+
 int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
@@ -1745,6 +1796,22 @@ void QgsComposition::collectAlignCoordinates( QMap< double, const QgsComposerIte
       alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
       alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
       alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
+    }
+  }
+
+  //arbitrary snap lines
+  QList< QGraphicsLineItem* >::const_iterator sIt = mSnapLines.constBegin();
+  for ( ; sIt != mSnapLines.constEnd(); ++sIt )
+  {
+    double x = ( *sIt )->line().x1();
+    double y = ( *sIt )->line().y1();
+    if ( doubleNear( y, 0.0 ) )
+    {
+      alignCoordsX.insert( x, 0 );
+    }
+    else
+    {
+      alignCoordsY.insert( y, 0 );
     }
   }
 }
