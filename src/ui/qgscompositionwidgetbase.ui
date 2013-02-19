@@ -467,7 +467,7 @@
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mAlignmentSnapGroupCheckBox">
          <property name="title">
-          <string>Snap to alignements</string>
+          <string>Snap to alignments</string>
          </property>
          <property name="checkable">
           <bool>true</bool>

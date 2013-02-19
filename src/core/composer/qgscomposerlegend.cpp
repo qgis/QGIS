@@ -157,20 +157,20 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     // For multicolumn center if we stay in totalWidth, otherwise allign to left
     // and expand total width. With single column keep alligned to left be cause
     // it looks better alligned with items bellow instead of centered
-    Qt::AlignmentFlag halignement;
+    Qt::AlignmentFlag halignment;
     if ( mColumnCount > 1 && titleSize.width() + 2 * mBoxSpace < size.width() )
     {
-      halignement = Qt::AlignHCenter;
+      halignment = Qt::AlignHCenter;
       point.rx() = mBoxSpace + size.rwidth() / 2;
     }
     else
     {
-      halignement = Qt::AlignLeft;
+      halignment = Qt::AlignLeft;
       point.rx() = mBoxSpace;
       size.rwidth() = qMax( titleSize.width() + 2 * mBoxSpace, size.width() );
     }
     point.ry() = mBoxSpace;
-    drawTitle( painter, point, halignement );
+    drawTitle( painter, point, halignment );
   }
 
   //adjust box if width or height is to small
@@ -198,7 +198,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   return size;
 }
 
-QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::AlignmentFlag halignement )
+QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::AlignmentFlag halignment )
 {
   QSizeF size( 0, 0 );
   if ( mTitle.isEmpty() ) return size;
@@ -215,11 +215,11 @@ QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::Align
     double width = textWidthMillimeters( mTitleFont, *titlePart ) + 1;
     double height = fontAscentMillimeters( mTitleFont ) + fontDescentMillimeters( mTitleFont );
 
-    double left = halignement == Qt::AlignLeft ?  point.x() : point.x() - width / 2;
+    double left = halignment == Qt::AlignLeft ?  point.x() : point.x() - width / 2;
 
     QRectF rect( left, y, width, height );
 
-    if ( painter ) drawText( painter, rect, *titlePart, mTitleFont, halignement, Qt::AlignVCenter );
+    if ( painter ) drawText( painter, rect, *titlePart, mTitleFont, halignment, Qt::AlignVCenter );
 
     size.rwidth() = qMax( width, size.width() );
 
