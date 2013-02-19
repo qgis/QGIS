@@ -825,7 +825,6 @@ double  QgsGdalProvider::maximumValue( int theBandNo ) const
     computeMinMax( theBandNo );
     mMinMaxComputed[theBandNo-1] = true;
   }
-  computeMinMax( theBandNo );
   return  mMaximum[theBandNo-1];
 }
 
