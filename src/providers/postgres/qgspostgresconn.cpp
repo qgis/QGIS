@@ -1484,6 +1484,13 @@ bool QgsPostgresConn::geometryColumnsOnly( QString theConnName )
   return settings.value( "/PostgreSQL/connections/" + theConnName + "/geometryColumnsOnly", false ).toBool();
 }
 
+bool QgsPostgresConn::dontResolveType( QString theConnName )
+{
+  QSettings settings;
+
+  return settings.value( "/PostgreSQL/connections/" + theConnName + "/dontResolveType", false ).toBool();
+}
+
 bool QgsPostgresConn::allowGeometrylessTables( QString theConnName )
 {
   QSettings settings;

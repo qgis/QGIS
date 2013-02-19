@@ -444,6 +444,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
     bool searchPublicOnly = QgsPostgresConn::publicSchemaOnly( cmbConnections->currentText() );
     bool searchGeometryColumnsOnly = QgsPostgresConn::geometryColumnsOnly( cmbConnections->currentText() );
+    bool dontResolveType = QgsPostgresConn::dontResolveType( cmbConnections->currentText() );
     bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
 
     QVector<QgsPostgresLayerProperty> layers;
@@ -458,6 +459,12 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
         {
           if ( QgsPostgresConn::wkbTypeFromPostgis( type ) == QGis::WKBUnknown || srid.isEmpty() )
           {
+            if ( dontResolveType )
+            {
+              QgsDebugMsg( QString( "skipping column %1.%2 without type constraint" ).arg( layer.schemaName ).arg( layer.tableName ) );
+              continue;
+            }
+
             addSearchGeometryColumn( layer );
             type = "";
             srid = "";
