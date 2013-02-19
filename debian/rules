@@ -47,11 +47,18 @@ CMAKE_OPTS := \
 	-D BINDINGS_GLOBAL_INSTALL=TRUE \
 	-D PEDANTIC=TRUE \
 	-D WITH_SPATIALITE=TRUE \
+	-D WITH_QSPATIALITE=TRUE \
 	-D WITH_MAPSERVER=TRUE \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-D WITH_APIDOC=TRUE
 
 MAKEFLAGS += VERBOSE=YES
+
+ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric"))
+	QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_GNU_TYPE)/qt4/plugins
+else
+	QT_PLUGIN_DIR = usr/lib/qt4/plugins
+endif
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
          NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -118,6 +125,7 @@ define gentemplate
 $(2): $(1)
 	sed \
 		-e "s/{DEB_BUILD_GNU_TYPE}/$(DEB_BUILD_GNU_TYPE)/g" \
+		-e "s/{QT_PLUGIN_DIR}/$(QT_PLUGIN_DIR)/g" \
 		-e "s/{QGIS_ABI}/$(QGIS_ABI)/g" \
 		-e "s/{GRASS}/$(GRASS)/g" \
 		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@

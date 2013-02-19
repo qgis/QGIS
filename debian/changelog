@@ -11,9 +11,9 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * add python-psycopg2 and python-qscintilla2 dependency to python-qgis
   * add support for ubuntu quantal and raring
   * remove js files and add libjs-jquery/libjs-underscore dependency
-  * temporarily disable mssql provider until migrated to new vector api.
+  * add spatialite qt sql driver
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 31 Jan 2013 13:34:24 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 19 Feb 2013 20:05:55 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

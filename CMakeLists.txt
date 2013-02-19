@@ -61,7 +61,7 @@ SET (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support shou
 IF (WITH_SPATIALITE)
   SET (WITH_INTERNAL_SPATIALITE FALSE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
   SET (WITH_PYSPATIALITE FALSE CACHE BOOL "Determines whether PYSPATIALITE should be built")
-  SET (WITH_QSPATIALITE TRUE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
+  SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
   IF(WITH_INTERNAL_SPATIALITE)
     SET(SPATIALITE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/spatialite/headers)
     SET(HAVE_SPATIALITE TRUE)
