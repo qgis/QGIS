@@ -392,12 +392,13 @@ class geometryThread( QThread ):
             multi_feature.extend( feature_list )
           nElement += 1
           self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
-        outFeat.setAttributes( atts )
-        outGeom = QgsGeometry( self.convertGeometry( multi_feature, vType ) )
-        if not outGeom.isGeosValid():
-          allValid = "valid_error"
-        outFeat.setGeometry( outGeom )
-        writer.addFeature( outFeat )
+        if not first:
+          outFeat.setAttributes( atts )
+          outGeom = QgsGeometry( self.convertGeometry( multi_feature, vType ) )
+          if not outGeom.isGeosValid():
+            allValid = "valid_error"
+          outFeat.setGeometry( outGeom )
+          writer.addFeature( outFeat )
       del writer
     else:
       return "attr_error"
