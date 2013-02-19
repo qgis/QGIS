@@ -34,7 +34,7 @@ class QgsAtlasCompositionWidget:
     ~QgsAtlasCompositionWidget();
 
   public slots:
-    void on_mUseAtlasCheckBox_stateChanged( int state );
+    void on_mUseAtlasGroupBox_toggled( bool state );
     void on_mComposerMapComboBox_currentIndexChanged( int index );
     void on_mAtlasCoverageLayerComboBox_currentIndexChanged( int index );
     void on_mAtlasFilenamePatternEdit_textChanged( const QString& text );

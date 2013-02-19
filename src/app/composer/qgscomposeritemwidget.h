@@ -19,6 +19,7 @@
 #define QGSCOMPOSERITEMWIDGET_H
 
 #include "ui_qgscomposeritemwidgetbase.h"
+#include "qgscomposeritem.h"
 
 class QgsComposerItem;
 
@@ -31,21 +32,43 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item );
     ~QgsComposerItemWidget();
 
+    /**A combination of upper/middle/lower and left/middle/right*/
+    QgsComposerItem::ItemPositionMode positionMode() const;
+
+
   public slots:
     void on_mFrameColorButton_clicked();
     void on_mBackgroundColorButton_clicked();
-    void on_mOpacitySlider_sliderReleased();
-    void on_mOpacitySpinBox_valueChanged( int value );
+    void on_mTransparencySlider_sliderReleased();
+    void on_mTransparencySpinBox_valueChanged( int value );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mFrameGroupBox_toggled( bool state );
     void on_mBackgroundGroupBox_toggled( bool state );
-    void on_mPositionButton_clicked();
     void on_mItemIdLineEdit_textChanged( const QString& text );
+
+    //adjust coordinates in line edits
+    void on_mXLineEdit_editingFinished(){ changeItemPosition(); }
+    void on_mYLineEdit_editingFinished(){ changeItemPosition(); }
+    void on_mWidthLineEdit_editingFinished(){ changeItemPosition(); }
+    void on_mHeightLineEdit_editingFinished(){ changeItemPosition(); }
+
+    void on_mUpperLeftCheckBox_stateChanged( int state ){ changeItemPosition(); }
+    void on_mUpperMiddleCheckBox_stateChanged( int state ){ changeItemPosition(); }
+    void on_mUpperRightCheckBox_stateChanged( int state ){ changeItemPosition(); }
+    void on_mMiddleLeftCheckBox_stateChanged( int state ){ changeItemPosition(); }
+    void on_mMiddleCheckBox_stateChanged( int state ){ changeItemPosition(); }
+    void on_mMiddleRightCheckBox_stateChanged( int state ){ changeItemPosition(); }
+    void on_mLowerLeftCheckBox_stateChanged( int state ){ changeItemPosition(); }
+    void on_mLowerMiddleCheckBox_stateChanged( int state ){ changeItemPosition(); }
+    void on_mLowerRightCheckBox_stateChanged( int state ){ changeItemPosition(); }
+    
+    void setValuesForGuiElements();
+    void setValuesForGuiPositionElements();
 
   private:
     QgsComposerItemWidget();
-    void setValuesForGuiElements();
-    void changeItemOpacity( int value );
+    void changeItemTransparency( int value );
+    void changeItemPosition();
 
     QgsComposerItem* mItem;
 };

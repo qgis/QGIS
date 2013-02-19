@@ -30,7 +30,7 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidg
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, label );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
 
   if ( mComposerLabel )
@@ -48,15 +48,13 @@ void QgsComposerLabelWidget::on_mHtmlCheckBox_stateChanged( int state )
     {
       mFontButton->setEnabled( false );
       mFontColorButton->setEnabled( false );
-      mHorizontalAlignementGroup->setEnabled( false );
-      mVerticalAlignementGroup->setEnabled( false );
+      mAlignementGroup->setEnabled( false );
     }
     else
     {
       mFontButton->setEnabled( true );
       mFontColorButton->setEnabled( true );
-      mHorizontalAlignementGroup->setEnabled( true );
-      mVerticalAlignementGroup->setEnabled( true );
+      mAlignementGroup->setEnabled( true );
     }
 
     mComposerLabel->beginCommand( tr( "Label text HTML state changed" ), QgsComposerMergeCommand::ComposerLabelSetText );

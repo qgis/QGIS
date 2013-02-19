@@ -189,6 +189,11 @@ class QgsComposerItem: QObject, QGraphicsRectItem
       @note: this method was added in version 1.6*/
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft );
 
+    /**Returns item's last used position mode.
+      @note: This property has no effect on actual's item position, which is always the top-left corner.
+      @note: this method was added in version 2.0*/
+    ItemPositionMode lastUsedPositionMode();
+
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );

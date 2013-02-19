@@ -56,16 +56,8 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     //setters and getters
-    void setLineWidth( double width );
-    double lineWidth() const;
-    void setOutlineColor( const QColor& color );
-    QColor outlineColor() const;
-    void setFillColor( const QColor& color );
-    QColor fillColor() const;
     QgsComposerShape::Shape shapeType() const {return mShape;}
     void setShapeType( QgsComposerShape::Shape s ) {mShape = s;}
-    bool transparentFill() const;
-    void setTransparentFill( bool transparent );
 
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit. Also, the shape is scaled*/
@@ -75,18 +67,21 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     /**Sets item rotation and resizes item bounds such that the shape always has the same size*/
     virtual void setRotation( double r );
 
+
+  protected:
+    /* reimplement drawFrame, since it's not a rect, but a custom shape */
+    virtual void drawFrame( QPainter* p );
+    /* reimplement drawBackground, since it's not a rect, but a custom shape */
+    virtual void drawBackground( QPainter* p );
+
+
   private:
     /**Ellipse, rectangle or triangle*/
     Shape mShape;
-    /**Shape outline*/
-    QPen mPen;
-    /**Shape fill*/
-    QBrush mBrush;
-    double mShapeWidth;
-    double mShapeHeight;
 
-    /**Apply default graphics settings*/
-    void initGraphicsSettings();
+    /* draws the custom shape */
+    void drawShape( QPainter* p );
+
 
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
