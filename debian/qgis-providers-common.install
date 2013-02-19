@@ -3,4 +3,3 @@ usr/share/qgis/resources/qgis.db
 usr/share/qgis/resources/srs.db
 usr/share/qgis/resources/symbology-ng-style.db
 usr/share/qgis/resources/cpt-city-qgis-min/*
-usr/lib/{DEB_BUILD_GNU_TYPE}/qt4/plugins/sqldrivers/libqsqlspatialite.so

@@ -1,2 +1,2 @@
 usr/lib/qgis/plugins/liboracleprovider.so
-usr/lib/{DEB_BUILD_GNU_TYPE}/qt4/plugins/sqldrivers/libqsqlocispatial.so
+{QT_PLUGIN_DIR}/sqldrivers/libqsqlocispatial.so

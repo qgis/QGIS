@@ -125,7 +125,7 @@ define gentemplate
 $(2): $(1)
 	sed \
 		-e "s/{DEB_BUILD_GNU_TYPE}/$(DEB_BUILD_GNU_TYPE)/g" \
-		-e "s/{QT_PLUGIN_DIR}/$(QT_PLUGIN_DIR)/g" \
+		-e "s#{QT_PLUGIN_DIR}#$(QT_PLUGIN_DIR)#g" \
 		-e "s/{QGIS_ABI}/$(QGIS_ABI)/g" \
 		-e "s/{GRASS}/$(GRASS)/g" \
 		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@
