@@ -667,6 +667,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
+    /**
+     * Deletes a list of attribute fields (but does not commit it)
+     *
+     * @param  attrs the indices of the attributes to delete
+     * @return true if at least one attribute has been deleted
+     *
+     */
+    bool deleteAttributes( QList<int> attrs );
+
     /** Insert a copy of the given features into the layer  (but does not commit it) */
     bool addFeatures( QgsFeatureList features, bool makeSelected = true );
 
