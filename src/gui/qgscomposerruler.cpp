@@ -137,6 +137,23 @@ void QgsComposerRuler::mouseMoveEvent( QMouseEvent* event )
 void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
 {
   Q_UNUSED( event );
+
+  //remove snap line if coordinate under 0
+  QPointF pos = mTransform.inverted().map( event->pos() );
+  bool removeItem = false;
+  if ( mDirection == Horizontal )
+  {
+    removeItem = pos.x() < 0 ? true : false;
+  }
+  else
+  {
+    removeItem = pos.y() < 0 ? true : false;
+  }
+
+  if ( removeItem )
+  {
+    mComposition->removeSnapLine( mLineSnapItem );
+  }
   mLineSnapItem = 0;
 }
 
@@ -153,7 +170,8 @@ void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
     y = mTransform.inverted().map( event->pos() ).y();
   }
 
-  QGraphicsLineItem* line = mComposition->nearestSnapLine( x, y, 2.0 );
+  //horizontal ruler means vertical snap line
+  QGraphicsLineItem* line = mComposition->nearestSnapLine( mDirection != Horizontal, x, y, 10.0 );
   if ( !line )
   {
     //create new snap line
@@ -176,11 +194,17 @@ void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
   QPointF transformedPt = mTransform.inverted().map( pos );
   if ( mDirection == Horizontal )
   {
-    mLineSnapItem->setLine( QLineF( transformedPt.x(), 0, transformedPt.x(), mComposition->height() - 1 ) );
+    int numPages = mComposition->numPages();
+    double lineHeight = numPages * mComposition->paperHeight();
+    if ( numPages > 1 )
+    {
+      lineHeight += ( numPages - 1 ) * mComposition->spaceBetweenPages();
+    }
+    mLineSnapItem->setLine( QLineF( transformedPt.x(), 0, transformedPt.x(), lineHeight ) );
   }
   else //vertical
   {
-    mLineSnapItem->setLine( QLineF( 0, transformedPt.y(), mComposition->width() - 1, transformedPt.y() ) );
+    mLineSnapItem->setLine( QLineF( 0, transformedPt.y(), mComposition->paperWidth(), transformedPt.y() ) );
   }
 }
 

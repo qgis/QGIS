@@ -1074,9 +1074,10 @@ void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
 {
   removeItem( line );
   mSnapLines.removeAll( line );
+  delete line;
 }
 
-QGraphicsLineItem* QgsComposition::nearestSnapLine( double x, double y, double tolerance )
+QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, double y, double tolerance )
 {
   bool xDirection = doubleNear( y, 0.0 );
   double minSqrDist = DBL_MAX;
@@ -1089,20 +1090,15 @@ QGraphicsLineItem* QgsComposition::nearestSnapLine( double x, double y, double t
   QList< QGraphicsLineItem* >::const_iterator it = mSnapLines.constBegin();
   for ( ; it != mSnapLines.constEnd(); ++it )
   {
-    currentXCoord = ( *it )->line().x1();
-    currentYCoord = ( *it )->line().y1();
-
-    if ( xDirection && !doubleNear( currentXCoord, 0.0 ) )
+    if ( horizontal )
     {
-      currentSqrDist = ( x - currentXCoord ) * ( x - currentXCoord );
-    }
-    else if ( !xDirection && !doubleNear( currentYCoord, 0.0 ) )
-    {
+      currentYCoord = ( *it )->line().y1();
       currentSqrDist = ( y - currentYCoord ) * ( y - currentYCoord );
     }
     else
     {
-      continue;
+      currentXCoord = ( *it )->line().x1();
+      currentSqrDist = ( x - currentXCoord ) * ( x - currentXCoord );
     }
 
     if ( currentSqrDist < minSqrDist && currentSqrDist < sqrTolerance )

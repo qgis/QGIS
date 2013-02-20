@@ -261,10 +261,10 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Add a custom snap line (can be horizontal or vertical)*/
     void addSnapLine( QGraphicsLineItem* line );
-    /**Remove custom snap line*/
+    /**Remove custom snap line (and delete the object)*/
     void removeSnapLine( QGraphicsLineItem* line );
     /**Get nearest snap line*/
-    QGraphicsLineItem* nearestSnapLine( double x, double y, double tolerance );
+    QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance );
 
     /**Allocates new item command and saves initial state in it
       @param item target item
