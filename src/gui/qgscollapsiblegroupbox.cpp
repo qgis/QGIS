@@ -375,7 +375,10 @@ void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
     setFlat( collapse );
 
   // avoid flicker in X11
-  QApplication::processEvents();
+  // NOTE: this causes app to crash when loading a project that hits a group box with
+  //       'collapse' set via dynamic property or in code (especially if auto-launching project)
+  // TODO: find another means of avoiding the X11 flicker
+//  QApplication::processEvents();
 
   // handle QPushButtons in form layouts that stay visible on collapse (Qt bug)
   // set flat on collapse for fix, but preserve button's flat value when expanding
