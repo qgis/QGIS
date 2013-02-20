@@ -661,15 +661,16 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
     QPainter painter;
 
-    try {
+    try
+    {
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
-			    e.what(),
-			    QMessageBox::Ok,
-			    QMessageBox::Ok );
+                            e.what(),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
       mView->setPaintingEnabled( true );
       return;
     }
@@ -704,8 +705,8 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
                               e.what(),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
-	mView->setPaintingEnabled( true );
-	return;
+        mView->setPaintingEnabled( true );
+        return;
       }
       if ( !atlasOnASingleFile )
       {
@@ -773,15 +774,16 @@ void QgsComposer::on_mActionPrint_triggered()
 
     mComposition->beginPrint( mPrinter );
     QPainter painter( &mPrinter );
-    try {
+    try
+    {
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
-			    e.what(),
-			    QMessageBox::Ok,
-			    QMessageBox::Ok );
+                            e.what(),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
       mView->setPaintingEnabled( true );
       return;
     }
@@ -808,8 +810,8 @@ void QgsComposer::on_mActionPrint_triggered()
                               e.what(),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
-	mView->setPaintingEnabled( true );
-	return;
+        mView->setPaintingEnabled( true );
+        return;
       }
 
 
@@ -969,15 +971,16 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     mView->setPaintingEnabled( false );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
-    try {
+    try
+    {
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
-			    e.what(),
-			    QMessageBox::Ok,
-			    QMessageBox::Ok );
+                            e.what(),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
       mView->setPaintingEnabled( true );
       return;
     }
@@ -1005,8 +1008,8 @@ void QgsComposer::on_mActionExportAsImage_triggered()
                               e.what(),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
-	mView->setPaintingEnabled( true );
-	return;
+        mView->setPaintingEnabled( true );
+        return;
       }
 
       QString filename = QDir( dir ).filePath( atlasMap->currentFilename() ) + fileExt;
@@ -1138,15 +1141,16 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   size_t featureI = 0;
   if ( hasAnAtlas )
   {
-    try {
+    try
+    {
       atlasMap->beginRender();
     }
     catch ( std::exception& e )
     {
       QMessageBox::warning( this, tr( "Atlas processing error" ),
-			    e.what(),
-			    QMessageBox::Ok,
-			    QMessageBox::Ok );
+                            e.what(),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
       mView->setPaintingEnabled( true );
       return;
     }
@@ -1178,8 +1182,8 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
                               e.what(),
                               QMessageBox::Ok,
                               QMessageBox::Ok );
-	mView->setPaintingEnabled( true );
-	return;
+        mView->setPaintingEnabled( true );
+        return;
       }
       outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".svg";
     }
