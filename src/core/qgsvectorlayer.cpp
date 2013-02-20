@@ -2980,6 +2980,23 @@ bool QgsVectorLayer::deleteAttribute( int index )
   return mEditBuffer->deleteAttribute( index );
 }
 
+bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
+{
+  bool deleted = false;
+
+  qSort( attrs.begin(), attrs.end(), qGreater<int>() );
+
+  foreach( int attr, attrs )
+  {
+    if ( deleteAttribute( attr ) )
+    {
+      deleted = true;
+    }
+  }
+
+  return deleted;
+}
+
 bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
 {
   if ( !mEditBuffer )

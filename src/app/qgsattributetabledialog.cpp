@@ -493,23 +493,13 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
     QgsAttributeTableModel* masterModel = mMainView->masterModel();
 
     mLayer->beginEditCommand( tr( "Deleted attribute" ) );
-    bool deleted = false;
-    QList<int>::const_iterator it = attributes.constBegin();
-    for ( ; it != attributes.constEnd(); ++it )
-    {
-      if ( mLayer->deleteAttribute( *it ) )
-      {
-        deleted = true;
-      }
-    }
-
-    if ( deleted )
+    if ( mLayer->deleteAttributes( attributes ) )
     {
       mLayer->endEditCommand();
     }
     else
     {
-      QMessageBox::critical( 0, tr( "Attribute Error" ), tr( "The attribute(s) could not be deleted" ) );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Attribute error" ), tr( "The attribute(s) could not be deleted" ), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
       mLayer->destroyEditCommand();
     }
     // update model - a field has been added or updated
@@ -517,34 +507,6 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
     columnBoxInit();
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 {
