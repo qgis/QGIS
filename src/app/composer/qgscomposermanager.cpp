@@ -172,7 +172,7 @@ void QgsComposerManager::show_clicked()
       c = it.value();
       if ( c )
       {
-        bool shown = isVisible();
+        bool shown = c->isVisible();
         c->show();
         c->activate();
         c->stackUnder( this );
@@ -223,6 +223,7 @@ void QgsComposerManager::show_clicked()
     activateWindow();
   }
 #endif //0
+  close();
 }
 
 void QgsComposerManager::rename_clicked()
