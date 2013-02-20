@@ -250,6 +250,7 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionSaveMapAsImage();
     virtual QAction *actionProjectProperties();
     virtual QAction *actionPrintComposer();
+    virtual QAction *actionShowComposerManager();
     virtual QAction *actionExit();
 
     //! Edit menu actions

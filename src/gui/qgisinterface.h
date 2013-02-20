@@ -349,6 +349,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSaveMapAsImage() = 0;
     virtual QAction *actionProjectProperties() = 0;
     virtual QAction *actionPrintComposer() = 0;
+    virtual QAction *actionShowComposerManager() = 0;
     virtual QAction *actionExit() = 0;
 
     //! Edit menu actions

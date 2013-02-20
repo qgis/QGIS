@@ -394,6 +394,7 @@ QAction *QgisAppInterface::actionSaveProjectAs() { return qgis->actionSaveProjec
 QAction *QgisAppInterface::actionSaveMapAsImage() { return qgis->actionSaveMapAsImage(); }
 QAction *QgisAppInterface::actionProjectProperties() { return qgis->actionProjectProperties(); }
 QAction *QgisAppInterface::actionPrintComposer() { return qgis->actionNewPrintComposer(); }
+QAction *QgisAppInterface::actionShowComposerManager() { return qgis->actionShowComposerManager(); }
 QAction *QgisAppInterface::actionExit() { return qgis->actionExit(); }
 
 //! Edit menu actions
