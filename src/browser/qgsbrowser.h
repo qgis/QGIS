@@ -35,7 +35,7 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
 
     // Expand to given path
     void expandPath( QString path );
-
+    void setLayer( QgsVectorLayer* vLayer );
 
 
   public slots:
@@ -79,6 +79,7 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
     QWidget *mParamWidget;
     // last (selected) tab for each
     QMap<QString, int> mLastTab;
+    QgsAttributeTableFilterModel* mAttributeTableFilterModel;
 };
 
 #endif // QGSBROWSER_H

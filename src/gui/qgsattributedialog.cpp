@@ -28,8 +28,6 @@
 #include "qgsexpression.h"
 #include "qgspythonrunner.h"
 
-#include "qgisapp.h"
-
 #include <QTableWidgetItem>
 #include <QSettings>
 #include <QLabel>
@@ -46,14 +44,15 @@
 
 int QgsAttributeDialog::smFormCounter = 0;
 
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner )
-    : mDialog( 0 )
+QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent, bool showDialogButtons )
+  : mDialog( 0 )
     , mSettingsPath( "/Windows/AttributeDialog/" )
     , mLayer( vl )
     , mFeature( thepFeature )
     , mFeatureOwner( featureOwner )
     , mHighlight( 0 )
     , mFormNr( -1 )
+    , mShowDialogButtons( showDialogButtons )
 {
   if ( !mFeature || !vl->dataProvider() )
     return;
@@ -77,7 +76,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       QFileInfo fi( vl->editForm() );
       loader.setWorkingDirectory( fi.dir() );
-      QWidget *myWidget = loader.load( &file, QgisApp::instance() );
+      QWidget *myWidget = loader.load( &file, parent );
       file.close();
 
       mDialog = qobject_cast<QDialog*>( myWidget );
@@ -87,7 +86,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   else if ( vl->editorLayout() == QgsVectorLayer::TabLayout )
   {
     // Tab display
-    mDialog = new QDialog( QgisApp::instance() );
+    mDialog = new QDialog( parent );
 
     QGridLayout *gridLayout;
     QTabWidget *tabWidget;
@@ -123,7 +122,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
   if ( !mDialog )
   {
-    mDialog = new QDialog( QgisApp::instance() );
+    mDialog = new QDialog( parent );
 
     QGridLayout *gridLayout;
     QFrame *mFrame;
@@ -220,12 +219,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
   }
   else
   {
+#if 0
     QgsDistanceArea myDa;
 
     myDa.setSourceCrs( vl->crs().srsid() );
     myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
     myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
-
+#endif
     for ( int fldIdx = 0; fldIdx < theFields.count(); ++fldIdx )
     {
       QList<QWidget *> myWidgets = mDialog->findChildren<QWidget*>( theFields[fldIdx].name() );
@@ -299,22 +299,32 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       mDialog->setWindowTitle( tr( "Attributes - %1" ).arg( vl->name() ) );
   }
 
-  if ( buttonBox )
+  if ( mShowDialogButtons )
   {
-    buttonBox->clear();
-
-    if ( vl->isEditable() )
+    if ( buttonBox )
     {
-      buttonBox->setStandardButtons( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-      connect( buttonBox, SIGNAL( accepted() ), mDialog, SLOT( accept() ) );
-      connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-    }
-    else
-    {
-      buttonBox->setStandardButtons( QDialogButtonBox::Cancel );
-    }
+      buttonBox->clear();
 
-    connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( reject() ) );
+      if ( vl->isEditable() )
+      {
+        buttonBox->setStandardButtons( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+        connect( buttonBox, SIGNAL( accepted() ), mDialog, SLOT( accept() ) );
+        connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+      }
+      else
+      {
+        buttonBox->setStandardButtons( QDialogButtonBox::Cancel );
+      }
+
+      connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( reject() ) );
+    }
+  }
+  else
+  {
+    if ( buttonBox )
+    {
+      buttonBox->setVisible( false );
+    }
   }
 
   QMetaObject::connectSlotsByName( mDialog );

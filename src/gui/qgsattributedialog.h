@@ -25,19 +25,19 @@ class QLayout;
 class QgsField;
 class QgsVectorLayer;
 class QgsHighlight;
+class QgsDistanceArea;
 
 class QgsAttributeDialog : public QObject
 {
     Q_OBJECT
 
   public:
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent = 0, bool showDialogButtons = true );
     ~QgsAttributeDialog();
 
     /** Saves the size and position for the next time
      *  this dialog box was used.
      */
-
     void saveGeometry();
 
     /** Restores the size and position from the last time
@@ -48,6 +48,8 @@ class QgsAttributeDialog : public QObject
     void setHighlight( QgsHighlight *h );
 
     QDialog *dialog() { return mDialog; }
+
+    QgsFeature* feature() { return mFeature; }
 
   public slots:
     void accept();
@@ -70,6 +72,7 @@ class QgsAttributeDialog : public QObject
     QgsHighlight *mHighlight;
     int mFormNr;
     static int smFormCounter;
+    bool mShowDialogButtons;
 };
 
 #endif
