@@ -60,7 +60,6 @@ class QgsAttributeTableDock : public QDockWidget
 QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
     : QDialog( parent, flags ),
       mDock( 0 ),
-      mWorkaround( false ),
       mLayer( theLayer )
 {
   setupUi( this );
