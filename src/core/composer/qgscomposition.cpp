@@ -436,6 +436,17 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     return false;
   }
 
+  // remove all uuid attributes since we don't want duplicates UUIDS 
+  QDomNodeList composerItemsNodes = importDoc.elementsByTagName("ComposerItem");
+  for (int i=0; i<composerItemsNodes.count(); ++i)
+  {
+    QDomNode composerItemNode = composerItemsNodes.at(i);
+    if( composerItemNode.isElement() )
+    {
+      composerItemNode.toElement().removeAttribute("uuid");
+    }
+  }
+
   //addItemsFromXML
   addItemsFromXML( importDoc.documentElement(), importDoc, 0, addUndoCommands, 0 );
 

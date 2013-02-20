@@ -485,6 +485,22 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       }
     }
     doc.appendChild( documentElement );
+
+    //if it's a copy, we have to remove the UUIDs since we don't want any duplicate UUID
+    if ( e->matches( QKeySequence::Copy ) )
+    {
+      // remove all uuid attributes
+      QDomNodeList composerItemsNodes = doc.elementsByTagName("ComposerItem");
+      for (int i=0; i<composerItemsNodes.count(); ++i)
+      {
+        QDomNode composerItemNode = composerItemsNodes.at(i);
+        if( composerItemNode.isElement() )
+        {
+          composerItemNode.toElement().removeAttribute("uuid");
+        }
+      }
+    }
+
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "text/xml", doc.toByteArray() );
     QClipboard *clipboard = QApplication::clipboard();

@@ -22,11 +22,13 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QPainter>
+#include <QUuid>
+
+#include "qgsproject.h"
 
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerframe.h"
-
 
 #include <limits>
 #include "qgsapplication.h"
@@ -51,6 +53,8 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mId( "" )
+    , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
 }
@@ -68,6 +72,8 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mId( "" )
+    , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
   QTransform t;
@@ -153,6 +159,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "rotation",  QString::number( mRotation ) );
+  composerItemElem.setAttribute( "uuid", mUuid );
   composerItemElem.setAttribute( "id", mId );
   //position lock for mouse moves/resizes
   if ( mItemPositionLocked )
@@ -201,8 +208,12 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   //rotation
   mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
 
+  //uuid
+  mUuid = itemElem.attribute( "uuid", QUuid::createUuid().toString() );
+
   //id
-  mId = itemElem.attribute( "id", "" );
+  QString id = itemElem.attribute( "id", "" );
+  setId(id);
 
   //frame
   QString frame = itemElem.attribute( "frame" );
@@ -1254,4 +1265,10 @@ void QgsComposerItem::deleteAlignItems()
 void QgsComposerItem::repaint()
 {
   update();
+}
+
+void QgsComposerItem::setId( const QString& id )
+{ 
+  setToolTip( id );
+  mId = id;
 }

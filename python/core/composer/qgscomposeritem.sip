@@ -292,15 +292,18 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem();
 
-    /**Get item identification name
+    /**Get item's id (which is not necessarly unique)
       @note this method was added in version 1.7*/
     QString id() const;
 
-    /**Set item identification name
-      @note this method was added in version 1.7
-                     This method was moved from qgscomposerlabel so that every object can have a
-                      id (NathanW)*/
+    /**Set item's id (which is not necessarly unique)
+      @note this method was added in version 1.7*/
     void setId( const QString& id );
+
+    /**Get item identification name
+      @note this method was added in version 2.0
+      @note there is not setter since one can't manually set the id*/
+    QString uuid() const;
 
   public slots:
     virtual void setRotation( double r );
