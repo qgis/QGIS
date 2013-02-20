@@ -230,6 +230,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSaveProjectAs() { return mActionSaveProjectAs; }
     QAction *actionSaveMapAsImage() { return mActionSaveMapAsImage; }
     QAction *actionProjectProperties() { return mActionProjectProperties; }
+    QAction *actionShowComposerManager() { return mActionShowComposerManager; }
     QAction *actionNewPrintComposer() { return mActionNewPrintComposer; }
     QAction *actionExit() { return mActionExit; }
 

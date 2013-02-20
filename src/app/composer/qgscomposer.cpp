@@ -172,6 +172,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QMenu *composerMenu = menuBar()->addMenu( tr( "Composer" ) );
   composerMenu->addAction( mSaveProjectAction );
   composerMenu->addSeparator();
+  composerMenu->addAction( QgisApp::instance()->actionNewPrintComposer() );
+  composerMenu->addAction( QgisApp::instance()->actionShowComposerManager() );
+  composerMenu->addSeparator();
   composerMenu->addAction( mActionLoadFromTemplate );
   composerMenu->addAction( mActionSaveAsTemplate );
   composerMenu->addSeparator();
