@@ -98,8 +98,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QToolButton* saveProjectToolButton = new QToolButton( this );
   saveProjectToolButton->addAction( mSaveProjectAction );
   saveProjectToolButton->setDefaultAction( mSaveProjectAction );
-  toolBar->insertWidget( mActionLoadFromTemplate, saveProjectToolButton );
-  toolBar->insertSeparator( mActionLoadFromTemplate );
+  mComposerToolbar->insertWidget( mActionLoadFromTemplate, saveProjectToolButton );
+  mComposerToolbar->insertSeparator( mActionLoadFromTemplate );
 
   QToolButton* orderingToolButton = new QToolButton( this );
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
@@ -110,7 +110,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   orderingToolButton->addAction( mActionMoveItemsToTop );
   orderingToolButton->addAction( mActionMoveItemsToBottom );
   orderingToolButton->setDefaultAction( mActionRaiseItems );
-  toolBar->addWidget( orderingToolButton );
+  mItemActionToolbar->addWidget( orderingToolButton );
 
   QToolButton* alignToolButton = new QToolButton( this );
   alignToolButton->setPopupMode( QToolButton::InstantPopup );
@@ -124,9 +124,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   alignToolButton->addAction( mActionAlignVCenter );
   alignToolButton->addAction( mActionAlignBottom );
   alignToolButton->setDefaultAction( mActionAlignLeft );
-  toolBar->addWidget( alignToolButton );
+  mItemActionToolbar->addWidget( alignToolButton );
 
-  QToolButton* shapeToolButton = new QToolButton( toolBar );
+  QToolButton* shapeToolButton = new QToolButton( mItemToolbar );
   shapeToolButton->setCheckable( true );
   shapeToolButton->setPopupMode( QToolButton::InstantPopup );
   shapeToolButton->setAutoRaise( true );
@@ -135,7 +135,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   shapeToolButton->addAction( mActionAddTriangle );
   shapeToolButton->addAction( mActionAddEllipse );
   shapeToolButton->setDefaultAction( mActionAddEllipse );
-  toolBar->insertWidget( mActionAddArrow, shapeToolButton );
+  mItemToolbar->insertWidget( mActionAddArrow, shapeToolButton );
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
   toggleActionGroup->addAction( mActionMoveItemContent );
@@ -169,20 +169,20 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   appMenu->addAction( QgisApp::instance()->actionOptions() );
 #endif
 
-  QMenu *fileMenu = menuBar()->addMenu( tr( "File" ) );
-  fileMenu->addAction( mSaveProjectAction );
-  fileMenu->addSeparator();
-  fileMenu->addAction( mActionLoadFromTemplate );
-  fileMenu->addAction( mActionSaveAsTemplate );
-  fileMenu->addSeparator();
-  fileMenu->addAction( mActionExportAsImage );
-  fileMenu->addAction( mActionExportAsPDF );
-  fileMenu->addAction( mActionExportAsSVG );
-  fileMenu->addSeparator();
-  fileMenu->addAction( mActionPageSetup );
-  fileMenu->addAction( mActionPrint );
-  fileMenu->addSeparator();
-  fileMenu->addAction( mActionQuit );
+  QMenu *composerMenu = menuBar()->addMenu( tr( "Composer" ) );
+  composerMenu->addAction( mSaveProjectAction );
+  composerMenu->addSeparator();
+  composerMenu->addAction( mActionLoadFromTemplate );
+  composerMenu->addAction( mActionSaveAsTemplate );
+  composerMenu->addSeparator();
+  composerMenu->addAction( mActionExportAsImage );
+  composerMenu->addAction( mActionExportAsPDF );
+  composerMenu->addAction( mActionExportAsSVG );
+  composerMenu->addSeparator();
+  composerMenu->addAction( mActionPageSetup );
+  composerMenu->addAction( mActionPrint );
+  composerMenu->addSeparator();
+  composerMenu->addAction( mActionQuit );
   QObject::connect( mActionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
 
   QMenu *viewMenu = menuBar()->addMenu( tr( "View" ) );
@@ -201,7 +201,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addMenu( mPanelMenu );
   viewMenu->addMenu( mToolbarMenu );
   // toolBar already exists, add other widgets as they are created
-  mToolbarMenu->addAction( toolBar->toggleViewAction() );
+  mToolbarMenu->addAction( mComposerToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mPaperNavToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mItemActionToolbar->toggleViewAction() );
+  mToolbarMenu->addAction( mItemToolbar->toggleViewAction() );
 
   QMenu *layoutMenu = menuBar()->addMenu( tr( "Layout" ) );
   layoutMenu->addAction( mActionUndo );

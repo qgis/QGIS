@@ -46,12 +46,9 @@
     </item>
    </layout>
   </widget>
-  <widget class="QToolBar" name="toolBar">
+  <widget class="QToolBar" name="mComposerToolbar">
    <property name="windowTitle">
-    <string>Toolbar</string>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
+    <string>Composer</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -61,18 +58,54 @@
    </attribute>
    <addaction name="mActionLoadFromTemplate"/>
    <addaction name="mActionSaveAsTemplate"/>
-   <addaction name="mActionExportAsImage"/>
-   <addaction name="mActionExportAsPDF"/>
-   <addaction name="mActionExportAsSVG"/>
-   <addaction name="mActionPrint"/>
    <addaction name="separator"/>
+   <addaction name="mActionPrint"/>
+   <addaction name="mActionExportAsImage"/>
+   <addaction name="mActionExportAsSVG"/>
+   <addaction name="mActionExportAsPDF"/>
+   <addaction name="mActionUndo"/>
+   <addaction name="mActionRedo"/>
+  </widget>
+  <widget class="QToolBar" name="mPaperNavToolbar">
+   <property name="windowTitle">
+    <string>Paper Navigation</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
    <addaction name="mActionZoomAll"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionRefreshView"/>
-   <addaction name="separator"/>
-   <addaction name="mActionUndo"/>
-   <addaction name="mActionRedo"/>
+  </widget>
+  <widget class="QToolBar" name="mItemActionToolbar">
+   <property name="windowTitle">
+    <string>Composer Item Actions</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="mActionSelectMoveItem"/>
+   <addaction name="mActionMoveItemContent"/>
+   <addaction name="mActionGroupItems"/>
+   <addaction name="mActionUngroupItems"/>
+  </widget>
+  <widget class="QToolBar" name="mItemToolbar">
+   <property name="windowTitle">
+    <string>Composer Items</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
    <addaction name="mActionAddNewMap"/>
    <addaction name="mActionAddImage"/>
    <addaction name="mActionAddNewLabel"/>
@@ -81,13 +114,11 @@
    <addaction name="mActionAddArrow"/>
    <addaction name="mActionAddTable"/>
    <addaction name="mActionAddHtml"/>
-   <addaction name="separator"/>
-   <addaction name="mActionSelectMoveItem"/>
-   <addaction name="mActionMoveItemContent"/>
-   <addaction name="mActionGroupItems"/>
-   <addaction name="mActionUngroupItems"/>
   </widget>
   <action name="mActionPrint">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset>
      <normaloff>../themes/default/mActionFilePrint.png</normaloff>../themes/default/mActionFilePrint.png</iconset>
