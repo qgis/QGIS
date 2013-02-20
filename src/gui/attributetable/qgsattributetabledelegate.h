@@ -21,6 +21,7 @@
 
 class QPainter;
 class QgsVectorLayer;
+class QgsAttributeTableView;
 
 /** \ingroup app
  * A delegate item class for QgsAttributeTable (see Qt documentation for
@@ -40,7 +41,7 @@ class QgsAttributeTableDelegate : public QItemDelegate
      * @param parent parent object
      */
     QgsAttributeTableDelegate( QObject* parent = NULL ) :
-        QItemDelegate( parent ) {};
+      QItemDelegate( parent ) {};
     /** Used to create an editor for when the user tries to
      * change the contents of a cell */
     QWidget * createEditor(

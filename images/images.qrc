@@ -325,6 +325,7 @@
         <file>themes/gis/mActionFilePrint.png</file>
         <file>themes/gis/mActionFileSaveAs.png</file>
         <file>themes/gis/mActionFileSave.png</file>
+        <file>themes/gis/mActionFilter.svg</file>
         <file>themes/gis/mActionFolder.png</file>
         <file>themes/gis/mActionFormAnnotation.png</file>
         <file>themes/gis/mActionGroupItems.png</file>

@@ -142,6 +142,8 @@ class CORE_EXPORT QgsExpression
 
     int scale() {return mScale; }
 
+    const QString& expression() const { return mExpression; }
+
     //! Return the parsed expression as a string - useful for debugging
     QString dump() const;
 

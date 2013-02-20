@@ -77,6 +77,7 @@
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
+%Include qgsvectorlayercache.sip
 %Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
