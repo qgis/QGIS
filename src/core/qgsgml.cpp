@@ -188,9 +188,7 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
     mParseModeStack.push( QgsGml::boundingBox );
   }
   else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
-  {
-  }
-  else if ( localName == mTypeName )
+    //else if ( localName == mTypeName )
   {
     mCurrentFeature = new QgsFeature( mFeatureCount );
     QgsAttributes attributes( mThematicAttributes.size() ); //add empty attributes
@@ -308,8 +306,8 @@ void QgsGml::endElement( const XML_Char* el )
       mParseModeStack.pop();
     }
   }
-  //else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
-  else if ( localName == mTypeName )
+  //else if ( localName == mTypeName )
+  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
   {
     if ( mCurrentWKBSize > 0 )
     {
