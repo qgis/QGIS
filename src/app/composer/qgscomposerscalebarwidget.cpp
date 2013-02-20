@@ -18,6 +18,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposition.h"
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>

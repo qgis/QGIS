@@ -17,7 +17,6 @@
 #include <stdexcept>
 
 #include "qgscomposition.h"
-#include "qgscomposeritem.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerframe.h"
 #include "qgscomposerhtml.h"
@@ -1077,9 +1076,9 @@ void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
   delete line;
 }
 
-QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, double y, double tolerance )
+QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, double y, double tolerance,
+    QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode> >& snappedItems )
 {
-  bool xDirection = doubleNear( y, 0.0 );
   double minSqrDist = DBL_MAX;
   QGraphicsLineItem* item = 0;
   double currentXCoord = 0;
@@ -1087,15 +1086,18 @@ QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, d
   double currentSqrDist = 0;
   double sqrTolerance = tolerance * tolerance;
 
+  snappedItems.clear();
+
   QList< QGraphicsLineItem* >::const_iterator it = mSnapLines.constBegin();
   for ( ; it != mSnapLines.constEnd(); ++it )
   {
-    if ( horizontal )
+    bool itemHorizontal = doubleNear(( *it )->line().y2() - ( *it )->line().y1(), 0 );
+    if ( horizontal && itemHorizontal )
     {
       currentYCoord = ( *it )->line().y1();
       currentSqrDist = ( y - currentYCoord ) * ( y - currentYCoord );
     }
-    else
+    else if ( !itemHorizontal )
     {
       currentXCoord = ( *it )->line().x1();
       currentSqrDist = ( x - currentXCoord ) * ( x - currentXCoord );
@@ -1105,6 +1107,53 @@ QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, d
     {
       item = *it;
       minSqrDist = currentSqrDist;
+    }
+  }
+
+  double itemTolerance = 0.0000001;
+  if ( item )
+  {
+    //go through all the items to find items snapped to this snap line
+    QList<QGraphicsItem *> itemList = items();
+    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+    for ( ; itemIt != itemList.end(); ++itemIt )
+    {
+      QgsComposerItem* currentItem = dynamic_cast<QgsComposerItem*>( *itemIt );
+      if ( !currentItem || currentItem->type() == QgsComposerItem::ComposerPaper )
+      {
+        continue;
+      }
+
+      if ( horizontal )
+      {
+        if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().top(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::UpperMiddle ) );
+        }
+        else if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().center().y(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
+        }
+        else if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().bottom(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::LowerMiddle ) );
+        }
+      }
+      else
+      {
+        if ( doubleNear( currentXCoord, currentItem->transform().dx(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleLeft ) );
+        }
+        else if ( doubleNear( currentXCoord, currentItem->transform().dx() + currentItem->rect().center().x(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
+        }
+        else if ( doubleNear( currentXCoord,  currentItem->transform().dx() + currentItem->rect().width(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleRight ) );
+        }
+      }
     }
   }
 

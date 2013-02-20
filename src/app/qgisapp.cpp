@@ -69,6 +69,7 @@
 
 #include <qgsnetworkaccessmanager.h>
 #include <qgsapplication.h>
+#include <qgscomposition.h>
 
 #include <QNetworkReply>
 #include <QNetworkProxy>

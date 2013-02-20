@@ -22,6 +22,7 @@
 #include "qgscomposerlegendlayersdialog.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include <QFontDialog>
 #include <QColorDialog>
 

@@ -16,11 +16,14 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
+#include "qgscomposeritem.h"
 #include <memory>
 
 #include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
+#include <QList>
+#include <QPair>
 #include <QSet>
 #include <QUndoStack>
 #include <QPrinter>
@@ -30,8 +33,8 @@
 #include "qgscomposeritemcommand.h"
 #include "qgsatlascomposition.h"
 
+
 class QgsComposerFrame;
-class QgsComposerItem;
 class QgsComposerMap;
 class QgsPaperItem;
 class QGraphicsRectItem;
@@ -264,7 +267,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Remove custom snap line (and delete the object)*/
     void removeSnapLine( QGraphicsLineItem* line );
     /**Get nearest snap line*/
-    QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance );
+    QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
 
     /**Allocates new item command and saves initial state in it
       @param item target item

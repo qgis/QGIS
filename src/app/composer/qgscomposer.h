@@ -24,6 +24,8 @@
 
 class QgisApp;
 class QgsComposerArrow;
+class QgsComposerFrame;
+class QgsComposerHtml;
 class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerPicture;

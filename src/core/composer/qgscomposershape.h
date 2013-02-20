@@ -19,6 +19,8 @@
 #define QGSCOMPOSERSHAPE_H
 
 #include "qgscomposeritem.h"
+#include <QBrush>
+#include <QPen>
 
 /**A composer items that draws common shapes (ellipse, triangle, rectangle)*/
 class CORE_EXPORT QgsComposerShape: public QgsComposerItem

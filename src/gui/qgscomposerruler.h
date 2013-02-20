@@ -1,6 +1,7 @@
 #ifndef QGSCOMPOSERRULER_H
 #define QGSCOMPOSERRULER_H
 
+#include "qgscomposeritem.h"
 #include <QWidget>
 class QgsComposition;
 class QGraphicsLineItem;
@@ -38,6 +39,8 @@ class QgsComposerRuler: public QWidget
     QPointF mMarkerPos;
     QgsComposition* mComposition; //reference to composition for paper size, nPages
     QGraphicsLineItem* mLineSnapItem;
+    //items snapped to the current snap line
+    QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > > mSnappedItems;
 
     void setSnapLinePosition( const QPointF& pos );
     static QGraphicsLineItem* createLineSnapItem();

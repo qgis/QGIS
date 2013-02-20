@@ -17,6 +17,7 @@
 #define QGSCOMPOSERSCALEBAR_H
 
 #include "qgscomposeritem.h"
+#include <QFont>
 #include <QPen>
 #include <QColor>
 

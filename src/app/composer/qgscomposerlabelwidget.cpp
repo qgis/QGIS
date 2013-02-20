@@ -18,6 +18,7 @@
 #include "qgscomposerlabelwidget.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
 
 #include <QColorDialog>

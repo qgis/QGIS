@@ -153,6 +153,7 @@ void QgsComposerRuler::mouseReleaseEvent( QMouseEvent* event )
   if ( removeItem )
   {
     mComposition->removeSnapLine( mLineSnapItem );
+    mSnappedItems.clear();
   }
   mLineSnapItem = 0;
 }
@@ -171,7 +172,7 @@ void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
   }
 
   //horizontal ruler means vertical snap line
-  QGraphicsLineItem* line = mComposition->nearestSnapLine( mDirection != Horizontal, x, y, 10.0 );
+  QGraphicsLineItem* line = mComposition->nearestSnapLine( mDirection != Horizontal, x, y, 10.0, mSnappedItems );
   if ( !line )
   {
     //create new snap line
@@ -205,6 +206,42 @@ void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
   else //vertical
   {
     mLineSnapItem->setLine( QLineF( 0, transformedPt.y(), mComposition->paperWidth(), transformedPt.y() ) );
+  }
+
+  //move snapped items together with the snap line
+  QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >::iterator itemIt = mSnappedItems.begin();
+  for ( ; itemIt != mSnappedItems.end(); ++itemIt )
+  {
+    if ( mDirection == Horizontal )
+    {
+      if ( itemIt->second == QgsComposerItem::MiddleLeft )
+      {
+        itemIt->first->setItemPosition( transformedPt.x(), itemIt->first->transform().dy(), QgsComposerItem::UpperLeft );
+      }
+      else if ( itemIt->second == QgsComposerItem::Middle )
+      {
+        itemIt->first->setItemPosition( transformedPt.x(), itemIt->first->transform().dy(), QgsComposerItem::UpperMiddle );
+      }
+      else
+      {
+        itemIt->first->setItemPosition( transformedPt.x(), itemIt->first->transform().dy(), QgsComposerItem::UpperRight );
+      }
+    }
+    else
+    {
+      if ( itemIt->second == QgsComposerItem::UpperMiddle )
+      {
+        itemIt->first->setItemPosition( itemIt->first->transform().dx(), transformedPt.y(), QgsComposerItem::UpperLeft );
+      }
+      else if ( itemIt->second == QgsComposerItem::Middle )
+      {
+        itemIt->first->setItemPosition( itemIt->first->transform().dx(), transformedPt.y(), QgsComposerItem::MiddleLeft );
+      }
+      else
+      {
+        itemIt->first->setItemPosition( itemIt->first->transform().dx(), transformedPt.y(), QgsComposerItem::LowerLeft );
+      }
+    }
   }
 }
 

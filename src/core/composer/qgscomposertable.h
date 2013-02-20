@@ -19,6 +19,7 @@
 #define QGSCOMPOSERTABLE_H
 
 #include "qgscomposeritem.h"
+#include "qgscomposition.h"
 #include "qgsfeature.h"
 #include <QSet>
 

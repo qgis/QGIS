@@ -19,6 +19,7 @@
 #include "qgsatlascomposition.h"
 #include "qgsvectorlayer.h"
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
@@ -49,7 +50,7 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
   mCoverageLayer = layer;
 
   // update the number of features
-  QgsExpression::setSpecialColumn( "$numfeatures", QVariant( (int)mFeatureIds.size() ) );
+  QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
 }
 
 void QgsAtlasComposition::beginRender()
@@ -213,18 +214,18 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
     // geometry height is too big
     if ( geom_ratio < map_ratio )
     {
-	    // extent the bbox's width
-	    double adj_width = ( map_ratio * geom_rect.height() - geom_rect.width() ) / 2.0;
-	    xa1 -= adj_width;
-	    xa2 += adj_width;
+      // extent the bbox's width
+      double adj_width = ( map_ratio * geom_rect.height() - geom_rect.width() ) / 2.0;
+      xa1 -= adj_width;
+      xa2 += adj_width;
     }
     // geometry width is too big
     else if ( geom_ratio > map_ratio )
     {
-	    // extent the bbox's height
-	    double adj_height = (geom_rect.width() / map_ratio - geom_rect.height() ) / 2.0;
-	    ya1 -= adj_height;
-	    ya2 += adj_height;
+      // extent the bbox's height
+      double adj_height = ( geom_rect.width() / map_ratio - geom_rect.height() ) / 2.0;
+      ya1 -= adj_height;
+      ya2 += adj_height;
     }
     new_extent = QgsRectangle( xa1, ya1, xa2, ya2 );
 
