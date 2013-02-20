@@ -256,7 +256,7 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
     it = mLayer->getFeatures( featureRequest );
   }
 
-  if ( requiresWriterIt )
+  if ( requiresWriterIt && mLayer->dataProvider() )
   {
     // No index was able to satisfy the request
     it = QgsFeatureIterator( new QgsCachedFeatureWriterIterator( this, featureRequest ) );
