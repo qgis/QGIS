@@ -145,23 +145,27 @@ void QgsScaleComboBox::setScale( double scale )
 void QgsScaleComboBox::fixupScale()
 {
   double newScale;
-  double oldScale = mScale;
-  bool ok;
-  QStringList txtList;
+  bool ok, userSetScale;
+  QStringList txtList = currentText().split( ':' );
+  txtList.size() == 2 ? userSetScale = false : userSetScale = true ;
 
   // QgsDebugMsg( QString( "entered with oldScale: %1" ).arg( oldScale ) );
   newScale = toDouble( currentText(), &ok );
+  
+  // Valid string representation
   if ( ok )
   {
-    // Valid string representation
-    if ( newScale != oldScale )
+    // if a user types scale = 2345, we transform to 1:2345
+    if(userSetScale)
     {
-      // Scale has change, update.
-      // QgsDebugMsg( QString( "New scale OK!: %1" ).arg( newScale ) );
-      mScale = newScale;
-      setScale( mScale );
-      emit scaleChanged();
+      mScale = 1 / newScale;
     }
+    else
+    {
+      mScale = newScale;
+    }
+    setScale( mScale );
+    emit scaleChanged();
   }
   else
   {
