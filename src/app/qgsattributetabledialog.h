@@ -174,8 +174,6 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
     QAction* mActionToggleEditing;
 
     QDockWidget* mDock;
-    QTime mStarted;
-    bool mWorkaround;
 
     QMenu* mFilterColumnsMenu;
     QSignalMapper* mFilterActionMapper;
