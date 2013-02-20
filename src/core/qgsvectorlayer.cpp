@@ -2235,6 +2235,8 @@ bool QgsVectorLayer::startEditing()
   connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
   connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), this, SIGNAL( attributeAdded( int ) ) );
   connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), this, SIGNAL( attributeDeleted( int ) ) );
+  connect( mEditBuffer, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ), this, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ) );
+  connect( mEditBuffer, SIGNAL( committedFeaturesRemoved( QString, QgsFeatureIds ) ), this, SIGNAL( committedFeaturesRemoved( QString, QgsFeatureIds ) ) );
 
   updateFields();
 
