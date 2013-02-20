@@ -54,15 +54,20 @@ CMAKE_OPTS := \
 
 MAKEFLAGS += VERBOSE=YES
 
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
+	CMAKE_OPTS += -D WITH_STAGED_PLUGINS=FALSE
+endif
+
 ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric"))
-	QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_GNU_TYPE)/qt4/plugins
+	DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
+	QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
 else
 	QT_PLUGIN_DIR = usr/lib/qt4/plugins
 endif
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-         NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-         MAKEFLAGS += -j$(NUMJOBS)
+	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise raring"))
@@ -80,8 +85,7 @@ else
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"raring"))
-DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
-        CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
+	CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
 ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
@@ -112,7 +116,7 @@ ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 endif
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	CMAKE_OPTS += -D ENABLE_TESTS=TRUE
+	CMAKE_OPTS += -D ENABLE_TESTS=FALSE
 endif
 
 ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
