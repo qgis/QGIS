@@ -847,10 +847,11 @@ int QgsWFSProvider::describeFeatureTypeGET( const QString& uri, QString& geometr
   }
 
   mNetworkRequestFinished = false;
-
-  QString describeFeatureUri = uri;
-  describeFeatureUri.replace( QString( "GetFeature" ), QString( "DescribeFeatureType" ) );
-  QNetworkRequest request( describeFeatureUri );
+  QUrl describeFeatureUrl( uri );
+  describeFeatureUrl.removeQueryItem( "SRSNAME" );
+  describeFeatureUrl.removeQueryItem( "REQUEST" );
+  describeFeatureUrl.addQueryItem( "REQUEST", "DescribeFeatureType" );
+  QNetworkRequest request( describeFeatureUrl.toString() );
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
   connect( reply, SIGNAL( finished() ), this, SLOT( networkRequestFinished() ) );
   while ( !mNetworkRequestFinished )
