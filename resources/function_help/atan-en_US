@@ -1,0 +1,12 @@
+<h3>atan() function</h3>
+Returns arcustanget of a value in radians.
+
+
+<p><h4>Syntax</h4>
+     atan(<i>real</i>)</p>
+
+<p><h4>Arguments</h4>
+<i>real</i> -> tan of an angle.</p>
+
+<p><h4>Example</h4>
+     atan(0.5) -> 0.463647609000806</p>

@@ -1,0 +1,13 @@
+<h3>toint function</h3>
+Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g '123asd' is invalid).
+
+<p><h4>Syntax</h4>
+     toint(<i>string</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  string</i> -> is string.  The String to convert to integer number.</p>
+
+<p><h4>Example</h4>
+<!-- Show example of function.-->
+     toint('123') -> 123</p>

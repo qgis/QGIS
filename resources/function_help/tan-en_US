@@ -1,0 +1,12 @@
+<h3>tan() function</h3>
+Returns tangent of an angle.
+
+
+<p><h4>Syntax</h4>
+     tan(<i>real</i>)</p>
+
+<p><h4>Arguments</h4>
+<i>real</i> -> angle in radians.</p>
+
+<p><h4>Example</h4>
+     tan(1.0) -> 1.5574077246549</p>
