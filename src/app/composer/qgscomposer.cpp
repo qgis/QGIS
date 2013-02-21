@@ -663,9 +663,9 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
   if ( hasAnAtlas )
   {
-    QPrinter printer;
+    QPrinter printerSingleFile;
 
-    QPainter painter;
+    QPainter painterSingleFile;
 
     try
     {
@@ -682,10 +682,11 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     }
     if ( atlasOnASingleFile )
     {
-      mComposition->beginPrintAsPDF( printer, outputFileName );
+
+      mComposition->beginPrintAsPDF( printerSingleFile, outputFileName );
       // set the correct resolution
-      mComposition->beginPrint( printer );
-      painter.begin( &printer );
+      mComposition->beginPrint( printerSingleFile );
+      painterSingleFile.begin( &printerSingleFile );
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
@@ -716,27 +717,30 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       }
       if ( !atlasOnASingleFile )
       {
+        QPainter painterMultiFile;
+        QPrinter printerMultiFile;
         outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".pdf";
-        mComposition->beginPrintAsPDF( printer, outputFileName );
+        mComposition->beginPrintAsPDF( printerMultiFile, outputFileName );
         // set the correct resolution
-        mComposition->beginPrint( printer );
-        painter.begin( &printer );
-        mComposition->doPrint( printer, painter );
-        painter.end();
+        mComposition->beginPrint( printerMultiFile );
+        painterMultiFile.begin( &printerMultiFile );
+        mComposition->doPrint( printerMultiFile, painterMultiFile );
+        painterMultiFile.end();
+        //TODO : DO I HAVE TO DELETE painterMultiFile ?
       }
       else
       {
         if ( featureI > 0 )
         {
-          printer.newPage();
+          printerSingleFile.newPage();
         }
-        mComposition->doPrint( printer, painter );
+        mComposition->doPrint( printerSingleFile, painterSingleFile );
       }
     }
     atlasMap->endRender();
     if ( atlasOnASingleFile )
     {
-      painter.end();
+      painterSingleFile.end();
     }
   }
   else
