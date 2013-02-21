@@ -254,6 +254,9 @@ class QgisInterface : QObject
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;
     virtual QMenu *layerMenu() = 0;
+    /** \note added in 2.0
+    */
+    virtual QMenu *newLayerMenu() = 0;
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
     virtual QMenu *rasterMenu() = 0;

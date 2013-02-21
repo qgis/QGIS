@@ -218,6 +218,8 @@ class QgisAppInterface : public QgisInterface
     virtual QMenu *editMenu();
     virtual QMenu *viewMenu();
     virtual QMenu *layerMenu();
+    //! @note added in 2.0
+    virtual QMenu *newLayerMenu();
     virtual QMenu *settingsMenu();
     virtual QMenu *pluginMenu();
     virtual QMenu *rasterMenu();

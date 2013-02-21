@@ -351,6 +351,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
+    //! @note added in 2.0
+    QMenu *newLayerMenu() { return mNewLayerMenu; }
     QMenu *settingsMenu() { return mSettingsMenu; }
     QMenu *pluginMenu() { return mPluginMenu; }
     QMenu *databaseMenu() { return mDatabaseMenu; }

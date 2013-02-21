@@ -362,6 +362,7 @@ QMenu *QgisAppInterface::fileMenu() { return qgis->fileMenu(); }
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }
+QMenu *QgisAppInterface::newLayerMenu() { return qgis->newLayerMenu(); }
 QMenu *QgisAppInterface::settingsMenu() { return qgis->settingsMenu(); }
 QMenu *QgisAppInterface::pluginMenu() { return qgis->pluginMenu(); }
 QMenu *QgisAppInterface::rasterMenu() { return qgis->rasterMenu(); }
