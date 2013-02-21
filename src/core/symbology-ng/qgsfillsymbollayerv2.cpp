@@ -747,6 +747,13 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
   int dx = 0;
   int dy = 0;
 
+  if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
+  {
+    QImage img;
+    mBrush.setTextureImage( img );
+    return;
+  }
+
   QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
   QPainter p( &patternImage );
@@ -1048,6 +1055,13 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
   //render 3 rows and columns in one go to easily incorporate displacement
   double width = context.outputPixelSize( mDistanceX ) * 2.0;
   double height = context.outputPixelSize( mDistanceY ) * 2.0;
+
+  if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
+  {
+    QImage img;
+    mBrush.setTextureImage( img );
+    return;
+  }
 
   QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
