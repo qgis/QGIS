@@ -247,7 +247,7 @@ QSizeF QgsComposerLegend::drawGroupItemTitle( QgsComposerGroupItem* groupItem, Q
   QStringList lines = splitStringForWrapping( groupItem->text() );
   for ( QStringList::Iterator groupPart = lines.begin(); groupPart != lines.end(); ++groupPart )
   {
-    y += fontAscentMillimeters( mGroupFont );
+    y += fontAscentMillimeters( mGroupFont ) + fontDescentMillimeters( mGroupFont );
     if ( painter ) drawText( painter, point.x(), y, *groupPart, mGroupFont );
     double width = textWidthMillimeters( mGroupFont, *groupPart );
     size.rwidth() = qMax( width, size.width() );
@@ -275,7 +275,7 @@ QSizeF QgsComposerLegend::drawLayerItemTitle( QgsComposerLayerItem* layerItem, Q
   QStringList lines = splitStringForWrapping( layerItem->text() );
   for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
   {
-    y += fontAscentMillimeters( mLayerFont );
+    y += fontAscentMillimeters( mLayerFont ) + fontDescentMillimeters( mLayerFont );
     if ( painter ) drawText( painter, point.x(), y, *layerItemPart , mLayerFont );
     double width = textWidthMillimeters( mLayerFont, *layerItemPart );
     size.rwidth() = qMax( width, size.width() );
