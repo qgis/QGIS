@@ -430,7 +430,9 @@ def load(path):
 def getfeatures(layer):
     return QGisLayers.features(layer)
 
-def loadFromAlg(layersdict):
-    '''Load all layer resulting from a given algorithm.
-    Layers are passed as a dictionary, obtained from alg.getOutputValuesAsDictionary()'''
-    QGisLayers.loadFromDict(layersdict)
+#===============================================================================
+# def loadFromAlg(layersdict):
+#    '''Load all layer resulting from a given algorithm.
+#    Layers are passed as a dictionary, obtained from alg.getOutputValuesAsDictionary()'''
+#    QGisLayers.loadFromDict(layersdict)
+#===============================================================================

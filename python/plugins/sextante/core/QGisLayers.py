@@ -156,10 +156,12 @@ class QGisLayers:
 
         return qgslayer
 
-    @staticmethod
-    def loadFromDict(layersdict, crs):
-        for name in layersdict.keys():
-            QGisLayers.load(layersdict[name], name, crs)
+    #===========================================================================
+    # @staticmethod
+    # def loadFromDict(layersdict, crs = None):
+    #    for name in layersdict.keys():
+    #        QGisLayers.load(layersdict[name], name, crs)
+    #===========================================================================
 
 
     @staticmethod

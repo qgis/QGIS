@@ -17,7 +17,7 @@
 ***************************************************************************
 """
 
-from sextante.core.Sextante import runalg, runandload, alghelp, alglist, algoptions, load, loadFromAlg, \
+from sextante.core.Sextante import runalg, runandload, alghelp, alglist, algoptions, load, \
                                     extent, getObjectFromName, getObjectFromUri, getobject, getfeatures
 
 __author__ = 'Victor Olaya'
