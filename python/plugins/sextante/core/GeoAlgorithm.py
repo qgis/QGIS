@@ -59,6 +59,7 @@ class GeoAlgorithm:
         #change any of the following if your algorithm should not appear in the toolbox or modeler
         self.showInToolbox = True
         self.showInModeler = True
+        self.canRunInBatchMode = True
         #to be set by the provider when it loads the algorithm
         self.provider = None
 

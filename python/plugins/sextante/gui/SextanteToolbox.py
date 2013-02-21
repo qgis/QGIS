@@ -79,9 +79,10 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             executeAction = QAction(self.tr("Execute"), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
-            executeBatchAction = QAction(self.tr("Execute as batch process"), self.algorithmTree)
-            executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
-            popupmenu.addAction(executeBatchAction)
+            if alg.canRunInBatchMode:
+                executeBatchAction = QAction(self.tr("Execute as batch process"), self.algorithmTree)
+                executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
+                popupmenu.addAction(executeBatchAction)
             editRenderingStylesAction = QAction(self.tr("Edit rendering styles for outputs"), self.algorithmTree)
             editRenderingStylesAction.triggered.connect(self.editRenderingStyles)
             popupmenu.addAction(editRenderingStylesAction)
@@ -202,7 +203,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             mainItem = QTreeWidgetItem()
             mainItem.setText(0, "Geoalgorithms")
             mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-            mainItem.setToolTip(0, mainItem.text(0))
+            mainItem.setToolTip(0, mainItem.text(0))            
             for groupname, group in groups.items():
                 groupItem = QTreeWidgetItem()
                 groupItem.setText(0, groupname)
@@ -217,11 +218,9 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                     groupItem.addChild(subgroupItem)
                     for alg in subgroup:
                         algItem = TreeAlgorithmItem(alg)
-                        subgroupItem.addChild(algItem)
-                    subgroupItem.setExpanded(text!="")
-                groupItem.setExpanded(text!="")
-            self.algorithmTree.addTopLevelItem(mainItem)
-            mainItem.setExpanded(text!="")
+                        subgroupItem.addChild(algItem)                    
+                
+            self.algorithmTree.addTopLevelItem(mainItem)            
 
         for providerName in Sextante.algs.keys():
             groups = {}
@@ -267,11 +266,10 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(text!="")
-                for groupItem in groups.values():
-                    if text != "":
-                        groupItem.setExpanded(True)
-
+                
+        if (text != ""):
+            self.algorithmTree.expandAll()
+                
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
@@ -319,9 +317,8 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
                 providerItem.setExpanded(text!="")
-                for groupItem in groups.values():
-                    if text != "":
-                        groupItem.setExpanded(True)
+                for groupItem in groups.values():                    
+                    groupItem.setExpanded(text != "")
 
 
 
@@ -330,8 +327,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
     def __init__(self, alg):
         useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
         QTreeWidgetItem.__init__(self)
-        self.alg = alg
-        self.setText(0, alg.name)
+        self.alg = alg        
         icon = alg.getIcon()
         name = alg.name
         if useCategories:
@@ -339,6 +335,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
             group, subgroup, name = AlgorithmDecorator.getGroupsAndName(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
+        self.setText(0, name)
 
 class TreeActionItem(QTreeWidgetItem):
 

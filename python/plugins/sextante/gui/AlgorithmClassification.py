@@ -37,7 +37,10 @@ class AlgorithmDecorator():
         while line != "":
             tokens = line.split(",")
             subtokens = tokens[2].split("/")
-            AlgorithmDecorator.classification[tokens[0]] = (subtokens[0], subtokens[1], tokens[1]);
+            try:
+                AlgorithmDecorator.classification[tokens[0]] = (subtokens[0], subtokens[1], tokens[1]);
+            except:
+                raise Exception(line);
             line = lines.readline().strip("\n")
         lines.close()
 
@@ -55,7 +58,7 @@ class AlgorithmDecorator():
                 name = alg.name
             return (group, subgroup, name)
         else:
-            return (None,None,alg.commandLineName())
+            return (None,None, alg.name)
 
 
 

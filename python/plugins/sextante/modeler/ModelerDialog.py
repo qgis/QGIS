@@ -262,6 +262,10 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             self.fillAlgorithmTreeUsingProviders()
 
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
+        
+        text = unicode(self.searchBox.text())
+        if (text != ""):
+            self.algorithmTree.expandAll()
 
     def fillAlgorithmTreeUsingCategories(self):
         providersToExclude = ["model", "script"]
@@ -312,11 +316,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                     groupItem.addChild(subgroupItem)
                     for alg in subgroup:
                         algItem = TreeAlgorithmItem(alg)
-                        subgroupItem.addChild(algItem)
-                    subgroupItem.setExpanded(text!="")
-                groupItem.setExpanded(text!="")
-            self.algorithmTree.addTopLevelItem(mainItem)
-            mainItem.setExpanded(text!="")
+                        subgroupItem.addChild(algItem)                                
+            self.algorithmTree.addTopLevelItem(mainItem)            
 
         for providerName in allAlgs.keys():
             groups = {}
@@ -399,8 +400,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
     def __init__(self, alg):
         useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
         QTreeWidgetItem.__init__(self)
-        self.alg = alg
-        self.setText(0, alg.name)
+        self.alg = alg        
         icon = alg.getIcon()
         name = alg.name
         if useCategories:
@@ -408,4 +408,5 @@ class TreeAlgorithmItem(QTreeWidgetItem):
             group, subgroup, name = AlgorithmDecorator.getGroupsAndName(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
+        self.setText(0, name)
         
