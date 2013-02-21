@@ -178,7 +178,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   mPrintComposersMenu = new QMenu( tr( "Print Composers" ), this );
   mPrintComposersMenu->setObjectName( "mPrintComposersMenu" );
-  QObject::connect( mPrintComposersMenu, SIGNAL( aboutToShow() ), this, SLOT( populatePrintComposersMenu() ) );
+  connect( mPrintComposersMenu, SIGNAL( aboutToShow() ), this, SLOT( populatePrintComposersMenu() ) );
   composerMenu->addMenu( mPrintComposersMenu );
 
   composerMenu->addSeparator();
@@ -239,11 +239,17 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionMoveItemsToBottom );
 
 #ifdef Q_WS_MAC
-#ifndef Q_WS_MAC64 /* assertion failure in NSMenuItem setSubmenu (Qt 4.5.0-snapshot-20080830) */
-  menuBar()->addMenu( mQgis->windowMenu() );
+  // this doesn't work on Mac anymore: menuBar()->addMenu( mQgis->windowMenu() );
+  // QgsComposer::populateWithOtherMenu should work recursively with submenus and regardless of Qt version
+  mWindowMenu = new QMenu( tr( "Window" ), this );
+  mWindowMenu->setObjectName( "mWindowMenu" );
+  connect( mWindowMenu, SIGNAL( aboutToShow() ), this, SLOT( populateWindowMenu() ) );
+  menuBar()->addMenu( mWindowMenu );
 
-  menuBar()->addMenu( mQgis->helpMenu() );
-#endif
+  mHelpMenu = new QMenu( tr( "Help" ) );
+  mHelpMenu->setObjectName( "mHelpMenu" );
+  connect( mHelpMenu, SIGNAL( aboutToShow() ), this, SLOT( populateHelpMenu() ) );
+  menuBar()->addMenu( mHelpMenu );
 #endif
 
   mFirstTime = true;
@@ -1997,4 +2003,47 @@ void QgsComposer::populatePrintComposersMenu()
 {
   mPrintComposersMenu->clear();
   mPrintComposersMenu->addActions( mQgis->printComposersMenu()->actions() );
+}
+
+void QgsComposer::populateWindowMenu()
+{
+  populateWithOtherMenu( mWindowMenu, mQgis->windowMenu() );
+}
+
+void QgsComposer::populateHelpMenu()
+{
+  populateWithOtherMenu( mHelpMenu, mQgis->helpMenu() );
+}
+
+void QgsComposer::populateWithOtherMenu( QMenu* thisMenu, QMenu* otherMenu )
+{
+  thisMenu->clear();
+  foreach ( QAction* act, otherMenu->actions() )
+  {
+    if ( act->menu() )
+    {
+      thisMenu->addMenu( mirrorOtherMenu( act->menu() ) );
+    }
+    else
+    {
+      thisMenu->addAction( act );
+    }
+  }
+}
+
+QMenu* QgsComposer::mirrorOtherMenu( QMenu* otherMenu )
+{
+  QMenu* newMenu = new QMenu( otherMenu->title(), this );
+  foreach ( QAction* act, otherMenu->actions() )
+  {
+    if ( act->menu() )
+    {
+      newMenu->addMenu( mirrorOtherMenu( act->menu() ) );
+    }
+    else
+    {
+      newMenu->addAction( act );
+    }
+  }
+  return newMenu;
 }

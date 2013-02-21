@@ -350,11 +350,35 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! @note added in 1.9
     QMenu* mPrintComposersMenu;
 
+    //! Window menu as mirror of main app's (on Mac)
+    //! @note added in 1.9
+    QMenu* mWindowMenu;
+
+    //! Help menu as mirror of main app's (on Mac)
+    //! @note added in 1.9
+    QMenu* mHelpMenu;
+
   private slots:
 
     //! Populate Print Composers menu from main app's
     //! @note added in 1.9
     void populatePrintComposersMenu();
+
+    //! Populate Window menu from main app's (on Mac)
+    //! @note added in 1.9
+    void populateWindowMenu();
+
+    //! Populate Help menu from main app's (on Mac)
+    //! @note added in 1.9
+    void populateHelpMenu();
+
+    //! Populate one menu from another menu (for Mac)
+    //! @note added in 1.9
+    void populateWithOtherMenu( QMenu* thisMenu, QMenu* otherMenu );
+
+    //! Create a duplicate of a menu (for Mac)
+    //! @note added in 1.9
+    QMenu* mirrorOtherMenu( QMenu* otherMenu );
 };
 
 #endif
