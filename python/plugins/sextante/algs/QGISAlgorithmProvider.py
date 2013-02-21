@@ -16,9 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.algs.MeanAndStdDevPlot import MeanAndStdDevPlot
-from sextante.algs.BarPlot import BarPlot
-from sextante.algs.PolarPlot import PolarPlot
+#from sextante.algs.MeanAndStdDevPlot import MeanAndStdDevPlot
+#from sextante.algs.BarPlot import BarPlot
+#from sextante.algs.PolarPlot import PolarPlot
 from sextante.algs.RasterLayerStatistics import RasterLayerStatistics
 
 __author__ = 'Victor Olaya'
@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 import os
 from PyQt4 import QtGui
 #from sextante.algs.RasterLayerHistogram import RasterLayerHistogram
-#from sextante.algs.StatisticsByCategories import StatisticsByCategories
+from sextante.algs.StatisticsByCategories import StatisticsByCategories
 from sextante.algs.ftools.PointsInPolygon import PointsInPolygon
 from sextante.algs.ftools.PointsInPolygonUnique import PointsInPolygonUnique
 from sextante.algs.ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -97,8 +97,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SumLines(), PointsInPolygon(), PointsInPolygonWeighted(), PointsInPolygonUnique(),
                         BasicStatisticsStrings(), BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
                         MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(), PointsLayerFromTable(),
-                        #StatisticsByCategories(),
-                        ReprojectLayer(),
+                        StatisticsByCategories(),ReprojectLayer(),
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
                         SimplifyGeometries(), DensifyGeometries(), DensifyGeometriesInterval(),
                         MultipartToSingleparts(), SinglePartsToMultiparts(), PolygonsToLines(),

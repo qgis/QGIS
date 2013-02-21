@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-import math
 
 __author__ = 'Victor Olaya'
 __date__ = 'September 2012'
@@ -24,9 +23,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import math
 from PyQt4.QtCore import *
 from qgis.core import *
-from scipy import stats
 from sextante.outputs.OutputTable import OutputTable
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
@@ -50,7 +49,7 @@ class StatisticsByCategories(GeoAlgorithm):
         self.addParameter(ParameterTableField(self.CATEGORIES_FIELD_NAME, "Field with categories", 
                                               self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))        
 
-        self.addOutput(OutputTable(self.OUTPUT, "Statistics for numeric field"))
+        self.addOutput(OutputTable(self.OUTPUT, "Statistics"))
         
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
@@ -62,21 +61,55 @@ class StatisticsByCategories(GeoAlgorithm):
         categoriesField = layer.fieldNameIndex(categoriesFieldName)
         
         features = QGisLayers.features(layer)
-        nFeat = len(features)
+        nFeats = len(features)
         values = {}
+        nFeat = 0
         for feat in features:
+            nFeat += 1
+            progress.setPercentage(int((100 * nFeats) / nFeat))
             attrs = feat.attributes()
-            value = float(attrs[valuesField].toDouble()[0])
-            cat = unicode(attrs[categoriesField].toString())
-            if cat not in values:
-                values[cat] = []
-            values[cat].append(value)
+            try:
+                value = float(attrs[valuesField].toDouble()[0])
+                cat = unicode(attrs[categoriesField].toString())
+                if cat not in values:
+                    values[cat] = []
+                values[cat].append(value)
+            except:
+                pass
         
-        fields = [QgsField("category", QVariant.String), QgsField("mean", QVariant.Double), QgsField("variance", QVariant.Double)]
+        fields = [QgsField("category", QVariant.String), QgsField("min", QVariant.Double), 
+                  QgsField("max", QVariant.Double), QgsField("mean", QVariant.Double), 
+                  QgsField("stddev", QVariant.Double)]
         writer = output.getTableWriter(fields)
-        for cat, value in values.items():                       
-            n, min_max, mean, var, skew, kurt = stats.describe(value)
-            record = [cat, mean, math.sqrt(var)]            
+        for cat, v in values.items():                       
+            min, max, mean, stddev = calculateStats(v)
+            record = [cat, min, max, mean, stddev]            
             writer.addRecord(record)
             
-   
+def calculateStats(values):    
+    n = 0    
+    sum = 0
+    mean = 0
+    M2 = 0    
+    minvalue = None
+    maxvalue = None
+ 
+    for v in values:                
+        sum += v    
+        n = n + 1
+        delta = v - mean
+        mean = mean + delta/n
+        M2 = M2 + delta*(v - mean)
+        if minvalue is None:
+            minvalue = v
+            maxvalue = v
+        else:
+            minvalue = min(v, minvalue)
+            maxvalue = max(v, maxvalue)        
+            
+    if n > 1:
+         variance = M2/(n - 1)
+    else:
+        variance = 0;
+    stddev = math.sqrt(variance)
+    return minvalue,maxvalue, mean, stddev    

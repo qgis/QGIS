@@ -31,7 +31,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 class FieldsCalculator(GeoAlgorithm):
