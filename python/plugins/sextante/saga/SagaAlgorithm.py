@@ -385,3 +385,9 @@ class SagaAlgorithm(GeoAlgorithm):
 
     def helpFile(self):
         return  os.path.join(os.path.dirname(__file__), "help", self.name.replace(" ", "") + ".html")
+    
+    def commandLineName(self):
+        name = self.provider.getName().lower() + ":" + self.cmdname.lower()
+        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+        name = ''.join(c for c in name if c in validChars)
+        return name
