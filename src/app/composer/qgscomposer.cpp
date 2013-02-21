@@ -80,6 +80,7 @@
 QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     : QMainWindow()
     , mTitle( title )
+    , mQgis( qgis )
     , mUndoView( 0 )
 {
   setupUi( this );
@@ -88,13 +89,13 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
   QSettings settings;
-  setStyleSheet( QgisApp::instance()->styleSheet() );
+  setStyleSheet( mQgis->styleSheet() );
 
   int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
 
   // ability to save parent project from composer
-  mSaveProjectAction = QgisApp::instance()->actionSaveProject();
+  mSaveProjectAction = mQgis->actionSaveProject();
   QToolButton* saveProjectToolButton = new QToolButton( this );
   saveProjectToolButton->addAction( mSaveProjectAction );
   saveProjectToolButton->setDefaultAction( mSaveProjectAction );
@@ -165,15 +166,21 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
 #ifdef Q_WS_MAC
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
-  appMenu->addAction( QgisApp::instance()->actionAbout() );
-  appMenu->addAction( QgisApp::instance()->actionOptions() );
+  appMenu->addAction( mQgis->actionAbout() );
+  appMenu->addAction( mQgis->actionOptions() );
 #endif
 
   QMenu *composerMenu = menuBar()->addMenu( tr( "Composer" ) );
   composerMenu->addAction( mSaveProjectAction );
   composerMenu->addSeparator();
-  composerMenu->addAction( QgisApp::instance()->actionNewPrintComposer() );
-  composerMenu->addAction( QgisApp::instance()->actionShowComposerManager() );
+  composerMenu->addAction( mQgis->actionNewPrintComposer() );
+  composerMenu->addAction( mQgis->actionShowComposerManager() );
+
+  mPrintComposersMenu = new QMenu( tr( "Print Composers" ), this );
+  mPrintComposersMenu->setObjectName( "mPrintComposersMenu" );
+  QObject::connect( mPrintComposersMenu, SIGNAL( aboutToShow() ), this, SLOT( populatePrintComposersMenu() ) );
+  composerMenu->addMenu( mPrintComposersMenu );
+
   composerMenu->addSeparator();
   composerMenu->addAction( mActionLoadFromTemplate );
   composerMenu->addAction( mActionSaveAsTemplate );
@@ -233,13 +240,12 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
 #ifdef Q_WS_MAC
 #ifndef Q_WS_MAC64 /* assertion failure in NSMenuItem setSubmenu (Qt 4.5.0-snapshot-20080830) */
-  menuBar()->addMenu( QgisApp::instance()->windowMenu() );
+  menuBar()->addMenu( mQgis->windowMenu() );
 
-  menuBar()->addMenu( QgisApp::instance()->helpMenu() );
+  menuBar()->addMenu( mQgis->helpMenu() );
 #endif
 #endif
 
-  mQgis = qgis;
   mFirstTime = true;
 
   // Create action to select this window
@@ -914,7 +920,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     dlg.setOption( QFileDialog::ShowDirsOnly, true );
 
     //
-    // Build an augmented FialeDialog with a combo box to select the output format
+    // Build an augmented FileDialog with a combo box to select the output format
     QComboBox *box = new QComboBox();
     QHBoxLayout* hlayout = new QHBoxLayout();
     QWidget* widget = new QWidget();
@@ -1547,7 +1553,7 @@ void QgsComposer::showEvent( QShowEvent* event )
   // add to menu if (re)opening window (event not due to unminimize)
   if ( !event->spontaneous() )
   {
-    QgisApp::instance()->addWindow( mWindowAction );
+    mQgis->addWindow( mWindowAction );
   }
 #endif
 }
@@ -1985,4 +1991,10 @@ void QgsComposer::initialiseComposerPicturePreviews()
     ( *picIt )->addStandardDirectoriesToPreview();
   }
   mPicturePreviews.clear();
+}
+
+void QgsComposer::populatePrintComposersMenu()
+{
+  mPrintComposersMenu->clear();
+  mPrintComposersMenu->addActions( mQgis->printComposersMenu()->actions() );
 }

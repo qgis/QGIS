@@ -108,7 +108,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //!Composer deletes the old composerview when loading a template
     void composerWillBeRemoved( QgsComposerView* v );
 
-
   public slots:
     //! Zoom to full extent of the paper
     void on_mActionZoomAll_triggered();
@@ -346,6 +345,16 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Save parent Project action
     //! @note added in 1.9
     QAction *mSaveProjectAction;
+
+    //! Print Composers menu as mirror of main app's
+    //! @note added in 1.9
+    QMenu* mPrintComposersMenu;
+
+  private slots:
+
+    //! Populate Print Composers menu from main app's
+    //! @note added in 1.9
+    void populatePrintComposersMenu();
 };
 
 #endif
