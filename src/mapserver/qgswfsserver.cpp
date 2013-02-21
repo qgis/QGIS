@@ -1577,7 +1577,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   QString fStr = "{\"type\": \"Feature\",\n";
 
   fStr += "   \"id\": ";
-  fStr += mTypeName + "." + QString::number( feat->id() );
+  fStr += "\""+ mTypeName +"."+ QString::number( feat->id() ) +"\"";
   fStr += ",\n";
 
   QgsGeometry* geom = feat->geometry();
