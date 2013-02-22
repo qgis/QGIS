@@ -320,6 +320,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   tabifyDockWidget( mGeneralDock, mUndoDock );
   tabifyDockWidget( mItemDock, mUndoDock );
   tabifyDockWidget( mGeneralDock, mItemDock );
+  tabifyDockWidget( mItemDock, mAtlasDock );
 
   mGeneralDock->raise();
 
