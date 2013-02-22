@@ -1,7 +1,7 @@
 <h3>Funktion ln()</h3>
 Gibt den natürlichen Logrithmus des gegebenen Ausdrucks zurück.
 <br>
-Die Funktion akzektiert ein Argument.
+Die Funktion akzeptiert ein Argument.
 <h4>Syntax</h4>
 <code>ln(wert)</code><br>
 
