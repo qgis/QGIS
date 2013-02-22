@@ -712,6 +712,8 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == "bpchar" ||
                 fieldTypeName == "bool" ||
                 fieldTypeName == "geometry" ||
+                fieldTypeName == "hstore" ||
+                fieldTypeName == "inet" ||
                 fieldTypeName == "money" ||
                 fieldTypeName == "ltree" ||
                 fieldTypeName == "uuid" ||
