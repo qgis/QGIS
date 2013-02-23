@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.modeler.MultilineTextPanel import MultilineTextPanel
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -26,6 +26,8 @@ __revision__ = '$Format:%H$'
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, QtWebKit
+from sextante.modeler.MultilineTextPanel import MultilineTextPanel
+from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.outputs.OutputString import OutputString
 from sextante.parameters.ParameterRaster import ParameterRaster
@@ -437,6 +439,8 @@ class ModelerParametersDialog(QtGui.QDialog):
             for n in numbers:
                 item.addItem(n.name(), n)
             item.setEditText(str(param.default))
+        elif isinstance(param, ParameterCrs):
+            item = CrsSelectionPanel(param.default)                                
         elif isinstance(param, ParameterExtent):
             item = QtGui.QComboBox()
             item.setEditable(True)
@@ -548,7 +552,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                         self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterCrs):
                     value = self.model.getValueFromAlgorithmAndParameter(value)
-                    widget.setText(unicode(value))
+                    widget.setAuthid(value)
                 elif isinstance(param, ParameterFixedTable):
                     pass
                 elif isinstance(param, ParameterMultipleInput):
@@ -766,6 +770,16 @@ class ModelerParametersDialog(QtGui.QDialog):
             self.params[param.name] = value
             self.values[name] = str(widget.getValue())
             return True
+        elif isinstance(param, ParameterCrs):
+            authid = widget.getValue()
+            if authid is None:
+                self.params[param.name] = None                
+            else:
+                name =  self.getSafeNameForHarcodedParameter(param)
+                value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+                self.params[param.name] = value
+                self.values[name] = authid
+            return True        
         elif isinstance(param, ParameterFixedTable):
             name =  self.getSafeNameForHarcodedParameter(param)
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)

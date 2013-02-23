@@ -29,7 +29,7 @@ from sextante.gui.CrsSelectionDialog import CrsSelectionDialog
 class CrsSelectionPanel(QtGui.QWidget):
 
     def __init__(self, default):
-        super(CrsSelectionPanel, self).__init__(None)
+        super(CrsSelectionPanel, self).__init__(None)        
         self.authid = default
         self.horizontalLayout = QtGui.QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
@@ -44,6 +44,10 @@ class CrsSelectionPanel(QtGui.QWidget):
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
         self.setText()
+        
+    def setAuthid(self, authid):
+        self.authid = authid
+        self.setText()
 
     def showSelectionDialog(self):
         dialog = CrsSelectionDialog()
@@ -53,7 +57,8 @@ class CrsSelectionPanel(QtGui.QWidget):
             self.setText()
 
     def setText(self):
-        self.text.setText(str(self.authid))
+        if self.authid is not None:
+            self.text.setText(str(self.authid))
 
     def getValue(self):
         return self.authid

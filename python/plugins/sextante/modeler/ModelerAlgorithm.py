@@ -128,7 +128,6 @@ class ModelerAlgorithm(GeoAlgorithm):
                 elif line.startswith("VALUE:"):
                     valueLine = line[len("VALUE:"):]
                     tokens = valueLine.split("===")
-
                     self.paramValues[tokens[0]] = tokens[1].replace(ModelerAlgorithm.LINE_BREAK_STRING, '\n')
                 elif line.startswith("NAME:"):
                     self.name = line[len("NAME:"):]
@@ -221,7 +220,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         for paramValues in self.algParameters:
             index += 1
             newValues = []
-            for name, value in paramValues:
+            for name, value in paramValues[index]:
                 if value:
                     if value.alg > index:
                         newValues[name] = AlgorithmAndParameter(value.alg - 1, value.param, value.algName, value.paramName)
