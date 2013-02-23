@@ -84,10 +84,6 @@ class LayerExporter():
         Currently, the output is restricted to geotiff, but not all other formats are exported.
         Only those formats not supported by GDAL are exported, so it is assumed that the external
         app uses GDAL to read the layer'''
-        exts = GdalUtils.getSupportedRasterExtensions()
-        for ext in exts:
-            if (unicode(layer.source()).endswith(ext)):
-                return unicode(layer.source())
 
         #TODO:Do the conversion here
         return unicode(layer.source())

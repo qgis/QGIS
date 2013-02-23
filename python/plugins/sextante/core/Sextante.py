@@ -36,7 +36,6 @@ from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor,\
     SilentProgress
-
 from sextante.modeler.Providers import Providers
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
@@ -51,8 +50,6 @@ from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from sextante.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
 from sextante.admintools.AdminToolsAlgorithmProvider import AdminToolsAlgorithmProvider
-
-
 
 class Sextante:
 
@@ -149,7 +146,6 @@ class Sextante:
 
     @staticmethod
     def updateProviders():
-
         for provider in Sextante.providers:
             provider.loadAlgorithms()
 
@@ -345,7 +341,7 @@ class Sextante:
 
 
 ##==========================================================
-##This methods are here to be used from the python console,
+##These methods are here to be used from the python console,
 ##making it easy to use SEXTANTE from there
 ##==========================================================
 

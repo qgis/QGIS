@@ -38,7 +38,7 @@ class VectorLayerBoundsAlgorithm(GeoAlgorithm):
     def defineCharacteristics(self):
         self.showInModeler = True
         self.showInToolbox = False
-        self.name = "Raster layer bounds"
+        self.name = "Vector layer bounds"
         self.group = "Modeler-only tools"
         self.addParameter(ParameterVector(self.LAYER, "Layer"))        
         self.addOutput(OutputNumber(self.XMIN, "min X"))
