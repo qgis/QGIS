@@ -4431,7 +4431,9 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
       {
         addVectorLayers( QStringList( newFilename ), encoding, "file" );
       }
-      QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to vector file has been completed" ) );
+      messageBar()->pushMessage( tr( "Saving done" ),
+                                 tr( "Export to vector file has been completed" ),
+                                 QgsMessageBar::INFO, 3 );
     }
     else
     {
