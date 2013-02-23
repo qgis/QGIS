@@ -168,6 +168,22 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void on_mActionAddHtml_triggered();
 
+    //! Save parent project
+    //! @note added in 1.9
+    void on_mActionSaveProject_triggered();
+
+    //! Create new composer
+    //! @note added in 1.9
+    void on_mActionNewComposer_triggered();
+
+    //! Duplicate current composer
+    //! @note added in 1.9
+    void on_mActionDuplicateComposer_triggered();
+
+    //! Show composer manager
+    //! @note added in 1.9
+    void on_mActionComposerManager_triggered();
+
     //! Save composer as template
     void on_mActionSaveAsTemplate_triggered();
 
@@ -259,6 +275,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Stores state in Dom node
     void writeXML( QDomDocument& doc );
 
+    //! Stores only template as base Dom node
+    void templateXML( QDomDocument& doc );
+
     //! Sets state from Dom document
     void readXML( const QDomDocument& doc );
     void readXML( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate = false );
@@ -341,10 +360,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QMenu* mPanelMenu;
     QMenu* mToolbarMenu;
-
-    //! Save parent Project action
-    //! @note added in 1.9
-    QAction *mSaveProjectAction;
 
     //! Print Composers menu as mirror of main app's
     //! @note added in 1.9

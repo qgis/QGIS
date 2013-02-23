@@ -56,6 +56,11 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionSaveProject"/>
+   <addaction name="separator"/>
+   <addaction name="mActionNewComposer"/>
+   <addaction name="mActionDuplicateComposer"/>
+   <addaction name="mActionComposerManager"/>
    <addaction name="mActionLoadFromTemplate"/>
    <addaction name="mActionSaveAsTemplate"/>
    <addaction name="separator"/>
@@ -125,6 +130,9 @@
    </property>
    <property name="text">
     <string>&amp;Print...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="mActionZoomAll">
@@ -410,6 +418,9 @@
    <property name="text">
     <string>Page Setup</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
+   </property>
   </action>
   <action name="mActionUndo">
    <property name="icon">
@@ -480,10 +491,48 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Add html</string>
+    <string>Add HTML</string>
    </property>
    <property name="toolTip">
     <string>Add html frame</string>
+   </property>
+  </action>
+  <action name="mActionComposerManager">
+   <property name="text">
+    <string>Composer Manager</string>
+   </property>
+   <property name="toolTip">
+    <string>Composer Manager</string>
+   </property>
+  </action>
+  <action name="mActionNewComposer">
+   <property name="text">
+    <string>&amp;New Composer</string>
+   </property>
+   <property name="toolTip">
+    <string>New Composer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="mActionSaveProject">
+   <property name="text">
+    <string>&amp;Save Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="mActionDuplicateComposer">
+   <property name="text">
+    <string>&amp;Duplicate Composer</string>
+   </property>
+   <property name="toolTip">
+    <string>Duplicate Composer</string>
    </property>
   </action>
  </widget>

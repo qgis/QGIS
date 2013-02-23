@@ -218,6 +218,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsComposer* createNewComposer();
     /**Deletes a composer and removes entry from Set*/
     void deleteComposer( QgsComposer* c );
+    /** Duplicates a composer and adds it to Set
+     * @note added in 1.9
+     */
+    QgsComposer* duplicateComposer( QgsComposer* currentComposer, QWidget* parent );
 
     /** overloaded function used to sort menu entries alphabetically */
     QMenu* createPopupMenu();

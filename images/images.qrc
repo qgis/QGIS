@@ -69,6 +69,7 @@
         <file>themes/default/mActionDeleteVertex.png</file>
         <file>themes/default/mActionDeselectAll.png</file>
         <file>themes/default/mActionDraw.png</file>
+        <file>themes/default/mActionDuplicateComposer.png</file>
         <file>themes/default/mActionEditCopy.png</file>
         <file>themes/default/mActionEditCut.png</file>
         <file>themes/default/mActionEditPaste.png</file>
@@ -316,6 +317,7 @@
         <file>themes/gis/mActionDeleteVertex.png</file>
         <file>themes/gis/mActionDeselectAll.png</file>
         <file>themes/gis/mActionDraw.png</file>
+        <file>themes/gis/mActionDuplicateComposer.png</file>
         <file>themes/gis/mActionEditCopy.png</file>
         <file>themes/gis/mActionEditCut.png</file>
         <file>themes/gis/mActionEditPaste.png</file>

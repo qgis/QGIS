@@ -94,14 +94,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
 
-  // ability to save parent project from composer
-  mSaveProjectAction = mQgis->actionSaveProject();
-  QToolButton* saveProjectToolButton = new QToolButton( this );
-  saveProjectToolButton->addAction( mSaveProjectAction );
-  saveProjectToolButton->setDefaultAction( mSaveProjectAction );
-  mComposerToolbar->insertWidget( mActionLoadFromTemplate, saveProjectToolButton );
-  mComposerToolbar->insertSeparator( mActionLoadFromTemplate );
-
   QToolButton* orderingToolButton = new QToolButton( this );
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
   orderingToolButton->setAutoRaise( true );
@@ -171,10 +163,11 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 #endif
 
   QMenu *composerMenu = menuBar()->addMenu( tr( "Composer" ) );
-  composerMenu->addAction( mSaveProjectAction );
+  composerMenu->addAction( mActionSaveProject );
   composerMenu->addSeparator();
-  composerMenu->addAction( mQgis->actionNewPrintComposer() );
-  composerMenu->addAction( mQgis->actionShowComposerManager() );
+  composerMenu->addAction( mActionNewComposer );
+  composerMenu->addAction( mActionDuplicateComposer );
+  composerMenu->addAction( mActionComposerManager );
 
   mPrintComposersMenu = new QMenu( tr( "Print Composers" ), this );
   mPrintComposersMenu->setObjectName( "mPrintComposersMenu" );
@@ -360,6 +353,10 @@ void QgsComposer::setupTheme()
   //now set all the icons - getThemeIcon will fall back to default theme if its
   //missing from active theme
   mActionQuit->setIcon( QgsApplication::getThemeIcon( "/mActionFileExit.png" ) );
+  mActionSaveProject->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.png" ) );
+  mActionNewComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.png" ) );
+  mActionDuplicateComposer->setIcon( QgsApplication::getThemeIcon( "/mActionDuplicateComposer.png" ) );
+  mActionComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.png" ) );
   mActionLoadFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.png" ) );
   mActionSaveAsTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.png" ) );
   mActionExportAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
@@ -1337,6 +1334,26 @@ void QgsComposer::on_mActionAddArrow_triggered()
   }
 }
 
+void QgsComposer::on_mActionSaveProject_triggered()
+{
+  mQgis->actionSaveProject()->trigger();
+}
+
+void QgsComposer::on_mActionNewComposer_triggered()
+{
+  mQgis->actionNewPrintComposer()->trigger();
+}
+
+void QgsComposer::on_mActionDuplicateComposer_triggered()
+{
+  mQgis->duplicateComposer( this, this );
+}
+
+void QgsComposer::on_mActionComposerManager_triggered()
+{
+  mQgis->actionShowComposerManager()->trigger();
+}
+
 void QgsComposer::on_mActionSaveAsTemplate_triggered()
 {
   //show file dialog
@@ -1366,7 +1383,7 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   }
 
   QDomDocument saveDocument;
-  writeXML( saveDocument, saveDocument );
+  templateXML( saveDocument );
 
   if ( templateFile.write( saveDocument.toByteArray() ) == -1 )
   {
@@ -1631,6 +1648,11 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
 
   // store atlas
   mComposition->atlasComposition().writeXML( composerElem, doc );
+}
+
+void  QgsComposer::templateXML( QDomDocument& doc )
+{
+  writeXML( doc, doc );
 }
 
 void QgsComposer::readXML( const QDomDocument& doc )

@@ -4632,6 +4632,90 @@ void QgisApp::deleteComposer( QgsComposer* c )
   delete c;
 }
 
+QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QWidget* parent )
+{
+  QgsComposer* newComposer = 0;
+  if ( !parent )
+  {
+    parent = this;
+  }
+
+  // test that current composer template write is valid
+  QDomDocument currentDoc;
+  currentComposer->templateXML( currentDoc );
+  QDomElement compositionElem = currentDoc.documentElement().firstChildElement( "Composition" );
+  if ( compositionElem.isNull() )
+  {
+    QMessageBox::warning( parent,
+                          tr( "Write error" ),
+                          tr( "Error, selected composer could not be stored as temporary template" ) );
+    return newComposer;
+  }
+
+  QList<QString> cNames;
+  foreach ( QgsComposer* c, printComposers() )
+  {
+    cNames << c->title();
+  }
+
+  bool ok = false;
+  bool titleValid = false;
+  QString newTitle = currentComposer->title() + tr( " copy" );
+  QString chooseMsg = tr( "Choose title" );
+  QString titleMsg = chooseMsg;
+  while ( !titleValid )
+  {
+    newTitle = QInputDialog::getText( parent,
+                                      tr( "New title" ),
+                                      titleMsg,
+                                      QLineEdit::Normal,
+                                      newTitle,
+                                      &ok );
+    if ( !ok )
+    {
+      return newComposer;
+    }
+
+    if ( cNames.contains( newTitle ) )
+    {
+      titleMsg = chooseMsg + tr( "\n (title already exists!)" );
+    }
+    else if ( newTitle.isEmpty() )
+    {
+      titleMsg = chooseMsg + tr( "\n (title can not be empty!)" );
+    }
+    else
+    {
+      titleValid = true;
+    }
+  }
+
+  newComposer = createNewComposer();
+  if ( !newComposer )
+  {
+    QMessageBox::warning( parent,
+                          tr( "Composer error" ),
+                          tr( "Error, could not create new composer" ) );
+    return newComposer;
+  }
+  newComposer->hide(); // until template is loaded (faster)
+
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+  if ( !newComposer->composition()->loadFromTemplate( currentDoc, 0, false ) )
+  {
+    deleteComposer( newComposer );
+    QMessageBox::warning( parent,
+                          tr( "Read error" ),
+                          tr( "Error, composer could not be duplicated" ) );
+    return newComposer;
+  }
+  newComposer->setTitle( newTitle );
+  newComposer->activate();
+  QApplication::restoreOverrideCursor();
+
+  return newComposer;
+}
+
 bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
 {
   if ( doc.isNull() )

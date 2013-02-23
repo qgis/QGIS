@@ -40,6 +40,10 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( show_clicked() ) );
 
+  pb = new QPushButton( tr( "&Duplicate" ) );
+  mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( duplicate_clicked() ) );
+
   pb = new QPushButton( tr( "&Remove" ) );
   mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( remove_clicked() ) );
@@ -211,6 +215,34 @@ void QgsComposerManager::show_clicked()
   }
 #endif //0
   close();
+}
+
+void QgsComposerManager::duplicate_clicked()
+{
+  QListWidgetItem* item = mComposerListWidget->currentItem();
+  if ( !item )
+  {
+    return;
+  }
+
+  QgsComposer* currentComposer = 0;
+  QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
+  if ( it != mItemComposerMap.end() )
+  {
+    currentComposer = it.value();
+  }
+  else
+  {
+    return;
+  }
+
+  QgsComposer* newComposer = QgisApp::instance()->duplicateComposer( currentComposer, this );
+
+  if ( newComposer )
+  {
+    // no need to add new composer to list widget, if just closing this->exec();
+    close();
+  }
 }
 
 void QgsComposerManager::rename_clicked()

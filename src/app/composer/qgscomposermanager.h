@@ -47,6 +47,10 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     void on_mAddButton_clicked();
     void remove_clicked();
     void show_clicked();
+    /** Duplicate composer
+     * @note added in 1.9
+     */
+    void duplicate_clicked();
     void rename_clicked();
     void on_mComposerListWidget_itemChanged( QListWidgetItem * item );
 };
