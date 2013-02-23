@@ -111,7 +111,9 @@ class ANALYSIS_EXPORT QgsOSMRelation : public QgsOSMElement
 };
 #endif
 
-
+/**
+ * This class is a container of tags for a node, way or a relation.
+ */
 class ANALYSIS_EXPORT QgsOSMTags
 {
   public:

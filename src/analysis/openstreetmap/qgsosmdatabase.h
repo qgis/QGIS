@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgsosmdatabase.h
+  --------------------------------------
+  Date                 : January 2013
+  Copyright            : (C) 2013 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef OSMDATABASE_H
 #define OSMDATABASE_H
 
@@ -16,6 +31,17 @@ typedef QPair<QString, int> QgsOSMTagCountPair;
 /**
  * Class that encapsulates access to OpenStreetMap data stored in a database
  * previously imported from XML file.
+ *
+ * Internal database structure consists of the following tables:
+ * - nodes
+ * - nodes_tags
+ * - ways
+ * - ways_tags
+ * - ways_nodes
+ *
+ * The topology representation can be translated to simple features representation
+ * using exportSpatiaLite() method into SpatiaLite layers (tables). These can be
+ * easily used in QGIS like any other layers.
  */
 class ANALYSIS_EXPORT QgsOSMDatabase
 {

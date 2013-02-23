@@ -282,7 +282,6 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
   int rows;
   int columns;
   char *errMsg = NULL;
-  bool ok = false;
   QString sql;
   gaiaVectorLayersListPtr list;
 
@@ -344,7 +343,6 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
           break;
       };
       mTables.append( TableEntry( tableName, column, type ) );
-      ok = true;
 
       lyr = lyr->Next;
     }
@@ -369,12 +367,11 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, b
         QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
         mTables.append( TableEntry( tableName, QString(), "qgis_table" ) );
       }
-      ok = true;
     }
     sqlite3_free_table( results );
   }
 
-  return ok;
+  return true;
 
 error:
   // unexpected IO error
@@ -396,7 +393,6 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
   int rows;
   int columns;
   char *errMsg = NULL;
-  bool ok = false;
   QString sql;
 
   // the following query return the tables containing a Geometry column
@@ -405,23 +401,17 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
   ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
     goto error;
-  if ( rows < 1 )
-    ;
-  else
+  for ( i = 1; i <= rows; i++ )
   {
-    for ( i = 1; i <= rows; i++ )
-    {
-      if ( isRasterlite1Datasource( handle, results[( i * columns ) + 0] ) )
-        continue;
-      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-      QString column = QString::fromUtf8( results[( i * columns ) + 1] );
-      QString type = results[( i * columns ) + 2];
-      if ( isDeclaredHidden( handle, tableName, column ) )
-        continue;
+    if ( isRasterlite1Datasource( handle, results[( i * columns ) + 0] ) )
+      continue;
+    QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+    QString column = QString::fromUtf8( results[( i * columns ) + 1] );
+    QString type = results[( i * columns ) + 2];
+    if ( isDeclaredHidden( handle, tableName, column ) )
+      continue;
 
-      mTables.append( TableEntry( tableName, column, type ) );
-    }
-    ok = true;
+    mTables.append( TableEntry( tableName, column, type ) );
   }
   sqlite3_free_table( results );
 
@@ -434,21 +424,15 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
     ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
       goto error;
-    if ( rows < 1 )
-      ;
-    else
+    for ( i = 1; i <= rows; i++ )
     {
-      for ( i = 1; i <= rows; i++ )
-      {
-        QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-        QString column = QString::fromUtf8( results[( i * columns ) + 1] );
-        QString type = results[( i * columns ) + 2];
-        if ( isDeclaredHidden( handle, tableName, column ) )
-          continue;
+      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      QString column = QString::fromUtf8( results[( i * columns ) + 1] );
+      QString type = results[( i * columns ) + 2];
+      if ( isDeclaredHidden( handle, tableName, column ) )
+        continue;
 
-        mTables.append( TableEntry( tableName, column, type ) );
-      }
-      ok = true;
+      mTables.append( TableEntry( tableName, column, type ) );
     }
     sqlite3_free_table( results );
   }
@@ -461,21 +445,15 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
     ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
       goto error;
-    if ( rows < 1 )
-      ;
-    else
+    for ( i = 1; i <= rows; i++ )
     {
-      for ( i = 1; i <= rows; i++ )
-      {
-        QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-        QString column = QString::fromUtf8( results[( i * columns ) + 1] );
-        QString type = results[( i * columns ) + 2];
-        if ( isDeclaredHidden( handle, tableName, column ) )
-          continue;
+      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      QString column = QString::fromUtf8( results[( i * columns ) + 1] );
+      QString type = results[( i * columns ) + 2];
+      if ( isDeclaredHidden( handle, tableName, column ) )
+        continue;
 
-        mTables.append( TableEntry( tableName, column, type ) );
-      }
-      ok = true;
+      mTables.append( TableEntry( tableName, column, type ) );
     }
     sqlite3_free_table( results );
   }
@@ -489,21 +467,15 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
     ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
       goto error;
-    if ( rows < 1 )
-      ;
-    else
+    for ( i = 1; i <= rows; i++ )
     {
-      for ( i = 1; i <= rows; i++ )
-      {
-        QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-        mTables.append( TableEntry( tableName, QString(), "qgis_table" ) );
-      }
-      ok = true;
+      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      mTables.append( TableEntry( tableName, QString(), "qgis_table" ) );
     }
     sqlite3_free_table( results );
   }
 
-  return ok;
+  return true;
 
 error:
   // unexpected IO error
