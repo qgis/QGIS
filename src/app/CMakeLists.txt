@@ -154,6 +154,10 @@ SET(QGIS_APP_SRCS
 
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
+
+  openstreetmap/qgsosmdownloaddialog.cpp
+  openstreetmap/qgsosmimportdialog.cpp
+  openstreetmap/qgsosmexportdialog.cpp
 )
 
 IF (ANDROID)
@@ -292,6 +296,10 @@ SET (QGIS_APP_MOC_HDRS
   ogr/qgsvectorlayersaveasdialog.h
 
   gps/qgsgpsinformationwidget.h
+
+  openstreetmap/qgsosmdownloaddialog.h
+  openstreetmap/qgsosmimportdialog.h
+  openstreetmap/qgsosmexportdialog.h
   )
 
 IF(WITH_INTERNAL_QWTPOLAR)
@@ -419,7 +427,7 @@ INCLUDE_DIRECTORIES(
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
-  ../analysis/raster
+  ../analysis/raster ../analysis/openstreetmap
   ../core
   ../core/gps
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
@@ -427,6 +435,7 @@ INCLUDE_DIRECTORIES(
   ../plugins
   ../python
   gps
+  openstreetmap
   )
 
 IF (ANDROID)

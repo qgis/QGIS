@@ -192,6 +192,11 @@
 #include "ogr/qgsogrsublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
+
+#include "qgsosmdownloaddialog.h"
+#include "qgsosmimportdialog.h"
+#include "qgsosmexportdialog.h"
+
 //
 // GDAL/OGR includes
 //
@@ -524,6 +529,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   legendLayerSelectionChanged();
   mSaveRollbackInProgress = false;
   activateDeactivateLayerRelatedActions( NULL );
+
+  QAction* actionOSMDownload = new QAction( tr( "Download data" ), this );
+  connect( actionOSMDownload, SIGNAL( triggered() ), this, SLOT( osmDownloadDialog() ) );
+  QAction* actionOSMImport = new QAction( tr( "Import topology from XML" ), this );
+  connect( actionOSMImport, SIGNAL( triggered() ), this, SLOT( osmImportDialog() ) );
+  QAction* actionOSMExport = new QAction( tr( "Export topology to SpatiaLite" ), this );
+  connect( actionOSMExport, SIGNAL( triggered() ), this, SLOT( osmExportDialog() ) );
+  addPluginToVectorMenu( "OpenStreetMap", actionOSMDownload );
+  addPluginToVectorMenu( "OpenStreetMap", actionOSMImport );
+  addPluginToVectorMenu( "OpenStreetMap", actionOSMExport );
 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
@@ -8867,6 +8882,25 @@ QMenu* QgisApp::createPopupMenu()
 
   return menu;
 }
+
+void QgisApp::osmDownloadDialog()
+{
+  QgsOSMDownloadDialog dlg;
+  dlg.exec();
+}
+
+void QgisApp::osmImportDialog()
+{
+  QgsOSMImportDialog dlg;
+  dlg.exec();
+}
+
+void QgisApp::osmExportDialog()
+{
+  QgsOSMExportDialog dlg;
+  dlg.exec();
+}
+
 
 #ifdef HAVE_TOUCH
 bool QgisApp::gestureEvent( QGestureEvent *event )

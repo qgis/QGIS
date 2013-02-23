@@ -1019,6 +1019,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! trust and load project macros
     void enableProjectMacros();
 
+    void osmDownloadDialog();
+    void osmImportDialog();
+    void osmExportDialog();
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */

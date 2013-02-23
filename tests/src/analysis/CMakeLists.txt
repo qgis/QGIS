@@ -72,6 +72,7 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 ADD_QGIS_TEST(analyzertest testqgsvectoranalyzer.cpp)
+ADD_QGIS_TEST(openstreetmaptest testopenstreetmap.cpp)
 
 
 

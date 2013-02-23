@@ -37,6 +37,10 @@ SET(QGIS_ANALYSIS_SRCS
   vector/qgsgeometryanalyzer.cpp
   vector/qgszonalstatistics.cpp
   vector/qgsoverlayanalyzer.cpp
+  openstreetmap/qgsosmbase.cpp
+  openstreetmap/qgsosmdatabase.cpp
+  openstreetmap/qgsosmdownload.cpp
+  openstreetmap/qgsosmimport.cpp
 )
 
 INCLUDE_DIRECTORIES(BEFORE raster)
@@ -64,6 +68,8 @@ IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 SET(QGIS_ANALYSIS_MOC_HDRS
+  openstreetmap/qgsosmdownload.h
+  openstreetmap/qgsosmimport.h
 )
 
 QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
@@ -85,6 +91,10 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/qgsgridfilewriter.h
   interpolation/qgsidwinterpolator.h
   interpolation/qgstininterpolator.h
+  openstreetmap/qgsosmbase.h
+  openstreetmap/qgsosmdatabase.h
+  openstreetmap/qgsosmdownload.h
+  openstreetmap/qgsosmimport.h
 )
 
 INCLUDE_DIRECTORIES(
