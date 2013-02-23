@@ -261,6 +261,61 @@ const QgsComposerItem* QgsComposition::getComposerItemById( QString theId ) cons
   }
   return 0;
 }
+/*
+const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid, bool inAllComposers ) const
+{
+  //This does not work since it seems impossible to get the QgisApp::instance() from here... Is there a workaround ?
+  QSet<QgsComposer*> composers = QSet<QgsComposer*>();
+
+  if( inAllComposers )
+  {
+    composers = QgisApp::instance()->printComposers();
+  }
+  else
+  {
+    composers.insert( this )
+  }
+
+  QSet<QgsComposer*>::const_iterator it = composers.constBegin();
+  for ( ; it != composers.constEnd(); ++it )
+  {
+    QList<QGraphicsItem *> itemList = ( *it )->items();
+    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+    for ( ; itemIt != itemList.end(); ++itemIt )
+    {
+      const QgsComposerItem* mypItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+      if ( mypItem )
+      {
+        if ( mypItem->uuid() == theUuid )
+        {
+          return mypItem;
+        }
+      }
+    }
+  }
+  
+  return 0;
+}
+*/
+
+const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid ) const
+{
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    const QgsComposerItem* mypItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+    if ( mypItem )
+    {
+      if ( mypItem->uuid() == theUuid )
+      {
+        return mypItem;
+      }
+    }
+  }
+  
+  return 0;
+}
 
 int QgsComposition::pixelFontSize( double pointSize ) const
 {
