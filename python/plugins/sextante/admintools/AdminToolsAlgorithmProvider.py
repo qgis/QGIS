@@ -41,7 +41,13 @@ class AdminToolsAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.alglist = [ImportVectorIntoGeoServer(), ImportRasterIntoGeoServer(),
                         CreateWorkspace(), DeleteWorkspace(), DeleteDatastore(),
-                        CreateStyleGeoServer(), ImportIntoPostGIS(), PostGISExecuteSQL()]#, TruncateSeedGWC()]
+                        CreateStyleGeoServer()]
+        
+        try:            
+            self.alglist.append(ImportIntoPostGIS())
+            self.alglist.append(PostGISExecuteSQL())
+        except:
+            pass 
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

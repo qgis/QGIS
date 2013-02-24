@@ -270,14 +270,14 @@ class Sextante:
             for param in alg.parameters:
                 if not param.hidden:
                     if not param.setValue(args[i]):
-                        print ("Error: Wrong parameter value: " + args[i])
+                        print ("Error: Wrong parameter value: " + unicode(args[i]))
                         return
                     i = i +1
 
             for output in alg.outputs:
                 if not output.hidden:
                     if not output.setValue(args[i]):
-                        print ("Error: Wrong output value: " + args[i])
+                        print ("Error: Wrong output value: " + unicode(args[i]))
                         return
                     i = i +1
 

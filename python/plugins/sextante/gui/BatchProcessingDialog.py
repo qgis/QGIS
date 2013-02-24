@@ -86,6 +86,37 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.table.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.addRowButton.clicked.connect(self.addRow)
         self.deleteRowButton.clicked.connect(self.deleteRow)
+        self.table.horizontalHeader().sectionDoubleClicked.connect(self.headerDoubleClicked)
+        
+
+    def headerDoubleClicked(self, col):
+        widget = self.table.cellWidget(0, col)
+        if isinstance(widget, QtGui.QComboBox):
+            widgetValue = widget.currentIndex()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).setCurrentIndex(widgetValue)
+        
+        elif isinstance(widget, ExtentSelectionPanel):
+            widgetValue = widget.getValue()
+            for row in range(1, self.table.rowCount()):
+                if widgetValue != None:
+                    self.table.cellWidget(row, col).text.setText(widgetValue)
+                else:
+                    self.table.cellWidget(row, col).text.setText("") 
+        
+        elif isinstance(widget, CrsSelectionPanel):
+            widgetValue = widget.getValue()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).epsg = widgetValue
+                self.table.cellWidget(row, col).setText()
+        
+        elif isinstance(widget, QtGui.QLineEdit):
+            widgetValue = widget.text()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).setText(widgetValue)
+        else:
+            pass    
+                        
 
     def setTableContent(self):
         i = 0

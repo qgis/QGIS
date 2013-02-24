@@ -18,7 +18,6 @@
 """
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterTableField import ParameterTableField
-from sextante.core.SextanteLog import SextanteLog
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2013'
