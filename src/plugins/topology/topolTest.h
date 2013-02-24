@@ -40,6 +40,37 @@ class TopologyRule
     bool useSecondLayer;
     bool useTolerance;
     bool useSpatialIndex;
+    QList<QGis::GeometryType> layer1SupportedTypes;
+    QList<QGis::GeometryType> layer2SupportedTypes;
+
+    bool layer1AcceptsType(QGis::GeometryType type )
+    {
+      if (layer1SupportedTypes.contains(type))
+        {
+
+          return true;
+        }
+      else
+        {
+          return false;
+        }
+
+    }
+
+    bool layer2AcceptsType(QGis::GeometryType type )
+    {
+      if (layer2SupportedTypes.contains(type))
+        {
+
+          return true;
+        }
+      else
+        {
+          return false;
+        }
+
+    }
+
     testFunction f;
 
     /**
@@ -50,6 +81,7 @@ class TopologyRule
     {
       useSecondLayer = true;
       useTolerance = false;
+
       f = 0;
     }
 };

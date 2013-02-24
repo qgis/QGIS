@@ -60,13 +60,6 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
-        <widget class="QComboBox" name="mTestBox">
-         <property name="sizeAdjustPolicy">
-          <enum>QComboBox::AdjustToContents</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QComboBox" name="mLayer1Box">
          <property name="sizeAdjustPolicy">
           <enum>QComboBox::AdjustToContents</enum>
@@ -76,6 +69,13 @@
            <string>No layer</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="mTestBox">
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToContents</enum>
+         </property>
         </widget>
        </item>
        <item>
