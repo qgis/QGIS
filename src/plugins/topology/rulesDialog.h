@@ -95,6 +95,14 @@ class rulesDialog : public QDialog, public Ui::rulesDialog
      * @param layerId layer ID
      */
     void removeLayer( QString layerId );
+
+
+    /*
+     * Updates Rule combobox to mach first layer
+     * @param layerId layer ID
+     */
+    void updateRuleItems( const QString& layerName);
+
 };
 
 #endif

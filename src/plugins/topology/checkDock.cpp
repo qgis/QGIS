@@ -49,6 +49,7 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
     : QDockWidget( parent ), Ui::checkDock()
 {
   mTest = new topolTest( qIface );
+
   setupUi( this );
 
   // hide the fix-related stuff, needs more work

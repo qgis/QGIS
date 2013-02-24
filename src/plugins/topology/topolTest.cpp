@@ -41,6 +41,7 @@ topolTest::topolTest( QgisInterface* qgsIface )
   mTopologyRuleMap["must not have invalid geometries"].useSecondLayer = false;
   mTopologyRuleMap["must not have invalid geometries"].useTolerance = false;
   mTopologyRuleMap["must not have invalid geometries"].useSpatialIndex = false;
+  mTopologyRuleMap["must not have invalid geometries"].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
 
   //mTopologyRuleMap["segments must have minimum length"].f = &topolTest::checkSegmentLength;
   //mTopologyRuleMap["segments must have minimum length"].useTolerance = true;
@@ -51,67 +52,85 @@ topolTest::topolTest( QgisInterface* qgsIface )
   mTopologyRuleMap["must not have dangles"].useSecondLayer = false;
   mTopologyRuleMap["must not have dangles"].useTolerance = false;
   mTopologyRuleMap["must not have dangles"].useSpatialIndex = false;
+  mTopologyRuleMap["must not have dangles"].layer1SupportedTypes << QGis::Line;
 
   mTopologyRuleMap["must not have duplicates"].f = &topolTest::checkDuplicates;
   mTopologyRuleMap["must not have duplicates"].useTolerance = false;
   mTopologyRuleMap["must not have duplicates"].useSecondLayer = false;
   mTopologyRuleMap["must not have duplicates"].useSpatialIndex = true;
+  mTopologyRuleMap["must not have duplicates"].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
 
   mTopologyRuleMap["must not have pseudos"].f = &topolTest::checkPseudos;
   mTopologyRuleMap["must not have pseudos"].useTolerance = false;
   mTopologyRuleMap["must not have pseudos"].useSecondLayer = false;
   mTopologyRuleMap["must not have pseudos"].useSpatialIndex = false;
+  mTopologyRuleMap["must not have pseudos"].layer1SupportedTypes << QGis::Line;
 
   mTopologyRuleMap["must not overlap"].f = &topolTest::checkOverlaps;
   mTopologyRuleMap["must not overlap"].useTolerance = false;
   mTopologyRuleMap["must not overlap"].useSecondLayer = false;
   mTopologyRuleMap["must not overlap"].useSpatialIndex = true;
+  mTopologyRuleMap["must not overlap"].layer1SupportedTypes << QGis::Polygon;
 
   mTopologyRuleMap["must not have gaps"].f = &topolTest::checkGaps;
   mTopologyRuleMap["must not have gaps"].useTolerance = false;
   mTopologyRuleMap["must not have gaps"].useSecondLayer = false;
   mTopologyRuleMap["must not have gaps"].useSpatialIndex = false;
+  mTopologyRuleMap["must not have gaps"].layer1SupportedTypes << QGis::Polygon;
 
   mTopologyRuleMap["Must not have multi-part geometries"].f = &topolTest::checkMultipart;
   mTopologyRuleMap["Must not have multi-part geometries"].useSecondLayer = false;
   mTopologyRuleMap["Must not have multi-part geometries"].useTolerance = false;
   mTopologyRuleMap["Must not have multi-part geometries"].useSpatialIndex = false;
+  mTopologyRuleMap["Must not have multi-part geometries"].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
 
   // two layer tests
   mTopologyRuleMap["must not overlap with"].f = &topolTest::checkOverlapWithLayer;
   mTopologyRuleMap["must not overlap with"].useSecondLayer = true;
   mTopologyRuleMap["must not overlap with"].useTolerance = false;
   mTopologyRuleMap["must not overlap with"].useSpatialIndex = true;
+  mTopologyRuleMap["must not overlap with"].layer1SupportedTypes << QGis::Polygon;
+  mTopologyRuleMap["must not overlap with"].layer2SupportedTypes << QGis::Polygon;
 
-  mTopologyRuleMap["points must be covered by segments"].f = &topolTest::checkPointCoveredBySegment;
-  mTopologyRuleMap["points must be covered by segments"].useSecondLayer = true;
-  mTopologyRuleMap["points must be covered by segments"].useTolerance = false;
-  mTopologyRuleMap["points must be covered by segments"].useSpatialIndex = true;
+  mTopologyRuleMap["must be covered by"].f = &topolTest::checkPointCoveredBySegment;
+  mTopologyRuleMap["must be covered by"].useSecondLayer = true;
+  mTopologyRuleMap["must be covered by"].useTolerance = false;
+  mTopologyRuleMap["must be covered by"].useSpatialIndex = true;
+  mTopologyRuleMap["must be covered by"].layer1SupportedTypes << QGis::Point;
+  mTopologyRuleMap["must be covered by"].layer2SupportedTypes << QGis::Line << QGis::Polygon;
 
   //mTopologyRuleMap["features must not be closer than tolerance"].f = &topolTest::checkCloseFeature;
   //mTopologyRuleMap["features must not be closer than tolerance"].useSecondLayer = true;
   //mTopologyRuleMap["features must not be closer than tolerance"].useTolerance = false;
   //mTopologyRuleMap["features must not be closer than tolerance"].useSpatialIndex = false;
 
-  mTopologyRuleMap["Ponts must be covered by endpoints of line"].f = &topolTest::checkPointCoveredByLineEnds;
-  mTopologyRuleMap["Ponts must be covered by endpoints of line"].useSecondLayer = true;
-  mTopologyRuleMap["Ponts must be covered by endpoints of line"].useTolerance = false;
-  mTopologyRuleMap["Ponts must be covered by endpoints of line"].useSpatialIndex = true;
+  mTopologyRuleMap["must be covered by endpoints of"].f = &topolTest::checkPointCoveredByLineEnds;
+  mTopologyRuleMap["must be covered by endpoints of"].useSecondLayer = true;
+  mTopologyRuleMap["must be covered by endpoints of"].useTolerance = false;
+  mTopologyRuleMap["must be covered by endpoints of"].useSpatialIndex = true;
+  mTopologyRuleMap["must be covered by endpoints of"].layer1SupportedTypes << QGis::Point;
+  mTopologyRuleMap["must be covered by endpoints of"].layer2SupportedTypes << QGis::Line;
 
-  mTopologyRuleMap["Line ends must be covered by Points"].f = &topolTest::checkyLineEndsCoveredByPoints;
-  mTopologyRuleMap["Line ends must be covered by Points"].useSecondLayer = true;
-  mTopologyRuleMap["Line ends must be covered by Points"].useTolerance = false;
-  mTopologyRuleMap["Line ends must be covered by Points"].useSpatialIndex = true;
+  mTopologyRuleMap["end points must be covered by"].f = &topolTest::checkyLineEndsCoveredByPoints;
+  mTopologyRuleMap["end points must be covered by"].useSecondLayer = true;
+  mTopologyRuleMap["end points must be covered by"].useTolerance = false;
+  mTopologyRuleMap["end points must be covered by"].useSpatialIndex = true;
+  mTopologyRuleMap["end points must be covered by"].layer1SupportedTypes << QGis::Line;
+  mTopologyRuleMap["end points must be covered by"].layer2SupportedTypes << QGis::Point;
 
-  mTopologyRuleMap["Points must be inside polygon"].f = &topolTest::checkPointInPolygon;
-  mTopologyRuleMap["Points must be inside polygon"].useSecondLayer = true;
-  mTopologyRuleMap["Points must be inside polygon"].useTolerance = false;
-  mTopologyRuleMap["Points must be inside polygon"].useSpatialIndex = true;
+  mTopologyRuleMap["must be inside"].f = &topolTest::checkPointInPolygon;
+  mTopologyRuleMap["must be inside"].useSecondLayer = true;
+  mTopologyRuleMap["must be inside"].useTolerance = false;
+  mTopologyRuleMap["must be inside"].useSpatialIndex = true;
+  mTopologyRuleMap["must be inside"].layer1SupportedTypes << QGis::Point;
+  mTopologyRuleMap["must be inside"].layer2SupportedTypes << QGis::Polygon;
 
-  mTopologyRuleMap["Polygon must contain point"].f = &topolTest::checkPolygonContainsPoint;
-  mTopologyRuleMap["Polygon must contain point"].useSecondLayer = true;
-  mTopologyRuleMap["Polygon must contain point"].useTolerance = false;
-  mTopologyRuleMap["Polygon must contain point"].useSpatialIndex = true;
+  mTopologyRuleMap["must contain"].f = &topolTest::checkPolygonContainsPoint;
+  mTopologyRuleMap["must contain"].useSecondLayer = true;
+  mTopologyRuleMap["must contain"].useTolerance = false;
+  mTopologyRuleMap["must contain"].useSpatialIndex = true;
+  mTopologyRuleMap["must contain"].layer1SupportedTypes << QGis::Polygon;
+  mTopologyRuleMap["must contain"].layer2SupportedTypes << QGis::Point;
 
 
 
