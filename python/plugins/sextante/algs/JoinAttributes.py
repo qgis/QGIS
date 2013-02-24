@@ -72,7 +72,7 @@ class JoinAttributes(GeoAlgorithm):
         outFields.extend(provider.fields())
         outFields.extend(provider2.fields())        
 
-        writer = output.getVectorWriter(outFields, provider.geometryType(), provider.crs())
+        writer = output.getVectorWriter(outFields, provider.geometryType(), layer.crs())
 
         inFeat = QgsFeature()
         inFeat2 = QgsFeature()

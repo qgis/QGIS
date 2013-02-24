@@ -38,7 +38,7 @@ from sextante.core.SextanteVectorWriter import SextanteVectorWriter
 
 # "input" contains the location of the selected layer.
 # We get the actual object,
-layer = getobject(input)
+layer = sextante.getobject(input)
 provider = layer.dataProvider()
 allAttrs = provider.attributeIndexes()
 provider.select( allAttrs )
@@ -54,7 +54,7 @@ inGeom = QgsGeometry()
 nElement = 0
 writers = {}
 
-feats = getfeatures(layer)
+feats = sextante.getfeatures(layer)
 nFeat = len(feats)
 for inFeat in feats:
     progress.setPercentage(int((100 * nElement)/nFeat))
@@ -63,7 +63,7 @@ for inFeat in feats:
     clazz = atMap[class_field_index].toString()
     if clazz not in writers:
         outputFile = output + "_" + str(len(writers)) + ".shp"
-        writers[clazz] = SextanteVectorWriter(outputFile, None, fields, provider.geometryType(), provider.crs() )
+        writers[clazz] = SextanteVectorWriter(outputFile, None, fields, provider.geometryType(), layer.crs() )
     inGeom = inFeat.geometry()
     outFeat.setGeometry(inGeom)
     outFeat.setAttributes(atMap)

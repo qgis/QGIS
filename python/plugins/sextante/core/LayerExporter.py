@@ -52,7 +52,7 @@ class LayerExporter():
         provider = layer.dataProvider()
         useSelection = SextanteConfig.getSetting(SextanteConfig.USE_SELECTED)
         if useSelection and layer.selectedFeatureCount() != 0:
-            writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), provider.crs())
+            writer = QgsVectorFileWriter(output, systemEncoding, layer.pendingFields(), provider.geometryType(), layer.crs())
             selection = layer.selectedFeatures()
             for feat in selection:
                 writer.addFeature(feat)
@@ -65,7 +65,7 @@ class LayerExporter():
             except UnicodeEncodeError:
                 isASCII=False
             if (not unicode(layer.source()).endswith("shp") or not isASCII):
-                writer = QgsVectorFileWriter( output, systemEncoding, layer.pendingFields(), provider.geometryType(), provider.crs() )
+                writer = QgsVectorFileWriter( output, systemEncoding, layer.pendingFields(), provider.geometryType(), layer.crs() )
                 for feat in layer.getFeatures():
                     writer.addFeature(feat)
                 del writer
@@ -108,7 +108,7 @@ class LayerExporter():
             isASCII=False
         isDbf = unicode(table.source()).endswith("dbf") or unicode(table.source()).endswith("shp")
         if (not isDbf or not isASCII):
-            writer = QgsVectorFileWriter( output, systemEncoding, provider.fields(), QGis.WKBNoGeometry, provider.crs() )
+            writer = QgsVectorFileWriter( output, systemEncoding, provider.fields(), QGis.WKBNoGeometry, layer.crs() )
             for feat in table.getFeatures():
                 writer.addFeature(feat)
             del writer

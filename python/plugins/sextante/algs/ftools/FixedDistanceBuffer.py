@@ -70,7 +70,7 @@ class FixedDistanceBuffer(GeoAlgorithm):
 
         provider = layer.dataProvider()
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
-                     QGis.WKBPolygon, provider.crs())
+                     QGis.WKBPolygon, layer.crs())
 
         buff.buffering(progress, writer, distance, None, False,
                        layer, dissolve, segments)

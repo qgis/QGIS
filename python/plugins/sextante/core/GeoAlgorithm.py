@@ -198,7 +198,7 @@ class GeoAlgorithm:
                     if layer is None: # for the case of memory layer, if the getCompatible method has been called
                         continue
                     provider = layer.dataProvider()
-                    writer = out.getVectorWriter( provider.fields(), provider.geometryType(), provider.crs())
+                    writer = out.getVectorWriter( provider.fields(), provider.geometryType(), layer.crs())
                     features = QGisLayers.features(layer)
                     for feature in features:
                         writer.addFeature(feature)

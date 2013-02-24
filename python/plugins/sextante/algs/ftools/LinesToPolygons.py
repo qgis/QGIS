@@ -52,7 +52,7 @@ class LinesToPolygons(GeoAlgorithm):
         provider = layer.dataProvider()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
-                     QGis.WKBPolygon, provider.crs())
+                     QGis.WKBPolygon, layer.crs())
 
         outFeat = QgsFeature()
 

@@ -69,7 +69,7 @@ class FieldsPyculator(GeoAlgorithm):
         vprovider = layer.dataProvider()
         fields = vprovider.fields()
         fields.append(QgsField(fieldname, QVariant.Double))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), layer.crs() )
         outFeat = QgsFeature()
         new_ns = {}
 

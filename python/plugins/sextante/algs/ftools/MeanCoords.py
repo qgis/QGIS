@@ -78,7 +78,7 @@ class MeanCoords(GeoAlgorithm):
                     ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                     QGis.WKBPoint, provider.crs())
+                     QGis.WKBPoint, layer.crs())
 
         current = 0
         total = 100.0 / float(provider.featureCount() * len(uniqueValues))

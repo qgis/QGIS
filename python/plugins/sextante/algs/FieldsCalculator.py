@@ -61,7 +61,7 @@ class FieldsCalculator(GeoAlgorithm):
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
         fields.append(QgsField(fieldname, QVariant.Double))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs())
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vlayer.crs())
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nFeat = vprovider.featureCount()

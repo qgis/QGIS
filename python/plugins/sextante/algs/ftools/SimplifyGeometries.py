@@ -65,7 +65,7 @@ class SimplifyGeometries(GeoAlgorithm):
         provider = layer.dataProvider()
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
-                     layer.wkbType(), provider.crs())
+                     layer.wkbType(), layer.crs())
 
         current = 0
         selection = QGisLayers.features(layer)

@@ -85,7 +85,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
         #To do so, we call the getVectorWriter method in the Output object.
         #That will give as a SextanteVectorWriter, that we can later use to add features.
         provider = vectorLayer.dataProvider()
-        writer = output.getVectorWriter( provider.fields(), provider.geometryType(), provider.crs() )
+        writer = output.getVectorWriter( provider.fields(), provider.geometryType(), vectorLayer.crs() )
 
         #Now we take the selected features and add them to the output layer
         features = QGisLayers.features(vectorLayer)

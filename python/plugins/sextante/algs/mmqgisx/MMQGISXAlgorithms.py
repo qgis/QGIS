@@ -803,7 +803,7 @@ class mmqgisx_hub_distance_algorithm(GeoAlgorithm):
 		for feature in features:
 			source = feature.geometry().boundingBox().center()
 			distance = QgsDistanceArea()
-			distance.setSourceCrs(layersource.dataProvider().crs().srsid())
+			distance.setSourceCrs(layersource.crs().srsid())
 			distance.setEllipsoidalMode(True)
 
 			closest = hubs[0]
