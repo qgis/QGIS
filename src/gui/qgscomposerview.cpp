@@ -448,6 +448,7 @@ void QgsComposerView::mouseDoubleClickEvent( QMouseEvent* e )
 
 void QgsComposerView::keyPressEvent( QKeyEvent * e )
 {
+  //TODO : those should be actions (so we could also display menu items and/or toolbar items)
   if ( e->key() == Qt::Key_Shift )
   {
     mShiftKeyPressed = true;
@@ -491,7 +492,8 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     clipboard->setMimeData( mimeData );
   }
 
-  if ( e->matches( QKeySequence::Paste ) )
+  //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18 
+  if ( e->matches( QKeySequence::Paste ) || (e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::AltModifier) )
   {
     QDomDocument doc;
     QClipboard *clipboard = QApplication::clipboard();
@@ -503,7 +505,8 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         if ( composition() )
         {
           QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
-          composition()->addItemsFromXML( docElem, doc, 0, true, &pt );
+          bool pasteInPlace = (e->modifiers() & Qt::AltModifier);
+          composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
         }
       }
     }
