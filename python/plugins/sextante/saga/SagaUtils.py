@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.core.SextanteVectorWriter import SextanteVectorWriter
-from sextante.core.QGisLayers import QGisLayers
-import sextante
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,13 +24,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from sextante.core.SextanteUtils import SextanteUtils
+import stat
+import traceback
 import subprocess
+from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
-import stat
 from qgis.core import *
 from PyQt4.QtCore import *
+from sextante.core.SextanteVectorWriter import SextanteVectorWriter
+from sextante.core.QGisLayers import QGisLayers
+
 
 class SagaUtils:
 
@@ -147,12 +148,15 @@ class SagaUtils:
                     outFeat.setAttributes(attrs)
                     writer.addFeature(outFeat)   
             del writer.writer
-            del writer                     
-            result = sextante.runalg("saga:thiessenpolygons", filename, None)
+            del writer       
+            from sextante.core.Sextante import runalg              
+            result = runalg("saga:thiessenpolygons", filename, None)
             if not os.path.exists(result['POLYGONS']):
                 return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
         except:
-            return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
+            s = traceback.format_exc()
+            return "Error while checking SAGA installation. SAGA might not be correctly configured.\n" + s;
+            
 
         settings.setValue("/SextanteQGIS/SagaInstalled", True)        
         
