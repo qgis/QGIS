@@ -67,7 +67,7 @@
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -179,7 +179,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mExtentsCheckBox">
+        <widget class="QgsCollapsibleGroupBox" name="mExtentsCheckBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -274,7 +274,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mGridCheckBox">
+        <widget class="QgsCollapsibleGroupBox" name="mGridCheckBox">
          <property name="title">
           <string>Show grid</string>
          </property>
@@ -466,7 +466,7 @@
            </widget>
           </item>
           <item row="7" column="0" colspan="2">
-           <widget class="QgsCollapsibleGroupBoxBasic" name="mDrawAnnotationCheckableGroupBox">
+           <widget class="QgsCollapsibleGroupBox" name="mDrawAnnotationCheckableGroupBox">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -644,7 +644,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
            <horstretch>0</horstretch>
@@ -703,7 +703,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>

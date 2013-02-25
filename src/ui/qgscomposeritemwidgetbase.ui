@@ -25,7 +25,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QgsCollapsibleGroupBoxBasic" name="mGeneralOptionsGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="mGeneralOptionsGroupBox">
      <property name="title">
       <string>Position and size</string>
      </property>
@@ -228,7 +228,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QgsCollapsibleGroupBoxBasic" name="mFrameGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="mFrameGroupBox">
      <property name="title">
       <string>Frame</string>
      </property>
@@ -276,7 +276,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QgsCollapsibleGroupBoxBasic" name="mBackgroundGroupBox">
+    <widget class="QgsCollapsibleGroupBox" name="mBackgroundGroupBox">
      <property name="title">
       <string>Background</string>
      </property>
@@ -341,7 +341,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
      <property name="title">
       <string>Item ID</string>
      </property>
@@ -391,7 +391,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>

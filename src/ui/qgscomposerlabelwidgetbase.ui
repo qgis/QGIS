@@ -58,7 +58,7 @@
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mTextGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mTextGroupBox">
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -125,7 +125,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mAlignementGroup">
+        <widget class="QgsCollapsibleGroupBox" name="mAlignementGroup">
          <property name="title">
           <string>Alignment</string>
          </property>
@@ -239,7 +239,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mDisplayGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mDisplayGroupBox">
          <property name="title">
           <string>Display</string>
          </property>
@@ -317,7 +317,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>

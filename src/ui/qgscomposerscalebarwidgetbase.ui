@@ -58,7 +58,7 @@
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -124,7 +124,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
          <property name="title">
           <string>Units</string>
          </property>
@@ -184,7 +184,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_3">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
          <property name="title">
           <string>Segments</string>
          </property>
@@ -279,7 +279,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_5">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_5">
          <property name="title">
           <string>Display</string>
          </property>
@@ -376,7 +376,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_4">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
          <property name="title">
           <string>Fonts and colors</string>
          </property>
@@ -441,7 +441,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
