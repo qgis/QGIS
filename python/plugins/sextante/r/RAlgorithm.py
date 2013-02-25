@@ -242,7 +242,7 @@ class RAlgorithm(GeoAlgorithm):
                     value = value + ".tif"
                 value = value.replace("\\", "/")
                 if self.useRraster:
-                    commands.append("writeRaster(" + out.name + ",\"" + value + "\", datatype=dataType(" + out.name + "), overwrite=TRUE)")
+                    commands.append("writeRaster(" + out.name + ",\"" + value + "\", overwrite=TRUE)")
                 else:
                     commands.append("writeGDAL(" + out.name + ",\"" + value + "\")")
             if isinstance(out, OutputVector):
@@ -282,7 +282,7 @@ class RAlgorithm(GeoAlgorithm):
                 value = param.value
                 value = value.replace("\\", "/")
                 if self.passFileNames:
-                    commands.append(param.name + " = " + value)
+                    commands.append(param.name + " = \"" + value + "\"")
                 elif self.useRasterPackage:
                     commands.append(param.name + " = " + "brick(\"" + value + "\")")
                 else:
@@ -294,7 +294,7 @@ class RAlgorithm(GeoAlgorithm):
                 filename = filename[:-4]
                 folder = os.path.dirname(value)
                 if self.passFileNames:
-                    commands.append(param.name + " = " + value)
+                    commands.append(param.name + " = \"" + value + "\"")
                 else:
                     commands.append(param.name + " = readOGR(\"" + folder + "\",layer=\"" + filename + "\")")
             if isinstance(param, ParameterTable):
@@ -302,7 +302,7 @@ class RAlgorithm(GeoAlgorithm):
                 if not value.lower().endswith("csv"):
                     raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
                 if self.passFileNames:
-                    commands.append(param.name + " = " + value)
+                    commands.append(param.name + " = \"" + value + "\"")
                 else:
                     commands.append(param.name + " <- read.csv(\"" + value + "\", head=TRUE, sep=\",\")")
             elif isinstance(param, (ParameterTableField, ParameterString, ParameterFile)):
@@ -323,11 +323,11 @@ class RAlgorithm(GeoAlgorithm):
                             #raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
                         layer = layer.replace("\\", "/")
                         if self.passFileNames:
-                            commands.append("tempvar" + str(iLayer)+ " = \"" + layer + "\"")                            
+                            commands.append("tempvar" + str(iLayer)+ " <- \"" + layer + "\"")                            
                         elif self.useRasterPackage:
-                            commands.append("tempvar" + str(iLayer)+ " = " + "brick(\"" + layer + "\")")
+                            commands.append("tempvar" + str(iLayer)+ " <- " + "brick(\"" + layer + "\")")
                         else:
-                            commands.append("tempvar" + str(iLayer)+ " = " + "readGDAL(\"" + layer + "\")")
+                            commands.append("tempvar" + str(iLayer)+ " <- " + "readGDAL(\"" + layer + "\")")
                         iLayer+=1
                 else:
                     exported = param.getSafeExportedLayers()
@@ -339,9 +339,9 @@ class RAlgorithm(GeoAlgorithm):
                         filename = os.path.basename(layer)
                         filename = filename[:-4]
                         if self.passFileNames:
-                            commands.append("tempvar" + str(iLayer)+ " = \"" + layer + "\"")
+                            commands.append("tempvar" + str(iLayer)+ " <- \"" + layer + "\"")
                         else:
-                            commands.append("tempvar" + str(iLayer) + " = " + "readOGR(\"" + layer + "\",layer=\"" + filename + "\")")
+                            commands.append("tempvar" + str(iLayer) + " <- " + "readOGR(\"" + layer + "\",layer=\"" + filename + "\")")
                         iLayer+=1
                 s = ""
                 s += param.name
