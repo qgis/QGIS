@@ -61,6 +61,7 @@ my $translators= {
 	lv => 'Maris Nartiss, Pēteris Brūns',
 	lt => 'Kestas M',
 	nl => 'Richard Duivenvoorde, Raymond Nijssen, Carlo van Rijswijk',
+	ml_IN => 'Vinayan',
 	mn => 'Bayarmaa Enkhtur',
 	pl_PL => 'Robert Szczepanek, Milena Nowotarska, Borys Jurgiel, Mateusz Loskot, Tomasz Paul, Andrzej Swiader ',
 	pt_BR => 'Arthur Nanni',
