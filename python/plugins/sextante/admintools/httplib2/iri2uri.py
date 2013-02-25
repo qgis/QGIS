@@ -4,9 +4,9 @@
 ***************************************************************************
     iri2uri.py
     ---------------------
-    Date                 : November 2012
-    Copyright            : (C) 2012 by Victor Olaya
-    Email                : volayaf at gmail dot com
+    Date                 : 2006
+    Copyright            : (C) 2006 Joe Gregorio
+    Email                : joe at bitworking dot org
 ***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
@@ -16,14 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
-__author__ = 'Victor Olaya'
-__date__ = 'November 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
-
-
 """
 iri2uri
 
@@ -37,6 +29,8 @@ __version__ = "1.0.0"
 __license__ = "MIT"
 __history__ = """
 """
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
 
 import urlparse
 
