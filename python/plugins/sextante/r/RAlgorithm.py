@@ -264,12 +264,14 @@ class RAlgorithm(GeoAlgorithm):
     def getImportCommands(self):
         commands = []
         # if rgdal is not available, try to install it
-        # just use US mirror
-        commands.append('options("repos"="http://cran.us.r-project.org")')
+        # just use main mirror
+        commands.append('options("repos"="http://cran.at.r-project.org/")')
         rLibDir = "%s/rlibs" % SextanteUtils.userFolder().replace("\\","/")
         if not os.path.isdir(rLibDir): 
             os.mkdir(rLibDir)
-        commands.append('.libPaths("%s")' % rLibDir )
+        # .libPaths("%s") substitutes the personal libPath with "%s"! With '.libPaths(c("%s",deflibloc))' it is added without replacing and we can use all installed R packages! 
+        commands.append('deflibloc <- .libPaths()[1]')
+        commands.append('.libPaths(c("%s",deflibloc))' % rLibDir )
         commands.append(
             'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", lib="%s"))' % rLibDir)
         commands.append("library(\"rgdal\")");
