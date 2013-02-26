@@ -238,12 +238,12 @@ class RAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 value = out.value
-                if not value.endswith("tif"):
-                    value = value + ".tif"
                 value = value.replace("\\", "/")
-                if self.useRraster:
+                if self.useRasterPackage or self.passFileNames:
                     commands.append("writeRaster(" + out.name + ",\"" + value + "\", overwrite=TRUE)")
                 else:
+                    if not value.endswith("tif"):
+                        value = value + ".tif"
                     commands.append("writeGDAL(" + out.name + ",\"" + value + "\")")
             if isinstance(out, OutputVector):
                 value = out.value
@@ -273,12 +273,13 @@ class RAlgorithm(GeoAlgorithm):
         commands.append('deflibloc <- .libPaths()[1]')
         commands.append('.libPaths(c("%s",deflibloc))' % rLibDir )
         commands.append(
-            'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", lib="%s"))' % rLibDir)
+            'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", dependencies=TRUE, lib="%s"))' % rLibDir)
         commands.append("library(\"rgdal\")");
-        if self.useRasterPackage:
+        if self.useRasterPackage or self.passFileNames:
             commands.append(
-            'tryCatch(find.package("raster"), error=function(e) install.packages("raster", lib="%s"))' % rLibDir)
+                'tryCatch(find.package("raster"), error=function(e) install.packages("raster", dependencies=TRUE, lib="%s"))' % rLibDir)
             commands.append("library(\"raster\")");
+            
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 value = param.value
