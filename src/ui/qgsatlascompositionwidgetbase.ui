@@ -109,7 +109,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QgsCollapsibleGroupBox" name="mConfigurationGroup">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mConfigurationGroup">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -164,7 +164,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsCollapsibleGroupBox" name="mVisibilityGroup">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mVisibilityGroup">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -192,7 +192,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsCollapsibleGroupBox" name="mSortingGroup">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mSortingGroup">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -243,7 +243,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsCollapsibleGroupBox" name="mFilteringGroup">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mFilteringGroup">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -288,7 +288,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsCollapsibleGroupBox" name="mScalingGroup">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mScalingGroup">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -336,7 +336,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QgsCollapsibleGroupBox" name="mOutputGroup">
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mOutputGroup">
             <property name="enabled">
              <bool>false</bool>
             </property>
@@ -408,7 +408,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
+   <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
