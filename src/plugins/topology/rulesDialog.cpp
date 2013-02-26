@@ -62,6 +62,8 @@ rulesDialog::rulesDialog( QList<QString> layerList, QMap<QString, TopologyRule> 
     // add layer name to the layer combo boxes
     mLayer1Box->addItem( v1->name(), v1->id() );
     //mLayer2Box->addItem((( QgsVectorLayer* )layerRegistry->mapLayers()[layerList[i]] )->name() );
+
+
   }
 
   connect (mLayer1Box, SIGNAL( currentIndexChanged(const QString&) ),this, SLOT( updateRuleItems(const QString&) ) );
@@ -247,6 +249,16 @@ void rulesDialog::addTest()
   QString layer2 = mLayer2Box->currentText();
   if ( layer2 == "No layer" && mTestConfMap[test].useSecondLayer )
     return;
+
+  for (int i = 0; i < mTestTable->rowCount(); ++i)
+    {
+      if( mTestTable->item(i,0)->text() == test &&
+          mTestTable->item(i,1)->text() == layer1 &&
+          mTestTable->item(i,2)->text() == layer2 )
+        {
+          return;
+        }
+    }
 
   int row = mTestTable->rowCount();
   mTestTable->insertRow( row );
