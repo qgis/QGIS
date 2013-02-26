@@ -61,6 +61,7 @@ void QgsCollapsibleGroupBoxBasic::init()
   mSyncParent = 0;
   mSyncGroup = "";
   mAltDown = false;
+  mShiftDown = false;
   mTitleClicked = false;
 
   // init icons
@@ -138,8 +139,8 @@ void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
 
 void QgsCollapsibleGroupBoxBasic::mousePressEvent( QMouseEvent *event )
 {
-  // avoid leaving checkbox in pressed state if alt-clicking
-  if ( event->modifiers() & Qt::AltModifier
+  // avoid leaving checkbox in pressed state if alt- or shift-clicking
+  if ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier | Qt::ShiftModifier )
        && titleRect().contains( event->pos() )
        && isCheckable() )
   {
@@ -154,12 +155,14 @@ void QgsCollapsibleGroupBoxBasic::mousePressEvent( QMouseEvent *event )
 void QgsCollapsibleGroupBoxBasic::mouseReleaseEvent( QMouseEvent *event )
 {
   mAltDown = ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier ) );
+  mShiftDown = ( event->modifiers() & Qt::ShiftModifier );
   mTitleClicked = ( titleRect().contains( event->pos() ) );
 
   // sync group when title is alt-clicked
   // collapse/expand when title is clicked and non-checkable
+  // expand current and collapse others on shift-click
   if ( event->button() == Qt::LeftButton && mTitleClicked &&
-       ( mAltDown || !isCheckable() ) )
+       ( mAltDown || mShiftDown || !isCheckable() ) )
   {
     toggleCollapsed();
     return;
@@ -184,14 +187,12 @@ void QgsCollapsibleGroupBoxBasic::changeEvent( QEvent *event )
 void QgsCollapsibleGroupBoxBasic::setSyncGroup( QString grp )
 {
   mSyncGroup = grp;
+  QString tipTxt = QString( "" );
   if ( !grp.isEmpty() )
   {
-    mCollapseButton->setToolTip( tr( "Ctrl(or Alt)-click to toggle all" ) );
+    tipTxt = tr( "Ctrl(or Alt)-click to toggle all" ) + "\n" + tr( "Shift-click to expand, then collapse others" );
   }
-  else
-  {
-    mCollapseButton->setToolTip( QString( "" ) );
-  }
+  mCollapseButton->setToolTip( tipTxt );
 }
 
 QRect QgsCollapsibleGroupBoxBasic::titleRect() const
@@ -200,6 +201,14 @@ QRect QgsCollapsibleGroupBoxBasic::titleRect() const
   initStyleOption( &box );
   return style()->subControlRect( QStyle::CC_GroupBox, &box,
                                   QStyle::SC_GroupBoxLabel, this );
+}
+
+void QgsCollapsibleGroupBoxBasic::clearModifiers()
+{
+  mCollapseButton->setAltDown( false );
+  mCollapseButton->setShiftDown( false );
+  mAltDown = false;
+  mShiftDown = false;
 }
 
 void QgsCollapsibleGroupBoxBasic::checkToggled( bool chkd )
@@ -219,13 +228,15 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
   QgsGroupBoxCollapseButton* collBtn = qobject_cast<QgsGroupBoxCollapseButton*>( QObject::sender() );
   senderCollBtn = ( collBtn && collBtn == mCollapseButton );
 
+  mAltDown = ( mAltDown || mCollapseButton->altDown() );
+  mShiftDown = ( mShiftDown || mCollapseButton->shiftDown() );
+
   // find any sync group siblings and toggle them
-  if ((( senderCollBtn && mCollapseButton->altDown() ) || ( mTitleClicked && mAltDown ) )
+  if (( senderCollBtn || mTitleClicked )
+      && ( mAltDown || mShiftDown )
       && !mSyncGroup.isEmpty() )
   {
-    mCollapseButton->setAltDown( false );
-    mAltDown = false;
-    QgsDebugMsg( "Alt key down, syncing group" );
+    QgsDebugMsg( "Alt or Shift key down, syncing group" );
     // get pointer to parent or grandparent widget
     if ( parentWidget() )
     {
@@ -253,10 +264,19 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
       {
         if ( grpbox->syncGroup() == syncGroup() && grpbox->isEnabled() )
         {
-          grpbox->setCollapsed( !thisCollapsed );
+          if ( mShiftDown && grpbox == dynamic_cast<QgsCollapsibleGroupBoxBasic *>( this ) )
+          {
+            // expand current group box on shift-click
+            setCollapsed( false );
+          }
+          else
+          {
+            grpbox->setCollapsed( mShiftDown ? true : !thisCollapsed );
+          }
         }
       }
 
+      clearModifiers();
       return;
     }
     else
@@ -265,7 +285,17 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
     }
   }
 
-  setCollapsed( !mCollapsed );
+  // expand current group box on shift-click, even if no sync group
+  if ( mShiftDown )
+  {
+    setCollapsed( false );
+  }
+  else
+  {
+    setCollapsed( !mCollapsed );
+  }
+
+  clearModifiers();
 }
 
 void QgsCollapsibleGroupBoxBasic::updateStyle()
