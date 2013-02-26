@@ -265,6 +265,14 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         {
           QMessageBox::critical( 0, tr( "Error" ), tr( "An error was reported during intersection removal" ) );
         }
+
+        if ( !f->geometry()->asWkb() ) //avoid intersection might have removed the whole geometry
+        {
+          QMessageBox::critical( 0, tr( "Error" ), tr( "The feature cannot be added because it contains an emtpy geometry" ) );
+          delete f;
+          stopCapturing();
+          return;
+        }
       }
 
       vlayer->beginEditCommand( tr( "Feature added" ) );
