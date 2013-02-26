@@ -70,6 +70,7 @@
 #include <QSettings>
 #include <QSizeGrip>
 #include <QSvgGenerator>
+#include <QTimer>
 #include <QToolBar>
 #include <QToolButton>
 #include <QUndoView>
@@ -1356,7 +1357,10 @@ void QgsComposer::on_mActionDuplicateComposer_triggered()
 
 void QgsComposer::on_mActionComposerManager_triggered()
 {
-  mQgis->actionShowComposerManager()->trigger();
+  // NOTE: Avoid crash where composer that spawned modal manager from toolbar ends up
+  // being deleted by user, but event loop tries to return to composer on manager close
+  // (does not seem to be an issue for menu action)
+  QTimer::singleShot( 0, mQgis->actionShowComposerManager(), SLOT( trigger() ) ) ;
 }
 
 void QgsComposer::on_mActionSaveAsTemplate_triggered()
