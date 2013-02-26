@@ -109,7 +109,13 @@ void QgsComposerManager::on_mAddButton_clicked()
 {
   QgsComposer* newComposer = 0;
 
-  newComposer = QgisApp::instance()->createNewComposer();
+  QString title = QgisApp::instance()->uniqueComposerTitle( this, true );
+  if ( title.isNull() )
+  {
+    return;
+  }
+
+  newComposer = QgisApp::instance()->createNewComposer( title );
   if ( !newComposer )
   {
     return;
@@ -226,17 +232,25 @@ void QgsComposerManager::duplicate_clicked()
   }
 
   QgsComposer* currentComposer = 0;
+  QString currentTitle;
   QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
   if ( it != mItemComposerMap.end() )
   {
     currentComposer = it.value();
+    currentTitle = it.value()->title();
   }
   else
   {
     return;
   }
 
-  QgsComposer* newComposer = QgisApp::instance()->duplicateComposer( currentComposer, this );
+  QString newTitle = QgisApp::instance()->uniqueComposerTitle( this, false, currentTitle + tr( " copy" ) );
+  if ( newTitle.isNull() )
+  {
+    return;
+  }
+
+  QgsComposer* newComposer = QgisApp::instance()->duplicateComposer( currentComposer, newTitle );
 
   if ( newComposer )
   {

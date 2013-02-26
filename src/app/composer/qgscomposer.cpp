@@ -1346,7 +1346,12 @@ void QgsComposer::on_mActionNewComposer_triggered()
 
 void QgsComposer::on_mActionDuplicateComposer_triggered()
 {
-  mQgis->duplicateComposer( this, this );
+  QString newTitle = mQgis->uniqueComposerTitle( this, false, title() + tr( " copy" ) );
+  if ( newTitle.isNull() )
+  {
+    return;
+  }
+  mQgis->duplicateComposer( this, newTitle );
 }
 
 void QgsComposer::on_mActionComposerManager_triggered()

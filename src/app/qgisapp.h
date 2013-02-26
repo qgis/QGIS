@@ -214,14 +214,21 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**Returns the print composers*/
     QSet<QgsComposer*> printComposers() const {return mPrintComposers;}
+    /** Get a unique title from user for new and duplicate composers
+     * @param acceptEmpty whether to accept empty titles (one will be generated)
+     * @param currentTitle base name for initial title choice
+     * @return QString::null if user cancels input dialog
+     * @note added in 1.9
+     */
+    QString uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const QString& currentTitle = QString( "" ) );
     /**Creates a new composer and returns a pointer to it*/
-    QgsComposer* createNewComposer();
+    QgsComposer* createNewComposer( QString title = QString( "" ) );
     /**Deletes a composer and removes entry from Set*/
     void deleteComposer( QgsComposer* c );
     /** Duplicates a composer and adds it to Set
      * @note added in 1.9
      */
-    QgsComposer* duplicateComposer( QgsComposer* currentComposer, QWidget* parent );
+    QgsComposer* duplicateComposer( QgsComposer* currentComposer, QString title = QString( "" ) );
 
     /** overloaded function used to sort menu entries alphabetically */
     QMenu* createPopupMenu();

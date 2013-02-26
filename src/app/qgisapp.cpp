@@ -3842,7 +3842,12 @@ void QgisApp::newPrintComposer()
     return;
   }
 
-  createNewComposer();
+  QString title = uniqueComposerTitle( this, true );
+  if ( title.isNull() )
+  {
+    return;
+  }
+  createNewComposer( title );
 }
 
 void QgisApp::showComposerManager()
@@ -4604,12 +4609,79 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
   return unionGeom;
 }
 
-QgsComposer* QgisApp::createNewComposer()
+QString QgisApp::uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const QString& currentName )
+{
+  if ( !parent )
+  {
+    parent = this;
+  }
+  bool ok = false;
+  bool titleValid = false;
+  QString newTitle = QString( currentName );
+  QString chooseMsg = tr( "Create unique print composer title" );
+  if ( acceptEmpty )
+  {
+    chooseMsg += "\n" + tr( "(title generated if left empty)" );
+  }
+  QString titleMsg = chooseMsg;
+
+  QStringList cNames;
+  cNames << newTitle;
+  foreach ( QgsComposer* c, printComposers() )
+  {
+    cNames << c->title();
+  }
+
+  while ( !titleValid )
+  {
+    newTitle = QInputDialog::getItem( parent,
+                                      tr( "Composer title" ),
+                                      titleMsg,
+                                      cNames,
+                                      cNames.indexOf( newTitle ),
+                                      true,
+                                      &ok );
+    if ( !ok )
+    {
+      return QString::null;
+    }
+
+    if ( newTitle.isEmpty() )
+    {
+      if ( !acceptEmpty )
+      {
+        titleMsg = chooseMsg + "\n\n" + tr( "Title can not be empty!" );
+      }
+      else
+      {
+        newTitle = QString( "" );
+        titleValid = true;
+      }
+    }
+    else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
+    {
+      cNames[0] = QString( "" ); // clear non-unique name
+      titleMsg = chooseMsg + "\n\n" + tr( "Title already exists!" );
+    }
+    else
+    {
+      titleValid = true;
+    }
+  }
+
+  return newTitle;
+}
+
+QgsComposer* QgisApp::createNewComposer( QString title )
 {
   //ask user about name
   mLastComposerId++;
+  if ( title.isEmpty() )
+  {
+    title = tr( "Composer %1" ).arg( mLastComposerId );
+  }
   //create new composer object
-  QgsComposer* newComposerObject = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
+  QgsComposer* newComposerObject = new QgsComposer( this, title );
 
   //add it to the map of existing print composers
   mPrintComposers.insert( newComposerObject );
@@ -4632,13 +4704,9 @@ void QgisApp::deleteComposer( QgsComposer* c )
   delete c;
 }
 
-QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QWidget* parent )
+QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QString title )
 {
   QgsComposer* newComposer = 0;
-  if ( !parent )
-  {
-    parent = this;
-  }
 
   // test that current composer template write is valid
   QDomDocument currentDoc;
@@ -4646,70 +4714,35 @@ QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QWidget* 
   QDomElement compositionElem = currentDoc.documentElement().firstChildElement( "Composition" );
   if ( compositionElem.isNull() )
   {
-    QMessageBox::warning( parent,
-                          tr( "Write error" ),
-                          tr( "Error, selected composer could not be stored as temporary template" ) );
+    QgsDebugMsg( "selected composer could not be stored as temporary template" );
     return newComposer;
   }
 
-  QList<QString> cNames;
-  foreach ( QgsComposer* c, printComposers() )
+  if ( title.isEmpty() )
   {
-    cNames << c->title();
+    // TODO: inject a bit of randomness in auto-titles?
+    title = currentComposer->title() + tr( " copy" );
   }
 
-  bool ok = false;
-  bool titleValid = false;
-  QString newTitle = currentComposer->title() + tr( " copy" );
-  QString chooseMsg = tr( "Choose title" );
-  QString titleMsg = chooseMsg;
-  while ( !titleValid )
-  {
-    newTitle = QInputDialog::getText( parent,
-                                      tr( "New title" ),
-                                      titleMsg,
-                                      QLineEdit::Normal,
-                                      newTitle,
-                                      &ok );
-    if ( !ok )
-    {
-      return newComposer;
-    }
-
-    if ( cNames.contains( newTitle ) )
-    {
-      titleMsg = chooseMsg + tr( "\n (title already exists!)" );
-    }
-    else if ( newTitle.isEmpty() )
-    {
-      titleMsg = chooseMsg + tr( "\n (title can not be empty!)" );
-    }
-    else
-    {
-      titleValid = true;
-    }
-  }
-
-  newComposer = createNewComposer();
+  newComposer = createNewComposer( title );
   if ( !newComposer )
   {
-    QMessageBox::warning( parent,
-                          tr( "Composer error" ),
-                          tr( "Error, could not create new composer" ) );
+    QgsDebugMsg( "could not create new composer" );
     return newComposer;
   }
-  newComposer->hide(); // until template is loaded (faster)
 
+  // disable updates until template is loaded (may be faster, but still gives user feedback),
+  // but is not as fast as hiding composer until template is loaded
+  newComposer->setUpdatesEnabled( false );
   QApplication::setOverrideCursor( Qt::BusyCursor );
   if ( !newComposer->composition()->loadFromTemplate( currentDoc, 0, false ) )
   {
     deleteComposer( newComposer );
-    QMessageBox::warning( parent,
-                          tr( "Read error" ),
-                          tr( "Error, composer could not be duplicated" ) );
+    newComposer = 0;
+    QgsDebugMsg( "Error, composer could not be duplicated" );
     return newComposer;
   }
-  newComposer->setTitle( newTitle );
+  newComposer->setUpdatesEnabled( true );
   newComposer->activate();
   QApplication::restoreOverrideCursor();
 
