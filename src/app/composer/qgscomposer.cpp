@@ -56,10 +56,12 @@
 #include <QCloseEvent>
 #include <QCheckBox>
 #include <QDesktopWidget>
+#include <QDialog>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QIcon>
 #include <QImageWriter>
+#include <QLabel>
 #include <QMatrix>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -75,6 +77,7 @@
 #include <QToolButton>
 #include <QUndoView>
 #include <QPaintEngine>
+#include <QProgressBar>
 #include <QProgressDialog>
 
 
@@ -487,6 +490,24 @@ void QgsComposer::setTitle( const QString& title )
   {
     mWindowAction->setText( title );
   }
+}
+
+QDialog* QgsComposer::progressDialog( const QString& message, QWidget* parent )
+{
+  QDialog* dlg = new QDialog( parent );
+  dlg->setLayout( new QVBoxLayout() );
+  dlg->setWindowModality( Qt::WindowModal );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->setMinimumWidth( 250 );
+  if ( !message.isEmpty() )
+  {
+    dlg->layout()->addWidget( new QLabel( message ) );
+  }
+  QProgressBar* pb = new QProgressBar();
+  pb->setMaximum( 0 ); // show as busy indicator
+  dlg->layout()->addWidget( pb );
+
+  return dlg;
 }
 
 void QgsComposer::showItemOptions( QgsComposerItem* item )
@@ -1352,7 +1373,19 @@ void QgsComposer::on_mActionDuplicateComposer_triggered()
   {
     return;
   }
-  mQgis->duplicateComposer( this, newTitle );
+
+  // provide feedback, since loading of template into duplicate composer will be hidden
+  QDialog* dlg = progressDialog( tr( "Duplicating composer..." ), this );
+  dlg->show();
+
+  QgsComposer* newComposer = mQgis->duplicateComposer( this, newTitle );
+  dlg->close();
+
+  if ( !newComposer )
+  {
+    QMessageBox::warning( this, tr( "Duplicate Composer" ),
+                          tr( "Composer duplication failed." ) );
+  }
 }
 
 void QgsComposer::on_mActionComposerManager_triggered()

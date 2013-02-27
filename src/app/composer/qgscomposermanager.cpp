@@ -19,6 +19,8 @@
 #include "qgsapplication.h"
 #include "qgscomposer.h"
 #include "qgslogger.h"
+
+#include <QDialog>
 #include <QDir>
 #include <QInputDialog>
 #include <QListWidgetItem>
@@ -250,12 +252,22 @@ void QgsComposerManager::duplicate_clicked()
     return;
   }
 
+  // provide feedback, since loading of template into duplicate composer will be hidden
+  QDialog* dlg = currentComposer->progressDialog( tr( "Duplicating composer..." ), this );
+  dlg->show();
+
   QgsComposer* newComposer = QgisApp::instance()->duplicateComposer( currentComposer, newTitle );
+  dlg->close();
 
   if ( newComposer )
   {
     // no need to add new composer to list widget, if just closing this->exec();
     close();
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Duplicate Composer" ),
+                          tr( "Composer duplication failed." ) );
   }
 }
 

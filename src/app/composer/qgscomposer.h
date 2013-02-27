@@ -84,6 +84,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     const QString& title() const {return mTitle;}
     void setTitle( const QString& title );
 
+    //! Modal busy indicator dialog with no buttons that deletes on close
+    //! @param message text to show above busy progress indicator
+    //! @note added in 1.9
+    QDialog* progressDialog( const QString& message = QString( "" ), QWidget* parent = 0 );
+
   protected:
     //! Move event
     virtual void moveEvent( QMoveEvent * );

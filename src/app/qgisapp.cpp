@@ -4731,9 +4731,8 @@ QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QString t
     return newComposer;
   }
 
-  // disable updates until template is loaded (may be faster, but still gives user feedback),
-  // but is not as fast as hiding composer until template is loaded
-  newComposer->setUpdatesEnabled( false );
+  // hiding composer until template is loaded is much faster, provide feedback to user
+  newComposer->hide();
   QApplication::setOverrideCursor( Qt::BusyCursor );
   if ( !newComposer->composition()->loadFromTemplate( currentDoc, 0, false ) )
   {
@@ -4742,7 +4741,6 @@ QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QString t
     QgsDebugMsg( "Error, composer could not be duplicated" );
     return newComposer;
   }
-  newComposer->setUpdatesEnabled( true );
   newComposer->activate();
   QApplication::restoreOverrideCursor();
 
