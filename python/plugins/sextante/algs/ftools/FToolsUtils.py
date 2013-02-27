@@ -96,6 +96,35 @@ def extractPoints( geom ):
 
     return points
 
+def simpleMeasure(geom, method=0, ellips=None, crs=None):
+    # method defines calculation type:
+    # 0 - layer CRS
+    # 1 - project CRS
+    # 2 - ellipsoidal
+    if geom.wkbType() in [QGis.WKBPoint, QGis.WKBPoint25D]:
+        pt = geom.asPoint()
+        attr1 = pt.x()
+        attr2 = pt.y()
+    elif geom.wkbType() in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
+        pt = inGeom.asMultiPoint()
+        attr1 = pt[0].x()
+        attr2 = pt[0].y()
+    else:
+        measure = QgsDistanceArea()
+
+        if method == 2:
+            measure.setSourceCrs(crs)
+            measure.setEllipsoid(ellips)
+            measure.setEllipsoidalMode(True)
+
+        attr1 = measure.measure(geom)
+        if geom.type() == QGis.Polygon:
+            attr2 = measure.measurePerimeter(geom)
+        else:
+            attr2 = attr1
+
+    return (attr1, attr2)
+
 def getUniqueValues(layer, fieldIndex):
     values = []
     layer.select([fieldIndex], QgsRectangle(), False)

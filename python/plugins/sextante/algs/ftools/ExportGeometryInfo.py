@@ -24,12 +24,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
+
 from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
+
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterSelection import ParameterSelection
+
 from sextante.outputs.OutputVector import OutputVector
+
+from sextante.algs.ftools import FToolsUtils as utils
 
 class ExportGeometryInfo(GeoAlgorithm):
 
@@ -55,7 +61,6 @@ class ExportGeometryInfo(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.METHOD, "Calculate using", self.CALC_METHODS, 0))
 
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
-
 
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -90,7 +95,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         # 2 - ellipsoidal
         if method == 2:
             settings = QSettings()
-            ellips = settings.value("/qgis/measure/ellipsoid", "WGS84").toString()
+            ellips = QgsProject.instance().readEntry("Measure", "/Ellipsoid", GEO_NONE)[0]
             crs = layer.crs().srsid()
         elif method == 1:
             mapCRS = QGisLayers.iface.mapCanvas().mapRenderer().destinationCrs()
@@ -109,7 +114,7 @@ class ExportGeometryInfo(GeoAlgorithm):
             if method == 1:
                 inGeom.transform(coordTransform)
 
-            (attr1, attr2) = self.simpleMeasure(inGeom, method, ellips, crs)
+            (attr1, attr2) = utils.simpleMeasure(inGeom, method, ellips, crs)
 
             outFeat.setGeometry(inGeom)
             atMap = inFeat.attributes()
@@ -123,42 +128,3 @@ class ExportGeometryInfo(GeoAlgorithm):
             progress.setPercentage(int(current * total))
 
         del writer
-
-    def simpleMeasure(self, geom, method, ellips, crs):
-        if geom.wkbType() in [QGis.WKBPoint, QGis.WKBPoint25D]:
-            pt = geom.asPoint()
-            attr1 = pt.x()
-            attr2 = pt.y()
-        elif geom.wkbType() in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
-            pt = inGeom.asMultiPoint()
-            attr1 = pt[0].x()
-            attr2 = pt[0].y()
-        else:
-            measure = QgsDistanceArea()
-
-            if method == 2:
-                measure.setSourceCrs(crs)
-                measure.setEllipsoid(ellips)
-                measure.setEllipsoidalMode(True)
-
-            attr1 = measure.measure(geom)
-            if geom.type() == QGis.Polygon:
-                attr2 = self.perimMeasure(geom, measure)
-            else:
-                attr2 = None
-
-        return (attr1, attr2)
-
-    def perimMeasure(self, geom, measure):
-        value = 0.0
-        if geom.isMultipart():
-            polygons = geom.asMultiPolygon()
-            for p in polygons:
-                for line in p:
-                    value += measure.measureLine(line)
-        else:
-            poly = geom.asPolygon()
-            for r in poly:
-                value += measure.measureLine(r)
-
-        return value
