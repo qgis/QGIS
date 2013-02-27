@@ -81,12 +81,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation type="unfinished">Coordenada no seu SRC selecionado (lat,lon or east,north)</translation>
+        <translation>Coordenada no SRC por si selecionado (lat,lon ou este,norte)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordenada no SRC do mapa (lat,lon ou este,norte)</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -1582,7 +1582,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/sextante/about/aboutdialogbase.ui" line="14"/>
         <source>About SEXTANTE</source>
-        <translation>Sobre SEXTANTE</translation>
+        <translation>Sobre o SEXTANTE</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/about/aboutdialogbase.ui" line="27"/>
@@ -1605,7 +1605,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="30"/>
         <source>geom</source>
-        <translation>Geometria</translation>
+        <translation>geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="37"/>
@@ -1620,32 +1620,32 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="53"/>
         <source>LINESTRING</source>
-        <translation>LINESTRING</translation>
+        <translation>LINHA</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="58"/>
         <source>POLYGON</source>
-        <translation>POLYGON</translation>
+        <translation>POLÍGONO</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="63"/>
         <source>MULTIPOINT</source>
-        <translation>MULTIPOINT</translation>
+        <translation>MULTIPONTO</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="68"/>
         <source>MULTILINESTRING</source>
-        <translation>MULTILINESTRING</translation>
+        <translation>MULTILINHA</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="73"/>
         <source>MULTIPOLYGON</source>
-        <translation>MULTIPOLYGON</translation>
+        <translation>MULTIPOLÍGONO</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="78"/>
         <source>GEOMETRYCOLLECTION</source>
-        <translation>GEOMETRYCOLLECTION</translation>
+        <translation type="unfinished">GEOMETRYCOLLECTION</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="86"/>
@@ -1993,13 +1993,13 @@ integer values</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="170"/>
         <source>Geometry column</source>
-        <translation>Geometria da Coluna</translation>
+        <translation>Coluna da geometria</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="209"/>
         <source>Retrieve 
 columns</source>
-        <translation>Recuperar coluna</translation>
+        <translation>Obter colunas</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="221"/>
@@ -2029,12 +2029,12 @@ columns</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="302"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Evitar seleccionar pelo id do elemento. Por vezes - especialmente ao executar consultas/vistas pesadas - recolher os dados sequencialmente em vez de pelo id pode ser bastante mais rápido.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="305"/>
         <source>Avoid selecting by feature id</source>
-        <translation>Evite seleccionar pelo id do elemento</translation>
+        <translation>Evitar seleccionar pelo id do elemento</translation>
     </message>
     <message>
         <source>Sorry</source>
@@ -2043,7 +2043,8 @@ columns</source>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation>Preencher os campos: geometria da coluna - coluna com valores inteiros únicos</translation>
+        <translation>Deve preencher os campos: 
+coluna da geometria - coluna com valores inteiros únicos</translation>
     </message>
 </context>
 <context>
@@ -5279,7 +5280,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/ui/qgisapp.ui" line="1497"/>
         <source>Rotate Label
 Ctl (Cmd) increments by 15 deg.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodar Rótulol
+Ctrl (Cmd) aumenta em 15 graus.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1575"/>
@@ -5330,7 +5332,7 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1734"/>
         <source>Pin/Unpin Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixar/Soltar Rótulos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1737"/>
@@ -5338,13 +5340,16 @@ Ctl (Cmd) increments by 15 deg.</source>
 Click or marquee on label to pin
 Shift unpins, Ctl (Cmd) toggles state
 Acts on all editable layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Fixar/Soltar Rótulos
+Clique ou seleccione o rótulo para fixar
+Shift solta, Ctrl (Cmd) alterna o estado
+Actua em todas as camadas editáveis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1752"/>
         <location filename="../src/ui/qgisapp.ui" line="1755"/>
         <source>Highlight Pinned Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Realçar Rótulos fixos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1764"/>
@@ -5383,7 +5388,10 @@ Acts on all editable layers</source>
 Click or marquee on feature to show label
 Shift+click or marquee on label to hide it
 Acts on currently active editable layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar/Ocultar Rótulos
+Clique ou seleccione o elemento para mostrar rótulo
+Shift+clique ou seleccione o Rótulo para ocultá-lo
+Actua na camada editável activa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1818"/>
@@ -7280,7 +7288,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Run command</source>
-        <translation type="unfinished">Executar comando</translation>
+        <translation>Executar comando</translation>
     </message>
     <message>
         <source>Help</source>
@@ -9434,22 +9442,22 @@ Está a ver esta mensagem provavelmente porque não tem a variável de ambiente 
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="274"/>
         <source>Cannot convert &apos;%1&apos; to DateTime</source>
-        <translation type="unfinished">Impossível converter &apos;%1&apos; para DataHora</translation>
+        <translation>Impossível converter &apos;%1&apos; para DataHora</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="288"/>
         <source>Cannot convert &apos;%1&apos; to Date</source>
-        <translation type="unfinished">Impossível converter &apos;%1&apos; para Data</translation>
+        <translation>Impossível converter &apos;%1&apos; para Data</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="302"/>
         <source>Cannot convert &apos;%1&apos; to Time</source>
-        <translation type="unfinished">Impossível converter &apos;%1&apos; para Hora</translation>
+        <translation>Impossível converter &apos;%1&apos; para Hora</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="319"/>
         <source>Cannot convert &apos;%1&apos; to Interval</source>
-        <translation type="unfinished">Impossível converter &apos;%1&apos; para Interval</translation>
+        <translation>Impossível converter &apos;%1&apos; para Interval</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="339"/>
@@ -11621,7 +11629,7 @@ Erros: %2</translation>
         <comment>number of selected features</comment>
         <translatorcomment>número de camadas seleccionadas</translatorcomment>
         <translation>
-            <numerusform>%n elemento (s) selecionado(s) na camada %1.</numerusform>
+            <numerusform>%n elemento(s) selecionado(s) na camada %1.</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -12122,12 +12130,12 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1479"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra as coordenadas do mapa na posição atual do cursor. O ecrã é atualizado continuamente quando o rato é movido. Também permite a edição para definir o centro da tela para a posição determinada. O formato é lat, lon ou este, norte</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1483"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
-        <translation type="unfinished">Coordenadas do mapa atual (lat, lon ou leste, norte)</translation>
+        <translation>Coordenadas do mapa atual (lat, lon ou este, norte)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1995"/>
@@ -12137,7 +12145,7 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2012"/>
         <source>Map layer list that displays all layers in drawing order.</source>
-        <translation>Listagem da camada do mapa que exibe as camadas por ordem de visualização  </translation>
+        <translation>Listagem das camadas do mapa que exibe todas as camadas por ordem de visualização.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2013"/>
@@ -14048,7 +14056,7 @@ Base de dados:%2</translation>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="165"/>
         <source>toolBar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">barra de ferramentas</translation>
     </message>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="193"/>
@@ -15750,7 +15758,7 @@ Podem as classes existentes serem excluídas antes da classificação?</translat
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="147"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="294"/>
         <source>Render</source>
-        <translation type="unfinished">Desenhar</translation>
+        <translation>Desenhar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="35"/>
@@ -15778,12 +15786,12 @@ Podem as classes existentes serem excluídas antes da classificação?</translat
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="55"/>
         <source>DegreeMinute</source>
-        <translation type="unfinished">Grau e Minuto</translation>
+        <translation>Grau e Minuto</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="56"/>
         <source>DegreeMinuteSecond</source>
-        <translation type="unfinished">Grau, Minuto e Segundo</translation>
+        <translation>Grau, Minuto e Segundo</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="68"/>
@@ -15835,12 +15843,12 @@ Podem as classes existentes serem excluídas antes da classificação?</translat
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="101"/>
         <source>Change item width</source>
-        <translation type="unfinished">Alterar largura do item</translation>
+        <translation>Alterar largura do item</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="121"/>
         <source>Change item height</source>
-        <translation type="unfinished">Alterar altura do item</translation>
+        <translation>Alterar altura do item</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="177"/>
@@ -17410,7 +17418,7 @@ Podem as classes existentes serem excluídas antes da classificação?</translat
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="277"/>
         <source>Set default (%1)</source>
-        <translation type="unfinished">Definir como padrão (%1)</translation>
+        <translation>Definir como padrão (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="370"/>
@@ -17482,7 +17490,7 @@ Podem as classes existentes serem excluídas antes da classificação?</translat
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="115"/>
         <source>Saving shortcuts</source>
-        <translation type="unfinished">Salvar atalhos</translation>
+        <translation>A salvar atalhos</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="116"/>
@@ -17494,7 +17502,7 @@ Podem as classes existentes serem excluídas antes da classificação?</translat
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="153"/>
         <source>Load shortcuts</source>
-        <translation type="unfinished">Carrega atalhos</translation>
+        <translation>Carrega atalhos</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="163"/>
@@ -17502,7 +17510,7 @@ Podem as classes existentes serem excluídas antes da classificação?</translat
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="188"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="208"/>
         <source>Loading shortcuts</source>
-        <translation type="unfinished">Carregar atalhos</translation>
+        <translation>A carregar atalhos</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="164"/>
@@ -18031,22 +18039,22 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="25"/>
         <source>Define</source>
-        <translation type="unfinished">Definição</translation>
+        <translation>Definir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="161"/>
         <source>Test</source>
-        <translation type="unfinished">Teste</translation>
+        <translation>Testar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="190"/>
         <source>Geographic / WGS84</source>
-        <translation type="unfinished">Geográfica / WGS84</translation>
+        <translation>Geográfica / WGS84</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="263"/>
         <source>Calculate</source>
-        <translation type="unfinished">Calcular</translation>
+        <translation>Calcular</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="41"/>
@@ -18057,12 +18065,12 @@ and current file is [%3]</source>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="54"/>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="177"/>
         <source>Parameters</source>
-        <translation type="unfinished">Parâmetros</translation>
+        <translation>Parâmetros</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="123"/>
         <source>*</source>
-        <translation type="unfinished">*</translation>
+        <translation>*</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="134"/>
@@ -18087,22 +18095,22 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="14"/>
         <source>Custom Coordinate Reference System Definition</source>
-        <translation type="unfinished">Definição de um Sistema de Referência de Coordenadas padronizado</translation>
+        <translation>Definição de um Sistema de Referência de Coordenadas personalizado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="31"/>
         <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</source>
-        <translation type="unfinished">Você pode definir seu Sistema de Referência de Coordenadas (SRC) aqui. A definição deve estar em conformidade com o formato proj4 para especificar um SRC.</translation>
+        <translation>Pode definir aqui o seu Sistema de Referência de Coordenadas (SRC). A definição deve estar em conformidade com o formato proj4 para especificar um SRC.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="167"/>
         <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
-        <translation type="unfinished">Use a caixa de texto abaixo para testar a definição de SRC que você está criando. Entre com as coordenadas onde lat/long e o resultado da transformação são conhecidos (por exemplo, lendo do seu mapa). Após pressione o botão calcular para ver se a definição do SRC foi criada com precisão.</translation>
+        <translation>Use a caixa de texto abaixo para testar a definição do SRC. Insira coordenadas lat/long cujos resultados da transformação são conhecidos (por exemplo, lendo do seu mapa). Em seguida, pressione o botão de calcular para ver se a definição do SRC que criou é preciso.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="197"/>
         <source>Destination CRS        </source>
-        <translation type="unfinished">SRC de destino         </translation>
+        <translation>SRC de destino         </translation>
     </message>
 </context>
 <context>
