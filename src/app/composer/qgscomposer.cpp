@@ -492,7 +492,7 @@ void QgsComposer::setTitle( const QString& title )
   }
 }
 
-QDialog* QgsComposer::progressDialog( const QString& message, QWidget* parent )
+QDialog* QgsComposer::busyIndicatorDialog( const QString& message, QWidget* parent )
 {
   QDialog* dlg = new QDialog( parent );
   dlg->setLayout( new QVBoxLayout() );
@@ -1375,7 +1375,7 @@ void QgsComposer::on_mActionDuplicateComposer_triggered()
   }
 
   // provide feedback, since loading of template into duplicate composer will be hidden
-  QDialog* dlg = progressDialog( tr( "Duplicating composer..." ), this );
+  QDialog* dlg = busyIndicatorDialog( tr( "Duplicating composer..." ), this );
   dlg->show();
 
   QgsComposer* newComposer = mQgis->duplicateComposer( this, newTitle );

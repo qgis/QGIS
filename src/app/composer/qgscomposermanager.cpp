@@ -253,7 +253,7 @@ void QgsComposerManager::duplicate_clicked()
   }
 
   // provide feedback, since loading of template into duplicate composer will be hidden
-  QDialog* dlg = currentComposer->progressDialog( tr( "Duplicating composer..." ), this );
+  QDialog* dlg = currentComposer->busyIndicatorDialog( tr( "Duplicating composer..." ), this );
   dlg->show();
 
   QgsComposer* newComposer = QgisApp::instance()->duplicateComposer( currentComposer, newTitle );
