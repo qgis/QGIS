@@ -370,12 +370,21 @@ void QgsMssqlProvider::loadFields()
         {
           pkCandidates << query.value( 3 ).toString();
         }
-        mAttributeFields.append(
-          QgsField(
-            query.value( 3 ).toString(), sqlType,
-            sqlTypeName,
-            query.value( 7 ).toInt(),
-            query.value( 6 ).toInt() ) );
+        if ( sqlType == QVariant::String )
+        {
+            mAttributeFields.append(
+              QgsField(
+                query.value( 3 ).toString(), sqlType,
+                sqlTypeName,
+                query.value( 7 ).toInt() ) );
+        }
+        else
+        {
+            mAttributeFields.append(
+              QgsField(
+                query.value( 3 ).toString(), sqlType,
+                sqlTypeName ) );
+        }
 
         if ( !query.value( 12 ).isNull() )
         {
