@@ -26,6 +26,7 @@
 #include "qgisappstylesheet.h"
 #include "qgisapp.h"
 #include "qgscomposer.h"
+#include "qgscomposerview.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapcanvas.h"
@@ -288,6 +289,44 @@ QList<QgsComposerView*> QgisAppInterface::activeComposers()
     }
   }
   return composerViewList;
+}
+
+QgsComposerView* QgisAppInterface::createNewComposer( QString title )
+{
+  QgsComposer* composerObj = 0;
+  composerObj = qgis->createNewComposer( title );
+  if ( composerObj )
+  {
+    return composerObj->view();
+  }
+  return 0;
+}
+
+QgsComposerView* QgisAppInterface::duplicateComposer( QgsComposerView* composerView, QString title )
+{
+  QgsComposer* composerObj = 0;
+  composerObj = qobject_cast<QgsComposer *>( composerView->composerWindow() );
+  if ( composerObj )
+  {
+    QgsComposer* dupComposer = qgis->duplicateComposer( composerObj, title );
+    if ( dupComposer )
+    {
+      return dupComposer->view();
+    }
+  }
+  return 0;
+}
+
+void QgisAppInterface::deleteComposer( QgsComposerView* composerView )
+{
+  composerView->composerWindow()->close();
+
+  QgsComposer* composerObj = 0;
+  composerObj = qobject_cast<QgsComposer *>( composerView->composerWindow() );
+  if ( composerObj )
+  {
+    qgis->deleteComposer( composerObj );
+  }
 }
 
 QMap<QString, QVariant> QgisAppInterface::defaultStyleSheetOptions()
