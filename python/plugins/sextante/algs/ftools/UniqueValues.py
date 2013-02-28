@@ -28,10 +28,13 @@ import codecs
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
+
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
+
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputNumber import OutputNumber
+
 from sextante.algs.ftools import FToolsUtils as utils
 
 class UniqueValues(GeoAlgorithm):

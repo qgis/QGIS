@@ -25,10 +25,12 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.outputs.OutputVector import OutputVector
+
 class LinesToPolygons(GeoAlgorithm):
 
     INPUT = "INPUT"
@@ -49,9 +51,7 @@ class LinesToPolygons(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        provider = layer.dataProvider()
-
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      QGis.WKBPolygon, layer.crs())
 
         outFeat = QgsFeature()
@@ -59,18 +59,18 @@ class LinesToPolygons(GeoAlgorithm):
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:
+        for f in features:
             outGeomList = []
-            if inFeat.geometry().isMultipart():
-                outGeomList = inFeat.geometry().asMultiPolyline()
+            if f.geometry().isMultipart():
+                outGeomList = f.geometry().asMultiPolyline()
             else:
-                outGeomList.append(inFeat.geometry().asPolyline())
+                outGeomList.append(f.geometry().asPolyline())
 
             polyGeom = self.removeBadLines(outGeomList)
             if len(polyGeom) <> 0:
                 outFeat.setGeometry(QgsGeometry.fromPolygon(polyGeom))
-                atMap = inFeat.attributes()
-                outFeat.setAttributes(atMap)
+                attrs = f.attributes()
+                outFeat.setAttributes(attrs)
                 writer.addFeature(outFeat)
 
             current += 1

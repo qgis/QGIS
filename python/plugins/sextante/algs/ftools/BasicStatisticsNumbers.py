@@ -24,12 +24,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
+
 from PyQt4.QtCore import *
+
 from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
+
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
+
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputNumber import OutputNumber
 
@@ -86,7 +91,6 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
         index = layer.fieldNameIndex(fieldName)
-        #layer.select([index], QgsRectangle(), False)
 
         cvValue = 0
         minValue = 0

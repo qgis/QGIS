@@ -93,13 +93,14 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         current = 0
         total = 100.0 / float(featureCount * len(unique))
 
+        features = QGisLayers.features(layer)
+
         if not len(unique) == featureCount:
             for i in unique:
                 FIDs= []
-                layer.select([index])
-                while layer.nextFeature(inFeat):
-                    atMap = inFeat.attributes()
-                    if atMap[index] == QVariant(i):
+                for inFeat in features:
+                    attrs = inFeat.attributes()
+                    if attrs[index] == QVariant(i):
                         FIDs.append(inFeat.id())
                     current += 1
                     progress.setPercentage(int(current * total))

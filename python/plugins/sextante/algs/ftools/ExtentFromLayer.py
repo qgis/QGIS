@@ -23,13 +23,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-
 from PyQt4.QtCore import *
+
 from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
+
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
+
 from sextante.outputs.OutputVector import OutputVector
 
 class ExtentFromLayer(GeoAlgorithm):
@@ -102,27 +105,26 @@ class ExtentFromLayer(GeoAlgorithm):
         feat = QgsFeature()
         feat.setGeometry(geometry)
         attrs = [QVariant(minx),
-            QVariant(miny),
-            QVariant(maxx),
-            QVariant(maxy),
-            QVariant(cntx),
-            QVariant(cnty),
-            QVariant(area),
-            QVariant(perim),
-            QVariant(height),
-            QVariant(width) ]
+                 QVariant(miny),
+                 QVariant(maxx),
+                 QVariant(maxy),
+                 QVariant(cntx),
+                 QVariant(cnty),
+                 QVariant(area),
+                 QVariant(perim),
+                 QVariant(height),
+                 QVariant(width)
+                ]
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
     def featureExtent(self, layer, writer, progress):
         current = 0
-        feat = QgsFeature()
-
-        provider = layer.dataProvider()
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:
-            rect = inFeat.geometry().boundingBox()
+        feat = QgsFeature()
+        for f in features:
+            rect = f.geometry().boundingBox()
             minx = rect.xMinimum()
             miny = rect.yMinimum()
             maxx = rect.xMaximum()
@@ -143,15 +145,16 @@ class ExtentFromLayer(GeoAlgorithm):
             geometry = QgsGeometry().fromPolygon([rect])
             feat.setGeometry(geometry)
             attrs = [QVariant(minx),
-                QVariant(miny),
-                QVariant(maxx),
-                QVariant(maxy),
-                QVariant(cntx),
-                QVariant(cnty),
-                QVariant(area),
-                QVariant(perim),
-                QVariant(height),
-                QVariant(width) ]
+                     QVariant(miny),
+                     QVariant(maxx),
+                     QVariant(maxy),
+                     QVariant(cntx),
+                     QVariant(cnty),
+                     QVariant(area),
+                     QVariant(perim),
+                     QVariant(height),
+                     QVariant(width)
+                    ]
             feat.setAttributes(attrs)
 
             writer.addFeature(feat)

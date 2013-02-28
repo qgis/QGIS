@@ -23,7 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-
 from PyQt4.QtCore import *
 from qgis.core import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
@@ -64,9 +63,6 @@ class LinesIntersection(GeoAlgorithm):
         fieldA = self.getParameterValue(self.FIELD_A)
         fieldB = self.getParameterValue(self.FIELD_B)
 
-        providerA = layerA.dataProvider()
-        providerB = layerB.dataProvider()
-
         idxA = layerA.fieldNameIndex(fieldA)
         idxB = layerB.fieldNameIndex(fieldB)
 
@@ -75,7 +71,7 @@ class LinesIntersection(GeoAlgorithm):
                     ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
-                     QGis.WKBPoint, providerA.crs())
+                     QGis.WKBPoint, layerA.dataProvider().crs())
 
         spatialIndex = utils.createSpatialIndex(layerB)
 
@@ -85,11 +81,13 @@ class LinesIntersection(GeoAlgorithm):
         inGeom = QgsGeometry()
         tmpGeom = QgsGeometry()
 
+        features = QGisLayers.features(layerA)
+
         current = 0
-        total = 100.0 / float(providerA.featureCount())
+        total = 100.0 / float(len(features))
         hasIntersections = False
 
-        while layerA.nextFeature(inFeatA):
+        for inFeatA in features:
             inGeom = inFeatA.geometry()
             hasIntersections = False
             lines = spatialIndex.intersects(inGeom.boundingBox())
@@ -98,14 +96,14 @@ class LinesIntersection(GeoAlgorithm):
                 hasIntersections = True
 
             if hasIntersections:
-                layerB.select([idxB])
                 for i in lines:
-                    layerB.featureAtId(int(i), inFeatB)
+                    request = QgsFeatureRequest().setFilterFid(i)
+                    inFeatB = layerB.getFeatures(request).next()
                     tmpGeom = QgsGeometry(inFeatB.geometry())
 
                     points = []
-                    atMapA = inFeatA.attributes()
-                    atMapB = inFeatB.attributes()
+                    attrsA = inFeatA.attributes()
+                    attrsB = inFeatB.attributes()
 
                     if inGeom.intersects(tmpGeom):
                         tempGeom = inGeom.intersection(tmpGeom)
@@ -117,7 +115,7 @@ class LinesIntersection(GeoAlgorithm):
 
                             for j in points:
                                 outFeat.setGeometry(tempGeom.fromPoint(j))
-                                outFeat.setAttributes([atMapA[idxA], atMapB[idxB]])
+                                outFeat.setAttributes([attrsA[idxA], attrsB[idxB]])
                                 writer.addFeature(outFeat)
 
             current += 1

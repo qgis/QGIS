@@ -23,8 +23,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import codecs
 
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -84,7 +84,6 @@ class BasicStatisticsStrings(GeoAlgorithm):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
 
         index = layer.fieldNameIndex(fieldName)
-        layer.select([index], QgsRectangle(), False)
 
         sumValue = 0
         minValue = 0
@@ -150,7 +149,10 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.setOutputValue(self.UNIQUE, uniqueValues)
 
     def createHTML(self, outputFile, algData):
-        f = open(outputFile, "w")
+        f = codecs.open(outputFile, "w", encoding="utf-8")
+        f.write('<html><head>')
+        f.write('<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body>')
         for s in algData:
             f.write("<p>" + str(s) + "</p>")
+        f.write("</body></html>")
         f.close()

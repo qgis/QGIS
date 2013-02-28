@@ -32,7 +32,6 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.outputs.OutputVector import OutputVector
 from sextante.algs.ftools import FToolsUtils as utils
 
-
 class MeanCoords(GeoAlgorithm):
 
     POINTS = "POINTS"
@@ -61,7 +60,6 @@ class MeanCoords(GeoAlgorithm):
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
 
-        provider = layer.dataProvider()
         weightIndex = layer.fieldNameIndex(weightField)
         uniqueIndex = layer.fieldNameIndex(uniqueField)
 
@@ -81,7 +79,8 @@ class MeanCoords(GeoAlgorithm):
                      QGis.WKBPoint, layer.crs())
 
         current = 0
-        total = 100.0 / float(provider.featureCount() * len(uniqueValues))
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features) * len(uniqueValues))
 
         outFeat = QgsFeature()
 
@@ -90,7 +89,6 @@ class MeanCoords(GeoAlgorithm):
             cy = 0.00
             points = []
             weights = []
-            features = QGisLayers.features(layer)
             for feat in features:
                 current += 1
                 progress.setPercentage(current * total)

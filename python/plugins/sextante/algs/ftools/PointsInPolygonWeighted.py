@@ -24,8 +24,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
 from PyQt4 import QtGui
 from PyQt4.QtCore import *
 
@@ -33,7 +31,6 @@ from qgis.core import *
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-from sextante.core.SextanteLog import SextanteLog
 
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterString import ParameterString
@@ -41,7 +38,6 @@ from sextante.parameters.ParameterString import ParameterString
 from sextante.outputs.OutputVector import OutputVector
 
 from sextante.algs.ftools import FToolsUtils as utils
-
 
 class PointsInPolygonWeighted(GeoAlgorithm):
 
@@ -71,17 +67,13 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         polyLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         pointLayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
-        fieldidx = pointLayer.dataProvider().fieldNameIndex(self.getParameterValue(self.WEIGHT))
+        fieldIdx = pointLayer.fieldNameIndex(self.getParameterValue(self.WEIGHT))
 
         polyProvider = polyLayer.dataProvider()
-        pointProvider = pointLayer.dataProvider()
-        if polyProvider.crs() != pointProvider.crs():
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING,
-                                 "CRS warning: Input layers have non-matching CRS. This may cause unexpected results.")
 
         idxCount, fieldList = utils.findOrCreateField(polyLayer, polyLayer.pendingFields(), fieldName)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList.toList(),
                      polyProvider.geometryType(), polyProvider.crs())
 
         spatialIndex = utils.createSpatialIndex(pointLayer)
@@ -97,7 +89,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for ftPoly in features:
             geom = ftPoly.geometry()
-            atMap = ftPoly.attributes()
+            attrs = ftPoly.attributes()
 
             count = 0
             hasIntersections = False
@@ -108,20 +100,20 @@ class PointsInPolygonWeighted(GeoAlgorithm):
             if hasIntersections:
                 progress.setText(str(len(points)))
                 for i in points:
-                    pointLayer.featureAtId(int(i), ftPoint, True, True)
+                    request = QgsFeatureRequest().setFilterFid(i)
+                    ftPoint = pointLayer.getFeatures(request).next()
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
-                        #try:
-                        weight, ok = ftPoint.attributes()[fieldidx].toDouble()
+                        weight, ok = ftPoint.attributes()[fieldIdx].toDouble()
                         if ok:
                             count += weight
 
             outFeat.setGeometry(geom)
-            if idxCount == len(atMap):
-                atMap.append(QVariant(count))
+            if idxCount == len(attrs):
+                attrs.append(QVariant(count))
             else:
-                atMap[idxCount] =  QVariant(count)
-            outFeat.setAttributes(atMap)
+                attrs[idxCount] =  QVariant(count)
+            outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
             current += 1

@@ -23,13 +23,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-
 from PyQt4.QtCore import *
 from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.outputs.OutputVector import OutputVector
+
 from sextante.algs.ftools import FToolsUtils as utils
 
 class ExtractNodes(GeoAlgorithm):
@@ -53,9 +54,7 @@ class ExtractNodes(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        provider = layer.dataProvider()
-
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      QGis.WKBPoint, layer.crs())
 
         outFeat = QgsFeature()
@@ -65,12 +64,12 @@ class ExtractNodes(GeoAlgorithm):
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:
-            inGeom = inFeat.geometry()
-            atMap = inFeat.attributes()
+        for f in features:
+            inGeom = f.geometry()
+            attrs = f.attributes()
 
             points = utils.extractPoints(inGeom)
-            outFeat.setAttributes(atMap)
+            outFeat.setAttributes(attrs)
 
             for i in points:
                 outFeat.setGeometry(outGeom.fromPoint(i))

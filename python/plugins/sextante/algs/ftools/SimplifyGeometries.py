@@ -38,7 +38,6 @@ class SimplifyGeometries(GeoAlgorithm):
 
     INPUT = "INPUT"
     TOLERANCE = "TOLERANCE"
-    USE_SELECTION = "USE_SELECTION"
     OUTPUT = "OUTPUT"
 
     #===========================================================================
@@ -62,9 +61,7 @@ class SimplifyGeometries(GeoAlgorithm):
         pointsBefore = 0
         pointsAfter = 0
 
-        provider = layer.dataProvider()
-
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      layer.wkbType(), layer.crs())
 
         current = 0
@@ -72,13 +69,13 @@ class SimplifyGeometries(GeoAlgorithm):
         total =  100.0 / float(len(selection))
         for f in selection:
             featGeometry = QgsGeometry(f.geometry())
-            attrMap = f.attributes()
+            attrs = f.attributes()
             pointsBefore += self.geomVertexCount(featGeometry)
             newGeometry = featGeometry.simplify(tolerance)
             pointsAfter += self.geomVertexCount(newGeometry)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
-            feature.setAttributes(attrMap)
+            feature.setAttributes(attrs)
             writer.addFeature(feature)
             current += 1
             progress.setPercentage(int(current * total))
