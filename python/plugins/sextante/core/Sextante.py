@@ -128,7 +128,7 @@ class Sextante:
         SextanteLog.startLogging()
         SextanteConfig.initialize()
         SextanteConfig.loadSettings()
-        RenderingStyles.loadStyles()        
+        RenderingStyles.loadStyles()
         Sextante.loadFromProviders()
 
     @staticmethod
@@ -416,8 +416,8 @@ def getObjectFromUri(uri):
 def getobject(uriorname):
     ret = getObjectFromName(uriorname)
     if ret is None:
-        ret = getObjectFromUri(uriorname) 
-    return ret       
+        ret = getObjectFromUri(uriorname)
+    return ret
 
 def load(path):
     '''Loads a layer into QGIS'''

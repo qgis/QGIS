@@ -141,7 +141,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Returns item's last used position mode.
       @note: This property has no effect on actual's item position, which is always the top-left corner.
       @note: this method was added in version 2.0*/
-    ItemPositionMode lastUsedPositionMode(){ return mLastUsedPositionMode; }
+    ItemPositionMode lastUsedPositionMode() { return mLastUsedPositionMode; }
 
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/

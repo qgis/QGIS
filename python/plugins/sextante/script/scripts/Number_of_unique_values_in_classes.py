@@ -73,7 +73,7 @@ for inFeat in feats:
 # Create output vector layer with additional attribute
 feats = sextante.getfeatures(layer)
 nElement = 0
-for inFeat in feats: 
+for inFeat in feats:
     progress.setPercentage(int((100 * nElement)/nFeat))
     nElement += 1
     inGeom = inFeat.geometry()
@@ -81,7 +81,7 @@ for inFeat in feats:
     attrs = inFeat.attributes()
     clazz = attrs[class_field_index].toString()
     attrs.append(QVariant(len(classes[clazz])))
-    outFeat.setAttributes(attrs)    
+    outFeat.setAttributes(attrs)
     writer.addFeature(outFeat)
 
 del writer

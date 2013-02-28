@@ -20,13 +20,13 @@
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ), mShape( Ellipse )
 {
-  setFrameEnabled(true);
+  setFrameEnabled( true );
 }
 
 QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition ), mShape( Ellipse )
 {
   setSceneRect( QRectF( x, y, width, height ) );
-  setFrameEnabled(true);
+  setFrameEnabled( true );
 }
 
 QgsComposerShape::~QgsComposerShape()
@@ -73,7 +73,7 @@ void QgsComposerShape::drawShape( QPainter* p )
     case Triangle:
       QPolygonF triangle;
       triangle << QPointF( 0, rect().height() );
-      triangle << QPointF( rect().width() , rect().height()  );
+      triangle << QPointF( rect().width() , rect().height() );
       triangle << QPointF( rect().width() / 2.0, 0 );
       p->drawPolygon( triangle );
       break;

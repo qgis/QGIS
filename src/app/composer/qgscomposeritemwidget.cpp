@@ -23,7 +23,7 @@
 
 QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QWidget( parent ), mItem( item )
 {
-  
+
   setupUi( this );
 
   //make button exclusive
@@ -37,16 +37,16 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   buttonGroup->addButton( mLowerLeftCheckBox );
   buttonGroup->addButton( mLowerMiddleCheckBox );
   buttonGroup->addButton( mLowerRightCheckBox );
-  buttonGroup->setExclusive( true );  
-  
+  buttonGroup->setExclusive( true );
+
   mXLineEdit->setValidator( new QDoubleValidator( 0 ) );
   mYLineEdit->setValidator( new QDoubleValidator( 0 ) );
   mWidthLineEdit->setValidator( new QDoubleValidator( 0 ) );
   mHeightLineEdit->setValidator( new QDoubleValidator( 0 ) );
-  
+
   setValuesForGuiElements();
   connect( mItem, SIGNAL( sizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
-  
+
 }
 
 QgsComposerItemWidget::QgsComposerItemWidget(): QWidget( 0 ), mItem( 0 )
@@ -141,7 +141,7 @@ void QgsComposerItemWidget::changeItemTransparency( int value )
   mItem->beginCommand( tr( "Item Transparency changed" ) );
   QBrush itemBrush = mItem->brush();
   QColor brushColor = itemBrush.color();
-  brushColor.setAlpha( 255-value );
+  brushColor.setAlpha( 255 - value );
   mItem->setBrush( QBrush( brushColor ) );
   mItem->update();
   mItem->endCommand();
@@ -265,63 +265,63 @@ void QgsComposerItemWidget::setValuesForGuiPositionElements()
   mHeightLineEdit->blockSignals( true );
 
 
-  if( mItem->lastUsedPositionMode() == QgsComposerItem::UpperLeft )
+  if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperLeft )
   {
     mUpperLeftCheckBox->setChecked( true );
     mXLineEdit->setText( QString::number( mItem->transform().dx() ) );
     mYLineEdit->setText( QString::number( mItem->transform().dy() ) );
   }
 
-  if( mItem->lastUsedPositionMode() == QgsComposerItem::UpperMiddle )
+  if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperMiddle )
   {
     mUpperMiddleCheckBox->setChecked( true );
     mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() / 2.0 ) );
     mYLineEdit->setText( QString::number( mItem->transform().dy() ) );
   }
 
-  if( mItem->lastUsedPositionMode() == QgsComposerItem::UpperRight )
+  if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperRight )
   {
     mUpperRightCheckBox->setChecked( true );
     mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() ) );
     mYLineEdit->setText( QString::number( mItem->transform().dy() ) );
   }
 
-  if( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleLeft )
+  if ( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleLeft )
   {
     mMiddleLeftCheckBox->setChecked( true );
     mXLineEdit->setText( QString::number( mItem->transform().dx() ) );
     mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() / 2.0 ) );
   }
 
-  if( mItem->lastUsedPositionMode() == QgsComposerItem::Middle )
+  if ( mItem->lastUsedPositionMode() == QgsComposerItem::Middle )
   {
     mMiddleCheckBox->setChecked( true );
     mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() / 2.0 ) );
     mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() / 2.0 ) );
   }
 
-  if( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleRight )
+  if ( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleRight )
   {
     mMiddleRightCheckBox->setChecked( true );
     mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() ) );
     mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() / 2.0 ) );
   }
 
-  if( mItem->lastUsedPositionMode() == QgsComposerItem::LowerLeft )
+  if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerLeft )
   {
     mLowerLeftCheckBox->setChecked( true );
     mXLineEdit->setText( QString::number( mItem->transform().dx() ) );
     mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() ) );
   }
 
-  if( mItem->lastUsedPositionMode() == QgsComposerItem::LowerMiddle )
+  if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerMiddle )
   {
     mLowerMiddleCheckBox->setChecked( true );
     mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() / 2.0 ) );
     mYLineEdit->setText( QString::number( mItem->transform().dy() + mItem->rect().height() ) );
   }
 
-  if( mItem->lastUsedPositionMode() == QgsComposerItem::LowerRight )
+  if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerRight )
   {
     mLowerRightCheckBox->setChecked( true );
     mXLineEdit->setText( QString::number( mItem->transform().dx() + mItem->rect().width() ) );
@@ -354,8 +354,8 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mItemIdLineEdit->blockSignals( true );
   mTransparencySpinBox->blockSignals( true );
 
-  mTransparencySpinBox->setValue( 255-mItem->brush().color().alpha() );
-  mTransparencySlider->setValue( 255-mItem->brush().color().alpha() );
+  mTransparencySpinBox->setValue( 255 - mItem->brush().color().alpha() );
+  mTransparencySlider->setValue( 255 - mItem->brush().color().alpha() );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
   mItemIdLineEdit->setText( mItem->id() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );

@@ -77,7 +77,7 @@ class warp(GeoAlgorithm):
         if self.getParameterValue(warp.TR) != 0:
             trStr = "-tr "+str(self.getParameterValue(warp.TR))+" "+str(self.getParameterValue(warp.TR))
             commands.append(trStr)
-        commands.append(str(self.getParameterValue(warp.EXTRA)))      
+        commands.append(str(self.getParameterValue(warp.EXTRA)))
         commands.append(self.getParameterValue(warp.INPUT))
         commands.append(out)
 

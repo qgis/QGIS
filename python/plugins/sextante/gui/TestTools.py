@@ -32,9 +32,9 @@ from osgeo.gdalconst import GA_ReadOnly
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
 
-def createTest(item):            
-    s = ""                
-    tokens = item.entry.text[len("sextante.runalg("):-1].split(",")                
+def createTest(item):
+    s = ""
+    tokens = item.entry.text[len("sextante.runalg("):-1].split(",")
     cmdname = tokens[0][1:-1];
     methodname = "test_" + cmdname.replace(":","")
     s += "def " + methodname + "():\n"
@@ -46,16 +46,16 @@ def createTest(item):
             execcommand+=token + ","
         else:
             execcommand+="None,"
-        i+=1                
+        i+=1
     s += "\toutputs=" + execcommand[:-1] + ")\n"
-                
+
     i = -1 * len(alg.outputs)
     for out in alg.outputs:
-        filename = tokens[i][1:-1]                    
+        filename = tokens[i][1:-1]
         s+="\toutput=outputs['" + out.name + "']\n"
         if isinstance(out, (OutputNumber, OutputString)):
             s+="self.assertTrue(" + str(out) + ", output)\n"
-        if isinstance(out, OutputRaster):                   
+        if isinstance(out, OutputRaster):
             dataset = gdal.Open(filename, GA_ReadOnly)
             array = dataset.ReadAsArray(1)
             s+="\tself.assertTrue(os.path.isfile(output))\n"
@@ -83,27 +83,26 @@ def createTest(item):
                 s+="\texpectedvalues=[" + ",".join([str(attr.toString()) for attr in attrs]) + "]\n"
                 s+="\tvalues=[str(attr.toString()) for attr in attrs]\n"
                 s+="\tself.assertEqual(exceptedtypes, types)\n"
-    
+
     dlg = ShowTestDialog(s)
     dlg.exec_()
-                
+
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 class ShowTestDialog(QtGui.QDialog):
-    def __init__(self, s):        
+    def __init__(self, s):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
         self.resize(600,400)
         self.setWindowTitle("Unit test")
         layout = QVBoxLayout()
-        self.text = QtGui.QTextEdit()        
-        self.text.setEnabled(True)   
-        self.text.setText(s)     
-        layout.addWidget(self.text)        
+        self.text = QtGui.QTextEdit()
+        self.text.setEnabled(True)
+        self.text.setText(s)
+        layout.addWidget(self.text)
         self.setLayout(layout)
         QtCore.QMetaObject.connectSlotsByName(self)
 
 
-    

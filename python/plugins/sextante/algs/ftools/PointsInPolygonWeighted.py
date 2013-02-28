@@ -106,15 +106,15 @@ class PointsInPolygonWeighted(GeoAlgorithm):
                 hasIntersections = True
 
             if hasIntersections:
-                progress.setText(str(len(points)))                
-                for i in points:                    
-                    pointLayer.featureAtId(int(i), ftPoint, True, True)                    
+                progress.setText(str(len(points)))
+                for i in points:
+                    pointLayer.featureAtId(int(i), ftPoint, True, True)
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
                         #try:
                         weight, ok = ftPoint.attributes()[fieldidx].toDouble()
-                        if ok:                            
-                            count += weight                            
+                        if ok:
+                            count += weight
 
             outFeat.setGeometry(geom)
             if idxCount == len(atMap):

@@ -87,7 +87,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.addRowButton.clicked.connect(self.addRow)
         self.deleteRowButton.clicked.connect(self.deleteRow)
         self.table.horizontalHeader().sectionDoubleClicked.connect(self.headerDoubleClicked)
-        
+
 
     def headerDoubleClicked(self, col):
         widget = self.table.cellWidget(0, col)
@@ -95,28 +95,28 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             widgetValue = widget.currentIndex()
             for row in range(1, self.table.rowCount()):
                 self.table.cellWidget(row, col).setCurrentIndex(widgetValue)
-        
+
         elif isinstance(widget, ExtentSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
                 if widgetValue != None:
                     self.table.cellWidget(row, col).text.setText(widgetValue)
                 else:
-                    self.table.cellWidget(row, col).text.setText("") 
-        
+                    self.table.cellWidget(row, col).text.setText("")
+
         elif isinstance(widget, CrsSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
                 self.table.cellWidget(row, col).epsg = widgetValue
                 self.table.cellWidget(row, col).setText()
-        
+
         elif isinstance(widget, QtGui.QLineEdit):
             widgetValue = widget.text()
             for row in range(1, self.table.rowCount()):
                 self.table.cellWidget(row, col).setText(widgetValue)
         else:
-            pass    
-                        
+            pass
+
 
     def setTableContent(self):
         i = 0
@@ -130,14 +130,14 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             self.table.setColumnWidth(i,250)
             self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(out.description))
             i+=1
-            
+
         self.table.setColumnWidth(i, 200)
         self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem("Load in QGIS"))
-            
+
         for i in range(3):
             self.addRow()
 
-    
+
     def accept(self):
         self.algs = []
         self.load = []
@@ -166,8 +166,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     self.algs = None
                     return
             self.algs.append(alg)
-            widget = self.table.cellWidget(row, col)                    
-            self.load.append(widget.currentIndex() == 0)            
+            widget = self.table.cellWidget(row, col)
+            self.load.append(widget.currentIndex() == 0)
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.table.setEnabled(False)
@@ -189,7 +189,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     return
 
             self.finishAll()
-                
+
     def loadHTMLResults(self, alg, i):
         for out in alg.outputs:
             if out.hidden or not out.open:
@@ -323,10 +323,10 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         for out in self.alg.outputs:
             self.table.setCellWidget(self.table.rowCount()-1,i, BatchOutputSelectionPanel(out, self.alg, self.table.rowCount()-1, i, self))
             i+=1
-        
+
         item = QtGui.QComboBox()
         item.addItem("Yes")
-        item.addItem("No")            
+        item.addItem("No")
         item.setCurrentIndex(0)
         self.table.setCellWidget(self.table.rowCount()-1, i, item)
 

@@ -36,23 +36,23 @@ from sextante.outputs.OutputHTML import OutputHTML
 
 class RasterLayerStatistics(GeoAlgorithm):
 
-    INPUT = "INPUT"    
-    
+    INPUT = "INPUT"
+
     MIN = "MIN"
     MAX = "MAX"
     SUM = "SUM"
     MEAN = "MEAN"
     COUNT = "COUNT"
-    NO_DATA_COUNT = "NO_DATA_COUNT"        
+    NO_DATA_COUNT = "NO_DATA_COUNT"
     STD_DEV = "STD_DEV"
     OUTPUT_HTML_FILE = "OUTPUT_HTML_FILE"
 
     def processAlgorithm(self, progress):
         outputFile = self.getOutputValue(self.OUTPUT_HTML_FILE)
         uri = self.getParameterValue(self.INPUT)
-        layer = QGisLayers.getObjectFromUri(uri)        
-        values = raster.scanraster(layer, progress)                       
-        
+        layer = QGisLayers.getObjectFromUri(uri)
+        values = raster.scanraster(layer, progress)
+
         n = 0
         nodata = 0
         mean = 0
@@ -60,10 +60,10 @@ class RasterLayerStatistics(GeoAlgorithm):
         sum = 0
         minvalue = None
         maxvalue = None
-     
+
         for v in values:
-            if v is not None:            
-                sum += v    
+            if v is not None:
+                sum += v
                 n = n + 1
                 delta = v - mean
                 mean = mean + delta/n
@@ -76,42 +76,42 @@ class RasterLayerStatistics(GeoAlgorithm):
                     maxvalue = max(v, maxvalue)
             else:
                 nodata += 1
-                
+
         variance = M2/(n - 1)
         stddev = math.sqrt(variance)
-        
+
         data = []
         data.append("Valid cells: " + unicode(n))
-        data.append("No-data cells: " + unicode(nodata))            
+        data.append("No-data cells: " + unicode(nodata))
         data.append("Minimum value: " + unicode(minvalue))
-        data.append("Maximum value: " + unicode(maxvalue))        
+        data.append("Maximum value: " + unicode(maxvalue))
         data.append("Sum: " + unicode(sum))
-        data.append("Mean value: " + unicode(mean))        
-        data.append("Standard deviation: " + unicode(stddev))        
+        data.append("Mean value: " + unicode(mean))
+        data.append("Standard deviation: " + unicode(stddev))
 
         self.createHTML(outputFile, data)
-        
+
         self.setOutputValue(self.COUNT, n)
         self.setOutputValue(self.NO_DATA_COUNT, nodata)
         self.setOutputValue(self.MIN, minvalue)
-        self.setOutputValue(self.MAX, maxvalue)        
+        self.setOutputValue(self.MAX, maxvalue)
         self.setOutputValue(self.SUM, sum)
-        self.setOutputValue(self.MEAN, mean)        
+        self.setOutputValue(self.MEAN, mean)
         self.setOutputValue(self.STD_DEV, stddev)
-        
-    
+
+
     def defineCharacteristics(self):
         self.name = "Raster layer statistics"
         self.group = "Raster tools"
-        self.addParameter(ParameterRaster(self.INPUT, "Input layer"))      
-        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, "Statistics"))        
+        self.addParameter(ParameterRaster(self.INPUT, "Input layer"))
+        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, "Statistics"))
         self.addOutput(OutputNumber(self.MIN, "Minimum value"))
         self.addOutput(OutputNumber(self.MAX, "Maximum value"))
         self.addOutput(OutputNumber(self.SUM, "Sum"))
         self.addOutput(OutputNumber(self.MEAN, "Mean value"))
         self.addOutput(OutputNumber(self.COUNT, "valid cells count"))
-        self.addOutput(OutputNumber(self.COUNT, "No-data cells count"))                    
-        self.addOutput(OutputNumber(self.STD_DEV, "Standard deviation"))                  
+        self.addOutput(OutputNumber(self.COUNT, "No-data cells count"))
+        self.addOutput(OutputNumber(self.STD_DEV, "Standard deviation"))
 
     def createHTML(self, outputFile, algData):
         f = open(outputFile, "w")

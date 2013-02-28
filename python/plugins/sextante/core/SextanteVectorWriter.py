@@ -60,7 +60,7 @@ class SextanteVectorWriter:
             fieldsstring = "&".join(fieldsdesc)
             uri += fieldsstring
             self.memLayer = QgsVectorLayer(uri, self.fileName, "memory")
-            self.writer = self.memLayer.dataProvider()            
+            self.writer = self.memLayer.dataProvider()
         else:
             formats = QgsVectorFileWriter.supportedFiltersAndFormats()
             OGRCodes = {}

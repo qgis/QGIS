@@ -29,7 +29,7 @@ class AlgorithmDecorator():
     classification = {};
 
     @staticmethod
-    def loadClassification():        
+    def loadClassification():
         if not os.path.isfile(AlgorithmDecorator.classificationFile()):
             return
         lines = open(AlgorithmDecorator.classificationFile())
@@ -45,9 +45,9 @@ class AlgorithmDecorator():
         lines.close()
 
     @staticmethod
-    def classificationFile():        
+    def classificationFile():
         folder = os.path.join(os.path.dirname(__file__), "help")
-        f = os.path.join(folder, "algclasssification.txt")        
+        f = os.path.join(folder, "algclasssification.txt")
         return f
 
     @staticmethod

@@ -49,8 +49,8 @@ class ParameterCrs(Parameter):
                         "|" + str(self.default)
 
     def deserialize(self, s):
-        tokens = s.split("|")        
-        if tokens[2]==str(None):            
+        tokens = s.split("|")
+        if tokens[2]==str(None):
             tokens[2] = None
         return ParameterCrs(tokens[0], tokens[1], tokens[2])
 

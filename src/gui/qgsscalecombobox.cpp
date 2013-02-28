@@ -152,12 +152,12 @@ void QgsScaleComboBox::fixupScale()
 
   // QgsDebugMsg( QString( "entered with oldScale: %1" ).arg( oldScale ) );
   newScale = toDouble( currentText(), &ok );
-  
+
   // Valid string representation
-  if ( ok && (newScale != oldScale))
+  if ( ok && ( newScale != oldScale ) )
   {
     // if a user types scale = 2345, we transform to 1:2345
-    if(userSetScale)
+    if ( userSetScale )
     {
       mScale = 1 / newScale;
     }

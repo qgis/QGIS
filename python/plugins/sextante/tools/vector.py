@@ -42,5 +42,4 @@ def getAttributeValues(layer, *attributeNames):
                 values.append(None)
         ret[name] = values;
     return ret
-        
- 
+

@@ -440,7 +440,7 @@ class ModelerParametersDialog(QtGui.QDialog):
                 item.addItem(n.name(), n)
             item.setEditText(str(param.default))
         elif isinstance(param, ParameterCrs):
-            item = CrsSelectionPanel(param.default)                                
+            item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterExtent):
             item = QtGui.QComboBox()
             item.setEditable(True)
@@ -773,13 +773,13 @@ class ModelerParametersDialog(QtGui.QDialog):
         elif isinstance(param, ParameterCrs):
             authid = widget.getValue()
             if authid is None:
-                self.params[param.name] = None                
+                self.params[param.name] = None
             else:
                 name =  self.getSafeNameForHarcodedParameter(param)
                 value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
                 self.params[param.name] = value
                 self.values[name] = authid
-            return True        
+            return True
         elif isinstance(param, ParameterFixedTable):
             name =  self.getSafeNameForHarcodedParameter(param)
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)

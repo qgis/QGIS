@@ -133,8 +133,8 @@ class RAlgorithm(GeoAlgorithm):
             return
         if line.lower().strip().startswith("userasterpackage"):
             self.useRasterPackage = True
-            return 
-        if line.lower().strip().startswith("passfilenames"):    
+            return
+        if line.lower().strip().startswith("passfilenames"):
             self.passFileNames = True
             return
         tokens = line.split("=");
@@ -267,9 +267,9 @@ class RAlgorithm(GeoAlgorithm):
         # just use main mirror
         commands.append('options("repos"="http://cran.at.r-project.org/")')
         rLibDir = "%s/rlibs" % SextanteUtils.userFolder().replace("\\","/")
-        if not os.path.isdir(rLibDir): 
+        if not os.path.isdir(rLibDir):
             os.mkdir(rLibDir)
-        # .libPaths("%s") substitutes the personal libPath with "%s"! With '.libPaths(c("%s",deflibloc))' it is added without replacing and we can use all installed R packages! 
+        # .libPaths("%s") substitutes the personal libPath with "%s"! With '.libPaths(c("%s",deflibloc))' it is added without replacing and we can use all installed R packages!
         commands.append('deflibloc <- .libPaths()[1]')
         commands.append('.libPaths(c("%s",deflibloc))' % rLibDir )
         commands.append(
@@ -300,7 +300,7 @@ class RAlgorithm(GeoAlgorithm):
                 else:
                     commands.append(param.name + " = readOGR(\"" + folder + "\",layer=\"" + filename + "\")")
             if isinstance(param, ParameterTable):
-                value = param.value                
+                value = param.value
                 if not value.lower().endswith("csv"):
                     raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
                 if self.passFileNames:
@@ -325,7 +325,7 @@ class RAlgorithm(GeoAlgorithm):
                             #raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
                         layer = layer.replace("\\", "/")
                         if self.passFileNames:
-                            commands.append("tempvar" + str(iLayer)+ " <- \"" + layer + "\"")                            
+                            commands.append("tempvar" + str(iLayer)+ " <- \"" + layer + "\"")
                         elif self.useRasterPackage:
                             commands.append("tempvar" + str(iLayer)+ " <- " + "brick(\"" + layer + "\")")
                         else:

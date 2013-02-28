@@ -1006,204 +1006,204 @@ bool QgsOSMDataProvider::createTriggers()
   {
     // tag table
     "create trigger if not exists main.trg_tag_oi_update after update of object_id on tag begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','tag',old.i,'object_id',old.object_id,new.object_id); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','tag',old.i,'object_id',old.object_id,new.object_id); "
+    "end;",
 
     "create trigger if not exists main.trg_tag_ot_update after update of object_type on tag begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','tag',old.i,'object_type',old.object_type,new.object_type); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','tag',old.i,'object_type',old.object_type,new.object_type); "
+    "end;",
 
     "create trigger if not exists main.trg_tag_k_update after update of key on tag begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','tag',old.i,'key',old.key,new.key); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','tag',old.i,'key',old.key,new.key); "
+    "end;",
 
     "create trigger if not exists main.trg_tag_v_update after update of val on tag begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','tag',old.i,'val',old.val,new.val); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','tag',old.i,'val',old.val,new.val); "
+    "end;",
 
     "create trigger if not exists main.trg_tag_insert after insert on tag begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('I','tag',new.i); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('I','tag',new.i); "
+    "end;",
 
     "create trigger if not exists main.trg_tag_delete before delete on tag begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('D','tag',old.i); "
-      "update tag set u=0 where i=old.i; "
-      "select raise(ignore); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('D','tag',old.i); "
+    "update tag set u=0 where i=old.i; "
+    "select raise(ignore); "
+    "end;",
 
     // node table
     "create trigger if not exists main.trg_node_lat_update after update of lat on node begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','node',old.i,'lat',old.lat,new.lat); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','node',old.i,'lat',old.lat,new.lat); "
+    "end;",
 
     "create trigger if not exists main.trg_node_lon_update after update of lon on node begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','node',old.i,'lon',old.lon,new.lon); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','node',old.i,'lon',old.lon,new.lon); "
+    "end;",
 
     "create trigger if not exists main.trg_node_t_update after update of timestamp on node begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','node',old.i,'timestamp',old.timestamp,new.timestamp); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','node',old.i,'timestamp',old.timestamp,new.timestamp); "
+    "end;",
 
     "create trigger if not exists main.trg_node_use_update after update of user on node begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','node',old.i,'user',old.user,new.user); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','node',old.i,'user',old.user,new.user); "
+    "end;",
 
     "create trigger if not exists main.trg_node_usa_update after update of usage on node begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','node',old.i,'usage',old.usage,new.usage); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','node',old.i,'usage',old.usage,new.usage); "
+    "end;",
 
     "create trigger if not exists main.trg_node_s_update after update of status on node begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','node',old.i,'status',old.status,new.status); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','node',old.i,'status',old.status,new.status); "
+    "end;",
 
     "create trigger if not exists main.trg_node_insert after insert on node begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('I','node',new.i); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('I','node',new.i); "
+    "end;",
 
     "create trigger if not exists main.trg_node_delete before delete on node begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('D','node',old.i); "
-      "update node set u=0 where i=old.i; "
-      "select raise(ignore); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('D','node',old.i); "
+    "update node set u=0 where i=old.i; "
+    "select raise(ignore); "
+    "end;",
 
     // way table
     "create trigger if not exists main.trg_way_t_update after update of timestamp on way begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','way',old.i,'timestamp',old.timestamp,new.timestamp); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','way',old.i,'timestamp',old.timestamp,new.timestamp); "
+    "end;",
 
     "create trigger if not exists main.trg_way_u_update after update of user on way begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','way',old.i,'user',old.user,new.user); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','way',old.i,'user',old.user,new.user); "
+    "end;",
 
     "create trigger if not exists main.trg_way_c_update after update of closed on way begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','way',old.i,'closed',old.closed,new.closed); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','way',old.i,'closed',old.closed,new.closed); "
+    "end;",
 
     "create trigger if not exists main.trg_way_s_update after update of status on way begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "  values ('U','way',old.i,'status',old.status,new.status); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "  values ('U','way',old.i,'status',old.status,new.status); "
+    "end;",
 
     "create trigger if not exists main.trg_way_w_update after update of wkb on way begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','way',old.i,'wkb','',''); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','way',old.i,'wkb','',''); "
+    "end;",
 
     "create trigger if not exists main.trg_way_insert after insert on way begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('I','way',new.i); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('I','way',new.i); "
+    "end;",
 
     "create trigger if not exists main.trg_way_delete before delete on way begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('D','way',old.i); "
-      "update way set u=0 where i=old.i; "
-      "select raise(ignore); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('D','way',old.i); "
+    "update way set u=0 where i=old.i; "
+    "select raise(ignore); "
+    "end;",
 
     // relation table
     "create trigger if not exists main.trg_relation_ty_update after update of type on relation begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','relation',old.i,'type',old.type,new.type); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','relation',old.i,'type',old.type,new.type); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_ti_update after update of timestamp on relation begin "
-      "insert into change_step  (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','relation',old.i,'timestamp',old.timestamp,new.timestamp); "
-      "end;",
+    "insert into change_step  (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','relation',old.i,'timestamp',old.timestamp,new.timestamp); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_u_update after update of user on relation begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "values ('U','relation',old.i,'user',old.user,new.user); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "values ('U','relation',old.i,'user',old.user,new.user); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_s_update after update of status on relation begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','relation',old.i,'status',old.status,new.status); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','relation',old.i,'status',old.status,new.status); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_insert after insert on relation begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('I','relation',new.i); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('I','relation',new.i); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_delete before delete on relation begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('D','relation',old.i); "
-      "update relation set u=0 where i=old.i; "
-      "select raise(ignore); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('D','relation',old.i); "
+    "update relation set u=0 where i=old.i; "
+    "select raise(ignore); "
+    "end;",
 
     // way_member table
     "create trigger if not exists main.trg_way_member_wi_update after update of way_id on way_member begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','way_member',old.i,'way_id',old.way_id,new.way_id); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','way_member',old.i,'way_id',old.way_id,new.way_id); "
+    "end;",
 
     "create trigger if not exists main.trg_way_member_pi_update after update of pos_id on way_member begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','way_member',old.i,'pos_id',old.pos_id,new.pos_id); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','way_member',old.i,'pos_id',old.pos_id,new.pos_id); "
+    "end;",
 
     "create trigger if not exists main.trg_way_member_ni_update after update of node_id on way_member begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','way_member',old.i,'node_id',old.node_id,new.node_id); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','way_member',old.i,'node_id',old.node_id,new.node_id); "
+    "end;",
 
     "create trigger if not exists main.trg_way_member_insert after insert on way_member begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('I','way_member',new.i); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('I','way_member',new.i); "
+    "end;",
 
     "create trigger if not exists main.trg_way_member_delete before delete on way_member begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('D','way_member',old.i); "
-      "update way_member set u=0 where i=old.i; "
-      "select raise(ignore); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('D','way_member',old.i); "
+    "update way_member set u=0 where i=old.i; "
+    "select raise(ignore); "
+    "end;",
 
     // relation_member table
     "create trigger if not exists main.trg_relation_member_ri_update after update of relation_id on relation_member begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','relation_member',old.i,'relation_id',old.relation_id,new.relation_id); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','relation_member',old.i,'relation_id',old.relation_id,new.relation_id); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_member_pi_update after update of pos_id on relation_member begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','relation_member',old.i,'pos_id',old.pos_id,new.pos_id); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','relation_member',old.i,'pos_id',old.pos_id,new.pos_id); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_member_mi_update after update of member_id on relation_member begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','relation_member',old.i,'member_id',old.member_id,new.member_id); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','relation_member',old.i,'member_id',old.member_id,new.member_id); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_member_mt_update after update of member_type on relation_member begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "    values ('U','relation_member',old.i,'member_type',old.member_type,new.member_type); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "    values ('U','relation_member',old.i,'member_type',old.member_type,new.member_type); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_member_r_update after update of role on relation_member begin "
-      "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
-      "values ('U','relation_member',old.i,'role',old.role,new.role); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id,col_name,old_value,new_value) "
+    "values ('U','relation_member',old.i,'role',old.role,new.role); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_member_insert after insert on relation_member begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('I','relation_member',new.i); "
-      "end;",
+    "insert into change_step (change_type,tab_name,row_id) values ('I','relation_member',new.i); "
+    "end;",
 
     "create trigger if not exists main.trg_relation_member_delete before delete on relation_member begin "
-      "insert into change_step (change_type,tab_name,row_id) values ('D','relation_member',old.i); "
-      "update relation_member set u=0 where i=old.i; "
-      "select raise(ignore); "
-      "end;"
+    "insert into change_step (change_type,tab_name,row_id) values ('D','relation_member',old.i); "
+    "update relation_member set u=0 where i=old.i; "
+    "select raise(ignore); "
+    "end;"
   };
 
   int count = sizeof( triggers ) / sizeof( const char* );

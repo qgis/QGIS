@@ -45,24 +45,24 @@ class RasterLayerHistogram(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.INPUT)
-        layer = QGisLayers.getObjectFromUri(uri)        
+        layer = QGisLayers.getObjectFromUri(uri)
         outputplot = self.getOutputValue(self.PLOT)
         outputtable = self.getOutputFromName(self.TABLE)
         values = raster.scanraster(layer, progress)
         nbins = self.getParameterValue(self.BINS)
         #ALERT:this is potentially blocking if the layer is too big
-        plt.close()        
+        plt.close()
         valueslist = []
         for v in values:
             if v is not None:
                 valueslist.append(v)
         n, bins, values = plt.hist(valueslist, nbins)
         fields = [QgsField("CENTER_VALUE", QVariant.Double), QgsField("NUM_ELEM", QVariant.Double)]
-        writer = outputtable.getTableWriter(fields)        
+        writer = outputtable.getTableWriter(fields)
         for i in xrange(len(values)):
-            writer.addRecord([str(bins[i]) + "-" + str(bins[i+1]) , n[i]])            
+            writer.addRecord([str(bins[i]) + "-" + str(bins[i+1]) , n[i]])
         plotFilename = outputplot +".png"
-        lab.savefig(plotFilename)        
+        lab.savefig(plotFilename)
         f = open(outputplot, "w")
         f.write("<img src=\"" + plotFilename + "\"/>")
         f.close()
@@ -70,7 +70,7 @@ class RasterLayerHistogram(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Raster layer histogram"
         self.group = "Graphics"
-        self.addParameter(ParameterRaster(self.INPUT, "Input layer"))        
+        self.addParameter(ParameterRaster(self.INPUT, "Input layer"))
         self.addParameter(ParameterNumber(self.BINS, "Number of bins", 2, None, 10))
         self.addOutput(OutputHTML(self.PLOT, "Output plot"))
         self.addOutput(OutputTable(self.TABLE, "Output table"))

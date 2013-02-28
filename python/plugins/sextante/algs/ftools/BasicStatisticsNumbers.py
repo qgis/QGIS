@@ -40,18 +40,18 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     INPUT_LAYER = "INPUT_LAYER"
     FIELD_NAME = "FIELD_NAME"
     OUTPUT_HTML_FILE = "OUTPUT_HTML_FILE"
-    
+
     CV = "CV"
     MIN = "MIN"
     MAX = "MAX"
     SUM = "SUM"
     MEAN = "MEAN"
-    COUNT = "COUNT"        
+    COUNT = "COUNT"
     STD_DEV = "STD_DEV"
     RANGE = "RANGE"
     MEDIAN = "MEDIAN"
     UNIQUE = "UNIQUE"
-    
+
 
     #===========================================================================
     # def getIcon(self):
@@ -63,7 +63,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.group = "Vector table tools"
 
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input vector layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterTableField(self.FIELD_NAME, "Field to calculate statistics on", 
+        self.addParameter(ParameterTableField(self.FIELD_NAME, "Field to calculate statistics on",
                                               self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, "Statistics for numeric field"))

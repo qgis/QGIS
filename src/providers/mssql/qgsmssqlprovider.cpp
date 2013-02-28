@@ -372,18 +372,18 @@ void QgsMssqlProvider::loadFields()
         }
         if ( sqlType == QVariant::String )
         {
-            mAttributeFields.append(
-              QgsField(
-                query.value( 3 ).toString(), sqlType,
-                sqlTypeName,
-                query.value( 7 ).toInt() ) );
+          mAttributeFields.append(
+            QgsField(
+              query.value( 3 ).toString(), sqlType,
+              sqlTypeName,
+              query.value( 7 ).toInt() ) );
         }
         else
         {
-            mAttributeFields.append(
-              QgsField(
-                query.value( 3 ).toString(), sqlType,
-                sqlTypeName ) );
+          mAttributeFields.append(
+            QgsField(
+              query.value( 3 ).toString(), sqlType,
+              sqlTypeName ) );
         }
 
         if ( !query.value( 12 ).isNull() )

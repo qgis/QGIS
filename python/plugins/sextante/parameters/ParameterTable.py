@@ -59,11 +59,11 @@ class ParameterTable(ParameterDataObject):
             val = unicode(obj)
             self.value = val
             return os.path.exists(self.value)
-        
+
     def getSafeExportedTable(self):
         '''Returns not the value entered by the user, but a string with a filename which
         contains the data of this table, but saved in a standard format (currently always
-        a dbf file) so that it can be opened by most external applications.        
+        a dbf file) so that it can be opened by most external applications.
         Works only if the table represented by the parameter value is currently loaded in QGIS.
         Otherwise, it will not perform any export and return the current value string.
         If the current value represents a table in a suitable format, it does not export at all
@@ -77,7 +77,7 @@ class ParameterTable(ParameterDataObject):
             self.exported = LayerExporter.exportTable(table)
         else:
             self.exported = self.value
-        return self.exported        
+        return self.exported
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

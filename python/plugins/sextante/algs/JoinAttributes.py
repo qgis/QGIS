@@ -64,13 +64,13 @@ class JoinAttributes(GeoAlgorithm):
         # Layer 2
         layer2 = QGisLayers.getObjectFromUri(input2)
         provider2 = layer2.dataProvider()
-        
+
         joinField2Index = layer2.fieldNameIndex(field2)
 
         # Output
         outFields = []
         outFields.extend(provider.fields())
-        outFields.extend(provider2.fields())        
+        outFields.extend(provider2.fields())
 
         writer = output.getVectorWriter(outFields, provider.geometryType(), layer.crs())
 
@@ -83,17 +83,17 @@ class JoinAttributes(GeoAlgorithm):
         for inFeat in features:
             inGeom = inFeat.geometry()
             attrs = inFeat.attributes()
-            joinValue1 = attrs[joinField1Index].toString()  
+            joinValue1 = attrs[joinField1Index].toString()
             features2 = QGisLayers.features(layer2);
-            for inFeat2 in features2:                              
+            for inFeat2 in features2:
                 ## Maybe it should cache this entries...
                 attrs2 = inFeat2.attributes()
                 joinValue2 = attrs2[joinField2Index].toString()
                 if joinValue1 == joinValue2:
                     # create the new feature
-                    outFeat.setGeometry(inGeom)                    
-                    attrs.extend(attrs2)                                        
-                    break;                    
+                    outFeat.setGeometry(inGeom)
+                    attrs.extend(attrs2)
+                    break;
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 

@@ -29,7 +29,7 @@ from sextante.parameters.ParameterVector import ParameterVector
 
 class VectorLayerBoundsAlgorithm(GeoAlgorithm):
 
-    LAYER = "LAYER"    
+    LAYER = "LAYER"
     XMIN = "XMIN"
     XMAX = "XMAX"
     YMIN = "YMIN"
@@ -40,7 +40,7 @@ class VectorLayerBoundsAlgorithm(GeoAlgorithm):
         self.showInToolbox = False
         self.name = "Vector layer bounds"
         self.group = "Modeler-only tools"
-        self.addParameter(ParameterVector(self.LAYER, "Layer"))        
+        self.addParameter(ParameterVector(self.LAYER, "Layer"))
         self.addOutput(OutputNumber(self.XMIN, "min X"))
         self.addOutput(OutputNumber(self.XMAX, "max X"))
         self.addOutput(OutputNumber(self.YMIN, "min Y"))
@@ -53,4 +53,4 @@ class VectorLayerBoundsAlgorithm(GeoAlgorithm):
         self.setOutputValue(self.XMAX, layer.extent().xMaximum())
         self.setOutputValue(self.YMIN, layer.extent().yMinimum())
         self.setOutputValue(self.YMAX, layer.extent().yMaximum())
-        
+

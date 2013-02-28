@@ -47,8 +47,8 @@ class SextanteTableWriter:
     def addRecord(self, values):
         for i in range(len(values)):
             if isinstance(values[i], QVariant):
-                values[i] = values[i].toString()            
-            
+                values[i] = values[i].toString()
+
         file = open(self.fileName, "a")
         file.write(";".join([unicode(value) for value in values]))
         file.write("\n")

@@ -88,12 +88,12 @@ class LayerExporter():
         #TODO:Do the conversion here
         return unicode(layer.source())
 
-    
+
     @staticmethod
     def exportTable( table):
-        '''Takes a QgsVectorLayer and returns the filename to refer to its attributes table, 
-        which allows external apps which support only file-based layers to use it. 
-        It performs the necessary export in case the input layer is not in a standard format 
+        '''Takes a QgsVectorLayer and returns the filename to refer to its attributes table,
+        which allows external apps which support only file-based layers to use it.
+        It performs the necessary export in case the input layer is not in a standard format
         suitable for most applications, it isa remote one or db-based (non-file based) one
         Currently, the output is restricted to dbf.
         It also export to a new file if the original one contains non-ascii characters'''
@@ -115,11 +115,11 @@ class LayerExporter():
             return output
         else:
             filename = unicode(table.source())
-            if unicode(table.source()).endswith("shp"):                 
+            if unicode(table.source()).endswith("shp"):
                 return filename[:-3] + "dbf"
             else:
                 return filename
-    
-    
+
+
 
 

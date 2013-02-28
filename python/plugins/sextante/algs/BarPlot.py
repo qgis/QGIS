@@ -40,24 +40,24 @@ class BarPlot(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
     NAME_FIELD = "NAME_FIELD"
-    VALUE_FIELD = "VALUE_FIELD"    
+    VALUE_FIELD = "VALUE_FIELD"
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.INPUT)
         layer = QGisLayers.getObjectFromUri(uri)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)        
+        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
         output = self.getOutputValue(self.OUTPUT)
         values = vector.getAttributeValues(layer, namefieldname, valuefieldname)
         plt.close()
-                
+
         ind = np.arange(len(values[namefieldname]))
         width = 0.8
         plt.bar(ind, values[valuefieldname], width, color='r')
 
-        plt.xticks(ind, values[namefieldname], rotation = 45)       
+        plt.xticks(ind, values[namefieldname], rotation = 45)
         plotFilename = output +".png"
-        lab.savefig(plotFilename)        
+        lab.savefig(plotFilename)
         f = open(output, "w")
         f.write("<img src=\"" + plotFilename + "\"/>")
         f.close()
@@ -66,8 +66,8 @@ class BarPlot(GeoAlgorithm):
         self.name = "Bar plot"
         self.group = "Graphics"
         self.addParameter(ParameterTable(self.INPUT, "Input table"))
-        self.addParameter(ParameterTableField(self.NAME_FIELD, "Category name field", self.INPUT))    
-        self.addParameter(ParameterTableField(self.VALUE_FIELD, "Value field", self.INPUT))                
+        self.addParameter(ParameterTableField(self.NAME_FIELD, "Category name field", self.INPUT))
+        self.addParameter(ParameterTableField(self.VALUE_FIELD, "Value field", self.INPUT))
         self.addOutput(OutputHTML(self.OUTPUT, "Output"))
 
 

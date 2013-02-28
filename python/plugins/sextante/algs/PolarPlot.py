@@ -42,26 +42,26 @@ class PolarPlot(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
     NAME_FIELD = "NAME_FIELD"
-    VALUE_FIELD = "VALUE_FIELD"    
+    VALUE_FIELD = "VALUE_FIELD"
 
     def processAlgorithm(self, progress):
         uri = self.getParameterValue(self.INPUT)
         layer = QGisLayers.getObjectFromUri(uri)
         namefieldname = self.getParameterValue(self.NAME_FIELD)
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)        
+        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
         output = self.getOutputValue(self.OUTPUT)
         values = vector.getAttributeValues(layer, namefieldname, valuefieldname)
         plt.close()
-                
+
         fig = figure(figsize=(8,8))
         ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
         N = len(values[valuefieldname])
         theta = np.arange(0.0, 2*np.pi, 2*np.pi/N)
         radii = values[valuefieldname]
         width = 2*np.pi/N
-        ax.bar(theta, radii, width=width, bottom=0.0)   
+        ax.bar(theta, radii, width=width, bottom=0.0)
         plotFilename = output +".png"
-        lab.savefig(plotFilename)        
+        lab.savefig(plotFilename)
         f = open(output, "w")
         f.write("<img src=\"" + plotFilename + "\"/>")
         f.close()
@@ -70,8 +70,8 @@ class PolarPlot(GeoAlgorithm):
         self.name = "Polar plot"
         self.group = "Graphics"
         self.addParameter(ParameterTable(self.INPUT, "Input table"))
-        self.addParameter(ParameterTableField(self.NAME_FIELD, "Category name field", self.INPUT))    
-        self.addParameter(ParameterTableField(self.VALUE_FIELD, "Value field", self.INPUT))                
+        self.addParameter(ParameterTableField(self.NAME_FIELD, "Category name field", self.INPUT))
+        self.addParameter(ParameterTableField(self.VALUE_FIELD, "Value field", self.INPUT))
         self.addOutput(OutputHTML(self.OUTPUT, "Output"))
 
 

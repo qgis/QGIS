@@ -29,7 +29,7 @@ from PyQt4.QtGui import *
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.modeler.CalculatorModelerAlgorithm import CalculatorModelerAlgorithm
 from sextante.modeler.RasterLayerBoundsAlgorithm import RasterLayerBoundsAlgorithm
-from sextante.modeler.VectorLayerBoundsAlgorithm import VectorLayerBoundsAlgorithm    
+from sextante.modeler.VectorLayerBoundsAlgorithm import VectorLayerBoundsAlgorithm
 
 import os.path
 

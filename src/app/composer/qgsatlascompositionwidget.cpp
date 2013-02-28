@@ -277,11 +277,13 @@ void QgsAtlasCompositionWidget::on_mAtlasSingleFileCheckBox_stateChanged( int st
   {
     return;
   }
-  if ( state == Qt::Checked ) {
+  if ( state == Qt::Checked )
+  {
     mAtlasFilenamePatternEdit->setEnabled( false );
     mAtlasFilenameExpressionButton->setEnabled( false );
   }
-  else {
+  else
+  {
     mAtlasFilenamePatternEdit->setEnabled( true );
     mAtlasFilenameExpressionButton->setEnabled( true );
   }
@@ -295,12 +297,14 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureCheckBox_stateChanged( int s
   {
     return;
   }
-  
-  if ( state == Qt::Checked ) {
+
+  if ( state == Qt::Checked )
+  {
     mAtlasSortFeatureDirectionButton->setEnabled( true );
     mAtlasSortFeatureKeyComboBox->setEnabled( true );
   }
-  else {
+  else
+  {
     mAtlasSortFeatureDirectionButton->setEnabled( false );
     mAtlasSortFeatureKeyComboBox->setEnabled( false );
   }
@@ -315,7 +319,8 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureKeyComboBox_currentIndexChan
     return;
   }
 
-  if ( index != -1 ) {
+  if ( index != -1 )
+  {
     atlasMap->setSortKeyAttributeIndex( index );
   }
 }
@@ -355,11 +360,12 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
 void QgsAtlasCompositionWidget::on_mAtlasSortFeatureDirectionButton_clicked()
 {
   Qt::ArrowType at = mAtlasSortFeatureDirectionButton->arrowType();
-  at = (at == Qt::UpArrow) ? Qt::DownArrow : Qt::UpArrow;
+  at = ( at == Qt::UpArrow ) ? Qt::DownArrow : Qt::UpArrow;
   mAtlasSortFeatureDirectionButton->setArrowType( at );
 
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
-  if ( !atlasMap ) {
+  if ( !atlasMap )
+  {
     return;
   }
 
@@ -377,8 +383,9 @@ void QgsAtlasCompositionWidget::fillSortColumns()
   mAtlasSortFeatureKeyComboBox->clear();
   // Get fields of the selected coverage layer
   const QgsFields& fields = atlasMap->coverageLayer()->pendingFields();
-  for ( int i = 0; i < fields.count(); ++i ) {
-    mAtlasSortFeatureKeyComboBox->insertItem( i, fields.at(i).name() );
+  for ( int i = 0; i < fields.count(); ++i )
+  {
+    mAtlasSortFeatureKeyComboBox->insertItem( i, fields.at( i ).name() );
   }
 }
 

@@ -36,21 +36,21 @@ class StatisticsByCategories(GeoAlgorithm):
 
     INPUT_LAYER = "INPUT_LAYER"
     VALUES_FIELD_NAME = "VALUES_FIELD_NAME"
-    CATEGORIES_FIELD_NAME = "CATEGORIES_FIELD_NAME"    
+    CATEGORIES_FIELD_NAME = "CATEGORIES_FIELD_NAME"
     OUTPUT = "OUTPUT"
-    
+
     def defineCharacteristics(self):
         self.name = "Statistics by categories"
         self.group = "Vector table tools"
 
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input vector layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME, "Field to calculate statistics on", 
+        self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME, "Field to calculate statistics on",
                                               self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterTableField(self.CATEGORIES_FIELD_NAME, "Field with categories", 
-                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))        
+        self.addParameter(ParameterTableField(self.CATEGORIES_FIELD_NAME, "Field with categories",
+                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
 
         self.addOutput(OutputTable(self.OUTPUT, "Statistics"))
-        
+
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
@@ -59,7 +59,7 @@ class StatisticsByCategories(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT)
         valuesField = layer.fieldNameIndex(valuesFieldName)
         categoriesField = layer.fieldNameIndex(categoriesFieldName)
-        
+
         features = QGisLayers.features(layer)
         nFeats = len(features)
         values = {}
@@ -76,26 +76,26 @@ class StatisticsByCategories(GeoAlgorithm):
                 values[cat].append(value)
             except:
                 pass
-        
-        fields = [QgsField("category", QVariant.String), QgsField("min", QVariant.Double), 
-                  QgsField("max", QVariant.Double), QgsField("mean", QVariant.Double), 
+
+        fields = [QgsField("category", QVariant.String), QgsField("min", QVariant.Double),
+                  QgsField("max", QVariant.Double), QgsField("mean", QVariant.Double),
                   QgsField("stddev", QVariant.Double)]
         writer = output.getTableWriter(fields)
-        for cat, v in values.items():                       
+        for cat, v in values.items():
             min, max, mean, stddev = calculateStats(v)
-            record = [cat, min, max, mean, stddev]            
+            record = [cat, min, max, mean, stddev]
             writer.addRecord(record)
-            
-def calculateStats(values):    
-    n = 0    
+
+def calculateStats(values):
+    n = 0
     sum = 0
     mean = 0
-    M2 = 0    
+    M2 = 0
     minvalue = None
     maxvalue = None
- 
-    for v in values:                
-        sum += v    
+
+    for v in values:
+        sum += v
         n = n + 1
         delta = v - mean
         mean = mean + delta/n
@@ -105,11 +105,11 @@ def calculateStats(values):
             maxvalue = v
         else:
             minvalue = min(v, minvalue)
-            maxvalue = max(v, maxvalue)        
-            
+            maxvalue = max(v, maxvalue)
+
     if n > 1:
          variance = M2/(n - 1)
     else:
         variance = 0;
     stddev = math.sqrt(variance)
-    return minvalue,maxvalue, mean, stddev    
+    return minvalue,maxvalue, mean, stddev

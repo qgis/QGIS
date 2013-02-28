@@ -194,7 +194,7 @@ class ParametersPanel(QtGui.QWidget):
 
     def getExtendedLayerName(self, layer):
         authid = layer.crs().authid()
-        if SextanteConfig.getSetting(SextanteConfig.SHOW_CRS_DEF) and authid is not None:            
+        if SextanteConfig.getSetting(SextanteConfig.SHOW_CRS_DEF) and authid is not None:
             return layer.name() + " [" + str(authid) +"]"
         else:
             return layer.name()

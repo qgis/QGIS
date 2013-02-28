@@ -203,7 +203,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             mainItem = QTreeWidgetItem()
             mainItem.setText(0, "Geoalgorithms")
             mainItem.setIcon(0, GeoAlgorithm.getDefaultIcon())
-            mainItem.setToolTip(0, mainItem.text(0))            
+            mainItem.setToolTip(0, mainItem.text(0))
             for groupname, group in groups.items():
                 groupItem = QTreeWidgetItem()
                 groupItem.setText(0, groupname)
@@ -218,9 +218,9 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                     groupItem.addChild(subgroupItem)
                     for alg in subgroup:
                         algItem = TreeAlgorithmItem(alg)
-                        subgroupItem.addChild(algItem)                    
-                
-            self.algorithmTree.addTopLevelItem(mainItem)            
+                        subgroupItem.addChild(algItem)
+
+            self.algorithmTree.addTopLevelItem(mainItem)
 
         for providerName in Sextante.algs.keys():
             groups = {}
@@ -266,10 +266,10 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
-                
+
         if (text != ""):
             self.algorithmTree.expandAll()
-                
+
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
@@ -317,7 +317,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
                 providerItem.setExpanded(text!="")
-                for groupItem in groups.values():                    
+                for groupItem in groups.values():
                     groupItem.setExpanded(text != "")
 
 
@@ -327,7 +327,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
     def __init__(self, alg):
         useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
         QTreeWidgetItem.__init__(self)
-        self.alg = alg        
+        self.alg = alg
         icon = alg.getIcon()
         name = alg.name
         if useCategories:

@@ -30,7 +30,7 @@ from sextante.core.QGisLayers import QGisLayers
 
 class RasterLayerBoundsAlgorithm(GeoAlgorithm):
 
-    LAYER = "LAYER"    
+    LAYER = "LAYER"
     XMIN = "XMIN"
     XMAX = "XMAX"
     YMIN = "YMIN"
@@ -41,7 +41,7 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
         self.showInToolbox = False
         self.name = "Raster layer bounds"
         self.group = "Modeler-only tools"
-        self.addParameter(ParameterRaster(self.LAYER, "Layer"))        
+        self.addParameter(ParameterRaster(self.LAYER, "Layer"))
         self.addOutput(OutputNumber(self.XMIN, "min X"))
         self.addOutput(OutputNumber(self.XMAX, "max X"))
         self.addOutput(OutputNumber(self.YMIN, "min Y"))
@@ -54,4 +54,4 @@ class RasterLayerBoundsAlgorithm(GeoAlgorithm):
         self.setOutputValue(self.XMAX, layer.extent().xMaximum())
         self.setOutputValue(self.YMIN, layer.extent().yMinimum())
         self.setOutputValue(self.YMAX, layer.extent().yMaximum())
-        
+

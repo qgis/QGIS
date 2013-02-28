@@ -54,7 +54,7 @@ class   Union(GeoAlgorithm):
 
         fields = utils.combineVectorFields(vlayerA, vlayerB )
         names = [field.name() for field in fields]
-        SextanteLog.addToLog(SextanteLog.LOG_INFO, str(names))        
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, str(names))
         writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()

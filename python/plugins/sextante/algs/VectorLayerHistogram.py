@@ -53,7 +53,7 @@ class VectorLayerHistogram(GeoAlgorithm):
         bins = self.getParameterValue(self.BINS)
         plt.hist(values[fieldname], bins)
         plotFilename = output +".png"
-        lab.savefig(plotFilename)        
+        lab.savefig(plotFilename)
         f = open(output, "w")
         f.write("<img src=\"" + plotFilename + "\"/>")
         f.close()

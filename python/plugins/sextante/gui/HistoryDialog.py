@@ -48,10 +48,10 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         self.clearButton.setToolTip(self.tr("Clear history and log"))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
-        self.tree.doubleClicked.connect(self.executeAlgorithm)        
+        self.tree.doubleClicked.connect(self.executeAlgorithm)
         self.tree.currentItemChanged.connect(self.changeText)
         self.clearButton.clicked.connect(self.clearLog)
-                
+
         self.tree.customContextMenuRequested.connect(self.showPopupMenu)
 
         self.fillTree()
@@ -85,21 +85,21 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
                 self.text.setText(item.entry.text.replace("|","\n"))
-                
-    
-    
+
+
+
     def createTest(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 TestTools.createTest(item)
-                
 
 
 
 
-    
-    
+
+
+
     def showPopupMenu(self,point):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
@@ -107,8 +107,8 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
                 popupmenu = QMenu()
                 createTestAction = QAction(self.tr("Create test"), self.tree)
                 createTestAction.triggered.connect(self.createTest)
-                popupmenu.addAction(createTestAction)            
-                popupmenu.exec_(self.tree.mapToGlobal(point))                
+                popupmenu.addAction(createTestAction)
+                popupmenu.exec_(self.tree.mapToGlobal(point))
 
 class TreeLogEntryItem(QTreeWidgetItem):
     def __init__(self, entry, isAlg):

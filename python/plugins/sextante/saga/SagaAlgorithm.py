@@ -367,12 +367,12 @@ class SagaAlgorithm(GeoAlgorithm):
 
     def checkBeforeOpeningParametersDialog(self):
         return SagaUtils.checkSagaIsInstalled()
-        
+
 
     def helpFile(self):
-        return  os.path.join(os.path.dirname(__file__), "help", self.name.replace(" ", "") + ".html")        
-        
-    
+        return  os.path.join(os.path.dirname(__file__), "help", self.name.replace(" ", "") + ".html")
+
+
     def commandLineName(self):
         name = self.provider.getName().lower() + ":" + self.cmdname.lower()
         validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
