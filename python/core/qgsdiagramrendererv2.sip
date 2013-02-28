@@ -128,7 +128,7 @@ class QgsDiagramRendererV2
 
     void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QPointF& pos );
 
-    void setDiagram( QgsDiagram* d );
+    void setDiagram( QgsDiagram* d /Transfer/ );
     const QgsDiagram* diagram() const;
 
     /**Returns list with all diagram settings in the renderer*/
