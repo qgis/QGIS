@@ -113,7 +113,7 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
     //Build the delimited text URI from the user provided information
     QString delimiterType;
     if ( delimiterSelection->isChecked() )
-      delimiterType = "regexp";
+      delimiterType = ( selectedChars().size() <= 1 ) ? "plain" : "regexp";
     else if ( delimiterPlain->isChecked() )
       delimiterType = "plain";
     else if ( delimiterRegexp->isChecked() )
