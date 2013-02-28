@@ -70,7 +70,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="title">
           <string>Paper and quality</string>
          </property>
@@ -231,7 +231,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mPrintAsRasterGroupCheckBox">
+        <widget class="QgsCollapsibleGroupBox" name="mPrintAsRasterGroupCheckBox">
          <property name="title">
           <string>Print as raster</string>
          </property>
@@ -284,7 +284,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mSnapToGridGroupCheckBox">
+        <widget class="QgsCollapsibleGroupBox" name="mSnapToGridGroupCheckBox">
          <property name="title">
           <string>Snap to grid</string>
          </property>
@@ -465,7 +465,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mAlignmentSnapGroupCheckBox">
+        <widget class="QgsCollapsibleGroupBox" name="mAlignmentSnapGroupCheckBox">
          <property name="title">
           <string>Snap to alignments</string>
          </property>
@@ -527,7 +527,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>

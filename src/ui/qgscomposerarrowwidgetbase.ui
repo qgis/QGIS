@@ -52,7 +52,7 @@
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -120,7 +120,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mArrowMarkersGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mArrowMarkersGroupBox">
          <property name="title">
           <string>Arrow markers</string>
          </property>
@@ -215,7 +215,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>

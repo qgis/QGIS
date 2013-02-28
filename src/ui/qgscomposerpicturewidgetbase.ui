@@ -58,7 +58,7 @@
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mPreviewGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mPreviewGroupBox">
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -115,7 +115,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mSearchDirectoriesGroupBox">
+        <widget class="QgsCollapsibleGroupBox" name="mSearchDirectoriesGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -191,7 +191,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="title">
           <string>Rotation</string>
          </property>
@@ -240,7 +240,7 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>

@@ -52,7 +52,7 @@
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -151,7 +151,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="mShowGridGroupCheckBox">
+        <widget class="QgsCollapsibleGroupBox" name="mShowGridGroupCheckBox">
          <property name="title">
           <string>Show grid</string>
          </property>
@@ -223,7 +223,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_3">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
          <property name="title">
           <string>Fonts</string>
          </property>
@@ -259,7 +259,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
+   <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
