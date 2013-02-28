@@ -85,12 +85,22 @@ void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
   if ( state == Qt::Checked )
   {
     atlasMap->setEnabled( true );
-    mAtlasFrame->setEnabled( true );
+    mConfigurationGroup->setEnabled( true );
+    mVisibilityGroup->setEnabled( true );
+    mSortingGroup->setEnabled( true );
+    mFilteringGroup->setEnabled( true );
+    mScalingGroup->setEnabled( true );
+    mOutputGroup->setEnabled( true );
   }
   else
   {
     atlasMap->setEnabled( false );
-    mAtlasFrame->setEnabled( false );
+    mConfigurationGroup->setEnabled( false );
+    mVisibilityGroup->setEnabled( false );
+    mSortingGroup->setEnabled( false );
+    mFilteringGroup->setEnabled( false );
+    mScalingGroup->setEnabled( false );
+    mOutputGroup->setEnabled( false );
   }
 }
 
@@ -409,5 +419,10 @@ void QgsAtlasCompositionWidget::updateGuiElements()
 void QgsAtlasCompositionWidget::blockAllSignals( bool b )
 {
   mUseAtlasCheckBox->blockSignals( b );
-  mAtlasFrame->blockSignals( b );
+  mConfigurationGroup->blockSignals( b );
+  mVisibilityGroup->blockSignals( b );
+  mSortingGroup->blockSignals( b );
+  mFilteringGroup->blockSignals( b );
+  mScalingGroup->blockSignals( b );
+  mOutputGroup->blockSignals( b );
 }
