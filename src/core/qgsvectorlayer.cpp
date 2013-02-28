@@ -3717,7 +3717,7 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
       break;
     }
     default:
-      QgsDebugMsg( "Unknown WkbType ENCOUNTERED" );
+      QgsDebugMsg( QString( "Unknown WkbType 0x%1 ENCOUNTERED" ).arg( wkbType, 0, 16 ) );
       break;
   }
 }
