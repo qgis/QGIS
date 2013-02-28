@@ -24,7 +24,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from osgeo import gdal
-from gdalconst import *
+from osgeo.gdalconst import *
 import struct
 
 def scanraster(layer, progress):
