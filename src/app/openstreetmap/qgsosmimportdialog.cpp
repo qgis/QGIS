@@ -105,7 +105,7 @@ void QgsOSMImportDialog::onOK()
 
   if ( !res )
   {
-    QMessageBox::critical( this, tr( "OpenStreetMap import" ), tr( "Failed to import import OSM data:\n%1" ).arg( mImport->errorString() ) );
+    QMessageBox::critical( this, tr( "OpenStreetMap import" ), tr( "Failed to import OSM data:\n%1" ).arg( mImport->errorString() ) );
     return;
   }
 
