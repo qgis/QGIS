@@ -1126,7 +1126,8 @@ void QgsWmsProvider::tileReplyFinished()
 
     QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( !contentType.startsWith( "image/", Qt::CaseInsensitive ) )
+    if ( !contentType.startsWith( "image/", Qt::CaseInsensitive ) &&
+         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) != 0 )
     {
       QByteArray text = reply->readAll();
       if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
@@ -1188,7 +1189,8 @@ void QgsWmsProvider::tileReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( reply->url().toString() ), tr( "WMS" ) );
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL: %2]" )
+                                   .arg( contentType ).arg( reply->url().toString() ), tr( "WMS" ) );
       }
     }
     else
@@ -1263,7 +1265,8 @@ void QgsWmsProvider::cacheReplyFinished()
 
     QString contentType = mCacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) )
+    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) ||
+         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
     {
       QImage myLocalImage = QImage::fromData( mCacheReply->readAll() );
       if ( !myLocalImage.isNull() )
@@ -1273,7 +1276,8 @@ void QgsWmsProvider::cacheReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL:%2]" )
+                                   .arg( contentType ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
       }
     }
     else
@@ -1287,9 +1291,10 @@ void QgsWmsProvider::cacheReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; URL:%3)" )
+        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)" )
                                    .arg( status.toInt() )
                                    .arg( QString::fromUtf8( text ) )
+                                   .arg( contentType )
                                    .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
       }
 
