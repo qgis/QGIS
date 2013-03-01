@@ -69,6 +69,7 @@ bool QgsOSMXmlImport::import()
 
   int retX = sqlite3_exec( mDatabase, "BEGIN", NULL, NULL, 0 );
   Q_ASSERT( retX == SQLITE_OK );
+  Q_UNUSED( retX );
 
   // start parsing
 
@@ -92,6 +93,7 @@ bool QgsOSMXmlImport::import()
 
   int retY = sqlite3_exec( mDatabase, "COMMIT", NULL, NULL, 0 );
   Q_ASSERT( retY == SQLITE_OK );
+  Q_UNUSED( retY );
 
   createIndexes();
 
@@ -301,8 +303,8 @@ void QgsOSMXmlImport::readNode( QXmlStreamReader& xml )
 void QgsOSMXmlImport::readTag( bool way, QgsOSMId id, QXmlStreamReader& xml )
 {
   QXmlStreamAttributes attrs = xml.attributes();
-  QByteArray k = attrs.value( "k" ).toUtf8();
-  QByteArray v = attrs.value( "v" ).toUtf8();
+  QByteArray k = attrs.value( "k" ).toString().toUtf8();
+  QByteArray v = attrs.value( "v" ).toString().toUtf8();
   xml.skipCurrentElement();
 
   sqlite3_stmt* stmtInsertTag = way ? mStmtInsertWayTag : mStmtInsertNodeTag;

@@ -32,10 +32,10 @@ QgsOSMDownloadDialog::QgsOSMDownloadDialog( QWidget* parent )
 {
   setupUi( this );
 
-  editXMin->setValidator( new QDoubleValidator( -180, 180, 6 ) );
-  editXMax->setValidator( new QDoubleValidator( -180, 180, 6 ) );
-  editYMin->setValidator( new QDoubleValidator( -90, 90, 6 ) );
-  editYMax->setValidator( new QDoubleValidator( -90, 90, 6 ) );
+  editXMin->setValidator( new QDoubleValidator( -180.0, 180.0, 6, this ) );
+  editXMax->setValidator( new QDoubleValidator( -180.0, 180.0, 6, this ) );
+  editYMin->setValidator( new QDoubleValidator( -90.0, 90.0, 6, this ) );
+  editYMax->setValidator( new QDoubleValidator( -90.0, 90.0, 6, this ) );
 
   populateLayers();
   onExtentCanvas();

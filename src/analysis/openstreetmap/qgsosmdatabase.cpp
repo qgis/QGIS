@@ -318,6 +318,7 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
 
   int retX = sqlite3_exec( mDatabase, "BEGIN", NULL, NULL, 0 );
   Q_ASSERT( retX == SQLITE_OK );
+  Q_UNUSED( retX );
 
   if ( type == Polyline || type == Polygon )
     exportSpatiaLiteWays( type == Polygon, tableName, tagKeys );
@@ -328,6 +329,7 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
 
   int retY = sqlite3_exec( mDatabase, "COMMIT", NULL, NULL, 0 );
   Q_ASSERT( retY == SQLITE_OK );
+  Q_UNUSED( retY );
 
   if ( !createSpatialIndex( tableName ) )
     return false;
