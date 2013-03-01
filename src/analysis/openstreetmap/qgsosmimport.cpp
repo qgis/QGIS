@@ -141,7 +141,7 @@ bool QgsOSMXmlImport::createDatabase()
   {
     "PRAGMA cache_size = 100000", // TODO!!!
     "PRAGMA synchronous = OFF", // TODO!!!
-    "SELECT InitSpatialMetadata('WGS84')",
+    "SELECT InitSpatialMetadata()",
     "CREATE TABLE nodes ( id INTEGER PRIMARY KEY, lat REAL, lon REAL )",
     "CREATE TABLE nodes_tags ( id INTEGER, k TEXT, v TEXT )",
     "CREATE TABLE ways ( id INTEGER PRIMARY KEY )",
