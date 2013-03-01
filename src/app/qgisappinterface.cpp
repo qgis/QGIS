@@ -530,7 +530,14 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
     return false;
 
   QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, -1, -1, QgisApp::instance() );
-  return action.editFeature();
+  if (vlayer->isEditable())
+  {
+    return action.editFeature();
+  }
+  else
+  {
+      return action.viewFeatureForm();
+  }
 }
 
 QList<QgsMapLayer *> QgisAppInterface::editableLayers( bool modified ) const
