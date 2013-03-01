@@ -493,7 +493,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   }
 
   //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18 
-  if ( e->matches( QKeySequence::Paste ) || (e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::AltModifier) )
+  if ( e->matches( QKeySequence::Paste ) || (e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier) )
   {
     QDomDocument doc;
     QClipboard *clipboard = QApplication::clipboard();
@@ -505,7 +505,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         if ( composition() )
         {
           QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
-          bool pasteInPlace = (e->modifiers() & Qt::AltModifier);
+          bool pasteInPlace = (e->modifiers() & Qt::ShiftModifier);
           composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
         }
       }
