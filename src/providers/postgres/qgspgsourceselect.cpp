@@ -467,7 +467,6 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
             addSearchGeometryColumn( layer );
             type = "";
-            srid = "";
           }
         }
         QgsDebugMsg( QString( "adding table %1.%2" ).arg( layer.schemaName ).arg( layer.tableName ) );
