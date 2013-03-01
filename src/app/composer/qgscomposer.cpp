@@ -179,6 +179,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   composerMenu->addMenu( mPrintComposersMenu );
 
   composerMenu->addSeparator();
+  composerMenu->addAction( mActionNewFromTemplate );
   composerMenu->addAction( mActionLoadFromTemplate );
   composerMenu->addAction( mActionSaveAsTemplate );
   composerMenu->addSeparator();
@@ -362,6 +363,7 @@ void QgsComposer::setupTheme()
   mActionNewComposer->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.png" ) );
   mActionDuplicateComposer->setIcon( QgsApplication::getThemeIcon( "/mActionDuplicateComposer.png" ) );
   mActionComposerManager->setIcon( QgsApplication::getThemeIcon( "/mActionComposerManager.png" ) );
+  mActionNewFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionNewComposer.png" ) );
   mActionLoadFromTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.png" ) );
   mActionSaveAsTemplate->setIcon( QgsApplication::getThemeIcon( "/mActionFileSaveAs.png" ) );
   mActionExportAsImage->setIcon( QgsApplication::getThemeIcon( "/mActionSaveMapAsImage.png" ) );
@@ -1434,7 +1436,17 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   }
 }
 
+void QgsComposer::on_mActionNewFromTemplate_triggered()
+{
+  loadTemplate( true );
+}
+
 void QgsComposer::on_mActionLoadFromTemplate_triggered()
+{
+  loadTemplate( false );
+}
+
+void QgsComposer::loadTemplate( bool newCompser )
 {
   QSettings settings;
   QString openFileDir = settings.value( "UI/lastComposerTemplateDir", "" ).toString();
@@ -1451,16 +1463,49 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
   QFile templateFile( openFileString );
   if ( !templateFile.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::warning( 0, tr( "Read error" ), tr( "Error, could not read file" ) );
+    QMessageBox::warning( this, tr( "Read error" ), tr( "Error, could not read file" ) );
     return;
   }
 
-  if ( mComposition )
+  QgsComposer* c = 0;
+  QgsComposition* comp = 0;
+
+  if ( newCompser )
+  {
+    QString newTitle = mQgis->uniqueComposerTitle( this, true );
+    if ( newTitle.isNull() )
+    {
+      return;
+    }
+    c = mQgis->createNewComposer( newTitle );
+    if ( !c )
+    {
+      QMessageBox::warning( this, tr( "Composer error" ), tr( "Error, could not create new composer" ) );
+      return;
+    }
+    comp = c->composition();
+  }
+  else
+  {
+    c = this;
+    comp = mComposition;
+  }
+
+  if ( comp )
   {
     QDomDocument templateDoc;
     if ( templateDoc.setContent( &templateFile ) )
     {
-      mComposition->loadFromTemplate( templateDoc, 0, false );
+      // provide feedback, since composer will be hidden when loading template (much faster)
+      QDialog* dlg = busyIndicatorDialog( tr( "Loading template into composer..." ), 0 );
+      dlg->setStyleSheet( mQgis->styleSheet() );
+      dlg->show();
+
+      c->hide();
+      comp->loadFromTemplate( templateDoc, 0, false );
+      c->activate();
+
+      dlg->close();
     }
   }
 }

@@ -84,6 +84,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     const QString& title() const {return mTitle;}
     void setTitle( const QString& title );
 
+    //! Load template into current or blank composer
+    //! @param newCompser whether to create a new composer first
+    //! @note added in 1.9
+    void loadTemplate( bool newCompser );
+
     //! Modal busy indicator dialog with no buttons that deletes on close
     //! @param message text to show above busy progress indicator
     //! @note added in 1.9
@@ -191,6 +196,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Save composer as template
     void on_mActionSaveAsTemplate_triggered();
+
+    //! Load template into blank composer
+    //! @note added in 1.9
+    void on_mActionNewFromTemplate_triggered();
 
     void on_mActionLoadFromTemplate_triggered();
 

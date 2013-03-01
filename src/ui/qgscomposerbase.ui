@@ -143,6 +143,9 @@
    <property name="text">
     <string>Zoom Full</string>
    </property>
+   <property name="toolTip">
+    <string>Zoom full</string>
+   </property>
   </action>
   <action name="mActionZoomIn">
    <property name="icon">
@@ -152,6 +155,9 @@
    <property name="text">
     <string>Zoom In</string>
    </property>
+   <property name="toolTip">
+    <string>Zoom in</string>
+   </property>
   </action>
   <action name="mActionZoomOut">
    <property name="icon">
@@ -160,6 +166,9 @@
    </property>
    <property name="text">
     <string>Zoom Out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom out</string>
    </property>
   </action>
   <action name="mActionAddNewMap">
@@ -218,6 +227,9 @@
    <property name="text">
     <string>Export as Image...</string>
    </property>
+   <property name="toolTip">
+    <string>Export as image</string>
+   </property>
   </action>
   <action name="mActionExportAsPDF">
    <property name="icon">
@@ -268,6 +280,9 @@
    </property>
    <property name="text">
     <string>Add Image</string>
+   </property>
+   <property name="toolTip">
+    <string>Add image</string>
    </property>
   </action>
   <action name="mActionMoveItemContent">
@@ -328,17 +343,23 @@
   </action>
   <action name="mActionLoadFromTemplate">
    <property name="text">
-    <string>Load From template</string>
+    <string>Load from Template</string>
+   </property>
+   <property name="toolTip">
+    <string>Load from template</string>
    </property>
   </action>
   <action name="mActionSaveAsTemplate">
    <property name="text">
+    <string>Save as Template</string>
+   </property>
+   <property name="toolTip">
     <string>Save as template</string>
    </property>
   </action>
   <action name="mActionAlignLeft">
    <property name="text">
-    <string>Align left</string>
+    <string>Align Left</string>
    </property>
    <property name="toolTip">
     <string>Align selected items left</string>
@@ -346,7 +367,7 @@
   </action>
   <action name="mActionAlignHCenter">
    <property name="text">
-    <string>Align center</string>
+    <string>Align Center</string>
    </property>
    <property name="toolTip">
     <string>Align center horizontal</string>
@@ -354,7 +375,7 @@
   </action>
   <action name="mActionAlignRight">
    <property name="text">
-    <string>Align right</string>
+    <string>Align Right</string>
    </property>
    <property name="toolTip">
     <string>Align selected items right</string>
@@ -362,7 +383,7 @@
   </action>
   <action name="mActionAlignTop">
    <property name="text">
-    <string>Align top</string>
+    <string>Align Top</string>
    </property>
    <property name="toolTip">
     <string>Align selected items to top</string>
@@ -370,7 +391,7 @@
   </action>
   <action name="mActionAlignVCenter">
    <property name="text">
-    <string>Align center vertical</string>
+    <string>Align Center Vertical</string>
    </property>
    <property name="toolTip">
     <string>Align center vertical</string>
@@ -378,7 +399,7 @@
   </action>
   <action name="mActionAlignBottom">
    <property name="text">
-    <string>Align bottom</string>
+    <string>Align Bottom</string>
    </property>
    <property name="toolTip">
     <string>Align selected items bottom</string>
@@ -400,6 +421,9 @@
     <bool>true</bool>
    </property>
    <property name="text">
+    <string>Add Arrow</string>
+   </property>
+   <property name="toolTip">
     <string>Add arrow</string>
    </property>
   </action>
@@ -408,15 +432,18 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Add table</string>
+    <string>Add Table</string>
    </property>
    <property name="toolTip">
-    <string>Adds attribute table</string>
+    <string>Add attribute table</string>
    </property>
   </action>
   <action name="mActionPageSetup">
    <property name="text">
     <string>Page Setup</string>
+   </property>
+   <property name="toolTip">
+    <string>Page setup</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
@@ -461,7 +488,7 @@
     <string>Add Rectangle</string>
    </property>
    <property name="toolTip">
-    <string>Add Rectangle</string>
+    <string>Add rectangle</string>
    </property>
   </action>
   <action name="mActionAddTriangle">
@@ -472,7 +499,7 @@
     <string>Add Triangle</string>
    </property>
    <property name="toolTip">
-    <string>Add Triangle</string>
+    <string>Add triangle</string>
    </property>
   </action>
   <action name="mActionAddEllipse">
@@ -483,7 +510,7 @@
     <string>Add Ellipse</string>
    </property>
    <property name="toolTip">
-    <string>Add Ellipse</string>
+    <string>Add ellipse</string>
    </property>
   </action>
   <action name="mActionAddHtml">
@@ -502,7 +529,7 @@
     <string>Composer Manager</string>
    </property>
    <property name="toolTip">
-    <string>Composer Manager</string>
+    <string>Composer manager</string>
    </property>
   </action>
   <action name="mActionNewComposer">
@@ -510,7 +537,7 @@
     <string>&amp;New Composer</string>
    </property>
    <property name="toolTip">
-    <string>New Composer</string>
+    <string>New composer</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -521,7 +548,7 @@
     <string>&amp;Save Project</string>
    </property>
    <property name="toolTip">
-    <string>Save Project</string>
+    <string>Save project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -532,7 +559,15 @@
     <string>&amp;Duplicate Composer</string>
    </property>
    <property name="toolTip">
-    <string>Duplicate Composer</string>
+    <string>Duplicate composer</string>
+   </property>
+  </action>
+  <action name="mActionNewFromTemplate">
+   <property name="text">
+    <string>New from Template</string>
+   </property>
+   <property name="toolTip">
+    <string>New from template</string>
    </property>
   </action>
  </widget>
