@@ -149,7 +149,7 @@ IF (NOT ANDROID)
 ENDIF (NOT ANDROID)
 
 ADD_DEPENDENCIES(qgis_analysis qgis_core)
-TARGET_LINK_LIBRARIES(qgis_analysis qgis_core)
+TARGET_LINK_LIBRARIES(qgis_analysis qgis_core ${SQLITE3_LIBRARY} )
 
 # install
 
