@@ -20,11 +20,14 @@
 #include "qgscomposer.h"
 #include "qgslogger.h"
 
+#include <QDesktopServices>
 #include <QDialog>
 #include <QDir>
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QListWidgetItem>
 #include <QMessageBox>
+#include <QUrl>
 #include <QSettings>
 
 QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
@@ -65,6 +68,7 @@ QgsComposerManager::~QgsComposerManager()
 
 void QgsComposerManager::initialize()
 {
+  QSettings settings;
   QSet<QgsComposer*> composers = QgisApp::instance()->printComposers();
   QSet<QgsComposer*>::const_iterator it = composers.constBegin();
   for ( ; it != composers.constEnd(); ++it )
@@ -75,24 +79,42 @@ void QgsComposerManager::initialize()
   }
 
   mTemplate->addItem( tr( "Empty composer" ) );
+  mTemplate->addItem( tr( "Specific" ) );
 
-  QMap<QString, QString> templateMap = defaultTemplates();
-  if ( templateMap.size() > 0 )
+  mUserTemplatesDir = QgsApplication::qgisSettingsDirPath() + "/composer_templates";
+  QMap<QString, QString> userTemplateMap = defaultTemplates( true );
+  if ( userTemplateMap.size() > 0 )
   {
-    QMap<QString, QString>::const_iterator templateIt = templateMap.constBegin();
-    for ( ; templateIt != templateMap.constEnd(); ++templateIt )
+    mTemplate->insertSeparator( mTemplate->count() );
+    QMap<QString, QString>::const_iterator templateIt = userTemplateMap.constBegin();
+    for ( ; templateIt != userTemplateMap.constEnd(); ++templateIt )
     {
       mTemplate->addItem( templateIt.key(), templateIt.value() );
     }
   }
+
+  mDefaultTemplatesDir = QgsApplication::pkgDataPath() + "/composer_templates";
+  QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
+  if ( defaultTemplateMap.size() > 0 )
+  {
+    mTemplate->insertSeparator( mTemplate->count() );
+    QMap<QString, QString>::const_iterator templateIt = defaultTemplateMap.constBegin();
+    for ( ; templateIt != defaultTemplateMap.constEnd(); ++templateIt )
+    {
+      mTemplate->addItem( templateIt.key(), templateIt.value() );
+    }
+  }
+
+  mTemplatePathLineEdit->setText( settings.value( "/UI/ComposerManager/templatePath", QString( "" ) ).toString() );
 }
 
-QMap<QString, QString> QgsComposerManager::defaultTemplates() const
+QMap<QString, QString> QgsComposerManager::defaultTemplates( bool fromUser ) const
 {
   QMap<QString, QString> templateMap;
 
   //search for default templates in $pkgDataPath/composer_templates
-  QDir defaultTemplateDir( QgsApplication::pkgDataPath() + "/composer_templates" );
+  // user templates in $qgisSettingsDirPath/composer_templates
+  QDir defaultTemplateDir( fromUser ? mUserTemplatesDir : mDefaultTemplatesDir );
   if ( !defaultTemplateDir.exists() )
   {
     return templateMap;
@@ -109,7 +131,33 @@ QMap<QString, QString> QgsComposerManager::defaultTemplates() const
 
 void QgsComposerManager::on_mAddButton_clicked()
 {
+  QFile templateFile;
+  bool loadingTemplate = ( mTemplate->currentIndex() > 0 );
+  if ( loadingTemplate )
+  {
+    if ( mTemplate->currentIndex() == 1 )
+    {
+      templateFile.setFileName( mTemplatePathLineEdit->text() );
+    }
+    else
+    {
+      templateFile.setFileName( mTemplate->itemData( mTemplate->currentIndex() ).toString() );
+    }
+
+    if ( !templateFile.exists() )
+    {
+      QMessageBox::warning( this, tr( "Template error" ), tr( "Error, template file not found" ) );
+      return;
+    }
+    if ( !templateFile.open( QIODevice::ReadOnly ) )
+    {
+      QMessageBox::warning( this, tr( "Template error" ), tr( "Error, could not read file" ) );
+      return;
+    }
+  }
+
   QgsComposer* newComposer = 0;
+  bool loadedOK = false;
 
   QString title = QgisApp::instance()->uniqueComposerTitle( this, true );
   if ( title.isNull() )
@@ -120,25 +168,94 @@ void QgsComposerManager::on_mAddButton_clicked()
   newComposer = QgisApp::instance()->createNewComposer( title );
   if ( !newComposer )
   {
+    QMessageBox::warning( this, tr( "Composer error" ), tr( "Error, could not create composer" ) );
     return;
   }
+  else
+  {
+    loadedOK = true;
+  }
 
-  if ( mTemplate->currentIndex() > 0 )
+  if ( loadingTemplate )
   {
     QDomDocument templateDoc;
-    QFile templateFile( mTemplate->itemData( mTemplate->currentIndex() ).toString() );
-    if ( templateFile.open( QIODevice::ReadOnly ) )
+    if ( templateDoc.setContent( &templateFile, false ) )
     {
-      if ( templateDoc.setContent( &templateFile, false ) )
-      {
-        newComposer->readXML( templateDoc );
-      }
+      // provide feedback, since composer will be hidden when loading template (much faster)
+      // (not needed for empty composer)
+      QDialog* dlg = newComposer->busyIndicatorDialog( tr( "Loading template into composer..." ), this );
+      dlg->show();
+      newComposer->hide();
+      loadedOK = newComposer->composition()->loadFromTemplate( templateDoc, 0, false );
+      newComposer->activate();
+      dlg->close();
     }
   }
 
-  QListWidgetItem* item = new QListWidgetItem( newComposer->title(), mComposerListWidget );
-  item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
-  mItemComposerMap.insert( item, newComposer );
+  if ( loadedOK )
+  {
+    // do not close on Add, since user may want to add multiple composers from templates
+    QListWidgetItem* item = new QListWidgetItem( newComposer->title(), mComposerListWidget );
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+    mItemComposerMap.insert( item, newComposer );
+    mComposerListWidget->setCurrentItem( item );
+    mComposerListWidget->setFocus();
+  }
+  else
+  {
+    if ( newComposer )
+    {
+      newComposer->close();
+      QgisApp::instance()->deleteComposer( newComposer );
+      newComposer = 0;
+    }
+    QMessageBox::warning( this, tr( "Template error" ), tr( "Error, could not load template file" ) );
+  }
+}
+
+void QgsComposerManager::on_mTemplate_currentIndexChanged( int indx )
+{
+  bool specific = ( indx == 1 ); // comes just after empty template
+  mTemplatePathLineEdit->setEnabled( specific );
+  mTemplatePathBtn->setEnabled( specific );
+}
+
+void QgsComposerManager::on_mTemplatePathBtn_pressed()
+{
+  QSettings settings;
+  QString lastTmplDir = settings.value( "/UI/lastComposerTemplateDir", "." ).toString();
+  QString tmplPath = QFileDialog::getOpenFileName( this,
+                     tr( "Choose template" ),
+                     lastTmplDir,
+                     tr( "Composer templates" ) + " (*.qpt)" );
+  if ( !tmplPath.isNull() )
+  {
+    mTemplatePathLineEdit->setText( tmplPath );
+    settings.setValue( "UI/ComposerManager/templatePath", tmplPath );
+    QFileInfo tmplFileInfo( tmplPath );
+    settings.setValue( "UI/lastComposerTemplateDir", tmplFileInfo.absolutePath() );
+  }
+}
+
+void QgsComposerManager::on_mTemplatesDefaultDirBtn_pressed()
+{
+  openLocalDirectory( mDefaultTemplatesDir );
+}
+
+void QgsComposerManager::on_mTemplatesUserDirBtn_pressed()
+{
+  openLocalDirectory( mUserTemplatesDir );
+}
+
+void QgsComposerManager::openLocalDirectory( const QString& localDirPath )
+{
+  QDir localDir;
+  if ( !localDir.mkpath( localDirPath ) )
+  {
+    QMessageBox::warning( this, tr( "File system error" ), tr( "Error, could not open or create local directory" ) );
+    return;
+  }
+  QDesktopServices::openUrl( QUrl::fromLocalFile( localDirPath ) );
 }
 
 void QgsComposerManager::remove_clicked()
@@ -150,7 +267,7 @@ void QgsComposerManager::remove_clicked()
   }
 
   //ask for confirmation
-  if ( QMessageBox::warning( 0, tr( "Remove composer" ), tr( "Do you really want to remove the map composer '%1'?" ).arg( item->text() ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+  if ( QMessageBox::warning( this, tr( "Remove composer" ), tr( "Do you really want to remove the map composer '%1'?" ).arg( item->text() ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
   {
     return;
   }
@@ -291,7 +408,7 @@ void QgsComposerManager::rename_clicked()
   {
     return;
   }
-  QString newTitle = QInputDialog::getText( 0, tr( "Change title" ), tr( "Title" ), QLineEdit::Normal, currentTitle );
+  QString newTitle = QgisApp::instance()->uniqueComposerTitle( this, false, currentTitle );
   if ( newTitle.isNull() )
   {
     return;

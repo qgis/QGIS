@@ -1419,7 +1419,7 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
     QString saveFileNameWithSuffix = saveFileName.append( ".qpt" );
     saveFileInfo = QFileInfo( saveFileNameWithSuffix );
   }
-  settings.setValue( "UI/LastComposerTemplateDir", saveFileInfo.absolutePath() );
+  settings.setValue( "UI/lastComposerTemplateDir", saveFileInfo.absolutePath() );
 
   QFile templateFile( saveFileName );
   if ( !templateFile.open( QIODevice::WriteOnly ) )
