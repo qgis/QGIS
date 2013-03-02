@@ -301,7 +301,17 @@ void QgsComposerManager::show_clicked()
       c = it.value();
       if ( c )
       {
+        // extra activation steps for Windows
+        bool shown = c->isVisible();
+        hide();
+
         c->activate();
+
+        // extra activation steps for Windows
+        if ( !shown )
+        {
+          c->on_mActionZoomAll_triggered();
+        }
       }
     }
   }
@@ -378,6 +388,10 @@ void QgsComposerManager::duplicate_clicked()
 
   if ( newComposer )
   {
+    // extra activation steps for Windows
+    hide();
+    newComposer->activate();
+
     // no need to add new composer to list widget, if just closing this->exec();
     close();
   }

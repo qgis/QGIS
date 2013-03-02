@@ -4780,7 +4780,8 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
     mPrintComposers.insert( composer );
     mPrintComposersMenu->addAction( composer->windowAction() );
 #ifndef Q_OS_MACX
-    composer->showMinimized();
+    composer->setWindowState( Qt::WindowMinimized );
+    composer->show();
 #endif
     composer->zoomFull();
     if ( composerNodes.at( i ).toElement().attribute( "visible", "1" ).toInt() < 1 )
