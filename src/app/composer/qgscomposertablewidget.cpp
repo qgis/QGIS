@@ -55,7 +55,7 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   if ( mComposerTable )
   {
     QObject::connect( mComposerTable, SIGNAL( maximumNumberOfFeaturesChanged( int ) ), this, SLOT( setMaximumNumberOfFeatures( int ) ) );
-    QObject::connect( mComposerTable, SIGNAL( itemChanged ), this, SLOT( updateGuiElements() ) );
+    QObject::connect( mComposerTable, SIGNAL( itemChanged() ), this, SLOT( updateGuiElements() ) );
   }
 }
 
