@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>436</width>
-    <height>761</height>
+    <width>337</width>
+    <height>757</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -52,8 +52,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>434</width>
-        <height>739</height>
+        <width>320</width>
+        <height>792</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -141,6 +141,9 @@
           <property name="labelAlignment">
            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
           </property>
+          <item row="0" column="0" colspan="2">
+           <widget class="QComboBox" name="mUnitsComboBox"/>
+          </item>
           <item row="1" column="0">
            <widget class="QLabel" name="mUnitLabelLabel">
             <property name="text">
@@ -176,9 +179,6 @@
              <double>9999999999999.000000000000000</double>
             </property>
            </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QComboBox" name="mUnitsComboBox"/>
           </item>
          </layout>
         </widget>
@@ -287,7 +287,7 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_4">
           <property name="fieldGrowthPolicy">
@@ -384,50 +384,42 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout2">
-            <item>
-             <widget class="QPushButton" name="mFontButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Font...</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mFontColorPushButton">
-              <property name="text">
-               <string>Font color...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QPushButton" name="mFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font...</string>
+            </property>
+           </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout3">
-            <item>
-             <widget class="QPushButton" name="mColorPushButton">
-              <property name="text">
-               <string>Fill color...</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mStrokeColorPushButton">
-              <property name="text">
-               <string>Stroke color...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QPushButton" name="mFontColorPushButton">
+            <property name="text">
+             <string>Font color...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mColorPushButton">
+            <property name="text">
+             <string>Fill color...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mStrokeColorPushButton">
+            <property name="text">
+             <string>Stroke color...</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

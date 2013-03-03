@@ -118,6 +118,9 @@
             <property name="text">
              <string>Width</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -143,6 +146,9 @@
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>Height</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -170,6 +176,9 @@
             <property name="text">
              <string>Units</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="3" column="1">
@@ -189,6 +198,9 @@
            <widget class="QLabel" name="mNumPagesLabel">
             <property name="text">
              <string>Number of pages</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -263,12 +275,6 @@
           </item>
           <item row="0" column="1">
            <widget class="QSpinBox" name="mResolutionSpinBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="suffix">
              <string> dpi</string>
             </property>
@@ -309,12 +315,6 @@
           </property>
           <item row="0" column="1">
            <widget class="QDoubleSpinBox" name="mGridResolutionSpinBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="prefix">
              <string/>
             </property>
@@ -334,10 +334,13 @@
             <property name="text">
              <string>Grid offset</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
              <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
               <property name="prefix">
@@ -365,16 +368,13 @@
             <property name="text">
              <string>Pen width</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="prefix">
              <string/>
             </property>
@@ -442,6 +442,9 @@
             <property name="text">
              <string>Selection tolerance</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="5" column="1">
@@ -458,6 +461,9 @@
            <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Spacing</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -540,7 +546,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mOffsetXSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

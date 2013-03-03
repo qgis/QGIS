@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>443</width>
-    <height>712</height>
+    <width>304</width>
+    <height>705</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -52,8 +52,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>441</width>
-        <height>690</height>
+        <width>302</width>
+        <height>683</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -80,46 +80,38 @@
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QCheckBox" name="mHtmlCheckBox">
-              <property name="text">
-               <string>Render as HTML</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mInsertExpressionButton">
-              <property name="text">
-               <string>Insert an expression</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QCheckBox" name="mHtmlCheckBox">
+            <property name="text">
+             <string>Render as HTML</string>
+            </property>
+           </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
-             <widget class="QPushButton" name="mFontButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Font</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mFontColorButton">
-              <property name="text">
-               <string>Font color...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QPushButton" name="mInsertExpressionButton">
+            <property name="text">
+             <string>Insert an expression</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mFontColorButton">
+            <property name="text">
+             <string>Font color...</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -138,21 +130,34 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_4">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+         <layout class="QGridLayout" name="gridLayout">
+          <property name="verticalSpacing">
+           <number>3</number>
           </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <item row="0" column="0">
+          <item row="1" column="0">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>4</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0" colspan="2">
            <widget class="QLabel" name="mVerticalAlignementLabel">
             <property name="text">
              <string>Vertical</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="3" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
              <widget class="QRadioButton" name="mTopRadioButton">
@@ -182,20 +187,13 @@
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
+                <width>0</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
            </layout>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mHorizontalAlignementLabel">
-            <property name="text">
-             <string>Horizontal</string>
-            </property>
-           </widget>
           </item>
           <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -227,13 +225,20 @@
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
+                <width>0</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
            </layout>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="mHorizontalAlignementLabel">
+            <property name="text">
+             <string>Horizontal</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -250,7 +255,7 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <layout class="QFormLayout" name="formLayout_2">
           <property name="fieldGrowthPolicy">

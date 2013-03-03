@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Attribute Table</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -92,13 +92,6 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
-           <widget class="QCheckBox" name="mShowOnlyVisibleFeaturesCheckBox">
-            <property name="text">
-             <string>Show only visible features</string>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="0">
            <widget class="QLabel" name="mComposerMapLabel">
             <property name="text">
@@ -146,6 +139,13 @@
           </item>
           <item row="5" column="1">
            <widget class="QDoubleSpinBox" name="mMarginSpinBox"/>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="mShowOnlyVisibleFeaturesCheckBox">
+            <property name="text">
+             <string>Show only visible features</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -233,20 +233,27 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="QPushButton" name="mHeaderFontPushButton">
-            <property name="text">
-             <string>Header Font...</string>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="spacing">
+             <number>6</number>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="mContentFontPushButton">
-            <property name="text">
-             <string>Content Font...</string>
-            </property>
-           </widget>
+            <item>
+             <widget class="QPushButton" name="mHeaderFontPushButton">
+              <property name="text">
+               <string>Header Font...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mContentFontPushButton">
+              <property name="text">
+               <string>Content Font...</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>

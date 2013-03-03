@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Atlas Generation</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -100,8 +100,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>431</width>
-           <height>546</height>
+           <width>416</width>
+           <height>562</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
@@ -208,19 +208,22 @@
             <property name="collapsed" stdset="0">
              <bool>true</bool>
             </property>
-            <layout class="QFormLayout" name="formLayout">
-             <property name="fieldGrowthPolicy">
-              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-             </property>
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="mAtlasSortFeatureCheckBox">
-               <property name="text">
-                <string>Sort by</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
               <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QCheckBox" name="mAtlasSortFeatureCheckBox">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Sort by</string>
+                 </property>
+                </widget>
+               </item>
                <item>
                 <widget class="QComboBox" name="mAtlasSortFeatureKeyComboBox"/>
                </item>
@@ -304,14 +307,7 @@
             <property name="collapsed" stdset="0">
              <bool>false</bool>
             </property>
-            <layout class="QFormLayout" name="formLayout_3">
-             <item row="1" column="0">
-              <widget class="QCheckBox" name="mAtlasFixedScaleCheckBox">
-               <property name="text">
-                <string>Fixed scale</string>
-               </property>
-              </widget>
-             </item>
+            <layout class="QGridLayout" name="gridLayout_2">
              <item row="0" column="0">
               <widget class="QLabel" name="label_3">
                <property name="text">
@@ -321,6 +317,12 @@
              </item>
              <item row="0" column="1">
               <widget class="QSpinBox" name="mAtlasMarginSpinBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="suffix">
                 <string>%</string>
                </property>
@@ -329,6 +331,13 @@
                </property>
                <property name="value">
                 <number>10</number>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QCheckBox" name="mAtlasFixedScaleCheckBox">
+               <property name="text">
+                <string>Fixed scale</string>
                </property>
               </widget>
              </item>
@@ -352,16 +361,26 @@
             <property name="collapsed" stdset="0">
              <bool>false</bool>
             </property>
-            <layout class="QFormLayout" name="formLayout_5">
-             <item row="0" column="0">
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="2" column="0" colspan="2">
+              <widget class="QCheckBox" name="mAtlasSingleFileCheckBox">
+               <property name="text">
+                <string>Single file export when possible</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="2">
               <widget class="QLabel" name="label_4">
                <property name="text">
                 <string>Output filename expression</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item row="1" column="0" colspan="2">
               <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <property name="leftMargin">
+                <number>12</number>
+               </property>
                <item>
                 <widget class="QLineEdit" name="mAtlasFilenamePatternEdit"/>
                </item>
@@ -373,13 +392,6 @@
                 </widget>
                </item>
               </layout>
-             </item>
-             <item row="1" column="0" colspan="2">
-              <widget class="QCheckBox" name="mAtlasSingleFileCheckBox">
-               <property name="text">
-                <string>Single file export when possible</string>
-               </property>
-              </widget>
              </item>
             </layout>
            </widget>

@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-150</y>
         <width>376</width>
-        <height>990</height>
+        <height>1186</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -83,6 +83,9 @@
             <property name="text">
              <string>&amp;Title</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
             <property name="buddy">
              <cstring>mTitleLineEdit</cstring>
             </property>
@@ -96,6 +99,9 @@
             <property name="text">
              <string>Map</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -105,6 +111,9 @@
            <widget class="QLabel" name="label">
             <property name="text">
              <string>Wrap text on</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -166,38 +175,16 @@
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
+                <width>0</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
             </item>
-            <item>
-             <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Auto Update</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
            </layout>
           </item>
           <item>
            <widget class="QTreeView" name="mItemTreeView">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::ContiguousSelection</enum>
             </property>
@@ -234,8 +221,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
              </widget>
@@ -251,8 +238,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
              </widget>
@@ -268,8 +255,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
              </widget>
@@ -285,8 +272,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
              </widget>
@@ -302,8 +289,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
              </widget>
@@ -325,8 +312,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>24</width>
-                <height>24</height>
+                <width>20</width>
+                <height>20</height>
                </size>
               </property>
               <property name="checkable">
@@ -341,7 +328,7 @@
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
+                <width>0</width>
                 <height>20</height>
                </size>
               </property>
@@ -349,17 +336,21 @@
             </item>
            </layout>
           </item>
+          <item>
+           <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
+            <property name="text">
+             <string>Auto Update</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mFontsColGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Fonts</string>
          </property>
@@ -367,10 +358,10 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
            <widget class="QPushButton" name="mTitleFontButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -383,28 +374,28 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="mGroupFontButton">
-            <property name="text">
-             <string>Group Font...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+          <item>
            <widget class="QPushButton" name="mLayerFontButton">
             <property name="text">
              <string>Layer Font...</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item>
+           <widget class="QPushButton" name="mGroupFontButton">
+            <property name="text">
+             <string>Group Font...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="mItemFontButton">
             <property name="text">
              <string>Item Font...</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="2">
+          <item>
            <widget class="QPushButton" name="mFontColorPushButton">
             <property name="text">
              <string>Font color...</string>
@@ -512,6 +503,9 @@
             <property name="text">
              <string>Symbol width</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -528,6 +522,9 @@
            <widget class="QLabel" name="label_4">
             <property name="text">
              <string>Symbol height</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -567,6 +564,9 @@
             <property name="text">
              <string>Group Space</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="0" column="1">
@@ -583,6 +583,9 @@
            <widget class="QLabel" name="label_6">
             <property name="text">
              <string>Layer space</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -601,6 +604,9 @@
             <property name="text">
              <string>Symbol space</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="2" column="1">
@@ -618,6 +624,9 @@
             <property name="text">
              <string>Icon label space</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
           <item row="3" column="1">
@@ -634,6 +643,9 @@
            <widget class="QLabel" name="label_9">
             <property name="text">
              <string>Box space</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>

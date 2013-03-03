@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Map options</string>
+   <string>Map Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="spacing">
@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>455</width>
-        <height>1051</height>
+        <y>-215</y>
+        <width>440</width>
+        <height>1303</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -68,12 +68,6 @@
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -146,46 +140,30 @@
            </widget>
           </item>
           <item row="3" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
-            <item>
-             <widget class="QCheckBox" name="mDrawCanvasItemsCheckBox">
-              <property name="text">
-               <string>Draw map canvas items</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QCheckBox" name="mKeepLayerListCheckBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Lock layers for map item</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QCheckBox" name="mDrawCanvasItemsCheckBox">
+            <property name="text">
+             <string>Draw map canvas items</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QCheckBox" name="mKeepLayerListCheckBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Lock layers for map item</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mExtentsCheckBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Extents</string>
          </property>
@@ -196,7 +174,26 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="2">
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="mYMaxLineEdit"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="mXMaxLineEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mXMaxLabel">
+            <property name="text">
+             <string>X max</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mXMaxLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
            <widget class="QLabel" name="mYMinLabel">
             <property name="text">
              <string>Y min</string>
@@ -209,13 +206,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="mXMinLineEdit"/>
-          </item>
-          <item row="0" column="3">
-           <widget class="QLineEdit" name="mYMinLineEdit"/>
-          </item>
-          <item row="1" column="2">
+          <item row="3" column="0">
            <widget class="QLabel" name="mYMaxLabel">
             <property name="text">
              <string>Y max</string>
@@ -225,6 +216,19 @@
             </property>
             <property name="buddy">
              <cstring>mYMaxLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="mXMinLineEdit"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="mYMinLineEdit"/>
+          </item>
+          <item row="4" column="0" colspan="4">
+           <widget class="QPushButton" name="mSetToMapCanvasExtentButton">
+            <property name="text">
+             <string>Set to map canvas extent</string>
             </property>
            </widget>
           </item>
@@ -241,32 +245,6 @@
             </property>
             <property name="buddy">
              <cstring>mXMinLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mXMaxLabel">
-            <property name="text">
-             <string>X max</string>
-            </property>
-            <property name="wordWrap">
-             <bool>false</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mXMaxLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="mXMaxLineEdit"/>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLineEdit" name="mYMaxLineEdit"/>
-          </item>
-          <item row="2" column="0" colspan="4">
-           <widget class="QPushButton" name="mSetToMapCanvasExtentButton">
-            <property name="text">
-             <string>Set to map canvas extent</string>
             </property>
            </widget>
           </item>
@@ -288,7 +266,7 @@
           <string notr="true">composeritem</string>
          </property>
          <property name="collapsed" stdset="0">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <layout class="QFormLayout">
           <property name="fieldGrowthPolicy">
@@ -330,7 +308,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <layout class="QVBoxLayout" name="verticalLayout_7">
             <item>
              <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
               <property name="prefix">
@@ -373,7 +351,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <layout class="QVBoxLayout" name="verticalLayout_8">
             <item>
              <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
               <property name="prefix">
@@ -473,6 +451,9 @@
             <property name="title">
              <string>Draw coordinates</string>
             </property>
+            <property name="flat">
+             <bool>false</bool>
+            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
@@ -488,6 +469,12 @@
              </property>
              <property name="labelAlignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
              </property>
              <item row="0" column="0">
               <widget class="QLabel" name="mAnnotationFormatLabel">
@@ -513,16 +500,12 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
-               </item>
-               <item>
-                <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
-               </item>
-              </layout>
+              <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
              </item>
-             <item row="2" column="0">
+             <item row="2" column="1">
+              <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
+             </item>
+             <item row="3" column="0">
               <widget class="QLabel" name="mAnnotationPositionLabelRight">
                <property name="text">
                 <string>Right</string>
@@ -535,17 +518,13 @@
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
-              <layout class="QHBoxLayout" name="horizontalLayout_6">
-               <item>
-                <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
-               </item>
-               <item>
-                <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
-               </item>
-              </layout>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
              </item>
-             <item row="3" column="0">
+             <item row="4" column="1">
+              <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
+             </item>
+             <item row="5" column="0">
               <widget class="QLabel" name="mAnnotationPositionLabelTop">
                <property name="text">
                 <string>Top</string>
@@ -558,17 +537,13 @@
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
-              <layout class="QHBoxLayout" name="horizontalLayout_7">
-               <item>
-                <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
-               </item>
-               <item>
-                <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
-               </item>
-              </layout>
+             <item row="5" column="1">
+              <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
              </item>
-             <item row="4" column="0">
+             <item row="6" column="1">
+              <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
+             </item>
+             <item row="7" column="0">
               <widget class="QLabel" name="mAnnotationPositionLabelBottom">
                <property name="text">
                 <string>Bottom</string>
@@ -581,31 +556,27 @@
                </property>
               </widget>
              </item>
-             <item row="4" column="1">
-              <layout class="QHBoxLayout" name="horizontalLayout_8">
-               <item>
-                <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
-               </item>
-               <item>
-                <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
-               </item>
-              </layout>
+             <item row="7" column="1">
+              <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
              </item>
-             <item row="5" column="1">
-              <widget class="QPushButton" name="mAnnotationFontButton">
-               <property name="text">
-                <string>Font...</string>
-               </property>
-              </widget>
+             <item row="8" column="1">
+              <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
              </item>
-             <item row="5" column="0">
+             <item row="9" column="0">
               <widget class="QLabel" name="label">
                <property name="text">
                 <string>Font</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="0">
+             <item row="9" column="1">
+              <widget class="QPushButton" name="mAnnotationFontButton">
+               <property name="text">
+                <string>Font...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0">
               <widget class="QLabel" name="mDistanceToFrameLabel">
                <property name="text">
                 <string>Distance to map frame</string>
@@ -618,10 +589,10 @@
                </property>
               </widget>
              </item>
-             <item row="6" column="1">
+             <item row="10" column="1">
               <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
              </item>
-             <item row="7" column="0">
+             <item row="11" column="0">
               <widget class="QLabel" name="mCoordinatePrecisionLabel">
                <property name="text">
                 <string>Coordinate precision</string>
@@ -634,7 +605,7 @@
                </property>
               </widget>
              </item>
-             <item row="7" column="1">
+             <item row="11" column="1">
               <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
              </item>
             </layout>
@@ -645,12 +616,6 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
          <property name="title">
           <string>Overview</string>
          </property>
