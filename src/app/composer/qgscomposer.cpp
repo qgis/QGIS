@@ -281,12 +281,16 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mComposition->setParent( mView );
   mView->setComposition( mComposition );
 
+  int minDockWidth( 335 );
+
   setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
   mGeneralDock = new QDockWidget( tr( "Composition" ), this );
   mGeneralDock->setObjectName( "CompositionDock" );
+  mGeneralDock->setMinimumWidth( minDockWidth );
   mPanelMenu->addAction( mGeneralDock->toggleViewAction() );
   mItemDock = new QDockWidget( tr( "Item Properties" ), this );
   mItemDock->setObjectName( "ItemDock" );
+  mItemDock->setMinimumWidth( minDockWidth );
   mPanelMenu->addAction( mItemDock->toggleViewAction() );
   mUndoDock = new QDockWidget( tr( "Command history" ), this );
   mUndoDock->setObjectName( "CommandDock" );

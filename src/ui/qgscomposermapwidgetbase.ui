@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-215</y>
-        <width>440</width>
-        <height>1303</height>
+        <y>0</y>
+        <width>439</width>
+        <height>1277</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -446,7 +446,7 @@
           <item row="7" column="0" colspan="2">
            <widget class="QgsCollapsibleGroupBoxBasic" name="mDrawAnnotationCheckableGroupBox">
             <property name="enabled">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="title">
              <string>Draw coordinates</string>

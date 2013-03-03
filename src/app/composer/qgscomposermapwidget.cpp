@@ -73,6 +73,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mFrameStyleComboBox->insertItem( 0, tr( "No frame" ) );
   mFrameStyleComboBox->insertItem( 1, tr( "Zebra" ) );
 
+  connect( mGridCheckBox, SIGNAL( toggled( bool ) ),
+           mDrawAnnotationCheckableGroupBox, SLOT( setEnabled( bool ) ) );
+
   if ( composerMap )
   {
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
