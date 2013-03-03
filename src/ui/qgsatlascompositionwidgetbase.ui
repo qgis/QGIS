@@ -27,16 +27,6 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLabel" name="label">
-     <property name="styleSheet">
-      <string notr="true">padding: 2px; font-weight: bold; background-color: rgb(200, 200, 200);</string>
-     </property>
-     <property name="text">
-      <string>Atlas generation</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QFrame" name="verticalFrame">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -100,8 +90,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>416</width>
-           <height>562</height>
+           <width>431</width>
+           <height>566</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
