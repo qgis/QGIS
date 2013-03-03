@@ -48,6 +48,7 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
 
   protected:
     void showEvent( QShowEvent * event );
+    void resizeEvent( QResizeEvent * event );
 
   private slots:
     /**Sets the GUI elements to the values of mPicture*/

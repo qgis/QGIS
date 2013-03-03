@@ -68,25 +68,19 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout_2">
-          <property name="fieldGrowthPolicy">
-           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-          </property>
-          <property name="labelAlignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Path</string>
-            </property>
-            <property name="buddy">
-             <cstring>mPictureLineEdit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Path</string>
+              </property>
+              <property name="buddy">
+               <cstring>mPictureLineEdit</cstring>
+              </property>
+             </widget>
+            </item>
             <item>
              <widget class="QLineEdit" name="mPictureLineEdit"/>
             </item>
@@ -133,6 +127,24 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
+           <widget class="QLabel" name="mPreviewsLoadingLabel">
+            <property name="font">
+             <font>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(19, 133, 54);</string>
+            </property>
+            <property name="text">
+             <string>Loading SVG previews...</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QListWidget" name="mPreviewListWidget">
             <property name="showDropIndicator" stdset="0">
              <bool>false</bool>
@@ -167,7 +179,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="mSearchDirectoriesComboBox"/>
+           <widget class="QComboBox" name="mSearchDirectoriesComboBox">
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+            </property>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout">

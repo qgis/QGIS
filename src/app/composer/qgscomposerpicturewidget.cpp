@@ -39,6 +39,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
   mainLayout->addWidget( itemPropertiesWidget );
 
   setGuiElementValues();
+  mPreviewsLoadingLabel->hide();
 
   mPreviewListWidget->setIconSize( QSize( 30, 30 ) );
 
@@ -487,5 +488,20 @@ void QgsComposerPictureWidget::showEvent( QShowEvent * event )
 {
   Q_UNUSED( event );
   refreshMapComboBox();
+
+  if ( mPreviewListWidget->count() == 0 )
+  {
+    mPreviewListWidget->hide();
+    mPreviewsLoadingLabel->show();
+    addStandardDirectoriesToPreview();
+    mPreviewsLoadingLabel->hide();
+    mPreviewListWidget->show();
+  }
+}
+
+void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )
+{
+  Q_UNUSED( event );
+  mSearchDirectoriesComboBox->setMinimumWidth( mPreviewListWidget->sizeHint().width() );
 }
 
