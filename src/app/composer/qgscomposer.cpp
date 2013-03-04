@@ -748,12 +748,16 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       }
       if ( !atlasOnASingleFile )
       {
+	// bugs #7263 and #6856
+	// QPrinter does not seem to be reset correctly and may cause generated PDFs (all except the first) corrupted
+	// when transparent objects are rendered. We thus use a new QPrinter object here
+	QPrinter multiFilePrinter;
         outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".pdf";
-        mComposition->beginPrintAsPDF( printer, outputFileName );
+	mComposition->beginPrintAsPDF( multiFilePrinter, outputFileName );
         // set the correct resolution
-        mComposition->beginPrint( printer );
-        painter.begin( &printer );
-        mComposition->doPrint( printer, painter );
+        mComposition->beginPrint( multiFilePrinter );
+        painter.begin( &multiFilePrinter );
+        mComposition->doPrint( multiFilePrinter, painter );
         painter.end();
       }
       else
