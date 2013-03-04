@@ -29,7 +29,7 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrasterprojector.h"
 
-#ifdef _MSC_VER
+#if defined(Q_OS_WIN)
 #undef interface
 #endif
 
