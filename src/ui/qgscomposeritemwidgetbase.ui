@@ -318,7 +318,7 @@
         <item>
          <widget class="QSlider" name="mTransparencySlider">
           <property name="maximum">
-           <number>255</number>
+           <number>100</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -327,8 +327,11 @@
         </item>
         <item>
          <widget class="QSpinBox" name="mTransparencySpinBox">
+          <property name="suffix">
+           <string>%</string>
+          </property>
           <property name="maximum">
-           <number>255</number>
+           <number>100</number>
           </property>
          </widget>
         </item>
@@ -395,38 +398,5 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>mTransparencySlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>mTransparencySpinBox</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>255</x>
-     <y>387</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>364</x>
-     <y>389</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mTransparencySpinBox</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>mTransparencySlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>364</x>
-     <y>389</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>271</x>
-     <y>387</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

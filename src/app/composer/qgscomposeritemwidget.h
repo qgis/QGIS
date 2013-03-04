@@ -39,7 +39,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
   public slots:
     void on_mFrameColorButton_clicked();
     void on_mBackgroundColorButton_clicked();
-    void on_mTransparencySlider_sliderReleased();
+    void on_mTransparencySlider_valueChanged( int value );
     void on_mTransparencySpinBox_valueChanged( int value );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mFrameGroupBox_toggled( bool state );

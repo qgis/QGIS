@@ -97,7 +97,7 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
   }
 
   mItem->beginCommand( tr( "Background color changed" ) );
-  newBackgroundColor.setAlpha( mTransparencySlider->value() );
+  newBackgroundColor.setAlpha( 255 - ( mTransparencySpinBox->value() * 2.55 ) );
   mItem->setBrush( QBrush( QColor( newBackgroundColor ), Qt::SolidPattern ) );
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
@@ -123,25 +123,22 @@ void QgsComposerItemWidget::on_mTransparencySpinBox_valueChanged( int value )
   changeItemTransparency( value );
 }
 
-void QgsComposerItemWidget::on_mTransparencySlider_sliderReleased()
+void QgsComposerItemWidget::on_mTransparencySlider_valueChanged( int value )
 {
   if ( !mItem )
   {
     return;
   }
-  int value = mTransparencySlider->value();
-  mTransparencySpinBox->blockSignals( true );
+  // do item updates only off of mTransparencySpinBox valueChanged
   mTransparencySpinBox->setValue( value );
-  mTransparencySpinBox->blockSignals( false );
-  changeItemTransparency( value );
 }
 
 void QgsComposerItemWidget::changeItemTransparency( int value )
 {
-  mItem->beginCommand( tr( "Item Transparency changed" ) );
+  mItem->beginCommand( tr( "Item transparency changed" ) );
   QBrush itemBrush = mItem->brush();
   QColor brushColor = itemBrush.color();
-  brushColor.setAlpha( 255 - value );
+  brushColor.setAlpha( 255 - ( value * 2.55 ) );
   mItem->setBrush( QBrush( brushColor ) );
   mItem->update();
   mItem->endCommand();
@@ -354,8 +351,9 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mItemIdLineEdit->blockSignals( true );
   mTransparencySpinBox->blockSignals( true );
 
-  mTransparencySpinBox->setValue( 255 - mItem->brush().color().alpha() );
-  mTransparencySlider->setValue( 255 - mItem->brush().color().alpha() );
+  int alphaPercent = ( 255 - mItem->brush().color().alpha() ) / 2.55;
+  mTransparencySpinBox->setValue( alphaPercent );
+  mTransparencySlider->setValue( alphaPercent );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
   mItemIdLineEdit->setText( mItem->id() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
