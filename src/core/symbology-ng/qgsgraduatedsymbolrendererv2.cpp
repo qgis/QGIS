@@ -192,7 +192,11 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
     return NULL;
   }
 
-  // find the right category
+  // Null values should not be categorized
+  if ( attrs[mAttrNum].isNull() )
+    return NULL;
+    
+  // find the right category    
   QgsSymbolV2* symbol = symbolForValue( attrs[mAttrNum].toDouble() );
   if ( symbol == NULL )
     return NULL;
@@ -802,8 +806,12 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     lst.append( attrNum );
 
     QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( lst ) );
+    
+    // create list of non-null attribute values
     while ( fit.nextFeature( f ) )
-      values.append( f.attribute( attrNum ).toDouble() );
+      if ( !f.attribute( attrNum ).isNull() )
+        values.append( f.attribute( attrNum ).toDouble() );
+
     // calculate the breaks
     if ( mode == Quantile )
     {
