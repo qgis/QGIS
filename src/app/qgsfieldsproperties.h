@@ -123,6 +123,7 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     QgsAttributesTree* mAttributesTree;
     QgsAttributesList* mAttributesList;
 
+    QMap<int, bool> mFieldEditables;
     QMap<int, QgsVectorLayer::ValueRelationData> mValueRelationData;
     QMap<int, QMap<QString, QVariant> > mValueMaps;
     QMap<int, QgsVectorLayer::RangeData> mRanges;
