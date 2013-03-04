@@ -5311,6 +5311,12 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     }
 
     f.setAttributes( dstAttr );
+
+    //avoid intersection if enabled in digitize settings
+    if ( f.geometry() )
+    {
+      f.geometry()->avoidIntersections();
+    }
   }
 
   pasteVectorLayer->addFeatures( features );
