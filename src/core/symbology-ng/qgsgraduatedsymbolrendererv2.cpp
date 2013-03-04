@@ -193,7 +193,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   }
 
   // Null values should not be categorized
-  if ( attrs[mAttrNum] == "")
+  if ( attrs[mAttrNum].toString().isEmpty() )
     return NULL;
     
   // find the right category    
@@ -809,7 +809,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     
     // create list of non-null attribute values
     while ( fit.nextFeature( f ) )
-      if ( f.attribute( attrNum ) != "" )
+      if ( !f.attribute( attrNum ).toString().isEmpty() )
         values.append( f.attribute( attrNum ).toDouble() );
 
     // calculate the breaks
