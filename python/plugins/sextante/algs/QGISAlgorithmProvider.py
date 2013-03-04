@@ -87,6 +87,7 @@ from sextante.algs.FieldPyculator import FieldsPyculator
 from sextante.algs.JoinAttributes import JoinAttributes
 from sextante.algs.CreateConstantRaster import CreateConstantRaster
 from sextante.algs.PointsLayerFromTable import PointsLayerFromTable
+from sextante.algs.Polygonize import Polygonize
 
 class QGISAlgorithmProvider(AlgorithmProvider):
 
@@ -97,7 +98,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SumLines(), PointsInPolygon(), PointsInPolygonWeighted(), PointsInPolygonUnique(),
                         BasicStatisticsStrings(), BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
                         MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(), PointsLayerFromTable(),
-                        StatisticsByCategories(),ReprojectLayer(),
+                        StatisticsByCategories(),ReprojectLayer(), Polygonize(),
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
                         SimplifyGeometries(), DensifyGeometries(), DensifyGeometriesInterval(),
                         MultipartToSingleparts(), SinglePartsToMultiparts(), PolygonsToLines(),
