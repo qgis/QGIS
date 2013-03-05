@@ -71,7 +71,7 @@ class QgsMssqlGeometryParser
 
   protected:
     void CopyBytes( void* src, int len );
-    void CopyCoordinates( unsigned char* src );
+    void CopyCoordinates( int iPoint );
     void CopyPoint( int iPoint );
     void ReadPoint( int iShape );
     void ReadMultiPoint( int iShape );

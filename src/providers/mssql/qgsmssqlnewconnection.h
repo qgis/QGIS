@@ -37,6 +37,7 @@ class QgsMssqlNewConnection : public QDialog, private Ui::QgsMssqlNewConnectionB
   public slots:
     void accept();
     void on_btnConnect_clicked();
+    void on_cb_trustedConnection_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
