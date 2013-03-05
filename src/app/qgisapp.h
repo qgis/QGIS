@@ -1257,8 +1257,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu * mPopupMenu;
     //! Top level database menu
     QMenu *mDatabaseMenu;
-    //! Top level vector menu
-    QMenu *mVectorMenu;
     //! Top level web menu
     QMenu *mWebMenu;
     //! Popup menu for the map overview tools

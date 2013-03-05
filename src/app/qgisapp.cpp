@@ -530,16 +530,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSaveRollbackInProgress = false;
   activateDeactivateLayerRelatedActions( NULL );
 
-  QAction* actionOSMDownload = new QAction( tr( "Download data" ), this );
-  connect( actionOSMDownload, SIGNAL( triggered() ), this, SLOT( osmDownloadDialog() ) );
-  QAction* actionOSMImport = new QAction( tr( "Import topology from XML" ), this );
-  connect( actionOSMImport, SIGNAL( triggered() ), this, SLOT( osmImportDialog() ) );
-  QAction* actionOSMExport = new QAction( tr( "Export topology to SpatiaLite" ), this );
-  connect( actionOSMExport, SIGNAL( triggered() ), this, SLOT( osmExportDialog() ) );
-  addPluginToVectorMenu( "OpenStreetMap", actionOSMDownload );
-  addPluginToVectorMenu( "OpenStreetMap", actionOSMImport );
-  addPluginToVectorMenu( "OpenStreetMap", actionOSMExport );
-
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
 
@@ -1061,6 +1051,11 @@ void QgisApp::createActions()
   connect( mActionLocalCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( localCumulativeCutStretch() ) );
   connect( mActionFullCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( fullCumulativeCutStretch() ) );
 
+  // Vector Menu Items
+  connect( mActionOSMDownload, SIGNAL( triggered() ), this, SLOT( osmDownloadDialog() ) );
+  connect( mActionOSMImport, SIGNAL( triggered() ), this, SLOT( osmImportDialog() ) );
+  connect( mActionOSMExport, SIGNAL( triggered() ), this, SLOT( osmExportDialog() ) );
+
   // Help Menu Items
 
 #ifdef Q_WS_MAC
@@ -1312,10 +1307,6 @@ void QgisApp::createMenus()
   // don't add it yet, wait for a plugin
   mDatabaseMenu = new QMenu( tr( "&Database" ), menuBar() );
   mDatabaseMenu->setObjectName( "mDatabaseMenu" );
-  // Vector Menu
-  // don't add it yet, wait for a plugin
-  mVectorMenu = new QMenu( tr( "Vect&or" ), menuBar() );
-  mVectorMenu->setObjectName( "mVectorMenu" );
   // Web Menu
   // don't add it yet, wait for a plugin
   mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
@@ -7101,31 +7092,6 @@ void QgisApp::addPluginToVectorMenu( QString name, QAction* action )
 {
   QMenu* menu = getVectorMenu( name );
   menu->addAction( action );
-
-  // add the Vector menu to the menuBar if not added yet
-  if ( mVectorMenu->actions().count() != 1 )
-    return;
-
-  QAction* before = NULL;
-  QList<QAction*> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    if ( actions.at( i )->menu() == mVectorMenu )
-      return;
-
-    // goes before Raster menu, which is already in qgisapp.ui
-    if ( actions.at( i )->menu() == mRasterMenu )
-    {
-      before = actions.at( i );
-      break;
-    }
-  }
-
-  if ( before )
-    menuBar()->insertMenu( before, mVectorMenu );
-  else
-    // fallback insert
-    menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mVectorMenu );
 }
 
 void QgisApp::addPluginToWebMenu( QString name, QAction* action )

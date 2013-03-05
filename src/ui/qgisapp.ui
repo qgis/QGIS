@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1052</width>
-    <height>489</height>
+    <width>1050</width>
+    <height>487</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1052</width>
-     <height>24</height>
+     <width>1050</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -224,12 +224,27 @@
     </property>
     <addaction name="mActionShowRasterCalculator"/>
    </widget>
+   <widget class="QMenu" name="mVectorMenu">
+    <property name="title">
+     <string>Vect&amp;or</string>
+    </property>
+    <widget class="QMenu" name="menuOpenStreetMap">
+     <property name="title">
+      <string>&amp;OpenStreetMap</string>
+     </property>
+     <addaction name="mActionOSMDownload"/>
+     <addaction name="mActionOSMImport"/>
+     <addaction name="mActionOSMExport"/>
+    </widget>
+    <addaction name="menuOpenStreetMap"/>
+   </widget>
    <addaction name="mFileMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
    <addaction name="mLayerMenu"/>
    <addaction name="mSettingsMenu"/>
    <addaction name="mPluginMenu"/>
+   <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
@@ -1982,6 +1997,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Rotate Feature(s)</string>
+   </property>
+  </action>
+  <action name="mActionOSMDownload">
+   <property name="text">
+    <string>&amp;Download data</string>
+   </property>
+  </action>
+  <action name="mActionOSMImport">
+   <property name="text">
+    <string>&amp;Import topology from XML</string>
+   </property>
+  </action>
+  <action name="mActionOSMExport">
+   <property name="text">
+    <string>&amp;Export topology to SpatiaLite</string>
    </property>
   </action>
  </widget>
