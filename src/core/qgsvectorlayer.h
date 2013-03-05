@@ -813,6 +813,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note public and static from version 1.4 */
     static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
+    /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
+     @note added in 1.7 */
+    void updateFields();
+
     /** Caches joined attributes if required (and not already done)
       @note added in 1.7 */
     void createJoinCaches();
@@ -954,10 +958,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Stop version 2 renderer and selected renderer (if required) */
     void stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer );
-
-    /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
-     @note added in 1.7 */
-    void updateFields();
 
     /**Registers label and diagram layer
       @param rendererContext render context

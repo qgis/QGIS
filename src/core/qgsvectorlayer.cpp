@@ -1321,6 +1321,7 @@ void QgsVectorLayer::setProviderEncoding( const QString& encoding )
   if ( mDataProvider )
   {
     mDataProvider->setEncoding( encoding );
+    updateFields();
   }
 }
 
@@ -3816,7 +3817,7 @@ void QgsVectorLayer::updateFields()
     mEditBuffer->updateFields( mUpdatedFields );
 
   // joined fields
-  if ( mJoinBuffer->containsJoins() )
+  if ( mJoinBuffer && mJoinBuffer->containsJoins() )
     mJoinBuffer->updateFields( mUpdatedFields );
 }
 
