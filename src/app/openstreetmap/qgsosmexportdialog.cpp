@@ -17,6 +17,10 @@
 
 #include "qgsosmdatabase.h"
 
+#include "qgsdatasourceuri.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
+
 #include <QApplication>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -147,6 +151,17 @@ void QgsOSMExportDialog::onOK()
   }
 
   bool res = mDatabase->exportSpatiaLite( type, editLayerName->text(), tagKeys );
+
+  // load the layer into canvas if that was requested
+  if ( chkLoadWhenFinished->isChecked() )
+  {
+    QgsDataSourceURI uri;
+    uri.setDatabase( editDbFileName->text() );
+    uri.setDataSource( QString(), editLayerName->text(), "geometry" );
+    QgsVectorLayer* vlayer = new QgsVectorLayer( uri.uri(), editLayerName->text(), "spatialite" );
+    if ( vlayer->isValid() )
+      QgsMapLayerRegistry::instance()->addMapLayer( vlayer );
+  }
 
   QApplication::restoreOverrideCursor();
   buttonBox->setEnabled( true );

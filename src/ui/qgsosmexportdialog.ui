@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>458</width>
-    <height>436</height>
+    <width>456</width>
+    <height>434</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -119,6 +119,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="chkLoadWhenFinished">
+     <property name="text">
+      <string>&amp;Load into canvas when finished</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <widget class="QProgressBar" name="progressBar">
@@ -150,6 +160,7 @@
   <tabstop>editLayerName</tabstop>
   <tabstop>btnLoadTags</tabstop>
   <tabstop>viewTags</tabstop>
+  <tabstop>chkLoadWhenFinished</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
