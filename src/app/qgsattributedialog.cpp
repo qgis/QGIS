@@ -177,7 +177,6 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       //show attribute alias if available
       QString myFieldName = vl->attributeDisplayName( fldIdx );
       int myFieldType = theFields[fldIdx].type();
-      bool isEditable = vl->fieldEditable( fldIdx );
 
       QWidget *myWidget = QgsAttributeEditor::createAttributeEditor( 0, 0, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
       if ( !myWidget )
@@ -205,7 +204,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
       {
-        myWidget->setEnabled( vl->isEditable() && isEditable );
+        myWidget->setEnabled( vl->isEditable() && vl->fieldEditable(fldIdx) );
       }
 
       mypInnerLayout->addWidget( myWidget, index, 1 );
@@ -234,15 +233,13 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       if ( !myWidgets.size() )
         continue;
 
-      bool isEditable = vl->fieldEditable( fldIdx );
-
       for ( QList<QWidget *>::const_iterator itw = myWidgets.begin(); itw != myWidgets.end(); ++itw )
       {
         QgsAttributeEditor::createAttributeEditor( mDialog, *itw, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
 
         if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
         {
-          ( *itw )->setEnabled(( *itw )->isEnabled() && vl->isEditable() && isEditable );
+          ( *itw )->setEnabled( (*itw)->isEnabled() && vl->isEditable() && vl->fieldEditable( fldIdx ) );
         }
       }
     }
