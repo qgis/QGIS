@@ -532,7 +532,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
       if ( myWidget )
       {
-        myWidget->setDisabled( editType == QgsVectorLayer::Immutable );
+        if (editType == QgsVectorLayer::Immutable)
+          myWidget->setDisabled( true );
 
         QgsStringRelay* relay = NULL;
 
