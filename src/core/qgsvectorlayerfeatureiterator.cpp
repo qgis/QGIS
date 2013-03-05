@@ -310,10 +310,12 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
     {
       FetchJoinInfo info;
       info.joinInfo = joinInfo;
-      info.indexOffset = *attIt - sourceLayerIndex;
       info.joinLayer = joinLayer;
       info.targetField = fields.indexFromName( joinInfo->targetFieldName );
       info.joinField = joinLayer->pendingFields().indexFromName( joinInfo->joinFieldName );
+      info.indexOffset = *attIt - sourceLayerIndex;
+      if ( info.joinField < sourceLayerIndex )
+        info.indexOffset++;
 
       // for joined fields, we always need to request the targetField from the provider too
       if ( !fetchAttributes.contains( info.targetField ) )
