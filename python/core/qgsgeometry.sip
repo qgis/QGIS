@@ -41,6 +41,18 @@ class QgsGeometry
     /** static method that creates geometry from Wkt */
     static QgsGeometry* fromWkt( QString wkt ) /Factory/;
 
+    /** static method that creates geometry from GML2
+     @param XML representation of the geometry. GML elements are expected to be
+       in default namespace (<Point>...</Point>) or in "gml" namespace (<gml:Point>...</gml:Point>)
+     @note added in 1.9
+     */
+    static QgsGeometry* fromGML2( const QString& xmlString ) /Factory/;
+
+    /** static method that creates geometry from GML2
+      @note added in 1.9
+      */
+    static QgsGeometry* fromGML2( const QDomNode& geometryNode ) /Factory/;
+
     /** construct geometry from a point */
     static QgsGeometry* fromPoint( const QgsPoint& point ) /Factory/;
     /** construct geometry from a multipoint */

@@ -540,7 +540,7 @@ QgsGeometry* QgsGeometry::fromGML2( const QDomNode& geometryNode )
   QDomElement geometryTypeElement = geometryNode.toElement();
   QString geomType = geometryTypeElement.tagName();
 
-  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" ) )
+  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" || geomType == "Box" ) )
   {
     QDomNode geometryChild = geometryNode.firstChild();
     if ( geometryChild.isNull() )
@@ -551,7 +551,7 @@ QgsGeometry* QgsGeometry::fromGML2( const QDomNode& geometryNode )
     geomType = geometryTypeElement.tagName();
   }
 
-  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" ) )
+  if ( !( geomType == "Point" || geomType == "LineString" || geomType == "Polygon" || geomType == "MultiPoint" || geomType == "MultiLineString" || geomType == "MultiPolygon" || geomType == "Box" ) )
     return 0;
 
   if ( geomType == "Point" && g->setFromGML2Point( geometryTypeElement ) )
@@ -578,11 +578,27 @@ QgsGeometry* QgsGeometry::fromGML2( const QDomNode& geometryNode )
   {
     return g;
   }
+  else if ( geomType == "Box" )
+  {
+    return QgsGeometry::fromRect( QgsRectangle( geometryTypeElement ) );
+  }
   else //unknown type
   {
     return 0;
   }
 }
+
+QgsGeometry* QgsGeometry::fromGML2( const QString& xmlString )
+{
+  // wrap the string into a root tag to have "gml" namespace (and also as a default namespace)
+  QString xml = QString( "<tmp xmlns=\"%1\" xmlns:gml=\"%1\">%2</tmp>").arg( GML_NAMESPACE ).arg( xmlString );
+  QDomDocument doc;
+  if ( !doc.setContent( xml, true ) )
+    return 0;
+
+  return fromGML2( doc.documentElement().firstChildElement() );
+}
+
 
 bool QgsGeometry::setFromGML2Point( const QDomElement& geometryElement )
 {

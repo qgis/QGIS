@@ -795,21 +795,8 @@ static QVariant fcnGeomFromWKT( const QVariantList& values, QgsFeature*, QgsExpr
 }
 static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExpression* parent )
 {
-  QDomDocument doc;
-  QString errorMsg;
   QString gml = getStringValue( values.at( 0 ), parent );
-  if ( !doc.setContent( gml, true, &errorMsg ) )
-    return QVariant();
-
-  QgsGeometry* geom = 0;
-  QDomElement elem = doc.documentElement();
-  if ( elem.tagName() == "Box" )
-  {
-    QgsRectangle* rect = new QgsRectangle( elem );
-    geom = QgsGeometry::fromRect( *rect );
-  }
-  else
-    geom = QgsGeometry::fromGML2( doc.documentElement() );
+  QgsGeometry* geom = QgsGeometry::fromGML2( gml );
 
   if ( geom )
     return QVariant::fromValue( *geom );
