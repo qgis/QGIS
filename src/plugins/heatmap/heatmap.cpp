@@ -110,6 +110,9 @@ void Heatmap::run()
     float cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
     float myDecay = d.decayRatio();
 
+    // Start working on the input vector
+    QgsVectorLayer* inputLayer = d.inputVectorLayer();
+
     // Getting the rasterdataset in place
     GDALAllRegister();
 
@@ -126,6 +129,8 @@ void Heatmap::run()
     double geoTransform[6] = { myBBox.xMinimum(), cellsize, 0, myBBox.yMinimum(), 0, cellsize };
     emptyDataset = myDriver->Create( d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, NULL );
     emptyDataset->SetGeoTransform( geoTransform );
+    // Set the projection on the raster destination to match the input layer
+    emptyDataset->SetProjection( inputLayer->crs().toWkt().toLocal8Bit().data() );
 
     GDALRasterBand *poBand;
     poBand = emptyDataset->GetRasterBand( 1 );
@@ -153,8 +158,6 @@ void Heatmap::run()
       return;
     }
     poBand = heatmapDS->GetRasterBand( 1 );
-    // Start working on the input vector
-    QgsVectorLayer* inputLayer = d.inputVectorLayer();
 
     QgsAttributeList myAttrList;
     int rField = 0;
