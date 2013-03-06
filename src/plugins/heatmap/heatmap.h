@@ -83,6 +83,9 @@ class Heatmap: public QObject, public QgisPlugin
   private:
     //! Worker to convert meters to map units
     float mapUnitsOf( float meters, QgsCoordinateReferenceSystem crs );
+    //! Worker to calculate buffer size in pixels
+    int bufferSize( float radius, float cellsize );
+    
     // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
 
     int mPluginType;

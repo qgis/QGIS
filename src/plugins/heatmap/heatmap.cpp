@@ -159,17 +159,35 @@ void Heatmap::run()
     QgsAttributeList myAttrList;
     int rField = 0;
     int wField = 0;
+
+    // Handle different radius options
+    float radius;
+    float radiusToMapUnits = 1;
+    int myBuffer;
     if ( d.variableRadius() )
     {
       rField = d.radiusField();
       myAttrList.append( rField );
       QgsDebugMsg( QString( "Radius Field index received: %1" ).arg( rField ) );
+      
+      // If not using map units, then calculate a conversion factor to convert the radii to map units
+      if ( d.radiusUnit() == HeatmapGui::Meters )
+      {
+        radiusToMapUnits = mapUnitsOf( 1, inputLayer->crs() );
+      }
     }
+    else
+    {
+      radius = d.radius(); // radius returned by d.radius() is already in map units
+      myBuffer = bufferSize( radius, cellsize );
+    }
+    
     if ( d.weighted() )
     {
       wField = d.weightField();
       myAttrList.append( wField );
     }
+    
     // This might have attributes or mightnot have attibutes at all
     // based on the variableRadius() and weighted()
     QgsFeatureIterator fit = inputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( myAttrList ) );
@@ -201,26 +219,14 @@ void Heatmap::run()
       {
         continue;
       }
-      float radius;
+      
+      // If radius is variable then fetch it and calculate new pixel buffer size
       if ( d.variableRadius() )
       {
-        radius = myFeature.attribute( rField ).toFloat();
+        radius = myFeature.attribute( rField ).toFloat() * radiusToMapUnits;
+        myBuffer = bufferSize( radius, cellsize );
       }
-      else
-      {
-        radius = d.radius();
-      }
-      //convert the radius to map units if it is in meters
-      if ( d.radiusUnit() == HeatmapGui::Meters )
-      {
-        radius = mapUnitsOf( radius, inputLayer->crs() );
-      }
-      // convert radius in map units to pixel count
-      int myBuffer = radius / cellsize;
-      if ( radius - ( cellsize * myBuffer ) > 0.5 )
-      {
-        ++myBuffer;
-      }
+      
       int blockSize = 2 * myBuffer + 1; //Block SIDE would be more appropriate
       // calculate the pixel position
       unsigned int xPosition, yPosition;
@@ -243,6 +249,13 @@ void Heatmap::run()
         for ( int yp = 0; yp <= myBuffer; yp++ )
         {
           float distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
+          
+          // is pixel outside search bandwidth of feature?
+          if ( distance > myBuffer )
+          {
+            continue;
+          }
+          
           float pixelValue = weight * ( 1 - (( 1 - myDecay ) * distance / myBuffer ) );
 
           // clearing anamolies along the axes
@@ -255,21 +268,18 @@ void Heatmap::run()
             pixelValue /= 2;
           }
 
-          if ( distance <= myBuffer )
+          int pos[4];
+          pos[0] = ( myBuffer + xp ) * blockSize + ( myBuffer + yp );
+          pos[1] = ( myBuffer + xp ) * blockSize + ( myBuffer - yp );
+          pos[2] = ( myBuffer - xp ) * blockSize + ( myBuffer + yp );
+          pos[3] = ( myBuffer - xp ) * blockSize + ( myBuffer - yp );
+          for ( int p = 0; p < 4; p++ )
           {
-            int pos[4];
-            pos[0] = ( myBuffer + xp ) * blockSize + ( myBuffer + yp );
-            pos[1] = ( myBuffer + xp ) * blockSize + ( myBuffer - yp );
-            pos[2] = ( myBuffer - xp ) * blockSize + ( myBuffer + yp );
-            pos[3] = ( myBuffer - xp ) * blockSize + ( myBuffer - yp );
-            for ( int p = 0; p < 4; p++ )
+            if ( dataBuffer[ pos[p] ] == NO_DATA )
             {
-              if ( dataBuffer[ pos[p] ] == NO_DATA )
-              {
-                dataBuffer[ pos[p] ] = 0;
-              }
-              dataBuffer[ pos[p] ] += pixelValue;
+              dataBuffer[ pos[p] ] = 0;
             }
+            dataBuffer[ pos[p] ] += pixelValue;
           }
         }
       }
@@ -278,7 +288,7 @@ void Heatmap::run()
                         dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
       CPLFree( dataBuffer );
     }
-    //Finally close the dataset
+    // Finally close the dataset
     GDALClose(( GDALDatasetH ) heatmapDS );
 
     // Open the file in QGIS window
@@ -291,6 +301,7 @@ void Heatmap::run()
  * Local functions
  *
  */
+ 
 float Heatmap::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
 {
   // Worker to transform metres input to mapunits
@@ -303,6 +314,19 @@ float Heatmap::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
   }
   return meters / da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
 }
+
+int Heatmap::bufferSize( float radius, float cellsize )
+{
+  // Calculate the buffer size in pixels
+
+  int buffer = radius / cellsize;
+  if ( radius - ( cellsize * buffer ) > 0.5 )
+  {
+    ++buffer;
+  }
+  return buffer;
+}    
+    
 
 // Unload the plugin by cleaning up the GUI
 void Heatmap::unload()
