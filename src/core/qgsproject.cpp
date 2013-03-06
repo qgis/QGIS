@@ -1134,8 +1134,8 @@ QgsProject::writeEntry( QString const &scope, const QString & key,
 QStringList
 QgsProject::readListEntry( QString const & scope,
                            const QString & key,
-                           bool * ok,
-                           QStringList def ) const
+                           QStringList def,
+                           bool * ok) const
 {
   QgsProperty * property = findKey_( scope, key, imp_->properties_ );
 
