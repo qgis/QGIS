@@ -993,6 +993,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /**Creates the composer instances in a project file and adds them to the menu*/
     bool loadComposersFromProject( const QDomDocument& doc );
 
+    /** Slot to handle display of composers menu, e.g. sorting
+     * @note added in 1.9
+     */
+    void on_mPrintComposersMenu_aboutToShow();
+
     bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
     //! Toggles whether to show pinned labels

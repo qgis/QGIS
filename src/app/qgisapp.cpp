@@ -4800,6 +4800,18 @@ void QgisApp::deletePrintComposers()
   markDirty();
 }
 
+void QgisApp::on_mPrintComposersMenu_aboutToShow()
+{
+  QList<QAction*> acts = mPrintComposersMenu->actions();
+  mPrintComposersMenu->clear();
+  if ( acts.size() > 1 )
+  {
+    // sort actions by text
+    qSort( acts.begin(), acts.end(), cmpByText_ );
+  }
+  mPrintComposersMenu->addActions( acts );
+}
+
 bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
 {
   if ( !mMapCanvas )

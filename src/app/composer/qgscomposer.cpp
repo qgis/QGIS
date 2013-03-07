@@ -81,6 +81,12 @@
 #include <QProgressDialog>
 
 
+// sort function for QList<QAction*>, e.g. menu listings
+static bool cmpByText_( QAction* a, QAction* b )
+{
+  return QString::localeAwareCompare( a->text(), b->text() ) < 0;
+}
+
 QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     : QMainWindow()
     , mTitle( title )
@@ -2120,7 +2126,13 @@ void QgsComposer::initialiseComposerPicturePreviews()
 void QgsComposer::populatePrintComposersMenu()
 {
   mPrintComposersMenu->clear();
-  mPrintComposersMenu->addActions( mQgis->printComposersMenu()->actions() );
+  QList<QAction*> acts = mQgis->printComposersMenu()->actions();
+  if ( acts.size() > 1 )
+  {
+    // sort actions in case main app's aboutToShow slot has not yet
+    qSort( acts.begin(), acts.end(), cmpByText_ );
+  }
+  mPrintComposersMenu->addActions( acts );
 }
 
 void QgsComposer::populateWindowMenu()
