@@ -39,7 +39,6 @@
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
-    , mShiftKeyPressed( false )
     , mRubberBandItem( 0 )
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
@@ -84,7 +83,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       //select/deselect items and pass mouse event further
     case Select:
     {
-      if ( !mShiftKeyPressed ) //keep selection if shift key pressed
+      if ( !( e->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
       {
         composition()->clearSelection();
       }
@@ -449,10 +448,6 @@ void QgsComposerView::mouseDoubleClickEvent( QMouseEvent* e )
 void QgsComposerView::keyPressEvent( QKeyEvent * e )
 {
   //TODO : those should be actions (so we could also display menu items and/or toolbar items)
-  if ( e->key() == Qt::Key_Shift )
-  {
-    mShiftKeyPressed = true;
-  }
 
   if ( !composition() )
   {
@@ -559,14 +554,6 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       ( *itemIt )->move( 0.0, -1.0 );
       ( *itemIt )->endCommand();
     }
-  }
-}
-
-void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
-{
-  if ( e->key() == Qt::Key_Shift )
-  {
-    mShiftKeyPressed = false;
   }
 }
 
