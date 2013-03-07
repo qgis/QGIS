@@ -33,6 +33,23 @@ QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( QColor color, double wid
   mCustomDashVector << 5 << 2;
 }
 
+void QgsSimpleLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mWidthUnit = unit;
+  mOffsetUnit = unit;
+  mCustomDashPatternUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit  QgsSimpleLineSymbolLayerV2::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mWidthUnit;
+  if ( mOffsetUnit != unit || mCustomDashPatternUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
+}
+
 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props )
 {
@@ -78,7 +95,7 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   QColor penColor = mColor;
   penColor.setAlphaF( mColor.alphaF() * context.alpha() );
   mPen.setColor( penColor );
-  double scaledWidth = context.outputLineWidth( mWidth );
+  double scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
   mPen.setWidthF( scaledWidth );
   if ( mUseCustomDashPattern && scaledWidth != 0 )
   {
@@ -90,7 +107,7 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
     for ( ; it != mCustomDashVector.constEnd(); ++it )
     {
       //the dash is specified in terms of pen widths, therefore the division
-      scaledVector << context.outputLineWidth(( *it ) / scaledWidth );
+      scaledVector << ( *it ) *  QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mCustomDashPatternUnit ) / scaledWidth;
     }
     mPen.setDashPattern( scaledVector );
   }
@@ -123,7 +140,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
 
   if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
   {
-    double scaledWidth = context.outputLineWidth( mWidth );
+    double scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
     mPen.setWidthF( scaledWidth );
     mSelPen.setWidthF( scaledWidth );
   }
@@ -135,7 +152,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   }
   else
   {
-    double scaledOffset = context.outputLineWidth( mOffset );
+    double scaledOffset = mOffset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
     p->drawPolyline( ::offsetLine( points, scaledOffset ) );
   }
 }
@@ -157,6 +174,9 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
 {
   QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2( mColor, mWidth, mPenStyle );
+  l->setWidthUnit( mWidthUnit );
+  l->setOffsetUnit( mOffsetUnit );
+  l->setCustomDashPatternUnit( mCustomDashPatternUnit );
   l->setOffset( mOffset );
   l->setPenJoinStyle( mPenJoinStyle );
   l->setPenCapStyle( mPenCapStyle );

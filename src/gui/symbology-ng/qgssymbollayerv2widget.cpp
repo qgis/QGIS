@@ -63,11 +63,19 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
 
 void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
-  if ( layer->layerType() != "SimpleLine" )
+  if ( !layer || layer->layerType() != "SimpleLine" )
     return;
 
   // layer type is correct, we can do the cast
   mLayer = static_cast<QgsSimpleLineSymbolLayerV2*>( layer );
+
+  // set units
+  mPenWidthUnitComboBox->blockSignals( true );
+  mPenWidthUnitComboBox->setCurrentIndex( mLayer->widthUnit() );
+  mPenWidthUnitComboBox->blockSignals( false );
+  mOffsetUnitComboBox->blockSignals( true );
+  mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
+  mOffsetUnitComboBox->blockSignals( false );
 
   // set values
   spinWidth->setValue( mLayer->width() );
@@ -158,6 +166,22 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mChangePatternButton_clicked()
     mLayer->setCustomDashVector( d.dashDotVector() );
     updatePatternIcon();
     emit changed();
+  }
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::on_mPenWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setWidthUnit(( QgsSymbolV2::OutputUnit )index );
+  }
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit )index );
   }
 }
 

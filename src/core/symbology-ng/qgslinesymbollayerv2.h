@@ -58,6 +58,9 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
 
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
     // new stuff
 
     Qt::PenStyle penStyle() const { return mPenStyle; }
@@ -72,8 +75,14 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     double offset() const { return mOffset; }
     void setOffset( double offset ) { mOffset = offset; }
 
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+
     bool useCustomDashPattern() const { return mUseCustomDashPattern; }
     void setUseCustomDashPattern( bool b ) { mUseCustomDashPattern = b; }
+
+    QgsSymbolV2::OutputUnit customDashPatternUnit() const { return mCustomDashPatternUnit; }
+    void setCustomDashPatternUnit( QgsSymbolV2::OutputUnit unit ) { mCustomDashPatternUnit = unit; }
 
     QVector<qreal> customDashVector() const { return mCustomDashVector; }
     void setCustomDashVector( const QVector<qreal>& vector ) { mCustomDashVector = vector; }
@@ -85,8 +94,12 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QPen mPen;
     QPen mSelPen;
     double mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
+
     //use a custom dash dot pattern instead of the predefined ones
     bool mUseCustomDashPattern;
+    QgsSymbolV2::OutputUnit mCustomDashPatternUnit;
+
     /**Vector with an even number of entries for the */
     QVector<qreal> mCustomDashVector;
 };
