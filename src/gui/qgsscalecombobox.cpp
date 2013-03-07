@@ -157,7 +157,7 @@ void QgsScaleComboBox::fixupScale()
   if ( ok && ( newScale != oldScale ) )
   {
     // if a user types scale = 2345, we transform to 1:2345
-    if ( userSetScale )
+    if ( userSetScale && newScale >= 1.0 )
     {
       mScale = 1 / newScale;
     }
