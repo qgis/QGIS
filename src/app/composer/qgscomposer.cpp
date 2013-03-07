@@ -167,6 +167,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionAddArrow->setCheckable( true );
 
 #ifdef Q_WS_MAC
+  mActionQuit->setText( tr( "Close" ) );
+  mActionQuit->setShortcut( QKeySequence::Close );
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
   appMenu->addAction( mQgis->actionAbout() );
   appMenu->addAction( mQgis->actionOptions() );
@@ -250,7 +252,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mWindowMenu, SIGNAL( aboutToShow() ), this, SLOT( populateWindowMenu() ) );
   menuBar()->addMenu( mWindowMenu );
 
-  mHelpMenu = new QMenu( tr( "Help" ) );
+  mHelpMenu = new QMenu( tr( "Help" ), this );
   mHelpMenu->setObjectName( "mHelpMenu" );
   connect( mHelpMenu, SIGNAL( aboutToShow() ), this, SLOT( populateHelpMenu() ) );
   menuBar()->addMenu( mHelpMenu );
