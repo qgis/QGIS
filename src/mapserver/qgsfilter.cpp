@@ -21,6 +21,8 @@
 #include "qgslogicalfilter.h"
 #include "qgsspatialfilter.h"
 #include "qgsvectordataprovider.h"
+#include "qgsogcutils.h"
+
 #include <QDomElement>
 #include <QStringList>
 #include "qgsvectorlayer.h"
@@ -129,7 +131,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML2( gElem );
       }
     }
 
@@ -139,7 +141,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML2( gElem );
       }
     }
 
@@ -149,7 +151,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML2( gElem );
       }
     }
 
@@ -159,7 +161,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML2( gElem );
       }
     }
 
@@ -169,7 +171,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML2( gElem );
       }
     }
 
@@ -179,7 +181,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML2( gElem );
       }
     }
 
