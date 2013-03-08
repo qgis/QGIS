@@ -1451,26 +1451,37 @@ void QgsWmsProvider::capabilitiesReplyFinished()
     {
       emit statusChanged( tr( "Capabilities request redirected." ) );
 
-      QNetworkRequest request( redirect.toUrl() );
-      setAuthorization( request );
-      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
-      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+      const QUrl& toUrl = redirect.toUrl();
+      mCapabilitiesReply->request();
+      if ( toUrl == mCapabilitiesReply->url() ) {
+        mErrorFormat = "text/plain";
+        mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
+        QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+        mHttpCapabilitiesResponse.clear();
+      } else {
+        QNetworkRequest request( toUrl );
+        setAuthorization( request );
+        request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+        request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-      mCapabilitiesReply->deleteLater();
-      QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
-      mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+        mCapabilitiesReply->deleteLater();
+        QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
+        mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
-      connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-      connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
-      return;
+        connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
+        connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+        return;
+      }
     }
-
-    mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
-
-    if ( mHttpCapabilitiesResponse.isEmpty() )
+    else
     {
-      mErrorFormat = "text/plain";
-      mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
+      mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
+
+      if ( mHttpCapabilitiesResponse.isEmpty() )
+      {
+        mErrorFormat = "text/plain";
+        mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
+      }
     }
   }
   else
@@ -1480,7 +1491,6 @@ void QgsWmsProvider::capabilitiesReplyFinished()
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     mHttpCapabilitiesResponse.clear();
   }
-
 
   mCapabilitiesReply->deleteLater();
   mCapabilitiesReply = 0;
