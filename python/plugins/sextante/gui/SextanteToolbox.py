@@ -36,7 +36,6 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.gui.ParametersDialog import ParametersDialog
 from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
-
 from sextante.ui.ui_SextanteToolbox import Ui_SextanteToolbox
 
 try:
@@ -135,7 +134,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             if dlg.executed:
                 showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
                 if showRecent:
-                    self.fillTree()
+                    self.addRecentAlgorithms()
         if isinstance(item, TreeActionItem):
             action = item.action
             action.setData(self)
@@ -147,11 +146,15 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             self.fillTreeUsingCategories()
         else:
             self.fillTreeUsingProviders()
-
-        self.algorithmTree.sortItems(0, Qt.AscendingOrder)
-
+        self.algorithmTree.sortItems(0, Qt.AscendingOrder)        
+        self.addRecentAlgorithms()
+        
+    def addRecentAlgorithms(self):
         showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
         if showRecent:
+            first = self.algorithmTree.topLevelItem(0)            
+            if first.text(0) == "Recently used algorithms":
+                self.algorithmTree.removeItemWidget(first, 0)
             recent = SextanteLog.getRecentAlgorithms()
             if len(recent) != 0:
                 found = False

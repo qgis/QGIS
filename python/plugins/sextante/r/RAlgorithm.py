@@ -97,9 +97,10 @@ class RAlgorithm(GeoAlgorithm):
         filename = os.path.basename(self.descriptionFile)
         self.name = filename[:filename.rfind(".")].replace("_", " ")
         self.group = "User R scripts"
+        ender = 0
         lines = open(self.descriptionFile)
         line = lines.readline().strip("\n").strip("\r")
-        while line != "":
+        while ender < 10:
             if line.startswith("##"):
                 try:
                     self.processParameterLine(line)
@@ -112,6 +113,10 @@ class RAlgorithm(GeoAlgorithm):
                     self.addOutput(OutputHTML(RAlgorithm.R_CONSOLE_OUTPUT, "R Console Output"))
                 self.showConsoleOutput = True
             else:
+                if line == '':
+                    ender += 1
+                else:
+                    ender=0
                 self.commands.append(line)
             self.script += line + "\n"
             line = lines.readline().strip("\n").strip("\r")

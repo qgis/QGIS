@@ -96,7 +96,6 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void mouseDoubleClickEvent( QMouseEvent* e );
 
     void keyPressEvent( QKeyEvent * e );
-    void keyReleaseEvent( QKeyEvent * e );
 
     void wheelEvent( QWheelEvent* event );
 
@@ -106,8 +105,6 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void showEvent( QShowEvent* e );
 
   private:
-    /**Status of shift key (used for multiple selection)*/
-    bool mShiftKeyPressed;
     /**Current composer tool*/
     QgsComposerView::Tool mCurrentTool;
     /**Rubber band item*/

@@ -39,7 +39,6 @@
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
-    , mShiftKeyPressed( false )
     , mRubberBandItem( 0 )
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
@@ -84,7 +83,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       //select/deselect items and pass mouse event further
     case Select:
     {
-      if ( !mShiftKeyPressed ) //keep selection if shift key pressed
+      if ( !( e->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
       {
         composition()->clearSelection();
       }
@@ -448,10 +447,7 @@ void QgsComposerView::mouseDoubleClickEvent( QMouseEvent* e )
 
 void QgsComposerView::keyPressEvent( QKeyEvent * e )
 {
-  if ( e->key() == Qt::Key_Shift )
-  {
-    mShiftKeyPressed = true;
-  }
+  //TODO : those should be actions (so we could also display menu items and/or toolbar items)
 
   if ( !composition() )
   {
@@ -491,7 +487,8 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     clipboard->setMimeData( mimeData );
   }
 
-  if ( e->matches( QKeySequence::Paste ) )
+  //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18 
+  if ( e->matches( QKeySequence::Paste ) || (e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier) )
   {
     QDomDocument doc;
     QClipboard *clipboard = QApplication::clipboard();
@@ -503,7 +500,8 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         if ( composition() )
         {
           QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
-          composition()->addItemsFromXML( docElem, doc, 0, true, &pt );
+          bool pasteInPlace = (e->modifiers() & Qt::ShiftModifier);
+          composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
         }
       }
     }
@@ -556,14 +554,6 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       ( *itemIt )->move( 0.0, -1.0 );
       ( *itemIt )->endCommand();
     }
-  }
-}
-
-void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
-{
-  if ( e->key() == Qt::Key_Shift )
-  {
-    mShiftKeyPressed = false;
   }
 }
 

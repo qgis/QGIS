@@ -81,6 +81,12 @@
 #include <QProgressDialog>
 
 
+// sort function for QList<QAction*>, e.g. menu listings
+static bool cmpByText_( QAction* a, QAction* b )
+{
+  return QString::localeAwareCompare( a->text(), b->text() ) < 0;
+}
+
 QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     : QMainWindow()
     , mTitle( title )
@@ -161,6 +167,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionAddArrow->setCheckable( true );
 
 #ifdef Q_WS_MAC
+  mActionQuit->setText( tr( "Close" ) );
+  mActionQuit->setShortcut( QKeySequence::Close );
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
   appMenu->addAction( mQgis->actionAbout() );
   appMenu->addAction( mQgis->actionOptions() );
@@ -244,7 +252,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mWindowMenu, SIGNAL( aboutToShow() ), this, SLOT( populateWindowMenu() ) );
   menuBar()->addMenu( mWindowMenu );
 
-  mHelpMenu = new QMenu( tr( "Help" ) );
+  mHelpMenu = new QMenu( tr( "Help" ), this );
   mHelpMenu->setObjectName( "mHelpMenu" );
   connect( mHelpMenu, SIGNAL( aboutToShow() ), this, SLOT( populateHelpMenu() ) );
   menuBar()->addMenu( mHelpMenu );
@@ -748,12 +756,16 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       }
       if ( !atlasOnASingleFile )
       {
+	// bugs #7263 and #6856
+	// QPrinter does not seem to be reset correctly and may cause generated PDFs (all except the first) corrupted
+	// when transparent objects are rendered. We thus use a new QPrinter object here
+	QPrinter multiFilePrinter;
         outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".pdf";
-        mComposition->beginPrintAsPDF( printer, outputFileName );
+	mComposition->beginPrintAsPDF( multiFilePrinter, outputFileName );
         // set the correct resolution
-        mComposition->beginPrint( printer );
-        painter.begin( &printer );
-        mComposition->doPrint( printer, painter );
+        mComposition->beginPrint( multiFilePrinter );
+        painter.begin( &multiFilePrinter );
+        mComposition->doPrint( multiFilePrinter, painter );
         painter.end();
       }
       else
@@ -2116,7 +2128,13 @@ void QgsComposer::initialiseComposerPicturePreviews()
 void QgsComposer::populatePrintComposersMenu()
 {
   mPrintComposersMenu->clear();
-  mPrintComposersMenu->addActions( mQgis->printComposersMenu()->actions() );
+  QList<QAction*> acts = mQgis->printComposersMenu()->actions();
+  if ( acts.size() > 1 )
+  {
+    // sort actions in case main app's aboutToShow slot has not yet
+    qSort( acts.begin(), acts.end(), cmpByText_ );
+  }
+  mPrintComposersMenu->addActions( acts );
 }
 
 void QgsComposer::populateWindowMenu()

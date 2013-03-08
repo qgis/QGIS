@@ -77,6 +77,7 @@ void QgsComposerManager::initialize()
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
     mItemComposerMap.insert( item, *it );
   }
+  mComposerListWidget->sortItems();
 
   mTemplate->addItem( tr( "Empty composer" ) );
   mTemplate->addItem( tr( "Specific" ) );
@@ -198,6 +199,8 @@ void QgsComposerManager::on_mAddButton_clicked()
     QListWidgetItem* item = new QListWidgetItem( newComposer->title(), mComposerListWidget );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
     mItemComposerMap.insert( item, newComposer );
+
+    mComposerListWidget->sortItems();
     mComposerListWidget->setCurrentItem( item );
     mComposerListWidget->setFocus();
   }
@@ -429,6 +432,8 @@ void QgsComposerManager::rename_clicked()
   }
   currentComposer->setTitle( newTitle );
   item->setText( newTitle );
+
+  mComposerListWidget->sortItems();
 }
 
 void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * item )
@@ -438,4 +443,5 @@ void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * i
   {
     it.value()->setTitle( item->text() );
   }
+  mComposerListWidget->sortItems();
 }
