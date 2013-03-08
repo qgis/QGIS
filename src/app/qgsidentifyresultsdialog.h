@@ -112,7 +112,8 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
                      const QMap< QString, QString > &attributes,
                      const QMap< QString, QString > &derivedAttributes,
                      const QgsFields &fields = QgsFields(),
-                     const QgsFeature &feature = QgsFeature() );
+                     const QgsFeature &feature = QgsFeature(),
+                     const QMap<QString, QVariant> &params = QMap<QString, QVariant>() );
 
     /** Add feature from identify results */
     void addFeature( QgsMapToolIdentify::IdentifyResult result );
@@ -150,7 +151,9 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
     void featureForm();
     void zoomToFeature();
     void copyAttributeValue();
+    void copyFeature();
     void copyFeatureAttributes();
+    void copyGetFeatureInfoUrl();
     void highlightAll();
     void highlightLayer();
     void layerProperties();
@@ -184,6 +187,10 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
     void printCurrentItem();
 
   private:
+    enum ItemDataRole
+    {
+      GetFeatureInfoUrlRole = Qt::UserRole + 10
+    };
 
     QMenu *mActionPopup;
     QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;

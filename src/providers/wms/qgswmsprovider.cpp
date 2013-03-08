@@ -4197,12 +4197,15 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
 #else
         Q_UNUSED( ret );
 #endif
-
+        // TODO: all features coming from this layer should probably have the same CRS
+        // the same as this layer, because layerExtentToOutputExtent() may be used
+        // for results -> verify CRS and reprojects if necessary
         QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
         QgsDebugMsg( QString( "%1 features read" ).arg( features.size() ) );
         QgsFeatureStore featureStore( fields, crs() );
         featureStore.params().insert( "sublayer", *layers );
         featureStore.params().insert( "featureType", featureTypeName );
+        featureStore.params().insert( "getFeatureInfoUrl", requestUrl.toString() );
         foreach ( QgsFeatureId id, features.keys() )
         {
           QgsFeature * feature = features.value( id );

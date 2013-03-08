@@ -487,12 +487,17 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
           if ( featureType.compare( sublayer, Qt::CaseInsensitive ) != 0 || labels.isEmpty() )
           {
             labels << featureType;
+
+
           }
 
           QMap< QString, QString > derAttributes = derivedAttributes;
           derAttributes.unite( featureDerivedAttributes( &feature, layer ) );
 
-          results->append( IdentifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( " / " ), featureStore.fields(), feature, derAttributes ) );
+          IdentifyResult identifyResult( qobject_cast<QgsMapLayer *>( layer ), labels.join( " / " ), featureStore.fields(), feature, derAttributes );
+
+          identifyResult.mParams.insert( "getFeatureInfoUrl", featureStore.params().value( "getFeatureInfoUrl" ) );
+          results->append( identifyResult );
         }
       }
     }
