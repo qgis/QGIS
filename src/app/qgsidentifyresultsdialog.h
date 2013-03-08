@@ -113,7 +113,7 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
                      const QMap< QString, QString > &derivedAttributes,
                      const QgsFields &fields = QgsFields(),
                      const QgsFeature &feature = QgsFeature(),
-                     const QMap<QString, QVariant> &params = QMap<QString, QVariant>() );
+                     const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() ) );
 
     /** Add feature from identify results */
     void addFeature( QgsMapToolIdentify::IdentifyResult result );
