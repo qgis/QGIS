@@ -125,6 +125,11 @@ SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 # if set to other directory than expected
 MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
 
+IF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
+  # following variable is also used in qgsconfig.h
+  SET (USING_NMAKE TRUE)
+ENDIF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
+
 #############################################################
 # check if lexer and parser are not missing
 # http://www.mail-archive.com/cmake@cmake.org/msg02861.html
@@ -295,7 +300,9 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 IF (PEDANTIC)
   MESSAGE (STATUS "Pedantic compiler settings enabled")
   IF(MSVC)
-    ADD_DEFINITIONS( /W4 )
+    IF (NOT USING_NMAKE)
+      ADD_DEFINITIONS( /W4 )
+    ENDIF (NOT USING_NMAKE)
 
     # disable warnings
     ADD_DEFINITIONS( /wd4100 )  # unused formal parameters
@@ -305,6 +312,9 @@ IF (PEDANTIC)
     ADD_DEFINITIONS( /wd4512 )  # assignment operator could not be generated (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4706 )  # assignment within conditional expression (pal)
+    IF (USING_NMAKE)
+      ADD_DEFINITIONS( /wd4999 )  # unknown warnings
+    ENDIF (USING_NMAKE)
   ELSE (MSVC)
     # add warnings via flags (not as definitions as on Mac -Wall can not be overridden per language )
     SET(_warnings "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing")
@@ -372,8 +382,10 @@ IF (WIN32)
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
 
     IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-      MESSAGE (STATUS "Generating browse files")
-      ADD_DEFINITIONS( /FR )
+      IF (NOT USING_NMAKE)
+        MESSAGE (STATUS "Generating browse files")
+        ADD_DEFINITIONS( /FR )
+      ENDIF (NOT USING_NMAKE)
     ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
     IF (INSTALL_DEPS)
