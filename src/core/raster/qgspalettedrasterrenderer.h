@@ -38,13 +38,16 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 
-    QgsRasterBlock * block( int bandNo, QgsRectangle  const & extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height );
 
     /**Returns number of colors*/
     int nColors() const { return mNColors; }
     /**Returns copy of color array (caller takes ownership)*/
     QColor* colors() const;
-    /**Returns copy of rgb array (caller takes ownership)*/
+
+    /**Returns copy of rgb array (caller takes ownership)
+     @note not available in python bindings
+     */
     QRgb* rgbArray() const;
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;

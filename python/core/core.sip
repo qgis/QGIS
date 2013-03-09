@@ -158,7 +158,7 @@
 %Include raster/qgssinglebandcolordatarenderer.sip
 %Include raster/qgssinglebandpseudocolorrenderer.sip
 %Include raster/qgssinglebandgrayrenderer.sip
-%Include raster/qgspaletterasterrenderer.sip
+%Include raster/qgspalettedrasterrenderer.sip
 %Include raster/qgscubicrasterresampler.sip
 %Include raster/qgsmultibandcolorrenderer.sip
 
