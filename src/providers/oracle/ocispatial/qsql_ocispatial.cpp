@@ -190,7 +190,11 @@ class enter
     }
 };
 
+#ifdef _MSC_VER
+#define ENTER enter here(__FUNCTION__,__FILE__,__LINE__);
+#else
 #define ENTER enter here(__PRETTY_FUNCTION__,__FILE__,__LINE__);
+#endif
 
 int enter::level = 0;
 #else
@@ -1152,8 +1156,7 @@ class QOCISpatialCols
     bool getValue( OCINumber *num, int &value );
     bool getValue( OCINumber *num, double &value );
     bool getArraySize( OCIColl *coll, int &nSize );
-    bool getArrayItem( OCIArray *coll, int elem, int &item );
-    bool getElemInfoElem( int elem, int nElems, int nOrds, int &startOffset, int &endOffset, int &etype, int &interpretation );
+    bool getElemInfoElem( int elem, const QVector<int> &vElem, int nOrds, int &startOffset, int &endOffset, int &etype, int &interpretation );
     static int byteorder() { static char littleEndian = htonl( 1 ) != 1; return littleEndian; }
 
 #ifdef QOCISPATIAL_DEBUG
@@ -2289,46 +2292,21 @@ bool QOCISpatialCols::getArraySize( OCIColl *coll, int &nSize )
   return false;
 }
 
-bool QOCISpatialCols::getArrayItem( OCIArray *coll, int elem, int &item )
-{
-  OCINumber *num;
-  boolean exists;
-
-  try
-  {
-    OCI_VERIFY_E( d->err, OCICollGetElem( d->env, d->err, coll, elem, &exists, ( dvoid ** ) &num, 0 ) );
-
-    if ( !exists )
-    {
-      qWarning( "item %d does not exists.", elem );
-      throw OCI_ERROR;
-    }
-
-    return getValue( num, item );
-  }
-  catch ( int )
-  {
-    return false;
-  }
-}
-
-bool QOCISpatialCols::getElemInfoElem( int iElem, int nElems, int nOrds,
+bool QOCISpatialCols::getElemInfoElem( int iElem, const QVector<int> &vElems, int nOrds,
                                        int &startOffset, int &endOffset,
                                        int &etype, int &interpretation )
 {
-  if ( !getArrayItem( d->sdoobj->elem_info, iElem + 0, startOffset ) ||
-       !getArrayItem( d->sdoobj->elem_info, iElem + 1, etype ) ||
-       !getArrayItem( d->sdoobj->elem_info, iElem + 2, interpretation ) )
-    return false;
+  startOffset = vElems[ iElem + 0 ];
+  etype = vElems[ iElem + 1 ];
+  interpretation = vElems[ iElem + 2 ];
 
-  if ( iElem + 3 == nElems )
+  if ( iElem + 3 >= vElems.size() )
   {
     endOffset = nOrds + 1;
   }
-  else if ( !getArrayItem( d->sdoobj->elem_info, iElem + 3, endOffset ) )
+  else
   {
-    qWarning() << "end offset not found";
-    return false;
+    endOffset = vElems[ iElem + 3 ];
   }
 
   --startOffset;
@@ -2470,41 +2448,49 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     return false;
   }
 
-  QVector<double> ordinates( nOrds );
-  boolean exists;
+  QVector<int> elems( nElems );
 
   try
   {
-#if 0
-    // TODO figure this out - quicker, but occasionally crashes
-    QVector<OCINumber*> numbers( nOrds, 0 );
+    QVector<boolean> exists( nElems );
+    QVector<OCINumber*> numbers( nElems );
+    uword nelems = nElems;
+    OCI_VERIFY_E( d->err, OCICollGetElemArray( d->env, d->err, d->sdoobj->elem_info, 0, exists.data(), ( void** ) numbers.data(), 0, &nelems ) );
+    if ( !exists[0] )
+    {
+      qWarning() << "element info array does not exists";
+      throw OCI_ERROR;
+    }
+
+    for ( unsigned int i = 0; i < nelems; i++ )
+    {
+      if ( !getValue( numbers[i], elems[i] ) )
+      {
+        qWarning() << "get value of element info item" << i << "failed";
+        throw OCI_ERROR;
+      }
+    }
+  }
+  catch ( int )
+  {
+    return false;
+  }
+
+
+  QVector<double> ordinates( nOrds );
+
+  try
+  {
+    QVector<boolean> exists( nOrds );
+    QVector<OCINumber*> numbers( nOrds );
     uword nords = nOrds;
-    OCI_VERIFY_E( d->err, OCICollGetElemArray( d->env, d->err, d->sdoobj->ordinates, 0, &exists, ( void** ) numbers.data(), 0, &nords ) );
-    if ( !exists )
+    OCI_VERIFY_E( d->err, OCICollGetElemArray( d->env, d->err, d->sdoobj->ordinates, 0, exists.data(), ( void** ) numbers.data(), 0, &nords ) );
+    if ( !exists[0] )
     {
       qWarning() << "ordinate array does not exists";
       throw OCI_ERROR;
     }
-    OCI_VERIFY_E( d->err, OCINumberToRealArray( d->err, ( const OCINumber ** ) numbers.data(), nOrds, sizeof( double ), ordinates.data() ) );
-#else
-    for ( int i = 0; i < nOrds; i++ )
-    {
-      OCINumber *num;
-
-      OCI_VERIFY_E( d->err, OCICollGetElem( d->env, d->err, d->sdoobj->ordinates, i, &exists, ( dvoid ** ) &num, 0 ) );
-
-      if ( !exists )
-      {
-        qWarning( "item %d does not exists.", i );
-        throw OCI_ERROR;
-      }
-
-      if ( !getValue( num, ordinates[i] ) )
-      {
-        throw OCI_ERROR;
-      }
-    }
-#endif
+    OCI_VERIFY_E( d->err, OCINumberToRealArray( d->err, ( const OCINumber ** ) numbers.data(), nords, sizeof( double ), ordinates.data() ) );
   }
   catch ( int )
   {
@@ -2518,7 +2504,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     for ( int i = 0; i < nElems; i += 3 )
     {
       int startOffset, endOffset, etype, n;
-      if ( !getElemInfoElem( i, nElems, nOrds, startOffset, endOffset, etype, n ) )
+      if ( !getElemInfoElem( i, elems, nOrds, startOffset, endOffset, etype, n ) )
       {
         qDebug() << "could not fetch element info" << i;
         return false;
@@ -2552,7 +2538,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     for ( int i = 0; i < nElems; i += 3 )
     {
       int startOffset, endOffset, etype, n;
-      if ( !getElemInfoElem( i, nElems, nOrds, startOffset, endOffset, etype, n ) )
+      if ( !getElemInfoElem( i, elems, nOrds, startOffset, endOffset, etype, n ) )
       {
         qDebug() << "could not fetch element info" << i;
         return false;
@@ -2595,9 +2581,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     for ( int i = 0; i < nElems; i += 3 )
     {
       int startOffset, endOffset, etype, n;
-      if ( !getElemInfoElem( i, nElems, nOrds, startOffset, endOffset, etype, n ) )
+      if ( !getElemInfoElem( i, elems, nOrds, startOffset, endOffset, etype, n ) )
       {
-        qDebug() << "could not fetch element info" << i;
+        qWarning() << "could not fetch element info" << i;
         return false;
       }
 
@@ -2608,7 +2594,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
       }
       else
       {
-        qDebug() << "unsupported line element - etype:" << etype << "n:" << n << "skipped";
+        qWarning( "skipped unsupported line element: etype=%08x n=%d", etype, n );
       }
     }
 
@@ -2634,9 +2620,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     for ( int i = 0; i < nElems; i += 3 )
     {
       int startOffset, endOffset, etype, n;
-      if ( !getElemInfoElem( i, nElems, nOrds, startOffset, endOffset, etype, n ) )
+      if ( !getElemInfoElem( i, elems, nOrds, startOffset, endOffset, etype, n ) )
       {
-        qDebug() << "could not fetch element info" << i;
+        qWarning() << "could not fetch element info" << i;
         return false;
       }
 
@@ -2667,9 +2653,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     for ( int i = 0; i < nElems; i += 3 )
     {
       int startOffset, endOffset, etype, n;
-      if ( !getElemInfoElem( i, nElems, nOrds, startOffset, endOffset, etype, n ) )
+      if ( !getElemInfoElem( i, elems, nOrds, startOffset, endOffset, etype, n ) )
       {
-        qDebug() << "could not fetch element info" << i;
+        qWarning() << "could not fetch element info" << i;
         return false;
       }
 
@@ -2695,7 +2681,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
       }
       else
       {
-        qDebug() << "unsupported polygon element - etype:" << etype << "n:" << n << "skipped";
+        qWarning( "skipped unsupported polygon element: etype=%08x n=%d", etype, n );
       }
     }
 
@@ -2727,9 +2713,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v )
     for ( int i = 0; i < nElems; i += 3 )
     {
       int startOffset, endOffset, etype, n;
-      if ( !getElemInfoElem( i, nElems, nOrds, startOffset, endOffset, etype, n ) )
+      if ( !getElemInfoElem( i, elems, nOrds, startOffset, endOffset, etype, n ) )
       {
-        qDebug() << "could not fetch element info" << i;
+        qWarning() << "could not fetch element info" << i;
         return false;
       }
 
