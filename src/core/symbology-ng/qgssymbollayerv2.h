@@ -69,7 +69,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }
 
-    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit ) {} //= 0;
+    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit ) { Q_UNUSED( unit ); } //= 0;
     virtual QgsSymbolV2::OutputUnit outputUnit() const { return QgsSymbolV2::Mixed; } //= 0;
 
     // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)

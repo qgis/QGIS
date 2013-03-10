@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>278</width>
-    <height>195</height>
+    <width>331</width>
+    <height>235</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -143,21 +143,24 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1" rowspan="2" colspan="2">
+   <item row="4" column="1" colspan="2">
     <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
    </item>
-   <item row="5" column="0" rowspan="2">
+   <item row="5" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
       <string>Cap style</string>
      </property>
     </widget>
    </item>
-   <item row="6" column="1" colspan="2">
+   <item row="5" column="1" colspan="2">
     <widget class="QgsPenCapStyleComboBox" name="cboCapStyle"/>
    </item>
-   <item row="7" column="0" colspan="3">
+   <item row="6" column="0" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetFixedSize</enum>
+     </property>
      <item>
       <widget class="QCheckBox" name="mCustomCheckBox">
        <property name="text">
@@ -173,6 +176,27 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="mDashPatternUnitLabel">
+     <property name="text">
+      <string>Dash pattern unit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" colspan="2">
+    <widget class="QComboBox" name="mDashPatternUnitComboBox">
+     <item>
+      <property name="text">
+       <string>Millimeter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Map unit</string>
+      </property>
+     </item>
+    </widget>
    </item>
   </layout>
  </widget>

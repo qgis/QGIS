@@ -26,7 +26,8 @@
 #include <cmath>
 
 QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( QColor color, double width, Qt::PenStyle penStyle )
-    : mPenStyle( penStyle ), mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE ), mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE ), mOffset( 0 ), mUseCustomDashPattern( false )
+    : mPenStyle( penStyle ), mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE ), mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE ), mOffset( 0 ), mOffsetUnit( QgsSymbolV2::MM ),
+    mUseCustomDashPattern( false ), mCustomDashPatternUnit( QgsSymbolV2::MM )
 {
   mColor = color;
   mWidth = width;
@@ -66,8 +67,12 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
 
 
   QgsSimpleLineSymbolLayerV2* l = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
+  if ( props.contains( "width_unit" ) )
+    l->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["width_unit"] ) );
   if ( props.contains( "offset" ) )
     l->setOffset( props["offset"].toDouble() );
+  if ( props.contains( "offset_unit" ) )
+    l->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
   if ( props.contains( "joinstyle" ) )
     l->setPenJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( props["joinstyle"] ) );
   if ( props.contains( "capstyle" ) )
@@ -80,6 +85,10 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
   if ( props.contains( "customdash" ) )
   {
     l->setCustomDashVector( QgsSymbolLayerV2Utils::decodeRealVector( props["customdash"] ) );
+  }
+  if ( props.contains( "customdash_unit" ) )
+  {
+    l->setCustomDashPatternUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["customdash_unit"] ) );
   }
   return l;
 }
@@ -162,12 +171,15 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
   QgsStringMap map;
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["width"] = QString::number( mWidth );
+  map["width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mWidthUnit );
   map["penstyle"] = QgsSymbolLayerV2Utils::encodePenStyle( mPenStyle );
   map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["capstyle"] = QgsSymbolLayerV2Utils::encodePenCapStyle( mPenCapStyle );
   map["offset"] = QString::number( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["use_custom_dash"] = ( mUseCustomDashPattern ? "1" : "0" );
   map["customdash"] = QgsSymbolLayerV2Utils::encodeRealVector( mCustomDashVector );
+  map["customdash_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mCustomDashPatternUnit );
   return map;
 }
 

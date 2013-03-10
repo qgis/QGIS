@@ -76,6 +76,9 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetUnitComboBox->blockSignals( true );
   mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
   mOffsetUnitComboBox->blockSignals( false );
+  mDashPatternUnitComboBox->blockSignals( true );
+  mDashPatternUnitComboBox->setCurrentIndex( mLayer->customDashPatternUnit() );
+  mDashPatternUnitComboBox->blockSignals( false );
 
   // set values
   spinWidth->setValue( mLayer->width() );
@@ -182,6 +185,14 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChange
   if ( mLayer )
   {
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit )index );
+  }
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::on_mDashPatternUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setCustomDashPatternUnit(( QgsSymbolV2::OutputUnit )index );
   }
 }
 
