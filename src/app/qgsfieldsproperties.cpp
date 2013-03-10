@@ -489,12 +489,16 @@ void QgsFieldsProperties::attributeTypeDialog()
 
   attributeTypeDialog.setIndex( index, mEditTypeMap.value( index, mLayer->editType( index ) ) );
 
+  attributeTypeDialog.setFieldEditable( mLayer->fieldEditable( index ) );
+
   if ( !attributeTypeDialog.exec() )
     return;
 
   QgsVectorLayer::EditType editType = attributeTypeDialog.editType();
-
   mEditTypeMap.insert( index, editType );
+
+  bool isFieldEditable = attributeTypeDialog.fieldEditable();
+  mFieldEditables.insert( index, isFieldEditable );
 
   QString buttonText;
   switch ( editType )
@@ -815,6 +819,8 @@ void QgsFieldsProperties::apply()
 
     QgsVectorLayer::EditType editType = editTypeFromButtonText( pb->text() );
     mLayer->setEditType( idx, editType );
+
+    mLayer->setFieldEditable( idx, mFieldEditables.value( idx, true ));
 
     switch ( editType )
     {
