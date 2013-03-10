@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.parameters.ParameterFile import ParameterFile
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -48,12 +49,13 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
     PARAMETER_BOOLEAN="Boolean"
     PARAMETER_TABLE_FIELD="Table field"
     PARAMETER_EXTENT="Extent"
+    PARAMETER_FILE="File"
     #TO ADD
     PARAMETER_MULTIPLE="Multiple input"
     PARAMETER_FIXED_TABLE="Fixed table"
 
-    paramTypes = [PARAMETER_BOOLEAN,PARAMETER_NUMBER, PARAMETER_RASTER, PARAMETER_EXTENT,
-                  PARAMETER_STRING, PARAMETER_VECTOR, PARAMETER_TABLE, PARAMETER_TABLE_FIELD]
+    paramTypes = [PARAMETER_BOOLEAN, PARAMETER_EXTENT, PARAMETER_FILE, PARAMETER_NUMBER, PARAMETER_RASTER,
+                  PARAMETER_STRING, PARAMETER_TABLE, PARAMETER_TABLE_FIELD, PARAMETER_VECTOR]
 
     def __init__(self, alg, paramType = None, param = None):
         self.alg = alg;
@@ -194,10 +196,17 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.defaultTextBox = QtGui.QLineEdit()
             if self.param is not None:
                 self.defaultTextBox.setText(self.param.default)
-                self.minTextBox.setText(self.param.min if self.param.min is not None else "")
-                self.maxTextBox.setText(self.param.max if self.param.max is not None else "")
             self.horizontalLayout2.addWidget(self.defaultTextBox)
             self.verticalLayout.addLayout(self.horizontalLayout2)
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_FILE \
+                    or isinstance(self.param, ParameterFile):
+            self.horizontalLayout2.addWidget(QtGui.QLabel("Type"))
+            self.fileFolderCombo = QtGui.QComboBox()
+            self.fileFolderCombo.addItem("File")
+            self.fileFolderCombo.addItem("Folder")
+            self.horizontalLayout2.addWidget(self.fileFolderCombo)            
+            if self.param is not None:
+                self.fileFolderCombo.setCurrentIndex(1 if self.param.isFolder else 0)                
 
         self.buttonBox = QtGui.QDialogButtonBox(self)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -251,12 +260,14 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
                     vmax = float(vmax)
                 self.param = ParameterNumber(name, description, vmin, vmax, float(str(self.defaultTextBox.text())))
             except:
-               QMessageBox.critical(self, "Unable to define parameter", "Wrong or missing parameter values")
-               return
+                QMessageBox.critical(self, "Unable to define parameter", "Wrong or missing parameter values")
+                return
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or isinstance(self.param, ParameterString):
             self.param = ParameterString(name, description, str(self.defaultTextBox.text()))
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXTENT or isinstance(self.param, ParameterExtent):
             self.param = ParameterExtent(name, description)
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_FILE or isinstance(self.param, ParameterFile):
+            self.param = ParameterFile(name, description)            
         self.close()
 
     def cancelPressed(self):
