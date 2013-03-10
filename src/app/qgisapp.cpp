@@ -3638,7 +3638,7 @@ bool QgisApp::fileSave()
     if ( path.isEmpty() )
       return false;
 
-    QFileInfo fullPath( path );
+    fullPath.setFile( path );
 
     // make sure we have the .qgs extension in the file name
     if ( "qgs" != fullPath.suffix().toLower() )
@@ -3653,7 +3653,7 @@ bool QgisApp::fileSave()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
 
     if ( isNewProject )
     {
@@ -3712,7 +3712,7 @@ void QgisApp::fileSaveAs()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath.filePath(), settings );
   }
