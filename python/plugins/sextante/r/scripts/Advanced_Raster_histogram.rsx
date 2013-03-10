@@ -1,4 +1,3 @@
-##userasterpackage
 ##[Example scripts]=group
 ##Layer = raster
 ##no_data_value = number 0
