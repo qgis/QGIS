@@ -51,7 +51,7 @@ class QgsVectorLayerJoinBuffer;
 class QgsFeatureRendererV2;
 class QgsDiagramRendererV2;
 class QgsDiagramLayerSettings;
-class QgsVectorLayerCache;
+class QgsGeometryCache;
 class QgsVectorLayerEditBuffer;
 class QgsSymbolV2;
 
@@ -855,7 +855,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QString metadata();
 
-    inline QgsVectorLayerCache* cache() { return mCache; }
+    inline QgsGeometryCache* cache() { return mCache; }
 
   signals:
 
@@ -1066,7 +1066,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QString mAnnotationForm;
 
     //! cache for some vector layer data - currently only geometries for faster editing
-    QgsVectorLayerCache* mCache;
+    QgsGeometryCache* mCache;
 
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer* mEditBuffer;
