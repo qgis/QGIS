@@ -60,7 +60,7 @@
 #include "qgsrendercontext.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayercache.h"
+#include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayereditutils.h"
 #include "qgsvectorlayerfeatureiterator.h"
@@ -100,8 +100,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mLabel( 0 )
     , mLabelOn( false )
     , mVertexMarkerOnlyForSelection( false )
-    , mEditorLayout( GeneratedLayout )
-    , mCache( new QgsVectorLayerCache( this ) )
+    , mCache( new QgsGeometryCache( this ) )
     , mEditBuffer( 0 )
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
@@ -1256,7 +1255,7 @@ void QgsVectorLayer::invertSelection()
   emit selectionChanged();
 }
 
-void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle &rect )
+void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
 {
   // normalize the rectangle
   rect.normalize();
@@ -3091,8 +3090,8 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
 
   if ( deleteBuffer )
   {
-    delete mEditBuffer;
-    mEditBuffer = 0;
+  delete mEditBuffer;
+  mEditBuffer = 0;
     undoStack()->clear();
   }
   emit editingStopped();
@@ -4144,7 +4143,7 @@ QString QgsVectorLayer::metadata()
   {
     myMetadata += "<tr><td>";
     myMetadata += tr( "Primary key attributes: " );
-    foreach ( int idx, pkAttrList )
+    foreach( int idx, pkAttrList )
     {
       myMetadata += pendingFields()[ idx ].name() + " ";
     }
