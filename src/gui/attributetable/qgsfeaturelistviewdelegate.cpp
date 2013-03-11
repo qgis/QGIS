@@ -77,7 +77,7 @@ void QgsFeatureListViewDelegate::paint(QPainter *painter, const QStyleOptionView
     textOption.palette.setColor( QPalette::Text, Qt::darkGreen );
     textOption.palette.setColor( QPalette::HighlightedText, Qt::darkGreen );
   }
-  else if ( featInfo.isEdited )
+  else if ( featInfo.isEdited || checked )
   {
     textOption.font.setStyle( QFont::StyleItalic );
     textOption.palette.setColor( QPalette::Text, Qt::red );
