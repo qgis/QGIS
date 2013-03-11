@@ -51,7 +51,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void writeXML( QDomDocument& doc, QDomElement& parentElem );
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& resamplefilterElem );
+    void readXML( const QDomElement& filterElem );
 
   private:
     /**Current brightness coefficient value. Default: 0. Range: -255...255*/
