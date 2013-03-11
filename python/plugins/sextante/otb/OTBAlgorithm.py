@@ -132,7 +132,7 @@ class OTBAlgorithm(GeoAlgorithm):
                     self.roiVectors[param.value] = roiFile
                 else:
                     commands.append(param.value)
-            if isinstance(param, ParameterRaster):
+            elif isinstance(param, ParameterRaster):
                 commands.append(param.name)
                 if self.hasROI:
                     roiFile = SextanteUtils.getTempFilename('tif')
