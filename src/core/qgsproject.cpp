@@ -31,6 +31,7 @@
 #include "qgsprojectversion.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
+#include "qgsdatasourceuri.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -1597,13 +1598,31 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
       //change datasource path from relative to absolute if necessary
       if ( !useAbsolutePathes )
       {
-        QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
-        QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
-        QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
-        if ( absoluteDs.exists() )
+        QDomElement provider = mapLayerElem.firstChildElement( "provider" );
+        if ( provider.text() == "spatialite" )
         {
-          dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-          dsElem.appendChild( projectDocument.createTextNode( absoluteDs.absoluteFilePath() ) );
+          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
+
+          QgsDataSourceURI uri( dsElem.text() );
+
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + uri.database() );
+          if ( absoluteDs.exists() )
+          {
+            uri.setDatabase( absoluteDs.absoluteFilePath() );
+            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
+            dsElem.appendChild( projectDocument.createTextNode( uri.uri() ) );
+          }
+        }
+        else
+        {
+          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
+          QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          if ( absoluteDs.exists() )
+          {
+            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
+            dsElem.appendChild( projectDocument.createTextNode( absoluteDs.absoluteFilePath() ) );
+          }
         }
       }
 
