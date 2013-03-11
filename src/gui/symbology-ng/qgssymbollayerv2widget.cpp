@@ -487,6 +487,15 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     radCentralPoint->setChecked( true );
   else
     radVertexFirst->setChecked( true );
+
+  // set units
+  mIntervalUnitComboBox->blockSignals( true );
+  mIntervalUnitComboBox->setCurrentIndex( mLayer->intervalUnit() );
+  mIntervalUnitComboBox->blockSignals( false );
+  mOffsetUnitComboBox->blockSignals( true );
+  mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
+  mOffsetUnitComboBox->blockSignals( false );
+
   setPlacement(); // update gui
 }
 
@@ -530,6 +539,22 @@ void QgsMarkerLineSymbolLayerV2Widget::setPlacement()
     mLayer->setPlacement( QgsMarkerLineSymbolLayerV2::CentralPoint );
 
   emit changed();
+}
+
+void QgsMarkerLineSymbolLayerV2Widget::on_mIntervalUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setIntervalUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
+}
+
+void QgsMarkerLineSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
 }
 
 ///////////

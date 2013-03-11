@@ -169,6 +169,15 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     Placement placement() const { return mPlacement; }
     void setPlacement( Placement p ) { mPlacement = p; }
 
+    QgsSymbolV2::OutputUnit intervalUnit() const { return mIntervalUnit; }
+    void setIntervalUnit( QgsSymbolV2::OutputUnit unit ) { mIntervalUnit = unit; }
+
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
 
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
@@ -177,8 +186,10 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     bool mRotateMarker;
     double mInterval;
+    QgsSymbolV2::OutputUnit mIntervalUnit;
     QgsMarkerSymbolV2* mMarker;
     double mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
     Placement mPlacement;
 };
 

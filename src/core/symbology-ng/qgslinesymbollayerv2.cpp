@@ -351,8 +351,10 @@ QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, doubl
 {
   mRotateMarker = rotateMarker;
   mInterval = interval;
+  mIntervalUnit = QgsSymbolV2::MM;
   mMarker = NULL;
   mOffset = 0;
+  mOffsetUnit = QgsSymbolV2::MM;
   mPlacement = Interval;
 
   setSubSymbol( new QgsMarkerSymbolV2() );
@@ -377,6 +379,14 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
   if ( props.contains( "offset" ) )
   {
     x->setOffset( props["offset"].toDouble() );
+  }
+  if ( props.contains( "offset_unit" ) )
+  {
+    x->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+  }
+  if ( props.contains( "interval_unit" ) )
+  {
+    x->setIntervalUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["interval_unit"] ) );
   }
 
   if ( props.contains( "placement" ) )
@@ -440,7 +450,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   }
   else
   {
-    QPolygonF points2 = ::offsetLine( points, context.outputLineWidth( mOffset ) );
+    QPolygonF points2 = ::offsetLine( points, mOffset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
     if ( mPlacement == Interval )
       renderPolylineInterval( points2, context );
     else if ( mPlacement == CentralPoint )
@@ -460,9 +470,9 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
   bool first = true;
   double origAngle = mMarker->angle();
 
-  double painterUnitInterval = context.outputLineWidth( mInterval > 0 ? mInterval : 0.1 );
-
   QgsRenderContext& rc = context.renderContext();
+  double interval = mInterval > 0 ? mInterval : 0.1;
+  double painterUnitInterval = interval * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, mIntervalUnit );
 
   for ( int i = 1; i < points.count(); ++i )
   {
@@ -668,6 +678,8 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   map["rotate"] = ( mRotateMarker ? "1" : "0" );
   map["interval"] = QString::number( mInterval );
   map["offset"] = QString::number( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["interval_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mIntervalUnit );
   if ( mPlacement == Vertex )
     map["placement"] = "vertex";
   else if ( mPlacement == LastVertex )
@@ -678,6 +690,7 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
     map["placement"] = "centralpoint";
   else
     map["placement"] = "interval";
+
   return map;
 }
 
@@ -706,6 +719,8 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
   x->setSubSymbol( mMarker->clone() );
   x->setOffset( mOffset );
   x->setPlacement( mPlacement );
+  x->setOffsetUnit( mOffsetUnit );
+  x->setIntervalUnit( mIntervalUnit );
   return x;
 }
 
@@ -865,6 +880,22 @@ void QgsMarkerLineSymbolLayerV2::setWidth( double width )
 double QgsMarkerLineSymbolLayerV2::width() const
 {
   return mMarker->size();
+}
+
+void QgsMarkerLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mIntervalUnit = unit;
+  mOffsetUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsMarkerLineSymbolLayerV2::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mIntervalUnit;
+  if ( mOffsetUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }
 
 /////////////
