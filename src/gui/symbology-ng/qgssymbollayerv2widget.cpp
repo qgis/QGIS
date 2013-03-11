@@ -936,6 +936,10 @@ void QgsLineDecorationSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* lay
   // set values
   btnChangeColor->setColor( mLayer->color() );
   spinWidth->setValue( mLayer->width() );
+
+  mWidthUnitComboBox->blockSignals( true );
+  mWidthUnitComboBox->setCurrentIndex( mLayer->widthUnit() );
+  mWidthUnitComboBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2Widget::symbolLayer()
@@ -964,6 +968,14 @@ void QgsLineDecorationSymbolLayerV2Widget::penWidthChanged()
 {
   mLayer->setWidth( spinWidth->value() );
   emit changed();
+}
+
+void QgsLineDecorationSymbolLayerV2Widget::on_mWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
 }
 
 /////////////

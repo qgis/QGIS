@@ -920,7 +920,14 @@ QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2::create( const QgsStringMap& pr
   if ( props.contains( "width" ) )
     width = props["width"].toDouble();
 
-  return new QgsLineDecorationSymbolLayerV2( color, width );
+
+  QgsLineDecorationSymbolLayerV2* layer = new QgsLineDecorationSymbolLayerV2( color, width );
+  if ( props.contains( "width_unit" ) )
+  {
+    layer->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["width_unit"] ) );
+  }
+  return layer;
+
 }
 
 QString QgsLineDecorationSymbolLayerV2::layerType() const
@@ -932,12 +939,14 @@ void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& cont
 {
   QColor penColor = mColor;
   penColor.setAlphaF( context.alpha() );
-  mPen.setWidth( context.outputLineWidth( mWidth ) );
+
+  double width = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
+  mPen.setWidth( context.outputLineWidth( width ) );
   mPen.setColor( penColor );
   QColor selColor = context.selectionColor();
   if ( ! selectionIsOpaque )
     selColor.setAlphaF( context.alpha() );
-  mSelPen.setWidth( context.outputLineWidth( mWidth ) );
+  mSelPen.setWidth( context.outputLineWidth( width ) );
   mSelPen.setColor( selColor );
 }
 
@@ -973,7 +982,7 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
   }
 
   double angle = atan2( p2.y() - p1.y(), p2.x() - p1.x() );
-  double size = context.outputLineWidth( mWidth * 8 );
+  double size = ( mWidth * 8 ) * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
   double angle1 = angle + M_PI / 6;
   double angle2 = angle - M_PI / 6;
 
@@ -990,12 +999,15 @@ QgsStringMap QgsLineDecorationSymbolLayerV2::properties() const
   QgsStringMap map;
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["width"] = QString::number( mWidth );
+  map["width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mWidthUnit );
   return map;
 }
 
 QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2::clone() const
 {
-  return new QgsLineDecorationSymbolLayerV2( mColor, mWidth );
+  QgsLineDecorationSymbolLayerV2* layer = new QgsLineDecorationSymbolLayerV2( mColor, mWidth );
+  layer->setWidthUnit( mWidthUnit );
+  return layer;
 }
 
 void QgsLineDecorationSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
@@ -1027,4 +1039,14 @@ void QgsLineDecorationSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &elem
 
   // use <VendorOption> to draw the decoration at end of the line
   symbolizerElem.appendChild( QgsSymbolLayerV2Utils::createVendorOptionElement( doc, "placement", "lastPoint" ) );
+}
+
+void QgsLineDecorationSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mWidthUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsLineDecorationSymbolLayerV2::outputUnit() const
+{
+  return mWidthUnit;
 }

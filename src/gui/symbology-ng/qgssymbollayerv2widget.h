@@ -240,6 +240,7 @@ class GUI_EXPORT QgsLineDecorationSymbolLayerV2Widget : public QgsSymbolLayerV2W
   public slots:
     void colorChanged();
     void penWidthChanged();
+    void on_mWidthUnitComboBox_currentIndexChanged( int index );
 
   protected:
     QgsLineDecorationSymbolLayerV2* mLayer;

@@ -226,6 +226,9 @@ class CORE_EXPORT QgsLineDecorationSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     QPen mPen;
     QPen mSelPen;
