@@ -24,6 +24,7 @@
 #include "qgsrectangle.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterresamplefilter.h"
+#include "qgsbrightnesscontrastfilter.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasternuller.h"
 #include "qgsrasterrenderer.h"
@@ -45,9 +46,10 @@ class CORE_EXPORT QgsRasterPipe
       UnknownRole   = 0,
       ProviderRole  = 1,
       RendererRole  = 2,
-      ResamplerRole = 3,
-      ProjectorRole = 4,
-      NullerRole = 5,
+      BrightnessRole = 3,
+      ResamplerRole = 4,
+      ProjectorRole = 5,
+      NullerRole = 6,
     };
 
     QgsRasterPipe();
@@ -92,6 +94,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterDataProvider * provider() const;
     QgsRasterRenderer * renderer() const;
     QgsRasterResampleFilter * resampleFilter() const;
+    QgsBrightnessContrastFilter * brightnessFilter() const;
     QgsRasterProjector * projector() const;
     QgsRasterNuller * nuller() const;
 

@@ -412,6 +412,10 @@
    <addaction name="mActionFullCumulativeCutStretch"/>
    <addaction name="mActionLocalHistogramStretch"/>
    <addaction name="mActionFullHistogramStretch"/>
+   <addaction name="mActionIncreaseBrightness"/>
+   <addaction name="mActionDecreaseBrightness"/>
+   <addaction name="mActionIncreaseContrast"/>
+   <addaction name="mActionDecreaseContrast"/>
   </widget>
   <widget class="QToolBar" name="mLabelToolBar">
    <property name="windowTitle">
@@ -2013,6 +2017,26 @@ Acts on currently active editable layer</string>
   <action name="mActionOSMExport">
    <property name="text">
     <string>&amp;Export topology to SpatiaLite</string>
+   </property>
+  </action>
+  <action name="mActionIncreaseBrightness">
+   <property name="text">
+    <string>Increase brightness</string>
+   </property>
+  </action>
+  <action name="mActionDecreaseBrightness">
+   <property name="text">
+    <string>Decrease brightness</string>
+   </property>
+  </action>
+  <action name="mActionIncreaseContrast">
+   <property name="text">
+    <string>Increase contrast</string>
+   </property>
+  </action>
+  <action name="mActionDecreaseContrast">
+   <property name="text">
+    <string>Decrease contrast</string>
    </property>
   </action>
  </widget>

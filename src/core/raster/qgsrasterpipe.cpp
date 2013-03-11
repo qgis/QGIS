@@ -127,6 +127,7 @@ QgsRasterPipe::Role QgsRasterPipe::interfaceRole( QgsRasterInterface * interface
   if ( dynamic_cast<QgsRasterDataProvider *>( interface ) ) role = ProviderRole;
   else if ( dynamic_cast<QgsRasterRenderer *>( interface ) ) role = RendererRole;
   else if ( dynamic_cast<QgsRasterResampleFilter *>( interface ) ) role = ResamplerRole;
+  else if ( dynamic_cast<QgsBrightnessContrastFilter *>( interface ) ) role = BrightnessRole;
   else if ( dynamic_cast<QgsRasterProjector *>( interface ) ) role = ProjectorRole;
   else if ( dynamic_cast<QgsRasterNuller *>( interface ) ) role = NullerRole;
 
@@ -178,6 +179,7 @@ bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
   int providerIdx = mRoleMap.value( ProviderRole, -1 );
   int rendererIdx = mRoleMap.value( RendererRole, -1 );
   int resamplerIdx = mRoleMap.value( ResamplerRole, -1 );
+  int brightnessIdx = mRoleMap.value( BrightnessRole, -1 );
 
   if ( role == ProviderRole )
   {
@@ -187,13 +189,17 @@ bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
   {
     idx =  providerIdx + 1;
   }
-  else if ( role == ResamplerRole )
+  else if ( role == BrightnessRole )
   {
     idx =  qMax( providerIdx, rendererIdx ) + 1;
   }
+  else if ( role == ResamplerRole )
+  {
+    idx =  qMax( qMax( providerIdx, rendererIdx ), brightnessIdx ) + 1;
+  }
   else if ( role == ProjectorRole )
   {
-    idx =  qMax( qMax( providerIdx, rendererIdx ), resamplerIdx ) + 1;
+    idx =  qMax( qMax( qMax( providerIdx, rendererIdx ), brightnessIdx ), resamplerIdx )  + 1;
   }
 
   return insert( idx, theInterface );  // insert may still fail and return false
@@ -222,6 +228,11 @@ QgsRasterRenderer * QgsRasterPipe::renderer() const
 QgsRasterResampleFilter * QgsRasterPipe::resampleFilter() const
 {
   return dynamic_cast<QgsRasterResampleFilter *>( interface( ResamplerRole ) );
+}
+
+QgsBrightnessContrastFilter * QgsRasterPipe::brightnessFilter() const
+{
+  return dynamic_cast<QgsBrightnessContrastFilter *>( interface( BrightnessRole ) );
 }
 
 QgsRasterProjector * QgsRasterPipe::projector() const

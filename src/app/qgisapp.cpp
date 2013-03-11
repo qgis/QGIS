@@ -169,6 +169,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasternuller.h"
+#include "qgsbrightnesscontrastfilter.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
@@ -1050,6 +1051,10 @@ void QgisApp::createActions()
   connect( mActionFullHistogramStretch, SIGNAL( triggered() ), this, SLOT( fullHistogramStretch() ) );
   connect( mActionLocalCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( localCumulativeCutStretch() ) );
   connect( mActionFullCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( fullCumulativeCutStretch() ) );
+  connect( mActionIncreaseBrightness, SIGNAL( triggered() ), this, SLOT( increaseBrightness() ) );
+  connect( mActionDecreaseBrightness, SIGNAL( triggered() ), this, SLOT( decreaseBrightness() ) );
+  connect( mActionIncreaseContrast, SIGNAL( triggered() ), this, SLOT( increaseContrast() ) );
+  connect( mActionDecreaseContrast, SIGNAL( triggered() ), this, SLOT( decreaseContrast() ) );
 
   // Vector Menu Items
   connect( mActionOSMDownload, SIGNAL( triggered() ), this, SLOT( osmDownloadDialog() ) );
@@ -1675,6 +1680,10 @@ void QgisApp::setTheme( QString theThemeName )
   mActionHelpContents->setIcon( QgsApplication::getThemeIcon( "/mActionHelpContents.png" ) );
   mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionFullHistogramStretch.png" ) );
+  //~ mActionIncreaseBrightness->setIcon( QgsApplication::getThemeIcon( "/mActionIncreaseBrightness.png" ) );
+  //~ mActionDecreaseBrightness->setIcon( QgsApplication::getThemeIcon( "/mActionDecreaseBrightness.png" ) );
+  //~ mActionIncreaseContrast->setIcon( QgsApplication::getThemeIcon( "/mActionIncreaseContrast.png" ) );
+  //~ mActionDecreaseContrast->setIcon( QgsApplication::getThemeIcon( "/mActionDecreaseContrast.png" ) );
   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( "/mActionZoomNative.png" ) );
   mActionQgisHomePage->setIcon( QgsApplication::getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( QgsApplication::getThemeIcon( "/mActionHelpAbout.png" ) );
@@ -6449,6 +6458,63 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterLayer::ContrastEn
   if ( visibleAreaOnly ) myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
 
   myRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
+
+  myRasterLayer->setCacheImage( NULL );
+  mMapCanvas->refresh();
+}
+
+void QgisApp::increaseBrightness()
+{
+  adjustBrightnessContrast( 1 );
+}
+
+void QgisApp::decreaseBrightness()
+{
+  adjustBrightnessContrast( -1 );
+}
+
+void QgisApp::increaseContrast()
+{
+  adjustBrightnessContrast( 1, false );
+}
+
+void QgisApp::decreaseContrast()
+{
+  adjustBrightnessContrast( -1, false );
+}
+
+
+void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
+{
+  QgsMapLayer * myLayer = mMapLegend->currentLayer();
+
+  if ( !myLayer )
+  {
+    QMessageBox::information( this,
+                              tr( "No Layer Selected" ),
+                              tr( "To change brightness or contrast, you need to have a raster layer selected." ) );
+    return;
+  }
+
+  QgsRasterLayer* myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
+  if ( !myRasterLayer )
+  {
+    QMessageBox::information( this,
+                              tr( "No Raster Layer Selected" ),
+                              tr( "To change brightness or contrast, you need to have a raster layer selected." ) );
+    return;
+  }
+
+  QgsBrightnessContrastFilter* brightnessFilter = myRasterLayer->brightnessFilter();
+
+  if ( updateBrightness )
+  {
+    brightnessFilter->setBrightness( brightnessFilter->brightness() + delta );
+  }
+  else
+  {
+    brightnessFilter->setContrast( brightnessFilter->contrast() + delta );
+  }
 
   myRasterLayer->setCacheImage( NULL );
   mMapCanvas->refresh();
