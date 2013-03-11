@@ -121,12 +121,23 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
 
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+
+    void setSizeUnit( QgsSymbolV2::OutputUnit unit ) { mSizeUnit = unit; }
+    QgsSymbolV2::OutputUnit sizeUnit() const { return mSizeUnit; }
+
+    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    virtual QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
 
     double mAngle;
     double mSize;
+    QgsSymbolV2::OutputUnit mSizeUnit;
     QPointF mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
     QgsSymbolV2::ScaleMethod mScaleMethod;
 };
 

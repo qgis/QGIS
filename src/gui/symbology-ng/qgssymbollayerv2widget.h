@@ -105,6 +105,8 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void setSize();
     void setAngle();
     void setOffset();
+    void on_mSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 
   protected:
     QgsSimpleMarkerSymbolLayerV2* mLayer;

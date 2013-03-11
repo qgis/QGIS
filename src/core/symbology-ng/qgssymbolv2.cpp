@@ -554,7 +554,6 @@ void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, 
 QgsSymbolV2* QgsMarkerSymbolV2::clone() const
 {
   QgsSymbolV2* cloneSymbol = new QgsMarkerSymbolV2( cloneLayers() );
-  cloneSymbol->setOutputUnit( outputUnit() );
   cloneSymbol->setAlpha( mAlpha );
   return cloneSymbol;
 }

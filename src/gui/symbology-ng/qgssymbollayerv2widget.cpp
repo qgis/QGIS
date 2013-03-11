@@ -277,6 +277,13 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   spinOffsetY->blockSignals( true );
   spinOffsetY->setValue( mLayer->offset().y() );
   spinOffsetY->blockSignals( false );
+
+  mSizeUnitComboBox->blockSignals( true );
+  mSizeUnitComboBox->setCurrentIndex( mLayer->sizeUnit() );
+  mSizeUnitComboBox->blockSignals( false );
+  mOffsetUnitComboBox->blockSignals( true );
+  mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
+  mOffsetUnitComboBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2Widget::symbolLayer()
@@ -340,6 +347,22 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setOffset()
 {
   mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::on_mSizeUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setSizeUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
+}
+
+void QgsSimpleMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
 }
 
 

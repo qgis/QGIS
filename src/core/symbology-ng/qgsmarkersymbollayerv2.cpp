@@ -55,6 +55,8 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
   mScaleMethod = scaleMethod;
+  mSizeUnit = QgsSymbolV2::MM;
+  mOffsetUnit = QgsSymbolV2::MM;
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& props )
@@ -82,6 +84,10 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle, scaleMethod );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
+  if ( props.contains( "offset_unit" ) )
+    m->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+  if ( props.contains( "size_unit" ) )
+    m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
   return m;
 }
 
@@ -146,7 +152,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   // scale the shape (if the size is not going to be modified)
   if ( !hasDataDefinedSize )
   {
-    double scaledSize = context.outputLineWidth( mSize );
+    double scaledSize = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
     if ( mUsingCache )
       scaledSize *= context.renderContext().rasterScaleFactor();
     double half = scaledSize / 2.0;
@@ -178,7 +184,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 
 void QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& context )
 {
-  double scaledSize = context.outputPixelSize( mSize );
+  double scaledSize = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
 
   // calculate necessary image size for the cache
   double pw = (( mPen.widthF() == 0 ? 1 : mPen.widthF() ) + 1 ) / 2 * 2; // make even (round up); handle cosmetic pen
@@ -375,7 +381,9 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     return;
   }
 
-  QPointF off( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
+  double offsetX = mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  double offsetY = mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  QPointF off( offsetX, offsetY );
   if ( mAngle )
     off = _rotatedOffset( off, mAngle );
 
@@ -401,7 +409,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     // resize if necessary
     if ( hasDataDefinedSize )
     {
-      double scaledSize = context.outputLineWidth( mSize );
+      double scaledSize = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
 
       switch ( mScaleMethod )
       {
@@ -440,8 +448,10 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   map["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   map["color_border"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
   map["size"] = QString::number( mSize );
+  map["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSizeUnit );
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
   return map;
 }
@@ -450,6 +460,8 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 {
   QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle, mScaleMethod );
   m->setOffset( mOffset );
+  m->setSizeUnit( mSizeUnit );
+  m->setOffsetUnit( mOffsetUnit );
   return m;
 }
 
