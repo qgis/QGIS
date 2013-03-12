@@ -812,6 +812,15 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffsetY->setValue( mLayer->offset().y() );
   spinOffsetY->blockSignals( false );
 
+  mSizeUnitComboBox->blockSignals( true );
+  mSizeUnitComboBox->setCurrentIndex( mLayer->sizeUnit() );
+  mSizeUnitComboBox->blockSignals( false );
+  mBorderWidthUnitComboBox->blockSignals( true );
+  mBorderWidthUnitComboBox->setCurrentIndex( mLayer->outlineWidthUnit() );
+  mBorderWidthUnitComboBox->blockSignals( false );
+  mOffsetUnitComboBox->blockSignals( true );
+  mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
+  mOffsetUnitComboBox->blockSignals( false );
   setGuiForSvg( mLayer );
 }
 
@@ -932,6 +941,30 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mBorderWidthSpinBox_valueChanged( doubl
   {
     mLayer->setOutlineWidth( d );
     emit changed();
+  }
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mSizeUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setSizeUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mBorderWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOutlineWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
   }
 }
 

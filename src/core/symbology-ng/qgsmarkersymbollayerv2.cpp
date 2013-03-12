@@ -612,6 +612,7 @@ QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( QString name, double size,
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
   mOutlineWidth = 1.0;
+  mOutlineWidthUnit = QgsSymbolV2::MM;
   mFillColor = QColor( Qt::black );
   mOutlineColor = QColor( Qt::black );
 }
@@ -653,14 +654,20 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
     }
   }
 
+  if ( props.contains( "size_unit" ) )
+    m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( "size_unit" ) );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
+  if ( props.contains( "offset_unit" ) )
+    m->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
   if ( props.contains( "fill" ) )
     m->setFillColor( QColor( props["fill"] ) );
   if ( props.contains( "outline" ) )
     m->setOutlineColor( QColor( props["outline"] ) );
   if ( props.contains( "outline-width" ) )
     m->setOutlineWidth( props["outline-width"].toDouble() );
+  if ( props.contains( "outline_width_unit" ) )
+    m->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
   return m;
 }
 
@@ -710,7 +717,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     return;
   }
 
-  double size = context.outputLineWidth( mSize );
+  double size = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
   //don't render symbols with size below one or above 10,000 pixels
   if (( int )size < 1 || 10000.0 < size )
   {
@@ -718,7 +725,10 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   }
 
   p->save();
-  QPointF outputOffset = QPointF( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
+  double offsetX = mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  double offsetY = mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  QPointF outputOffset( offsetX, offsetY );
+
   if ( mAngle )
     outputOffset = _rotatedOffset( outputOffset, mAngle );
   p->translate( point + outputOffset );
@@ -770,7 +780,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if ( context.selected() )
   {
     QPen pen( context.selectionColor() );
-    double penWidth = context.outputLineWidth( 1.0 );
+    double penWidth = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), QgsSymbolV2::MM );
     if ( penWidth > size / 20 )
     {
       // keep the pen width from covering symbol
@@ -794,11 +804,14 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
   QgsStringMap map;
   map["name"] = QgsSymbolLayerV2Utils::symbolPathToName( mPath );
   map["size"] = QString::number( mSize );
+  map["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSizeUnit );
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["fill"] = mFillColor.name();
   map["outline"] = mOutlineColor.name();
   map["outline-width"] = QString::number( mOutlineWidth );
+  map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   return map;
 }
 
@@ -808,8 +821,28 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
   m->setFillColor( mFillColor );
   m->setOutlineColor( mOutlineColor );
   m->setOutlineWidth( mOutlineWidth );
+  m->setOutlineWidthUnit( mOutlineWidthUnit );
   m->setOffset( mOffset );
+  m->setOffsetUnit( mOffsetUnit );
+  m->setSizeUnit( mSizeUnit );
   return m;
+}
+
+void QgsSvgMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mSizeUnit = unit;
+  mOffsetUnit = unit;
+  mOutlineWidthUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsSvgMarkerSymbolLayerV2::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mSizeUnit;
+  if ( unit != mOffsetUnit || unit != mOutlineWidthUnit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }
 
 void QgsSvgMarkerSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const

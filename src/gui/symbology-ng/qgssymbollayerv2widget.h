@@ -209,6 +209,9 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
     void on_mChangeColorButton_clicked();
     void on_mChangeBorderColorButton_clicked();
     void on_mBorderWidthSpinBox_valueChanged( double d );
+    void on_mSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 
   protected:
 
