@@ -358,7 +358,7 @@ bool HeatmapGui::variableRadius()
 
 float HeatmapGui::radius()
 {
-  float radius = mBufferLineEdit->text().toInt();
+  float radius = mBufferLineEdit->text().toFloat();
   if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
   {
     radius = mapUnitsOf( radius, inputVectorLayer()->crs() );

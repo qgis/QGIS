@@ -172,7 +172,7 @@ void Heatmap::run()
       rField = d.radiusField();
       myAttrList.append( rField );
       QgsDebugMsg( QString( "Radius Field index received: %1" ).arg( rField ) );
-      
+
       // If not using map units, then calculate a conversion factor to convert the radii to map units
       if ( d.radiusUnit() == HeatmapGui::Meters )
       {
@@ -184,13 +184,13 @@ void Heatmap::run()
       radius = d.radius(); // radius returned by d.radius() is already in map units
       myBuffer = bufferSize( radius, cellsize );
     }
-    
+
     if ( d.weighted() )
     {
       wField = d.weightField();
       myAttrList.append( wField );
     }
-    
+
     // This might have attributes or mightnot have attibutes at all
     // based on the variableRadius() and weighted()
     QgsFeatureIterator fit = inputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( myAttrList ) );
@@ -222,14 +222,14 @@ void Heatmap::run()
       {
         continue;
       }
-      
+
       // If radius is variable then fetch it and calculate new pixel buffer size
       if ( d.variableRadius() )
       {
         radius = myFeature.attribute( rField ).toFloat() * radiusToMapUnits;
         myBuffer = bufferSize( radius, cellsize );
       }
-      
+
       int blockSize = 2 * myBuffer + 1; //Block SIDE would be more appropriate
       // calculate the pixel position
       unsigned int xPosition, yPosition;
@@ -252,13 +252,13 @@ void Heatmap::run()
         for ( int yp = 0; yp <= myBuffer; yp++ )
         {
           float distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
-          
+
           // is pixel outside search bandwidth of feature?
           if ( distance > myBuffer )
           {
             continue;
           }
-          
+
           float pixelValue = weight * ( 1 - (( 1 - myDecay ) * distance / myBuffer ) );
 
           // clearing anamolies along the axes
@@ -304,7 +304,7 @@ void Heatmap::run()
  * Local functions
  *
  */
- 
+
 float Heatmap::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
 {
   // Worker to transform metres input to mapunits
@@ -328,8 +328,8 @@ int Heatmap::bufferSize( float radius, float cellsize )
     ++buffer;
   }
   return buffer;
-}    
-    
+}
+
 
 // Unload the plugin by cleaning up the GUI
 void Heatmap::unload()
