@@ -26,10 +26,17 @@
 
 #include <QPair>
 
+#ifdef DEBUG
+typedef struct OGRDataSourceHS  *OGRDataSourceH;
+typedef struct OGRLayerHS       *OGRLayerH;
+typedef struct OGRGeometryHS    *OGRGeometryH;
+#else
 typedef void *OGRDataSourceH;
 typedef void *OGRLayerH;
 typedef void *OGRGeometryH;
 typedef void *OGRFeatureH;
+#endif
+
 
 class QgsSymbolLayerV2;
 class QTextCodec;
