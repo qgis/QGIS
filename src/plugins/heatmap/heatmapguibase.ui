@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
-    <height>380</height>
+    <width>460</width>
+    <height>382</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -99,20 +99,6 @@
        <string>map units</string>
       </property>
      </item>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mDecayLabel">
-     <property name="text">
-      <string>Decay Ratio</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QLineEdit" name="mDecayLineEdit">
-     <property name="text">
-      <string>0.1</string>
-     </property>
     </widget>
    </item>
    <item row="6" column="0" colspan="3">
@@ -236,6 +222,20 @@
          <widget class="QComboBox" name="weightFieldCombo">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QLineEdit" name="mDecayLineEdit">
+          <property name="text">
+           <string>0.0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="mDecayLabel">
+          <property name="text">
+           <string>Decay Ratio</string>
           </property>
          </widget>
         </item>
