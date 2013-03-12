@@ -1,0 +1,16 @@
+Haralick Texture Extraction
+otbcli_HaralickTextureExtraction
+Haralick Texture Extraction
+Feature Extraction
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterNumber|-channel|Raster Band|None|None|1
+ParameterNumber|-parameters.xrad|X Radius|None|None|1
+ParameterNumber|-parameters.yrad|Y Radius|None|None|1
+ParameterNumber|-parameters.xoff|X Offset|None|None|1
+ParameterNumber|-parameters.yoff|Y Offset|None|None|1
+ParameterNumber|-parameters.min|Image Minimum|None|None|1
+ParameterNumber|-parameters.max|Image Maximum|None|None|255
+ParameterNumber|-parameters.nbbin|Histogram number of bin|None|None|8
+ParameterSelection|-texture|Texture Set Selection|simple;advanced;higher|0

@@ -1,0 +1,14 @@
+Compute Confusion Matrix
+otbcli_ComputeConfusionMatrix
+Compute Confusion Matrix
+Learning
+ParameterRaster|-in|Input Image|False
+OutputFile|-out|Matrix Output
+ParameterSelection|-ref|Ground Truth|raster;vector|1
+ParameterRaster|-ref.raster.in|Input Reference Image|False
+ParameterFile|-ref.vector.in|Input Vector Data|False
+ParameterString|-ref.vector.field|Field name|None|None|dn
+ParameterNumber|-labels|Number of labels|None|None|2
+ParameterNumber|-nodata|Value for nodata pixels|None|None|0
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+
