@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>460</width>
-    <height>382</height>
+    <height>415</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -180,21 +180,21 @@
       </item>
       <item row="1" column="0">
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
+        <item row="1" column="0">
          <widget class="QCheckBox" name="useRadius">
           <property name="text">
            <string>Use Radius from field</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="1" column="1">
          <widget class="QComboBox" name="radiusFieldCombo">
           <property name="enabled">
            <bool>false</bool>
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
+        <item row="1" column="2">
          <widget class="QComboBox" name="radiusFieldUnitCombo">
           <property name="enabled">
            <bool>false</bool>
@@ -211,31 +211,57 @@
           </item>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="2" column="0">
          <widget class="QCheckBox" name="useWeight">
           <property name="text">
            <string>Use Weight from field</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1" colspan="2">
+        <item row="2" column="1" colspan="2">
          <widget class="QComboBox" name="weightFieldCombo">
           <property name="enabled">
            <bool>false</bool>
           </property>
          </widget>
         </item>
-        <item row="2" column="1" colspan="2">
+        <item row="3" column="1" colspan="2">
          <widget class="QLineEdit" name="mDecayLineEdit">
           <property name="text">
            <string>0.0</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="mDecayLabel">
           <property name="text">
            <string>Decay Ratio</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QComboBox" name="kernelShapeCombo">
+          <item>
+           <property name="text">
+            <string>Triangular</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Uniform</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Quartic</string>
+           </property>
+          </item>          
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="kernelShapeLable">
+          <property name="text">
+           <string>Kernel Shape</string>
           </property>
          </widget>
         </item>

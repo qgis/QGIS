@@ -35,6 +35,13 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
       Meters,
       MapUnits
     };
+    
+    enum kernelShape
+    {
+      Triangular,
+      Uniform,
+      Quartic
+    };
 
     /** Returns whether to apply weighted heat */
     bool weighted();
@@ -47,6 +54,9 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
 
     /** Return the radius Unit (meters/map units) */
     int radiusUnit();
+    
+    /** Return the selected kernel shape */
+    int kernelShape();
 
     /** Return the decay ratio */
     float decayRatio();

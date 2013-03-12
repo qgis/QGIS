@@ -43,6 +43,9 @@
 
 #define NO_DATA -9999
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 static const QString sName = QObject::tr( "Heatmap" );
 static const QString sDescription = QObject::tr( "Creates a Heatmap raster for the input point vector" );
@@ -109,7 +112,8 @@ void Heatmap::run()
     int rows = d.rows();
     float cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
     float myDecay = d.decayRatio();
-
+    int kernelShape = d.kernelShape();
+       
     // Start working on the input vector
     QgsVectorLayer* inputLayer = d.inputVectorLayer();
 
@@ -259,7 +263,7 @@ void Heatmap::run()
             continue;
           }
           
-          float pixelValue = weight * ( 1 - (( 1 - myDecay ) * distance / myBuffer ) );
+          float pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
 
           // clearing anamolies along the axes
           if ( xp == 0 && yp == 0 )
@@ -330,6 +334,40 @@ int Heatmap::bufferSize( float radius, float cellsize )
   return buffer;
 }    
     
+float Heatmap::calculateKernelValue( float distance, int bandwidth, int kernelShape )
+{
+  switch (kernelShape) {
+    case HeatmapGui::Triangular:
+      return ( 1 - ( distance / bandwidth ) );
+      
+    case HeatmapGui::Uniform:
+      return uniformKernel( distance, bandwidth );
+      
+    case HeatmapGui::Quartic:
+      return quarticKernel( distance, bandwidth );
+  }
+  return 0;
+  
+}
+
+float Heatmap::uniformKernel( float distance, int bandwidth )
+{
+  // Normalizing constant. Calculated by polar double integrating the kernel function
+  // with radius of 0 to bandwidth and equating area to 1.
+  float k = 2. / (M_PI * (float)bandwidth);
+  
+  // Derived from Wand and Jones (1995), p. 175
+  return k * ( 0.5 / (float)bandwidth);
+}
+
+float Heatmap::quarticKernel( float distance, int bandwidth )
+{
+  // Normalizing constant
+  float k = 16. / (5. * M_PI * pow((float)bandwidth, 2));
+  
+  // Derived from Wand and Jones (1995), p. 175
+  return k * (15. / 16. ) * pow( 1. - pow( distance / (float)bandwidth, 2), 2);
+}
 
 // Unload the plugin by cleaning up the GUI
 void Heatmap::unload()

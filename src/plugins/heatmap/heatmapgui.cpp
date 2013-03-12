@@ -375,6 +375,11 @@ int HeatmapGui::radiusUnit()
   return mRadiusUnitCombo->currentIndex();
 }
 
+int HeatmapGui::kernelShape()
+{
+  return kernelShapeCombo->currentIndex();
+}
+
 float HeatmapGui::decayRatio()
 {
   return mDecayLineEdit->text().toFloat();

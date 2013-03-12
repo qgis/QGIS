@@ -85,6 +85,13 @@ class Heatmap: public QObject, public QgisPlugin
     float mapUnitsOf( float meters, QgsCoordinateReferenceSystem crs );
     //! Worker to calculate buffer size in pixels
     int bufferSize( float radius, float cellsize );
+    //! Calculate the value given to a point width a given distance for a specified kernel shape
+    float calculateKernelValue( float distance, int bandwidth, int kernelShape );
+    //! Uniform kernel function
+    float uniformKernel( float distance, int bandwidth );
+    //! Quartic kernel function    
+    float quarticKernel( float distance, int bandwidth );
+    
     
     // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
 
