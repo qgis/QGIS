@@ -79,13 +79,28 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
 
     QSet<QString> usedAttributes() const;
 
+    void setSymbolWidthUnit( QgsSymbolV2::OutputUnit unit ) { mSymbolWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
+
+    void setSymbolHeightUnit( QgsSymbolV2::OutputUnit unit ) { mSymbolHeightUnit = unit; }
+    QgsSymbolV2::OutputUnit symbolHeightUnit() const { return mSymbolHeightUnit; }
+
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   private:
     QString mSymbolName;
     double mSymbolWidth;
+    QgsSymbolV2::OutputUnit mSymbolWidthUnit;
     double mSymbolHeight;
+    QgsSymbolV2::OutputUnit mSymbolHeightUnit;
     QColor mFillColor;
     QColor mOutlineColor;
     double mOutlineWidth;
+    QgsSymbolV2::OutputUnit mOutlineWidthUnit;
 
 #if 0
     /**Take width from attribute (-1  if fixed width)*/

@@ -921,7 +921,9 @@ QgsFontMarkerSymbolLayerV2::QgsFontMarkerSymbolLayerV2( QString fontFamily, QCha
   mColor = color;
   mAngle = angle;
   mSize = pointSize;
+  mSizeUnit = QgsSymbolV2::MM;
   mOffset = QPointF( 0, 0 );
+  mOffsetUnit = QgsSymbolV2::MM;
 }
 
 QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::create( const QgsStringMap& props )
@@ -946,6 +948,10 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::create( const QgsStringMap& props 
   QgsFontMarkerSymbolLayerV2* m = new QgsFontMarkerSymbolLayerV2( fontFamily, chr, pointSize, color, angle );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
+  if ( props.contains( "offset_unit" ) )
+    m->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit" ] ) );
+  if ( props.contains( "size_unit" ) )
+    m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
   return m;
 }
 
@@ -957,7 +963,7 @@ QString QgsFontMarkerSymbolLayerV2::layerType() const
 void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mFont = QFont( mFontFamily );
-  mFont.setPixelSize( context.outputLineWidth( mSize ) );
+  mFont.setPixelSize( mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit ) );
   QFontMetrics fm( mFont );
   mChrOffset = QPointF( fm.width( mChr ) / 2, -fm.ascent() / 2 );
 
@@ -979,7 +985,9 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
 
 
   p->save();
-  QPointF outputOffset = QPointF( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
+  double offsetX = mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  double offsetY = mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  QPointF outputOffset( offsetX, offsetY );
   if ( mAngle )
     outputOffset = _rotatedOffset( outputOffset, mAngle );
   p->translate( point + outputOffset );
@@ -1003,9 +1011,11 @@ QgsStringMap QgsFontMarkerSymbolLayerV2::properties() const
   props["font"] = mFontFamily;
   props["chr"] = mChr;
   props["size"] = QString::number( mSize );
+  props["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSizeUnit );
   props["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
   props["angle"] = QString::number( mAngle );
   props["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  props["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   return props;
 }
 
@@ -1013,6 +1023,8 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
 {
   QgsFontMarkerSymbolLayerV2* m = new QgsFontMarkerSymbolLayerV2( mFontFamily, mChr, mSize, mColor, mAngle );
   m->setOffset( mOffset );
+  m->setOffsetUnit( mOffsetUnit );
+  m->setSizeUnit( mSizeUnit );
   return m;
 }
 

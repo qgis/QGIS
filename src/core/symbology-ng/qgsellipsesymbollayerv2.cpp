@@ -23,8 +23,8 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSymbolWidth( 4 ), mSymbolHeight( 3 ),
-    mFillColor( Qt::black ), mOutlineColor( Qt::white ), mOutlineWidth( 0 )
+QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSymbolWidth( 4 ), mSymbolWidthUnit( QgsSymbolV2::MM ), mSymbolHeight( 3 ),
+    mSymbolHeightUnit( QgsSymbolV2::MM ), mFillColor( Qt::black ), mOutlineColor( Qt::white ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
 {
   mPen.setColor( mOutlineColor );
   mPen.setWidth( 1.0 );
@@ -57,9 +57,17 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   {
     layer->setSymbolWidth( properties["symbol_width"].toDouble() );
   }
+  if ( properties.contains( "symbol_width_unit" ) )
+  {
+    layer->setSymbolWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["symbol_width_unit"] ) );
+  }
   if ( properties.contains( "symbol_height" ) )
   {
     layer->setSymbolHeight( properties["symbol_height"].toDouble() );
+  }
+  if ( properties.contains( "symbol_height_unit" ) )
+  {
+    layer->setSymbolHeightUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["symbol_height_unit"] ) );
   }
   if ( properties.contains( "angle" ) )
   {
@@ -68,6 +76,10 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   if ( properties.contains( "outline_width" ) )
   {
     layer->setOutlineWidth( properties["outline_width"].toDouble() );
+  }
+  if ( properties.contains( "outline_width_unit" ) )
+  {
+    layer->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["outline_width_unit"] ) );
   }
   if ( properties.contains( "fill_color" ) )
   {
@@ -119,7 +131,7 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   {
     if ( mOutlineWidthIndex != -1 )
     {
-      double width = context.outputLineWidth( f->attribute( mOutlineWidthIndex ).toDouble() );
+      double width = f->attribute( mOutlineWidthIndex ).toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit );
       mPen.setWidthF( width );
     }
     if ( mFillColorIndex != -1 )
@@ -179,7 +191,7 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
     preparePath( mSymbolName, context );
   }
   mPen.setColor( mOutlineColor );
-  mPen.setWidthF( context.outputLineWidth( mOutlineWidth ) );
+  mPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
   mBrush.setColor( mFillColor );
 
   //resolve data defined attribute indices
@@ -319,12 +331,15 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   QgsStringMap map;
   map["symbol_name"] = mSymbolName;
   map["symbol_width"] = QString::number( mSymbolWidth );
+  map["symbol_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolWidthUnit );
   map["width_field"] = mWidthField;
   map["symbol_height"] = QString::number( mSymbolHeight );
+  map["symbol_height_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolHeightUnit );
   map["height_field"] = mHeightField;
   map["angle"] = QString::number( mAngle );
   map["rotation_field"] = mRotationField;
   map["outline_width"] = QString::number( mOutlineWidth );
+  map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["outline_width_field"] = mOutlineWidthField;
   map["fill_color"] = QgsSymbolLayerV2Utils::encodeColor( mFillColor );
   map["fill_color_field"] = mFillColorField;
@@ -343,34 +358,35 @@ bool QgsEllipseSymbolLayerV2::hasDataDefinedProperty() const
 void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, const QgsFeature* f )
 {
   mPainterPath = QPainterPath();
+  const QgsRenderContext& ct = context.renderContext();
 
   double width = 0;
 
   if ( f && mWidthIndex != -1 ) //1. priority: data defined setting on symbol layer level
   {
-    width = context.outputLineWidth( f->attribute( mWidthIndex ).toDouble() );
+    width = f->attribute( mWidthIndex ).toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolWidthUnit );
   }
   else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
   {
-    width = context.outputLineWidth( mSize );
+    width = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolWidthUnit );
   }
   else //3. priority: global width setting
   {
-    width = context.outputLineWidth( mSymbolWidth );
+    width = mSymbolWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolWidthUnit );
   }
 
   double height = 0;
   if ( f && mHeightIndex != -1 ) //1. priority: data defined setting on symbol layer level
   {
-    height = context.outputLineWidth( f->attribute( mHeightIndex ).toDouble() );
+    height =  f->attribute( mHeightIndex ).toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolHeightUnit );
   }
   else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
   {
-    height = context.outputLineWidth( mSize );
+    height = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolHeightUnit );
   }
   else //3. priority: global height setting
   {
-    height = context.outputLineWidth( mSymbolHeight );
+    height = mSymbolHeight * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolHeightUnit );
   }
 
   if ( symbolName == "circle" )
@@ -429,4 +445,21 @@ QSet<QString> QgsEllipseSymbolLayerV2::usedAttributes() const
     dataDefinedAttributes.insert( mSymbolNameField );
   }
   return dataDefinedAttributes;
+}
+
+void QgsEllipseSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mSymbolWidthUnit = unit;
+  mSymbolHeightUnit = unit;
+  mOutlineWidthUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsEllipseSymbolLayerV2::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mSymbolWidthUnit;
+  if ( mSymbolHeightUnit != unit || mOutlineWidthUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }

@@ -1429,6 +1429,13 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffsetY->setValue( mLayer->offset().y() );
   spinOffsetY->blockSignals( false );
 
+  mSizeUnitComboBox->blockSignals( true );
+  mSizeUnitComboBox->setCurrentIndex( mLayer->sizeUnit() );
+  mSizeUnitComboBox->blockSignals( false );
+
+  mOffsetUnitComboBox->blockSignals( true );
+  mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
+  mOffsetUnitComboBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2Widget::symbolLayer()
@@ -1483,6 +1490,22 @@ void QgsFontMarkerSymbolLayerV2Widget::setOffset()
 {
   mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::on_mSizeUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setSizeUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
 }
 
 
