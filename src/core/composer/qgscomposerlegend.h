@@ -147,7 +147,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QColor mFontColor;
 
     /**Space between item box and contents*/
-    double mBoxSpace;
+    qreal mBoxSpace;
     /**Space between columns*/
     double mColumnSpace;
     /**Vertical space between group entries*/

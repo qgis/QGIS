@@ -83,7 +83,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsplitfeatures.cpp
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
-  qgsmaptoolvertexedit.cpp
+  qgsmaptoolvertexedit.cpp  
 
   nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
@@ -159,14 +159,6 @@ SET(QGIS_APP_SRCS
   openstreetmap/qgsosmimportdialog.cpp
   openstreetmap/qgsosmexportdialog.cpp
 )
-
-IF (ANDROID)
-    SET(QGIS_APP_SRCS
-        ${QGIS_APP_SRCS}
-        qtmain_android.cpp
-        )
-ENDIF (ANDROID)
-
 
 SET (QGIS_APP_MOC_HDRS
   qgisapp.h
