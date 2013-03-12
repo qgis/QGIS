@@ -56,8 +56,6 @@ class TestQgsGeometry: public QObject
     void differenceCheck2();
     void bufferCheck();
 
-    void gmlTest();
-
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
     bool renderCheck( QString theTestName, QString theComment = "" );
@@ -370,18 +368,6 @@ void TestQgsGeometry::dumpPolyline( QgsPolyline &thePolyline )
 //    }
   }
   mpPainter->drawPolyline( myPoints );
-}
-
-void TestQgsGeometry::gmlTest()
-{
-  QgsGeometry* geom = QgsGeometry::fromGML2( "<Point><coordinates>123,456</coordinates></Point>" );
-  QVERIFY( geom );
-  QVERIFY( geom->wkbType() == QGis::WKBPoint );
-  QVERIFY( geom->asPoint() == QgsPoint( 123, 456 ) );
-
-  QgsGeometry* geomBox = QgsGeometry::fromGML2( "<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>" );
-  QVERIFY( geomBox );
-  QVERIFY( geomBox->wkbType() == QGis::WKBPolygon );
 }
 
 

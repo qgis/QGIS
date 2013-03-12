@@ -91,7 +91,7 @@ class RAlgorithm(GeoAlgorithm):
         self.commands=[]
         self.showPlots = False
         self.showConsoleOutput = False
-        self.useRasterPackage = False
+        self.useRasterPackage = True
         self.passFileNames = False
         self.verboseCommands = []
         filename = os.path.basename(self.descriptionFile)
@@ -136,8 +136,8 @@ class RAlgorithm(GeoAlgorithm):
             self.showPlots = True
             self.addOutput(OutputHTML(RAlgorithm.RPLOTS, "R Plots"));
             return
-        if line.lower().strip().startswith("userasterpackage"):
-            self.useRasterPackage = True
+        if line.lower().strip().startswith("usereadgdal"):
+            self.useRasterPackage = False
             return
         if line.lower().strip().startswith("passfilenames"):
             self.passFileNames = True

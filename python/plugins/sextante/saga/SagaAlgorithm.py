@@ -47,9 +47,7 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.LayerExporter import LayerExporter
-import subprocess
 from sextante.parameters.ParameterExtent import ParameterExtent
-from PyQt4 import QtGui
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
 from sextante.core.SextanteLog import SextanteLog
 
@@ -367,6 +365,17 @@ class SagaAlgorithm(GeoAlgorithm):
 
     def checkBeforeOpeningParametersDialog(self):
         return SagaUtils.checkSagaIsInstalled()
+    
+
+    def checkParameterValuesBeforeExecuting(self):
+        '''We check that there are no multiband layers, which are not supported by SAGA'''
+        for param in self.parameters:
+            if isinstance(param, ParameterRaster):                
+                value = param.value
+                layer = QGisLayers.getObjectFromUri(value)
+                if layer is not None and layer.bandCount() > 1:
+                        return ("Input layer " + str(layer.name()) + " has more than one band.\n"
+                                + "Multiband layers are not supported by SAGA")
 
 
     def helpFile(self):

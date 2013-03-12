@@ -204,7 +204,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
       {
-        myWidget->setEnabled( vl->isEditable() );
+        myWidget->setEnabled( vl->isEditable() && vl->fieldEditable(fldIdx) );
       }
 
       mypInnerLayout->addWidget( myWidget, index, 1 );
@@ -239,7 +239,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
         if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
         {
-          ( *itw )->setEnabled(( *itw )->isEnabled() && vl->isEditable() );
+          ( *itw )->setEnabled( (*itw)->isEnabled() && vl->isEditable() && vl->fieldEditable( fldIdx ) );
         }
       }
     }

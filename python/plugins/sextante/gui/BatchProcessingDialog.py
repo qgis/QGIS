@@ -149,7 +149,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     continue
                 widget = self.table.cellWidget(row, col)
                 if not self.setParameterValueFromWidget(param, widget, alg):
-                    QMessageBox.critical(self.dialog, "Unable to execute batch process", "Wrong or missing parameter values")
+                    QMessageBox.critical(self, "Unable to execute batch process", "Wrong or missing parameter values")
                     self.algs = None
                     return
                 col+=1

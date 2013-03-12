@@ -116,7 +116,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     {
       if ( !dontResolveType )
       {
-        QgsDebugMsg( QString( "Skip column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ).arg( layerProperty.geometryColName ) );
+        QgsDebugMsg( QString( "Skip column %1.%2.%3 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ).arg( layerProperty.geometryColName ) );
         continue;
       }
 

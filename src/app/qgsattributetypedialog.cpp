@@ -84,6 +84,16 @@ QMap<QString, QVariant> &QgsAttributeTypeDialog::valueMap()
   return mValueMap;
 }
 
+bool QgsAttributeTypeDialog::fieldEditable()
+{
+  return isFieldEditableCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setFieldEditable(bool editable)
+{
+  isFieldEditableCheckBox->setChecked( editable );
+}
+
 QPair<QString, QString> QgsAttributeTypeDialog::checkedState()
 {
   return QPair<QString, QString>( leCheckedState->text(), leUncheckedState->text() );
@@ -538,6 +548,8 @@ void QgsAttributeTypeDialog::setStackPage( int index )
 void QgsAttributeTypeDialog::accept()
 {
   //store data to output variables
+  mFieldEditable = isFieldEditableCheckBox->isChecked();
+
   switch ( selectionListWidget->currentRow() )
   {
     default:

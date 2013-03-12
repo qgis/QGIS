@@ -343,7 +343,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
     break;
 
     default:
-      QgsDebugMsg( QString( "unsupported wkb type 0x%1 for rendering" ).arg( geom->wkbType(), 0, 16 ) );
+      QgsDebugMsg( QString( "feature %1: unsupported wkb type 0x%2 for rendering" ).arg( feature.id() ).arg( geom->wkbType(), 0, 16 ) );
   }
 }
 
