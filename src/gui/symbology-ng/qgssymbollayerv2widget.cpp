@@ -186,6 +186,7 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChange
   {
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit )index );
   }
+  emit changed();
 }
 
 void QgsSimpleLineSymbolLayerV2Widget::on_mDashPatternUnitComboBox_currentIndexChanged( int index )
@@ -194,6 +195,7 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDashPatternUnitComboBox_currentIndexC
   {
     mLayer->setCustomDashPatternUnit(( QgsSymbolV2::OutputUnit )index );
   }
+  emit changed();
 }
 
 void QgsSimpleLineSymbolLayerV2Widget::updatePatternIcon()
@@ -354,6 +356,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mSizeUnitComboBox_currentIndexChange
   if ( mLayer )
   {
     mLayer->setSizeUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
   }
 }
 
@@ -362,6 +365,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChan
   if ( mLayer )
   {
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
   }
 }
 
@@ -570,6 +574,7 @@ void QgsMarkerLineSymbolLayerV2Widget::on_mIntervalUnitComboBox_currentIndexChan
   {
     mLayer->setIntervalUnit(( QgsSymbolV2::OutputUnit ) index );
   }
+  emit changed();
 }
 
 void QgsMarkerLineSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
@@ -578,6 +583,7 @@ void QgsMarkerLineSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChange
   {
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
   }
+  emit changed();
 }
 
 ///////////
@@ -950,6 +956,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mSizeUnitComboBox_currentIndexChanged( 
   {
     mLayer->setSizeUnit(( QgsSymbolV2::OutputUnit ) index );
   }
+  emit changed();
 }
 
 void QgsSvgMarkerSymbolLayerV2Widget::on_mBorderWidthUnitComboBox_currentIndexChanged( int index )
@@ -958,6 +965,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mBorderWidthUnitComboBox_currentIndexCh
   {
     mLayer->setOutlineWidthUnit(( QgsSymbolV2::OutputUnit ) index );
   }
+  emit changed();
 }
 
 void QgsSvgMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
@@ -966,6 +974,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged
   {
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
   }
+  emit changed();
 }
 
 ///////////////
@@ -1032,6 +1041,7 @@ void QgsLineDecorationSymbolLayerV2Widget::on_mWidthUnitComboBox_currentIndexCha
   {
     mLayer->setWidthUnit(( QgsSymbolV2::OutputUnit ) index );
   }
+  emit changed();
 }
 
 /////////////
@@ -1498,6 +1508,7 @@ void QgsFontMarkerSymbolLayerV2Widget::on_mSizeUnitComboBox_currentIndexChanged(
   {
     mLayer->setSizeUnit(( QgsSymbolV2::OutputUnit ) index );
   }
+  emit changed();
 }
 
 void QgsFontMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
@@ -1506,6 +1517,7 @@ void QgsFontMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChange
   {
     mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
   }
+  emit changed();
 }
 
 
