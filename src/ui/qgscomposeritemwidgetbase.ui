@@ -18,13 +18,6 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QgsCollapsibleGroupBoxBasic" name="mGeneralOptionsGroupBox">
      <property name="title">
       <string>Position and size</string>
