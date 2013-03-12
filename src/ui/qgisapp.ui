@@ -35,6 +35,7 @@
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionDeleteSelected"/>
     <addaction name="separator"/>
+    <addaction name="mActionRotateFeature"/>
     <addaction name="mActionSimplifyFeature"/>
     <addaction name="mActionAddRing"/>
     <addaction name="mActionAddPart"/>
