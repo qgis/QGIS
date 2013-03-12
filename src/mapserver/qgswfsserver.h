@@ -115,6 +115,10 @@ class QgsWFSServer
       @param coordString out: GML coord string
       @return 0 in case of success*/
     QDomElement createCoordinateGML2( const QVector<QgsPoint> points, QDomDocument& doc ) const;
+
+    //methods to write GML3
+    QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QgsFields fields, QSet<QString> excludedAttributes ) /*const*/;
+    QDomElement createEnvelopeGML3( QgsRectangle* env, QDomDocument& doc ) /* const */;
 };
 
 #endif

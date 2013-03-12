@@ -203,6 +203,8 @@ QDomDocument QgsWFSServer::getCapabilities()
   getFeatureElement.appendChild( getFeatureFormatElement );
   QDomElement gmlFormatElement = doc.createElement( "GML2" );/*wfs:GML2*/
   getFeatureFormatElement.appendChild( gmlFormatElement );
+  QDomElement gml3FormatElement = doc.createElement( "GML3" );/*wfs:GML3*/
+  getFeatureFormatElement.appendChild( gml3FormatElement );
   QDomElement geojsonFormatElement = doc.createElement( "GeoJSON" );/*wfs:GeoJSON*/
   getFeatureFormatElement.appendChild( geojsonFormatElement );
   QDomElement getFeatureDhcTypeGetElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
@@ -1093,15 +1095,31 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
 
     QDomDocument doc;
     QDomElement bbElem = doc.createElement( "gml:boundedBy" );
-    QDomElement boxElem = createBoxGML2( rect, doc );
-    if ( !boxElem.isNull() )
+    if ( format == "GML3" )
     {
-      if ( crs.isValid() )
+      QDomElement envElem = createEnvelopeGML3( rect, doc );
+      if ( !envElem.isNull() )
       {
-        boxElem.setAttribute( "srsName", crs.authid() );
+        if ( crs.isValid() )
+        {
+          envElem.setAttribute( "srsName", crs.authid() );
+        }
+        bbElem.appendChild( envElem );
+        doc.appendChild( bbElem );
       }
-      bbElem.appendChild( boxElem );
-      doc.appendChild( bbElem );
+    }
+    else
+    {
+      QDomElement boxElem = createBoxGML2( rect, doc );
+      if ( !boxElem.isNull() )
+      {
+        if ( crs.isValid() )
+        {
+          boxElem.setAttribute( "srsName", crs.authid() );
+        }
+        bbElem.appendChild( boxElem );
+        doc.appendChild( bbElem );
+      }
     }
     result = doc.toByteArray();
     request.sendGetFeatureResponse( &result );
@@ -1132,8 +1150,17 @@ void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& fo
   else
   {
     QDomDocument gmlDoc;
-    QDomElement featureElement = createFeatureGML2( feat, gmlDoc, crs, fields, excludedAttributes );
-    gmlDoc.appendChild( featureElement );
+    QDomElement featureElement;
+    if ( format == "GML3" )
+    {
+      featureElement = createFeatureGML3( feat, gmlDoc, crs, fields, excludedAttributes );
+      gmlDoc.appendChild( featureElement );
+    }
+    else
+    {
+      featureElement = createFeatureGML2( feat, gmlDoc, crs, fields, excludedAttributes );
+      gmlDoc.appendChild( featureElement );
+    }
 
     result = gmlDoc.toByteArray();
     request.sendGetFeatureResponse( &result );
@@ -1714,6 +1741,64 @@ QDomElement QgsWFSServer::createBoxGML2( QgsRectangle* box, QDomDocument& doc ) 
   return boxElem;
 }
 
+QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QgsFields fields, QSet<QString> excludedAttributes ) /*const*/
+{
+  //gml:FeatureMember
+  QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
+
+  //qgs:%TYPENAME%
+  QDomElement typeNameElement = doc.createElement( "qgs:" + mTypeName /*qgs:%TYPENAME%*/ );
+  typeNameElement.setAttribute( "gml:id", mTypeName + "." + QString::number( feat->id() ) );
+  featureElement.appendChild( typeNameElement );
+
+  if ( mWithGeom )
+  {
+    //add geometry column (as gml)
+    QgsGeometry* geom = feat->geometry();
+
+    QDomElement geomElem = doc.createElement( "qgs:geometry" );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML3( geom, doc );
+    if ( !gmlElem.isNull() )
+    {
+      QgsRectangle box = geom->boundingBox();
+      QDomElement bbElem = doc.createElement( "gml:boundedBy" );
+      QDomElement boxElem = createEnvelopeGML3( &box, doc );
+
+      if ( crs.isValid() )
+      {
+        boxElem.setAttribute( "srsName", crs.authid() );
+        gmlElem.setAttribute( "srsName", crs.authid() );
+      }
+
+      bbElem.appendChild( boxElem );
+      typeNameElement.appendChild( bbElem );
+
+      geomElem.appendChild( gmlElem );
+      typeNameElement.appendChild( geomElem );
+    }
+  }
+
+  //read all attribute values from the feature
+  QgsAttributes featureAttributes = feat->attributes();
+  for ( int i = 0; i < featureAttributes.count(); ++i )
+  {
+
+    QString attributeName = fields[i].name();
+    //skip attribute if is explicitely excluded from WFS publication
+    if ( excludedAttributes.contains( attributeName ) )
+    {
+      continue;
+    }
+
+    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
+    QDomText fieldText = doc.createTextNode( featureAttributes[i].toString() );
+    fieldElem.appendChild( fieldText );
+    typeNameElement.appendChild( fieldElem );
+  }
+
+  return featureElement;
+}
+
 QDomElement QgsWFSServer::createCoordinateGML2( const QVector<QgsPoint> points, QDomDocument& doc ) const
 {
   QDomElement coordElem = doc.createElement( "gml:coordinates" );
@@ -1736,4 +1821,33 @@ QDomElement QgsWFSServer::createCoordinateGML2( const QVector<QgsPoint> points, 
   QDomText coordText = doc.createTextNode( coordString );
   coordElem.appendChild( coordText );
   return coordElem;
+}
+
+QDomElement QgsWFSServer::createEnvelopeGML3( QgsRectangle* env, QDomDocument& doc ) /*const*/
+{
+  if ( !env )
+  {
+    return QDomElement();
+  }
+
+  QDomElement envElem = doc.createElement( "gml:Envelope" );
+  QString posList;
+
+  QDomElement lowerCornerElem = doc.createElement( "gml:lowerCorner" );
+  posList = QString::number( env->xMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  posList += " ";
+  posList = QString::number( env->yMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  QDomText lowerCornerText = doc.createTextNode( posList );
+  lowerCornerElem.appendChild( lowerCornerText );
+  envElem.appendChild( lowerCornerElem );
+
+  QDomElement upperCornerElem = doc.createElement( "gml:upperCorner" );
+  posList = QString::number( env->xMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  posList += " ";
+  posList = QString::number( env->yMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
+  QDomText upperCornerText = doc.createTextNode( posList );
+  upperCornerElem.appendChild( upperCornerText );
+  envElem.appendChild( upperCornerElem );
+
+  return envElem;
 }
