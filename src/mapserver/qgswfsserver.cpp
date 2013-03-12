@@ -537,7 +537,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           }
           else
           {
-            QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+            QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
             if ( mFilter->hasParserError() )
             {
               throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
@@ -920,7 +920,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         else
         {
-          QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+          QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
           if ( mFilter->hasParserError() )
           {
             throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
@@ -1573,7 +1573,7 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, Qgs
   }
   else
   {
-    QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+    QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
     if ( mFilter->hasParserError() )
     {
       throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );

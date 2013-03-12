@@ -23,12 +23,13 @@
 #include <QDomDocument>
 
 #include "qgsfield.h"
-#include "qgsvectorlayer.h"
 #include "qgsdistancearea.h"
-#include "qgsgeometry.h"
 
 class QgsFeature;
 class QgsGeometry;
+class QgsOgcUtils;
+class QgsVectorLayer;
+
 class QDomElement;
 
 /**
@@ -57,6 +58,7 @@ Possible QVariant value types:
 - int
 - double
 - string
+- geometry
 
 Similarly to SQL, this class supports three-value logic: true/false/unknown.
 Unknown value may be a result of operations with missing data (NULL). Please note
@@ -322,7 +324,6 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const = 0;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const { Q_UNUSED( doc ); Q_UNUSED( element ); }
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
 
         virtual QStringList referencedColumns() const = 0;
         virtual bool needsGeometry() const = 0;
@@ -391,7 +392,6 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
 
         virtual QStringList referencedColumns() const { return mOperand->referencedColumns(); }
         virtual bool needsGeometry() const { return mOperand->needsGeometry(); }
@@ -417,7 +417,6 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
 
         virtual QStringList referencedColumns() const { return mOpLeft->referencedColumns() + mOpRight->referencedColumns(); }
         virtual bool needsGeometry() const { return mOpLeft->needsGeometry() || mOpRight->needsGeometry(); }
@@ -475,7 +474,6 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
 
         virtual QStringList referencedColumns() const { QStringList lst; if ( !mArgs ) return lst; foreach ( Node* n, mArgs->list() ) lst.append( n->referencedColumns() ); return lst; }
         virtual bool needsGeometry() const { bool needs = Functions()[mFnIndex]->usesgeometry(); if ( mArgs ) { foreach ( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
@@ -499,7 +497,6 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
 
         virtual QStringList referencedColumns() const { return QStringList(); }
         virtual bool needsGeometry() const { return false; }
@@ -521,7 +518,6 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage );
 
         virtual QStringList referencedColumns() const { return QStringList( mName ); }
         virtual bool needsGeometry() const { return false; }
@@ -587,7 +583,6 @@ class CORE_EXPORT QgsExpression
 
     // convert from/to OGC Filter
     void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-    static QgsExpression* createFromOgcFilter( QDomElement &element );
 
   protected:
     // internally used to create an empty expression
@@ -607,6 +602,7 @@ class CORE_EXPORT QgsExpression
     static QMap<QString, QVariant> gmSpecialColumns;
     QgsDistanceArea mCalc;
 
+    friend class QgsOgcUtils;
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );

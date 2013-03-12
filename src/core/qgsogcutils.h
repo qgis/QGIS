@@ -9,9 +9,12 @@ class QString;
 #include <list>
 #include <QVector>
 
+class QgsExpression;
 class QgsGeometry;
 class QgsPoint;
 class QgsRectangle;
+
+#include "qgsexpression.h"
 
 /**
  * @brief The QgsOgcUtils class provides various utility functions for conversion between
@@ -24,8 +27,7 @@ class QgsRectangle;
  */
 class CORE_EXPORT QgsOgcUtils
 {
-public:
-
+  public:
 
   /** static method that creates geometry from GML
    @param XML representation of the geometry. GML elements are expected to be
@@ -63,6 +65,11 @@ public:
    */
   static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc );
 
+
+  /** Parse XML with OGC filter into QGIS expression */
+  static QgsExpression* expressionFromOgcFilter( const QDomElement& element );
+
+
 private:
   /** static method that creates geometry from GML Point */
   static QgsGeometry* geometryFromGMLPoint( const QDomElement& geometryElement );
@@ -99,6 +106,25 @@ private:
       @param the GML document
       @return QDomElement */
   static QDomElement createGMLPositions( const QVector<QgsPoint> points, QDomDocument& doc );
+    
+    //! handle a generic sub-expression
+    static QgsExpression::Node* nodeFromOgcFilter( QDomElement &element, QString &errorMessage );
+    //! handle a generic binary operator
+    static QgsExpression::NodeBinaryOperator* nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
+    //! handles various spatial operation tags (<Intersects>, <Touches> etc)
+    static QgsExpression::NodeFunction* nodeSpatialOperatorFromOgcFilter( QDomElement& element, QString& errorMessage );
+    //! handle <Not> tag
+    static QgsExpression::NodeUnaryOperator* nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage );
+    //! handles <Function> tag
+    static QgsExpression::NodeFunction* nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage );
+    //! handles <Literal> tag
+    static QgsExpression::Node* nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage );
+    //! handles <PropertyName> tag
+    static QgsExpression::NodeColumnRef* nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage );
+    //! handles <PropertyIsBetween> tag
+    static QgsExpression::Node* nodeIsBetweenFromOgcFilter( QDomElement& element, QString& errorMessage );
+    //! handles <PropertyIsNull> tag
+    static QgsExpression::NodeBinaryOperator* nodePropertyIsNullFromOgcFilter( QDomElement& element, QString& errorMessage );
 };
 
 #endif // QGSOGCUTILS_H

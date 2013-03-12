@@ -31,6 +31,9 @@ class TestQgsOgcUtils : public QObject
 
     void testGeometryFromGML();
     void testGeometryToGML();
+
+    void testExpressionFromOgcFilter();
+    void testExpressionFromOgcFilter_data();
 };
 
 
@@ -104,6 +107,109 @@ void TestQgsOgcUtils::testGeometryToGML()
 
   delete geomPoint;
   delete geomLine;
+}
+
+
+void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
+{
+  QTest::addColumn<QString>( "xmlText" );
+  QTest::addColumn<QString>( "dumpText" );
+
+  QTest::newRow( "=" ) << QString(
+    "<Filter><PropertyIsEqualTo>"
+    "<PropertyName>NAME</PropertyName>"
+    "<Literal>New York</Literal>"
+    "</PropertyIsEqualTo></Filter>" )
+  << QString( "NAME = 'New York'" );
+
+  QTest::newRow( ">" ) << QString(
+    "<Filter><PropertyIsGreaterThan>"
+    "<PropertyName>COUNT</PropertyName>"
+    "<Literal>3</Literal>"
+    "</PropertyIsGreaterThan></Filter>" )
+  << QString( "COUNT > 3" );
+
+  QTest::newRow( "AND" ) << QString(
+    "<ogc:Filter>"
+    "<ogc:And>"
+    "<ogc:PropertyIsGreaterThanOrEqualTo>"
+    "<ogc:PropertyName>pop</ogc:PropertyName>"
+    "<ogc:Literal>50000</ogc:Literal>"
+    "</ogc:PropertyIsGreaterThanOrEqualTo>"
+    "<ogc:PropertyIsLessThan>"
+    "<ogc:PropertyName>pop</ogc:PropertyName>"
+    "<ogc:Literal>100000</ogc:Literal>"
+    "</ogc:PropertyIsLessThan>"
+    "</ogc:And>"
+    "</ogc:Filter>" )
+  << QString( "pop >= 50000 AND pop < 100000" );
+
+  // TODO: should work also without <Literal> tags in Lower/Upper-Boundary tags?
+  QTest::newRow( "between" ) << QString(
+    "<Filter>"
+    "<PropertyIsBetween><PropertyName>POPULATION</PropertyName>"
+    "<LowerBoundary><Literal>100</Literal></LowerBoundary>"
+    "<UpperBoundary><Literal>200</Literal></UpperBoundary></PropertyIsBetween>"
+    "</Filter>" )
+  << QString( "POPULATION >= 100 AND POPULATION <= 200" );
+
+  // TODO: needs to handle different wildcards, single chars, escape chars
+  QTest::newRow( "like" ) << QString(
+    "<Filter>"
+    "<PropertyIsLike wildcard='*' singleChar='.' escape='!'>"
+    "<PropertyName>NAME</PropertyName><Literal>*QGIS*</Literal></PropertyIsLike>"
+    "</Filter>" )
+  << QString( "NAME LIKE '*QGIS*'" );
+
+  QTest::newRow( "is null" ) << QString(
+    "<Filter>"
+    "<ogc:PropertyIsNull>"
+    "<ogc:PropertyName>FIRST_NAME</ogc:PropertyName>"
+    "</ogc:PropertyIsNull>"
+    "</Filter>" )
+  << QString( "FIRST_NAME IS NULL" );
+
+  QTest::newRow( "bbox" ) << QString(
+    "<Filter>"
+    "<BBOX><PropertyName>Name>NAME</PropertyName><gml:Box srsName='foo'>"
+    "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
+    "</Filter>" )
+  << QString( "bbox($geometry, geomFromGML2('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
+
+  QTest::newRow( "Intersects" ) << QString(
+    "<Filter>"
+    "<Intersects>"
+    "<PropertyName>GEOMETRY</PropertyName>"
+    "<gml:Point>"
+    "<gml:coordinates>123,456</gml:coordinates>"
+    "</gml:Point>"
+    "</Intersects>"
+    "</Filter>" )
+  << QString( "intersects($geometry, geomFromGML2('<Point><coordinates>123,456</coordinates></Point>'))" );
+}
+
+void TestQgsOgcUtils::testExpressionFromOgcFilter()
+{
+  QFETCH( QString, xmlText );
+  QFETCH( QString, dumpText );
+
+  QDomDocument doc;
+  QVERIFY( doc.setContent( xmlText, true ) );
+  QDomElement rootElem = doc.documentElement();
+
+  QgsExpression* expr = QgsOgcUtils::expressionFromOgcFilter( rootElem );
+  QVERIFY( expr );
+
+  qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
+  qDebug( "EXPR-DUMP: %s", expr->dump().toAscii().data() );
+
+  if ( expr->hasParserError() )
+    qDebug( "ERROR: %s ", expr->parserErrorString().toAscii().data() );
+  QVERIFY( !expr->hasParserError() );
+
+  QCOMPARE( dumpText, expr->dump() );
+
+  delete expr;
 }
 
 

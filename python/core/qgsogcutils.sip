@@ -35,5 +35,20 @@ public:
       @return QDomElement
    */
   static QDomElement geometryToGML( QgsGeometry* geometry, QDomDocument& doc, QString Format );
+
+  /** Exports the rectangle to GML2 Box
+      @return QDomElement
+   */
+  static QDomElement rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc );
+
+  /** Exports the rectangle to GML2 Envelope
+      @return QDomElement
+   */
+  static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc );
+
+
+  /** Parse XML with OGC filter into QGIS expression */
+  static QgsExpression* expressionFromOgcFilter( const QDomElement& element ) /Factory/;
+
 };
 

@@ -182,7 +182,6 @@ class QgsExpression
         virtual QString dump() const = 0;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage ) /Factory/;
 
         virtual QStringList referencedColumns() const = 0;
         virtual bool needsGeometry() const = 0;
@@ -237,7 +236,6 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage ) /Factory/;
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
@@ -259,7 +257,6 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage ) /Factory/;
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
@@ -302,7 +299,6 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage ) /Factory/;
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
@@ -321,7 +317,6 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage ) /Factory/;
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
@@ -340,7 +335,6 @@ class QgsExpression
         virtual QString dump() const;
 
         virtual void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-        static QgsExpression::Node* createFromOgcFilter( QDomElement &element, QString &errorMessage ) /Factory/;
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
@@ -398,7 +392,6 @@ class QgsExpression
 
     // convert from/to OGC Filter
     void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;
-    static QgsExpression* createFromOgcFilter( QDomElement &element ) /Factory/;
 
   protected:
     void initGeomCalculator();

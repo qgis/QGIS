@@ -22,7 +22,7 @@
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
-
+#include "qgsogcutils.h"
 
 #include "qgsapplication.h"
 #include "qgsproject.h"
@@ -2239,7 +2239,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 {
   QgsDebugMsg( "Entered." );
 
-  QgsExpression *expr = QgsExpression::createFromOgcFilter( element );
+  QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( element );
   if ( !expr )
     return false;
 
