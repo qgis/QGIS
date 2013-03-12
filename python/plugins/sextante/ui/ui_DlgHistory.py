@@ -17,7 +17,7 @@ except AttributeError:
 class Ui_DlgHistory(object):
     def setupUi(self, DlgHistory):
         DlgHistory.setObjectName(_fromUtf8("DlgHistory"))
-        DlgHistory.resize(532, 377)
+        DlgHistory.resize(800, 600)
         self.verticalLayout = QtGui.QVBoxLayout(DlgHistory)
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
@@ -29,6 +29,7 @@ class Ui_DlgHistory(object):
         self.tree.setObjectName(_fromUtf8("tree"))
         self.tree.headerItem().setText(0, _fromUtf8("1"))
         self.tree.header().setVisible(False)
+        self.tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.text = QtGui.QTextEdit(self.splitter)
         self.text.setReadOnly(True)
         self.text.setObjectName(_fromUtf8("text"))

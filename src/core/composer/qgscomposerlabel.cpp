@@ -25,9 +25,10 @@
 #include <QWebPage>
 
 QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
-    QgsComposerItem( composition ), mMargin( 1.0 ), mHtmlState( 0 ), mFontColor( QColor( 0, 0, 0 ) ),
+    QgsComposerItem( composition ), mHtmlState( 0 ), mHtmlUnitsToMM( 1.0 ),
+    mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
     mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop ),
-    mExpressionFeature( 0 ), mExpressionLayer( 0 ), mHtmlUnitsToMM( 1.0 )
+    mExpressionFeature( 0 ), mExpressionLayer( 0 )
 {
   mHtmlUnitsToMM = htmlUnitsToMM();
   //default font size is 10 point

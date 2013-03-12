@@ -1,4 +1,21 @@
+# -*- coding: utf-8 -*-
 
+"""
+***************************************************************************
+    iri2uri.py
+    ---------------------
+    Date                 : 2006
+    Copyright            : (C) 2006 Joe Gregorio
+    Email                : joe at bitworking dot org
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
 """
 iri2uri
 
@@ -12,6 +29,8 @@ __version__ = "1.0.0"
 __license__ = "MIT"
 __history__ = """
 """
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
 
 import urlparse
 

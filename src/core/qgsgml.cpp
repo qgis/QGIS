@@ -50,6 +50,12 @@ QgsGml::QgsGml(
   }
 
   mEndian = QgsApplication::endian();
+
+  int index = mTypeName.indexOf( ":" );
+  if ( index != -1 && index < mTypeName.length() )
+  {
+    mTypeName = mTypeName.mid( index + 1 );
+  }
 }
 
 QgsGml::~QgsGml()
@@ -187,9 +193,6 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   {
     mParseModeStack.push( QgsGml::boundingBox );
   }
-  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
-  {
-  }
   else if ( localName == mTypeName )
   {
     mCurrentFeature = new QgsFeature( mFeatureCount );
@@ -308,7 +311,6 @@ void QgsGml::endElement( const XML_Char* el )
       mParseModeStack.pop();
     }
   }
-  //else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "featureMember" )
   else if ( localName == mTypeName )
   {
     if ( mCurrentWKBSize > 0 )

@@ -125,6 +125,26 @@ class QgisAppInterface : public QgisInterface
 
     QList<QgsComposerView*> activeComposers();
 
+    /** Create a new composer
+     * @param title window title for new composer (one will be generated if empty)
+     * @return pointer to composer's view
+     * @note new composer window will be shown and activated (added in 1.9)
+     */
+    QgsComposerView* createNewComposer( QString title = QString( "" ) );
+
+    /** Duplicate an existing parent composer from composer view
+     * @param composerView pointer to existing composer view
+     * @param title window title for duplicated composer (one will be generated if empty)
+     * @return pointer to duplicate composer's view
+     * @note dupicate composer window will be hidden until loaded, then shown and activated (added in 1.9)
+     */
+    QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString( "" ) );
+
+    /** Deletes parent composer of composer view, after closing composer window
+     * @note (added in 1.9)
+     */
+    void deleteComposer( QgsComposerView* composerView );
+
     /** Return changeable options built from settings and/or defaults
      * @note (added in 1.9)
      */
@@ -218,6 +238,8 @@ class QgisAppInterface : public QgisInterface
     virtual QMenu *editMenu();
     virtual QMenu *viewMenu();
     virtual QMenu *layerMenu();
+    //! @note added in 2.0
+    virtual QMenu *newLayerMenu();
     virtual QMenu *settingsMenu();
     virtual QMenu *pluginMenu();
     virtual QMenu *rasterMenu();
@@ -250,6 +272,7 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionSaveMapAsImage();
     virtual QAction *actionProjectProperties();
     virtual QAction *actionPrintComposer();
+    virtual QAction *actionShowComposerManager();
     virtual QAction *actionExit();
 
     //! Edit menu actions
@@ -356,6 +379,8 @@ class QgisAppInterface : public QgisInterface
     // @param updateFeatureOnly only update the feature update (don't change any attributes of the layer)
     // @added in 1.6
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false );
+
+    virtual QDialog* getFeatureForm(QgsVectorLayer *l, QgsFeature &f);
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified

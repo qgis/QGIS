@@ -61,10 +61,10 @@ class translate(GeoAlgorithm):
         self.addParameter(ParameterBoolean(translate.OUTSIZE_PERC, "Output size is a percentage of input size", True))
         self.addParameter(ParameterString(translate.NO_DATA, "Nodata value, leave as none to take the nodata value from input", "none"))
         self.addParameter(ParameterSelection(translate.EXPAND, "Expand", ["none","gray","rgb","rgba"]))
-        self.addParameter(ParameterCrs(translate.SRS, "Override the projection for the output file", ""))
+        self.addParameter(ParameterCrs(translate.SRS, "Override the projection for the output file", None))
         self.addParameter(ParameterExtent(translate.PROJWIN, "Subset based on georeferenced coordinates"))
         self.addParameter(ParameterBoolean(translate.SDS, "Copy all subdatasets of this file to individual output files", False))
-        self.addParameter(ParameterString(translate.EXTRA, "Additional creation parameters"))
+        self.addParameter(ParameterString(translate.EXTRA, "Additional creation parameters", " "))
         self.addOutput(OutputRaster(translate.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
@@ -75,8 +75,8 @@ class translate(GeoAlgorithm):
         noData = str(self.getParameterValue(translate.NO_DATA))
         expand = str(self.getParameterFromName(translate.EXPAND).options[self.getParameterValue(translate.EXPAND)])
         projwin = str(self.getParameterValue(translate.PROJWIN))
-        srs = str(self.getParameterValue(translate.SRS))
-        sds = str(self.getParameterValue(translate.SDS))
+        srs = self.getParameterValue(translate.SRS)
+        sds = self.getParameterValue(translate.SDS)
         extra = str(self.getParameterValue(translate.EXTRA))
 
         commands = ["gdal_translate"]
@@ -92,9 +92,9 @@ class translate(GeoAlgorithm):
             commands.append("-expand "+expand)
         regionCoords = projwin.split(",")
         commands.append("-projwin "+regionCoords[0]+" "+regionCoords[3]+" "+regionCoords[1]+" "+regionCoords[2])
-        if srs != "":
-            commands.append("-a_srs EPSG:"+srs)
-        if sds == "True":
+        if srs is not None:
+            commands.append("-a_srs "+str(srs))
+        if sds:
             commands.append("-sds")
         commands.append(extra)
         commands.append(self.getParameterValue(translate.INPUT))

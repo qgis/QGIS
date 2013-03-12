@@ -1126,7 +1126,8 @@ void QgsWmsProvider::tileReplyFinished()
 
     QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( !contentType.startsWith( "image/", Qt::CaseInsensitive ) )
+    if ( !contentType.startsWith( "image/", Qt::CaseInsensitive ) &&
+         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) != 0 )
     {
       QByteArray text = reply->readAll();
       if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
@@ -1188,7 +1189,8 @@ void QgsWmsProvider::tileReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( reply->url().toString() ), tr( "WMS" ) );
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL: %2]" )
+                                   .arg( contentType ).arg( reply->url().toString() ), tr( "WMS" ) );
       }
     }
     else
@@ -1263,7 +1265,8 @@ void QgsWmsProvider::cacheReplyFinished()
 
     QString contentType = mCacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) )
+    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) ||
+         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
     {
       QImage myLocalImage = QImage::fromData( mCacheReply->readAll() );
       if ( !myLocalImage.isNull() )
@@ -1273,7 +1276,8 @@ void QgsWmsProvider::cacheReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL:%2]" )
+                                   .arg( contentType ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
       }
     }
     else
@@ -1287,9 +1291,10 @@ void QgsWmsProvider::cacheReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; URL:%3)" )
+        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)" )
                                    .arg( status.toInt() )
                                    .arg( QString::fromUtf8( text ) )
+                                   .arg( contentType )
                                    .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
       }
 
@@ -1446,26 +1451,37 @@ void QgsWmsProvider::capabilitiesReplyFinished()
     {
       emit statusChanged( tr( "Capabilities request redirected." ) );
 
-      QNetworkRequest request( redirect.toUrl() );
-      setAuthorization( request );
-      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
-      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+      const QUrl& toUrl = redirect.toUrl();
+      mCapabilitiesReply->request();
+      if ( toUrl == mCapabilitiesReply->url() ) {
+        mErrorFormat = "text/plain";
+        mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
+        QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+        mHttpCapabilitiesResponse.clear();
+      } else {
+        QNetworkRequest request( toUrl );
+        setAuthorization( request );
+        request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+        request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-      mCapabilitiesReply->deleteLater();
-      QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
-      mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+        mCapabilitiesReply->deleteLater();
+        QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
+        mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
-      connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-      connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
-      return;
+        connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
+        connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+        return;
+      }
     }
-
-    mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
-
-    if ( mHttpCapabilitiesResponse.isEmpty() )
+    else
     {
-      mErrorFormat = "text/plain";
-      mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
+      mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
+
+      if ( mHttpCapabilitiesResponse.isEmpty() )
+      {
+        mErrorFormat = "text/plain";
+        mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
+      }
     }
   }
   else
@@ -1475,7 +1491,6 @@ void QgsWmsProvider::capabilitiesReplyFinished()
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     mHttpCapabilitiesResponse.clear();
   }
-
 
   mCapabilitiesReply->deleteLater();
   mCapabilitiesReply = 0;
@@ -4187,13 +4202,20 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
         QgsGml gml( featureTypeName, geometryAttribute, fields );
         // TODO: avoid converting to string and back
         int ret = gml.getFeatures( mIdentifyResultBodies.value( gmlPart ), &wkbType );
+#ifdef QGISDEBUG
         QgsDebugMsg( QString( "parsing result = %1" ).arg( ret ) );
-
+#else
+        Q_UNUSED( ret );
+#endif
+        // TODO: all features coming from this layer should probably have the same CRS
+        // the same as this layer, because layerExtentToOutputExtent() may be used
+        // for results -> verify CRS and reprojects if necessary
         QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
         QgsDebugMsg( QString( "%1 features read" ).arg( features.size() ) );
         QgsFeatureStore featureStore( fields, crs() );
         featureStore.params().insert( "sublayer", *layers );
         featureStore.params().insert( "featureType", featureTypeName );
+        featureStore.params().insert( "getFeatureInfoUrl", requestUrl.toString() );
         foreach ( QgsFeatureId id, features.keys() )
         {
           QgsFeature * feature = features.value( id );

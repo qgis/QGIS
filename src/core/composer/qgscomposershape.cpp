@@ -20,15 +20,13 @@
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ), mShape( Ellipse )
 {
-  initGraphicsSettings();
+  setFrameEnabled( true );
 }
 
 QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition ), mShape( Ellipse )
 {
   setSceneRect( QRectF( x, y, width, height ) );
-  mShapeWidth = width;
-  mShapeHeight = height;
-  initGraphicsSettings();
+  setFrameEnabled( true );
 }
 
 QgsComposerShape::~QgsComposerShape()
@@ -45,64 +43,73 @@ void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     return;
   }
   drawBackground( painter );
-
-  painter->save();
-  painter->setRenderHint( QPainter::Antialiasing );
-  painter->setPen( mPen );
-  painter->setBrush( mBrush );
-
-  painter->translate( rect().width() / 2.0, rect().height() / 2.0 );
-  painter->rotate( mRotation );
-  painter->translate( -mShapeWidth / 2.0, -mShapeHeight / 2.0 );
-
-  double halfPenWidth = mPen.widthF() / 2.0;
-
-  switch ( mShape )
-  {
-    case Ellipse:
-      painter->drawEllipse( QRectF( halfPenWidth, halfPenWidth , mShapeWidth - mPen.widthF(), mShapeHeight - mPen.widthF() ) );
-      break;
-    case Rectangle:
-      painter->drawRect( QRectF( halfPenWidth, halfPenWidth , mShapeWidth - mPen.widthF(), mShapeHeight - mPen.widthF() ) );
-      break;
-    case Triangle:
-      QPolygonF triangle;
-      triangle << QPointF( halfPenWidth, mShapeHeight - halfPenWidth );
-      triangle << QPointF( mShapeWidth - halfPenWidth, mShapeHeight - halfPenWidth );
-      triangle << QPointF( mShapeWidth / 2.0, halfPenWidth );
-      painter->drawPolygon( triangle );
-      break;
-  }
-
-  painter->restore();
-
   drawFrame( painter );
+
   if ( isSelected() )
   {
     drawSelectionBoxes( painter );
   }
 }
 
+
+void QgsComposerShape::drawShape( QPainter* p )
+{
+
+  p->save();
+  p->setRenderHint( QPainter::Antialiasing );
+
+  p->translate( rect().width() / 2.0, rect().height() / 2.0 );
+  p->rotate( mRotation );
+  p->translate( -rect().width() / 2.0, -rect().height() / 2.0 );
+
+  switch ( mShape )
+  {
+    case Ellipse:
+      p->drawEllipse( QRectF( 0, 0 , rect().width(), rect().height() ) );
+      break;
+    case Rectangle:
+      p->drawRect( QRectF( 0, 0 , rect().width(), rect().height() ) );
+      break;
+    case Triangle:
+      QPolygonF triangle;
+      triangle << QPointF( 0, rect().height() );
+      triangle << QPointF( rect().width() , rect().height() );
+      triangle << QPointF( rect().width() / 2.0, 0 );
+      p->drawPolygon( triangle );
+      break;
+  }
+  p->restore();
+
+}
+
+
+void QgsComposerShape::drawFrame( QPainter* p )
+{
+  if ( mFrame && p )
+  {
+    p->setPen( pen() );
+    p->setBrush( Qt::NoBrush );
+    p->setRenderHint( QPainter::Antialiasing, true );
+    drawShape( p );
+  }
+}
+
+void QgsComposerShape::drawBackground( QPainter* p )
+{
+  if ( mBackground && p )
+  {
+    p->setBrush( brush() );//this causes a problem in atlas generation
+    p->setPen( Qt::NoPen );
+    p->setRenderHint( QPainter::Antialiasing, true );
+    drawShape( p );
+  }
+}
+
+
 bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
   QDomElement composerShapeElem = doc.createElement( "ComposerShape" );
   composerShapeElem.setAttribute( "shapeType", mShape );
-  composerShapeElem.setAttribute( "outlineWidth", QString::number( mPen.widthF() ) );
-  composerShapeElem.setAttribute( "transparentFill", mBrush.style() == Qt::NoBrush );
-  composerShapeElem.setAttribute( "shapeWidth", QString::number( mShapeWidth ) );
-  composerShapeElem.setAttribute( "shapeHeight", QString::number( mShapeHeight ) );
-  QDomElement outlineColorElem = doc.createElement( "OutlineColor" );
-  outlineColorElem.setAttribute( "red", mPen.color().red() );
-  outlineColorElem.setAttribute( "green", mPen.color().green() );
-  outlineColorElem.setAttribute( "blue", mPen.color().blue() );
-  outlineColorElem.setAttribute( "alpha", mPen.color().alpha() );
-  composerShapeElem.appendChild( outlineColorElem );
-  QDomElement fillColorElem = doc.createElement( "FillColor" );
-  fillColorElem.setAttribute( "red", mBrush.color().red() );
-  fillColorElem.setAttribute( "green", mBrush.color().green() );
-  fillColorElem.setAttribute( "blue", mBrush.color().blue() );
-  fillColorElem.setAttribute( "alpha", mBrush.color().alpha() );
-  composerShapeElem.appendChild( fillColorElem );
   elem.appendChild( composerShapeElem );
   return _writeXML( composerShapeElem, doc );
 }
@@ -110,45 +117,6 @@ bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
 bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
   mShape = QgsComposerShape::Shape( itemElem.attribute( "shapeType", "0" ).toInt() );
-  mShapeWidth = itemElem.attribute( "shapeWidth", "10" ).toDouble();
-  mShapeHeight = itemElem.attribute( "shapeHeight", "10" ).toDouble();
-  mPen.setWidthF( itemElem.attribute( "outlineWidth", "0.4" ).toDouble() );
-
-  //transparent fill
-  bool transparent = itemElem.attribute( "transparentFill", "1" ).toInt() == 1;
-  if ( transparent )
-  {
-    mBrush.setStyle( Qt::NoBrush );
-  }
-  else
-  {
-    mBrush.setStyle( Qt::SolidPattern );
-  }
-
-  //outline color
-  QDomNodeList outlineColorList = itemElem.elementsByTagName( "OutlineColor" );
-  if ( outlineColorList.size() > 0 )
-  {
-    QDomElement outlineColorElem = outlineColorList.at( 0 ).toElement();
-    int penRed = outlineColorElem.attribute( "red", "0" ).toInt();
-    int penGreen = outlineColorElem.attribute( "green", "0" ).toInt();
-    int penBlue = outlineColorElem.attribute( "blue", "0" ).toInt();
-    int penAlpha = outlineColorElem.attribute( "alpha", "255" ).toInt();
-    mPen.setColor( QColor( penRed, penGreen, penBlue, penAlpha ) );
-  }
-
-  //fill color
-  QDomNodeList fillNodeList = itemElem.elementsByTagName( "FillColor" );
-  if ( fillNodeList.size() > 0 )
-  {
-    QDomElement fillColorElem = fillNodeList.at( 0 ).toElement();
-    int brushRed = fillColorElem.attribute( "red", "0" ).toInt();
-    int brushGreen = fillColorElem.attribute( "green", "0" ).toInt();
-    int brushBlue = fillColorElem.attribute( "blue", "0" ).toInt();
-    int brushAlpha = fillColorElem.attribute( "alpha", "255" ).toInt();
-    mBrush.setColor( QColor( brushRed, brushGreen, brushBlue, brushAlpha ) );
-  }
-
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
@@ -161,71 +129,12 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
   return true;
 }
 
-void QgsComposerShape::setLineWidth( double width )
-{
-  mPen.setWidthF( width );
-}
-
-double QgsComposerShape::lineWidth() const
-{
-  return mPen.widthF();
-}
-
-void QgsComposerShape::setOutlineColor( const QColor& color )
-{
-  mPen.setColor( color );
-}
-
-QColor QgsComposerShape::outlineColor() const
-{
-  return mPen.color();
-}
-
-void QgsComposerShape::setFillColor( const QColor& color )
-{
-  mBrush.setColor( color );
-}
-
-QColor QgsComposerShape::fillColor() const
-{
-  return mBrush.color();
-}
-
-bool QgsComposerShape::transparentFill() const
-{
-  return mBrush.style() == Qt::NoBrush;
-}
-
-void QgsComposerShape::setTransparentFill( bool transparent )
-{
-  if ( transparent )
-  {
-    mBrush.setStyle( Qt::NoBrush );
-  }
-  else
-  {
-    mBrush.setStyle( Qt::SolidPattern );
-  }
-}
-
-void QgsComposerShape::initGraphicsSettings()
-{
-  mPen.setColor( QColor( 0, 0, 0 ) );
-  mPen.setWidthF( 1 );
-  mPen.setJoinStyle( Qt::RoundJoin );
-  mBrush.setColor( QColor( 0, 0, 0 ) );
-  mBrush.setStyle( Qt::NoBrush );
-
-  //set composer item brush and pen to transparent white by default
-  setPen( QPen( QColor( 255, 255, 255, 0 ) ) );
-  setBrush( QBrush( QColor( 255, 255, 255, 0 ) ) );
-}
 
 void QgsComposerShape::setRotation( double r )
 {
   //adapt rectangle size
-  double width = mShapeWidth;
-  double height = mShapeHeight;
+  double width = rect().width();
+  double height = rect().height();
   sizeChangedByRotation( width, height );
 
   //adapt scene rect to have the same center and the new width / height
@@ -246,8 +155,6 @@ void QgsComposerShape::setSceneRect( const QRectF& rectangle )
     double newShapeWidth = rectangle.width();
     double newShapeHeight = rectangle.height();
     imageSizeConsideringRotation( newShapeWidth, newShapeHeight );
-    mShapeWidth = newShapeWidth;
-    mShapeHeight = newShapeHeight;
   }
 
   QgsComposerItem::setSceneRect( rectangle );

@@ -119,9 +119,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool mSortFeatures;
     // sort direction
     bool mSortAscending;
- public:
+  public:
     typedef std::map< QgsFeatureId, QVariant > SorterKeys;
- private:
+  private:
     // value of field that is used for ordering of features
     SorterKeys mFeatureKeys;
     // key (attribute index) used for ordering

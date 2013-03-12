@@ -37,6 +37,7 @@ class ParameterCrs(Parameter):
         if value is None:
             self.value = self.default
             return True
+        #TODO: check it is a valid authid
         self.value = str(value)
         return True
 
@@ -49,6 +50,8 @@ class ParameterCrs(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
+        if tokens[2]==str(None):
+            tokens[2] = None
         return ParameterCrs(tokens[0], tokens[1], tokens[2])
 
     def getAsScriptCode(self):

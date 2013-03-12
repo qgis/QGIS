@@ -54,12 +54,13 @@ class SextanteVectorWriter:
 
             uri = self.TYPE_MAP[geometryType]
             if crs.isValid():
-                uri += "?crs=" + crs.authid()
+                uri += "?crs=" + crs.authid() + "&"
+            fieldsdesc = ["field=" + str(f.name())  for f in fields]
+            #+ ":" + str(f.typeName())
+            fieldsstring = "&".join(fieldsdesc)
+            uri += fieldsstring
             self.memLayer = QgsVectorLayer(uri, self.fileName, "memory")
             self.writer = self.memLayer.dataProvider()
-            # FIXME: addAttributes was deprecated and removed
-            self.writer.addAttributes(fields.values())
-            self.memLayer.updateFieldMap()
         else:
             formats = QgsVectorFileWriter.supportedFiltersAndFormats()
             OGRCodes = {}

@@ -108,6 +108,7 @@ cmake -G "Visual Studio 9 2008" ^
 	-D SITE="qgis.org" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_SPATIALITE=TRUE ^
+	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_MAPSERVER=TRUE ^
 	-D WITH_ASTYLE=TRUE ^
 	-D WITH_GLOBE=TRUE ^
@@ -185,6 +186,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	bin/%PACKAGENAME%.bat.tmpl ^
 	bin/%PACKAGENAME%-browser.bat.tmpl ^
 	apps/qt4/plugins/sqldrivers/qsqlocispatial.dll ^
+	apps/qt4/plugins/sqldrivers/qsqlspatialite.dll ^
 	etc/postinstall/%PACKAGENAME%.bat ^
 	etc/preremove/%PACKAGENAME%.bat ^
 	>>%LOG% 2>&1

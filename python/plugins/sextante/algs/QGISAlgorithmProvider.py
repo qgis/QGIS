@@ -16,12 +16,21 @@
 *                                                                         *
 ***************************************************************************
 """
+#from sextante.algs.MeanAndStdDevPlot import MeanAndStdDevPlot
+#from sextante.algs.BarPlot import BarPlot
+#from sextante.algs.PolarPlot import PolarPlot
+from sextante.algs.RasterLayerStatistics import RasterLayerStatistics
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+from PyQt4 import QtGui
+#from sextante.algs.RasterLayerHistogram import RasterLayerHistogram
+from sextante.algs.StatisticsByCategories import StatisticsByCategories
 from sextante.algs.ftools.PointsInPolygon import PointsInPolygon
 from sextante.algs.ftools.PointsInPolygonUnique import PointsInPolygonUnique
 from sextante.algs.ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -66,10 +75,10 @@ from sextante.algs.mmqgisx.MMQGISXAlgorithms import  (mmqgisx_delete_columns_alg
     mmqgisx_merge_algorithm, mmqgisx_select_algorithm,
     mmqgisx_text_to_float_algorithm)
 from sextante.algs.EquivalentNumField import EquivalentNumField
+#from sextante.algs.VectorLayerHistogram import VectorLayerHistogram
+#from sextante.algs.VectorLayerScatterplot import VectorLayerScatterplot
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.algs.AddTableField import AddTableField
-from PyQt4 import QtGui
-import os
 from sextante.algs.FieldsCalculator import FieldsCalculator
 from sextante.algs.SaveSelectedFeatures import SaveSelectedFeatures
 from sextante.algs.Explode import Explode
@@ -85,32 +94,22 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.alglist = [AddTableField(), FieldsCalculator(), SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(), EquivalentNumField(),
-                        #FTOOLS
                         SumLines(), PointsInPolygon(), PointsInPolygonWeighted(), PointsInPolygonUnique(),
                         BasicStatisticsStrings(), BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
                         MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(), PointsLayerFromTable(),
-                        # data management
-                        ReprojectLayer(),
-                        # geometry
+                        StatisticsByCategories(),ReprojectLayer(),
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
                         SimplifyGeometries(), DensifyGeometries(), DensifyGeometriesInterval(),
                         MultipartToSingleparts(), SinglePartsToMultiparts(), PolygonsToLines(),
                         LinesToPolygons(), ExtractNodes(),
-                        # geoprocessing
                         ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
                         Dissolve(), Difference(), Intersection(), Union(), Clip(),
-                        # research
                         ExtentFromLayer(), RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(),
                         #MMQGISX
-                        #mmqgisx_attribute_export_algorithm(),
-                        #mmqgisx_attribute_join_algorithm(),
                         mmqgisx_delete_columns_algorithm(),
                         mmqgisx_delete_duplicate_geometries_algorithm(),
-                        #mmqgisx_geocode_google_algorithm(),
                         mmqgisx_geometry_convert_algorithm(),
-                        #mmqgisx_geometry_export_algorithm(),
-                        #mmqgisx_geometry_import_algorithm(),
                         mmqgisx_grid_algorithm(),
                         mmqgisx_gridify_algorithm(),
                         mmqgisx_hub_distance_algorithm(),
@@ -119,7 +118,11 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         mmqgisx_select_algorithm(),
                         mmqgisx_text_to_float_algorithm(),
                         #raster
-                        CreateConstantRaster()]
+                        CreateConstantRaster(), RasterLayerStatistics()
+                        #graphics
+                        #VectorLayerHistogram(), VectorLayerScatterplot(), RasterLayerHistogram(),
+                        #MeanAndStdDevPlot(), BarPlot(), PolarPlot()
+                        ]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

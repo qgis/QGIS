@@ -1,3 +1,28 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    Save_selected_features.py
+    ---------------------
+    Date                 : November 2012
+    Copyright            : (C) 2012 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'November 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -29,7 +54,7 @@ vectorLayer = QGisLayers.getObjectFromUri(input)
 #First we create the output layer.
 #To do so, we create a SextanteVectorWriter, that we can later use to add features.
 provider = vectorLayer.dataProvider()
-writer = SextanteVectorWriter(output, None, provider.fields(), provider.geometryType(), provider.crs() )
+writer = SextanteVectorWriter(output, None, provider.fields(), provider.geometryType(), layer.crs() )
 
 #Now we take the selected features and add them to the output layer
 selection = vectorLayer.selectedFeatures()

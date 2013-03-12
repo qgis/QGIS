@@ -192,6 +192,11 @@
 #include "ogr/qgsogrsublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
+
+#include "qgsosmdownloaddialog.h"
+#include "qgsosmimportdialog.h"
+#include "qgsosmexportdialog.h"
+
 //
 // GDAL/OGR includes
 //
@@ -1046,6 +1051,11 @@ void QgisApp::createActions()
   connect( mActionLocalCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( localCumulativeCutStretch() ) );
   connect( mActionFullCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( fullCumulativeCutStretch() ) );
 
+  // Vector Menu Items
+  connect( mActionOSMDownload, SIGNAL( triggered() ), this, SLOT( osmDownloadDialog() ) );
+  connect( mActionOSMImport, SIGNAL( triggered() ), this, SLOT( osmImportDialog() ) );
+  connect( mActionOSMExport, SIGNAL( triggered() ), this, SLOT( osmExportDialog() ) );
+
   // Help Menu Items
 
 #ifdef Q_WS_MAC
@@ -1297,10 +1307,6 @@ void QgisApp::createMenus()
   // don't add it yet, wait for a plugin
   mDatabaseMenu = new QMenu( tr( "&Database" ), menuBar() );
   mDatabaseMenu->setObjectName( "mDatabaseMenu" );
-  // Vector Menu
-  // don't add it yet, wait for a plugin
-  mVectorMenu = new QMenu( tr( "Vect&or" ), menuBar() );
-  mVectorMenu->setObjectName( "mVectorMenu" );
   // Web Menu
   // don't add it yet, wait for a plugin
   mWebMenu = new QMenu( tr( "&Web" ), menuBar() );
@@ -1701,6 +1707,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionDeleteRing->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteRing.png" ) );
   mActionDeletePart->setIcon( QgsApplication::getThemeIcon( "/mActionDeletePart.png" ) );
   mActionMergeFeatures->setIcon( QgsApplication::getThemeIcon( "/mActionMergeFeatures.png" ) );
+  mActionOffsetCurve->setIcon( QgsApplication::getThemeIcon( "/mActionOffsetCurve.png" ) );
   mActionMergeFeatureAttributes->setIcon( QgsApplication::getThemeIcon( "/mActionMergeFeatureAttributes.png" ) );
   mActionRotatePointSymbols->setIcon( QgsApplication::getThemeIcon( "mActionRotatePointSymbols.png" ) );
   mActionZoomIn->setIcon( QgsApplication::getThemeIcon( "/mActionZoomIn.png" ) );
@@ -3631,7 +3638,7 @@ bool QgisApp::fileSave()
     if ( path.isEmpty() )
       return false;
 
-    QFileInfo fullPath( path );
+    fullPath.setFile( path );
 
     // make sure we have the .qgs extension in the file name
     if ( "qgs" != fullPath.suffix().toLower() )
@@ -3646,7 +3653,7 @@ bool QgisApp::fileSave()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
 
     if ( isNewProject )
     {
@@ -3705,7 +3712,7 @@ void QgisApp::fileSaveAs()
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
-    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath.filePath(), settings );
   }
@@ -3842,7 +3849,12 @@ void QgisApp::newPrintComposer()
     return;
   }
 
-  createNewComposer();
+  QString title = uniqueComposerTitle( this, true );
+  if ( title.isNull() )
+  {
+    return;
+  }
+  createNewComposer( title );
 }
 
 void QgisApp::showComposerManager()
@@ -4431,7 +4443,9 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
       {
         addVectorLayers( QStringList( newFilename ), encoding, "file" );
       }
-      QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to vector file has been completed" ) );
+      messageBar()->pushMessage( tr( "Saving done" ),
+                                 tr( "Export to vector file has been completed" ),
+                                 QgsMessageBar::INFO, 3 );
     }
     else
     {
@@ -4602,12 +4616,79 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
   return unionGeom;
 }
 
-QgsComposer* QgisApp::createNewComposer()
+QString QgisApp::uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const QString& currentName )
+{
+  if ( !parent )
+  {
+    parent = this;
+  }
+  bool ok = false;
+  bool titleValid = false;
+  QString newTitle = QString( currentName );
+  QString chooseMsg = tr( "Create unique print composer title" );
+  if ( acceptEmpty )
+  {
+    chooseMsg += "\n" + tr( "(title generated if left empty)" );
+  }
+  QString titleMsg = chooseMsg;
+
+  QStringList cNames;
+  cNames << newTitle;
+  foreach ( QgsComposer* c, printComposers() )
+  {
+    cNames << c->title();
+  }
+
+  while ( !titleValid )
+  {
+    newTitle = QInputDialog::getItem( parent,
+                                      tr( "Composer title" ),
+                                      titleMsg,
+                                      cNames,
+                                      cNames.indexOf( newTitle ),
+                                      true,
+                                      &ok );
+    if ( !ok )
+    {
+      return QString::null;
+    }
+
+    if ( newTitle.isEmpty() )
+    {
+      if ( !acceptEmpty )
+      {
+        titleMsg = chooseMsg + "\n\n" + tr( "Title can not be empty!" );
+      }
+      else
+      {
+        newTitle = QString( "" );
+        titleValid = true;
+      }
+    }
+    else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
+    {
+      cNames[0] = QString( "" ); // clear non-unique name
+      titleMsg = chooseMsg + "\n\n" + tr( "Title already exists!" );
+    }
+    else
+    {
+      titleValid = true;
+    }
+  }
+
+  return newTitle;
+}
+
+QgsComposer* QgisApp::createNewComposer( QString title )
 {
   //ask user about name
   mLastComposerId++;
+  if ( title.isEmpty() )
+  {
+    title = tr( "Composer %1" ).arg( mLastComposerId );
+  }
   //create new composer object
-  QgsComposer* newComposerObject = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
+  QgsComposer* newComposerObject = new QgsComposer( this, title );
 
   //add it to the map of existing print composers
   mPrintComposers.insert( newComposerObject );
@@ -4630,6 +4711,49 @@ void QgisApp::deleteComposer( QgsComposer* c )
   delete c;
 }
 
+QgsComposer* QgisApp::duplicateComposer( QgsComposer* currentComposer, QString title )
+{
+  QgsComposer* newComposer = 0;
+
+  // test that current composer template write is valid
+  QDomDocument currentDoc;
+  currentComposer->templateXML( currentDoc );
+  QDomElement compositionElem = currentDoc.documentElement().firstChildElement( "Composition" );
+  if ( compositionElem.isNull() )
+  {
+    QgsDebugMsg( "selected composer could not be stored as temporary template" );
+    return newComposer;
+  }
+
+  if ( title.isEmpty() )
+  {
+    // TODO: inject a bit of randomness in auto-titles?
+    title = currentComposer->title() + tr( " copy" );
+  }
+
+  newComposer = createNewComposer( title );
+  if ( !newComposer )
+  {
+    QgsDebugMsg( "could not create new composer" );
+    return newComposer;
+  }
+
+  // hiding composer until template is loaded is much faster, provide feedback to user
+  newComposer->hide();
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+  if ( !newComposer->composition()->loadFromTemplate( currentDoc, 0, false ) )
+  {
+    deleteComposer( newComposer );
+    newComposer = 0;
+    QgsDebugMsg( "Error, composer could not be duplicated" );
+    return newComposer;
+  }
+  newComposer->activate();
+  QApplication::restoreOverrideCursor();
+
+  return newComposer;
+}
+
 bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
 {
   if ( doc.isNull() )
@@ -4647,7 +4771,8 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
     mPrintComposers.insert( composer );
     mPrintComposersMenu->addAction( composer->windowAction() );
 #ifndef Q_OS_MACX
-    composer->showMinimized();
+    composer->setWindowState( Qt::WindowMinimized );
+    composer->show();
 #endif
     composer->zoomFull();
     if ( composerNodes.at( i ).toElement().attribute( "visible", "1" ).toInt() < 1 )
@@ -4673,6 +4798,18 @@ void QgisApp::deletePrintComposers()
   mPrintComposers.clear();
   mLastComposerId = 0;
   markDirty();
+}
+
+void QgisApp::on_mPrintComposersMenu_aboutToShow()
+{
+  QList<QAction*> acts = mPrintComposersMenu->actions();
+  mPrintComposersMenu->clear();
+  if ( acts.size() > 1 )
+  {
+    // sort actions by text
+    qSort( acts.begin(), acts.end(), cmpByText_ );
+  }
+  mPrintComposersMenu->addActions( acts );
 }
 
 bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
@@ -5177,6 +5314,12 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
     }
 
     f.setAttributes( dstAttr );
+
+    //avoid intersection if enabled in digitize settings
+    if ( f.geometry() )
+    {
+      f.geometry()->avoidIntersections();
+    }
   }
 
   pasteVectorLayer->addFeatures( features );
@@ -5247,6 +5390,7 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       }
 
       mMapLegend->refreshLayerSymbology( selectionLayer->id(), false );
+      mMapCanvas->refresh();
     }
   }
 }
@@ -6960,31 +7104,6 @@ void QgisApp::addPluginToVectorMenu( QString name, QAction* action )
 {
   QMenu* menu = getVectorMenu( name );
   menu->addAction( action );
-
-  // add the Vector menu to the menuBar if not added yet
-  if ( mVectorMenu->actions().count() != 1 )
-    return;
-
-  QAction* before = NULL;
-  QList<QAction*> actions = menuBar()->actions();
-  for ( int i = 0; i < actions.count(); i++ )
-  {
-    if ( actions.at( i )->menu() == mVectorMenu )
-      return;
-
-    // goes before Raster menu, which is already in qgisapp.ui
-    if ( actions.at( i )->menu() == mRasterMenu )
-    {
-      before = actions.at( i );
-      break;
-    }
-  }
-
-  if ( before )
-    menuBar()->insertMenu( before, mVectorMenu );
-  else
-    // fallback insert
-    menuBar()->insertMenu( firstRightStandardMenu()->menuAction(), mVectorMenu );
 }
 
 void QgisApp::addPluginToWebMenu( QString name, QAction* action )
@@ -7655,10 +7774,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       //start editing/stop editing
       if ( dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
       {
-        bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-        mActionToggleEditing->setEnabled( canChangeAttributes && !vlayer->isReadOnly() );
+        mActionToggleEditing->setEnabled( !vlayer->isReadOnly() );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
-        mActionSaveLayerEdits->setEnabled( canChangeAttributes && vlayer->isEditable() && vlayer->isModified() );
+        mActionSaveLayerEdits->setEnabled( vlayer->isEditable() && vlayer->isModified() );
         mUndoWidget->dockContents()->setEnabled( vlayer->isEditable() );
         updateUndoActions();
       }
@@ -8748,6 +8866,25 @@ QMenu* QgisApp::createPopupMenu()
 
   return menu;
 }
+
+void QgisApp::osmDownloadDialog()
+{
+  QgsOSMDownloadDialog dlg;
+  dlg.exec();
+}
+
+void QgisApp::osmImportDialog()
+{
+  QgsOSMImportDialog dlg;
+  dlg.exec();
+}
+
+void QgisApp::osmExportDialog()
+{
+  QgsOSMExportDialog dlg;
+  dlg.exec();
+}
+
 
 #ifdef HAVE_TOUCH
 bool QgisApp::gestureEvent( QGestureEvent *event )

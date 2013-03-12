@@ -30,11 +30,11 @@ __revision__ = '$Format:%H$'
 ##src_filename=raster
 ##dst_filename=output raster
 ##connectedness=selection 4;8
+##threshold=number 2
 from sextante.gdal.GdalUtils import GdalUtils
 
 from osgeo import gdal, ogr
 
-threshold = 2
 connectedness=int(connectedness)
 options = []
 

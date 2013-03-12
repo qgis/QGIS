@@ -64,7 +64,7 @@ class AddTableField(GeoAlgorithm):
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
         fields.append(QgsField(fieldname, self.TYPES[fieldtype]))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vlayer.crs() )
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nElement = 0

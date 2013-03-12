@@ -47,7 +47,7 @@ class Ui_SextanteToolbox(object):
 
     def retranslateUi(self, SextanteToolbox):
         SextanteToolbox.setWindowTitle(QtGui.QApplication.translate("SextanteToolbox", "SEXTANTE Toolbox", None, QtGui.QApplication.UnicodeUTF8))
-        self.externalAppsButton.setText(QtGui.QApplication.translate("SextanteToolbox", "Click here to configure\n"
-"additional algorithm providers", None, QtGui.QApplication.UnicodeUTF8))
+        self.externalAppsButton.setText(QtGui.QApplication.translate("SextanteToolbox", "Click here to learn\n"
+"more about SEXTANTE!", None, QtGui.QApplication.UnicodeUTF8))
         self.searchBox.setToolTip(QtGui.QApplication.translate("SextanteToolbox", "Enter algorithm name to filter list", None, QtGui.QApplication.UnicodeUTF8))
 

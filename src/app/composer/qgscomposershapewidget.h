@@ -38,10 +38,6 @@ class QgsComposerShapeWidget: public QWidget, private Ui::QgsComposerShapeWidget
 
   private slots:
     void on_mShapeComboBox_currentIndexChanged( const QString& text );
-    void on_mOutlineColorButton_clicked();
-    void on_mOutlineWidthSpinBox_valueChanged( double d );
-    void on_mTransparentCheckBox_stateChanged( int state );
-    void on_mFillColorButton_clicked();
     void on_mRotationSpinBox_valueChanged( int val );
 
     /**Sets the GUI elements to the currentValues of mComposerShape*/

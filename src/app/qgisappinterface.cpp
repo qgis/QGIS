@@ -26,6 +26,7 @@
 #include "qgisappstylesheet.h"
 #include "qgisapp.h"
 #include "qgscomposer.h"
+#include "qgscomposerview.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapcanvas.h"
@@ -290,6 +291,44 @@ QList<QgsComposerView*> QgisAppInterface::activeComposers()
   return composerViewList;
 }
 
+QgsComposerView* QgisAppInterface::createNewComposer( QString title )
+{
+  QgsComposer* composerObj = 0;
+  composerObj = qgis->createNewComposer( title );
+  if ( composerObj )
+  {
+    return composerObj->view();
+  }
+  return 0;
+}
+
+QgsComposerView* QgisAppInterface::duplicateComposer( QgsComposerView* composerView, QString title )
+{
+  QgsComposer* composerObj = 0;
+  composerObj = qobject_cast<QgsComposer *>( composerView->composerWindow() );
+  if ( composerObj )
+  {
+    QgsComposer* dupComposer = qgis->duplicateComposer( composerObj, title );
+    if ( dupComposer )
+    {
+      return dupComposer->view();
+    }
+  }
+  return 0;
+}
+
+void QgisAppInterface::deleteComposer( QgsComposerView* composerView )
+{
+  composerView->composerWindow()->close();
+
+  QgsComposer* composerObj = 0;
+  composerObj = qobject_cast<QgsComposer *>( composerView->composerWindow() );
+  if ( composerObj )
+  {
+    qgis->deleteComposer( composerObj );
+  }
+}
+
 QMap<QString, QVariant> QgisAppInterface::defaultStyleSheetOptions()
 {
   return qgis->styleSheetBuilder()->defaultOptions();
@@ -362,6 +401,7 @@ QMenu *QgisAppInterface::fileMenu() { return qgis->fileMenu(); }
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }
+QMenu *QgisAppInterface::newLayerMenu() { return qgis->newLayerMenu(); }
 QMenu *QgisAppInterface::settingsMenu() { return qgis->settingsMenu(); }
 QMenu *QgisAppInterface::pluginMenu() { return qgis->pluginMenu(); }
 QMenu *QgisAppInterface::rasterMenu() { return qgis->rasterMenu(); }
@@ -394,6 +434,7 @@ QAction *QgisAppInterface::actionSaveProjectAs() { return qgis->actionSaveProjec
 QAction *QgisAppInterface::actionSaveMapAsImage() { return qgis->actionSaveMapAsImage(); }
 QAction *QgisAppInterface::actionProjectProperties() { return qgis->actionProjectProperties(); }
 QAction *QgisAppInterface::actionPrintComposer() { return qgis->actionNewPrintComposer(); }
+QAction *QgisAppInterface::actionShowComposerManager() { return qgis->actionShowComposerManager(); }
 QAction *QgisAppInterface::actionExit() { return qgis->actionExit(); }
 
 //! Edit menu actions
@@ -490,6 +531,12 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
   QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, -1, -1, QgisApp::instance() );
   return action.editFeature();
+}
+
+QDialog* QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeature &f )
+{
+    QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &f, false );
+    return dialog->dialog();
 }
 
 QList<QgsMapLayer *> QgisAppInterface::editableLayers( bool modified ) const

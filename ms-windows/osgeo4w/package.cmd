@@ -105,6 +105,7 @@ set GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION%
 cmake -G "Visual Studio 9 2008" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_SPATIALITE=TRUE ^
+	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_MAPSERVER=TRUE ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
@@ -251,6 +252,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/zonalstatisticsplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/heatmapplugin.dll" ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^
+        "apps/qt4/plugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/python/" ^
 	"apps/%PACKAGENAME%/resources/context_help/" ^
 	"apps/%PACKAGENAME%/resources/function_help/" ^

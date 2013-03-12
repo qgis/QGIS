@@ -55,6 +55,7 @@ class TestQgsGeometry: public QObject
     void differenceCheck1();
     void differenceCheck2();
     void bufferCheck();
+
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
     bool renderCheck( QString theTestName, QString theComment = "" );
@@ -368,6 +369,7 @@ void TestQgsGeometry::dumpPolyline( QgsPolyline &thePolyline )
   }
   mpPainter->drawPolyline( myPoints );
 }
+
 
 QTEST_MAIN( TestQgsGeometry )
 #include "moc_testqgsgeometry.cxx"

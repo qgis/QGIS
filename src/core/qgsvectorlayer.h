@@ -767,6 +767,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      **/
     ValueRelationData &valueRelation( int idx );
 
+    /**is edit widget editable
+     * @note added in 1.9
+     **/
+    bool fieldEditable( int idx );
+
+    /**set edit widget editable
+     * @note added in 1.9
+     **/
+    void setFieldEditable( int idx, bool editable );
+
+
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
      @note this method was added in version 1.1
      */
@@ -1058,6 +1069,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QStringList mCommitErrors;
 
     QMap< QString, EditType > mEditTypes;
+    QMap< QString, bool> mFieldEditables;
     QMap< QString, QMap<QString, QVariant> > mValueMaps;
     QMap< QString, RangeData > mRanges;
     QMap< QString, QPair<QString, QString> > mCheckedStates;

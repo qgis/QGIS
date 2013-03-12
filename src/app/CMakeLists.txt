@@ -133,7 +133,6 @@ SET(QGIS_APP_SRCS
   composer/qgscomposerlegendwidget.cpp
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
-  composer/qgsitempositiondialog.cpp
 
   legend/qgslegendgroup.cpp
   legend/qgslegend.cpp
@@ -155,6 +154,10 @@ SET(QGIS_APP_SRCS
 
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
+
+  openstreetmap/qgsosmdownloaddialog.cpp
+  openstreetmap/qgsosmimportdialog.cpp
+  openstreetmap/qgsosmexportdialog.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -273,7 +276,6 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscomposershapewidget.h
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
-  composer/qgsitempositiondialog.h
 
   legend/qgslegend.h
   legend/qgsapplegendinterface.h
@@ -286,6 +288,10 @@ SET (QGIS_APP_MOC_HDRS
   ogr/qgsvectorlayersaveasdialog.h
 
   gps/qgsgpsinformationwidget.h
+
+  openstreetmap/qgsosmdownloaddialog.h
+  openstreetmap/qgsosmimportdialog.h
+  openstreetmap/qgsosmexportdialog.h
   )
 
 IF(WITH_INTERNAL_QWTPOLAR)
@@ -413,7 +419,7 @@ INCLUDE_DIRECTORIES(
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
-  ../analysis/raster
+  ../analysis/raster ../analysis/openstreetmap
   ../core
   ../core/gps
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
@@ -421,6 +427,7 @@ INCLUDE_DIRECTORIES(
   ../plugins
   ../python
   gps
+  openstreetmap
   )
 
 IF (ANDROID)
@@ -477,10 +484,6 @@ ENDIF (ANDROID)
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
 ENDIF(WIN32)
-
-IF(NOT WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${SQLITE_LIBRARY})
-ENDIF(NOT WITH_INTERNAL_SPATIALITE)
 
 IF (APPLE)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${APP_SERVICES_LIBRARY} )

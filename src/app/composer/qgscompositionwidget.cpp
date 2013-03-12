@@ -47,27 +47,13 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     mResolutionSpinBox->setValue( mComposition->printResolution() );
 
     //print as raster
-    if ( mComposition->printAsRaster() )
-    {
-      mPrintAsRasterCheckBox->setCheckState( Qt::Checked );
-    }
-    else
-    {
-      mPrintAsRasterCheckBox->setCheckState( Qt::Unchecked );
-    }
+    mPrintAsRasterGroupCheckBox->setChecked( mComposition->printAsRaster() );
 
-    mAlignmentSnapCheckBox->setCheckState( mComposition->alignmentSnap() ? Qt::Checked : Qt::Unchecked );
+    mAlignmentSnapGroupCheckBox->setChecked( mComposition->alignmentSnap() );
     mAlignmentToleranceSpinBox->setValue( mComposition->alignmentSnapTolerance() );
 
     //snap grid
-    if ( mComposition->snapToGridEnabled() )
-    {
-      mSnapToGridCheckBox->setCheckState( Qt::Checked );
-    }
-    else
-    {
-      mSnapToGridCheckBox->setCheckState( Qt::Unchecked );
-    }
+    mSnapToGridGroupCheckBox->setChecked( mComposition->snapToGridEnabled() );
     mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
     mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
     mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
@@ -131,18 +117,18 @@ void QgsCompositionWidget::createPaperEntries()
   << QgsCompositionPaper( tr( "B1 (707 x 1000 mm)" ), 707, 1000 )
   << QgsCompositionPaper( tr( "B0 (1000 x 1414 mm)" ), 1000, 1414 )
   // North american formats
-  << QgsCompositionPaper( tr( "Legal (8.5x14 inches)" ), 215.9, 355.6 )
-  << QgsCompositionPaper( tr( "ANSI A (Letter; 8.5x11 inches)" ), 215.9, 279.4 )
-  << QgsCompositionPaper( tr( "ANSI B (Tabloid; 11x17 inches)" ), 279.4, 431.8 )
-  << QgsCompositionPaper( tr( "ANSI C (17x22 inches)" ), 431.8, 558.8 )
-  << QgsCompositionPaper( tr( "ANSI D (22x34 inches)" ), 558.8, 863.6 )
-  << QgsCompositionPaper( tr( "ANSI E (34x44 inches)" ), 863.6, 1117.6 )
-  << QgsCompositionPaper( tr( "Arch A (9x12 inches)" ), 228.6, 304.8 )
-  << QgsCompositionPaper( tr( "Arch B (12x18 inches)" ), 304.8, 457.2 )
-  << QgsCompositionPaper( tr( "Arch C (18x24 inches)" ), 457.2, 609.6 )
-  << QgsCompositionPaper( tr( "Arch D (24x36 inches)" ), 609.6, 914.4 )
-  << QgsCompositionPaper( tr( "Arch E (36x48 inches)" ), 914.4, 1219.2 )
-  << QgsCompositionPaper( tr( "Arch E1 (30x42 inches)" ), 762, 1066.8 )
+  << QgsCompositionPaper( tr( "Legal (8.5x14 in)" ), 215.9, 355.6 )
+  << QgsCompositionPaper( tr( "ANSI A (Letter; 8.5x11 in)" ), 215.9, 279.4 )
+  << QgsCompositionPaper( tr( "ANSI B (Tabloid; 11x17 in)" ), 279.4, 431.8 )
+  << QgsCompositionPaper( tr( "ANSI C (17x22 in)" ), 431.8, 558.8 )
+  << QgsCompositionPaper( tr( "ANSI D (22x34 in)" ), 558.8, 863.6 )
+  << QgsCompositionPaper( tr( "ANSI E (34x44 in)" ), 863.6, 1117.6 )
+  << QgsCompositionPaper( tr( "Arch A (9x12 in)" ), 228.6, 304.8 )
+  << QgsCompositionPaper( tr( "Arch B (12x18 in)" ), 304.8, 457.2 )
+  << QgsCompositionPaper( tr( "Arch C (18x24 in)" ), 457.2, 609.6 )
+  << QgsCompositionPaper( tr( "Arch D (24x36 in)" ), 609.6, 914.4 )
+  << QgsCompositionPaper( tr( "Arch E (36x48 in)" ), 914.4, 1219.2 )
+  << QgsCompositionPaper( tr( "Arch E1 (30x42 in)" ), 762, 1066.8 )
   ;
   mPaperSizeComboBox->addItem( tr( "Custom" ) );
 
@@ -396,15 +382,7 @@ void QgsCompositionWidget::displaySnapingSettings()
     return;
   }
 
-  if ( mComposition->snapToGridEnabled() )
-  {
-    mSnapToGridCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    mSnapToGridCheckBox->setCheckState( Qt::Unchecked );
-  }
-
+  mSnapToGridGroupCheckBox->setChecked( mComposition->snapToGridEnabled() );
   mGridResolutionSpinBox->setValue( mComposition->snapGridResolution() );
   mOffsetXSpinBox->setValue( mComposition->snapGridOffsetX() );
   mOffsetYSpinBox->setValue( mComposition->snapGridOffsetY() );
@@ -415,35 +393,21 @@ void QgsCompositionWidget::on_mResolutionSpinBox_valueChanged( const int value )
   mComposition->setPrintResolution( value );
 }
 
-void QgsCompositionWidget::on_mPrintAsRasterCheckBox_stateChanged( int state )
+void QgsCompositionWidget::on_mPrintAsRasterGroupCheckBox_toggled( bool state )
 {
   if ( !mComposition )
   {
     return;
   }
 
-  if ( state == Qt::Checked )
-  {
-    mComposition->setPrintAsRaster( true );
-  }
-  else
-  {
-    mComposition->setPrintAsRaster( false );
-  }
+  mComposition->setPrintAsRaster( state );
 }
 
-void QgsCompositionWidget::on_mSnapToGridCheckBox_stateChanged( int state )
+void QgsCompositionWidget::on_mSnapToGridGroupCheckBox_toggled( bool state )
 {
   if ( mComposition )
   {
-    if ( state == Qt::Checked )
-    {
-      mComposition->setSnapToGridEnabled( true );
-    }
-    else
-    {
-      mComposition->setSnapToGridEnabled( false );
-    }
+    mComposition->setSnapToGridEnabled( state );
   }
 }
 
@@ -527,11 +491,11 @@ void QgsCompositionWidget::on_mSelectionToleranceSpinBox_valueChanged( double d 
   }
 }
 
-void QgsCompositionWidget::on_mAlignmentSnapCheckBox_stateChanged( int state )
+void QgsCompositionWidget::on_mAlignmentSnapGroupCheckBox_toggled( bool state )
 {
   if ( mComposition )
   {
-    mComposition->setAlignmentSnap( state == Qt::Checked ? true : false );
+    mComposition->setAlignmentSnap( state );
   }
 }
 
@@ -552,8 +516,8 @@ void QgsCompositionWidget::blockSignals( bool block )
   mNumPagesSpinBox->blockSignals( block );
   mPaperOrientationComboBox->blockSignals( block );
   mResolutionSpinBox->blockSignals( block );
-  mPrintAsRasterCheckBox->blockSignals( block );
-  mSnapToGridCheckBox->blockSignals( block );
+  mPrintAsRasterGroupCheckBox->blockSignals( block );
+  mSnapToGridGroupCheckBox->blockSignals( block );
   mGridResolutionSpinBox->blockSignals( block );
   mOffsetXSpinBox->blockSignals( block );
   mOffsetYSpinBox->blockSignals( block );
@@ -561,6 +525,6 @@ void QgsCompositionWidget::blockSignals( bool block )
   mGridColorButton->blockSignals( block );
   mGridStyleComboBox->blockSignals( block );
   mSelectionToleranceSpinBox->blockSignals( block );
-  mAlignmentSnapCheckBox->blockSignals( block );
+  mAlignmentSnapGroupCheckBox->blockSignals( block );
   mAlignmentToleranceSpinBox->blockSignals( block );
 }

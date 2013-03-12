@@ -1,7 +1,8 @@
-##Classification=group
-##Layer = raster|R.raster
+##[Example scripts]=group
+##Layer = raster
 ##no_data_value = number 0
+##breaks = number 100
+##color = string red
 ##showplots
-Layer <- raster(Layer, 1)
 NAvalue(Layer) = no_data_value
-hist(as.matrix(Layer), breaks=100, xlab = basename(filename(Layer)))
+hist(Layer, breaks=breaks,col=color)

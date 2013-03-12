@@ -29,7 +29,7 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, scaleBar );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
   blockMemberSignals( true );
 

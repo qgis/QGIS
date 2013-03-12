@@ -100,6 +100,8 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
 
   stop();
 
+  bool dontResolveType = QgsPostgresConn::dontResolveType( mName );
+
   foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
   {
     QgsPGSchemaItem *schemaItem = mSchemaMap.value( layerProperty.schemaName, 0 );
@@ -112,6 +114,12 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
 
     if ( QgsPostgresConn::wkbTypeFromPostgis( layerProperty.type ) == QGis::WKBUnknown )
     {
+      if ( !dontResolveType )
+      {
+        QgsDebugMsg( QString( "Skip column %1.%2.%3 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ).arg( layerProperty.geometryColName ) );
+        continue;
+      }
+
       if ( !mColumnTypeThread )
       {
         QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), true /* readonly */ );

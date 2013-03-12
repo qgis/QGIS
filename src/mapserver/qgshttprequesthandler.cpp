@@ -97,7 +97,8 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
   if ( img )
   {
     bool png8Bit = ( mFormat.compare( "image/png; mode=8bit", Qt::CaseInsensitive ) == 0 );
-    if ( mFormat != "PNG" && mFormat != "JPG" && !png8Bit )
+    bool png1Bit = ( mFormat.compare( "image/png; mode=1bit", Qt::CaseInsensitive ) == 0 );
+    if ( mFormat != "PNG" && mFormat != "JPG" && !png8Bit && !png1Bit )
     {
       QgsDebugMsg( "service exception - incorrect image format requested..." );
       sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormat + "' is not supported in the GetMap request" ) );
@@ -114,6 +115,12 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
       QVector<QRgb> colorTable;
       medianCut( colorTable, 256, *img );
       QImage palettedImg = img->convertToFormat( QImage::Format_Indexed8, colorTable, Qt::ColorOnly | Qt::ThresholdDither |
+                           Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
+      palettedImg.save( &buffer, "PNG", -1 );
+    }
+    else if ( png1Bit )
+    {
+      QImage palettedImg = img->convertToFormat( QImage::Format_Mono, Qt::MonoOnly | Qt::ThresholdDither |
                            Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
       palettedImg.save( &buffer, "PNG", -1 );
     }

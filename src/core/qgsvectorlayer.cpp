@@ -2235,6 +2235,8 @@ bool QgsVectorLayer::startEditing()
   connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
   connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), this, SIGNAL( attributeAdded( int ) ) );
   connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), this, SIGNAL( attributeDeleted( int ) ) );
+  connect( mEditBuffer, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ), this, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ) );
+  connect( mEditBuffer, SIGNAL( committedFeaturesRemoved( QString, QgsFeatureIds ) ), this, SIGNAL( committedFeaturesRemoved( QString, QgsFeatureIds ) ) );
 
   updateFields();
 
@@ -2309,7 +2311,6 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   return mValid;               // should be true if read successfully
 
 } // void QgsVectorLayer::readXml
-
 
 
 bool QgsVectorLayer::setDataProvider( QString const & provider )
@@ -2615,6 +2616,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
       EditType editType = ( EditType ) editTypeElement.attribute( "type" ).toInt();
       mEditTypes.insert( name, editType );
+
+      int editable = editTypeElement.attribute( "editable" , "1" ).toInt();
+      mFieldEditables.insert( name, editable == 1 );
 
       switch ( editType )
       {
@@ -2931,6 +2935,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
       QDomElement editTypeElement = doc.createElement( "edittype" );
       editTypeElement.setAttribute( "name", it.key() );
       editTypeElement.setAttribute( "type", it.value() );
+      editTypeElement.setAttribute( "editable", mFieldEditables[ it.key()] ? 1 : 0 );
 
       switch (( EditType ) it.value() )
       {
@@ -3173,7 +3178,7 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 
 bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal )
 {
-  Q_UNUSED( emitSignal ); // TODO[MD]
+  Q_UNUSED( emitSignal ); // TODO[MD] - see also QgsFieldCalculator and #7071
   if ( !mEditBuffer || !mDataProvider )
     return false;
 
@@ -3715,7 +3720,7 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
       break;
     }
     default:
-      QgsDebugMsg( "Unknown WkbType ENCOUNTERED" );
+      QgsDebugMsg( QString( "Unknown WkbType 0x%1 ENCOUNTERED" ).arg( wkbType, 0, 16 ) );
       break;
   }
 }
@@ -3891,6 +3896,22 @@ QgsVectorLayer::RangeData &QgsVectorLayer::range( int idx )
     mRanges[fieldName] = RangeData();
 
   return mRanges[fieldName];
+}
+
+bool QgsVectorLayer::fieldEditable( int idx )
+{
+  const QgsFields &fields = pendingFields();
+  if ( idx >= 0 && idx < fields.count() && mEditTypes.contains( fields[idx].name() ) )
+    return mFieldEditables[ fields[idx].name()];
+  else
+    return false;
+}
+
+void QgsVectorLayer::setFieldEditable( int idx, bool editable )
+{
+  const QgsFields &fields = pendingFields();
+  if ( idx >= 0 && idx < fields.count() && mEditTypes.contains( fields[idx].name() ) )
+    mFieldEditables[ fields[idx].name()] = editable;
 }
 
 void QgsVectorLayer::addOverlay( QgsVectorOverlay* overlay )

@@ -189,6 +189,11 @@ class QgsComposerItem: QObject, QGraphicsRectItem
       @note: this method was added in version 1.6*/
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft );
 
+    /**Returns item's last used position mode.
+      @note: This property has no effect on actual's item position, which is always the top-left corner.
+      @note: this method was added in version 2.0*/
+    ItemPositionMode lastUsedPositionMode();
+
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );
@@ -252,7 +257,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text*/
-    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignement = Qt::AlignLeft, Qt::AlignmentFlag valignement = Qt::AlignTop ) const;
+    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop ) const;
 
     /**Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double textWidthMillimeters( const QFont& font, const QString& text ) const;

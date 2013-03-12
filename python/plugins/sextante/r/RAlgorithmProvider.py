@@ -50,12 +50,14 @@ class RAlgorithmProvider(AlgorithmProvider):
         SextanteConfig.addSetting(Setting(self.getDescription(), RUtils.RSCRIPTS_FOLDER, "R Scripts folder", RUtils.RScriptsFolder()))
         if SextanteUtils.isWindows():
             SextanteConfig.addSetting(Setting(self.getDescription(), RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
+            SextanteConfig.addSetting(Setting(self.getDescription(), RUtils.R_USE64, "Use 64 bit version", False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         SextanteConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
         if SextanteUtils.isWindows():
             SextanteConfig.removeSetting(RUtils.R_FOLDER)
+            SextanteConfig.removeSetting(RUtils.R_USE64)
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")

@@ -99,9 +99,7 @@ class QGisLayers:
         tables = list()
         for layer in layers:
             if layer.type() == layer.VectorLayer :
-                uri = unicode(layer.source())
-                if uri.lower().endswith("csv") or uri.lower().endswith("dbf") or uri.lower().endswith("shp"):
-                    tables.append(layer)
+                tables.append(layer)
         return tables
 
     @staticmethod
@@ -158,10 +156,12 @@ class QGisLayers:
 
         return qgslayer
 
-    @staticmethod
-    def loadFromDict(layersdict, crs):
-        for name in layersdict.keys():
-            QGisLayers.load(layersdict[name], name, crs)
+    #===========================================================================
+    # @staticmethod
+    # def loadFromDict(layersdict, crs = None):
+    #    for name in layersdict.keys():
+    #        QGisLayers.load(layersdict[name], name, crs)
+    #===========================================================================
 
 
     @staticmethod

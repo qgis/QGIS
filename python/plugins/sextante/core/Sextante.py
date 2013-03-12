@@ -30,13 +30,12 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.SextanteLog import SextanteLog
-from sextante.core.AlgorithmClassification import AlgorithmDecorator
+from sextante.gui.AlgorithmClassification import AlgorithmDecorator
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
 from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor,\
     SilentProgress
-
 from sextante.modeler.Providers import Providers
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
@@ -51,8 +50,6 @@ from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from sextante.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
 from sextante.admintools.AdminToolsAlgorithmProvider import AdminToolsAlgorithmProvider
-
-
 
 class Sextante:
 
@@ -127,11 +124,11 @@ class Sextante:
         Sextante.addProvider(AdminToolsAlgorithmProvider())
         Sextante.modeler.initializeSettings();
         #and initialize
+        AlgorithmDecorator.loadClassification()
         SextanteLog.startLogging()
         SextanteConfig.initialize()
         SextanteConfig.loadSettings()
         RenderingStyles.loadStyles()
-        AlgorithmDecorator.loadClassification()
         Sextante.loadFromProviders()
 
     @staticmethod
@@ -149,7 +146,6 @@ class Sextante:
 
     @staticmethod
     def updateProviders():
-
         for provider in Sextante.providers:
             provider.loadAlgorithms()
 
@@ -274,14 +270,14 @@ class Sextante:
             for param in alg.parameters:
                 if not param.hidden:
                     if not param.setValue(args[i]):
-                        print ("Error: Wrong parameter value: " + args[i])
+                        print ("Error: Wrong parameter value: " + unicode(args[i]))
                         return
                     i = i +1
 
             for output in alg.outputs:
                 if not output.hidden:
                     if not output.setValue(args[i]):
-                        print ("Error: Wrong output value: " + args[i])
+                        print ("Error: Wrong output value: " + unicode(args[i]))
                         return
                     i = i +1
 
@@ -345,7 +341,7 @@ class Sextante:
 
 
 ##==========================================================
-##This methods are here to be used from the python console,
+##These methods are here to be used from the python console,
 ##making it easy to use SEXTANTE from there
 ##==========================================================
 
@@ -378,6 +374,7 @@ def alghelp(name):
     alg = Sextante.getAlgorithm(name)
     if alg != None:
         print(str(alg))
+        algoptions(name)
     else:
         print "Algorithm not found"
 
@@ -416,14 +413,22 @@ def getObjectFromName(name):
 def getObjectFromUri(uri):
     return QGisLayers.getObjectFromUri(uri, False)
 
+def getobject(uriorname):
+    ret = getObjectFromName(uriorname)
+    if ret is None:
+        ret = getObjectFromUri(uriorname)
+    return ret
+
 def load(path):
     '''Loads a layer into QGIS'''
     return QGisLayers.load(path)
 
-def features(layer):
+def getfeatures(layer):
     return QGisLayers.features(layer)
 
-def loadFromAlg(layersdict):
-    '''Load all layer resulting from a given algorithm.
-    Layers are passed as a dictionary, obtained from alg.getOutputValuesAsDictionary()'''
-    QGisLayers.loadFromDict(layersdict)
+#===============================================================================
+# def loadFromAlg(layersdict):
+#    '''Load all layer resulting from a given algorithm.
+#    Layers are passed as a dictionary, obtained from alg.getOutputValuesAsDictionary()'''
+#    QGisLayers.loadFromDict(layersdict)
+#===============================================================================

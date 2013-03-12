@@ -195,6 +195,7 @@ class QgsPostgresConn : public QObject
     static QgsDataSourceURI connUri( QString theConnName );
     static bool publicSchemaOnly( QString theConnName );
     static bool geometryColumnsOnly( QString theConnName );
+    static bool dontResolveType( QString theConnName );
     static bool allowGeometrylessTables( QString theConnName );
     static void deleteConnection( QString theConnName );
 

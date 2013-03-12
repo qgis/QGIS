@@ -56,7 +56,7 @@ class Centroids(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(layer.pendingFields(),
-                     QGis.WKBPoint, layer.dataProvider().crs())
+                     QGis.WKBPoint, layer.crs())
 
         #layer.select(layer.pendingAllAttributesList())
 

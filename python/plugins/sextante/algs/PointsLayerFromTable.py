@@ -18,7 +18,6 @@
 """
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterTableField import ParameterTableField
-from sextante.core.SextanteLog import SextanteLog
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2013'
@@ -39,11 +38,6 @@ class PointsLayerFromTable(GeoAlgorithm):
     XFIELD = "XFIELD"
     YFIELD = "YFIELD"
     OUTPUT = "OUTPUT"
-
-    #===========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
-    #===========================================================================
 
     def processAlgorithm(self, progress):
         source = self.getParameterValue(self.INPUT)
@@ -80,7 +74,7 @@ class PointsLayerFromTable(GeoAlgorithm):
         self.name = "Points layer from table"
         self.group = "Vector creation tools"
         self.addParameter(ParameterTable(self.INPUT, "Input layer"))
-        self.addParameter(ParameterTableField(self.XFIELD, "X field", self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterTableField(self.YFIELD, "Y field", self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterTableField(self.XFIELD, "X field", self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.YFIELD, "Y field", self.INPUT, ParameterTableField.DATA_TYPE_ANY))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 

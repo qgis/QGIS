@@ -787,7 +787,7 @@ double  QgsGdalProvider::noDataValue() const
 }
 #endif
 
-void QgsGdalProvider::computeMinMax( int theBandNo )
+void QgsGdalProvider::computeMinMax( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1 mMinMaxComputed = %2" ).arg( theBandNo ).arg( mMinMaxComputed[theBandNo-1] ) );
   if ( mMinMaxComputed[theBandNo-1] )
@@ -810,11 +810,21 @@ void QgsGdalProvider::computeMinMax( int theBandNo )
 double  QgsGdalProvider::minimumValue( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
+  if ( !mMinMaxComputed[theBandNo-1] )
+  {
+    computeMinMax( theBandNo );
+    mMinMaxComputed[theBandNo-1] = true;
+  }
   return  mMinimum[theBandNo-1];
 }
 double  QgsGdalProvider::maximumValue( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
+  if ( !mMinMaxComputed[theBandNo-1] )
+  {
+    computeMinMax( theBandNo );
+    mMinMaxComputed[theBandNo-1] = true;
+  }
   return  mMaximum[theBandNo-1];
 }
 
@@ -2341,7 +2351,6 @@ void QgsGdalProvider::initBaseDataset()
   //mValidNoDataValue = true;
   for ( int i = 1; i <= GDALGetRasterCount( mGdalBaseDataset ); i++ )
   {
-    computeMinMax( i );
     GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
     GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
 

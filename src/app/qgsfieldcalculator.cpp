@@ -184,7 +184,10 @@ void QgsFieldCalculator::accept()
     }
     else
     {
+      // FIXME workaround while QgsVectorLayer::changeAttributeValue's emitSignal is ignored (see #7071)
+      mVectorLayer->blockSignals( true );
       mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, false );
+      mVectorLayer->blockSignals( false );
     }
 
     rownum++;

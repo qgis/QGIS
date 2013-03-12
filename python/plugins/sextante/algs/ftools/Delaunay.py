@@ -63,7 +63,7 @@ class Delaunay(GeoAlgorithm):
                  ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                     QGis.WKBPolygon, layer.dataProvider().crs())
+                     QGis.WKBPolygon, layer.crs())
 
         pts = []
         ptDict = {}

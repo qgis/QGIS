@@ -166,6 +166,26 @@ class GUI_EXPORT QgisInterface : public QObject
     /**Return mainwindows / composer views of running composer instances (currently only one)*/
     virtual QList<QgsComposerView*> activeComposers() = 0;
 
+    /** Create a new composer
+     * @param title window title for new composer (one will be generated if empty)
+     * @return pointer to composer's view
+     * @note new composer window will be shown and activated (added in 1.9)
+     */
+    virtual QgsComposerView* createNewComposer( QString title = QString( "" ) ) = 0;
+
+    /** Duplicate an existing parent composer from composer view
+     * @param composerView pointer to existing composer view
+     * @param title window title for duplicated composer (one will be generated if empty)
+     * @return pointer to duplicate composer's view
+     * @note dupicate composer window will be hidden until loaded, then shown and activated (added in 1.9)
+     */
+    virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString( "" ) ) = 0;
+
+    /** Deletes parent composer of composer view, after closing composer window
+     * @note (added in 1.9)
+     */
+    virtual void deleteComposer( QgsComposerView* composerView ) = 0;
+
     /** Return changeable options built from settings and/or defaults
      * @note (added in 1.9)
      */
@@ -303,6 +323,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;
     virtual QMenu *layerMenu() = 0;
+    /** \note added in 2.0
+    */
+    virtual QMenu *newLayerMenu() = 0;
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
     virtual QMenu *rasterMenu() = 0;
@@ -349,6 +372,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSaveMapAsImage() = 0;
     virtual QAction *actionProjectProperties() = 0;
     virtual QAction *actionPrintComposer() = 0;
+    virtual QAction *actionShowComposerManager() = 0;
     virtual QAction *actionExit() = 0;
 
     //! Edit menu actions
@@ -450,6 +474,8 @@ class GUI_EXPORT QgisInterface : public QObject
     // returns true when dialog was accepted
     // @added in 1.6
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false ) = 0;
+
+    virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified

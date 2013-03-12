@@ -60,7 +60,7 @@ class MultipartToSingleparts(GeoAlgorithm):
         geomType = self.multiToSingleGeom(provider.geometryType())
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
-                     geomType, provider.crs())
+                     geomType, layer.crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

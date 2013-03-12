@@ -24,11 +24,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from sextante.core.SextanteUtils import SextanteUtils
+import stat
+import traceback
 import subprocess
+from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
-import stat
+from qgis.core import *
+from PyQt4.QtCore import *
+from sextante.core.SextanteVectorWriter import SextanteVectorWriter
+from sextante.core.QGisLayers import QGisLayers
+
 
 class SagaUtils:
 
@@ -108,6 +114,48 @@ class SagaUtils:
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
 
+    @classmethod
+    def checkSagaIsInstalled(cls):
+        if SextanteUtils.isWindows():
+            path = SagaUtils.sagaPath()
+            if path == "":
+                return "SAGA folder is not configured.\nPlease configure it before running SAGA algorithms."
+            cmdpath = os.path.join(path, "saga_cmd.exe")
+            if not os.path.exists(cmdpath):
+                return ("The specified SAGA folder does not contain a valid SAGA executable.\n"
+                        + "Please, go to the SEXTANTE settings dialog, and check that the SAGA\n"
+                        + "folder is correctly configured")
+
+        SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
+        settings = QSettings()
+        if settings.contains(SAGA_INSTALLED):
+            return
+
+        try:
+            qgis = QGisLayers.iface
+            crs = qgis.mapCanvas().mapRenderer().destinationCrs()
+            fields = []
+            fields.append(QgsField("NUM_FIELD", QVariant.Int))
+            filename = SextanteUtils.getTempFilename("shp")
+            writer = SextanteVectorWriter(filename, None, fields, QGis.WKBPoint, crs)
+            for x in range(5):
+                for y in range(5):
+                    attrs = []
+                    attrs.append(QVariant(x))
+                    outFeat = QgsFeature()
+                    pt = QgsPoint(x, y)
+                    outFeat.setGeometry(QgsGeometry.fromPoint(pt))
+                    outFeat.setAttributes(attrs)
+                    writer.addFeature(outFeat)
+            del writer.writer
+            del writer
+            from sextante.core.Sextante import runalg
+            result = runalg("saga:thiessenpolygons", filename, None)
+            if not os.path.exists(result['POLYGONS']):
+                return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
+        except:
+            s = traceback.format_exc()
+            return "Error while checking SAGA installation. SAGA might not be correctly configured.\n" + s;
 
 
-
+        settings.setValue("/SextanteQGIS/SagaInstalled", True)

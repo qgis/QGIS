@@ -55,9 +55,6 @@ class   Union(GeoAlgorithm):
         fields = utils.combineVectorFields(vlayerA, vlayerB )
         names = [field.name() for field in fields]
         SextanteLog.addToLog(SextanteLog.LOG_INFO, str(names))
-        #longNames = ftools_utils.checkFieldNameLength( fields )
-        #if not longNames.isEmpty():
-            #raise GeoAlgorithmExecutionException("Following field names are longer than 10 characters:\n" +  longNames.join('\n') )
         writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()

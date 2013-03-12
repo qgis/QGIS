@@ -204,9 +204,12 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterTable):
                 if param.value == None:
                     continue
-                value = param.value
-                if not value.endswith("dbf"):
-                    raise GeoAlgorithmExecutionException("Unsupported file format")
+                table = QGisLayers.getObjectFromUri(param.value, False)
+                if table:
+                    filename = LayerExporter.exportTable(table)
+                    self.exportedLayers[param.value]=filename
+                elif not param.value.endswith("shp"):
+                        raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterMultipleInput):
                 if param.value == None:
                     continue
@@ -237,7 +240,7 @@ class SagaAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value is None:
                 continue
-            if isinstance(param, (ParameterRaster, ParameterVector)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
                 value = param.value
                 if value in self.exportedLayers.keys():
                     command+=(" -" + param.name + " \"" + self.exportedLayers[value] + "\"")
@@ -363,22 +366,15 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def checkBeforeOpeningParametersDialog(self):
-        if SextanteUtils.isWindows():
-            path = SagaUtils.sagaPath()
-            if path == "":
-                return "SAGA folder is not configured.\nPlease configure it before running SAGA algorithms."
-        else:
-            SAGA_INSTALLED = "SAGA_INSTALLED"
-            settings = QSettings()
-            if settings.contains(SAGA_INSTALLED):
-                return
-            command = ["saga_cmd"]
-            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
-            for line in iter(proc.readline, ""):
-                if "________" in line:
-                    settings.setValue(SAGA_INSTALLED, True)
-                    return
-            return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
+        return SagaUtils.checkSagaIsInstalled()
+
 
     def helpFile(self):
         return  os.path.join(os.path.dirname(__file__), "help", self.name.replace(" ", "") + ".html")
+
+
+    def commandLineName(self):
+        name = self.provider.getName().lower() + ":" + self.cmdname.lower()
+        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+        name = ''.join(c for c in name if c in validChars)
+        return name

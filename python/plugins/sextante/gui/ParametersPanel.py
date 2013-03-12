@@ -106,7 +106,7 @@ class ParametersPanel(QtGui.QWidget):
                 if param.isAdvanced:
                     self.advancedButton = QtGui.QPushButton()
                     self.advancedButton.setText("Show advanced parameters")
-                    self.advancedButton.setMaximumWidth(150)
+                    self.advancedButton.setMaximumWidth(250)
                     QtCore.QObject.connect(self.advancedButton, QtCore.SIGNAL("clicked()"), self.showAdvancedParametersClicked)
                     self.verticalLayout.addWidget(self.advancedButton)
                     break
@@ -193,8 +193,9 @@ class ParametersPanel(QtGui.QWidget):
                     button.setChecked(False)
 
     def getExtendedLayerName(self, layer):
-        if SextanteConfig.getSetting(SextanteConfig.SHOW_CRS_DEF):
-            return layer.name() + " [" + layer.crs().description() +"]"
+        authid = layer.crs().authid()
+        if SextanteConfig.getSetting(SextanteConfig.SHOW_CRS_DEF) and authid is not None:
+            return layer.name() + " [" + str(authid) +"]"
         else:
             return layer.name()
 

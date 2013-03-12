@@ -40,12 +40,16 @@ class SextanteTableWriter:
         if not fileName.endswith("csv"):
             fileName += ".csv"
         file = open(fileName, "w")
-        file.write(";".join(field.name() for field in fields))
+        file.write(";".join(unicode(field.name()) for field in fields))
         file.write("\n")
         file.close()
 
     def addRecord(self, values):
+        for i in range(len(values)):
+            if isinstance(values[i], QVariant):
+                values[i] = values[i].toString()
+
         file = open(self.fileName, "a")
-        file.write(";".join([value.toString() for value in values]))
+        file.write(";".join([unicode(value) for value in values]))
         file.write("\n")
         file.close()

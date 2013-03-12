@@ -69,6 +69,7 @@
         <file>themes/default/mActionDeleteVertex.png</file>
         <file>themes/default/mActionDeselectAll.png</file>
         <file>themes/default/mActionDraw.png</file>
+        <file>themes/default/mActionDuplicateComposer.png</file>
         <file>themes/default/mActionEditCopy.png</file>
         <file>themes/default/mActionEditCut.png</file>
         <file>themes/default/mActionEditPaste.png</file>
@@ -279,6 +280,7 @@
         <file>themes/gis/mActionAddArrow.png</file>
         <file>themes/gis/mActionAddBasicShape.png</file>
         <file>themes/gis/mActionAddGPSLayer.png</file>
+        <file>themes/gis/mActionAddHtml.png</file>
         <file>themes/gis/mActionAddImage.png</file>
         <file>themes/gis/mActionAddPart.png</file>
         <file>themes/gis/mActionAddLayer.png</file>
@@ -316,6 +318,7 @@
         <file>themes/gis/mActionDeleteVertex.png</file>
         <file>themes/gis/mActionDeselectAll.png</file>
         <file>themes/gis/mActionDraw.png</file>
+        <file>themes/gis/mActionDuplicateComposer.png</file>
         <file>themes/gis/mActionEditCopy.png</file>
         <file>themes/gis/mActionEditCut.png</file>
         <file>themes/gis/mActionEditPaste.png</file>
@@ -352,6 +355,7 @@
         <file>themes/gis/mActionNewComposer.png</file>
         <file>themes/gis/mActionNewVectorLayer.png</file>
         <file>themes/gis/mActionNodeTool.png</file>
+        <file>themes/gis/mActionOffsetCurve.png</file>
         <file>themes/gis/mActionOpenTable.png</file>
         <file>themes/gis/mActionPan.png</file>
         <file>themes/gis/mActionPanToSelected.png</file>
@@ -364,6 +368,7 @@
         <file>themes/gis/mActionReshape.png</file>
         <file>themes/gis/mActionRollbackAllEdits.svg</file>
         <file>themes/gis/mActionRollbackEdits.svg</file>
+        <file>themes/gis/mActionRotateFeature.png</file>
         <file>themes/gis/mActionRotateLabel.png</file>
         <file>themes/gis/mActionRotateLabel.svg</file>
         <file>themes/gis/mActionSaveAsPDF.png</file>
@@ -412,7 +417,8 @@
         <file>themes/gis/plugins/copyright_label.png</file>
         <file>themes/gis/plugins/delimited_text.png</file>
         <file>themes/gis/plugins/dxf2shp_converter.png</file>
-        <file>themes/gis/plugins/gps_importer.png</file>
+        <file>themes/gis/plugins/gps_importer/create_gpx.png</file>
+        <file>themes/gis/plugins/gps_importer/import_gpx.png</file>
         <file>themes/gis/plugins/interpolation.png</file>
         <file>themes/gis/plugins/mapserver_export.png</file>
         <file>themes/gis/plugins/mGeorefRun.png</file>
@@ -520,6 +526,7 @@
         <file>flags/sr_Latn.png</file>
         <file>flags/sw.png</file>
         <file>flags/eu_ES.png</file>
+        <file>flags/ml_IN.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

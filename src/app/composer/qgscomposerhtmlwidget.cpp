@@ -42,7 +42,7 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   {
     //add widget for general composer item properties
     QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mFrame );
-    mToolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+    mainLayout->addWidget( itemPropertiesWidget );
   }
 }
 

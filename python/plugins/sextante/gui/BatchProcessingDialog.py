@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.gui.SextantePostprocessing import SextantePostprocessing
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -25,6 +27,7 @@ __revision__ = '$Format:%H$'
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterVector import ParameterVector
@@ -34,13 +37,9 @@ from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
 from sextante.outputs.OutputNumber import OutputNumber
 from sextante.outputs.OutputString import OutputString
 from sextante.core.SextanteUtils import SextanteUtils
-
 from sextante.parameters.ParameterExtent import ParameterExtent
-from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.gui.ExtentSelectionPanel import ExtentSelectionPanel
-
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
@@ -80,13 +79,44 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.buttonBox.addButton(self.addRowButton, QtGui.QDialogButtonBox.ActionRole)
         self.buttonBox.addButton(self.deleteRowButton, QtGui.QDialogButtonBox.ActionRole)
 
-        self.table.setColumnCount(self.alg.getVisibleParametersCount() + self.alg.getVisibleOutputsCount())
+        self.table.setColumnCount(self.alg.getVisibleParametersCount() + self.alg.getVisibleOutputsCount() + 1)
         self.setTableContent()
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
         self.table.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.addRowButton.clicked.connect(self.addRow)
         self.deleteRowButton.clicked.connect(self.deleteRow)
+        self.table.horizontalHeader().sectionDoubleClicked.connect(self.headerDoubleClicked)
+
+
+    def headerDoubleClicked(self, col):
+        widget = self.table.cellWidget(0, col)
+        if isinstance(widget, QtGui.QComboBox):
+            widgetValue = widget.currentIndex()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).setCurrentIndex(widgetValue)
+
+        elif isinstance(widget, ExtentSelectionPanel):
+            widgetValue = widget.getValue()
+            for row in range(1, self.table.rowCount()):
+                if widgetValue != None:
+                    self.table.cellWidget(row, col).text.setText(widgetValue)
+                else:
+                    self.table.cellWidget(row, col).text.setText("")
+
+        elif isinstance(widget, CrsSelectionPanel):
+            widgetValue = widget.getValue()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).epsg = widgetValue
+                self.table.cellWidget(row, col).setText()
+
+        elif isinstance(widget, QtGui.QLineEdit):
+            widgetValue = widget.text()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).setText(widgetValue)
+        else:
+            pass
+
 
     def setTableContent(self):
         i = 0
@@ -101,11 +131,16 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(out.description))
             i+=1
 
+        self.table.setColumnWidth(i, 200)
+        self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem("Load in QGIS"))
+
         for i in range(3):
             self.addRow()
 
+
     def accept(self):
         self.algs = []
+        self.load = []
         for row in range(self.table.rowCount()):
             alg = self.alg.getCopy()#copy.deepcopy(self.alg)
             col = 0
@@ -131,19 +166,23 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     self.algs = None
                     return
             self.algs.append(alg)
+            widget = self.table.cellWidget(row, col)
+            self.load.append(widget.currentIndex() == 0)
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.table.setEnabled(False)
         if SextanteConfig.getSetting(SextanteConfig.USE_THREADS):
             self.nextAlg(0)
         else:
-            i=1
+            i=0
             self.progress.setMaximum(len(self.algs))
             for alg in self.algs:
-                self.setBaseText("Processing algorithm " + str(i) + "/" + str(len(self.algs)) + "...")
+                self.setBaseText("Processing algorithm " + str(i+1) + "/" + str(len(self.algs)) + "...")
                 if UnthreadedAlgorithmExecutor.runalg(alg, self):#SilentProgress()):
                     #self.progress.setValue(i)
                     #self.loadHTMLResults(alg, i)
+                    if self.load[i]:
+                        SextantePostprocessing.handleAlgorithmResults(alg, self, False)
                     i+=1
                 else:
                     QApplication.restoreOverrideCursor()
@@ -166,8 +205,10 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
 
     @pyqtSlot()
     def finish(self, i):
+        if self.load[i]:
+            SextantePostprocessing.handleAlgorithmResults(self.algs[i], self, False)
         i += 1
-        self.progress.setValue(i)
+        #self.progress.setValue(i)
         if len(self.algs) == i:
             self.finishAll()
             self.algEx = None
@@ -282,6 +323,12 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         for out in self.alg.outputs:
             self.table.setCellWidget(self.table.rowCount()-1,i, BatchOutputSelectionPanel(out, self.alg, self.table.rowCount()-1, i, self))
             i+=1
+
+        item = QtGui.QComboBox()
+        item.addItem("Yes")
+        item.addItem("No")
+        item.setCurrentIndex(0)
+        self.table.setCellWidget(self.table.rowCount()-1, i, item)
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced

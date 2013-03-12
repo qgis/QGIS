@@ -61,6 +61,7 @@ SET (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support shou
 IF (WITH_SPATIALITE)
   SET (WITH_INTERNAL_SPATIALITE FALSE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
   SET (WITH_PYSPATIALITE FALSE CACHE BOOL "Determines whether PYSPATIALITE should be built")
+  SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
   IF(WITH_INTERNAL_SPATIALITE)
     SET(SPATIALITE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/spatialite/headers)
     SET(HAVE_SPATIALITE TRUE)
@@ -83,7 +84,7 @@ IF (WITH_BINDINGS)
   # as otherwise user has to use PYTHONPATH environemnt variable to add
   # QGIS bindings to package search path
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
-  SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities, console and installer are always staged)")
+  SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
   SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
   # concatenate QScintilla2 API files
   SET (WITH_QSCIAPI TRUE CACHE BOOL "Determines whether the QScintilla2 API files will be updated and concatenated")

@@ -133,7 +133,7 @@ void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult>
   {
     if ( rresult->mLayer->type() == QgsMapLayer::RasterLayer )
     {
-      resultsDialog()->addFeature( qobject_cast<QgsRasterLayer *>( rresult->mLayer ), rresult->mLabel, rresult->mAttributes, rresult->mDerivedAttributes, rresult->mFields,  rresult->mFeature );
+      resultsDialog()->addFeature( *rresult );
     }
   }
 }

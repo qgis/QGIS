@@ -50,6 +50,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mLastUsedPositionMode( UpperLeft )
 {
   init( manageZValue );
 }
@@ -66,6 +67,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mLastUsedPositionMode( UpperLeft )
 {
   init( manageZValue );
   QTransform t;
@@ -147,6 +149,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "y", QString::number( transform().dy() ) );
   composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
   composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
+  composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "rotation",  QString::number( mRotation ) );
@@ -236,12 +239,17 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //position
   double x, y, width, height;
-  bool xOk, yOk, widthOk, heightOk;
+  bool xOk, yOk, widthOk, heightOk, positionModeOK;
 
   x = itemElem.attribute( "x" ).toDouble( &xOk );
   y = itemElem.attribute( "y" ).toDouble( &yOk );
   width = itemElem.attribute( "width" ).toDouble( &widthOk );
   height = itemElem.attribute( "height" ).toDouble( &heightOk );
+  mLastUsedPositionMode = ( ItemPositionMode )itemElem.attribute( "positionMode" ).toInt( &positionModeOK );
+  if ( !positionModeOK )
+  {
+    mLastUsedPositionMode = UpperLeft;
+  }
 
   if ( !xOk || !yOk || !widthOk || !heightOk )
   {
@@ -771,6 +779,9 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
   double upperLeftX = x;
   double upperLeftY = y;
 
+  //store the item position mode
+  mLastUsedPositionMode = itemPoint;
+
   //adjust x-coordinate if placement is not done to a left point
   if ( itemPoint == UpperMiddle || itemPoint == Middle || itemPoint == LowerMiddle )
   {
@@ -861,7 +872,7 @@ void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& 
   p->restore();
 }
 
-void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignement, Qt::AlignmentFlag valignment ) const
+void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment ) const
 {
   QFont textFont = scaledFontPixelSize( font );
 
@@ -872,7 +883,7 @@ void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& 
   p->setFont( textFont );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
-  p->drawText( scaledRect, halignement | valignment | Qt::TextWordWrap, text );
+  p->drawText( scaledRect, halignment | valignment | Qt::TextWordWrap, text );
   p->restore();
 }
 void QgsComposerItem::drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const

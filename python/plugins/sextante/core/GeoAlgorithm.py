@@ -59,6 +59,7 @@ class GeoAlgorithm:
         #change any of the following if your algorithm should not appear in the toolbox or modeler
         self.showInToolbox = True
         self.showInModeler = True
+        self.canRunInBatchMode = True
         #to be set by the provider when it loads the algorithm
         self.provider = None
 
@@ -197,7 +198,7 @@ class GeoAlgorithm:
                     if layer is None: # for the case of memory layer, if the getCompatible method has been called
                         continue
                     provider = layer.dataProvider()
-                    writer = out.getVectorWriter( provider.fields(), provider.geometryType(), provider.crs())
+                    writer = out.getVectorWriter( provider.fields(), provider.geometryType(), layer.crs())
                     features = QGisLayers.features(layer)
                     for feature in features:
                         writer.addFeature(feature)
@@ -318,12 +319,20 @@ class GeoAlgorithm:
             if not out.hidden:
                 i+=1
         return i;
-
+    
     def getVisibleParametersCount(self):
         '''returns the number of non-hidden parameters'''
         i = 0;
         for param in self.parameters:
             if not param.hidden:
+                i+=1
+        return i;
+
+    def getHTMLOutputsCount(self):
+        '''returns the number of HTML outputs'''
+        i = 0;
+        for out in self.outputs:
+            if isinstance(out, OutputHTML):
                 i+=1
         return i;
 
@@ -346,7 +355,11 @@ class GeoAlgorithm:
 
 
     def commandLineName(self):
-        return self.provider.getName().lower().replace(" ", "") + ":" + self.name.lower().replace(" ", "").replace(",","")
+        name = self.provider.getName().lower() + ":" + self.name.lower()
+        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+        name = ''.join(c for c in name if c in validChars)
+        return name
+
 
     def removeOutputFromName(self, name):
         for out in self.outputs:

@@ -227,7 +227,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     QgsComposerLegend(); //forbidden
 
-    QSizeF drawTitle( QPainter* painter = 0, QPointF point = QPointF(), Qt::AlignmentFlag halignement = Qt::AlignLeft );
+    QSizeF drawTitle( QPainter* painter = 0, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft );
 
     /**Draws a group item and all subitems
      * Returns list of sizes of layers and groups including this group.

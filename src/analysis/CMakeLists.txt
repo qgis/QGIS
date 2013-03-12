@@ -39,6 +39,29 @@ SET(QGIS_ANALYSIS_SRCS
   vector/qgsoverlayanalyzer.cpp
 )
 
+IF(HAVE_SPATIALITE)
+  SET(QGIS_ANALYSIS_SRCS ${QGIS_ANALYSIS_SRCS}
+    openstreetmap/qgsosmbase.cpp
+    openstreetmap/qgsosmdatabase.cpp
+    openstreetmap/qgsosmdownload.cpp
+    openstreetmap/qgsosmimport.cpp
+  )
+
+  SET(QGIS_ANALYSIS_MOC_HDRS
+    openstreetmap/qgsosmdownload.h
+    openstreetmap/qgsosmimport.h
+  )
+
+  IF (WITH_INTERNAL_SPATIALITE)
+    INCLUDE_DIRECTORIES(../core/spatialite/headers)
+    INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
+  ELSE (WITH_INTERNAL_SPATIALITE)
+    INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
+    INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+    ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
+  ENDIF (WITH_INTERNAL_SPATIALITE)
+ENDIF(HAVE_SPATIALITE)
+
 INCLUDE_DIRECTORIES(BEFORE raster)
 ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
 
@@ -63,9 +86,6 @@ IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   )
 ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
-SET(QGIS_ANALYSIS_MOC_HDRS
-)
-
 QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 
 # install headers
@@ -86,6 +106,15 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/qgsidwinterpolator.h
   interpolation/qgstininterpolator.h
 )
+
+IF(HAVE_SPATIALITE)
+  SET(QGIS_ANALYSIS_HDRS ${QGIS_ANALYSIS_HDRS}
+    openstreetmap/qgsosmbase.h
+    openstreetmap/qgsosmdatabase.h
+    openstreetmap/qgsosmdownload.h
+    openstreetmap/qgsosmimport.h
+  )
+ENDIF(HAVE_SPATIALITE)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -137,8 +166,8 @@ IF (NOT ANDROID)
     )
 ENDIF (NOT ANDROID)
 
-ADD_DEPENDENCIES(qgis_analysis qgis_core)
 TARGET_LINK_LIBRARIES(qgis_analysis qgis_core)
+
 
 # install
 

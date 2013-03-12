@@ -133,6 +133,12 @@ void QgsMapLayerRegistry::removeMapLayers( QStringList theLayerIds,
   emit layersWillBeRemoved( theLayerIds );
 }
 
+void QgsMapLayerRegistry::removeMapLayer( const QString& theLayerId, bool theEmitSignal )
+{
+  removeMapLayers( QStringList( theLayerId ), theEmitSignal );
+}
+
+
 void QgsMapLayerRegistry::removeAllMapLayers()
 {
   // moved before physically removing the layers

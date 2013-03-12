@@ -41,6 +41,8 @@
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
 #include "qgsrequesthandler.h"
+#include "qgsogcutils.h"
+
 #include <QImage>
 #include <QPainter>
 #include <QStringList>
@@ -509,11 +511,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             {
               if ( childElem.tagName() == "Box" )
               {
-                req.setFilterRect( QgsRectangle( childElem ) );
+                req.setFilterRect( QgsOgcUtils::rectangleFromGMLBox( childElem ) );
               }
               else if ( childElem.tagName() != "PropertyName" )
               {
-                QgsGeometry *geom = QgsGeometry::fromGML2( childElem );
+                QgsGeometry *geom = QgsOgcUtils::geometryFromGML2( childElem );
                 req.setFilterRect( geom->boundingBox() );
                 delete geom;
               }
@@ -892,11 +894,11 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           {
             if ( childElem.tagName() == "Box" )
             {
-              req.setFilterRect( QgsRectangle( childElem ) );
+              req.setFilterRect( QgsOgcUtils::rectangleFromGMLBox( childElem ) );
             }
             else if ( childElem.tagName() != "PropertyName" )
             {
-              QgsGeometry* geom = QgsGeometry::fromGML2( childElem );
+              QgsGeometry* geom = QgsOgcUtils::geometryFromGML2( childElem );
               req.setFilterRect( geom->boundingBox() );
               delete geom;
             }
@@ -1335,7 +1337,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 
             if ( !geometryElem.isNull() )
             {
-              if ( !layer->changeGeometry( *fidIt, QgsGeometry::fromGML2( geometryElem ) ) )
+              if ( !layer->changeGeometry( *fidIt, QgsOgcUtils::geometryFromGML2( geometryElem ) ) )
                 throw QgsMapServiceException( "RequestNotWellFormed", "Error in change geometry" );
             }
           }
@@ -1451,7 +1453,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
                 }
                 else //a geometry attribute
                 {
-                  f->setGeometry( QgsGeometry::fromGML2( currentAttributeElement ) );
+                  f->setGeometry( QgsOgcUtils::geometryFromGML2( currentAttributeElement ) );
                 }
               }
               currentAttributeChild = currentAttributeChild.nextSibling();
@@ -1577,7 +1579,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, QgsCoordinateRefer
   QString fStr = "{\"type\": \"Feature\",\n";
 
   fStr += "   \"id\": ";
-  fStr += mTypeName + "." + QString::number( feat->id() );
+  fStr += "\"" + mTypeName + "." + QString::number( feat->id() ) + "\"";
   fStr += ",\n";
 
   QgsGeometry* geom = feat->geometry();
@@ -1649,7 +1651,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
     QgsGeometry* geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
-    QDomElement gmlElem = geom->exportToGML2( doc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML2( geom, doc );
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();

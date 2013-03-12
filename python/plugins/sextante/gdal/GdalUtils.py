@@ -30,10 +30,10 @@ from sextante.core.SextanteLog import SextanteLog
 import os
 
 try:
-  from osgeo import gdal
-  gdalAvailable = True
+    from osgeo import gdal
+    gdalAvailable = True
 except:
-  gdalAvailable = False
+    gdalAvailable = False
 
 class GdalUtils():
 

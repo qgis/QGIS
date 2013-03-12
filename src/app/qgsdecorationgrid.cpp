@@ -694,7 +694,7 @@ void QgsDecorationGrid::drawText( QPainter* p, double x, double y, const QString
   p->restore();
 }
 
-void QgsDecorationGrid::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignement, Qt::AlignmentFlag valignment ) const
+void QgsDecorationGrid::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment ) const
 {
   QFont textFont = scaledFontPixelSize( font );
 
@@ -705,7 +705,7 @@ void QgsDecorationGrid::drawText( QPainter* p, const QRectF& rect, const QString
   p->setFont( textFont );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
-  p->drawText( scaledRect, halignement | valignment | Qt::TextWordWrap, text );
+  p->drawText( scaledRect, halignment | valignment | Qt::TextWordWrap, text );
   p->restore();
 }
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1052</width>
-    <height>489</height>
+    <width>1050</width>
+    <height>487</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1052</width>
-     <height>25</height>
+     <width>1050</width>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -140,14 +140,14 @@
     <property name="title">
      <string>&amp;Layer</string>
     </property>
-    <widget class="QMenu" name="menuNew">
+    <widget class="QMenu" name="mNewLayerMenu">
      <property name="title">
       <string>New</string>
      </property>
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatialiteLayer"/>
     </widget>
-    <addaction name="menuNew"/>
+    <addaction name="mNewLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
     <addaction name="mActionAddOgrLayer"/>
     <addaction name="mActionAddRasterLayer"/>
@@ -224,12 +224,27 @@
     </property>
     <addaction name="mActionShowRasterCalculator"/>
    </widget>
+   <widget class="QMenu" name="mVectorMenu">
+    <property name="title">
+     <string>Vect&amp;or</string>
+    </property>
+    <widget class="QMenu" name="menuOpenStreetMap">
+     <property name="title">
+      <string>&amp;OpenStreetMap</string>
+     </property>
+     <addaction name="mActionOSMDownload"/>
+     <addaction name="mActionOSMImport"/>
+     <addaction name="mActionOSMExport"/>
+    </widget>
+    <addaction name="menuOpenStreetMap"/>
+   </widget>
    <addaction name="mFileMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
    <addaction name="mLayerMenu"/>
    <addaction name="mSettingsMenu"/>
    <addaction name="mPluginMenu"/>
+   <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
@@ -1970,19 +1985,34 @@ Acts on currently active editable layer</string>
    </property>
   </action>
   <action name="mActionRotateFeature">
-  <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="icon">
-      <iconset resource="../../images/images.qrc">
-       <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
-     </property>
-     <property name="text">
-      <string>Rotate Feature(s)</string>
-     </property>
-     <property name="toolTip">
-      <string>Rotate Feature(s)</string>
-     </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate Feature(s)</string>
+   </property>
+  </action>
+  <action name="mActionOSMDownload">
+   <property name="text">
+    <string>&amp;Download data</string>
+   </property>
+  </action>
+  <action name="mActionOSMImport">
+   <property name="text">
+    <string>&amp;Import topology from XML</string>
+   </property>
+  </action>
+  <action name="mActionOSMExport">
+   <property name="text">
+    <string>&amp;Export topology to SpatiaLite</string>
+   </property>
   </action>
  </widget>
  <resources>

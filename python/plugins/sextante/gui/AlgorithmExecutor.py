@@ -81,7 +81,7 @@ class AlgorithmExecutor(QThread):
             while provider.nextFeature(feat):
                 output = SextanteUtils.getTempFilename("shp")
                 self.filelist.append(output)
-                writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
+                writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), layer.crs() )
                 writer.addFeature(feat)
                 del writer
         else:

@@ -83,6 +83,12 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void setValueRelation( QgsVectorLayer::ValueRelationData valueRelationData );
 
     /**
+     * Setter for checkbox for editable state of field
+     * @param bool editable
+     */
+    void setFieldEditable( bool editable );
+
+    /**
      * Getter for checked state after editing
      * @return string representing the checked
      */
@@ -104,6 +110,11 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * Getter for value relation data
      */
     QgsVectorLayer::ValueRelationData valueRelationData();
+
+    /**
+     * Getter for checkbox for editable state of field
+     */
+    bool fieldEditable();
 
   private slots:
     /**
@@ -160,6 +171,7 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      */
     void updateMap( const QMap<QString, QVariant> &map );
 
+    bool mFieldEditable;
 
     QMap<QString, QVariant> mValueMap;
 

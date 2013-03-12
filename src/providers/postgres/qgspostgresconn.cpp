@@ -388,6 +388,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    .arg( srid )
                    .arg( relkind ) );
 
+      layerProperty.pkCols.clear();
       layerProperty.type = type;
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
@@ -403,6 +404,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
           continue;
         }
       }
+
       layerProperty.srid = srid;
       layerProperty.sql = "";
 
@@ -1480,6 +1482,13 @@ bool QgsPostgresConn::geometryColumnsOnly( QString theConnName )
   QSettings settings;
 
   return settings.value( "/PostgreSQL/connections/" + theConnName + "/geometryColumnsOnly", false ).toBool();
+}
+
+bool QgsPostgresConn::dontResolveType( QString theConnName )
+{
+  QSettings settings;
+
+  return settings.value( "/PostgreSQL/connections/" + theConnName + "/dontResolveType", false ).toBool();
 }
 
 bool QgsPostgresConn::allowGeometrylessTables( QString theConnName )

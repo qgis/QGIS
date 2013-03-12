@@ -172,7 +172,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
 
   //wms:GetMap
   elem = doc.createElement( "GetMap"/*wms:GetMap*/ );
-  appendFormats( doc, elem, QStringList() << "image/jpeg" << "image/png" << "image/png; mode=8bit" );
+  appendFormats( doc, elem, QStringList() << "image/jpeg" << "image/png" << "image/png; mode=8bit" << "image/png; mode=1bit" );
   elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
   requestElement.appendChild( elem );
 
@@ -1265,10 +1265,14 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   bool addWktGeometry = mConfigParser && mConfigParser->featureInfoWithWktGeometry();
   const QSet<QString>& excludedAttributes = layer->excludeAttributesWMS();
 
-  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest()
-                           .setFilterRect( searchRect )
-                           .setFlags((( addWktGeometry || featureBBox ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect )
-                                             );
+  QgsFeatureRequest fReq;
+  fReq.setFlags((( addWktGeometry || featureBBox ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
+  if ( !searchRect.isEmpty() )
+  {
+    fReq.setFilterRect( searchRect );
+  }
+  QgsFeatureIterator fit = layer->getFeatures( fReq );
+
   while ( fit.nextFeature( feature ) )
   {
     ++featureCounter;

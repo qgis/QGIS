@@ -23,21 +23,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
 import math
-
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
-
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
-from sextante.parameters.ParameterBoolean import ParameterBoolean
-
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputNumber import OutputNumber
 
@@ -55,10 +47,11 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     SUM = "SUM"
     MEAN = "MEAN"
     COUNT = "COUNT"
+    STD_DEV = "STD_DEV"
     RANGE = "RANGE"
     MEDIAN = "MEDIAN"
     UNIQUE = "UNIQUE"
-    STD_DEV = "STD_DEV"
+
 
     #===========================================================================
     # def getIcon(self):
@@ -70,7 +63,8 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.group = "Vector table tools"
 
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input vector layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        self.addParameter(ParameterTableField(self.FIELD_NAME, "Field to calculate statistics on", self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterTableField(self.FIELD_NAME, "Field to calculate statistics on",
+                                              self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, "Statistics for numeric field"))
 
@@ -111,7 +105,6 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         current = 0
         for ft in features:
             value = float(ft.attributes()[index].toDouble()[0])
-
             if isFirst:
                 minValue = value
                 maxValue = value
@@ -133,21 +126,21 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         uniqueValue = utils.getUniqueValuesCount(layer, index)
 
         if count > 0:
-          meanValue = sumValue / count
-          if meanValue != 0.00:
-            for v in values:
-              stdDevValue += ((v - meanValue) * (v - meanValue))
-            stdDevValue = math.sqrt(stdDevValue / count)
-            cvValue = stdDevValue / meanValue
+            meanValue = sumValue / count
+            if meanValue != 0.00:
+                for v in values:
+                    stdDevValue += ((v - meanValue) * (v - meanValue))
+                stdDevValue = math.sqrt(stdDevValue / count)
+                cvValue = stdDevValue / meanValue
 
         if count > 1:
-          tmp = values
-          tmp.sort()
-          # calculate median
-          if (count % 2) == 0:
-            medianValue = 0.5 * (tmp[(count - 1) / 2] + tmp[count / 2])
-          else:
-            medianValue = tmp[(count + 1) / 2 - 1]
+            tmp = values
+            tmp.sort()
+            # calculate median
+            if (count % 2) == 0:
+                medianValue = 0.5 * (tmp[(count - 1) / 2] + tmp[count / 2])
+            else:
+                medianValue = tmp[(count + 1) / 2 - 1]
 
         data = []
         data.append("Count: " + unicode(count))

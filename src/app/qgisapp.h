@@ -214,10 +214,21 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**Returns the print composers*/
     QSet<QgsComposer*> printComposers() const {return mPrintComposers;}
+    /** Get a unique title from user for new and duplicate composers
+     * @param acceptEmpty whether to accept empty titles (one will be generated)
+     * @param currentTitle base name for initial title choice
+     * @return QString::null if user cancels input dialog
+     * @note added in 1.9
+     */
+    QString uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const QString& currentTitle = QString( "" ) );
     /**Creates a new composer and returns a pointer to it*/
-    QgsComposer* createNewComposer();
+    QgsComposer* createNewComposer( QString title = QString( "" ) );
     /**Deletes a composer and removes entry from Set*/
     void deleteComposer( QgsComposer* c );
+    /** Duplicates a composer and adds it to Set
+     * @note added in 1.9
+     */
+    QgsComposer* duplicateComposer( QgsComposer* currentComposer, QString title = QString( "" ) );
 
     /** overloaded function used to sort menu entries alphabetically */
     QMenu* createPopupMenu();
@@ -230,6 +241,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSaveProjectAs() { return mActionSaveProjectAs; }
     QAction *actionSaveMapAsImage() { return mActionSaveMapAsImage; }
     QAction *actionProjectProperties() { return mActionProjectProperties; }
+    QAction *actionShowComposerManager() { return mActionShowComposerManager; }
     QAction *actionNewPrintComposer() { return mActionNewPrintComposer; }
     QAction *actionExit() { return mActionExit; }
 
@@ -350,6 +362,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
+    //! @note added in 2.0
+    QMenu *newLayerMenu() { return mNewLayerMenu; }
     QMenu *settingsMenu() { return mSettingsMenu; }
     QMenu *pluginMenu() { return mPluginMenu; }
     QMenu *databaseMenu() { return mDatabaseMenu; }
@@ -979,6 +993,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /**Creates the composer instances in a project file and adds them to the menu*/
     bool loadComposersFromProject( const QDomDocument& doc );
 
+    /** Slot to handle display of composers menu, e.g. sorting
+     * @note added in 1.9
+     */
+    void on_mPrintComposersMenu_aboutToShow();
+
     bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
     //! Toggles whether to show pinned labels
@@ -1004,6 +1023,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! trust and load project macros
     void enableProjectMacros();
+
+    void osmDownloadDialog();
+    void osmImportDialog();
+    void osmExportDialog();
 
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
@@ -1239,8 +1262,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu * mPopupMenu;
     //! Top level database menu
     QMenu *mDatabaseMenu;
-    //! Top level vector menu
-    QMenu *mVectorMenu;
     //! Top level web menu
     QMenu *mWebMenu;
     //! Popup menu for the map overview tools

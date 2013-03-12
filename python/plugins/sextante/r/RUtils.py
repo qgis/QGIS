@@ -35,6 +35,7 @@ class RUtils:
 
     RSCRIPTS_FOLDER = "R_SCRIPTS_FOLDER"
     R_FOLDER = "R_FOLDER"
+    R_USE64 = "R_USE64"
 
     @staticmethod
     def RFolder():
@@ -73,7 +74,11 @@ class RUtils:
         RUtils.verboseCommands = alg.getVerboseCommands();
         RUtils.createRScriptFromRCommands(alg.getFullSetOfRCommands())
         if SextanteUtils.isWindows():
-            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + "R.exe", "CMD", "BATCH", "--vanilla",
+            if SextanteConfig.getSetting(RUtils.R_USE64):
+                execDir = "x64"
+            else:
+                execDir = "i386"
+            command = [RUtils.RFolder() + os.sep + "bin" + os.sep + execDir + os.sep + "R.exe", "CMD", "BATCH", "--vanilla",
                        RUtils.getRScriptFilename(), RUtils.getConsoleOutputFilename()]
         else:
             os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)

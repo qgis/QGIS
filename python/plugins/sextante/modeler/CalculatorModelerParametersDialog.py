@@ -126,6 +126,7 @@ class CalculatorModelerParametersDialog(QtGui.QDialog):
             self.params[paramname] = value
 
         self.outputs[self.alg.RESULT] = None
+        self.dependencies = []
         return True
 
     def getSafeNameForHarcodedParameter(self, param):

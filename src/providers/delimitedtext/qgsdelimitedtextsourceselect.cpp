@@ -68,7 +68,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
 
   QString delimiterChars = settings.value( key + "/delimiterChars", " " ).toString();
   cbxDelimSpace->setChecked( delimiterChars.contains( " " ) );
-  cbxDelimTab->setChecked( delimiterChars.contains( "\\t" ) );
+  cbxDelimTab->setChecked( delimiterChars.contains( "\t" ) );
   cbxDelimColon->setChecked( delimiterChars.contains( ":" ) );
   cbxDelimSemicolon->setChecked( delimiterChars.contains( ";" ) );
   cbxDelimComma->setChecked( delimiterChars.contains( "," ) );
@@ -113,7 +113,7 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
     //Build the delimited text URI from the user provided information
     QString delimiterType;
     if ( delimiterSelection->isChecked() )
-      delimiterType = "regexp";
+      delimiterType = ( selectedChars().size() <= 1 ) ? "plain" : "regexp";
     else if ( delimiterPlain->isChecked() )
       delimiterType = "plain";
     else if ( delimiterRegexp->isChecked() )
@@ -187,7 +187,7 @@ QStringList QgsDelimitedTextSourceSelect::selectedChars()
   if ( cbxDelimSpace->isChecked() )
     chars << " ";
   if ( cbxDelimTab->isChecked() )
-    chars << "\\t";
+    chars << "\t";
   if ( cbxDelimSemicolon->isChecked() )
     chars << ";";
   if ( cbxDelimComma->isChecked() )

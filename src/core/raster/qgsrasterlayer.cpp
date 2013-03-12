@@ -1709,21 +1709,22 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   // Set default identify format - use the richest format available
   int capabilities = mDataProvider->capabilities();
   QgsRasterDataProvider::IdentifyFormat identifyFormat = QgsRasterDataProvider::IdentifyFormatUndefined;
-  if ( capabilities & QgsRasterInterface::IdentifyFeature )
+  if ( capabilities & QgsRasterInterface::IdentifyHtml )
+  {
+    // HTML is usually richest
+    identifyFormat = QgsRasterDataProvider::IdentifyFormatHtml;
+  }
+  else if ( capabilities & QgsRasterInterface::IdentifyFeature )
   {
     identifyFormat = QgsRasterDataProvider::IdentifyFormatFeature;
-  }
-  else if ( capabilities & QgsRasterInterface::IdentifyValue )
-  {
-    identifyFormat = QgsRasterDataProvider::IdentifyFormatValue;
-  }
-  else if ( capabilities & QgsRasterInterface::IdentifyHtml )
-  {
-    identifyFormat = QgsRasterDataProvider::IdentifyFormatHtml;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyText )
   {
     identifyFormat = QgsRasterDataProvider::IdentifyFormatText;
+  }
+  else if ( capabilities & QgsRasterInterface::IdentifyValue )
+  {
+    identifyFormat = QgsRasterDataProvider::IdentifyFormatValue;
   }
   setCustomProperty( "identify/format", QgsRasterDataProvider::identifyFormatName( identifyFormat ) );
 

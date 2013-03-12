@@ -1,6 +1,9 @@
-
 ########################################################
 # Files
+
+IF(WITH_QSPATIALITE)
+  SUBDIRS(qspatialite)
+ENDIF(WITH_QSPATIALITE)
 
 SET(SPATIALITE_SRCS
   qgsspatialiteprovider.cpp

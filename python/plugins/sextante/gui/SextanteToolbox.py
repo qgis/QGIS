@@ -22,26 +22,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-import sys
-import subprocess
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import webbrowser
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.modeler.Providers import Providers
-from sextante.core.AlgorithmClassification import AlgorithmDecorator
+from sextante.gui.AlgorithmClassification import AlgorithmDecorator
 from sextante.core.Sextante import Sextante
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.QGisLayers import QGisLayers
-
 from sextante.gui.ParametersDialog import ParametersDialog
 from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 from sextante.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
-
 from sextante.ui.ui_SextanteToolbox import Ui_SextanteToolbox
 
 try:
@@ -74,17 +68,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
         Sextante.updateAlgsList()
 
     def configureProviders(self):
-        webbrowser.open("http://docs.qgis.org/html/en/user_manual/sextante/3rdParty.html")
-        #=======================================================================
-        # #QDesktopServices.openUrl(QUrl(os.path.join(os.path.dirname(__file__), os.path.pardir) + "/help/3rdParty.html"))
-        # filename = os.path.join(os.path.dirname(__file__), "..", "help", "3rdParty.html")
-        # if os.name == "nt":
-        #    os.startfile(filename)
-        # elif sys.platform == "darwin":
-        #    subprocess.Popen(('open', filename))
-        # else:
-        #    subprocess.call(('xdg-open', filename))
-        #=======================================================================
+        webbrowser.open("http://sextantegis.com")
 
     def showPopupMenu(self,point):
         item = self.algorithmTree.itemAt(point)
@@ -94,9 +78,10 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             executeAction = QAction(self.tr("Execute"), self.algorithmTree)
             executeAction.triggered.connect(self.executeAlgorithm)
             popupmenu.addAction(executeAction)
-            executeBatchAction = QAction(self.tr("Execute as batch process"), self.algorithmTree)
-            executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
-            popupmenu.addAction(executeBatchAction)
+            if alg.canRunInBatchMode:
+                executeBatchAction = QAction(self.tr("Execute as batch process"), self.algorithmTree)
+                executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
+                popupmenu.addAction(executeBatchAction)
             editRenderingStylesAction = QAction(self.tr("Edit rendering styles for outputs"), self.algorithmTree)
             editRenderingStylesAction.triggered.connect(self.editRenderingStyles)
             popupmenu.addAction(editRenderingStylesAction)
@@ -149,7 +134,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             if dlg.executed:
                 showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
                 if showRecent:
-                    self.fillTree()
+                    self.addRecentAlgorithms()
         if isinstance(item, TreeActionItem):
             action = item.action
             action.setData(self)
@@ -161,11 +146,15 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             self.fillTreeUsingCategories()
         else:
             self.fillTreeUsingProviders()
-
-        self.algorithmTree.sortItems(0, Qt.AscendingOrder)
-
+        self.algorithmTree.sortItems(0, Qt.AscendingOrder)        
+        self.addRecentAlgorithms()
+        
+    def addRecentAlgorithms(self):
         showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
         if showRecent:
+            first = self.algorithmTree.topLevelItem(0)
+            if first != None and first.text(0) == "Recently used algorithms":
+                self.algorithmTree.removeItemWidget(first, 0)
             recent = SextanteLog.getRecentAlgorithms()
             if len(recent) != 0:
                 found = False
@@ -202,6 +191,8 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 if not alg.showInToolbox:
                     continue
                 altgroup, altsubgroup, altname = AlgorithmDecorator.getGroupsAndName(alg)
+                if altgroup is None:
+                    continue
                 if text =="" or text.lower() in altname.lower():
                     if altgroup not in groups:
                         groups[altgroup] = {}
@@ -231,10 +222,8 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                     for alg in subgroup:
                         algItem = TreeAlgorithmItem(alg)
                         subgroupItem.addChild(algItem)
-                    subgroupItem.setExpanded(text!="")
-                groupItem.setExpanded(text!="")
+
             self.algorithmTree.addTopLevelItem(mainItem)
-            mainItem.setExpanded(text!="")
 
         for providerName in Sextante.algs.keys():
             groups = {}
@@ -280,10 +269,9 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 for groupItem in groups.values():
                     providerItem.addChild(groupItem)
                 self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(text!="")
-                for groupItem in groups.values():
-                    if text != "":
-                        groupItem.setExpanded(True)
+
+        if (text != ""):
+            self.algorithmTree.expandAll()
 
     def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
@@ -333,8 +321,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 self.algorithmTree.addTopLevelItem(providerItem)
                 providerItem.setExpanded(text!="")
                 for groupItem in groups.values():
-                    if text != "":
-                        groupItem.setExpanded(True)
+                    groupItem.setExpanded(text != "")
 
 
 
@@ -344,7 +331,6 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
         QTreeWidgetItem.__init__(self)
         self.alg = alg
-        self.setText(0, alg.name)
         icon = alg.getIcon()
         name = alg.name
         if useCategories:
@@ -352,6 +338,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
             group, subgroup, name = AlgorithmDecorator.getGroupsAndName(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
+        self.setText(0, name)
 
 class TreeActionItem(QTreeWidgetItem):
 

@@ -45,6 +45,10 @@ class CrsSelectionPanel(QtGui.QWidget):
         self.setLayout(self.horizontalLayout)
         self.setText()
 
+    def setAuthid(self, authid):
+        self.authid = authid
+        self.setText()
+
     def showSelectionDialog(self):
         dialog = CrsSelectionDialog()
         dialog.exec_()
@@ -53,7 +57,8 @@ class CrsSelectionPanel(QtGui.QWidget):
             self.setText()
 
     def setText(self):
-        self.text.setText(str(self.authid))
+        if self.authid is not None:
+            self.text.setText(str(self.authid))
 
     def getValue(self):
         return self.authid

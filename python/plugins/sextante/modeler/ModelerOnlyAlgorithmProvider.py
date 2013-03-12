@@ -27,8 +27,9 @@ from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.core.AlgorithmProvider import AlgorithmProvider
-from sextante.modeler.CalculatorModelerAlgorithm import \
-    CalculatorModelerAlgorithm
+from sextante.modeler.CalculatorModelerAlgorithm import CalculatorModelerAlgorithm
+from sextante.modeler.RasterLayerBoundsAlgorithm import RasterLayerBoundsAlgorithm
+from sextante.modeler.VectorLayerBoundsAlgorithm import VectorLayerBoundsAlgorithm
 
 import os.path
 
@@ -47,6 +48,6 @@ class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/model.png")
 
     def _loadAlgorithms(self):
-        self.algs = [CalculatorModelerAlgorithm()]
+        self.algs = [CalculatorModelerAlgorithm(), RasterLayerBoundsAlgorithm(), VectorLayerBoundsAlgorithm()]
         for alg in self.algs:
             alg.provider = self
