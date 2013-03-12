@@ -323,9 +323,16 @@ void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirecti
 {
   //create x, y arrays
   int nVertices = poly.size();
-  QVector<qreal> x( nVertices );
-  QVector<qreal> y( nVertices );
-  QVector<qreal> z( nVertices );
+
+#ifdef ANDROID
+QVector<double> x( nVertices );
+QVector<double> y( nVertices );
+QVector<double> z( nVertices );
+#else
+QVector<qreal> x( nVertices );
+QVector<qreal> y( nVertices );
+QVector<qreal> z( nVertices );
+#endif
 
   for ( int i = 0; i < nVertices; ++i )
   {
