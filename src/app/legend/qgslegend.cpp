@@ -1849,10 +1849,12 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       }
       else
       {
+        blockSignals( true );
         if ( parent )
           theGroup = new QgsLegendGroup( parent, name );
         else
           theGroup = new QgsLegendGroup( this, name );
+        blockSignals( false );
       }
 
       if ( !theGroup )

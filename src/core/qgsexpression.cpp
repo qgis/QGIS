@@ -28,6 +28,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsogcutils.h"
 
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
@@ -796,7 +797,7 @@ static QVariant fcnGeomFromWKT( const QVariantList& values, QgsFeature*, QgsExpr
 static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExpression* parent )
 {
   QString gml = getStringValue( values.at( 0 ), parent );
-  QgsGeometry* geom = QgsGeometry::fromGML2( gml );
+  QgsGeometry* geom = QgsOgcUtils::geometryFromGML2( gml );
 
   if ( geom )
     return QVariant::fromValue( *geom );
@@ -2268,11 +2269,10 @@ void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &e
         {
           if ( childElem.attribute( "name" ) == "geomFromWKT" )
           {
-            QgsGeometry* geom = 0;
-            geom = QgsGeometry::fromWkt( childElem.firstChildElement().text() );
+            QgsGeometry* geom = QgsGeometry::fromWkt( childElem.firstChildElement().text() );
             if ( geom )
-              funcElem.appendChild( geom->exportToGML2( doc ) );
-
+              funcElem.appendChild( QgsOgcUtils::geometryToGML2( geom, doc ) );
+            delete geom;
           }
           else if ( childElem.attribute( "name" ) == "geomFromGML2" )
           {

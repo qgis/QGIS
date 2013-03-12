@@ -2313,7 +2313,6 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 } // void QgsVectorLayer::readXml
 
 
-
 bool QgsVectorLayer::setDataProvider( QString const & provider )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
@@ -2617,6 +2616,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
       EditType editType = ( EditType ) editTypeElement.attribute( "type" ).toInt();
       mEditTypes.insert( name, editType );
+
+      int editable = editTypeElement.attribute( "editable" , "1" ).toInt();
+      mFieldEditables.insert( name, editable == 1 );
 
       switch ( editType )
       {
@@ -2933,6 +2935,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
       QDomElement editTypeElement = doc.createElement( "edittype" );
       editTypeElement.setAttribute( "name", it.key() );
       editTypeElement.setAttribute( "type", it.value() );
+      editTypeElement.setAttribute( "editable", mFieldEditables[ it.key()] ? 1 : 0 );
 
       switch (( EditType ) it.value() )
       {
@@ -3893,6 +3896,22 @@ QgsVectorLayer::RangeData &QgsVectorLayer::range( int idx )
     mRanges[fieldName] = RangeData();
 
   return mRanges[fieldName];
+}
+
+bool QgsVectorLayer::fieldEditable( int idx )
+{
+  const QgsFields &fields = pendingFields();
+  if ( idx >= 0 && idx < fields.count() && mEditTypes.contains( fields[idx].name() ) )
+    return mFieldEditables[ fields[idx].name()];
+  else
+    return false;
+}
+
+void QgsVectorLayer::setFieldEditable( int idx, bool editable )
+{
+  const QgsFields &fields = pendingFields();
+  if ( idx >= 0 && idx < fields.count() && mEditTypes.contains( fields[idx].name() ) )
+    mFieldEditables[ fields[idx].name()] = editable;
 }
 
 void QgsVectorLayer::addOverlay( QgsVectorOverlay* overlay )

@@ -319,12 +319,20 @@ class GeoAlgorithm:
             if not out.hidden:
                 i+=1
         return i;
-
+    
     def getVisibleParametersCount(self):
         '''returns the number of non-hidden parameters'''
         i = 0;
         for param in self.parameters:
             if not param.hidden:
+                i+=1
+        return i;
+
+    def getHTMLOutputsCount(self):
+        '''returns the number of HTML outputs'''
+        i = 0;
+        for out in self.outputs:
+            if isinstance(out, OutputHTML):
                 i+=1
         return i;
 

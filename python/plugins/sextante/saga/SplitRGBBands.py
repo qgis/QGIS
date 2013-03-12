@@ -53,7 +53,12 @@ class SplitRGBBands(GeoAlgorithm):
     def processAlgorithm(self, progress):
         #TODO:check correct num of bands
         input = self.getParameterValue(SplitRGBBands.INPUT)
-        temp = SextanteUtils.getTempFilename();
+        temp = SextanteUtils.getTempFilename(None).replace('.','');
+        basename = os.path.basename(temp)
+        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        safeBasename = ''.join(c for c in basename if c in validChars)
+        temp = os.path.join(os.path.dirname(temp), safeBasename)
+        
         r = self.getOutputValue(SplitRGBBands.R)
         g = self.getOutputValue(SplitRGBBands.G)
         b = self.getOutputValue(SplitRGBBands.B)

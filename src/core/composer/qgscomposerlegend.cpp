@@ -96,7 +96,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
   setColumns( atomList );
 
-  double maxColumnWidth = 0;
+  qreal maxColumnWidth = 0;
   if ( mEqualColumnWidth )
   {
     foreach ( Atom atom, atomList )
@@ -112,7 +112,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   QPointF point( mBoxSpace, columnTop );
   bool firstInColumn = true;
   double columnMaxHeight = 0;
-  double columnWidth = 0;
+  qreal columnWidth = 0;
   int column = 0;
   foreach ( Atom atom, atomList )
   {
@@ -212,8 +212,8 @@ QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::Align
   for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
   {
     // it does not draw the last world if rectangle width is exactly text width
-    double width = textWidthMillimeters( mTitleFont, *titlePart ) + 1;
-    double height = fontAscentMillimeters( mTitleFont ) + fontDescentMillimeters( mTitleFont );
+    qreal width = textWidthMillimeters( mTitleFont, *titlePart ) + 1;
+    qreal height = fontAscentMillimeters( mTitleFont ) + fontDescentMillimeters( mTitleFont );
 
     double left = halignment == Qt::AlignLeft ?  point.x() : point.x() - width / 2;
 
@@ -249,7 +249,7 @@ QSizeF QgsComposerLegend::drawGroupItemTitle( QgsComposerGroupItem* groupItem, Q
   {
     y += fontAscentMillimeters( mGroupFont );
     if ( painter ) drawText( painter, point.x(), y, *groupPart, mGroupFont );
-    double width = textWidthMillimeters( mGroupFont, *groupPart );
+    qreal width = textWidthMillimeters( mGroupFont, *groupPart );
     size.rwidth() = qMax( width, size.width() );
     if ( groupPart != lines.end() )
     {
@@ -277,7 +277,7 @@ QSizeF QgsComposerLegend::drawLayerItemTitle( QgsComposerLayerItem* layerItem, Q
   {
     y += fontAscentMillimeters( mLayerFont );
     if ( painter ) drawText( painter, point.x(), y, *layerItemPart , mLayerFont );
-    double width = textWidthMillimeters( mLayerFont, *layerItemPart );
+    qreal width = textWidthMillimeters( mLayerFont, *layerItemPart );
     size.rwidth() = qMax( width, size.width() );
     if ( layerItemPart != lines.end() )
     {
@@ -401,7 +401,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   for ( QStringList::Iterator itemPart = lines.begin(); itemPart != lines.end(); ++itemPart )
   {
     if ( painter ) drawText( painter, labelX, labelY, *itemPart , mItemFont );
-    labelSize.rwidth() = qMax( textWidthMillimeters( mItemFont,  *itemPart ), labelSize.width() );
+    labelSize.rwidth() = qMax( textWidthMillimeters( mItemFont,  *itemPart ), double(labelSize.width()) );
     if ( itemPart != lines.end() )
     {
       labelY += mlineSpacing + textHeight;
@@ -1012,7 +1012,7 @@ void QgsComposerLegend::setColumns( QList<Atom>& atomList )
   // Divide atoms to columns
   double totalHeight = 0;
   bool first = true;
-  double maxAtomHeight = 0;
+  qreal maxAtomHeight = 0;
   foreach ( Atom atom, atomList )
   {
     if ( !first )
@@ -1073,7 +1073,7 @@ void QgsComposerLegend::setColumns( QList<Atom>& atomList )
   }
 
   // Alling labels of symbols for each layr/column to the same labelXOffset
-  QMap<QString, double> maxSymbolWidth;
+  QMap<QString, qreal> maxSymbolWidth;
   for ( int i = 0; i < atomList.size(); i++ )
   {
     for ( int j = 0; j < atomList[i].nucleons.size(); j++ )

@@ -47,6 +47,7 @@
 %Include qgsmimedatautils.sip
 %Include qgsnetworkaccessmanager.sip
 %Include qgsofflineediting.sip
+%Include qgsogcutils.sip
 %Include qgsoverlayobject.sip
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip
@@ -157,7 +158,7 @@
 %Include raster/qgssinglebandcolordatarenderer.sip
 %Include raster/qgssinglebandpseudocolorrenderer.sip
 %Include raster/qgssinglebandgrayrenderer.sip
-%Include raster/qgspaletterasterrenderer.sip
+%Include raster/qgspalettedrasterrenderer.sip
 %Include raster/qgscubicrasterresampler.sip
 %Include raster/qgsmultibandcolorrenderer.sip
 

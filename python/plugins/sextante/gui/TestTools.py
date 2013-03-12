@@ -16,13 +16,13 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'February 2013'
 __copyright__ = '(C) 2013, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 from sextante.core.Sextante import Sextante
 from sextante.outputs.OutputNumber import OutputNumber
 from sextante.outputs.OutputString import OutputString
@@ -42,7 +42,9 @@ def createTest(item):
     execcommand = "sextante.runalg("
     i = 0
     for token in tokens:
-        if i < alg.getVisibleParametersCount():
+        if i < alg.getVisibleParametersCount() + 1:                            
+            if os.path.exists(token[1:-1]):
+                token = '"' + os.path.basename(token[1:-1])[:-4] + '"'           
             execcommand+=token + ","
         else:
             execcommand+="None,"
@@ -50,8 +52,10 @@ def createTest(item):
     s += "\toutputs=" + execcommand[:-1] + ")\n"
 
     i = -1 * len(alg.outputs)
-    for out in alg.outputs:
+    for out in alg.outputs:        
         filename = tokens[i][1:-1]
+        if (filename == str(None)):
+            raise Exception("Cannot create unit test for that algorithm.\nThe output cannot be a temporary file")        
         s+="\toutput=outputs['" + out.name + "']\n"
         if isinstance(out, (OutputNumber, OutputString)):
             s+="self.assertTrue(" + str(out) + ", output)\n"
@@ -69,8 +73,8 @@ def createTest(item):
             s+="\texpectedtypes=[" + ",".join([str(f.typeName()) for f in fields]) + "]\n"
             s+="\tnames=[str(f.name()) for f in fields]\n"
             s+="\ttypes=[str(f.typeName()) for f in fields]\n"
-            s+="\tself.assertEqual(exceptednames, names)\n"
-            s+="\tself.assertEqual(exceptedtypes, types)\n"
+            s+="\tself.assertEqual(expectednames, names)\n"
+            s+="\tself.assertEqual(expectedtypes, types)\n"
             features = QGisLayers.features(layer)
             numfeat = len(features)
             s+="\tfeatures=sextante.getfeatures(layer))\n"
@@ -80,9 +84,9 @@ def createTest(item):
                 attrs = feature.attributes()
                 s+="\tfeature=features.next()\n"
                 s+="\tattrs=feature.attributes()\n"
-                s+="\texpectedvalues=[" + ",".join([str(attr.toString()) for attr in attrs]) + "]\n"
+                s+="\texpectedvalues=[" + ",".join(['"' + str(attr.toString()) + '"' for attr in attrs]) + "]\n"
                 s+="\tvalues=[str(attr.toString()) for attr in attrs]\n"
-                s+="\tself.assertEqual(exceptedtypes, types)\n"
+                s+="\tself.assertEqual(expectedtypes, types)\n"
 
     dlg = ShowTestDialog(s)
     dlg.exec_()

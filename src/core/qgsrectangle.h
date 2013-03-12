@@ -44,9 +44,6 @@ class CORE_EXPORT QgsRectangle
     QgsRectangle( const QRectF & qRectF );
     //! Copy constructor
     QgsRectangle( const QgsRectangle &other );
-    //! GML2 constructor
-    //@note added in 1.9
-    QgsRectangle( const QDomNode& boxNode );
     //! Destructor
     ~QgsRectangle();
     //! Set the rectangle from two QgsPoints. The rectangle is

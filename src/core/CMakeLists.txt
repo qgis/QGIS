@@ -86,6 +86,7 @@ SET(QGIS_CORE_SRCS
   qgsnetworkreplyparser.cpp
   qgscredentials.cpp
   qgsofflineediting.cpp
+  qgsogcutils.cpp
   qgsoverlayobject.cpp
   qgsowsconnection.cpp
   qgspalgeometry.cpp
@@ -404,6 +405,7 @@ SET(QGIS_CORE_HDRS
   qgsnetworkreplyparser.h
   qgscredentials.h
   qgsofflineediting.h
+  qgsogcutils.h
   qgsoverlayobjectpositionmanager.h
   qgsowsconnection.h
   qgspallabeling.h

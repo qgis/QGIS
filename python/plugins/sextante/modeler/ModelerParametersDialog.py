@@ -615,7 +615,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         selectedOptions = self.dependenciesPanel.selectedoptions
         #this index are based on the list of available dependencies.
         #we translate them into indices based on the whole set of algorithm in the model
-        #We just take the values in the begining of the string representing the algorithm
+        #We just take the values in the beginning of the string representing the algorithm
         availableDependencies = self.getAvailableDependencies()
         self.dependencies = []
         for selected in selectedOptions:
@@ -627,17 +627,13 @@ class ModelerParametersDialog(QtGui.QDialog):
 
 
     def setParamValueLayerOrTable(self, param, widget):
-        idx = widget.findText(widget.currentText())
+        idx = widget.currentIndex()
         if idx < 0:
-            name =  self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            s = str(widget.currentText())
-            self.values[name] = s
+            return False
         else:
             value = widget.itemData(widget.currentIndex()).toPyObject()
             self.params[param.name] = value
-        return True
+            return True
 
     def setParamBooleanValue(self, param, widget):
         if widget.currentIndex() < 2:

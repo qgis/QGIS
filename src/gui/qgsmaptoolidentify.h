@@ -80,6 +80,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       QgsFeature mFeature;
       QMap< QString, QString > mAttributes;
       QMap< QString, QString > mDerivedAttributes;
+      QMap< QString, QVariant > mParams;
     };
 
     //! constructor
