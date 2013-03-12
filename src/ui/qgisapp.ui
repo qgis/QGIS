@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -2020,21 +2020,37 @@ Acts on currently active editable layer</string>
    </property>
   </action>
   <action name="mActionIncreaseBrightness">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mActionIncreaseBrightness.svg</normaloff>:/images/themes/gis/mActionIncreaseBrightness.svg</iconset>
+   </property>
    <property name="text">
     <string>Increase brightness</string>
    </property>
   </action>
   <action name="mActionDecreaseBrightness">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mActionDecreaseBrightness.svg</normaloff>:/images/themes/gis/mActionDecreaseBrightness.svg</iconset>
+   </property>
    <property name="text">
     <string>Decrease brightness</string>
    </property>
   </action>
   <action name="mActionIncreaseContrast">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mActionIncreaseContrast.svg</normaloff>:/images/themes/gis/mActionIncreaseContrast.svg</iconset>
+   </property>
    <property name="text">
     <string>Increase contrast</string>
    </property>
   </action>
   <action name="mActionDecreaseContrast">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mActionDecreaseContrast.svg</normaloff>:/images/themes/gis/mActionDecreaseContrast.svg</iconset>
+   </property>
    <property name="text">
     <string>Decrease contrast</string>
    </property>

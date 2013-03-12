@@ -186,6 +186,10 @@
         <file>themes/default/mActionZoomOut.png</file>
         <file>themes/default/mActionZoomToLayer.png</file>
         <file>themes/default/mActionZoomToSelected.png</file>
+        <file>themes/default/mActionIncreaseBrightness.svg</file>
+        <file>themes/default/mActionDecreaseBrightness.svg</file>
+        <file>themes/default/mActionIncreaseContrast.svg</file>
+        <file>themes/default/mActionDecreaseContrast.svg</file>
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
         <file>themes/default/mIconConnect.png</file>
@@ -406,6 +410,10 @@
         <file>themes/gis/mActionZoomOut.png</file>
         <file>themes/gis/mActionZoomToLayer.png</file>
         <file>themes/gis/mActionZoomToSelected.png</file>
+        <file>themes/gis/mActionIncreaseBrightness.svg</file>
+        <file>themes/gis/mActionDecreaseBrightness.svg</file>
+        <file>themes/gis/mActionIncreaseContrast.svg</file>
+        <file>themes/gis/mActionDecreaseContrast.svg</file>
         <file>themes/gis/mIconClose.png</file>
         <file>themes/gis/mIconEditable.png</file>
         <file>themes/gis/mIconEditableEdits.png</file>
