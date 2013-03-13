@@ -244,7 +244,7 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::createFromSld( QDomElement &elemen
 
 //QgsImageFillSymbolLayer
 
-QgsImageFillSymbolLayer::QgsImageFillSymbolLayer(): mOutlineWidth( 0.0 ), mOutline( 0 )
+QgsImageFillSymbolLayer::QgsImageFillSymbolLayer(): mOutlineWidth( 0.0 ), mOutlineWidthUnit( QgsSymbolV2::MM ), mOutline( 0 )
 {
   setSubSymbol( new QgsLineSymbolV2() );
 }
@@ -327,7 +327,8 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 
 //QgsSVGFillSymbolLayer
 
-QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width, double angle ): QgsImageFillSymbolLayer(), mPatternWidth( width )
+QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width, double angle ): QgsImageFillSymbolLayer(), mPatternWidth( width ),
+    mPatternWidthUnit( QgsSymbolV2::MM ), mSvgOutlineWidthUnit( QgsSymbolV2::MM )
 {
   setSvgFilePath( svgFilePath );
   mOutlineWidth = 0.3;
@@ -351,6 +352,23 @@ QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
 {
   delete mOutline;
   delete mSvgPattern;
+}
+
+void QgsSVGFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mPatternWidthUnit = unit;
+  mSvgOutlineWidthUnit = unit;
+  mOutlineWidthUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsSVGFillSymbolLayer::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mPatternWidthUnit;
+  if ( mSvgOutlineWidthUnit != unit || mOutlineWidthUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }
 
 void QgsSVGFillSymbolLayer::setSvgFilePath( const QString& svgPath )
@@ -412,6 +430,19 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
     symbolLayer->setSvgOutlineWidth( properties["svgOutlineWidth"].toDouble() );
   }
 
+  //units
+  if ( properties.contains( "pattern_width_unit" ) )
+  {
+    symbolLayer->setPatternWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["pattern_width_unit"] ) );
+  }
+  if ( properties.contains( "svg_outline_width_unit" ) )
+  {
+    symbolLayer->setSvgOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["svg_outline_width_unit"] ) );
+  }
+  if ( properties.contains( "outline_width_unit" ) )
+  {
+    symbolLayer->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["outline_width_unit"] ) );
+  }
 
   return symbolLayer;
 }
@@ -430,7 +461,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 
   delete mSvgPattern;
   mSvgPattern = 0;
-  double size = context.outputPixelSize( mPatternWidth );
+  double size = mPatternWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mPatternWidthUnit );
 
   //don't render pattern if symbol size is below one or above 10,000 pixels
   if (( int )size < 1.0 || 10000.0 < size )
@@ -440,13 +471,14 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   }
   else
   {
+    double outlineWidth = mSvgOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSvgOutlineWidthUnit );
     bool fitsInCache = true;
-    const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
+    const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, outlineWidth,
                                  context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
 
     if ( !fitsInCache )
     {
-      const QPicture& patternPict = QgsSvgCache::instance()->svgAsPicture( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
+      const QPicture& patternPict = QgsSvgCache::instance()->svgAsPicture( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, outlineWidth,
                                     context.renderContext().scaleFactor(), 1.0 );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
@@ -509,24 +541,32 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   map.insert( "svgOutlineColor", mSvgOutlineColor.name() );
   map.insert( "svgOutlineWidth", QString::number( mSvgOutlineWidth ) );
 
+  //units
+  map["pattern_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mPatternWidthUnit );
+  map["svg_outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSvgOutlineWidthUnit );
+  map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
+
   return map;
 }
 
 QgsSymbolLayerV2* QgsSVGFillSymbolLayer::clone() const
 {
-  QgsSymbolLayerV2* clonedLayer = 0;
+  QgsSVGFillSymbolLayer* clonedLayer = 0;
   if ( !mSvgFilePath.isEmpty() )
   {
     clonedLayer = new QgsSVGFillSymbolLayer( mSvgFilePath, mPatternWidth, mAngle );
-    QgsSVGFillSymbolLayer* sl = static_cast<QgsSVGFillSymbolLayer*>( clonedLayer );
-    sl->setSvgFillColor( mSvgFillColor );
-    sl->setSvgOutlineColor( mSvgOutlineColor );
-    sl->setSvgOutlineWidth( mSvgOutlineWidth );
+    clonedLayer->setSvgFillColor( mSvgFillColor );
+    clonedLayer->setSvgOutlineColor( mSvgOutlineColor );
+    clonedLayer->setSvgOutlineWidth( mSvgOutlineWidth );
   }
   else
   {
     clonedLayer = new QgsSVGFillSymbolLayer( mSvgData, mPatternWidth, mAngle );
   }
+
+  clonedLayer->setPatternWidthUnit( mPatternWidthUnit );
+  clonedLayer->setSvgOutlineWidthUnit( mSvgOutlineWidthUnit );
+  clonedLayer->setOutlineWidthUnit( mOutlineWidthUnit );
 
   if ( mOutline )
   {

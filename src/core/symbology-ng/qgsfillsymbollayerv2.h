@@ -109,11 +109,16 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     virtual QgsSymbolV2* subSymbol() { return mOutline; }
     virtual bool setSubSymbol( QgsSymbolV2* symbol );
 
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+
   protected:
     QBrush mBrush;
 
     /**Outline width*/
     double mOutlineWidth;
+    QgsSymbolV2::OutputUnit mOutlineWidthUnit;
+
     /**Custom outline*/
     QgsLineSymbolV2* mOutline;
 };
@@ -156,9 +161,20 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setSvgOutlineWidth( double w ) { mSvgOutlineWidth = w; }
     double svgOutlineWidth() const { return mSvgOutlineWidth; }
 
+    void setPatternWidthUnit( QgsSymbolV2::OutputUnit unit ) { mPatternWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit patternWidthUnit() const { return mPatternWidthUnit; }
+
+    void setSvgOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mSvgOutlineWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit svgOutlineWidthUnit() const { return mSvgOutlineWidthUnit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
-    /**Width of the pattern (in QgsSymbolV2 output units)*/
+    /**Width of the pattern (in output units)*/
     double mPatternWidth;
+    QgsSymbolV2::OutputUnit mPatternWidthUnit;
+
     /**SVG data*/
     QByteArray mSvgData;
     /**Path to the svg file (or empty if constructed directly from data)*/
@@ -174,6 +190,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QColor mSvgFillColor;
     QColor mSvgOutlineColor;
     double mSvgOutlineWidth;
+    QgsSymbolV2::OutputUnit mSvgOutlineWidthUnit;
 
   private:
     /**Helper function that gets the view box from the byte array*/

@@ -1103,6 +1103,12 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
     mTextureWidthSpinBox->setValue( width );
     mSVGLineEdit->setText( mLayer->svgFilePath() );
     mRotationSpinBox->setValue( mLayer->angle() );
+    mTextureWidthUnitComboBox->blockSignals( true );
+    mTextureWidthUnitComboBox->setCurrentIndex( mLayer->patternWidthUnit() );
+    mTextureWidthUnitComboBox->blockSignals( false );
+    mSvgOutlineWidthUnitComboBox->blockSignals( true );
+    mSvgOutlineWidthUnitComboBox->setCurrentIndex( mLayer->svgOutlineWidthUnit() );
+    mSvgOutlineWidthUnitComboBox->blockSignals( false );
   }
   updateParamGui();
 }
@@ -1270,6 +1276,24 @@ void QgsSVGFillSymbolLayerWidget::on_mBorderWidthSpinBox_valueChanged( double d 
   if ( mLayer )
   {
     mLayer->setSvgOutlineWidth( d );
+    emit changed();
+  }
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mTextureWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setPatternWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mSvgOutlineWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setSvgOutlineWidthUnit(( QgsSymbolV2::OutputUnit ) index );
     emit changed();
   }
 }
