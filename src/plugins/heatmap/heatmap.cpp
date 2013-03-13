@@ -334,7 +334,7 @@ int Heatmap::bufferSize( double radius, double cellsize )
   return buffer;
 }    
     
-float Heatmap::calculateKernelValue( float distance, int bandwidth, int kernelShape )
+double Heatmap::calculateKernelValue( double distance, int bandwidth, int kernelShape )
 {
   switch (kernelShape) {
     case HeatmapGui::Triangular:
@@ -350,23 +350,23 @@ float Heatmap::calculateKernelValue( float distance, int bandwidth, int kernelSh
   
 }
 
-float Heatmap::uniformKernel( float distance, int bandwidth )
+double Heatmap::uniformKernel( double distance, int bandwidth )
 {
   // Normalizing constant. Calculated by polar double integrating the kernel function
   // with radius of 0 to bandwidth and equating area to 1.
-  float k = 2. / (M_PI * (float)bandwidth);
+  double k = 2. / (M_PI * (double)bandwidth);
   
   // Derived from Wand and Jones (1995), p. 175
-  return k * ( 0.5 / (float)bandwidth);
+  return k * ( 0.5 / (double)bandwidth);
 }
 
-float Heatmap::quarticKernel( float distance, int bandwidth )
+double Heatmap::quarticKernel( double distance, int bandwidth )
 {
   // Normalizing constant
-  float k = 16. / (5. * M_PI * pow((float)bandwidth, 2));
+  double k = 16. / (5. * M_PI * pow((double)bandwidth, 2));
   
   // Derived from Wand and Jones (1995), p. 175
-  return k * (15. / 16. ) * pow( 1. - pow( distance / (float)bandwidth, 2), 2);
+  return k * (15. / 16. ) * pow( 1. - pow( distance / (double)bandwidth, 2), 2);
 }
 
 // Unload the plugin by cleaning up the GUI
