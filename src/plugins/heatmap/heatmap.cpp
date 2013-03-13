@@ -110,10 +110,10 @@ void Heatmap::run()
     QgsRectangle myBBox = d.bbox();
     int columns = d.columns();
     int rows = d.rows();
-    float cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
-    float myDecay = d.decayRatio();
+    double cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
+    double myDecay = d.decayRatio();
     int kernelShape = d.kernelShape();
-       
+
     // Start working on the input vector
     QgsVectorLayer* inputLayer = d.inputVectorLayer();
 
@@ -168,8 +168,8 @@ void Heatmap::run()
     int wField = 0;
 
     // Handle different radius options
-    float radius;
-    float radiusToMapUnits = 1;
+    double radius;
+    double radiusToMapUnits = 1;
     int myBuffer;
     if ( d.variableRadius() )
     {
@@ -230,7 +230,7 @@ void Heatmap::run()
       // If radius is variable then fetch it and calculate new pixel buffer size
       if ( d.variableRadius() )
       {
-        radius = myFeature.attribute( rField ).toFloat() * radiusToMapUnits;
+        radius = myFeature.attribute( rField ).toDouble() * radiusToMapUnits;
         myBuffer = bufferSize( radius, cellsize );
       }
 
@@ -245,17 +245,17 @@ void Heatmap::run()
       poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize,
                         dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
 
-      float weight = 1.0;
+      double weight = 1.0;
       if ( d.weighted() )
       {
-        weight = myFeature.attribute( wField ).toFloat();
+        weight = myFeature.attribute( wField ).toDouble();
       }
 
       for ( int xp = 0; xp <= myBuffer; xp++ )
       {
         for ( int yp = 0; yp <= myBuffer; yp++ )
         {
-          float distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
+          double distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
 
           // is pixel outside search bandwidth of feature?
           if ( distance > myBuffer )
@@ -263,7 +263,7 @@ void Heatmap::run()
             continue;
           }
           
-          float pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
+          double pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
 
           // clearing anamolies along the axes
           if ( xp == 0 && yp == 0 )
@@ -308,8 +308,8 @@ void Heatmap::run()
  * Local functions
  *
  */
- 
-float Heatmap::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
+
+double Heatmap::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs )
 {
   // Worker to transform metres input to mapunits
   QgsDistanceArea da;
@@ -322,7 +322,7 @@ float Heatmap::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
   return meters / da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
 }
 
-int Heatmap::bufferSize( float radius, float cellsize )
+int Heatmap::bufferSize( double radius, double cellsize )
 {
   // Calculate the buffer size in pixels
 
