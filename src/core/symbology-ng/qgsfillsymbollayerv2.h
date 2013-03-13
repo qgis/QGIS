@@ -233,16 +233,31 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOffset( double offset ) { mOffset = offset; }
     double offset() const { return mOffset; }
 
+    void setDistanceUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceUnit = unit; }
+    QgsSymbolV2::OutputUnit distanceUnit() const { return mDistanceUnit; }
+
+    void setLineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mLineWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit lineWidthUnit() const { return mLineWidthUnit; }
+
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     /**Distance (in mm or map units) between lines*/
     double mDistance;
+    QgsSymbolV2::OutputUnit mDistanceUnit;
     /**Line width (in mm or map units)*/
     double mLineWidth;
+    QgsSymbolV2::OutputUnit mLineWidthUnit;
     QColor mColor;
     /**Vector line angle in degrees (0 = horizontal, counterclockwise)*/
     double mLineAngle;
     /**Offset perpendicular to line direction*/
     double mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
 };
 
 class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer

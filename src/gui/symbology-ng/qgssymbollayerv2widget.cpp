@@ -1322,6 +1322,17 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* laye
     mLineWidthSpinBox->setValue( mLayer->lineWidth() );
     mOffsetSpinBox->setValue( mLayer->offset() );
     mColorPushButton->setColor( mLayer->color() );
+
+    //units
+    mDistanceUnitComboBox->blockSignals( true );
+    mDistanceUnitComboBox->setCurrentIndex( mLayer->distanceUnit() );
+    mDistanceUnitComboBox->blockSignals( false );
+    mLineWidthUnitComboBox->blockSignals( true );
+    mLineWidthUnitComboBox->setCurrentIndex( mLayer->lineWidthUnit() );
+    mLineWidthUnitComboBox->blockSignals( false );
+    mOffsetUnitComboBox->blockSignals( true );
+    mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
+    mOffsetUnitComboBox->blockSignals( false );
   }
 }
 
@@ -1377,6 +1388,33 @@ void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_clicked()
       mColorPushButton->setColor( c );
       emit changed();
     }
+  }
+}
+
+void QgsLinePatternFillSymbolLayerWidget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setDistanceUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsLinePatternFillSymbolLayerWidget::on_mLineWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setLineWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsLinePatternFillSymbolLayerWidget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
   }
 }
 
