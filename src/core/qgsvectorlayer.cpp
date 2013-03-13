@@ -4218,7 +4218,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
     QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
     Q_ASSERT( vl );
 
-    return vl->maximumValue( index );
+    return vl->maximumValue( sourceLayerIndex );
   }
   else if ( origin == QgsFields::OriginEdit )
   {
