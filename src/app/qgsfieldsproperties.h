@@ -130,6 +130,7 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     QMap<int, QPair<QString, QString> > mCheckedStates;
     QMap<int, QgsVectorLayer::EditType> mEditTypeMap;
     QMap<int, QPushButton*> mButtonMap;
+    QMap<int, QString> mDateFormat;
 
     enum attrColumns
     {

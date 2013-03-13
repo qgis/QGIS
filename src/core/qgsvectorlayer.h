@@ -767,6 +767,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      **/
     ValueRelationData &valueRelation( int idx );
 
+    /**access date format
+     * @note added in 1.9
+     */
+    QString &dateFormat( int idx );
+
     /**is edit widget editable
      * @note added in 1.9
      **/
@@ -1074,6 +1079,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, RangeData > mRanges;
     QMap< QString, QPair<QString, QString> > mCheckedStates;
     QMap< QString, ValueRelationData > mValueRelations;
+    QMap< QString, QString> mDateFormats;
 
     /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     EditorLayout mEditorLayout;

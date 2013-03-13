@@ -21,7 +21,9 @@
 #include <QToolButton>
 #include <QStyle>
 
-QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent ) : QLineEdit( parent )
+QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, QString nullValue )
+    : QLineEdit( parent )
+    , mNullValue( nullValue )
 {
   btnClear = new QToolButton( this );
   btnClear->setIcon( QgsApplication::getThemeIcon( "/mIconClear.png" ) );
@@ -51,7 +53,13 @@ void QgsFilterLineEdit::resizeEvent( QResizeEvent * )
                   ( rect().bottom() + 1 - sz.height() ) / 2 );
 }
 
+void QgsFilterLineEdit::clear()
+{
+  setText( mNullValue );
+  setModified( true );
+}
+
 void QgsFilterLineEdit::toggleClearButton( const QString &text )
 {
-  btnClear->setVisible( !text.isEmpty() );
+  btnClear->setVisible( !isReadOnly() && text != mNullValue );
 }

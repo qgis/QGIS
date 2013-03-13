@@ -2678,13 +2678,16 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         }
         break;
 
+        case Calendar:
+          mDateFormats[ name ] = editTypeElement.attribute( "dateFormat" );
+          break;
+
         case Classification:
         case FileName:
         case Immutable:
         case Hidden:
         case LineEdit:
         case TextEdit:
-        case Calendar:
         case Enumeration:
         case UniqueValues:
         case UniqueValuesEditable:
@@ -2988,6 +2991,10 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
           }
           break;
 
+        case Calendar:
+          editTypeElement.setAttribute( "dateFormat", mDateFormats[ it.key()] );
+          break;
+
         case LineEdit:
         case UniqueValues:
         case UniqueValuesEditable:
@@ -2995,7 +3002,6 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         case FileName:
         case Hidden:
         case TextEdit:
-        case Calendar:
         case Enumeration:
         case Immutable:
         case UuidGenerator:
@@ -3896,6 +3902,18 @@ QgsVectorLayer::RangeData &QgsVectorLayer::range( int idx )
     mRanges[fieldName] = RangeData();
 
   return mRanges[fieldName];
+}
+
+QString &QgsVectorLayer::dateFormat( int idx )
+{
+  const QgsFields &fields = pendingFields();
+
+  QString fieldName = fields[idx].name();
+
+  if ( !mDateFormats.contains( fieldName ) )
+    mDateFormats[fieldName] = "yyyy-MM-dd";
+
+  return mDateFormats[fieldName];
 }
 
 bool QgsVectorLayer::fieldEditable( int idx )

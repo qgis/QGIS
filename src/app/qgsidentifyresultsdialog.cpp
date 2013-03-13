@@ -361,6 +361,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
         value = vlayer->valueMap( i ).key( value.toString(), QString( "(%1)" ).arg( value.toString() ) );
         break;
 
+      case QgsVectorLayer::Calendar:
+        if ( value.canConvert( QVariant::Date ) )
+          value = value.toDate().toString( vlayer->dateFormat( i ) );
+        break;
+
       default:
         break;
     }
