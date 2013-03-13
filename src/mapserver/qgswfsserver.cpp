@@ -517,7 +517,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
               else if ( childElem.tagName() != "PropertyName" )
               {
-                QgsGeometry *geom = QgsOgcUtils::geometryFromGML2( childElem );
+                QgsGeometry *geom = QgsOgcUtils::geometryFromGML( childElem );
                 req.setFilterRect( geom->boundingBox() );
                 delete geom;
               }
@@ -900,7 +900,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
             else if ( childElem.tagName() != "PropertyName" )
             {
-              QgsGeometry* geom = QgsOgcUtils::geometryFromGML2( childElem );
+              QgsGeometry* geom = QgsOgcUtils::geometryFromGML( childElem );
               req.setFilterRect( geom->boundingBox() );
               delete geom;
             }
@@ -1097,7 +1097,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
     QDomElement bbElem = doc.createElement( "gml:boundedBy" );
     if ( format == "GML3" )
     {
-      QDomElement envElem = createEnvelopeGML3( rect, doc );
+      QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( rect, doc );
       if ( !envElem.isNull() )
       {
         if ( crs.isValid() )
@@ -1110,7 +1110,7 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
     }
     else
     {
-      QDomElement boxElem = createBoxGML2( rect, doc );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( rect, doc );
       if ( !boxElem.isNull() )
       {
         if ( crs.isValid() )
@@ -1364,7 +1364,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 
             if ( !geometryElem.isNull() )
             {
-              if ( !layer->changeGeometry( *fidIt, QgsOgcUtils::geometryFromGML2( geometryElem ) ) )
+              if ( !layer->changeGeometry( *fidIt, QgsOgcUtils::geometryFromGML( geometryElem ) ) )
                 throw QgsMapServiceException( "RequestNotWellFormed", "Error in change geometry" );
             }
           }
@@ -1480,7 +1480,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
                 }
                 else //a geometry attribute
                 {
-                  f->setGeometry( QgsOgcUtils::geometryFromGML2( currentAttributeElement ) );
+                  f->setGeometry( QgsOgcUtils::geometryFromGML( currentAttributeElement ) );
                 }
               }
               currentAttributeChild = currentAttributeChild.nextSibling();
@@ -1678,12 +1678,12 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
     QgsGeometry* geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML2( geom, doc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc );
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();
       QDomElement bbElem = doc.createElement( "gml:boundedBy" );
-      QDomElement boxElem = createBoxGML2( &box, doc );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
 
       if ( crs.isValid() )
       {
@@ -1718,27 +1718,6 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   }
 
   return featureElement;
-}
-
-QDomElement QgsWFSServer::createBoxGML2( QgsRectangle* box, QDomDocument& doc ) /*const*/
-{
-  if ( !box )
-  {
-    return QDomElement();
-  }
-
-  QDomElement boxElem = doc.createElement( "gml:Box" );
-  QVector<QgsPoint> v;
-  QgsPoint p1;
-  p1.set( box->xMinimum(), box->yMinimum() );
-  v.append( p1 );
-  QgsPoint p2;
-  p2.set( box->xMaximum(), box->yMaximum() );
-  v.append( p2 );
-  QDomElement coordElem = createCoordinateGML2( v, doc );
-  boxElem.appendChild( coordElem );
-
-  return boxElem;
 }
 
 QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QgsFields fields, QSet<QString> excludedAttributes ) /*const*/
@@ -1757,12 +1736,12 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
     QgsGeometry* geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML3( geom, doc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3" );
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();
       QDomElement bbElem = doc.createElement( "gml:boundedBy" );
-      QDomElement boxElem = createEnvelopeGML3( &box, doc );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
 
       if ( crs.isValid() )
       {
@@ -1799,55 +1778,3 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   return featureElement;
 }
 
-QDomElement QgsWFSServer::createCoordinateGML2( const QVector<QgsPoint> points, QDomDocument& doc ) const
-{
-  QDomElement coordElem = doc.createElement( "gml:coordinates" );
-  coordElem.setAttribute( "cs", "," );
-  coordElem.setAttribute( "ts", " " );
-
-  QString coordString;
-  QVector<QgsPoint>::const_iterator pointIt = points.constBegin();
-  for ( ; pointIt != points.constEnd(); ++pointIt )
-  {
-    if ( pointIt != points.constBegin() )
-    {
-      coordString += " ";
-    }
-    coordString += QString::number( pointIt->x(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
-    coordString += ",";
-    coordString += QString::number( pointIt->y(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
-  }
-
-  QDomText coordText = doc.createTextNode( coordString );
-  coordElem.appendChild( coordText );
-  return coordElem;
-}
-
-QDomElement QgsWFSServer::createEnvelopeGML3( QgsRectangle* env, QDomDocument& doc ) /*const*/
-{
-  if ( !env )
-  {
-    return QDomElement();
-  }
-
-  QDomElement envElem = doc.createElement( "gml:Envelope" );
-  QString posList;
-
-  QDomElement lowerCornerElem = doc.createElement( "gml:lowerCorner" );
-  posList = QString::number( env->xMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
-  posList += " ";
-  posList = QString::number( env->yMinimum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
-  QDomText lowerCornerText = doc.createTextNode( posList );
-  lowerCornerElem.appendChild( lowerCornerText );
-  envElem.appendChild( lowerCornerElem );
-
-  QDomElement upperCornerElem = doc.createElement( "gml:upperCorner" );
-  posList = QString::number( env->xMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
-  posList += " ";
-  posList = QString::number( env->yMaximum(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
-  QDomText upperCornerText = doc.createTextNode( posList );
-  upperCornerElem.appendChild( upperCornerText );
-  envElem.appendChild( upperCornerElem );
-
-  return envElem;
-}

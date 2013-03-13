@@ -797,7 +797,7 @@ static QVariant fcnGeomFromWKT( const QVariantList& values, QgsFeature*, QgsExpr
 static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExpression* parent )
 {
   QString gml = getStringValue( values.at( 0 ), parent );
-  QgsGeometry* geom = QgsOgcUtils::geometryFromGML2( gml );
+  QgsGeometry* geom = QgsOgcUtils::geometryFromGML( gml );
 
   if ( geom )
     return QVariant::fromValue( *geom );
@@ -2271,7 +2271,7 @@ void QgsExpression::NodeFunction::toOgcFilter( QDomDocument &doc, QDomElement &e
           {
             QgsGeometry* geom = QgsGeometry::fromWkt( childElem.firstChildElement().text() );
             if ( geom )
-              funcElem.appendChild( QgsOgcUtils::geometryToGML2( geom, doc ) );
+              funcElem.appendChild( QgsOgcUtils::geometryToGML( geom, doc ) );
             delete geom;
           }
           else if ( childElem.attribute( "name" ) == "geomFromGML2" )

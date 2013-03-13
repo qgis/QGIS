@@ -131,7 +131,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsOgcUtils::geometryFromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -141,7 +141,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsOgcUtils::geometryFromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -151,7 +151,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsOgcUtils::geometryFromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -161,7 +161,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsOgcUtils::geometryFromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -171,7 +171,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsOgcUtils::geometryFromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -181,7 +181,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsOgcUtils::geometryFromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 

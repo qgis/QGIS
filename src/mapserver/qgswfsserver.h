@@ -107,18 +107,9 @@ class QgsWFSServer
 
     //methods to write GML2
     QDomElement createFeatureGML2( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QgsFields fields, QSet<QString> excludedAttributes ) /*const*/;
-
-    QDomElement createBoxGML2( QgsRectangle* box, QDomDocument& doc ) /* const */;
-
-    /**Create a GML coordinate string from a point list.
-      @param points list of data points
-      @param coordString out: GML coord string
-      @return 0 in case of success*/
-    QDomElement createCoordinateGML2( const QVector<QgsPoint> points, QDomDocument& doc ) const;
-
+    
     //methods to write GML3
     QDomElement createFeatureGML3( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QgsFields fields, QSet<QString> excludedAttributes ) /*const*/;
-    QDomElement createEnvelopeGML3( QgsRectangle* env, QDomDocument& doc ) /* const */;
 };
 
 #endif

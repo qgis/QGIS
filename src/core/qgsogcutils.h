@@ -7,6 +7,7 @@ class QDomDocument;
 class QString;
 
 #include <list>
+#include <QVector>
 
 class QgsGeometry;
 class QgsPoint;
@@ -26,78 +27,78 @@ class CORE_EXPORT QgsOgcUtils
 public:
 
 
-  /** static method that creates geometry from GML2
+  /** static method that creates geometry from GML
    @param XML representation of the geometry. GML elements are expected to be
      in default namespace (<Point>...</Point>) or in "gml" namespace (<gml:Point>...</gml:Point>)
    */
-  static QgsGeometry* geometryFromGML2( const QString& xmlString );
+  static QgsGeometry* geometryFromGML( const QString& xmlString );
 
-  /** static method that creates geometry from GML2
+  /** static method that creates geometry from GML
     */
-  static QgsGeometry* geometryFromGML2( const QDomNode& geometryNode );
-
-  /** Exports the geometry to mGML2
-      @return true in case of success and false else
-   */
-  static QDomElement geometryToGML2( QgsGeometry* geometry, QDomDocument& doc );
+  static QgsGeometry* geometryFromGML( const QDomNode& geometryNode );
 
   /** read rectangle from GML2 Box */
   static QgsRectangle rectangleFromGMLBox( const QDomNode& boxNode );
 
-
-  /** static method that creates geometry from GML3
-   @param XML representation of the geometry. GML elements are expected to be
-     in default namespace (<Point>...</Point>) or in "gml" namespace (<gml:Point>...</gml:Point>)
-   */
-  static QgsGeometry* geometryFromGML3( const QString& xmlString );
-
-  /** static method that creates geometry from GML2
-    */
-  static QgsGeometry* geometryFromGML3( const QDomNode& geometryNode );
-  /** Exports the geometry to mGML3
-      @return true in case of success and false else
-   */
-  static QDomElement geometryToGML3( QgsGeometry* geometry, QDomDocument& doc );
-
   /** read rectangle from GML3 Envelope */
   static QgsRectangle rectangleFromGMLEnvelope( const QDomNode& envelopeNode );
 
+  /** Exports the geometry to GML2 or GML3
+      @return QDomELement
+   */
+  static QDomElement geometryToGML( QgsGeometry* geometry, QDomDocument& doc, QString format );
+
+  /** Exports the geometry to GML2
+      @return QDomElement
+   */
+  static QDomElement geometryToGML( QgsGeometry* geometry, QDomDocument& doc ); 
+
+  /** Exports the rectangle to GML2 Box
+      @return QDomElement
+   */
+  static QDomElement rectangleToGMLBox( QgsRectangle* box, QDomDocument& doc );
+
+  /** Exports the rectangle to GML2 Envelope
+      @return QDomElement
+   */
+  static QDomElement rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument& doc );
+
 private:
-  /** static method that creates geometry from GML2 Point */
-  static QgsGeometry* geometryFromGML2Point( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML2 LineString */
-  static QgsGeometry* geometryFromGML2LineString( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML2 Polygon */
-  static QgsGeometry* geometryFromGML2Polygon( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML2 MultiPoint */
-  static QgsGeometry* geometryFromGML2MultiPoint( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML2 MultiLineString */
-  static QgsGeometry* geometryFromGML2MultiLineString( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML2 MultiPolygon */
-  static QgsGeometry* geometryFromGML2MultiPolygon( const QDomElement& geometryElement );
+  /** static method that creates geometry from GML Point */
+  static QgsGeometry* geometryFromGMLPoint( const QDomElement& geometryElement );
+  /** static method that creates geometry from GML LineString */
+  static QgsGeometry* geometryFromGMLLineString( const QDomElement& geometryElement );
+  /** static method that creates geometry from GML Polygon */
+  static QgsGeometry* geometryFromGMLPolygon( const QDomElement& geometryElement );
+  /** static method that creates geometry from GML MultiPoint */
+  static QgsGeometry* geometryFromGMLMultiPoint( const QDomElement& geometryElement );
+  /** static method that creates geometry from GML MultiLineString */
+  static QgsGeometry* geometryFromGMLMultiLineString( const QDomElement& geometryElement );
+  /** static method that creates geometry from GML MultiPolygon */
+  static QgsGeometry* geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
   /** Reads the <gml:coordinates> element and extracts the coordinates as points
      @param coords list where the found coordinates are appended
      @param elem the <gml:coordinates> element
      @return boolean for success*/
-  static bool readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement elem );
-
-  /** static method that creates geometry from GML3 Point */
-  static QgsGeometry* geometryFromGML3Point( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML3 LineString */
-  static QgsGeometry* geometryFromGML3LineString( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML3 Polygon */
-  static QgsGeometry* geometryFromGML3Polygon( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML3 MultiPoint */
-  static QgsGeometry* geometryFromGML3MultiPoint( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML3 MultiLineString */
-  static QgsGeometry* geometryFromGML3MultiLineString( const QDomElement& geometryElement );
-  /** static method that creates geometry from GML3 MultiPolygon */
-  static QgsGeometry* geometryFromGML3MultiPolygon( const QDomElement& geometryElement );
+  static bool readGMLCoordinates( std::list<QgsPoint>& coords, const QDomElement elem );
   /** Reads the <gml:pos> or <gml:posList> element and extracts the coordinates as points
      @param coords list where the found coordinates are appended
      @param elem the <gml:pos> or <gml:posList> element
      @return boolean for success*/
-  static bool readGML3Positions( std::list<QgsPoint>& coords, const QDomElement elem );
+  static bool readGMLPositions( std::list<QgsPoint>& coords, const QDomElement elem );
+
+  
+    /**Create a GML coordinates element from a point list.
+      @param points list of data points
+      @param the GML document
+      @return QDomElement */
+  static QDomElement createGMLCoordinates( const QVector<QgsPoint> points, QDomDocument& doc );
+
+    /**Create a GML pos or posList element from a point list.
+      @param points list of data points
+      @param the GML document
+      @return QDomElement */
+  static QDomElement createGMLPositions( const QVector<QgsPoint> points, QDomDocument& doc );
 };
 
 #endif // QGSOGCUTILS_H
