@@ -160,11 +160,7 @@ QgsRasterInterface * QgsGdalProvider::clone() const
 bool QgsGdalProvider::crsFromWkt( const char *wkt )
 {
 
-#ifdef DEBUG
-struct OGRSpatialReferenceHS *hCRS = OSRNewSpatialReference( NULL );
-#else
-void *hCRS = OSRNewSpatialReference( NULL );
-#endif
+  OGRSpatialReferenceH hCRS = OSRNewSpatialReference( NULL );
 
   if ( OSRImportFromWkt( hCRS, ( char ** ) &wkt ) == OGRERR_NONE )
   {
