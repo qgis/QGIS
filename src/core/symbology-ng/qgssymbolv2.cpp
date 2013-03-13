@@ -673,7 +673,6 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
 QgsSymbolV2* QgsFillSymbolV2::clone() const
 {
   QgsSymbolV2* cloneSymbol = new QgsFillSymbolV2( cloneLayers() );
-  cloneSymbol->setOutputUnit( outputUnit() );
   cloneSymbol->setAlpha( mAlpha );
   return cloneSymbol;
 }

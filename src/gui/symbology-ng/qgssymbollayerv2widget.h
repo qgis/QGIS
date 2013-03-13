@@ -138,6 +138,8 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void borderWidthChanged();
     void borderStyleChanged();
     void offsetChanged();
+    void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 
   protected:
     QgsSimpleFillSymbolLayerV2* mLayer;

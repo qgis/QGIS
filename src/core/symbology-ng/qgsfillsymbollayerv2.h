@@ -74,6 +74,15 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() { return mOffset; }
 
+    void setBorderWidthUnit( QgsSymbolV2::OutputUnit unit ) { mBorderWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit borderWidthUnit() const { return mBorderWidthUnit; }
+
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     QBrush mBrush;
     QBrush mSelBrush;
@@ -81,10 +90,12 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QColor mBorderColor;
     Qt::PenStyle mBorderStyle;
     double mBorderWidth;
+    QgsSymbolV2::OutputUnit mBorderWidthUnit;
     QPen mPen;
     QPen mSelPen;
 
     QPointF mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
 };
 
 /**Base class for polygon renderers generating texture images*/

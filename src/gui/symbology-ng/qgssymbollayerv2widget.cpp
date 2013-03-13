@@ -408,6 +408,13 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffsetY->blockSignals( true );
   spinOffsetY->setValue( mLayer->offset().y() );
   spinOffsetY->blockSignals( false );
+
+  mBorderWidthUnitComboBox->blockSignals( true );
+  mBorderWidthUnitComboBox->setCurrentIndex( mLayer->borderWidthUnit() );
+  mBorderWidthUnitComboBox->blockSignals( false );
+  mOffsetUnitComboBox->blockSignals( true );
+  mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
+  mOffsetUnitComboBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
@@ -471,6 +478,24 @@ void QgsSimpleFillSymbolLayerV2Widget::offsetChanged()
 {
   mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
+}
+
+void QgsSimpleFillSymbolLayerV2Widget::on_mBorderWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setBorderWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsSimpleFillSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
 }
 
 ///////////

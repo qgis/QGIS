@@ -28,9 +28,26 @@
 #include <QDomElement>
 
 QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth )
-    : mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth )
+    : mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth ), mBorderWidthUnit( QgsSymbolV2::MM ),
+    mOffsetUnit( QgsSymbolV2::MM )
 {
   mColor = color;
+}
+
+void QgsSimpleFillSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mBorderWidthUnit = unit;
+  mOffsetUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsSimpleFillSymbolLayerV2::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mBorderWidthUnit;
+  if ( mOffsetUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }
 
 
@@ -58,6 +75,10 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
 
   QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, style, borderColor, borderStyle, borderWidth );
   sl->setOffset( offset );
+  if ( props.contains( "border_width_unit" ) )
+    sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["border_width_unit"] ) );
+  if ( props.contains( "offset_unit" ) )
+    sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
   return sl;
 }
 
@@ -94,7 +115,7 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mPen = QPen( borderColor );
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
-  mPen.setWidthF( context.outputLineWidth( mBorderWidth ) );
+  mPen.setWidthF( mBorderWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit ) );
 }
 
 void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -114,13 +135,20 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
   p->setPen( mPen );
   p->setPen( context.selected() ? mSelPen : mPen );
 
+  QPointF offset;
   if ( !mOffset.isNull() )
-    p->translate( mOffset );
+  {
+    offset.setX( mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+    offset.setY( mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+    p->translate( offset );
+  }
 
   _renderPolygon( p, points, rings );
 
   if ( !mOffset.isNull() )
-    p->translate( -mOffset );
+  {
+    p->translate( -offset );
+  }
 }
 
 QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
@@ -131,7 +159,9 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
   map["color_border"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
   map["style_border"] = QgsSymbolLayerV2Utils::encodePenStyle( mBorderStyle );
   map["width_border"] = QString::number( mBorderWidth );
+  map["border_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mBorderWidthUnit );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   return map;
 }
 
@@ -139,6 +169,8 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
 {
   QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( mColor, mBrushStyle, mBorderColor, mBorderStyle, mBorderWidth );
   sl->setOffset( mOffset );
+  sl->setOffsetUnit( mOffsetUnit );
+  sl->setBorderWidthUnit( mBorderWidthUnit );
   return sl;
 }
 
