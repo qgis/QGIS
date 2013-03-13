@@ -3904,7 +3904,7 @@ bool QgsVectorLayer::fieldEditable( int idx )
   if ( idx >= 0 && idx < fields.count() && mEditTypes.contains( fields[idx].name() ) )
     return mFieldEditables[ fields[idx].name()];
   else
-    return false;
+    return true;
 }
 
 void QgsVectorLayer::setFieldEditable( int idx, bool editable )
