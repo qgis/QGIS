@@ -349,6 +349,10 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Wi
     void on_mVerticalDistanceSpinBox_valueChanged( double d );
     void on_mHorizontalDisplacementSpinBox_valueChanged( double d );
     void on_mVerticalDisplacementSpinBox_valueChanged( double d );
+    void on_mHorizontalDistanceUnitComboBox_currentIndexChanged( int index );
+    void on_mVerticalDistanceUnitComboBox_currentIndexChanged( int index );
+    void on_mHorizontalDisplacementUnitComboBox_currentIndexChanged( int index );
+    void on_mVerticalDisplacementUnitComboBox_currentIndexChanged( int index );
 };
 
 /////////

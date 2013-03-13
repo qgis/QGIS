@@ -1440,6 +1440,19 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* lay
   mVerticalDistanceSpinBox->setValue( mLayer->distanceY() );
   mHorizontalDisplacementSpinBox->setValue( mLayer->displacementX() );
   mVerticalDisplacementSpinBox->setValue( mLayer->displacementY() );
+
+  mHorizontalDistanceUnitComboBox->blockSignals( true );
+  mHorizontalDistanceUnitComboBox->setCurrentIndex( mLayer->distanceXUnit() );
+  mHorizontalDistanceUnitComboBox->blockSignals( false );
+  mVerticalDistanceUnitComboBox->blockSignals( true );
+  mVerticalDistanceUnitComboBox->setCurrentIndex( mLayer->distanceYUnit() );
+  mVerticalDistanceUnitComboBox->blockSignals( false );
+  mHorizontalDisplacementUnitComboBox->blockSignals( true );
+  mHorizontalDisplacementUnitComboBox->setCurrentIndex( mLayer->displacementXUnit() );
+  mHorizontalDisplacementUnitComboBox->blockSignals( false );
+  mVerticalDisplacementUnitComboBox->blockSignals( true );
+  mVerticalDisplacementUnitComboBox->setCurrentIndex( mLayer->displacementYUnit() );
+  mVerticalDisplacementUnitComboBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayerWidget::symbolLayer()
@@ -1479,6 +1492,42 @@ void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementSpinBox_value
   if ( mLayer )
   {
     mLayer->setDisplacementY( d );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDistanceUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setDistanceXUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDistanceUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setDistanceYUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDisplacementUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setDisplacementXUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setDisplacementYUnit(( QgsSymbolV2::OutputUnit ) index );
     emit changed();
   }
 }

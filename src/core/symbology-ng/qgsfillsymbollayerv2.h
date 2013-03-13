@@ -297,12 +297,28 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbolV2* symbol );
     virtual QgsSymbolV2* subSymbol() { return mMarkerSymbol; }
 
+    void setDistanceXUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceXUnit = unit; }
+    QgsSymbolV2::OutputUnit distanceXUnit() const { return mDistanceXUnit; }
+
+    void setDistanceYUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceYUnit = unit; }
+    QgsSymbolV2::OutputUnit distanceYUnit() const { return mDistanceYUnit; }
+
+    void setDisplacementXUnit( QgsSymbolV2::OutputUnit unit ) { mDisplacementXUnit = unit; }
+    QgsSymbolV2::OutputUnit displacementXUnit() const { return mDisplacementXUnit; }
+
+    void setDisplacementYUnit( QgsSymbolV2::OutputUnit unit ) { mDisplacementYUnit = unit; }
+    QgsSymbolV2::OutputUnit displacementYUnit() const { return mDisplacementYUnit; }
+
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;
     double mDistanceX;
+    QgsSymbolV2::OutputUnit mDistanceXUnit;
     double mDistanceY;
+    QgsSymbolV2::OutputUnit mDistanceYUnit;
     double mDisplacementX;
+    QgsSymbolV2::OutputUnit mDisplacementXUnit;
     double mDisplacementY;
+    QgsSymbolV2::OutputUnit mDisplacementYUnit;
 };
 
 class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2

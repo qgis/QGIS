@@ -1120,7 +1120,8 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &ele
 ////////////////////////
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mMarkerSymbol( 0 ), mDistanceX( 15 ),
-    mDistanceY( 15 ), mDisplacementX( 0 ), mDisplacementY( 0 )
+    mDistanceXUnit( QgsSymbolV2::MM ), mDistanceY( 15 ), mDistanceYUnit( QgsSymbolV2::MM ), mDisplacementX( 0 ), mDisplacementXUnit( QgsSymbolV2::MM ),
+    mDisplacementY( 0 ), mDisplacementYUnit( QgsSymbolV2::MM )
 {
   mDistanceX = 15;
   mDistanceY = 15;
@@ -1153,6 +1154,29 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& pr
   {
     layer->setDisplacementY( properties["displacement_y"].toDouble() );
   }
+
+  /*propertyMap["distance_x_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceXUnit );
+  propertyMap["distance_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceYUnit );
+  propertyMap["displacement_x_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementXUnit );
+  propertyMap["displacement_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementYUnit );*/
+
+  if ( properties.contains( "distance_x_unit" ) )
+  {
+    layer->setDistanceXUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["distance_x_unit"] ) );
+  }
+  if ( properties.contains( "distance_y_unit" ) )
+  {
+    layer->setDistanceYUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["distance_y_unit"] ) );
+  }
+  if ( properties.contains( "displacement_x_unit" ) )
+  {
+    layer->setDisplacementXUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["displacement_x_unit"] ) );
+  }
+  if ( properties.contains( "displacement_y_unit" ) )
+  {
+    layer->setDisplacementYUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["displacement_y_unit"] ) );
+  }
+
   return layer;
 }
 
@@ -1164,8 +1188,9 @@ QString QgsPointPatternFillSymbolLayer::layerType() const
 void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
   //render 3 rows and columns in one go to easily incorporate displacement
-  double width = context.outputPixelSize( mDistanceX ) * 2.0;
-  double height = context.outputPixelSize( mDistanceY ) * 2.0;
+  const QgsRenderContext& ctx = context.renderContext();
+  double width = mDistanceX * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceXUnit ) * 2.0;
+  double height = mDistanceY * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceYUnit ) * 2.0;
 
   if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
   {
@@ -1200,8 +1225,8 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
     mMarkerSymbol->renderPoint( QPointF( width, height ), context.feature(), pointRenderContext );
 
     //render displaced points
-    double displacementPixelX = context.outputPixelSize( mDisplacementX );
-    double displacementPixelY = context.outputPixelSize( mDisplacementY );
+    double displacementPixelX = mDisplacementX * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDisplacementXUnit );
+    double displacementPixelY = mDisplacementY * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDisplacementYUnit );
     mMarkerSymbol->renderPoint( QPointF( width / 2.0, -displacementPixelY ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( displacementPixelX, height / 2.0 ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( width / 2.0 + displacementPixelX, height / 2.0 - displacementPixelY ), context.feature(), pointRenderContext );
@@ -1246,16 +1271,24 @@ QgsStringMap QgsPointPatternFillSymbolLayer::properties() const
   propertyMap["distance_y"] = QString::number( mDistanceY );
   propertyMap["displacement_x"] = QString::number( mDisplacementX );
   propertyMap["displacement_y"] = QString::number( mDisplacementY );
+  propertyMap["distance_x_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceXUnit );
+  propertyMap["distance_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceYUnit );
+  propertyMap["displacement_x_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementXUnit );
+  propertyMap["displacement_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementYUnit );
   return propertyMap;
 }
 
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::clone() const
 {
-  QgsSymbolLayerV2* clonedLayer = QgsPointPatternFillSymbolLayer::create( properties() );
+  QgsPointPatternFillSymbolLayer* clonedLayer = static_cast<QgsPointPatternFillSymbolLayer*>( QgsPointPatternFillSymbolLayer::create( properties() ) );
   if ( mMarkerSymbol )
   {
     clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
   }
+  clonedLayer->setDistanceXUnit( mDistanceXUnit );
+  clonedLayer->setDistanceYUnit( mDistanceYUnit );
+  clonedLayer->setDisplacementXUnit( mDisplacementXUnit );
+  clonedLayer->setDisplacementYUnit( mDisplacementYUnit );
   return clonedLayer;
 }
 
