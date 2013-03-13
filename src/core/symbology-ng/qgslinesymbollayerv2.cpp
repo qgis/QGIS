@@ -419,7 +419,6 @@ void QgsMarkerLineSymbolLayerV2::setColor( const QColor& color )
 void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mMarker->setAlpha( context.alpha() );
-  mMarker->setOutputUnit( context.outputUnit() );
 
   // if being rotated, it gets initialized with every line segment
   int hints = 0;

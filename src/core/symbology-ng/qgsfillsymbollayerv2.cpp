@@ -1135,6 +1135,24 @@ QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer()
 {
 }
 
+void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mDistanceXUnit = unit;
+  mDistanceYUnit = unit;
+  mDisplacementXUnit = unit;
+  mDisplacementYUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsPointPatternFillSymbolLayer::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mDistanceXUnit;
+  if ( mDistanceYUnit != unit || mDisplacementXUnit != unit || mDisplacementYUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
+}
+
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& properties )
 {
   QgsPointPatternFillSymbolLayer* layer = new QgsPointPatternFillSymbolLayer();
@@ -1215,7 +1233,6 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
     pointRenderContext.setMapToPixel( mtp );
     pointRenderContext.setForceVectorOutput( false );
 
-    mMarkerSymbol->setOutputUnit( context.outputUnit() );
     mMarkerSymbol->startRender( pointRenderContext );
 
     //render corner points

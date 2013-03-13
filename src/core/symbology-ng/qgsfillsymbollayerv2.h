@@ -309,6 +309,9 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setDisplacementYUnit( QgsSymbolV2::OutputUnit unit ) { mDisplacementYUnit = unit; }
     QgsSymbolV2::OutputUnit displacementYUnit() const { return mDisplacementYUnit; }
 
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;
     double mDistanceX;
