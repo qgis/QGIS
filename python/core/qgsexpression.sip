@@ -187,7 +187,7 @@ class QgsExpression
         virtual bool needsGeometry() const = 0;
 
         // support for visitor pattern
-        virtual void accept( QgsExpression::Visitor& v ) = 0;
+        virtual void accept( QgsExpression::Visitor& v ) const = 0;
     };
 
     class NodeList
@@ -228,8 +228,8 @@ class QgsExpression
         NodeUnaryOperator( QgsExpression::UnaryOperator op, QgsExpression::Node* operand );
         ~NodeUnaryOperator();
 
-        QgsExpression::UnaryOperator op();
-        QgsExpression::Node* operand();
+        QgsExpression::UnaryOperator op() const;
+        QgsExpression::Node* operand() const;
 
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
@@ -239,7 +239,7 @@ class QgsExpression
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v );
+        virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
     class NodeBinaryOperator : QgsExpression::Node
@@ -248,9 +248,9 @@ class QgsExpression
         NodeBinaryOperator( QgsExpression::BinaryOperator op, QgsExpression::Node* opLeft, QgsExpression::Node* opRight );
         ~NodeBinaryOperator();
 
-        QgsExpression::BinaryOperator op();
-        QgsExpression::Node* opLeft();
-        QgsExpression::Node* opRight();
+        QgsExpression::BinaryOperator op() const;
+        QgsExpression::Node* opLeft() const;
+        QgsExpression::Node* opRight() const;
 
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
@@ -260,7 +260,7 @@ class QgsExpression
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v );
+        virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
     class NodeInOperator : QgsExpression::Node
@@ -269,9 +269,9 @@ class QgsExpression
         NodeInOperator( QgsExpression::Node* node, QgsExpression::NodeList* list, bool notin = false );
         ~NodeInOperator();
 
-        QgsExpression::Node* node();
-        bool isNotIn();
-        QgsExpression::NodeList* list();
+        QgsExpression::Node* node() const;
+        bool isNotIn() const;
+        QgsExpression::NodeList* list() const;
 
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
@@ -281,7 +281,7 @@ class QgsExpression
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v );
+        virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
     class NodeFunction : QgsExpression::Node
@@ -291,8 +291,8 @@ class QgsExpression
         //NodeFunction( QString name, QgsExpression::NodeList* args );
         ~NodeFunction();
 
-        int fnIndex();
-        QgsExpression::NodeList* args();
+        int fnIndex() const;
+        QgsExpression::NodeList* args() const;
 
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
@@ -302,7 +302,7 @@ class QgsExpression
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v );
+        virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
     class NodeLiteral : QgsExpression::Node
@@ -310,7 +310,7 @@ class QgsExpression
       public:
         NodeLiteral( QVariant value );
 
-        QVariant value();
+        QVariant value() const;
 
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
@@ -320,7 +320,7 @@ class QgsExpression
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v );
+        virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
     class NodeColumnRef : QgsExpression::Node
@@ -328,7 +328,7 @@ class QgsExpression
       public:
         NodeColumnRef( QString name );
 
-        QString name();
+        QString name() const;
 
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
@@ -338,7 +338,7 @@ class QgsExpression
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v );
+        virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
     class WhenThen
@@ -367,7 +367,7 @@ class QgsExpression
 
         virtual QStringList referencedColumns() const;
         virtual bool needsGeometry() const;
-        virtual void accept( QgsExpression::Visitor& v );
+        virtual void accept( QgsExpression::Visitor& v ) const;
     };
 
     //////
@@ -378,17 +378,17 @@ class QgsExpression
     {
       public:
         virtual ~Visitor();
-        virtual void visit( QgsExpression::NodeUnaryOperator* n ) = 0;
-        virtual void visit( QgsExpression::NodeBinaryOperator* n ) = 0;
-        virtual void visit( QgsExpression::NodeInOperator* n ) = 0;
-        virtual void visit( QgsExpression::NodeFunction* n ) = 0;
-        virtual void visit( QgsExpression::NodeLiteral* n ) = 0;
-        virtual void visit( QgsExpression::NodeColumnRef* n ) = 0;
-        virtual void visit( QgsExpression::NodeCondition* n ) = 0;
+        virtual void visit( const QgsExpression::NodeUnaryOperator& n ) = 0;
+        virtual void visit( const QgsExpression::NodeBinaryOperator& n ) = 0;
+        virtual void visit( const QgsExpression::NodeInOperator& n ) = 0;
+        virtual void visit( const QgsExpression::NodeFunction& n ) = 0;
+        virtual void visit( const QgsExpression::NodeLiteral& n ) = 0;
+        virtual void visit( const QgsExpression::NodeColumnRef& n ) = 0;
+        virtual void visit( const QgsExpression::NodeCondition& n ) = 0;
     };
 
     /** entry function for the visitor pattern */
-    void acceptVisitor( QgsExpression::Visitor& v );
+    void acceptVisitor( QgsExpression::Visitor& v ) const;
 
     // convert from/to OGC Filter
     void toOgcFilter( QDomDocument &doc, QDomElement &element ) const;

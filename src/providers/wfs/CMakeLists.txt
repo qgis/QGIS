@@ -8,7 +8,6 @@ SET(WFS_SRCS
   qgswfsdataitems.cpp
   qgswfsfeatureiterator.cpp
   qgswfssourceselect.cpp
-  qgswfsutils.cpp
 )
 
 SET (WFS_MOC_HDRS

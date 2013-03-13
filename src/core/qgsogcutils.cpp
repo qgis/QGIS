@@ -1810,3 +1810,115 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodePropertyIsNullFromOgcFilter(
   return new QgsExpression::NodeBinaryOperator( QgsExpression::boIs, opLeft, opRight );
 }
 
+
+
+// -----------------------------------------
+
+
+
+class QgsExpressionOGCVisitor : public QgsExpression::Visitor
+{
+  public:
+    QgsExpressionOGCVisitor( QDomDocument& doc )
+      : mDoc( doc ), mRoot( doc.createElement("Filter") ), mParent( mRoot ), mResult( false )
+    {}
+
+    QDomElement root() { return mRoot; }
+    bool result() { return mResult; }
+
+    void visit( const QgsExpression::NodeUnaryOperator& n )
+    {
+      mResult = false;
+
+      if ( n.op() == QgsExpression::uoNot && n.operand() )
+      {
+        QDomElement notElemParent = mParent;
+        QDomElement notElem = mDoc.createElement( "Not" );
+
+        mParent = notElem;
+        n.operand()->accept( *this );
+        if ( !mResult )
+          return; // visit failed
+
+        mParent = notElemParent;
+        mParent.appendChild( notElem );
+        mResult = true;
+      }
+    }
+
+    void visit( const QgsExpression::NodeBinaryOperator& n )
+    {
+      QString opName;
+      switch ( n.op() )
+      {
+        case QgsExpression::boEQ:  opName = "PropertyIsEqualTo"; break;
+        case QgsExpression::boNE:  opName = "PropertyIsNotEqualTo"; break;
+        case QgsExpression::boLE:  opName = "PropertyIsLessThanOrEqualTo"; break;
+        case QgsExpression::boGE:  opName = "PropertyIsGreaterThanOrEqualTo"; break;
+        case QgsExpression::boLT:  opName = "PropertyIsLessThan"; break;
+        case QgsExpression::boGT:  opName = "PropertyIsGreaterThan"; break;
+        case QgsExpression::boOr:  opName = "Or"; break;
+        case QgsExpression::boAnd: opName = "And"; break;
+        default: break;
+      }
+
+      mResult = false;
+      if ( opName.isEmpty() || !n.opLeft() || !n.opRight() )
+        return; // unknown operation -> fail
+
+      QDomElement opElem = mDoc.createElement( opName );
+      QDomElement opElemParent = mParent;
+
+      mParent = opElem;
+      n.opLeft()->accept( *this );
+      if ( !mResult )
+        return; // visit failed
+
+      mParent = opElem;
+      n.opRight()->accept( *this );
+      if ( !mResult )
+        return; // visit failed
+
+      mParent = opElemParent;
+      mParent.appendChild( opElem );
+      mResult = true;
+    }
+
+    void visit( const QgsExpression::NodeInOperator& ) { mResult = false; }
+    void visit( const QgsExpression::NodeFunction& ) { mResult = false; }
+
+    void visit( const QgsExpression::NodeLiteral& n )
+    {
+      QDomElement literalElem = mDoc.createElement( "Literal" );
+      QDomText literalText = mDoc.createTextNode( n.value().toString() );
+      literalElem.appendChild( literalText );
+      mParent.appendChild( literalElem );
+      mResult = true;
+    }
+
+    void visit( const QgsExpression::NodeColumnRef& n )
+    {
+      QDomElement propertyElem = mDoc.createElement( "PropertyName" );
+      QDomText propertyText = mDoc.createTextNode( n.name() );
+      propertyElem.appendChild( propertyText );
+      mParent.appendChild( propertyElem );
+      mResult = true;
+    }
+
+    void visit( const QgsExpression::NodeCondition& n ) { Q_UNUSED( n ); mResult = false; }
+
+  protected:
+    QDomDocument mDoc;
+    QDomElement mRoot;
+    QDomElement mParent;
+    bool mResult;
+};
+
+
+
+QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc )
+{
+  QgsExpressionOGCVisitor v( doc );
+  exp.acceptVisitor( v );
+  return v.result() ? v.root() : QDomElement();
+}

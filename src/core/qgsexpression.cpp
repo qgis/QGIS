@@ -1327,7 +1327,7 @@ void QgsExpression::toOgcFilter( QDomDocument &doc, QDomElement &element ) const
 }
 
 
-void QgsExpression::acceptVisitor( QgsExpression::Visitor& v )
+void QgsExpression::acceptVisitor( QgsExpression::Visitor& v ) const
 {
   if ( mRootNode )
     mRootNode->accept( v );

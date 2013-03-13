@@ -69,6 +69,10 @@ class CORE_EXPORT QgsOgcUtils
   /** Parse XML with OGC filter into QGIS expression */
   static QgsExpression* expressionFromOgcFilter( const QDomElement& element );
 
+  /** Creates OGC filter XML element. Supports minimum standard filter according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
+      @return valid <Filter> QDomElement on success, otherwise null QDomElement
+   */
+  static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc );
 
 private:
   /** static method that creates geometry from GML Point */

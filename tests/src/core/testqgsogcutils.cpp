@@ -34,6 +34,9 @@ class TestQgsOgcUtils : public QObject
 
     void testExpressionFromOgcFilter();
     void testExpressionFromOgcFilter_data();
+
+    void testExpressionToOgcFilter();
+    void testExpressionToOgcFilter_data();
 };
 
 
@@ -210,6 +213,53 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   QCOMPARE( dumpText, expr->dump() );
 
   delete expr;
+}
+
+void TestQgsOgcUtils::testExpressionToOgcFilter()
+{
+  QFETCH( QString, exprText );
+  QFETCH( QString, xmlText );
+
+  QgsExpression exp( exprText );
+  QVERIFY( !exp.hasParserError() );
+
+  QDomDocument doc;
+  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc );
+  QVERIFY( !filterElem.isNull() );
+
+  doc.appendChild( filterElem );
+
+  qDebug("EXPR: %s", exp.dump().toAscii().data() );
+  qDebug("OGC : %s", doc.toString( -1 ).toAscii().data() );
+
+  QCOMPARE( xmlText, doc.toString( -1 ) );
+}
+
+void TestQgsOgcUtils::testExpressionToOgcFilter_data()
+{
+  QTest::addColumn<QString>( "exprText" );
+  QTest::addColumn<QString>( "xmlText" );
+
+  QTest::newRow( "=" ) << QString( "NAME = 'New York'" ) << QString(
+    "<Filter><PropertyIsEqualTo>"
+    "<PropertyName>NAME</PropertyName>"
+    "<Literal>New York</Literal>"
+    "</PropertyIsEqualTo></Filter>" );
+
+  QTest::newRow( ">" ) << QString( "COUNT > 3" ) << QString(
+    "<Filter><PropertyIsGreaterThan>"
+    "<PropertyName>COUNT</PropertyName>"
+    "<Literal>3</Literal>"
+    "</PropertyIsGreaterThan></Filter>" );
+
+  /*
+  QTest::newRow( "is null" ) << QString( "FIRST_NAME IS NULL" ) << QString(
+    "<Filter>"
+    "<PropertyIsNull>"
+    "<PropertyName>FIRST_NAME</ogc:PropertyName>"
+    "</PropertyIsNull>"
+    "</Filter>" );
+  */
 }
 
 
