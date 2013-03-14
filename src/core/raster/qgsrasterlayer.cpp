@@ -1771,6 +1771,8 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
     return;
   }
 
+  mContrastEnhancementAlgorithm = theAlgorithm;
+
   QList<int> myBands;
   QList<QgsContrastEnhancement*> myEnhancements;
   QgsSingleBandGrayRenderer* myGrayRenderer = 0;
