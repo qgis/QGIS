@@ -2231,7 +2231,9 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
     element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
     return false;
   }
-  expr.toOgcFilter( doc, element );
+  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( expr, doc );
+  if ( !filterElem.isNull() )
+    element.appendChild( filterElem );
   return true;
 }
 

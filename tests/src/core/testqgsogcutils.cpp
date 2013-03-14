@@ -223,8 +223,13 @@ void TestQgsOgcUtils::testExpressionToOgcFilter()
   QgsExpression exp( exprText );
   QVERIFY( !exp.hasParserError() );
 
+  QString errorMsg;
   QDomDocument doc;
-  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc );
+  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc, &errorMsg );
+
+  if ( !errorMsg.isEmpty() )
+    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+
   QVERIFY( !filterElem.isNull() );
 
   doc.appendChild( filterElem );
@@ -241,24 +246,98 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
   QTest::addColumn<QString>( "xmlText" );
 
   QTest::newRow( "=" ) << QString( "NAME = 'New York'" ) << QString(
-    "<Filter><PropertyIsEqualTo>"
-    "<PropertyName>NAME</PropertyName>"
-    "<Literal>New York</Literal>"
-    "</PropertyIsEqualTo></Filter>" );
+    "<ogc:Filter><ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>NAME</ogc:PropertyName>"
+    "<ogc:Literal>New York</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo></ogc:Filter>" );
 
   QTest::newRow( ">" ) << QString( "COUNT > 3" ) << QString(
-    "<Filter><PropertyIsGreaterThan>"
-    "<PropertyName>COUNT</PropertyName>"
-    "<Literal>3</Literal>"
-    "</PropertyIsGreaterThan></Filter>" );
+    "<ogc:Filter><ogc:PropertyIsGreaterThan>"
+    "<ogc:PropertyName>COUNT</ogc:PropertyName>"
+    "<ogc:Literal>3</ogc:Literal>"
+    "</ogc:PropertyIsGreaterThan></ogc:Filter>" );
+
+  QTest::newRow( "and+or" ) << QString( "(FIELD1 = 10 OR FIELD1 = 20) AND STATUS = 'VALID'" ) << QString(
+  "<ogc:Filter>"
+    "<ogc:And>"
+      "<ogc:Or>"
+        "<ogc:PropertyIsEqualTo>"
+          "<ogc:PropertyName>FIELD1</ogc:PropertyName>"
+          "<ogc:Literal>10</ogc:Literal>"
+        "</ogc:PropertyIsEqualTo>"
+        "<ogc:PropertyIsEqualTo>"
+          "<ogc:PropertyName>FIELD1</ogc:PropertyName>"
+          "<ogc:Literal>20</ogc:Literal>"
+        "</ogc:PropertyIsEqualTo>"
+      "</ogc:Or>"
+      "<ogc:PropertyIsEqualTo>"
+        "<ogc:PropertyName>STATUS</ogc:PropertyName>"
+        "<ogc:Literal>VALID</ogc:Literal>"
+      "</ogc:PropertyIsEqualTo>"
+    "</ogc:And>"
+  "</ogc:Filter>" );
+
+  QTest::newRow( "is null" ) << QString( "X IS NULL" ) << QString(
+  "<ogc:Filter>"
+    "<ogc:PropertyIsNull>"
+      "<ogc:PropertyName>X</ogc:PropertyName>"
+    "</ogc:PropertyIsNull>"
+  "</ogc:Filter>" );
+
+  QTest::newRow( "is not null" ) << QString( "X IS NOT NULL" ) << QString(
+  "<ogc:Filter>"
+    "<ogc:Not>"
+      "<ogc:PropertyIsNull>"
+        "<ogc:PropertyName>X</ogc:PropertyName>"
+      "</ogc:PropertyIsNull>"
+    "</ogc:Not>"
+  "</ogc:Filter>" );
+
+  QTest::newRow( "in" ) << QString( "A IN (10,20,30)" ) << QString(
+  "<ogc:Filter>"
+    "<ogc:Or>"
+      "<ogc:PropertyIsEqualTo>"
+        "<ogc:PropertyName>A</ogc:PropertyName>"
+        "<ogc:Literal>10</ogc:Literal>"
+      "</ogc:PropertyIsEqualTo>"
+      "<ogc:PropertyIsEqualTo>"
+        "<ogc:PropertyName>A</ogc:PropertyName>"
+        "<ogc:Literal>20</ogc:Literal>"
+      "</ogc:PropertyIsEqualTo>"
+      "<ogc:PropertyIsEqualTo>"
+        "<ogc:PropertyName>A</ogc:PropertyName>"
+        "<ogc:Literal>30</ogc:Literal>"
+      "</ogc:PropertyIsEqualTo>"
+    "</ogc:Or>"
+  "</ogc:Filter>" );
+
+  QTest::newRow( "intersects + wkt" ) << QString( "intersects($geometry, geomFromWKT('POINT (5 6)'))" ) << QString(
+  "<ogc:Filter>"
+    "<ogc:Intersects>"
+      "<ogc:PropertyName>geometry</ogc:PropertyName>"
+      "<gml:Point><gml:coordinates cs=\",\" ts=\" \">5.0,6.0</gml:coordinates></gml:Point>"
+    "</ogc:Intersects>"
+  "</ogc:Filter>" );
+
+  QTest::newRow( "contains + gml" ) << QString( "contains($geometry, geomFromGML2('<Point><coordinates cs=\",\" ts=\" \">5.0,6.0</coordinates></Point>'))" ) << QString(
+  "<ogc:Filter>"
+    "<ogc:Contains>"
+      "<ogc:PropertyName>geometry</ogc:PropertyName>"
+      "<Point><coordinates cs=\",\" ts=\" \">5.0,6.0</coordinates></Point>"
+    "</ogc:Contains>"
+  "</ogc:Filter>" );
 
   /*
-  QTest::newRow( "is null" ) << QString( "FIRST_NAME IS NULL" ) << QString(
-    "<Filter>"
-    "<PropertyIsNull>"
-    "<PropertyName>FIRST_NAME</ogc:PropertyName>"
-    "</PropertyIsNull>"
-    "</Filter>" );
+  QTest::newRow( "bbox" ) << QString( "bbox(13.0983, )") << QString(
+  "<ogc:Filter>"
+    "<ogc:BBOX>"
+      "<ogc:PropertyName>Geometry</ogc:PropertyName>"
+        "<gml:Envelope>"
+        "<gml:lowerCorner>13.0983 31.5899</gml:lowerCorner>"
+        "<gml:upperCorner>35.5472 42.8143</gml:upperCorner>"
+      "</gml:Envelope>"
+    "</ogc:BBOX>"
+  "</ogc:Filter>" );
   */
 }
 

@@ -72,7 +72,7 @@ class CORE_EXPORT QgsOgcUtils
   /** Creates OGC filter XML element. Supports minimum standard filter according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
       @return valid <Filter> QDomElement on success, otherwise null QDomElement
    */
-  static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc );
+  static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = 0 );
 
 private:
   /** static method that creates geometry from GML Point */
@@ -129,6 +129,15 @@ private:
     static QgsExpression::Node* nodeIsBetweenFromOgcFilter( QDomElement& element, QString& errorMessage );
     //! handles <PropertyIsNull> tag
     static QgsExpression::NodeBinaryOperator* nodePropertyIsNullFromOgcFilter( QDomElement& element, QString& errorMessage );
+
+    static QDomElement expressionNodeToOgcFilter( const QgsExpression::Node* node, QDomDocument& doc, QString& errorMessage );
+    static QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpression::NodeUnaryOperator* node, QDomDocument& doc, QString& errorMessage );
+    static QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpression::NodeBinaryOperator* node, QDomDocument& doc, QString& errorMessage );
+    static QDomElement expressionLiteralToOgcFilter( const QgsExpression::NodeLiteral* node, QDomDocument& doc, QString& errorMessage );
+    static QDomElement expressionColumnRefToOgcFilter( const QgsExpression::NodeColumnRef* node, QDomDocument& doc, QString& errorMessage );
+    static QDomElement expressionInOperatorToOgcFilter( const QgsExpression::NodeInOperator* node, QDomDocument& doc, QString& errorMessage );
+    static QDomElement expressionFunctionToOgcFilter( const QgsExpression::NodeFunction* node, QDomDocument& doc, QString& errorMessage );
+
 };
 
 #endif // QGSOGCUTILS_H

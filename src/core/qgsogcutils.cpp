@@ -1434,7 +1434,7 @@ QgsExpression* QgsOgcUtils::expressionFromOgcFilter( const QDomElement& element 
 }
 
 
-static int binaryOperatorFromTagName( const QString& tagName )
+static const QMap<QString, int>& binaryOperatorsTagNamesMap()
 {
   static QMap<QString, int> binOps;
   if ( binOps.isEmpty() )
@@ -1456,8 +1456,18 @@ static int binaryOperatorFromTagName( const QString& tagName )
     binOps.insert( "Mul", QgsExpression::boMul );
     binOps.insert( "Div", QgsExpression::boDiv );
   }
+  return binOps;
+}
 
-  return binOps.value( tagName, -1 );
+static int binaryOperatorFromTagName( const QString& tagName )
+{
+
+  return binaryOperatorsTagNamesMap().value( tagName, -1 );
+}
+
+static QString binaryOperatorToTagName( QgsExpression::BinaryOperator op )
+{
+  return binaryOperatorsTagNamesMap().key( op, QString() );
 }
 
 static bool isBinaryOperator( const QString& tagName )
@@ -1811,114 +1821,346 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodePropertyIsNullFromOgcFilter(
 }
 
 
-
-// -----------------------------------------
-
+/////////////////
 
 
-class QgsExpressionOGCVisitor : public QgsExpression::Visitor
+
+
+QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage )
 {
-  public:
-    QgsExpressionOGCVisitor( QDomDocument& doc )
-      : mDoc( doc ), mRoot( doc.createElement("Filter") ), mParent( mRoot ), mResult( false )
-    {}
+  if ( !exp.rootNode() )
+    return QDomElement();
 
-    QDomElement root() { return mRoot; }
-    bool result() { return mResult; }
+  QString localErrorMessage; // temporary that will be thrown away unused
+  QString& refErrorMessage = ( errorMessage ? *errorMessage : localErrorMessage );
+  refErrorMessage.clear();
 
-    void visit( const QgsExpression::NodeUnaryOperator& n )
-    {
-      mResult = false;
+  QDomElement exprRootElem = expressionNodeToOgcFilter( exp.rootNode(), doc, refErrorMessage );
+  if ( exprRootElem.isNull() )
+    return QDomElement();
 
-      if ( n.op() == QgsExpression::uoNot && n.operand() )
-      {
-        QDomElement notElemParent = mParent;
-        QDomElement notElem = mDoc.createElement( "Not" );
-
-        mParent = notElem;
-        n.operand()->accept( *this );
-        if ( !mResult )
-          return; // visit failed
-
-        mParent = notElemParent;
-        mParent.appendChild( notElem );
-        mResult = true;
-      }
-    }
-
-    void visit( const QgsExpression::NodeBinaryOperator& n )
-    {
-      QString opName;
-      switch ( n.op() )
-      {
-        case QgsExpression::boEQ:  opName = "PropertyIsEqualTo"; break;
-        case QgsExpression::boNE:  opName = "PropertyIsNotEqualTo"; break;
-        case QgsExpression::boLE:  opName = "PropertyIsLessThanOrEqualTo"; break;
-        case QgsExpression::boGE:  opName = "PropertyIsGreaterThanOrEqualTo"; break;
-        case QgsExpression::boLT:  opName = "PropertyIsLessThan"; break;
-        case QgsExpression::boGT:  opName = "PropertyIsGreaterThan"; break;
-        case QgsExpression::boOr:  opName = "Or"; break;
-        case QgsExpression::boAnd: opName = "And"; break;
-        default: break;
-      }
-
-      mResult = false;
-      if ( opName.isEmpty() || !n.opLeft() || !n.opRight() )
-        return; // unknown operation -> fail
-
-      QDomElement opElem = mDoc.createElement( opName );
-      QDomElement opElemParent = mParent;
-
-      mParent = opElem;
-      n.opLeft()->accept( *this );
-      if ( !mResult )
-        return; // visit failed
-
-      mParent = opElem;
-      n.opRight()->accept( *this );
-      if ( !mResult )
-        return; // visit failed
-
-      mParent = opElemParent;
-      mParent.appendChild( opElem );
-      mResult = true;
-    }
-
-    void visit( const QgsExpression::NodeInOperator& ) { mResult = false; }
-    void visit( const QgsExpression::NodeFunction& ) { mResult = false; }
-
-    void visit( const QgsExpression::NodeLiteral& n )
-    {
-      QDomElement literalElem = mDoc.createElement( "Literal" );
-      QDomText literalText = mDoc.createTextNode( n.value().toString() );
-      literalElem.appendChild( literalText );
-      mParent.appendChild( literalElem );
-      mResult = true;
-    }
-
-    void visit( const QgsExpression::NodeColumnRef& n )
-    {
-      QDomElement propertyElem = mDoc.createElement( "PropertyName" );
-      QDomText propertyText = mDoc.createTextNode( n.name() );
-      propertyElem.appendChild( propertyText );
-      mParent.appendChild( propertyElem );
-      mResult = true;
-    }
-
-    void visit( const QgsExpression::NodeCondition& n ) { Q_UNUSED( n ); mResult = false; }
-
-  protected:
-    QDomDocument mDoc;
-    QDomElement mRoot;
-    QDomElement mParent;
-    bool mResult;
-};
+  QDomElement filterElem = doc.createElement( "ogc:Filter" );
+  filterElem.appendChild( exprRootElem );
+  return filterElem;
+}
 
 
-
-QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc )
+QDomElement QgsOgcUtils::expressionNodeToOgcFilter( const QgsExpression::Node* node, QDomDocument& doc, QString& errorMessage )
 {
-  QgsExpressionOGCVisitor v( doc );
-  exp.acceptVisitor( v );
-  return v.result() ? v.root() : QDomElement();
+  switch ( node->nodeType() )
+  {
+    case QgsExpression::ntUnaryOperator:
+      return expressionUnaryOperatorToOgcFilter( static_cast<const QgsExpression::NodeUnaryOperator*>( node ), doc, errorMessage );
+    case QgsExpression::ntBinaryOperator:
+      return expressionBinaryOperatorToOgcFilter( static_cast<const QgsExpression::NodeBinaryOperator*>( node ), doc, errorMessage );
+    case QgsExpression::ntInOperator:
+      return expressionInOperatorToOgcFilter( static_cast<const QgsExpression::NodeInOperator*>( node ), doc, errorMessage );
+    case QgsExpression::ntFunction:
+      return expressionFunctionToOgcFilter( static_cast<const QgsExpression::NodeFunction*>( node ), doc, errorMessage );
+    case QgsExpression::ntLiteral:
+      return expressionLiteralToOgcFilter( static_cast<const QgsExpression::NodeLiteral*>( node ), doc, errorMessage );
+    case QgsExpression::ntColumnRef:
+      return expressionColumnRefToOgcFilter( static_cast<const QgsExpression::NodeColumnRef*>( node ), doc, errorMessage );
+
+    default:
+      errorMessage = QString( "Node type not supported: %1" ).arg( node->nodeType() );
+      return QDomElement();
+  }
+}
+
+
+QDomElement QgsOgcUtils::expressionUnaryOperatorToOgcFilter( const QgsExpression::NodeUnaryOperator* node, QDomDocument& doc, QString& errorMessage )
+{
+  QDomElement uoElem;
+  switch ( node->op() )
+  {
+    case QgsExpression::uoMinus:
+      uoElem = doc.createElement( "ogc:Literal" );
+      uoElem.appendChild( doc.createTextNode( "-" ) );
+      break;
+    case QgsExpression::uoNot:
+      uoElem = doc.createElement( "ogc:Not" );
+      break;
+
+    default:
+      errorMessage = QString( "Unary operator %1 not implemented yet" ).arg( QgsExpression::UnaryOperatorText[node->op()] );
+      return QDomElement();
+  }
+
+  QDomElement operandElem = expressionNodeToOgcFilter( node->operand(), doc, errorMessage );
+  if ( !errorMessage.isEmpty() )
+    return QDomElement();
+
+  uoElem.appendChild( operandElem );
+  return uoElem;
+}
+
+
+QDomElement QgsOgcUtils::expressionBinaryOperatorToOgcFilter( const QgsExpression::NodeBinaryOperator* node, QDomDocument& doc, QString& errorMessage )
+{
+  QDomElement leftElem = expressionNodeToOgcFilter( node->opLeft(), doc, errorMessage );
+  if ( !errorMessage.isEmpty() )
+    return QDomElement();
+
+  QgsExpression::BinaryOperator op = node->op();
+
+  // before right operator is parsed: to allow NULL handling
+  if ( op == QgsExpression::boIs || op == QgsExpression::boIsNot )
+  {
+    if ( node->opRight()->nodeType() == QgsExpression::ntLiteral )
+    {
+      const QgsExpression::NodeLiteral* rightLit = static_cast<const QgsExpression::NodeLiteral*>( node->opRight() );
+      if ( rightLit->value().isNull() )
+      {
+
+        QDomElement elem = doc.createElement( "ogc:PropertyIsNull" );
+        elem.appendChild( leftElem );
+
+        if ( op == QgsExpression::boIsNot )
+        {
+          QDomElement notElem = doc.createElement( "ogc:Not" );
+          notElem.appendChild( elem );
+          return notElem;
+        }
+
+        return elem;
+      }
+
+      // continue with equal / not equal operator once the null case is handled
+      op = ( op == QgsExpression::boIs ? QgsExpression::boEQ : QgsExpression::boNE );
+    }
+
+  }
+
+  QDomElement rightElem = expressionNodeToOgcFilter( node->opRight(), doc, errorMessage );
+  if ( !errorMessage.isEmpty() )
+    return QDomElement();
+
+
+  QString opText = binaryOperatorToTagName( op );
+  if ( opText.isEmpty() )
+  {
+    // not implemented binary operators
+    // TODO: regex, % (mod), ^ (pow) are not supported yet
+    errorMessage = QString( "Binary operator %1 not implemented yet" ).arg( QgsExpression::BinaryOperatorText[op] );
+    return QDomElement();
+  }
+
+  QDomElement boElem = doc.createElement( "ogc:" + opText );
+
+  if ( op == QgsExpression::boLike || op == QgsExpression::boILike )
+  {
+    if ( op == QgsExpression::boILike )
+      boElem.setAttribute( "matchCase", "false" );
+
+    // setup wildcards to <ogc:PropertyIsLike>
+    boElem.setAttribute( "wildCard", "%" );
+    boElem.setAttribute( "singleChar", "?" );
+    boElem.setAttribute( "escapeChar", "!" );
+  }
+
+  boElem.appendChild( leftElem );
+  boElem.appendChild( rightElem );
+  return boElem;
+}
+
+
+QDomElement QgsOgcUtils::expressionLiteralToOgcFilter( const QgsExpression::NodeLiteral* node, QDomDocument& doc, QString& errorMessage )
+{
+  QString value;
+  switch ( node->value().type() )
+  {
+    case QVariant::Int:
+      value = QString::number( node->value().toInt() );
+      break;
+    case QVariant::Double:
+      value = QString::number( node->value().toDouble() );
+      break;
+    case QVariant::String:
+      value = node->value().toString();
+      break;
+
+    default:
+      errorMessage = QString( "Literal type not supported: %1" ).arg( node->value().type() );
+      return QDomElement();
+  }
+
+  QDomElement litElem = doc.createElement( "ogc:Literal" );
+  litElem.appendChild( doc.createTextNode( value ) );
+  return litElem;
+}
+
+
+QDomElement QgsOgcUtils::expressionColumnRefToOgcFilter( const QgsExpression::NodeColumnRef* node, QDomDocument& doc, QString& /*errorMessage*/ )
+{
+  QDomElement propElem = doc.createElement( "ogc:PropertyName" );
+  propElem.appendChild( doc.createTextNode( node->name() ) );
+  return propElem;
+}
+
+
+
+QDomElement QgsOgcUtils::expressionInOperatorToOgcFilter( const QgsExpression::NodeInOperator* node, QDomDocument& doc, QString& errorMessage )
+{
+  if ( node->list()->list().size() == 1 )
+    return expressionNodeToOgcFilter( node->list()->list()[0], doc, errorMessage );
+
+  QDomElement orElem = doc.createElement( "ogc:Or" );
+  QDomElement leftNode = expressionNodeToOgcFilter( node->node(), doc, errorMessage );
+
+  foreach ( QgsExpression::Node* n, node->list()->list() )
+  {
+    QDomElement listNode = expressionNodeToOgcFilter( n, doc, errorMessage );
+    if ( !errorMessage.isEmpty() )
+      return QDomElement();
+
+    QDomElement eqElem = doc.createElement( "ogc:PropertyIsEqualTo" );
+    eqElem.appendChild( leftNode.cloneNode() );
+    eqElem.appendChild( listNode );
+
+    orElem.appendChild( eqElem );
+  }
+  return orElem;
+}
+
+static QMap<QString, QString> binarySpatialOpsMap()
+{
+  static QMap<QString, QString> binSpatialOps;
+  if ( binSpatialOps.isEmpty() )
+  {
+    binSpatialOps.insert( "disjoint", "Disjoint" );
+    binSpatialOps.insert( "intersects", "Intersects" );
+    binSpatialOps.insert( "touches", "Touches" );
+    binSpatialOps.insert( "crosses", "Crosses" );
+    binSpatialOps.insert( "contains", "Contains" );
+    binSpatialOps.insert( "overlaps", "Overlaps" );
+    binSpatialOps.insert( "within", "Within" );
+  }
+  return binSpatialOps;
+}
+
+static bool isBinarySpatialOperator( const QString& fnName )
+{
+  return binarySpatialOpsMap().contains( fnName );
+}
+
+static QString tagNameForSpatialOperator( const QString& fnName )
+{
+  return binarySpatialOpsMap().value( fnName );
+}
+
+static bool isGeometryColumn( const QgsExpression::Node* node )
+{
+  if ( node->nodeType() != QgsExpression::ntFunction )
+    return false;
+
+  const QgsExpression::NodeFunction* fn = static_cast<const QgsExpression::NodeFunction*>( node );
+  QgsExpression::Function* fd = QgsExpression::Functions()[fn->fnIndex()];
+  return fd->name() == "$geometry";
+}
+
+
+QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::NodeFunction* node, QDomDocument& doc, QString& errorMessage )
+{
+  QgsExpression::Function* fd = QgsExpression::Functions()[node->fnIndex()];
+
+  if ( fd->name() == "bbox" )
+  {
+    errorMessage = QString( "<BBOX> is currently not supported." );
+    return QDomElement();
+  }
+
+  if ( isBinarySpatialOperator( fd->name() ) )
+  {
+    QList<QgsExpression::Node*> argNodes = node->args()->list();
+    Q_ASSERT( argNodes.count() == 2 ); // binary spatial ops must have two args
+
+    QgsExpression::Node* otherNode = 0;
+    if ( isGeometryColumn( argNodes[0]) )
+      otherNode = argNodes[1];
+    else if ( isGeometryColumn( argNodes[1] ) )
+      otherNode = argNodes[0];
+    else
+    {
+      errorMessage = QString( "Unable to translate spatial operator: at least one must refer to geometry." );
+      return QDomElement();
+    }
+
+    QDomElement otherGeomElem;
+
+    // the other node must be a geometry constructor
+    if ( otherNode->nodeType() != QgsExpression::ntFunction )
+    {
+      errorMessage = "spatial operator: the other operator must be a geometry constructor function";
+      return QDomElement();
+    }
+
+    const QgsExpression::NodeFunction* otherFn = static_cast<const QgsExpression::NodeFunction*>( otherNode );
+    QgsExpression::Function* otherFnDef = QgsExpression::Functions()[otherFn->fnIndex()];
+    if ( otherFnDef->name() == "geomFromWKT" )
+    {
+      QgsExpression::Node* firstFnArg = otherFn->args()->list()[0];
+      if ( firstFnArg->nodeType() != QgsExpression::ntLiteral )
+      {
+        errorMessage = "geomFromWKT: argument must be string literal";
+        return QDomElement();
+      }
+      QString wkt = static_cast<const QgsExpression::NodeLiteral*>( firstFnArg )->value().toString();
+      QgsGeometry* geom = QgsGeometry::fromWkt( wkt );
+      otherGeomElem = QgsOgcUtils::geometryToGML( geom, doc );
+      delete geom;
+    }
+    else if ( otherFnDef->name() == "geomFromGML2" )
+    {
+      QgsExpression::Node* firstFnArg = otherFn->args()->list()[0];
+      if ( firstFnArg->nodeType() != QgsExpression::ntLiteral )
+      {
+        errorMessage = "geomFromGML2: argument must be string literal";
+        return QDomElement();
+      }
+
+      QDomDocument geomDoc;
+      QString gml = static_cast<const QgsExpression::NodeLiteral*>( firstFnArg )->value().toString();
+      if ( !geomDoc.setContent( gml, true ) )
+      {
+        errorMessage = "geomFromGML2: unable to parse XML";
+        return QDomElement();
+      }
+
+      QDomNode geomNode = doc.importNode( geomDoc.documentElement(), true );
+      otherGeomElem = geomNode.toElement();
+    }
+    else
+    {
+      errorMessage = "spatial operator: unknown geometry constructor function";
+      return QDomElement();
+    }
+
+    QDomElement funcElem = doc.createElement( "ogc:" + tagNameForSpatialOperator( fd->name() ) );
+    QDomElement geomProperty = doc.createElement( "ogc:PropertyName" );
+    geomProperty.appendChild( doc.createTextNode( "geometry" ) );
+    funcElem.appendChild( geomProperty );
+    funcElem.appendChild( otherGeomElem );
+    return funcElem;
+  }
+
+  if ( fd->params() == 0 )
+  {
+    errorMessage = QString( "Special columns / constants are not supported." );
+    return QDomElement();
+  }
+
+  // this is somehow wrong - we are just hoping that the other side supports the same functions as we do...
+  QDomElement funcElem = doc.createElement( "ogc:Function" );
+  funcElem.setAttribute( "name", fd->name() );
+  foreach ( QgsExpression::Node* n, node->args()->list() )
+  {
+    QDomElement childElem = expressionNodeToOgcFilter( n, doc, errorMessage );
+    if ( !errorMessage.isEmpty() )
+      return QDomElement();
+
+    funcElem.appendChild( childElem );
+  }
+
+  return funcElem;
 }
