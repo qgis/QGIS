@@ -63,14 +63,25 @@ void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
     mLength->setValue( mLength->minimum() );
   if ( mLength->value() > mLength->maximum() )
     mLength->setValue( mLength->maximum() );
+  setPrecisionMinMax();
+}
 
-  mPrec->setMinimum( mTypeBox->itemData( idx, Qt::UserRole + 4 ).toInt() );
-  mPrec->setMaximum( mTypeBox->itemData( idx, Qt::UserRole + 5 ).toInt() );
-  mPrec->setVisible( mPrec->minimum() < mPrec->maximum() );
-  if ( mPrec->value() < mPrec->minimum() )
-    mPrec->setValue( mPrec->minimum() );
-  if ( mPrec->value() > mPrec->maximum() )
-    mPrec->setValue( mPrec->maximum() );
+void QgsAddAttrDialog::on_mLength_editingFinished()
+{
+  setPrecisionMinMax();
+}
+
+void QgsAddAttrDialog::setPrecisionMinMax()
+{
+  int idx = mTypeBox->currentIndex();
+  int minPrecType = mTypeBox->itemData( idx, Qt::UserRole + 4 ).toInt();
+  int maxPrecType = mTypeBox->itemData( idx, Qt::UserRole + 5 ).toInt();
+  mPrec->setVisible( minPrecType < maxPrecType );
+  if ( mPrec->isVisible() )
+  {
+    mPrec->setMinimum( minPrecType );
+    mPrec->setMaximum( qMin( maxPrecType, mLength->value() ) );
+  }
 }
 
 void QgsAddAttrDialog::accept()
