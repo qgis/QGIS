@@ -443,7 +443,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
 
-    layItem->setData( 0, GetFeatureInfoUrlRole, params.value( "getFeatureInfoUrl" ) );
     lstResults->addTopLevelItem( layItem );
 
     QComboBox *formatCombo = new QComboBox();
@@ -481,6 +480,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
     connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
   }
+  // Set/reset getFeatureInfoUrl (currently only available for Feature, so it may change if format changes)
+  layItem->setData( 0, GetFeatureInfoUrlRole, params.value( "getFeatureInfoUrl" ) );
 
   QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( fields, feature, layer->crs(), QStringList() << label << "" );
   layItem->addChild( featItem );
