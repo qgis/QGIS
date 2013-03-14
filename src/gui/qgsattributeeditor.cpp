@@ -1195,6 +1195,6 @@ void QgsStringRelay::changeText( QString str )
   connect( this, SIGNAL( textChanged( QString ) ), sObj, sSlot );
   for ( int i = 0; i < mProxyList.size(); ++i )
   {
-    ( mProxyList[i] )->blockSignals( oldBlockSigs[i] );
+    mProxyList[i]->blockSignals( oldBlockSigs[i] );
   }
 }

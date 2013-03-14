@@ -59,6 +59,15 @@ void QgsFilterLineEdit::clear()
   setModified( true );
 }
 
+void QgsFilterLineEdit::changeEvent( QEvent *e )
+{
+  QLineEdit::changeEvent( e );
+  if ( !isEnabled() )
+    btnClear->setVisible( false );
+  else
+    btnClear->setVisible( text() != mNullValue );
+}
+
 void QgsFilterLineEdit::toggleClearButton( const QString &text )
 {
   btnClear->setVisible( !isReadOnly() && text != mNullValue );

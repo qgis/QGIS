@@ -38,6 +38,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   protected:
     void resizeEvent( QResizeEvent * );
+    void changeEvent( QEvent * );
 
   private slots:
     void clear();
