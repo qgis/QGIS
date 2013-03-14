@@ -42,7 +42,6 @@ class Dialog(QDialog, Ui_Dialog):
         self.setupUi(self)
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         QObject.connect(self.spnX, SIGNAL("valueChanged(double)"), self.offset)
-        #QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateInput)
         QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateLayer)
         QObject.connect(self.btnCanvas, SIGNAL("clicked()"), self.updateCanvas)
         QObject.connect(self.chkAlign, SIGNAL("toggled(bool)"), self.chkAlignToggled)
@@ -166,12 +165,14 @@ class Dialog(QDialog, Ui_Dialog):
 
         fields = QgsFields()
         fields.append( QgsField("ID", QVariant.Int) )
+        fieldCount = 1
 
         if polygon:
             fields.append( QgsField("XMIN", QVariant.Double) )
             fields.append( QgsField("XMAX", QVariant.Double) )
             fields.append( QgsField("YMIN", QVariant.Double) )
             fields.append( QgsField("YMAX", QVariant.Double) )
+            fieldCount = 5
             check = QFile(self.shapefileName)
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
@@ -179,12 +180,15 @@ class Dialog(QDialog, Ui_Dialog):
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPolygon, crs)
         else:
             fields.append( QgsField("COORD", QVariant.Double) )
+            fieldCount = 2
             check = QFile(self.shapefileName)
             if check.exists():
                 if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                     return
             writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBLineString, crs)
         outFeat = QgsFeature()
+        outFeat.initAttributes(fieldCount)
+        outFeat.setFields(fields)
         outGeom = QgsGeometry()
         idVar = 0
         self.progressBar.setValue( 0 )
@@ -258,7 +262,6 @@ class Dialog(QDialog, Ui_Dialog):
                     prog = int( count / count_max * 100 )
 
         self.progressBar.setValue( 100 )
-        #self.progressBar.setRange( 0, 100 )
         del writer
 
     def outFile(self):
@@ -302,4 +305,3 @@ class Dialog(QDialog, Ui_Dialog):
                     foundVal = tmpVal
                 tmpVal += step
         return foundVal
-
