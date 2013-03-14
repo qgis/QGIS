@@ -605,8 +605,8 @@ static QPointF offsetPoint( QPointF pt, double angle, double dist )
 // calc intersection of two (infinite) lines defined by one point and tangent
 static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
 {
-  // parallel lines? (or the difference between angles is less than cca 0.1 degree)
-  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || qAbs( t1 - t2 ) < 0.001 )
+  // parallel lines? (or the difference between angles is less than appr. 10 degree)
+  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || qAbs( atan( t1 ) - atan( t2 ) ) < 0.175 )
     return QPointF();
 
   double x, y;
