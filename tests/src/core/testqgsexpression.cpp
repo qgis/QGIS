@@ -571,18 +571,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "geomFromWKT Polygon" ) << "geomFromWKT('" + QgsGeometry::fromPolygon( polygon )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
 
       // GML Point
-      QTest::newRow( "GML Point (coordinates)" ) << "geomFromGML2('<gml:Point><gml:coordinates>123,456</gml:coordinates></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
+      QTest::newRow( "GML Point (coordinates)" ) << "geomFromGML('<gml:Point><gml:coordinates>123,456</gml:coordinates></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
       // gml:pos if from GML3
-      //QTest::newRow( "GML Point (pos)" ) << "geomFromGML2('<gml:Point srsName=\"foo\"><gml:pos srsDimension=\"2\">123 456</gml:pos></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
+      QTest::newRow( "GML Point (pos)" ) << "geomFromGML('<gml:Point srsName=\"foo\"><gml:pos srsDimension=\"2\">123 456</gml:pos></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
 
       // GML Box
       QgsRectangle rect( 135.2239, 34.4879, 135.8578, 34.8471 );
-      QTest::newRow( "GML Box" ) << "geomFromGML2('<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
+      QTest::newRow( "GML Box" ) << "geomFromGML('<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
       // Envelope is from GML3 ?
-      //QTest::newRow( "GML Envelope" ) << "geomFromGML2('<gml:Envelope>"
-      //   "<gml:lowerCorner>135.2239 34.4879</gml:lowerCorner>"
-      //   "<gml:upperCorner>135.8578 34.8471</gml:upperCorner>"
-      // "</gml:Envelope>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
+      QTest::newRow( "GML Envelope" ) << "geomFromGML('<gml:Envelope>"
+         "<gml:lowerCorner>135.2239 34.4879</gml:lowerCorner>"
+         "<gml:upperCorner>135.8578 34.8471</gml:upperCorner>"
+       "</gml:Envelope>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
     }
 
     void eval_geometry_constructor()

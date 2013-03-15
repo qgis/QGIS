@@ -942,7 +942,7 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode& envelopeNode
   if ( !conversionSuccess )
     return rect;
 
-  elem = lowerCornerList.at( 0 ).toElement();
+  elem = upperCornerList.at( 0 ).toElement();
   if ( elem.hasAttribute( "srsDimension" ) )
   {
     srsDimension = elem.attribute( "srsDimension" ).toInt( &conversionSuccess );
@@ -1605,7 +1605,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDom
 
   QgsExpression::NodeList *opArgs = new QgsExpression::NodeList();
   opArgs->append( new QgsExpression::NodeFunction( QgsExpression::functionIndex( "$geometry" ), new QgsExpression::NodeList() ) );
-  opArgs->append( new QgsExpression::NodeFunction( QgsExpression::functionIndex( "geomFromGML2" ), gml2Args ) );
+  opArgs->append( new QgsExpression::NodeFunction( QgsExpression::functionIndex( "geomFromGML" ), gml2Args ) );
 
   return new QgsExpression::NodeFunction( opIdx, opArgs );
 }
@@ -2110,12 +2110,12 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
       otherGeomElem = QgsOgcUtils::geometryToGML( geom, doc );
       delete geom;
     }
-    else if ( otherFnDef->name() == "geomFromGML2" )
+    else if ( otherFnDef->name() == "geomFromGML" )
     {
       QgsExpression::Node* firstFnArg = otherFn->args()->list()[0];
       if ( firstFnArg->nodeType() != QgsExpression::ntLiteral )
       {
-        errorMessage = "geomFromGML2: argument must be string literal";
+        errorMessage = "geomFromGML: argument must be string literal";
         return QDomElement();
       }
 
@@ -2123,7 +2123,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
       QString gml = static_cast<const QgsExpression::NodeLiteral*>( firstFnArg )->value().toString();
       if ( !geomDoc.setContent( gml, true ) )
       {
-        errorMessage = "geomFromGML2: unable to parse XML";
+        errorMessage = "geomFromGML: unable to parse XML";
         return QDomElement();
       }
 

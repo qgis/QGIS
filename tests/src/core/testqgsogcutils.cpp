@@ -172,12 +172,12 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "</Filter>" )
   << QString( "FIRST_NAME IS NULL" );
 
-  QTest::newRow( "bbox" ) << QString(
+  QTest::newRow( "bbox with GML2 Box" ) << QString(
     "<Filter>"
     "<BBOX><PropertyName>Name>NAME</PropertyName><gml:Box srsName='foo'>"
     "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
     "</Filter>" )
-  << QString( "bbox($geometry, geomFromGML2('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
+  << QString( "bbox($geometry, geomFromGML('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
 
   QTest::newRow( "Intersects" ) << QString(
     "<Filter>"
@@ -188,7 +188,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "</gml:Point>"
     "</Intersects>"
     "</Filter>" )
-  << QString( "intersects($geometry, geomFromGML2('<Point><coordinates>123,456</coordinates></Point>'))" );
+  << QString( "intersects($geometry, geomFromGML('<Point><coordinates>123,456</coordinates></Point>'))" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter()
@@ -319,7 +319,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:Intersects>"
   "</ogc:Filter>" );
 
-  QTest::newRow( "contains + gml" ) << QString( "contains($geometry, geomFromGML2('<Point><coordinates cs=\",\" ts=\" \">5.0,6.0</coordinates></Point>'))" ) << QString(
+  QTest::newRow( "contains + gml" ) << QString( "contains($geometry, geomFromGML('<Point><coordinates cs=\",\" ts=\" \">5.0,6.0</coordinates></Point>'))" ) << QString(
   "<ogc:Filter>"
     "<ogc:Contains>"
       "<ogc:PropertyName>geometry</ogc:PropertyName>"
@@ -328,7 +328,9 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
   "</ogc:Filter>" );
 
   /*
-  QTest::newRow( "bbox" ) << QString( "bbox(13.0983, )") << QString(
+  QTest::newRow( "bbox with GML3 Envelope" )
+  << QString( "bbox($geometry, geomFromGML('<gml:Envelope><gml:lowerCorner>13.0983 31.5899</gml:lowerCorner><gml:upperCorner>35.5472 42.8143</gml:upperCorner></gml:Envelope>'))" )
+  << QString(
   "<ogc:Filter>"
     "<ogc:BBOX>"
       "<ogc:PropertyName>Geometry</ogc:PropertyName>"
