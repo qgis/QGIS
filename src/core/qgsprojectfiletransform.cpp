@@ -532,6 +532,40 @@ void QgsProjectFileTransform::transform1800to1900()
     }
   }
 
+  //Composer: move all items under Composition element
+  QDomNodeList composerList = mDom.elementsByTagName( "Composer" );
+  for ( int i = 0; i < composerList.size(); ++i )
+  {
+    QDomElement composerElem = composerList.at( i ).toElement();
+
+    //find <QgsComposition element
+    QDomElement compositionElem = composerElem.firstChildElement( "Composition" );
+    if ( compositionElem.isNull() )
+    {
+      continue;
+    }
+
+    QDomNodeList composerChildren = composerElem.childNodes();
+
+    if ( composerChildren.size() < 1 )
+    {
+      continue;
+    }
+
+    for ( int j = composerChildren.size() - 1; j >= 0; --j )
+    {
+      QDomElement childElem = composerChildren.at( j ).toElement();
+      if ( childElem.tagName() == "Composition" )
+      {
+        continue;
+      }
+
+      composerElem.removeChild( childElem );
+      compositionElem.appendChild( childElem );
+
+    }
+  }
+
   // SimpleFill symbol layer v2: avoid double transparency
   // replacing alpha value of symbol layer's color with 255 (the
   // transparency value is already stored as symbol transparency).
