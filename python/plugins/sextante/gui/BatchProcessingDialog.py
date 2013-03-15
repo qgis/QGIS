@@ -105,8 +105,11 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         elif isinstance(widget, CrsSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
-                self.table.cellWidget(row, col).epsg = widgetValue
-                self.table.cellWidget(row, col).setText()
+                self.table.cellWidget(row, col).setAuthid(widgetValue)
+        elif isinstance(widget, FileSelectionPanel):
+            widgetValue = widget.getValue()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).setText(widgetValue)                                       
         elif isinstance(widget, QtGui.QLineEdit):
             widgetValue = widget.text()
             for row in range(1, self.table.rowCount()):
