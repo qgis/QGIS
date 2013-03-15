@@ -770,7 +770,7 @@ static QVariant fcnGeomFromWKT( const QVariantList& values, QgsFeature*, QgsExpr
   else
     return QVariant();
 }
-static QVariant fcnGeomFromGML2( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+static QVariant fcnGeomFromGML( const QVariantList& values, QgsFeature*, QgsExpression* parent )
 {
   QString gml = getStringValue( values.at( 0 ), parent );
   QgsGeometry* geom = QgsOgcUtils::geometryFromGML( gml );
@@ -1087,7 +1087,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "$y", 0, fcnY, QObject::tr( "Geometry" ), "" , true )
     << new StaticFunction( "$geometry", 0, fcnGeometry, QObject::tr( "Geometry" ), "" , true )
     << new StaticFunction( "geomFromWKT", 1, fcnGeomFromWKT, QObject::tr( "Geometry" ) )
-    << new StaticFunction( "geomFromGML2", 1, fcnGeomFromGML2, QObject::tr( "Geometry" ) )
+    << new StaticFunction( "geomFromGML", 1, fcnGeomFromGML, QObject::tr( "Geometry" ) )
     << new StaticFunction( "bbox", 2, fcnBbox, QObject::tr( "Geometry" ) )
     << new StaticFunction( "disjoint", 2, fcnDisjoint, QObject::tr( "Geometry" ) )
     << new StaticFunction( "intersects", 2, fcnIntersects, QObject::tr( "Geometry" ) )
