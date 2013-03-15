@@ -739,6 +739,10 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
     return NULL;
   }
 
+  if ( element.hasAttribute( "outputUnit" ) )
+  {
+    symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+  }
   symbol->setAlpha( element.attribute( "alpha", "1.0" ).toDouble() );
 
   return symbol;
@@ -785,7 +789,6 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
   QDomElement symEl = doc.createElement( "symbol" );
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
-  symEl.setAttribute( "outputUnit", encodeOutputUnit( symbol->outputUnit() ) );
   symEl.setAttribute( "alpha", QString::number( symbol->alpha() ) );
   QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
