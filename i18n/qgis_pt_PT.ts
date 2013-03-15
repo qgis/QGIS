@@ -12161,7 +12161,8 @@ Esta cópia do QGIS foi compilada com QWT %1.</translation>
         <location filename="../src/app/qgisapp.cpp" line="2114"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">A actualização da vista no qgis.db privado falhou.
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2255"/>
@@ -12647,7 +12648,16 @@ Default Theme Path:	%7
 SVG Search Paths:	%8
 User DB Path:	%9
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Estado da aplicação:
+Var amb QGIS_PREFIX_PATH:	%1
+Prefixo:			%2
+Caminho dos Plugins:		%3
+Caminho do Pacote de Dados:	%4
+Nome do tema activo:		%5
+Caminho do tema activo:	%6
+Caminho do tema padrão:	%7
+Caminho de procura SVG:	%8
+Caminho da BD utilizador:	%9</translation>
     </message>
     <message>
         <source>Application state:
@@ -12705,7 +12715,7 @@ Caminho DB de utilizador:	%8
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="327"/>
         <source>Echo attribute&apos;s value</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra valor de atributo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="328"/>
