@@ -86,6 +86,11 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   {
     mRadiansRadioButton->setChecked( true );
   }
+
+  mDistanceUnitComboBox->blockSignals( true );
+  mDistanceUnitComboBox->setCurrentIndex( mLayer->distanceUnit() );
+  mDistanceUnitComboBox->blockSignals( false );
+
   emit changed();
 }
 
@@ -191,6 +196,15 @@ void QgsVectorFieldSymbolLayerWidget::on_mCounterclockwiseFromEastRadioButton_to
   if ( mLayer && checked )
   {
     mLayer->setAngleOrientation( QgsVectorFieldSymbolLayer::CounterclockwiseFromEast );
+    emit changed();
+  }
+}
+
+void QgsVectorFieldSymbolLayerWidget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setDistanceUnit(( QgsSymbolV2::OutputUnit ) index );
     emit changed();
   }
 }

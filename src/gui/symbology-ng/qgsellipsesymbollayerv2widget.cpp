@@ -72,6 +72,9 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   blockComboSignals( true );
   if ( mLayer )
   {
+    mSymbolWidthUnitComboBox->setCurrentIndex( mLayer->symbolWidthUnit() );
+    mOutlineWidthUnitComboBox->setCurrentIndex( mLayer->outlineWidthUnit() );
+    mSymbolHeightUnitComboBox->setCurrentIndex( mLayer->symbolHeightUnit() );
 
     if ( mLayer->widthField().isEmpty() )
     {
@@ -312,6 +315,30 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDShapeComboBox_currentIndexChanged( int
   }
 }
 
+void QgsEllipseSymbolLayerV2Widget::on_mSymbolWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setSymbolWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
+}
+
+void QgsEllipseSymbolLayerV2Widget::on_mOutlineWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOutlineWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
+}
+
+void QgsEllipseSymbolLayerV2Widget::on_mSymbolHeightUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setSymbolHeightUnit(( QgsSymbolV2::OutputUnit ) index );
+  }
+}
+
 void QgsEllipseSymbolLayerV2Widget::blockComboSignals( bool block )
 {
   mDDSymbolWidthComboBox->blockSignals( block );
@@ -321,4 +348,7 @@ void QgsEllipseSymbolLayerV2Widget::blockComboSignals( bool block )
   mDDFillColorComboBox->blockSignals( block );
   mDDOutlineColorComboBox->blockSignals( block );
   mDDShapeComboBox->blockSignals( block );
+  mSymbolWidthUnitComboBox->blockSignals( block );
+  mOutlineWidthUnitComboBox->blockSignals( block );
+  mSymbolHeightUnitComboBox->blockSignals( block );
 }

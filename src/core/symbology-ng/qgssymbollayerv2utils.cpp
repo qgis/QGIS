@@ -739,7 +739,6 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
     return NULL;
   }
 
-  symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
   symbol->setAlpha( element.attribute( "alpha", "1.0" ).toDouble() );
 
   return symbol;
