@@ -605,8 +605,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return role == Qt::DisplayRole ? rowId : QVariant();
 
   int fieldId = mAttributes[ index.column()];
+  const QgsField& field = mLayer->pendingFields()[ fieldId ];
 
-  QVariant::Type fldType = mLayer->pendingFields()[ fieldId ].type();
+  QVariant::Type fldType = field.type();
   bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
 
   if ( role == Qt::TextAlignmentRole )
@@ -656,8 +657,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-
-  return val.toString();
+  return field.displayString( val );
 }
 
 bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
