@@ -89,23 +89,6 @@ class QgsVectorLayer : QgsMapLayer
 
   public:
 
-  QgsVectorLayer* __iter__();
-%MethodCode
-    sipRes = sipCpp;
-%End
-
-  SIP_PYOBJECT __next__();
-%MethodCode
-    QgsFeature* f = new QgsFeature;
-    if (sipCpp->nextFeature(*f))
-      sipRes = sipConvertFromInstance(f, sipClass_QgsFeature, Py_None);
-    else
-    {
-      delete f;
-      PyErr_SetString(PyExc_StopIteration,"");
-    }
-%End
-
     enum EditorLayout
     {
       GeneratedLayout,
@@ -383,32 +366,9 @@ class QgsVectorLayer : QgsMapLayer
     virtual QString subsetString();
 
     /**
-     * Select features with or without attributes in a given window.
-     * @param fetchAttributes indizes of attributes to fetch
-     * @param rect window (QgsRectangle() for all)
-     * @param fetchGeometry fetch features with geometry
-     * @param useIntersect fetch only features that actually intersect the window (not just the bounding box)
-     */
-    void select( QList<int> fetchAttributes,
-                 QgsRectangle rect = QgsRectangle(),
-                 bool fetchGeometry = true,
-                 bool useIntersect = false ) /Deprecated/;
-
-    /**
      * Query the provider for features specified in request.
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
-
-    /**
-     * fetch a feature (after select)
-     * @param feature buffer to read the feature into
-     * @return true, if a feature was fetched, false, if there are no more features
-     */
-    bool nextFeature( QgsFeature& feature ) /Deprecated/;
-
-    /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
-     @return true in case of success*/
-    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true ) /Deprecated/;
 
     /** Adds a feature
         @param f feature to add
