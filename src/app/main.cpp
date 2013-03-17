@@ -551,6 +551,7 @@ int main( int argc, char *argv[] )
   if ( !customizationfile.isEmpty() )
   {
     customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
+    QgsCustomization::instance()->setEnabled(true);
   }
 
   // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
