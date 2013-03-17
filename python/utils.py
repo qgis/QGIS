@@ -155,14 +155,11 @@ def updateAvailablePlugins():
 
 def pluginMetadata(packageName, fct):
   """ fetch metadata from a plugin """
-  try:
-    # try to use values from metadata.txt if available
-    if plugins_metadata_parser.has_key(packageName):
-      return plugins_metadata_parser[packageName].get('general', fct)
-    # otherwise fall back to old method, using __init__.py
-    package = sys.modules[packageName]
-    return getattr(package, fct)()
-  except:
+
+  # use values from metadata.txt
+  if plugins_metadata_parser.has_key(packageName):
+    return plugins_metadata_parser[packageName].get('general', fct)
+  else:
     return "__error__"
 
 def loadPlugin(packageName):
