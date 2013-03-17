@@ -136,7 +136,7 @@ class RAlgorithm(GeoAlgorithm):
             self.showPlots = True
             self.addOutput(OutputHTML(RAlgorithm.RPLOTS, "R Plots"));
             return
-        if line.lower().strip().startswith("usereadgdal"):
+        if line.lower().strip().startswith("dontuserasterpackage"):
             self.useRasterPackage = False
             return
         if line.lower().strip().startswith("passfilenames"):

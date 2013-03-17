@@ -79,6 +79,11 @@ QgsVectorLayer::ValueRelationData QgsAttributeTypeDialog::valueRelationData()
   return mValueRelationData;
 }
 
+QString QgsAttributeTypeDialog::dateFormat()
+{
+  return mDateFormat;
+}
+
 QMap<QString, QVariant> &QgsAttributeTypeDialog::valueMap()
 {
   return mValueMap;
@@ -89,7 +94,7 @@ bool QgsAttributeTypeDialog::fieldEditable()
   return isFieldEditableCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setFieldEditable(bool editable)
+void QgsAttributeTypeDialog::setFieldEditable( bool editable )
 {
   isFieldEditableCheckBox->setChecked( editable );
 }
@@ -338,6 +343,11 @@ void QgsAttributeTypeDialog::setValueRelation( QgsVectorLayer::ValueRelationData
   mValueRelationData = valueRelation;
 }
 
+void QgsAttributeTypeDialog::setDateFormat( QString dateFormat )
+{
+  mDateFormat = dateFormat;
+}
+
 void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editType )
 {
   mIndex = index;
@@ -446,6 +456,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
         maximumDoubleSpinBox->setValue( mRangeData.mMax.toDouble() );
         stepDoubleSpinBox->setValue( mRangeData.mStep.toDouble() );
       }
+
       if ( editType == QgsVectorLayer::EditRange )
       {
         rangeWidget->setCurrentIndex( 0 );
@@ -475,6 +486,10 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
       valueRelationFilterExpression->setText( mValueRelationData.mFilterExpression );
       break;
 
+    case QgsVectorLayer::Calendar:
+      leDateFormat->setText( mDateFormat );
+      break;
+
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::UniqueValues:
     case QgsVectorLayer::Classification:
@@ -484,12 +499,10 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::TextEdit:
-    case QgsVectorLayer::Calendar:
     case QgsVectorLayer::UuidGenerator:
       break;
   }
 }
-
 
 void QgsAttributeTypeDialog::setPage( int index )
 {
@@ -639,6 +652,7 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 11:
       mEditType = QgsVectorLayer::Calendar;
+      mDateFormat = leDateFormat->text();
       break;
     case 12:
       mEditType = QgsVectorLayer::ValueRelation;

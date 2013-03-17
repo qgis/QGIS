@@ -420,7 +420,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
 
     //add geometry column (as gml)
     QDomElement geomElem = transactionDoc.createElementNS( mWfsNamespace, mGeometryAttribute );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML2( featureIt->geometry(), transactionDoc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( featureIt->geometry(), transactionDoc );
     if ( !gmlElem.isNull() )
     {
       geomElem.appendChild( gmlElem );
@@ -571,7 +571,7 @@ bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     nameElem.appendChild( nameText );
     propertyElem.appendChild( nameElem );
     QDomElement valueElem = transactionDoc.createElementNS( "http://www.opengis.net/wfs", "Value" );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML2( &geomIt.value(), transactionDoc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( &geomIt.value(), transactionDoc );
     valueElem.appendChild( gmlElem );
     propertyElem.appendChild( valueElem );
     updateElem.appendChild( propertyElem );
@@ -1289,7 +1289,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
         }
         else //a geometry attribute
         {
-          f->setGeometry( QgsOgcUtils::geometryFromGML2( currentAttributeElement ) );
+          f->setGeometry( QgsOgcUtils::geometryFromGML( currentAttributeElement ) );
         }
       }
       currentAttributeChild = currentAttributeChild.nextSibling();

@@ -487,6 +487,8 @@ void QgsFieldsProperties::attributeTypeDialog()
   QPair<QString, QString> checkStates = mCheckedStates.value( index, mLayer->checkedState( index ) );
   attributeTypeDialog.setCheckedState( checkStates.first, checkStates.second );
 
+  attributeTypeDialog.setDateFormat( mLayer->dateFormat( index ) );
+
   attributeTypeDialog.setIndex( index, mEditTypeMap.value( index, mLayer->editType( index ) ) );
 
   attributeTypeDialog.setFieldEditable( mLayer->fieldEditable( index ) );
@@ -517,6 +519,9 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::ValueRelation:
       mValueRelationData.insert( index, attributeTypeDialog.valueRelationData() );
       break;
+    case QgsVectorLayer::Calendar:
+      mDateFormat.insert( index, attributeTypeDialog.dateFormat() );
+      break;
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::UniqueValues:
@@ -526,7 +531,6 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::Enumeration:
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
-    case QgsVectorLayer::Calendar:
     case QgsVectorLayer::UuidGenerator:
       break;
   }
@@ -820,7 +824,7 @@ void QgsFieldsProperties::apply()
     QgsVectorLayer::EditType editType = editTypeFromButtonText( pb->text() );
     mLayer->setEditType( idx, editType );
 
-    mLayer->setFieldEditable( idx, mFieldEditables.value( idx, true ));
+    mLayer->setFieldEditable( idx, mFieldEditables.value( idx, true ) );
 
     switch ( editType )
     {
@@ -856,6 +860,13 @@ void QgsFieldsProperties::apply()
         }
         break;
 
+      case QgsVectorLayer::Calendar:
+        if ( mDateFormat.contains( idx ) )
+        {
+          mLayer->dateFormat( idx ) = mDateFormat[idx];
+        }
+        break;
+
       case QgsVectorLayer::LineEdit:
       case QgsVectorLayer::UniqueValues:
       case QgsVectorLayer::UniqueValuesEditable:
@@ -865,7 +876,6 @@ void QgsFieldsProperties::apply()
       case QgsVectorLayer::Immutable:
       case QgsVectorLayer::Hidden:
       case QgsVectorLayer::TextEdit:
-      case QgsVectorLayer::Calendar:
       case QgsVectorLayer::UuidGenerator:
         break;
     }

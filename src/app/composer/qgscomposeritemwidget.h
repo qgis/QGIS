@@ -44,7 +44,7 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mFrameGroupBox_toggled( bool state );
     void on_mBackgroundGroupBox_toggled( bool state );
-    void on_mItemIdLineEdit_textChanged( const QString& text );
+    void on_mItemIdLineEdit_editingFinished();
 
     //adjust coordinates in line edits
     void on_mXLineEdit_editingFinished() { changeItemPosition(); }

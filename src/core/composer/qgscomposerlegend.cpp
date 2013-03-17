@@ -138,8 +138,8 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
       point.ry() += spaceAboveAtom( atom );
     }
 
-    drawAtom( atom, painter, point );
-    columnWidth = qMax( atom.size.width(), columnWidth );
+    QSizeF atomSize = drawAtom( atom, painter, point );
+    columnWidth = qMax( atomSize.width(), columnWidth );
 
     point.ry() += atom.size.height();
     columnMaxHeight = qMax( point.y() - columnTop, columnMaxHeight );
@@ -380,7 +380,8 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
 
   if ( painter ) painter->setPen( mFontColor );
 
-  double labelX = point.x() + labelXOffset; // + mIconLabelSpace;
+  //double labelX = point.x() + labelXOffset; // + mIconLabelSpace;
+  double labelX = point.x() + qMax( symbolSize.width(), labelXOffset );
 
   // Vertical alignment of label with symbol:
   // a) label height < symbol heigh: label centerd with symbol
@@ -401,7 +402,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   for ( QStringList::Iterator itemPart = lines.begin(); itemPart != lines.end(); ++itemPart )
   {
     if ( painter ) drawText( painter, labelX, labelY, *itemPart , mItemFont );
-    labelSize.rwidth() = qMax( textWidthMillimeters( mItemFont,  *itemPart ), double(labelSize.width()) );
+    labelSize.rwidth() = qMax( textWidthMillimeters( mItemFont,  *itemPart ), double( labelSize.width() ) );
     if ( itemPart != lines.end() )
     {
       labelY += mlineSpacing + textHeight;
@@ -413,7 +414,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   nucleon.symbolSize = symbolSize;
   nucleon.labelSize = labelSize;
   //QgsDebugMsg( QString( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
-  double width = symbolSize.width() + labelXOffset + labelSize.width();
+  double width = qMax( symbolSize.width(), labelXOffset ) + labelSize.width();
   double height = qMax( symbolSize.height(), labelSize.height() );
   nucleon.size = QSizeF( width, height );
   return nucleon;
@@ -941,9 +942,11 @@ QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem*
   return atoms;
 }
 
-void QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point )
+// Draw atom and expand its size (using actual nucleons labelXOffset)
+QSizeF QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point )
 {
   bool first = true;
+  QSizeF size = QSizeF( atom.size );
   foreach ( Nucleon nucleon, atom.nucleons )
   {
     QgsComposerLegendItem* item = nucleon.item;
@@ -970,11 +973,14 @@ void QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point )
     {
       if ( !first ) point.ry() += mSymbolSpace;
       double labelXOffset = nucleon.labelXOffset;
-      drawSymbolItem( item, painter, point, labelXOffset );
+      Nucleon symbolNucleon = drawSymbolItem( item, painter, point, labelXOffset );
+      // expand width, it may be wider because of labelXOffset
+      size.rwidth() = qMax( symbolNucleon.size.width(), size.width() );
     }
     point.ry() += nucleon.size.height();
     first = false;
   }
+  return size;
 }
 
 double QgsComposerLegend::spaceAboveAtom( Atom atom )

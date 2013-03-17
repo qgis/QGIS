@@ -316,7 +316,7 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   int marginLeft = 20;  // title margin for disclosure triangle
   int marginRight = 5;  // a little bit of space on the right, to match space on the left
   int offsetLeft = 0;   // offset for oxygen theme
-  int offsetStyle = QApplication::style()->objectName().contains( "macintosh" ) ? 1 : 0;
+  int offsetStyle = QApplication::style()->objectName().contains( "macintosh" ) ? ( usingQgsStyle ? 1 : 8 ) : 0;
   int topBuffer = ( usingQgsStyle ? 3 : 1 ) + offsetStyle; // space between top of title or triangle and widget above
   int offsetTop =  topBuffer;
   int offsetTopTri = topBuffer; // offset for triangle
@@ -378,6 +378,10 @@ void QgsCollapsibleGroupBoxBasic::updateStyle()
   ss += QString( "  margin-right: %1px;" ).arg( marginRight );
   ss += QString( "  left: %1px;" ).arg( offsetLeft );
   ss += QString( "  top: %1px;" ).arg( offsetTop );
+  if ( QApplication::style()->objectName().contains( "macintosh" ) )
+  {
+    ss += "  background-color: rgba(0,0,0,0)";
+  }
   ss += "}";
   setStyleSheet( ss );
 
@@ -410,30 +414,8 @@ void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
   // TODO: find another means of avoiding the X11 flicker
 //  QApplication::processEvents();
 
-  // handle QPushButtons in form layouts that stay visible on collapse (Qt bug)
-  // set flat on collapse for fix, but preserve button's flat value when expanding
-  if ( collapse )
-  {
-    foreach ( QPushButton* pBtn, findChildren<QPushButton *>() )
-    {
-      if ( ! pBtn->isFlat() )
-      {
-        if ( ! pBtn->property( "PushButtonFlat" ).isValid() )
-          pBtn->setProperty( "PushButtonFlat", QVariant( false ) );
-
-        pBtn->setFlat( true );
-      }
-    }
-  }
-  else
-  {
-    foreach ( QPushButton* pBtn, findChildren<QPushButton *>() )
-    {
-      // restore any previous flat value
-      if ( pBtn->property( "PushButtonFlat" ).isValid() )
-        pBtn->setFlat( false );
-    }
-  }
+  // handle visual fixes for collapsing/expanding
+  collapseExpandFixes();
 
   // set maximum height to hide contents - does this work in all envs?
   // setMaximumHeight( collapse ? 25 : 16777215 );
@@ -450,6 +432,67 @@ void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
   // emit signal for connections using collapsed state
   emit collapsedStateChanged( isCollapsed() );
 }
+
+void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
+{
+  if ( QApplication::style()->objectName().contains( "macintosh" ) )
+  {
+    // handle QPushButtons in form layouts that stay partly visible on collapse (Qt bug?)
+    // hide on collapse for fix, but only show buttons that were specifically hidden when expanding
+    // key hiding off of this group box's object name so it does not affect child group boxes
+    const QByteArray objKey = QString( "CollGrpBxHiddenButton_%1" ).arg( objectName() ).toUtf8();
+    const char* pbHideKey = objKey.constData();
+
+    // handle child group box widgets that don't hide their frames on collapse of parent
+    const char* gbHideKey = "CollGrpBxHideGrpBx";
+
+    if ( mCollapsed )
+    {
+      // first hide all child group boxes, regardless of whether they are collapsible
+      foreach ( QGroupBox* gbx, findChildren<QGroupBox *>() )
+      {
+        if ( gbx->isVisible() && !gbx->property( gbHideKey ).isValid() )
+        {
+          gbx->setProperty( gbHideKey, QVariant( true ) );
+          gbx->hide();
+        }
+      }
+
+      // hide still visible push buttons belonging to this group box
+      foreach ( QPushButton* pBtn, findChildren<QPushButton *>() )
+      {
+        if ( pBtn->isVisible() && !pBtn->property( pbHideKey ).isValid() )
+        {
+          pBtn->setProperty( pbHideKey, QVariant( true ) );
+          pBtn->hide();
+        }
+      }
+    }
+    else // on expand
+    {
+      // first show push buttons belonging to this group box
+      foreach ( QPushButton* pBtn, findChildren<QPushButton *>() )
+      {
+        if ( pBtn->property( pbHideKey ).isValid() ) // don't have to check bool value
+        {
+          pBtn->setProperty( pbHideKey, QVariant() ); // remove property
+          pBtn->show();
+        }
+      }
+
+      // show all hidden child group boxes
+      foreach ( QGroupBox* gbx, findChildren<QGroupBox *>() )
+      {
+        if ( gbx->property( gbHideKey ).isValid() ) // don't have to check bool value
+        {
+          gbx->setProperty( gbHideKey, QVariant() ); // remove property
+          gbx->show();
+        }
+      }
+    }
+  }
+}
+
 
 // ----
 

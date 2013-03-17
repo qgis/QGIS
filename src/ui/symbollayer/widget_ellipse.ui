@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>336</width>
-    <height>336</height>
+    <height>357</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,20 +34,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QgsColorButtonV2" name="btnChangeColorBorder">
-         <property name="text">
-          <string>Change</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Fill color</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="1">
         <widget class="QgsColorButtonV2" name="btnChangeColorFill">
          <property name="text">
@@ -55,31 +41,42 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="mSymbolWidthLabel">
+       <item row="0" column="1">
+        <widget class="QgsColorButtonV2" name="btnChangeColorBorder">
          <property name="text">
-          <string>Symbol width</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="mWidthSpinBox">
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="maximum">
-          <double>999999999.000000000000000</double>
+          <string>Change</string>
          </property>
         </widget>
        </item>
        <item row="3" column="0">
+        <widget class="QLabel" name="mSymbolWidthUnitLabel">
+         <property name="text">
+          <string>Symbol width unit</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="mOutlineWidthUnitComboBox">
+         <item>
+          <property name="text">
+           <string>Millimeter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Map unit</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="4" column="0">
         <widget class="QLabel" name="mOutlineWidthLabel">
          <property name="text">
           <string>Outline width</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
          <property name="decimals">
           <number>6</number>
@@ -89,14 +86,31 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="mSymbolHeightLabel">
+       <item row="6" column="1">
+        <widget class="QDoubleSpinBox" name="mRotationSpinBox"/>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="mRotationLabel">
          <property name="text">
-          <string>Symbol height</string>
+          <string>Rotation</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="3" column="1">
+        <widget class="QComboBox" name="mSymbolWidthUnitComboBox">
+         <item>
+          <property name="text">
+           <string>Millimeter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Map unit</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="7" column="1">
         <widget class="QDoubleSpinBox" name="mHeightSpinBox">
          <property name="decimals">
           <number>6</number>
@@ -106,7 +120,14 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="2">
+       <item row="5" column="0">
+        <widget class="QLabel" name="mOutlineWidthUnitLabel">
+         <property name="text">
+          <string>Outline width unit</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0" colspan="2">
         <widget class="QListWidget" name="mShapeListWidget">
          <property name="dragDropMode">
           <enum>QAbstractItemView::NoDragDrop</enum>
@@ -146,13 +167,55 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QDoubleSpinBox" name="mRotationSpinBox"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="mRotationLabel">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Rotation</string>
+          <string>Fill color</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="mSymbolWidthLabel">
+         <property name="text">
+          <string>Symbol width</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="mSymbolHeightLabel">
+         <property name="text">
+          <string>Symbol height</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDoubleSpinBox" name="mWidthSpinBox">
+         <property name="decimals">
+          <number>6</number>
+         </property>
+         <property name="maximum">
+          <double>999999999.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QComboBox" name="mSymbolHeightUnitComboBox">
+         <item>
+          <property name="text">
+           <string>Millimeter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Map unit</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="mSymbolHeightUnitLabel">
+         <property name="text">
+          <string>Symbol height unit</string>
          </property>
         </widget>
        </item>

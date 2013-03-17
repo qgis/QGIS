@@ -100,6 +100,10 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
 
   protected:
     void init();
+
+    /** Visual fixes for when group box is collapsed/expanded */
+    void collapseExpandFixes();
+
     void showEvent( QShowEvent *event );
     void mousePressEvent( QMouseEvent *event );
     void mouseReleaseEvent( QMouseEvent *event );

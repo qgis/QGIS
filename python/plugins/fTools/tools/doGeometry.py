@@ -566,19 +566,19 @@ class geometryThread( QThread ):
       if self.writeShape:
         outFeat.setGeometry( inGeom )
         atMap = inFeat.attributes()
-	maxIndex = index1 if index1>index2 else index2
-	if maxIndex>len(atMap):
-          atMap += [ QVariant() ] * ( index2+1 - len(atMap) )
-	atMap[ index1 ] = attr1
-	if index1!=index2:
-	  atMap[ index2 ] = attr2
+        maxIndex = index1 if index1>index2 else index2
+        if maxIndex>len(atMap):
+                atMap += [ QVariant() ] * ( index2+1 - len(atMap) )
+        atMap[ index1 ] = attr1
+        if index1!=index2:
+          atMap[ index2 ] = attr2
         outFeat.setAttributes( atMap )
         writer.addFeature( outFeat )
       else:
         changeMap = {}
         changeMap[ inFeat.id() ] = {}
         changeMap[ inFeat.id() ][ index1 ] = QVariant( attr1 )
-	if index1!=index2:
+        if index1!=index2:
           changeMap[ inFeat.id() ][ index2 ] = QVariant( attr2 )
         vprovider.changeAttributeValues( changeMap )
 

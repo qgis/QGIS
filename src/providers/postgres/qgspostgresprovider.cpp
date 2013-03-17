@@ -168,6 +168,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255 )
   << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255 )
   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String )
+
+  // date type
+  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date )
   ;
 
   QString key;
@@ -707,6 +710,11 @@ bool QgsPostgresProvider::loadFields()
         {
           fieldSize = -1;
         }
+      }
+      else if ( fieldTypeName == "date" )
+      {
+        fieldType = QVariant::Date;
+        fieldSize = -1;
       }
       else if ( fieldTypeName == "text" ||
                 fieldTypeName == "bpchar" ||
@@ -2775,6 +2783,11 @@ bool QgsPostgresProvider::convertField( QgsField &field )
         fieldType = "numeric";
       }
       fieldPrec = 0;
+      break;
+
+    case QVariant::Date:
+      fieldType = "numeric";
+      fieldSize = -1;
       break;
 
     case QVariant::Double:

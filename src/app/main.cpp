@@ -551,6 +551,7 @@ int main( int argc, char *argv[] )
   if ( !customizationfile.isEmpty() )
   {
     customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
+    QgsCustomization::instance()->setEnabled(true);
   }
 
   // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
@@ -696,7 +697,7 @@ int main( int argc, char *argv[] )
   }
 
   //set up splash screen
-  QString mySplashPath( QgsApplication::splashPath() );
+  QString mySplashPath( QgsCustomization::instance()->splashPath() );
   QPixmap myPixmap( mySplashPath + QString( "splash.png" ) );
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap );
   if ( mySettings.value( "/qgis/hideSplash" ).toBool() || myHideSplash )

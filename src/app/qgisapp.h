@@ -670,6 +670,22 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void localCumulativeCutStretch();
     /** Perform a full extent cumulative cut stretch */
     void fullCumulativeCutStretch();
+    /**Increase raster brightness
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void increaseBrightness();
+    /**Decrease raster brightness
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void decreaseBrightness();
+    /**Increase raster contrast
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void increaseContrast();
+    /**Decrease raster contrast
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void decreaseContrast();
     //! plugin manager
     void showPluginManager();
     //! load python support if possible
@@ -1142,6 +1158,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**Do histogram stretch for singleband gray / multiband color rasters*/
     void histogramStretch( bool visibleAreaOnly = false, QgsRasterLayer::ContrastEnhancementLimits theLimits = QgsRasterLayer::ContrastEnhancementMinMax );
+
+    /**Apply raster brightness
+     * @note Added in QGIS 2.0 */
+    void adjustBrightnessContrast( int delta, bool updateBrightness = true );
 
     QgisAppStyleSheet* mStyleSheetBuilder;
 

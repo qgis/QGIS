@@ -40,12 +40,12 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgspointdisplacementrenderer.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
   symbology-ng/qgscolorbrewerpalette.cpp
-  
+
   diagram/qgsdiagram.cpp
   diagram/qgspiediagram.cpp
   diagram/qgstextdiagram.cpp
   diagram/qgshistogramdiagram.cpp
-  
+
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
@@ -204,6 +204,7 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandcolordatarenderer.cpp
   raster/qgssinglebandgrayrenderer.cpp
   raster/qgssinglebandpseudocolorrenderer.cpp
+  raster/qgsbrightnesscontrastfilter.cpp
 
   renderer/qgscontinuouscolorrenderer.cpp
   renderer/qgsgraduatedsymbolrenderer.cpp
@@ -446,7 +447,7 @@ SET(QGIS_CORE_HDRS
   diagram/qgstextdiagram.h
   diagram/qgshistogramdiagram.h
 
-  
+
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 

@@ -341,13 +341,13 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     if ( i >= fields.count() )
       continue;
 
-    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << attrs[i].toString() );
+    QString value = fields[i].displayString( attrs[i] );
+    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << QString::number( i ) << value );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
     attrItem->setData( 0, Qt::UserRole, fields[i].name() );
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
-    QVariant value = attrs[i];
     attrItem->setData( 1, Qt::UserRole, value );
 
     switch ( vlayer->editType( i ) )
@@ -358,7 +358,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
         continue;
 
       case QgsVectorLayer::ValueMap:
-        value = vlayer->valueMap( i ).key( value.toString(), QString( "(%1)" ).arg( value.toString() ) );
+        value = vlayer->valueMap( i ).key( value, QString( "(%1)" ).arg( value ) );
+        break;
+
+      case QgsVectorLayer::Calendar:
+        if ( attrs[i].canConvert( QVariant::Date ) )
+          value = attrs[i].toDate().toString( vlayer->dateFormat( i ) );
         break;
 
       default:
@@ -438,7 +443,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     layItem = new QTreeWidgetItem( QStringList() << QString::number( lstResults->topLevelItemCount() ) << layer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
 
-    layItem->setData( 0, GetFeatureInfoUrlRole, params.value( "getFeatureInfoUrl" ) );
     lstResults->addTopLevelItem( layItem );
 
     QComboBox *formatCombo = new QComboBox();
@@ -476,6 +480,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
     connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
   }
+  // Set/reset getFeatureInfoUrl (currently only available for Feature, so it may change if format changes)
+  layItem->setData( 0, GetFeatureInfoUrlRole, params.value( "getFeatureInfoUrl" ) );
 
   QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( fields, feature, layer->crs(), QStringList() << label << "" );
   layItem->addChild( featItem );

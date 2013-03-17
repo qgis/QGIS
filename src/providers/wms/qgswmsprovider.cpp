@@ -1413,7 +1413,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
           //      GML.1, GML.2, or GML.3
           // 1.1.0, 1.3.0 - mime types, GML should use application/vnd.ogc.gml
           //      but in UMN Mapserver it may be also OUTPUTFORMAT, e.g. OGRGML
-          IdentifyFormat format;
+          IdentifyFormat format = IdentifyFormatUndefined;
           if ( f == "MIME" )
             format = IdentifyFormatText; // 1.0
           else if ( f == "text/plain" )
@@ -1453,12 +1453,15 @@ void QgsWmsProvider::capabilitiesReplyFinished()
 
       const QUrl& toUrl = redirect.toUrl();
       mCapabilitiesReply->request();
-      if ( toUrl == mCapabilitiesReply->url() ) {
+      if ( toUrl == mCapabilitiesReply->url() )
+      {
         mErrorFormat = "text/plain";
         mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
         QgsMessageLog::logMessage( mError, tr( "WMS" ) );
         mHttpCapabilitiesResponse.clear();
-      } else {
+      }
+      else
+      {
         QNetworkRequest request( toUrl );
         setAuthorization( request );
         request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );

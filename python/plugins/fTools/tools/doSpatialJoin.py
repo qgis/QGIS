@@ -123,23 +123,23 @@ class Dialog(QDialog, Ui_Dialog):
     def compute(self, inName, joinName, outName, summary, sumList, keep, progressBar):
         layer1 = ftools_utils.getVectorLayerByName(inName)
         provider1 = layer1.dataProvider()
-        fieldList1 = ftools_utils.getFieldList(layer1).values()
+        fieldList1 = ftools_utils.getFieldList(layer1).toList()
 
         layer2 = ftools_utils.getVectorLayerByName(joinName)
         provider2 = layer2.dataProvider()
 
-        fieldList2 = ftools_utils.getFieldList(layer2)
+        fieldList2 = ftools_utils.getFieldList(layer2).toList()
         fieldList = []
         if provider1.crs() != provider2.crs():
             QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
         if not summary:
-            fieldList2 = ftools_utils.testForUniqueness(fieldList1, fieldList2.values())
+            fieldList2 = ftools_utils.testForUniqueness(fieldList1, fieldList2)
             seq = range(0, len(fieldList1) + len(fieldList2))
             fieldList1.extend(fieldList2)
             fieldList1 = dict(zip(seq, fieldList1))
         else:
             numFields = {}
-            for j in fieldList2.keys():
+            for j in xrange(len(fieldList2)):
                 if fieldList2[j].type() == QVariant.Int or fieldList2[j].type() == QVariant.Double:
                     numFields[j] = []
                     for i in sumList:
@@ -153,7 +153,8 @@ class Dialog(QDialog, Ui_Dialog):
             fieldList1 = dict(zip(seq, fieldList1))
 
         # check for correct field names
-        longNames = ftools_utils.checkFieldNameLength( fieldList1 )
+        print fieldList1
+        longNames = ftools_utils.checkFieldNameLength( fieldList1.values() )
         if not longNames.isEmpty():
             QMessageBox.warning( self, self.tr( 'Incorrect field names' ),
                         self.tr( 'No output will be created.\nFollowing field names are longer than 10 characters:\n%1' )
@@ -168,7 +169,10 @@ class Dialog(QDialog, Ui_Dialog):
                 QMessageBox.warning( self, self.tr( 'Error deleting shapefile' ),
                             self.tr( "Can't delete existing shapefile\n%1" ).arg( self.shapefileName ) )
                 return False
-        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList1, provider1.geometryType(), sRs)
+        fields = QgsFields()
+        for f in fieldList1.values():
+          fields.append(f)
+        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, provider1.geometryType(), sRs)
         #writer = QgsVectorFileWriter(outName, "UTF-8", fieldList1, provider1.geometryType(), sRs)
         inFeat = QgsFeature()
         outFeat = QgsFeature()
@@ -179,7 +183,7 @@ class Dialog(QDialog, Ui_Dialog):
         add = 85.00 / provider1.featureCount()
 
         index = ftools_utils.createIndex(provider2)
-	fit1 = provider1.getFeatures()
+        fit1 = provider1.getFeatures()
         while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
             atMap1 = inFeat.attributes()
@@ -211,8 +215,8 @@ class Dialog(QDialog, Ui_Dialog):
                         none = False
                         atMap2 = inFeatB.attributes()
                         if not summary:
-                            atMap = atMap1.values()
-                            atMap2 = atMap2.values()
+                            atMap = atMap1
+                            atMap2 = atMap2
                             atMap.extend(atMap2)
                             atMap = dict(zip(seq, atMap))
                             break
@@ -220,7 +224,7 @@ class Dialog(QDialog, Ui_Dialog):
                             for j in numFields.keys():
                                 numFields[j].append(atMap2[j].toDouble()[0])
                 if summary and not none:
-                    atMap = atMap1.values()
+                    atMap = atMap1
                     for j in numFields.keys():
                         for k in sumList:
                             if k == "SUM": atMap.append(QVariant(sum(numFields[j])))
@@ -234,7 +238,7 @@ class Dialog(QDialog, Ui_Dialog):
             if none:
                 outFeat.setAttributes(atMap1)
             else:
-                outFeat.setAttributes(atMap)
+                outFeat.setAttributes(atMap.values())
             if keep: # keep all records
                 writer.addFeature(outFeat)
             else: # keep only matching records

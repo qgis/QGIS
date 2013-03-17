@@ -1996,21 +1996,28 @@ QgsRectangle QgsOracleProvider::extent()
     QString sql;
     QSqlQuery qry( *mConnection );
 
+    bool ok = false;
+
     if ( !mSpatialIndex.isNull() && ( mUseEstimatedMetadata || mSqlWhereClause.isEmpty() ) )
     {
       sql = QString( "SELECT SDO_TUNE.EXTENT_OF(%1,%2) FROM dual" )
             .arg( quotedValue( QString( "%1.%2" ).arg( mOwnerName ).arg( mTableName ) ) )
             .arg( quotedValue( mGeometryColumn ) );
+
+      ok = exec( qry, sql );
     }
-    else
+
+    if ( !ok )
     {
       sql = QString( "SELECT SDO_AGGR_MBR(%1) FROM %2" ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery );
 
       if ( !mSqlWhereClause.isEmpty() )
         sql += QString( " WHERE %1" ).arg( mSqlWhereClause );
+
+      ok = exec( qry, sql );
     }
 
-    if ( exec( qry, sql ) && qry.next() )
+    if ( ok && qry.next() )
     {
       QByteArray *ba = static_cast<QByteArray*>( qry.value( 0 ).data() );
       unsigned char *copy = new unsigned char[ba->size()];

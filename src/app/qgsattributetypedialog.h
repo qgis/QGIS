@@ -83,6 +83,12 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void setValueRelation( QgsVectorLayer::ValueRelationData valueRelationData );
 
     /**
+     * Setter to date format
+     * @param dateFormat date format
+     */
+    void setDateFormat( QString dateFormat );
+
+    /**
      * Setter for checkbox for editable state of field
      * @param bool editable
      */
@@ -110,6 +116,11 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * Getter for value relation data
      */
     QgsVectorLayer::ValueRelationData valueRelationData();
+
+    /**
+     * Getter for date format
+     */
+    QString dateFormat();
 
     /**
      * Getter for checkbox for editable state of field
@@ -181,6 +192,7 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     QgsVectorLayer::RangeData mRangeData;
     QgsVectorLayer::ValueRelationData mValueRelationData;
     QgsVectorLayer::EditType mEditType;
+    QString mDateFormat;
 };
 
 #endif

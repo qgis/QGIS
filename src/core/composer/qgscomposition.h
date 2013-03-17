@@ -30,6 +30,7 @@
 #include "qgscomposeritemcommand.h"
 #include "qgsatlascomposition.h"
 
+class QgisApp;
 class QgsComposerFrame;
 class QgsComposerItem;
 class QgsComposerMap;
@@ -50,6 +51,7 @@ class QgsComposerAttributeTable;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
+class QgsComposer;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -158,12 +160,23 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
 
     /**Returns a composer item given its text identifier.
+       Ids are not necessarely unique, but this function returns only one element.
       @note added in 2.0
       @param theId - A QString representing the identifier of the item to
         retrieve.
       @return QgsComposerItem pointer or 0 pointer if no such item exists.
       **/
     const QgsComposerItem* getComposerItemById( QString theId ) const;
+
+    /**Returns a composer item given its unique identifier.
+      @note added in 2.0
+      @param theId - A QString representing the UUID of the item to
+      @param inAllComposers - Whether the search should be done in all composers of the project
+        retrieve.
+      @return QgsComposerItem pointer or 0 pointer if no such item exists.
+      **/
+    //const QgsComposerItem* getComposerItemByUuid( QString theUuid, bool inAllComposers = false ) const;//does not work since it's impossible to get QGisApp::instance()
+    const QgsComposerItem* getComposerItemByUuid( QString theUuid ) const;
 
     int printResolution() const {return mPrintResolution;}
     void setPrintResolution( int dpi ) {mPrintResolution = dpi;}

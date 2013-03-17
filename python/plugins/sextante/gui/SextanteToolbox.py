@@ -134,7 +134,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             if dlg.executed:
                 showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
                 if showRecent:
-                    self.addRecentAlgorithms()
+                    self.addRecentAlgorithms(True)
         if isinstance(item, TreeActionItem):
             action = item.action
             action.setData(self)
@@ -147,13 +147,13 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
         else:
             self.fillTreeUsingProviders()
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)        
-        self.addRecentAlgorithms()
+        self.addRecentAlgorithms(False)
         
-    def addRecentAlgorithms(self):
+    def addRecentAlgorithms(self, updating):
         showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
         if showRecent:
             first = self.algorithmTree.topLevelItem(0)
-            if first != None and first.text(0) == "Recently used algorithms":
+            if updating:
                 self.algorithmTree.removeItemWidget(first, 0)
             recent = SextanteLog.getRecentAlgorithms()
             if len(recent) != 0:

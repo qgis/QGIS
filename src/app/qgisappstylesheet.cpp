@@ -86,7 +86,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   QgsDebugMsg( QString( "fontFamily: %1" ).arg( fontFamily ) );
   opts.insert( "fontFamily", QVariant( fontFamily ) );
 
-  bool gbxCustom = false;
+  bool gbxCustom = ( mMacStyle ? true : false );
   opts.insert( "groupBoxCustom", settings.value( "groupBoxCustom", QVariant( gbxCustom ) ) );
 
   bool gbxBoldTitle = false;

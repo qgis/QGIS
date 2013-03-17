@@ -26,6 +26,7 @@
 #include <qgsmaplayerregistry.h>
 #include <qgslogger.h>
 #include <qgsexpression.h>
+#include <qgsfilterlineedit.h>
 
 #include <QScrollArea>
 #include <QPushButton>
@@ -87,8 +88,12 @@ void QgsAttributeEditor::selectDate()
   dlg->setWindowTitle( tr( "Select a date" ) );
   QVBoxLayout *vl = new QVBoxLayout( dlg );
 
+  const QgsFieldValidator *v = dynamic_cast<const QgsFieldValidator *>( le->validator() );
+  QString dateFormat = v ? v->dateFormat() : "yyyy-MM-dd";
+
   QCalendarWidget *cw = new QCalendarWidget( dlg );
-  cw->setSelectedDate( QDate::fromString( le->text(), Qt::ISODate ) );
+  QString prevValue = le->text();
+  cw->setSelectedDate( QDate::fromString( prevValue, dateFormat ) );
   vl->addWidget( cw );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox( dlg );
@@ -101,7 +106,9 @@ void QgsAttributeEditor::selectDate()
 
   if ( dlg->exec() == QDialog::Accepted )
   {
-    le->setText( cw->selectedDate().toString( Qt::ISODate ) );
+    QString newValue = cw->selectedDate().toString( dateFormat );
+    le->setText( newValue );
+    le->setModified( newValue != prevValue );
   }
 }
 
@@ -483,7 +490,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       }
       else
       {
-        le = new QLineEdit( parent );
+        le = new QgsFilterLineEdit( parent );
       }
 
       if ( le )
@@ -507,7 +514,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           le->setReadOnly( true );
         }
 
-        le->setValidator( new QgsFieldValidator( le, field ) );
+        le->setValidator( new QgsFieldValidator( le, field, vl->dateFormat( idx ) ) );
 
         myWidget = le;
       }
@@ -526,13 +533,13 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       if ( cb )
       {
         if ( cb->isEditable() )
-          cb->setValidator( new QgsFieldValidator( cb, field ) );
+          cb->setValidator( new QgsFieldValidator( cb, field, vl->dateFormat( idx ) ) );
         myWidget = cb;
       }
 
       if ( myWidget )
       {
-        if (editType == QgsVectorLayer::Immutable)
+        if ( editType == QgsVectorLayer::Immutable )
           myWidget->setDisabled( true );
 
         QgsStringRelay* relay = NULL;
@@ -611,7 +618,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       }
       else
       {
-        le = new QLineEdit();
+        le = new QgsFilterLineEdit();
 
         pb = new QPushButton( tr( "..." ) );
 
@@ -624,6 +631,9 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         myWidget->setAutoFillBackground( true );
         myWidget->setLayout( hbl );
       }
+
+      if ( le )
+        le->setValidator( new QgsFieldValidator( le, field, vl->dateFormat( idx ) ) );
 
       if ( pb )
       {
@@ -783,7 +793,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( widget );
   if ( cw )
   {
-    text = cw->selectedDate().toString( Qt::ISODate );
+    text = cw->selectedDate().toString( vl->dateFormat( idx ) );
   }
 
   le = widget->findChild<QLineEdit *>();
@@ -792,6 +802,11 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   if ( !cw && !gb && le )
   {
     text = le->text();
+    modified = le->isModified();
+    if ( text == nullValue )
+    {
+      text = QString::null;
+    }
   }
 
   switch ( theField.type() )
@@ -842,7 +857,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     break;
     case QVariant::Date:
     {
-      QDate myDateValue = QDate::fromString( text, Qt::ISODate );
+      QDate myDateValue = QDate::fromString( text, vl->dateFormat( idx ) );
       if ( myDateValue.isValid() && !text.isEmpty() )
       {
         value = myDateValue;
@@ -856,7 +871,10 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     break;
     default: //string
       modified = true;
-      value = QVariant( text );
+      if ( text.isNull() )
+        value = QVariant();
+      else
+        value = QVariant( text );
       break;
   }
 
@@ -957,8 +975,9 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::UniqueValuesEditable:
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::UuidGenerator:
-    default:
+    case QgsVectorLayer::TextEdit:
     {
+      QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit *>( editor );
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
       QComboBox *cb = qobject_cast<QComboBox *>( editor );
       QTextEdit *te = qobject_cast<QTextEdit *>( editor );
@@ -966,10 +985,15 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       if ( !le && ! cb && !te && !pte )
         return false;
 
+      if ( fle && !( myFieldType == QVariant::Int || myFieldType == QVariant::Double || myFieldType == QVariant::LongLong || myFieldType == QVariant::Date ) )
+      {
+        fle->setNullValue( nullValue );
+      }
+
       QString text;
       if ( value.isNull() )
       {
-        if ( myFieldType == QVariant::Int || myFieldType == QVariant::Double || myFieldType == QVariant::LongLong )
+        if ( myFieldType == QVariant::Int || myFieldType == QVariant::Double || myFieldType == QVariant::LongLong || myFieldType == QVariant::Date )
           text = "";
         else if ( editType == QgsVectorLayer::UuidGenerator )
           text = QUuid::createUuid().toString();
@@ -978,7 +1002,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       }
       else
       {
-        text = value.toString();
+        text = field.displayString( value );
       }
 
       if ( le )
@@ -1002,18 +1026,47 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
         break;
       }
 
-      QLineEdit* le = qobject_cast<QLineEdit*>( editor );
+      QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( editor );
+      QLineEdit *le = qobject_cast<QLineEdit*>( editor );
       if ( !le )
       {
         le = editor->findChild<QLineEdit *>();
+        fle = qobject_cast<QgsFilterLineEdit *>( le );
       }
       if ( !le )
       {
         return false;
       }
-      le->setText( value.toString() );
+
+      if ( fle && !( myFieldType == QVariant::Int || myFieldType == QVariant::Double || myFieldType == QVariant::LongLong || myFieldType == QVariant::Date ) )
+      {
+        fle->setNullValue( nullValue );
+      }
+
+      QString text;
+      if ( value.isNull() )
+      {
+        if ( myFieldType == QVariant::Int || myFieldType == QVariant::Double || myFieldType == QVariant::LongLong || myFieldType == QVariant::Date )
+          text = "";
+        else
+          text = nullValue;
+      }
+      else if ( editType == QgsVectorLayer::Calendar && value.canConvert( QVariant::Date ) )
+      {
+        text = value.toDate().toString( vl->dateFormat( idx ) );
+      }
+      else
+      {
+        text = value.toString();
+      }
+
+
+      le->setText( text );
     }
     break;
+
+    case QgsVectorLayer::Hidden:
+      break;
   }
 
   return true;
@@ -1029,7 +1082,6 @@ QWidget* QgsAttributeEditor::createWidgetFromDef( const QgsAttributeEditorElemen
     {
       const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
       newWidget = createAttributeEditor( parent, 0, vl, fieldDef->idx(), attrs.value( fieldDef->idx(), QVariant() ), proxyWidgets );
-
 
       if ( vl->editType( fieldDef->idx() ) != QgsVectorLayer::Immutable )
       {
@@ -1143,6 +1195,6 @@ void QgsStringRelay::changeText( QString str )
   connect( this, SIGNAL( textChanged( QString ) ), sObj, sSlot );
   for ( int i = 0; i < mProxyList.size(); ++i )
   {
-    ( mProxyList[i] )->blockSignals( oldBlockSigs[i] );
+    mProxyList[i]->blockSignals( oldBlockSigs[i] );
   }
 }

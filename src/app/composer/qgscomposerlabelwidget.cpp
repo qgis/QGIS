@@ -227,16 +227,6 @@ void QgsComposerLabelWidget::on_mMiddleRadioButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mLabelIdLineEdit_textChanged( const QString& text )
-{
-  if ( mComposerLabel )
-  {
-    mComposerLabel->beginCommand( tr( "Label id changed" ), QgsComposerMergeCommand::ComposerLabelSetId );
-    mComposerLabel->setId( text );
-    mComposerLabel->endCommand();
-  }
-}
-
 void QgsComposerLabelWidget::on_mRotationSpinBox_valueChanged( double v )
 {
   if ( mComposerLabel )

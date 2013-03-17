@@ -22,7 +22,7 @@
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
-
+#include "qgsogcutils.h"
 
 #include "qgsapplication.h"
 #include "qgsproject.h"
@@ -605,8 +605,8 @@ static QPointF offsetPoint( QPointF pt, double angle, double dist )
 // calc intersection of two (infinite) lines defined by one point and tangent
 static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
 {
-  // parallel lines? (or the difference between angles is less than cca 0.1 degree)
-  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || qAbs( t1 - t2 ) < 0.001 )
+  // parallel lines? (or the difference between angles is less than appr. 10 degree)
+  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || qAbs( atan( t1 ) - atan( t2 ) ) < 0.175 )
     return QPointF();
 
   double x, y;
@@ -739,7 +739,10 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
     return NULL;
   }
 
-  symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+  if ( element.hasAttribute( "outputUnit" ) )
+  {
+    symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+  }
   symbol->setAlpha( element.attribute( "alpha", "1.0" ).toDouble() );
 
   return symbol;
@@ -786,7 +789,6 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
   QDomElement symEl = doc.createElement( "symbol" );
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
-  symEl.setAttribute( "outputUnit", encodeOutputUnit( symbol->outputUnit() ) );
   symEl.setAttribute( "alpha", QString::number( symbol->alpha() ) );
   QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
@@ -2231,7 +2233,9 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
     element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
     return false;
   }
-  expr.toOgcFilter( doc, element );
+  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( expr, doc );
+  if ( !filterElem.isNull() )
+    element.appendChild( filterElem );
   return true;
 }
 
@@ -2239,7 +2243,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 {
   QgsDebugMsg( "Entered." );
 
-  QgsExpression *expr = QgsExpression::createFromOgcFilter( element );
+  QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( element );
   if ( !expr )
     return false;
 

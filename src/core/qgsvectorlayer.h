@@ -438,28 +438,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual QString subsetString();
 
     /**
-     * Select features with or without attributes in a given window.
-     * @param fetchAttributes indizes of attributes to fetch
-     * @param rect window (QgsRectangle() for all)
-     * @param fetchGeometry fetch features with geometry
-     * @param useIntersect fetch only features that actually intersect the window (not just the bounding box)
-     */
-    Q_DECL_DEPRECATED void select( QgsAttributeList fetchAttributes,
-                                   QgsRectangle rect = QgsRectangle(),
-                                   bool fetchGeometry = true,
-                                   bool useIntersect = false );
-    /**
-     * fetch a feature (after select)
-     * @param feature buffer to read the feature into
-     * @return true, if a feature was fetched, false, if there are no more features
-     */
-    Q_DECL_DEPRECATED bool nextFeature( QgsFeature& feature );
-
-    /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
-     @return true in case of success*/
-    Q_DECL_DEPRECATED bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
-
-    /**
      * Query the provider for features specified in request.
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
@@ -766,6 +744,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 1.8
      **/
     ValueRelationData &valueRelation( int idx );
+
+    /**access date format
+     * @note added in 1.9
+     */
+    QString &dateFormat( int idx );
 
     /**is edit widget editable
      * @note added in 1.9
@@ -1074,6 +1057,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, RangeData > mRanges;
     QMap< QString, QPair<QString, QString> > mCheckedStates;
     QMap< QString, ValueRelationData > mValueRelations;
+    QMap< QString, QString> mDateFormats;
 
     /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     EditorLayout mEditorLayout;
@@ -1081,20 +1065,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QString mEditForm, mEditFormInit;
     //annotation form for this layer
     QString mAnnotationForm;
-
-    QgsFeatureIterator mLayerIterator; // temporary: to support old API
-
-#if 0
-    bool mFetching;
-    QgsRectangle mFetchRect;
-    QgsAttributeList mFetchAttributes;
-    QgsAttributeList mFetchProvAttributes;
-    bool mFetchGeometry;
-
-    QSet<QgsFeatureId> mFetchConsidered;
-    QgsGeometryMap::iterator mFetchChangedGeomIt;
-    QgsFeatureList::iterator mFetchAddedFeaturesIt;
-#endif
 
     //! cache for some vector layer data - currently only geometries for faster editing
     QgsVectorLayerCache* mCache;

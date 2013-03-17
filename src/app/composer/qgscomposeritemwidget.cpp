@@ -349,6 +349,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mFrameGroupBox->blockSignals( true );
   mBackgroundGroupBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
+  mItemUuidLineEdit->blockSignals( true );
   mTransparencySpinBox->blockSignals( true );
 
   int alphaPercent = ( 255 - mItem->brush().color().alpha() ) / 2.55;
@@ -356,6 +357,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mTransparencySlider->setValue( alphaPercent );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
   mItemIdLineEdit->setText( mItem->id() );
+  mItemUuidLineEdit->setText( mItem->uuid() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
 
@@ -364,15 +366,18 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mFrameGroupBox->blockSignals( false );
   mBackgroundGroupBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );
+  mItemUuidLineEdit->blockSignals( false );
   mTransparencySpinBox->blockSignals( false );
 }
 
-void QgsComposerItemWidget::on_mItemIdLineEdit_textChanged( const QString &text )
+
+void QgsComposerItemWidget::on_mItemIdLineEdit_editingFinished()
 {
   if ( mItem )
   {
     mItem->beginCommand( tr( "Item id changed" ), QgsComposerMergeCommand::ComposerLabelSetId );
-    mItem->setId( text );
+    mItem->setId( mItemIdLineEdit->text() );
+    mItemIdLineEdit->setText( mItem->id() );
     mItem->endCommand();
   }
 }

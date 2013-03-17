@@ -73,3 +73,6 @@ class FileSelectionPanel(QtGui.QWidget):
         if SextanteUtils.isWindows():
             s = s.replace("\\", "/")
         return s
+
+    def setText(self, text):
+        self.text.setText(text)

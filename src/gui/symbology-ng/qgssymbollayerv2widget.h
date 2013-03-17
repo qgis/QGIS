@@ -67,6 +67,9 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void offsetChanged();
     void on_mCustomCheckBox_stateChanged( int state );
     void on_mChangePatternButton_clicked();
+    void on_mPenWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDashPatternUnitComboBox_currentIndexChanged( int index );
 
 
   protected:
@@ -102,6 +105,8 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void setSize();
     void setAngle();
     void setOffset();
+    void on_mSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 
   protected:
     QgsSimpleMarkerSymbolLayerV2* mLayer;
@@ -133,6 +138,8 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void borderWidthChanged();
     void borderStyleChanged();
     void offsetChanged();
+    void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 
   protected:
     QgsSimpleFillSymbolLayerV2* mLayer;
@@ -164,6 +171,8 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void setRotate();
     void setOffset();
     void setPlacement();
+    void on_mIntervalUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 
   protected:
 
@@ -202,6 +211,9 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
     void on_mChangeColorButton_clicked();
     void on_mChangeBorderColorButton_clicked();
     void on_mBorderWidthSpinBox_valueChanged( double d );
+    void on_mSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 
   protected:
 
@@ -235,6 +247,7 @@ class GUI_EXPORT QgsLineDecorationSymbolLayerV2Widget : public QgsSymbolLayerV2W
   public slots:
     void colorChanged();
     void penWidthChanged();
+    void on_mWidthUnitComboBox_currentIndexChanged( int index );
 
   protected:
     QgsLineDecorationSymbolLayerV2* mLayer;
@@ -275,6 +288,8 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void on_mChangeColorButton_clicked();
     void on_mChangeBorderColorButton_clicked();
     void on_mBorderWidthSpinBox_valueChanged( double d );
+    void on_mTextureWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mSvgOutlineWidthUnitComboBox_currentIndexChanged( int index );
 };
 
 //////////
@@ -304,6 +319,9 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
     void on_mLineWidthSpinBox_valueChanged( double d );
     void on_mOffsetSpinBox_valueChanged( double d );
     void on_mColorPushButton_clicked();
+    void on_mDistanceUnitComboBox_currentIndexChanged( int index );
+    void on_mLineWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 };
 
 //////////
@@ -331,6 +349,10 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Wi
     void on_mVerticalDistanceSpinBox_valueChanged( double d );
     void on_mHorizontalDisplacementSpinBox_valueChanged( double d );
     void on_mVerticalDisplacementSpinBox_valueChanged( double d );
+    void on_mHorizontalDistanceUnitComboBox_currentIndexChanged( int index );
+    void on_mVerticalDistanceUnitComboBox_currentIndexChanged( int index );
+    void on_mHorizontalDisplacementUnitComboBox_currentIndexChanged( int index );
+    void on_mVerticalDisplacementUnitComboBox_currentIndexChanged( int index );
 };
 
 /////////
@@ -360,6 +382,8 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void setAngle( double angle );
     void setCharacter( const QChar& chr );
     void setOffset();
+    void on_mSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 
   protected:
     QgsFontMarkerSymbolLayerV2* mLayer;

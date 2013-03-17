@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.gui.SextantePostprocessing import SextantePostprocessing
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -27,7 +25,9 @@ __revision__ = '$Format:%H$'
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from sextante.core.QGisLayers import QGisLayers
+from sextante.gui.SextantePostprocessing import SextantePostprocessing
+from sextante.parameters.ParameterFile import ParameterFile
+from sextante.gui.FileSelectionPanel import FileSelectionPanel
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterVector import ParameterVector
@@ -95,7 +95,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             widgetValue = widget.currentIndex()
             for row in range(1, self.table.rowCount()):
                 self.table.cellWidget(row, col).setCurrentIndex(widgetValue)
-
         elif isinstance(widget, ExtentSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
@@ -103,17 +102,23 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     self.table.cellWidget(row, col).text.setText(widgetValue)
                 else:
                     self.table.cellWidget(row, col).text.setText("")
-
         elif isinstance(widget, CrsSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
-                self.table.cellWidget(row, col).epsg = widgetValue
-                self.table.cellWidget(row, col).setText()
-
+                self.table.cellWidget(row, col).setAuthid(widgetValue)
+        elif isinstance(widget, FileSelectionPanel):
+            widgetValue = widget.getValue()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).setText(widgetValue)                                       
         elif isinstance(widget, QtGui.QLineEdit):
             widgetValue = widget.text()
             for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).setText(widgetValue)        
+        elif isinstance(widget, BatchInputSelectionPanel):
+            widgetValue = widget.getText()
+            for row in range(1, self.table.rowCount()):
                 self.table.cellWidget(row, col).setText(widgetValue)
+                
         else:
             pass
 
@@ -264,7 +269,10 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
 
     def setParameterValueFromWidget(self, param, widget, alg = None):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput)):
-            return param.setValue(widget.getText())
+            value = widget.getText()
+            if unicode(value.strip()) == "":
+                value = None
+            return param.setValue(value)
         elif isinstance(param, ParameterBoolean):
             return param.setValue(widget.currentIndex() == 0)
         elif isinstance(param, ParameterSelection):
@@ -275,7 +283,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             if alg != None:
                 widget.useNewAlg(alg)
             return param.setValue(widget.getValue())
-        elif isinstance(param, ParameterCrs):
+        elif isinstance(param, (ParameterCrs, ParameterFile)):
             return param.setValue(widget.getValue())
         else:
             return param.setValue(widget.text())
@@ -300,6 +308,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             item = ExtentSelectionPanel(self, self.alg, param.default)
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
+        elif isinstance(param, ParameterFile):
+            item = FileSelectionPanel(param.isFolder)
         else:
             item = QtGui.QLineEdit()
             try:

@@ -126,14 +126,15 @@ class Dialog(QDialog, Ui_Dialog):
             # Calculate grid spacing
             pointSpacing = sqrt(area / value)
         outFeat = QgsFeature()
+        outFeat.initAttributes(1)
         fields = QgsFields()
         fields.append( QgsField("ID", QVariant.Int) )
+        outFeat.setFields( fields )
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 return
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, crs)
-        #writer = QgsVectorFileWriter(unicode(outPath), "CP1250", fields, QGis.WKBPoint, None)
         idVar = 0
         count = 10.00
         add = 90.00 / (area / pointSpacing)
@@ -156,4 +157,3 @@ class Dialog(QDialog, Ui_Dialog):
                     self.progressBar.setValue(count)
             y = y - pointSpacing
         del writer
-

@@ -246,7 +246,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void drawLineSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
     void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
 
-    void drawAtom( Atom atom, QPainter* painter = 0, QPointF point = QPointF() );
+    /** Draw atom and return its actual size */
+    QSizeF drawAtom( Atom atom, QPainter* painter = 0, QPointF point = QPointF() );
 
     double spaceAboveAtom( Atom atom );
 

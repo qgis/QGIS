@@ -605,8 +605,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return role == Qt::DisplayRole ? rowId : QVariant();
 
   int fieldId = mAttributes[ index.column()];
+  const QgsField& field = mLayer->pendingFields()[ fieldId ];
 
-  QVariant::Type fldType = mLayer->pendingFields()[ fieldId ].type();
+  QVariant::Type fldType = field.type();
   bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
 
   if ( role == Qt::TextAlignmentRole )
@@ -643,12 +644,20 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  if ( role == Qt::DisplayRole && mValueMaps.contains( fieldId ) )
+  if ( role == Qt::DisplayRole )
   {
-    return mValueMaps[ fieldId ]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
+    if ( mValueMaps.contains( fieldId ) )
+    {
+      return mValueMaps[ fieldId ]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
+    }
+
+    if ( mLayer->editType( fieldId ) == QgsVectorLayer::Calendar && val.canConvert( QVariant::Date ) )
+    {
+      return val.toDate().toString( mLayer->dateFormat( fieldId ) );
+    }
   }
 
-  return val.toString();
+  return field.displayString( val );
 }
 
 bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &value, int role )

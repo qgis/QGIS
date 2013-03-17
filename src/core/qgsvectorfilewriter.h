@@ -26,10 +26,6 @@
 
 #include <QPair>
 
-typedef void *OGRDataSourceH;
-typedef void *OGRLayerH;
-typedef void *OGRGeometryH;
-typedef void *OGRFeatureH;
 
 class QgsSymbolLayerV2;
 class QTextCodec;

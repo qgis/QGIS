@@ -44,8 +44,9 @@ class CORE_EXPORT QgsSymbolV2
 
     enum OutputUnit
     {
-      MM,
-      MapUnit
+      MM = 0,
+      MapUnit,
+      Mixed //mixed units in symbol layers
     };
 
     enum SymbolType
@@ -112,8 +113,8 @@ class CORE_EXPORT QgsSymbolV2
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
-    OutputUnit outputUnit() const { return mOutputUnit; }
-    void setOutputUnit( OutputUnit u ) { mOutputUnit = u; }
+    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsSymbolV2::OutputUnit u );
 
     //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const { return mAlpha; }
@@ -139,8 +140,6 @@ class CORE_EXPORT QgsSymbolV2
 
     SymbolType mType;
     QgsSymbolLayerV2List mLayers;
-
-    OutputUnit mOutputUnit;
 
     /**Symbol opacity (in the range 0 - 1)*/
     qreal mAlpha;

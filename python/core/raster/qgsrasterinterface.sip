@@ -192,5 +192,19 @@ class QgsRasterInterface
                                 const QgsRectangle & theExtent = QgsRectangle(),
                                 int theSampleSize = 0 );
 
+    /** Switch on (and clear old statistics) or off collection of statistics */
+    //void setStatsOn( bool on );
+
+    /** Last total time (for allbands) consumed by this interface for call to block()
+     * If cumulative is true, the result includes also time spent in all preceding
+     * interfaces. If cumulative is false, only time consumed by this interface is
+     * returned. */
+    //double time( bool cumulative = false );
+
+    /** Write base class members to xml. */
+    virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    /** Sets base class members from xml. Usually called from create() methods of subclasses */
+    virtual void readXML( const QDomElement& filterElem );
+
 };
 

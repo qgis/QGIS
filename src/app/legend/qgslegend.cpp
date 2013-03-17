@@ -2775,7 +2775,10 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
       layer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
     }
 
-    layer->setMinimumMaximumUsingLastExtent();
+    QgsRectangle myRectangle;
+    myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( layer, mMapCanvas->extent() );
+    layer->setContrastEnhancementAlgorithm( layer->contrastEnhancementAlgorithm(), QgsRasterLayer::ContrastEnhancementMinMax, myRectangle );
+
     layer->setCacheImage( NULL );
     refreshLayerSymbology( layer->id() );
     mMapCanvas->refresh();

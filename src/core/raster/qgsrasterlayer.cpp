@@ -1698,6 +1698,10 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
     }
   }
 
+  // brightness filter
+  QgsBrightnessContrastFilter * brightnessFilter = new QgsBrightnessContrastFilter();
+  mPipe.set( brightnessFilter );
+
   //resampler (must be after renderer)
   QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
@@ -1770,6 +1774,8 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
   {
     return;
   }
+
+  mContrastEnhancementAlgorithm = theAlgorithm;
 
   QList<int> myBands;
   QList<QgsContrastEnhancement*> myEnhancements;
@@ -2284,6 +2290,17 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
     }
   }
 
+  //brightness
+  QgsBrightnessContrastFilter * brightnessFilter = new QgsBrightnessContrastFilter();
+  mPipe.set( brightnessFilter );
+
+  //brightness coefficient
+  QDomElement brightnessElem = layer_node.firstChildElement( "brightnesscontrast" );
+  if ( !brightnessElem.isNull() )
+  {
+    brightnessFilter->readXML( brightnessElem );
+  }
+
   //resampler
   QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
@@ -2466,6 +2483,13 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   if ( renderer )
   {
     renderer->writeXML( document, layerElem );
+  }
+
+  QgsBrightnessContrastFilter *brightnessFilter = mPipe.brightnessFilter();
+  if ( brightnessFilter )
+  {
+    QDomElement layerElem = layer_node.toElement();
+    brightnessFilter->writeXML( document, layerElem );
   }
 
   QgsRasterResampleFilter *resampleFilter = mPipe.resampleFilter();

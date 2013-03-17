@@ -203,6 +203,8 @@ QDomDocument QgsWFSServer::getCapabilities()
   getFeatureElement.appendChild( getFeatureFormatElement );
   QDomElement gmlFormatElement = doc.createElement( "GML2" );/*wfs:GML2*/
   getFeatureFormatElement.appendChild( gmlFormatElement );
+  QDomElement gml3FormatElement = doc.createElement( "GML3" );/*wfs:GML3*/
+  getFeatureFormatElement.appendChild( gml3FormatElement );
   QDomElement geojsonFormatElement = doc.createElement( "GeoJSON" );/*wfs:GeoJSON*/
   getFeatureFormatElement.appendChild( geojsonFormatElement );
   QDomElement getFeatureDhcTypeGetElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
@@ -515,7 +517,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
               else if ( childElem.tagName() != "PropertyName" )
               {
-                QgsGeometry *geom = QgsOgcUtils::geometryFromGML2( childElem );
+                QgsGeometry *geom = QgsOgcUtils::geometryFromGML( childElem );
                 req.setFilterRect( geom->boundingBox() );
                 delete geom;
               }
@@ -535,7 +537,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           }
           else
           {
-            QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+            QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
             if ( mFilter->hasParserError() )
             {
               throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
@@ -898,7 +900,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             }
             else if ( childElem.tagName() != "PropertyName" )
             {
-              QgsGeometry* geom = QgsOgcUtils::geometryFromGML2( childElem );
+              QgsGeometry* geom = QgsOgcUtils::geometryFromGML( childElem );
               req.setFilterRect( geom->boundingBox() );
               delete geom;
             }
@@ -918,7 +920,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         else
         {
-          QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+          QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
           if ( mFilter->hasParserError() )
           {
             throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
@@ -1093,15 +1095,31 @@ void QgsWFSServer::startGetFeature( QgsRequestHandler& request, const QString& f
 
     QDomDocument doc;
     QDomElement bbElem = doc.createElement( "gml:boundedBy" );
-    QDomElement boxElem = createBoxGML2( rect, doc );
-    if ( !boxElem.isNull() )
+    if ( format == "GML3" )
     {
-      if ( crs.isValid() )
+      QDomElement envElem = QgsOgcUtils::rectangleToGMLEnvelope( rect, doc );
+      if ( !envElem.isNull() )
       {
-        boxElem.setAttribute( "srsName", crs.authid() );
+        if ( crs.isValid() )
+        {
+          envElem.setAttribute( "srsName", crs.authid() );
+        }
+        bbElem.appendChild( envElem );
+        doc.appendChild( bbElem );
       }
-      bbElem.appendChild( boxElem );
-      doc.appendChild( bbElem );
+    }
+    else
+    {
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( rect, doc );
+      if ( !boxElem.isNull() )
+      {
+        if ( crs.isValid() )
+        {
+          boxElem.setAttribute( "srsName", crs.authid() );
+        }
+        bbElem.appendChild( boxElem );
+        doc.appendChild( bbElem );
+      }
     }
     result = doc.toByteArray();
     request.sendGetFeatureResponse( &result );
@@ -1132,8 +1150,17 @@ void QgsWFSServer::sendGetFeature( QgsRequestHandler& request, const QString& fo
   else
   {
     QDomDocument gmlDoc;
-    QDomElement featureElement = createFeatureGML2( feat, gmlDoc, crs, fields, excludedAttributes );
-    gmlDoc.appendChild( featureElement );
+    QDomElement featureElement;
+    if ( format == "GML3" )
+    {
+      featureElement = createFeatureGML3( feat, gmlDoc, crs, fields, excludedAttributes );
+      gmlDoc.appendChild( featureElement );
+    }
+    else
+    {
+      featureElement = createFeatureGML2( feat, gmlDoc, crs, fields, excludedAttributes );
+      gmlDoc.appendChild( featureElement );
+    }
 
     result = gmlDoc.toByteArray();
     request.sendGetFeatureResponse( &result );
@@ -1337,7 +1364,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
 
             if ( !geometryElem.isNull() )
             {
-              if ( !layer->changeGeometry( *fidIt, QgsOgcUtils::geometryFromGML2( geometryElem ) ) )
+              if ( !layer->changeGeometry( *fidIt, QgsOgcUtils::geometryFromGML( geometryElem ) ) )
                 throw QgsMapServiceException( "RequestNotWellFormed", "Error in change geometry" );
             }
           }
@@ -1453,7 +1480,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
                 }
                 else //a geometry attribute
                 {
-                  f->setGeometry( QgsOgcUtils::geometryFromGML2( currentAttributeElement ) );
+                  f->setGeometry( QgsOgcUtils::geometryFromGML( currentAttributeElement ) );
                 }
               }
               currentAttributeChild = currentAttributeChild.nextSibling();
@@ -1546,7 +1573,7 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, Qgs
   }
   else
   {
-    QgsExpression *mFilter = QgsExpression::createFromOgcFilter( filterElem );
+    QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
     if ( mFilter->hasParserError() )
     {
       throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
@@ -1651,12 +1678,12 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
     QgsGeometry* geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML2( geom, doc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc );
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();
       QDomElement bbElem = doc.createElement( "gml:boundedBy" );
-      QDomElement boxElem = createBoxGML2( &box, doc );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLBox( &box, doc );
 
       if ( crs.isValid() )
       {
@@ -1693,47 +1720,61 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   return featureElement;
 }
 
-QDomElement QgsWFSServer::createBoxGML2( QgsRectangle* box, QDomDocument& doc ) /*const*/
+QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc, QgsCoordinateReferenceSystem& crs, QgsFields fields, QSet<QString> excludedAttributes ) /*const*/
 {
-  if ( !box )
+  //gml:FeatureMember
+  QDomElement featureElement = doc.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
+
+  //qgs:%TYPENAME%
+  QDomElement typeNameElement = doc.createElement( "qgs:" + mTypeName /*qgs:%TYPENAME%*/ );
+  typeNameElement.setAttribute( "gml:id", mTypeName + "." + QString::number( feat->id() ) );
+  featureElement.appendChild( typeNameElement );
+
+  if ( mWithGeom )
   {
-    return QDomElement();
-  }
+    //add geometry column (as gml)
+    QgsGeometry* geom = feat->geometry();
 
-  QDomElement boxElem = doc.createElement( "gml:Box" );
-  QVector<QgsPoint> v;
-  QgsPoint p1;
-  p1.set( box->xMinimum(), box->yMinimum() );
-  v.append( p1 );
-  QgsPoint p2;
-  p2.set( box->xMaximum(), box->yMaximum() );
-  v.append( p2 );
-  QDomElement coordElem = createCoordinateGML2( v, doc );
-  boxElem.appendChild( coordElem );
-
-  return boxElem;
-}
-
-QDomElement QgsWFSServer::createCoordinateGML2( const QVector<QgsPoint> points, QDomDocument& doc ) const
-{
-  QDomElement coordElem = doc.createElement( "gml:coordinates" );
-  coordElem.setAttribute( "cs", "," );
-  coordElem.setAttribute( "ts", " " );
-
-  QString coordString;
-  QVector<QgsPoint>::const_iterator pointIt = points.constBegin();
-  for ( ; pointIt != points.constEnd(); ++pointIt )
-  {
-    if ( pointIt != points.constBegin() )
+    QDomElement geomElem = doc.createElement( "qgs:geometry" );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3" );
+    if ( !gmlElem.isNull() )
     {
-      coordString += " ";
+      QgsRectangle box = geom->boundingBox();
+      QDomElement bbElem = doc.createElement( "gml:boundedBy" );
+      QDomElement boxElem = QgsOgcUtils::rectangleToGMLEnvelope( &box, doc );
+
+      if ( crs.isValid() )
+      {
+        boxElem.setAttribute( "srsName", crs.authid() );
+        gmlElem.setAttribute( "srsName", crs.authid() );
+      }
+
+      bbElem.appendChild( boxElem );
+      typeNameElement.appendChild( bbElem );
+
+      geomElem.appendChild( gmlElem );
+      typeNameElement.appendChild( geomElem );
     }
-    coordString += QString::number( pointIt->x(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
-    coordString += ",";
-    coordString += QString::number( pointIt->y(), 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
   }
 
-  QDomText coordText = doc.createTextNode( coordString );
-  coordElem.appendChild( coordText );
-  return coordElem;
+  //read all attribute values from the feature
+  QgsAttributes featureAttributes = feat->attributes();
+  for ( int i = 0; i < featureAttributes.count(); ++i )
+  {
+
+    QString attributeName = fields[i].name();
+    //skip attribute if is explicitely excluded from WFS publication
+    if ( excludedAttributes.contains( attributeName ) )
+    {
+      continue;
+    }
+
+    QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QString( " " ), QString( "_" ) ) );
+    QDomText fieldText = doc.createTextNode( featureAttributes[i].toString() );
+    fieldElem.appendChild( fieldText );
+    typeNameElement.appendChild( fieldElem );
+  }
+
+  return featureElement;
 }
+

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>23</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -35,6 +35,7 @@
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionDeleteSelected"/>
     <addaction name="separator"/>
+    <addaction name="mActionRotateFeature"/>
     <addaction name="mActionSimplifyFeature"/>
     <addaction name="mActionAddRing"/>
     <addaction name="mActionAddPart"/>
@@ -411,6 +412,10 @@
    <addaction name="mActionFullCumulativeCutStretch"/>
    <addaction name="mActionLocalHistogramStretch"/>
    <addaction name="mActionFullHistogramStretch"/>
+   <addaction name="mActionIncreaseBrightness"/>
+   <addaction name="mActionDecreaseBrightness"/>
+   <addaction name="mActionIncreaseContrast"/>
+   <addaction name="mActionDecreaseContrast"/>
   </widget>
   <widget class="QToolBar" name="mLabelToolBar">
    <property name="windowTitle">
@@ -2012,6 +2017,42 @@ Acts on currently active editable layer</string>
   <action name="mActionOSMExport">
    <property name="text">
     <string>&amp;Export topology to SpatiaLite</string>
+   </property>
+  </action>
+  <action name="mActionIncreaseBrightness">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mActionIncreaseBrightness.svg</normaloff>:/images/themes/gis/mActionIncreaseBrightness.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Increase brightness</string>
+   </property>
+  </action>
+  <action name="mActionDecreaseBrightness">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mActionDecreaseBrightness.svg</normaloff>:/images/themes/gis/mActionDecreaseBrightness.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Decrease brightness</string>
+   </property>
+  </action>
+  <action name="mActionIncreaseContrast">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mActionIncreaseContrast.svg</normaloff>:/images/themes/gis/mActionIncreaseContrast.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Increase contrast</string>
+   </property>
+  </action>
+  <action name="mActionDecreaseContrast">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mActionDecreaseContrast.svg</normaloff>:/images/themes/gis/mActionDecreaseContrast.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Decrease contrast</string>
    </property>
   </action>
  </widget>

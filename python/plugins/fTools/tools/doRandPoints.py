@@ -145,13 +145,11 @@ class Dialog(QDialog, Ui_Dialog):
         provider = vlayer.dataProvider()
         feat = QgsFeature()
         geom = QgsGeometry()
-        #geom2 = QgsGeometry()
         fit = provider.getFeatures()
         fit.nextFeature(feat)
         geom = QgsGeometry(feat.geometry())
         count = 10.00
         add = ( 40.00 - 10.00 ) / provider.featureCount()
-        #geom = QgsGeometry(feat.geometry())
         while fit.nextFeature(feat):
             geom = geom.combine(QgsGeometry( feat.geometry() ))
             count = count + add
@@ -202,6 +200,7 @@ class Dialog(QDialog, Ui_Dialog):
 
     def randomize(self, inLayer, outPath, minimum, design, value):
         outFeat = QgsFeature()
+        outFeat.initAttributes(1)
         if design == self.tr("unstratified"):
             ext = inLayer.extent()
             if inLayer.type() == inLayer.RasterLayer:
@@ -215,6 +214,7 @@ class Dialog(QDialog, Ui_Dialog):
         if not crs.isValid(): crs = None
         fields = QgsFields()
         fields.append( QgsField("ID", QVariant.Int) )
+        outFeat.setFields(fields)
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):

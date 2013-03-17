@@ -194,7 +194,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
         .arg( prefix )
         .arg( geometryColumnsOnly ? "sdo_geom_metadata" : "tab_columns" )
         .arg( userTablesOnly ? "" : " AND c.owner=t.owner" )
-        .arg( geometryColumnsOnly ? "" : " WHERE c.data_type='SDO_GEOMETRY' AND c.data_type_owner='MDSYS'" );
+        .arg( geometryColumnsOnly ? "" : " WHERE c.data_type='SDO_GEOMETRY'" );
 
   if ( allowGeometrylessTables )
   {

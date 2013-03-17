@@ -103,7 +103,7 @@ class Dialog(QDialog, Ui_Dialog):
         fieldList = ftools_utils.getFieldList(polyLayer)
         index = polyProvider.fieldNameIndex(unicode(inField))
         if index == -1:
-            index = polyProvider.fieldCount()
+            index = polyProvider.fields().count()
             fieldList.append( QgsField(unicode(inField), QVariant.Double, "real", 24, 15, self.tr("length field")) )
         sRs = polyProvider.crs()
         inFeat = QgsFeature()
@@ -119,17 +119,13 @@ class Dialog(QDialog, Ui_Dialog):
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 return
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, polyProvider.geometryType(), sRs)
-        #writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, polyProvider.geometryType(), sRs)
         spatialIndex = ftools_utils.createIndex( lineProvider )
-	polyFit = polyProvider.getFeatures()
+        polyFit = polyProvider.getFeatures()
         while polyFit.nextFeature(inFeat):
             inGeom = QgsGeometry(inFeat.geometry())
             atMap = inFeat.attributes()
             lineList = []
             length = 0
-            #(check, lineList) = lineLayer.featuresInRectangle(inGeom.boundingBox(), True, False)
-            #lineLayer.select(inGeom.boundingBox(), False)
-            #lineList = lineLayer.selectedFeatures()
             lineList = spatialIndex.intersects(inGeom.boundingBox())
             if len(lineList) > 0: check = 0
             else: check = 1
@@ -141,8 +137,9 @@ class Dialog(QDialog, Ui_Dialog):
                         outGeom = inGeom.intersection(tmpGeom)
                         length = length + distArea.measure(outGeom)
             outFeat.setGeometry(inGeom)
+            atMap.append(QVariant(length))
             outFeat.setAttributes(atMap)
-            outFeat.setAttribute(index, QVariant(length))
+            #outFeat.setAttribute(index, QVariant(length))
             writer.addFeature(outFeat)
             start = start + 1
             progressBar.setValue(start)
