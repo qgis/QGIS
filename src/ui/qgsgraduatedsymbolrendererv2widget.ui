@@ -116,7 +116,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Quantile</string>
+         <string>Quantile (Equal Count)</string>
         </property>
        </item>
        <item>
