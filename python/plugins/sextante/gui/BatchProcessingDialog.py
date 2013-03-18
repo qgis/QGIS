@@ -270,7 +270,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
     def setParameterValueFromWidget(self, param, widget, alg = None):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput)):
             value = widget.getText()
-            if unicode(value.strip()) == "":
+            if unicode(value).strip() == "":
                 value = None
             return param.setValue(value)
         elif isinstance(param, ParameterBoolean):
