@@ -4454,7 +4454,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
       }
       messageBar()->pushMessage( tr( "Saving done" ),
                                  tr( "Export to vector file has been completed" ),
-                                 QgsMessageBar::INFO, 3 );
+                                 QgsMessageBar::INFO, messageTimeout() );
     }
     else
     {
@@ -4491,32 +4491,34 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent )
 
   if ( !layer )
   {
-    QMessageBox::information( parent,
-                              tr( "No Layer Selected" ),
-                              tr( "To delete features, you must select a vector layer in the legend" ) );
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To delete features, you must select a vector layer in the legend" ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
-    QMessageBox::information( parent,
-                              tr( "No Vector Layer Selected" ),
-                              tr( "Deleting features only works on vector layers" ) );
+    messageBar()->pushMessage( tr( "No Vector Layer Selected" ),
+                               tr( "Deleting features only works on vector layers" ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
   if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
-    QMessageBox::information( parent, tr( "Provider does not support deletion" ),
-                              tr( "Data provider does not support deleting features" ) );
+    messageBar()->pushMessage( tr( "Provider does not support deletion" ),
+                               tr( "Data provider does not support deleting features" ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( parent, tr( "Layer not editable" ),
-                              tr( "The current layer is not editable. Choose 'Start editing' in the digitizing toolbar." ) );
+    messageBar()->pushMessage( tr( "Layer not editable" ),
+                               tr( "The current layer is not editable. Choose 'Start editing' in the digitizing toolbar." ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
@@ -4530,8 +4532,9 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent )
   vlayer->beginEditCommand( tr( "Features deleted" ) );
   if ( !vlayer->deleteSelectedFeatures() )
   {
-    QMessageBox::information( parent, tr( "Problem deleting features" ),
-                              tr( "A problem occured during deletion of features" ) );
+    messageBar()->pushMessage( tr( "Problem deleting features" ),
+                               tr( "A problem occured during deletion of features" ),
+                               QgsMessageBar::WARNING );
   }
 
   vlayer->endEditCommand();
@@ -4955,7 +4958,9 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QgsMapLayer *activeMapLayer = activeLayer();
   if ( !activeMapLayer )
   {
-    QMessageBox::information( 0, tr( "No active layer" ), tr( "No active layer found. Please select a layer in the layer list" ) );
+    messageBar()->pushMessage( tr( "No active layer" ),
+                               tr( "No active layer found. Please select a layer in the layer list" ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
@@ -5473,7 +5478,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     {
       mActionToggleEditing->setChecked( false );
       mActionToggleEditing->setEnabled( false );
-      QMessageBox::information( 0, tr( "Start editing failed" ), tr( "Provider cannot be opened for editing" ) );
+      messageBar()->pushMessage( tr( "Start editing failed" ),
+                                 tr( "Provider cannot be opened for editing" ),
+                                 QgsMessageBar::INFO, messageTimeout() );
       return false;
     }
 
@@ -5526,7 +5533,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         mMapCanvas->freeze( true );
         if ( !vlayer->rollBack() )
         {
-          QMessageBox::information( 0, tr( "Error" ), tr( "Problems during roll back" ) );
+          messageBar()->pushMessage( tr( "Error" ),
+                                     tr( "Problems during roll back" ),
+                                     QgsMessageBar::CRITICAL );
           res = false;
         }
         mMapCanvas->freeze( false );
@@ -6439,18 +6448,18 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterLayer::ContrastEn
 
   if ( !myLayer )
   {
-    QMessageBox::information( this,
-                              tr( "No Layer Selected" ),
-                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To perform a full histogram stretch, you need to have a raster layer selected." ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
   QgsRasterLayer* myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
   if ( !myRasterLayer )
   {
-    QMessageBox::information( this,
-                              tr( "No Raster Layer Selected" ),
-                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To perform a full histogram stretch, you need to have a raster layer selected." ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
@@ -6490,18 +6499,18 @@ void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 
   if ( !myLayer )
   {
-    QMessageBox::information( this,
-                              tr( "No Layer Selected" ),
-                              tr( "To change brightness or contrast, you need to have a raster layer selected." ) );
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To change brightness or contrast, you need to have a raster layer selected." ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
   QgsRasterLayer* myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
   if ( !myRasterLayer )
   {
-    QMessageBox::information( this,
-                              tr( "No Raster Layer Selected" ),
-                              tr( "To change brightness or contrast, you need to have a raster layer selected." ) );
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To change brightness or contrast, you need to have a raster layer selected." ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
@@ -8684,7 +8693,9 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
 
     if ( !plt->showLayerProperties( pl ) )
     {
-      QMessageBox::information( this, tr( "Warning" ), tr( "This layer doesn't have a properties dialog." ) );
+      messageBar()->pushMessage( tr( "Warning" ),
+                                 tr( "This layer doesn't have a properties dialog." ),
+                                 QgsMessageBar::INFO, messageTimeout() );
     }
   }
 }
