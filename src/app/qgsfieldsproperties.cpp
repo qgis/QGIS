@@ -487,11 +487,11 @@ void QgsFieldsProperties::attributeTypeDialog()
   QPair<QString, QString> checkStates = mCheckedStates.value( index, mLayer->checkedState( index ) );
   attributeTypeDialog.setCheckedState( checkStates.first, checkStates.second );
 
-  attributeTypeDialog.setDateFormat( mLayer->dateFormat( index ) );
+  attributeTypeDialog.setDateFormat( mDateFormat.value( index, mLayer->dateFormat( index ) ) );
+
+  attributeTypeDialog.setFieldEditable( mFieldEditables.value( index, mLayer->fieldEditable( index ) ) );
 
   attributeTypeDialog.setIndex( index, mEditTypeMap.value( index, mLayer->editType( index ) ) );
-
-  attributeTypeDialog.setFieldEditable( mLayer->fieldEditable( index ) );
 
   if ( !attributeTypeDialog.exec() )
     return;

@@ -293,7 +293,7 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid, b
       }
     }
   }
-  
+
   return 0;
 }
 */
@@ -313,7 +313,7 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid ) 
       }
     }
   }
-  
+
   return 0;
 }
 
@@ -491,14 +491,14 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     return false;
   }
 
-  // remove all uuid attributes since we don't want duplicates UUIDS 
-  QDomNodeList composerItemsNodes = importDoc.elementsByTagName("ComposerItem");
-  for (int i=0; i<composerItemsNodes.count(); ++i)
+  // remove all uuid attributes since we don't want duplicates UUIDS
+  QDomNodeList composerItemsNodes = importDoc.elementsByTagName( "ComposerItem" );
+  for ( int i = 0; i < composerItemsNodes.count(); ++i )
   {
-    QDomNode composerItemNode = composerItemsNodes.at(i);
-    if( composerItemNode.isElement() )
+    QDomNode composerItemNode = composerItemsNodes.at( i );
+    if ( composerItemNode.isElement() )
     {
-      composerItemNode.toElement().removeAttribute("uuid");
+      composerItemNode.toElement().removeAttribute( "uuid" );
     }
   }
 
@@ -514,10 +514,10 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
 void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore,
                                       bool addUndoCommands, QPointF* pos, bool pasteInPlace )
 {
-  QPointF* pasteInPlacePt;
-  if( pasteInPlace )
+  QPointF* pasteInPlacePt = 0;
+  if ( pasteInPlace )
   {
-    pasteInPlacePt = new QPointF(0, pageNumberAt( *pos ) * (mPageHeight+mSpaceBetweenPages) );
+    pasteInPlacePt = new QPointF( 0, pageNumberAt( *pos ) * ( mPageHeight + mSpaceBetweenPages ) );
   }
   QDomNodeList composerLabelList = elem.elementsByTagName( "ComposerLabel" );
   for ( int i = 0; i < composerLabelList.size(); ++i )
@@ -527,10 +527,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     newLabel->readXML( currentComposerLabelElem, doc );
     if ( pos )
     {
-      if ( pasteInPlace )
+      if ( pasteInPlacePt )
       {
-        newLabel->setItemPosition( newLabel->transform().dx(), fmod(newLabel->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newLabel->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newLabel->setItemPosition( newLabel->transform().dx(), fmod( newLabel->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLabel->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -563,8 +563,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newMap->setItemPosition( newMap->transform().dx(), fmod(newMap->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newMap->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newMap->setItemPosition( newMap->transform().dx(), fmod( newMap->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newMap->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -588,8 +588,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newArrow->setItemPosition( newArrow->transform().dx(), fmod(newArrow->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newArrow->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newArrow->setItemPosition( newArrow->transform().dx(), fmod( newArrow->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newArrow->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -613,8 +613,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newScaleBar->setItemPosition( newScaleBar->transform().dx(), fmod(newScaleBar->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newScaleBar->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newScaleBar->setItemPosition( newScaleBar->transform().dx(), fmod( newScaleBar->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newScaleBar->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -638,8 +638,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newShape->setItemPosition( newShape->transform().dx(), fmod(newShape->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newShape->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newShape->setItemPosition( newShape->transform().dx(), fmod( newShape->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newShape->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -663,8 +663,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newPicture->setItemPosition( newPicture->transform().dx(), fmod(newPicture->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newPicture->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newPicture->setItemPosition( newPicture->transform().dx(), fmod( newPicture->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPicture->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -688,8 +688,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newLegend->setItemPosition( newLegend->transform().dx(), fmod(newLegend->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newLegend->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newLegend->setItemPosition( newLegend->transform().dx(), fmod( newLegend->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLegend->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -713,8 +713,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newTable->setItemPosition( newTable->transform().dx(), fmod(newTable->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newTable->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newTable->setItemPosition( newTable->transform().dx(), fmod( newTable->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newTable->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {

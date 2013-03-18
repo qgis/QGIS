@@ -99,11 +99,10 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     tabWidget = new QTabWidget( mDialog );
     gridLayout->addWidget( tabWidget );
 
-    for ( QList<QgsAttributeEditorElement*>::const_iterator tIt = vl->attributeEditorElements().begin(); tIt != vl->attributeEditorElements().end(); ++tIt )
+    foreach ( const QgsAttributeEditorElement *widgDef, vl->attributeEditorElements() )
     {
-      QgsAttributeEditorElement* widgDef = *tIt;
-
       QWidget* tabPage = new QWidget( tabWidget );
+
       tabWidget->addTab( tabPage, widgDef->name() );
       QGridLayout *tabPageLayout = new QGridLayout( tabPage );
 
@@ -230,16 +229,16 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     for ( int fldIdx = 0; fldIdx < theFields.count(); ++fldIdx )
     {
       QList<QWidget *> myWidgets = mDialog->findChildren<QWidget*>( theFields[fldIdx].name() );
-      if ( !myWidgets.size() )
+      if ( myWidgets.isEmpty() )
         continue;
 
-      for ( QList<QWidget *>::const_iterator itw = myWidgets.begin(); itw != myWidgets.end(); ++itw )
+      foreach ( QWidget *w, myWidgets )
       {
-        QgsAttributeEditor::createAttributeEditor( mDialog, *itw, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
+        QgsAttributeEditor::createAttributeEditor( mDialog, w, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
 
-        if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
+        if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable && w->isEnabled() )
         {
-          ( *itw )->setEnabled(( *itw )->isEnabled() && vl->isEditable() && vl->fieldEditable( fldIdx ) );
+          w->setEnabled( vl->isEditable() && vl->fieldEditable( fldIdx ) );
         }
       }
     }
