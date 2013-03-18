@@ -81,6 +81,8 @@ class Heatmap: public QObject, public QgisPlugin
     void help();
 
   private:
+    double mDecay;
+
     //! Worker to convert meters to map units
     double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs );
     //! Worker to calculate buffer size in pixels
@@ -89,10 +91,15 @@ class Heatmap: public QObject, public QgisPlugin
     double calculateKernelValue( double distance, int bandwidth, int kernelShape );
     //! Uniform kernel function
     double uniformKernel( double distance, int bandwidth );
-    //! Quartic kernel function    
+    //! Quartic kernel function
     double quarticKernel( double distance, int bandwidth );
-    
-    
+    //! Triweight kernel function
+    double triweightKernel( double distance, int bandwidth );
+    //! Epanechnikov kernel function
+    double epanechnikovKernel( double distance, int bandwidth );
+    //! Triangular kernel function
+    double triangularKernel( double distance, int bandwidth );
+
     // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
 
     int mPluginType;

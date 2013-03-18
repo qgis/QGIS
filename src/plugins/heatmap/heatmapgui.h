@@ -35,12 +35,14 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
       Meters,
       MapUnits
     };
-    
+
     enum kernelShape
     {
+      Quartic,
       Triangular,
       Uniform,
-      Quartic
+      Triweight,
+      Epanechnikov
     };
 
     /** Returns whether to apply weighted heat */
@@ -54,7 +56,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
 
     /** Return the radius Unit (meters/map units) */
     int radiusUnit();
-    
+
     /** Return the selected kernel shape */
     int kernelShape();
 
@@ -130,6 +132,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void on_mRadiusUnitCombo_currentIndexChanged( int index );
     void on_mInputVectorCombo_currentIndexChanged( int index );
     void on_mBufferLineEdit_editingFinished();
+    void on_kernelShapeCombo_currentIndexChanged( int index );
 };
 
 #endif

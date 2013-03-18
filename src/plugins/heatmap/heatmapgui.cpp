@@ -225,6 +225,14 @@ void HeatmapGui::on_mBufferLineEdit_editingFinished()
 {
   updateBBox();
 }
+
+void HeatmapGui::on_kernelShapeCombo_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  // Only enable the decay edit if the kernel shape is set to triangular
+  mDecayLineEdit->setEnabled( index == HeatmapGui::Triangular );
+}
+
 /*
  *
  * Private Functions

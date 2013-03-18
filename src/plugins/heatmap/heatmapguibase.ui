@@ -227,6 +227,9 @@
         </item>
         <item row="3" column="1" colspan="2">
          <widget class="QLineEdit" name="mDecayLineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>0.0</string>
           </property>
@@ -243,6 +246,11 @@
          <widget class="QComboBox" name="kernelShapeCombo">
           <item>
            <property name="text">
+            <string>Quartic (Biweight)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
             <string>Triangular</string>
            </property>
           </item>
@@ -253,9 +261,14 @@
           </item>
           <item>
            <property name="text">
-            <string>Quartic</string>
+            <string>Triweight</string>
            </property>
-          </item>          
+          </item>
+          <item>
+           <property name="text">
+            <string>Epanechnikov</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item row="0" column="0">
