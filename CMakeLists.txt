@@ -323,7 +323,7 @@ IF (PEDANTIC)
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual")
     ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   ENDIF (MSVC)
 
