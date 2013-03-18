@@ -325,7 +325,14 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
     }
   }
 
-  QStringList lines = splitStringForWrapping( symbolItem->text() );
+  QString text = symbolItem->text();
+  if ( text.isEmpty() )
+  {
+    // Use layer label, used for single symbols
+    text = layerItem->text();
+  }
+
+  QStringList lines = splitStringForWrapping( text );
 
   QgsSymbol* symbol = 0;
   QgsComposerSymbolItem* symItem = dynamic_cast<QgsComposerSymbolItem*>( symbolItem );
@@ -899,15 +906,20 @@ QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem*
     }
     else if ( type == QgsComposerLegendItem::LayerItem )
     {
-      Nucleon nucleon;
-      nucleon.item = currentLegendItem;
-      nucleon.size = drawLayerItemTitle( dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ) );
+      Atom atom;
+
+      // Draw layer title only if there are more than one symbol
+      if ( currentLegendItem->rowCount() > 1 )
+      {
+        Nucleon nucleon;
+        nucleon.item = currentLegendItem;
+        nucleon.size = drawLayerItemTitle( dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ) );
+        atom.nucleons.append( nucleon );
+        atom.size.rwidth() = nucleon.size.width();
+        atom.size.rheight() = nucleon.size.height();
+      }
 
       QList<Atom> layerAtoms;
-      Atom atom;
-      atom.nucleons.append( nucleon );
-      atom.size.rwidth() = nucleon.size.width();
-      atom.size.rheight() = nucleon.size.height();
 
       for ( int j = 0; j < currentLegendItem->rowCount(); j++ )
       {
@@ -921,7 +933,10 @@ QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem*
           // append to layer atom
           // the width is not correct at this moment, we must align all symbol labels
           atom.size.rwidth() = qMax( symbolNucleon.size.width(), atom.size.width() );
-          atom.size.rheight() += mSymbolSpace;
+          if ( currentLegendItem->rowCount() > 1 )
+          {
+            atom.size.rheight() += mSymbolSpace;
+          }
           atom.size.rheight() += symbolNucleon.size.height();
           atom.nucleons.append( symbolNucleon );
         }
@@ -971,7 +986,17 @@ QSizeF QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point 
               type == QgsComposerLegendItem::SymbologyV2Item ||
               type == QgsComposerLegendItem::RasterSymbolItem )
     {
-      if ( !first ) point.ry() += mSymbolSpace;
+      if ( !first )
+      {
+        if ( item->parent() && item->parent()->rowCount() == 1 )
+        {
+          point.ry() += mLayerSpace;
+        }
+        else
+        {
+          point.ry() += mSymbolSpace;
+        }
+      }
       double labelXOffset = nucleon.labelXOffset;
       Nucleon symbolNucleon = drawSymbolItem( item, painter, point, labelXOffset );
       // expand width, it may be wider because of labelXOffset
@@ -1003,6 +1028,11 @@ double QgsComposerLegend::spaceAboveAtom( Atom atom )
       break;
     case QgsComposerLegendItem::SymbologyV2Item:
     case QgsComposerLegendItem::RasterSymbolItem:
+      if ( item->parent() && item->parent()->rowCount() == 1 )
+      {
+        // single symbol representing the whole layer
+        return mLayerSpace;
+      }
       return mSymbolSpace;
       break;
     default:
