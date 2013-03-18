@@ -119,21 +119,25 @@ def findPlugins(path):
   """ for internal use: return list of plugins in given path """
   plugins = []
   for plugin in glob.glob(path + "/*"):
-    if os.path.isdir(plugin) and os.path.exists(os.path.join(plugin, '__init__.py')):
-      plugins.append( os.path.basename(plugin) )
+    if not os.path.isdir(plugin):
+      continue
+    if not os.path.exists(os.path.join(plugin, '__init__.py')):
+      continue
+
+    metadataFile = os.path.join(plugin, 'metadata.txt')
+    if not os.path.exists(metadataFile):
+      continue
+
+    cp = ConfigParser.ConfigParser()
+    res = cp.read(metadataFile)
+    if len(res) == 0:
+      return None # reading of metadata file failed
+
+    pluginName = os.path.basename(plugin)
+    plugins.append( (pluginName, cp) )
+
   return plugins
 
-def _checkMetadataFile(pluginpath, plugin):
-  """ Check whether there exists a metadata.txt file.
-      That is now a preferred way to store plugin's metadata """
-  metadataFile = os.path.join(pluginpath, plugin, 'metadata.txt')
-  if not os.path.exists(metadataFile):
-    return None
-  cp = ConfigParser.ConfigParser()
-  res = cp.read(metadataFile)
-  if len(res) == 0:
-    return None # reading of metadata file failed
-  return cp
 
 def updateAvailablePlugins():
   """ go thrgouh the plugin_paths list and find out what plugins are available """
@@ -142,10 +146,10 @@ def updateAvailablePlugins():
   metadata_parser = {}
   for pluginpath in plugin_paths:
     for p in findPlugins(pluginpath):
-      if p not in plugins:
-        plugins.append(p)
-        cp = _checkMetadataFile(pluginpath, p)
-        if cp: metadata_parser[p] = cp
+      pluginName = p[0]
+      if pluginName not in plugins:
+        plugins.append(pluginName)
+        metadata_parser[pluginName] = p[1]
 
   global available_plugins
   available_plugins = plugins
@@ -154,13 +158,12 @@ def updateAvailablePlugins():
 
 
 def pluginMetadata(packageName, fct):
-  """ fetch metadata from a plugin """
-
-  # use values from metadata.txt
-  if plugins_metadata_parser.has_key(packageName):
+  """ fetch metadata from a plugin - use values from metadata.txt """
+  try:
     return plugins_metadata_parser[packageName].get('general', fct)
-  else:
+  except Exception:
     return "__error__"
+
 
 def loadPlugin(packageName):
   """ load plugin's package """

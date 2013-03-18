@@ -8,5 +8,5 @@ FILE(GLOB UI_FILES ui/*.ui)
 PYQT4_WRAP_UI(PYUI_FILES ${UI_FILES})
 PYQT4_ADD_RESOURCES(PYRC_FILES resources.qrc)
 
-PLUGIN_INSTALL(db_manager . ${OTHER_FILES} ${PY_FILES} ${PYRC_FILES}) 
+PLUGIN_INSTALL(db_manager . ${OTHER_FILES} ${PY_FILES} ${PYRC_FILES} metadata.txt)
 PLUGIN_INSTALL(db_manager ui ${PYUI_FILES} ui/__init__.py)
