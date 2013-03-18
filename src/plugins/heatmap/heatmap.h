@@ -69,6 +69,16 @@ class Heatmap: public QObject, public QgisPlugin
     Heatmap( QgisInterface * theInterface );
     //! Destructor
     virtual ~Heatmap();
+    
+    // Kernel shape type
+    enum kernelShape
+    {
+      Quartic,
+      Triangular,
+      Uniform,
+      Triweight,
+      Epanechnikov
+    };
 
   public slots:
     //! init the gui

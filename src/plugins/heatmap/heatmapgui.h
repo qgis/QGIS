@@ -36,15 +36,6 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
       MapUnits
     };
 
-    enum kernelShape
-    {
-      Quartic,
-      Triangular,
-      Uniform,
-      Triweight,
-      Epanechnikov
-    };
-
     /** Returns whether to apply weighted heat */
     bool weighted();
 

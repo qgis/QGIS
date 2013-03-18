@@ -338,19 +338,19 @@ double Heatmap::calculateKernelValue( double distance, int bandwidth, int kernel
 {
   switch ( kernelShape )
   {
-    case HeatmapGui::Triangular:
+    case Heatmap::Triangular:
       return triangularKernel( distance , bandwidth );
 
-    case HeatmapGui::Uniform:
+    case Heatmap::Uniform:
       return uniformKernel( distance, bandwidth );
 
-    case HeatmapGui::Quartic:
+    case Heatmap::Quartic:
       return quarticKernel( distance, bandwidth );
 
-    case HeatmapGui::Triweight:
+    case Heatmap::Triweight:
       return triweightKernel( distance, bandwidth );
 
-    case HeatmapGui::Epanechnikov:
+    case Heatmap::Epanechnikov:
       return epanechnikovKernel( distance, bandwidth );
   }
   return 0;

@@ -12,6 +12,7 @@
 // qgis includes
 #include "qgis.h"
 #include "heatmapgui.h"
+#include "heatmap.h"
 #include "qgscontexthelp.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
@@ -230,7 +231,7 @@ void HeatmapGui::on_kernelShapeCombo_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
   // Only enable the decay edit if the kernel shape is set to triangular
-  mDecayLineEdit->setEnabled( index == HeatmapGui::Triangular );
+  mDecayLineEdit->setEnabled( index == Heatmap::Triangular );
 }
 
 /*
