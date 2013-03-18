@@ -160,6 +160,8 @@ class QgsWMSServer
     /**Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
     bool testFilterStringSafety( const QString& filter ) const;
+    /**Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes*/
+    static void groupStringList( QStringList& list, const QString& groupString );
 
     /**Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
       @return list with layer ids where selections have been created*/
