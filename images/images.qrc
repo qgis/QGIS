@@ -535,6 +535,7 @@
         <file>flags/sw.png</file>
         <file>flags/eu_ES.png</file>
         <file>flags/ml_IN.png</file>
+        <file>flags/km.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
