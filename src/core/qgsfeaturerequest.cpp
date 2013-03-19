@@ -24,6 +24,48 @@ QgsFeatureRequest::QgsFeatureRequest()
 {
 }
 
+QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
+  : mFilter( FilterFid )
+  , mFilterFid( fid )
+  , mFlags( 0 )
+{
+}
+
+QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
+    : mFilter( FilterRect )
+    , mFilterRect( rect )
+    , mFlags( 0 )
+{
+}
+
+
+QgsFeatureRequest& QgsFeatureRequest::setFilterRect( const QgsRectangle& rect )
+{
+  mFilter = FilterRect;
+  mFilterRect = rect;
+  return *this;
+}
+
+QgsFeatureRequest& QgsFeatureRequest::setFilterFid( QgsFeatureId fid )
+{
+  mFilter = FilterFid;
+  mFilterFid = fid;
+  return *this;
+}
+
+QgsFeatureRequest& QgsFeatureRequest::setFlags( QgsFeatureRequest::Flags flags )
+{
+  mFlags = flags;
+  return *this;
+}
+
+QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QgsAttributeList& attrs )
+{
+  mFlags |= SubsetOfAttributes;
+  mAttrs = attrs;
+  return *this;
+}
+
 
 QgsFeatureRequest& QgsFeatureRequest::setSubsetOfAttributes( const QStringList& attrNames, const QgsFields& fields )
 {
