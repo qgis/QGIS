@@ -82,6 +82,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
 
+  // brightness/contrast controls
+  connect( mSliderBrightness, SIGNAL( valueChanged( int ) ), mBrightnessSpinBox, SLOT( setValue( int ) ) );
+  connect( mBrightnessSpinBox, SIGNAL( valueChanged( int ) ), mSliderBrightness, SLOT( setValue( int ) ) );
+
+  connect( mSliderContrast, SIGNAL( valueChanged( int ) ), mContrastSpinBox, SLOT( setValue( int ) ) );
+  connect( mContrastSpinBox, SIGNAL( valueChanged( int ) ), mSliderContrast, SLOT( setValue( int ) ) );
+
   // enable or disable Build Pyramids button depending on selection in pyramid list
   connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
 
@@ -528,6 +535,19 @@ void QgsRasterLayerProperties::sync()
   QgsDebugMsg( "populate transparency tab" );
 
   /*
+   * Style tab (brightness and contrast)
+   */
+
+  QgsBrightnessContrastFilter* brightnessFilter = mRasterLayer->brightnessFilter();
+  if ( brightnessFilter )
+  {
+    mSliderBrightness->setValue( brightnessFilter->brightness() );
+    mSliderContrast->setValue( brightnessFilter->contrast() );
+  }
+
+  //set the transparency slider
+
+  /*
    * Transparent Pixel Tab
    */
 
@@ -671,6 +691,9 @@ void QgsRasterLayerProperties::apply()
 
   //set whether the layer histogram should be inverted
   //mRasterLayer->setInvertHistogram( cboxInvertColorMap->isChecked() );
+
+  mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
+  mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
 
   QgsDebugMsg( "processing transparency tab" );
   /*
