@@ -25,22 +25,22 @@
             &lt;p&gt;For more information, please visit our website at
             &lt;a href=&quot;http://sextantegis.com&quot;&gt;http://sextantegis.com&lt;/a&gt;&lt;/p&gt;
             </source>
-        <translation type="unfinished">            &lt;img src=&quot;qrc:/sextante/images/sextante_logo.png&quot; /&gt;
+        <translation>            &lt;img src=&quot;qrc:/sextante/images/sextante_logo.png&quot; /&gt;
             &lt;h2&gt;SEXTANTE para QGIS&lt;/h2&gt;
             &lt;p&gt;SEXTANTE, uma plataforma de geoprocessamento para QGIS&lt;/p&gt;
             &lt;p&gt;Desenvolvido por Victor Olaya (volayaf@gmail.com).&lt;/p&gt;
-            &lt;p&gt;Partes deste software contribuído por:
+            &lt;p&gt;Partes deste software com contribuição de:
             &lt;ul&gt;
             &lt;li&gt;Alexander Bruy&lt;/li&gt;
-            &lt;li&gt;Carson Farmer (fTools algorithms)&lt;/li&gt;
-            &lt;li&gt;Julien Malik (Orfeo Toolbox connectors)&lt;/li&gt;
-            &lt;li&gt;Evgeniy Nikulin (Original Field Pyculator code)&lt;/li&gt;
-            &lt;li&gt;Michael Nimm (mmqgis algorithms)&lt;/li&gt;
-            &lt;li&gt;Camilo Polymeris (Threading). Developed as part of Google
+            &lt;li&gt;Carson Farmer (algoritmos fTools)&lt;/li&gt;
+            &lt;li&gt;Julien Malik (conectores Orfeo Toolbox)&lt;/li&gt;
+            &lt;li&gt;Evgeniy Nikulin (Códfiigo original do Field Pyculator)&lt;/li&gt;
+            &lt;li&gt;Michael Nimm (algoritmos mmqgis)&lt;/li&gt;
+            &lt;li&gt;Camilo Polymeris (Threading). Desenvolvido como parte do Google
             Summer of Code 2012&lt;/li&gt;
             &lt;/ul&gt;
             &lt;/p&gt;
-            &lt;p&gt;Você está usando atualmente SEXTANTE v%1&lt;/p&gt;
+            &lt;p&gt;Está a usar atualmente o SEXTANTE v%1&lt;/p&gt;
             &lt;p&gt;Este software é distribuído sob os termos da GNU GPL License v2.
             &lt;p&gt;Para mais informação, por favor visite o nosso site em
             &lt;a href=&quot;http://sextantegis.com&quot;&gt;http://sextantegis.com&lt;/a&gt;&lt;/p&gt;</translation>
@@ -436,7 +436,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="76"/>
         <source>Std. Dev.</source>
-        <translation>Desvio Padrão</translation>
+        <translation>Des. Pad.</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="16"/>
@@ -7264,27 +7264,27 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Import Class</source>
-        <translation type="unfinished">Importar classe</translation>
+        <translation>Importar classe</translation>
     </message>
     <message>
         <source>Manage Script</source>
-        <translation type="unfinished">Gerir Script</translation>
+        <translation>Gerir Script</translation>
     </message>
     <message>
         <source>Import sextante class</source>
-        <translation type="unfinished">Importar classe sextante</translation>
+        <translation>Importar classe sextante</translation>
     </message>
     <message>
         <source>Import iface class</source>
-        <translation type="unfinished">Importar classe iface</translation>
+        <translation>Importar classe iface</translation>
     </message>
     <message>
         <source>Open script file</source>
-        <translation type="unfinished">Abrir ficheiro script</translation>
+        <translation>Abrir ficheiro script</translation>
     </message>
     <message>
         <source>Save to script file</source>
-        <translation type="unfinished">Salvar para ficheiro script</translation>
+        <translation>Salvar para ficheiro script</translation>
     </message>
     <message>
         <source>Run command</source>
@@ -7354,7 +7354,7 @@ use o objeto qgis.utils.iface (instância da classe QgisInterface).
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="91"/>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
-        <translation>Nenhuma camada vectorial pode ser carregada. Verifique sua instalação do QGIS</translation>
+        <translation>Nenhuma camada vectorial pode ser carregada. Verifique a sua instalação do QGIS</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="94"/>
@@ -8895,7 +8895,7 @@ Apenas %1 de %2 elementos escritos.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4029"/>
         <source>Reading raster</source>
-        <translation type="unfinished">Ler raster</translation>
+        <translation>A ler raster</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS</source>
@@ -18100,7 +18100,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="234"/>
         <source>East</source>
-        <translation>Leste</translation>
+        <translation type="unfinished">Este</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="14"/>
@@ -20122,12 +20122,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="71"/>
         <source>(String Concatenation)</source>
-        <translation type="unfinished">(Concatenação de texto)</translation>
+        <translation>(Concatenação de texto)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="72"/>
         <source>Joins two values together into a string</source>
-        <translation type="unfinished">Juntar dois valores em campo texto</translation>
+        <translation>Juntar dois valores num campo de texto</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="73"/>
@@ -20137,7 +20137,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="74"/>
         <source>&apos;Dia&apos; || Diameter</source>
-        <translation type="unfinished">&apos;Dia&apos; || Diametro</translation>
+        <translation>&apos;Dia&apos; || Diâmetro</translation>
     </message>
     <message>
         <source>Fields</source>
@@ -20152,12 +20152,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="99"/>
         <source>Search</source>
-        <translation type="unfinished">Pesquisa</translation>
+        <translation>Pesquisa</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="173"/>
         <source>Fields and Values</source>
-        <translation type="unfinished">Campos e valores</translation>
+        <translation>Campos e valores</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="288"/>
@@ -20172,42 +20172,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="292"/>
         <source>Expression is invalid &lt;a href=more&gt;(more info)&lt;/a&gt;</source>
-        <translation type="unfinished">Expressão inválida &lt;a href=more&gt;(more info)&lt;/a&gt;</translation>
+        <translation>Expressão inválida &lt;a href=more&gt;(more info)&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="321"/>
         <source>More info on expression error</source>
-        <translation type="unfinished">Mais informação acerca do erro da expressão</translation>
+        <translation>Mais informação acerca do erro da expressão</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="348"/>
         <source>Load top 10 unique values</source>
-        <translation type="unfinished">Carregar os 10 valores únicos do topo</translation>
+        <translation>Carregar os 10 valores únicos do topo</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="349"/>
         <source>Load all unique values</source>
-        <translation type="unfinished">Carregar todos os valores únicos</translation>
+        <translation>Carregar todos os valores únicos</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="427"/>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this function.&lt;/h3&gt;The help file for %1 was not found.&lt;br&gt;</source>
-        <translation type="unfinished">&lt;h3&gt;Oops! QGIS não consegue encontrar ajuda para esta função.&lt;/h3&gt;O ficheiro de ajuda para %1 não foi encontrado.&lt;br&gt;</translation>
+        <translation>&lt;h3&gt;Oops! QGIS não consegue encontrar ajuda para esta função.&lt;/h3&gt;O ficheiro de ajuda para %1 não foi encontrado.&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="436"/>
         <source>(Showing English version as there was no help available in your language (%1). If you would like to create it, contact the QGIS translation team).&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>(A mostrar a versão em inglês uma vez que a ajuda no seu idioma não está disponível (%1). Se pretender criá-la, contacte a equipa de tradução do QGIS).&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="438"/>
         <source>It was neither available in your language (%1) nor English.</source>
-        <translation type="unfinished">Não está disponível no seu idiona (%1) nem em Inglês.</translation>
+        <translation>Não está disponível no seu idiona (%1) nem em Inglês.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="446"/>
         <source>&lt;br&gt;If you would like to create it, contact the QGIS development team.</source>
-        <translation type="unfinished">&lt;br&gt;Se você gostaria de o criar, contate a equipa de desenvolvimento do QGIS.</translation>
+        <translation>&lt;br&gt;Se pretender criá-la, contacte a equipa de desenvolvimento do QGIS.</translation>
     </message>
     <message>
         <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
@@ -20941,7 +20941,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="827"/>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="956"/>
         <source>Feature added</source>
-        <translation type="unfinished">Feição adicionada</translation>
+        <translation>Elemento adicionado</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="836"/>
@@ -20966,7 +20966,7 @@ Erros: %2</translation>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="935"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
-        <translation type="unfinished">A feição não pode ser adicionada porque remover interseções de polígono poderia mudar o tipo de geometria</translation>
+        <translation>O elemento não pode ser adicionado porque remover interseções do polígono mudaria o tipo de geometria</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="942"/>
@@ -20976,7 +20976,7 @@ Erros: %2</translation>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="950"/>
         <source>Cannot add feature. Unknown WKB type. Choose a different layer and try again.</source>
-        <translation type="unfinished">Impossível adicionar a feição. Tipo de WKB desconhecido. Escolha uma camada diferente e tente novamente.</translation>
+        <translation>Não é possível adicionar o elemento. Tipo de WKB desconhecido. Escolha uma camada diferente e tente novamente.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="1041"/>
@@ -21863,7 +21863,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="70"/>
         <source>Bad URI - you need to specify the feature type.</source>
-        <translation type="unfinished">URI ruim - você precisa especificar o tipo de feição.</translation>
+        <translation type="unfinished">URI errado - precisa  de especificar o tipo de elemento.</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="118"/>
@@ -24029,7 +24029,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="172"/>
         <source>Current east-west resolution</source>
-        <translation type="unfinished">Resolução leste-oeste atual</translation>
+        <translation type="unfinished">Resolução Este-Oeste atual</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="173"/>
@@ -24807,7 +24807,7 @@ na linha %2 coluna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="692"/>
         <source>East must be greater than west</source>
-        <translation type="unfinished">Leste deve ser maior que oeste</translation>
+        <translation type="unfinished">Este deve ser maior que Oeste</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="893"/>
@@ -25472,22 +25472,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="32"/>
         <source>North</source>
-        <translation type="unfinished">Norte</translation>
+        <translation>Norte</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="51"/>
         <source>West</source>
-        <translation type="unfinished">Oeste</translation>
+        <translation>Oeste</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="67"/>
         <source>East</source>
-        <translation type="unfinished">Leste</translation>
+        <translation>Este</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="83"/>
         <source>South</source>
-        <translation type="unfinished">Sul</translation>
+        <translation>Sul</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregionbase.ui" line="96"/>
@@ -26097,7 +26097,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="102"/>
         <source>Feature</source>
-        <translation type="unfinished">Feição</translation>
+        <translation>Elemento</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="103"/>
@@ -26125,19 +26125,19 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <location filename="../src/app/qgsidentifyresults.cpp" line="337"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="442"/>
         <source>Edit feature form</source>
-        <translation type="unfinished">Formulário de editar feição</translation>
+        <translation type="unfinished">Editar formulário do elemento</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="230"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="337"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="442"/>
         <source>View feature form</source>
-        <translation type="unfinished">Formulário de ver feição</translation>
+        <translation>Ver formulário do elemento</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="444"/>
         <source>Zoom to feature</source>
-        <translation type="unfinished">Aproximar à feição</translation>
+        <translation type="unfinished">Aproximar ao elemento</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="445"/>
@@ -28386,7 +28386,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="133"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="273"/>
         <source>Feature added</source>
-        <translation type="unfinished">Feição adicionada</translation>
+        <translation>Elemento adicionado</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="154"/>
@@ -28410,7 +28410,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="220"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="239"/>
         <source>Cannot add feature. Unknown WKB type</source>
-        <translation type="unfinished">Impossível adicionar feição. Tipo WKB desconhecido</translation>
+        <translation>Não é possível adicionar elemento. Tipo WKB desconhecido</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="261"/>
@@ -48319,13 +48319,14 @@ Description: %3</source>
     <name>SextanteToolbox</name>
     <message>
         <source>SEXTANTE Toolbox</source>
-        <translation>Ferramenta SEXTANTE</translation>
+        <translation type="unfinished">Ferramentas SEXTANTE</translation>
     </message>
     <message>
         <source>Click here to configure
 additional algorithm providers</source>
+        <translatorcomment>troquei provedor por fornecedores</translatorcomment>
         <translation>Clique aqui para configurar
-provedores adicionais de algoritmos</translation>
+fornecedores adicionais de algoritmos</translation>
     </message>
     <message>
         <source>Execute</source>
@@ -49837,7 +49838,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="446"/>
         <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished">Um valor para ser adicionado a orientação da bússola. Isto permite você compensar a declinação (ajuste as orientações coletadas usando orientações magnéticas para a orientação norte verdadeira). Declinações para o leste devem estar em valores positivos e para oeste com valores negativos. </translation>
+        <translation type="unfinished">Um valor para ser adicionado a orientação da bússola. Isto permite você compensar a declinação (ajuste as orientações coletadas usando orientações magnéticas para a orientação Norte verdadeira). Declinações para Este devem estar em valores positivos e para Oeste com valores negativos. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="481"/>
@@ -49852,7 +49853,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished">Use a caixa de listagem para selecionar o campo que contém a distância de orientação da bússola. Isto permite você compensar a declinação (ajusta orientações coletadas usando orientações magnéticas ao norte verdadeiro). Declinações para o leste devem estar em valores positivos e para oeste com valores negativos. </translation>
+        <translation type="unfinished">Use a caixa de listagem para selecionar o campo que contém a distância de orientação da bússola. Isto permite você compensar a declinação (ajusta orientações coletadas usando orientações magnéticas ao Norte verdadeiro). Declinações para o Este devem estar em valores positivos e para Oeste com valores negativos. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
