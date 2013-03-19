@@ -302,10 +302,10 @@ class TestQgsGeometry(TestCase):
         )
         print 'Clip: %s' % myClipPolygon.exportToWkt()
         writeShape(myMemoryLayer, 'clipGeometryBefore.shp')
-        myMemoryLayer.select(myProvider.attributeIndexes())
+        fit = myProvider.getFeatures()
         myFeatures = []
         myFeature = QgsFeature()
-        while myMemoryLayer.nextFeature(myFeature):
+        while fit.nextFeature(myFeature):
             myGeometry = myFeature.geometry()
             if myGeometry.intersects(myClipPolygon):
                 # Adds nodes where the clip and the line intersec
