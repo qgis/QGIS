@@ -461,7 +461,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 
   delete mSvgPattern;
   mSvgPattern = 0;
-  double size = mPatternWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mPatternWidthUnit );
+  double size = mPatternWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context.renderContext(), mPatternWidthUnit );
 
   //don't render pattern if symbol size is below one or above 10,000 pixels
   if (( int )size < 1.0 || 10000.0 < size )
@@ -831,9 +831,9 @@ QString QgsLinePatternFillSymbolLayer::layerType() const
 void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
   const QgsRenderContext& ctx = context.renderContext();
-  double outlinePixelWidth = mLineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mLineWidthUnit );
-  double outputPixelDist = mDistance * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceUnit );
-  double outputPixelOffset = mOffset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx,  mOffsetUnit );
+  double outlinePixelWidth = mLineWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mLineWidthUnit );
+  double outputPixelDist = mDistance * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceUnit );
+  double outputPixelOffset = mOffset * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mOffsetUnit );
 
   //create image
   int height, width;
@@ -1207,8 +1207,8 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
 {
   //render 3 rows and columns in one go to easily incorporate displacement
   const QgsRenderContext& ctx = context.renderContext();
-  double width = mDistanceX * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceXUnit ) * 2.0;
-  double height = mDistanceY * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDistanceYUnit ) * 2.0;
+  double width = mDistanceX * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceXUnit ) * 2.0;
+  double height = mDistanceY * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceYUnit ) * 2.0;
 
   if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
   {
