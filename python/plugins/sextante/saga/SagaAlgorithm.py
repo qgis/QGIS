@@ -364,7 +364,8 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def checkBeforeOpeningParametersDialog(self):
-        return SagaUtils.checkSagaIsInstalled()
+        pass
+        #return SagaUtils.checkSagaIsInstalled()
     
 
     def checkParameterValuesBeforeExecuting(self):
