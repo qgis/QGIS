@@ -5257,6 +5257,7 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
   selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
   selectionVectorLayer->deleteSelectedFeatures();
   selectionVectorLayer->endEditCommand();
+  activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
 void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
@@ -5272,6 +5273,7 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
 
   // Test for feature support in this layer
   clipboard()->replaceWithCopyOf( selectionVectorLayer );
+  activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
 
