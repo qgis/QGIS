@@ -97,9 +97,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.tabWidget)
         self.logText = QTextEdit()
         self.logText.readOnly = True
-        useThreads = SextanteConfig.getSetting(SextanteConfig.USE_THREADS)
-        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-        #if useThreads or keepOpen:
         self.tabWidget.addTab(self.logText, "Log")
         self.webView = QtWebKit.QWebView()
         cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), "help", "help.css"))

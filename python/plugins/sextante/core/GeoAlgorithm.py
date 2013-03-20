@@ -64,8 +64,9 @@ class GeoAlgorithm:
         self.provider = None
 
         self.defineCharacteristics()
-
+    
     def getCopy(self):
+        '''returns a new instance of this algorithm, ready to be used for being executed'''
         newone = copy.copy(self)
         newone.parameters = copy.deepcopy(self.parameters)
         newone.outputs = copy.deepcopy(self.outputs)
