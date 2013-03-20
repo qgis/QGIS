@@ -165,7 +165,12 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     QString label = symbolIt->first;
     if ( lItem->showFeatureCount() )
     {
-      label += QString( " [%1]" ).arg( vlayer->featureCount( symbolIt->second ) );
+      // Add counts to multi symbols layers only or labeled single symbols,
+      // so that single symbol layers are still drawn on single line
+      if ( lst.size() > 1 || !label.isEmpty() )
+      {
+        label += QString( " [%1]" ).arg( vlayer->featureCount( symbolIt->second ) );
+      }
     }
     QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( label );
     currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
