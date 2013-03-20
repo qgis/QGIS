@@ -760,7 +760,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      **/
     void setFieldEditable( int idx, bool editable );
 
-
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
      @note this method was added in version 1.1
      */

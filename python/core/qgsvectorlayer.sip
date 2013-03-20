@@ -619,8 +619,10 @@ class QgsVectorLayer : QgsMapLayer
     bool commitChanges();
     const QStringList &commitErrors();
 
-    /** Stop editing and discard the edits */
-    bool rollBack();
+    /** Stop editing and discard the edits
+     * @param deleteBuffer whether to delete editing buffer (added in 1.9)
+     */
+    bool rollBack( bool deleteBuffer = true );
 
     /**get edit type*/
     EditType editType( int idx );
@@ -672,10 +674,25 @@ class QgsVectorLayer : QgsMapLayer
      **/
     ValueRelationData &valueRelation( int idx );
 
+    /**access date format
+     * @note added in 1.9
+     */
+    QString &dateFormat( int idx );
+
+    /**is edit widget editable
+     * @note added in 1.9
+     **/
+    bool fieldEditable( int idx );
+
+    /**set edit widget editable
+     * @note added in 1.9
+     **/
+    void setFieldEditable( int idx, bool editable );
+
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
      @note this method was added in version 1.1
      */
-    void addOverlay( QgsVectorOverlay* overlay /Transfer/);
+    void addOverlay( QgsVectorOverlay* overlay /Transfer/ );
 
     /**Removes all overlays of a given type
     @note this method was added in version 1.1
@@ -685,7 +702,7 @@ class QgsVectorLayer : QgsMapLayer
     /**Returns pointers to the overlays of this layer
     @note this method was added in version 1.1
     */
-    void vectorOverlays( QList<QgsVectorOverlay*>& overlayList /Out/);
+    void vectorOverlays( QList<QgsVectorOverlay*>& overlayList /Out/ );
 
     /**Returns the (first) overlay of a type, e.g. diagram or label
     @note this method was added in version 1.1
