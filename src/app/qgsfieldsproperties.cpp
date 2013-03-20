@@ -824,7 +824,8 @@ void QgsFieldsProperties::apply()
     QgsVectorLayer::EditType editType = editTypeFromButtonText( pb->text() );
     mLayer->setEditType( idx, editType );
 
-    mLayer->setFieldEditable( idx, mFieldEditables.value( idx, true ) );
+    if ( mFieldEditables.contains( idx ) )
+      mLayer->setFieldEditable( idx, mFieldEditables[idx] );
 
     switch ( editType )
     {
