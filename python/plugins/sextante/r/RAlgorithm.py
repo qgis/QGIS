@@ -75,18 +75,21 @@ class RAlgorithm(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")
 
     def defineCharacteristicsFromScript(self):
-        lines = self.script.split("\n")
-        self.silentOutputs = []
+        lines = self.script.split("\n")        
         self.name = "[Unnamed algorithm]"
         self.group = "User R scripts"
-        for line in lines:
-            if line.startswith("##"):
-                try:
-                    self.processParameterLine(line.strip("\n"))
-                except:
-                    pass
-
-    def defineCharacteristicsFromFile(self):
+        self.parseDescription(iter(lines))
+    
+        
+    def defineCharacteristicsFromFile(self):        
+        filename = os.path.basename(self.descriptionFile)
+        self.name = filename[:filename.rfind(".")].replace("_", " ")
+        self.group = "User R scripts"        
+        with open(self.descriptionFile, 'r') as f:
+            lines = [line.strip() for line in f]
+        self.parseDescription(iter(lines))
+        
+    def parseDescription(self, lines):        
         self.script = ""
         self.commands=[]
         self.showPlots = False
@@ -94,12 +97,8 @@ class RAlgorithm(GeoAlgorithm):
         self.useRasterPackage = True
         self.passFileNames = False
         self.verboseCommands = []
-        filename = os.path.basename(self.descriptionFile)
-        self.name = filename[:filename.rfind(".")].replace("_", " ")
-        self.group = "User R scripts"
-        ender = 0
-        lines = open(self.descriptionFile)
-        line = lines.readline().strip("\n").strip("\r")
+        ender = 0        
+        line = lines.next().strip("\n").strip("\r")
         while ender < 10:
             if line.startswith("##"):
                 try:
@@ -119,8 +118,10 @@ class RAlgorithm(GeoAlgorithm):
                     ender=0
                 self.commands.append(line)
             self.script += line + "\n"
-            line = lines.readline().strip("\n").strip("\r")
-        lines.close()
+            try:
+                line = lines.next().strip("\n").strip("\r")
+            except:
+                break
 
     def getVerboseCommands(self):
         return self.verboseCommands
@@ -280,7 +281,7 @@ class RAlgorithm(GeoAlgorithm):
         commands.append(
             'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", dependencies=TRUE, lib="%s"))' % rLibDir)
         commands.append("library(\"rgdal\")");
-        if self.useRasterPackage or self.passFileNames:
+        if not self.useRasterPackage or self.passFileNames:
             commands.append(
                 'tryCatch(find.package("raster"), error=function(e) install.packages("raster", dependencies=TRUE, lib="%s"))' % rLibDir)
             commands.append("library(\"raster\")");
@@ -376,7 +377,7 @@ class RAlgorithm(GeoAlgorithm):
         return self.commands
 
     def helpFile(self):
-        helpfile = self.descriptionFile + ".help"
+        helpfile = unicode(self.descriptionFile) + ".help"
         if os.path.exists(helpfile):
             h2h = Help2Html()
             return h2h.getHtmlFile(self, helpfile)

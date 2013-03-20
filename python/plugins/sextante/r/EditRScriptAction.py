@@ -37,6 +37,7 @@ class EditRScriptAction(ContextAction):
 
     def execute(self):
         dlg = EditRScriptDialog(self.alg)
+        dlg.show()
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateTree()

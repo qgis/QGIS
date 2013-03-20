@@ -89,7 +89,7 @@ class RAlgorithmProvider(AlgorithmProvider):
                 except WrongScriptException,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR,e.msg)
                 except Exception, e:
-                    SextanteLog.addToLog(SextanteLog.LOG_ERROR,"Could not load R script:" + descriptionFile)
+                    SextanteLog.addToLog(SextanteLog.LOG_ERROR,"Could not load R script:" + descriptionFile + "\n" + str(e))
 
 
 
