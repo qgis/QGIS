@@ -3639,8 +3639,8 @@ QString &QgsVectorLayer::dateFormat( int idx )
 bool QgsVectorLayer::fieldEditable( int idx )
 {
   const QgsFields &fields = pendingFields();
-  if ( idx >= 0 && idx < fields.count() && mEditTypes.contains( fields[idx].name() ) )
-    return mFieldEditables[ fields[idx].name()];
+  if ( idx >= 0 && idx < fields.count() )
+    return mFieldEditables.value( fields[idx].name(), true );
   else
     return true;
 }
@@ -3648,7 +3648,7 @@ bool QgsVectorLayer::fieldEditable( int idx )
 void QgsVectorLayer::setFieldEditable( int idx, bool editable )
 {
   const QgsFields &fields = pendingFields();
-  if ( idx >= 0 && idx < fields.count() && mEditTypes.contains( fields[idx].name() ) )
+  if ( idx >= 0 && idx < fields.count() )
     mFieldEditables[ fields[idx].name()] = editable;
 }
 
