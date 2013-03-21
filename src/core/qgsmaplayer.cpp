@@ -411,6 +411,15 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
     setTransparency( myElement.text().toInt() );
   }
 
+  //read blend mode
+  QDomNode blendModeNode = layer_node.namedItem( "blendMode" );
+  if ( ! blendModeNode.isNull() )
+  {
+    // set blend mode if it's specified in project
+    QDomElement myElement = blendModeNode.toElement();
+    setBlendMode(( QgsMapLayer::BlendMode )myElement.text().toInt() );
+  }
+
   readCustomProperties( layer_node );
 
   return true;
@@ -526,6 +535,13 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QDomText    transparencyLevelIntText    = document.createTextNode( QString::number( getTransparency() ) );
   transparencyLevelIntElement.appendChild( transparencyLevelIntText );
   maplayer.appendChild( transparencyLevelIntElement );
+
+  // <blendMode>
+  QDomElement blendModeElement = document.createElement( "blendMode" );
+  QDomText blendModeText = document.createTextNode( QString::number( blendMode() ) );
+  blendModeElement.appendChild( blendModeText );
+  maplayer.appendChild( blendModeElement );
+
   // now append layer node to map layer node
 
   layer_node.appendChild( maplayer );
