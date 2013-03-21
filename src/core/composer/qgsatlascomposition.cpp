@@ -117,7 +117,7 @@ void QgsAtlasComposition::beginRender()
   QgsFeatureIterator fit = mCoverageLayer->getFeatures();
 
   std::auto_ptr<QgsExpression> filterExpression;
-  if ( mFeatureFilter.size() > 0 )
+  if ( mFilterFeatures )
   {
     filterExpression = std::auto_ptr<QgsExpression>( new QgsExpression( mFeatureFilter ) );
     if ( filterExpression->hasParserError() )
@@ -133,7 +133,7 @@ void QgsAtlasComposition::beginRender()
   mFeatureKeys.clear();
   while ( fit.nextFeature( feat ) )
   {
-    if ( mFeatureFilter.size() > 0 )
+    if ( mFilterFeatures )
     {
       QVariant result = filterExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
       if ( filterExpression->hasEvalError() )
@@ -359,7 +359,11 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
     atlasElem.setAttribute( "sortKey", QString::number( mSortKeyAttributeIdx ) );
     atlasElem.setAttribute( "sortAscending", mSortAscending ? "true" : "false" );
   }
-  atlasElem.setAttribute( "featureFilter", mFeatureFilter );
+  atlasElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
+  if ( mFilterFeatures )
+  {
+    atlasElem.setAttribute( "featureFilter", mFeatureFilter );
+  }
 
   elem.appendChild( atlasElem );
 }
@@ -407,7 +411,11 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
     mSortKeyAttributeIdx = atlasElem.attribute( "sortKey", "0" ).toInt();
     mSortAscending = atlasElem.attribute( "sortAscending", "true" ) == "true" ? true : false;
   }
-  mFeatureFilter = atlasElem.attribute( "featureFilter", "" );
+  mFilterFeatures = atlasElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;
+  if ( mFilterFeatures )
+  {
+    mFeatureFilter = atlasElem.attribute( "featureFilter", "" );
+  }
 
   emit parameterChanged();
 }
