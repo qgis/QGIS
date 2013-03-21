@@ -177,7 +177,12 @@ void QgsComposerLabel::adjustSizeToText()
 
   sizeChangedByRotation( width, height );
 
-  QgsComposerItem::setSceneRect( QRectF( transform().dx(), transform().dy(), width, height ) );
+  //keep alignment point constant
+  double xShift = 0;
+  double yShift = 0;
+  itemShiftAdjustSize( width, height, xShift, yShift );
+
+  QgsComposerItem::setSceneRect( QRectF( transform().dx() + xShift, transform().dy() + yShift, width, height ) );
 }
 
 QFont QgsComposerLabel::font() const
@@ -303,4 +308,90 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   }
   emit itemChanged();
   return true;
+}
+
+void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const
+{
+  //keep alignment point constant
+  double currentWidth = rect().width();
+  double currentHeight = rect().height();
+  xShift = 0;
+  yShift = 0;
+
+  if ( mRotation >= 0 && mRotation < 90 )
+  {
+    if ( mHAlignment == Qt::AlignHCenter )
+    {
+      xShift = - ( newWidth - currentWidth ) / 2.0;
+    }
+    else if ( mHAlignment == Qt::AlignRight )
+    {
+      xShift = - ( newWidth - currentWidth );
+    }
+    if ( mVAlignment == Qt::AlignVCenter )
+    {
+      yShift = -( newHeight - currentHeight ) / 2.0;
+    }
+    else if ( mVAlignment == Qt::AlignBottom )
+    {
+      yShift = - ( newHeight - currentHeight );
+    }
+  }
+  if ( mRotation >= 90 && mRotation < 180 )
+  {
+    if ( mHAlignment == Qt::AlignHCenter )
+    {
+      yShift = -( newHeight  - currentHeight ) / 2.0;
+    }
+    else if ( mHAlignment == Qt::AlignRight )
+    {
+      yShift = -( newHeight  - currentHeight );
+    }
+    if ( mVAlignment == Qt::AlignTop )
+    {
+      xShift = -( newWidth - currentWidth );
+    }
+    else if ( mVAlignment == Qt::AlignVCenter )
+    {
+      xShift = -( newWidth - currentWidth / 2.0 );
+    }
+  }
+  else if ( mRotation >= 180 && mRotation < 270 )
+  {
+    if ( mHAlignment == Qt::AlignHCenter )
+    {
+      xShift = -( newWidth - currentWidth ) / 2.0;
+    }
+    else if ( mHAlignment == Qt::AlignLeft )
+    {
+      xShift = -( newWidth - currentWidth );
+    }
+    if ( mVAlignment == Qt::AlignVCenter )
+    {
+      yShift = ( newHeight - currentHeight ) / 2.0;
+    }
+    else if ( mVAlignment == Qt::AlignTop )
+    {
+      yShift = ( newHeight - currentHeight );
+    }
+  }
+  else if ( mRotation >= 270 && mRotation < 360 )
+  {
+    if ( mHAlignment == Qt::AlignHCenter )
+    {
+      yShift = -( newHeight  - currentHeight ) / 2.0;
+    }
+    else if ( mHAlignment == Qt::AlignLeft )
+    {
+      yShift = -( newHeight  - currentHeight );
+    }
+    if ( mVAlignment == Qt::AlignBottom )
+    {
+      xShift = -( newWidth - currentWidth );
+    }
+    else if ( mVAlignment == Qt::AlignVCenter )
+    {
+      xShift = -( newWidth - currentWidth / 2.0 );
+    }
+  }
 }

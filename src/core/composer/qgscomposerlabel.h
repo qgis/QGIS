@@ -112,6 +112,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     double mHtmlUnitsToMM;
     double htmlUnitsToMM(); //calculate scale factor
 
+    /**Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment*/
+    void itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const;
+
     // Font
     QFont mFont;
 
