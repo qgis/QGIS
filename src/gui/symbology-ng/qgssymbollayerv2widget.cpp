@@ -967,6 +967,7 @@ void QgsLineDecorationSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* lay
 
   // set values
   btnChangeColor->setColor( mLayer->color() );
+  btnChangeColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   spinWidth->setValue( mLayer->width() );
 
   mWidthUnitComboBox->blockSignals( true );
@@ -1245,6 +1246,7 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* laye
     mLineWidthSpinBox->setValue( mLayer->lineWidth() );
     mOffsetSpinBox->setValue( mLayer->offset() );
     mColorPushButton->setColor( mLayer->color() );
+    mColorPushButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
     //units
     mDistanceUnitComboBox->blockSignals( true );
@@ -1485,6 +1487,7 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   cboFont->setCurrentFont( QFont( mLayer->fontFamily() ) );
   spinSize->setValue( mLayer->size() );
   btnColor->setColor( mLayer->color() );
+  btnColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   spinAngle->setValue( mLayer->angle() );
 
   //block
