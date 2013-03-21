@@ -227,7 +227,7 @@ void QgsAtlasComposition::prepareForFeature( size_t featureI )
   if ( !mSingleFile && mFilenamePattern.size() > 0 )
   {
     QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
-    QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature );
+    QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature, mCoverageLayer->pendingFields() );
     if ( mFilenameExpr->hasEvalError() )
     {
       throw std::runtime_error( tr( "Filename eval error: %1" ).arg( mFilenameExpr->evalErrorString() ).toLocal8Bit().data() );
