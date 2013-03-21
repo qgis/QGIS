@@ -199,7 +199,7 @@ or change the following values</string>
        </spacer>
       </item>
       <item row="0" column="1">
-       <widget class="QgsColorButtonV2" name="mColorButton">
+       <widget class="QgsColorButton" name="mColorButton">
         <property name="minimumSize">
          <size>
           <width>64</width>
@@ -234,7 +234,7 @@ or change the following values</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
