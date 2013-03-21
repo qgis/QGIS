@@ -135,9 +135,10 @@ struct CORE_EXPORT QgsVectorJoinInfo
     */
   QHash< QString, QgsAttributes> cachedAttributes;
 
-  // the following are temporaries, assigned by QgsVectorLayerJoinBuffer::updateFields()
-  mutable int tmpTargetField;
-  mutable int tmpJoinField;
+  /**Join field index in the target layer. For backward compatibility with 1.x (x>=7)*/
+  int targetFieldIndex;
+  /**Join field index in the source layer. For backward compatibility with 1.x (x>=7)*/
+  int joinFieldIndex;
 };
 
 
