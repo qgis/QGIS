@@ -1076,6 +1076,22 @@ void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
   delete line;
 }
 
+void QgsComposition::setSnapLinesVisible( bool visible )
+{
+  QList< QGraphicsLineItem* >::iterator it = mSnapLines.begin();
+  for ( ; it != mSnapLines.end(); ++it )
+  {
+    if ( visible )
+    {
+      ( *it )->show();
+    }
+    else
+    {
+      ( *it )->hide();
+    }
+  }
+}
+
 QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, double y, double tolerance,
     QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode> >& snappedItems )
 {
@@ -1802,7 +1818,9 @@ void QgsComposition::renderPage( QPainter* p, int page )
   QgsComposition::PlotStyle savedPlotStyle = mPlotStyle;
   mPlotStyle = QgsComposition::Print;
 
+  setSnapLinesVisible( false );
   render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
+  setSnapLinesVisible( true );
 
   mPlotStyle = savedPlotStyle;
 }

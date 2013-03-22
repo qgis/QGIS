@@ -268,6 +268,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void removeSnapLine( QGraphicsLineItem* line );
     /**Get nearest snap line*/
     QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
+    /**Hides / shows custom snap lines*/
+    void setSnapLinesVisible( bool visible );
 
     /**Allocates new item command and saves initial state in it
       @param item target item
