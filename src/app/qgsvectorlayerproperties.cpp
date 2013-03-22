@@ -192,6 +192,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mLayerAbstractTextEdit->setPlainText( layer->abstract() );
   }
 
+  // Blend mode
+  mBlendModeComboBox->setBlendMode( layer->blendMode() );
+
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/VectorLayerProperties/geometry" ).toByteArray() );
   int tabIndex = settings.value( "/Windows/VectorLayerProperties/row", 0 ).toInt();
@@ -527,6 +530,9 @@ void QgsVectorLayerProperties::apply()
   //layer title and abstract
   layer->setTitle( mLayerTitleLineEdit->text() );
   layer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
+
+  // set the blend mode for the layer
+  layer->setBlendMode(( QgsMapLayer::BlendMode ) mBlendModeComboBox->blendMode() );
 
   // update symbology
   emit refreshLegend( layer->id(), QgsLegendItem::DontChange );
