@@ -187,35 +187,10 @@
           <item row="0" column="1">
            <widget class="QDoubleSpinBox" name="mGridStrokeWidthSpinBox"/>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mGridColorLabel">
-            <property name="text">
-             <string>Color</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mGridColorButton</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
+          <item row="1" column="0" colspan="2">
            <widget class="QgsColorButton" name="mGridColorButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
-            </property>
             <property name="text">
-             <string/>
+             <string>Color...</string>
             </property>
            </widget>
           </item>
@@ -266,15 +241,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

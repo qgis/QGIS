@@ -70,17 +70,12 @@ void QgsDecorationCopyrightDialog::on_buttonBox_rejected()
   reject();
 }
 
-void QgsDecorationCopyrightDialog::on_pbnColorChooser_clicked()
+void QgsDecorationCopyrightDialog::on_pbnColorChooser_colorChanged( const QColor& c )
 {
-  QColor c = QColorDialog::getColor();
-  if ( c.isValid() )
-  {
-    pbnColorChooser->setColor( c );
-    QTextCursor cursor = txtCopyrightText->textCursor();
-    txtCopyrightText->selectAll();
-    txtCopyrightText->setTextColor( c );
-    txtCopyrightText->setTextCursor( cursor );
-  }
+  QTextCursor cursor = txtCopyrightText->textCursor();
+  txtCopyrightText->selectAll();
+  txtCopyrightText->setTextColor( c );
+  txtCopyrightText->setTextCursor( cursor );
 }
 
 void QgsDecorationCopyrightDialog::on_buttonBox_helpRequested()

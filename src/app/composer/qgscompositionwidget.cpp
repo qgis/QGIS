@@ -64,6 +64,8 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
     //grid pen color
     mGridColorButton->setColor( mComposition->gridPen().color() );
+    mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
+    mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
     mGridStyleComboBox->insertItem( 0, tr( "Solid" ) );
     mGridStyleComboBox->insertItem( 1, tr( "Dots" ) );
@@ -435,15 +437,8 @@ void QgsCompositionWidget::on_mOffsetYSpinBox_valueChanged( double d )
   }
 }
 
-void QgsCompositionWidget::on_mGridColorButton_clicked()
+void QgsCompositionWidget::on_mGridColorButton_colorChanged( const QColor &newColor )
 {
-  QColor newColor = QColorDialog::getColor( mGridColorButton->color() );
-  if ( !newColor.isValid() )
-  {
-    return ; //dialog canceled by user
-  }
-  mGridColorButton->setColor( newColor );
-
   if ( mComposition )
   {
     QPen pen = mComposition->gridPen();

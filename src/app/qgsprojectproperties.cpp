@@ -159,6 +159,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   int myAlphaInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
   pbnSelectionColor->setColor( myColor );
+  pbnSelectionColor->setColorDialogTitle( tr( "Selection color" ) );
+  pbnSelectionColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   //get the color for map canvas background and set button color accordingly (default white)
   myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
@@ -791,29 +793,6 @@ bool QgsProjectProperties::isProjected()
 void QgsProjectProperties::showProjectionsTab()
 {
   tabWidget->setCurrentIndex( 1 );
-}
-
-void QgsProjectProperties::on_pbnSelectionColor_clicked()
-{
-#if QT_VERSION >= 0x040500
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), 0, tr( "Selection color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color() );
-#endif
-
-  if ( color.isValid() )
-  {
-    pbnSelectionColor->setColor( color );
-  }
-}
-
-void QgsProjectProperties::on_pbnCanvasColor_clicked()
-{
-  QColor color = QColorDialog::getColor( pbnCanvasColor->color(), this );
-  if ( color.isValid() )
-  {
-    pbnCanvasColor->setColor( color );
-  }
 }
 
 void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )

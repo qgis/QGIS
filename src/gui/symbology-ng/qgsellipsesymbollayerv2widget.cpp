@@ -60,7 +60,9 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
 
   btnChangeColorBorder->setColor( mLayer->outlineColor() );
+  btnChangeColorBorder->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   btnChangeColorFill->setColor( mLayer->fillColor() );
+  btnChangeColorFill->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
   if ( symbolItemList.size() > 0 )
@@ -190,32 +192,26 @@ void QgsEllipseSymbolLayerV2Widget::on_mOutlineWidthSpinBox_valueChanged( double
   }
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorBorder_clicked()
+void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorBorder_colorChanged( const QColor& newColor )
 {
-  if ( mLayer )
+  if ( !mLayer )
   {
-    QColor newColor = QColorDialog::getColor( mLayer->outlineColor(), this, "", QColorDialog::ShowAlphaChannel );
-    if ( newColor.isValid() )
-    {
-      mLayer->setOutlineColor( newColor );
-      btnChangeColorBorder->setColor( newColor );
-      emit changed();
-    }
+    return;
   }
+
+  mLayer->setOutlineColor( newColor );
+  emit changed();
 }
 
-void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorFill_clicked()
+void QgsEllipseSymbolLayerV2Widget::on_btnChangeColorFill_colorChanged( const QColor& newColor )
 {
-  if ( mLayer )
+  if ( !mLayer )
   {
-    QColor newColor = QColorDialog::getColor( mLayer->fillColor(), this, "", QColorDialog::ShowAlphaChannel );
-    if ( newColor.isValid() )
-    {
-      mLayer->setFillColor( newColor );
-      btnChangeColorFill->setColor( newColor );
-      emit changed();
-    }
+    return;
   }
+
+  mLayer->setFillColor( newColor );
+  emit changed();
 }
 
 void QgsEllipseSymbolLayerV2Widget::fillDataDefinedComboBoxes()

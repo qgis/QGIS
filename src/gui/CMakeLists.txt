@@ -51,6 +51,7 @@ qgslegendinterface.cpp
 qgsblendmodecombobox.cpp
 qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
+qgscolordialog.cpp
 qgscomposerview.cpp
 qgscursors.cpp
 qgsdetaileditemdelegate.cpp
@@ -114,6 +115,8 @@ ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_MOC_HDRS
 
+qgscolorbutton.h
+
 raster/qgsrasterminmaxwidget.h
 raster/qgspalettedrendererwidget.h
 raster/qgsmultibandcolorrendererwidget.h
@@ -156,6 +159,7 @@ attributetable/qgsattributetabledelegate.h
 qgsattributeeditor.h
 qgsblendmodecombobox.h
 qgscharacterselectdialog.h
+qgscolordialog.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
@@ -205,7 +209,7 @@ SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
 qgscharacterselectdialog.h
-qgscolorbutton.h
+qgscolordialog.h
 qgscursors.h
 qgsencodingfiledialog.h
 qgsfiledropedit.h

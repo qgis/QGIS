@@ -37,8 +37,8 @@ class QgsContinuousColorDialog: public QDialog, private Ui::QgsContinuousColorDi
     void apply();
 
   protected slots:
-    void selectMinimumColor();
-    void selectMaximumColor();
+    void selectMinimumColor( const QColor& color );
+    void selectMaximumColor( const QColor& color );
     void on_cb_polygonOutline_clicked();
 
   protected:

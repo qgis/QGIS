@@ -113,8 +113,8 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   lstSymbols->setContextMenuPolicy( Qt::ActionsContextMenu );
 
   //do the signal/slot connections
-  connect( btnOutlineColor, SIGNAL( clicked() ), this, SLOT( selectOutlineColor() ) );
-  connect( btnFillColor, SIGNAL( clicked() ), this, SLOT( selectFillColor() ) );
+  connect( btnOutlineColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( selectOutlineColor( const QColor& ) ) );
+  connect( btnFillColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( selectFillColor( const QColor& ) ) );
   connect( outlinewidthspinbox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mLabelEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mPointSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
@@ -248,40 +248,16 @@ QgsSingleSymbolDialog::~QgsSingleSymbolDialog()
   QgsDebugMsg( "entered." );
 }
 
-void QgsSingleSymbolDialog::selectOutlineColor()
+void QgsSingleSymbolDialog::selectOutlineColor( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QColor c = QColorDialog::getColor( btnOutlineColor->color(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-  QColor c = QColorDialog::getColor( btnOutlineColor->color(), this );
-#endif
-
-  if ( c.isValid() )
-  {
-    btnOutlineColor->setColor( c );
-    emit settingsChanged();
-  }
-
-  activateWindow();
+  Q_UNUSED( color )
+  emit settingsChanged();
 }
 
-void QgsSingleSymbolDialog::selectFillColor()
+void QgsSingleSymbolDialog::selectFillColor( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QColor c = QColorDialog::getColor( btnFillColor->color(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-  QColor c = QColorDialog::getColor( btnFillColor->color(), this );
-#endif
-
-  if ( c.isValid() )
-  {
-    btnFillColor->setColor( c );
-    emit settingsChanged();
-  }
-
-  activateWindow();
+  Q_UNUSED( color )
+  emit settingsChanged();
 }
 
 //should this method have a different name?
