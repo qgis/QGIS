@@ -38,7 +38,7 @@ class GUI_EXPORT QgsColorDialog : public QObject
     /** Return a color selection from a QColorDialog, with live updating of interim selections.
      * @param initialColor The initial color of the selection dialog.
      * @param updateObject The receiver object of the live updating.
-     * @param updateSlot The receiver object's slot for live updating (e.g. "setColor( const QColor& )" ).
+     * @param updateSlot The receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
      * @param parent Parent widget. Usually 0 is best for native system color dialogs.
      * @param title The title of the QColorDialog.
      * @param options ColorDialogOptions passed to QColorDialog.

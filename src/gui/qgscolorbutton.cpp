@@ -73,7 +73,7 @@ void QgsColorButton::onButtonClicked()
   if ( mAcceptLiveUpdates && settings.value( "/qgis/live_color_dialogs", false ).toBool() )
   {
     newColor = QgsColorDialog::getLiveColor(
-                 color(), this, "setValidColor( const QColor& )",
+                 color(), this, SLOT( setValidColor( const QColor& ) ),
                  this->parentWidget(), mColorDialogTitle, mColorDialogOptions );
   }
   else

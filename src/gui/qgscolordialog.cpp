@@ -16,7 +16,6 @@
 
 #include "qgscolordialog.h"
 
-#include <QMetaObject>
 
 QgsColorDialog::QgsColorDialog()
 {
@@ -35,12 +34,9 @@ QColor QgsColorDialog::getLiveColor( const QColor& initialColor, QObject* update
   QColorDialog* liveDialog = new QColorDialog( initialColor, parent );
   liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
   liveDialog->setOptions( options );
-#ifdef Q_WS_MAC
-  // always use native color dialog on Mac
-  liveDialog->setOption( QColorDialog::DontUseNativeDialog, false );
-#endif
+
   connect( liveDialog, SIGNAL( currentColorChanged( const QColor& ) ),
-           updateObject, QString( "1%1" ).arg( QString( QMetaObject::normalizedSignature( updateSlot ) ) ).toAscii() );
+           updateObject, updateSlot );
 
   if ( liveDialog->exec() )
   {

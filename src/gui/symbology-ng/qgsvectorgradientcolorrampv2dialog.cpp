@@ -264,7 +264,9 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
     if ( settings.value( "/qgis/live_color_dialogs", false ).toBool() )
     {
       mCurrentItem = item;
-      color = QgsColorDialog::getLiveColor( item->data( 0, StopColorRole ).value<QColor>(), this, "setItemStopColor( const QColor& )", this );
+      color = QgsColorDialog::getLiveColor(
+                item->data( 0, StopColorRole ).value<QColor>(),
+                this, SLOT( setItemStopColor( const QColor& ) ), this );
       mCurrentItem = 0;
     }
     else
