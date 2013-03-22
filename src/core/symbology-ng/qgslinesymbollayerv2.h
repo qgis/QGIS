@@ -21,6 +21,8 @@
 #include <QPen>
 #include <QVector>
 
+class QgsExpression;
+
 #define DEFAULT_SIMPLELINE_COLOR     QColor(0,0,0)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
 #define DEFAULT_SIMPLELINE_PENSTYLE  Qt::SolidLine
@@ -34,6 +36,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsSimpleLineSymbolLayerV2( QColor color = DEFAULT_SIMPLELINE_COLOR,
                                 double width = DEFAULT_SIMPLELINE_WIDTH,
                                 Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
+
+    ~QgsSimpleLineSymbolLayerV2();
 
     // static stuff
 
@@ -87,6 +91,12 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QVector<qreal> customDashVector() const { return mCustomDashVector; }
     void setCustomDashVector( const QVector<qreal>& vector ) { mCustomDashVector = vector; }
 
+    const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    void removeDataDefinedProperty( const QString& property );
+
+    QSet<QString> usedAttributes() const;
+
   protected:
     Qt::PenStyle mPenStyle;
     Qt::PenJoinStyle mPenJoinStyle;
@@ -102,6 +112,14 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     /**Vector with an even number of entries for the */
     QVector<qreal> mCustomDashVector;
+
+    //data defined properties
+    QgsExpression* mStrokeColorExpression;
+    QgsExpression* mStrokeWidthExpression;
+    QgsExpression* mLineOffsetExpression;
+    QgsExpression* mDashPatternExpression;
+    QgsExpression* mJoinStyleExpression;
+    QgsExpression* mCapStyleExpression;
 };
 
 /////////
