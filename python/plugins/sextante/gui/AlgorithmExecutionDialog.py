@@ -286,7 +286,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 palette = ex.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 ex.widget.setPalette(palette)
-                self.progressLabel.setText("<b>Missing parameter value</b>")
+                self.progressLabel.setText("<b>Missing parameter value: " + ex.parameter.description + "</b>")
                 return
             except:
                 QMessageBox.critical(self, "Unable to execute algorithm", "Wrong or missing parameter values")
