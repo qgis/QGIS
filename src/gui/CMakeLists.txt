@@ -48,6 +48,7 @@ qgisinterface.cpp
 qgsannotationitem.cpp
 qgsattributeeditor.cpp
 qgslegendinterface.cpp
+qgsblendmodecombobox.cpp
 qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
 qgscomposerview.cpp
@@ -153,6 +154,7 @@ attributetable/qgsattributetablememorymodel.h
 attributetable/qgsattributetabledelegate.h
 
 qgsattributeeditor.h
+qgsblendmodecombobox.h
 qgscharacterselectdialog.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
@@ -227,6 +229,7 @@ qgsrubberband.h
 qgsvertexmarker.h
 qgsmaptip.h
 qgsscalecombobox.h
+qgsblendmodecombobox.h
 qgssearchquerybuilder.h
 qgsattributeeditor.h
 qgsfieldvalidator.h
