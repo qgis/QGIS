@@ -47,8 +47,8 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     void on_mHeightSpinBox_valueChanged( double d );
     void on_mRotationSpinBox_valueChanged( double d );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
-    void on_btnChangeColorBorder_clicked();
-    void on_btnChangeColorFill_clicked();
+    void on_btnChangeColorBorder_colorChanged( const QColor& newColor );
+    void on_btnChangeColorFill_colorChanged( const QColor& newColor );
 
     void on_mDDSymbolWidthComboBox_currentIndexChanged( int idx );
     void on_mDDSymbolHeightComboBox_currentIndexChanged( int idx );

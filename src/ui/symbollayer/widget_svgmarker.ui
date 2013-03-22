@@ -54,9 +54,9 @@
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QgsColorButtonV2" name="mChangeBorderColorButton">
+      <widget class="QgsColorButton" name="mChangeBorderColorButton">
        <property name="text">
-        <string>Change</string>
+        <string>Change...</string>
        </property>
       </widget>
      </item>
@@ -82,9 +82,9 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QgsColorButtonV2" name="mChangeColorButton">
+      <widget class="QgsColorButton" name="mChangeColorButton">
        <property name="text">
-        <string>Change</string>
+        <string>Change...</string>
        </property>
       </widget>
      </item>
@@ -290,7 +290,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>

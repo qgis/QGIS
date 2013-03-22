@@ -937,7 +937,7 @@ QString QgsLineDecorationSymbolLayerV2::layerType() const
 void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   QColor penColor = mColor;
-  penColor.setAlphaF( context.alpha() );
+  penColor.setAlphaF( mColor.alphaF() * context.alpha() );
 
   double width = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
   mPen.setWidth( context.outputLineWidth( width ) );

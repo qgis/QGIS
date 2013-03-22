@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>256</width>
+    <width>263</width>
     <height>175</height>
    </rect>
   </property>
@@ -64,19 +64,6 @@
      <property name="text">
       <string>Minimum value</string>
      </property>
-     <property name="buddy">
-      <cstring>btnMinValue</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QgsColorButton" name="btnMinValue">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
-     </property>
     </widget>
    </item>
    <item row="2" column="0">
@@ -89,19 +76,6 @@
      </property>
      <property name="text">
       <string>Maximum value</string>
-     </property>
-     <property name="buddy">
-      <cstring>btnMaxValue</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QgsColorButton" name="btnMaxValue">
-     <property name="minimumSize">
-      <size>
-       <width>100</width>
-       <height>0</height>
-      </size>
      </property>
     </widget>
    </item>
@@ -144,20 +118,32 @@
      </property>
     </spacer>
    </item>
+   <item row="1" column="1">
+    <widget class="QgsColorButton" name="btnMinValue">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsColorButton" name="btnMaxValue">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
+   <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>classificationComboBox</tabstop>
-  <tabstop>btnMinValue</tabstop>
-  <tabstop>btnMaxValue</tabstop>
   <tabstop>outlinewidthspinbox</tabstop>
   <tabstop>cb_polygonOutline</tabstop>
  </tabstops>

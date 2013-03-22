@@ -48,8 +48,8 @@ class QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialog
     void on_mBufferSizeSpinBox_valueChanged( double d );
     void on_mRotationSpinBox_valueChanged( double d );
     void on_mFontPushButton_clicked();
-    void on_mFontColorButton_clicked();
-    void on_mBufferColorButton_clicked();
+    void on_mFontColorButton_colorChanged( const QColor &color );
+    void on_mBufferColorButton_colorChanged( const QColor &color );
     void on_mHaliComboBox_currentIndexChanged( const QString& text );
     void on_mValiComboBox_currentIndexChanged( const QString& text );
     void on_mLabelTextLineEdit_textChanged( const QString& text );

@@ -42,11 +42,11 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
   public slots:
     void collapseSample( bool collapse );
     void apply();
-    void changeTextColor();
+    void changeTextColor( const QColor &color );
     void changeTextFont();
     void showEngineConfigDialog();
     void showExpressionDialog();
-    void changeBufferColor();
+    void changeBufferColor( const QColor &color );
 
     void updateUi();
     void updatePreview();
@@ -71,7 +71,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
     void on_mPreviewTextEdit_textChanged( const QString & text );
     void on_mPreviewTextBtn_clicked();
-    void on_mPreviewBackgroundBtn_clicked();
+    void on_mPreviewBackgroundBtn_colorChanged( const QColor &color );
     void on_mDirectSymbLeftToolBtn_clicked();
     void on_mDirectSymbRightToolBtn_clicked();
 

@@ -12,6 +12,7 @@
 %Include qgsattributeeditor.sip
 %Include qgscollapsiblegroupbox.sip
 %Include qgscolorbutton.sip
+%Include qgscolordialog.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
 %Include qgsdetaileditemdata.sip

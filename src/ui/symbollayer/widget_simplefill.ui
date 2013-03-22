@@ -20,9 +20,9 @@
    <item>
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="1">
-      <widget class="QgsColorButtonV2" name="btnChangeColor">
+      <widget class="QgsColorButton" name="btnChangeColor">
        <property name="text">
-        <string>Change</string>
+        <string>Change...</string>
        </property>
       </widget>
      </item>
@@ -41,9 +41,9 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QgsColorButtonV2" name="btnChangeBorderColor">
+      <widget class="QgsColorButton" name="btnChangeBorderColor">
        <property name="text">
-        <string>Change</string>
+        <string>Change...</string>
        </property>
       </widget>
      </item>
@@ -182,7 +182,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>

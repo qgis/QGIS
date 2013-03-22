@@ -979,7 +979,7 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
 {
   QPainter* p = context.renderContext().painter();
   QColor penColor = context.selected() ? context.selectionColor() : mColor;
-  penColor.setAlphaF( context.alpha() );
+  penColor.setAlphaF( mColor.alphaF() * context.alpha() );
   p->setPen( penColor );
   p->setFont( mFont );
 
