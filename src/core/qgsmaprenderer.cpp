@@ -377,13 +377,18 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       continue;
     }
 
-    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  extent:%5" )
+    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  extent:%5  blendmode:%6" )
                  .arg( ml->name() )
                  .arg( ml->minimumScale() )
                  .arg( ml->maximumScale() )
                  .arg( ml->hasScaleBasedVisibility() )
                  .arg( ml->extent().toString() )
+                 .arg( ml->blendMode() )
                );
+    
+    // Set the QPainter composition mode so that this layer is rendered using
+    // the desired blending mode
+    mypContextPainter->setCompositionMode(ml->getCompositionMode());
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {

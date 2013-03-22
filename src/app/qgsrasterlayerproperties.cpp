@@ -243,6 +243,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
   }
 
+  //blend mode
+  mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
+
   //transparency band
   if ( provider )
   {
@@ -798,6 +801,8 @@ void QgsRasterLayerProperties::apply()
     resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
   }
 
+  //set the blend mode for the layer
+  mRasterLayer->setBlendMode(( QgsMapLayer::BlendMode ) mBlendModeComboBox->blendMode() );
 
   //get the thumbnail for the layer
   pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
