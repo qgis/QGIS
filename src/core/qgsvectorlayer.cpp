@@ -2260,6 +2260,14 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       setDisplayField( e.text() );
     }
 
+    // get and set the blend mode if it exists
+    QDomNode blendModeNode = node.namedItem( "blendMode" );
+    if ( !blendModeNode.isNull() )
+    {
+      QDomElement e = blendModeNode.toElement();
+      setBlendMode(( QgsMapLayer::BlendMode ) e.text().toInt() );
+    }
+
     // use scale dependent visibility flag
     QDomElement e = node.toElement();
     mLabel->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0" ) == "1" );
@@ -2604,6 +2612,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
+
+    // add the blend mode field
+    QDomElement blendModeElem  = doc.createElement( "blendMode" );
+    QDomText blendModeText = doc.createTextNode( QString::number( blendMode() ) );
+    blendModeElem.appendChild( blendModeText );
+    node.appendChild( blendModeElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
