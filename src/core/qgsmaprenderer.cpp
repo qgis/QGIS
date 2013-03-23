@@ -385,10 +385,10 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
                  .arg( ml->extent().toString() )
                  .arg( ml->blendMode() )
                );
-    
+
     // Set the QPainter composition mode so that this layer is rendered using
     // the desired blending mode
-    mypContextPainter->setCompositionMode(ml->getCompositionMode());
+    mypContextPainter->setCompositionMode( ml->getCompositionMode() );
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {
@@ -558,6 +558,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   } // while (li.hasPrevious())
 
   QgsDebugMsg( "Done rendering map layers" );
+
+  // Reset the composition mode before rendering the labels
+  mRenderContext.painter()->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
   if ( !mOverview )
   {
