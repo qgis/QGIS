@@ -153,8 +153,12 @@
           </widget>
          </item>
          <item>
-          <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox" native="true">
+          <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox">
            <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -1299,7 +1303,7 @@ p, li { white-space: pre-wrap; }
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
-   <extends>QWidget</extends>
+   <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>

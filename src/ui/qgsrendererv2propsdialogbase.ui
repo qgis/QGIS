@@ -40,7 +40,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox" native="true"/>
+      <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox"/>
      </item>
      <item>
       <widget class="QPushButton" name="btnOldSymbology">
@@ -90,7 +90,7 @@
  <customwidgets>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
-   <extends>QWidget</extends>
+   <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>
