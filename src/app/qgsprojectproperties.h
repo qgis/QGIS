@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 
+#include "qgsoptionsdialogbase.h"
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
 #include "qgisgui.h"
@@ -30,7 +31,7 @@ class QgsStyleV2;
   @note actual state is stored in QgsProject singleton instance
 
  */
-class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBase
+class QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase
 {
     Q_OBJECT
 
@@ -122,13 +123,14 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbtnStyleFill_clicked();
     void on_pbtnStyleColorRamp_clicked();
     void on_mTransparencySlider_valueChanged( int value );
+    void on_mTransparencySpinBox_valueChanged( int value );
 
     /*!
      * Slot to show the context help for this dialog
      */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-    void on_cbxProjectionEnabled_stateChanged( int state );
+    void on_cbxProjectionEnabled_toggled( bool onFlyEnabled );
 
     /*!
      * Slot to link WFS checkboxes
@@ -159,7 +161,6 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     //! let listening canvases know to refresh
     void refresh();
 
-
   private:
     QgsMapCanvas* mMapCanvas;
     QgsStyleV2* mStyle;
@@ -168,12 +169,12 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void editSymbol( QComboBox* cbo );
 
     /*!
-     * Function to save dialog window state
+     * Function to save non-base dialog states
      */
     void saveState();
 
     /*!
-     * Function to restore dialog window state
+     * Function to restore non-base dialog states
      */
     void restoreState();
 

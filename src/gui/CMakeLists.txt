@@ -84,6 +84,7 @@ qgsmessagelogviewer.cpp
 qgsnewhttpconnection.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
+qgsoptionsdialogbase.cpp
 qgscredentialdialog.cpp
 qgsowssourceselect.cpp
 qgsprojectbadlayerguihandler.cpp
@@ -183,6 +184,7 @@ qgsmessageviewer.h
 qgsmessagelogviewer.h
 qgsnewhttpconnection.h
 qgsnewvectorlayerdialog.h
+qgsoptionsdialogbase.h
 qgscredentialdialog.h
 qgsowssourceselect.h
 qgsprojectionselector.h
@@ -227,6 +229,7 @@ qgsmaptoolpan.h
 qgsmaptoolzoom.h
 qgsmessagebar.h
 qgsmessageviewer.h
+qgsoptionsdialogbase.h
 qgscredentialdialog.h
 qgsowssourceselect.h
 qgsprojectionselector.h
