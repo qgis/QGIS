@@ -18,6 +18,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
+#include "qgsmessagelog.h"
 
 
 QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryProvider* p, const QgsFeatureRequest& request )
@@ -25,7 +26,10 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryProvider* p, const 
 {
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "Memory provider" ) );
     P->mActiveIterator->close();
+  }
   P->mActiveIterator = this;
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )

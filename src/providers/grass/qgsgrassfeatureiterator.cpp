@@ -37,7 +37,10 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassProvider* p, const Qgs
 {
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
+  {
+    QgsMessageLog::logMessage( tr( "Already active iterator on this provider was closed." ), tr( "GRASS" ) );
     P->mActiveIterator->close();
+  }
   P->mActiveIterator = this;
 
   // check if outdated and update if necessary
