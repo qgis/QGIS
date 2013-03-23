@@ -96,7 +96,6 @@ qgscredentialdialog.cpp
 qgsowssourceselect.cpp
 qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
-qgsquickprint.cpp
 qgsrasterlayersaveasdialog.cpp
 qgsrasterformatsaveoptionswidget.cpp
 qgsrasterpyramidsoptionswidget.cpp
@@ -204,7 +203,6 @@ qgsoptionsdialogbase.h
 qgscredentialdialog.h
 qgsowssourceselect.h
 qgsprojectionselector.h
-qgsquickprint.h
 qgsrasterlayersaveasdialog.h
 qgsrasterformatsaveoptionswidget.h
 qgsrasterpyramidsoptionswidget.h

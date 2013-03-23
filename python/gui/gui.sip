@@ -55,7 +55,6 @@
 %Include qgsprojectbadlayerguihandler.sip
 %Include qgsprojectionselector.sip
 %Include qgsquerybuilder.sip
-%Include qgsquickprint.sip
 %Include qgsrasterformatsaveoptionswidget.sip
 %Include qgsrasterlayersaveasdialog.sip
 %Include qgsrasterpyramidsoptionswidget.sip
