@@ -12,6 +12,7 @@
 // qgis includes
 #include "qgis.h"
 #include "heatmapgui.h"
+#include "heatmap.h"
 #include "qgscontexthelp.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
@@ -225,6 +226,14 @@ void HeatmapGui::on_mBufferLineEdit_editingFinished()
 {
   updateBBox();
 }
+
+void HeatmapGui::on_kernelShapeCombo_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  // Only enable the decay edit if the kernel shape is set to triangular
+  mDecayLineEdit->setEnabled( index == Heatmap::Triangular );
+}
+
 /*
  *
  * Private Functions
@@ -373,6 +382,11 @@ int HeatmapGui::radiusUnit()
     return radiusFieldUnitCombo->currentIndex();
   }
   return mRadiusUnitCombo->currentIndex();
+}
+
+int HeatmapGui::kernelShape()
+{
+  return kernelShapeCombo->currentIndex();
 }
 
 double HeatmapGui::decayRatio()
