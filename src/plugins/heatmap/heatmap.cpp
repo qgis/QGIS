@@ -43,6 +43,9 @@
 
 #define NO_DATA -9999
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 static const QString sName = QObject::tr( "Heatmap" );
 static const QString sDescription = QObject::tr( "Creates a Heatmap raster for the input point vector" );
@@ -108,7 +111,8 @@ void Heatmap::run()
     int columns = d.columns();
     int rows = d.rows();
     double cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
-    double myDecay = d.decayRatio();
+    mDecay = d.decayRatio();
+    int kernelShape = d.kernelShape();
 
     // Start working on the input vector
     QgsVectorLayer* inputLayer = d.inputVectorLayer();
@@ -259,7 +263,7 @@ void Heatmap::run()
             continue;
           }
 
-          double pixelValue = weight * ( 1 - (( 1 - myDecay ) * distance / myBuffer ) );
+          double pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
 
           // clearing anamolies along the axes
           if ( xp == 0 && yp == 0 )
@@ -330,6 +334,83 @@ int Heatmap::bufferSize( double radius, double cellsize )
   return buffer;
 }
 
+double Heatmap::calculateKernelValue( double distance, int bandwidth, int kernelShape )
+{
+  switch ( kernelShape )
+  {
+    case Heatmap::Triangular:
+      return triangularKernel( distance , bandwidth );
+
+    case Heatmap::Uniform:
+      return uniformKernel( distance, bandwidth );
+
+    case Heatmap::Quartic:
+      return quarticKernel( distance, bandwidth );
+
+    case Heatmap::Triweight:
+      return triweightKernel( distance, bandwidth );
+
+    case Heatmap::Epanechnikov:
+      return epanechnikovKernel( distance, bandwidth );
+  }
+  return 0;
+
+}
+
+/* The kernel functions below are taken from "Kernel Smoothing" by Wand and Jones (1995), p. 175
+ *
+ * Each kernel is multiplied by a normalizing constant "k", which normalizes the kernel area
+ * to 1 for a given bandwidth size.
+ *
+ * k is calculated by polar double integration of the kernel function
+ * between a radius of 0 to the specified bandwidth and equating the area to 1. */
+
+double Heatmap::uniformKernel( double distance, int bandwidth )
+{
+  // Normalizing constant
+  double k = 2. / ( M_PI * ( double )bandwidth );
+
+  // Derived from Wand and Jones (1995), p. 175
+  return k * ( 0.5 / ( double )bandwidth );
+}
+
+double Heatmap::quarticKernel( double distance, int bandwidth )
+{
+  // Normalizing constant
+  double k = 16. / ( 5. * M_PI * pow(( double )bandwidth, 2 ) );
+
+  // Derived from Wand and Jones (1995), p. 175
+  return k * ( 15. / 16. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 2 );
+}
+
+double Heatmap::triweightKernel( double distance, int bandwidth )
+{
+  // Normalizing constant
+  double k = 128. / ( 35. * M_PI * pow(( double )bandwidth, 2 ) );
+
+  // Derived from Wand and Jones (1995), p. 175
+  return k * ( 35. / 32. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 3 );
+}
+
+double Heatmap::epanechnikovKernel( double distance, int bandwidth )
+{
+  // Normalizing constant
+  double k = 8. / ( 3. * M_PI * pow(( double )bandwidth, 2 ) );
+
+  // Derived from Wand and Jones (1995), p. 175
+  return k * ( 3. / 4. ) * ( 1. - pow( distance / ( double )bandwidth, 2 ) );
+}
+
+double Heatmap::triangularKernel( double distance, int bandwidth )
+{
+  // Normalizing constant. In this case it's calculated a little different
+  // due to the inclusion of the non-standard "decay" parameter
+
+  double k = 3. / (( 1. + 2. * mDecay ) * M_PI * pow(( double )bandwidth, 2 ) );
+
+  // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
+  return k * ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+}
 
 // Unload the plugin by cleaning up the GUI
 void Heatmap::unload()
