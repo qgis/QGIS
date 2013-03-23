@@ -276,29 +276,14 @@ class SagaAlgorithm(GeoAlgorithm):
 
         for out in self.outputs:
             if isinstance(out, OutputRaster):
-                filename = out.getCompatibleFileName(self)#filename = out.value
-                #===============================================================
-                # if not filename.endswith(".tif"):
-                #    filename += ".tif"
-                #    out.value = filename
-                #===============================================================
+                filename = out.getCompatibleFileName(self)
                 filename = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
                 command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputVector):
-                filename = out.getCompatibleFileName(self)#out.value
-                #===============================================================
-                # if not filename.endswith(".shp"):
-                #    filename += ".shp"
-                #    out.value = filename
-                #===============================================================
+                filename = out.getCompatibleFileName(self)
                 command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputTable):
-                filename = out.getCompatibleFileName(self)#out.value
-                #===============================================================
-                # if not filename.endswith(".dbf"):
-                #    filename += ".dbf"
-                #    out.value = filename
-                #===============================================================
+                filename = out.getCompatibleFileName(self)
                 command+=(" -" + out.name + " \"" + filename + "\"");
 
         commands.append(command)
@@ -355,7 +340,7 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def exportRasterLayer(self, layer):
-        destFilename = SextanteUtils.getTempFilename("sgrd")
+        destFilename = SextanteUtils.getTempFilenameInTempFolder(os.path.basename(layer)[0:5] + ".sgrd")
         self.exportedLayers[layer]= destFilename
         if SextanteUtils.isWindows():
             return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer+"\""
