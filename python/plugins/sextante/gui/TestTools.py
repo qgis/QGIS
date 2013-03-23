@@ -32,9 +32,9 @@ from osgeo.gdalconst import GA_ReadOnly
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
 
-def createTest(item):
+def createTest(text):
     s = ""
-    tokens = item.entry.text[len("sextante.runalg("):-1].split(",")
+    tokens =  text[len("sextante.runalg("):-1].split(",")
     cmdname = tokens[0][1:-1];
     methodname = "test_" + cmdname.replace(":","")
     s += "def " + methodname + "():\n"
@@ -44,7 +44,7 @@ def createTest(item):
     for token in tokens:
         if i < alg.getVisibleParametersCount() + 1:                            
             if os.path.exists(token[1:-1]):
-                token = '"' + os.path.basename(token[1:-1])[:-4] + '"'           
+                token = os.path.basename(token[1:-1])[:-4]           
             execcommand+=token + ","
         else:
             execcommand+="None,"
@@ -69,8 +69,8 @@ def createTest(item):
             fields = layer.pendingFields()
             s+="\tlayer=sextante.getobject(output)\n"
             s+="\tfields=layer.pendingFields()\n"
-            s+="\texpectednames=[" + ",".join([str(f.name()) for f in fields]) + "]\n"
-            s+="\texpectedtypes=[" + ",".join([str(f.typeName()) for f in fields]) + "]\n"
+            s+="\texpectednames=[" + ",".join(["'" + str(f.name()) + "'" for f in fields]) + "]\n"
+            s+="\texpectedtypes=[" + ",".join(["'" + str(f.typeName()) +"'" for f in fields]) + "]\n"
             s+="\tnames=[str(f.name()) for f in fields]\n"
             s+="\ttypes=[str(f.typeName()) for f in fields]\n"
             s+="\tself.assertEqual(expectednames, names)\n"
