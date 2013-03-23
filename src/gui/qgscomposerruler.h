@@ -43,7 +43,6 @@ class QgsComposerRuler: public QWidget
     QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > > mSnappedItems;
 
     void setSnapLinePosition( const QPointF& pos );
-    static QGraphicsLineItem* createLineSnapItem();
 };
 
 #endif // QGSCOMPOSERRULER_H

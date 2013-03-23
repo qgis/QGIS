@@ -299,6 +299,19 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
   compositionElem.setAttribute( "snapGridOffsetY", QString::number( mSnapGridOffsetY ) );
 
+  //custom snap lines
+  QList< QGraphicsLineItem* >::const_iterator snapLineIt = mSnapLines.constBegin();
+  for ( ; snapLineIt != mSnapLines.constEnd(); ++snapLineIt )
+  {
+    QDomElement snapLineElem = doc.createElement( "SnapLine" );
+    QLineF line = ( *snapLineIt )->line();
+    snapLineElem.setAttribute( "x1", QString::number( line.x1() ) );
+    snapLineElem.setAttribute( "y1", QString::number( line.y1() ) );
+    snapLineElem.setAttribute( "x2", QString::number( line.x2() ) );
+    snapLineElem.setAttribute( "y2", QString::number( line.y2() ) );
+    compositionElem.appendChild( snapLineElem );
+  }
+
   compositionElem.setAttribute( "printResolution", mPrintResolution );
   compositionElem.setAttribute( "printAsRaster", mPrintAsRaster );
 
@@ -367,6 +380,19 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
+
+  //custom snap lines
+  QDomNodeList snapLineNodes = compositionElem.elementsByTagName( "SnapLine" );
+  for ( int i = 0; i < snapLineNodes.size(); ++i )
+  {
+    QDomElement snapLineElem = snapLineNodes.at( i ).toElement();
+    QGraphicsLineItem* snapItem = addSnapLine();
+    double x1 = snapLineElem.attribute( "x1" ).toDouble();
+    double y1 = snapLineElem.attribute( "y1" ).toDouble();
+    double x2 = snapLineElem.attribute( "x2" ).toDouble();
+    double y2 = snapLineElem.attribute( "y2" ).toDouble();
+    snapItem->setLine( x1, y1, x2, y2 );
+  }
 
   mAlignmentSnap = compositionElem.attribute( "alignmentSnap", "1" ).toInt() == 0 ? false : true;
   mAlignmentSnapTolerance = compositionElem.attribute( "alignmentSnapTolerance", "2.0" ).toDouble();
@@ -1063,10 +1089,17 @@ QPointF QgsComposition::alignPos( const QPointF& pos, const QgsComposerItem* exc
   return result;
 }
 
-void QgsComposition::addSnapLine( QGraphicsLineItem* line )
+QGraphicsLineItem* QgsComposition::addSnapLine()
 {
-  addItem( line );
-  mSnapLines.push_back( line );
+  QGraphicsLineItem* item = new QGraphicsLineItem();
+  QPen linePen( Qt::SolidLine );
+  linePen.setColor( Qt::red );
+  linePen.setWidthF( 0.5 );
+  item->setPen( linePen );
+  item->setZValue( 100 );
+  addItem( item );
+  mSnapLines.push_back( item );
+  return item;
 }
 
 void QgsComposition::removeSnapLine( QGraphicsLineItem* line )

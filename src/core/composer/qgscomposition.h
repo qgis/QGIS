@@ -263,7 +263,7 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     QPointF alignPos( const QPointF& pos, const QgsComposerItem* excludeItem, double& alignX, double& alignY );
 
     /**Add a custom snap line (can be horizontal or vertical)*/
-    void addSnapLine( QGraphicsLineItem* line );
+    QGraphicsLineItem* addSnapLine();
     /**Remove custom snap line (and delete the object)*/
     void removeSnapLine( QGraphicsLineItem* line );
     /**Get nearest snap line*/

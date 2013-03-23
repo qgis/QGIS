@@ -176,8 +176,7 @@ void QgsComposerRuler::mousePressEvent( QMouseEvent* event )
   if ( !line )
   {
     //create new snap line
-    mLineSnapItem = createLineSnapItem();
-    mComposition->addSnapLine( mLineSnapItem );
+    mLineSnapItem = mComposition->addSnapLine();
   }
   else
   {
@@ -243,15 +242,4 @@ void QgsComposerRuler::setSnapLinePosition( const QPointF& pos )
       }
     }
   }
-}
-
-QGraphicsLineItem* QgsComposerRuler::createLineSnapItem()
-{
-  QGraphicsLineItem* item = new QGraphicsLineItem();
-  QPen linePen( Qt::SolidLine );
-  linePen.setColor( Qt::red );
-  linePen.setWidthF( 0.5 );
-  item->setPen( linePen );
-  item->setZValue( 100 );
-  return item;
 }
