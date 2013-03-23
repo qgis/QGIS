@@ -83,6 +83,12 @@ class ParameterVector(ParameterDataObject):
         else:
             self.exported = self.value
         return self.exported
+    
+    def getFileFilter(self):
+        exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
+        for i in range(len(exts)):
+            exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
+        return ";;".join(exts)
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

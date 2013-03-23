@@ -57,11 +57,11 @@ class BatchInputSelectionPanel(QtGui.QWidget):
         elif os.path.isdir(os.path.dirname(text)):
             path = os.path.dirname(text)
         elif settings.contains("/SextanteQGIS/LastInputPath"):
-            path = str(settings.value( "/SextanteQGIS/LastInputPath",QtCore.QVariant( "" ) ).toString())
+            path = str(settings.value( "/SextanteQGIS/LastInputPath",QtCore.QVariant("")).toString())
         else:
             path = ""
         
-        ret = QtGui.QFileDialog.getOpenFileNames(self, "Open file", path, "All files (*.*)")
+        ret = QtGui.QFileDialog.getOpenFileNames(self, "Open file", path, self.param.getFileFilter())
         if ret:            
             files = list(ret)            
             if len(files) == 1:
