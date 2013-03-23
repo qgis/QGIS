@@ -507,7 +507,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     // Let user know we couldn't initialise the Postgres/PostGIS provider
     QMessageBox::warning( this,
                           tr( "Postgres/PostGIS Provider" ),
-                          tr( "Could not open the Postgres/PostGIS Provider" ) );
+                          tr( "Could not open the Postgres/PostGIS Provider.\nCheck message log for possible errors." ) );
   }
 }
 
@@ -529,7 +529,7 @@ void QgsPgSourceSelect::finishList()
   if ( mTablesTreeView->model()->rowCount() == 0 )
     QMessageBox::information( this,
                               tr( "Postgres/PostGIS Provider" ),
-                              tr( "No accessible tables or views found.  Check the message log for possible errors." ) );
+                              tr( "No accessible tables or views found.\nCheck the message log for possible errors." ) );
 
 }
 
