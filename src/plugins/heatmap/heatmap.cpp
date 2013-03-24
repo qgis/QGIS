@@ -367,6 +367,7 @@ double Heatmap::calculateKernelValue( double distance, int bandwidth, int kernel
 
 double Heatmap::uniformKernel( double distance, int bandwidth )
 {
+  Q_UNUSED(distance);
   // Normalizing constant
   double k = 2. / ( M_PI * ( double )bandwidth );
 
