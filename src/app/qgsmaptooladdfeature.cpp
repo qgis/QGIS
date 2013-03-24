@@ -268,9 +268,14 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
         if ( !f->geometry()->asWkb() ) //avoid intersection might have removed the whole geometry
         {
-          QString reason = tr( "The feature cannot be added because it contains an empty geometry" );
-          if ( avoidIntersectionsReturn == 2 ) {
-            reason += QString( " (" + tr("collapsed due to intersection avoidance") +  ")" );
+          QString reason;
+          if ( avoidIntersectionsReturn != 2 )
+          {
+            reason = tr( "The feature cannot be added because it's geometry is empty" );
+          }
+          else
+          {
+            reason = tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" );
           }
           QMessageBox::critical( 0, tr( "Error" ), reason );
           delete f;
