@@ -37,7 +37,7 @@ def createTest(text):
     tokens =  text[len("sextante.runalg("):-1].split(",")
     cmdname = tokens[0][1:-1];
     methodname = "test_" + cmdname.replace(":","")
-    s += "def " + methodname + "():\n"
+    s += "def " + methodname + "(self):\n"
     alg = Sextante.getAlgorithm(cmdname)
     execcommand = "sextante.runalg("
     i = 0
@@ -45,9 +45,9 @@ def createTest(text):
         if i < alg.getVisibleParametersCount() + 1:                            
             if os.path.exists(token[1:-1]):
                 token = os.path.basename(token[1:-1])[:-4]           
-            execcommand+=token + ","
+            execcommand += token + "(),"
         else:
-            execcommand+="None,"
+            execcommand += "None,"
         i+=1
     s += "\toutputs=" + execcommand[:-1] + ")\n"
 
@@ -55,7 +55,7 @@ def createTest(text):
     for out in alg.outputs:        
         filename = tokens[i][1:-1]
         if (filename == str(None)):
-            raise Exception("Cannot create unit test for that algorithm.\nThe output cannot be a temporary file")        
+            raise Exception("Cannot create unit test for that algorithm execution.\nThe output cannot be a temporary file")        
         s+="\toutput=outputs['" + out.name + "']\n"
         if isinstance(out, (OutputNumber, OutputString)):
             s+="self.assertTrue(" + str(out) + ", output)\n"
@@ -67,7 +67,7 @@ def createTest(text):
         if isinstance(out, OutputVector):
             layer = Sextante.getObject(filename)
             fields = layer.pendingFields()
-            s+="\tlayer=sextante.getobject(output)\n"
+            s+="\tlayer=QGisLayers.getObjectFromUri(output, True)\n"
             s+="\tfields=layer.pendingFields()\n"
             s+="\texpectednames=[" + ",".join(["'" + str(f.name()) + "'" for f in fields]) + "]\n"
             s+="\texpectedtypes=[" + ",".join(["'" + str(f.typeName()) +"'" for f in fields]) + "]\n"
@@ -77,8 +77,8 @@ def createTest(text):
             s+="\tself.assertEqual(expectedtypes, types)\n"
             features = QGisLayers.features(layer)
             numfeat = len(features)
-            s+="\tfeatures=sextante.getfeatures(layer))\n"
-            s+="\tself.assertEqual(" + str(numfeat) + ", len(features)\n"
+            s+="\tfeatures=sextante.getfeatures(layer)\n"
+            s+="\tself.assertEqual(" + str(numfeat) + ", len(features))\n"
             if numfeat > 0:
                 feature = features.next()
                 attrs = feature.attributes()
@@ -86,7 +86,7 @@ def createTest(text):
                 s+="\tattrs=feature.attributes()\n"
                 s+="\texpectedvalues=[" + ",".join(['"' + str(attr.toString()) + '"' for attr in attrs]) + "]\n"
                 s+="\tvalues=[str(attr.toString()) for attr in attrs]\n"
-                s+="\tself.assertEqual(expectedtypes, types)\n"
+                s+="\tself.assertEqual(expectedvalues, values)\n"
 
     dlg = ShowTestDialog(s)
     dlg.exec_()
