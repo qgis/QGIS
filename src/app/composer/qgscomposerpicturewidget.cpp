@@ -20,6 +20,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposition.h"
 #include <QDoubleValidator>
 #include <QFileDialog>
 #include <QFileInfo>

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspaperitem.h"
+#include "qgscomposition.h"
 #include <QPainter>
 
 QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false )

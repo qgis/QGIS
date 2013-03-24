@@ -16,6 +16,7 @@
 
 #include "qgscomposerscalebar.h"
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include "qgsdistancearea.h"
 #include "qgsscalebarstyle.h"
 #include "qgsdoubleboxscalebarstyle.h"

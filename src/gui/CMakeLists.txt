@@ -53,6 +53,7 @@ qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
 qgscolordialog.cpp
 qgscomposerview.cpp
+qgscomposerruler.cpp
 qgscursors.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp

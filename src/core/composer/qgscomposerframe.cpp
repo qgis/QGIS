@@ -15,6 +15,7 @@
 
 #include "qgscomposerframe.h"
 #include "qgscomposermultiframe.h"
+#include "qgscomposition.h"
 
 QgsComposerFrame::QgsComposerFrame( QgsComposition* c, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height )
     : QgsComposerItem( x, y, width, height, c )

@@ -24,10 +24,13 @@
 
 class QgisApp;
 class QgsComposerArrow;
+class QgsComposerFrame;
+class QgsComposerHtml;
 class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerPicture;
 class QgsComposerPictureWidget;
+class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
@@ -331,11 +334,17 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! To make loading from project faster, the previews are generated when the composer becomes visible.
     void initialiseComposerPicturePreviews();
 
+    //! Create composer view and rulers
+    void createComposerView();
+
     /**Composer title*/
     QString mTitle;
 
     //! Pointer to composer view
     QgsComposerView *mView;
+    QGridLayout* mViewLayout;
+    QgsComposerRuler* mHorizontalRuler;
+    QgsComposerRuler* mVerticalRuler;
 
     //! Current composition
     QgsComposition *mComposition;

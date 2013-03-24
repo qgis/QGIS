@@ -17,16 +17,15 @@
 #ifndef QGSCOMPOSERITEM_H
 #define QGSCOMPOSERITEM_H
 
-#include "qgscomposition.h"
+#include "qgscomposeritemcommand.h"
 #include <QGraphicsRectItem>
 #include <QObject>
 
+class QgsComposition;
 class QWidget;
 class QDomDocument;
 class QDomElement;
 class QGraphicsLineItem;
-
-class QqsComposition;
 
 /** \ingroup MapComposer
  * A item that forms part of a map composition.

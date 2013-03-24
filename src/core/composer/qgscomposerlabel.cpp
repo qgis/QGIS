@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposerlabel.h"
+#include "qgscomposition.h"
 #include "qgsexpression.h"
 #include <QCoreApplication>
 #include <QDate>

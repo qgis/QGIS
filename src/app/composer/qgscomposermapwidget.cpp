@@ -17,6 +17,7 @@
 
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposition.h"
 #include "qgsmaprenderer.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"

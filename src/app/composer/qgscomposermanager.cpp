@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgscomposer.h"
+#include "qgscomposition.h"
 #include "qgslogger.h"
 
 #include <QDesktopServices>

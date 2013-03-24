@@ -20,6 +20,7 @@
 //#include "ui_qgscomposermapbase.h"
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
+#include <QFont>
 #include <QGraphicsRectItem>
 
 class QgsComposition;

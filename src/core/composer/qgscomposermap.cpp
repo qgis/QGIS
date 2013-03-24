@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmaprenderer.h"

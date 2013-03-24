@@ -16,11 +16,14 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
+#include "qgscomposeritem.h"
 #include <memory>
 
 #include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
+#include <QList>
+#include <QPair>
 #include <QSet>
 #include <QUndoStack>
 #include <QPrinter>
@@ -32,7 +35,6 @@
 
 class QgisApp;
 class QgsComposerFrame;
-class QgsComposerItem;
 class QgsComposerMap;
 class QgsPaperItem;
 class QGraphicsRectItem;
@@ -273,6 +275,15 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     @return snapped position or original position if no snap*/
     QPointF alignPos( const QPointF& pos, const QgsComposerItem* excludeItem, double& alignX, double& alignY );
 
+    /**Add a custom snap line (can be horizontal or vertical)*/
+    QGraphicsLineItem* addSnapLine();
+    /**Remove custom snap line (and delete the object)*/
+    void removeSnapLine( QGraphicsLineItem* line );
+    /**Get nearest snap line*/
+    QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
+    /**Hides / shows custom snap lines*/
+    void setSnapLinesVisible( bool visible );
+
     /**Allocates new item command and saves initial state in it
       @param item target item
       @param commandText descriptive command text
@@ -382,6 +393,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Parameters for alignment snap*/
     bool mAlignmentSnap;
     double mAlignmentSnapTolerance;
+
+    /**Arbitraty snap lines (horizontal and vertical)*/
+    QList< QGraphicsLineItem* > mSnapLines;
 
     QUndoStack mUndoStack;
 

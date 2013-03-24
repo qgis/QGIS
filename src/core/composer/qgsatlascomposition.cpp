@@ -19,6 +19,7 @@
 #include "qgsatlascomposition.h"
 #include "qgsvectorlayer.h"
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"

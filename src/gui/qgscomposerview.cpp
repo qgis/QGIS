@@ -21,6 +21,7 @@
 #include <QKeyEvent>
 #include <QClipboard>
 #include <QMimeData>
+#include <QGridLayout>
 
 #include "qgscomposerview.h"
 #include "qgscomposerarrow.h"
@@ -31,6 +32,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
+#include "qgscomposerruler.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
@@ -43,6 +45,8 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
     , mPaintingEnabled( true )
+    , mHorizontalRuler( 0 )
+    , mVerticalRuler( 0 )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -50,6 +54,7 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
+  setFrameShape( QFrame::NoFrame );
 }
 
 void QgsComposerView::mousePressEvent( QMouseEvent* e )
@@ -238,6 +243,18 @@ void QgsComposerView::addShape( Tool currentTool )
   }
 }
 
+void QgsComposerView::updateRulers()
+{
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->setSceneTransform( viewportTransform() );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->setSceneTransform( viewportTransform() );
+  }
+}
+
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( !composition() )
@@ -348,6 +365,16 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
   if ( !composition() )
   {
     return;
+  }
+
+  updateRulers();
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->updateMarker( e->posF() );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->updateMarker( e->posF() );
   }
 
   if ( e->buttons() == Qt::NoButton )
@@ -616,9 +643,29 @@ void QgsComposerView::showEvent( QShowEvent* e )
   e->ignore();
 }
 
+void QgsComposerView::resizeEvent( QResizeEvent* event )
+{
+  QGraphicsView::resizeEvent( event );
+  updateRulers();
+}
+
+void QgsComposerView::scrollContentsBy( int dx, int dy )
+{
+  QGraphicsView::scrollContentsBy( dx, dy );
+  updateRulers();
+}
+
 void QgsComposerView::setComposition( QgsComposition* c )
 {
   setScene( c );
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->setComposition( c );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->setComposition( c );
+  }
 }
 
 QgsComposition* QgsComposerView::composition()

@@ -17,7 +17,6 @@
 #include <stdexcept>
 
 #include "qgscomposition.h"
-#include "qgscomposeritem.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerframe.h"
 #include "qgscomposerhtml.h"
@@ -355,6 +354,19 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
   compositionElem.setAttribute( "snapGridOffsetY", QString::number( mSnapGridOffsetY ) );
 
+  //custom snap lines
+  QList< QGraphicsLineItem* >::const_iterator snapLineIt = mSnapLines.constBegin();
+  for ( ; snapLineIt != mSnapLines.constEnd(); ++snapLineIt )
+  {
+    QDomElement snapLineElem = doc.createElement( "SnapLine" );
+    QLineF line = ( *snapLineIt )->line();
+    snapLineElem.setAttribute( "x1", QString::number( line.x1() ) );
+    snapLineElem.setAttribute( "y1", QString::number( line.y1() ) );
+    snapLineElem.setAttribute( "x2", QString::number( line.x2() ) );
+    snapLineElem.setAttribute( "y2", QString::number( line.y2() ) );
+    compositionElem.appendChild( snapLineElem );
+  }
+
   compositionElem.setAttribute( "printResolution", mPrintResolution );
   compositionElem.setAttribute( "printAsRaster", mPrintAsRaster );
 
@@ -423,6 +435,19 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mSnapGridResolution = compositionElem.attribute( "snapGridResolution" ).toDouble();
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
+
+  //custom snap lines
+  QDomNodeList snapLineNodes = compositionElem.elementsByTagName( "SnapLine" );
+  for ( int i = 0; i < snapLineNodes.size(); ++i )
+  {
+    QDomElement snapLineElem = snapLineNodes.at( i ).toElement();
+    QGraphicsLineItem* snapItem = addSnapLine();
+    double x1 = snapLineElem.attribute( "x1" ).toDouble();
+    double y1 = snapLineElem.attribute( "y1" ).toDouble();
+    double x2 = snapLineElem.attribute( "x2" ).toDouble();
+    double y2 = snapLineElem.attribute( "y2" ).toDouble();
+    snapItem->setLine( x1, y1, x2, y2 );
+  }
 
   mAlignmentSnap = compositionElem.attribute( "alignmentSnap", "1" ).toInt() == 0 ? false : true;
   mAlignmentSnapTolerance = compositionElem.attribute( "alignmentSnapTolerance", "2.0" ).toDouble();
@@ -1199,6 +1224,126 @@ QPointF QgsComposition::alignPos( const QPointF& pos, const QgsComposerItem* exc
   return result;
 }
 
+QGraphicsLineItem* QgsComposition::addSnapLine()
+{
+  QGraphicsLineItem* item = new QGraphicsLineItem();
+  QPen linePen( Qt::SolidLine );
+  linePen.setColor( Qt::red );
+  linePen.setWidthF( 0.5 );
+  item->setPen( linePen );
+  item->setZValue( 100 );
+  addItem( item );
+  mSnapLines.push_back( item );
+  return item;
+}
+
+void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
+{
+  removeItem( line );
+  mSnapLines.removeAll( line );
+  delete line;
+}
+
+void QgsComposition::setSnapLinesVisible( bool visible )
+{
+  QList< QGraphicsLineItem* >::iterator it = mSnapLines.begin();
+  for ( ; it != mSnapLines.end(); ++it )
+  {
+    if ( visible )
+    {
+      ( *it )->show();
+    }
+    else
+    {
+      ( *it )->hide();
+    }
+  }
+}
+
+QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, double y, double tolerance,
+    QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode> >& snappedItems )
+{
+  double minSqrDist = DBL_MAX;
+  QGraphicsLineItem* item = 0;
+  double currentXCoord = 0;
+  double currentYCoord = 0;
+  double currentSqrDist = 0;
+  double sqrTolerance = tolerance * tolerance;
+
+  snappedItems.clear();
+
+  QList< QGraphicsLineItem* >::const_iterator it = mSnapLines.constBegin();
+  for ( ; it != mSnapLines.constEnd(); ++it )
+  {
+    bool itemHorizontal = doubleNear(( *it )->line().y2() - ( *it )->line().y1(), 0 );
+    if ( horizontal && itemHorizontal )
+    {
+      currentYCoord = ( *it )->line().y1();
+      currentSqrDist = ( y - currentYCoord ) * ( y - currentYCoord );
+    }
+    else if ( !itemHorizontal )
+    {
+      currentXCoord = ( *it )->line().x1();
+      currentSqrDist = ( x - currentXCoord ) * ( x - currentXCoord );
+    }
+
+    if ( currentSqrDist < minSqrDist && currentSqrDist < sqrTolerance )
+    {
+      item = *it;
+      minSqrDist = currentSqrDist;
+    }
+  }
+
+  double itemTolerance = 0.0000001;
+  if ( item )
+  {
+    //go through all the items to find items snapped to this snap line
+    QList<QGraphicsItem *> itemList = items();
+    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+    for ( ; itemIt != itemList.end(); ++itemIt )
+    {
+      QgsComposerItem* currentItem = dynamic_cast<QgsComposerItem*>( *itemIt );
+      if ( !currentItem || currentItem->type() == QgsComposerItem::ComposerPaper )
+      {
+        continue;
+      }
+
+      if ( horizontal )
+      {
+        if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().top(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::UpperMiddle ) );
+        }
+        else if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().center().y(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
+        }
+        else if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().bottom(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::LowerMiddle ) );
+        }
+      }
+      else
+      {
+        if ( doubleNear( currentXCoord, currentItem->transform().dx(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleLeft ) );
+        }
+        else if ( doubleNear( currentXCoord, currentItem->transform().dx() + currentItem->rect().center().x(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
+        }
+        else if ( doubleNear( currentXCoord,  currentItem->transform().dx() + currentItem->rect().width(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleRight ) );
+        }
+      }
+    }
+  }
+
+  return item;
+}
+
 int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
 {
   QList<QgsComposerItem*> selectedItems = selectedComposerItems();
@@ -1841,7 +1986,9 @@ void QgsComposition::renderPage( QPainter* p, int page )
   QgsComposition::PlotStyle savedPlotStyle = mPlotStyle;
   mPlotStyle = QgsComposition::Print;
 
+  setSnapLinesVisible( false );
   render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
+  setSnapLinesVisible( true );
 
   mPlotStyle = savedPlotStyle;
 }
@@ -1880,6 +2027,22 @@ void QgsComposition::collectAlignCoordinates( QMap< double, const QgsComposerIte
       alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
       alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
       alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
+    }
+  }
+
+  //arbitrary snap lines
+  QList< QGraphicsLineItem* >::const_iterator sIt = mSnapLines.constBegin();
+  for ( ; sIt != mSnapLines.constEnd(); ++sIt )
+  {
+    double x = ( *sIt )->line().x1();
+    double y = ( *sIt )->line().y1();
+    if ( doubleNear( y, 0.0 ) )
+    {
+      alignCoordsX.insert( x, 0 );
+    }
+    else
+    {
+      alignCoordsY.insert( y, 0 );
     }
   }
 }
