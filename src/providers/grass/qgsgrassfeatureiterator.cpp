@@ -12,11 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QObject>
+
 #include "qgsgrassfeatureiterator.h"
 #include "qgsgrassprovider.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 extern "C"
 {
@@ -38,7 +42,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassProvider* p, const Qgs
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
   {
-    QgsMessageLog::logMessage( tr( "Already active iterator on this provider was closed." ), tr( "GRASS" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "GRASS" ) );
     P->mActiveIterator->close();
   }
   P->mActiveIterator = this;
