@@ -7,7 +7,7 @@ class QgsComposition;
 class QGraphicsLineItem;
 
 /**A class to show paper scale and the current cursor position*/
-class QgsComposerRuler: public QWidget
+class GUI_EXPORT QgsComposerRuler: public QWidget
 {
   public:
     enum Direction
