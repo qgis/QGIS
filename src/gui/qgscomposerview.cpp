@@ -368,6 +368,7 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     return;
   }
 
+  updateRulers();
   if ( mHorizontalRuler )
   {
     mHorizontalRuler->updateMarker( e->posF() );
