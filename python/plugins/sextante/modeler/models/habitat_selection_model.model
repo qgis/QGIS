@@ -1,5 +1,5 @@
 NAME:Habitat_selection_model
-GROUP:Habitat models Sextante
+GROUP:[Example models]
 PARAMETER:ParameterVector|VECTORLAYER_LOCATIONS|Locations|0|False
 120.0,60.0
 PARAMETER:ParameterVector|VECTORLAYER_LINEFEATURES|Line features|1|False

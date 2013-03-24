@@ -61,14 +61,7 @@ class MeanCoords(GeoAlgorithm):
         uniqueField = self.getParameterValue(self.UID)
 
         weightIndex = layer.fieldNameIndex(weightField)
-        uniqueIndex = layer.fieldNameIndex(uniqueField)
-
-        if uniqueIndex <> -1:
-            uniqueValues = utils.getUniqueValues(layer, uniqueIndex)
-            single = False
-        else:
-            uniqueValues = [QVariant(1)]
-            single = True
+        uniqueIndex = layer.fieldNameIndex(uniqueField)        
 
         fieldList = [QgsField("MEAN_X", QVariant.Double, "", 24, 15),
                      QgsField("MEAN_Y", QVariant.Double, "", 24, 15),
@@ -80,60 +73,41 @@ class MeanCoords(GeoAlgorithm):
 
         current = 0
         features = QGisLayers.features(layer)
-        total = 100.0 / float(len(features) * len(uniqueValues))
-
-        outFeat = QgsFeature()
-
-        for j in uniqueValues:
-            cx = 0.00
-            cy = 0.00
-            points = []
-            weights = []
-            for feat in features:
-                current += 1
-                progress.setPercentage(current * total)
-
-                if single:
-                    check = j.toString().trimmed()
-                else:
-                    check = feat.attributes()[uniqueIndex].toString().trimmed()
-
-                if check == j.toString().trimmed():
-                    cx = 0.00
-                    cy = 0.00
-                    if weightIndex == -1:
-                        weight = 1.00
-                    else:
-                        try:
-                            weight = float(feat.attributes()[weightIndex].toDouble()[0])
-                        except:
-                            weight = 1.00
-
-                    geom = QgsGeometry(feat.geometry())
-                    geom = utils.extractPoints(geom)
-                    for i in geom:
-                        cx += i.x()
-                        cy += i.y()
-                    points.append(QgsPoint((cx / len(geom)), (cy / len(geom))))
-                    weights.append(weight)
-
-            sumWeight = sum(weights)
-            cx = 0.00
-            cy = 0.00
-            item = 0
-            for item, i in enumerate(points):
-                cx += i.x() * weights[item]
-                cy += i.y() * weights[item]
-
-            cx = cx / sumWeight
-            cy = cy / sumWeight
+        total = 100.0 / float(len(features))
+        
+        means = {}
+        for feat in features:
+            current += 1
+            progress.setPercentage(current * total)
+            clazz = feat.attributes()[uniqueIndex].toString().trimmed()
+            if weightIndex == -1:
+                weight = 1.00
+            else:
+                try:
+                    weight = float(feat.attributes()[weightIndex].toDouble()[0])
+                except:
+                    weight = 1.00
+            if clazz not in means:
+                means[clazz] = (0,0,0)
+            
+            cx,cy, totalweight = means[clazz]
+            geom = QgsGeometry(feat.geometry())
+            geom = utils.extractPoints(geom)
+            for i in geom:
+                cx += i.x() * weight
+                cy += i.y() * weight
+                totalweight += weight
+            means[clazz] = (cx, cy, totalweight)
+            
+        for clazz, values in means.iteritems():
+            outFeat = QgsFeature()            
+            cx = values[0] / values[2]
+            cy = values[1] / values[2]            
             meanPoint = QgsPoint(cx, cy)
-
+    
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-            outFeat.setAttributes([QVariant(cx), QVariant(cy), QVariant(j)])
+            outFeat.setAttributes([QVariant(cx), QVariant(cy), clazz])
             writer.addFeature(outFeat)
 
-            if single:
-                break
 
         del writer

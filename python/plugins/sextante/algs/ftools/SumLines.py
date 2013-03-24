@@ -70,8 +70,7 @@ class SumLines(GeoAlgorithm):
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 
-        polyProvider = polyLayer.dataProvider()
-        lineProvider = lineLayer.dataProvider()
+        polyProvider = polyLayer.dataProvider()        
 
         idxLength, fieldList = utils.findOrCreateField(polyLayer, polyLayer.pendingFields(), lengthFieldName)
         idxCount, fieldList = utils.findOrCreateField(polyLayer, fieldList, countFieldName)
@@ -104,7 +103,8 @@ class SumLines(GeoAlgorithm):
 
             if hasIntersections:
                 for i in lines:
-                    lineLayer.featureAtId(int(i), ftLine)
+                    request = QgsFeatureRequest().setFilterFid(i)
+                    ftLine = lineLayer.getFeatures(request).next()                    
                     tmpGeom = QgsGeometry(ftLine.geometry())
                     if inGeom.intersects(tmpGeom):
                         outGeom = inGeom.intersection(tmpGeom)

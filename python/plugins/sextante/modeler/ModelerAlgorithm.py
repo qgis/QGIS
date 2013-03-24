@@ -614,7 +614,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             return None
 
     def commandLineName(self):
-        return "modeler:" + os.path.basename(self.descriptionFile)[:-5].lower()
+        return "modeler:" + os.path.basename(self.descriptionFile)[:-6].lower()
 
     def setModelerView(self, dialog):
         self.modelerdialog = dialog

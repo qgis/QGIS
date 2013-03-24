@@ -44,8 +44,8 @@ def createTest(text):
     for token in tokens:
         if i < alg.getVisibleParametersCount() + 1:                            
             if os.path.exists(token[1:-1]):
-                token = os.path.basename(token[1:-1])[:-4]           
-            execcommand += token + "(),"
+                token = os.path.basename(token[1:-1])[:-4] + "()"           
+            execcommand += token + ","
         else:
             execcommand += "None,"
         i+=1
@@ -61,9 +61,11 @@ def createTest(text):
             s+="self.assertTrue(" + str(out) + ", output)\n"
         if isinstance(out, OutputRaster):
             dataset = gdal.Open(filename, GA_ReadOnly)
-            array = dataset.ReadAsArray(1)
+            strhash = hash(str(dataset.ReadAsArray(0).tolist()))         
             s+="\tself.assertTrue(os.path.isfile(output))\n"
-            s+="\tself.assertEqual(hashraster(output)," + str(hash(array)) + ")\n"
+            s+="\tdataset=gdal.Open(output, GA_ReadOnly)\n"
+            s+="\tstrhash=hash(str(dataset.ReadAsArray(0).tolist()))\n"
+            s+="\tself.assertEqual(strhash," + str(strhash) + ")\n"
         if isinstance(out, OutputVector):
             layer = Sextante.getObject(filename)
             fields = layer.pendingFields()
@@ -87,6 +89,8 @@ def createTest(text):
                 s+="\texpectedvalues=[" + ",".join(['"' + str(attr.toString()) + '"' for attr in attrs]) + "]\n"
                 s+="\tvalues=[str(attr.toString()) for attr in attrs]\n"
                 s+="\tself.assertEqual(expectedvalues, values)\n"
+                s+="\twkt='" + str(feature.geometry().exportToWkt()) + "'\n"
+                s+="\tself.assertEqual(wkt, str(feature.geometry().exportToWkt()))"
 
     dlg = ShowTestDialog(s)
     dlg.exec_()

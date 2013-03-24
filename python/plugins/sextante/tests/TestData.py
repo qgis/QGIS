@@ -3,8 +3,15 @@ from sextante.core.QGisLayers import QGisLayers
 
 dataFolder = os.path.join(os.path.dirname(__file__), 'data')
 
+
+def table():
+    return os.path.join(dataFolder, "table.dbf")
+
 def points():
     return os.path.join(dataFolder, "points.shp")
+
+def points2():
+    return os.path.join(dataFolder, "points2.shp")
 
 def raster():
     return os.path.join(dataFolder, "raster.tif")
@@ -23,8 +30,10 @@ def union():
 
 def loadTestData():
     QGisLayers.load(points(), "points");
+    QGisLayers.load(points(), "points2");
     QGisLayers.load(polygons(), "polygons");
     QGisLayers.load(polygons2(), "polygons2");
     QGisLayers.load(lines(), "lines");
     QGisLayers.load(raster(), "raster");
+    QGisLayers.load(table(), "table");
     QGisLayers.load(union(), "union");
