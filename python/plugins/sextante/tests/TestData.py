@@ -30,7 +30,7 @@ def union():
 
 def loadTestData():
     QGisLayers.load(points(), "points");
-    QGisLayers.load(points(), "points2");
+    QGisLayers.load(points2(), "points2");
     QGisLayers.load(polygons(), "polygons");
     QGisLayers.load(polygons2(), "polygons2");
     QGisLayers.load(lines(), "lines");
