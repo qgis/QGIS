@@ -45,6 +45,7 @@
 #include "qgsrastertransparency.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
+#include "qgshuesaturationfilter.h"
 
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -81,6 +82,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
+
+  // Connect saturation slider and spin box
+  connect( sliderSaturation, SIGNAL( valueChanged( int ) ), spinBoxSaturation, SLOT( setValue( int ) ) );
+  connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), sliderSaturation, SLOT( setValue( int ) ) );
 
   // enable or disable Build Pyramids button depending on selection in pyramid list
   connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
@@ -241,6 +246,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
     }
     mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
+  }
+
+  // Hue and saturation color control
+  mHueSaturationGroupBox->setSaveCheckedState( true );
+  const QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  //set hue and saturation controls to current values
+  if ( hueSaturationFilter )
+  {
+    sliderSaturation->setValue( hueSaturationFilter->saturation() );
   }
 
   //blend mode
@@ -800,6 +814,14 @@ void QgsRasterLayerProperties::apply()
   {
     resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
   }
+
+  // Hue and saturation controls
+  QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  if ( hueSaturationFilter )
+  {
+    hueSaturationFilter->setSaturation( sliderSaturation->value() );
+  }
+
 
   //set the blend mode for the layer
   mRasterLayer->setBlendMode(( QgsMapLayer::BlendMode ) mBlendModeComboBox->blendMode() );
@@ -1433,7 +1455,6 @@ void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
   int myInt = static_cast < int >(( theValue / 255.0 ) * 100 );  //255.0 to prevent integer division
   lblTransparencyPercent->setText( QString::number( myInt ) + "%" );
 }//sliderTransparency_valueChanged
-
 
 QLinearGradient QgsRasterLayerProperties::redGradient()
 {

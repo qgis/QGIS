@@ -1702,6 +1702,10 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   QgsBrightnessContrastFilter * brightnessFilter = new QgsBrightnessContrastFilter();
   mPipe.set( brightnessFilter );
 
+  // hue/saturation filter
+  QgsHueSaturationFilter * hueSaturationFilter = new QgsHueSaturationFilter();
+  mPipe.set( hueSaturationFilter );
+
   //resampler (must be after renderer)
   QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
@@ -2301,6 +2305,17 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
     brightnessFilter->readXML( brightnessElem );
   }
 
+  //hue/saturation
+  QgsHueSaturationFilter * hueSaturationFilter = new QgsHueSaturationFilter();
+  mPipe.set( hueSaturationFilter );
+
+  //saturation coefficient
+  QDomElement hueSaturationElem = layer_node.firstChildElement( "huesaturation" );
+  if ( !hueSaturationElem.isNull() )
+  {
+    hueSaturationFilter->readXML( hueSaturationElem );
+  }
+
   //resampler
   QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
@@ -2498,6 +2513,13 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   {
     QDomElement layerElem = layer_node.toElement();
     brightnessFilter->writeXML( document, layerElem );
+  }
+
+  QgsHueSaturationFilter *hueSaturationFilter = mPipe.hueSaturationFilter();
+  if ( hueSaturationFilter )
+  {
+    QDomElement layerElem = layer_node.toElement();
+    hueSaturationFilter->writeXML( document, layerElem );
   }
 
   QgsRasterResampleFilter *resampleFilter = mPipe.resampleFilter();
