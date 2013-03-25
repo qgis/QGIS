@@ -20,6 +20,7 @@
 #include "qgscomposermap.h"
 #include "qgspoint.h"
 #include <QColorDialog>
+#include <QPen>
 
 QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QWidget( parent ), mItem( item )
 {
