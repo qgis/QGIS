@@ -325,6 +325,27 @@ void QgsAtlasCompositionWidget::on_mAtlasSortFeatureKeyComboBox_currentIndexChan
   }
 }
 
+void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int state )
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap )
+  {
+    return;
+  }
+
+  if ( state == Qt::Checked )
+  {
+    mAtlasFeatureFilterEdit->setEnabled( true );
+    mAtlasFeatureFilterButton->setEnabled( true );
+  }
+  else
+  {
+    mAtlasFeatureFilterEdit->setEnabled( false );
+    mAtlasFeatureFilterButton->setEnabled( false );
+  }
+  atlasMap->setFilterFeatures( state == Qt::Checked );
+}
+
 void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_textChanged( const QString& text )
 {
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
@@ -421,6 +442,7 @@ void QgsAtlasCompositionWidget::updateGuiElements()
   mAtlasSortFeatureKeyComboBox->setCurrentIndex( atlasMap->sortKeyAttributeIndex() );
   mAtlasSortFeatureDirectionButton->setArrowType( atlasMap->sortAscending() ? Qt::UpArrow : Qt::DownArrow );
   mAtlasFeatureFilterEdit->setText( atlasMap->featureFilter() );
+  mAtlasFeatureFilterCheckBox->setCheckState( atlasMap->filterFeatures() ? Qt::Checked : Qt::Unchecked );
 }
 
 void QgsAtlasCompositionWidget::blockAllSignals( bool b )
