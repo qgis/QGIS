@@ -7,6 +7,8 @@
 #include <QVariant>
 #include <QItemSelectionModel>
 
+#include "qgsfeature.h" // QgsFeatureId
+
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;

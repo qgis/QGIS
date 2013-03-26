@@ -30,6 +30,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgslegend.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsattributedialog.h"
@@ -535,7 +536,13 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
 QDialog* QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeature &f )
 {
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &f, false );
+  QgsDistanceArea myDa;
+
+  myDa.setSourceCrs( l->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &f, false, myDa );
   return dialog->dialog();
 }
 

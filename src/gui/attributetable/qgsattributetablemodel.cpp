@@ -431,7 +431,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return role == Qt::DisplayRole ? rowId : QVariant();
 
   int fieldId = mAttributes[ index.column()];
-  const QgsField& field = mLayer->pendingFields()[ fieldId ];
+  const QgsField& field = layer()->pendingFields()[ fieldId ];
 
   QVariant::Type fldType = field.type();
   bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
@@ -477,9 +477,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return mValueMaps[ fieldId ]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
     }
 
-    if ( mLayer->editType( fieldId ) == QgsVectorLayer::Calendar && val.canConvert( QVariant::Date ) )
+    if ( layer()->editType( fieldId ) == QgsVectorLayer::Calendar && val.canConvert( QVariant::Date ) )
     {
-      return val.toDate().toString( mLayer->dateFormat( fieldId ) );
+      return val.toDate().toString( layer()->dateFormat( fieldId ) );
     }
   }
 
