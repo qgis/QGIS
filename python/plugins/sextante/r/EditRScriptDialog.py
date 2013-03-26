@@ -46,7 +46,7 @@ class EditRScriptDialog(QtGui.QDialog):
         self.setupUi()
         self.update = False
         self.help = None
-   
+
     def setupUi(self):
         self.resize(600,400)
         self.setWindowTitle("Edit script")
@@ -82,7 +82,7 @@ class EditRScriptDialog(QtGui.QDialog):
 
     def editHelp(self):
         if self.alg is None:
-            alg = RAlgorithm(None, unicode(self.text.toPlainText()))            
+            alg = RAlgorithm(None, unicode(self.text.toPlainText()))
         else:
             alg = self.alg
         dlg = HelpEditionDialog(alg)

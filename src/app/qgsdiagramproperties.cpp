@@ -45,7 +45,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   setupUi( this );
 
 
-  mBackgroundColorButton->setColorDialogTitle(  tr( "Background color" ) );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Background color" ) );
   mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mDiagramPenColorButton->setColorDialogTitle( tr( "Pen color" ) );
   mDiagramPenColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );

@@ -234,8 +234,8 @@ void TestQgsOgcUtils::testExpressionToOgcFilter()
 
   doc.appendChild( filterElem );
 
-  qDebug("EXPR: %s", exp.dump().toAscii().data() );
-  qDebug("OGC : %s", doc.toString( -1 ).toAscii().data() );
+  qDebug( "EXPR: %s", exp.dump().toAscii().data() );
+  qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
 
   QCOMPARE( xmlText, doc.toString( -1 ) );
 }
@@ -258,74 +258,74 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
     "</ogc:PropertyIsGreaterThan></ogc:Filter>" );
 
   QTest::newRow( "and+or" ) << QString( "(FIELD1 = 10 OR FIELD1 = 20) AND STATUS = 'VALID'" ) << QString(
-  "<ogc:Filter>"
+    "<ogc:Filter>"
     "<ogc:And>"
-      "<ogc:Or>"
-        "<ogc:PropertyIsEqualTo>"
-          "<ogc:PropertyName>FIELD1</ogc:PropertyName>"
-          "<ogc:Literal>10</ogc:Literal>"
-        "</ogc:PropertyIsEqualTo>"
-        "<ogc:PropertyIsEqualTo>"
-          "<ogc:PropertyName>FIELD1</ogc:PropertyName>"
-          "<ogc:Literal>20</ogc:Literal>"
-        "</ogc:PropertyIsEqualTo>"
-      "</ogc:Or>"
-      "<ogc:PropertyIsEqualTo>"
-        "<ogc:PropertyName>STATUS</ogc:PropertyName>"
-        "<ogc:Literal>VALID</ogc:Literal>"
-      "</ogc:PropertyIsEqualTo>"
+    "<ogc:Or>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>FIELD1</ogc:PropertyName>"
+    "<ogc:Literal>10</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>FIELD1</ogc:PropertyName>"
+    "<ogc:Literal>20</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "</ogc:Or>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>STATUS</ogc:PropertyName>"
+    "<ogc:Literal>VALID</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
     "</ogc:And>"
-  "</ogc:Filter>" );
+    "</ogc:Filter>" );
 
   QTest::newRow( "is null" ) << QString( "X IS NULL" ) << QString(
-  "<ogc:Filter>"
+    "<ogc:Filter>"
     "<ogc:PropertyIsNull>"
-      "<ogc:PropertyName>X</ogc:PropertyName>"
+    "<ogc:PropertyName>X</ogc:PropertyName>"
     "</ogc:PropertyIsNull>"
-  "</ogc:Filter>" );
+    "</ogc:Filter>" );
 
   QTest::newRow( "is not null" ) << QString( "X IS NOT NULL" ) << QString(
-  "<ogc:Filter>"
+    "<ogc:Filter>"
     "<ogc:Not>"
-      "<ogc:PropertyIsNull>"
-        "<ogc:PropertyName>X</ogc:PropertyName>"
-      "</ogc:PropertyIsNull>"
+    "<ogc:PropertyIsNull>"
+    "<ogc:PropertyName>X</ogc:PropertyName>"
+    "</ogc:PropertyIsNull>"
     "</ogc:Not>"
-  "</ogc:Filter>" );
+    "</ogc:Filter>" );
 
   QTest::newRow( "in" ) << QString( "A IN (10,20,30)" ) << QString(
-  "<ogc:Filter>"
+    "<ogc:Filter>"
     "<ogc:Or>"
-      "<ogc:PropertyIsEqualTo>"
-        "<ogc:PropertyName>A</ogc:PropertyName>"
-        "<ogc:Literal>10</ogc:Literal>"
-      "</ogc:PropertyIsEqualTo>"
-      "<ogc:PropertyIsEqualTo>"
-        "<ogc:PropertyName>A</ogc:PropertyName>"
-        "<ogc:Literal>20</ogc:Literal>"
-      "</ogc:PropertyIsEqualTo>"
-      "<ogc:PropertyIsEqualTo>"
-        "<ogc:PropertyName>A</ogc:PropertyName>"
-        "<ogc:Literal>30</ogc:Literal>"
-      "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>10</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>20</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyIsEqualTo>"
+    "<ogc:PropertyName>A</ogc:PropertyName>"
+    "<ogc:Literal>30</ogc:Literal>"
+    "</ogc:PropertyIsEqualTo>"
     "</ogc:Or>"
-  "</ogc:Filter>" );
+    "</ogc:Filter>" );
 
   QTest::newRow( "intersects + wkt" ) << QString( "intersects($geometry, geomFromWKT('POINT (5 6)'))" ) << QString(
-  "<ogc:Filter>"
+    "<ogc:Filter>"
     "<ogc:Intersects>"
-      "<ogc:PropertyName>geometry</ogc:PropertyName>"
-      "<gml:Point><gml:coordinates cs=\",\" ts=\" \">5.0,6.0</gml:coordinates></gml:Point>"
+    "<ogc:PropertyName>geometry</ogc:PropertyName>"
+    "<gml:Point><gml:coordinates cs=\",\" ts=\" \">5.0,6.0</gml:coordinates></gml:Point>"
     "</ogc:Intersects>"
-  "</ogc:Filter>" );
+    "</ogc:Filter>" );
 
   QTest::newRow( "contains + gml" ) << QString( "contains($geometry, geomFromGML('<Point><coordinates cs=\",\" ts=\" \">5.0,6.0</coordinates></Point>'))" ) << QString(
-  "<ogc:Filter>"
+    "<ogc:Filter>"
     "<ogc:Contains>"
-      "<ogc:PropertyName>geometry</ogc:PropertyName>"
-      "<Point><coordinates cs=\",\" ts=\" \">5.0,6.0</coordinates></Point>"
+    "<ogc:PropertyName>geometry</ogc:PropertyName>"
+    "<Point><coordinates cs=\",\" ts=\" \">5.0,6.0</coordinates></Point>"
     "</ogc:Contains>"
-  "</ogc:Filter>" );
+    "</ogc:Filter>" );
 
   /*
   QTest::newRow( "bbox with GML3 Envelope" )

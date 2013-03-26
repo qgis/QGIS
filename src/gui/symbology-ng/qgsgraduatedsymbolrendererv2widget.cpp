@@ -441,7 +441,7 @@ void QgsGraduatedSymbolRendererV2Widget::populateColumns()
   const QgsFields& flds = mLayer->pendingFields();
   for ( int idx = 0; idx < flds.count(); ++idx )
   {
-    if ( flds[idx].type() == QVariant::Double || flds[idx].type() == QVariant::Int || flds[idx].type() == QVariant::LongLong)
+    if ( flds[idx].type() == QVariant::Double || flds[idx].type() == QVariant::Int || flds[idx].type() == QVariant::LongLong )
       cboGraduatedColumn->addItem( flds[idx].name() );
   }
 }

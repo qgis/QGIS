@@ -69,7 +69,7 @@ class Heatmap: public QObject, public QgisPlugin
     Heatmap( QgisInterface * theInterface );
     //! Destructor
     virtual ~Heatmap();
-    
+
     // Kernel shape type
     enum kernelShape
     {

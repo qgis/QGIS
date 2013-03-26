@@ -75,21 +75,21 @@ class RAlgorithm(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")
 
     def defineCharacteristicsFromScript(self):
-        lines = self.script.split("\n")        
+        lines = self.script.split("\n")
         self.name = "[Unnamed algorithm]"
         self.group = "User R scripts"
         self.parseDescription(iter(lines))
-    
-        
-    def defineCharacteristicsFromFile(self):        
+
+
+    def defineCharacteristicsFromFile(self):
         filename = os.path.basename(self.descriptionFile)
         self.name = filename[:filename.rfind(".")].replace("_", " ")
-        self.group = "User R scripts"        
+        self.group = "User R scripts"
         with open(self.descriptionFile, 'r') as f:
             lines = [line.strip() for line in f]
         self.parseDescription(iter(lines))
-        
-    def parseDescription(self, lines):        
+
+    def parseDescription(self, lines):
         self.script = ""
         self.commands=[]
         self.showPlots = False
@@ -97,7 +97,7 @@ class RAlgorithm(GeoAlgorithm):
         self.useRasterPackage = True
         self.passFileNames = False
         self.verboseCommands = []
-        ender = 0        
+        ender = 0
         line = lines.next().strip("\n").strip("\r")
         while ender < 10:
             if line.startswith("##"):
@@ -285,7 +285,7 @@ class RAlgorithm(GeoAlgorithm):
             commands.append(
                 'tryCatch(find.package("raster"), error=function(e) install.packages("raster", dependencies=TRUE, lib="%s"))' % rLibDir)
             commands.append("library(\"raster\")");
-            
+
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 value = param.value

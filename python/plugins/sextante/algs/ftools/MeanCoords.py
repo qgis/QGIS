@@ -61,7 +61,7 @@ class MeanCoords(GeoAlgorithm):
         uniqueField = self.getParameterValue(self.UID)
 
         weightIndex = layer.fieldNameIndex(weightField)
-        uniqueIndex = layer.fieldNameIndex(uniqueField)        
+        uniqueIndex = layer.fieldNameIndex(uniqueField)
 
         fieldList = [QgsField("MEAN_X", QVariant.Double, "", 24, 15),
                      QgsField("MEAN_Y", QVariant.Double, "", 24, 15),
@@ -74,7 +74,7 @@ class MeanCoords(GeoAlgorithm):
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        
+
         means = {}
         for feat in features:
             current += 1
@@ -89,7 +89,7 @@ class MeanCoords(GeoAlgorithm):
                     weight = 1.00
             if clazz not in means:
                 means[clazz] = (0,0,0)
-            
+
             cx,cy, totalweight = means[clazz]
             geom = QgsGeometry(feat.geometry())
             geom = utils.extractPoints(geom)
@@ -98,13 +98,13 @@ class MeanCoords(GeoAlgorithm):
                 cy += i.y() * weight
                 totalweight += weight
             means[clazz] = (cx, cy, totalweight)
-            
+
         for clazz, values in means.iteritems():
-            outFeat = QgsFeature()            
+            outFeat = QgsFeature()
             cx = values[0] / values[2]
-            cy = values[1] / values[2]            
+            cy = values[1] / values[2]
             meanPoint = QgsPoint(cx, cy)
-    
+
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
             outFeat.setAttributes([QVariant(cx), QVariant(cy), clazz])
             writer.addFeature(outFeat)

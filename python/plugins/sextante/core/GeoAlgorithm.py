@@ -64,7 +64,7 @@ class GeoAlgorithm:
         self.provider = None
 
         self.defineCharacteristics()
-    
+
     def getCopy(self):
         '''returns a new instance of this algorithm, ready to be used for being executed'''
         newone = copy.copy(self)
@@ -320,7 +320,7 @@ class GeoAlgorithm:
             if not out.hidden:
                 i+=1
         return i;
-    
+
     def getVisibleParametersCount(self):
         '''returns the number of non-hidden parameters'''
         i = 0;

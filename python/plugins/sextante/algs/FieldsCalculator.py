@@ -83,7 +83,7 @@ class FieldsCalculator(GeoAlgorithm):
             nElement += 1
             inGeom = inFeat.geometry()
             outFeat.setGeometry(inGeom)
-            attrs = inFeat.attributes() 
+            attrs = inFeat.attributes()
             attrs.append(QVariant(result))
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)

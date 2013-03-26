@@ -53,7 +53,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
       RasterLayer,
       PluginLayer // added in 1.5
     };
-    
+
     /** Blending modes enum defining the available composition modes that can
      * be used when rendering a layer
      */
@@ -492,7 +492,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Type of the layer (eg. vector, raster) */
     QgsMapLayer::LayerType mLayerType;
-    
+
     /** Blend mode for the layer */
     QgsMapLayer::BlendMode mBlendMode;
 

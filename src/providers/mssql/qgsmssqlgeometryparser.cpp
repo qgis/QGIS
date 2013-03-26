@@ -107,10 +107,10 @@ ShapeType (1 byte)
 #define PointOffset(iFigure) (ReadInt32(nFigurePos + (iFigure) * 5 + 1))
 #define NextPointOffset(iFigure) (iFigure + 1 < nNumFigures? PointOffset((iFigure) +1) : nNumPoints)
 
-#define ReadX(iPoint) (ReadDouble(nPointPos + 16 * (iPoint))) 
-#define ReadY(iPoint) (ReadDouble(nPointPos + 16 * (iPoint) + 8)) 
-#define ReadZ(iPoint) (ReadDouble(nPointPos + 16 * nNumPoints + 8 * (iPoint))) 
-#define ReadM(iPoint) (ReadDouble(nPointPos + 24 * nNumPoints + 8 * (iPoint))) 
+#define ReadX(iPoint) (ReadDouble(nPointPos + 16 * (iPoint)))
+#define ReadY(iPoint) (ReadDouble(nPointPos + 16 * (iPoint) + 8))
+#define ReadZ(iPoint) (ReadDouble(nPointPos + 16 * nNumPoints + 8 * (iPoint)))
+#define ReadM(iPoint) (ReadDouble(nPointPos + 24 * nNumPoints + 8 * (iPoint)))
 
 /************************************************************************/
 /*                   QgsMssqlGeometryParser()                           */
@@ -180,15 +180,15 @@ void QgsMssqlGeometryParser::CopyCoordinates( int iPoint )
 {
   if ( IsGeography )
   {
-    CopyBytes(pszData + nPointPos + 16 * iPoint + 8, 8); // longitude
-    CopyBytes(pszData + nPointPos + 16 * iPoint, 8); // latitude
+    CopyBytes( pszData + nPointPos + 16 * iPoint + 8, 8 ); // longitude
+    CopyBytes( pszData + nPointPos + 16 * iPoint, 8 ); // latitude
   }
   else
     // copy geometry coords
-    CopyBytes(pszData + nPointPos + 16 * iPoint, 16);
+    CopyBytes( pszData + nPointPos + 16 * iPoint, 16 );
 
   if ( chProps & SP_HASZVALUES )
-    CopyBytes(pszData + nPointPos + 16 * nNumPoints + 8 * iPoint, 8); // copy z value
+    CopyBytes( pszData + nPointPos + 16 * nNumPoints + 8 * iPoint, 8 ); // copy z value
 }
 
 /************************************************************************/

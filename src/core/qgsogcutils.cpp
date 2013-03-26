@@ -96,7 +96,9 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPoint( const QDomElement& geometryEleme
     {
       return 0;
     }
-  } else {
+  }
+  else
+  {
     QDomNodeList posList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "pos" );
     if ( posList.size() < 1 )
     {
@@ -150,7 +152,9 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLLineString( const QDomElement& geometry
     {
       return 0;
     }
-  } else {
+  }
+  else
+  {
     QDomNodeList posList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "posList" );
     if ( posList.size() < 1 )
     {
@@ -235,7 +239,9 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPolygon( const QDomElement& geometryEle
       }
       ringCoordinates.push_back( interiorPointList );
     }
-  } else {
+  }
+  else
+  {
     //read coordinates for exterior
     QDomNodeList exteriorList = geometryElement.elementsByTagNameNS( GML_NAMESPACE, "exterior" );
     if ( exteriorList.size() < 1 ) //outer ring is necessary
@@ -359,7 +365,9 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement& geometry
       }
       pointList.push_back(( *currentPoint.begin() ) );
       continue;
-    } else {
+    }
+    else
+    {
       //<pos> element
       posList = pointNodeList.at( 0 ).toElement().elementsByTagNameNS( GML_NAMESPACE, "pos" );
       if ( posList.size() < 1 )
@@ -455,7 +463,9 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
           return 0;
         }
         lineCoordinates.push_back( currentPointList );
-      } else {
+      }
+      else
+      {
         currentPosList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, "posList" );
         if ( currentPosList.size() < 1 )
         {
@@ -488,7 +498,9 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
           }
           lineCoordinates.push_back( currentPointList );
           return 0;
-        } else {
+        }
+        else
+        {
           currentPosList = currentLineStringElement.elementsByTagNameNS( GML_NAMESPACE, "posList" );
           if ( currentPosList.size() < 1 )
           {
@@ -646,7 +658,9 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement& geomet
         }
         currentPolygonList.push_back( ringCoordinates );
       }
-    } else {
+    }
+    else
+    {
       //find exterior ring
       exteriorList = currentPolygonElement.elementsByTagNameNS( GML_NAMESPACE, "exterior" );
       if ( exteriorList.size() < 1 )
@@ -880,13 +894,14 @@ bool QgsOgcUtils::readGMLPositions( std::list<QgsPoint>& coords, const QDomEleme
     }
   }
 
-  for (int i=0; i<posSize/srsDimension; i++) {
-    x = pos.at( i*srsDimension ).toDouble( &conversionSuccess );
+  for ( int i = 0; i < posSize / srsDimension; i++ )
+  {
+    x = pos.at( i * srsDimension ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
       return 1;
     }
-    y = pos.at( i*srsDimension+1 ).toDouble( &conversionSuccess );
+    y = pos.at( i * srsDimension + 1 ).toDouble( &conversionSuccess );
     if ( !conversionSuccess )
     {
       return 1;
@@ -1054,10 +1069,10 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
       case QGis::WKBPoint:
       case QGis::WKBMultiPoint25D:
       case QGis::WKBMultiPoint:
-        baseCoordElem = doc.createElement( "gml:pos");;
+        baseCoordElem = doc.createElement( "gml:pos" );;
         break;
       default:
-        baseCoordElem = doc.createElement( "gml:posList");;
+        baseCoordElem = doc.createElement( "gml:posList" );;
         break;
     }
     baseCoordElem.setAttribute( "srsDimension", "2" );
@@ -1065,7 +1080,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
   }
   else
   {
-    baseCoordElem = doc.createElement( "gml:coordinates");;
+    baseCoordElem = doc.createElement( "gml:coordinates" );;
     baseCoordElem.setAttribute( "cs", cs );
     baseCoordElem.setAttribute( "ts", ts );
   }
@@ -1341,11 +1356,11 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
 
 QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc )
 {
-  return geometryToGML( geometry, doc, "GML2");
+  return geometryToGML( geometry, doc, "GML2" );
 }
 
 QDomElement QgsOgcUtils::createGMLCoordinates( const QVector<QgsPoint> points, QDomDocument& doc )
-{  
+{
   QDomElement coordElem = doc.createElement( "gml:coordinates" );
   coordElem.setAttribute( "cs", "," );
   coordElem.setAttribute( "ts", " " );
@@ -1369,7 +1384,7 @@ QDomElement QgsOgcUtils::createGMLCoordinates( const QVector<QgsPoint> points, Q
 }
 
 QDomElement QgsOgcUtils::createGMLPositions( const QVector<QgsPoint> points, QDomDocument& doc )
-{  
+{
   QDomElement posElem = doc.createElement( "gml:pos" );
   if ( points.size() > 1 )
     posElem = doc.createElement( "gml:posList" );
@@ -2076,7 +2091,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
     Q_ASSERT( argNodes.count() == 2 ); // binary spatial ops must have two args
 
     QgsExpression::Node* otherNode = 0;
-    if ( isGeometryColumn( argNodes[0]) )
+    if ( isGeometryColumn( argNodes[0] ) )
       otherNode = argNodes[1];
     else if ( isGeometryColumn( argNodes[1] ) )
       otherNode = argNodes[0];

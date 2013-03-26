@@ -535,8 +535,8 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
 QDialog* QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeature &f )
 {
-    QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &f, false );
-    return dialog->dialog();
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &f, false );
+  return dialog->dialog();
 }
 
 QList<QgsMapLayer *> QgisAppInterface::editableLayers( bool modified ) const

@@ -42,9 +42,9 @@ def createTest(text):
     execcommand = "sextante.runalg("
     i = 0
     for token in tokens:
-        if i < alg.getVisibleParametersCount() + 1:                            
+        if i < alg.getVisibleParametersCount() + 1:
             if os.path.exists(token[1:-1]):
-                token = os.path.basename(token[1:-1])[:-4] + "()"           
+                token = os.path.basename(token[1:-1])[:-4] + "()"
             execcommand += token + ","
         else:
             execcommand += "None,"
@@ -52,16 +52,16 @@ def createTest(text):
     s += "\toutputs=" + execcommand[:-1] + ")\n"
 
     i = -1 * len(alg.outputs)
-    for out in alg.outputs:        
+    for out in alg.outputs:
         filename = tokens[i][1:-1]
         if (filename == str(None)):
-            raise Exception("Cannot create unit test for that algorithm execution.\nThe output cannot be a temporary file")        
+            raise Exception("Cannot create unit test for that algorithm execution.\nThe output cannot be a temporary file")
         s+="\toutput=outputs['" + out.name + "']\n"
         if isinstance(out, (OutputNumber, OutputString)):
             s+="self.assertTrue(" + str(out) + ", output)\n"
         if isinstance(out, OutputRaster):
             dataset = gdal.Open(filename, GA_ReadOnly)
-            strhash = hash(str(dataset.ReadAsArray(0).tolist()))         
+            strhash = hash(str(dataset.ReadAsArray(0).tolist()))
             s+="\tself.assertTrue(os.path.isfile(output))\n"
             s+="\tdataset=gdal.Open(output, GA_ReadOnly)\n"
             s+="\tstrhash=hash(str(dataset.ReadAsArray(0).tolist()))\n"

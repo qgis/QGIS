@@ -213,7 +213,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //id
   QString id = itemElem.attribute( "id", "" );
-  setId(id);
+  setId( id );
 
   //frame
   QString frame = itemElem.attribute( "frame" );
@@ -1268,7 +1268,7 @@ void QgsComposerItem::repaint()
 }
 
 void QgsComposerItem::setId( const QString& id )
-{ 
+{
   setToolTip( id );
   mId = id;
 }
