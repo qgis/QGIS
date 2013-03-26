@@ -87,11 +87,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   connect( sliderSaturation, SIGNAL( valueChanged( int ) ), spinBoxSaturation, SLOT( setValue( int ) ) );
   connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), sliderSaturation, SLOT( setValue( int ) ) );
 
+  // Connect colorize strength slider and spin box
+  connect( sliderColorizeStrength, SIGNAL( valueChanged( int ) ), spinColorizeStrength, SLOT( setValue( int ) ) );
+  connect( spinColorizeStrength, SIGNAL( valueChanged( int ) ), sliderColorizeStrength, SLOT( setValue( int ) ) );
+
   // enable or disable saturation slider and spin box depending on grayscale combo choice
   connect( comboGrayscale, SIGNAL( currentIndexChanged( int ) ), this, SLOT( toggleSaturationControls( int ) ) );
 
   // enable or disable colorize colorbutton with colorize checkbox
-  connect( mColorizeCheck, SIGNAL( toggled( bool ) ), btnColorizeColor, SLOT( setEnabled( bool ) ) );
+  connect( mColorizeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleColorizeControls( bool ) ) );
 
   // enable or disable Build Pyramids button depending on selection in pyramid list
   connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
@@ -265,12 +269,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
     // Set initial state of saturation controls based on grayscale mode choice
     toggleSaturationControls( hueSaturationFilter->grayscaleMode() == QgsHueSaturationFilter::GrayscaleOff );
- 	
-	// Set initial state of colorize controls 
+
+    // Set initial state of colorize controls
     mColorizeCheck->setChecked( hueSaturationFilter->colorizeOn() );
-    btnColorizeColor->setEnabled( hueSaturationFilter->colorizeOn() );
     btnColorizeColor->setColor( hueSaturationFilter->colorizeColor() );
- }
+    toggleColorizeControls( hueSaturationFilter->colorizeOn() );
+    sliderColorizeStrength->setValue( hueSaturationFilter->colorizeStrength() );
+  }
 
   //blend mode
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
@@ -838,8 +843,8 @@ void QgsRasterLayerProperties::apply()
     hueSaturationFilter->setGrayscaleMode(( QgsHueSaturationFilter::GrayscaleMode ) comboGrayscale->currentIndex() );
     hueSaturationFilter->setColorizeOn( mColorizeCheck->checkState() );
     hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
+    hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
   }
-
 
   //set the blend mode for the layer
   mRasterLayer->setBlendMode(( QgsMapLayer::BlendMode ) mBlendModeComboBox->blendMode() );
@@ -1490,6 +1495,15 @@ void QgsRasterLayerProperties::toggleSaturationControls( int theValue )
     spinBoxSaturation->setEnabled( false );
   }
 }
+
+void QgsRasterLayerProperties::toggleColorizeControls( bool colorizeEnabled )
+{
+  // Enable or disable colorize controls based on checkbox
+  btnColorizeColor->setEnabled( colorizeEnabled );
+  sliderColorizeStrength->setEnabled( colorizeEnabled );
+  spinColorizeStrength->setEnabled( colorizeEnabled );
+}
+
 
 QLinearGradient QgsRasterLayerProperties::redGradient()
 {

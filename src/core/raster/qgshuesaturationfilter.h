@@ -62,6 +62,8 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     bool colorizeOn() const { return mColorizeOn; }
     void setColorizeColor( QColor colorizeColor ) { mColorizeColor = colorizeColor; }
     QColor colorizeColor() const { return mColorizeColor; }
+    void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
+    int colorizeStrength() const { return mColorizeStrength; }
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem );
 
@@ -78,6 +80,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     /**Colorize settings*/
     bool mColorizeOn;
     QColor mColorizeColor;
+    int mColorizeStrength;
 
 };
 

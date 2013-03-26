@@ -106,6 +106,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /**Enable or disable saturation controls depending on choice of grayscale mode */
     void toggleSaturationControls( int theValue );
 
+    /**Enable or disable colorize controls depending on checkbox */
+    void toggleColorizeControls( bool colorizeEnabled );
+
     /** Update items in pipe list */
     void pipeItemClicked( QTreeWidgetItem * item, int column );
 

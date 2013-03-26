@@ -288,7 +288,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
+          <item row="0" column="4">
            <widget class="QSpinBox" name="spinBoxSaturation">
             <property name="minimum">
              <number>-100</number>
@@ -311,14 +311,14 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
+          <item row="0" column="6">
            <widget class="QLabel" name="labelGrayscale">
             <property name="text">
              <string>Grayscale</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="6">
+          <item row="0" column="7">
            <widget class="QComboBox" name="comboGrayscale">
             <item>
              <property name="text">
@@ -342,23 +342,69 @@
             </item>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QgsColorButton" name="btnColorizeColor">
-            <property name="maximumSize">
-             <size>
-              <width>64</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="mColorizeCheck">
             <property name="text">
              <string>Colorize</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QgsColorButton" name="btnColorizeColor">
+              <property name="maximumSize">
+               <size>
+                <width>64</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="labelColorizeStrength">
+              <property name="text">
+               <string>Strength</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="sliderColorizeStrength">
+              <property name="maximum">
+               <number>100</number>
+              </property>
+              <property name="value">
+               <number>100</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="tickPosition">
+               <enum>QSlider::TicksBelow</enum>
+              </property>
+              <property name="tickInterval">
+               <number>25</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="4">
+           <widget class="QSpinBox" name="spinColorizeStrength">
+            <property name="suffix">
+             <string>%</string>
+            </property>
+            <property name="minimum">
+             <number>0</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="value">
+             <number>100</number>
             </property>
            </widget>
           </item>
