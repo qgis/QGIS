@@ -268,7 +268,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     comboGrayscale->setCurrentIndex(( int ) hueSaturationFilter->grayscaleMode() );
 
     // Set initial state of saturation controls based on grayscale mode choice
-    toggleSaturationControls( hueSaturationFilter->grayscaleMode() == QgsHueSaturationFilter::GrayscaleOff );
+    toggleSaturationControls(( int )hueSaturationFilter->grayscaleMode() );
 
     // Set initial state of colorize controls
     mColorizeCheck->setChecked( hueSaturationFilter->colorizeOn() );
@@ -1479,18 +1479,16 @@ void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
   lblTransparencyPercent->setText( QString::number( myInt ) + "%" );
 }//sliderTransparency_valueChanged
 
-void QgsRasterLayerProperties::toggleSaturationControls( int theValue )
+void QgsRasterLayerProperties::toggleSaturationControls( int grayscaleMode )
 {
   // Enable or disable saturation controls based on choice of grayscale mode
-  if ( theValue == 0 )
+  if ( grayscaleMode == 0 )
   {
-    // Grayscale set to off, enable controls
     sliderSaturation->setEnabled( true );
     spinBoxSaturation->setEnabled( true );
   }
   else
   {
-    // A grayscale mode is selected, disable saturation controls
     sliderSaturation->setEnabled( false );
     spinBoxSaturation->setEnabled( false );
   }

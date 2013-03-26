@@ -104,7 +104,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void toggleBuildPyramidsButton();
 
     /**Enable or disable saturation controls depending on choice of grayscale mode */
-    void toggleSaturationControls( int theValue );
+    void toggleSaturationControls( int grayscaleMode );
 
     /**Enable or disable colorize controls depending on checkbox */
     void toggleColorizeControls( bool colorizeEnabled );
