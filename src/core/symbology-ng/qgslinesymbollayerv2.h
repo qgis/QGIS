@@ -92,8 +92,10 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void setCustomDashVector( const QVector<qreal>& vector ) { mCustomDashVector = vector; }
 
     const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    QString dataDefinedPropertyString( const QString& property ) const;
     void setDataDefinedProperty( const QString& property, const QString& expressionString );
     void removeDataDefinedProperty( const QString& property );
+    void removeDataDefinedProperties();
 
     QSet<QString> usedAttributes() const;
 

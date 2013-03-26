@@ -70,7 +70,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void on_mPenWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDashPatternUnitComboBox_currentIndexChanged( int index );
-
+    void on_mDataDefinedPropertiesButton_clicked();
 
   protected:
     QgsSimpleLineSymbolLayerV2* mLayer;

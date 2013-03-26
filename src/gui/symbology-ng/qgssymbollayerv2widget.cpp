@@ -22,6 +22,7 @@
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
+#include "qgsdatadefinedsymboldialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerv2utils.h"
@@ -196,6 +197,39 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDashPatternUnitComboBox_currentIndexC
     mLayer->setCustomDashPatternUnit(( QgsSymbolV2::OutputUnit )index );
   }
   emit changed();
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QMap<QString, QPair< QString, QString> > dataDefinedProperties;
+  dataDefinedProperties.insert( "color", qMakePair( tr( "Color" ), mLayer->dataDefinedPropertyString( "color" ) ) );
+  dataDefinedProperties.insert( "width", qMakePair( tr( "Pen width" ), mLayer->dataDefinedPropertyString( "width" ) ) );
+  dataDefinedProperties.insert( "offset", qMakePair( tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ) ) );
+  dataDefinedProperties.insert( "customdash", qMakePair( tr( "Dash pattern" ), mLayer->dataDefinedPropertyString( "customdash" ) ) );
+  dataDefinedProperties.insert( "joinstyle", qMakePair( tr( "Join style" ), mLayer->dataDefinedPropertyString( "joinstyle" ) ) );
+  dataDefinedProperties.insert( "capstyle", qMakePair( tr( "Cap style" ), mLayer->dataDefinedPropertyString( "capstyle" ) ) );
+
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //empty all existing properties first
+    mLayer->removeDataDefinedProperties();
+
+    QMap<QString, QString> properties = d.dataDefinedProperties();
+    QMap<QString, QString>::const_iterator it = properties.constBegin();
+    for ( ; it != properties.constEnd(); ++it )
+    {
+      if ( !it.value().isEmpty() )
+      {
+        mLayer->setDataDefinedProperty( it.key(), it.value() );
+      }
+    }
+  }
 }
 
 void QgsSimpleLineSymbolLayerV2Widget::updatePatternIcon()

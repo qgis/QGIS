@@ -101,6 +101,12 @@ const QgsExpression* QgsSimpleLineSymbolLayerV2::dataDefinedProperty( const QStr
   }
 }
 
+QString QgsSimpleLineSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
+{
+  const QgsExpression* expression = dataDefinedProperty( property );
+  return expression ? expression->dump() : QString( "" );
+}
+
 void QgsSimpleLineSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
 {
   if ( property == "color" )
@@ -155,6 +161,16 @@ void QgsSimpleLineSymbolLayerV2::removeDataDefinedProperty( const QString& prope
   {
     delete mCapStyleExpression; mCapStyleExpression = 0;
   }
+}
+
+void QgsSimpleLineSymbolLayerV2::removeDataDefinedProperties()
+{
+  delete mStrokeColorExpression; mStrokeColorExpression = 0;
+  delete mStrokeWidthExpression; mStrokeWidthExpression = 0;
+  delete mLineOffsetExpression; mLineOffsetExpression = 0;
+  delete mDashPatternExpression; mDashPatternExpression = 0;
+  delete mJoinStyleExpression; mJoinStyleExpression = 0;
+  delete mCapStyleExpression; mCapStyleExpression = 0;
 }
 
 void QgsSimpleLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
