@@ -146,9 +146,9 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             self.fillTreeUsingCategories()
         else:
             self.fillTreeUsingProviders()
-        self.algorithmTree.sortItems(0, Qt.AscendingOrder)        
+        self.algorithmTree.sortItems(0, Qt.AscendingOrder)
         self.addRecentAlgorithms(False)
-        
+
     def addRecentAlgorithms(self, updating):
         showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
         if showRecent:

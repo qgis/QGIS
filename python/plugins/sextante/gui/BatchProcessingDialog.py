@@ -109,16 +109,16 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         elif isinstance(widget, FileSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
-                self.table.cellWidget(row, col).setText(widgetValue)                                       
+                self.table.cellWidget(row, col).setText(widgetValue)
         elif isinstance(widget, QtGui.QLineEdit):
             widgetValue = widget.text()
             for row in range(1, self.table.rowCount()):
-                self.table.cellWidget(row, col).setText(widgetValue)        
+                self.table.cellWidget(row, col).setText(widgetValue)
         elif isinstance(widget, BatchInputSelectionPanel):
             widgetValue = widget.getText()
             for row in range(1, self.table.rowCount()):
                 self.table.cellWidget(row, col).setText(widgetValue)
-                
+
         else:
             pass
 
@@ -207,13 +207,13 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
     def cancel(self):
         self.algs = None
         if self.algEx:
-            self.algEx.terminate()        
-        self.table.setEnabled(True)            
+            self.algEx.terminate()
+        self.table.setEnabled(True)
         #self.close()
 
     @pyqtSlot()
     def finish(self, i):
-        if not self.stop:            
+        if not self.stop:
             if self.load[i]:
                 SextantePostprocessing.handleAlgorithmResults(self.algs[i], self, False)
             i += 1
@@ -230,8 +230,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         QMessageBox.critical(self, "Error", msg)
         SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
         if self.algEx:
-            self.algEx.terminate() 
-        self.table.setEnabled(True)                   
+            self.algEx.terminate()
+        self.table.setEnabled(True)
         #self.close()
 
 

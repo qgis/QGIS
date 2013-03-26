@@ -380,7 +380,7 @@ class QgisAppInterface : public QgisInterface
     // @added in 1.6
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false );
 
-    virtual QDialog* getFeatureForm(QgsVectorLayer *l, QgsFeature &f);
+    virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f );
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified

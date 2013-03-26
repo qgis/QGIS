@@ -909,15 +909,15 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
 
 QString QgsCustomization::splashPath()
 {
-    if ( isEnabled() )
-    {
-        QString path = mSettings->value( "/Customization/splashpath", QgsApplication::splashPath() ).toString();
-        return path;
-    }
-    else
-    {
-        return QgsApplication::splashPath();
-    }
+  if ( isEnabled() )
+  {
+    QString path = mSettings->value( "/Customization/splashpath", QgsApplication::splashPath() ).toString();
+    return path;
+  }
+  else
+  {
+    return QgsApplication::splashPath();
+  }
 }
 
 void QgsCustomization::loadDefault()

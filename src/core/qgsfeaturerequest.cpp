@@ -25,9 +25,9 @@ QgsFeatureRequest::QgsFeatureRequest()
 }
 
 QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
-  : mFilter( FilterFid )
-  , mFilterFid( fid )
-  , mFlags( 0 )
+    : mFilter( FilterFid )
+    , mFilterFid( fid )
+    , mFlags( 0 )
 {
 }
 

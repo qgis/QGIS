@@ -83,7 +83,7 @@ class ParameterVector(ParameterDataObject):
         else:
             self.exported = self.value
         return self.exported
-    
+
     def getFileFilter(self):
         exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):

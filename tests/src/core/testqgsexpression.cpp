@@ -580,9 +580,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "GML Box" ) << "geomFromGML('<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
       // Envelope is from GML3 ?
       QTest::newRow( "GML Envelope" ) << "geomFromGML('<gml:Envelope>"
-         "<gml:lowerCorner>135.2239 34.4879</gml:lowerCorner>"
-         "<gml:upperCorner>135.8578 34.8471</gml:upperCorner>"
-       "</gml:Envelope>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
+      "<gml:lowerCorner>135.2239 34.4879</gml:lowerCorner>"
+      "<gml:upperCorner>135.8578 34.8471</gml:upperCorner>"
+      "</gml:Envelope>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
     }
 
     void eval_geometry_constructor()

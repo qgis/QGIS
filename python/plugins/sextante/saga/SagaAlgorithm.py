@@ -351,12 +351,12 @@ class SagaAlgorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
         pass
         #return SagaUtils.checkSagaIsInstalled()
-    
+
 
     def checkParameterValuesBeforeExecuting(self):
         '''We check that there are no multiband layers, which are not supported by SAGA'''
         for param in self.parameters:
-            if isinstance(param, ParameterRaster):                
+            if isinstance(param, ParameterRaster):
                 value = param.value
                 layer = QGisLayers.getObjectFromUri(value)
                 if layer is not None and layer.bandCount() > 1:

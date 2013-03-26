@@ -93,8 +93,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Update rulers with current scene rect*/
     void updateRulers();
 
-    void setHorizontalRuler( QgsComposerRuler* r ){ mHorizontalRuler = r; }
-    void setVerticalRuler( QgsComposerRuler* r ){ mVerticalRuler = r; }
+    void setHorizontalRuler( QgsComposerRuler* r ) { mHorizontalRuler = r; }
+    void setVerticalRuler( QgsComposerRuler* r ) { mVerticalRuler = r; }
 
   protected:
     void mousePressEvent( QMouseEvent* );

@@ -78,7 +78,7 @@ class ParameterTable(ParameterDataObject):
         else:
             self.exported = self.value
         return self.exported
-    
+
     def getFileFilter(self,alg):
         exts = ['csv', 'dbf']
         for i in range(len(exts)):

@@ -170,7 +170,7 @@ void Heatmap::run()
     // Handle different radius options
     double radius;
     double radiusToMapUnits = 1;
-    int myBuffer;
+    int myBuffer = 0;
     if ( d.variableRadius() )
     {
       rField = d.radiusField();
@@ -367,7 +367,7 @@ double Heatmap::calculateKernelValue( double distance, int bandwidth, int kernel
 
 double Heatmap::uniformKernel( double distance, int bandwidth )
 {
-  Q_UNUSED(distance);
+  Q_UNUSED( distance );
   // Normalizing constant
   double k = 2. / ( M_PI * ( double )bandwidth );
 

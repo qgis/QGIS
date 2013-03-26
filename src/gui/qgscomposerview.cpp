@@ -513,13 +513,13 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     if ( e->matches( QKeySequence::Copy ) )
     {
       // remove all uuid attributes
-      QDomNodeList composerItemsNodes = doc.elementsByTagName("ComposerItem");
-      for (int i=0; i<composerItemsNodes.count(); ++i)
+      QDomNodeList composerItemsNodes = doc.elementsByTagName( "ComposerItem" );
+      for ( int i = 0; i < composerItemsNodes.count(); ++i )
       {
-        QDomNode composerItemNode = composerItemsNodes.at(i);
-        if( composerItemNode.isElement() )
+        QDomNode composerItemNode = composerItemsNodes.at( i );
+        if ( composerItemNode.isElement() )
         {
-          composerItemNode.toElement().removeAttribute("uuid");
+          composerItemNode.toElement().removeAttribute( "uuid" );
         }
       }
     }
@@ -530,8 +530,8 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
     clipboard->setMimeData( mimeData );
   }
 
-  //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18 
-  if ( e->matches( QKeySequence::Paste ) || (e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier) )
+  //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18
+  if ( e->matches( QKeySequence::Paste ) || ( e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier ) )
   {
     QDomDocument doc;
     QClipboard *clipboard = QApplication::clipboard();
@@ -543,7 +543,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         if ( composition() )
         {
           QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
-          bool pasteInPlace = (e->modifiers() & Qt::ShiftModifier);
+          bool pasteInPlace = ( e->modifiers() & Qt::ShiftModifier );
           composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
         }
       }

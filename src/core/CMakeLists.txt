@@ -146,6 +146,7 @@ SET(QGIS_CORE_SRCS
   composer/qgsatlascomposition.cpp
   composer/qgslegendmodel.cpp
   composer/qgscomposerlegend.cpp
+  composer/qgscomposerlegendstyle.cpp
   composer/qgspaperitem.cpp
   composer/qgsscalebarstyle.cpp
   composer/qgsdoubleboxscalebarstyle.cpp
@@ -322,6 +323,7 @@ SET(QGIS_CORE_MOC_HDRS
 
   composer/qgsaddremoveitemcommand.h
   composer/qgscomposerlegend.h
+  composer/qgscomposerlegendstyle.h
   composer/qgscomposermap.h
   composer/qgscomposerpicture.h
   composer/qgscomposerscalebar.h

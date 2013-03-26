@@ -63,7 +63,7 @@ QgsSymbolV2::~QgsSymbolV2()
 
 QgsSymbolV2::OutputUnit QgsSymbolV2::outputUnit() const
 {
-  QgsSymbolV2::OutputUnit unit;
+  QgsSymbolV2::OutputUnit unit( QgsSymbolV2::Mixed );
 
   QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin();
   for ( ; it != mLayers.constEnd(); ++it )

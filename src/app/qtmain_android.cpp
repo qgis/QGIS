@@ -43,128 +43,132 @@ static QSemaphore m_quitAppSemaphore;
 static QList<QByteArray> m_applicationParams;
 static const char * const QtNativeClassPathName = "org/kde/necessitas/industrius/QtNative";
 
-extern "C" int main(int, char **); //use the standard main method to start the application
-static void * startMainMethod(void * /*data*/)
+extern "C" int main( int, char ** ); //use the standard main method to start the application
+static void * startMainMethod( void * /*data*/ )
 {
 
-    char **  params;
-    params=(char**)malloc(sizeof(char*)*m_applicationParams.length());
-    for (int i=0;i<m_applicationParams.size();i++)
-        params[i]= (char*)m_applicationParams[i].constData();
+  char **  params;
+  params = ( char** )malloc( sizeof( char* ) * m_applicationParams.length() );
+  for ( int i = 0;i < m_applicationParams.size();i++ )
+    params[i] = ( char* )m_applicationParams[i].constData();
 
-    int ret = main(m_applicationParams.length(), params);
+  int ret = main( m_applicationParams.length(), params );
 
-    qDebug()<<"MainMethod finished, it's time to cleanup";
-    free(params);
-    Q_UNUSED(ret);
+  qDebug() << "MainMethod finished, it's time to cleanup";
+  free( params );
+  Q_UNUSED( ret );
 
-    JNIEnv* env;
-    if (m_javaVM->AttachCurrentThread(&env, NULL)<0)
-    {
-        qCritical()<<"AttachCurrentThread failed";
-        return false;
-    }
-    jclass applicationClass = env->GetObjectClass(objptr);
-    if (applicationClass){
-        jmethodID quitApp = env->GetStaticMethodID(applicationClass, "quitApp", "()V");
-        env->CallStaticVoidMethod(applicationClass, quitApp);
-    }
-    m_javaVM->DetachCurrentThread();
-    return NULL;
+  JNIEnv* env;
+  if ( m_javaVM->AttachCurrentThread( &env, NULL ) < 0 )
+  {
+    qCritical() << "AttachCurrentThread failed";
+    return false;
+  }
+  jclass applicationClass = env->GetObjectClass( objptr );
+  if ( applicationClass )
+  {
+    jmethodID quitApp = env->GetStaticMethodID( applicationClass, "quitApp", "()V" );
+    env->CallStaticVoidMethod( applicationClass, quitApp );
+  }
+  m_javaVM->DetachCurrentThread();
+  return NULL;
 }
 
-static jboolean startQtApp(JNIEnv* env, jobject /*object*/, jstring paramsString, jstring environmentString)
+static jboolean startQtApp( JNIEnv* env, jobject /*object*/, jstring paramsString, jstring environmentString )
 {
-    qDebug()<<"startQtApp";
-    const char * nativeString = env->GetStringUTFChars(environmentString, 0);
-    QByteArray string=nativeString;
-    env->ReleaseStringUTFChars(environmentString, nativeString);
-    m_applicationParams=string.split('\t');
-    qDebug()<<"environmentString"<<string<<m_applicationParams;
-    foreach (string, m_applicationParams)
-        if (putenv(string.constData()))
-            qWarning()<<"Can't set environment"<<string;
+  qDebug() << "startQtApp";
+  const char * nativeString = env->GetStringUTFChars( environmentString, 0 );
+  QByteArray string = nativeString;
+  env->ReleaseStringUTFChars( environmentString, nativeString );
+  m_applicationParams = string.split( '\t' );
+  qDebug() << "environmentString" << string << m_applicationParams;
+  foreach ( string, m_applicationParams )
+    if ( putenv( string.constData() ) )
+      qWarning() << "Can't set environment" << string;
 
-    nativeString = env->GetStringUTFChars(paramsString, 0);
-    string=nativeString;
-    env->ReleaseStringUTFChars(paramsString, nativeString);
+  nativeString = env->GetStringUTFChars( paramsString, 0 );
+  string = nativeString;
+  env->ReleaseStringUTFChars( paramsString, nativeString );
 
-    qDebug()<<"paramsString"<<string;
-    m_applicationParams=string.split('\t');
+  qDebug() << "paramsString" << string;
+  m_applicationParams = string.split( '\t' );
 
-    // Go home
-    QDir::setCurrent(QDir::homePath());
+  // Go home
+  QDir::setCurrent( QDir::homePath() );
 
-    pthread_t appThread;
-    return pthread_create(&appThread, NULL, startMainMethod, NULL)==0;
+  pthread_t appThread;
+  return pthread_create( &appThread, NULL, startMainMethod, NULL ) == 0;
 }
 
 
-static JNINativeMethod methods[] = {
-    {"startQtApp", "(Ljava/lang/String;Ljava/lang/String;)V", (void *)startQtApp}
+static JNINativeMethod methods[] =
+{
+  {"startQtApp", "(Ljava/lang/String;Ljava/lang/String;)V", ( void * )startQtApp}
 };
 
 /*
 * Register several native methods for one class.
 */
-static int registerNativeMethods(JNIEnv* env, const char* className,
-                                 JNINativeMethod* gMethods, int numMethods)
+static int registerNativeMethods( JNIEnv* env, const char* className,
+                                  JNINativeMethod* gMethods, int numMethods )
 {
-    jclass clazz=env->FindClass(className);
-    if (clazz == NULL)
-    {
-        __android_log_print(ANDROID_LOG_FATAL,"Qt", "Native registration unable to find class '%s'", className);
-        return JNI_FALSE;
-    }
-    jmethodID constr = env->GetMethodID(clazz, "<init>", "()V");
-    if(!constr) {
-        __android_log_print(ANDROID_LOG_FATAL,"Qt", "Native registration unable to find  constructor for class '%s'", className);
-        return JNI_FALSE;;
-    }
-    jobject obj = env->NewObject(clazz, constr);
-    objptr = env->NewGlobalRef(obj);
-    if (env->RegisterNatives(clazz, gMethods, numMethods) < 0)
-    {
-        __android_log_print(ANDROID_LOG_FATAL,"Qt", "RegisterNatives failed for '%s'", className);
-        return JNI_FALSE;
-    }
-    return JNI_TRUE;
+  jclass clazz = env->FindClass( className );
+  if ( clazz == NULL )
+  {
+    __android_log_print( ANDROID_LOG_FATAL, "Qt", "Native registration unable to find class '%s'", className );
+    return JNI_FALSE;
+  }
+  jmethodID constr = env->GetMethodID( clazz, "<init>", "()V" );
+  if ( !constr )
+  {
+    __android_log_print( ANDROID_LOG_FATAL, "Qt", "Native registration unable to find  constructor for class '%s'", className );
+    return JNI_FALSE;;
+  }
+  jobject obj = env->NewObject( clazz, constr );
+  objptr = env->NewGlobalRef( obj );
+  if ( env->RegisterNatives( clazz, gMethods, numMethods ) < 0 )
+  {
+    __android_log_print( ANDROID_LOG_FATAL, "Qt", "RegisterNatives failed for '%s'", className );
+    return JNI_FALSE;
+  }
+  return JNI_TRUE;
 }
 
 /*
 * Register native methods for all classes we know about.
 */
-static int registerNatives(JNIEnv* env)
+static int registerNatives( JNIEnv* env )
 {
-    if (!registerNativeMethods(env, QtNativeClassPathName, methods, sizeof(methods) / sizeof(methods[0])))
-        return JNI_FALSE;
+  if ( !registerNativeMethods( env, QtNativeClassPathName, methods, sizeof( methods ) / sizeof( methods[0] ) ) )
+    return JNI_FALSE;
 
-    return JNI_TRUE;
+  return JNI_TRUE;
 }
 
-typedef union {
-    JNIEnv* nativeEnvironment;
-    void* venv;
+typedef union
+{
+  JNIEnv* nativeEnvironment;
+  void* venv;
 } UnionJNIEnvToVoid;
 
-Q_DECL_EXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
+Q_DECL_EXPORT jint JNICALL JNI_OnLoad( JavaVM* vm, void* /*reserved*/ )
 {
-    __android_log_print(ANDROID_LOG_INFO,"Qt", "qt start");
-    UnionJNIEnvToVoid uenv;
-    uenv.venv = NULL;
-    m_javaVM = 0;
+  __android_log_print( ANDROID_LOG_INFO, "Qt", "qt start" );
+  UnionJNIEnvToVoid uenv;
+  uenv.venv = NULL;
+  m_javaVM = 0;
 
-    if (vm->GetEnv(&uenv.venv, JNI_VERSION_1_4) != JNI_OK)
-    {
-        __android_log_print(ANDROID_LOG_FATAL,"Qt","GetEnv failed");
-        return -1;
-    }
-    m_env = uenv.nativeEnvironment;
-    if (!registerNatives(m_env))
-    {
-        __android_log_print(ANDROID_LOG_FATAL, "Qt", "registerNatives failed");
-        return -1;
-    }
-    m_javaVM = vm;
-    return JNI_VERSION_1_4;
+  if ( vm->GetEnv( &uenv.venv, JNI_VERSION_1_4 ) != JNI_OK )
+  {
+    __android_log_print( ANDROID_LOG_FATAL, "Qt", "GetEnv failed" );
+    return -1;
+  }
+  m_env = uenv.nativeEnvironment;
+  if ( !registerNatives( m_env ) )
+  {
+    __android_log_print( ANDROID_LOG_FATAL, "Qt", "registerNatives failed" );
+    return -1;
+  }
+  m_javaVM = vm;
+  return JNI_VERSION_1_4;
 }

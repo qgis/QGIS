@@ -66,7 +66,7 @@ class Intersection(GeoAlgorithm):
             intersects = index.intersects( geom.boundingBox() )
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
-                inFeatB = vlayerB.getFeatures(request).next()                
+                inFeatB = vlayerB.getFeatures(request).next()
                 tmpGeom = QgsGeometry(inFeatB.geometry())
                 try:
                     if geom.intersects( tmpGeom ):

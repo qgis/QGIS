@@ -3,12 +3,12 @@ import os
 from sextante.core.SextanteUtils import mkdir
 from sextante.parameters.ParameterSelection import ParameterSelection
 
-def createBaseHelpFile(alg, folder):    
+def createBaseHelpFile(alg, folder):
     folder = os.path.join(folder, alg.provider.getName().lower())
     mkdir(folder)
     cmdLineName = alg.commandLineName()[alg.commandLineName().find(":") + 1:].lower()
     validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    safeFilename = ''.join(c for c in cmdLineName if c in validChars)    
+    safeFilename = ''.join(c for c in cmdLineName if c in validChars)
     filepath = os.path.join(folder, safeFilename + ".rst")
     file = open(filepath, "w")
     file.write(alg.name.upper())
@@ -24,9 +24,9 @@ def createBaseHelpFile(alg, folder):
     file.write("\nOutputs\n")
     file.write("-------\n\n")
     for out in alg.outputs:
-        file.write("- ``" + out.description + "[" + out.outputTypeName()[6:] + "]``:\n")  
+        file.write("- ``" + out.description + "[" + out.outputTypeName()[6:] + "]``:\n")
     file.write("\nSee also\n")
-    file.write("---------\n\n")      
+    file.write("---------\n\n")
     file.write("\nConsole usage\n")
     file.write("-------------\n\n")
     file.write("\n::\n\n")
@@ -38,7 +38,7 @@ def createBaseHelpFile(alg, folder):
             s+=str(out.name.lower().strip()) + ", "
     s = s[:-2] +")\n"
     file.write(s)
-    
+
     s =""
     hasSelection = False
     for param in alg.parameters:
@@ -59,4 +59,3 @@ def createBaseHelpFiles(folder):
     for provider in Sextante.providers:
         for alg in provider.algs:
             createBaseHelpFile(alg, folder)
-            
