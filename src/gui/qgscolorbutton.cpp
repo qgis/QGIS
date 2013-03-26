@@ -233,6 +233,7 @@ void QgsColorButton::setButtonBackground()
 
     //QgsDebugMsg( QString( "%1" ).arg( bkgrd ) );
 
+    // TODO: get OS-style focus color and switch border to that color when button in focus
     setStyleSheet( QString( "QgsColorButton{"
                             " %1"
                             " background-position: top left;"
@@ -240,6 +241,7 @@ void QgsColorButton::setButtonBackground()
                             " background-clip: content;"
                             " padding: 2px;"
                             " margin: %2;"
+                            " outline: none;"
                             " border-style: outset;"
                             " border-width: 1px;"
                             " border-color: rgb(%3,%3,%3);"
@@ -251,6 +253,7 @@ void QgsColorButton::setButtonBackground()
                             " background-clip: content;"
                             " padding: 1px;"
                             " margin: %2;"
+                            " outline: none;"
                             " border-style: inset;"
                             " border-width: 2px;"
                             " border-color: rgb(128,128,128);"
