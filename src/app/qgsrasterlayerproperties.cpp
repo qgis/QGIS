@@ -90,6 +90,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   // enable or disable saturation slider and spin box depending on grayscale combo choice
   connect( comboGrayscale, SIGNAL( currentIndexChanged( int ) ), this, SLOT( toggleSaturationControls( int ) ) );
 
+  // enable or disable colorize colorbutton with colorize checkbox
+  connect( mColorizeCheck, SIGNAL( toggled( bool ) ), btnColorizeColor, SLOT( setEnabled( bool ) ) );
+
   // enable or disable Build Pyramids button depending on selection in pyramid list
   connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
 
@@ -262,7 +265,12 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
     // Set initial state of saturation controls based on grayscale mode choice
     toggleSaturationControls( hueSaturationFilter->grayscaleMode() == QgsHueSaturationFilter::GrayscaleOff );
-  }
+ 	
+	// Set initial state of colorize controls 
+    mColorizeCheck->setChecked( hueSaturationFilter->colorizeOn() );
+    btnColorizeColor->setEnabled( hueSaturationFilter->colorizeOn() );
+    btnColorizeColor->setColor( hueSaturationFilter->colorizeColor() );
+ }
 
   //blend mode
   mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
@@ -828,6 +836,8 @@ void QgsRasterLayerProperties::apply()
   {
     hueSaturationFilter->setSaturation( sliderSaturation->value() );
     hueSaturationFilter->setGrayscaleMode(( QgsHueSaturationFilter::GrayscaleMode ) comboGrayscale->currentIndex() );
+    hueSaturationFilter->setColorizeOn( mColorizeCheck->checkState() );
+    hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
   }
 
 

@@ -25,7 +25,9 @@
 QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface* input )
     : QgsRasterInterface( input ),
     mSaturation( 0 ),
-    mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff )
+    mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff ),
+    mColorizeOn( false ),
+    mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
 {
 }
 
@@ -129,7 +131,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
     return outputBlock;
   }
 
-  if ( mSaturation == 0 && mGrayscaleMode == GrayscaleOff )
+  if ( mSaturation == 0 && mGrayscaleMode == GrayscaleOff && !mColorizeOn )
   {
     QgsDebugMsg( "No hue/saturation change." );
     delete outputBlock;
@@ -150,6 +152,11 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
 
   // Scale saturation value to [0-2], where 0 = desaturated
   double saturationScale = (( double ) mSaturation / 100 ) + 1;
+
+  // Get hue, saturation for colorized color
+  int colorizeH, colorizeS;
+  colorizeH = mColorizeColor.hue();
+  colorizeS = mColorizeColor.saturation();
 
   for ( size_t i = 0; i < ( size_t )width*height; i++ )
   {
@@ -208,6 +215,18 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
       }
     }
 
+    // Colorizing?
+    if ( mColorizeOn )
+    {
+      // Update hsl values (these may have changed with saturation/grayscale adjustments)
+      myColor.getHsl( &h, &s, &l );
+
+      // Overwrite hue and saturation with values from colorize color
+      h = colorizeH;
+      s = colorizeS;
+      myColor = QColor::fromHsl( h, s, l );
+    }
+
     // Convert back to rgb
     outputBlock->setColor( i, myColor.rgb() );
   }
@@ -227,6 +246,11 @@ void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentEle
 
   filterElem.setAttribute( "saturation", QString::number( mSaturation ) );
   filterElem.setAttribute( "grayscaleMode", QString::number( mGrayscaleMode ) );
+  filterElem.setAttribute( "colorizeOn", QString::number( mColorizeOn ) );
+  filterElem.setAttribute( "colorizeRed", QString::number( mColorizeColor.red() ) );
+  filterElem.setAttribute( "colorizeGreen", QString::number( mColorizeColor.green() ) );
+  filterElem.setAttribute( "colorizeBlue", QString::number( mColorizeColor.blue() ) );
+
   parentElem.appendChild( filterElem );
 }
 
@@ -239,4 +263,11 @@ void QgsHueSaturationFilter::readXML( const QDomElement& filterElem )
 
   mSaturation = filterElem.attribute( "saturation", "0" ).toInt();
   mGrayscaleMode = ( QgsHueSaturationFilter::GrayscaleMode )filterElem.attribute( "grayscaleMode", "0" ).toInt();
+
+  mColorizeOn = ( bool )filterElem.attribute( "colorizeOn", "0" ).toInt();
+  int mColorizeRed = filterElem.attribute( "colorizeRed", "255" ).toInt();
+  int mColorizeGreen = filterElem.attribute( "colorizeGreen", "0" ).toInt();
+  int mColorizeBlue = filterElem.attribute( "colorizeBlue", "0" ).toInt();
+  mColorizeColor = QColor::fromRgb( mColorizeRed, mColorizeGreen, mColorizeBlue );
+
 }

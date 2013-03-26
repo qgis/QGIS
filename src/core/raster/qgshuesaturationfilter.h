@@ -58,6 +58,11 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     void setGrayscaleMode( QgsHueSaturationFilter::GrayscaleMode grayscaleMode ) { mGrayscaleMode = grayscaleMode; }
     QgsHueSaturationFilter::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
 
+    void setColorizeOn( bool colorizeOn ) { mColorizeOn = colorizeOn; }
+    bool colorizeOn() const { return mColorizeOn; }
+    void setColorizeColor( QColor colorizeColor ) { mColorizeColor = colorizeColor; }
+    QColor colorizeColor() const { return mColorizeColor; }
+
     void writeXML( QDomDocument& doc, QDomElement& parentElem );
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
@@ -69,6 +74,10 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     /**Current grayscale mode*/
     QgsHueSaturationFilter::GrayscaleMode mGrayscaleMode;
+
+    /**Colorize settings*/
+    bool mColorizeOn;
+    QColor mColorizeColor;
 
 };
 
