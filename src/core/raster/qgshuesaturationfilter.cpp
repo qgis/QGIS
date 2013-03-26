@@ -24,7 +24,8 @@
 
 QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface* input )
     : QgsRasterInterface( input ),
-    mSaturation( 0 )
+    mSaturation( 0 ),
+    mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff )
 {
 }
 
@@ -128,9 +129,9 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
     return outputBlock;
   }
 
-  if ( mSaturation == 0 )
+  if ( mSaturation == 0 && mGrayscaleMode == GrayscaleOff )
   {
-    QgsDebugMsg( "No saturation change." );
+    QgsDebugMsg( "No hue/saturation change." );
     delete outputBlock;
     return inputBlock;
   }
@@ -144,7 +145,8 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
   // adjust image
   QRgb myNoDataColor = qRgba( 0, 0, 0, 0 );
   QColor myColor;
-  int h, s, v;
+  int h, s, l;
+  int r, g, b;
 
   // Scale saturation value to [0-2], where 0 = desaturated
   double saturationScale = (( double ) mSaturation / 100 ) + 1;
@@ -157,24 +159,56 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
       continue;
     }
 
-    // Get current color in hsv
+    // Get hsv and rgb for color
     myColor = QColor( inputBlock->color( i ) );
-    myColor.getHsv( &h, &s, &v );
+    myColor.getHsl( &h, &s, &l );
+    myColor.getRgb( &r, &g, &b );
 
-    if ( saturationScale < 1 )
+    switch ( mGrayscaleMode )
     {
-      // Lowering the saturation. Use a simple linear relationship
-      s = qMin(( int )( s * saturationScale ), 255 );
-    }
-    else
-    {
-      // Raising the saturation. Use a saturation curve to prevent
-      // clipping at maximum saturation with ugly results.
-      s = qMin(( int )( 255. * ( 1 - pow( 1 - (( double )s / 255. )  , saturationScale * 2 ) ) ), 255 );
+      case GrayscaleLightness:
+      {
+        // Lightness mode, set saturation to zero
+        s = 0;
+        myColor = QColor::fromHsl( h, s, l );
+        break;
+      }
+      case GrayscaleLuminosity:
+      {
+        // Grayscale by weighted rgb components
+        int luminosity = 0.21 * r + 0.72 * g + 0.07 * b;
+        r = g = b = luminosity;
+        myColor = QColor::fromRgb( r, g, b );
+        break;
+      }
+      case GrayscaleAverage:
+      {
+        // Grayscale by average of rgb components
+        int average = ( r + g + b ) / 3;
+        r = g = b = average;
+        myColor = QColor::fromRgb( r, g, b );
+        break;
+      }
+      case GrayscaleOff:
+      {
+        // Not being made grayscale, do saturation change
+        if ( saturationScale < 1 )
+        {
+          // Lowering the saturation. Use a simple linear relationship
+          s = qMin(( int )( s * saturationScale ), 255 );
+        }
+        else
+        {
+          // Raising the saturation. Use a saturation curve to prevent
+          // clipping at maximum saturation with ugly results.
+          s = qMin(( int )( 255. * ( 1 - pow( 1 - (( double )s / 255. )  , saturationScale * 2 ) ) ), 255 );
+        }
+        myColor = QColor::fromHsl( h, s, l );
+        break;
+      }
     }
 
     // Convert back to rgb
-    myColor = QColor::fromHsv( h, s, v );
     outputBlock->setColor( i, myColor.rgb() );
   }
 
@@ -192,6 +226,7 @@ void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentEle
   QDomElement filterElem = doc.createElement( "huesaturation" );
 
   filterElem.setAttribute( "saturation", QString::number( mSaturation ) );
+  filterElem.setAttribute( "grayscaleMode", QString::number( mGrayscaleMode ) );
   parentElem.appendChild( filterElem );
 }
 
@@ -203,4 +238,5 @@ void QgsHueSaturationFilter::readXML( const QDomElement& filterElem )
   }
 
   mSaturation = filterElem.attribute( "saturation", "0" ).toInt();
+  mGrayscaleMode = ( QgsHueSaturationFilter::GrayscaleMode )filterElem.attribute( "grayscaleMode", "0" ).toInt();
 }

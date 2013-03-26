@@ -103,6 +103,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 
+    /**Enable or disable saturation controls depending on choice of grayscale mode */
+    void toggleSaturationControls( int theValue );
+
     /** Update items in pipe list */
     void pipeItemClicked( QTreeWidgetItem * item, int column );
 

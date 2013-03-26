@@ -263,7 +263,7 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="_7">
-          <item row="0" column="0">
+          <item row="0" column="1">
            <widget class="QSlider" name="sliderSaturation">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -288,7 +288,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="2">
            <widget class="QSpinBox" name="spinBoxSaturation">
             <property name="minimum">
              <number>-100</number>
@@ -302,6 +302,44 @@
             <property name="decimals" stdset="0">
              <number>0</number>
             </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelSaturation">
+            <property name="text">
+             <string>Saturation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLabel" name="labelGrayscale">
+            <property name="text">
+             <string>Grayscale</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QComboBox" name="comboGrayscale">
+            <item>
+             <property name="text">
+              <string>Off</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>By lightness</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>By luminosity</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>By average</string>
+             </property>
+            </item>
            </widget>
           </item>
          </layout>

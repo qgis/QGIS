@@ -87,6 +87,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   connect( sliderSaturation, SIGNAL( valueChanged( int ) ), spinBoxSaturation, SLOT( setValue( int ) ) );
   connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), sliderSaturation, SLOT( setValue( int ) ) );
 
+  // enable or disable saturation slider and spin box depending on grayscale combo choice
+  connect( comboGrayscale, SIGNAL( currentIndexChanged( int ) ), this, SLOT( toggleSaturationControls( int ) ) );
+
   // enable or disable Build Pyramids button depending on selection in pyramid list
   connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
 
@@ -255,6 +258,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   if ( hueSaturationFilter )
   {
     sliderSaturation->setValue( hueSaturationFilter->saturation() );
+    comboGrayscale->setCurrentIndex(( int ) hueSaturationFilter->grayscaleMode() );
+
+    // Set initial state of saturation controls based on grayscale mode choice
+    toggleSaturationControls( hueSaturationFilter->grayscaleMode() == QgsHueSaturationFilter::GrayscaleOff );
   }
 
   //blend mode
@@ -820,6 +827,7 @@ void QgsRasterLayerProperties::apply()
   if ( hueSaturationFilter )
   {
     hueSaturationFilter->setSaturation( sliderSaturation->value() );
+    hueSaturationFilter->setGrayscaleMode(( QgsHueSaturationFilter::GrayscaleMode ) comboGrayscale->currentIndex() );
   }
 
 
@@ -1455,6 +1463,23 @@ void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
   int myInt = static_cast < int >(( theValue / 255.0 ) * 100 );  //255.0 to prevent integer division
   lblTransparencyPercent->setText( QString::number( myInt ) + "%" );
 }//sliderTransparency_valueChanged
+
+void QgsRasterLayerProperties::toggleSaturationControls( int theValue )
+{
+  // Enable or disable saturation controls based on choice of grayscale mode
+  if ( theValue == 0 )
+  {
+    // Grayscale set to off, enable controls
+    sliderSaturation->setEnabled( true );
+    spinBoxSaturation->setEnabled( true );
+  }
+  else
+  {
+    // A grayscale mode is selected, disable saturation controls
+    sliderSaturation->setEnabled( false );
+    spinBoxSaturation->setEnabled( false );
+  }
+}
 
 QLinearGradient QgsRasterLayerProperties::redGradient()
 {

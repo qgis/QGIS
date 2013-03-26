@@ -29,6 +29,16 @@ class QDomElement;
 class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 {
   public:
+
+    // Available modes for converting a raster to grayscale
+    enum GrayscaleMode
+    {
+      GrayscaleOff,
+      GrayscaleLightness,
+      GrayscaleLuminosity,
+      GrayscaleAverage
+    };
+
     QgsHueSaturationFilter( QgsRasterInterface *input = 0 );
     ~QgsHueSaturationFilter();
 
@@ -45,6 +55,9 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     void setSaturation( int saturation ) { mSaturation = qBound( -100, saturation, 100 ); }
     int saturation() const { return mSaturation; }
 
+    void setGrayscaleMode( QgsHueSaturationFilter::GrayscaleMode grayscaleMode ) { mGrayscaleMode = grayscaleMode; }
+    QgsHueSaturationFilter::GrayscaleMode grayscaleMode() const { return mGrayscaleMode; }
+
     void writeXML( QDomDocument& doc, QDomElement& parentElem );
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
@@ -53,6 +66,9 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
   private:
     /**Current saturation value. Range: -100 (desaturated) ... 0 (no change) ... 100 (increased)*/
     int mSaturation;
+
+    /**Current grayscale mode*/
+    QgsHueSaturationFilter::GrayscaleMode mGrayscaleMode;
 
 };
 
