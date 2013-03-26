@@ -22,8 +22,6 @@
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 #include <qgsmaplayer.h>
-//#include <qgssearchstring.h>
-//#include <qgssearchtreenode.h>
 #include <qgsmaplayer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsgeometry.h>
@@ -35,13 +33,11 @@
 #include <qgslogger.h>
 #include <qgsspatialindex.h>
 #include <qgisinterface.h>
-
-//#include "../../app/qgisapp.h"
+#include <qgsmessagelog.h>
 
 #include "topolTest.h"
 #include "rulesDialog.h"
 #include "dockModel.h"
-//#include "geosFunctions.h"
 
 //class QgisInterface;
 
@@ -107,7 +103,6 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
 
 checkDock::~checkDock()
 {
-  delete mRBConflict, mRBFeature1, mRBFeature2;
   delete mConfigureDialog;
   delete mErrorListModel;
 
@@ -168,9 +163,8 @@ void checkDock::deleteErrors()
 
 void checkDock::parseErrorListByLayer( QString layerId )
 {
-  QgsVectorLayer* layer = ( QgsVectorLayer* )mLayerRegistry->mapLayers()[layerId];
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayerRegistry->mapLayers()[layerId] );
   QList<TopolError*>::Iterator it = mErrorList.begin();
-  QList<TopolError*>::Iterator end = mErrorList.end();
 
   while ( it != mErrorList.end() )
   {
@@ -185,13 +179,12 @@ void checkDock::parseErrorListByLayer( QString layerId )
   }
 
   mErrorListModel->resetModel();
-  mComment->setText( QString( "No errors were found" ) );
+  mComment->setText( tr( "No errors were found" ) );
 }
 
 void checkDock::parseErrorListByFeature( int featureId )
 {
   QList<TopolError*>::Iterator it = mErrorList.begin();
-  QList<TopolError*>::Iterator end = mErrorList.end();
 
   while ( it != mErrorList.end() )
   {
@@ -205,7 +198,7 @@ void checkDock::parseErrorListByFeature( int featureId )
       ++it;
   }
 
-  mComment->setText( QString( "No errors were found" ) );
+  mComment->setText( tr( "No errors were found" ) );
   mErrorListModel->resetModel();
 }
 
@@ -225,14 +218,14 @@ void checkDock::errorListClicked( const QModelIndex& index )
 
   mFixBox->clear();
   mFixBox->addItems( mErrorList[row]->fixNames() );
-  mFixBox->setCurrentIndex( mFixBox->findText( "Select automatic fix" ) );
+  mFixBox->setCurrentIndex( mFixBox->findText( tr( "Select automatic fix" ) ) );
 
   QgsFeature f;
   QgsGeometry* g;
   FeatureLayer fl = mErrorList[row]->featurePairs().first();
   if ( !fl.layer )
   {
-    std::cout << "invalid layer 1\n";
+    QgsMessageLog::logMessage( tr( "Invalid first layer" ), tr( "Topology plugin" ) );
     return;
   }
 
@@ -242,8 +235,8 @@ void checkDock::errorListClicked( const QModelIndex& index )
   g = f.geometry();
   if ( !g )
   {
-    std::cout << "invalid geometry 1\n" << std::flush;
-    QMessageBox::information( this, "Topology test", "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." );
+    QgsMessageLog::logMessage( tr( "Invalid first geometry" ), tr( "Topology plugin" ) );
+    QMessageBox::information( this, tr( "Topology test" ), tr( "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." ) );
     return;
   }
 
@@ -266,7 +259,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
   fl = mErrorList[row]->featurePairs()[1];
   if ( !fl.layer )
   {
-    std::cout << "invalid layer 2\n";
+    QgsMessageLog::logMessage( tr( "Invalid second layer" ), tr( "Topology plugin" ) );
     return;
   }
 
@@ -275,8 +268,8 @@ void checkDock::errorListClicked( const QModelIndex& index )
   g = f.geometry();
   if ( !g )
   {
-    std::cout << "invalid geometry 2\n" << std::flush;
-    QMessageBox::information( this, "Topology test", "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." );
+    QgsMessageLog::logMessage( tr( "Invalid second geometry" ), tr( "Topology plugin" ) );
+    QMessageBox::information( this, tr( "Topology test" ), tr( "Feature not found in the layer.\nThe layer has probably changed.\nRun topology check again." ) );
     return;
   }
 
@@ -294,7 +287,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
 
   if ( !mErrorList[row]->conflict() )
   {
-    std::cout << "invalid conflict\n" << std::flush;
+    QgsMessageLog::logMessage( tr( "Invalid conflict" ), tr( "Topology plugin" ) );
     return;
   }
 
@@ -330,11 +323,11 @@ void checkDock::fix()
     mErrorList.removeAt( row );
     mErrorListModel->resetModel();
     //parseErrorListByFeature();
-    mComment->setText( QString( "%1 errors were found" ).arg( mErrorList.count() ) );
+    mComment->setText( tr( "%1 errors were found" ).arg( mErrorList.count() ) );
     qgsInterface->mapCanvas()->refresh();
   }
   else
-    QMessageBox::information( this, "Topology fix error", "Fixing failed!" );
+    QMessageBox::information( this, tr( "Topology fix error" ), tr( "Fixing failed!" ) );
 }
 
 void checkDock::runTests( ValidateType type )
@@ -349,7 +342,7 @@ void checkDock::runTests( ValidateType type )
     // test if layer1 is in the registry
     if ( !(( QgsVectorLayer* )mLayerRegistry->mapLayers().contains( layer1Str ) ) )
     {
-      std::cout << "CheckDock: layer " << layer1Str.toStdString() << " not found in registry!" << std::flush;
+      QgsMessageLog::logMessage( tr( "Layer %1 not found in registry." ).arg( layer1Str ), tr( "Topology plugin" ) );
       return;
     }
 
@@ -359,7 +352,7 @@ void checkDock::runTests( ValidateType type )
     if (( QgsVectorLayer* )mLayerRegistry->mapLayers().contains( layer2Str ) )
       layer2 = ( QgsVectorLayer* )mLayerRegistry->mapLayers()[layer2Str];
 
-    QProgressDialog progress( testName, "Abort", 0, layer1->featureCount(), this );
+    QProgressDialog progress( testName, tr( "Abort" ), 0, layer1->featureCount(), this );
     progress.setWindowModality( Qt::WindowModal );
 
     connect( &progress, SIGNAL( canceled() ), mTest, SLOT( setTestCancelled() ) );
@@ -414,7 +407,7 @@ void checkDock::validate( ValidateType type )
   mRbErrorMarkers.clear();
 
   runTests( type );
-  mComment->setText( QString( "%1 errors were found" ).arg( mErrorList.count() ) );
+  mComment->setText( tr( "%1 errors were found" ).arg( mErrorList.count() ) );
 
   mRBFeature1->reset();
   mRBFeature2->reset();

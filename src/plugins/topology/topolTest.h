@@ -32,7 +32,7 @@ class WKTReader;
 
 enum ValidateType { ValidateAll, ValidateExtent, ValidateSelected };
 
-typedef ErrorList( topolTest::*testFunction )( double, QgsVectorLayer*, QgsVectorLayer*,bool );
+typedef ErrorList( topolTest::*testFunction )( double, QgsVectorLayer*, QgsVectorLayer*, bool );
 
 class TopologyRule
 {
@@ -42,36 +42,18 @@ class TopologyRule
     bool useSpatialIndex;
     QList<QGis::GeometryType> layer1SupportedTypes;
     QList<QGis::GeometryType> layer2SupportedTypes;
-
-    bool layer1AcceptsType(QGis::GeometryType type )
-    {
-      if (layer1SupportedTypes.contains(type))
-        {
-
-          return true;
-        }
-      else
-        {
-          return false;
-        }
-
-    }
-
-    bool layer2AcceptsType(QGis::GeometryType type )
-    {
-      if (layer2SupportedTypes.contains(type))
-        {
-
-          return true;
-        }
-      else
-        {
-          return false;
-        }
-
-    }
-
     testFunction f;
+
+    bool layer1AcceptsType( QGis::GeometryType type )
+    {
+      return layer1SupportedTypes.contains( type );
+    }
+
+    bool layer2AcceptsType( QGis::GeometryType type )
+    {
+      return layer2SupportedTypes.contains( type );
+    }
+
 
     /**
      * Constructor
@@ -99,12 +81,9 @@ class PointComparer
         return true;
       }
 
-      if ( p1.x() == p2.x() )
+      if ( p1.x() == p2.x() && p1.y() < p2.y() )
       {
-        if ( p1.y() < p2.y() )
-        {
-          return true;
-        }
+        return true;
       }
 
       return false;
@@ -140,7 +119,7 @@ class topolTest: public QObject
      * @param layer1 pointer to the first layer
      * @param layer2 pointer to the second layer
      */
-    ErrorList checkOverlapWithLayer( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2 , bool isExtent);
+    ErrorList checkOverlapWithLayer( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2 , bool isExtent );
     /**
      * Checks for self-intersections in the layer
      * @param tolerance not used
@@ -155,12 +134,12 @@ class topolTest: public QObject
      * @param layer2 pointer to the second layer
      */
     ErrorList checkCloseFeature( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
-     /**
-     * Checks for short segments
-     * @param tolerance tolerance - not used
-     * @param layer1 pointer to the first layer
-     * @param layer2 pointer to the second layer
-     */
+    /**
+    * Checks for short segments
+    * @param tolerance tolerance - not used
+    * @param layer1 pointer to the first layer
+    * @param layer2 pointer to the second layer
+    */
     ErrorList checkSegmentLength( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
     /**
      * Checks for dangling lines
@@ -168,7 +147,7 @@ class topolTest: public QObject
      * @param layer1 pointer to the first layer
      * @param layer2 not used
      */
-    ErrorList checkDanglingLines( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2 , bool isExtent);
+    ErrorList checkDanglingLines( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2 , bool isExtent );
     /**
      * Checks for points not covered by any segment
      * @param tolerance not used
@@ -238,7 +217,7 @@ class topolTest: public QObject
      * @param layer1 pointer to the first polygon layer
      * @param layer2 pointer to the second point layer
      */
-    ErrorList checkPolygonContainsPoint( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2,bool isExtent );
+    ErrorList checkPolygonContainsPoint( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
 
     /**
      * Checks for multipart features
@@ -246,7 +225,7 @@ class topolTest: public QObject
      * @param layer1 pointer to the first layer
      * @param layer2 not used
      */
-    ErrorList checkMultipart( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2,bool isExtent );
+    ErrorList checkMultipart( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
 
     /**
      * Checks for line features that do not have both ends covered by points from another layer
@@ -254,7 +233,7 @@ class topolTest: public QObject
      * @param layer1 pointer to the first linelayer
      * @param layer2 pointer to the second point layer
      */
-    ErrorList checkyLineEndsCoveredByPoints( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2,bool isExtent );
+    ErrorList checkyLineEndsCoveredByPoints( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
 
 
   public slots:

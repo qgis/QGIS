@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "topolError.h"
+#include <qgsmessagelog.h>
 
 //TODO: tell dock to parse errorlist when feature is deleted
 bool TopolError::fix( QString fixName )
 {
-  std::cout << "fix: \"" << fixName.toStdString() << "\"\n";
-  ( this->*mFixMap[fixName] )();
+  QgsMessageLog::logMessage( QObject::tr( "Using fix %1." ).arg( fixName ), QObject::tr( "Topology plugin" ), QgsMessageLog::INFO );
+  return ( this->*mFixMap[fixName] )();
 }
 
 bool TopolError::fixMove( FeatureLayer fl1, FeatureLayer fl2 )
@@ -36,7 +37,6 @@ bool TopolError::fixMove( FeatureLayer fl1, FeatureLayer fl2 )
     return false;
 
 
-  QgsGeometry* g2, *g1 = f1.geometry();
   // 0 means success
   if ( !f1.geometry()->makeDifference( f2.geometry() ) )
     return fl1.layer->changeGeometry( f1.id(), f1.geometry() );
@@ -121,109 +121,109 @@ bool TopolError::fixDeleteSecond()
   return fl.layer->deleteFeature( fl.feature.id() );
 }
 
-TopolError::TopolError( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ):
-    mFeaturePairs( theFeaturePairs ),
-    mBoundingBox( theBoundingBox ),
-    mConflict( theConflict )
+TopolError::TopolError( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs )
+    : mBoundingBox( theBoundingBox )
+    , mConflict( theConflict )
+    , mFeaturePairs( theFeaturePairs )
 {
-  mFixMap["Select automatic fix"] = &TopolError::fixDummy;
+  mFixMap[ QObject::tr( "Select automatic fix" )] = &TopolError::fixDummy;
 }
 
 TopolErrorIntersection::TopolErrorIntersection( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "intersecting geometries";
+  mName = QObject::tr( "intersecting geometries" );
 
-  mFixMap["Move blue feature"] = &TopolErrorIntersection::fixMoveFirst;
-  mFixMap["Move red feature"] = &TopolErrorIntersection::fixMoveSecond;
-  mFixMap["Delete blue feature"] = &TopolErrorIntersection::fixDeleteFirst;
-  mFixMap["Delete red feature"] = &TopolErrorIntersection::fixDeleteSecond;
+  mFixMap[QObject::tr( "Move blue feature" )] = &TopolErrorIntersection::fixMoveFirst;
+  mFixMap[QObject::tr( "Move red feature" )] = &TopolErrorIntersection::fixMoveSecond;
+  mFixMap[QObject::tr( "Delete blue feature" )] = &TopolErrorIntersection::fixDeleteFirst;
+  mFixMap[QObject::tr( "Delete red feature" )] = &TopolErrorIntersection::fixDeleteSecond;
 
   // allow union only when both features have the same geometry type
   if ( theFeaturePairs.first().feature.geometry()->type() == theFeaturePairs[1].feature.geometry()->type() )
   {
-    mFixMap["Union to blue feature"] = &TopolErrorIntersection::fixUnionFirst;
-    mFixMap["Union to red feature"] = &TopolErrorIntersection::fixUnionSecond;
+    mFixMap[QObject::tr( "Union to blue feature" )] = &TopolErrorIntersection::fixUnionFirst;
+    mFixMap[QObject::tr( "Union to red feature" )] = &TopolErrorIntersection::fixUnionSecond;
   }
 }
 
 TopolErrorClose::TopolErrorClose( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "features too close";
+  mName = QObject::tr( "features too close" );
 
-  mFixMap["Move blue feature"] = &TopolErrorClose::fixMoveFirst;
-  mFixMap["Move red feature"] = &TopolErrorClose::fixMoveSecond;
-  mFixMap["Snap to segment"] = &TopolErrorClose::fixSnap;
+  mFixMap[QObject::tr( "Move blue feature" )] = &TopolErrorClose::fixMoveFirst;
+  mFixMap[QObject::tr( "Move red feature" )] = &TopolErrorClose::fixMoveSecond;
+  mFixMap[QObject::tr( "Snap to segment" )] = &TopolErrorClose::fixSnap;
 }
 
 TopolErrorCovered::TopolErrorCovered( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "point not covered by segment";
-  mFixMap["Delete point"] = &TopolErrorCovered::fixDeleteFirst;
+  mName = QObject::tr( "point not covered by segment" );
+  mFixMap[QObject::tr( "Delete point" )] = &TopolErrorCovered::fixDeleteFirst;
 }
 
 TopolErrorShort::TopolErrorShort( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "segment too short";
-  mFixMap["Delete feature"] = &TopolErrorShort::fixDeleteFirst;
+  mName = QObject::tr( "segment too short" );
+  mFixMap[QObject::tr( "Delete feature" )] = &TopolErrorShort::fixDeleteFirst;
 }
 
 TopolErrorValid::TopolErrorValid( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "invalid geometry";
-  mFixMap["Delete feature"] = &TopolErrorValid::fixDeleteFirst;
+  mName = QObject::tr( "invalid geometry" );
+  mFixMap[QObject::tr( "Delete feature" )] = &TopolErrorValid::fixDeleteFirst;
 }
 
 TopolErrorDangle::TopolErrorDangle( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "dangling end";
-  mFixMap["Delete feature"] = &TopolErrorDangle::fixDeleteFirst;
+  mName = QObject::tr( "dangling end" );
+  mFixMap[QObject::tr( "Delete feature" )] = &TopolErrorDangle::fixDeleteFirst;
 }
 
 TopolErrorDuplicates::TopolErrorDuplicates( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "duplicate geometry";
+  mName = QObject::tr( "duplicate geometry" );
   //mFixMap["Delete feature"] = &TopolErrorDuplicates::fixDeleteFirst;
 }
 
 TopolErrorPseudos::TopolErrorPseudos( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "pseudo node";
+  mName = QObject::tr( "pseudo node" );
   //mFixMap["Delete feature"] = &TopolErrorDuplicates::fixDeleteFirst;
 }
 
 TopolErrorOverlaps::TopolErrorOverlaps( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "overlaps";
+  mName = QObject::tr( "overlaps" );
   //mFixMap["Delete feature"] = &TopolErrorDuplicates::fixDeleteFirst;
 }
 
 TopolErrorGaps::TopolErrorGaps( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "gaps";
+  mName = QObject::tr( "gaps" );
   //mFixMap["Delete feature"] = &TopolErrorDuplicates::fixDeleteFirst;
 }
 
 TopolErrorPointNotCoveredByLineEnds::TopolErrorPointNotCoveredByLineEnds( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "point not covered";
+  mName = QObject::tr( "point not covered" );
 }
 
 TopolErrorLineEndsNotCoveredByPoints::TopolErrorLineEndsNotCoveredByPoints( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "line ends not covered by point";
+  mName = QObject::tr( "line ends not covered by point" );
 }
 
 TopolErrorPointNotInPolygon::TopolErrorPointNotInPolygon( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "point not in polygon";
+  mName = QObject::tr( "point not in polygon" );
 }
 
 TopolErrorPolygonContainsPoint::TopolErrorPolygonContainsPoint( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "polygon does not contain point";
+  mName = QObject::tr( "polygon does not contain point" );
 }
 
 TopolErroMultiPart::TopolErroMultiPart( QgsRectangle theBoundingBox, QgsGeometry* theConflict, QList<FeatureLayer> theFeaturePairs ) : TopolError( theBoundingBox, theConflict, theFeaturePairs )
 {
-  mName = "multipart feature";
+  mName = QObject::tr( "multipart feature" );
 }

@@ -66,7 +66,7 @@ rulesDialog::rulesDialog( QList<QString> layerList, QMap<QString, TopologyRule> 
 
   }
 
-  connect (mLayer1Box, SIGNAL( currentIndexChanged(const QString&) ),this, SLOT( updateRuleItems(const QString&) ) );
+  connect( mLayer1Box, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( updateRuleItems( const QString& ) ) );
 
   connect( mAddTestButton, SIGNAL( clicked() ), this, SLOT( addTest() ) );
   connect( mAddTestButton, SIGNAL( clicked() ), mTestTable, SLOT( resizeColumnsToContents() ) );
@@ -175,44 +175,44 @@ void rulesDialog::projectRead()
 void rulesDialog::showControls( const QString& testName )
 {
   mLayer2Box->clear();
-  mLayer2Box->addItem("No layer");
+  mLayer2Box->addItem( "No layer" );
   TopologyRule topologyRule = mTestConfMap[testName];
   QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
 
-  if( topologyRule.useSecondLayer)
+  if ( topologyRule.useSecondLayer )
+  {
+    mLayer2Box->setVisible( true );
+    for ( int i = 0; i < mLayerIds.count(); ++i )
     {
-      mLayer2Box->setVisible(true);
-      for(int i = 0; i < mLayerIds.count(); ++i)
-        {
-          QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayers()[mLayerIds.at(i)];
+      QgsVectorLayer* v1 = ( QgsVectorLayer* )layerRegistry->mapLayers()[mLayerIds.at( i )];
 
-          if ( v1->name() == mLayer1Box->currentText())
-            {
-              continue;
-            }
+      if ( v1->name() == mLayer1Box->currentText() )
+      {
+        continue;
+      }
 
-          if( topologyRule.layer2AcceptsType( v1->geometryType()) )
-            {
-              mLayer2Box->addItem( v1->name());
-            }
-        }
+      if ( topologyRule.layer2AcceptsType( v1->geometryType() ) )
+      {
+        mLayer2Box->addItem( v1->name() );
+      }
     }
+  }
   else
-    {
-      mLayer2Box->setVisible(false);
-    }
+  {
+    mLayer2Box->setVisible( false );
+  }
 
 
-  if(topologyRule.useTolerance)
-    {
-      mToleranceBox->setVisible( true );
-      mToleranceLabel->setVisible( true );
-    }
+  if ( topologyRule.useTolerance )
+  {
+    mToleranceBox->setVisible( true );
+    mToleranceLabel->setVisible( true );
+  }
   else
-    {
-      mToleranceBox->setVisible( false );
-      mToleranceLabel->setVisible( false );
-    }
+  {
+    mToleranceBox->setVisible( false );
+    mToleranceLabel->setVisible( false );
+  }
 
 }
 
@@ -250,15 +250,15 @@ void rulesDialog::addTest()
   if ( layer2 == "No layer" && mTestConfMap[test].useSecondLayer )
     return;
 
-  for (int i = 0; i < mTestTable->rowCount(); ++i)
+  for ( int i = 0; i < mTestTable->rowCount(); ++i )
+  {
+    if ( mTestTable->item( i, 0 )->text() == test &&
+         mTestTable->item( i, 1 )->text() == layer1 &&
+         mTestTable->item( i, 2 )->text() == layer2 )
     {
-      if( mTestTable->item(i,0)->text() == test &&
-          mTestTable->item(i,1)->text() == layer1 &&
-          mTestTable->item(i,2)->text() == layer2 )
-        {
-          return;
-        }
+      return;
     }
+  }
 
   int row = mTestTable->rowCount();
   mTestTable->insertRow( row );
@@ -323,27 +323,27 @@ void rulesDialog::deleteTest()
     mTestTable->removeRow( row );
 }
 
-void rulesDialog::updateRuleItems(const QString &layerName)
+void rulesDialog::updateRuleItems( const QString &layerName )
 {
   mTestBox->clear();
 
-  if( layerName == "No layer")
-    {
-      return;
-    }
+  if ( layerName == "No layer" )
+  {
+    return;
+  }
 
-  QString layerId = mLayer1Box->itemData(mLayer1Box->currentIndex()).toString();
+  QString layerId = mLayer1Box->itemData( mLayer1Box->currentIndex() ).toString();
 
   QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
-  QgsVectorLayer* vlayer= (QgsVectorLayer*)layerRegistry->mapLayers()[layerId];
+  QgsVectorLayer* vlayer = ( QgsVectorLayer* )layerRegistry->mapLayers()[layerId];
 
-  for (QMap<QString, TopologyRule>::iterator it = mTestConfMap.begin(); it != mTestConfMap.end(); ++it)
+  for ( QMap<QString, TopologyRule>::iterator it = mTestConfMap.begin(); it != mTestConfMap.end(); ++it )
+  {
+    TopologyRule rule = it.value();
+    if ( rule.layer1AcceptsType( vlayer->geometryType() ) )
     {
-      TopologyRule rule = it.value();
-      if(rule.layer1AcceptsType(vlayer->geometryType()))
-        {
-          mTestBox->addItem(it.key());
-        }
-
+      mTestBox->addItem( it.key() );
     }
+
+  }
 }

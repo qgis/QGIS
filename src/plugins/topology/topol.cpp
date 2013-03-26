@@ -160,6 +160,12 @@ QGISEXTERN int type()
   return sPluginType;
 }
 
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
+}
+
 // Return the version number for the plugin
 QGISEXTERN QString version()
 {

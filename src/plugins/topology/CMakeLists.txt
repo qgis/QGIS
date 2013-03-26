@@ -22,7 +22,6 @@ SET (topol_MOC_HDRS
   checkDock.h
   topolTest.h
   dockModel.h
-  geosFunctions.h
 )
 
 SET (topol_RCCS  topol.qrc)

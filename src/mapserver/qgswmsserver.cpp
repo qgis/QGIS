@@ -1552,6 +1552,9 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
       case QgsComposerLegendItem::LayerItem:
         //QgsDebugMsg( "GroupItem not handled" );
         break;
+      case QgsComposerLegendItem::StyleItem:
+        //QgsDebugMsg( "StyleItem not handled" );
+        break;
     }
 
     //finally draw text

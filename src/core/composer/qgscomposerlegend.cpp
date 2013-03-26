@@ -111,7 +111,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   double columnTop = mBoxSpace + titleSize.height() + style( QgsComposerLegendStyle::Group ).margin( QgsComposerLegendStyle::Top );
 
   QPointF point( mBoxSpace, columnTop );
-  bool firstInColumn = true;
+  // bool firstInColumn = true;
   double columnMaxHeight = 0;
   qreal columnWidth = 0;
   int column = 0;
@@ -131,7 +131,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
       point.ry() = columnTop;
       columnWidth = 0;
       column++;
-      firstInColumn = true;
+      // firstInColumn = true;
     }
     // Add space if necessary, unfortunately it depends on first nucleon
     //if ( !firstInColumn )
@@ -145,7 +145,7 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     point.ry() += atom.size.height();
     columnMaxHeight = qMax( point.y() - columnTop, columnMaxHeight );
 
-    firstInColumn = false;
+    // firstInColumn = false;
   }
   point.rx() += columnWidth + mBoxSpace;
 
@@ -962,7 +962,7 @@ QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem*
 // Draw atom and expand its size (using actual nucleons labelXOffset)
 QSizeF QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point )
 {
-  bool first = true;
+  // bool first = true;
   QSizeF size = QSizeF( atom.size );
   foreach ( Nucleon nucleon, atom.nucleons )
   {
@@ -1006,7 +1006,7 @@ QSizeF QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point 
       size.rwidth() = qMax( symbolNucleon.size.width(), size.width() );
     }
     point.ry() += nucleon.size.height();
-    first = false;
+    // first = false;
   }
   return size;
 }
@@ -1046,7 +1046,7 @@ void QgsComposerLegend::setColumns( QList<Atom>& atomList )
 
   // Divide atoms to columns
   double totalHeight = 0;
-  bool first = true;
+  // bool first = true;
   qreal maxAtomHeight = 0;
   foreach ( Atom atom, atomList )
   {
@@ -1056,7 +1056,7 @@ void QgsComposerLegend::setColumns( QList<Atom>& atomList )
     //}
     totalHeight += atom.size.height();
     maxAtomHeight = qMax( atom.size.height(), maxAtomHeight );
-    first  = false;
+    // first  = false;
   }
 
   // We know height of each atom and we have to split them into columns
@@ -1071,7 +1071,7 @@ void QgsComposerLegend::setColumns( QList<Atom>& atomList )
   double currentColumnHeight = 0;
   double maxColumnHeight = 0;
   double closedColumnsHeight = 0;
-  first = true; // first in column
+  // first = true; // first in column
   for ( int i = 0; i < atomList.size(); i++ )
   {
     Atom atom = atomList[i];
@@ -1104,7 +1104,7 @@ void QgsComposerLegend::setColumns( QList<Atom>& atomList )
     currentColumnAtomCount++;
     maxColumnHeight = qMax( currentColumnHeight, maxColumnHeight );
 
-    first  = false;
+    // first  = false;
   }
 
   // Alling labels of symbols for each layr/column to the same labelXOffset

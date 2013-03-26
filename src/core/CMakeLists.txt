@@ -322,7 +322,6 @@ SET(QGIS_CORE_MOC_HDRS
 
   composer/qgsaddremoveitemcommand.h
   composer/qgscomposerlegend.h
-  composer/qgscomposerlegendstyle.h
   composer/qgscomposermap.h
   composer/qgscomposerpicture.h
   composer/qgscomposerscalebar.h

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "topolTest.h"
-#include <geos_c.h>
 
 #include <qgsvectorlayer.h>
 #include <qgsmaplayer.h>
@@ -25,11 +24,11 @@
 #include <qgsfeature.h>
 #include <qgsspatialindex.h>
 #include <qgisinterface.h>
+#include <qgslogger.h>
+#include <qgsmessagelog.h>
 #include <cmath>
 #include <set>
 #include <map>
-
-#include "geosFunctions.h"
 
 topolTest::topolTest( QgisInterface* qgsIface )
 {
@@ -37,103 +36,100 @@ topolTest::topolTest( QgisInterface* qgsIface )
   mTestCancelled = false;
 
   // one layer tests
-  mTopologyRuleMap["must not have invalid geometries"].f = &topolTest::checkValid;
-  mTopologyRuleMap["must not have invalid geometries"].useSecondLayer = false;
-  mTopologyRuleMap["must not have invalid geometries"].useTolerance = false;
-  mTopologyRuleMap["must not have invalid geometries"].useSpatialIndex = false;
-  mTopologyRuleMap["must not have invalid geometries"].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
+  mTopologyRuleMap[QObject::tr( "must not have invalid geometries" )].f = &topolTest::checkValid;
+  mTopologyRuleMap[QObject::tr( "must not have invalid geometries" )].useSecondLayer = false;
+  mTopologyRuleMap[QObject::tr( "must not have invalid geometries" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must not have invalid geometries" )].useSpatialIndex = false;
+  mTopologyRuleMap[QObject::tr( "must not have invalid geometries" )].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
 
-  //mTopologyRuleMap["segments must have minimum length"].f = &topolTest::checkSegmentLength;
-  //mTopologyRuleMap["segments must have minimum length"].useTolerance = true;
-  //mTopologyRuleMap["segments must have minimum length"].useSecondLayer = false;
-  //mTopologyRuleMap["segments must have minimum length"].useSpatialIndex = false;
+  //mTopologyRuleMap[QObject::tr("segments must have minimum length")].f = &topolTest::checkSegmentLength;
+  //mTopologyRuleMap[QObject::tr("segments must have minimum length")].useTolerance = true;
+  //mTopologyRuleMap[QObject::tr("segments must have minimum length")].useSecondLayer = false;
+  //mTopologyRuleMap[QObject::tr("segments must have minimum length")].useSpatialIndex = false;
 
-  mTopologyRuleMap["must not have dangles"].f = &topolTest::checkDanglingLines;
-  mTopologyRuleMap["must not have dangles"].useSecondLayer = false;
-  mTopologyRuleMap["must not have dangles"].useTolerance = false;
-  mTopologyRuleMap["must not have dangles"].useSpatialIndex = false;
-  mTopologyRuleMap["must not have dangles"].layer1SupportedTypes << QGis::Line;
+  mTopologyRuleMap[QObject::tr( "must not have dangles" )].f = &topolTest::checkDanglingLines;
+  mTopologyRuleMap[QObject::tr( "must not have dangles" )].useSecondLayer = false;
+  mTopologyRuleMap[QObject::tr( "must not have dangles" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must not have dangles" )].useSpatialIndex = false;
+  mTopologyRuleMap[QObject::tr( "must not have dangles" )].layer1SupportedTypes << QGis::Line;
 
-  mTopologyRuleMap["must not have duplicates"].f = &topolTest::checkDuplicates;
-  mTopologyRuleMap["must not have duplicates"].useTolerance = false;
-  mTopologyRuleMap["must not have duplicates"].useSecondLayer = false;
-  mTopologyRuleMap["must not have duplicates"].useSpatialIndex = true;
-  mTopologyRuleMap["must not have duplicates"].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
+  mTopologyRuleMap[QObject::tr( "must not have duplicates" )].f = &topolTest::checkDuplicates;
+  mTopologyRuleMap[QObject::tr( "must not have duplicates" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must not have duplicates" )].useSecondLayer = false;
+  mTopologyRuleMap[QObject::tr( "must not have duplicates" )].useSpatialIndex = true;
+  mTopologyRuleMap[QObject::tr( "must not have duplicates" )].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
 
-  mTopologyRuleMap["must not have pseudos"].f = &topolTest::checkPseudos;
-  mTopologyRuleMap["must not have pseudos"].useTolerance = false;
-  mTopologyRuleMap["must not have pseudos"].useSecondLayer = false;
-  mTopologyRuleMap["must not have pseudos"].useSpatialIndex = false;
-  mTopologyRuleMap["must not have pseudos"].layer1SupportedTypes << QGis::Line;
+  mTopologyRuleMap[QObject::tr( "must not have pseudos" )].f = &topolTest::checkPseudos;
+  mTopologyRuleMap[QObject::tr( "must not have pseudos" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must not have pseudos" )].useSecondLayer = false;
+  mTopologyRuleMap[QObject::tr( "must not have pseudos" )].useSpatialIndex = false;
+  mTopologyRuleMap[QObject::tr( "must not have pseudos" )].layer1SupportedTypes << QGis::Line;
 
-  mTopologyRuleMap["must not overlap"].f = &topolTest::checkOverlaps;
-  mTopologyRuleMap["must not overlap"].useTolerance = false;
-  mTopologyRuleMap["must not overlap"].useSecondLayer = false;
-  mTopologyRuleMap["must not overlap"].useSpatialIndex = true;
-  mTopologyRuleMap["must not overlap"].layer1SupportedTypes << QGis::Polygon;
+  mTopologyRuleMap[QObject::tr( "must not overlap" )].f = &topolTest::checkOverlaps;
+  mTopologyRuleMap[QObject::tr( "must not overlap" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must not overlap" )].useSecondLayer = false;
+  mTopologyRuleMap[QObject::tr( "must not overlap" )].useSpatialIndex = true;
+  mTopologyRuleMap[QObject::tr( "must not overlap" )].layer1SupportedTypes << QGis::Polygon;
 
-  mTopologyRuleMap["must not have gaps"].f = &topolTest::checkGaps;
-  mTopologyRuleMap["must not have gaps"].useTolerance = false;
-  mTopologyRuleMap["must not have gaps"].useSecondLayer = false;
-  mTopologyRuleMap["must not have gaps"].useSpatialIndex = false;
-  mTopologyRuleMap["must not have gaps"].layer1SupportedTypes << QGis::Polygon;
+  mTopologyRuleMap[QObject::tr( "must not have gaps" )].f = &topolTest::checkGaps;
+  mTopologyRuleMap[QObject::tr( "must not have gaps" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must not have gaps" )].useSecondLayer = false;
+  mTopologyRuleMap[QObject::tr( "must not have gaps" )].useSpatialIndex = false;
+  mTopologyRuleMap[QObject::tr( "must not have gaps" )].layer1SupportedTypes << QGis::Polygon;
 
-  mTopologyRuleMap["Must not have multi-part geometries"].f = &topolTest::checkMultipart;
-  mTopologyRuleMap["Must not have multi-part geometries"].useSecondLayer = false;
-  mTopologyRuleMap["Must not have multi-part geometries"].useTolerance = false;
-  mTopologyRuleMap["Must not have multi-part geometries"].useSpatialIndex = false;
-  mTopologyRuleMap["Must not have multi-part geometries"].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
+  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].f = &topolTest::checkMultipart;
+  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].useSecondLayer = false;
+  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].useSpatialIndex = false;
+  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
 
   // two layer tests
-  mTopologyRuleMap["must not overlap with"].f = &topolTest::checkOverlapWithLayer;
-  mTopologyRuleMap["must not overlap with"].useSecondLayer = true;
-  mTopologyRuleMap["must not overlap with"].useTolerance = false;
-  mTopologyRuleMap["must not overlap with"].useSpatialIndex = true;
-  mTopologyRuleMap["must not overlap with"].layer1SupportedTypes << QGis::Polygon;
-  mTopologyRuleMap["must not overlap with"].layer2SupportedTypes << QGis::Polygon;
+  mTopologyRuleMap[QObject::tr( "must not overlap with" )].f = &topolTest::checkOverlapWithLayer;
+  mTopologyRuleMap[QObject::tr( "must not overlap with" )].useSecondLayer = true;
+  mTopologyRuleMap[QObject::tr( "must not overlap with" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must not overlap with" )].useSpatialIndex = true;
+  mTopologyRuleMap[QObject::tr( "must not overlap with" )].layer1SupportedTypes << QGis::Polygon;
+  mTopologyRuleMap[QObject::tr( "must not overlap with" )].layer2SupportedTypes << QGis::Polygon;
 
-  mTopologyRuleMap["must be covered by"].f = &topolTest::checkPointCoveredBySegment;
-  mTopologyRuleMap["must be covered by"].useSecondLayer = true;
-  mTopologyRuleMap["must be covered by"].useTolerance = false;
-  mTopologyRuleMap["must be covered by"].useSpatialIndex = true;
-  mTopologyRuleMap["must be covered by"].layer1SupportedTypes << QGis::Point;
-  mTopologyRuleMap["must be covered by"].layer2SupportedTypes << QGis::Line << QGis::Polygon;
+  mTopologyRuleMap[QObject::tr( "must be covered by" )].f = &topolTest::checkPointCoveredBySegment;
+  mTopologyRuleMap[QObject::tr( "must be covered by" )].useSecondLayer = true;
+  mTopologyRuleMap[QObject::tr( "must be covered by" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must be covered by" )].useSpatialIndex = true;
+  mTopologyRuleMap[QObject::tr( "must be covered by" )].layer1SupportedTypes << QGis::Point;
+  mTopologyRuleMap[QObject::tr( "must be covered by" )].layer2SupportedTypes << QGis::Line << QGis::Polygon;
 
-  //mTopologyRuleMap["features must not be closer than tolerance"].f = &topolTest::checkCloseFeature;
-  //mTopologyRuleMap["features must not be closer than tolerance"].useSecondLayer = true;
-  //mTopologyRuleMap["features must not be closer than tolerance"].useTolerance = false;
-  //mTopologyRuleMap["features must not be closer than tolerance"].useSpatialIndex = false;
+  //mTopologyRuleMap[QObject::tr("features must not be closer than tolerance")].f = &topolTest::checkCloseFeature;
+  //mTopologyRuleMap[QObject::tr("features must not be closer than tolerance")].useSecondLayer = true;
+  //mTopologyRuleMap[QObject::tr("features must not be closer than tolerance")].useTolerance = false;
+  //mTopologyRuleMap[QObject::tr("features must not be closer than tolerance")].useSpatialIndex = false;
 
-  mTopologyRuleMap["must be covered by endpoints of"].f = &topolTest::checkPointCoveredByLineEnds;
-  mTopologyRuleMap["must be covered by endpoints of"].useSecondLayer = true;
-  mTopologyRuleMap["must be covered by endpoints of"].useTolerance = false;
-  mTopologyRuleMap["must be covered by endpoints of"].useSpatialIndex = true;
-  mTopologyRuleMap["must be covered by endpoints of"].layer1SupportedTypes << QGis::Point;
-  mTopologyRuleMap["must be covered by endpoints of"].layer2SupportedTypes << QGis::Line;
+  mTopologyRuleMap[QObject::tr( "must be covered by endpoints of" )].f = &topolTest::checkPointCoveredByLineEnds;
+  mTopologyRuleMap[QObject::tr( "must be covered by endpoints of" )].useSecondLayer = true;
+  mTopologyRuleMap[QObject::tr( "must be covered by endpoints of" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must be covered by endpoints of" )].useSpatialIndex = true;
+  mTopologyRuleMap[QObject::tr( "must be covered by endpoints of" )].layer1SupportedTypes << QGis::Point;
+  mTopologyRuleMap[QObject::tr( "must be covered by endpoints of" )].layer2SupportedTypes << QGis::Line;
 
-  mTopologyRuleMap["end points must be covered by"].f = &topolTest::checkyLineEndsCoveredByPoints;
-  mTopologyRuleMap["end points must be covered by"].useSecondLayer = true;
-  mTopologyRuleMap["end points must be covered by"].useTolerance = false;
-  mTopologyRuleMap["end points must be covered by"].useSpatialIndex = true;
-  mTopologyRuleMap["end points must be covered by"].layer1SupportedTypes << QGis::Line;
-  mTopologyRuleMap["end points must be covered by"].layer2SupportedTypes << QGis::Point;
+  mTopologyRuleMap[QObject::tr( "end points must be covered by" )].f = &topolTest::checkyLineEndsCoveredByPoints;
+  mTopologyRuleMap[QObject::tr( "end points must be covered by" )].useSecondLayer = true;
+  mTopologyRuleMap[QObject::tr( "end points must be covered by" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "end points must be covered by" )].useSpatialIndex = true;
+  mTopologyRuleMap[QObject::tr( "end points must be covered by" )].layer1SupportedTypes << QGis::Line;
+  mTopologyRuleMap[QObject::tr( "end points must be covered by" )].layer2SupportedTypes << QGis::Point;
 
-  mTopologyRuleMap["must be inside"].f = &topolTest::checkPointInPolygon;
-  mTopologyRuleMap["must be inside"].useSecondLayer = true;
-  mTopologyRuleMap["must be inside"].useTolerance = false;
-  mTopologyRuleMap["must be inside"].useSpatialIndex = true;
-  mTopologyRuleMap["must be inside"].layer1SupportedTypes << QGis::Point;
-  mTopologyRuleMap["must be inside"].layer2SupportedTypes << QGis::Polygon;
+  mTopologyRuleMap[QObject::tr( "must be inside" )].f = &topolTest::checkPointInPolygon;
+  mTopologyRuleMap[QObject::tr( "must be inside" )].useSecondLayer = true;
+  mTopologyRuleMap[QObject::tr( "must be inside" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must be inside" )].useSpatialIndex = true;
+  mTopologyRuleMap[QObject::tr( "must be inside" )].layer1SupportedTypes << QGis::Point;
+  mTopologyRuleMap[QObject::tr( "must be inside" )].layer2SupportedTypes << QGis::Polygon;
 
-  mTopologyRuleMap["must contain"].f = &topolTest::checkPolygonContainsPoint;
-  mTopologyRuleMap["must contain"].useSecondLayer = true;
-  mTopologyRuleMap["must contain"].useTolerance = false;
-  mTopologyRuleMap["must contain"].useSpatialIndex = true;
-  mTopologyRuleMap["must contain"].layer1SupportedTypes << QGis::Polygon;
-  mTopologyRuleMap["must contain"].layer2SupportedTypes << QGis::Point;
-
-
-
+  mTopologyRuleMap[QObject::tr( "must contain" )].f = &topolTest::checkPolygonContainsPoint;
+  mTopologyRuleMap[QObject::tr( "must contain" )].useSecondLayer = true;
+  mTopologyRuleMap[QObject::tr( "must contain" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must contain" )].useSpatialIndex = true;
+  mTopologyRuleMap[QObject::tr( "must contain" )].layer1SupportedTypes << QGis::Polygon;
+  mTopologyRuleMap[QObject::tr( "must contain" )].layer2SupportedTypes << QGis::Point;
 }
 
 topolTest::~topolTest()
@@ -161,6 +157,7 @@ bool topolTest::testCancelled()
 
 ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
+  Q_UNUSED( isExtent );
   ErrorList errorList;
   QgsSpatialIndex* index = 0;
 
@@ -232,10 +229,10 @@ ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1
   }
 
   if ( badG2 )
-    std::cout << "g2 or g2->asGeos() == NULL in close\n" << std::flush;
+    QgsMessageLog::logMessage( tr( "Invalid second geometry." ), tr( "Topology plugin" ) );
 
   if ( badG1 )
-    std::cout << "g1 or g1->asGeos() == NULL in close\n" << std::flush;
+    QgsMessageLog::logMessage( tr( "Invalid first geometry." ), tr( "Topology plugin" ) );
 
   return errorList;
 }
@@ -276,13 +273,13 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
 
     if ( !g1 )
     {
-      std::cout << "g2 == NULL in pseudo line test\n" << std::flush;
+      QgsMessageLog::logMessage( tr( "First geometry invalid in line test." ), tr( "Topology plugin" ) );
       continue;
     }
 
     if ( !g1->asGeos() )
     {
-      std::cout << "g2->asGeos() == NULL in pseudo line test\n" << std::flush;
+      QgsMessageLog::logMessage( tr( "Failed to import first geometry into GEOS in line test." ), tr( "Topology plugin" ) );
       continue;
     }
 
@@ -310,7 +307,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
     }
   }
 
-  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
   for ( std::multimap<QgsPoint, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
@@ -325,9 +322,9 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
     {
 
       QgsGeometry* conflictGeom = QgsGeometry::fromPoint( p );
-      if(isExtent)
+      if ( isExtent )
       {
-      if(canvasExtentPoly->disjoint(conflictGeom))
+        if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
           continue;
         }
@@ -366,7 +363,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
 
   QgsSpatialIndex* index = mLayerIndexes[layer1->id()];
 
-  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
   QList<FeatureLayer>::Iterator it;
@@ -408,17 +405,17 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
       QgsGeometry* g2 = mFeatureMap2[*cit].feature.geometry();
       if ( !g2 )
       {
-        std::cout << "g2 == NULL in dangling line test\n" << std::flush;
+        QgsMessageLog::logMessage( tr( "Invalid second geometry in dangling line test." ), tr( "Topology plugin" ) );
         continue;
       }
 
       if ( !g2->asGeos() )
       {
-        std::cout << "g2->asGeos() == NULL in dangling line test\n" << std::flush;
+        QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in dangling line test." ), tr( "Topology plugin" ) );
         continue;
       }
 
-      if (g1->equals(g2))
+      if ( g1->equals( g2 ) )
       {
         duplicate = true;
         duplicateIds->append( mFeatureMap2[*cit].feature.id() );
@@ -432,15 +429,15 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
         fls << *it << *it;
         QgsGeometry* conflict = new QgsGeometry( *g1 );
 
-        if(isExtent)
+        if ( isExtent )
         {
-        if(canvasExtentPoly->disjoint(conflict))
+          if ( canvasExtentPoly->disjoint( conflict ) )
           {
             continue;
           }
-        if(canvasExtentPoly->crosses(conflict))
+          if ( canvasExtentPoly->crosses( conflict ) )
           {
-            conflict = conflict->intersection(canvasExtentPoly);
+            conflict = conflict->intersection( canvasExtentPoly );
           }
         }
 
@@ -504,10 +501,10 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
     QgsGeometry* g1 = it->feature.geometry();
 
     if ( g1->isGeosValid() == false )
-      {
-        qDebug() << "invalid geometry(g1) found..skipping.." << it->feature.id();
-        continue;
-      }
+    {
+      qDebug() << "invalid geometry(g1) found..skipping.." << it->feature.id();
+      continue;
+    }
 
     QgsRectangle bb = g1->boundingBox();
 
@@ -519,7 +516,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
 
     bool duplicate = false;
 
-    QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+    QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
     for ( ; cit != crossingIdsEnd; ++cit )
     {
@@ -531,25 +528,25 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
       QgsGeometry* g2 = mFeatureMap2[*cit].feature.geometry();
       if ( !g2 )
       {
-        std::cout << "g2 == NULL in dangling line test\n" << std::flush;
+        QgsMessageLog::logMessage( tr( "Invalid second geometry in dangling line test." ), tr( "Topology plugin" ) );
         continue;
       }
 
       if ( !g2->asGeos() )
       {
-        std::cout << "g2->asGeos() == NULL in dangling line test\n" << std::flush;
+        QgsMessageLog::logMessage( tr( "Failed to import second geometry into GEOS in dangling line test." ), tr( "Topology plugin" ) );
         continue;
       }
 
       if ( g2->isGeosValid() == false )
-        {
-          qDebug() << "invalid geometry(g2) found..skipping.." << it->feature.id();
-          continue;
-        }
+      {
+        QgsMessageLog::logMessage( tr( "Skipping invalid second geometry of feature %1 in dangling line test." ).arg( it->feature.id() ), tr( "Topology plugin" ) );
+        continue;
+      }
 
 
       qDebug() << "checking overlap for" << it->feature.id();
-      if (g1->overlaps(g2))
+      if ( g1->overlaps( g2 ) )
       {
         duplicate = true;
         duplicateIds->append( mFeatureMap2[*cit].feature.id() );
@@ -563,15 +560,15 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
         fls << *it << *it;
         QgsGeometry* conflictGeom = g1->intersection( g2 );
 
-        if(isExtent)
+        if ( isExtent )
         {
-        if(canvasExtentPoly->disjoint(conflictGeom))
+          if ( canvasExtentPoly->disjoint( conflictGeom ) )
           {
             continue;
           }
-        if(canvasExtentPoly->crosses(conflictGeom))
+          if ( canvasExtentPoly->crosses( conflictGeom ) )
           {
-            conflictGeom = conflictGeom->intersection(canvasExtentPoly);
+            conflictGeom = conflictGeom->intersection( canvasExtentPoly );
           }
         }
 
@@ -637,28 +634,28 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
     }
 
     if ( g1->isGeosValid() == false )
-      {
-        qDebug() << "invalid geometry found..skipping.." << it->feature.id();
-        continue;
-      }
+    {
+      qDebug() << "invalid geometry found..skipping.." << it->feature.id();
+      continue;
+    }
 
     if ( g1->isMultipart() )
+    {
+      QgsMultiPolygon polys = g1->asMultiPolygon();
+      for ( int m = 0; m < polys.count(); m++ )
       {
-        QgsMultiPolygon polys = g1->asMultiPolygon();
-        for ( int m = 0; m < polys.count(); m++ )
-          {
-            QgsPolygon polygon = polys[m];
+        QgsPolygon polygon = polys[m];
 
-            QgsGeometry* polyGeom = QgsGeometry::fromPolygon(polygon);
+        QgsGeometry* polyGeom = QgsGeometry::fromPolygon( polygon );
 
-            geomList.push_back( GEOSGeom_clone(polyGeom->asGeos()) );
-          }
-
+        geomList.push_back( GEOSGeom_clone( polyGeom->asGeos() ) );
       }
+
+    }
     else
-      {
-        geomList.push_back( GEOSGeom_clone( g1->asGeos() ) );
-      }
+    {
+      geomList.push_back( GEOSGeom_clone( g1->asGeos() ) );
+    }
   }
 
   GEOSGeometry** geomArray = new GEOSGeometry*[geomList.size()];
@@ -702,22 +699,22 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
 
   QList<QgsGeometry*> geomColl = diffGeoms->asGeometryCollection();
 
-  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
   for ( int i = 1; i < geomColl.count() ; ++i )
   {
     QgsGeometry* conflictGeom = geomColl[i];
-    if(isExtent)
+    if ( isExtent )
+    {
+      if ( canvasExtentPoly->disjoint( conflictGeom ) )
       {
-        if(canvasExtentPoly->disjoint(conflictGeom))
-          {
-            continue;
-          }
-        if(canvasExtentPoly->crosses(conflictGeom))
-          {
-            conflictGeom = conflictGeom->intersection(canvasExtentPoly);
-          }
+        continue;
       }
+      if ( canvasExtentPoly->crosses( conflictGeom ) )
+      {
+        conflictGeom = conflictGeom->intersection( canvasExtentPoly );
+      }
+    }
     QgsRectangle bBox = conflictGeom->boundingBox();
     QgsFeature feat;
     FeatureLayer ftrLayer1;
@@ -767,13 +764,13 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
 
     if ( !g1 )
     {
-      std::cout << "g2 == NULL in pseudo line test\n" << std::flush;
+      QgsMessageLog::logMessage( tr( "Skipping invalid first geometry in pseudo line test." ), tr( "Topology plugin" ) );
       continue;
     }
 
     if ( !g1->asGeos() )
     {
-      std::cout << "g2->asGeos() == NULL in pseudo line test\n" << std::flush;
+      QgsMessageLog::logMessage( tr( "Failed to import first geometry into GEOS in pseudo line test." ), tr( "Topology plugin" ) );
       continue;
     }
 
@@ -802,7 +799,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
   }
 
 
-  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
   for ( std::multimap<QgsPoint, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
@@ -816,9 +813,9 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
     {
       QgsGeometry* conflictGeom = QgsGeometry::fromPoint( p );
 
-      if(isExtent)
+      if ( isExtent )
       {
-      if(canvasExtentPoly->disjoint(conflictGeom))
+        if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
           continue;
         }
@@ -850,6 +847,7 @@ ErrorList topolTest::checkValid( double tolerance, QgsVectorLayer* layer1, QgsVe
   Q_UNUSED( tolerance );
   Q_UNUSED( layer1 );
   Q_UNUSED( layer2 );
+  Q_UNUSED( isExtent );
 
   int i = 0;
   ErrorList errorList;
@@ -867,7 +865,7 @@ ErrorList topolTest::checkValid( double tolerance, QgsVectorLayer* layer1, QgsVe
     QgsGeometry* g = it->feature.geometry();
     if ( !g )
     {
-      std::cout << "validity test: invalid QgsGeometry pointer\n" << std::flush;
+      QgsMessageLog::logMessage( tr( "Invalid geometry in validity test." ), tr( "Topology plugin" ) );
       continue;
     }
 
@@ -908,7 +906,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
   }
 
   QgsSpatialIndex* index = mLayerIndexes[layer2->id()];
-  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
   QList<FeatureLayer>::Iterator it;
@@ -936,14 +934,14 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
       QgsFeature& f = mFeatureMap2[*cit].feature;
       QgsGeometry* g2 = f.geometry();
 
-      if ( !g2 || !g2->asGeos() )
+      if ( !g2 )
       {
-        std::cout << "g2 or g2->asGeos() == NULL in covered\n" << std::flush;
+        QgsMessageLog::logMessage( tr( "Invalid geometry in covering test." ), tr( "Topology plugin" ) );
         continue;
       }
 
       // test if point touches other geometry
-      if ( geosTouches( g1, g2 ) )
+      if ( g1->touches( g2 ) )
       {
         touched = true;
         break;
@@ -954,9 +952,9 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
     {
       QgsGeometry* conflictGeom = new QgsGeometry( *g1 );
 
-      if(isExtent)
+      if ( isExtent )
       {
-      if(canvasExtentPoly->disjoint(conflictGeom))
+        if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
           continue;
         }
@@ -977,7 +975,9 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
 
 ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
+  Q_UNUSED( layer1 );
   Q_UNUSED( layer2 );
+  Q_UNUSED( isExtent );
 
   int i = 0;
   ErrorList errorList;
@@ -1138,7 +1138,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
   bool skipItself = layer1 == layer2;
   QgsSpatialIndex* index = mLayerIndexes[layer2->id()];
 
-  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
   QList<FeatureLayer>::Iterator it;
@@ -1169,51 +1169,51 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
         continue;
 
       if ( !g2 )
+      {
+        QgsMessageLog::logMessage( tr( "Second geometry missing." ), tr( "Topology plugin" ) );
+        continue;
+      }
+
+      if ( g1->overlaps( g2 ) )
+      {
+        QgsRectangle r = bb;
+        QgsRectangle r2 = g2->boundingBox();
+        r.combineExtentWith( &r2 );
+
+        QgsGeometry* conflictGeom = g1->intersection( g2 );
+        // could this for some reason return NULL?
+        if ( !conflictGeom )
         {
-          std::cout << "no second geometry\n";
           continue;
         }
 
-        if ( g1->overlaps( g2 ))
+        if ( isExtent )
         {
-          QgsRectangle r = bb;
-          QgsRectangle r2 = g2->boundingBox();
-          r.combineExtentWith( &r2 );
-
-          QgsGeometry* conflictGeom = g1->intersection( g2 );
-          // could this for some reason return NULL?
-          if ( !conflictGeom )
-            {
-            continue;
-            }
-
-          if(isExtent)
+          if ( canvasExtentPoly->disjoint( conflictGeom ) )
           {
-          if(canvasExtentPoly->disjoint(conflictGeom))
-            {
-              continue;
-            }
-          if(canvasExtentPoly->crosses(conflictGeom))
-            {
-              conflictGeom = conflictGeom->intersection(canvasExtentPoly);
-            }
+            continue;
           }
-
-          //c = new QgsGeometry;
-
-          QList<FeatureLayer> fls;
-          FeatureLayer fl;
-          fl.feature = f;
-          fl.layer = layer2;
-          fls << *it << fl;
-          TopolErrorIntersection* err = new TopolErrorIntersection( r, conflictGeom, fls );
-
-          errorList << err;
+          if ( canvasExtentPoly->crosses( conflictGeom ) )
+          {
+            conflictGeom = conflictGeom->intersection( canvasExtentPoly );
+          }
         }
+
+        //c = new QgsGeometry;
+
+        QList<FeatureLayer> fls;
+        FeatureLayer fl;
+        fl.feature = f;
+        fl.layer = layer2;
+        fls << *it << fl;
+        TopolErrorIntersection* err = new TopolErrorIntersection( r, conflictGeom, fls );
+
+        errorList << err;
       }
     }
-    return errorList;
   }
+  return errorList;
+}
 
 
 
@@ -1236,7 +1236,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
   }
 
   QgsSpatialIndex* index = mLayerIndexes[layer2->id()];
-  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
   QList<FeatureLayer>::Iterator it;
@@ -1259,7 +1259,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
       QgsGeometry* g2 = f.geometry();
       if ( !g2 || !g2->asGeos() )
       {
-        std::cout << "g2 or g2->asGeos() == NULL in covered\n" << std::flush;
+        QgsMessageLog::logMessage( tr( "No second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
       QgsGeometry* startPoint = QgsGeometry::fromPoint( g2->asPolyline().first() );
@@ -1274,9 +1274,9 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
     if ( !touched )
     {
       QgsGeometry* conflictGeom = new QgsGeometry( *g1 );
-      if(isExtent)
+      if ( isExtent )
       {
-      if(canvasExtentPoly->disjoint(conflictGeom))
+        if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
           continue;
         }
@@ -1294,7 +1294,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
 
 }
 
-ErrorList topolTest::checkyLineEndsCoveredByPoints(double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent)
+ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
 
@@ -1314,7 +1314,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints(double tolerance, QgsVectorLa
 
   QgsSpatialIndex* index = mLayerIndexes[layer2->id()];
 
-  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
   QList<FeatureLayer>::Iterator it;
   for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
@@ -1344,43 +1344,43 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints(double tolerance, QgsVectorLa
       QgsGeometry* g2 = f.geometry();
       if ( !g2 || !g2->asGeos() )
       {
-        std::cout << "g2 or g2->asGeos() == NULL in covered\n" << std::flush;
+        QgsMessageLog::logMessage( tr( "No second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
 
 
-      if (g2->intersects(startPoint))
+      if ( g2->intersects( startPoint ) )
       {
-          touchStartPoint = true;
+        touchStartPoint = true;
       }
 
-      if(g2->intersects(endPoint))
-        {
-          touchEndPoint = true ;
-        }
+      if ( g2->intersects( endPoint ) )
+      {
+        touchEndPoint = true ;
+      }
 
-      if(touchStartPoint && touchEndPoint)
-        {
-          touched = true;
-          break;
-        }
+      if ( touchStartPoint && touchEndPoint )
+      {
+        touched = true;
+        break;
+      }
 
     }
     if ( !touched )
     {
-         QgsGeometry* conflictGeom = new QgsGeometry( *g1 );
+      QgsGeometry* conflictGeom = new QgsGeometry( *g1 );
 
-        if(isExtent)
+      if ( isExtent )
+      {
+        if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
-        if(canvasExtentPoly->disjoint(conflictGeom))
-          {
-            continue;
-          }
-        if(canvasExtentPoly->crosses(conflictGeom))
-          {
-            conflictGeom = conflictGeom->intersection(canvasExtentPoly);
-          }
+          continue;
         }
+        if ( canvasExtentPoly->crosses( conflictGeom ) )
+        {
+          conflictGeom = conflictGeom->intersection( canvasExtentPoly );
+        }
+      }
       QList<FeatureLayer> fls;
       fls << *it << *it;
       //bb.scale(10);
@@ -1413,7 +1413,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
 
   QgsSpatialIndex* index = mLayerIndexes[layer2->id()];
 
-  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt(theQgsInterface->mapCanvas()->extent().asWktPolygon());
+  QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
   QList<FeatureLayer>::Iterator it;
   for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
@@ -1435,7 +1435,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
       QgsGeometry* g2 = f.geometry();
       if ( !g2 || !g2->asGeos() )
       {
-        std::cout << "g2 or g2->asGeos() == NULL in covered\n" << std::flush;
+        QgsMessageLog::logMessage( tr( "No second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
       if ( g2->contains( g1 ) )
@@ -1448,9 +1448,9 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
     {
       QgsGeometry* conflictGeom = new QgsGeometry( *g1 );
 
-      if(isExtent)
+      if ( isExtent )
       {
-      if(canvasExtentPoly->disjoint(conflictGeom))
+        if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
           continue;
         }
@@ -1472,6 +1472,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
 ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
 {
   Q_UNUSED( tolerance );
+  Q_UNUSED( isExtent );
 
   int i = 0;
   ErrorList errorList;
@@ -1508,7 +1509,7 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
       QgsGeometry* g2 = f.geometry();
       if ( !g2 || !g2->asGeos() )
       {
-        std::cout << "g2 or g2->asGeos() == NULL in covered\n" << std::flush;
+        QgsMessageLog::logMessage( tr( "No second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
         continue;
       }
       if ( g1->contains( g2 ) )
@@ -1535,6 +1536,8 @@ ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer *layer1, Q
   Q_UNUSED( tolerance );
   Q_UNUSED( layer2 );
   Q_UNUSED( layer1 );
+  Q_UNUSED( isExtent );
+
   int i = 0;
   ErrorList errorList;
   QList<FeatureLayer>::Iterator it;
@@ -1547,7 +1550,7 @@ ErrorList topolTest::checkMultipart( double tolerance, QgsVectorLayer *layer1, Q
     QgsGeometry* g = it->feature.geometry();
     if ( !g )
     {
-      std::cout << "validity test: invalid QgsGeometry pointer\n" << std::flush;
+      QgsMessageLog::logMessage( tr( "Missing geometry in multipart check." ), tr( "Topology plugin" ) );
       continue;
     }
     if ( !g->asGeos() )
@@ -1661,18 +1664,18 @@ QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, QgsRectangle ext
 
 ErrorList topolTest::runTest( QString testName, QgsVectorLayer* layer1, QgsVectorLayer* layer2, ValidateType type, double tolerance )
 {
-  std::cout << testName.toStdString();
+  QgsDebugMsg( QString( "Running test %1" ).arg( testName ) );
   ErrorList errors;
 
   if ( !layer1 )
   {
-    std::cout << "First layer not found in registry!\n" << std::flush;
+    QgsMessageLog::logMessage( tr( "First layer not found in registry." ), tr( "Topology plugin" ) );
     return errors;
   }
 
   if ( !layer2 && mTopologyRuleMap[testName].useSecondLayer )
   {
-    std::cout << "Second layer not found in registry!\n" << std::flush;
+    QgsMessageLog::logMessage( tr( "Second layer not found in registry." ), tr( "Topology plugin" ) );
     return errors;
   }
 
@@ -1687,71 +1690,71 @@ ErrorList topolTest::runTest( QString testName, QgsVectorLayer* layer1, QgsVecto
 
   if ( mTopologyRuleMap[testName].useSecondLayer )
   {
-      // validate all features or current extent
-      QgsRectangle extent;
-      if ( type == ValidateExtent )
-      {
-        extent = theQgsInterface->mapCanvas()->extent();
-      }
-      else
-      {
-        extent = QgsRectangle();
-      }
+    // validate all features or current extent
+    QgsRectangle extent;
+    if ( type == ValidateExtent )
+    {
+      extent = theQgsInterface->mapCanvas()->extent();
+    }
+    else
+    {
+      extent = QgsRectangle();
+    }
 
-      fillFeatureList(layer1,extent);
-      //fillFeatureMap( layer1, extent );
+    fillFeatureList( layer1, extent );
+    //fillFeatureMap( layer1, extent );
 
-      QString secondLayerId = layer2->id();
+    QString secondLayerId = layer2->id();
 
-      if ( !mLayerIndexes.contains( layer2->id() ) )
-      {
-        mLayerIndexes[layer2->id()] = createIndex( layer2, extent );
-      }
+    if ( !mLayerIndexes.contains( layer2->id() ) )
+    {
+      mLayerIndexes[layer2->id()] = createIndex( layer2, extent );
+    }
   }
   else
-  {  
-      // validate all features or current extent
-      QgsRectangle extent;
-      if ( type == ValidateExtent )
+  {
+    // validate all features or current extent
+    QgsRectangle extent;
+    if ( type == ValidateExtent )
+    {
+      extent = theQgsInterface->mapCanvas()->extent();
+      if ( mTopologyRuleMap[testName].useSpatialIndex )
       {
-        extent = theQgsInterface->mapCanvas()->extent();
-        if ( mTopologyRuleMap[testName].useSpatialIndex )
+        mLayerIndexes[layer1->id()] = createIndex( layer1, theQgsInterface->mapCanvas()->extent() );
+      }
+      else
+      {
+        fillFeatureList( layer1, extent );
+      }
+    }
+    else
+    {
+      if ( mTopologyRuleMap[testName].useSpatialIndex )
+      {
+        if ( !mLayerIndexes.contains( layer1->id() ) )
         {
-          mLayerIndexes[layer1->id()] = createIndex( layer1, theQgsInterface->mapCanvas()->extent() );
-        }
-        else
-        {
-          fillFeatureList( layer1, extent );
+
+          mLayerIndexes[layer1->id()] = createIndex( layer1, QgsRectangle() );
         }
       }
       else
       {
-        if ( mTopologyRuleMap[testName].useSpatialIndex )
-        {
-          if ( !mLayerIndexes.contains( layer1->id() ) )
-          {
-
-            mLayerIndexes[layer1->id()] = createIndex( layer1, QgsRectangle() );
-          }
-        }
-        else
-        {
-          fillFeatureList( layer1, QgsRectangle() );
-        }
+        fillFeatureList( layer1, QgsRectangle() );
       }
+    }
 
   }
 
   //call test routine
   bool isValidatingExtent;
-  if( type == ValidateExtent )
-    {
-      isValidatingExtent = true;
-    }
+  if ( type == ValidateExtent )
+  {
+    isValidatingExtent = true;
+  }
   else
-    {
-      isValidatingExtent = false;
-    }
+  {
+    isValidatingExtent = false;
+  }
 
   return ( this->*( mTopologyRuleMap[testName].f ) )( tolerance, layer1, layer2, isValidatingExtent );
 }
