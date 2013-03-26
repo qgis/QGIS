@@ -348,9 +348,8 @@ class SagaAlgorithm(GeoAlgorithm):
             return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer + "\""
 
 
-    def checkBeforeOpeningParametersDialog(self):
-        pass
-        #return SagaUtils.checkSagaIsInstalled()
+    def checkBeforeOpeningParametersDialog(self):        
+        return SagaUtils.checkSagaIsInstalled()
 
 
     def checkParameterValuesBeforeExecuting(self):
