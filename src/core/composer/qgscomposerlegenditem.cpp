@@ -385,7 +385,8 @@ void QgsComposerLayerItem::setDefaultStyle()
     QgsFeatureRendererV2* renderer = vLayer->rendererV2();
     if ( renderer )
     {
-      if ( renderer->legendSymbolItems().size() > 1 )
+      QPair<QString, QgsSymbolV2*> symbolItem = renderer->legendSymbolItems().value( 0 );
+      if ( renderer->legendSymbolItems().size() > 1 || !symbolItem.first.isEmpty() )
       {
         setStyle( QgsComposerLegendStyle::Subgroup );
       }
