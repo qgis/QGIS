@@ -370,6 +370,7 @@
    </attribute>
    <addaction name="mActionIdentify"/>
    <addaction name="mActionDeselectAll"/>
+   <addaction name="mActionSelectByExpression"/>
    <addaction name="mActionOpenTable"/>
    <addaction name="mActionMapTips"/>
    <addaction name="mActionNewBookmark"/>
@@ -2053,6 +2054,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>Decrease contrast</string>
+   </property>
+  </action>
+  <action name="mActionSelectByExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/gis/mIconExpressionSelect.svg</normaloff>:/images/themes/gis/mIconExpressionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select By Expression</string>
+   </property>
+   <property name="toolTip">
+    <string>Select features using an expression</string>
    </property>
   </action>
  </widget>

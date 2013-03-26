@@ -51,7 +51,7 @@ class QgsVectorLayerJoinBuffer;
 class QgsFeatureRendererV2;
 class QgsDiagramRendererV2;
 class QgsDiagramLayerSettings;
-class QgsVectorLayerCache;
+class QgsGeometryCache;
 class QgsVectorLayerEditBuffer;
 class QgsSymbolV2;
 
@@ -667,6 +667,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
+    /**
+     * Deletes a list of attribute fields (but does not commit it)
+     *
+     * @param  attrs the indices of the attributes to delete
+     * @return true if at least one attribute has been deleted
+     *
+     */
+    bool deleteAttributes( QList<int> attrs );
+
     /** Insert a copy of the given features into the layer  (but does not commit it) */
     bool addFeatures( QgsFeatureList features, bool makeSelected = true );
 
@@ -855,7 +864,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QString metadata();
 
-    inline QgsVectorLayerCache* cache() { return mCache; }
+    inline QgsGeometryCache* cache() { return mCache; }
 
   signals:
 
@@ -1066,7 +1075,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QString mAnnotationForm;
 
     //! cache for some vector layer data - currently only geometries for faster editing
-    QgsVectorLayerCache* mCache;
+    QgsGeometryCache* mCache;
 
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer* mEditBuffer;

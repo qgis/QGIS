@@ -20,13 +20,14 @@
 
 #include "qgsvectorlayer.h"
 
+class QgsGeometryCache;
 
 class CORE_EXPORT QgsVectorLayerEditUtils
 {
   public:
     QgsVectorLayerEditUtils( QgsVectorLayer* layer );
 
-    inline QgsVectorLayerCache* cache() { return L->cache(); }
+    inline QgsGeometryCache* cache() { return L->cache(); }
 
 
     /** Insert a new vertex before the given vertex number,

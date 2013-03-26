@@ -49,6 +49,9 @@ SET(QGIS_CORE_SRCS
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
+  qgscachedfeatureiterator.cpp
+  qgscacheindex.cpp
+  qgscacheindexfeatureid.cpp
   qgsbrowsermodel.cpp
   qgscentralpointpositionmanager.cpp
   qgsclipper.cpp
@@ -68,6 +71,7 @@ SET(QGIS_CORE_SRCS
   qgsfeaturestore.cpp
   qgsfield.cpp
   qgsgeometry.cpp
+  qgsgeometrycache.cpp
   qgsgeometryvalidator.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
@@ -113,6 +117,7 @@ SET(QGIS_CORE_SRCS
   qgscoordinatereferencesystem.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
+  qgsvectorlayercache.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp
@@ -317,6 +322,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditbuffer.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
+  qgsvectorlayercache.h
   qgsgeometryvalidator.h
 
   composer/qgsaddremoveitemcommand.h
@@ -374,6 +380,9 @@ SET(QGIS_CORE_HDRS
   qgis.h
   qgsapplication.h
   qgsattributeaction.h
+  qgscachedfeatureiterator.h
+  qgscacheindex.h
+  qgscacheindexfeatureid.h
   qgscentralpointpositionmanager.h
   qgsclipper.h
   qgscontexthelp.h
@@ -393,6 +402,7 @@ SET(QGIS_CORE_HDRS
   qgsgeometry.h
   qgsgml.h
   qgsgmlschema.h
+  qgsgeometrycache.h
   qgshttptransaction.h
   qgslabel.h
   qgslabelattributes.h
@@ -431,6 +441,7 @@ SET(QGIS_CORE_HDRS
   qgssnapper.h
   qgscoordinatereferencesystem.h
   qgsvectordataprovider.h
+  qgsvectorlayercache.h
   qgsvectorfilewriter.h
   qgsvectorlayer.h
   qgsvectorlayercache.h

@@ -26,6 +26,9 @@
 #include "qgsattributeeditor.h"
 #include "qgslogger.h"
 
+
+// TODO: Remove this casting orgy
+
 QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model ) const
 {
   const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
@@ -47,7 +50,7 @@ int QgsAttributeTableDelegate::fieldIdx( const QModelIndex &index ) const
 
   const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( index.model() );
   if ( fm )
-    return fm->tableModel()->fieldIdx( index.column() );
+    return fm->masterModel()->fieldIdx( index.column() );
 
   return -1;
 }
@@ -60,7 +63,7 @@ QgsFeatureId QgsAttributeTableDelegate::featureId( const QModelIndex &index ) co
 
   const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( index.model() );
   if ( fm )
-    return fm->tableModel()->rowToId( fm->mapToSource( index ).row() );
+    return fm->masterModel()->rowToId( fm->mapToSource( index ).row() );
 
   return -1;
 }

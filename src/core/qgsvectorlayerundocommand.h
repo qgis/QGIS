@@ -26,6 +26,7 @@
 #include "qgsfeature.h"
 
 class QgsGeometry;
+class QgsGeometryCache;
 
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
@@ -36,7 +37,7 @@ class QgsVectorLayerUndoCommand : public QUndoCommand
   public:
     QgsVectorLayerUndoCommand( QgsVectorLayerEditBuffer* buffer ) : mBuffer( buffer ) {}
     inline QgsVectorLayer* layer() { return mBuffer->L; }
-    inline QgsVectorLayerCache* cache() { return mBuffer->L->cache(); }
+    inline QgsGeometryCache* cache() { return mBuffer->L->cache(); }
 
   protected:
     QgsVectorLayerEditBuffer* mBuffer;

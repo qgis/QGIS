@@ -31,6 +31,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 
+#include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdialog.h"
@@ -302,12 +303,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // set the current theme
   cmbTheme->setItemText( cmbTheme->currentIndex(), settings.value( "/Themes" ).toString() );
 
-  // set the attribute table behaviour
+  // set the attribute table default filter
   cmbAttrTableBehaviour->clear();
-  cmbAttrTableBehaviour->addItem( tr( "Show all features" ) );
-  cmbAttrTableBehaviour->addItem( tr( "Show selected features" ) );
-  cmbAttrTableBehaviour->addItem( tr( "Show features in current canvas" ) );
-  cmbAttrTableBehaviour->setCurrentIndex( settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt() );
+  cmbAttrTableBehaviour->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
+  cmbAttrTableBehaviour->addItem( tr( "Show selected features" ), QgsAttributeTableFilterModel::ShowSelected );
+  cmbAttrTableBehaviour->addItem( tr( "Show features visible on map" ), QgsAttributeTableFilterModel::ShowVisible );
+  cmbAttrTableBehaviour->setCurrentIndex( cmbAttrTableBehaviour->findData( settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() ) );
+
 
   spinBoxAttrTableRowCache->setValue( settings.value( "/qgis/attributeTableRowCache", 10000 ).toInt() );
 
@@ -1010,7 +1012,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
   settings.setValue( "/qgis/showTips", cbxShowTips->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
-  settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->currentIndex() );
+  settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->itemData( cmbAttrTableBehaviour->currentIndex() ) );
   settings.setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
   settings.setValue( "/qgis/promptForRasterSublayers", cmbPromptRasterSublayers->currentIndex() );
   settings.setValue( "/qgis/scanItemsInBrowser2",
