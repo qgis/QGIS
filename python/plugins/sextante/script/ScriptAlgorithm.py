@@ -204,12 +204,10 @@ class ScriptAlgorithm(GeoAlgorithm):
         ns['progress'] = progress
 
         for param in self.parameters:
-            #script += param.name + "=" + param.getValueAsCommandLineParameter() + "\n"
             ns[param.name] = param.value
 
         for out in self.outputs:
             ns[out.name] = out.value
-            #script += out.name + "=" + out.getValueAsCommandLineParameter() + "\n"
 
         script+=self.script
         exec(script) in ns
