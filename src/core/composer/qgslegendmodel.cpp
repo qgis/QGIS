@@ -36,6 +36,8 @@
 
 QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
 {
+  setColumnCount( 2 );
+
   if ( QgsMapLayerRegistry::instance() )
   {
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
@@ -82,7 +84,6 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
         {
           return; //should never happen
         }
-        //QString layerID = currentItem->data(Qt::UserRole + 2).toString();
         QString layerID = layerItem->layerID();
         if ( layerList.contains( layerID ) )
         {
@@ -123,14 +124,15 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position )
     text = tr( "Group" );
 
   QgsComposerGroupItem* groupItem = new QgsComposerGroupItem( text );
+
   if ( position == -1 )
   {
-    invisibleRootItem()->insertRow( invisibleRootItem()->rowCount(), groupItem );
+    position = invisibleRootItem()->rowCount();
   }
-  else
-  {
-    invisibleRootItem()->insertRow( position, groupItem );
-  }
+  QList<QStandardItem *> itemsList;
+  itemsList << groupItem << new QgsComposerStyleItem( groupItem );
+  invisibleRootItem()->insertRow( position, itemsList );
+
   emit layersChanged();
   return groupItem;
 }
@@ -377,9 +379,12 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
 
   QgsComposerLayerItem* layerItem = new QgsComposerLayerItem( theMapLayer->name() );
   layerItem->setLayerID( theMapLayer->id() );
+  layerItem->setDefaultStyle();
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-  invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), layerItem );
+  QList<QStandardItem *> itemsList;
+  itemsList << layerItem << new QgsComposerStyleItem( layerItem );
+  invisibleRootItem()->appendRow( itemsList );
 
   switch ( theMapLayer->type() )
   {
@@ -548,7 +553,10 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
       currentItem = new QgsComposerGroupItem();
     }
     currentItem->readXML( currentElem, mHasTopLevelWindow );
-    appendRow( currentItem );
+
+    QList<QStandardItem *> itemsList;
+    itemsList << currentItem << new QgsComposerStyleItem( currentItem );
+    appendRow( itemsList );
   }
 
   setAutoUpdate( legendModelElem.attribute( "autoUpdate", "1" ).toInt() );
@@ -583,6 +591,29 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
     else if ( type == QgsComposerLegendItem::LayerItem )
     {
       flags |= Qt::ItemIsDragEnabled;
+    }
+  }
+  if ( index.column() == 1 && item )
+  {
+    // Style
+    QStandardItem* firstColumnItem = 0;
+    if ( item->parent() )
+    {
+      firstColumnItem = item->parent()->child( index.row(), 0 );
+    }
+    else
+    {
+      firstColumnItem = QgsLegendModel::item( index.row(), 0 );
+    }
+    cItem = dynamic_cast<QgsComposerLegendItem*>( firstColumnItem );
+
+    if ( cItem )
+    {
+      if ( cItem->itemType() == QgsComposerLegendItem::GroupItem ||
+           cItem->itemType() == QgsComposerLegendItem::LayerItem )
+      {
+        flags |= Qt::ItemIsEditable;
+      }
     }
   }
   return flags;
@@ -706,14 +737,18 @@ bool QgsLegendModel::dropMimeData( const QMimeData *data, Qt::DropAction action,
       continue;
     }
     currentItem->readXML( currentElem );
+    int index;
     if ( row < 0 )
     {
-      dropIntoItem->insertRow( dropIntoItem->rowCount(), currentItem );
+      index = dropIntoItem->rowCount();
     }
     else
     {
-      dropIntoItem->insertRow( row + i, currentItem );
+      index = row + i;
     }
+    QList<QStandardItem *> itemsList;
+    itemsList << currentItem << new QgsComposerStyleItem( currentItem );
+    dropIntoItem->insertRow( index, itemsList );
   }
   emit layersChanged();
   return true;
