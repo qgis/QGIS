@@ -250,6 +250,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     mBufferTranspSpinBox->setValue( lyr.bufferTransp );
     mBufferJoinStyleComboBox->setPenJoinStyle( lyr.bufferJoinStyle );
     mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
+    comboBufferBlendMode->setBlendMode( lyr.bufferBlendMode );
   }
   else
   {
@@ -290,6 +291,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
   btnTextColor->setColor( lyr.textColor );
   mFontTranspSpinBox->setValue( lyr.textTransp );
+  comboBlendMode->setBlendMode( lyr.blendMode );
 
   mFontWordSpacingSpinBox->setValue( lyr.textFont.wordSpacing() );
   mFontLetterSpacingSpinBox->setValue( lyr.textFont.letterSpacing() );
@@ -446,6 +448,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.textFont = mRefFont;
   lyr.textNamedStyle = mFontStyleComboBox->currentText();
   lyr.textTransp = mFontTranspSpinBox->value();
+  lyr.blendMode = ( QgsMapRenderer::BlendMode ) comboBlendMode->blendMode();
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
@@ -470,6 +473,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.bufferSizeInMapUnits = ( mBufferUnitComboBox->currentIndex() == 1 );
     lyr.bufferJoinStyle = mBufferJoinStyleComboBox->penJoinStyle();
     lyr.bufferNoFill = !mBufferTranspFillChbx->isChecked();
+    lyr.bufferBlendMode = ( QgsMapRenderer::BlendMode ) comboBufferBlendMode->blendMode();
   }
   else
   {
