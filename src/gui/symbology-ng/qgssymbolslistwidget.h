@@ -34,7 +34,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
   public slots:
     void setSymbolFromStyle( const QModelIndex & index );
-    void setSymbolColor();
+    void setSymbolColor( const QColor& color );
     void setMarkerAngle( double angle );
     void setMarkerSize( double size );
     void setLineWidth( double width );

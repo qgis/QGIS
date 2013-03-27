@@ -2312,6 +2312,14 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
     resampleFilter->readXML( resampleElem );
   }
 
+  // get and set the blend mode if it exists
+  QDomNode blendModeNode = layer_node.namedItem( "blendMode" );
+  if ( !blendModeNode.isNull() )
+  {
+    QDomElement e = blendModeNode.toElement();
+    setBlendMode(( QgsMapLayer::BlendMode ) e.text().toInt() );
+  }
+
   return true;
 } //readSymbology
 
@@ -2498,6 +2506,12 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
     QDomElement layerElem = layer_node.toElement();
     resampleFilter->writeXML( document, layerElem );
   }
+
+  // add blend mode node
+  QDomElement blendModeElement  = document.createElement( "blendMode" );
+  QDomText blendModeText = document.createTextNode( QString::number( blendMode() ) );
+  blendModeElement.appendChild( blendModeText );
+  layer_node.appendChild( blendModeElement );
 
   return true;
 } // bool QgsRasterLayer::writeSymbology

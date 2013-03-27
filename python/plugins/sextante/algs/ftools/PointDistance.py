@@ -27,16 +27,20 @@ import csv
 import math
 import codecs
 import cStringIO
+
 from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
-from sextante.algs.ftools import FToolsUtils as utils
+
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterTableField import ParameterTableField
 
 from sextante.outputs.OutputFile import OutputFile
+
+from sextante.algs.ftools import FToolsUtils as utils
 
 class PointDistance(GeoAlgorithm):
 
@@ -82,7 +86,7 @@ class PointDistance(GeoAlgorithm):
         outputFile = self.getOutputValue(self.DISTANCE_MATRIX)
 
         if nPoints < 1:
-            nPoints = targetLayer.featureCount()
+            nPoints = len(QGisLayers.features(targetLayer))
 
         # prepare CSV file writer
         csvFile = open(outputFile, "wb")
@@ -125,7 +129,8 @@ class PointDistance(GeoAlgorithm):
             distList = []
             vari = 0.0
             for i in featList:
-                targetLayer.featureAtId(i, outFeat)
+                request = QgsFeatureRequest().setFilterFid(i)
+                outFeat = targetLayer.getFeatures(request).next()
                 outID = outFeat.attributes()[outIdx].toString()
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
@@ -145,7 +150,6 @@ class PointDistance(GeoAlgorithm):
             progress.setPercentage(int(current * total))
 
     def regularMatrix(self, inLayer, inField, targetLayer, targetField, nPoints, progress):
-
         index = utils.createSpatialIndex(targetLayer)
 
         inIdx = inLayer.fieldNameIndex(inField)
@@ -158,9 +162,9 @@ class PointDistance(GeoAlgorithm):
 
         first = True
         current = 0
-        total = 100.0 / float(inLayer.featureCount())
-
         features = QGisLayers.features(inLayer)
+        total = 100.0 / float(features)
+
         for inFeat in features:
             inGeom = inFeat.geometry()
             inID = inFeat.attributes()[inIdx].toString()
@@ -169,13 +173,15 @@ class PointDistance(GeoAlgorithm):
                 first = False
                 data = ["ID"]
                 for i in featList:
-                    targetLayer.featureAtId(i, outFeat)
-                    data.append(unicode(outFeat.attributeMap()[outIdx].toString()))
+                    request = QgsFeatureRequest().setFilterFid(i)
+                    outFeat = targetLayer.getFeatures(request).next()
+                    data.append(unicode(outFeat.attributes[outIdx].toString()))
                 self.writer.writerow(data)
 
             data = [unicode(inID)]
             for i in featList:
-                targetLayer.featureAtId(i, outFeat)
+                request = QgsFeatureRequest().setFilterFid(i)
+                outFeat = targetLayer.getFeatures(request).next()
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 data.append(unicode(float(dist)))

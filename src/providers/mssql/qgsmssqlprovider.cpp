@@ -945,7 +945,7 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     return true;
 
   if ( mFidColName.isEmpty() )
-      return false;
+    return false;
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -1056,7 +1056,7 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     return true;
 
   if ( mFidColName.isEmpty() )
-      return false;
+    return false;
 
   for ( QgsGeometryMap::iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
@@ -1129,8 +1129,8 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
 {
   if ( mFidColName.isEmpty() )
-      return false;
-    
+    return false;
+
   QString featureIds;
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
@@ -1162,12 +1162,12 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
 
 int QgsMssqlProvider::capabilities() const
 {
-  if (mFidColName.isEmpty())
+  if ( mFidColName.isEmpty() )
     return CreateSpatialIndex | CreateAttributeIndex | AddFeatures | AddAttributes;
   else
     return CreateSpatialIndex | CreateAttributeIndex | AddFeatures | DeleteFeatures |
-         ChangeAttributeValues | ChangeGeometries | AddAttributes | DeleteAttributes |
-         QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+           ChangeAttributeValues | ChangeGeometries | AddAttributes | DeleteAttributes |
+           QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
 }
 
 bool QgsMssqlProvider::createSpatialIndex()

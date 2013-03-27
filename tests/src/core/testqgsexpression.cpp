@@ -571,18 +571,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "geomFromWKT Polygon" ) << "geomFromWKT('" + QgsGeometry::fromPolygon( polygon )->exportToWkt() + "')" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
 
       // GML Point
-      QTest::newRow( "GML Point (coordinates)" ) << "geomFromGML2('<gml:Point><gml:coordinates>123,456</gml:coordinates></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
+      QTest::newRow( "GML Point (coordinates)" ) << "geomFromGML('<gml:Point><gml:coordinates>123,456</gml:coordinates></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
       // gml:pos if from GML3
-      //QTest::newRow( "GML Point (pos)" ) << "geomFromGML2('<gml:Point srsName=\"foo\"><gml:pos srsDimension=\"2\">123 456</gml:pos></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
+      QTest::newRow( "GML Point (pos)" ) << "geomFromGML('<gml:Point srsName=\"foo\"><gml:pos srsDimension=\"2\">123 456</gml:pos></gml:Point>')" << ( void * ) QgsGeometry::fromPoint( point ) << false;
 
       // GML Box
       QgsRectangle rect( 135.2239, 34.4879, 135.8578, 34.8471 );
-      QTest::newRow( "GML Box" ) << "geomFromGML2('<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
+      QTest::newRow( "GML Box" ) << "geomFromGML('<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
       // Envelope is from GML3 ?
-      //QTest::newRow( "GML Envelope" ) << "geomFromGML2('<gml:Envelope>"
-      //   "<gml:lowerCorner>135.2239 34.4879</gml:lowerCorner>"
-      //   "<gml:upperCorner>135.8578 34.8471</gml:upperCorner>"
-      // "</gml:Envelope>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
+      QTest::newRow( "GML Envelope" ) << "geomFromGML('<gml:Envelope>"
+      "<gml:lowerCorner>135.2239 34.4879</gml:lowerCorner>"
+      "<gml:upperCorner>135.8578 34.8471</gml:upperCorner>"
+      "</gml:Envelope>')" << ( void * ) QgsGeometry::fromRect( rect ) << false;
     }
 
     void eval_geometry_constructor()
@@ -758,113 +758,6 @@ class TestQgsExpression: public QObject
       QgsExpression::unsetSpecialColumn( "$var1" );
     }
 
-
-    void test_from_ogc_filter_data()
-    {
-      QTest::addColumn<QString>( "xmlText" );
-      QTest::addColumn<QString>( "dumpText" );
-
-      QTest::newRow( "=" ) << QString(
-        "<Filter><PropertyIsEqualTo>"
-          "<PropertyName>NAME</PropertyName>"
-          "<Literal>New York</Literal>"
-        "</PropertyIsEqualTo></Filter>" )
-        << QString( "NAME = 'New York'" );
-
-      QTest::newRow( ">" ) << QString(
-        "<Filter><PropertyIsGreaterThan>"
-          "<PropertyName>COUNT</PropertyName>"
-          "<Literal>3</Literal>"
-        "</PropertyIsGreaterThan></Filter>" )
-        << QString( "COUNT > 3" );
-
-      QTest::newRow( "AND" ) << QString(
-        "<ogc:Filter>"
-          "<ogc:And>"
-            "<ogc:PropertyIsGreaterThanOrEqualTo>"
-              "<ogc:PropertyName>pop</ogc:PropertyName>"
-              "<ogc:Literal>50000</ogc:Literal>"
-            "</ogc:PropertyIsGreaterThanOrEqualTo>"
-            "<ogc:PropertyIsLessThan>"
-              "<ogc:PropertyName>pop</ogc:PropertyName>"
-              "<ogc:Literal>100000</ogc:Literal>"
-            "</ogc:PropertyIsLessThan>"
-          "</ogc:And>"
-        "</ogc:Filter>" )
-        << QString( "pop >= 50000 AND pop < 100000" );
-
-      // TODO: should work also without <Literal> tags in Lower/Upper-Boundary tags?
-      QTest::newRow( "between" ) << QString(
-        "<Filter>"
-          "<PropertyIsBetween><PropertyName>POPULATION</PropertyName>"
-          "<LowerBoundary><Literal>100</Literal></LowerBoundary>"
-          "<UpperBoundary><Literal>200</Literal></UpperBoundary></PropertyIsBetween>"
-        "</Filter>" )
-        << QString( "POPULATION >= 100 AND POPULATION <= 200" );
-
-      // TODO: needs to handle different wildcards, single chars, escape chars
-      QTest::newRow( "like" ) << QString(
-        "<Filter>"
-          "<PropertyIsLike wildcard='*' singleChar='.' escape='!'>"
-          "<PropertyName>NAME</PropertyName><Literal>*QGIS*</Literal></PropertyIsLike>"
-        "</Filter>" )
-        << QString( "NAME LIKE '*QGIS*'" );
-
-      QTest::newRow( "is null" ) << QString(
-        "<Filter>"
-          "<ogc:PropertyIsNull>"
-            "<ogc:PropertyName>FIRST_NAME</ogc:PropertyName>"
-          "</ogc:PropertyIsNull>"
-        "</Filter>" )
-        << QString( "FIRST_NAME IS NULL" );
-
-      QTest::newRow( "bbox" ) << QString(
-      "<Filter>"
-        "<BBOX><PropertyName>Name>NAME</PropertyName><gml:Box srsName='foo'>"
-        "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
-      "</Filter>" )
-      << QString( "bbox($geometry, geomFromGML2('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
-
-      QTest::newRow( "Intersects" ) << QString(
-        "<Filter>"
-        "<Intersects>"
-           "<PropertyName>GEOMETRY</PropertyName>"
-           "<gml:Point>"
-              "<gml:coordinates>123,456</gml:coordinates>"
-           "</gml:Point>"
-        "</Intersects>"
-        "</Filter>" )
-        << QString( "intersects($geometry, geomFromGML2('<Point><coordinates>123,456</coordinates></Point>'))" );
-    }
-
-    void test_from_ogc_filter()
-    {
-      QFETCH( QString, xmlText );
-      QFETCH( QString, dumpText );
-
-      QDomDocument doc;
-      QVERIFY(doc.setContent(xmlText, true));
-      QDomElement rootElem = doc.documentElement();
-
-      QgsExpression* expr = QgsExpression::createFromOgcFilter( rootElem );
-      QVERIFY( expr );
-
-      qDebug("OGC XML  : %s", xmlText.toAscii().data() );
-      qDebug("EXPR-DUMP: %s", expr->dump().toAscii().data() );
-
-      if ( expr->hasParserError() )
-        qDebug( "ERROR: %s ", expr->parserErrorString().toAscii().data() );
-      QVERIFY( !expr->hasParserError() );
-
-      QCOMPARE( dumpText, expr->dump() );
-
-      delete expr;
-    }
-
-    void test_to_ogc_filter()
-    {
-      // TODO
-    }
 };
 
 QTEST_MAIN( TestQgsExpression )

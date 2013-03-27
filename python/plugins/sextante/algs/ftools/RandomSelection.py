@@ -70,8 +70,9 @@ class RandomSelection(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
 
         featureCount = layer.featureCount()
-
         value = int(self.getParameterValue(self.NUMBER))
+
+        layer.removeSelection(True)
 
         if method == 0:
             if value > featureCount:
@@ -85,4 +86,3 @@ class RandomSelection(GeoAlgorithm):
 
         layer.setSelectedFeatures(selran)
         self.setOutputValue(self.OUTPUT, filename)
-

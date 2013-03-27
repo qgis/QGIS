@@ -39,7 +39,9 @@ def createUniqueFieldName(fieldName, fieldList):
     if len(fieldList) == 0:
         return shortName
 
-    if shortName not in fieldList:
+    fieldNames = [f.name() for f in fieldList]
+
+    if shortName not in fieldNames:
         return shortName
 
     shortName = fieldName[:8] + "_1"
@@ -63,13 +65,13 @@ def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
     idx = layer.fieldNameIndex(fieldName)
     if idx == -1:
         fn = createUniqueFieldName(fieldName, fieldList)
-        field =  QgsField(fn, QVariant.Double, "", fieldLen, fieldPrec)
+        field = QgsField(fn, QVariant.Double, "", fieldLen, fieldPrec)
         idx = len(fieldList)
         fieldList.append(field)
 
     return idx, fieldList
 
-def extractPoints( geom ):
+def extractPoints(geom):
     points = []
     if geom.type() ==  QGis.Point:
         if geom.isMultipart():
@@ -96,9 +98,37 @@ def extractPoints( geom ):
 
     return points
 
+def simpleMeasure(geom, method=0, ellips=None, crs=None):
+    # method defines calculation type:
+    # 0 - layer CRS
+    # 1 - project CRS
+    # 2 - ellipsoidal
+    if geom.wkbType() in [QGis.WKBPoint, QGis.WKBPoint25D]:
+        pt = geom.asPoint()
+        attr1 = pt.x()
+        attr2 = pt.y()
+    elif geom.wkbType() in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
+        pt = inGeom.asMultiPoint()
+        attr1 = pt[0].x()
+        attr2 = pt[0].y()
+    else:
+        measure = QgsDistanceArea()
+
+        if method == 2:
+            measure.setSourceCrs(crs)
+            measure.setEllipsoid(ellips)
+            measure.setEllipsoidalMode(True)
+
+        attr1 = measure.measure(geom)
+        if geom.type() == QGis.Polygon:
+            attr2 = measure.measurePerimeter(geom)
+        else:
+            attr2 = None
+
+    return (attr1, attr2)
+
 def getUniqueValues(layer, fieldIndex):
     values = []
-    layer.select([fieldIndex], QgsRectangle(), False)
     features = QGisLayers.features(layer)
     for feat in features:
         if feat.attributes()[fieldIndex] not in values:
@@ -109,7 +139,7 @@ def getUniqueValuesCount(layer, fieldIndex):
     return len(getUniqueValues(layer, fieldIndex))
 
 # From two input field maps, create single field map
-def combineVectorFields( layerA, layerB ):
+def combineVectorFields(layerA, layerB):
     fields = []
     fieldsA = layerA.dataProvider().fields()
     fields.extend(fieldsA)
@@ -129,19 +159,19 @@ def combineVectorFields( layerA, layerB ):
     return fields
 
 # Create a unique field name based on input field name
-def createUniqueFieldNameFromName( field ):
-    check = field.name().right( 2 )
-    shortName = field.name().left( 8 )
+def createUniqueFieldNameFromName(field):
+    check = field.name().right(2)
+    shortName = field.name().left(8)
     if check.startsWith("_"):
-        ( val, test ) = check.right( 1 ).toInt()
+        (val, test) = check.right(1).toInt()
         if test:
             if val < 2:
                 val = 2
             else:
                 val = val + 1
-            field.setName( shortName.left( len( shortName )-1 ) + unicode( val ) )
+            field.setName(shortName.left(len(shortName) - 1) + unicode(val))
         else:
-            field.setName( shortName + "_2" )
+            field.setName(shortName + "_2")
     else:
-        field.setName( shortName + "_2" )
+        field.setName(shortName + "_2")
     return field

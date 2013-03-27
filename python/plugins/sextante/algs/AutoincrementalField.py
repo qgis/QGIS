@@ -45,7 +45,7 @@ class AutoincrementalField(GeoAlgorithm):
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
-        fields[len(fields)] = QgsField("AUTO", QVariant.Int)
+        fields.append(QgsField("AUTO", QVariant.Int))
         writer = output.getVectorWriter(fields, vprovider.geometryType(), vlayer.crs() )
         inFeat = QgsFeature()
         outFeat = QgsFeature()
@@ -58,10 +58,10 @@ class AutoincrementalField(GeoAlgorithm):
             nElement += 1
             inGeom = inFeat.geometry()
             outFeat.setGeometry( inGeom )
-            atMap = inFeat.attributeMap()
-            atMap.append(QVariant(nElement))
-            outFeat.setAttributeMap( atMap )
-            writer.addFeature( outFeat )
+            attrs = inFeat.attributes()
+            attrs.append(QVariant(nElement))
+            outFeat.setAttributes(attrs)
+            writer.addFeature(outFeat)
         del writer
 
     def defineCharacteristics(self):

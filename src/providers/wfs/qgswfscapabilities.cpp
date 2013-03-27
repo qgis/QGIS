@@ -16,7 +16,7 @@
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgswfsutils.h"
+#include "qgsogcutils.h"
 #include <QDomDocument>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -106,9 +106,10 @@ QString QgsWFSCapabilities::uriGetFeature( QString typeName, QString crsString, 
     {
       //if not, if must be a QGIS expression
       QgsExpression filterExpression( filter );
-      if ( !QgsWFSUtils::expressionToOGCFilter( filterExpression, filterDoc ) )
+      QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( filterExpression, filterDoc );
+      if ( !filterElem.isNull() )
       {
-        //error
+        filterDoc.appendChild( filterElem );
       }
 
     }

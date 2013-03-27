@@ -45,7 +45,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>change</string>
+        <string>Change...</string>
        </property>
       </widget>
      </item>
@@ -116,7 +116,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Quantile</string>
+         <string>Quantile (Equal Count)</string>
         </property>
        </item>
        <item>

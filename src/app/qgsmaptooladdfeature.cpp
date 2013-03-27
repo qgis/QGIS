@@ -268,7 +268,16 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
         if ( !f->geometry()->asWkb() ) //avoid intersection might have removed the whole geometry
         {
-          QMessageBox::critical( 0, tr( "Error" ), tr( "The feature cannot be added because it contains an emtpy geometry" ) );
+          QString reason;
+          if ( avoidIntersectionsReturn != 2 )
+          {
+            reason = tr( "The feature cannot be added because it's geometry is empty" );
+          }
+          else
+          {
+            reason = tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" );
+          }
+          QMessageBox::critical( 0, tr( "Error" ), reason );
           delete f;
           stopCapturing();
           return;

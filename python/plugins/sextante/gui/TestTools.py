@@ -32,53 +32,55 @@ from osgeo.gdalconst import GA_ReadOnly
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputVector import OutputVector
 
-def createTest(item):
+def createTest(text):
     s = ""
-    tokens = item.entry.text[len("sextante.runalg("):-1].split(",")
+    tokens =  text[len("sextante.runalg("):-1].split(",")
     cmdname = tokens[0][1:-1];
     methodname = "test_" + cmdname.replace(":","")
-    s += "def " + methodname + "():\n"
+    s += "def " + methodname + "(self):\n"
     alg = Sextante.getAlgorithm(cmdname)
     execcommand = "sextante.runalg("
     i = 0
     for token in tokens:
-        if i < alg.getVisibleParametersCount() + 1:                            
+        if i < alg.getVisibleParametersCount() + 1:
             if os.path.exists(token[1:-1]):
-                token = '"' + os.path.basename(token[1:-1])[:-4] + '"'           
-            execcommand+=token + ","
+                token = os.path.basename(token[1:-1])[:-4] + "()"
+            execcommand += token + ","
         else:
-            execcommand+="None,"
+            execcommand += "None,"
         i+=1
     s += "\toutputs=" + execcommand[:-1] + ")\n"
 
     i = -1 * len(alg.outputs)
-    for out in alg.outputs:        
+    for out in alg.outputs:
         filename = tokens[i][1:-1]
         if (filename == str(None)):
-            raise Exception("Cannot create unit test for that algorithm.\nThe output cannot be a temporary file")        
+            raise Exception("Cannot create unit test for that algorithm execution.\nThe output cannot be a temporary file")
         s+="\toutput=outputs['" + out.name + "']\n"
         if isinstance(out, (OutputNumber, OutputString)):
             s+="self.assertTrue(" + str(out) + ", output)\n"
         if isinstance(out, OutputRaster):
             dataset = gdal.Open(filename, GA_ReadOnly)
-            array = dataset.ReadAsArray(1)
+            strhash = hash(str(dataset.ReadAsArray(0).tolist()))
             s+="\tself.assertTrue(os.path.isfile(output))\n"
-            s+="\tself.assertEqual(hashraster(output)," + str(hash(array)) + ")\n"
+            s+="\tdataset=gdal.Open(output, GA_ReadOnly)\n"
+            s+="\tstrhash=hash(str(dataset.ReadAsArray(0).tolist()))\n"
+            s+="\tself.assertEqual(strhash," + str(strhash) + ")\n"
         if isinstance(out, OutputVector):
             layer = Sextante.getObject(filename)
             fields = layer.pendingFields()
-            s+="\tlayer=sextante.getobject(output)\n"
+            s+="\tlayer=QGisLayers.getObjectFromUri(output, True)\n"
             s+="\tfields=layer.pendingFields()\n"
-            s+="\texpectednames=[" + ",".join([str(f.name()) for f in fields]) + "]\n"
-            s+="\texpectedtypes=[" + ",".join([str(f.typeName()) for f in fields]) + "]\n"
+            s+="\texpectednames=[" + ",".join(["'" + str(f.name()) + "'" for f in fields]) + "]\n"
+            s+="\texpectedtypes=[" + ",".join(["'" + str(f.typeName()) +"'" for f in fields]) + "]\n"
             s+="\tnames=[str(f.name()) for f in fields]\n"
             s+="\ttypes=[str(f.typeName()) for f in fields]\n"
             s+="\tself.assertEqual(expectednames, names)\n"
             s+="\tself.assertEqual(expectedtypes, types)\n"
             features = QGisLayers.features(layer)
             numfeat = len(features)
-            s+="\tfeatures=sextante.getfeatures(layer))\n"
-            s+="\tself.assertEqual(" + str(numfeat) + ", len(features)\n"
+            s+="\tfeatures=sextante.getfeatures(layer)\n"
+            s+="\tself.assertEqual(" + str(numfeat) + ", len(features))\n"
             if numfeat > 0:
                 feature = features.next()
                 attrs = feature.attributes()
@@ -86,7 +88,9 @@ def createTest(item):
                 s+="\tattrs=feature.attributes()\n"
                 s+="\texpectedvalues=[" + ",".join(['"' + str(attr.toString()) + '"' for attr in attrs]) + "]\n"
                 s+="\tvalues=[str(attr.toString()) for attr in attrs]\n"
-                s+="\tself.assertEqual(expectedtypes, types)\n"
+                s+="\tself.assertEqual(expectedvalues, values)\n"
+                s+="\twkt='" + str(feature.geometry().exportToWkt()) + "'\n"
+                s+="\tself.assertEqual(wkt, str(feature.geometry().exportToWkt()))"
 
     dlg = ShowTestDialog(s)
     dlg.exec_()

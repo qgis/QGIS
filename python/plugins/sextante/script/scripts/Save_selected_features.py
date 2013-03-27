@@ -54,7 +54,7 @@ vectorLayer = QGisLayers.getObjectFromUri(input)
 #First we create the output layer.
 #To do so, we create a SextanteVectorWriter, that we can later use to add features.
 provider = vectorLayer.dataProvider()
-writer = SextanteVectorWriter(output, None, provider.fields(), provider.geometryType(), layer.crs() )
+writer = SextanteVectorWriter(output, None, provider.fields(), provider.geometryType(), vectorLayer.crs() )
 
 #Now we take the selected features and add them to the output layer
 selection = vectorLayer.selectedFeatures()

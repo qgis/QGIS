@@ -74,6 +74,15 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() { return mOffset; }
 
+    void setBorderWidthUnit( QgsSymbolV2::OutputUnit unit ) { mBorderWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit borderWidthUnit() const { return mBorderWidthUnit; }
+
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     QBrush mBrush;
     QBrush mSelBrush;
@@ -81,10 +90,12 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QColor mBorderColor;
     Qt::PenStyle mBorderStyle;
     double mBorderWidth;
+    QgsSymbolV2::OutputUnit mBorderWidthUnit;
     QPen mPen;
     QPen mSelPen;
 
     QPointF mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
 };
 
 /**Base class for polygon renderers generating texture images*/
@@ -98,11 +109,16 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     virtual QgsSymbolV2* subSymbol() { return mOutline; }
     virtual bool setSubSymbol( QgsSymbolV2* symbol );
 
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+
   protected:
     QBrush mBrush;
 
     /**Outline width*/
     double mOutlineWidth;
+    QgsSymbolV2::OutputUnit mOutlineWidthUnit;
+
     /**Custom outline*/
     QgsLineSymbolV2* mOutline;
 };
@@ -145,9 +161,20 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setSvgOutlineWidth( double w ) { mSvgOutlineWidth = w; }
     double svgOutlineWidth() const { return mSvgOutlineWidth; }
 
+    void setPatternWidthUnit( QgsSymbolV2::OutputUnit unit ) { mPatternWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit patternWidthUnit() const { return mPatternWidthUnit; }
+
+    void setSvgOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mSvgOutlineWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit svgOutlineWidthUnit() const { return mSvgOutlineWidthUnit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
-    /**Width of the pattern (in QgsSymbolV2 output units)*/
+    /**Width of the pattern (in output units)*/
     double mPatternWidth;
+    QgsSymbolV2::OutputUnit mPatternWidthUnit;
+
     /**SVG data*/
     QByteArray mSvgData;
     /**Path to the svg file (or empty if constructed directly from data)*/
@@ -163,6 +190,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     QColor mSvgFillColor;
     QColor mSvgOutlineColor;
     double mSvgOutlineWidth;
+    QgsSymbolV2::OutputUnit mSvgOutlineWidthUnit;
 
   private:
     /**Helper function that gets the view box from the byte array*/
@@ -205,16 +233,31 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOffset( double offset ) { mOffset = offset; }
     double offset() const { return mOffset; }
 
+    void setDistanceUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceUnit = unit; }
+    QgsSymbolV2::OutputUnit distanceUnit() const { return mDistanceUnit; }
+
+    void setLineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mLineWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit lineWidthUnit() const { return mLineWidthUnit; }
+
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     /**Distance (in mm or map units) between lines*/
     double mDistance;
+    QgsSymbolV2::OutputUnit mDistanceUnit;
     /**Line width (in mm or map units)*/
     double mLineWidth;
+    QgsSymbolV2::OutputUnit mLineWidthUnit;
     QColor mColor;
     /**Vector line angle in degrees (0 = horizontal, counterclockwise)*/
     double mLineAngle;
     /**Offset perpendicular to line direction*/
     double mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
 };
 
 class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
@@ -254,12 +297,31 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbolV2* symbol );
     virtual QgsSymbolV2* subSymbol() { return mMarkerSymbol; }
 
+    void setDistanceXUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceXUnit = unit; }
+    QgsSymbolV2::OutputUnit distanceXUnit() const { return mDistanceXUnit; }
+
+    void setDistanceYUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceYUnit = unit; }
+    QgsSymbolV2::OutputUnit distanceYUnit() const { return mDistanceYUnit; }
+
+    void setDisplacementXUnit( QgsSymbolV2::OutputUnit unit ) { mDisplacementXUnit = unit; }
+    QgsSymbolV2::OutputUnit displacementXUnit() const { return mDisplacementXUnit; }
+
+    void setDisplacementYUnit( QgsSymbolV2::OutputUnit unit ) { mDisplacementYUnit = unit; }
+    QgsSymbolV2::OutputUnit displacementYUnit() const { return mDisplacementYUnit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;
     double mDistanceX;
+    QgsSymbolV2::OutputUnit mDistanceXUnit;
     double mDistanceY;
+    QgsSymbolV2::OutputUnit mDistanceYUnit;
     double mDisplacementX;
+    QgsSymbolV2::OutputUnit mDisplacementXUnit;
     double mDisplacementY;
+    QgsSymbolV2::OutputUnit mDisplacementYUnit;
 };
 
 class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2

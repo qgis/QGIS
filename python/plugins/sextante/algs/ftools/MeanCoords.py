@@ -32,7 +32,6 @@ from sextante.parameters.ParameterVector import ParameterVector
 from sextante.outputs.OutputVector import OutputVector
 from sextante.algs.ftools import FToolsUtils as utils
 
-
 class MeanCoords(GeoAlgorithm):
 
     POINTS = "POINTS"
@@ -61,16 +60,8 @@ class MeanCoords(GeoAlgorithm):
         weightField = self.getParameterValue(self.WEIGHT)
         uniqueField = self.getParameterValue(self.UID)
 
-        provider = layer.dataProvider()
         weightIndex = layer.fieldNameIndex(weightField)
         uniqueIndex = layer.fieldNameIndex(uniqueField)
-
-        if uniqueIndex <> -1:
-            uniqueValues = utils.getUniqueValues(layer, uniqueIndex)
-            single = False
-        else:
-            uniqueValues = [QVariant(1)]
-            single = True
 
         fieldList = [QgsField("MEAN_X", QVariant.Double, "", 24, 15),
                      QgsField("MEAN_Y", QVariant.Double, "", 24, 15),
@@ -81,61 +72,42 @@ class MeanCoords(GeoAlgorithm):
                      QGis.WKBPoint, layer.crs())
 
         current = 0
-        total = 100.0 / float(provider.featureCount() * len(uniqueValues))
+        features = QGisLayers.features(layer)
+        total = 100.0 / float(len(features))
 
-        outFeat = QgsFeature()
+        means = {}
+        for feat in features:
+            current += 1
+            progress.setPercentage(current * total)
+            clazz = feat.attributes()[uniqueIndex].toString().trimmed()
+            if weightIndex == -1:
+                weight = 1.00
+            else:
+                try:
+                    weight = float(feat.attributes()[weightIndex].toDouble()[0])
+                except:
+                    weight = 1.00
+            if clazz not in means:
+                means[clazz] = (0,0,0)
 
-        for j in uniqueValues:
-            cx = 0.00
-            cy = 0.00
-            points = []
-            weights = []
-            features = QGisLayers.features(layer)
-            for feat in features:
-                current += 1
-                progress.setPercentage(current * total)
+            cx,cy, totalweight = means[clazz]
+            geom = QgsGeometry(feat.geometry())
+            geom = utils.extractPoints(geom)
+            for i in geom:
+                cx += i.x() * weight
+                cy += i.y() * weight
+                totalweight += weight
+            means[clazz] = (cx, cy, totalweight)
 
-                if single:
-                    check = j.toString().trimmed()
-                else:
-                    check = feat.attributes()[uniqueIndex].toString().trimmed()
-
-                if check == j.toString().trimmed():
-                    cx = 0.00
-                    cy = 0.00
-                    if weightIndex == -1:
-                        weight = 1.00
-                    else:
-                        try:
-                            weight = float(feat.attributes()[weightIndex].toDouble()[0])
-                        except:
-                            weight = 1.00
-
-                    geom = QgsGeometry(feat.geometry())
-                    geom = utils.extractPoints(geom)
-                    for i in geom:
-                        cx += i.x()
-                        cy += i.y()
-                    points.append(QgsPoint((cx / len(geom)), (cy / len(geom))))
-                    weights.append(weight)
-
-            sumWeight = sum(weights)
-            cx = 0.00
-            cy = 0.00
-            item = 0
-            for item, i in enumerate(points):
-                cx += i.x() * weights[item]
-                cy += i.y() * weights[item]
-
-            cx = cx / sumWeight
-            cy = cy / sumWeight
+        for clazz, values in means.iteritems():
+            outFeat = QgsFeature()
+            cx = values[0] / values[2]
+            cy = values[1] / values[2]
             meanPoint = QgsPoint(cx, cy)
 
             outFeat.setGeometry(QgsGeometry.fromPoint(meanPoint))
-            outFeat.setAttributes([QVariant(cx), QVariant(cy), QVariant(j)])
+            outFeat.setAttributes([QVariant(cx), QVariant(cy), clazz])
             writer.addFeature(outFeat)
 
-            if single:
-                break
 
         del writer

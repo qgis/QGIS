@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-150</y>
-        <width>376</width>
-        <height>1186</height>
+        <y>-118</y>
+        <width>369</width>
+        <height>1088</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -192,10 +192,13 @@
              <bool>false</bool>
             </property>
             <property name="headerHidden">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <attribute name="headerVisible">
-             <bool>false</bool>
+             <bool>true</bool>
+            </attribute>
+            <attribute name="headerVisible">
+             <bool>true</bool>
             </attribute>
            </widget>
           </item>
@@ -377,7 +380,7 @@
           <item>
            <widget class="QPushButton" name="mLayerFontButton">
             <property name="text">
-             <string>Layer Font...</string>
+             <string>Subgroup Font...</string>
             </property>
            </widget>
           </item>
@@ -443,37 +446,20 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="3" column="0" colspan="2">
            <widget class="QCheckBox" name="mEqualColumnWidthCheckBox">
             <property name="text">
              <string>Equal column widths</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="2">
+          <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mSplitLayerCheckBox">
             <property name="toolTip">
              <string>Allow to split layer items into multiple columns.</string>
             </property>
             <property name="text">
              <string>Split layers</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Spacing</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mColumnSpaceSpinBox">
-            <property name="prefix">
-             <string/>
-            </property>
-            <property name="suffix">
-             <string> mm</string>
             </property>
            </widget>
           </item>
@@ -561,6 +547,9 @@
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label_5">
+            <property name="toolTip">
+             <string>Space above text using group style.</string>
+            </property>
             <property name="text">
              <string>Group Space</string>
             </property>
@@ -581,8 +570,11 @@
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_6">
+            <property name="toolTip">
+             <string>Space above text using subgroup style.</string>
+            </property>
             <property name="text">
-             <string>Layer space</string>
+             <string>Subgroup space</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -601,6 +593,9 @@
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_7">
+            <property name="toolTip">
+             <string>Space above symbol and symbol label.</string>
+            </property>
             <property name="text">
              <string>Symbol space</string>
             </property>
@@ -621,6 +616,9 @@
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_8">
+            <property name="toolTip">
+             <string>Space between symbol icon and symbol label (symbol label left margin).</string>
+            </property>
             <property name="text">
              <string>Icon label space</string>
             </property>
@@ -651,6 +649,23 @@
           </item>
           <item row="4" column="1">
            <widget class="QDoubleSpinBox" name="mBoxSpaceSpinBox">
+            <property name="prefix">
+             <string/>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Column space</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QDoubleSpinBox" name="mColumnSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>

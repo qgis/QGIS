@@ -29,12 +29,17 @@ __revision__ = '$Format:%H$'
 ##[GDAL] Analysis=group
 ##src_filename=raster
 ##dst_filename=output raster
-##connectedness=selection 4;8
 ##threshold=number 2
+##connectedness=selection 4;8
 from sextante.gdal.GdalUtils import GdalUtils
 
-from osgeo import gdal, ogr
+try:
+    from osgeo import gdal, ogr
+except ImportError:
+    import gdal
+    import ogr
 
+threshold = int(threshold)
 connectedness=int(connectedness)
 options = []
 

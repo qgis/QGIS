@@ -49,7 +49,10 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
 {
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "PostgreSQL" ) );
     P->mActiveIterator->close();
+  }
 
   mCursorName = QString( "qgisf%1" ).arg( P->mProviderId );
 

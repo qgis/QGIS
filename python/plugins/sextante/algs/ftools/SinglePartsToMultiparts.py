@@ -59,12 +59,9 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         output = self.getOutputValue(self.OUTPUT)
         fieldName = self.getParameterValue(self.FIELD)
 
-        provider = layer.dataProvider()
-        allAttrs = layer.pendingAllAttributesList()
-        layer.select(allAttrs)
-        geomType = self.singleToMultiGeom(provider.geometryType())
+        geomType = self.singleToMultiGeom(layer.dataProvider().geometryType())
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      geomType, layer.crs())
 
         inFeat = QgsFeature()
@@ -81,10 +78,8 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
         if not len(unique) == layer.featureCount():
             for i in unique:
-                #provider.rewind()
                 multi_feature= []
                 first = True
-                layer.select(allAttrs)
                 features = QGisLayers.features(layer)
                 for inFeat in features:
                     atMap = inFeat.attributes()

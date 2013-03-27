@@ -57,20 +57,30 @@ const char * QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOption
 //stdc++ includes
 
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl )
+    : QgsOptionsDialogBase( "ProjectProperties", parent, fl )
     , mMapCanvas( mapCanvas )
     , mEllipsoidList()
     , mEllipsoidIndex( 0 )
 
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
+  // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
+  // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
+  initOptionsBase( false );
+
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( setMapUnitsToCurrentProjection() ) );
 
   connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
+
+  connect( radMeters, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
+  connect( radFeet, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
+  connect( radDegrees, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setEnabled( bool ) ) );
+
+  connect( radAutomatic, SIGNAL( toggled( bool ) ), mPrecisionFrame, SLOT( setDisabled( bool ) ) );
+  connect( radManual, SIGNAL( toggled( bool ) ), mPrecisionFrame, SLOT( setEnabled( bool ) ) );
 
   ///////////////////////////////////////////////////////////
   // Properties stored in map canvas's QgsMapRenderer
@@ -80,17 +90,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QGis::UnitType myUnit = myRenderer->mapUnits();
   setMapUnits( myUnit );
 
-  // we need to initialize it, since the on_cbxProjectionEnabled_stateChanged()
-  // callback triggered by setChecked() might use it.
+  // we need to initialize it, since the on_cbxProjectionEnabled_toggled()
+  // slot triggered by setChecked() might use it.
   mProjectSrsId = myRenderer->destinationCrs().srsid();
-
-  //see if the user wants on the fly projection enabled
-  bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
-  cbxProjectionEnabled->setChecked( myProjectionEnabled );
 
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
   projectionSelector->setSelectedCrsId( mProjectSrsId );
-  projectionSelector->setEnabled( myProjectionEnabled );
+
+  // see end of constructor for updating of projection selector
 
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
@@ -99,16 +106,16 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   // get the manner in which the number of decimal places in the mouse
   // position display is set (manual or automatic)
-  bool automaticPrecision = QgsProject::instance()->readBoolEntry( "PositionPrecision", "/Automatic" );
+  bool automaticPrecision = QgsProject::instance()->readBoolEntry( "PositionPrecision", "/Automatic", true );
   if ( automaticPrecision )
   {
     radAutomatic->setChecked( true );
-    spinBoxDP->setDisabled( true );
-    labelDP->setDisabled( true );
+    mPrecisionFrame->setEnabled( false );
   }
   else
   {
     radManual->setChecked( true );
+    mPrecisionFrame->setEnabled( true );
   }
 
   cbxAbsolutePath->setCurrentIndex( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true ) ? 0 : 1 );
@@ -159,6 +166,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   int myAlphaInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
   pbnSelectionColor->setColor( myColor );
+  pbnSelectionColor->setColorDialogTitle( tr( "Selection color" ) );
+  pbnSelectionColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   //get the color for map canvas background and set button color accordingly (default white)
   myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
@@ -432,6 +441,18 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     resetPythonMacros();
   }
 
+  // Update projection selector (after mLayerSrsId is set)
+  bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
+  bool onFlyChecked = cbxProjectionEnabled->isChecked();
+  cbxProjectionEnabled->setChecked( myProjectionEnabled );
+
+  if ( onFlyChecked == myProjectionEnabled )
+  {
+    // ensure selector is updated if cbxProjectionEnabled->toggled signal not sent
+    on_cbxProjectionEnabled_toggled( myProjectionEnabled );
+  }
+
+  restoreOptionsBaseUi();
   restoreState();
 }
 
@@ -440,14 +461,11 @@ QgsProjectProperties::~QgsProjectProperties()
   saveState();
 }
 
-
-
 // return the map units
 QGis::UnitType QgsProjectProperties::mapUnits() const
 {
   return mMapCanvas->mapRenderer()->mapUnits();
 }
-
 
 void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
 {
@@ -464,20 +482,16 @@ void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
   mMapCanvas->mapRenderer()->setMapUnits( unit );
 }
 
-
 QString QgsProjectProperties::title() const
 {
   return titleEdit->text();
 } //  QgsProjectPropertires::title() const
-
 
 void QgsProjectProperties::title( QString const & title )
 {
   titleEdit->setText( title );
   QgsProject::instance()->title( title );
 } // QgsProjectProperties::title( QString const & title )
-
-
 
 //when user clicks apply button
 void QgsProjectProperties::apply()
@@ -767,7 +781,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "DefaultStyles", "/Line", cboStyleLine->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/Fill", cboStyleFill->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/ColorRamp", cboStyleColorRamp->currentText() );
-  QgsProject::instance()->writeEntry( "DefaultStyles", "/AlphaInt", 255 - mTransparencySlider->value() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/AlphaInt", ( int )( 255 - ( mTransparencySlider->value() * 2.55 ) ) );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
 
   // store project macros
@@ -790,48 +804,37 @@ bool QgsProjectProperties::isProjected()
 
 void QgsProjectProperties::showProjectionsTab()
 {
-  tabWidget->setCurrentIndex( 1 );
+  mOptionsListWidget->setCurrentRow( 1 );
 }
 
-void QgsProjectProperties::on_pbnSelectionColor_clicked()
+void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
 {
-#if QT_VERSION >= 0x040500
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), 0, tr( "Selection color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color() );
-#endif
-
-  if ( color.isValid() )
+  QString measureOnFlyState = tr( "Measure tool (CRS transformation: %1)" );
+  QString unitsOnFlyState = tr( "Canvas units (CRS transformation: %1)" );
+  if ( !onFlyEnabled )
   {
-    pbnSelectionColor->setColor( color );
-  }
-}
-
-void QgsProjectProperties::on_pbnCanvasColor_clicked()
-{
-  QColor color = QColorDialog::getColor( pbnCanvasColor->color(), this );
-  if ( color.isValid() )
-  {
-    pbnCanvasColor->setColor( color );
-  }
-}
-
-void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
-{
-  projectionSelector->setEnabled( state == Qt::Checked );
-
-  if ( state != Qt::Checked )
-  {
-    mProjectSrsId = projectionSelector->selectedCrsId();
+    if ( !mProjectSrsId )
+    {
+      mProjectSrsId = projectionSelector->selectedCrsId();
+    }
     projectionSelector->setSelectedCrsId( mLayerSrsId );
+
+    btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "OFF" ) ) );
+    btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "OFF" ) ) );
   }
   else
   {
-    mLayerSrsId = projectionSelector->selectedCrsId();
+    if ( !mLayerSrsId )
+    {
+      mLayerSrsId = projectionSelector->selectedCrsId();
+    }
     projectionSelector->setSelectedCrsId( mProjectSrsId );
+
+    btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "ON" ) ) );
+    btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "ON" ) ) );
   }
 
-  // Enable/Disabel selector and update tool-tip
+  // Enable/Disable selector and update tool-tip
   updateEllipsoidUI( mEllipsoidIndex );
 }
 
@@ -894,7 +897,7 @@ void QgsProjectProperties::on_cbxWFSDelete_stateChanged( int aIdx )
 void QgsProjectProperties::setMapUnitsToCurrentProjection()
 {
   long myCRSID = projectionSelector->selectedCrsId();
-  if ( myCRSID )
+  if ( isProjected() && myCRSID )
   {
     QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
     //set radio button to crs map unit type
@@ -907,23 +910,17 @@ void QgsProjectProperties::setMapUnitsToCurrentProjection()
 }
 
 /*!
- * Function to save dialog window state
+ * Function to save non-base dialog states
  */
 void QgsProjectProperties::saveState()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/ProjectProperties/geometry", saveGeometry() );
-  settings.setValue( "/Windows/ProjectProperties/tab", tabWidget->currentIndex() );
 }
 
 /*!
- * Function to restore dialog window state
+ * Function to restore non-base dialog states
  */
 void QgsProjectProperties::restoreState()
 {
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/ProjectProperties/geometry" ).toByteArray() );
-  tabWidget->setCurrentIndex( settings.value( "/Windows/ProjectProperties/tab" ).toInt() );
 }
 
 /*!
@@ -1233,9 +1230,8 @@ void QgsProjectProperties::populateStyles()
   cbxStyleRandomColors->setChecked( QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) );
 
   // alpha transparency
-  int transparencyInt = 255 - QgsProject::instance()->readNumEntry( "DefaultStyles", "/AlphaInt", 255 );
+  int transparencyInt = ( 255 - QgsProject::instance()->readNumEntry( "DefaultStyles", "/AlphaInt", 255 ) ) / 2.55;
   mTransparencySlider->setValue( transparencyInt );
-  on_mTransparencySlider_valueChanged( transparencyInt );
 }
 
 void QgsProjectProperties::on_pbtnStyleManager_clicked()
@@ -1269,9 +1265,16 @@ void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
 
 void QgsProjectProperties::on_mTransparencySlider_valueChanged( int value )
 {
-  double alpha = 1 - ( value / 255.0 );
-  double transparencyPercent = ( 1 - alpha ) * 100;
-  mTransparencyLabel->setText( tr( "Transparency %1%" ).arg(( int ) transparencyPercent ) );
+  mTransparencySpinBox->blockSignals( true );
+  mTransparencySpinBox->setValue( value );
+  mTransparencySpinBox->blockSignals( false );
+}
+
+void QgsProjectProperties::on_mTransparencySpinBox_valueChanged( int value )
+{
+  mTransparencySlider->blockSignals( true );
+  mTransparencySlider->setValue( value );
+  mTransparencySlider->blockSignals( false );
 }
 
 void QgsProjectProperties::editSymbol( QComboBox* cbo )

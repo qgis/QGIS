@@ -30,11 +30,13 @@ from qgis.core import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteLog import SextanteLog
+
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterString import ParameterString
-from sextante.outputs.OutputVector import OutputVector
-from sextante.algs.ftools import FToolsUtils as utils
 
+from sextante.outputs.OutputVector import OutputVector
+
+from sextante.algs.ftools import FToolsUtils as utils
 
 class PointsInPolygon(GeoAlgorithm):
 
@@ -63,14 +65,10 @@ class PointsInPolygon(GeoAlgorithm):
         fieldName = self.getParameterValue(self.FIELD)
 
         polyProvider = polyLayer.dataProvider()
-        pointProvider = pointLayer.dataProvider()
-        if polyProvider.crs() != pointProvider.crs():
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING,
-                                 "CRS warning: Input layers have non-matching CRS. This may cause unexpected results.")
 
         idxCount, fieldList = utils.findOrCreateField(polyLayer, polyLayer.pendingFields(), fieldName)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList.toList(),
                      polyProvider.geometryType(), polyProvider.crs())
 
         spatialIndex = utils.createSpatialIndex(pointLayer)
@@ -87,7 +85,7 @@ class PointsInPolygon(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for ftPoly in features:
             geom = ftPoly.geometry()
-            atMap = ftPoly.attributes()
+            attrs = ftPoly.attributes()
 
             count = 0
             hasIntersections = False
@@ -97,17 +95,18 @@ class PointsInPolygon(GeoAlgorithm):
 
             if hasIntersections:
                 for i in points:
-                    pointLayer.featureAtId(int(i), ftPoint, True, False)
+                    request = QgsFeatureRequest().setFilterFid(i)
+                    ftPoint = pointLayer.getFeatures(request).next()
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
                         count += 1
 
             outFeat.setGeometry(geom)
-            if idxCount == len(atMap):
-                atMap.append(QVariant(count))
+            if idxCount == len(attrs):
+                attrs.append(QVariant(count))
             else:
-                atMap[idxCount] = QVariant(count)
-            outFeat.setAttributes(atMap)
+                attrs[idxCount] = QVariant(count)
+            outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
             current += 1

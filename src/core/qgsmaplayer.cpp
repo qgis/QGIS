@@ -49,7 +49,8 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mDataSource( source ),
     mLayerOrigName( lyrname ), // store the original name
     mID( "" ),
-    mLayerType( type )
+    mLayerType( type ),
+    mBlendMode( QgsMapLayer::BlendNormal ) // Default to normal blending
 {
   mCRS = new QgsCoordinateReferenceSystem();
 
@@ -132,6 +133,58 @@ QgsRectangle QgsMapLayer::extent()
 {
   return mExtent;
 }
+
+/** Write blend mode for layer */
+void QgsMapLayer::setBlendMode( const QgsMapLayer::BlendMode blendMode )
+{
+  mBlendMode = blendMode;
+}
+
+/** Read blend mode for layer */
+QgsMapLayer::BlendMode QgsMapLayer::blendMode() const
+{
+  return mBlendMode;
+}
+
+/** Returns a QPainter::CompositionMode corresponding to the current
+ * blend mode for this layer
+ */
+QPainter::CompositionMode QgsMapLayer::getCompositionMode()
+{
+  // Map QgsMapLayer::BlendNormal to QPainter::CompositionMode
+  switch ( mBlendMode )
+  {
+    case QgsMapLayer::BlendNormal:
+      return QPainter::CompositionMode_SourceOver;
+    case QgsMapLayer::BlendLighten:
+      return QPainter::CompositionMode_Lighten;
+    case QgsMapLayer::BlendScreen:
+      return QPainter::CompositionMode_Screen;
+    case QgsMapLayer::BlendDodge:
+      return QPainter::CompositionMode_ColorDodge;
+    case QgsMapLayer::BlendAddition:
+      return QPainter::CompositionMode_Plus;
+    case QgsMapLayer::BlendDarken:
+      return QPainter::CompositionMode_Darken;
+    case QgsMapLayer::BlendMultiply:
+      return QPainter::CompositionMode_Multiply;
+    case QgsMapLayer::BlendBurn:
+      return QPainter::CompositionMode_ColorBurn;
+    case QgsMapLayer::BlendOverlay:
+      return QPainter::CompositionMode_Overlay;
+    case QgsMapLayer::BlendSoftLight:
+      return QPainter::CompositionMode_SoftLight;
+    case QgsMapLayer::BlendHardLight:
+      return QPainter::CompositionMode_HardLight;
+    case QgsMapLayer::BlendDifference:
+      return QPainter::CompositionMode_Difference;
+    case QgsMapLayer::BlendSubtract:
+      return QPainter::CompositionMode_Exclusion;
+    default:
+      return QPainter::CompositionMode_SourceOver;
+  }
+}
+
 
 bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
 {
@@ -473,6 +526,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QDomText    transparencyLevelIntText    = document.createTextNode( QString::number( getTransparency() ) );
   transparencyLevelIntElement.appendChild( transparencyLevelIntText );
   maplayer.appendChild( transparencyLevelIntElement );
+
   // now append layer node to map layer node
 
   layer_node.appendChild( maplayer );

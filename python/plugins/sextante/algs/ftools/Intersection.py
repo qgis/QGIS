@@ -64,9 +64,10 @@ class Intersection(GeoAlgorithm):
             geom = QgsGeometry( inFeatA.geometry() )
             atMapA = inFeatA.attributes()
             intersects = index.intersects( geom.boundingBox() )
-            for id in intersects:
-                vlayerB.featureAtId( int( id ), inFeatB , True)
-                tmpGeom = QgsGeometry( inFeatB.geometry() )
+            for i in intersects:
+                request = QgsFeatureRequest().setFilterFid(i)
+                inFeatB = vlayerB.getFeatures(request).next()
+                tmpGeom = QgsGeometry(inFeatB.geometry())
                 try:
                     if geom.intersects( tmpGeom ):
                         atMapB = inFeatB.attributes()

@@ -1002,7 +1002,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       }
       else
       {
-        text = value.toString();
+        text = field.displayString( value );
       }
 
       if ( le )

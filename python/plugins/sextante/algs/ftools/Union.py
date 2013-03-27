@@ -86,7 +86,8 @@ class   Union(GeoAlgorithm):
           else:
             for id in intersects:
                 count += 1
-                vlayerB.featureAtId( int( id ), inFeatB , True)
+                request = QgsFeatureRequest().setFilterFid(id)
+                inFeatB = vlayerB.getFeatures(request).next()
                 atMapB = inFeatB.attributes()
                 tmpGeom = QgsGeometry( inFeatB.geometry() )
 
@@ -171,7 +172,8 @@ class   Union(GeoAlgorithm):
                     raise GeoAlgorithmExecutionException("Feature exception while computing union")
             else:
                 for id in intersects:
-                    vlayerA.featureAtId( int( id ), inFeatB , True)
+                    request = QgsFeatureRequest().setFilterFid(id)
+                    inFeatB = vlayerA.getFeatures(request).next()
                     atMapB = inFeatB.attributes()
                     tmpGeom = QgsGeometry( inFeatB.geometry() )
                     try:

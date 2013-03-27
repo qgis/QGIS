@@ -9,12 +9,15 @@ class QgsAttributeTableView : QTableView
     virtual ~QgsAttributeTableView();
 
     /**
-     * Sets the layer
-     * @param canvas canvas pointer
-     * @param layer layer pointer
+     * Autocreates the models
+     * @param layerCache The {@link QgsVectorLayerCache} to use ( as backend )
+     * @param canvas     The {@link QgsMapCanvas} to use ( for the currently visible features filter )
+     *
+     * @deprecated
      */
-    void setCanvasAndLayer( QgsMapCanvas *canvas, QgsVectorLayer *layer );
+    void setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVectorLayerCache *layerCache );
 
+  protected:
     /**
      * Saves geometry to the settings on close
      * @param event not used

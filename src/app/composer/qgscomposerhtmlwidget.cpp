@@ -17,6 +17,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgscomposerhtml.h"
+#include "qgscomposition.h"
 #include <QFileDialog>
 #include <QSettings>
 

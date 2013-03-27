@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import shutil
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -100,13 +101,7 @@ class SextantePlugin:
         #delete temporary output files
         folder = SextanteUtils.tempFolder()
         if QDir(folder).exists():
-            for f in os.listdir(folder):
-                path = os.path.join(folder, f)
-                try:
-                    os.unlink(path)
-                except:
-                    #leave files that could not be deleted
-                    pass
+            shutil.rmtree(folder, True)
 
     def openToolbox(self):
         if self.toolbox.isVisible():

@@ -1107,7 +1107,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
 
   // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
   QString version = mParameterMap.value( "VERSION", "1.3.0" );
-  if ( version == "1.3.0" && outputCRS.axisInverted() )
+  if ( version != "1.1.1" && outputCRS.axisInverted() )
   {
     //switch coordinates of extent
     double tmp;
@@ -1552,6 +1552,9 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
       case QgsComposerLegendItem::LayerItem:
         //QgsDebugMsg( "GroupItem not handled" );
         break;
+      case QgsComposerLegendItem::StyleItem:
+        //QgsDebugMsg( "StyleItem not handled" );
+        break;
     }
 
     //finally draw text
@@ -1862,6 +1865,9 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
   }
 
   QStringList tokens = filter.split( " ", QString::SkipEmptyParts );
+  groupStringList( tokens, "'" );
+  groupStringList( tokens, "\"" );
+
   QStringList::const_iterator tokenIt = tokens.constBegin();
   for ( ; tokenIt != tokens.constEnd(); ++tokenIt )
   {
@@ -1924,6 +1930,55 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
   }
 
   return true;
+}
+
+void QgsWMSServer::groupStringList( QStringList& list, const QString& groupString )
+{
+  //group contens within single quotes together
+  bool groupActive = false;
+  int startGroup = -1;
+  int endGroup = -1;
+  QString concatString;
+
+  for ( int i = 0; i < list.size(); ++i )
+  {
+    QString& str = list[i];
+    if ( str.startsWith( groupString ) )
+    {
+      startGroup = i;
+      groupActive = true;
+      concatString.clear();
+    }
+
+    if ( groupActive )
+    {
+      if ( i != startGroup )
+      {
+        concatString.append( " " );
+      }
+      concatString.append( str );
+    }
+
+    if ( str.endsWith( groupString ) )
+    {
+      endGroup = i;
+      groupActive = false;
+
+      if ( startGroup != -1 )
+      {
+        list[startGroup] = concatString;
+        for ( int j = startGroup + 1; j <= endGroup; ++j )
+        {
+          list.removeAt( j );
+          --i;
+        }
+      }
+
+      concatString.clear();
+      startGroup = -1;
+      endGroup = -1;
+    }
+  }
 }
 
 QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList ) const

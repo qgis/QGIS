@@ -20,6 +20,7 @@
 #include "qgscomposermap.h"
 #include "qgspoint.h"
 #include <QColorDialog>
+#include <QPen>
 
 QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QWidget( parent ), mItem( item )
 {
@@ -66,13 +67,14 @@ void QgsComposerItemWidget::on_mFrameColorButton_clicked()
   {
     return;
   }
+}
 
-  QColor newFrameColor = QColorDialog::getColor( mItem->pen().color(), 0 );
-  if ( !newFrameColor.isValid() )
+void QgsComposerItemWidget::on_mFrameColorButton_colorChanged( const QColor& newFrameColor )
+{
+  if ( !mItem )
   {
-    return; //dialog canceled
+    return;
   }
-
   mItem->beginCommand( tr( "Frame color changed" ) );
   QPen thePen;
   thePen.setColor( newFrameColor );
@@ -89,15 +91,17 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
   {
     return;
   }
+}
 
-  QColor newBackgroundColor = QColorDialog::getColor( mItem->brush().color(), 0 );
-  if ( !newBackgroundColor.isValid() )
+void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor& newBackgroundColor )
+{
+  if ( !mItem )
   {
-    return; //dialog canceled
+    return;
   }
-
+//  QColor newColor( newBackgroundColor );
   mItem->beginCommand( tr( "Background color changed" ) );
-  newBackgroundColor.setAlpha( 255 - ( mTransparencySpinBox->value() * 2.55 ) );
+//  newColor.setAlpha( 255 - ( mTransparencySpinBox->value() * 2.55 ) );
   mItem->setBrush( QBrush( QColor( newBackgroundColor ), Qt::SolidPattern ) );
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
@@ -110,39 +114,39 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_clicked()
   mItem->endCommand();
 }
 
-void QgsComposerItemWidget::on_mTransparencySpinBox_valueChanged( int value )
-{
-  if ( !mItem )
-  {
-    return;
-  }
+//void QgsComposerItemWidget::on_mTransparencySpinBox_valueChanged( int value )
+//{
+//  if ( !mItem )
+//  {
+//    return;
+//  }
 
-  mTransparencySlider->blockSignals( true );
-  mTransparencySlider->setValue( value );
-  mTransparencySlider->blockSignals( false );
-  changeItemTransparency( value );
-}
+//  mTransparencySlider->blockSignals( true );
+//  mTransparencySlider->setValue( value );
+//  mTransparencySlider->blockSignals( false );
+//  changeItemTransparency( value );
+//}
 
-void QgsComposerItemWidget::on_mTransparencySlider_valueChanged( int value )
-{
-  if ( !mItem )
-  {
-    return;
-  }
-  // do item updates only off of mTransparencySpinBox valueChanged
-  mTransparencySpinBox->setValue( value );
-}
+//void QgsComposerItemWidget::on_mTransparencySlider_valueChanged( int value )
+//{
+//  if ( !mItem )
+//  {
+//    return;
+//  }
+//  // do item updates only off of mTransparencySpinBox valueChanged
+//  mTransparencySpinBox->setValue( value );
+//}
 
-void QgsComposerItemWidget::changeItemTransparency( int value )
-{
-  mItem->beginCommand( tr( "Item transparency changed" ) );
-  QBrush itemBrush = mItem->brush();
-  QColor brushColor = itemBrush.color();
-  brushColor.setAlpha( 255 - ( value * 2.55 ) );
-  mItem->setBrush( QBrush( brushColor ) );
-  mItem->update();
-  mItem->endCommand();
-}
+//void QgsComposerItemWidget::changeItemTransparency( int value )
+//{
+//  mItem->beginCommand( tr( "Item transparency changed" ) );
+//  QBrush itemBrush = mItem->brush();
+//  QColor brushColor = itemBrush.color();
+//  brushColor.setAlpha( 255 - ( value * 2.55 ) );
+//  mItem->setBrush( QBrush( brushColor ) );
+//  mItem->update();
+//  mItem->endCommand();
+//}
 
 void QgsComposerItemWidget::changeItemPosition()
 {
@@ -344,35 +348,47 @@ void QgsComposerItemWidget::setValuesForGuiElements()
 
   setValuesForGuiPositionElements();
 
-  mTransparencySlider->blockSignals( true );
+//  mTransparencySlider->blockSignals( true );
   mOutlineWidthSpinBox->blockSignals( true );
   mFrameGroupBox->blockSignals( true );
   mBackgroundGroupBox->blockSignals( true );
   mItemIdLineEdit->blockSignals( true );
-  mTransparencySpinBox->blockSignals( true );
+  mItemUuidLineEdit->blockSignals( true );
+//  mTransparencySpinBox->blockSignals( true );
 
-  int alphaPercent = ( 255 - mItem->brush().color().alpha() ) / 2.55;
-  mTransparencySpinBox->setValue( alphaPercent );
-  mTransparencySlider->setValue( alphaPercent );
+  mBackgroundColorButton->setColor( mItem->brush().color() );
+  mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+//  int alphaPercent = ( 255 - mItem->brush().color().alpha() ) / 2.55;
+//  mTransparencySpinBox->setValue( alphaPercent );
+//  mTransparencySlider->setValue( alphaPercent );
+
+  mFrameColorButton->setColor( mItem->pen().color() );
+  mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
+  mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
   mItemIdLineEdit->setText( mItem->id() );
+  mItemUuidLineEdit->setText( mItem->uuid() );
   mFrameGroupBox->setChecked( mItem->hasFrame() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
 
-  mTransparencySlider->blockSignals( false );
+//  mTransparencySlider->blockSignals( false );
   mOutlineWidthSpinBox->blockSignals( false );
   mFrameGroupBox->blockSignals( false );
   mBackgroundGroupBox->blockSignals( false );
   mItemIdLineEdit->blockSignals( false );
-  mTransparencySpinBox->blockSignals( false );
+  mItemUuidLineEdit->blockSignals( false );
+//  mTransparencySpinBox->blockSignals( false );
 }
 
-void QgsComposerItemWidget::on_mItemIdLineEdit_textChanged( const QString &text )
+
+void QgsComposerItemWidget::on_mItemIdLineEdit_editingFinished()
 {
   if ( mItem )
   {
     mItem->beginCommand( tr( "Item id changed" ), QgsComposerMergeCommand::ComposerLabelSetId );
-    mItem->setId( text );
+    mItem->setId( mItemIdLineEdit->text() );
+    mItemIdLineEdit->setText( mItem->id() );
     mItem->endCommand();
   }
 }

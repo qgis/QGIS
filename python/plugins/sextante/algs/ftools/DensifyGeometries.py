@@ -23,7 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-
 from PyQt4.QtCore import *
 
 from qgis.core import *
@@ -42,9 +41,6 @@ class DensifyGeometries(GeoAlgorithm):
     VERTICES = "VERTICES"
     OUTPUT = "OUTPUT"
 
-    #def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/de.png")
-
     def defineCharacteristics(self):
         self.name = "Densify geometries"
         self.group = "Vector geometry tools"
@@ -60,7 +56,7 @@ class DensifyGeometries(GeoAlgorithm):
 
         isPolygon = layer.geometryType() == QGis.Polygon
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      layer.wkbType(), layer.crs())
 
         features = QGisLayers.features(layer)
@@ -68,11 +64,11 @@ class DensifyGeometries(GeoAlgorithm):
         current = 0
         for f in features:
             featGeometry = QgsGeometry(f.geometry())
-            attrMap = f.attributes()
+            attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, int(vertices), isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
-            feature.setAttributes(attrMap)
+            feature.setAttributes(attrs)
             writer.addFeature(feature)
             current += 1
             progress.setPercentage(int(current * total))

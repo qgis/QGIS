@@ -17,8 +17,9 @@
 #include "qgsogrprovider.h"
 
 #include "qgsapplication.h"
-#include "qgslogger.h"
 #include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 #include <QTextCodec>
 
@@ -35,7 +36,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
 {
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "OGR" ) );
     P->mActiveIterator->close();
+  }
   P->mActiveIterator = this;
 
   mFeatureFetched = false;

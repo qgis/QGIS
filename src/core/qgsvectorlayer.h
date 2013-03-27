@@ -51,7 +51,7 @@ class QgsVectorLayerJoinBuffer;
 class QgsFeatureRendererV2;
 class QgsDiagramRendererV2;
 class QgsDiagramLayerSettings;
-class QgsVectorLayerCache;
+class QgsGeometryCache;
 class QgsVectorLayerEditBuffer;
 class QgsSymbolV2;
 
@@ -438,28 +438,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual QString subsetString();
 
     /**
-     * Select features with or without attributes in a given window.
-     * @param fetchAttributes indizes of attributes to fetch
-     * @param rect window (QgsRectangle() for all)
-     * @param fetchGeometry fetch features with geometry
-     * @param useIntersect fetch only features that actually intersect the window (not just the bounding box)
-     */
-    Q_DECL_DEPRECATED void select( QgsAttributeList fetchAttributes,
-                                   QgsRectangle rect = QgsRectangle(),
-                                   bool fetchGeometry = true,
-                                   bool useIntersect = false );
-    /**
-     * fetch a feature (after select)
-     * @param feature buffer to read the feature into
-     * @return true, if a feature was fetched, false, if there are no more features
-     */
-    Q_DECL_DEPRECATED bool nextFeature( QgsFeature& feature );
-
-    /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
-     @return true in case of success*/
-    Q_DECL_DEPRECATED bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
-
-    /**
      * Query the provider for features specified in request.
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
@@ -689,6 +667,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
+    /**
+     * Deletes a list of attribute fields (but does not commit it)
+     *
+     * @param  attrs the indices of the attributes to delete
+     * @return true if at least one attribute has been deleted
+     *
+     */
+    bool deleteAttributes( QList<int> attrs );
+
     /** Insert a copy of the given features into the layer  (but does not commit it) */
     bool addFeatures( QgsFeatureList features, bool makeSelected = true );
 
@@ -781,7 +768,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 1.9
      **/
     void setFieldEditable( int idx, bool editable );
-
 
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
      @note this method was added in version 1.1
@@ -878,7 +864,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QString metadata();
 
-    inline QgsVectorLayerCache* cache() { return mCache; }
+    inline QgsGeometryCache* cache() { return mCache; }
 
   signals:
 
@@ -1088,22 +1074,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     //annotation form for this layer
     QString mAnnotationForm;
 
-    QgsFeatureIterator mLayerIterator; // temporary: to support old API
-
-#if 0
-    bool mFetching;
-    QgsRectangle mFetchRect;
-    QgsAttributeList mFetchAttributes;
-    QgsAttributeList mFetchProvAttributes;
-    bool mFetchGeometry;
-
-    QSet<QgsFeatureId> mFetchConsidered;
-    QgsGeometryMap::iterator mFetchChangedGeomIt;
-    QgsFeatureList::iterator mFetchAddedFeaturesIt;
-#endif
-
     //! cache for some vector layer data - currently only geometries for faster editing
-    QgsVectorLayerCache* mCache;
+    QgsGeometryCache* mCache;
 
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer* mEditBuffer;

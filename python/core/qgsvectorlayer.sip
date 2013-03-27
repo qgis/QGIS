@@ -89,23 +89,6 @@ class QgsVectorLayer : QgsMapLayer
 
   public:
 
-  QgsVectorLayer* __iter__();
-%MethodCode
-    sipRes = sipCpp;
-%End
-
-  SIP_PYOBJECT __next__();
-%MethodCode
-    QgsFeature* f = new QgsFeature;
-    if (sipCpp->nextFeature(*f))
-      sipRes = sipConvertFromInstance(f, sipClass_QgsFeature, Py_None);
-    else
-    {
-      delete f;
-      PyErr_SetString(PyExc_StopIteration,"");
-    }
-%End
-
     enum EditorLayout
     {
       GeneratedLayout,
@@ -383,32 +366,9 @@ class QgsVectorLayer : QgsMapLayer
     virtual QString subsetString();
 
     /**
-     * Select features with or without attributes in a given window.
-     * @param fetchAttributes indizes of attributes to fetch
-     * @param rect window (QgsRectangle() for all)
-     * @param fetchGeometry fetch features with geometry
-     * @param useIntersect fetch only features that actually intersect the window (not just the bounding box)
-     */
-    void select( QList<int> fetchAttributes,
-                 QgsRectangle rect = QgsRectangle(),
-                 bool fetchGeometry = true,
-                 bool useIntersect = false ) /Deprecated/;
-
-    /**
      * Query the provider for features specified in request.
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
-
-    /**
-     * fetch a feature (after select)
-     * @param feature buffer to read the feature into
-     * @return true, if a feature was fetched, false, if there are no more features
-     */
-    bool nextFeature( QgsFeature& feature ) /Deprecated/;
-
-    /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
-     @return true in case of success*/
-    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true ) /Deprecated/;
 
     /** Adds a feature
         @param f feature to add
@@ -659,8 +619,10 @@ class QgsVectorLayer : QgsMapLayer
     bool commitChanges();
     const QStringList &commitErrors();
 
-    /** Stop editing and discard the edits */
-    bool rollBack();
+    /** Stop editing and discard the edits
+     * @param deleteBuffer whether to delete editing buffer (added in 1.9)
+     */
+    bool rollBack( bool deleteBuffer = true );
 
     /**get edit type*/
     EditType editType( int idx );
@@ -712,10 +674,25 @@ class QgsVectorLayer : QgsMapLayer
      **/
     ValueRelationData &valueRelation( int idx );
 
+    /**access date format
+     * @note added in 1.9
+     */
+    QString &dateFormat( int idx );
+
+    /**is edit widget editable
+     * @note added in 1.9
+     **/
+    bool fieldEditable( int idx );
+
+    /**set edit widget editable
+     * @note added in 1.9
+     **/
+    void setFieldEditable( int idx, bool editable );
+
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
      @note this method was added in version 1.1
      */
-    void addOverlay( QgsVectorOverlay* overlay /Transfer/);
+    void addOverlay( QgsVectorOverlay* overlay /Transfer/ );
 
     /**Removes all overlays of a given type
     @note this method was added in version 1.1
@@ -725,7 +702,7 @@ class QgsVectorLayer : QgsMapLayer
     /**Returns pointers to the overlays of this layer
     @note this method was added in version 1.1
     */
-    void vectorOverlays( QList<QgsVectorOverlay*>& overlayList /Out/);
+    void vectorOverlays( QList<QgsVectorOverlay*>& overlayList /Out/ );
 
     /**Returns the (first) overlay of a type, e.g. diagram or label
     @note this method was added in version 1.1

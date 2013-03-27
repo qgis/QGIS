@@ -120,4 +120,5 @@ ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
 ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
 ADD_QGIS_TEST(projectionissues testprojectionissues.cpp)
 ADD_QGIS_TEST(scalecombobox testqgsscalecombobox.cpp)
+ADD_QGIS_TEST(dualviewtest testqgsdualview.cpp )
 

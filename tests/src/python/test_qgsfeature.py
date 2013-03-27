@@ -41,11 +41,9 @@ class TestQgsFeature(TestCase):
         myPath = os.path.join(unitTestDataPath(), 'points.shp')
         myLayer = QgsVectorLayer(myPath, 'Points', 'ogr')
         provider = myLayer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        myLayer.select(allAttrs)
-
+        fit = provider.getFeatures()
         feat = QgsFeature()
-        myLayer.nextFeature(feat)
+        fit.nextFeature(feat)
         myValidValue = feat.isValid()
         myMessage = '\nExpected: %s\nGot: %s' % ("True", myValidValue)
         assert myValidValue == True, myMessage
@@ -54,11 +52,9 @@ class TestQgsFeature(TestCase):
         myPath = os.path.join(unitTestDataPath(), 'lines.shp')
         myLayer = QgsVectorLayer(myPath, 'Lines', 'ogr')
         provider = myLayer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        myLayer.select(allAttrs)
+        fit = provider.getFeatures()
         feat = QgsFeature()
-        myLayer.nextFeature(feat)
-
+        fit.nextFeature(feat)
         myAttributes = feat.attributes()
         myExpectedAttributes = [ QVariant("Highway"), QVariant(1) ]
 
@@ -94,4 +90,3 @@ class TestQgsFeature(TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

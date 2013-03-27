@@ -97,9 +97,6 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
         self.verticalLayout.addWidget(self.tabWidget)
         self.logText = QTextEdit()
         self.logText.readOnly = True
-        useThreads = SextanteConfig.getSetting(SextanteConfig.USE_THREADS)
-        keepOpen = SextanteConfig.getSetting(SextanteConfig.KEEP_DIALOG_OPEN)
-        #if useThreads or keepOpen:
         self.tabWidget.addTab(self.logText, "Log")
         self.webView = QtWebKit.QWebView()
         cssUrl = QtCore.QUrl(os.path.join(os.path.dirname(__file__), "help", "help.css"))
@@ -289,7 +286,7 @@ class AlgorithmExecutionDialog(QtGui.QDialog):
                 palette = ex.widget.palette()
                 palette.setColor(QPalette.Base, QColor(255, 255, 0))
                 ex.widget.setPalette(palette)
-                self.progressLabel.setText("<b>Missing parameter value</b>")
+                self.progressLabel.setText("<b>Missing parameter value: " + ex.parameter.description + "</b>")
                 return
             except:
                 QMessageBox.critical(self, "Unable to execute algorithm", "Wrong or missing parameter values")

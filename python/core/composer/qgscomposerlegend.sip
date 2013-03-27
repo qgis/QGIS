@@ -5,6 +5,7 @@ class QgsComposerLegend : QgsComposerItem
 {
 %TypeHeaderCode
 #include <qgscomposerlegend.h>
+#include <qgscomposerlegendstyle.h>
 %End
 
   public:
@@ -30,32 +31,17 @@ class QgsComposerLegend : QgsComposerItem
     void setTitle( const QString& t );
     QString title() const;
 
-    QFont titleFont() const;
-    void setTitleFont( const QFont& f );
-
-    QFont groupFont() const;
-    void setGroupFont( const QFont& f );
-
-    QFont layerFont() const;
-    void setLayerFont( const QFont& f );
-
-    QFont itemFont() const;
-    void setItemFont( const QFont& f );
+    /*
+    QgsComposerLegendStyle style(QgsComposerLegendStyle::Style s) const;
+    void setStyle(QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style);
+    QFont styleFont( QgsComposerLegendStyle::Style s ) const;
+    void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
+    void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
+    void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
+    */
 
     double boxSpace() const;
     void setBoxSpace( double s );
-
-    double groupSpace() const;
-    void setGroupSpace( double s );
-
-    double layerSpace() const;
-    void setLayerSpace( double s );
-
-    double symbolSpace() const;
-    void setSymbolSpace( double s );
-
-    double iconLabelSpace() const;
-    void setIconLabelSpace( double s );
 
     double symbolWidth() const;
     void setSymbolWidth( double w );

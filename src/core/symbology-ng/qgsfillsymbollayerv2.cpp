@@ -28,9 +28,26 @@
 #include <QDomElement>
 
 QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth )
-    : mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth )
+    : mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth ), mBorderWidthUnit( QgsSymbolV2::MM ),
+    mOffsetUnit( QgsSymbolV2::MM )
 {
   mColor = color;
+}
+
+void QgsSimpleFillSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mBorderWidthUnit = unit;
+  mOffsetUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsSimpleFillSymbolLayerV2::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mBorderWidthUnit;
+  if ( mOffsetUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }
 
 
@@ -58,6 +75,10 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
 
   QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, style, borderColor, borderStyle, borderWidth );
   sl->setOffset( offset );
+  if ( props.contains( "border_width_unit" ) )
+    sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["border_width_unit"] ) );
+  if ( props.contains( "offset_unit" ) )
+    sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
   return sl;
 }
 
@@ -94,7 +115,7 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mPen = QPen( borderColor );
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
-  mPen.setWidthF( context.outputLineWidth( mBorderWidth ) );
+  mPen.setWidthF( mBorderWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit ) );
 }
 
 void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -114,13 +135,20 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
   p->setPen( mPen );
   p->setPen( context.selected() ? mSelPen : mPen );
 
+  QPointF offset;
   if ( !mOffset.isNull() )
-    p->translate( mOffset );
+  {
+    offset.setX( mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+    offset.setY( mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+    p->translate( offset );
+  }
 
   _renderPolygon( p, points, rings );
 
   if ( !mOffset.isNull() )
-    p->translate( -mOffset );
+  {
+    p->translate( -offset );
+  }
 }
 
 QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
@@ -131,7 +159,9 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
   map["color_border"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
   map["style_border"] = QgsSymbolLayerV2Utils::encodePenStyle( mBorderStyle );
   map["width_border"] = QString::number( mBorderWidth );
+  map["border_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mBorderWidthUnit );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   return map;
 }
 
@@ -139,6 +169,8 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
 {
   QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( mColor, mBrushStyle, mBorderColor, mBorderStyle, mBorderWidth );
   sl->setOffset( mOffset );
+  sl->setOffsetUnit( mOffsetUnit );
+  sl->setBorderWidthUnit( mBorderWidthUnit );
   return sl;
 }
 
@@ -212,7 +244,7 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::createFromSld( QDomElement &elemen
 
 //QgsImageFillSymbolLayer
 
-QgsImageFillSymbolLayer::QgsImageFillSymbolLayer(): mOutlineWidth( 0.0 ), mOutline( 0 )
+QgsImageFillSymbolLayer::QgsImageFillSymbolLayer(): mOutlineWidth( 0.0 ), mOutlineWidthUnit( QgsSymbolV2::MM ), mOutline( 0 )
 {
   setSubSymbol( new QgsLineSymbolV2() );
 }
@@ -295,7 +327,8 @@ bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 
 //QgsSVGFillSymbolLayer
 
-QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width, double angle ): QgsImageFillSymbolLayer(), mPatternWidth( width )
+QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width, double angle ): QgsImageFillSymbolLayer(), mPatternWidth( width ),
+    mPatternWidthUnit( QgsSymbolV2::MM ), mSvgOutlineWidthUnit( QgsSymbolV2::MM )
 {
   setSvgFilePath( svgFilePath );
   mOutlineWidth = 0.3;
@@ -319,6 +352,23 @@ QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
 {
   delete mOutline;
   delete mSvgPattern;
+}
+
+void QgsSVGFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mPatternWidthUnit = unit;
+  mSvgOutlineWidthUnit = unit;
+  mOutlineWidthUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsSVGFillSymbolLayer::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mPatternWidthUnit;
+  if ( mSvgOutlineWidthUnit != unit || mOutlineWidthUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }
 
 void QgsSVGFillSymbolLayer::setSvgFilePath( const QString& svgPath )
@@ -380,6 +430,19 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
     symbolLayer->setSvgOutlineWidth( properties["svgOutlineWidth"].toDouble() );
   }
 
+  //units
+  if ( properties.contains( "pattern_width_unit" ) )
+  {
+    symbolLayer->setPatternWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["pattern_width_unit"] ) );
+  }
+  if ( properties.contains( "svg_outline_width_unit" ) )
+  {
+    symbolLayer->setSvgOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["svg_outline_width_unit"] ) );
+  }
+  if ( properties.contains( "outline_width_unit" ) )
+  {
+    symbolLayer->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["outline_width_unit"] ) );
+  }
 
   return symbolLayer;
 }
@@ -398,7 +461,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 
   delete mSvgPattern;
   mSvgPattern = 0;
-  double size = context.outputPixelSize( mPatternWidth );
+  double size = mPatternWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context.renderContext(), mPatternWidthUnit );
 
   //don't render pattern if symbol size is below one or above 10,000 pixels
   if (( int )size < 1.0 || 10000.0 < size )
@@ -408,13 +471,14 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   }
   else
   {
+    double outlineWidth = mSvgOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSvgOutlineWidthUnit );
     bool fitsInCache = true;
-    const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
+    const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, outlineWidth,
                                  context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
 
     if ( !fitsInCache )
     {
-      const QPicture& patternPict = QgsSvgCache::instance()->svgAsPicture( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
+      const QPicture& patternPict = QgsSvgCache::instance()->svgAsPicture( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, outlineWidth,
                                     context.renderContext().scaleFactor(), 1.0 );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
@@ -477,24 +541,32 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   map.insert( "svgOutlineColor", mSvgOutlineColor.name() );
   map.insert( "svgOutlineWidth", QString::number( mSvgOutlineWidth ) );
 
+  //units
+  map["pattern_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mPatternWidthUnit );
+  map["svg_outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSvgOutlineWidthUnit );
+  map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
+
   return map;
 }
 
 QgsSymbolLayerV2* QgsSVGFillSymbolLayer::clone() const
 {
-  QgsSymbolLayerV2* clonedLayer = 0;
+  QgsSVGFillSymbolLayer* clonedLayer = 0;
   if ( !mSvgFilePath.isEmpty() )
   {
     clonedLayer = new QgsSVGFillSymbolLayer( mSvgFilePath, mPatternWidth, mAngle );
-    QgsSVGFillSymbolLayer* sl = static_cast<QgsSVGFillSymbolLayer*>( clonedLayer );
-    sl->setSvgFillColor( mSvgFillColor );
-    sl->setSvgOutlineColor( mSvgOutlineColor );
-    sl->setSvgOutlineWidth( mSvgOutlineWidth );
+    clonedLayer->setSvgFillColor( mSvgFillColor );
+    clonedLayer->setSvgOutlineColor( mSvgOutlineColor );
+    clonedLayer->setSvgOutlineWidth( mSvgOutlineWidth );
   }
   else
   {
     clonedLayer = new QgsSVGFillSymbolLayer( mSvgData, mPatternWidth, mAngle );
   }
+
+  clonedLayer->setPatternWidthUnit( mPatternWidthUnit );
+  clonedLayer->setSvgOutlineWidthUnit( mSvgOutlineWidthUnit );
+  clonedLayer->setOutlineWidthUnit( mOutlineWidthUnit );
 
   if ( mOutline )
   {
@@ -668,12 +740,30 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
   }
 }
 
-QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer(): QgsImageFillSymbolLayer()
+QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mDistanceUnit( QgsSymbolV2::MM ), mLineWidthUnit( QgsSymbolV2::MM ),
+    mOffsetUnit( QgsSymbolV2::MM )
 {
 }
 
 QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
 {
+}
+
+void QgsLinePatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mDistanceUnit = unit;
+  mLineWidthUnit = unit;
+  mOffsetUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsLinePatternFillSymbolLayer::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mDistanceUnit;
+  if ( mLineWidthUnit != unit || mOffsetUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }
 
 QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& properties )
@@ -716,6 +806,20 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
     offset = properties["offset"].toDouble();
   }
   patternLayer->setOffset( offset );
+
+
+  if ( properties.contains( "distance_unit" ) )
+  {
+    patternLayer->setDistanceUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["distance_unit"] ) );
+  }
+  if ( properties.contains( "line_width_unit" ) )
+  {
+    patternLayer->setLineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["line_width_unit"] ) );
+  }
+  if ( properties.contains( "offset_unit" ) )
+  {
+    patternLayer->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["offset_unit"] ) );
+  }
   return patternLayer;
 }
 
@@ -726,9 +830,10 @@ QString QgsLinePatternFillSymbolLayer::layerType() const
 
 void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
-  double outlinePixelWidth = context.outputPixelSize( mLineWidth );
-  double outputPixelDist = context.outputPixelSize( mDistance );
-  double outputPixelOffset = context.outputPixelSize( mOffset );
+  const QgsRenderContext& ctx = context.renderContext();
+  double outlinePixelWidth = mLineWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mLineWidthUnit );
+  double outputPixelDist = mDistance * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceUnit );
+  double outputPixelOffset = mOffset * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mOffsetUnit );
 
   //create image
   int height, width;
@@ -864,16 +969,22 @@ QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
   map.insert( "linewidth", QString::number( mLineWidth ) );
   map.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
   map.insert( "offset", QString::number( mOffset ) );
+  map.insert( "distance_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceUnit ) );
+  map.insert( "line_width_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mLineWidthUnit ) );
+  map.insert( "offset_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit ) );
   return map;
 }
 
 QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
 {
-  QgsSymbolLayerV2* clonedLayer = QgsLinePatternFillSymbolLayer::create( properties() );
+  QgsLinePatternFillSymbolLayer* clonedLayer = static_cast<QgsLinePatternFillSymbolLayer*>( QgsLinePatternFillSymbolLayer::create( properties() ) );
   if ( mOutline )
   {
     clonedLayer->setSubSymbol( mOutline->clone() );
   }
+  clonedLayer->setDistanceUnit( mDistanceUnit );
+  clonedLayer->setLineWidthUnit( mLineWidthUnit );
+  clonedLayer->setOffsetUnit( mOffsetUnit );
   return clonedLayer;
 }
 
@@ -1009,7 +1120,8 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &ele
 ////////////////////////
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mMarkerSymbol( 0 ), mDistanceX( 15 ),
-    mDistanceY( 15 ), mDisplacementX( 0 ), mDisplacementY( 0 )
+    mDistanceXUnit( QgsSymbolV2::MM ), mDistanceY( 15 ), mDistanceYUnit( QgsSymbolV2::MM ), mDisplacementX( 0 ), mDisplacementXUnit( QgsSymbolV2::MM ),
+    mDisplacementY( 0 ), mDisplacementYUnit( QgsSymbolV2::MM )
 {
   mDistanceX = 15;
   mDistanceY = 15;
@@ -1021,6 +1133,24 @@ QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSy
 
 QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer()
 {
+}
+
+void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mDistanceXUnit = unit;
+  mDistanceYUnit = unit;
+  mDisplacementXUnit = unit;
+  mDisplacementYUnit = unit;
+}
+
+QgsSymbolV2::OutputUnit QgsPointPatternFillSymbolLayer::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mDistanceXUnit;
+  if ( mDistanceYUnit != unit || mDisplacementXUnit != unit || mDisplacementYUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }
 
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& properties )
@@ -1042,6 +1172,29 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& pr
   {
     layer->setDisplacementY( properties["displacement_y"].toDouble() );
   }
+
+  /*propertyMap["distance_x_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceXUnit );
+  propertyMap["distance_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceYUnit );
+  propertyMap["displacement_x_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementXUnit );
+  propertyMap["displacement_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementYUnit );*/
+
+  if ( properties.contains( "distance_x_unit" ) )
+  {
+    layer->setDistanceXUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["distance_x_unit"] ) );
+  }
+  if ( properties.contains( "distance_y_unit" ) )
+  {
+    layer->setDistanceYUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["distance_y_unit"] ) );
+  }
+  if ( properties.contains( "displacement_x_unit" ) )
+  {
+    layer->setDisplacementXUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["displacement_x_unit"] ) );
+  }
+  if ( properties.contains( "displacement_y_unit" ) )
+  {
+    layer->setDisplacementYUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["displacement_y_unit"] ) );
+  }
+
   return layer;
 }
 
@@ -1053,8 +1206,9 @@ QString QgsPointPatternFillSymbolLayer::layerType() const
 void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
   //render 3 rows and columns in one go to easily incorporate displacement
-  double width = context.outputPixelSize( mDistanceX ) * 2.0;
-  double height = context.outputPixelSize( mDistanceY ) * 2.0;
+  const QgsRenderContext& ctx = context.renderContext();
+  double width = mDistanceX * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceXUnit ) * 2.0;
+  double height = mDistanceY * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceYUnit ) * 2.0;
 
   if ( width > 10000 || height > 10000 ) //protect symbol layer from eating too much memory
   {
@@ -1079,7 +1233,6 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
     pointRenderContext.setMapToPixel( mtp );
     pointRenderContext.setForceVectorOutput( false );
 
-    mMarkerSymbol->setOutputUnit( context.outputUnit() );
     mMarkerSymbol->startRender( pointRenderContext );
 
     //render corner points
@@ -1089,8 +1242,8 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
     mMarkerSymbol->renderPoint( QPointF( width, height ), context.feature(), pointRenderContext );
 
     //render displaced points
-    double displacementPixelX = context.outputPixelSize( mDisplacementX );
-    double displacementPixelY = context.outputPixelSize( mDisplacementY );
+    double displacementPixelX = mDisplacementX * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDisplacementXUnit );
+    double displacementPixelY = mDisplacementY * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ctx, mDisplacementYUnit );
     mMarkerSymbol->renderPoint( QPointF( width / 2.0, -displacementPixelY ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( displacementPixelX, height / 2.0 ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( width / 2.0 + displacementPixelX, height / 2.0 - displacementPixelY ), context.feature(), pointRenderContext );
@@ -1135,16 +1288,24 @@ QgsStringMap QgsPointPatternFillSymbolLayer::properties() const
   propertyMap["distance_y"] = QString::number( mDistanceY );
   propertyMap["displacement_x"] = QString::number( mDisplacementX );
   propertyMap["displacement_y"] = QString::number( mDisplacementY );
+  propertyMap["distance_x_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceXUnit );
+  propertyMap["distance_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceYUnit );
+  propertyMap["displacement_x_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementXUnit );
+  propertyMap["displacement_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementYUnit );
   return propertyMap;
 }
 
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::clone() const
 {
-  QgsSymbolLayerV2* clonedLayer = QgsPointPatternFillSymbolLayer::create( properties() );
+  QgsPointPatternFillSymbolLayer* clonedLayer = static_cast<QgsPointPatternFillSymbolLayer*>( QgsPointPatternFillSymbolLayer::create( properties() ) );
   if ( mMarkerSymbol )
   {
     clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
   }
+  clonedLayer->setDistanceXUnit( mDistanceXUnit );
+  clonedLayer->setDistanceYUnit( mDistanceYUnit );
+  clonedLayer->setDisplacementXUnit( mDisplacementXUnit );
+  clonedLayer->setDisplacementYUnit( mDisplacementYUnit );
   return clonedLayer;
 }
 

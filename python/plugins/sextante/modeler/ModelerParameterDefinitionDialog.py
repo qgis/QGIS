@@ -204,9 +204,9 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
             self.fileFolderCombo = QtGui.QComboBox()
             self.fileFolderCombo.addItem("File")
             self.fileFolderCombo.addItem("Folder")
-            self.horizontalLayout2.addWidget(self.fileFolderCombo)            
+            self.horizontalLayout2.addWidget(self.fileFolderCombo)
             if self.param is not None:
-                self.fileFolderCombo.setCurrentIndex(1 if self.param.isFolder else 0)                
+                self.fileFolderCombo.setCurrentIndex(1 if self.param.isFolder else 0)
 
         self.buttonBox = QtGui.QDialogButtonBox(self)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -267,7 +267,7 @@ class ModelerParameterDefinitionDialog(QtGui.QDialog):
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXTENT or isinstance(self.param, ParameterExtent):
             self.param = ParameterExtent(name, description)
         elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_FILE or isinstance(self.param, ParameterFile):
-            self.param = ParameterFile(name, description)            
+            self.param = ParameterFile(name, description)
         self.close()
 
     def cancelPressed(self):

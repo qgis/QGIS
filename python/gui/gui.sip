@@ -12,6 +12,7 @@
 %Include qgsattributeeditor.sip
 %Include qgscollapsiblegroupbox.sip
 %Include qgscolorbutton.sip
+%Include qgscolordialog.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
 %Include qgsdetaileditemdata.sip
@@ -63,7 +64,6 @@
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
 
-%Include attributetable/qgsattributetablemodel.sip
 %Include attributetable/qgsattributetableview.sip
 
 %Include raster/qgsmultibandcolorrendererwidget.sip

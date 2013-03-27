@@ -33,6 +33,16 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Blending mode</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox"/>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnOldSymbology">
        <property name="text">
         <string>Old symbology</string>
@@ -77,6 +87,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>
   <tabstop>buttonBox</tabstop>

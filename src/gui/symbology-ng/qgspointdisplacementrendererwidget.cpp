@@ -222,42 +222,24 @@ void QgsPointDisplacementRendererWidget::on_mCircleWidthSpinBox_valueChanged( do
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mCircleColorButton_clicked()
+void QgsPointDisplacementRendererWidget::on_mCircleColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mRenderer )
   {
     return;
   }
 
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( mRenderer->circleColor(), 0, tr( "Circle color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( mRenderer->circleColor() );
-#endif
-  if ( newColor.isValid() )
-  {
-    mRenderer->setCircleColor( newColor );
-    mCircleColorButton->setColor( newColor );
-  }
+  mRenderer->setCircleColor( newColor );
 }
 
-void QgsPointDisplacementRendererWidget::on_mLabelColorButton_clicked()
+void QgsPointDisplacementRendererWidget::on_mLabelColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mRenderer )
   {
     return;
   }
 
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( mRenderer->labelColor(), 0, tr( "Label color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( mRenderer->labelColor() );
-#endif
-  if ( newColor.isValid() )
-  {
-    mRenderer->setLabelColor( newColor );
-    mLabelColorButton->setColor( newColor );
-  }
+  mRenderer->setLabelColor( newColor );
 }
 
 void QgsPointDisplacementRendererWidget::on_mCircleModificationSpinBox_valueChanged( double d )

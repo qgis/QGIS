@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/topology" >
+        <file>topol.png</file>
+        <file>configureRules.png</file>
+        <file>validateAll.png</file>
+        <file>validateExtent.png</file>
+    </qresource>
+</RCC>

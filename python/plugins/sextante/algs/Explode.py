@@ -50,7 +50,7 @@ class Explode(GeoAlgorithm):
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nElement = 0
-        features = QGisLayers.features(layer)
+        features = QGisLayers.features(vlayer)
         nFeat = len(features)
         for feature in features:
             nElement += 1

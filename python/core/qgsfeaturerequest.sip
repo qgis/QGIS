@@ -23,6 +23,10 @@ class QgsFeatureRequest
 
     //! construct a default request: for all features get attributes and geometries
     QgsFeatureRequest();
+    //! construct a request with feature ID filter
+    explicit QgsFeatureRequest( QgsFeatureId fid );
+    //! construct a request with rectangle filter
+    explicit QgsFeatureRequest( const QgsRectangle& rect );
 
     FilterType filterType() const;
 

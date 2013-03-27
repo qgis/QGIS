@@ -18,6 +18,7 @@
 #define QGSCOMPOSERLABEL_H
 
 #include "qgscomposeritem.h"
+#include <QFont>
 
 class QgsVectorLayer;
 class QgsFeature;
@@ -111,6 +112,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     int mHtmlState;
     double mHtmlUnitsToMM;
     double htmlUnitsToMM(); //calculate scale factor
+
+    /**Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment*/
+    void itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const;
 
     // Font
     QFont mFont;

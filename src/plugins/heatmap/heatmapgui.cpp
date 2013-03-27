@@ -12,6 +12,7 @@
 // qgis includes
 #include "qgis.h"
 #include "heatmapgui.h"
+#include "heatmap.h"
 #include "qgscontexthelp.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
@@ -170,7 +171,7 @@ void HeatmapGui::on_columnLineEdit_editingFinished()
 
 void HeatmapGui::on_cellXLineEdit_editingFinished()
 {
-  mXcellsize = cellXLineEdit->text().toFloat();
+  mXcellsize = cellXLineEdit->text().toDouble();
   mYcellsize = mXcellsize;
   mRows = mBBox.height() / mYcellsize + 1;
   mColumns = mBBox.width() / mXcellsize + 1;
@@ -180,7 +181,7 @@ void HeatmapGui::on_cellXLineEdit_editingFinished()
 
 void HeatmapGui::on_cellYLineEdit_editingFinished()
 {
-  mYcellsize = cellYLineEdit->text().toFloat();
+  mYcellsize = cellYLineEdit->text().toDouble();
   mXcellsize = mYcellsize;
   mRows = mBBox.height() / mYcellsize + 1;
   mColumns = mBBox.width() / mXcellsize + 1;
@@ -225,6 +226,14 @@ void HeatmapGui::on_mBufferLineEdit_editingFinished()
 {
   updateBBox();
 }
+
+void HeatmapGui::on_kernelShapeCombo_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  // Only enable the decay edit if the kernel shape is set to triangular
+  mDecayLineEdit->setEnabled( index == Heatmap::Triangular );
+}
+
 /*
  *
  * Private Functions
@@ -281,10 +290,10 @@ void HeatmapGui::updateBBox()
   mBBox = inputLayer->extent();
   QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
 
-  float radiusInMapUnits = 0.0;
+  double radiusInMapUnits = 0.0;
   if ( useRadius->isChecked() )
   {
-    float maxInField = inputLayer->maximumValue( radiusFieldCombo->itemData( radiusFieldCombo->currentIndex() ).toInt() ).toFloat();
+    double maxInField = inputLayer->maximumValue( radiusFieldCombo->itemData( radiusFieldCombo->currentIndex() ).toInt() ).toDouble();
 
     if ( radiusFieldUnitCombo->currentIndex() == HeatmapGui::Meters )
     {
@@ -297,7 +306,7 @@ void HeatmapGui::updateBBox()
   }
   else
   {
-    float radiusValue = mBufferLineEdit->text().toFloat();
+    double radiusValue = mBufferLineEdit->text().toDouble();
     if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
     {
       radiusInMapUnits = mapUnitsOf( radiusValue, layerCrs );
@@ -325,7 +334,7 @@ void HeatmapGui::updateBBox()
   }
 }
 
-float HeatmapGui::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
+double HeatmapGui::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs )
 {
   // converter function to transform metres input to mapunits
   // so that bounding box can be updated
@@ -356,9 +365,9 @@ bool HeatmapGui::variableRadius()
   return useRadius->isChecked();
 }
 
-float HeatmapGui::radius()
+double HeatmapGui::radius()
 {
-  float radius = mBufferLineEdit->text().toInt();
+  double radius = mBufferLineEdit->text().toDouble();
   if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
   {
     radius = mapUnitsOf( radius, inputVectorLayer()->crs() );
@@ -375,9 +384,14 @@ int HeatmapGui::radiusUnit()
   return mRadiusUnitCombo->currentIndex();
 }
 
-float HeatmapGui::decayRatio()
+int HeatmapGui::kernelShape()
 {
-  return mDecayLineEdit->text().toFloat();
+  return kernelShapeCombo->currentIndex();
+}
+
+double HeatmapGui::decayRatio()
+{
+  return mDecayLineEdit->text().toDouble();
 }
 
 int HeatmapGui::radiusField()

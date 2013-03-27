@@ -52,8 +52,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>302</width>
-        <height>683</height>
+        <width>298</width>
+        <height>681</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -164,6 +164,9 @@
               <property name="text">
                <string>Top</string>
               </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup</string>
+              </attribute>
              </widget>
             </item>
             <item>
@@ -171,6 +174,9 @@
               <property name="text">
                <string>Middle</string>
               </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup</string>
+              </attribute>
              </widget>
             </item>
             <item>
@@ -178,6 +184,9 @@
               <property name="text">
                <string>Bottom</string>
               </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup</string>
+              </attribute>
              </widget>
             </item>
             <item>
@@ -202,6 +211,9 @@
               <property name="text">
                <string>Left</string>
               </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
              </widget>
             </item>
             <item>
@@ -209,6 +221,9 @@
               <property name="text">
                <string>Center</string>
               </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
              </widget>
             </item>
             <item>
@@ -216,6 +231,9 @@
               <property name="text">
                <string>Right</string>
               </property>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
              </widget>
             </item>
             <item>
@@ -330,4 +348,8 @@
  </customwidgets>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
+ </buttongroups>
 </ui>

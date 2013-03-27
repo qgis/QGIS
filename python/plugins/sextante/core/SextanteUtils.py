@@ -63,7 +63,7 @@ class SextanteUtils:
         ext = out.getDefaultFileExtension(alg)
         validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         safeCmdName = ''.join(c for c in alg.commandLineName() if c in validChars)
-        uniqueSufix = str(uuid.uuid4()).replace("-","");
+        uniqueSufix = str(uuid.uuid4()).replace("-","")
         filename = SextanteUtils.tempFolder() + os.sep + safeCmdName + uniqueSufix + "." + ext
         out.value = filename
 
@@ -74,6 +74,15 @@ class SextanteUtils:
             filename = path + os.sep + str(time.time()) + str(SextanteUtils.getNumExportedLayers())
         else:
             filename = path + os.sep + str(time.time()) + str(SextanteUtils.getNumExportedLayers()) + "." + ext
+        return filename
+
+    @staticmethod
+    def getTempFilenameInTempFolder(basename):
+        '''returns a temporary filename for a given file, putting it into a temp folder but not changing its basename'''
+        path = SextanteUtils.tempFolder()
+        tempFolder = os.path.join(path, str(uuid.uuid4()).replace("-",""))
+        mkdir(tempFolder)
+        filename =  os.path.join(tempFolder, basename)
         return filename
 
     @staticmethod

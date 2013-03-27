@@ -21,6 +21,7 @@
 
 class QPainter;
 class QgsVectorLayer;
+class QgsAttributeTableView;
 
 /** \ingroup app
  * A delegate item class for QgsAttributeTable (see Qt documentation for

@@ -111,6 +111,8 @@ void QgsDiagramSettings::readXML( const QDomElement& elem )
 
   barWidth = elem.attribute( "barWidth" ).toDouble();
 
+  angleOffset = elem.attribute( "angleOffset" ).toInt();
+
   minimumSize = elem.attribute( "minimumSize" ).toDouble();
 
   //colors
@@ -204,6 +206,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
 
   categoryElem.setAttribute( "barWidth", QString::number( barWidth ) );
   categoryElem.setAttribute( "minimumSize", QString::number( minimumSize ) );
+  categoryElem.setAttribute( "angleOffset", QString::number( angleOffset ) );
 
   QString colors;
   for ( int i = 0; i < categoryColors.size(); ++i )

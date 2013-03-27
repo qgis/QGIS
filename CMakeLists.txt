@@ -125,6 +125,11 @@ SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 # if set to other directory than expected
 MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
 
+IF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
+  # following variable is also used in qgsconfig.h
+  SET (USING_NMAKE TRUE)
+ENDIF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
+
 #############################################################
 # check if lexer and parser are not missing
 # http://www.mail-archive.com/cmake@cmake.org/msg02861.html
@@ -295,7 +300,9 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 IF (PEDANTIC)
   MESSAGE (STATUS "Pedantic compiler settings enabled")
   IF(MSVC)
-    ADD_DEFINITIONS( /W4 )
+    IF (NOT USING_NMAKE)
+      ADD_DEFINITIONS( /W4 )
+    ENDIF (NOT USING_NMAKE)
 
     # disable warnings
     ADD_DEFINITIONS( /wd4100 )  # unused formal parameters
@@ -316,7 +323,7 @@ IF (PEDANTIC)
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual")
     ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   ENDIF (MSVC)
 
@@ -372,8 +379,10 @@ IF (WIN32)
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
 
     IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-      MESSAGE (STATUS "Generating browse files")
-      ADD_DEFINITIONS( /FR )
+      IF (NOT USING_NMAKE)
+        MESSAGE (STATUS "Generating browse files")
+        ADD_DEFINITIONS( /FR )
+      ENDIF (NOT USING_NMAKE)
     ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
     IF (INSTALL_DEPS)

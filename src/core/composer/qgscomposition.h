@@ -16,11 +16,14 @@
 #ifndef QGSCOMPOSITION_H
 #define QGSCOMPOSITION_H
 
+#include "qgscomposeritem.h"
 #include <memory>
 
 #include <QDomDocument>
 #include <QGraphicsScene>
 #include <QLinkedList>
+#include <QList>
+#include <QPair>
 #include <QSet>
 #include <QUndoStack>
 #include <QPrinter>
@@ -30,8 +33,8 @@
 #include "qgscomposeritemcommand.h"
 #include "qgsatlascomposition.h"
 
+class QgisApp;
 class QgsComposerFrame;
-class QgsComposerItem;
 class QgsComposerMap;
 class QgsPaperItem;
 class QGraphicsRectItem;
@@ -50,6 +53,7 @@ class QgsComposerAttributeTable;
 class QgsComposerMultiFrame;
 class QgsComposerMultiFrameCommand;
 class QgsVectorLayer;
+class QgsComposer;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -158,12 +162,23 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
 
     /**Returns a composer item given its text identifier.
+       Ids are not necessarely unique, but this function returns only one element.
       @note added in 2.0
       @param theId - A QString representing the identifier of the item to
         retrieve.
       @return QgsComposerItem pointer or 0 pointer if no such item exists.
       **/
     const QgsComposerItem* getComposerItemById( QString theId ) const;
+
+    /**Returns a composer item given its unique identifier.
+      @note added in 2.0
+      @param theId - A QString representing the UUID of the item to
+      @param inAllComposers - Whether the search should be done in all composers of the project
+        retrieve.
+      @return QgsComposerItem pointer or 0 pointer if no such item exists.
+      **/
+    //const QgsComposerItem* getComposerItemByUuid( QString theUuid, bool inAllComposers = false ) const;//does not work since it's impossible to get QGisApp::instance()
+    const QgsComposerItem* getComposerItemByUuid( QString theUuid ) const;
 
     int printResolution() const {return mPrintResolution;}
     void setPrintResolution( int dpi ) {mPrintResolution = dpi;}
@@ -259,6 +274,15 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     @param alignY snapped y coordinate or -1 if not snapped
     @return snapped position or original position if no snap*/
     QPointF alignPos( const QPointF& pos, const QgsComposerItem* excludeItem, double& alignX, double& alignY );
+
+    /**Add a custom snap line (can be horizontal or vertical)*/
+    QGraphicsLineItem* addSnapLine();
+    /**Remove custom snap line (and delete the object)*/
+    void removeSnapLine( QGraphicsLineItem* line );
+    /**Get nearest snap line*/
+    QGraphicsLineItem* nearestSnapLine( bool horizontal, double x, double y, double tolerance, QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode > >& snappedItems );
+    /**Hides / shows custom snap lines*/
+    void setSnapLinesVisible( bool visible );
 
     /**Allocates new item command and saves initial state in it
       @param item target item
@@ -369,6 +393,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Parameters for alignment snap*/
     bool mAlignmentSnap;
     double mAlignmentSnapTolerance;
+
+    /**Arbitraty snap lines (horizontal and vertical)*/
+    QList< QGraphicsLineItem* > mSnapLines;
 
     QUndoStack mUndoStack;
 

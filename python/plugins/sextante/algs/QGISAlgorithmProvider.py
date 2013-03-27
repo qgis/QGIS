@@ -2,9 +2,9 @@
 
 """
 ***************************************************************************
-    SextanteAlgorithmProvider.py
+    QGISAlgorithmProvider.py
     ---------------------
-    Date                 : August 2012
+    Date                 : December 2012
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
@@ -16,21 +16,17 @@
 *                                                                         *
 ***************************************************************************
 """
-#from sextante.algs.MeanAndStdDevPlot import MeanAndStdDevPlot
-#from sextante.algs.BarPlot import BarPlot
-#from sextante.algs.PolarPlot import PolarPlot
-from sextante.algs.RasterLayerStatistics import RasterLayerStatistics
 
 __author__ = 'Victor Olaya'
-__date__ = 'August 2012'
+__date__ = 'December 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui
-#from sextante.algs.RasterLayerHistogram import RasterLayerHistogram
-from sextante.algs.StatisticsByCategories import StatisticsByCategories
+from PyQt4.QtGui import *
+
+from sextante.core.AlgorithmProvider import AlgorithmProvider
+
 from sextante.algs.ftools.PointsInPolygon import PointsInPolygon
 from sextante.algs.ftools.PointsInPolygonUnique import PointsInPolygonUnique
 from sextante.algs.ftools.PointsInPolygonWeighted import PointsInPolygonWeighted
@@ -67,6 +63,7 @@ from sextante.algs.ftools.RandomSelectionWithinSubsets import RandomSelectionWit
 from sextante.algs.ftools.SelectByLocation import SelectByLocation
 from sextante.algs.ftools.Union import Union
 from sextante.algs.ftools.DensifyGeometriesInterval import DensifyGeometriesInterval
+
 from sextante.algs.mmqgisx.MMQGISXAlgorithms import  (mmqgisx_delete_columns_algorithm,
     mmqgisx_delete_duplicate_geometries_algorithm,
     mmqgisx_geometry_convert_algorithm,
@@ -74,10 +71,10 @@ from sextante.algs.mmqgisx.MMQGISXAlgorithms import  (mmqgisx_delete_columns_alg
     mmqgisx_hub_distance_algorithm, mmqgisx_hub_lines_algorithm,
     mmqgisx_merge_algorithm, mmqgisx_select_algorithm,
     mmqgisx_text_to_float_algorithm)
+
+from sextante.algs.RasterLayerStatistics import RasterLayerStatistics
+from sextante.algs.StatisticsByCategories import StatisticsByCategories
 from sextante.algs.EquivalentNumField import EquivalentNumField
-#from sextante.algs.VectorLayerHistogram import VectorLayerHistogram
-#from sextante.algs.VectorLayerScatterplot import VectorLayerScatterplot
-from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.algs.AddTableField import AddTableField
 from sextante.algs.FieldsCalculator import FieldsCalculator
 from sextante.algs.SaveSelectedFeatures import SaveSelectedFeatures
@@ -88,25 +85,38 @@ from sextante.algs.JoinAttributes import JoinAttributes
 from sextante.algs.CreateConstantRaster import CreateConstantRaster
 from sextante.algs.PointsLayerFromTable import PointsLayerFromTable
 
+#from sextante.algs.VectorLayerHistogram import VectorLayerHistogram
+#from sextante.algs.VectorLayerScatterplot import VectorLayerScatterplot
+#from sextante.algs.MeanAndStdDevPlot import MeanAndStdDevPlot
+#from sextante.algs.BarPlot import BarPlot
+#from sextante.algs.PolarPlot import PolarPlot
+#from sextante.algs.RasterLayerHistogram import RasterLayerHistogram
+
+import sextante.resources_rc
+
 class QGISAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.alglist = [AddTableField(), FieldsCalculator(), SaveSelectedFeatures(), JoinAttributes(),
-                        AutoincrementalField(), Explode(), FieldsPyculator(), EquivalentNumField(),
-                        SumLines(), PointsInPolygon(), PointsInPolygonWeighted(), PointsInPolygonUnique(),
-                        BasicStatisticsStrings(), BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
-                        MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(), PointsLayerFromTable(),
-                        StatisticsByCategories(),ReprojectLayer(),
+        self.alglist = [# ------ fTools ------
+                        SumLines(), PointsInPolygon(), PointsInPolygonWeighted(),
+                        PointsInPolygonUnique(), BasicStatisticsStrings(),
+                        BasicStatisticsNumbers(), NearestNeighbourAnalysis(),
+                        MeanCoords(), LinesIntersection(), UniqueValues(), PointDistance(),
+                        # data management
+                        ReprojectLayer(),
+                        # geometry
                         ExportGeometryInfo(), Centroids(), Delaunay(), VoronoiPolygons(),
                         SimplifyGeometries(), DensifyGeometries(), DensifyGeometriesInterval(),
                         MultipartToSingleparts(), SinglePartsToMultiparts(), PolygonsToLines(),
                         LinesToPolygons(), ExtractNodes(),
+                        # geoprocessing
                         ConvexHull(), FixedDistanceBuffer(), VariableDistanceBuffer(),
                         Dissolve(), Difference(), Intersection(), Union(), Clip(),
+                        # research
                         ExtentFromLayer(), RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(),
-                        #MMQGISX
+                        # ------ mmqgisx ------
                         mmqgisx_delete_columns_algorithm(),
                         mmqgisx_delete_duplicate_geometries_algorithm(),
                         mmqgisx_geometry_convert_algorithm(),
@@ -117,9 +127,13 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         mmqgisx_merge_algorithm(),
                         mmqgisx_select_algorithm(),
                         mmqgisx_text_to_float_algorithm(),
-                        #raster
+                        # ------ native algs ------
+                        AddTableField(), FieldsCalculator(), SaveSelectedFeatures(), JoinAttributes(),
+                        AutoincrementalField(), Explode(), FieldsPyculator(), EquivalentNumField(),
+                        PointsLayerFromTable(), StatisticsByCategories(),
+                        # ------ raster ------
                         CreateConstantRaster(), RasterLayerStatistics()
-                        #graphics
+                        # ------ graphics ------
                         #VectorLayerHistogram(), VectorLayerScatterplot(), RasterLayerHistogram(),
                         #MeanAndStdDevPlot(), BarPlot(), PolarPlot()
                         ]
@@ -127,10 +141,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
 
-
     def unload(self):
         AlgorithmProvider.unload(self)
-
 
     def getName(self):
         return "qgis"
@@ -139,7 +151,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         return "QGIS geoalgorithms"
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
+        return QIcon(":/sextante/images/qgis.png")
 
     def _loadAlgorithms(self):
         self.algs = self.alglist

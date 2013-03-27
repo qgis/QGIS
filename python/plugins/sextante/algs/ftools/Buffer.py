@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.core.QGisLayers import QGisLayers
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,17 +23,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+
 from PyQt4.QtCore import *
 
 from qgis.core import *
 
+from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteLog import SextanteLog
 
 def buffering(progress, writer, distance, field, useField, layer, dissolve, segments):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
-
-    layer.select(layer.pendingAllAttributesList())
 
     if useField:
         field = layer.fieldNameIndex(field)
@@ -52,9 +51,9 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
     if dissolve:
         first = True
         for inFeat in features:
-            atMap = inFeat.attributes()
+            attrs = inFeat.attributes()
             if useField:
-                value = atMap[field].toDouble()[0]
+                value = attrs[field].toDouble()[0]
             else:
                 value = distance
 
@@ -78,15 +77,16 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
             progress.setPercentage(int(current * total))
         try:
             outFeat.setGeometry(tempGeom)
+            outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         except:
             FEATURE_EXCEPT = False
     # without dissolve
     else:
         for inFeat in features:
-            atMap = inFeat.attributes()
+            attrs = inFeat.attributes()
             if useField:
-                value = atMap[field].toDouble()[0]
+                value = attrs[field].toDouble()[0]
             else:
                 value = distance
 
@@ -95,7 +95,7 @@ def buffering(progress, writer, distance, field, useField, layer, dissolve, segm
                 outGeom = inGeom.buffer(float(value), segments)
                 try:
                     outFeat.setGeometry(outGeom)
-                    outFeat.setAttributes(atMap)
+                    outFeat.setAttributes(attrs)
                     writer.addFeature(outFeat)
                 except:
                     FEATURE_EXCEPT = False

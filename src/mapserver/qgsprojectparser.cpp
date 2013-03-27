@@ -574,7 +574,14 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         QString minScaleString = QString::number( currentLayer->minimumScale() );
         QString maxScaleString = QString::number( currentLayer->maximumScale() );
 
-        if ( version == "1.3.0" )
+        if ( version == "1.1.1" )
+        {
+          QDomElement scaleHintElem = doc.createElement( "ScaleHint" );
+          scaleHintElem.setAttribute( "min", minScaleString );
+          scaleHintElem.setAttribute( "max", maxScaleString );
+          layerElem.appendChild( scaleHintElem );
+        }
+        else
         {
           QDomElement minScaleElem = doc.createElement( "MinScaleDenominator" );
           QDomText minScaleText = doc.createTextNode( minScaleString );
@@ -584,13 +591,6 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
           QDomText maxScaleText = doc.createTextNode( maxScaleString );
           maxScaleElem.appendChild( maxScaleText );
           layerElem.appendChild( maxScaleElem );
-        }
-        else if ( version == "1.1.1" )
-        {
-          QDomElement scaleHintElem = doc.createElement( "ScaleHint" );
-          scaleHintElem.setAttribute( "min", minScaleString );
-          scaleHintElem.setAttribute( "max", maxScaleString );
-          layerElem.appendChild( scaleHintElem );
         }
       }
 
@@ -2386,7 +2386,7 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
 
   BBox.set( minx, miny, maxx, maxy );
 
-  if ( version == "1.3.0" && layerCrs.axisInverted() )
+  if ( version != "1.1.1" && layerCrs.axisInverted() )
   {
     BBox.invert();
   }

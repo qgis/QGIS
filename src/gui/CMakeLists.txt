@@ -37,20 +37,26 @@ symbology-ng/qgslayerpropertieswidget.cpp
 symbology-ng/qgssmartgroupeditordialog.cpp
 
 attributetable/qgsattributetablemodel.cpp
-attributetable/qgsattributetablememorymodel.cpp
 attributetable/qgsattributetableview.cpp
 attributetable/qgsattributetablefiltermodel.cpp
-attributetable/qgsattributetableidcolumnpair.cpp
 attributetable/qgsattributetabledelegate.cpp
+attributetable/qgsfeaturelistview.cpp
+attributetable/qgsfeaturelistmodel.cpp
+attributetable/qgsfeaturelistviewdelegate.cpp
+attributetable/qgsdualview.cpp
 
 qgisgui.cpp
 qgisinterface.cpp
 qgsannotationitem.cpp
 qgsattributeeditor.cpp
+qgsattributedialog.cpp
 qgslegendinterface.cpp
+qgsblendmodecombobox.cpp
 qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
+qgscolordialog.cpp
 qgscomposerview.cpp
+qgscomposerruler.cpp
 qgscursors.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
@@ -62,6 +68,7 @@ qgsfiledropedit.cpp
 qgsfieldvalidator.cpp
 qgsformannotationitem.cpp
 qgshtmlannotationitem.cpp
+qgshighlight.cpp
 qgsgenericprojectionselector.cpp
 qgsmanageconnectionsdialog.cpp
 qgsmapcanvas.cpp
@@ -81,6 +88,7 @@ qgsmessagelogviewer.cpp
 qgsnewhttpconnection.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
+qgsoptionsdialogbase.cpp
 qgscredentialdialog.cpp
 qgsowssourceselect.cpp
 qgsprojectbadlayerguihandler.cpp
@@ -98,6 +106,7 @@ qgsludialog.cpp
 qgssearchquerybuilder.cpp
 qgsexpressionbuilderwidget.cpp
 qgsexpressionbuilderdialog.cpp
+qgsexpressionselectiondialog.cpp
 qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
 qgscollapsiblegroupbox.cpp
@@ -112,6 +121,8 @@ IF (WITH_TOUCH)
 ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_MOC_HDRS
+
+qgscolorbutton.h
 
 raster/qgsrasterminmaxwidget.h
 raster/qgspalettedrendererwidget.h
@@ -149,11 +160,18 @@ symbology-ng/qgssmartgroupeditordialog.h
 
 attributetable/qgsattributetableview.h
 attributetable/qgsattributetablemodel.h
-attributetable/qgsattributetablememorymodel.h
+attributetable/qgsattributetablefiltermodel.h
 attributetable/qgsattributetabledelegate.h
+attributetable/qgsfeaturelistview.h
+attributetable/qgsfeaturelistmodel.h
+attributetable/qgsfeaturelistviewdelegate.h
+attributetable/qgsdualview.h
 
+qgsattributedialog.h
 qgsattributeeditor.h
+qgsblendmodecombobox.h
 qgscharacterselectdialog.h
+qgscolordialog.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
@@ -176,6 +194,7 @@ qgsmessageviewer.h
 qgsmessagelogviewer.h
 qgsnewhttpconnection.h
 qgsnewvectorlayerdialog.h
+qgsoptionsdialogbase.h
 qgscredentialdialog.h
 qgsowssourceselect.h
 qgsprojectionselector.h
@@ -190,6 +209,7 @@ qgssearchquerybuilder.h
 qgsscalecombobox.h
 qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
+qgsexpressionselectiondialog.h
 qgsquerybuilder.h
 qgscollapsiblegroupbox.h
 qgsfilterlineedit.h
@@ -203,11 +223,12 @@ SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
 qgscharacterselectdialog.h
-qgscolorbutton.h
+qgscolordialog.h
 qgscursors.h
 qgsencodingfiledialog.h
 qgsfiledropedit.h
 qgsgenericprojectionselector.h
+qgshighlight.h
 qgsmapcanvas.h
 qgsmapcanvasitem.h
 qgsmapcanvasmap.h
@@ -220,6 +241,7 @@ qgsmaptoolpan.h
 qgsmaptoolzoom.h
 qgsmessagebar.h
 qgsmessageviewer.h
+qgsoptionsdialogbase.h
 qgscredentialdialog.h
 qgsowssourceselect.h
 qgsprojectionselector.h
@@ -227,21 +249,26 @@ qgsrubberband.h
 qgsvertexmarker.h
 qgsmaptip.h
 qgsscalecombobox.h
+qgsblendmodecombobox.h
 qgssearchquerybuilder.h
 qgsattributeeditor.h
+qgsattributedialog.h
 qgsfieldvalidator.h
 qgsexpressionbuilderwidget.h
 qgsexpressionbuilderdialog.h
+qgsexpressionselectiondialog.h
 qgsexpressionhighlighter.h
 qgscollapsiblegroupbox.h
 qgsfilterlineedit.h
 
 attributetable/qgsattributetablemodel.h
-attributetable/qgsattributetablememorymodel.h
 attributetable/qgsattributetableview.h
 attributetable/qgsattributetablefiltermodel.h
-attributetable/qgsattributetableidcolumnpair.h
 attributetable/qgsattributetabledelegate.h
+attributetable/qgsfeaturelistview.h
+attributetable/qgsfeaturelistmodel.h
+attributetable/qgsfeaturelistviewdelegate.h
+attributetable/qgsdualview.h
 )
 
 IF (WITH_TOUCH)
@@ -262,6 +289,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
 )
 
 # ModelTest
@@ -281,6 +309,7 @@ INCLUDE_DIRECTORIES(
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng
+  ${CMAKE_CURRENT_SOURCE_DIR}/attributetable
   ../core
   ../core/composer
   ../core/raster

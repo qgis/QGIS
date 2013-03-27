@@ -1,4 +1,5 @@
 SET(INSTALLER_FILES
+        metadata.txt
         mapserver_export.png
         __init__.py
         mapserverexportdialog.py

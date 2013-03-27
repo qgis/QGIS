@@ -41,14 +41,18 @@ int main( int argc, char ** argv )
   {
     context = argv[1];
   }
+
+  if ( !QgsApplication::isRunningFromBuildDir() )
+  {
 #if defined(Q_WS_MACX)
-  // If we're on Mac, we have the resource library way above us...
-  a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../" + QString( QGIS_DATA_SUBDIR ) );
+    // If we're on Mac, we have the resource library way above us...
+    a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../" + QString( QGIS_DATA_SUBDIR ) );
 #elif defined(Q_WS_WIN)
-  a.setPkgDataPath( QgsApplication::prefixPath() + "/" QGIS_DATA_SUBDIR );
+    a.setPkgDataPath( QgsApplication::prefixPath() + "/" QGIS_DATA_SUBDIR );
 #else
-  a.setPkgDataPath( QgsApplication::prefixPath() + "/../" QGIS_DATA_SUBDIR );
+    a.setPkgDataPath( QgsApplication::prefixPath() + "/../" QGIS_DATA_SUBDIR );
 #endif
+  }
 
   QString i18nPath = QgsApplication::i18nPath();
   if ( myTranslationCode.isEmpty() )

@@ -24,12 +24,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
+
 from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
+
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterSelection import ParameterSelection
+
 from sextante.outputs.OutputVector import OutputVector
+
+from sextante.algs.ftools import FToolsUtils as utils
 
 class ExportGeometryInfo(GeoAlgorithm):
 
@@ -56,29 +62,30 @@ class ExportGeometryInfo(GeoAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 
-
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         method = self.getParameterValue(self.METHOD)
 
-        provider = layer.dataProvider()
         geometryType = layer.geometryType()
 
-        layer.select(layer.pendingAllAttributesList())
-
-        fields = provider.fields()
+        idx1 = -1
+        idx2 = -1
+        fields = layer.pendingFields()
 
         if geometryType == QGis.Polygon:
-            fields.append(QgsField(QString("area"), QVariant.Double))
-            fields.append(QgsField(QString("perimeter"), QVariant.Double))
+            idx1, fields = utils.findOrCreateField(layer, fields, "area", 21, 6)
+            idx2, fields = utils.findOrCreateField(layer, fields, "perimeter", 21, 6)
         elif geometryType == QGis.Line:
-            fields.append(QgsField(QString("length"), QVariant.Double))
+            idx1, fields = utils.findOrCreateField(layer, fields, "length", 21, 6)
+            idx2 = idx1
         else:
-            fields.append(QgsField(QString("xcoords"), QVariant.Double))
-            fields.append(QgsField(QString("ycoords"), QVariant.Double))
+            idx1, fields = utils.findOrCreateField(layer, fields, "xcoord", 21, 6)
+            idx2, fields = utils.findOrCreateField(layer, fields, "ycoord", 21, 6)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
-                     provider.geometryType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields.toList(),
+                     layer.dataProvider().geometryType(), layer.crs())
+
+        print idx1, idx2
 
         ellips = None
         crs = None
@@ -90,7 +97,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         # 2 - ellipsoidal
         if method == 2:
             settings = QSettings()
-            ellips = settings.value("/qgis/measure/ellipsoid", "WGS84").toString()
+            ellips = QgsProject.instance().readEntry("Measure", "/Ellipsoid", GEO_NONE)[0]
             crs = layer.crs().srsid()
         elif method == 1:
             mapCRS = QGisLayers.iface.mapCanvas().mapRenderer().destinationCrs()
@@ -100,65 +107,29 @@ class ExportGeometryInfo(GeoAlgorithm):
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
 
+        outFeat.initAttributes(len(fields))
+        outFeat.setFields(fields)
+
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:
-            inGeom = inFeat.geometry()
+        for f in features:
+            inGeom = f.geometry()
 
             if method == 1:
                 inGeom.transform(coordTransform)
 
-            (attr1, attr2) = self.simpleMeasure(inGeom, method, ellips, crs)
+            (attr1, attr2) = utils.simpleMeasure(inGeom, method, ellips, crs)
 
             outFeat.setGeometry(inGeom)
-            atMap = inFeat.attributes()
-            atMap.append(QVariant(attr1))
+            attrs = f.attributes()
+            attrs.insert(idx1, QVariant(attr1))
             if attr2 is not None:
-                atMap.append(QVariant(attr2))
-            outFeat.setAttributes(atMap)
+                attrs.insert(idx2, QVariant(attr2))
+            outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
             current += 1
             progress.setPercentage(int(current * total))
 
         del writer
-
-    def simpleMeasure(self, geom, method, ellips, crs):
-        if geom.wkbType() in [QGis.WKBPoint, QGis.WKBPoint25D]:
-            pt = geom.asPoint()
-            attr1 = pt.x()
-            attr2 = pt.y()
-        elif geom.wkbType() in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
-            pt = inGeom.asMultiPoint()
-            attr1 = pt[0].x()
-            attr2 = pt[0].y()
-        else:
-            measure = QgsDistanceArea()
-
-            if method == 2:
-                measure.setSourceCrs(crs)
-                measure.setEllipsoid(ellips)
-                measure.setEllipsoidalMode(True)
-
-            attr1 = measure.measure(geom)
-            if geom.type() == QGis.Polygon:
-                attr2 = self.perimMeasure(geom, measure)
-            else:
-                attr2 = None
-
-        return (attr1, attr2)
-
-    def perimMeasure(self, geom, measure):
-        value = 0.0
-        if geom.isMultipart():
-            polygons = geom.asMultiPolygon()
-            for p in polygons:
-                for line in p:
-                    value += measure.measureLine(line)
-        else:
-            poly = geom.asPolygon()
-            for r in poly:
-                value += measure.measureLine(r)
-
-        return value

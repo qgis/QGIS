@@ -21,6 +21,7 @@
 #include <QKeyEvent>
 #include <QClipboard>
 #include <QMimeData>
+#include <QGridLayout>
 
 #include "qgscomposerview.h"
 #include "qgscomposerarrow.h"
@@ -31,6 +32,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
+#include "qgscomposerruler.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
@@ -43,6 +45,8 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
     , mPaintingEnabled( true )
+    , mHorizontalRuler( 0 )
+    , mVerticalRuler( 0 )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -50,6 +54,7 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
+  setFrameShape( QFrame::NoFrame );
 }
 
 void QgsComposerView::mousePressEvent( QMouseEvent* e )
@@ -238,6 +243,18 @@ void QgsComposerView::addShape( Tool currentTool )
   }
 }
 
+void QgsComposerView::updateRulers()
+{
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->setSceneTransform( viewportTransform() );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->setSceneTransform( viewportTransform() );
+  }
+}
+
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( !composition() )
@@ -348,6 +365,16 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
   if ( !composition() )
   {
     return;
+  }
+
+  updateRulers();
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->updateMarker( e->posF() );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->updateMarker( e->posF() );
   }
 
   if ( e->buttons() == Qt::NoButton )
@@ -481,14 +508,30 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       }
     }
     doc.appendChild( documentElement );
+
+    //if it's a copy, we have to remove the UUIDs since we don't want any duplicate UUID
+    if ( e->matches( QKeySequence::Copy ) )
+    {
+      // remove all uuid attributes
+      QDomNodeList composerItemsNodes = doc.elementsByTagName( "ComposerItem" );
+      for ( int i = 0; i < composerItemsNodes.count(); ++i )
+      {
+        QDomNode composerItemNode = composerItemsNodes.at( i );
+        if ( composerItemNode.isElement() )
+        {
+          composerItemNode.toElement().removeAttribute( "uuid" );
+        }
+      }
+    }
+
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "text/xml", doc.toByteArray() );
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setMimeData( mimeData );
   }
 
-  //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18 
-  if ( e->matches( QKeySequence::Paste ) || (e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier) )
+  //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18
+  if ( e->matches( QKeySequence::Paste ) || ( e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier ) )
   {
     QDomDocument doc;
     QClipboard *clipboard = QApplication::clipboard();
@@ -500,7 +543,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         if ( composition() )
         {
           QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
-          bool pasteInPlace = (e->modifiers() & Qt::ShiftModifier);
+          bool pasteInPlace = ( e->modifiers() & Qt::ShiftModifier );
           composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
         }
       }
@@ -600,9 +643,29 @@ void QgsComposerView::showEvent( QShowEvent* e )
   e->ignore();
 }
 
+void QgsComposerView::resizeEvent( QResizeEvent* event )
+{
+  QGraphicsView::resizeEvent( event );
+  updateRulers();
+}
+
+void QgsComposerView::scrollContentsBy( int dx, int dy )
+{
+  QGraphicsView::scrollContentsBy( dx, dy );
+  updateRulers();
+}
+
 void QgsComposerView::setComposition( QgsComposition* c )
 {
   setScene( c );
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->setComposition( c );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->setComposition( c );
+  }
 }
 
 QgsComposition* QgsComposerView::composition()

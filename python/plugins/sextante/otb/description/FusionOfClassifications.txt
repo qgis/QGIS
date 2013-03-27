@@ -1,0 +1,7 @@
+Fusion of Classifications
+otbcli_FusionOfClassifications
+Fusion of Classifications
+Learning
+ParameterMultipleInput|-il|Input classifications|-1|False
+ParameterNumber|-undecided|Label for the undecided class|None|None|0
+OutputRaster|-out|Output Image

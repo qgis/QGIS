@@ -1,0 +1,19 @@
+Binary Morphological Operation
+otbcli_BinaryMorphologicalOperation
+Binary Morphological Operation
+Image Filtering
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterNumber|-channel|Selected Channel|None|None|1
+ParameterSelection|-structype|Structuring Element Type|ball;cross|0
+ParameterNumber|-structype.ball.xradius|The Structuring Element X Radius|None|None|5
+ParameterNumber|-structype.ball.yradius|The Structuring Element Y Radius|None|None|5
+ParameterSelection|-filter|Morphological Operation|dilate;erode;opening;closing|0
+ParameterNumber|-filter.dilate.foreval|Dilate Foreground Value|None|None|1
+ParameterNumber|-filter.dilate.backval|Dilate Background Value Value|None|None|0
+ParameterNumber|-filter.erode.foreval|Erode Foreground Value|None|None|1
+ParameterNumber|-filter.erode.backval|Erode Background Value|None|None|0
+ParameterNumber|-filter.opening.foreval|Opening Foreground Value|None|None|1
+ParameterNumber|-filter.opening.backval|Opening Background Value|None|None|0
+ParameterNumber|-filter.closing.foreval|Closing Foreground Value|None|None|1

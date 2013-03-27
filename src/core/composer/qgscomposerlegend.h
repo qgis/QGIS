@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERLEGEND_H
 #define QGSCOMPOSERLEGEND_H
 
+#include "qgscomposerlegendstyle.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerlegenditem.h"
 #include "qgslegendmodel.h"
@@ -33,10 +34,9 @@ class QgsComposerMap;
  */
 class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 {
-    Q_OBJECT
+    Q_OBJECT;
 
   public:
-
     QgsComposerLegend( QgsComposition* composition );
     ~QgsComposerLegend();
 
@@ -60,20 +60,19 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     void setTitle( const QString& t ) {mTitle = t;}
     QString title() const {return mTitle;}
 
-    QFont titleFont() const;
-    void setTitleFont( const QFont& f );
+    /** Returns reference to modifiable style */
+    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s ) { return mStyleMap[s]; }
+    /** Returns style */
+    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const { return mStyleMap.value( s ); }
+    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style ) { mStyleMap[s] = style; }
 
-    QFont groupFont() const;
-    void setGroupFont( const QFont& f );
+    QFont styleFont( QgsComposerLegendStyle::Style s ) const { return style( s ).font(); }
+    /** Set style font */
+    void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
 
-    QFont layerFont() const;
-    void setLayerFont( const QFont& f );
-
-    QFont itemFont() const;
-    void setItemFont( const QFont& f );
-
-    QColor fontColor() const {return mFontColor;}
-    void setFontColor( const QColor& c ) {mFontColor = c;}
+    /** Set style margin*/
+    void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
+    void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
 
     double boxSpace() const {return mBoxSpace;}
     void setBoxSpace( double s ) {mBoxSpace = s;}
@@ -81,17 +80,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     double columnSpace() const {return mColumnSpace;}
     void setColumnSpace( double s ) { mColumnSpace = s;}
 
-    double groupSpace() const {return mGroupSpace;}
-    void setGroupSpace( double s ) {mGroupSpace = s;}
-
-    double layerSpace() const {return mLayerSpace;}
-    void setLayerSpace( double s ) {mLayerSpace = s;}
-
-    double symbolSpace() const {return mSymbolSpace;}
-    void setSymbolSpace( double s ) {mSymbolSpace = s;}
-
-    double iconLabelSpace() const {return mIconLabelSpace;}
-    void setIconLabelSpace( double s ) {mIconLabelSpace = s;}
+    QColor fontColor() const {return mFontColor;}
+    void setFontColor( const QColor& c ) {mFontColor = c;}
 
     double symbolWidth() const {return mSymbolWidth;}
     void setSymbolWidth( double w ) {mSymbolWidth = w;}
@@ -139,25 +129,13 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QString mTitle;
     QString mWrapChar;
 
-    //different fonts for entries
-    QFont mTitleFont;
-    QFont mGroupFont;
-    QFont mLayerFont;
-    QFont mItemFont;
     QColor mFontColor;
 
     /**Space between item box and contents*/
     qreal mBoxSpace;
     /**Space between columns*/
     double mColumnSpace;
-    /**Vertical space between group entries*/
-    double mGroupSpace;
-    /**Vertical space between layer entries*/
-    double mLayerSpace;
-    /**Vertical space between symbol entries*/
-    double mSymbolSpace;
-    /**Horizontal space between item icon and label*/
-    double mIconLabelSpace;
+
     /**Width of symbol icon*/
     double mSymbolWidth;
     /**Height of symbol icon*/
@@ -257,6 +235,8 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     /** Splits a string using the wrap char taking into account handling empty
       wrap char which means no wrapping */
     QStringList splitStringForWrapping( QString stringToSplt );
+
+    QMap<QgsComposerLegendStyle::Style, QgsComposerLegendStyle> mStyleMap;
 };
 
 #endif
