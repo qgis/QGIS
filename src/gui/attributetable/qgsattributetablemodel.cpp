@@ -422,7 +422,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
+  if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole && role != SortRole ) )
     return QVariant();
 
   QgsFeatureId rowId = rowToId( index.row() );
@@ -481,6 +481,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     {
       return val.toDate().toString( layer()->dateFormat( fieldId ) );
     }
+  }
+
+  if ( role == SortRole )
+  {
+    return val;
   }
 
   return field.displayString( val );
