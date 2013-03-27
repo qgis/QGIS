@@ -27,7 +27,7 @@ class QgsVectorLayer;
 class QgsHighlight;
 class QgsDistanceArea;
 
-class QgsAttributeDialog : public QObject
+class GUI_EXPORT QgsAttributeDialog : public QObject
 {
     Q_OBJECT
 

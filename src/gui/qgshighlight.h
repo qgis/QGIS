@@ -27,7 +27,7 @@ class QgsVectorLayer;
 
 /** A class for highlight features on the map.
  */
-class QgsHighlight: public QgsMapCanvasItem
+class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
   public:
     QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer );

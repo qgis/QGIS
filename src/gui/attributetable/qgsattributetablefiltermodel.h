@@ -27,7 +27,7 @@ class QgsVectorLayerCache;
 class QgsMapCanvas;
 class QItemSelectionModel;
 
-class QgsAttributeTableFilterModel: public QSortFilterProxyModel
+class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel
 {
     Q_OBJECT
 
