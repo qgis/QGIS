@@ -388,7 +388,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
     // Set the QPainter composition mode so that this layer is rendered using
     // the desired blending mode
-    mypContextPainter->setCompositionMode( ml->getCompositionMode() );
+    mypContextPainter->setCompositionMode( getCompositionMode( ml->blendMode() ) );
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {
@@ -1150,6 +1150,44 @@ const QgsCoordinateTransform* QgsMapRenderer::tr( QgsMapLayer *layer )
     return 0;
   }
   return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid() );
+}
+
+/** Returns a QPainter::CompositionMode corresponding to a QgsMapRenderer::BlendMode
+ */
+QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRenderer::BlendMode blendMode )
+{
+  // Map QgsMapRenderer::BlendNormal to QPainter::CompositionMode
+  switch ( blendMode )
+  {
+    case QgsMapRenderer::BlendNormal:
+      return QPainter::CompositionMode_SourceOver;
+    case QgsMapRenderer::BlendLighten:
+      return QPainter::CompositionMode_Lighten;
+    case QgsMapRenderer::BlendScreen:
+      return QPainter::CompositionMode_Screen;
+    case QgsMapRenderer::BlendDodge:
+      return QPainter::CompositionMode_ColorDodge;
+    case QgsMapRenderer::BlendAddition:
+      return QPainter::CompositionMode_Plus;
+    case QgsMapRenderer::BlendDarken:
+      return QPainter::CompositionMode_Darken;
+    case QgsMapRenderer::BlendMultiply:
+      return QPainter::CompositionMode_Multiply;
+    case QgsMapRenderer::BlendBurn:
+      return QPainter::CompositionMode_ColorBurn;
+    case QgsMapRenderer::BlendOverlay:
+      return QPainter::CompositionMode_Overlay;
+    case QgsMapRenderer::BlendSoftLight:
+      return QPainter::CompositionMode_SoftLight;
+    case QgsMapRenderer::BlendHardLight:
+      return QPainter::CompositionMode_HardLight;
+    case QgsMapRenderer::BlendDifference:
+      return QPainter::CompositionMode_Difference;
+    case QgsMapRenderer::BlendSubtract:
+      return QPainter::CompositionMode_Exclusion;
+    default:
+      return QPainter::CompositionMode_SourceOver;
+  }
 }
 
 bool QgsMapRenderer::mDrawing = false;

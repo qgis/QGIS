@@ -154,6 +154,7 @@ class CORE_EXPORT QgsPalLayerSettings
     QString textNamedStyle;
     QColor textColor;
     int textTransp;
+    QgsMapRenderer::BlendMode blendMode;
     QColor previewBkgrdColor;
     bool enabled;
     int priority; // 0 = low, 10 = high
@@ -168,6 +169,7 @@ class CORE_EXPORT QgsPalLayerSettings
     double bufferSize; //buffer size (in mm)
     QColor bufferColor;
     int bufferTransp;
+    QgsMapRenderer::BlendMode bufferBlendMode;
     Qt::PenJoinStyle bufferJoinStyle;
     bool bufferNoFill; //set interior of buffer to 100% transparent
     bool formatNumbers;

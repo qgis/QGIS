@@ -217,7 +217,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>678</width>
+                <width>683</width>
                 <height>300</height>
                </rect>
               </property>
@@ -429,8 +429,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>689</width>
-             <height>826</height>
+             <width>693</width>
+             <height>709</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_17">
@@ -1082,6 +1082,16 @@
                       </property>
                      </widget>
                     </item>
+                    <item row="3" column="1">
+                     <widget class="QgsBlendModeComboBox" name="comboBlendMode"/>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QLabel" name="labelBlendMode">
+                      <property name="text">
+                       <string>Blending mode</string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </item>
                   <item row="0" column="0">
@@ -1097,22 +1107,6 @@
                     </property>
                     <property name="alignment">
                      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="mFontColorLabel">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Color</string>
-                    </property>
-                    <property name="alignment">
-                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -1133,6 +1127,22 @@
                    <widget class="Line" name="line_2">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="mFontColorLabel">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Color</string>
+                    </property>
+                    <property name="alignment">
+                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                     </property>
                    </widget>
                   </item>
@@ -1257,6 +1267,16 @@
                    </property>
                    <property name="checked">
                     <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QgsBlendModeComboBox" name="comboBufferBlendMode"/>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="labelBufferBlend">
+                   <property name="text">
+                    <string>Blending mode</string>
                    </property>
                   </widget>
                  </item>
@@ -1911,8 +1931,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>686</width>
-            <height>618</height>
+            <width>604</width>
+            <height>622</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -2360,11 +2380,11 @@
                     <item>
                      <widget class="QFrame" name="mMaxCharAngleFrame">
                       <layout class="QGridLayout" name="gridLayout_22">
-                       <property name="verticalSpacing">
-                        <number>6</number>
-                       </property>
                        <property name="margin">
                         <number>0</number>
+                       </property>
+                       <property name="verticalSpacing">
+                        <number>6</number>
                        </property>
                        <item row="1" column="4">
                         <widget class="QDoubleSpinBox" name="mMaxCharAngleOutDSpinBox">
@@ -2988,8 +3008,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>686</width>
-            <height>981</height>
+            <width>520</width>
+            <height>1043</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -3483,6 +3503,11 @@
    <class>QgsPenJoinStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>
