@@ -11,7 +11,7 @@
  * takes much longer than querying in bunches (e.g. network latency, slow views in the database...)
  */
 
-class QgsVectorLayerCache : public QObject
+class QgsVectorLayerCache : QObject
 {
 %TypeHeaderCode
 #include "qgsvectorlayercache.h"

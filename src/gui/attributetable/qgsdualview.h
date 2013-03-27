@@ -30,7 +30,7 @@ class QSignalMapper;
 /**
  * @brief
  */
-class QgsDualView : public QStackedWidget, private Ui::QgsDualViewBase
+class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBase
 {
     Q_OBJECT
 
