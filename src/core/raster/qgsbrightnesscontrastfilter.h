@@ -45,7 +45,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
     int brightness() const { return mBrightness; }
 
-    void setContrast( int contrast ) { mContrast = qBound( -255, contrast, 255 ); }
+    void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
     int contrast() const { return mContrast; }
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem );
@@ -54,11 +54,11 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void readXML( const QDomElement& filterElem );
 
   private:
-    /**Current brightness coefficient value. Default: 0. Range: -255...255*/
+    /** Current brightness coefficient value. Default: 0. Range: -255...255 */
     int mBrightness;
 
-    /**Current contrast coefficient value. Default: 0. Range: -255...255*/
-    int mContrast;
+    /** Current contrast coefficient value. Default: 0. Range: -100...100 */
+    double mContrast;
 };
 
 #endif // QGSBRIGHTNESSCONTRASTFILTER_H

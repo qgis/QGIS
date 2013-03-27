@@ -18,6 +18,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsbrightnesscontrastfilter.h"
 
+#include <qmath.h>
 #include <QDomDocument>
 #include <QDomElement>
 
@@ -145,9 +146,9 @@ QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  c
   // adjust image
   QRgb myNoDataColor = qRgba( 0, 0, 0, 0 );
   QRgb myColor;
-  int r, g, b;
 
-  double f = ( 259 * ( mContrast + 255 ) ) / ( 255 * ( 259 - mContrast ) );
+  int r, g, b;
+  double f = qPow(( mContrast + 100 ) / 100.0, 2 );
 
   for ( size_t i = 0; i < ( size_t )width*height; i++ )
   {
@@ -158,9 +159,9 @@ QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  c
     }
 
     myColor = inputBlock->color( i );
-    r = qBound( 0, qRound( f * ( qBound( 0, qRed( myColor ) + mBrightness, 255 ) - 128 ) + 128 ), 255 );
-    g = qBound( 0, qRound( f * ( qBound( 0, qGreen( myColor ) + mBrightness, 255 ) - 128 ) + 128 ), 255 );
-    b = qBound( 0, qRound( f * ( qBound( 0, qBlue( myColor ) + mBrightness, 255 ) - 128 ) + 128 ), 255 );
+    r = qBound( 0, ( int )((((( qRed( myColor ) / 255.0 ) - 0.5 ) * f ) + 0.5 ) * 255 ) + mBrightness, 255 );
+    g = qBound( 0, ( int )((((( qGreen( myColor ) / 255.0 ) - 0.5 ) * f ) + 0.5 ) * 255 ) + mBrightness, 255 );
+    b = qBound( 0, ( int )((((( qBlue( myColor ) / 255.0 ) - 0.5 ) * f ) + 0.5 ) * 255 ) + mBrightness, 255 );
 
     outputBlock->setColor( i, qRgb( r, g, b ) );
   }
