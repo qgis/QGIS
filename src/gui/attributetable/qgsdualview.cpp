@@ -231,6 +231,7 @@ void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature 
 
   mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( feat ), true, mDistanceArea, this, false );
   mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
+  mAttributeDialog->dialog()->setVisible( true );
 
   delete oldDialog;
 }
