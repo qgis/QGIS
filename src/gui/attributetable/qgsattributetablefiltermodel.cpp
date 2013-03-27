@@ -27,11 +27,11 @@
 // Filter Model //
 //////////////////
 
-QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent ) :
-  QSortFilterProxyModel( parent ),
-  mCanvas( canvas ),
-  mFilterMode( ShowAll ),
-  mSelectedOnTop( false )
+QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent )
+    : QSortFilterProxyModel( parent )
+    , mCanvas( canvas )
+    , mFilterMode( ShowAll )
+    , mSelectedOnTop( false )
 {
   mMasterSelection = new QItemSelectionModel( this, this );
   setSourceModel( sourceModel );
@@ -122,7 +122,7 @@ void QgsAttributeTableFilterModel::selectionChanged()
 
   QItemSelection selection;
 
-  foreach( QgsFeatureId fid, layer()->selectedFeaturesIds() )
+  foreach ( QgsFeatureId fid, layer()->selectedFeaturesIds() )
   {
     selection.append( QItemSelectionRange( mTableModel->idToIndex( fid ) ) );
   }
@@ -151,28 +151,28 @@ void QgsAttributeTableFilterModel::masterSelectionChanged( const QItemSelection 
   QgsFeatureIds selectedFeatureIds;
   QgsFeatureIds deselectedFeatureIds;
 
-  foreach( QItemSelectionRange selectedRange, selected )
+  foreach ( QItemSelectionRange selectedRange, selected )
   {
-    foreach( QModelIndex selectedModelIdx, selectedRange.indexes() )
+    foreach ( QModelIndex selectedModelIdx, selectedRange.indexes() )
     {
       selectedFeatureIds << masterModel()->rowToId( selectedModelIdx.row() );
     }
   }
 
-  foreach( QItemSelectionRange deselectedRange, deselected )
+  foreach ( QItemSelectionRange deselectedRange, deselected )
   {
-    foreach( QModelIndex deselectedModelIdx, deselectedRange.indexes() )
+    foreach ( QModelIndex deselectedModelIdx, deselectedRange.indexes() )
     {
       deselectedFeatureIds << masterModel()->rowToId( deselectedModelIdx.row() );
     }
   }
 
   // Change selection without emitting a signal
-  foreach( QgsFeatureId seletedFid, selectedFeatureIds )
+  foreach ( QgsFeatureId seletedFid, selectedFeatureIds )
   {
     layer()->select( seletedFid, false );
   }
-  foreach( QgsFeatureId deselectedFid, deselectedFeatureIds )
+  foreach ( QgsFeatureId deselectedFid, deselectedFeatureIds )
   {
     layer()->deselect( deselectedFid, false );
   }

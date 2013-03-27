@@ -28,9 +28,9 @@
 #include <QMenu>
 #include <QProgressDialog>
 
-QgsDualView::QgsDualView( QWidget* parent ) :
-  QStackedWidget( parent ),
-  mProgressDlg( NULL )
+QgsDualView::QgsDualView( QWidget* parent )
+    : QStackedWidget( parent )
+    , mProgressDlg( NULL )
 {
   setupUi( this );
 
@@ -76,7 +76,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
 void QgsDualView::columnBoxInit()
 {
   QList< QAction* > previewActions = mFeatureListPreviewButton->actions();
-  foreach( QAction* a, previewActions )
+  foreach ( QAction* a, previewActions )
   {
     if ( a != mActionExpressionPreview )
     {
@@ -90,7 +90,7 @@ void QgsDualView::columnBoxInit()
 
   QList<QgsField> fields = mLayerCache->layer()->pendingFields().toList();
 
-  foreach( const QgsField field, fields )
+  foreach ( const QgsField field, fields )
   {
     if ( mLayerCache->layer()->editType( mLayerCache->layer()->fieldNameIndex( field.name() ) ) != QgsVectorLayer::Hidden )
     {
@@ -121,7 +121,7 @@ void QgsDualView::columnBoxInit()
     {
       QStringList pkFields;
 
-      foreach( int attr, pkAttrs )
+      foreach ( int attr, pkAttrs )
       {
         pkFields.append( "\"" + fields[attr].name() + "\"" );
       }
@@ -131,7 +131,7 @@ void QgsDualView::columnBoxInit()
     else if ( fields.size() > 0 )
     {
       QStringList fieldNames;
-      foreach ( QgsField field, fields)
+      foreach ( QgsField field, fields )
       {
         fieldNames.append( "\"" + field.name() + "\"" );
       }
@@ -311,11 +311,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
     }
   }
 
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ),this, -1, sourceIndex );
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 }
 
-void QgsDualView::setFilteredFeatures(QgsFeatureIds filteredFeatures)
+void QgsDualView::setFilteredFeatures( QgsFeatureIds filteredFeatures )
 {
   mFilterModel->setFilteredFeatures( filteredFeatures );
 }

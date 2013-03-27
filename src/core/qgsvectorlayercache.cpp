@@ -19,9 +19,9 @@
 #include "qgscacheindex.h"
 #include "qgscachedfeatureiterator.h"
 
-QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent ) :
-  QObject( parent ),
-  mLayer( layer )
+QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent )
+    : QObject( parent )
+    , mLayer( layer )
 {
   mCache.setMaxCost( cacheSize );
 
@@ -132,10 +132,10 @@ bool QgsVectorLayerCache::featureAtId( QgsFeatureId featureId, QgsFeature& featu
     featureFound = true;
   }
   else if ( mLayer->getFeatures( QgsFeatureRequest()
-                                   .setFilterFid( featureId )
-                                   .setSubsetOfAttributes( mCachedAttributes )
+                                 .setFilterFid( featureId )
+                                 .setSubsetOfAttributes( mCachedAttributes )
                                  .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( 0 ) ) )
-              .nextFeature( feature ) )
+            .nextFeature( feature ) )
   {
     cacheFeature( feature );
     featureFound = true;
@@ -159,7 +159,7 @@ void QgsVectorLayerCache::requestCompleted( QgsFeatureRequest featureRequest, Qg
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() < mCache.size() )
   {
-    foreach( QgsAbstractCacheIndex* idx, mCacheIndices )
+    foreach ( QgsAbstractCacheIndex* idx, mCacheIndices )
     {
       idx->requestCompleted( featureRequest, fids );
     }
@@ -168,7 +168,7 @@ void QgsVectorLayerCache::requestCompleted( QgsFeatureRequest featureRequest, Qg
 
 void QgsVectorLayerCache::featureRemoved( QgsFeatureId fid )
 {
-  foreach( QgsAbstractCacheIndex* idx, mCacheIndices )
+  foreach ( QgsAbstractCacheIndex* idx, mCacheIndices )
   {
     idx->flushFeature( fid );
   }
@@ -236,7 +236,7 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
   if ( checkInformationCovered( featureRequest ) )
   {
     // Check if an index is able to deliver the requested features
-    foreach( QgsAbstractCacheIndex *idx, mCacheIndices )
+    foreach ( QgsAbstractCacheIndex *idx, mCacheIndices )
     {
       QgsFeatureIds featureIds;
 

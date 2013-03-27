@@ -12,7 +12,7 @@ class QPosition;
 
 class QgsFeatureListViewDelegate : public QItemDelegate
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     static int const sIconSize = 24;
@@ -29,7 +29,7 @@ class QgsFeatureListViewDelegate : public QItemDelegate
     Element positionToElement( const QPoint& pos );
 
   signals:
-    void editButtonClicked( QModelIndex& index);
+    void editButtonClicked( QModelIndex& index );
 
   public slots:
 

@@ -24,9 +24,9 @@ class QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
 {
   public:
     QgsCacheIndexFeatureId( QgsCachedVectorLayer* cachedVectorLayer );
-    
+
   signals:
-    
+
   public slots:
 
   private:

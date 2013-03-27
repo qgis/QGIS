@@ -41,11 +41,11 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     Q_OBJECT
 
   public:
-  /**
-   * Creates a feature list view
-   *
-   * @param parent   owner
-   */
+    /**
+     * Creates a feature list view
+     *
+     * @param parent   owner
+     */
     explicit QgsFeatureListView( QWidget* parent = 0 );
 
     /**

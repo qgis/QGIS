@@ -30,9 +30,9 @@
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     : QTableView( parent ),
-      mMasterModel( NULL ),
-      mFilterModel( NULL ),
-      mActionPopup( NULL )
+    mMasterModel( NULL ),
+    mFilterModel( NULL ),
+    mActionPopup( NULL )
 {
   QSettings settings;
   restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
@@ -141,8 +141,8 @@ void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
   switch ( event->key() )
   {
 
-    // Default Qt behavior would be to change the selection.
-    // We don't make it that easy for the user to trash his selection.
+      // Default Qt behavior would be to change the selection.
+      // We don't make it that easy for the user to trash his selection.
     case Qt::Key_Up:
     case Qt::Key_Down:
     case Qt::Key_Left:
@@ -166,7 +166,7 @@ void QgsAttributeTableView::onVerticalHeaderSectionClicked( int logicalIndex )
 
   QModelIndexList selectedRows = selectionModel()->selectedRows();
 
-  foreach( QModelIndex row, selectedRows )
+  foreach ( QModelIndex row, selectedRows )
   {
     selectedFeatures.insert( mFilterModel->rowToId( row ) );
   }
@@ -183,31 +183,31 @@ void QgsAttributeTableView::onFilterInvalidated()
 {
   QItemSelection localSelection = mFilterModel->mapSelectionFromSource( mMasterSelection->selection() );
   selectionModel()->select( localSelection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
-  connect( selectionModel(), SIGNAL( selectionChanged( QItemSelection,QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
+  connect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
 }
 
 void QgsAttributeTableView::onSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
 {
-  disconnect( mMasterSelection, SIGNAL( selectionChanged(QItemSelection,QItemSelection)), this, SLOT( onMasterSelectionChanged( QItemSelection, QItemSelection ) ) );
+  disconnect( mMasterSelection, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onMasterSelectionChanged( QItemSelection, QItemSelection ) ) );
   QItemSelection masterSelected = mFilterModel->mapSelectionToSource( selected );
   QItemSelection masterDeselected = mFilterModel->mapSelectionToSource( deselected );
 
   mMasterSelection->select( masterSelected, QItemSelectionModel::Select );
   mMasterSelection->select( masterDeselected, QItemSelectionModel::Deselect );
-  connect( mMasterSelection, SIGNAL( selectionChanged(QItemSelection,QItemSelection ) ), SLOT( onMasterSelectionChanged( QItemSelection, QItemSelection ) ) );
+  connect( mMasterSelection, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( onMasterSelectionChanged( QItemSelection, QItemSelection ) ) );
 }
 
 void QgsAttributeTableView::onMasterSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
 {
   Q_UNUSED( selected )
   Q_UNUSED( deselected )
-  disconnect( selectionModel(), SIGNAL( selectionChanged(QItemSelection,QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
+  disconnect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
 
   // Synchronizing the whole selection seems to work faster than using the deltas (Deselecting takes pretty long)
   QItemSelection localSelection = mFilterModel->mapSelectionFromSource( mMasterSelection->selection() );
   selectionModel()->select( localSelection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
 
-  connect( selectionModel(), SIGNAL( selectionChanged(QItemSelection,QItemSelection)), this, SLOT(onSelectionChanged( QItemSelection, QItemSelection ) ) );
+  connect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
 }
 
 void QgsAttributeTableView::selectAll()

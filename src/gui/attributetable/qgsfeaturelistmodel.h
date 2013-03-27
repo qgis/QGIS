@@ -20,13 +20,14 @@ class QgsFeatureListModel : public QAbstractProxyModel
   public:
     struct FeatureInfo
     {
-      public:
-        FeatureInfo() :
-          isNew( false ),
-          isEdited( false ) {}
+    public:
+      FeatureInfo()
+          : isNew( false )
+          , isEdited( false )
+      {}
 
-        bool isNew;
-        bool isEdited;
+      bool isNew;
+      bool isEdited;
     };
 
   public:

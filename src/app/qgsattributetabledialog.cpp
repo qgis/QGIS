@@ -58,9 +58,9 @@ class QgsAttributeTableDock : public QDockWidget
 };
 
 QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags ),
-      mDock( 0 ),
-      mLayer( theLayer )
+    : QDialog( parent, flags )
+    , mDock( 0 )
+    , mLayer( theLayer )
 {
   setupUi( this );
 
@@ -167,7 +167,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mMainViewButtonGroup->setId( mAttributeViewButton, QgsDualView::AttributeEditor );
 
   // Load default attribute table filter
-  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = (QgsAttributeTableFilterModel::FilterMode) settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt();
+  QgsAttributeTableFilterModel::FilterMode defaultFilterMode = ( QgsAttributeTableFilterModel::FilterMode ) settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt();
 
   switch ( defaultFilterMode )
   {
@@ -215,7 +215,7 @@ void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  foreach( QAction* a, mFilterColumnsMenu->actions() )
+  foreach ( QAction* a, mFilterColumnsMenu->actions() )
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
@@ -231,7 +231,7 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   QList<QgsField> fields = mLayer->pendingFields().toList();
 
-  foreach( const QgsField field, fields )
+  foreach ( const QgsField field, fields )
   {
     if ( mLayer->editType( mLayer->fieldNameIndex( field.name() ) ) != QgsVectorLayer::Hidden )
     {

@@ -32,9 +32,9 @@
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
     : QListView( parent ),
-      mCurrentEditSelectionModel( NULL ),
-      mItemDelegate( NULL ),
-      mEditSelectionDrag( false )
+    mCurrentEditSelectionModel( NULL ),
+    mItemDelegate( NULL ),
+    mEditSelectionDrag( false )
 {
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
@@ -123,12 +123,12 @@ void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsFeatureListView::editSelectionChanged( QItemSelection deselected, QItemSelection selected )
 {
-  if (isVisible() && updatesEnabled())
+  if ( isVisible() && updatesEnabled() )
   {
     QItemSelection localDeselected = mModel->mapSelectionFromMaster( deselected );
     QItemSelection localSelected = mModel->mapSelectionFromMaster( selected );
     viewport()->update( visualRegionForSelection( localDeselected ) | visualRegionForSelection( localSelected ) );
-   }
+  }
 
   QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
   if ( currentSelection.size() == 1 )
@@ -147,9 +147,9 @@ void QgsFeatureListView::onFilterAboutToBeInvalidated()
 
 void QgsFeatureListView::onFilterInvalidated()
 {
-  QItemSelection localSelection = mModel->mapSelectionFromMaster(mMasterSelection->selection() );
+  QItemSelection localSelection = mModel->mapSelectionFromMaster( mMasterSelection->selection() );
   selectionModel()->select( localSelection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
-  connect( selectionModel(), SIGNAL( selectionChanged( QItemSelection,QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
+  connect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
 }
 
 void QgsFeatureListView::onSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
@@ -167,7 +167,7 @@ void QgsFeatureListView::onMasterSelectionChanged( const QItemSelection& selecte
 {
   Q_UNUSED( selected )
   Q_UNUSED( deselected )
-  disconnect( selectionModel(), SIGNAL( selectionChanged(QItemSelection,QItemSelection)), this, SLOT(onSelectionChanged(QItemSelection,QItemSelection)) );
+  disconnect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
 
   // Synchronizing the whole selection seems to work faster than using the deltas (Deselecting takes pretty long)
   QItemSelection localSelection = mModel->mapSelectionFromMaster( mMasterSelection->selection() );
@@ -178,7 +178,7 @@ void QgsFeatureListView::onMasterSelectionChanged( const QItemSelection& selecte
 
 void QgsFeatureListView::selectAll()
 {
-  disconnect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection,QItemSelection ) ) );
+  disconnect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
   QItemSelection selection;
   selection.append( QItemSelectionRange( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, 0 ) ) );
   selectionModel()->select( selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
@@ -189,7 +189,7 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
 {
   QItemSelection selection;
 
-  foreach( QgsFeatureId fid, fids )
+  foreach ( QgsFeatureId fid, fids )
   {
     selection.append( QItemSelectionRange( mModel->mapToMaster( mModel->fidToIdx( fid ) ) ) );
   }

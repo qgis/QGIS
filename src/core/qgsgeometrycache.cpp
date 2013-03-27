@@ -2,8 +2,8 @@
 
 #include "qgsvectorlayereditbuffer.h"
 
-QgsGeometryCache::QgsGeometryCache(QgsVectorLayer* layer)
-  : L(layer)
+QgsGeometryCache::QgsGeometryCache( QgsVectorLayer* layer )
+    : L( layer )
 {
 }
 
@@ -13,7 +13,7 @@ QgsGeometryCache::~QgsGeometryCache()
   deleteCachedGeometries();
 }
 
-bool QgsGeometryCache::geometry(QgsFeatureId fid, QgsGeometry& geometry)
+bool QgsGeometryCache::geometry( QgsFeatureId fid, QgsGeometry& geometry )
 {
   // no need to check changed geometries because all changed geometries are also cached
 

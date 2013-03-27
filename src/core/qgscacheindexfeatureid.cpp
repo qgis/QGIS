@@ -15,9 +15,9 @@
 
 #include "qgscacheindexfeatureid.h"
 
-QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsCachedVectorLayer* cachedVectorLayer ) :
-  QgsAbstractCacheIndex(),
-  C( cachedVectorLayer )
+QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsCachedVectorLayer* cachedVectorLayer )
+    : QgsAbstractCacheIndex()
+    , C( cachedVectorLayer )
 {
 
 }

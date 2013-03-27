@@ -54,8 +54,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
          * @param feat     The feature to cache. A copy will be made.
          * @param vlCache  The cache to inform when the feature has been removed from the cache.
          */
-        QgsCachedFeature( const QgsFeature& feat, QgsVectorLayerCache* vlCache ) :
-          mCache( vlCache )
+        QgsCachedFeature( const QgsFeature& feat, QgsVectorLayerCache* vlCache )
+            : mCache( vlCache )
         {
           mFeature = new QgsFeature( feat );
         }

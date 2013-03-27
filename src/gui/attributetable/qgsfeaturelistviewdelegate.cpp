@@ -12,9 +12,9 @@
 #include <QMouseEvent>
 #include <QObject>
 
-QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent ) :
-  QItemDelegate( parent ),
-  mListModel( listModel )
+QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
+    : QItemDelegate( parent )
+    , mListModel( listModel )
 {
 }
 
@@ -41,7 +41,7 @@ QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, 
   return QSize( option.rect.width(), sIconSize );
 }
 
-void QgsFeatureListViewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
@@ -54,10 +54,13 @@ void QgsFeatureListViewDelegate::paint(QPainter *painter, const QStyleOptionView
   pbn1Opts.iconSize = QSize( sIconSize, sIconSize );
 
   pbn1Opts.state |= QStyle::State_Enabled;
-  if (checked) {
+  if ( checked )
+  {
     pbn1Opts.icon = QgsApplication::getThemeIcon( "/mIconEditableEdits.png" );
     pbn1Opts.state |= QStyle::State_On;
-  } else {
+  }
+  else
+  {
     pbn1Opts.icon = QgsApplication::getThemeIcon( "/mIconEditable.png" );
     pbn1Opts.state |= QStyle::State_Off;
   }

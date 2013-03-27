@@ -2986,7 +2986,7 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
 
   qSort( attrs.begin(), attrs.end(), qGreater<int>() );
 
-  foreach( int attr, attrs )
+  foreach ( int attr, attrs )
   {
     if ( deleteAttribute( attr ) )
     {
@@ -3107,8 +3107,8 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
 
   if ( deleteBuffer )
   {
-  delete mEditBuffer;
-  mEditBuffer = 0;
+    delete mEditBuffer;
+    mEditBuffer = 0;
     undoStack()->clear();
   }
   emit editingStopped();
@@ -4160,7 +4160,7 @@ QString QgsVectorLayer::metadata()
   {
     myMetadata += "<tr><td>";
     myMetadata += tr( "Primary key attributes: " );
-    foreach( int idx, pkAttrList )
+    foreach ( int idx, pkAttrList )
     {
       myMetadata += pendingFields()[ idx ].name() + " ";
     }

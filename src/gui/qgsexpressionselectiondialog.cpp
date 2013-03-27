@@ -20,8 +20,8 @@
 #include <QSettings>
 
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* layer, QString startText, QWidget* parent )
-    : QDialog( parent ),
-      mLayer( layer )
+    : QDialog( parent )
+    , mLayer( layer )
 {
   setupUi( this );
 
@@ -131,7 +131,7 @@ void QgsExpressionSelectionDialog::on_mActionSelectInstersect_triggered()
   expression->prepare( fields );
 
   QgsFeature feat;
-  foreach( const QgsFeatureId fid, oldSelection )
+  foreach ( const QgsFeatureId fid, oldSelection )
   {
     QgsFeatureIterator features = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
 
@@ -167,7 +167,7 @@ void QgsExpressionSelectionDialog::on_mActionRemoveFromSelection_triggered()
   expression->prepare( fields );
 
   QgsFeature feat;
-  foreach( const QgsFeatureId fid, oldSelection )
+  foreach ( const QgsFeatureId fid, oldSelection )
   {
     QgsFeatureIterator features = mLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) );
 

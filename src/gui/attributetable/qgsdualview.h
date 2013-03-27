@@ -98,7 +98,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void  setCurrentEditSelection( const QgsFeatureIds& fids );
 
   signals:
-    
+
   private slots:
     /**
      * Changes the currently visible feature within the attribute editor
@@ -128,7 +128,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     virtual void finished();
 
   private:
-    void initLayerCache(QgsVectorLayer *layer);
+    void initLayerCache( QgsVectorLayer *layer );
     void initModels( QgsMapCanvas* mapCanvas );
 
     QgsAttributeTableModel* mMasterModel;

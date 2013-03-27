@@ -31,7 +31,7 @@
 #include <limits>
 
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent )
-  : QAbstractTableModel( parent ),
+    : QAbstractTableModel( parent ),
     mLayerCache( layerCache )
 {
   QgsDebugMsg( "entered." );
@@ -52,7 +52,7 @@ QgsAttributeTableModel::~QgsAttributeTableModel()
   const QgsFields& fields = layer()->pendingFields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if (  layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
+    if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
       continue;
 
     delete mValueMaps.take( idx );
