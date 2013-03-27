@@ -45,17 +45,21 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( layer(), SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
   connect( layer(), SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( layer(), SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+  connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
 }
 
 QgsAttributeTableModel::~QgsAttributeTableModel()
 {
-  const QgsFields& fields = layer()->pendingFields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  if ( layer() )
   {
-    if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
-      continue;
+    const QgsFields& fields = layer()->pendingFields();
+    for ( int idx = 0; idx < fields.count(); ++idx )
+    {
+      if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
+        continue;
 
-    delete mValueMaps.take( idx );
+      delete mValueMaps.take( idx );
+    }
   }
 }
 
@@ -163,6 +167,15 @@ void QgsAttributeTableModel::layerDeleted()
   beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
   removeRows( 0, rowCount() );
   endRemoveRows();
+
+  const QgsFields& fields = layer()->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
+  {
+    if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
+      continue;
+
+    delete mValueMaps.take( idx );
+  }
 }
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
@@ -393,6 +406,9 @@ int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
+  if ( !layer() )
+    return QVariant();
+
   if ( role == Qt::DisplayRole )
   {
     if ( orientation == Qt::Vertical ) //row

@@ -209,6 +209,13 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     void progress( int i, bool& cancel );
 
+    /**
+     * @brief Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
+     * signal is being emitted, but before the local reference to it has been set to NULL. So call to
+     * @link {layer()} will still return a valid pointer for cleanup purpose.
+     */
+    void cachedLayerDeleted();
+
   public slots:
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant& value );
     void featureDeleted( QgsFeatureId fid );
@@ -216,6 +223,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void attributeAdded( int field );
     void attributeDeleted( int field );
     void geometryChanged( QgsFeatureId fid, QgsGeometry& geom );
+    void layerDeleted();
 
   private:
 
