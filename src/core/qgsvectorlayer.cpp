@@ -60,7 +60,7 @@
 #include "qgsrendercontext.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayercache.h"
+#include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayereditutils.h"
 #include "qgsvectorlayerfeatureiterator.h"
@@ -100,8 +100,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mLabel( 0 )
     , mLabelOn( false )
     , mVertexMarkerOnlyForSelection( false )
-    , mEditorLayout( GeneratedLayout )
-    , mCache( new QgsVectorLayerCache( this ) )
+    , mCache( new QgsGeometryCache( this ) )
     , mEditBuffer( 0 )
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
@@ -1256,7 +1255,7 @@ void QgsVectorLayer::invertSelection()
   emit selectionChanged();
 }
 
-void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle &rect )
+void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
 {
   // normalize the rectangle
   rect.normalize();
@@ -2979,6 +2978,23 @@ bool QgsVectorLayer::deleteAttribute( int index )
     return false;
 
   return mEditBuffer->deleteAttribute( index );
+}
+
+bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
+{
+  bool deleted = false;
+
+  qSort( attrs.begin(), attrs.end(), qGreater<int>() );
+
+  foreach ( int attr, attrs )
+  {
+    if ( deleteAttribute( attr ) )
+    {
+      deleted = true;
+    }
+  }
+
+  return deleted;
 }
 
 bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )

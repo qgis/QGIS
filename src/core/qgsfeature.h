@@ -22,6 +22,7 @@ email                : sherman at mrcc.com
 #include <QList>
 #include <QHash>
 #include <QVector>
+#include <QSet>
 
 class QgsGeometry;
 class QgsRectangle;

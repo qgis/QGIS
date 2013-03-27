@@ -78,8 +78,8 @@ void Topol::initGui()
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( showOrHide() ) );
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToMenu( tr( "&Topol" ), mQActionPointer );
+  mQGisIface->addVectorToolBarIcon( mQActionPointer );
+  mQGisIface->addPluginToVectorMenu( tr( "&Topology Checker" ), mQActionPointer );
   //run();
 }
 //method defined in interface
@@ -115,8 +115,8 @@ void Topol::run()
 void Topol::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( "&Topol", mQActionPointer );
-  mQGisIface->removeToolBarIcon( mQActionPointer );
+  mQGisIface->removePluginVectorMenu( "&Topology Checker", mQActionPointer );
+  mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 

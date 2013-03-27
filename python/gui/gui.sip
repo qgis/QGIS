@@ -64,7 +64,6 @@
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
 
-%Include attributetable/qgsattributetablemodel.sip
 %Include attributetable/qgsattributetableview.sip
 
 %Include raster/qgsmultibandcolorrendererwidget.sip

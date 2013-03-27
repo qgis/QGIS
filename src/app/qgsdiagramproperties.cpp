@@ -44,7 +44,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   setupUi( this );
 
-
   mBackgroundColorButton->setColorDialogTitle( tr( "Background color" ) );
   mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mDiagramPenColorButton->setColorDialogTitle( tr( "Pen color" ) );
@@ -111,6 +110,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   mDataDefinedXComboBox->addItem( tr( "None" ), -1 );
   mDataDefinedYComboBox->addItem( tr( "None" ), -1 );
+
+  mAngleOffsetComboBox->addItem( tr( "Top" ), 90 * 16 );
+  mAngleOffsetComboBox->addItem( tr( "Right" ), 0 );
+  mAngleOffsetComboBox->addItem( tr( "Bottom" ), 270 * 16 );
+  mAngleOffsetComboBox->addItem( tr( "Left" ), 180 * 16 );
 
   //insert all attributes into the combo boxes
   const QgsFields& layerFields = layer->pendingFields();
@@ -197,6 +201,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       {
         mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
+
+      mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).angleOffset ) );
 
       mOrientationLeftButton->setProperty( "direction", QgsDiagramSettings::Left );
       mOrientationRightButton->setProperty( "direction", QgsDiagramSettings::Right );
@@ -345,6 +351,17 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
   {
     mScaleDependencyComboBox->hide();
     mScaleDependencyLabel->hide();
+  }
+
+  if ( DIAGRAM_NAME_PIE == diagramType )
+  {
+    mAngleOffsetComboBox->show();
+    mAngleOffsetLabel->show();
+  }
+  else
+  {
+    mAngleOffsetComboBox->hide();
+    mAngleOffsetLabel->hide();
   }
 }
 void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
@@ -520,6 +537,9 @@ void QgsDiagramProperties::apply()
       ds.minScaleDenominator = -1;
       ds.maxScaleDenominator = -1;
     }
+
+    // Diagram angle offset (pie)
+    ds.angleOffset = mAngleOffsetComboBox->itemData( mAngleOffsetComboBox->currentIndex() ).toInt();
 
     // Diagram orientation (histogram)
     ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );

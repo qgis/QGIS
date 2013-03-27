@@ -21,6 +21,10 @@
 #include "qgsidentifyresultsdialog.h"
 #include "qgsattributedialog.h"
 #include "qgslogger.h"
+#include "qgsdistancearea.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
+#include "qgsmapcanvas.h"
 
 #include <QPushButton>
 #include <QSettings>
@@ -42,7 +46,14 @@ void QgsFeatureAction::execute()
 QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 {
   QgsFeature *f = cloneFeature ? new QgsFeature( mFeature ) : &mFeature;
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature );
+
+  QgsDistanceArea myDa;
+
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, myDa );
 
   if ( mLayer->actions()->size() > 0 )
   {
