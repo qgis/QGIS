@@ -22,17 +22,32 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QMap< QString, QPa
   for ( ; it != properties.constEnd(); ++it )
   {
     //check box
-    mTableWidget->setCellWidget( i, 0, new QCheckBox( this ) );
+    QCheckBox* cb = new QCheckBox( this );
+    cb->setChecked( !it.value().second.isEmpty() );
+    mTableWidget->setCellWidget( i, 0, cb );
+
     //property name
     QTableWidgetItem* propertyItem = new QTableWidgetItem( it.value().first );
     propertyItem->setData( Qt::UserRole, it.key() );
     mTableWidget->setItem( i, 1, propertyItem );
+
     //attribute list
+    QString expressionString = it.value().second;
     QComboBox* attributeComboBox = new QComboBox( this );
-    attributeComboBox->addItem( it.value().second );
+    attributeComboBox->addItem( QString() );
     for ( int j = 0; j < attributeFields.count(); ++j )
     {
       attributeComboBox->addItem( attributeFields.at( j ).name() );
+    }
+
+    int attrComboIndex = comboIndexForExpressionString( expressionString, attributeComboBox );
+    if ( attrComboIndex >= 0 )
+    {
+      attributeComboBox->setCurrentIndex( attrComboIndex );
+    }
+    else
+    {
+      attributeComboBox->setItemText( 0, expressionString );
     }
 
     mTableWidget->setCellWidget( i, 2, attributeComboBox );
@@ -43,8 +58,6 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QMap< QString, QPa
     mTableWidget->setCellWidget( i, 3, expressionButton );
     ++i;
   }
-
-  //connect( this, SIGNAL( cellClicked( int, int ) ), this, SLOT( handleCellClick(int,int) ) );
 }
 
 QgsDataDefinedSymbolDialog::~QgsDataDefinedSymbolDialog()
@@ -113,10 +126,9 @@ void QgsDataDefinedSymbolDialog::expressionButtonClicked()
   if ( d.exec() == QDialog::Accepted )
   {
     QString expressionString = d.expressionText();
-    QString attributeString = expressionString.trimmed();
-    attributeString.remove( 0, 1 ).chop( 1 );
-    int comboIndex = attributeCombo->findText( attributeString );
-    if ( attributeString.size() < 1 || comboIndex == -1 )
+    int comboIndex = comboIndexForExpressionString( d.expressionText(), attributeCombo );
+
+    if ( comboIndex == -1 )
     {
       attributeCombo->setItemText( 0, d.expressionText() );
       attributeCombo->setCurrentIndex( 0 );
@@ -127,4 +139,16 @@ void QgsDataDefinedSymbolDialog::expressionButtonClicked()
       attributeCombo->setCurrentIndex( comboIndex );
     }
   }
+}
+
+int QgsDataDefinedSymbolDialog::comboIndexForExpressionString( const QString& expr, const QComboBox* cb )
+{
+  QString attributeString = expr.trimmed();
+  int comboIndex = cb->findText( attributeString );
+  if ( comboIndex == -1 )
+  {
+    attributeString.remove( 0, 1 ).chop( 1 );
+    comboIndex = cb->findText( attributeString );
+  }
+  return comboIndex;
 }

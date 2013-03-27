@@ -5,6 +5,7 @@
 #include <QDialog>
 
 class QgsVectorLayer;
+class QComboBox;
 
 class QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsDataDefinedSymbolDialog
 {
@@ -19,6 +20,10 @@ class QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsDataDefinedSymb
 
   private:
     const QgsVectorLayer* mVectorLayer;
+
+    /**Tries to fiend a combo box field for an expression string (considering whitespaces, brackets around attribute names)
+        @return index or -1 in case not found*/
+    int comboIndexForExpressionString( const QString& expr, const QComboBox* cb );
 };
 
 #endif // QGSDATADEFINEDSYMBOLLAYERDIALOG_H

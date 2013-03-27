@@ -229,6 +229,7 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
         mLayer->setDataDefinedProperty( it.key(), it.value() );
       }
     }
+    emit changed();
   }
 }
 

@@ -232,17 +232,17 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
 
   //data defined properties
   if ( props.contains( "color_expression" ) )
-    l->setDataDefinedProperty( "color_expression", props["color_expression"] );
+    l->setDataDefinedProperty( "color", props["color_expression"] );
   if ( props.contains( "width_expression" ) )
-    l->setDataDefinedProperty( "width_expression", props["width_expression"] );
+    l->setDataDefinedProperty( "width", props["width_expression"] );
   if ( props.contains( "offset_expression" ) )
-    l->setDataDefinedProperty( "offset_expression", props["offset_expression"] );
+    l->setDataDefinedProperty( "offset", props["offset_expression"] );
   if ( props.contains( "customdash_expression" ) )
-    l->setDataDefinedProperty( "customdash_expression", props["customdash_expression"] );
+    l->setDataDefinedProperty( "customdash", props["customdash_expression"] );
   if ( props.contains( "joinstyle_expression" ) )
-    l->setDataDefinedProperty( "joinstyle_expression", props["joinstyle_expression"] );
+    l->setDataDefinedProperty( "joinstyle", props["joinstyle_expression"] );
   if ( props.contains( "capstyle_expression" ) )
-    l->setDataDefinedProperty( "capstyle_expression", props["capstyle_expression"] );
+    l->setDataDefinedProperty( "capstyle", props["capstyle_expression"] );
 
   return l;
 }
@@ -334,6 +334,12 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
     mPen.setWidthF( scaledWidth );
     mSelPen.setWidthF( scaledWidth );
+  }
+
+  //color
+  if ( mStrokeColorExpression )
+  {
+    mPen.setColor( QColor( mStrokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
   }
 
   p->setPen( context.selected() ? mSelPen : mPen );
