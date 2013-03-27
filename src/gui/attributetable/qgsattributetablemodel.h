@@ -43,6 +43,12 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     Q_OBJECT
 
   public:
+    enum Role
+    {
+      SortRole = Qt::UserRole + 1
+    };
+
+  public:
     /**
      * Constructor
      * @param layerCache  A layer cache to use as backend

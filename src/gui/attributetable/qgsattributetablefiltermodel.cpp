@@ -36,6 +36,7 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas* canvas
   mMasterSelection = new QItemSelectionModel( this, this );
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );
+  setSortRole( QgsAttributeTableModel::SortRole );
   connect( layer(), SIGNAL( selectionChanged() ), SLOT( selectionChanged() ) );
 }
 
