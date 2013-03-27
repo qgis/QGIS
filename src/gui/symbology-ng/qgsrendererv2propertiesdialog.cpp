@@ -182,7 +182,7 @@ void QgsRendererV2PropertiesDialog::apply()
   }
 
   // set the blend mode for the layer
-  mLayer->setBlendMode(( QgsMapLayer::BlendMode ) mBlendModeComboBox->blendMode() );
+  mLayer->setBlendMode(( QgsMapRenderer::BlendMode ) mBlendModeComboBox->blendMode() );
 }
 
 void QgsRendererV2PropertiesDialog::onOK()

@@ -825,7 +825,7 @@ void QgsRasterLayerProperties::apply()
   }
 
   //set the blend mode for the layer
-  mRasterLayer->setBlendMode(( QgsMapLayer::BlendMode ) mBlendModeComboBox->blendMode() );
+  mRasterLayer->setBlendMode(( QgsMapRenderer::BlendMode ) mBlendModeComboBox->blendMode() );
 
   //get the thumbnail for the layer
   pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );

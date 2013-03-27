@@ -2264,7 +2264,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     if ( !blendModeNode.isNull() )
     {
       QDomElement e = blendModeNode.toElement();
-      setBlendMode(( QgsMapLayer::BlendMode ) e.text().toInt() );
+      setBlendMode(( QgsMapRenderer::BlendMode ) e.text().toInt() );
     }
 
     // use scale dependent visibility flag

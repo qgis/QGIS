@@ -202,6 +202,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   textNamedStyle = QString( "" );
   textColor = Qt::black;
   textTransp = 0;
+  blendMode = QgsMapRenderer::BlendNormal;
   previewBkgrdColor = Qt::white;
   enabled = false;
   priority = 5;
@@ -212,6 +213,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   bufferSize = 1;
   bufferColor = Qt::white;
   bufferTransp = 0;
+  bufferBlendMode = QgsMapRenderer::BlendNormal;
   bufferNoFill = false;
   bufferJoinStyle = Qt::BevelJoin;
   formatNumbers = false;
@@ -286,6 +288,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   textNamedStyle = s.textNamedStyle;
   textColor = s.textColor;
   textTransp = s.textTransp;
+  blendMode = s.blendMode;
   previewBkgrdColor = s.previewBkgrdColor;
   enabled = s.enabled;
   priority = s.priority;
@@ -296,6 +299,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   bufferSize = s.bufferSize;
   bufferColor = s.bufferColor;
   bufferTransp = s.bufferTransp;
+  bufferBlendMode = s.bufferBlendMode;
   bufferJoinStyle = s.bufferJoinStyle;
   bufferNoFill = s.bufferNoFill;
   formatNumbers = s.formatNumbers;
@@ -524,6 +528,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont.setWordSpacing( layer->customProperty( "labeling/fontWordSpacing", QVariant( 0.0 ) ).toDouble() );
   textColor = _readColor( layer, "labeling/textColor" );
   textTransp = layer->customProperty( "labeling/textTransp" ).toInt();
+  blendMode = ( QgsMapRenderer::BlendMode ) layer->customProperty( "labeling/blendMode" ).toInt();
   previewBkgrdColor = QColor( layer->customProperty( "labeling/previewBkgrdColor", QVariant( "#ffffff" ) ).toString() );
   enabled = layer->customProperty( "labeling/enabled" ).toBool();
   priority = layer->customProperty( "labeling/priority" ).toInt();
@@ -534,6 +539,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   bufferSize = layer->customProperty( "labeling/bufferSize" ).toDouble();
   bufferColor = _readColor( layer, "labeling/bufferColor" );
   bufferTransp = layer->customProperty( "labeling/bufferTransp" ).toInt();
+  bufferBlendMode = ( QgsMapRenderer::BlendMode ) layer->customProperty( "labeling/bufferBlendMode" ).toInt();
   bufferJoinStyle = ( Qt::PenJoinStyle ) layer->customProperty( "labeling/bufferJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt();
   bufferNoFill = layer->customProperty( "labeling/bufferNoFill", QVariant( false ) ).toBool();
   formatNumbers = layer->customProperty( "labeling/formatNumbers" ).toBool();
@@ -596,6 +602,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
 
   _writeColor( layer, "labeling/textColor", textColor );
   layer->setCustomProperty( "labeling/textTransp", textTransp );
+  layer->setCustomProperty( "labeling/blendMode", ( unsigned int )blendMode );
   layer->setCustomProperty( "labeling/previewBkgrdColor", previewBkgrdColor.name() );
   layer->setCustomProperty( "labeling/enabled", enabled );
   layer->setCustomProperty( "labeling/priority", priority );
@@ -606,6 +613,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/bufferSize", bufferSize );
   _writeColor( layer, "labeling/bufferColor", bufferColor );
   layer->setCustomProperty( "labeling/bufferTransp", bufferTransp );
+  layer->setCustomProperty( "labeling/bufferBlendMode", ( unsigned int )bufferBlendMode );
   layer->setCustomProperty( "labeling/bufferJoinStyle", ( unsigned int )bufferJoinStyle );
   layer->setCustomProperty( "labeling/bufferNoFill", bufferNoFill );
   layer->setCustomProperty( "labeling/formatNumbers", formatNumbers );
@@ -1645,9 +1653,11 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     QFont fontForLabel = lyr.textFont;
     QColor fontColor = lyr.textColor;
     int fontTransp = lyr.textTransp;
+    QgsMapRenderer::BlendMode blendMode = lyr.blendMode;
     double bufferSize = lyr.bufferSize;
     QColor bufferColor = lyr.bufferColor;
     int bufferTransp = lyr.bufferTransp;
+    QgsMapRenderer::BlendMode bufferBlendMode = lyr.bufferBlendMode;
 
     //apply data defined settings for the label
     //font size
@@ -1741,10 +1751,16 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     if ( lyr.bufferSize != 0 )
     {
+      // Set the painter composition mode for the buffer
+      painter->setCompositionMode( mMapRenderer->getCompositionMode( bufferBlendMode ) );
+      
       int bufferPixelSize = lyr.sizeToPixel( bufferSize, context, true );
       drawLabel( *it, painter, fontForLabel, fontColor, xform, bufferPixelSize, bufferColor, true );
     }
-
+    
+    // Set the painter composition mode before rendering the label
+    painter->setCompositionMode( mMapRenderer->getCompositionMode( blendMode ) );
+    
     drawLabel( *it, painter, fontForLabel, fontColor, xform );
 
     if ( mLabelSearchTree )
@@ -1753,6 +1769,9 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), ( *it )->getLayerName(), labeltext, false, palGeometry->isPinned() );
     }
   }
+
+  // Reset composition mode for further drawing operations
+  painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
   QgsDebugMsg( QString( "LABELING draw:  %1 ms" ).arg( t.elapsed() ) );
 
