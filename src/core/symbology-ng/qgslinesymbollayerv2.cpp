@@ -342,14 +342,48 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     mPen.setColor( QColor( mStrokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
   }
 
+  //offset
+  double offset = mOffset;
+  if ( mLineOffsetExpression )
+  {
+    offset = mLineOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+
+  //dash dot vector
+  if ( mDashPatternExpression )
+  {
+    QVector<qreal> dashVector;
+    QStringList dashList = mDashPatternExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString().split( ";" );
+    QStringList::const_iterator dashIt = dashList.constBegin();
+    for ( ; dashIt != dashList.constEnd(); ++dashIt )
+    {
+      dashVector.push_back( dashIt->toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mCustomDashPatternUnit ) / mPen.widthF() );
+    }
+    mPen.setDashPattern( dashVector );
+  }
+
+  //join style
+  if ( mJoinStyleExpression )
+  {
+    QString joinStyleString = mJoinStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    mPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( joinStyleString ) );
+  }
+
+  //cap style
+  if ( mCapStyleExpression )
+  {
+    QString capStyleString = mCapStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    mPen.setCapStyle( QgsSymbolLayerV2Utils::decodePenCapStyle( capStyleString ) );
+  }
   p->setPen( context.selected() ? mSelPen : mPen );
-  if ( mOffset == 0 )
+
+  if ( offset == 0 )
   {
     p->drawPolyline( points );
   }
   else
   {
-    double scaledOffset = mOffset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+    double scaledOffset = offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
     p->drawPolyline( ::offsetLine( points, scaledOffset ) );
   }
 }
