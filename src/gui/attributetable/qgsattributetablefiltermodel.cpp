@@ -241,6 +241,9 @@ void QgsAttributeTableFilterModel::announcedInvalidateFilter()
 
 void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 {
+  if ( !layer() )
+    return;
+
   bool filter = false;
   QgsRectangle rect = mCanvas->mapRenderer()->mapToLayerCoordinates( layer(), mCanvas->extent() );
   QgsRenderContext renderContext;
