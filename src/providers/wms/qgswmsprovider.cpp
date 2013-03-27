@@ -97,6 +97,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mErrors( 0 )
     , mUserName( QString::null )
     , mPassword( QString::null )
+    , mReferer( QString::null )
     , mTiled( false )
     , mTileLayer( 0 )
     , mTileMatrixSetId( QString::null )
@@ -161,6 +162,9 @@ bool QgsWmsProvider::parseUri( QString uriString )
 
   mPassword = uri.param( "password" );
   QgsDebugMsg( "set password to " + mPassword );
+  
+  mReferer = uri.param( "referer" );
+  QgsDebugMsg( "set referer to " + mReferer );
 
   addLayers( uri.params( "layers" ), uri.params( "styles" ) );
   setImageEncoding( uri.param( "format" ) );
@@ -1518,7 +1522,7 @@ int QgsWmsProvider::bandCount() const
 void QgsWmsProvider::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   QString msg = tr( "%1 of %2 bytes of capabilities downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
-  QgsDebugMsg( msg );
+  //QgsDebugMsg( msg );
   emit statusChanged( msg );
 }
 
@@ -2714,13 +2718,13 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
 
       double res = m.scaleDenom * 0.00028 / metersPerUnit;
 
-      QgsDebugMsg( QString( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" )
+      /*QgsDebugMsg( QString( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" )
                    .arg( m.identifier )
                    .arg( m.scaleDenom ).arg( res )
                    .arg( m.tileWidth ).arg( m.tileHeight )
                    .arg( m.matrixWidth ).arg( m.matrixHeight )
                    .arg( m.topLeft.toString() )
-                 );
+                 );*/
 
       s.tileMatrices.insert( res, m );
     }
@@ -2738,7 +2742,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
         e0 = e0.nextSiblingElement( "Layer" ) )
   {
     QString id = e0.firstChildElement( "ows:Identifier" ).text();
-    QgsDebugMsg( QString( "Layer %1" ).arg( id ) );
+    //QgsDebugMsg( QString( "Layer %1" ).arg( id ) );
 
     QgsWmtsTileLayer l;
     l.tileMode   = WMTS;
@@ -2936,7 +2940,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
       }
     }
 
-    QgsDebugMsg( QString( "add layer %1" ).arg( id ) );
+    //QgsDebugMsg( QString( "add layer %1" ).arg( id ) );
     mTileLayersSupported << l;
   }
 

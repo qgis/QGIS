@@ -58,6 +58,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
+    txtReferer->setText( settings.value( credentialsKey + "/referer" ).toString() );
   }
 
   if ( mBaseKey != "/Qgis/connections-wms/" )
@@ -160,6 +161,7 @@ void QgsNewHttpConnection::accept()
 
   settings.setValue( credentialsKey + "/username", txtUserName->text() );
   settings.setValue( credentialsKey + "/password", txtPassword->text() );
+  settings.setValue( credentialsKey + "/referer", txtReferer->text() );
 
   settings.setValue( mBaseKey + "/selected", txtName->text() );
 
