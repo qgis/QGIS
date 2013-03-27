@@ -135,6 +135,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="mExpressionSelectButton">
+       <property name="toolTip">
+        <string>Select features using an expression</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
@@ -563,12 +566,11 @@
     <string>Show Features Visible On Map</string>
    </property>
   </action>
-<action name="mActionFilterColumnsMenu">
+  <action name="mActionFilterColumnsMenu">
    <property name="text">
     <string>Column Filter</string>
    </property>
   </action>
-  
   <action name="mActionEditedFilter">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
