@@ -2317,7 +2317,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   if ( !blendModeNode.isNull() )
   {
     QDomElement e = blendModeNode.toElement();
-    setBlendMode(( QgsMapLayer::BlendMode ) e.text().toInt() );
+    setBlendMode(( QgsMapRenderer::BlendMode ) e.text().toInt() );
   }
 
   return true;

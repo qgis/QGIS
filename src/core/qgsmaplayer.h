@@ -29,6 +29,7 @@
 #include "qgis.h"
 #include "qgserror.h"
 #include "qgsrectangle.h"
+#include "qgsmaprenderer.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
@@ -52,26 +53,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
       VectorLayer,
       RasterLayer,
       PluginLayer // added in 1.5
-    };
-
-    /** Blending modes enum defining the available composition modes that can
-     * be used when rendering a layer
-     */
-    enum BlendMode
-    {
-      BlendNormal,
-      BlendLighten,
-      BlendScreen,
-      BlendDodge,
-      BlendAddition,
-      BlendDarken,
-      BlendMultiply,
-      BlendBurn,
-      BlendOverlay,
-      BlendSoftLight,
-      BlendHardLight,
-      BlendDifference,
-      BlendSubtract
     };
 
     /** Constructor
@@ -116,13 +97,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     const QString& abstract() const { return mAbstract; }
 
     /* Set the blending mode used for rendering a layer */
-    void setBlendMode( const QgsMapLayer::BlendMode blendMode );
+    void setBlendMode( const QgsMapRenderer::BlendMode blendMode );
     /* Returns the current blending mode for a layer */
-    QgsMapLayer::BlendMode blendMode() const;
-    /** Returns a QPainter::CompositionMode corresponding to the
-     * current blending mode for the layer
-     */
-    QPainter::CompositionMode getCompositionMode();
+    QgsMapRenderer::BlendMode blendMode() const;
 
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
@@ -494,7 +471,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayer::LayerType mLayerType;
 
     /** Blend mode for the layer */
-    QgsMapLayer::BlendMode mBlendMode;
+    QgsMapRenderer::BlendMode mBlendMode;
 
     /** Tag for embedding additional information */
     QString mTag;
