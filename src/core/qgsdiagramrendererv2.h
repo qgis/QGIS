@@ -128,6 +128,7 @@ class CORE_EXPORT QgsDiagramSettings
     double barWidth;
     int transparency; // 0 - 100
     bool scaleByArea;
+    int angleOffset;
 
     //scale range (-1 if no lower / upper bound )
     double minScaleDenominator;
