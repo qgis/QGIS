@@ -37,12 +37,12 @@ typedef ErrorList( topolTest::*testFunction )( double, QgsVectorLayer*, QgsVecto
 class TopologyRule
 {
   public:
+    testFunction f;
     bool useSecondLayer;
     bool useTolerance;
     bool useSpatialIndex;
     QList<QGis::GeometryType> layer1SupportedTypes;
     QList<QGis::GeometryType> layer2SupportedTypes;
-    testFunction f;
 
     bool layer1AcceptsType( QGis::GeometryType type )
     {

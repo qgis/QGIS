@@ -751,6 +751,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
       else if ( name == "subgroup" ) s = QgsComposerLegendStyle::Subgroup;
       else if ( name == "symbol" ) s = QgsComposerLegendStyle::Symbol;
       else if ( name == "symbolLabel" ) s = QgsComposerLegendStyle::SymbolLabel;
+      else continue;
       setStyle( s, style );
     }
   }
