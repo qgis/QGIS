@@ -128,6 +128,7 @@ QgsRasterPipe::Role QgsRasterPipe::interfaceRole( QgsRasterInterface * interface
   else if ( dynamic_cast<QgsRasterRenderer *>( interface ) ) role = RendererRole;
   else if ( dynamic_cast<QgsRasterResampleFilter *>( interface ) ) role = ResamplerRole;
   else if ( dynamic_cast<QgsBrightnessContrastFilter *>( interface ) ) role = BrightnessRole;
+  else if ( dynamic_cast<QgsHueSaturationFilter *>( interface ) ) role = HueSaturationRole;
   else if ( dynamic_cast<QgsRasterProjector *>( interface ) ) role = ProjectorRole;
   else if ( dynamic_cast<QgsRasterNuller *>( interface ) ) role = NullerRole;
 
@@ -180,6 +181,7 @@ bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
   int rendererIdx = mRoleMap.value( RendererRole, -1 );
   int resamplerIdx = mRoleMap.value( ResamplerRole, -1 );
   int brightnessIdx = mRoleMap.value( BrightnessRole, -1 );
+  int hueSaturationIdx = mRoleMap.value( HueSaturationRole, -1 );
 
   if ( role == ProviderRole )
   {
@@ -193,13 +195,17 @@ bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
   {
     idx =  qMax( providerIdx, rendererIdx ) + 1;
   }
-  else if ( role == ResamplerRole )
+  else if ( role == HueSaturationRole )
   {
     idx =  qMax( qMax( providerIdx, rendererIdx ), brightnessIdx ) + 1;
   }
+  else if ( role == ResamplerRole )
+  {
+    idx = qMax( qMax( qMax( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ) + 1;
+  }
   else if ( role == ProjectorRole )
   {
-    idx =  qMax( qMax( qMax( providerIdx, rendererIdx ), brightnessIdx ), resamplerIdx )  + 1;
+    idx = qMax( qMax( qMax( qMax( providerIdx, rendererIdx ), brightnessIdx ), hueSaturationIdx ), resamplerIdx )  + 1;
   }
 
   return insert( idx, theInterface );  // insert may still fail and return false
@@ -233,6 +239,11 @@ QgsRasterResampleFilter * QgsRasterPipe::resampleFilter() const
 QgsBrightnessContrastFilter * QgsRasterPipe::brightnessFilter() const
 {
   return dynamic_cast<QgsBrightnessContrastFilter *>( interface( BrightnessRole ) );
+}
+
+QgsHueSaturationFilter * QgsRasterPipe::hueSaturationFilter() const
+{
+  return dynamic_cast<QgsHueSaturationFilter *>( interface( HueSaturationRole ) );
 }
 
 QgsRasterProjector * QgsRasterPipe::projector() const
