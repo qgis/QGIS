@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.algs.Polygonize import Polygonize
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2012'
@@ -130,7 +131,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         # ------ native algs ------
                         AddTableField(), FieldsCalculator(), SaveSelectedFeatures(), JoinAttributes(),
                         AutoincrementalField(), Explode(), FieldsPyculator(), EquivalentNumField(),
-                        PointsLayerFromTable(), StatisticsByCategories(),
+                        PointsLayerFromTable(), StatisticsByCategories(), Polygonize(),
                         # ------ raster ------
                         CreateConstantRaster(), RasterLayerStatistics()
                         # ------ graphics ------
