@@ -189,14 +189,14 @@ void QgsComposerManager::on_mAddButton_clicked()
       QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ) );
       dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
       dlg->show();
+
       newComposer->hide();
       loadedOK = newComposer->composition()->loadFromTemplate( templateDoc, 0, false );
       newComposer->activate();
 
-      if ( dlg ) // user may have already closed busy indicator
-      {
-        dlg->close();
-      }
+      dlg->close();
+      delete dlg;
+      dlg = 0;
     }
   }
 
@@ -396,10 +396,9 @@ void QgsComposerManager::duplicate_clicked()
 
   QgsComposer* newComposer = QgisApp::instance()->duplicateComposer( currentComposer, newTitle );
 
-  if ( dlg ) // user may have already closed busy indicator
-  {
-    dlg->close();
-  }
+  dlg->close();
+  delete dlg;
+  dlg = 0;
 
   if ( newComposer )
   {

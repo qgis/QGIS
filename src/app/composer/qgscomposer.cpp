@@ -1401,10 +1401,9 @@ void QgsComposer::on_mActionDuplicateComposer_triggered()
 
   QgsComposer* newComposer = mQgis->duplicateComposer( this, newTitle );
 
-  if ( dlg ) // user may have already closed busy indicator
-  {
-    dlg->close();
-  }
+  dlg->close();
+  delete dlg;
+  dlg = 0;
 
   if ( !newComposer )
   {
@@ -1527,10 +1526,9 @@ void QgsComposer::loadTemplate( bool newCompser )
       comp->loadFromTemplate( templateDoc, 0, false );
       c->activate();
 
-      if ( dlg ) // user may have already closed busy indicator
-      {
-        dlg->close();
-      }
+      dlg->close();
+      delete dlg;
+      dlg = 0;
     }
   }
 }
