@@ -854,6 +854,26 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
         return false;
       }
     }
+
+
+    if ( mSchemaName.isEmpty() )
+      statement = QString( "SELECT IDENT_CURRENT('dbo.%1')" ).arg( mTableName );
+    else
+      statement = QString( "SELECT IDENT_CURRENT('%1.%2')" ).arg( mSchemaName, mTableName );
+
+    if ( !query.exec( statement ) )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      if ( !mSkipFailures )
+      {
+        pushError( msg );
+        return false;
+      }
+    }
+
+    query.next();
+    it->setFeatureId( query.value( 0 ).toLongLong() );
   }
 
   return true;
