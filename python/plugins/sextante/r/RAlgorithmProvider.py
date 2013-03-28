@@ -27,6 +27,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os.path
 from sextante.script.WrongScriptException import WrongScriptException
+from sextante.r.DeleteRScriptAction import DeleteRScriptAction
 from sextante.core.SextanteConfig import SextanteConfig, Setting
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.AlgorithmProvider import AlgorithmProvider
@@ -43,7 +44,7 @@ class RAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.activate = False
         self.actions.append(CreateNewRScriptAction())
-        self.contextMenuActions = [EditRScriptAction()]
+        self.contextMenuActions = [EditRScriptAction(), DeleteRScriptAction()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
