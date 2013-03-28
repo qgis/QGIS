@@ -288,23 +288,7 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mSelPen.setColor( selColor );
 
   //prepare expressions for data defined properties
-  const QgsVectorLayer* vLayer = context.layer();
-  if ( vLayer )
-  {
-    const QgsFields& fields = vLayer->pendingFields();
-    if ( mStrokeColorExpression )
-      mStrokeColorExpression->prepare( fields );
-    if ( mStrokeWidthExpression )
-      mStrokeWidthExpression->prepare( fields );
-    if ( mLineOffsetExpression )
-      mLineOffsetExpression->prepare( fields );
-    if ( mDashPatternExpression )
-      mDashPatternExpression->prepare( fields );
-    if ( mJoinStyleExpression )
-      mJoinStyleExpression->prepare( fields );
-    if ( mCapStyleExpression )
-      mCapStyleExpression->prepare( fields );
-  }
+  prepareExpressions( context.layer() );
 }
 
 void QgsSimpleLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -320,61 +304,9 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     return;
   }
 
-  //data defined properties
-  double scaledWidth = 0;
-  if ( mStrokeWidthExpression )
-  {
-    scaledWidth = mStrokeWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble()
-                  * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
-    mPen.setWidthF( scaledWidth );
-    mSelPen.setWidthF( scaledWidth );
-  }
-  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
-  {
-    scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
-    mPen.setWidthF( scaledWidth );
-    mSelPen.setWidthF( scaledWidth );
-  }
+  double offset = 0.0;
+  applyDataDefinedSymbology( context, mPen, mSelPen, offset );
 
-  //color
-  if ( mStrokeColorExpression )
-  {
-    mPen.setColor( QColor( mStrokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
-  }
-
-  //offset
-  double offset = mOffset;
-  if ( mLineOffsetExpression )
-  {
-    offset = mLineOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
-  }
-
-  //dash dot vector
-  if ( mDashPatternExpression )
-  {
-    QVector<qreal> dashVector;
-    QStringList dashList = mDashPatternExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString().split( ";" );
-    QStringList::const_iterator dashIt = dashList.constBegin();
-    for ( ; dashIt != dashList.constEnd(); ++dashIt )
-    {
-      dashVector.push_back( dashIt->toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mCustomDashPatternUnit ) / mPen.widthF() );
-    }
-    mPen.setDashPattern( dashVector );
-  }
-
-  //join style
-  if ( mJoinStyleExpression )
-  {
-    QString joinStyleString = mJoinStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    mPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( joinStyleString ) );
-  }
-
-  //cap style
-  if ( mCapStyleExpression )
-  {
-    QString capStyleString = mCapStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    mPen.setCapStyle( QgsSymbolLayerV2Utils::decodePenCapStyle( capStyleString ) );
-  }
   p->setPen( context.selected() ? mSelPen : mPen );
 
   if ( offset == 0 )
@@ -532,6 +464,87 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &elemen
   l->setUseCustomDashPattern( penStyle == Qt::CustomDashLine );
   l->setCustomDashVector( customDashVector );
   return l;
+}
+
+void QgsSimpleLineSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
+{
+  if ( !vl )
+  {
+    return;
+  }
+
+  const QgsFields& fields = vl->pendingFields();
+  if ( mStrokeColorExpression )
+    mStrokeColorExpression->prepare( fields );
+  if ( mStrokeWidthExpression )
+    mStrokeWidthExpression->prepare( fields );
+  if ( mLineOffsetExpression )
+    mLineOffsetExpression->prepare( fields );
+  if ( mDashPatternExpression )
+    mDashPatternExpression->prepare( fields );
+  if ( mJoinStyleExpression )
+    mJoinStyleExpression->prepare( fields );
+  if ( mCapStyleExpression )
+    mCapStyleExpression->prepare( fields );
+}
+
+void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset )
+{
+  //data defined properties
+  double scaledWidth = 0;
+  if ( mStrokeWidthExpression )
+  {
+    scaledWidth = mStrokeWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble()
+                  * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
+    pen.setWidthF( scaledWidth );
+    selPen.setWidthF( scaledWidth );
+  }
+  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
+  {
+    scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
+    pen.setWidthF( scaledWidth );
+    selPen.setWidthF( scaledWidth );
+  }
+
+  //color
+  if ( mStrokeColorExpression )
+  {
+    pen.setColor( QColor( mStrokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+  }
+
+  //offset
+  offset = mOffset;
+  if ( mLineOffsetExpression )
+  {
+    offset = mLineOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+
+  //dash dot vector
+  if ( mDashPatternExpression )
+  {
+    QVector<qreal> dashVector;
+    QStringList dashList = mDashPatternExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString().split( ";" );
+    QStringList::const_iterator dashIt = dashList.constBegin();
+    for ( ; dashIt != dashList.constEnd(); ++dashIt )
+    {
+      dashVector.push_back( dashIt->toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mCustomDashPatternUnit ) / mPen.widthF() );
+    }
+    pen.setDashPattern( dashVector );
+  }
+
+  //join style
+  if ( mJoinStyleExpression )
+  {
+    QString joinStyleString = mJoinStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    pen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( joinStyleString ) );
+  }
+
+  //cap style
+  if ( mCapStyleExpression )
+  {
+    QString capStyleString = mCapStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    pen.setCapStyle( QgsSymbolLayerV2Utils::decodePenCapStyle( capStyleString ) );
+  }
 }
 
 

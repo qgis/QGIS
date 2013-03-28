@@ -122,6 +122,11 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsExpression* mDashPatternExpression;
     QgsExpression* mJoinStyleExpression;
     QgsExpression* mCapStyleExpression;
+
+  private:
+    //helper functions for data defined symbology
+    void prepareExpressions( const QgsVectorLayer* vl );
+    void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset );
 };
 
 /////////
