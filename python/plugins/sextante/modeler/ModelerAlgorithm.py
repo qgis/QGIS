@@ -212,6 +212,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
 
     def removeAlgorithm(self, index):
+        '''returns true if the algorithm could be removed, false if others depend on it and could not be removed'''
         if self.hasDependencies(self.algs[index], index):
             return False
         for out in self.algs[index].outputs:
@@ -241,6 +242,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         return True
 
     def removeParameter(self, index):
+        '''returns true if the parameter could be removed, false if others depend on it and could not be removed'''
         if self.hasDependencies(self.parameters[index], index):
             return False
         del self.parameters[index]

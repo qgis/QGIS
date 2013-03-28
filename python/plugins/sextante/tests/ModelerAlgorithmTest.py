@@ -6,18 +6,36 @@ from sextante.core.QGisLayers import QGisLayers
 import os
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
+from sextante.modeler import ModelerAlgorithmProvider
+from sextante.modeler.ModelerAlgorithm import ModelerAlgorithm
+
 
 class ModelerAlgorithmTest(unittest.TestCase):
 
     def testCreateModel(self):
         pass
 
+    def testRemoveAlgorithm(self):
+        '''NOTE:this is not passing, since the algCopy method reload from file'''
+        folder = os.path.join(os.path.dirname(ModelerAlgorithmProvider.__file__), "models")
+        modelfile = os.path.join(folder, "noinputs.model")
+        model = ModelerAlgorithm()
+        model.openModel(modelfile)
+        self.assertTrue(2, len(model.algs))
+        self.assertFalse(model.removeAlgorithm(0))
+        self.assertTrue(model.removeAlgorithm(len(model.algs) - 1));
+        outputs = sextante.runalg(model, None)
+        self.assertEquals(2, len(outputs))
+        output=outputs['SAVENAME_ALG0']
+        layer=QGisLayers.getObjectFromUri(output, True)
+        self.assertIsNone(layer)
+
     def testRemoveParameter(self):
         pass
-
-    def testRemoveAlgorithm(self):
-        pass
-
+    
+    
+    
+    '''The following tests correspond to example models'''
 
     def test_modelersagagrass(self):
         outputs=sextante.runalg("modeler:sagagrass",points(),None)
