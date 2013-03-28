@@ -34,8 +34,8 @@ class QgsAttributesList : public QTableWidget
 
   protected:
     // virtual void dragMoveEvent( QDragMoveEvent *event );
-    //QMimeData *mimeData( const QList<QTableWidgetItem *> items ) const;
-    //Qt::DropActions supportedDropActions() const;
+    // QMimeData *mimeData( const QList<QTableWidgetItem *> items ) const;
+    // Qt::DropActions supportedDropActions() const;
 };
 
 class QgsAttributesTree : public QTreeWidget
