@@ -17,6 +17,7 @@
 #define QGSMARKERSYMBOLLAYERV2_H
 
 #include "qgssymbollayerv2.h"
+#include "qgsvectorlayer.h"
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
 #define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)
@@ -70,6 +71,14 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QColor borderColor() const { return mBorderColor; }
     void setBorderColor( QColor color ) { mBorderColor = color; }
 
+    const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    QString dataDefinedPropertyString( const QString& property ) const;
+    void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    void removeDataDefinedProperty( const QString& property );
+    void removeDataDefinedProperties();
+
+    QSet<QString> usedAttributes() const;
+
   protected:
 
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
@@ -90,6 +99,19 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QBrush mSelBrush;
     QImage mSelCache;
     bool mUsingCache;
+
+    //data defined properties
+    QgsExpression* mNameExpression;
+    QgsExpression* mColorExpression;
+    QgsExpression* mColorBorderExpression;
+    QgsExpression* mSizeExpression;
+    QgsExpression* mAngleExpression;
+    QgsExpression* mOffsetExpression;
+
+  private:
+    //helper functions for data defined symbology
+    void prepareExpressions( const QgsVectorLayer* vl );
+    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
 };
 
 //////////

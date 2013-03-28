@@ -16,6 +16,7 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
 
+#include "qgsexpression.h"
 #include "qgsrendercontext.h"
 #include "qgslogger.h"
 #include "qgssvgcache.h"
@@ -47,6 +48,7 @@ static QPointF _rotatedOffset( const QPointF& offset, double angle )
 //////
 
 QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
+    : mNameExpression( 0 ), mColorExpression( 0 ), mColorBorderExpression( 0 ), mSizeExpression( 0 ), mAngleExpression( 0 ), mOffsetExpression( 0 )
 {
   mName = name;
   mColor = color;
@@ -88,6 +90,32 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
     m->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
   if ( props.contains( "size_unit" ) )
     m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
+
+  //data defined properties
+  if ( props.contains( "name_expression" ) )
+  {
+    m->setDataDefinedProperty( "name", props["name_expression"] );
+  }
+  if ( props.contains( "color_expression" ) )
+  {
+    m->setDataDefinedProperty( "color", props["color_expression"] );
+  }
+  if ( props.contains( "color_border_expression" ) )
+  {
+    m->setDataDefinedProperty( "color_border", props["color_border_expression"] );
+  }
+  if ( props.contains( "size_expression" ) )
+  {
+    m->setDataDefinedProperty( "size", props["size_expression"] );
+  }
+  if ( props.contains( "angle_expression" ) )
+  {
+    m->setDataDefinedProperty( "angle", props["angle_expression"] );
+  }
+  if ( props.contains( "offset_expression" ) )
+  {
+    m->setDataDefinedProperty( "offset", props["offset_expression"] );
+  }
   return m;
 }
 
@@ -124,9 +152,10 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale;
 
   // use caching only when:
-  // - the size and rotation is not data-defined
+  // - size, rotation, shape, color, border color is not data-defined
   // - drawing to screen (not printer)
-  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput();
+  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput()
+                && !mNameExpression && !mColorExpression && !mColorBorderExpression && !mSizeExpression && !mAngleExpression;
 
   // use either QPolygonF or QPainterPath for drawing
   // TODO: find out whether drawing directly doesn't bring overhead - if not, use it for all shapes
@@ -179,6 +208,8 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
     mCache = QImage();
     mSelCache = QImage();
   }
+
+  prepareExpressions( context.layer() );
 }
 
 
@@ -372,6 +403,22 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath()
   return false;
 }
 
+void QgsSimpleMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY )
+{
+  offsetX = mOffset.x();
+  offsetY = mOffset.y();
+
+  if ( mOffsetExpression )
+  {
+    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( mOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    offsetX = offset.x();
+    offsetY = offset.y();
+  }
+
+  offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+}
+
 void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
   QgsRenderContext& rc = context.renderContext();
@@ -381,11 +428,20 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     return;
   }
 
-  double offsetX = mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
-  double offsetY = mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  //offset
+  double offsetX = 0;
+  double offsetY = 0;
+  markerOffset( context, offsetX, offsetY );
   QPointF off( offsetX, offsetY );
-  if ( mAngle )
-    off = _rotatedOffset( off, mAngle );
+
+  //angle
+  double angle = mAngle;
+  if ( mAngleExpression )
+  {
+    angle = mAngleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  if ( angle )
+    off = _rotatedOffset( off, angle );
 
   if ( mUsingCache )
   {
@@ -400,8 +456,8 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   {
     QMatrix transform;
 
-    bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation;
-    bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale;
+    bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || mAngleExpression;
+    bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || mSizeExpression;
 
     // move to the desired position
     transform.translate( point.x() + off.x(), point.y() + off.y() );
@@ -409,7 +465,12 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     // resize if necessary
     if ( hasDataDefinedSize )
     {
-      double scaledSize = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
+      double scaledSize = mSize;
+      if ( mSizeExpression )
+      {
+        scaledSize = mSizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+      }
+      scaledSize *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit );
 
       switch ( mScaleMethod )
       {
@@ -425,9 +486,18 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     }
 
     // rotate if necessary
-    if ( mAngle != 0 && hasDataDefinedRotation )
+    if ( angle != 0 && hasDataDefinedRotation )
     {
-      transform.rotate( mAngle );
+      transform.rotate( angle );
+    }
+
+    if ( mColorExpression )
+    {
+      mBrush.setColor( QColor( mColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+    }
+    if ( mColorBorderExpression )
+    {
+      mPen.setColor( QColor( mColorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
     }
 
     p->setBrush( context.selected() ? mSelBrush : mBrush );
@@ -453,6 +523,32 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
+
+  //data define properties
+  if ( mNameExpression )
+  {
+    map["name_expression"] = mNameExpression->dump();
+  }
+  if ( mColorExpression )
+  {
+    map["color_expression"] = mColorExpression->dump();
+  }
+  if ( mColorBorderExpression )
+  {
+    map["color_border_expression"] = mColorBorderExpression->dump();
+  }
+  if ( mSizeExpression )
+  {
+    map["size_expression"] = mSizeExpression->dump();
+  }
+  if ( mAngleExpression )
+  {
+    map["angle_expression"] = mAngleExpression->dump();
+  }
+  if ( mOffsetExpression )
+  {
+    map["offset_expression"] = mOffsetExpression->dump();
+  }
   return map;
 }
 
@@ -462,6 +558,32 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
   m->setOffset( mOffset );
   m->setSizeUnit( mSizeUnit );
   m->setOffsetUnit( mOffsetUnit );
+
+  //data defined properties
+  if ( mNameExpression )
+  {
+    m->setDataDefinedProperty( "name", mNameExpression->dump() );
+  }
+  if ( mColorExpression )
+  {
+    m->setDataDefinedProperty( "color", mColorExpression->dump() );
+  }
+  if ( mColorBorderExpression )
+  {
+    m->setDataDefinedProperty( "color_border", mColorBorderExpression->dump() );
+  }
+  if ( mSizeExpression )
+  {
+    m->setDataDefinedProperty( "size", mSizeExpression->dump() );
+  }
+  if ( mAngleExpression )
+  {
+    m->setDataDefinedProperty( "angle", mAngleExpression->dump() );
+  }
+  if ( mOffsetExpression )
+  {
+    m->setDataDefinedProperty( "offset", mOffsetExpression->dump() );
+  }
   return m;
 }
 
@@ -553,6 +675,134 @@ QString QgsSimpleMarkerSymbolLayerV2::ogrFeatureStyle( double mmScaleFactor, dou
   return ogrString;
 }
 
+const QgsExpression* QgsSimpleMarkerSymbolLayerV2::dataDefinedProperty( const QString& property ) const
+{
+  if ( property == "name" )
+  {
+    return mNameExpression;
+  }
+  else if ( property == "color" )
+  {
+    return mColorExpression;
+  }
+  else if ( property == "color_border" )
+  {
+    return mColorBorderExpression;
+  }
+  else if ( property == "size" )
+  {
+    return mSizeExpression;
+  }
+  else if ( property == "angle" )
+  {
+    return mAngleExpression;
+  }
+  else if ( property == "offset" )
+  {
+    return mOffsetExpression;
+  }
+  return 0;
+}
+
+QString QgsSimpleMarkerSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
+{
+  const QgsExpression* ex = dataDefinedProperty( property );
+  return ex ? ex->dump() : QString();
+}
+
+void QgsSimpleMarkerSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
+{
+  if ( property == "name" )
+  {
+    delete mNameExpression; mNameExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "color" )
+  {
+    delete mColorExpression; mColorExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "color_border" )
+  {
+    delete mColorBorderExpression; mColorBorderExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "size" )
+  {
+    delete mSizeExpression; mSizeExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "angle" )
+  {
+    delete  mAngleExpression; mAngleExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "offset" )
+  {
+    delete mOffsetExpression; mOffsetExpression = new QgsExpression( expressionString );
+  }
+}
+
+void QgsSimpleMarkerSymbolLayerV2::removeDataDefinedProperty( const QString& property )
+{
+  if ( property == "name" )
+  {
+    delete mNameExpression; mNameExpression = 0;
+  }
+  else if ( property == "color" )
+  {
+    delete mColorExpression; mColorExpression = 0;
+  }
+  else if ( property == "color_border" )
+  {
+    delete mColorBorderExpression; mColorBorderExpression = 0;
+  }
+  else if ( property == "size" )
+  {
+    delete mSizeExpression; mSizeExpression = 0;
+  }
+  else if ( property == "angle" )
+  {
+    delete  mAngleExpression; mAngleExpression = 0;
+  }
+  else if ( property == "offset" )
+  {
+    delete mOffsetExpression; mOffsetExpression = 0;
+  }
+}
+
+void QgsSimpleMarkerSymbolLayerV2::removeDataDefinedProperties()
+{
+  delete mNameExpression; mNameExpression = 0;
+  delete mColorExpression; mColorExpression = 0;
+  delete mColorBorderExpression; mColorBorderExpression = 0;
+  delete mSizeExpression; mSizeExpression = 0;
+  delete mAngleExpression; mAngleExpression = 0;
+  delete mOffsetExpression; mOffsetExpression = 0;
+}
+
+QSet<QString> QgsSimpleMarkerSymbolLayerV2::usedAttributes() const
+{
+  QSet<QString> attributes;
+
+  //add data defined attributes
+  QStringList columns;
+  if ( mNameExpression )
+    columns.append( mNameExpression->referencedColumns() );
+  if ( mColorExpression )
+    columns.append( mColorExpression->referencedColumns() );
+  if ( mColorBorderExpression )
+    columns.append( mColorBorderExpression->referencedColumns() );
+  if ( mSizeExpression )
+    columns.append( mSizeExpression->referencedColumns() );
+  if ( mAngleExpression )
+    columns.append( mAngleExpression->referencedColumns() );
+  if ( mOffsetExpression )
+    columns.append( mOffsetExpression->referencedColumns() );
+
+  QStringList::const_iterator it = columns.constBegin();
+  for ( ; it != columns.constEnd(); ++it )
+  {
+    attributes.insert( *it );
+  }
+  return attributes;
+}
+
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::createFromSld( QDomElement &element )
 {
   QgsDebugMsg( "Entered." );
@@ -601,6 +851,27 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
   }
 }
 
+void QgsSimpleMarkerSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
+{
+  if ( !vl )
+  {
+    return;
+  }
+
+  const QgsFields& fields = vl->pendingFields();
+  if ( mNameExpression )
+    mNameExpression->prepare( fields );
+  if ( mColorExpression )
+    mColorExpression->prepare( fields );
+  if ( mColorBorderExpression )
+    mColorBorderExpression->prepare( fields );
+  if ( mSizeExpression )
+    mSizeExpression->prepare( fields );
+  if ( mAngleExpression )
+    mAngleExpression->prepare( fields );
+  if ( mOffsetExpression )
+    mOffsetExpression->prepare( fields );
+}
 
 //////////
 
