@@ -86,6 +86,7 @@ class SagaAlgorithm(GeoAlgorithm):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")
 
     def defineCharacteristicsFromFile(self):
+        self.hardcodedStrings = []
         lines = open(self.descriptionFile)
         line = lines.readline().strip("\n").strip()
         self.name = line
@@ -100,7 +101,9 @@ class SagaAlgorithm(GeoAlgorithm):
         self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
         while line != "":
             line = line.strip("\n").strip()
-            if line.startswith("Parameter"):
+            if line.startswith("Hardcoded"):                
+                self.hardcodedStrings.append(line[len("Harcoded|")+1:])
+            elif line.startswith("Parameter"):
                 self.addParameter(ParameterFactory.getFromString(line))
             elif line.startswith("DontResample"):
                 self.resample = False
@@ -234,21 +237,25 @@ class SagaAlgorithm(GeoAlgorithm):
             command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
         else:
             command = "lib" + self.undecoratedGroup  + " \"" + self.cmdname + "\""
-
+        
+        if self.hardcodedStrings:
+            for s in self.hardcodedStrings:
+                command += " " + s
+                                   
         for param in self.parameters:
             if param.value is None:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
                 value = param.value
                 if value in self.exportedLayers.keys():
-                    command+=(" -" + param.name + " \"" + self.exportedLayers[value] + "\"")
+                    command += (" -" + param.name + " \"" + self.exportedLayers[value] + "\"")
                 else:
-                    command+=(" -" + param.name + " \"" + value + "\"")
+                    command += (" -" + param.name + " \"" + value + "\"")
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in self.exportedLayers.keys():
                     s = s.replace(layer, self.exportedLayers[layer])
-                command+=(" -" + param.name + " \"" + s + "\"");
+                command += (" -" + param.name + " \"" + s + "\"");
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     command+=(" -" + param.name);

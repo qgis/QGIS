@@ -49,7 +49,11 @@ class LayerExporter():
         It also export to a new file if the original one contains non-ascii characters'''
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = SextanteUtils.getTempFilenameInTempFolder(os.path.basename(unicode(layer.source())) + ".shp")
+        filename = os.path.basename(unicode(layer.source()))
+        idx = filename.rfind(".")
+        if idx != -1:
+            filename = filename[:idx]
+        output = SextanteUtils.getTempFilenameInTempFolder(filename + ".shp")
         #output = SextanteUtils.getTempFilename("shp")
         provider = layer.dataProvider()
         useSelection = SextanteConfig.getSetting(SextanteConfig.USE_SELECTED)

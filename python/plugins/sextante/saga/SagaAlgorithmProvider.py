@@ -80,7 +80,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                     else:
                         SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
                 except Exception,e:
-                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
+                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile +"\n" + str(e))
         self.preloadedAlgs.append(SplitRGBBands())
 
     def _loadAlgorithms(self):
