@@ -15,12 +15,17 @@
 #ifndef QGSLABELPREVIEW_H
 #define QGSLABELPREVIEW_H
 
+#include "qgspallabeling.h"
+
 #include <QLabel>
+
+class QgsRenderContext;
 
 class QgsLabelPreview : public QLabel
 {
   public:
     QgsLabelPreview( QWidget* parent = NULL );
+    ~QgsLabelPreview();
 
     void setTextColor( QColor color );
 
@@ -32,12 +37,12 @@ class QgsLabelPreview : public QLabel
     void paintEvent( QPaintEvent* e );
 
   private:
-    double mBufferSize;
-    QColor mBufferColor;
-    Qt::PenJoinStyle mBufferJoinStyle;
-    bool mBufferNoFill;
+    QgsPalLayerSettings* mTmpLyr;
     QColor mTextColor;
     QFont mFont;
+
+    // device-based render context
+    QgsRenderContext* mContext;
 };
 
 #endif // LABELPREVIEW_H

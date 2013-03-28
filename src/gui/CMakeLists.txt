@@ -34,6 +34,7 @@ symbology-ng/qgsellipsesymbollayerv2widget.cpp
 symbology-ng/qgspointdisplacementrendererwidget.cpp
 symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
 symbology-ng/qgssymbolslistwidget.cpp
+symbology-ng/qgssvgselectorwidget.cpp
 symbology-ng/qgslayerpropertieswidget.cpp
 symbology-ng/qgssmartgroupeditordialog.cpp
 
@@ -158,6 +159,7 @@ symbology-ng/qgsellipsesymbollayerv2widget.h
 symbology-ng/qgspointdisplacementrendererwidget.h
 symbology-ng/qgsvectorfieldsymbollayerwidget.h
 symbology-ng/qgssymbolslistwidget.h
+symbology-ng/qgssvgselectorwidget.h
 symbology-ng/qgslayerpropertieswidget.h
 symbology-ng/qgssmartgroupeditordialog.h
 

@@ -105,6 +105,17 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      */
     void setAcceptLiveUpdates( bool accept ) { mAcceptLiveUpdates = accept; }
 
+  public slots:
+    /**
+     * Sets the background pixmap for the button based upon set color and transparency.
+     * Call directly to update background after adding/removing QColorDialog::ShowAlphaChannel option
+     * but the color has not changed, i.e. setColor() wouldn't update button and
+     * you want the button to retain the set color's alpha component regardless
+     *
+     * @note added in 1.9
+     */
+    void setButtonBackground();
+
   signals:
     /**
      * Is emitted, whenever a new color is accepted. The color is always valid.
@@ -132,13 +143,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
 
   private slots:
     void onButtonClicked();
-
-    /**
-     * Sets the background pixmap for the button based upon set color and transparency.
-     *
-     * @note added in 1.9
-     */
-    void setButtonBackground();
 
     /**
      * Sets color for button, if valid.

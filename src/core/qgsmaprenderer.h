@@ -252,7 +252,11 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
 
     //! Returns a QPainter::CompositionMode corresponding to a BlendMode
+    //! Added in 1.9
     static QPainter::CompositionMode getCompositionMode( const QgsMapRenderer::BlendMode blendMode );
+    //! Returns a BlendMode corresponding to a QPainter::CompositionMode
+    //! Added in 1.9
+    static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
 
   signals:
 
@@ -347,7 +351,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
   private:
     const QgsCoordinateTransform* tr( QgsMapLayer *layer );
-
 };
 
 #endif

@@ -87,6 +87,26 @@ class QgsMapRenderer : QObject
       //MAP_UNITS probably supported in future versions
     };
 
+    /** Blending modes enum defining the available composition modes that can
+     * be used when rendering a layer
+     */
+    enum BlendMode
+    {
+      BlendNormal,
+      BlendLighten,
+      BlendScreen,
+      BlendDodge,
+      BlendAddition,
+      BlendDarken,
+      BlendMultiply,
+      BlendBurn,
+      BlendOverlay,
+      BlendSoftLight,
+      BlendHardLight,
+      BlendDifference,
+      BlendSubtract
+    };
+
     //! constructor
     QgsMapRenderer();
 

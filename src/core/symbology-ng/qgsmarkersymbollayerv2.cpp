@@ -998,7 +998,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   }
 
   if ( props.contains( "size_unit" ) )
-    m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( "size_unit" ) );
+    m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
   if ( props.contains( "offset_unit" ) )

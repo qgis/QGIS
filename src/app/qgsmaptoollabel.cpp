@@ -260,7 +260,8 @@ QFont QgsMapToolLabel::labelFontCurrentFeature()
       {
         if ( layerSettings.fontSizeInMapUnits )
         {
-          font.setPixelSize( layerSettings.sizeToPixel( f.attribute( *sizeIt ).toDouble(), QgsRenderContext() ) );
+          font.setPixelSize( layerSettings.sizeToPixel( f.attribute( *sizeIt ).toDouble(),
+                             QgsRenderContext(), QgsPalLayerSettings::MapUnits, true ) );
         }
         else
         {

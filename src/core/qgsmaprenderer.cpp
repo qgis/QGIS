@@ -1191,4 +1191,40 @@ QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRender
   }
 }
 
+QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::CompositionMode blendMode )
+{
+  // Map QPainter::CompositionMode to QgsMapRenderer::BlendNormal
+  switch ( blendMode )
+  {
+    case QPainter::CompositionMode_SourceOver:
+      return QgsMapRenderer::BlendNormal;
+    case QPainter::CompositionMode_Lighten:
+      return QgsMapRenderer::BlendLighten;
+    case QPainter::CompositionMode_Screen:
+      return QgsMapRenderer::BlendScreen;
+    case QPainter::CompositionMode_ColorDodge:
+      return QgsMapRenderer::BlendDodge;
+    case QPainter::CompositionMode_Plus:
+      return QgsMapRenderer::BlendAddition;
+    case QPainter::CompositionMode_Darken:
+      return QgsMapRenderer::BlendDarken;
+    case QPainter::CompositionMode_Multiply:
+      return QgsMapRenderer::BlendMultiply;
+    case QPainter::CompositionMode_ColorBurn:
+      return QgsMapRenderer::BlendBurn;
+    case QPainter::CompositionMode_Overlay:
+      return QgsMapRenderer::BlendOverlay;
+    case QPainter::CompositionMode_SoftLight:
+      return QgsMapRenderer::BlendSoftLight;
+    case QPainter::CompositionMode_HardLight:
+      return QgsMapRenderer::BlendHardLight;
+    case QPainter::CompositionMode_Difference:
+      return QgsMapRenderer::BlendDifference;
+    case QPainter::CompositionMode_Exclusion:
+      return QgsMapRenderer::BlendSubtract;
+    default:
+      return QgsMapRenderer::BlendNormal;
+  }
+}
+
 bool QgsMapRenderer::mDrawing = false;
