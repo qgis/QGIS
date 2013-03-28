@@ -710,6 +710,10 @@ QSet<QString> QgsMarkerLineSymbolLayerV2::usedAttributes() const
   {
     attributes.insert( *it );
   }
+  if ( mMarker )
+  {
+    attributes.unite( mMarker->usedAttributes() );
+  }
   return attributes;
 }
 
@@ -791,7 +795,7 @@ void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
     hints |= QgsSymbolV2::DataDefinedSizeScale;
   mMarker->setRenderHints( hints );
 
-  mMarker->startRender( context.renderContext() );
+  mMarker->startRender( context.renderContext(), context.layer() );
 
   //prepare expressions for data defined properties
   prepareExpressions( context.layer() );
