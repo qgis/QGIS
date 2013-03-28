@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-import shutil
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,6 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import shutil
 import os, sys
 import inspect
 from PyQt4.QtCore import *
@@ -32,19 +32,16 @@ from qgis.core import *
 from sextante.core.Sextante import Sextante
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
-
 from sextante.gui.SextanteToolbox import SextanteToolbox
 from sextante.gui.HistoryDialog import HistoryDialog
 from sextante.gui.ConfigDialog import ConfigDialog
 from sextante.gui.ResultsDialog import ResultsDialog
-
 from sextante.modeler.ModelerDialog import ModelerDialog
-
 import sextante.resources_rc
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
 if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
+    sys.path.insert(0, cmd_folder)    
 
 class SextantePlugin:
 
