@@ -13967,7 +13967,7 @@ Base de dados:%2</translation>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="47"/>
         <source>&amp;Delete</source>
-        <translation>&amp;Excluir</translation>
+        <translation>&amp;Eliminar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="48"/>
@@ -17921,12 +17921,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="103"/>
         <source>Delete Projection Definition?</source>
-        <translation type="unfinished">Excluir definição de projeção?</translation>
+        <translation>Apagar definição de projeção?</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="104"/>
         <source>Deleting a projection definition is not reversable. Do you want to delete it?</source>
-        <translation type="unfinished">Excluir a definição de projeção é irreversível. Quer mesmo excluir?</translation>
+        <translation>Apagar a definição de projeção é irreversível. Quer mesmo apagá-la?</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="351"/>
@@ -20622,7 +20622,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialog.cpp" line="54"/>
         <source>Are you sure that you want to delete this device?</source>
-        <translation>Tem a certeza que deseja excluir este dispositivo?</translation>
+        <translation>Tem a certeza que deseja eliminar este dispositivo?</translation>
     </message>
 </context>
 <context>
@@ -21155,7 +21155,7 @@ Erros: %2</translation>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="43"/>
         <source>&amp;Add feature</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Adiciona elemento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="68"/>
@@ -21810,7 +21810,7 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="169"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="315"/>
         <source>Feature type</source>
-        <translation type="unfinished">Tipo de feição</translation>
+        <translation type="unfinished">Tipo de elementos</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="189"/>
@@ -23132,7 +23132,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="189"/>
         <source>Delete class</source>
-        <translation type="unfinished">Excluir classe</translation>
+        <translation>Apagar classe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="209"/>
@@ -23223,7 +23223,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributesbase.ui" line="238"/>
         <source>Delete selected category</source>
-        <translation>Excluir a categoria selecionada</translation>
+        <translation>Apagar categoria selecionada</translation>
     </message>
 </context>
 <context>
@@ -23296,9 +23296,9 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="437"/>
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation type="unfinished">
-            <numerusform>Você tem certeza que deseja excluir %n a camada selecionada?</numerusform>
-            <numerusform>Você tem certeza que deseja excluir %n as camadas selecionadas?</numerusform>
+        <translation>
+            <numerusform>Tem a certeza que deseja eliminar a camada selecionada?</numerusform>
+            <numerusform>Tem a certeza que deseja eliminar as %n camadas selecionadas?</numerusform>
         </translation>
     </message>
     <message>
@@ -23332,7 +23332,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="475"/>
         <source>Cannot delete map %1</source>
-        <translation type="unfinished">Impossível excluir o mapa %1</translation>
+        <translation type="unfinished">Impossível eliminar o mapa %1</translation>
     </message>
 </context>
 <context>
@@ -23445,7 +23445,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1427"/>
         <source>Orphan record was left in attribute table. &lt;br&gt;Delete the record?</source>
-        <translation type="unfinished">Registro órfão ficou solto na tabela de atributos. &lt;br&gt; Excluir o registro?</translation>
+        <translation type="unfinished">Registro órfão ficou solto na tabela de atributos. &lt;br&gt; Eliminar o registro?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1438"/>
@@ -28415,7 +28415,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="261"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
-        <translation type="unfinished">A feição não pode ser adicionada porque remover interseções de polígono poderiam mudar o tipo de geometria</translation>
+        <translation>O elemento não pode ser adicionado porque remover interseções do polígono iria mudar o tipo de geometria</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="269"/>
@@ -28508,7 +28508,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="62"/>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="189"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
-        <translation type="unfinished">Sem feição selecionada. Selecione uma feição com a ferramenta de seleção ou na tabela de atributos</translation>
+        <translation>Nenhum elemento selecionado. Selecione um elemento com a ferramenta de seleção ou na tabela de atributos</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="66"/>
@@ -28554,7 +28554,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="193"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
-        <translation type="unfinished">Muitas feições foram selecionadas. Selecione apenas uma feição para que uma ilha seja adicionada.</translation>
+        <translation>Vários elementos estão selecionados. Selecione apenas um elemento no qual será adicionada uma ilha.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="197"/>
@@ -28627,7 +28627,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="102"/>
         <source>The inserted Ring is not contained in a feature</source>
-        <translation type="unfinished">O Anel inserido não está contido na feição</translation>
+        <translation>O Anel inserido não é contido por nenhum elemento</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="106"/>
@@ -28675,22 +28675,22 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="103"/>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="118"/>
         <source>Delete part</source>
-        <translation type="unfinished">Exclui parte</translation>
+        <translation>Apagar parte</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="103"/>
         <source>This isn&apos;t a multipart geometry.</source>
-        <translation type="unfinished">Esta não é uma geometria multiparte.</translation>
+        <translation>Esta não é uma geometria multiparte.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="111"/>
         <source>Part of multipart feature deleted</source>
-        <translation type="unfinished">Parte da feição multiparte excluída</translation>
+        <translation>Parte do elemento multiparte apagada</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="118"/>
         <source>Couldn&apos;t remove the selected part.</source>
-        <translation type="unfinished">Impossível remover a parte selecionada.</translation>
+        <translation>Não foi possível remover a parte selecionada.</translation>
     </message>
 </context>
 <context>
@@ -28805,12 +28805,12 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="304"/>
         <source>feature id</source>
-        <translation type="unfinished">feição id</translation>
+        <translation>ID do elemento</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="304"/>
         <source>new feature</source>
-        <translation type="unfinished">nova feição</translation>
+        <translation>novo elemento</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="342"/>
@@ -28820,7 +28820,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="362"/>
         <source>Feature info</source>
-        <translation type="unfinished">Informação da feição</translation>
+        <translation>Informação do elemento</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="371"/>
@@ -28843,7 +28843,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="156"/>
         <source>Feature moved</source>
-        <translation type="unfinished">Feição movida</translation>
+        <translation>Elemento movido</translation>
     </message>
 </context>
 <context>
@@ -28876,7 +28876,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/nodetool/qgsmaptoolnodetool.cpp" line="655"/>
         <source>Inserted vertex</source>
-        <translation type="unfinished">Vértice inserido</translation>
+        <translation>Vértice inserido</translation>
     </message>
 </context>
 <context>
@@ -28966,27 +28966,27 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="94"/>
         <source>No point feature</source>
-        <translation type="unfinished">Sem feição de ponto</translation>
+        <translation>Nenhum elemento do tipo ponto</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="94"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation type="unfinished">Feição de ponto não encontrada na posição clicada. Clique mais próximo da feição ou aumente a tolerância em Arquivo &gt; Propriedades do projeto&gt; Geral &gt; Digitalizar &gt; Opções de ajuste para editar vértices</translation>
+        <translation>Não foi encontrado nenhum elemento do tipo ponto na posição clicada. Clique mais próximo do elemento ou aumente a tolerância em Configurações &gt; Opções &gt; Digitalizar &gt; Raio de pesquisa para edição de vértices</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="108"/>
         <source>No rotation Attributes</source>
-        <translation type="unfinished">Sem atributos de rotação</translation>
+        <translation>Sem atributos de rotação</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="108"/>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation type="unfinished">A camada de pontos ativa não possui um atributo de rotação</translation>
+        <translation>A camada de pontos ativa não possui um atributo de rotação</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="189"/>
         <source>Rotate symbol</source>
-        <translation type="unfinished">Rotacionar símbolo</translation>
+        <translation>Rodar símbolo</translation>
     </message>
 </context>
 <context>
@@ -29037,12 +29037,12 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="285"/>
         <source>Multipart features are not supported for simplification.</source>
-        <translation type="unfinished">Feições multiparte não são suportadas para simplificação.</translation>
+        <translation type="unfinished">Elementos multiparte não são suportados para simplificação.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="302"/>
         <source>This feature cannot be simplified. Check if feature has enough vertices to be simplified.</source>
-        <translation type="unfinished">Esta feição não pode ser simplificada. Verifique se a feição tem vértices suficientes para ser simplificada.</translation>
+        <translation>Este elemento não pode ser simplificado. Verifique se o elemento tem vértices suficientes para ser simplificado.</translation>
     </message>
 </context>
 <context>
@@ -29514,7 +29514,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="473"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="526"/>
         <source>feature %1</source>
-        <translation type="unfinished">feição %1</translation>
+        <translation>elemento %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="150"/>
@@ -29570,17 +29570,17 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="14"/>
         <source>Merge feature attributes</source>
-        <translation type="unfinished">Mescla feições de atributos</translation>
+        <translation>Juntar atributos dos elementos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="38"/>
         <source>Take attributes from selected feature</source>
-        <translation type="unfinished">Pega atributos de uma feição selecionada</translation>
+        <translation>Usar atributos do elemento selecionado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="72"/>
         <source>Remove feature from selection</source>
-        <translation type="unfinished">Remove feição da seleção</translation>
+        <translation>Remover elemento da seleção</translation>
     </message>
 </context>
 <context>
@@ -30747,7 +30747,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="397"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished">Excluir atributo selecionado</translation>
+        <translation>Apagar atributo selecionado</translation>
     </message>
     <message>
         <source>Remove selected attribute</source>
@@ -32560,7 +32560,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1590"/>
         <source>Search radius for identifying features and displaying map tips</source>
-        <translation type="unfinished">Estabelecer um raio para identificar feições e mostrar no mapa</translation>
+        <translation>Raio de pesquisa para identificar elementos e mostrar dicas do mapa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1786"/>
@@ -32580,7 +32580,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2094"/>
         <source>Default snap mode</source>
-        <translation type="unfinished">Modo de atração padrão</translation>
+        <translation>Modo de ressalto por defeito</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2221"/>
@@ -32600,7 +32600,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2326"/>
         <source>Validate geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Valida geometrias</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2336"/>
@@ -32686,7 +32686,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2734"/>
         <source>User</source>
-        <translation type="unfinished">Usuário</translation>
+        <translation>Utilizador</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2741"/>
@@ -32727,7 +32727,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2306"/>
         <source>Suppress attributes pop-up windows after each created feature</source>
-        <translation type="unfinished">Suprimir atributos de janelas pop-up depois de cada feição criada</translation>
+        <translation>Desligar pop-up do formulário de atributos depois de criar cada elemento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2765"/>
@@ -32806,7 +32806,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2015"/>
         <source>Digitizing</source>
-        <translation type="unfinished">Digitalizar</translation>
+        <translation>Digitalizar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="567"/>
@@ -32896,12 +32896,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="595"/>
         <source>Open snapping options  in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir opções de ressalto em janela acoplada (requer reiniciar o QGIS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="602"/>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir tabela de atributos em janela acoplada (requer reiniciar o QGIS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="616"/>
@@ -33090,7 +33090,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1623"/>
         <source>Open feature form, if a single feature is identified</source>
-        <translation type="unfinished">Abre formulário de feição, se uma feição simples for identificada</translation>
+        <translation>Abre formulário de elemento, se apenas um elemento for identificado</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1813"/>
@@ -33160,12 +33160,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2111"/>
         <source>Default snapping tolerance</source>
-        <translation type="unfinished">Tolerância de atração padrão</translation>
+        <translation>Tolerância de ressalto por defeito</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2128"/>
         <source>Search radius for vertex edits</source>
-        <translation type="unfinished">Encontrar raio para editar vértice</translation>
+        <translation>Raio de pesquisa para editação de vértices</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2277"/>
@@ -33180,7 +33180,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2316"/>
         <source>Reuse last entered attribute values</source>
-        <translation type="unfinished"></translation>
+        <translation>Reutilizar últimos valores de atributos introduzidos</translation>
     </message>
     <message>
         <source>Default Coordinate Reference System</source>
@@ -41688,7 +41688,7 @@ CRS of map is %1.
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="698"/>
         <source>Zoom to feature</source>
-        <translation type="unfinished">Aproximar à feição</translation>
+        <translation>Aproximar ao elemento</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="737"/>
@@ -41765,7 +41765,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="74"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="144"/>
         <source>Selected feature(s) only</source>
-        <translation type="unfinished">Apenas feição(ões) selecionada(s)</translation>
+        <translation>Apenas elemento(s) selecionado(s)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="60"/>
@@ -42179,7 +42179,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="49"/>
         <source>Feature Class</source>
-        <translation type="unfinished">Classe da Feição</translation>
+        <translation>Classe do Elemento</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="49"/>
@@ -49708,7 +49708,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="281"/>
         <source>An invalid feature was received during initialization</source>
-        <translation type="unfinished">Uma feição inválida foi recebida durante a inicialização</translation>
+        <translation type="unfinished">Um elemento inválido foi recebido durante a inicialização</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="316"/>
