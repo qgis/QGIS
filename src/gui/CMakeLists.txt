@@ -50,6 +50,7 @@ qgisinterface.cpp
 qgsannotationitem.cpp
 qgsattributeeditor.cpp
 qgsattributedialog.cpp
+qgsbusyindicatordialog.cpp
 qgslegendinterface.cpp
 qgsblendmodecombobox.cpp
 qgscharacterselectdialog.cpp
@@ -170,6 +171,7 @@ attributetable/qgsdualview.h
 qgsattributedialog.h
 qgsattributeeditor.h
 qgsblendmodecombobox.h
+qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscolordialog.h
 qgscomposerview.h
@@ -222,6 +224,7 @@ QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
+qgsbusyindicatordialog.h
 qgscharacterselectdialog.h
 qgscolordialog.h
 qgscursors.h

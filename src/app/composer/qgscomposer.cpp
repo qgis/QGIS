@@ -20,6 +20,7 @@
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsbusyindicatordialog.h"
 #include "qgscomposerruler.h"
 #include "qgscomposerview.h"
 #include "qgscomposition.h"
@@ -520,24 +521,6 @@ void QgsComposer::setTitle( const QString& title )
   {
     mWindowAction->setText( title );
   }
-}
-
-QDialog* QgsComposer::busyIndicatorDialog( const QString& message, QWidget* parent )
-{
-  QDialog* dlg = new QDialog( parent );
-  dlg->setLayout( new QVBoxLayout() );
-  dlg->setWindowModality( Qt::WindowModal );
-  dlg->setAttribute( Qt::WA_DeleteOnClose );
-  dlg->setMinimumWidth( 250 );
-  if ( !message.isEmpty() )
-  {
-    dlg->layout()->addWidget( new QLabel( message ) );
-  }
-  QProgressBar* pb = new QProgressBar();
-  pb->setMaximum( 0 ); // show as busy indicator
-  dlg->layout()->addWidget( pb );
-
-  return dlg;
 }
 
 void QgsComposer::showItemOptions( QgsComposerItem* item )
@@ -1412,11 +1395,16 @@ void QgsComposer::on_mActionDuplicateComposer_triggered()
   }
 
   // provide feedback, since loading of template into duplicate composer will be hidden
-  QDialog* dlg = busyIndicatorDialog( tr( "Duplicating composer..." ), this );
+  QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer..." ) );
+  dlg->setStyleSheet( mQgis->styleSheet() );
   dlg->show();
 
   QgsComposer* newComposer = mQgis->duplicateComposer( this, newTitle );
-  dlg->close();
+
+  if ( dlg ) // user may have already closed busy indicator
+  {
+    dlg->close();
+  }
 
   if ( !newComposer )
   {
@@ -1531,7 +1519,7 @@ void QgsComposer::loadTemplate( bool newCompser )
     if ( templateDoc.setContent( &templateFile ) )
     {
       // provide feedback, since composer will be hidden when loading template (much faster)
-      QDialog* dlg = busyIndicatorDialog( tr( "Loading template into composer..." ), 0 );
+      QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ) );
       dlg->setStyleSheet( mQgis->styleSheet() );
       dlg->show();
 
@@ -1539,7 +1527,10 @@ void QgsComposer::loadTemplate( bool newCompser )
       comp->loadFromTemplate( templateDoc, 0, false );
       c->activate();
 
-      dlg->close();
+      if ( dlg ) // user may have already closed busy indicator
+      {
+        dlg->close();
+      }
     }
   }
 }
