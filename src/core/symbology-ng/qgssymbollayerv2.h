@@ -32,6 +32,7 @@ class QPainter;
 class QSize;
 class QPolygonF;
 
+class QgsExpression;
 class QgsRenderContext;
 
 class CORE_EXPORT QgsSymbolLayerV2
@@ -78,6 +79,12 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     // symbol layers normally only use additional attributes to provide data defined settings
     virtual QSet<QString> usedAttributes() const { return QSet<QString>(); }
+
+    virtual const QgsExpression* dataDefinedProperty( const QString& property ) const { Q_UNUSED( property ); return 0; } //= 0;
+    virtual QString dataDefinedPropertyString( const QString& property ) const { Q_UNUSED( property ); return QString(); } //= 0;
+    virtual void setDataDefinedProperty( const QString& property, const QString& expressionString ) { Q_UNUSED( property ); Q_UNUSED( expressionString ); } //=0;
+    virtual void removeDataDefinedProperty( const QString& property ) { Q_UNUSED( property ); } //=0;
+    virtual void removeDataDefinedProperties() {} //=0;
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )

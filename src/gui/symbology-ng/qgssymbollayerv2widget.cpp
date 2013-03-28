@@ -646,6 +646,37 @@ void QgsMarkerLineSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChange
   emit changed();
 }
 
+void QgsMarkerLineSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QMap<QString, QPair< QString, QString> > dataDefinedProperties;
+  dataDefinedProperties.insert( "interval", qMakePair( tr( "Interval" ), mLayer->dataDefinedPropertyString( "interval" ) ) );
+  dataDefinedProperties.insert( "offset", qMakePair( tr( "Line offset" ), mLayer->dataDefinedPropertyString( "offset" ) ) );
+  dataDefinedProperties.insert( "placement", qMakePair( tr( "Placement" ), mLayer->dataDefinedPropertyString( "placement" ) ) );
+
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //empty all existing properties first
+    mLayer->removeDataDefinedProperties();
+
+    QMap<QString, QString> properties = d.dataDefinedProperties();
+    QMap<QString, QString>::const_iterator it = properties.constBegin();
+    for ( ; it != properties.constEnd(); ++it )
+    {
+      if ( !it.value().isEmpty() )
+      {
+        mLayer->setDataDefinedProperty( it.key(), it.value() );
+      }
+    }
+    emit changed();
+  }
+}
+
 ///////////
 
 

@@ -203,10 +203,18 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    QString dataDefinedPropertyString( const QString& property ) const;
+    void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    void removeDataDefinedProperty( const QString& property );
+    void removeDataDefinedProperties();
+
+    QSet<QString> usedAttributes() const;
+
   protected:
 
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
-    void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context, Placement placement = Vertex );
     void renderPolylineCentral( const QPolygonF& points, QgsSymbolV2RenderContext& context );
 
     bool mRotateMarker;
@@ -216,6 +224,15 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     double mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
     Placement mPlacement;
+
+    //data defined properties
+    QgsExpression* mIntervalExpression;
+    QgsExpression* mOffsetExpression;
+    QgsExpression* mPlacementExpression;
+
+  private:
+    //helper functions for data defined symbology
+    void prepareExpressions( const QgsVectorLayer* vl );
 };
 
 /////////

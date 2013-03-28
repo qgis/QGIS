@@ -612,7 +612,7 @@ class MyLine
 };
 
 
-QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, double interval )
+QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, double interval ): mIntervalExpression( 0 ), mOffsetExpression( 0 ), mPlacementExpression( 0 )
 {
   mRotateMarker = rotateMarker;
   mInterval = interval;
@@ -628,6 +628,89 @@ QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, doubl
 QgsMarkerLineSymbolLayerV2::~QgsMarkerLineSymbolLayerV2()
 {
   delete mMarker;
+}
+
+const QgsExpression* QgsMarkerLineSymbolLayerV2::dataDefinedProperty( const QString& property ) const
+{
+  if ( property == "interval" )
+  {
+    return mIntervalExpression;
+  }
+  else if ( property == "offset" )
+  {
+    return mOffsetExpression;
+  }
+  else if ( property == "placement" )
+  {
+    return mPlacementExpression;
+  }
+  return 0;
+}
+
+QString QgsMarkerLineSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
+{
+  const QgsExpression* ex = dataDefinedProperty( property );
+  return ex ? ex->dump() : QString();
+}
+
+void QgsMarkerLineSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
+{
+  if ( property == "interval" )
+  {
+    delete mIntervalExpression; mIntervalExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "offset" )
+  {
+    delete mOffsetExpression; mOffsetExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "placement" )
+  {
+    delete mPlacementExpression; mPlacementExpression = new QgsExpression( expressionString );
+  }
+}
+
+void QgsMarkerLineSymbolLayerV2::removeDataDefinedProperty( const QString& property )
+{
+  if ( property == "interval" )
+  {
+    delete mIntervalExpression; mIntervalExpression = 0;
+  }
+  else if ( property == "offset" )
+  {
+    delete mOffsetExpression; mOffsetExpression = 0;
+  }
+  else if ( property == "placement" )
+  {
+    delete mPlacementExpression; mPlacementExpression = 0;
+  }
+}
+
+void QgsMarkerLineSymbolLayerV2::removeDataDefinedProperties()
+{
+  delete mIntervalExpression; mIntervalExpression = 0;
+  delete mOffsetExpression; mOffsetExpression = 0;
+  delete mPlacementExpression; mPlacementExpression = 0;
+}
+
+QSet<QString> QgsMarkerLineSymbolLayerV2::usedAttributes() const
+{
+  QSet<QString> attributes;
+
+  //add data defined attributes
+  QStringList columns;
+  if ( mIntervalExpression )
+    columns.append( mIntervalExpression->referencedColumns() );
+  if ( mOffsetExpression )
+    columns.append( mOffsetExpression->referencedColumns() );
+  if ( mPlacementExpression )
+    columns.append( mPlacementExpression->referencedColumns() );
+
+  QStringList::const_iterator it = columns.constBegin();
+  for ( ; it != columns.constEnd(); ++it )
+  {
+    attributes.insert( *it );
+  }
+  return attributes;
 }
 
 QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props )
@@ -667,6 +750,21 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props 
     else
       x->setPlacement( Interval );
   }
+
+  //data defined properties
+  if ( props.contains( "interval_expression" ) )
+  {
+    x->setDataDefinedProperty( "interval", props["interval_expression"] );
+  }
+  if ( props.contains( "offset_expression" ) )
+  {
+    x->setDataDefinedProperty( "offset", props["offset_expression"] );
+  }
+  if ( props.contains( "placement_expression" ) )
+  {
+    x->setDataDefinedProperty( "placement", props["placement_expression"] );
+  }
+
   return x;
 }
 
@@ -694,6 +792,9 @@ void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mMarker->setRenderHints( hints );
 
   mMarker->startRender( context.renderContext() );
+
+  //prepare expressions for data defined properties
+  prepareExpressions( context.layer() );
 }
 
 void QgsMarkerLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -703,24 +804,56 @@ void QgsMarkerLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 
 void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
-  if ( mOffset == 0 )
+  double offset = mOffset;
+  if ( mOffsetExpression )
   {
-    if ( mPlacement == Interval )
+    offset = mOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+
+  Placement placement = mPlacement;
+  if ( mPlacementExpression )
+  {
+    QString placementString = mPlacementExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    if ( placementString.compare( "vertex", Qt::CaseInsensitive ) == 0 )
+    {
+      placement = Vertex;
+    }
+    else if ( placementString.compare( "lastvertex", Qt::CaseInsensitive ) == 0 )
+    {
+      placement = LastVertex;
+    }
+    else if ( placementString.compare( "firstvertex", Qt::CaseInsensitive ) == 0 )
+    {
+      placement = FirstVertex;
+    }
+    else if ( placementString.compare( "centerpoint", Qt::CaseInsensitive ) == 0 )
+    {
+      placement = CentralPoint;
+    }
+    else
+    {
+      placement = Interval;
+    }
+  }
+
+  if ( offset == 0 )
+  {
+    if ( placement == Interval )
       renderPolylineInterval( points, context );
-    else if ( mPlacement == CentralPoint )
+    else if ( placement == CentralPoint )
       renderPolylineCentral( points, context );
     else
-      renderPolylineVertex( points, context );
+      renderPolylineVertex( points, context, placement );
   }
   else
   {
-    QPolygonF points2 = ::offsetLine( points, mOffset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
-    if ( mPlacement == Interval )
+    QPolygonF points2 = ::offsetLine( points, offset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit ) );
+    if ( placement == Interval )
       renderPolylineInterval( points2, context );
-    else if ( mPlacement == CentralPoint )
+    else if ( placement == CentralPoint )
       renderPolylineCentral( points2, context );
     else
-      renderPolylineVertex( points2, context );
+      renderPolylineVertex( points2, context, placement );
   }
 }
 
@@ -735,7 +868,16 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
   double origAngle = mMarker->angle();
 
   QgsRenderContext& rc = context.renderContext();
-  double interval = mInterval > 0 ? mInterval : 0.1;
+  double interval = mInterval;
+  if ( mIntervalExpression )
+  {
+    interval = mIntervalExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  if ( !interval > 0 )
+  {
+    interval = 0.1;
+  }
+
   double painterUnitInterval = interval * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, mIntervalUnit );
 
   for ( int i = 1; i < points.count(); ++i )
@@ -796,7 +938,7 @@ static double _averageAngle( const QPointF& prevPt, const QPointF& pt, const QPo
   return atan2( unitY, unitX );
 }
 
-void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context )
+void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, QgsSymbolV2RenderContext& context, Placement placement )
 {
   if ( points.isEmpty() )
     return;
@@ -808,12 +950,12 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
   int i, maxCount;
   bool isRing = false;
 
-  if ( mPlacement == FirstVertex )
+  if ( placement == FirstVertex )
   {
     i = 0;
     maxCount = 1;
   }
-  else if ( mPlacement == LastVertex )
+  else if ( placement == LastVertex )
   {
     i = points.count() - 1;
     maxCount = points.count();
@@ -955,6 +1097,19 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   else
     map["placement"] = "interval";
 
+  if ( mIntervalExpression )
+  {
+    map["interval_expression"] = mIntervalExpression->dump();
+  }
+  if ( mOffsetExpression )
+  {
+    map["offset_expression"] = mOffsetExpression->dump();
+  }
+  if ( mPlacementExpression )
+  {
+    map["placement_expression"] = mPlacementExpression->dump();
+  }
+
   return map;
 }
 
@@ -985,6 +1140,21 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
   x->setPlacement( mPlacement );
   x->setOffsetUnit( mOffsetUnit );
   x->setIntervalUnit( mIntervalUnit );
+
+  //data defined properties
+  if ( mIntervalExpression )
+  {
+    x->setDataDefinedProperty( "interval", mIntervalExpression->dump() );
+  }
+  if ( mOffsetExpression )
+  {
+    x->setDataDefinedProperty( "offset", mOffsetExpression->dump() );
+  }
+  if ( mPlacementExpression )
+  {
+    x->setDataDefinedProperty( "placement", mPlacementExpression->dump() );
+  }
+
   return x;
 }
 
@@ -1162,6 +1332,22 @@ QgsSymbolV2::OutputUnit QgsMarkerLineSymbolLayerV2::outputUnit() const
   return unit;
 }
 
+void QgsMarkerLineSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
+{
+  if ( !vl )
+  {
+    return;
+  }
+
+  const QgsFields& fields = vl->pendingFields();
+  if ( mIntervalExpression )
+    mIntervalExpression->prepare( fields );
+  if ( mOffsetExpression )
+    mOffsetExpression->prepare( fields );
+  if ( mPlacementExpression )
+    mPlacementExpression->prepare( fields );
+}
+
 /////////////
 
 QgsLineDecorationSymbolLayerV2::QgsLineDecorationSymbolLayerV2( QColor color, double width )
@@ -1191,7 +1377,6 @@ QgsSymbolLayerV2* QgsLineDecorationSymbolLayerV2::create( const QgsStringMap& pr
     layer->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["width_unit"] ) );
   }
   return layer;
-
 }
 
 QString QgsLineDecorationSymbolLayerV2::layerType() const
