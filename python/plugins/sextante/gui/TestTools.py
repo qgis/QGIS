@@ -54,11 +54,12 @@ def createTest(text):
     i = -1 * len(alg.outputs)
     for out in alg.outputs:
         filename = tokens[i][1:-1]
-        if (filename == str(None)):
-            raise Exception("Cannot create unit test for that algorithm execution.\nThe output cannot be a temporary file")
+        if (tokens[i] == str(None)):
+            QtGui.QMessageBox.critical(None, "Error", "Cannot create unit test for that algorithm execution.\nThe output cannot be a temporary file")
+            return
         s+="\toutput=outputs['" + out.name + "']\n"
         if isinstance(out, (OutputNumber, OutputString)):
-            s+="self.assertTrue(" + str(out) + ", output)\n"
+            s+="self.assertTrue(" + str(out) + ", output.value)\n"
         if isinstance(out, OutputRaster):
             dataset = gdal.Open(filename, GA_ReadOnly)
             strhash = hash(str(dataset.ReadAsArray(0).tolist()))

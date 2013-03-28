@@ -16,12 +16,14 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import traceback
 import copy
 import os.path
 import codecs
@@ -121,7 +123,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if param:
                         self.parameters.append(param)
                     else:
-                        raise WrongModelException("Error in line: " + line)
+                        raise WrongModelException("Error in parameter line: " + line)
                     line = lines.readline().strip("\n")
                     tokens = line.split(",")
                     self.paramPos.append(QtCore.QPointF(float(tokens[0]), float(tokens[1])))
@@ -138,7 +140,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     algOutputs={}
                     algLine = line[len("ALGORITHM:"):]
                     alg = ModelerUtils.getAlgorithm(algLine)
-                    if alg:
+                    if alg is not None:
                         posline = lines.readline().strip("\n")
                         tokens = posline.split(",")
                         self.algPos.append(QtCore.QPointF(float(tokens[0]), float(tokens[1])))
@@ -147,7 +149,10 @@ class ModelerAlgorithm(GeoAlgorithm):
                         dependencies = [];
                         if dependenceline != str(None):
                             for index in dependenceline.split(","):
-                                dependencies.append(int(index))
+                                try:
+                                    dependencies.append(int(index))
+                                except:
+                                    pass #a quick fix fwhile I figure out how to solve problems when parsing this 
                         for param in alg.parameters:
                             line = lines.readline().strip("\n")
                             if line==str(None):
@@ -172,10 +177,13 @@ class ModelerAlgorithm(GeoAlgorithm):
                         self.dependencies.append(dependencies)
                         iAlg += 1
                     else:
-                        raise WrongModelException("Error in line: " + line)
+                        raise WrongModelException("Error in algorithm name: " + algLine)
                 line = lines.readline().strip("\n")
-        except:
-            raise WrongModelException("Error in line: " + line)
+        except Exception, e:
+            if isinstance (e, WrongModelException):
+                raise e
+            else:
+                raise WrongModelException("Error in model definition line:"  + line.strip() + " : " + traceback.format_exc())
 
     def addParameter(self, param):
         self.parameters.append(param)
@@ -292,13 +300,13 @@ class ModelerAlgorithm(GeoAlgorithm):
         '''This method returns a list with the indexes of algorithms a given one depends on'''
         algs = []
         algs.extend(self.dependencies[algIndex])
-        index = -1
+        index = -1        
         for aap in self.algParameters[algIndex].values():
             index += 1
             if aap is not None:
                 if aap.alg != AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.alg not in algs:
-                    algs.append(index)
-                    dep = self.getDependsOnAlgorithms(index)
+                    algs.append(aap.alg)
+                    dep = self.getDependsOnAlgorithms(aap.alg)
                     for alg in dep:
                         if alg not in algs:
                             algs.append(alg)
@@ -496,7 +504,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     canExecute = True
                     required = self.getDependsOnAlgorithms(iAlg)
                     for requiredAlg in required:
-                        if requiredAlg not in executed:
+                        if requiredAlg != iAlg and requiredAlg not in executed:
                             canExecute = False
                             break
                     if canExecute:
@@ -523,7 +531,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                             progress.setDebugInfo("Failed")
                             raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
                 else:
-                    progress.setDebugInfo("Algorithm %s deactivated (or already executed)" % alg.name)
+                    pass
+                    #progress.setDebugInfo("Algorithm %s deactivated (or already executed)" % alg.name)
                 iAlg += 1
         progress.setDebugInfo("Model processed ok. Executed %i algorithms total" % iAlg)
 

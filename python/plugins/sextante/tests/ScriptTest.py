@@ -5,6 +5,7 @@ from sextante.tests.TestData import points, points2, polygons, polygons2, lines,
 from sextante.core.QGisLayers import QGisLayers
 
 class ScriptTest(unittest.TestCase):
+    '''tests that use scripts'''
     
     def test_scriptcreatetilingfromvectorlayer(self):
         outputs=sextante.runalg("script:createtilingfromvectorlayer",union(),10,None)
@@ -47,6 +48,11 @@ class ScriptTest(unittest.TestCase):
         self.assertEqual(expectedvalues, values)
         wkt='POLYGON((270771.39533669 4458907.27146471,270768.50858535 4458902.27146471,270762.73508265 4458902.27146471,270759.84833131 4458907.27146471,270762.73508265 4458912.27146471,270768.50858535 4458912.27146471,270771.39533669 4458907.27146471))'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+        
+    def test_scriptascriptthatreturnsanumber(self):
+        outputs=sextante.runalg("script:ascriptthatreturnsanumber")
+        output=outputs['number']
+        self.assertTrue(10, output.value)        
             
 def suite():
     suite = unittest.makeSuite(ScriptTest, 'test')    

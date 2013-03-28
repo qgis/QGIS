@@ -22,7 +22,7 @@ class ParametrizedTestCase(unittest.TestCase):
     
 class RunAlgTest(ParametrizedTestCase):
     '''This test takes a reduced set of algorithms and executes them in different ways, changing 
-    parameters such as whether to use thread or not, the output file format, etc. 
+    parameters such as whether to use temp outputs, the output file format, etc. 
     Basically, it uses some algorithms to test other parts of SEXTANTE, not the algorithms themselves'''
            
     def getOutputFile(self):
