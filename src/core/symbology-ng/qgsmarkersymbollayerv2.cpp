@@ -271,22 +271,27 @@ void QgsSimpleMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context
   Q_UNUSED( context );
 }
 
-bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
+bool QgsSimpleMarkerSymbolLayerV2::prepareShape( QString name )
 {
   mPolygon.clear();
 
-  if ( mName == "square" || mName == "rectangle" )
+  if ( name.isNull() )
+  {
+    name = mName;
+  }
+
+  if ( name == "square" || name == "rectangle" )
   {
     mPolygon = QPolygonF( QRectF( QPointF( -1, -1 ), QPointF( 1, 1 ) ) );
     return true;
   }
-  else if ( mName == "diamond" )
+  else if ( name == "diamond" )
   {
     mPolygon << QPointF( -1, 0 ) << QPointF( 0, 1 )
     << QPointF( 1, 0 ) << QPointF( 0, -1 );
     return true;
   }
-  else if ( mName == "pentagon" )
+  else if ( name == "pentagon" )
   {
     mPolygon << QPointF( sin( DEG2RAD( 288.0 ) ), - cos( DEG2RAD( 288.0 ) ) )
     << QPointF( sin( DEG2RAD( 216.0 ) ), - cos( DEG2RAD( 216.0 ) ) )
@@ -295,19 +300,19 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
     << QPointF( 0, -1 );
     return true;
   }
-  else if ( mName == "triangle" )
+  else if ( name == "triangle" )
   {
     mPolygon << QPointF( -1, 1 ) << QPointF( 1, 1 ) << QPointF( 0, -1 );
     return true;
   }
-  else if ( mName == "equilateral_triangle" )
+  else if ( name == "equilateral_triangle" )
   {
     mPolygon << QPointF( sin( DEG2RAD( 240.0 ) ), - cos( DEG2RAD( 240.0 ) ) )
     << QPointF( sin( DEG2RAD( 120.0 ) ), - cos( DEG2RAD( 120.0 ) ) )
     << QPointF( 0, -1 );
     return true;
   }
-  else if ( mName == "star" )
+  else if ( name == "star" )
   {
     double sixth = 1.0 / 3;
 
@@ -323,7 +328,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
     << QPointF( + sixth, -sixth );
     return true;
   }
-  else if ( mName == "regular_star" )
+  else if ( name == "regular_star" )
   {
     double inner_r = cos( DEG2RAD( 72.0 ) ) / cos( DEG2RAD( 36.0 ) );
 
@@ -339,7 +344,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
     << QPointF( 0, -1 );          //   0
     return true;
   }
-  else if ( mName == "arrow" )
+  else if ( name == "arrow" )
   {
     mPolygon
     << QPointF( 0, -1 )
@@ -351,7 +356,7 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
     << QPointF( -0.5,  -0.5 );
     return true;
   }
-  else if ( mName == "filled_arrowhead" )
+  else if ( name == "filled_arrowhead" )
   {
     mPolygon << QPointF( 0, 0 ) << QPointF( -1, 1 ) << QPointF( -1, -1 );
     return true;
@@ -360,16 +365,20 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
   return false;
 }
 
-bool QgsSimpleMarkerSymbolLayerV2::preparePath()
+bool QgsSimpleMarkerSymbolLayerV2::preparePath( QString name )
 {
   mPath = QPainterPath();
+  if ( name.isNull() )
+  {
+    name = mName;
+  }
 
-  if ( mName == "circle" )
+  if ( name == "circle" )
   {
     mPath.addEllipse( QRectF( -1, -1, 2, 2 ) ); // x,y,w,h
     return true;
   }
-  else if ( mName == "cross" )
+  else if ( name == "cross" )
   {
     mPath.moveTo( -1, 0 );
     mPath.lineTo( 1, 0 ); // horizontal
@@ -377,7 +386,7 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath()
     mPath.lineTo( 0, 1 ); // vertical
     return true;
   }
-  else if ( mName == "x" || mName == "cross2" )
+  else if ( name == "x" || name == "cross2" )
   {
     mPath.moveTo( -1, -1 );
     mPath.lineTo( 1, 1 );
@@ -385,13 +394,13 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath()
     mPath.lineTo( -1, 1 );
     return true;
   }
-  else if ( mName == "line" )
+  else if ( name == "line" )
   {
     mPath.moveTo( 0, -1 );
     mPath.lineTo( 0, 1 ); // vertical line
     return true;
   }
-  else if ( mName == "arrowhead" )
+  else if ( name == "arrowhead" )
   {
     mPath.moveTo( 0, 0 );
     mPath.lineTo( -1, -1 );
@@ -442,6 +451,16 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   }
   if ( angle )
     off = _rotatedOffset( off, angle );
+
+  //data defined shape?
+  if ( mNameExpression )
+  {
+    QString name = mNameExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    if ( !prepareShape( name ) ) // drawing as a polygon
+    {
+      preparePath( name ); // drawing as a painter path
+    }
+  }
 
   if ( mUsingCache )
   {

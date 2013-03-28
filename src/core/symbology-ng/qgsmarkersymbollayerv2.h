@@ -83,8 +83,8 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
 
-    bool prepareShape();
-    bool preparePath();
+    bool prepareShape( QString name = QString() );
+    bool preparePath( QString name = QString() );
 
     void prepareCache( QgsSymbolV2RenderContext& context );
 
