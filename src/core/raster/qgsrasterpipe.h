@@ -25,6 +25,7 @@
 #include "qgsrasterinterface.h"
 #include "qgsrasterresamplefilter.h"
 #include "qgsbrightnesscontrastfilter.h"
+#include "qgshuesaturationfilter.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasternuller.h"
 #include "qgsrasterrenderer.h"
@@ -50,6 +51,7 @@ class CORE_EXPORT QgsRasterPipe
       ResamplerRole = 4,
       ProjectorRole = 5,
       NullerRole = 6,
+      HueSaturationRole = 7
     };
 
     QgsRasterPipe();
@@ -95,6 +97,7 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterRenderer * renderer() const;
     QgsRasterResampleFilter * resampleFilter() const;
     QgsBrightnessContrastFilter * brightnessFilter() const;
+    QgsHueSaturationFilter * hueSaturationFilter() const;
     QgsRasterProjector * projector() const;
     QgsRasterNuller * nuller() const;
 
