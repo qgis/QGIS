@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>475</width>
-    <height>400</height>
+    <height>415</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,7 +55,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>If the service requires basic authentication, enter a user name, an optional password and an optional referer</string>
+         <string>If the service requires basic authentication, enter a user name and optional password</string>
         </property>
         <property name="textFormat">
          <enum>Qt::PlainText</enum>
@@ -166,7 +166,7 @@
        <widget class="QLineEdit" name="txtReferer"/>
       </item>
       <item row="7" column="0">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="lblReferer">
         <property name="text">
          <string>Referer</string>
         </property>

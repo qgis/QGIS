@@ -36,7 +36,7 @@ QgsWFSCapabilities::QgsWFSCapabilities( QString theUri ) :
   mBaseUrl = prepareUri( mUri.param( "url" ) );
 
   QgsDebugMsg( "mBaseUrl = " + mBaseUrl );
-  
+
   //find out the server URL
   /*
   QSettings settings;
@@ -142,18 +142,8 @@ void QgsWFSCapabilities::requestCapabilities()
 
   QNetworkRequest request( uriGetCapabilities() );
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-  setReferer( request );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-}
-
-void QgsWFSCapabilities::setReferer( QNetworkRequest &request ) const
-{
-  QString referer = mUri.param( "referer" );
-  if ( !referer.isNull() )
-  {
-      request.setRawHeader( "Referer", QString( "%1" ).arg( referer ).toAscii() );
-  }
 }
 
 void QgsWFSCapabilities::capabilitiesReplyFinished()

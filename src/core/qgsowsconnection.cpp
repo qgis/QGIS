@@ -93,12 +93,6 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
     mUri.setParam( "password", password );
   }
 
-  QString referer = settings.value( key + "/referer" ).toString();
-  if ( !referer.isEmpty() )
-  {
-    mUri.setParam( "referer", referer );
-  }
-
   bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
   bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();

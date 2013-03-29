@@ -81,6 +81,11 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
     cbxIgnoreGetFeatureInfoURI->setVisible( false );
     mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+    
+    txtReferer->setVisible( false );
+    mGroupBox->layout()->removeWidget( txtReferer );
+    lblReferer->setVisible( false );
+    mGroupBox->layout()->removeWidget( lblReferer );
 
     // Adjust height
     int w = width();

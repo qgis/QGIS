@@ -1522,7 +1522,7 @@ int QgsWmsProvider::bandCount() const
 void QgsWmsProvider::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   QString msg = tr( "%1 of %2 bytes of capabilities downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
-  //QgsDebugMsg( msg );
+  QgsDebugMsg( msg );
   emit statusChanged( msg );
 }
 
@@ -1601,7 +1601,7 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabili
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if ( !e.isNull() )
     {
-      //QgsDebugMsg(e.tagName() ); // the node really is an element.
+      QgsDebugMsg(e.tagName() ); // the node really is an element.
 
       if ( e.tagName() == "Service" || e.tagName() == "ows:ServiceProvider" || e.tagName() == "ows:ServiceIdentification" )
       {
@@ -2236,7 +2236,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      //QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
+      QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
 
       QString tagName = e1.tagName();
       if ( tagName.startsWith( "wms:" ) )
@@ -2718,13 +2718,13 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
 
       double res = m.scaleDenom * 0.00028 / metersPerUnit;
 
-      /*QgsDebugMsg( QString( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" )
+      QgsDebugMsg( QString( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" )
                    .arg( m.identifier )
                    .arg( m.scaleDenom ).arg( res )
                    .arg( m.tileWidth ).arg( m.tileHeight )
                    .arg( m.matrixWidth ).arg( m.matrixHeight )
                    .arg( m.topLeft.toString() )
-                 );*/
+                 );
 
       s.tileMatrices.insert( res, m );
     }
@@ -2742,7 +2742,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
         e0 = e0.nextSiblingElement( "Layer" ) )
   {
     QString id = e0.firstChildElement( "ows:Identifier" ).text();
-    //QgsDebugMsg( QString( "Layer %1" ).arg( id ) );
+    QgsDebugMsg( QString( "Layer %1" ).arg( id ) );
 
     QgsWmtsTileLayer l;
     l.tileMode   = WMTS;
@@ -2940,7 +2940,7 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
       }
     }
 
-    //QgsDebugMsg( QString( "add layer %1" ).arg( id ) );
+    QgsDebugMsg( QString( "add layer %1" ).arg( id ) );
     mTileLayersSupported << l;
   }
 
@@ -3010,7 +3010,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if ( !e.isNull() )
     {
-      //QgsDebugMsg(e.tagName() ); // the node really is an element.
+      QgsDebugMsg(e.tagName() ); // the node really is an element.
 
       QString tagName = e.tagName();
       if ( tagName.startsWith( "wms:" ) )
