@@ -4364,6 +4364,11 @@ void QgsWmsProvider::setAuthorization( QNetworkRequest &request ) const
   {
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
   }
+  
+  if ( !mReferer.isNull() )
+  {
+      request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toAscii() );
+  }
 }
 
 QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()

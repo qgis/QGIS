@@ -55,7 +55,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>If the service requires basic authentication, enter a user name and optional password</string>
+         <string>If the service requires basic authentication, enter a user name, an optional password and an optional referer</string>
         </property>
         <property name="textFormat">
          <enum>Qt::PlainText</enum>
