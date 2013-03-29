@@ -21,6 +21,7 @@
 #include "qgsdatasourceuri.h"
 
 class QNetworkReply;
+class QNetworkRequest;
 
 class QgsWFSCapabilities : public QObject
 {
@@ -47,7 +48,10 @@ class QgsWFSCapabilities : public QObject
 
     //! start network connection to get capabilities
     void requestCapabilities();
-
+    
+    //! set referer header
+    void setReferer( QNetworkRequest &request ) const;
+    
     //! description of a vector layer
     struct FeatureType
     {
