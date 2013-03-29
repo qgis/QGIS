@@ -166,6 +166,12 @@ void QgsSingleSymbolRendererV2::setSymbol( QgsSymbolV2* s )
   mSymbol = s;
 }
 
+void QgsSingleSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  mScaleMethod = scaleMethod;
+  setScaleMethodToSymbol( mSymbol, scaleMethod );
+}
+
 QString QgsSingleSymbolRendererV2::dump()
 {
   if ( mSymbol )
