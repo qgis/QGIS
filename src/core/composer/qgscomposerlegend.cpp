@@ -43,10 +43,10 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mSplitLayer( false )
     , mEqualColumnWidth( false )
 {
-  setStyleMargin( QgsComposerLegendStyle::Group, 2 );
-  setStyleMargin( QgsComposerLegendStyle::Subgroup, 2 );
-  setStyleMargin( QgsComposerLegendStyle::Symbol, 2 );
-  setStyleMargin( QgsComposerLegendStyle::SymbolLabel, 2 );
+  setStyleMargin( QgsComposerLegendStyle::Group, QgsComposerLegendStyle::Top, 2 );
+  setStyleMargin( QgsComposerLegendStyle::Subgroup, QgsComposerLegendStyle::Top, 2 );
+  setStyleMargin( QgsComposerLegendStyle::Symbol, QgsComposerLegendStyle::Top, 2 );
+  setStyleMargin( QgsComposerLegendStyle::SymbolLabel, QgsComposerLegendStyle::Top, 2 );
   rstyle( QgsComposerLegendStyle::Title ).rfont().setPointSizeF( 16.0 );
   rstyle( QgsComposerLegendStyle::Group ).rfont().setPointSizeF( 14.0 );
   rstyle( QgsComposerLegendStyle::Subgroup ).rfont().setPointSizeF( 12.0 );
@@ -795,14 +795,12 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   QString titleFontString = itemElem.attribute( "titleFont" );
   if ( !titleFontString.isEmpty() )
   {
-    //mTitleFont.fromString( titleFontString );
     rstyle( QgsComposerLegendStyle::Title ).rfont().fromString( titleFontString );
   }
   //group font
   QString groupFontString = itemElem.attribute( "groupFont" );
   if ( !groupFontString.isEmpty() )
   {
-    //mGroupFont.fromString( groupFontString );
     rstyle( QgsComposerLegendStyle::Group ).rfont().fromString( groupFontString );
   }
 
@@ -810,21 +808,28 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   QString layerFontString = itemElem.attribute( "layerFont" );
   if ( !layerFontString.isEmpty() )
   {
-    //mLayerFont.fromString( layerFontString );
     rstyle( QgsComposerLegendStyle::Subgroup ).rfont().fromString( layerFontString );
   }
   //item font
   QString itemFontString = itemElem.attribute( "itemFont" );
   if ( !itemFontString.isEmpty() )
   {
-    //mItemFont.fromString( itemFontString );
     rstyle( QgsComposerLegendStyle::SymbolLabel ).rfont().fromString( itemFontString );
   }
 
-  rstyle( QgsComposerLegendStyle::Group ).setMargin( itemElem.attribute( "groupSpace", "3.0" ).toDouble() );
-  rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( itemElem.attribute( "layerSpace", "3.0" ).toDouble() );
-  rstyle( QgsComposerLegendStyle::Symbol ).setMargin( itemElem.attribute( "symbolSpace", "2.0" ).toDouble() );
-  rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( itemElem.attribute( "symbolSpace", "2.0" ).toDouble() );
+  if ( !itemElem.attribute( "groupSpace" ).isEmpty() )
+  {
+    rstyle( QgsComposerLegendStyle::Group ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( "groupSpace", "3.0" ).toDouble() );
+  }
+  if ( !itemElem.attribute( "layerSpace" ).isEmpty() )
+  {
+    rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( "layerSpace", "3.0" ).toDouble() );
+  }
+  if ( !itemElem.attribute( "symbolSpace" ).isEmpty() )
+  {
+    rstyle( QgsComposerLegendStyle::Symbol ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( "symbolSpace", "2.0" ).toDouble() );
+    rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( "symbolSpace", "2.0" ).toDouble() );
+  }
   // <<<<<<< < 2.0 projects backward compatibility
 
   emit itemChanged();

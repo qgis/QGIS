@@ -123,7 +123,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
 
   if ( legend )
   {
-    legend->model()->setHorizontalHeaderLabels( QStringList() << tr( "Item" ) << tr( "Style" ) );
+    legend->model()->setHorizontalHeaderLabels( QStringList() << tr( "Item" ) << tr( "Title style" ) );
     mItemTreeView->setModel( legend->model() );
   }
 

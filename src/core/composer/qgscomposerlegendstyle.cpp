@@ -31,8 +31,8 @@ QgsComposerLegendStyle::~QgsComposerLegendStyle()
 {
 }
 
-void QgsComposerLegendStyle::setMargin( double margin ) 
-{ 
+void QgsComposerLegendStyle::setMargin( double margin )
+{
   mMarginMap[Top] = margin;
   mMarginMap[Bottom] = margin;
   mMarginMap[Left] = margin;
@@ -47,32 +47,32 @@ void QgsComposerLegendStyle::writeXML( QString name, QDomElement& elem, QDomDocu
 
   styleElem.setAttribute( "name", name );
 
-  styleElem.setAttribute( "marginTop", QString::number( mMarginMap[Top] ) );
-  styleElem.setAttribute( "marginBottom", QString::number( mMarginMap[Bottom] ) );
-  styleElem.setAttribute( "marginLeft", QString::number( mMarginMap[Left] ) );
-  styleElem.setAttribute( "marginRight", QString::number( mMarginMap[Right] ) );
+  if ( mMarginMap[Top] != 0 ) styleElem.setAttribute( "marginTop", QString::number( mMarginMap[Top] ) );
+  if ( mMarginMap[Bottom] != 0 ) styleElem.setAttribute( "marginBottom", QString::number( mMarginMap[Bottom] ) );
+  if ( mMarginMap[Left] != 0 ) styleElem.setAttribute( "marginLeft", QString::number( mMarginMap[Left] ) );
+  if ( mMarginMap[Right] != 0 ) styleElem.setAttribute( "marginRight", QString::number( mMarginMap[Right] ) );
 
   styleElem.setAttribute( "font", mFont.toString() );
 
   elem.appendChild( styleElem );
 }
 
-void QgsComposerLegendStyle::readXML( const QDomElement& elem, const QDomDocument& doc ) 
+void QgsComposerLegendStyle::readXML( const QDomElement& elem, const QDomDocument& doc )
 {
   Q_UNUSED( doc );
   if ( elem.isNull() ) return;
 
   mFont.fromString( elem.attribute( "font" ) );
 
-  mMarginMap[Top] = elem.attribute( "marginTop" ).toDouble();
-  mMarginMap[Bottom] = elem.attribute( "marginBottom" ).toDouble();
-  mMarginMap[Left] = elem.attribute( "marginLeft" ).toDouble();
-  mMarginMap[Right] = elem.attribute( "marginRight" ).toDouble();
+  mMarginMap[Top] = elem.attribute( "marginTop", "0" ).toDouble();
+  mMarginMap[Bottom] = elem.attribute( "marginBottom", "0" ).toDouble();
+  mMarginMap[Left] = elem.attribute( "marginLeft", "0" ).toDouble();
+  mMarginMap[Right] = elem.attribute( "marginRight", "0" ).toDouble();
 }
 
-QString QgsComposerLegendStyle::styleName ( Style s ) 
+QString QgsComposerLegendStyle::styleName( Style s )
 {
-  switch ( s ) 
+  switch ( s )
   {
     case Undefined:
       return "";
@@ -92,7 +92,7 @@ QString QgsComposerLegendStyle::styleName ( Style s )
   return "";
 }
 
-QgsComposerLegendStyle::Style QgsComposerLegendStyle::styleFromName ( QString styleName ) 
+QgsComposerLegendStyle::Style QgsComposerLegendStyle::styleFromName( QString styleName )
 {
   if ( styleName == "hidden" ) return Hidden;
   else if ( styleName == "title" ) return Title;
@@ -103,24 +103,24 @@ QgsComposerLegendStyle::Style QgsComposerLegendStyle::styleFromName ( QString st
   return Undefined;
 }
 
-QString QgsComposerLegendStyle::styleLabel ( Style s ) 
+QString QgsComposerLegendStyle::styleLabel( Style s )
 {
-  switch ( s ) 
+  switch ( s )
   {
     case Undefined:
-      return QObject::tr("Undefined");
+      return QObject::tr( "Undefined" );
     case Hidden:
-      return QObject::tr("Hidden");
+      return QObject::tr( "Hidden" );
     case Title:
-      return QObject::tr("Title");
+      return QObject::tr( "Title" );
     case Group:
-      return QObject::tr("Group");
+      return QObject::tr( "Group" );
     case Subgroup:
-      return QObject::tr("Subgroup");
+      return QObject::tr( "Subgroup" );
     case Symbol:
-      return QObject::tr("Symbol");
+      return QObject::tr( "Symbol" );
     case SymbolLabel:
-      return QObject::tr("Symbol label");
+      return QObject::tr( "Symbol label" );
   }
   return "";
 }
