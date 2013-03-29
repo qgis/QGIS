@@ -139,6 +139,8 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 
     /**Custom outline*/
     QgsLineSymbolV2* mOutline;
+
+    virtual void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); }
 };
 
 /**A class for svg fill patterns. The class automatically scales the pattern to
@@ -188,6 +190,14 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    QString dataDefinedPropertyString( const QString& property ) const;
+    void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    void removeDataDefinedProperty( const QString& property );
+    void removeDataDefinedProperties();
+
+    QSet<QString> usedAttributes() const;
+
   protected:
     /**Width of the pattern (in output units)*/
     double mPatternWidth;
@@ -210,10 +220,25 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     double mSvgOutlineWidth;
     QgsSymbolV2::OutputUnit mSvgOutlineWidthUnit;
 
+    //data defined properties
+    QgsExpression* mWidthExpression;
+    QgsExpression* mSvgFileExpression;
+    QgsExpression* mAngleExpression;
+    QgsExpression* mFillColorExpression;
+    QgsExpression* mOutlineColorExpression;
+    QgsExpression* mOutlineWidthExpression;
+
+    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
+
   private:
     /**Helper function that gets the view box from the byte array*/
     void storeViewBox();
     void setDefaultSvgParams(); //fills mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth with default values for mSvgFilePath
+
+    void prepareExpressions( const QgsVectorLayer* vl );
+    /**Applies the svg pattern to the brush*/
+    void applyPattern( QBrush& brush, const QString& svgFilePath, double patternWidth, QgsSymbolV2::OutputUnit patternWidthUnit, const QColor& svgFillColor, const QColor& svgOutlineColor,
+                       double svgOutlineWidth, QgsSymbolV2::OutputUnit svgOutlineWidthUnit, const QgsSymbolV2RenderContext& context );
 };
 
 class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer

@@ -1429,6 +1429,40 @@ void QgsSVGFillSymbolLayerWidget::on_mSvgOutlineWidthUnitComboBox_currentIndexCh
   }
 }
 
+void QgsSVGFillSymbolLayerWidget::on_mDataDefinedPropertiesButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QMap<QString, QPair< QString, QString> > dataDefinedProperties;
+  dataDefinedProperties.insert( "width", qMakePair( tr( "Texture width" ), mLayer->dataDefinedPropertyString( "width" ) ) );
+  dataDefinedProperties.insert( "svgFile", qMakePair( tr( "SVG file" ), mLayer->dataDefinedPropertyString( "svgFile" ) ) );
+  dataDefinedProperties.insert( "angle", qMakePair( tr( "Rotation" ), mLayer->dataDefinedPropertyString( "angle" ) ) );
+  dataDefinedProperties.insert( "svgFillColor", qMakePair( tr( "Color" ), mLayer->dataDefinedPropertyString( "svgFillColor" ) ) );
+  dataDefinedProperties.insert( "svgOutlineColor", qMakePair( tr( "Border color" ), mLayer->dataDefinedPropertyString( "svgOutlineColor" ) ) );
+  dataDefinedProperties.insert( "svgOutlineWidth", qMakePair( tr( "Border width" ), mLayer->dataDefinedPropertyString( "svgOutlineWidth" ) ) );
+
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //empty all existing properties first
+    mLayer->removeDataDefinedProperties();
+
+    QMap<QString, QString> properties = d.dataDefinedProperties();
+    QMap<QString, QString>::const_iterator it = properties.constBegin();
+    for ( ; it != properties.constEnd(); ++it )
+    {
+      if ( !it.value().isEmpty() )
+      {
+        mLayer->setDataDefinedProperty( it.key(), it.value() );
+      }
+    }
+    emit changed();
+  }
+}
+
 /////////////
 
 QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ):

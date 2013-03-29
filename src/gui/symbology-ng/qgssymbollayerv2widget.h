@@ -293,6 +293,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void on_mBorderWidthSpinBox_valueChanged( double d );
     void on_mTextureWidthUnitComboBox_currentIndexChanged( int index );
     void on_mSvgOutlineWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 };
 
 //////////
