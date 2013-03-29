@@ -16,6 +16,7 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
 
+#include "qgsexpression.h"
 #include "qgsrendercontext.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
@@ -29,7 +30,7 @@
 
 QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth )
     : mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth ), mBorderWidthUnit( QgsSymbolV2::MM ),
-    mOffsetUnit( QgsSymbolV2::MM )
+    mOffsetUnit( QgsSymbolV2::MM ), mColorExpression( 0 ), mColorBorderExpression( 0 ), mWidthBorderExpression( 0 )
 {
   mColor = color;
 }
@@ -48,6 +49,124 @@ QgsSymbolV2::OutputUnit QgsSimpleFillSymbolLayerV2::outputUnit() const
     return QgsSymbolV2::Mixed;
   }
   return unit;
+}
+
+const QgsExpression* QgsSimpleFillSymbolLayerV2::dataDefinedProperty( const QString& property ) const
+{
+  if ( property == "color" )
+  {
+    return mColorExpression;
+  }
+  else if ( property == "color_border" )
+  {
+    return mColorBorderExpression;
+  }
+  else if ( property == "width_border" )
+  {
+    return mWidthBorderExpression;
+  }
+  return 0;
+}
+
+QString QgsSimpleFillSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
+{
+  const QgsExpression* ex  = dataDefinedProperty( property );
+  return ex ? ex->dump() : QString();
+}
+
+void QgsSimpleFillSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
+{
+  if ( property == "color" )
+  {
+    delete mColorExpression; mColorExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "color_border" )
+  {
+    delete mColorBorderExpression; mColorBorderExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "width_border" )
+  {
+    delete mWidthBorderExpression; mWidthBorderExpression = new QgsExpression( expressionString );
+  }
+}
+
+void QgsSimpleFillSymbolLayerV2::removeDataDefinedProperty( const QString& property )
+{
+  if ( property == "color" )
+  {
+    delete mColorExpression; mColorExpression = 0;
+  }
+  else if ( property == "color_border" )
+  {
+    delete mColorBorderExpression; mColorBorderExpression = 0;
+  }
+  else if ( property == "width_border" )
+  {
+    delete mWidthBorderExpression; mWidthBorderExpression = 0;
+  }
+}
+
+void QgsSimpleFillSymbolLayerV2::removeDataDefinedProperties()
+{
+  delete mColorExpression; mColorExpression = 0;
+  delete mColorBorderExpression; mColorBorderExpression = 0;
+  delete mWidthBorderExpression; mWidthBorderExpression = 0;
+}
+
+QSet<QString> QgsSimpleFillSymbolLayerV2::usedAttributes() const
+{
+  QSet<QString> attributes;
+
+  //add data defined attributes
+  QStringList columns;
+  if ( mColorExpression )
+    columns.append( mColorExpression->referencedColumns() );
+  if ( mColorBorderExpression )
+    columns.append( mColorBorderExpression->referencedColumns() );
+  if ( mWidthBorderExpression )
+    columns.append( mWidthBorderExpression->referencedColumns() );
+
+  QStringList::const_iterator it = columns.constBegin();
+  for ( ; it != columns.constEnd(); ++it )
+  {
+    attributes.insert( *it );
+  }
+  return attributes;
+}
+
+void QgsSimpleFillSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
+{
+  if ( !vl )
+  {
+    return;
+  }
+
+  const QgsFields& fields = vl->pendingFields();
+  if ( mColorExpression )
+    mColorExpression->prepare( fields );
+  if ( mColorBorderExpression )
+    mColorBorderExpression->prepare( fields );
+  if ( mWidthBorderExpression )
+    mWidthBorderExpression->prepare( fields );
+}
+
+void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QBrush& brush, QPen& pen, QPen& selPen )
+{
+  if ( mColorExpression )
+  {
+    brush.setColor( QColor( mColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+  }
+  if ( mColorBorderExpression )
+  {
+    pen.setColor( QColor( mColorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+  }
+  if ( mWidthBorderExpression )
+  {
+    double width = mWidthBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    width *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit );
+    pen.setWidthF( width );
+    selPen.setWidthF( width );
+  }
 }
 
 
@@ -79,6 +198,19 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
     sl->setBorderWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["border_width_unit"] ) );
   if ( props.contains( "offset_unit" ) )
     sl->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["offset_unit"] ) );
+
+  if ( props.contains( "color_expression" ) )
+  {
+    sl->setDataDefinedProperty( "color", props["color_expression"] );
+  }
+  if ( props.contains( "color_border_expression" ) )
+  {
+    sl->setDataDefinedProperty( "color_border", props["color_border_expression"] );
+  }
+  if ( props.contains( "width_border_expression" ) )
+  {
+    sl->setDataDefinedProperty( "width_border", props["width_border_expression"] );
+  }
   return sl;
 }
 
@@ -116,6 +248,7 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mSelPen = QPen( selPenColor );
   mPen.setStyle( mBorderStyle );
   mPen.setWidthF( mBorderWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit ) );
+  prepareExpressions( context.layer() );
 }
 
 void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -130,6 +263,8 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
   {
     return;
   }
+
+  applyDataDefinedSymbology( context, mBrush, mPen, mSelPen );
 
   p->setBrush( context.selected() ? mSelBrush : mBrush );
   p->setPen( mPen );
@@ -162,6 +297,18 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
   map["border_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mBorderWidthUnit );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  if ( mColorExpression )
+  {
+    map["color_expression"] = mColorExpression->dump();
+  }
+  if ( mColorBorderExpression )
+  {
+    map["color_border_expression"] = mColorBorderExpression->dump();
+  }
+  if ( mWidthBorderExpression )
+  {
+    map["width_border_expression"] = mWidthBorderExpression->dump();
+  }
   return map;
 }
 
@@ -171,6 +318,19 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
   sl->setOffset( mOffset );
   sl->setOffsetUnit( mOffsetUnit );
   sl->setBorderWidthUnit( mBorderWidthUnit );
+
+  if ( mColorExpression )
+  {
+    sl->setDataDefinedProperty( "color", mColorExpression->dump() );
+  }
+  if ( mColorBorderExpression )
+  {
+    sl->setDataDefinedProperty( "color_border", mColorBorderExpression->dump() );
+  }
+  if ( mWidthBorderExpression )
+  {
+    sl->setDataDefinedProperty( "width_border", mWidthBorderExpression->dump() );
+  }
   return sl;
 }
 
