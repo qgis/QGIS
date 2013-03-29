@@ -1583,6 +1583,38 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOffsetUnitComboBox_currentIndexCha
   }
 }
 
+void QgsLinePatternFillSymbolLayerWidget::on_mDataDefinedPropertiesButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QMap<QString, QPair< QString, QString> > dataDefinedProperties;
+  dataDefinedProperties.insert( "lineangle", qMakePair( tr( "Angle" ), mLayer->dataDefinedPropertyString( "lineangle" ) ) );
+  dataDefinedProperties.insert( "distance", qMakePair( tr( "Distance" ), mLayer->dataDefinedPropertyString( "distance" ) ) );
+  dataDefinedProperties.insert( "linewidth", qMakePair( tr( "Line width" ), mLayer->dataDefinedPropertyString( "linewidth" ) ) );
+  dataDefinedProperties.insert( "color", qMakePair( tr( "Color" ), mLayer->dataDefinedPropertyString( "color" ) ) );
+
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //empty all existing properties first
+    mLayer->removeDataDefinedProperties();
+
+    QMap<QString, QString> properties = d.dataDefinedProperties();
+    QMap<QString, QString>::const_iterator it = properties.constBegin();
+    for ( ; it != properties.constEnd(); ++it )
+    {
+      if ( !it.value().isEmpty() )
+      {
+        mLayer->setDataDefinedProperty( it.key(), it.value() );
+      }
+    }
+    emit changed();
+  }
+}
+
 
 /////////////
 

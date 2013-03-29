@@ -1237,7 +1237,7 @@ void QgsSVGFillSymbolLayer::prepareExpressions( const QgsVectorLayer* vl )
 }
 
 QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mDistanceUnit( QgsSymbolV2::MM ), mLineWidthUnit( QgsSymbolV2::MM ),
-    mOffsetUnit( QgsSymbolV2::MM )
+    mOffsetUnit( QgsSymbolV2::MM ), mLineAngleExpression( 0 ), mDistanceExpression( 0 ), mLineWidthExpression( 0 ), mColorExpression( 0 )
 {
 }
 
@@ -1316,6 +1316,24 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
   {
     patternLayer->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["offset_unit"] ) );
   }
+
+  //data defined properties
+  if ( properties.contains( "lineangle_expression" ) )
+  {
+    patternLayer->setDataDefinedProperty( "lineangle", properties["lineangle_expression"] );
+  }
+  if ( properties.contains( "distance_expression" ) )
+  {
+    patternLayer->setDataDefinedProperty( "distance", properties["distance_expression"] );
+  }
+  if ( properties.contains( "linewidth_expression" ) )
+  {
+    patternLayer->setDataDefinedProperty( "linewidth", properties["linewidth_expression"] );
+  }
+  if ( properties.contains( "color_expression" ) )
+  {
+    patternLayer->setDataDefinedProperty( "color", properties["color_expression"] );
+  }
   return patternLayer;
 }
 
@@ -1324,24 +1342,25 @@ QString QgsLinePatternFillSymbolLayer::layerType() const
   return "LinePatternFill";
 }
 
-void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
+void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double lineAngle, double distance,
+    double lineWidth, const QColor& color )
 {
   const QgsRenderContext& ctx = context.renderContext();
-  double outlinePixelWidth = mLineWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mLineWidthUnit );
-  double outputPixelDist = mDistance * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceUnit );
+  double outlinePixelWidth = lineWidth * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mLineWidthUnit );
+  double outputPixelDist = distance * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx, mDistanceUnit );
   double outputPixelOffset = mOffset * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( ctx,  mOffsetUnit );
 
   //create image
   int height, width;
-  if ( doubleNear( mLineAngle, 0 ) || doubleNear( mLineAngle, 360 ) || doubleNear( mLineAngle, 90 ) || doubleNear( mLineAngle, 180 ) || doubleNear( mLineAngle, 270 ) )
+  if ( doubleNear( lineAngle, 0 ) || doubleNear( lineAngle, 360 ) || doubleNear( lineAngle, 90 ) || doubleNear( lineAngle, 180 ) || doubleNear( lineAngle, 270 ) )
   {
     height = outputPixelDist;
     width = height; //width can be set to arbitrary value
   }
   else
   {
-    height = qAbs( outputPixelDist / cos( mLineAngle * M_PI / 180 ) ); //keep perpendicular distance between lines constant
-    width = qAbs( height / tan( mLineAngle * M_PI / 180 ) );
+    height = qAbs( outputPixelDist / cos( lineAngle * M_PI / 180 ) ); //keep perpendicular distance between lines constant
+    width = qAbs( height / tan( lineAngle * M_PI / 180 ) );
   }
 
   //depending on the angle, we might need to render into a larger image and use a subset of it
@@ -1360,13 +1379,13 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
   QPainter p( &patternImage );
 
   p.setRenderHint( QPainter::Antialiasing, true );
-  QPen pen( mColor );
+  QPen pen( color );
   pen.setWidthF( outlinePixelWidth );
   pen.setCapStyle( Qt::FlatCap );
   p.setPen( pen );
 
   QPoint p1, p2, p3, p4, p5, p6;
-  if ( doubleNear( mLineAngle, 0.0 ) || doubleNear( mLineAngle, 360.0 ) || doubleNear( mLineAngle, 180.0 ) )
+  if ( doubleNear( lineAngle, 0.0 ) || doubleNear( lineAngle, 360.0 ) || doubleNear( lineAngle, 180.0 ) )
   {
     p1 = QPoint( 0, height );
     p2 = QPoint( width, height );
@@ -1375,7 +1394,7 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
     p5 = QPoint( 0, 2 * height );
     p6 = QPoint( width, 2 * height );
   }
-  else if ( doubleNear( mLineAngle, 90.0 ) || doubleNear( mLineAngle, 270.0 ) )
+  else if ( doubleNear( lineAngle, 90.0 ) || doubleNear( lineAngle, 270.0 ) )
   {
     p1 = QPoint( 0, height );
     p2 = QPoint( 0, 0 );
@@ -1384,10 +1403,10 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
     p5 = QPoint( -width, height );
     p6 = QPoint( -width, 0 );
   }
-  else if (( mLineAngle > 0 && mLineAngle < 90 ) || ( mLineAngle > 180 && mLineAngle < 270 ) )
+  else if (( lineAngle > 0 && lineAngle < 90 ) || ( lineAngle > 180 && lineAngle < 270 ) )
   {
-    dx = outputPixelDist * cos(( 90 - mLineAngle ) * M_PI / 180.0 );
-    dy = outputPixelDist * sin(( 90 - mLineAngle ) * M_PI / 180.0 );
+    dx = outputPixelDist * cos(( 90 - lineAngle ) * M_PI / 180.0 );
+    dy = outputPixelDist * sin(( 90 - lineAngle ) * M_PI / 180.0 );
     p1 = QPoint( 0, height );
     p2 = QPoint( width, 0 );
     p3 = QPoint( -dx, height - dy );
@@ -1395,10 +1414,10 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
     p5 = QPoint( dx, height + dy );
     p6 = QPoint( width + dx, dy ); //p6 = QPoint( p5.x() + width, p5.y() - height );
   }
-  else if (( mLineAngle < 180 ) || ( mLineAngle > 270 && mLineAngle < 360 ) )
+  else if (( lineAngle < 180 ) || ( lineAngle > 270 && lineAngle < 360 ) )
   {
-    dy = outputPixelDist * cos(( 180 - mLineAngle ) * M_PI / 180 );
-    dx = outputPixelDist * sin(( 180 - mLineAngle ) * M_PI / 180 );
+    dy = outputPixelDist * cos(( 180 - lineAngle ) * M_PI / 180 );
+    dx = outputPixelDist * sin(( 180 - lineAngle ) * M_PI / 180 );
     p1 = QPoint( width, height );
     p2 = QPoint( 0, 0 );
     p5 = QPoint( width + dx, height - dy );
@@ -1436,21 +1455,28 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
   {
     QImage transparentImage = patternImage.copy();
     QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
-    mBrush.setTextureImage( transparentImage );
+    brush.setTextureImage( transparentImage );
   }
   else
   {
-    mBrush.setTextureImage( patternImage );
+    brush.setTextureImage( patternImage );
   }
 
   QTransform brushTransform;
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
-  mBrush.setTransform( brushTransform );
+  brush.setTransform( brushTransform );
+}
+
+void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
+{
+  applyPattern( context, mBrush, mLineAngle, mDistance, mLineWidth, mColor );
 
   if ( mOutline )
   {
     mOutline->startRender( context.renderContext() );
   }
+
+  prepareExpressions( context.layer() );
 }
 
 void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext & )
@@ -1468,6 +1494,25 @@ QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
   map.insert( "distance_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceUnit ) );
   map.insert( "line_width_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mLineWidthUnit ) );
   map.insert( "offset_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit ) );
+
+  //data defined properties
+  if ( mLineAngleExpression )
+  {
+    map.insert( "lineangle_expression", mLineAngleExpression->dump() );
+  }
+  if ( mDistanceExpression )
+  {
+    map.insert( "distance_expression", mDistanceExpression->dump() );
+  }
+  if ( mLineWidthExpression )
+  {
+    map.insert( "linewidth_expression", mLineWidthExpression->dump() );
+  }
+  if ( mColorExpression )
+  {
+    map.insert( "color_expression", mColorExpression->dump() );
+  }
+
   return map;
 }
 
@@ -1481,6 +1526,24 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
   clonedLayer->setDistanceUnit( mDistanceUnit );
   clonedLayer->setLineWidthUnit( mLineWidthUnit );
   clonedLayer->setOffsetUnit( mOffsetUnit );
+
+  if ( mLineAngleExpression )
+  {
+    clonedLayer->setDataDefinedProperty( "lineangle", mLineAngleExpression->dump() );
+  }
+  if ( mDistanceExpression )
+  {
+    clonedLayer->setDataDefinedProperty( "distance", mDistanceExpression->dump() );
+  }
+  if ( mLineWidthExpression )
+  {
+    clonedLayer->setDataDefinedProperty( "linewidth", mLineWidthExpression->dump() );
+  }
+  if ( mColorExpression )
+  {
+    clonedLayer->setDataDefinedProperty( "color", mColorExpression->dump() );
+  }
+
   return clonedLayer;
 }
 
@@ -1545,6 +1608,152 @@ QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFa
   featureStyle.append( QString( ",dy:%1mm" ).arg( mDistance * widthScaleFactor ) );
   featureStyle.append( ")" );
   return featureStyle;
+}
+
+const QgsExpression* QgsLinePatternFillSymbolLayer::dataDefinedProperty( const QString& property ) const
+{
+  if ( property == "lineangle" )
+  {
+    return mLineAngleExpression;
+  }
+  else if ( property == "distance" )
+  {
+    return mDistanceExpression;
+  }
+  else if ( property == "linewidth" )
+  {
+    return mLineWidthExpression;
+  }
+  else if ( property == "color" )
+  {
+    return mColorExpression;
+  }
+  return 0;
+}
+
+QString QgsLinePatternFillSymbolLayer::dataDefinedPropertyString( const QString& property ) const
+{
+  const QgsExpression* ex = dataDefinedProperty( property );
+  return ex ? ex->dump() : QString();
+}
+
+void QgsLinePatternFillSymbolLayer::setDataDefinedProperty( const QString& property, const QString& expressionString )
+{
+  if ( property == "lineangle" )
+  {
+    delete mLineAngleExpression; mLineAngleExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "distance" )
+  {
+    delete mDistanceExpression; mDistanceExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "linewidth" )
+  {
+    delete mLineWidthExpression; mLineWidthExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "color" )
+  {
+    delete mColorExpression; mColorExpression = new QgsExpression( expressionString );
+  }
+}
+
+void QgsLinePatternFillSymbolLayer::removeDataDefinedProperty( const QString& property )
+{
+  if ( property == "lineangle" )
+  {
+    delete mLineAngleExpression; mLineAngleExpression = 0;
+  }
+  else if ( property == "distance" )
+  {
+    delete mDistanceExpression; mDistanceExpression = 0;
+  }
+  else if ( property == "linewidth" )
+  {
+    delete mLineWidthExpression; mLineWidthExpression = 0;
+  }
+  else if ( property == "color" )
+  {
+    delete mColorExpression; mColorExpression = 0;
+  }
+}
+
+void QgsLinePatternFillSymbolLayer::removeDataDefinedProperties()
+{
+  delete mLineAngleExpression; mLineAngleExpression = 0;
+  delete mDistanceExpression; mDistanceExpression = 0;
+  delete mLineWidthExpression; mLineWidthExpression = 0;
+  delete mColorExpression; mColorExpression = 0;
+}
+
+QSet<QString> QgsLinePatternFillSymbolLayer::usedAttributes() const
+{
+  QSet<QString> attributes;
+
+  //add data defined attributes
+  QStringList columns;
+  if ( mLineAngleExpression )
+    columns.append( mLineAngleExpression->referencedColumns() );
+  if ( mDistanceExpression )
+    columns.append( mDistanceExpression->referencedColumns() );
+  if ( mLineWidthExpression )
+    columns.append( mLineWidthExpression->referencedColumns() );
+  if ( mColorExpression )
+    columns.append( mColorExpression->referencedColumns() );
+
+  QStringList::const_iterator it = columns.constBegin();
+  for ( ; it != columns.constEnd(); ++it )
+  {
+    attributes.insert( *it );
+  }
+  return attributes;
+}
+
+void QgsLinePatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderContext& context )
+{
+  if ( !mLineAngleExpression && !mDistanceExpression && !mLineWidthExpression && !mColorExpression )
+  {
+    return; //no data defined settings
+  }
+
+  double lineAngle = mLineAngle;
+  if ( mLineAngleExpression )
+  {
+    lineAngle = mLineAngleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  double distance = mDistance;
+  if ( mDistanceExpression )
+  {
+    distance = mDistanceExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  double lineWidth = mLineWidth;
+  if ( mLineWidthExpression )
+  {
+    lineWidth = mLineWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  QColor color = mColor;
+  if ( mColorExpression )
+  {
+    color = QColor( mColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+  }
+  applyPattern( context, mBrush, lineAngle, distance, lineWidth, color );
+}
+
+void QgsLinePatternFillSymbolLayer::prepareExpressions( const QgsVectorLayer* vl )
+{
+  if ( !vl )
+  {
+    return;
+  }
+
+  const QgsFields& fields = vl->pendingFields();
+  if ( mLineAngleExpression )
+    mLineAngleExpression->prepare( fields );
+  if ( mDistanceExpression )
+    mDistanceExpression->prepare( fields );
+  if ( mLineWidthExpression )
+    mLineWidthExpression->prepare( fields );
+  if ( mColorExpression )
+    mColorExpression->prepare( fields );
 }
 
 QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &element )

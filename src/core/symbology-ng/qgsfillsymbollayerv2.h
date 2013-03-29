@@ -288,6 +288,14 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    QString dataDefinedPropertyString( const QString& property ) const;
+    void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    void removeDataDefinedProperty( const QString& property );
+    void removeDataDefinedProperties();
+
+    QSet<QString> usedAttributes() const;
+
   protected:
     /**Distance (in mm or map units) between lines*/
     double mDistance;
@@ -301,6 +309,19 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     /**Offset perpendicular to line direction*/
     double mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
+
+    //data defined properties
+    QgsExpression* mLineAngleExpression;
+    QgsExpression* mDistanceExpression;
+    QgsExpression* mLineWidthExpression;
+    QgsExpression* mColorExpression;
+
+    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
+
+  private:
+    void prepareExpressions( const QgsVectorLayer* vl );
+    /**Applies the svg pattern to the brush*/
+    void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
 };
 
 class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer

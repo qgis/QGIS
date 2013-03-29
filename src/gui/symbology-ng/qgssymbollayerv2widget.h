@@ -326,6 +326,7 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
     void on_mDistanceUnitComboBox_currentIndexChanged( int index );
     void on_mLineWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 };
 
 //////////
