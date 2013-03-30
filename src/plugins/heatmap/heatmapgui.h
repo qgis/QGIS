@@ -124,6 +124,12 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void on_mInputVectorCombo_currentIndexChanged( int index );
     void on_mBufferLineEdit_editingFinished();
     void on_kernelShapeCombo_currentIndexChanged( int index );
+
+    /** Estimate a reasonable starting value for the radius field */
+    double estimateRadius();
+
+    inline double max( double a, double b )
+    { return a > b ? a : b; }
 };
 
 #endif

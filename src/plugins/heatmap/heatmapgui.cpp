@@ -204,13 +204,57 @@ void HeatmapGui::on_mRadiusUnitCombo_currentIndexChanged( int index )
   updateBBox();
 }
 
+/*
+ * Estimate a good default radius for the heatmap, based on the
+ * bounding box size of the layer
+ */
+double HeatmapGui::estimateRadius()
+{
+
+  QgsVectorLayer *inputLayer = inputVectorLayer();
+
+  // No input layer? Default to radius of 100
+  if ( !inputLayer )
+    return 100;
+
+  // Find max dimension of layer bounding box
+  QgsRectangle mExtent = inputLayer->extent();
+  double extentWidth = abs( mExtent.xMinimum() - mExtent.xMaximum() );
+  double extentHeight = abs( mExtent.yMinimum() - mExtent.yMaximum() );
+  double maxExtent = max( extentWidth, extentHeight );
+
+  // Return max dimension divided by 30. This is fairly arbitrary
+  // but approximately corresponds to the default value chosen by ArcMap
+  // TODO - a better solution is to let the data define the radius
+  // choice by setting the radius equal to the average Nearest
+  // Neighbour Index for the closest n points
+
+  double estimate = maxExtent / 30;
+
+  if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
+  {
+    // metres selected, so convert estimate from map units
+    QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
+    estimate = estimate / mapUnitsOf( 1, layerCrs );
+  }
+
+  // Make estimate pretty by rounding off to first digit only (eg 356->300, 0.567->0.5)
+  double tens = pow( 10, floor( log10( estimate ) ) );
+  return floor( estimate / tens + 0.5 ) * tens;
+}
+
 void HeatmapGui::on_mInputVectorCombo_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
+
+  // Set initial value for radius field based on layer's extent
+  mBufferLineEdit->setText( QString::number( estimateRadius() ) );
+
+  updateBBox();
+
   if ( advancedGroupBox->isChecked() )
   {
     populateFields();
-    updateBBox();
   }
   QgsDebugMsg( QString( "Input vector index changed to %1" ).arg( index ) );
 }
