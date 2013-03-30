@@ -37,6 +37,9 @@ class CORE_EXPORT QgsPythonRunner
     /** execute a python statement */
     static bool run( QString command, QString messageOnError = QString() );
 
+    /** Eval a python statement */
+    static bool eval( QString command, QString& result);
+
     /** assign an instance of python runner so that run() can be used.
       This method should be called during app initialization.
       Takes ownership of the object, deletes previous instance. */
@@ -48,6 +51,8 @@ class CORE_EXPORT QgsPythonRunner
     virtual ~QgsPythonRunner();
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
+
+    virtual bool evalCommand( QString command, QString& result ) = 0;
 
     static QgsPythonRunner* mInstance;
 };

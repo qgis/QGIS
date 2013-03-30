@@ -6232,6 +6232,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 {
   public:
     QgsPythonRunnerImpl( QgsPythonUtils* pythonUtils ) : mPythonUtils( pythonUtils ) {}
+
     virtual bool runCommand( QString command, QString messageOnError = QString() )
     {
       if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -6239,6 +6240,15 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
         return mPythonUtils->runString( command, messageOnError, false );
       }
       return false;
+    }
+
+    virtual bool evalCommand( QString command, QString &result )
+    {
+        if  ( mPythonUtils && mPythonUtils->isEnabled() )
+        {
+            return mPythonUtils->evalString( command, result );
+        }
+        return false;
     }
 
   protected:
