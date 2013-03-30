@@ -106,10 +106,22 @@ void QgsColorButton::changeEvent( QEvent* e )
   QPushButton::changeEvent( e );
 }
 
+#if 0 // causes too many cyclical updates, but may be needed on some platforms
 void QgsColorButton::paintEvent( QPaintEvent* e )
 {
-  setButtonBackground();
   QPushButton::paintEvent( e );
+
+  if ( !mBackgroundSet )
+  {
+    setButtonBackground();
+  }
+}
+#endif
+
+void QgsColorButton::showEvent( QShowEvent* e )
+{
+  setButtonBackground();
+  QPushButton::showEvent( e );
 }
 
 void QgsColorButton::setColor( const QColor &color )
