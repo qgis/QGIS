@@ -37,6 +37,7 @@ email                : sherman at mrcc.com
 #include <QWheelEvent>
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
@@ -1090,6 +1091,12 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
 
   if ( mDrawing )
   {
+    return;
+  }
+
+  if ( QgsApplication::keyboardModifiers() )
+  {
+    // leave the wheel for map tools if any modifier pressed
     return;
   }
 
