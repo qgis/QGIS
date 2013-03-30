@@ -86,8 +86,8 @@ class K3ProcessPrivate
     }
 
     K3Process::Communication usePty;
-    bool addUtmp : 1;
-    bool useShell : 1;
+  bool addUtmp : 1;
+  bool useShell : 1;
 
     KPty *pty;
 
@@ -151,7 +151,7 @@ K3Process::setupEnvironment()
   }
   if ( !d->wd.isEmpty() )
   {
-    chdir( QFile::encodeName( d->wd ).data() );
+    ( void ) chdir( QFile::encodeName( d->wd ).data() );
   }
 }
 
@@ -356,7 +356,7 @@ bool K3Process::start( RunMode runmode, Communication comm )
     execvp( executable, arglist );
 
     char resultByte = 1;
-    write( fd[1], &resultByte, 1 );
+    ( void ) write( fd[1], &resultByte, 1 );
     _exit( -1 );
   }
   else if ( pid_ == -1 )

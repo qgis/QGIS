@@ -201,7 +201,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     {
       fprintf( stderr, "Fatal: %s\n", msg );
 #if defined(linux) && !defined(ANDROID)
-      write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
+      ( void ) write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
       void *buffer[256];
       int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
       backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
