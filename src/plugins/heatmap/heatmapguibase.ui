@@ -26,7 +26,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="mInputLabel">
      <property name="text">
-      <string>Input Point Vector</string>
+      <string>Input point layer</string>
      </property>
     </widget>
    </item>
@@ -36,7 +36,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="mOutputLabel">
      <property name="text">
-      <string>Output Raster</string>
+      <string>Output raster</string>
      </property>
     </widget>
    </item>
@@ -59,7 +59,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="mFormatLabel">
      <property name="text">
-      <string>Output Format</string>
+      <string>Output format</string>
      </property>
     </widget>
    </item>
@@ -137,7 +137,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="cellsizeXLabel">
           <property name="text">
-           <string>Cell Size X</string>
+           <string>Cell size X</string>
           </property>
           <property name="buddy">
            <cstring>cellXLineEdit</cstring>
@@ -157,7 +157,7 @@
         <item row="1" column="2">
          <widget class="QLabel" name="cellsizeYLabel">
           <property name="text">
-           <string>Cell Size Y</string>
+           <string>Cell size Y</string>
           </property>
           <property name="buddy">
            <cstring>cellYLineEdit</cstring>
@@ -183,7 +183,7 @@
         <item row="1" column="0">
          <widget class="QCheckBox" name="useRadius">
           <property name="text">
-           <string>Use Radius from field</string>
+           <string>Use radius from field</string>
           </property>
          </widget>
         </item>
@@ -214,7 +214,7 @@
         <item row="2" column="0">
          <widget class="QCheckBox" name="useWeight">
           <property name="text">
-           <string>Use Weight from field</string>
+           <string>Use weight from field</string>
           </property>
          </widget>
         </item>
@@ -238,7 +238,7 @@
         <item row="3" column="0">
          <widget class="QLabel" name="mDecayLabel">
           <property name="text">
-           <string>Decay Ratio</string>
+           <string>Decay ratio</string>
           </property>
          </widget>
         </item>
@@ -246,7 +246,7 @@
          <widget class="QComboBox" name="kernelShapeCombo">
           <item>
            <property name="text">
-            <string>Quartic (Biweight)</string>
+            <string>Quartic (biweight)</string>
            </property>
           </item>
           <item>
@@ -274,7 +274,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="kernelShapeLable">
           <property name="text">
-           <string>Kernel Shape</string>
+           <string>Kernel shape</string>
           </property>
          </widget>
         </item>
