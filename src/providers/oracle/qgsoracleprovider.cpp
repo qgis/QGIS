@@ -918,23 +918,14 @@ bool QgsOracleProvider::determinePrimaryKey()
         {
           const QgsField &fld = mAttributeFields.at( idx );
 
-          if ( fld.type() == QVariant::Int ||
-               fld.type() == QVariant::LongLong ||
-               ( fld.type() == QVariant::Double && fld.precision() == 0 ) )
+          if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
           {
-            if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
-            {
-              mPrimaryKeyType = pktInt;
-              mPrimaryKeyAttrs << idx;
-            }
-            else
-            {
-              QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "Oracle" ) );
-            }
+            mPrimaryKeyType = ( fld.type() == QVariant::Int || fld.type() == QVariant::LongLong || ( fld.type() == QVariant::Double && fld.precision() == 0 ) ) ? pktInt : pktFidMap;
+            mPrimaryKeyAttrs << idx;
           }
           else
           {
-            QgsMessageLog::logMessage( tr( "Type '%1' of primary key field '%2' for view invalid." ).arg( fld.typeName() ).arg( primaryKey ), tr( "Oracle" ) );
+            QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "Oracle" ) );
           }
         }
         else

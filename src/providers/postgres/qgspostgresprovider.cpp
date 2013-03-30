@@ -1035,21 +1035,14 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
           if ( idx >= 0 )
           {
-            if ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong )
+            if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
             {
-              if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
-              {
-                mPrimaryKeyType = pktInt;
-                mPrimaryKeyAttrs << idx;
-              }
-              else
-              {
-                QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
-              }
+              mPrimaryKeyType = ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong ) ? pktInt : pktFidMap;
+              mPrimaryKeyAttrs << idx;
             }
             else
             {
-              QgsMessageLog::logMessage( tr( "Type '%1' of primary key field '%2' for view invalid." ).arg( mAttributeFields[idx].typeName() ).arg( primaryKey ), tr( "PostGIS" ) );
+              QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
             }
           }
           else

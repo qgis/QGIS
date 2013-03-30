@@ -273,7 +273,7 @@ QStringList QgsPostgresConn::pkCandidates( QString schemaName, QString viewName 
 {
   QStringList cols;
 
-  QString sql = QString( "SELECT attname FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE pg_type.typname IN ('int2','int4','int8','oid','serial','serial8') AND attrelid=regclass('%1.%2')" )
+  QString sql = QString( "SELECT attname FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2')" )
                 .arg( quotedIdentifier( schemaName ) )
                 .arg( quotedIdentifier( viewName ) );
   QgsDebugMsg( sql );
