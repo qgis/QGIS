@@ -117,6 +117,8 @@ class CORE_EXPORT QgsFeature
     //! Constructor
     QgsFeature( QgsFeatureId id = QgsFeatureId() );
 
+    QgsFeature( const QgsFields& fields, QgsFeatureId id = QgsFeatureId() );
+
     /** copy ctor needed due to internal pointer */
     QgsFeature( const QgsFeature & rhs );
 

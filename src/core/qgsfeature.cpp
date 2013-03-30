@@ -37,6 +37,16 @@ QgsFeature::QgsFeature( QgsFeatureId id )
   // NOOP
 }
 
+QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
+    : mFid( id )
+    , mGeometry( 0 )
+    , mOwnsGeometry( 0 )
+    , mValid( false )
+    , mFields( &fields )
+{
+    initAttributes( fields.count() );
+}
+
 QgsFeature::QgsFeature( QgsFeature const & rhs )
     : mFid( rhs.mFid )
     , mAttributes( rhs.mAttributes )
