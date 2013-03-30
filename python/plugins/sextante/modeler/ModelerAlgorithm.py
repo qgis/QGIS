@@ -59,6 +59,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         newone = ModelerAlgorithm()
         newone.openModel(self.descriptionFile)
         newone.provider = self.provider
+        newone.deactivated = self.deactivate
         return newone
 
     def __init__(self):
@@ -113,7 +114,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
         self.descriptionFile = filename
         lines = codecs.open(filename, "r", encoding='utf-8')
-        line = lines.readline().strip("\n")
+        line = lines.readline().strip("\n").strip("\r")
         iAlg = 0
         try:
             while line != "":
@@ -141,11 +142,11 @@ class ModelerAlgorithm(GeoAlgorithm):
                     algLine = line[len("ALGORITHM:"):]
                     alg = ModelerUtils.getAlgorithm(algLine)
                     if alg is not None:
-                        posline = lines.readline().strip("\n")
+                        posline = lines.readline().strip("\n").strip("\r")
                         tokens = posline.split(",")
                         self.algPos.append(QtCore.QPointF(float(tokens[0]), float(tokens[1])))
                         self.algs.append(alg)
-                        dependenceline = lines.readline().strip("\n")
+                        dependenceline = lines.readline().strip("\n").strip("\r")
                         dependencies = [];
                         if dependenceline != str(None):
                             for index in dependenceline.split(","):
@@ -154,14 +155,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 except:
                                     pass #a quick fix fwhile I figure out how to solve problems when parsing this 
                         for param in alg.parameters:
-                            line = lines.readline().strip("\n")
+                            line = lines.readline().strip("\n").strip("\r")
                             if line==str(None):
                                 algParams[param.name] = None
                             else:
                                 tokens = line.split("|")
                                 algParams[param.name] = AlgorithmAndParameter(int(tokens[0]), tokens[1])
                         for out in alg.outputs:
-                            line = lines.readline().strip("\n")
+                            line = lines.readline().strip("\n").strip("\r")
                             if str(None)!=line:
                                 algOutputs[out.name] = line
                                 #we add the output to the algorithm, with a name indicating where it comes from
@@ -178,7 +179,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         iAlg += 1
                     else:
                         raise WrongModelException("Error in algorithm name: " + algLine)
-                line = lines.readline().strip("\n")
+                line = lines.readline().strip("\n").strip("\r")
         except Exception, e:
             if isinstance (e, WrongModelException):
                 raise e

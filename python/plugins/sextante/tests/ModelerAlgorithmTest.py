@@ -9,14 +9,12 @@ from osgeo.gdalconst import GA_ReadOnly
 from sextante.modeler import ModelerAlgorithmProvider
 from sextante.modeler.ModelerAlgorithm import ModelerAlgorithm
 
-
 class ModelerAlgorithmTest(unittest.TestCase):
 
     def testCreateModel(self):
         pass
 
     def testRemoveAlgorithm(self):
-        '''NOTE:this is not passing, since the algCopy method reload from file'''
         folder = os.path.join(os.path.dirname(ModelerAlgorithmProvider.__file__), "models")
         modelfile = os.path.join(folder, "noinputs.model")
         model = ModelerAlgorithm()
@@ -24,14 +22,50 @@ class ModelerAlgorithmTest(unittest.TestCase):
         self.assertTrue(2, len(model.algs))
         self.assertFalse(model.removeAlgorithm(0))
         self.assertTrue(model.removeAlgorithm(len(model.algs) - 1));
-        outputs = sextante.runalg(model, None)
+        outputs = model.execute(None)
         self.assertEquals(2, len(outputs))
         output=outputs['SAVENAME_ALG0']
         layer=QGisLayers.getObjectFromUri(output, True)
         self.assertIsNone(layer)
 
     def testRemoveParameter(self):
-        pass
+        folder = os.path.join(os.path.dirname(ModelerAlgorithmProvider.__file__), "models")
+        modelfile = os.path.join(folder, "watersheds.model")
+        model = ModelerAlgorithm()
+        model.openModel(modelfile)
+        self.assertTrue(2, len(model.parameters))
+        self.assertFalse(model.removeParameter(0))
+        self.assertTrue(2, len(model.parameters))
+        
+    def testComputingDependecies(self):
+        folder = os.path.join(os.path.dirname(ModelerAlgorithmProvider.__file__), "models")
+        modelfile = os.path.join(folder, "watersheds.model")
+        model = ModelerAlgorithm()
+        model.openModel(modelfile)
+        self.assertTrue(2, len(model.parameters))
+        self.assertTrue(5, len(model.algs))
+        dependent = model.getDependentAlgorithms(0)
+        self.assertEquals([0,1,2,3,4], dependent)
+        dependent = model.getDependentAlgorithms(1)
+        self.assertEquals([1,2,3,4], dependent)
+        dependent = model.getDependentAlgorithms(2)
+        self.assertEquals([2,3,4], dependent)
+        dependent = model.getDependentAlgorithms(3)
+        self.assertEquals([3,4], dependent)
+        dependent = model.getDependentAlgorithms(4)
+        self.assertEquals([4], dependent)
+        
+        depends = model.getDependsOnAlgorithms(0)
+        self.assertEquals([], depends)
+        depends = model.getDependsOnAlgorithms(1)
+        self.assertEquals([0], depends)
+        depends = model.getDependsOnAlgorithms(2)
+        self.assertEquals([1,0], depends)
+        depends = model.getDependsOnAlgorithms(3)
+        self.assertEquals([2,1,0], depends)
+        depends = model.getDependsOnAlgorithms(4)
+        self.assertEquals([3,2,1,0], depends)
+                
     
     
     
