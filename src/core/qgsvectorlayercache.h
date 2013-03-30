@@ -30,7 +30,7 @@ class QgsAbstractCacheIndex;
  * This class caches features of a given QgsVectorLayer.
  *
  * @brief
- * The cached features can be indexed by @link {QgsAbstractCacheIndex}.
+ * The cached features can be indexed by @link QgsAbstractCacheIndex @endlink.
  *
  * Proper indexing for a given use-case may speed up performance substantially.
  */
@@ -41,9 +41,9 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
   private:
     /**
-     * This is a wrapper class around a cached @link {QgsFeature}, which will inform
-     * the cache, when it has been deleted, so indexes can be updated that the wrapped
-     * feature needs to be fetched again if needed.
+     * This is a wrapper class around a cached @link QgsFeature @endlink, which
+     * will inform the cache, when it has been deleted, so indexes can be
+     * updated that the wrapped feature needs to be fetched again if needed.
      */
     class QgsCachedFeature
     {
@@ -212,7 +212,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     /**
      * @brief Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
      * signal is being emitted, but before the local reference to it has been set to NULL. So call to
-     * @link {layer()} will still return a valid pointer for cleanup purpose.
+     * @link layer() @endlink will still return a valid pointer for cleanup purpose.
      */
     void cachedLayerDeleted();
 

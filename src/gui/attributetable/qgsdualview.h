@@ -116,8 +116,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Will be called periodically, when loading layers from slow data providers.
      *
-     * @param i         The number of features already loaded
-     * @param canceled  Set to true to cancel
+     * @param i       The number of features already loaded
+     * @param cancel  Set to true to cancel
      */
     virtual void progress( int i, bool& cancel );
 

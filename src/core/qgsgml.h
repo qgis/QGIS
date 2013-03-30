@@ -48,6 +48,8 @@ class CORE_EXPORT QgsGml: public QObject
 
     /** Does the Http GET request to the wfs server
      *  @param uri GML URL
+     *  @param wkbType wkbType to retrieve
+     *  @param extent retrieved extents
      *  @return 0 in case of success
      */
     int getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent = 0 );

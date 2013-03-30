@@ -51,6 +51,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
   public:
     /** Constructor
      * @param settingsKey QSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
+     * @param parent parent object (owner)
+     * @param fl widget flags
      */
     QgsOptionsDialogBase( QString settingsKey, QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsOptionsDialogBase();

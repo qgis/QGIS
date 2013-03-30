@@ -600,7 +600,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   QString expFilter;
   // BBOX
   bool bboxOk = false;
-  double minx, miny, maxx, maxy;
+  double minx = 0.0, miny = 0.0, maxx = 0.0, maxy = 0.0;
 
   //read FEATUREDID
   bool featureIdOk = false;
@@ -788,10 +788,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       if ( bboxOk )
         searchRect.set( minx, miny, maxx, maxy );
       else
-        searchRect.set( searchRect.xMinimum() - 0.000001
-                        , searchRect.yMinimum() - 0.000001
-                        , searchRect.xMaximum() + 0.000001
-                        , searchRect.yMaximum() + 0.000001 );
+        searchRect.set( searchRect.xMinimum() - 0.000001,
+                        searchRect.yMinimum() - 0.000001,
+                        searchRect.xMaximum() + 0.000001,
+                        searchRect.yMaximum() + 0.000001 );
       QgsCoordinateReferenceSystem layerCrs = layer->crs();
 
       long featCounter = 0;

@@ -35,6 +35,8 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
     /** Constructor
      * Modal busy indicator dialog with no buttons.
      * @param message Text to show above busy progress indicator.
+     * @param parent parent object (owner)
+     * @param fl widget flags
      * @note added in 1.9
     */
     QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );

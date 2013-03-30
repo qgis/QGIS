@@ -32,7 +32,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     /**
      * @brief
      * This constructor creates a feature iterator, that delivers only cached information, based on the
-     * {@link QgsFeatureIds}. No request is made to the backend.
+     * @link QgsFeatureIds @endlink. No request is made to the backend.
      *
      * @param vlCache          The vector layer cache to use
      * @param featureRequest   The feature request to answer

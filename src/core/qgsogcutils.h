@@ -30,8 +30,9 @@ class CORE_EXPORT QgsOgcUtils
   public:
 
     /** static method that creates geometry from GML
-     @param XML representation of the geometry. GML elements are expected to be
-       in default namespace (<Point>...</Point>) or in "gml" namespace (<gml:Point>...</gml:Point>)
+     @param xmlString xml representation of the geometry. GML elements are expected to be
+       in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
+       "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
      */
     static QgsGeometry* geometryFromGML( const QString& xmlString );
 
@@ -69,8 +70,10 @@ class CORE_EXPORT QgsOgcUtils
     /** Parse XML with OGC filter into QGIS expression */
     static QgsExpression* expressionFromOgcFilter( const QDomElement& element );
 
-    /** Creates OGC filter XML element. Supports minimum standard filter according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
-        @return valid <Filter> QDomElement on success, otherwise null QDomElement
+    /** Creates OGC filter XML element. Supports minimum standard filter
+     * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
+     * @return valid \verbatim <Filter> \endverbatim QDomElement on success,
+     * otherwise null QDomElement
      */
     static QDomElement expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage = 0 );
 
@@ -87,27 +90,29 @@ class CORE_EXPORT QgsOgcUtils
     static QgsGeometry* geometryFromGMLMultiLineString( const QDomElement& geometryElement );
     /** static method that creates geometry from GML MultiPolygon */
     static QgsGeometry* geometryFromGMLMultiPolygon( const QDomElement& geometryElement );
-    /** Reads the <gml:coordinates> element and extracts the coordinates as points
+    /** Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        @param coords list where the found coordinates are appended
-       @param elem the <gml:coordinates> element
+       @param elem the \verbatim <gml:coordinates> \endverbatim element
        @return boolean for success*/
     static bool readGMLCoordinates( std::list<QgsPoint>& coords, const QDomElement elem );
-    /** Reads the <gml:pos> or <gml:posList> element and extracts the coordinates as points
+    /** Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
+       and extracts the coordinates as points
        @param coords list where the found coordinates are appended
-       @param elem the <gml:pos> or <gml:posList> element
+       @param elem the \verbatim <gml:pos> \endverbatim or
+                    \verbatim <gml:posList> \endverbatim element
        @return boolean for success*/
     static bool readGMLPositions( std::list<QgsPoint>& coords, const QDomElement elem );
 
 
     /**Create a GML coordinates element from a point list.
       @param points list of data points
-      @param the GML document
+      @param doc the GML document
       @return QDomElement */
     static QDomElement createGMLCoordinates( const QVector<QgsPoint> points, QDomDocument& doc );
 
     /**Create a GML pos or posList element from a point list.
       @param points list of data points
-      @param the GML document
+      @param doc the GML document
       @return QDomElement */
     static QDomElement createGMLPositions( const QVector<QgsPoint> points, QDomDocument& doc );
 
@@ -115,19 +120,19 @@ class CORE_EXPORT QgsOgcUtils
     static QgsExpression::Node* nodeFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handle a generic binary operator
     static QgsExpression::NodeBinaryOperator* nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
-    //! handles various spatial operation tags (<Intersects>, <Touches> etc)
+    //! handles various spatial operation tags (\verbatim <Intersects> \endverbatim, \verbatim <Touches> \endverbatim etc.)
     static QgsExpression::NodeFunction* nodeSpatialOperatorFromOgcFilter( QDomElement& element, QString& errorMessage );
-    //! handle <Not> tag
+    //! handle \verbatim <Not> \endverbatim tag
     static QgsExpression::NodeUnaryOperator* nodeNotFromOgcFilter( QDomElement &element, QString &errorMessage );
-    //! handles <Function> tag
+    //! handles \verbatim <Function> \endverbatim tag
     static QgsExpression::NodeFunction* nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage );
-    //! handles <Literal> tag
+    //! handles \verbatim <Literal> \endverbatim tag
     static QgsExpression::Node* nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage );
-    //! handles <PropertyName> tag
+    //! handles \verbatim <PropertyName> \endverbatim tag
     static QgsExpression::NodeColumnRef* nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage );
-    //! handles <PropertyIsBetween> tag
+    //! handles \verbatim <PropertyIsBetween> \endverbatim tag
     static QgsExpression::Node* nodeIsBetweenFromOgcFilter( QDomElement& element, QString& errorMessage );
-    //! handles <PropertyIsNull> tag
+    //! handles \verbatim <PropertyIsNull> \endverbatim tag
     static QgsExpression::NodeBinaryOperator* nodePropertyIsNullFromOgcFilter( QDomElement& element, QString& errorMessage );
 
     static QDomElement expressionNodeToOgcFilter( const QgsExpression::Node* node, QDomDocument& doc, QString& errorMessage );

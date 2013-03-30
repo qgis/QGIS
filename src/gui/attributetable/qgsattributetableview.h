@@ -32,10 +32,10 @@ class QProgressDialog;
 
 /**
  * @brief
- * Provides a table view of features of a {@link QgsVectorLayer}.
+ * Provides a table view of features of a @link QgsVectorLayer @endlink.
  *
- * This can either be used as a standalone widget. {@link QgsBrowser} features a reference implementation.
- * Or this can be used within the {@link QgsDualView} stacked widget.
+ * This can either be used as a standalone widget. QgsBrowser features a reference implementation.
+ * Or this can be used within the @link QgsDualView @endlink stacked widget.
  */
 
 class GUI_EXPORT QgsAttributeTableView : public QTableView
@@ -51,14 +51,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     /**
      * The selection used for synchronisation with other views.
      *
-     * @param masterSelection The selection to synchronize to and from
      */
     QItemSelectionModel* masterSelection();
 
     /**
      * Autocreates the models
-     * @param layerCach  The {@link QgsVectorLayerCache} to use ( as backend )
-     * @param canvas     The {@link QgsMapCanvas} to use ( for the currently visible features filter )
+     * @param layerCache The @link QgsVectorLayerCache @endlink to use ( as backend )
+     * @param canvas     The @link QgsMapCanvas @endlink to use ( for the currently visible features filter )
      *
      * @deprecated
      */
@@ -99,7 +98,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     /**
      * @brief
-     * Is called when the context menu will be shown. Emits a {@link willShowContextMenu} signal,
+     * Is called when the context menu will be shown. Emits a @link willShowContextMenu @endlink signal,
      * so the menu can be populated by other parts of the application.
      *
      * @param event The associated event object.
@@ -119,7 +118,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param menu     If additional QMenuItems are added, they will show up in the context menu.
      * @param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
-     *                 In most cases, this will be a {@link QgsAttributeTableFilterModel}
+     *                 In most cases, this will be a @link QgsAttributeTableFilterModel @endlink
      */
     void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
 

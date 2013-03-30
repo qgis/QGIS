@@ -46,7 +46,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel
      *
      * Make sure, the master model is already loaded, so the selection will get synchronized.
      *
-     * @param layerCache The layer cache to use
+     * @param parent parent object (owner)
      * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * @param canvas  The mapCanvas. Used to identify the currently visible features.
      */

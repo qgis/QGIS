@@ -865,7 +865,7 @@ bool QgsOgcUtils::readGMLPositions( std::list<QgsPoint>& coords, const QDomEleme
 {
   //tupel and coord separator are the same
   QString coordSeparator = " ";
-  QString tupleSeparator = " ";
+  QString tupelSeparator = " ";
   //"decimal" has to be "."
 
 
@@ -893,9 +893,7 @@ bool QgsOgcUtils::readGMLPositions( std::list<QgsPoint>& coords, const QDomEleme
       srsDimension = 2;
     }
   }
-  //srsDimension was added by rdlhont for future support of 3d geometries
-  //currently it is unused so I have marked it as such. TS
-  Q_UNUSED(srsDimension);
+
   for ( int i = 0; i < posSize / srsDimension; i++ )
   {
     x = pos.at( i * srsDimension ).toDouble( &conversionSuccess );
@@ -976,9 +974,8 @@ QgsRectangle QgsOgcUtils::rectangleFromGMLEnvelope( const QDomNode& envelopeNode
       srsDimension = 2;
     }
   }
-  //srsDimension was added by rdlhont for future support of 3d geometries
-  //currently it is unused so I have marked it as such. TS
-  Q_UNUSED(srsDimension);
+
+  Q_UNUSED( srsDimension );
 
   bString = elem.text();
   double xmax = bString.section( " ", 0, 0 ).toDouble( &conversionSuccess );

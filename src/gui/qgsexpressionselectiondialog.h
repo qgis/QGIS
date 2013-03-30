@@ -36,6 +36,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * Creates a new selection dialog.
      * @param layer     The layer on which the selection is to be performed.
      * @param startText A default expression text to be applied (Defaults to empty)
+     * @param parent parent object (owner)
      */
     QgsExpressionSelectionDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = NULL );
 

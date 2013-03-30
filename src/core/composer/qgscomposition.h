@@ -172,12 +172,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Returns a composer item given its unique identifier.
       @note added in 2.0
-      @param theId - A QString representing the UUID of the item to
-      @param inAllComposers - Whether the search should be done in all composers of the project
-        retrieve.
-      @return QgsComposerItem pointer or 0 pointer if no such item exists.
+      @param theUuid A QString representing the UUID of the item to
       **/
-    //const QgsComposerItem* getComposerItemByUuid( QString theUuid, bool inAllComposers = false ) const;//does not work since it's impossible to get QGisApp::instance()
     const QgsComposerItem* getComposerItemByUuid( QString theUuid ) const;
 
     int printResolution() const {return mPrintResolution;}
