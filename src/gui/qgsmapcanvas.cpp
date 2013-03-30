@@ -1094,6 +1094,11 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
     return;
   }
 
+  if ( mMapTool )
+  {
+    mMapTool->wheelEvent( e );
+  }
+
   if ( QgsApplication::keyboardModifiers() )
   {
     // leave the wheel for map tools if any modifier pressed
