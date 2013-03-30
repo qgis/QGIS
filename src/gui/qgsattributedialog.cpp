@@ -346,6 +346,14 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       QgsPythonRunner::run( QString( "import %1" ).arg( module.left( pos ) ) );
     }
 
+    /* Reload the module if the DEBUGMODE switch has been set in the module.
+     If set to False you have to reload QGIS to reset it to True due to Python
+     module caching */
+    QString reload = QString("if hasattr(%1,'DEBUGMODE') and %1.DEBUGMODE:"
+                             "    reload(%1)").arg( module.left( pos ) );
+
+    QgsPythonRunner::run( reload );
+
     mFormNr = smFormCounter++;
 
     QString form =  QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" )
