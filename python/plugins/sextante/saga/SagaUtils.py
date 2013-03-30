@@ -115,8 +115,8 @@ class SagaUtils:
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
 
-    @classmethod
-    def checkSagaIsInstalled(cls):
+    @staticmethod
+    def checkSagaIsInstalled(ignoreRegistrySettings=False):
         if SextanteUtils.isWindows():
             path = SagaUtils.sagaPath()
             if path == "":
@@ -127,31 +127,13 @@ class SagaUtils:
                         + "Please, go to the SEXTANTE settings dialog, and check that the SAGA\n"
                         + "folder is correctly configured")
 
-        SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
-        settings = QSettings()
-        if settings.contains(SAGA_INSTALLED):
-            return
+        if not ignoreRegistrySettings:
+            SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
+            settings = QSettings()
+            if settings.contains(SAGA_INSTALLED):
+                return
 
-        try:
-            #===================================================================
-            # qgis = QGisLayers.iface
-            # crs = qgis.mapCanvas().mapRenderer().destinationCrs()
-            # fields = []
-            # fields.append(QgsField("NUM_FIELD", QVariant.Int))
-            # filename = SextanteUtils.getTempFilename("shp")
-            # writer = SextanteVectorWriter(filename, None, fields, QGis.WKBPoint, crs)
-            # for x in range(5):
-            #    for y in range(5):
-            #        attrs = []
-            #        attrs.append(QVariant(x))
-            #        outFeat = QgsFeature()
-            #        pt = QgsPoint(x, y)
-            #        outFeat.setGeometry(QgsGeometry.fromPoint(pt))
-            #        outFeat.setAttributes(attrs)
-            #        writer.addFeature(outFeat)
-            # del writer.writer
-            # del writer
-            #===================================================================
+        try:      
             from sextante.core.Sextante import runalg
             result = runalg("saga:thiessenpolygons", points(), None)
             if not os.path.exists(result['POLYGONS']):
@@ -159,6 +141,5 @@ class SagaUtils:
         except:
             s = traceback.format_exc()
             return "Error while checking SAGA installation. SAGA might not be correctly configured.\n" + s;
-
 
         settings.setValue("/SextanteQGIS/SagaInstalled", True)

@@ -23,6 +23,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+from PyQt4.QtGui import *
+from qgis.core import *
 from sextante.core.QGisLayers import QGisLayers
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputVector import OutputVector
@@ -31,14 +34,14 @@ from sextante.core.SextanteResults import SextanteResults
 from sextante.gui.ResultsDialog import ResultsDialog
 from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.outputs.OutputHTML import OutputHTML
-from PyQt4.QtGui import *
-from qgis.core import *
+from sextante.gui.CouldNotLoadResultsDialog import CouldNotLoadResultsDialog
 from sextante.core.SextanteConfig import SextanteConfig
-import os
+
 class SextantePostprocessing:
 
     @staticmethod
     def handleAlgorithmResults(alg, progress, showResults = True):
+        wrongLayers = []
         htmlResults = False;
         progress.setText("Loading resulting layers")
         i =  0
@@ -58,12 +61,19 @@ class SextantePostprocessing:
                             name = out.description
                         QGisLayers.load(out.value, name, alg.crs, RenderingStyles.getStyle(alg.commandLineName(),out.name))
                 except Exception, e:
-                    QMessageBox.critical(None, "Error", str(e))
+                    wrongLayers.append(out)
+                    #QMessageBox.critical(None, "Error", str(e))
             elif isinstance(out, OutputHTML):
                 SextanteResults.addResult(out.description, out.value)
                 htmlResults = True
             i += 1
-        if showResults and htmlResults:
+        if wrongLayers:
+            QApplication.restoreOverrideCursor()
+            dlg = CouldNotLoadResultsDialog(wrongLayers, alg)
+            dlg.exec_()
+        
+        if showResults and htmlResults and not wrongLayers:
             QApplication.restoreOverrideCursor()
             dlg = ResultsDialog()
             dlg.exec_()
+        
