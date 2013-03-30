@@ -113,7 +113,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     //grass provider has its own mechanism of feature addition
     if ( provider->capabilities() & QgsVectorDataProvider::AddFeatures )
     {
-      QgsFeature* f = new QgsFeature( 0 );
+      QgsFeature* f = new QgsFeature( vlayer->pendingFields(), 0 );
 
       QgsGeometry *g = 0;
       if ( layerWKBType == QGis::WKBPoint || layerWKBType == QGis::WKBPoint25D )
@@ -198,7 +198,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
 
       //create QgsFeature with wkb representation
-      QgsFeature* f = new QgsFeature( 0 );
+      QgsFeature* f = new QgsFeature( vlayer->pendingFields(),  0 );
 
       QgsGeometry *g;
 
