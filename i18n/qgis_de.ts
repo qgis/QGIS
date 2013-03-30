@@ -4281,22 +4281,22 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
         <translation>Erweiterte Optionen konnten nicht aktiviert werden.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="458"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="502"/>
         <source>Layer not found</source>
         <translation>Layer nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="458"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="502"/>
         <source>Layer %1 not found.</source>
         <translation>Layer %1 nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="420"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="464"/>
         <source>Invalid output filename</source>
         <translation>Ungültiger Ausgabedateiname</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="420"/>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="464"/>
         <source>Please enter a valid output file path and name.</source>
         <translation>Bitte geben Sie einen gültigen Dateiennamen an.</translation>
     </message>
@@ -4315,18 +4315,23 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="29"/>
-        <source>Input Point Vector</source>
+        <source>Input point layer</source>
         <translation>Eingabepunktlayer</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="39"/>
-        <source>Output Raster</source>
+        <source>Output raster</source>
         <translation>Ausgaberaster</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="52"/>
         <source>...</source>
         <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="62"/>
+        <source>Output format</source>
+        <translation>Ausgabeformat</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="79"/>
@@ -4357,8 +4362,38 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="140"/>
-        <source>Cell Size X</source>
-        <translation>Zellenbreite</translation>
+        <source>Cell size X</source>
+        <translation>Zellengröße X</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="160"/>
+        <source>Cell size Y</source>
+        <translation>Zellengröße Y</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="186"/>
+        <source>Use radius from field</source>
+        <translation>Feld für Radius</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="217"/>
+        <source>Use weight from field</source>
+        <translation>Feld für Gewichtung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="241"/>
+        <source>Decay ratio</source>
+        <translation>Verfallrate</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="249"/>
+        <source>Quartic (biweight)</source>
+        <translation>Quartic (biweight)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="277"/>
+        <source>Kernel shape</source>
+        <translation>Kernform</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="150"/>
@@ -4366,34 +4401,9 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
         <translation>Spalte</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="160"/>
-        <source>Cell Size Y</source>
-        <translation>Zellenhöhe</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="186"/>
-        <source>Use Radius from field</source>
-        <translation>Feld für Radius</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="217"/>
-        <source>Use Weight from field</source>
-        <translation>Feld für Gewichtung</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="234"/>
         <source>0.0</source>
         <translation>0.0</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="241"/>
-        <source>Decay Ratio</source>
-        <translation>Verfallrate</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="249"/>
-        <source>Quartic (Biweight)</source>
-        <translation>Quartic (Biweight)</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="254"/>
@@ -4416,19 +4426,9 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
         <translation>Epanechnikov</translation>
     </message>
     <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="277"/>
-        <source>Kernel Shape</source>
-        <translation>Kernform</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="86"/>
         <source>10</source>
         <translation>10</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="62"/>
-        <source>Output Format</source>
-        <translation>Ausgabeformat</translation>
     </message>
 </context>
 <context>
@@ -8504,7 +8504,7 @@ SQL: %1</translation>
         <translation>SQLite-Fehler beim Objektladen: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsfeature.cpp" line="180"/>
+        <location filename="../src/core/qgsfeature.cpp" line="190"/>
         <source>Attribute index %1 out of bounds [0;%2[</source>
         <translation>Attributindex %1 außerhalb der Grenzen [0;%2[</translation>
     </message>
@@ -46177,17 +46177,17 @@ SEXTANTE zu erfahren!</translation>
 <context>
     <name>UndoWidget</name>
     <message>
-        <location filename="../src/app/qgsundowidget.cpp" line="210"/>
+        <location filename="../src/app/qgsundowidget.cpp" line="212"/>
         <source>Undo/Redo</source>
         <translation>Rücknahme/Wiederholung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsundowidget.cpp" line="211"/>
+        <location filename="../src/app/qgsundowidget.cpp" line="213"/>
         <source>Undo</source>
         <translation>Zurücknehmen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsundowidget.cpp" line="212"/>
+        <location filename="../src/app/qgsundowidget.cpp" line="214"/>
         <source>Redo</source>
         <translation>Wiederholen</translation>
     </message>

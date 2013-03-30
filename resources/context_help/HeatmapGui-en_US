@@ -24,7 +24,7 @@
 <h4>Use radius from field</h4>
 <p>Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.</p>
 <h4>Use weight from field</h4>
-<p>Optionally, a column containg weights for points can be used to weight some points in the input layer more than others.</p>
+<p>Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.</p>
 <h4>Decay ratio</h4>
 <p>For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.</p>
 
