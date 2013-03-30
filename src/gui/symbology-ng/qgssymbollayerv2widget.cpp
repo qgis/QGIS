@@ -1729,6 +1729,38 @@ void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementUnitComboBox_
   }
 }
 
+void QgsPointPatternFillSymbolLayerWidget::on_mDataDefinedPropertiesButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QMap<QString, QPair< QString, QString> > dataDefinedProperties;
+  dataDefinedProperties.insert( "distance_x", qMakePair( tr( "Horizontal distance" ), mLayer->dataDefinedPropertyString( "distance_x" ) ) );
+  dataDefinedProperties.insert( "distance_y", qMakePair( tr( "Vertical distance" ), mLayer->dataDefinedPropertyString( "distance_y" ) ) );
+  dataDefinedProperties.insert( "displacement_x", qMakePair( tr( "Horizontal displacement" ), mLayer->dataDefinedPropertyString( "displacement_x" ) ) );
+  dataDefinedProperties.insert( "displacement_y", qMakePair( tr( "Vertical displacement" ), mLayer->dataDefinedPropertyString( "displacement_y" ) ) );
+
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //empty all existing properties first
+    mLayer->removeDataDefinedProperties();
+
+    QMap<QString, QString> properties = d.dataDefinedProperties();
+    QMap<QString, QString>::const_iterator it = properties.constBegin();
+    for ( ; it != properties.constEnd(); ++it )
+    {
+      if ( !it.value().isEmpty() )
+      {
+        mLayer->setDataDefinedProperty( it.key(), it.value() );
+      }
+    }
+    emit changed();
+  }
+}
+
 /////////////
 
 QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )

@@ -358,6 +358,7 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Wi
     void on_mVerticalDistanceUnitComboBox_currentIndexChanged( int index );
     void on_mHorizontalDisplacementUnitComboBox_currentIndexChanged( int index );
     void on_mVerticalDisplacementUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 };
 
 /////////
