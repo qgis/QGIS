@@ -1133,6 +1133,41 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged
   emit changed();
 }
 
+void QgsSvgMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QMap<QString, QPair< QString, QString> > dataDefinedProperties;
+  dataDefinedProperties.insert( "size", qMakePair( tr( "Size" ), mLayer->dataDefinedPropertyString( "size" ) ) );
+  dataDefinedProperties.insert( "outline-width", qMakePair( tr( "Border width" ), mLayer->dataDefinedPropertyString( "outline-width" ) ) );
+  dataDefinedProperties.insert( "angle", qMakePair( tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ) ) );
+  dataDefinedProperties.insert( "offset", qMakePair( tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ) ) );
+  dataDefinedProperties.insert( "name", qMakePair( tr( "SVG file" ), mLayer->dataDefinedPropertyString( "name" ) ) );
+  dataDefinedProperties.insert( "fill", qMakePair( tr( "Color" ), mLayer->dataDefinedPropertyString( "fill" ) ) );
+  dataDefinedProperties.insert( "outline", qMakePair( tr( "Border color" ), mLayer->dataDefinedPropertyString( "outline" ) ) );
+
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //empty all existing properties first
+    mLayer->removeDataDefinedProperties();
+
+    QMap<QString, QString> properties = d.dataDefinedProperties();
+    QMap<QString, QString>::const_iterator it = properties.constBegin();
+    for ( ; it != properties.constEnd(); ++it )
+    {
+      if ( !it.value().isEmpty() )
+      {
+        mLayer->setDataDefinedProperty( it.key(), it.value() );
+      }
+    }
+    emit changed();
+  }
+}
+
 ///////////////
 
 QgsLineDecorationSymbolLayerV2Widget::QgsLineDecorationSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )

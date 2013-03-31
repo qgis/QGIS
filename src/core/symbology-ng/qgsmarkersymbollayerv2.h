@@ -166,6 +166,14 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    QString dataDefinedPropertyString( const QString& property ) const;
+    void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    void removeDataDefinedProperty( const QString& property );
+    void removeDataDefinedProperties();
+
+    QSet<QString> usedAttributes() const;
+
   protected:
     QString mPath;
 
@@ -176,6 +184,17 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
     double mOrigSize;
+
+    QgsExpression* mSizeExpression;
+    QgsExpression* mOutlineWidthExpression;
+    QgsExpression* mAngleExpression;
+    QgsExpression* mOffsetExpression;
+    QgsExpression* mNameExpression;
+    QgsExpression* mFillExpression;
+    QgsExpression* mOutlineExpression;
+
+  private:
+    void prepareExpressions( const QgsVectorLayer* vl );
 };
 
 
