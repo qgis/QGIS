@@ -70,6 +70,8 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mLowerMiddleCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
     void on_mLowerRightCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
 
+    void on_mBlendModeCombo_currentIndexChanged( int index );
+
     void setValuesForGuiElements();
     void setValuesForGuiPositionElements();
 

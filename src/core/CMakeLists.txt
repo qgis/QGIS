@@ -148,6 +148,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposertexttable.cpp
   composer/qgscomposerscalebar.cpp
   composer/qgscomposershape.cpp
+  composer/qgscomposereffect.cpp
   composer/qgsatlascomposition.cpp
   composer/qgslegendmodel.cpp
   composer/qgscomposerlegend.cpp
@@ -339,6 +340,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerattributetable.h
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
+  composer/qgscomposereffect.h
   composer/qgsatlascomposition.h
   composer/qgscomposition.h
 
