@@ -1053,8 +1053,15 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   }
 
   p->save();
-  double offsetX = mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
-  double offsetY = mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+
+  QPointF offset = mOffset;
+  if ( mOffsetExpression )
+  {
+    QString offsetString =  mOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    offset = QgsSymbolLayerV2Utils::decodePoint( offsetString );
+  }
+  double offsetX = offset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  double offsetY = offset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
   QPointF outputOffset( offsetX, offsetY );
 
   double angle = mAngle;
@@ -1071,13 +1078,40 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if ( rotated )
     p->rotate( angle );
 
+  QString path = mPath;
+  if ( mNameExpression )
+  {
+    path = mNameExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+  }
+
+  double outlineWidth = mOutlineWidth;
+  if ( mOutlineWidthExpression )
+  {
+    outlineWidth = mOutlineWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+
+  QColor fillColor = mFillColor;
+  if ( mFillExpression )
+  {
+    QString colorString = mFillExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    fillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+  }
+
+  QColor outlineColor = mOutlineColor;
+  if ( mOutlineExpression )
+  {
+    QString colorString = mOutlineExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    outlineColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+  }
+
+
   bool fitsInCache = true;
   bool usePict = true;
   double hwRatio = 1.0;
   if ( drawOnScreen && !rotated )
   {
     usePict = false;
-    const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
+    const QImage& img = QgsSvgCache::instance()->svgAsImage( path, size, fillColor, outlineColor, outlineWidth,
                         context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor(), fitsInCache );
     if ( fitsInCache && img.width() > 1 )
     {
@@ -1100,7 +1134,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if ( usePict || !fitsInCache )
   {
     p->setOpacity( context.alpha() );
-    const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
+    const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( path, size, fillColor, outlineColor, outlineWidth,
                           context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
 
     if ( pct.width() > 1 )
