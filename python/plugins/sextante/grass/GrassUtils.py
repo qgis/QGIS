@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.tests.TestData import points
+import traceback
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -323,6 +325,34 @@ class GrassUtils:
     def addSessionLayers(exportedLayers):
         GrassUtils.sessionLayers = dict(GrassUtils.sessionLayers.items() + exportedLayers.items())
 
+    @staticmethod
+    def checkGrassIsInstalled(ignoreRegistrySettings=False):
+        if SextanteUtils.isWindows():
+            path = GrassUtils.grassPath()
+            if path == "":
+                return "GRASS folder is not configured.\nPlease configure it before running SAGA algorithms."
+            cmdpath = os.path.join(path, "bin\r.out.exe")
+            if not os.path.exists(cmdpath):
+                return ("The specified GRASS folder does not contain a valid set of GRASS modules.\n"
+                        + "Please, go to the SEXTANTE settings dialog, and check that the GRASS\n"
+                        + "folder is correctly configured")
+
+        if not ignoreRegistrySettings:
+            GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"
+            settings = QSettings()
+            if settings.contains(GRASS_INSTALLED):
+                return
+
+        try:      
+            from sextante.core.Sextante import runalg
+            result = runalg("grass:v.voronoi", points(),False,False,"270778.60198,270855.745301,4458921.97814,4458983.8488",-1,0.0001,None)
+            if not os.path.exists(result['output']):
+                return "It seems that GRASS is not correctly installed and configured in your system.\nPlease install it before running GRASS algorithms."
+        except:
+            s = traceback.format_exc()
+            return "Error while checking GRASS installation. GRASS might not be correctly configured.\n" + s;
+
+        settings.setValue(GRASS_INSTALLED, True)
 
 
 
