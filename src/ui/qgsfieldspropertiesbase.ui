@@ -96,7 +96,7 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="7">
+   <item row="3" column="0" colspan="7">
     <layout class="QHBoxLayout" name="horizontalLayout_15">
      <item>
       <widget class="QWidget" name="mAttributesListFrame" native="true"/>
@@ -110,7 +110,7 @@
         <item row="1" column="0" colspan="3">
          <widget class="QStackedWidget" name="mAttributeEditorOptionsWidget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="page">
            <layout class="QGridLayout" name="gridLayout_2">
@@ -127,16 +127,6 @@
                </widget>
               </item>
              </layout>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Init function</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QLineEdit" name="leEditFormInit"/>
             </item>
             <item row="0" column="0">
              <widget class="QLabel" name="label">
@@ -318,6 +308,30 @@
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Attribute editor layout:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="6">
+    <widget class="QLineEdit" name="leEditFormInit"/>
+   </item>
+   <item row="1" column="5">
+    <widget class="QLabel" name="label_3">
+     <property name="toolTip">
+      <string>QGIS forms can have a Python function that is called when the form is opened.  
+Use this function to add extra logic to your forms.
+
+An example is (in module MyForms.py):
+
+          def open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in Python Init Function like so: MyForms.open
+
+MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</string>
+     </property>
+     <property name="text">
+      <string>Python Init function</string>
      </property>
     </widget>
    </item>
