@@ -73,7 +73,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   QMenu *styleMenu = new QMenu( btnStyle );
   QAction *styleMgrAction = new QAction( "Style Manager", styleMenu );
   styleMenu->addAction( styleMgrAction );
-  QAction *saveStyle = new QAction( "Save as style", styleMenu );
+  QAction *saveStyle = new QAction( "Save in symbol library...", styleMenu );
   styleMenu->addAction( saveStyle );
   connect( styleMgrAction, SIGNAL( triggered() ), this, SLOT( openStyleManager() ) );
   connect( saveStyle, SIGNAL( triggered() ), this, SLOT( addSymbolToStyle() ) );

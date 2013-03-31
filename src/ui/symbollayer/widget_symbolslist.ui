@@ -336,7 +336,7 @@
      <item>
       <widget class="QPushButton" name="btnStyle">
        <property name="text">
-        <string>Style</string>
+        <string>Symbol</string>
        </property>
       </widget>
      </item>
