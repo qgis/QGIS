@@ -59,7 +59,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         newone = ModelerAlgorithm()
         newone.openModel(self.descriptionFile)
         newone.provider = self.provider
-        newone.deactivated = self.deactivate
+        newone.deactivated = self.deactivated
         return newone
 
     def __init__(self):

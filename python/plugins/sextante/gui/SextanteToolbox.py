@@ -151,13 +151,16 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
 
     def addRecentAlgorithms(self, updating):
         showRecent = SextanteConfig.getSetting(SextanteConfig.SHOW_RECENT_ALGORITHMS)
-        if showRecent:
-            first = self.algorithmTree.topLevelItem(0)
-            if updating:
-                self.algorithmTree.removeItemWidget(first, 0)
+        if showRecent:                        
             recent = SextanteLog.getRecentAlgorithms()
             if len(recent) != 0:
                 found = False
+                if updating:
+                    recentItem = self.algorithmTree.topLevelItem(0)
+                    treeWidget = recentItem.treeWidget()                    
+                    treeWidget.takeTopLevelItem(treeWidget.indexOfTopLevelItem(recentItem))                    
+                    #self.algorithmTree.removeItemWidget(first, 0)
+                
                 recentItem = QTreeWidgetItem()
                 recentItem.setText(0, self.tr("Recently used algorithms"))
                 for algname in recent:
@@ -166,12 +169,11 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                         algItem = TreeAlgorithmItem(alg)
                         recentItem.addChild(algItem)
                         found = True
-                if found:
+                if found:                    
                     self.algorithmTree.insertTopLevelItem(0, recentItem)
                     recentItem.setExpanded(True)
 
             self.algorithmTree.setWordWrap(True)
-
 
     def fillTreeUsingCategories(self):
         providersToExclude = ["model", "script"]
