@@ -176,6 +176,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       DialRange,     /* dial range @added in 1.5 */
       ValueRelation, /* value map from an table @added in 1.8 */
       UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
+      Photo,         /* phote widget @added in 1.9 */
+      Webview,       /* webview widget @added in 1.9 */
     };
 
     struct RangeData
@@ -759,6 +761,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QString &dateFormat( int idx );
 
+    /**access widget size for photo and webview widget
+     * @note added in 1.9
+     */
+    QSize &widgetSize( int idx );
+
     /**is edit widget editable
      * @note added in 1.9
      **/
@@ -1066,6 +1073,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, QPair<QString, QString> > mCheckedStates;
     QMap< QString, ValueRelationData > mValueRelations;
     QMap< QString, QString> mDateFormats;
+    QMap< QString, QSize> mWidgetSize;
 
     /** Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated) */
     EditorLayout mEditorLayout;

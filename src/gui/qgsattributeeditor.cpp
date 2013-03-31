@@ -48,6 +48,7 @@
 #include <QUuid>
 #include <QGroupBox>
 #include <QLabel>
+#include <QWebView>
 
 void QgsAttributeEditor::selectFileName()
 {
@@ -63,7 +64,7 @@ void QgsAttributeEditor::selectFileName()
   if ( !le )
     return;
 
-  QString fileName = QFileDialog::getOpenFileName( 0 , tr( "Select a file" ) );
+  QString fileName = QFileDialog::getOpenFileName( 0 , tr( "Select a file" ), QFileInfo( le->text() ).absolutePath() );
   if ( fileName.isNull() )
     return;
 
@@ -110,6 +111,80 @@ void QgsAttributeEditor::selectDate()
     le->setText( newValue );
     le->setModified( newValue != prevValue );
   }
+}
+
+void QgsAttributeEditor::loadUrl( const QString &url )
+{
+  QLineEdit *le = qobject_cast<QLineEdit *>( sender() );
+  if ( !le )
+    return;
+
+  QWidget *hbox = qobject_cast<QWidget *>( le->parent() );
+  if ( !hbox )
+    return;
+
+  QWebView *ww = hbox->findChild<QWebView *>();
+  if ( !ww )
+    return;
+
+  ww->load( url );
+}
+
+void QgsAttributeEditor::loadPixmap( const QString &name )
+{
+  QLineEdit *le = qobject_cast<QLineEdit *>( sender() );
+  if ( !le )
+    return;
+
+  QWidget *hbox = qobject_cast<QWidget *>( le->parent() );
+  if ( !hbox )
+    return;
+
+  QLabel *lw = hbox->findChild<QLabel *>();
+  if ( !lw )
+    return;
+
+  QPixmap pm( name );
+  if ( pm.isNull() )
+    return;
+
+  QSize size( mLayer->widgetSize( mIdx ) );
+  if ( size.width() == 0 && size.height() > 0 )
+  {
+    size.setWidth( size.height() * pm.size().width() / pm.size().height() );
+  }
+  else if ( size.width() > 0 && size.height() == 0 )
+  {
+    size.setHeight( size.width() * pm.size().height() / pm.size().width() );
+  }
+
+  pm = pm.scaled( size, Qt::KeepAspectRatio );
+
+  lw->setPixmap( pm );
+  lw->setMinimumSize( size );
+}
+
+void QgsAttributeEditor::updateUrl()
+{
+  QPushButton *pb = qobject_cast<QPushButton *>( sender() );
+  if ( !pb )
+    return;
+
+  QWidget *hbox = qobject_cast<QWidget *>( pb->parent() );
+  if ( !hbox )
+    return;
+
+  QWebView *ww = hbox->findChild<QWebView *>();
+  if ( !ww )
+    return;
+
+  QLineEdit *le = hbox->findChild<QLineEdit *>();
+  if ( !le )
+    return;
+
+  le->blockSignals( true );
+  le->setText( ww->url().toString() );
+  le->blockSignals( false );
 }
 
 QComboBox *QgsAttributeEditor::comboBox( QWidget *editor, QWidget *parent )
@@ -595,6 +670,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
+    case QgsVectorLayer::Photo:
+    case QgsVectorLayer::Webview:
     {
       QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
       if ( cw )
@@ -603,6 +680,19 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         break;
       }
 
+      QWebView *ww = qobject_cast<QWebView *>( editor );
+      if ( ww )
+      {
+        myWidget = ww;
+        break;
+      }
+
+      QLabel *lw = qobject_cast<QLabel *>( editor );
+      if ( lw )
+      {
+        myWidget = lw;
+        break;
+      }
 
       QPushButton *pb = 0;
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
@@ -619,26 +709,51 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       else
       {
         le = new QgsFilterLineEdit();
+        if ( editType == QgsVectorLayer::FileName || editType == QgsVectorLayer::Photo )
+          pb = new QPushButton( tr( "..." ) );
+        else
+          pb = new QPushButton( tr( "<" ) );
 
-        pb = new QPushButton( tr( "..." ) );
+        int row = 0;
+        QGridLayout *layout = new QGridLayout();
+        if ( editType == QgsVectorLayer::Photo )
+        {
+          lw = new QLabel();
+          layout->addWidget( lw, 0, 0, 1, 2 );
+          row++;
+        }
+        else if ( editType == QgsVectorLayer::Webview )
+        {
+          ww = new QWebView();
+          layout->addWidget( ww, 0, 0, 1, 2 );
+          row++;
+        }
 
-        QHBoxLayout *hbl = new QHBoxLayout();
-        hbl->addWidget( le );
-        hbl->addWidget( pb );
+        layout->addWidget( le, row, 0 );
+        layout->addWidget( pb, row, 1 );
 
         myWidget = new QWidget( parent );
         myWidget->setBackgroundRole( QPalette::Window );
         myWidget->setAutoFillBackground( true );
-        myWidget->setLayout( hbl );
+        myWidget->setLayout( layout );
       }
 
       if ( le )
+      {
         le->setValidator( new QgsFieldValidator( le, field, vl->dateFormat( idx ) ) );
+
+        if ( ww )
+          connect( le, SIGNAL( textChanged( const QString & ) ), new QgsAttributeEditor( le, vl, idx ), SLOT( loadUrl( const QString & ) ) );
+        if ( lw )
+          connect( le, SIGNAL( textChanged( const QString & ) ), new QgsAttributeEditor( le, vl, idx ), SLOT( loadPixmap( const QString & ) ) );
+      }
 
       if ( pb )
       {
-        if ( editType == QgsVectorLayer::FileName )
+        if ( editType == QgsVectorLayer::FileName || editType == QgsVectorLayer::Photo )
           connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectFileName() ) );
+        if ( editType == QgsVectorLayer::Webview )
+          connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( updateUrl() ) );
         if ( editType == QgsVectorLayer::Calendar )
           connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectDate() ) );
       }
@@ -1018,11 +1133,27 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
+    case QgsVectorLayer::Photo:
+    case QgsVectorLayer::Webview:
     {
       QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
       if ( cw )
       {
         cw->setSelectedDate( value.toDate() );
+        break;
+      }
+
+      QWebView *ww = qobject_cast<QWebView *>( editor );
+      if ( ww )
+      {
+        ww->load( value.toString() );
+        break;
+      }
+
+      QLabel *lw = qobject_cast<QLabel *>( editor );
+      if ( lw )
+      {
+
         break;
       }
 
@@ -1059,7 +1190,6 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
       {
         text = value.toString();
       }
-
 
       le->setText( text );
     }

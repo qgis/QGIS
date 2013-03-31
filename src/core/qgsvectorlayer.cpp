@@ -2409,6 +2409,10 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
           mDateFormats[ name ] = editTypeElement.attribute( "dateFormat" );
           break;
 
+        case Photo:
+          mWidgetSize[ name ] = QSize( editTypeElement.attribute( "widgetWidth" ).toInt(), editTypeElement.attribute( "widgetHeight" ).toInt() );
+          break;
+
         case Classification:
         case FileName:
         case Immutable:
@@ -2419,6 +2423,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         case UniqueValues:
         case UniqueValuesEditable:
         case UuidGenerator:
+        case Webview:
           break;
       }
     }
@@ -2728,6 +2733,11 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
           editTypeElement.setAttribute( "dateFormat", mDateFormats[ it.key()] );
           break;
 
+        case Photo:
+          editTypeElement.setAttribute( "widgetWidth", mWidgetSize[ it.key()].width() );
+          editTypeElement.setAttribute( "widgetHeight", mWidgetSize[ it.key()].height() );
+          break;
+
         case LineEdit:
         case UniqueValues:
         case UniqueValuesEditable:
@@ -2738,6 +2748,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         case Enumeration:
         case Immutable:
         case UuidGenerator:
+        case Webview:
           break;
       }
 
@@ -3664,6 +3675,18 @@ QString &QgsVectorLayer::dateFormat( int idx )
     mDateFormats[fieldName] = "yyyy-MM-dd";
 
   return mDateFormats[fieldName];
+}
+
+QSize &QgsVectorLayer::widgetSize( int idx )
+{
+  const QgsFields &fields = pendingFields();
+
+  QString fieldName = fields[idx].name();
+
+  if ( !mWidgetSize.contains( fieldName ) )
+    mWidgetSize[fieldName] = QSize( 0, 0 );
+
+  return mWidgetSize[fieldName];
 }
 
 bool QgsVectorLayer::fieldEditable( int idx )

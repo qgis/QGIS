@@ -131,6 +131,7 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     QMap<int, QgsVectorLayer::EditType> mEditTypeMap;
     QMap<int, QPushButton*> mButtonMap;
     QMap<int, QString> mDateFormat;
+    QMap<int, QSize> mWidgetSize;
 
     enum attrColumns
     {

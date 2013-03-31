@@ -35,7 +35,11 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
     Q_OBJECT
 
   public:
-    QgsAttributeEditor( QObject *parent ) : QObject( parent ) {};
+    QgsAttributeEditor( QObject *parent, QgsVectorLayer *vl = 0, int idx = -1 )
+        : QObject( parent )
+        , mLayer( vl )
+        , mIdx( idx )
+    {};
     /**
      * Creates or prepares a attributre editor widget
      * @param parent The parent object
@@ -78,6 +82,13 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
   public slots:
     void selectFileName();
     void selectDate();
+    void loadUrl( const QString & );
+    void loadPixmap( const QString & );
+    void updateUrl();
+
+  private:
+    QgsVectorLayer *mLayer;
+    int mIdx;
 };
 
 class QgsStringRelay : public QObject

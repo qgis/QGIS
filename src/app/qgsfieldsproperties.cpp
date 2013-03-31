@@ -488,7 +488,7 @@ void QgsFieldsProperties::attributeTypeDialog()
   attributeTypeDialog.setCheckedState( checkStates.first, checkStates.second );
 
   attributeTypeDialog.setDateFormat( mDateFormat.value( index, mLayer->dateFormat( index ) ) );
-
+  attributeTypeDialog.setWidgetSize( mWidgetSize.value( index, mLayer->widgetSize( index ) ) );
   attributeTypeDialog.setFieldEditable( mFieldEditables.value( index, mLayer->fieldEditable( index ) ) );
 
   attributeTypeDialog.setIndex( index, mEditTypeMap.value( index, mLayer->editType( index ) ) );
@@ -522,6 +522,9 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::Calendar:
       mDateFormat.insert( index, attributeTypeDialog.dateFormat() );
       break;
+    case QgsVectorLayer::Photo:
+      mWidgetSize.insert( index, attributeTypeDialog.widgetSize() );
+      break;
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::UniqueValues:
@@ -532,6 +535,7 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::UuidGenerator:
+    case QgsVectorLayer::Webview:
       break;
   }
 
@@ -741,6 +745,8 @@ void QgsFieldsProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::Calendar, tr( "Calendar" ) );
   editTypeMap.insert( QgsVectorLayer::ValueRelation, tr( "Value relation" ) );
   editTypeMap.insert( QgsVectorLayer::UuidGenerator, tr( "UUID generator" ) );
+  editTypeMap.insert( QgsVectorLayer::Photo, tr( "Photo" ) );
+  editTypeMap.insert( QgsVectorLayer::Webview, tr( "Webview" ) );
 }
 
 QString QgsFieldsProperties::editTypeButtonText( QgsVectorLayer::EditType type )
@@ -868,6 +874,13 @@ void QgsFieldsProperties::apply()
         }
         break;
 
+      case QgsVectorLayer::Photo:
+        if ( mWidgetSize.contains( idx ) )
+        {
+          mLayer->widgetSize( idx ) = mWidgetSize[idx];
+        }
+        break;
+
       case QgsVectorLayer::LineEdit:
       case QgsVectorLayer::UniqueValues:
       case QgsVectorLayer::UniqueValuesEditable:
@@ -878,6 +891,7 @@ void QgsFieldsProperties::apply()
       case QgsVectorLayer::Hidden:
       case QgsVectorLayer::TextEdit:
       case QgsVectorLayer::UuidGenerator:
+      case QgsVectorLayer::Webview:
         break;
     }
 

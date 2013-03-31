@@ -6,14 +6,118 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>620</width>
-    <height>418</height>
+    <width>751</width>
+    <height>451</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Attribute Edit Dialog</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
+   <item row="3" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="4">
+    <widget class="QListWidget" name="selectionListWidget">
+     <item>
+      <property name="text">
+       <string>Line edit</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Classification</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Range</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Unique values</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>File name</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Value map</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Enumeration</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Immutable</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Hidden</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Checkbox</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Text edit</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Calendar</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Value relation</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>UUID generator</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Photo</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Webview</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QCheckBox" name="isFieldEditableCheckBox">
+     <property name="text">
+      <string>Editable</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="sizePolicy">
@@ -23,7 +127,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>15</number>
      </property>
      <widget class="QWidget" name="lineEditPage">
       <layout class="QVBoxLayout" name="verticalLayout_1">
@@ -677,100 +781,88 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" rowspan="3">
-    <widget class="QListWidget" name="selectionListWidget">
-     <item>
-      <property name="text">
-       <string>Line edit</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Classification</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Range</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Unique values</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>File name</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Value map</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Enumeration</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Immutable</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Hidden</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Checkbox</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Text edit</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Calendar</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Value relation</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>UUID generator</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QCheckBox" name="isFieldEditableCheckBox">
-     <property name="text">
-      <string>Editable</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
+     <widget class="QWidget" name="page">
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_13">
+         <property name="text">
+          <string>Height</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <spacer name="verticalSpacer_12">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_12">
+         <property name="text">
+          <string>Width</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="sbWidgetWidth">
+         <property name="maximum">
+          <number>10000</number>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QSpinBox" name="sbWidgetHeight">
+         <property name="suffix">
+          <string/>
+         </property>
+         <property name="prefix">
+          <string/>
+         </property>
+         <property name="maximum">
+          <number>10000</number>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Field contains a filename for a picture</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label_14">
+         <property name="text">
+          <string>Fields contains an URL</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_13">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
@@ -784,8 +876,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>403</x>
-     <y>388</y>
+     <x>520</x>
+     <y>435</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -800,8 +892,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>471</x>
-     <y>388</y>
+     <x>588</x>
+     <y>435</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
