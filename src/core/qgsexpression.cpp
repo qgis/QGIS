@@ -948,6 +948,11 @@ static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpress
   return QVariant();
 }
 
+static QVariant fcnPi( const QVariantList& values , QgsFeature *f, QgsExpression* parent )
+{
+  return M_PI;
+}
+
 static QVariant fcnScale( const QVariantList&, QgsFeature*, QgsExpression* parent )
 {
   return QVariant( parent->scale() );
@@ -1045,6 +1050,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
     << new StaticFunction( "log", 2, fcnLog, QObject::tr( "Math" ) )
     << new StaticFunction( "round", -1, fcnRound, QObject::tr( "Math" ) )
+    << new StaticFunction( "$pi", 0, fcnPi, QObject::tr( "Math" ) )
     << new StaticFunction( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
     << new StaticFunction( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
     << new StaticFunction( "tostring", 1, fcnToString, QObject::tr( "Conversions" ) )
