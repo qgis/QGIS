@@ -133,7 +133,7 @@ class SagaUtils:
             if settings.contains(SAGA_INSTALLED):
                 return
 
-        try:      
+        try:
             from sextante.core.Sextante import runalg
             result = runalg("saga:thiessenpolygons", points(), None)
             if not os.path.exists(result['POLYGONS']):

@@ -1753,14 +1753,14 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     {
       // Set the painter composition mode for the buffer
       painter->setCompositionMode( mMapRenderer->getCompositionMode( bufferBlendMode ) );
-      
+
       int bufferPixelSize = lyr.sizeToPixel( bufferSize, context, true );
       drawLabel( *it, painter, fontForLabel, fontColor, xform, bufferPixelSize, bufferColor, true );
     }
-    
+
     // Set the painter composition mode before rendering the label
     painter->setCompositionMode( mMapRenderer->getCompositionMode( blendMode ) );
-    
+
     drawLabel( *it, painter, fontForLabel, fontColor, xform );
 
     if ( mLabelSearchTree )

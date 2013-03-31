@@ -64,7 +64,7 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     //! Mouse wheel event for overriding. Default implementation does nothing.
     //! Added in version 2.0
-    virtual void wheelEvent ( QWheelEvent* e );
+    virtual void wheelEvent( QWheelEvent* e );
 
     //! Key event for overriding. Default implementation does nothing.
     virtual void keyPressEvent( QKeyEvent* e );

@@ -32,20 +32,20 @@ class CouldNotLoadResultsDialog(QtGui.QDialog):
     def __init__(self, wrongLayers, alg):
         QtGui.QDialog.__init__(self, None, QtCore.Qt.WindowSystemMenuHint | QtCore.Qt.WindowTitleHint)
         self.alg = alg
-        self.wrongLayers = wrongLayers                
-        self.setupUi()        
+        self.wrongLayers = wrongLayers
+        self.setupUi()
 
     def setupUi(self):
         self.resize(800,400)
         self.setWindowTitle("Problem loading output layers")
         layout = QVBoxLayout()
-        webView = QtWebKit.QWebView()         
+        webView = QtWebKit.QWebView()
         webView.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
         webView.connect(webView, SIGNAL("linkClicked(const QUrl&)"), self.linkClicked)
         html = self.alg.provider.getPostProcessingErrorMessage(self.wrongLayers)
         webView.setHtml(html)
         closeButton = QtGui.QPushButton()
-        closeButton.setText("Close")            
+        closeButton.setText("Close")
         QObject.connect(closeButton, QtCore.SIGNAL("clicked()"), self.closeButtonPressed)
         layout.addWidget(webView)
         layout.addWidget(closeButton)
@@ -54,6 +54,6 @@ class CouldNotLoadResultsDialog(QtGui.QDialog):
 
     def linkClicked(self, url):
         webbrowser.open(str(url.toString()))
-    
-    def closeButtonPressed(self):        
+
+    def closeButtonPressed(self):
         self.close()

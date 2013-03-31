@@ -36,7 +36,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
         self.assertTrue(2, len(model.parameters))
         self.assertFalse(model.removeParameter(0))
         self.assertTrue(2, len(model.parameters))
-        
+
     def testComputingDependecies(self):
         folder = os.path.join(os.path.dirname(ModelerAlgorithmProvider.__file__), "models")
         modelfile = os.path.join(folder, "watersheds.model")
@@ -54,7 +54,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
         self.assertEquals([3,4], dependent)
         dependent = model.getDependentAlgorithms(4)
         self.assertEquals([4], dependent)
-        
+
         depends = model.getDependsOnAlgorithms(0)
         self.assertEquals([], depends)
         depends = model.getDependsOnAlgorithms(1)
@@ -65,10 +65,10 @@ class ModelerAlgorithmTest(unittest.TestCase):
         self.assertEquals([2,1,0], depends)
         depends = model.getDependsOnAlgorithms(4)
         self.assertEquals([3,2,1,0], depends)
-                
-    
-    
-    
+
+
+
+
     '''The following tests correspond to example models'''
 
     def test_modelersagagrass(self):

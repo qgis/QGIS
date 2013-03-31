@@ -66,7 +66,7 @@ void TestVectorLayerCache::initTestCase()
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + QDir::separator();
 
-  foreach( QString f, backupFiles )
+  foreach ( QString f, backupFiles )
   {
     QTemporaryFile* tmpFile = new QTemporaryFile();
     tmpFile->open();
@@ -99,7 +99,7 @@ void TestVectorLayerCache::cleanupTestCase()
   if ( mAddedFeatures.length() > 0 )
   {
     mPointsLayer->startEditing();
-    foreach( QgsFeature f, mAddedFeatures )
+    foreach ( QgsFeature f, mAddedFeatures )
     {
       mPointsLayer->deleteFeature( f.id() );
     }
@@ -116,7 +116,7 @@ void TestVectorLayerCache::cleanupTestCase()
   // Clean tmp files
   QMap<QString, QString>::const_iterator it;
 
-  for( it = mTmpFiles.constBegin(); it != mTmpFiles.constEnd(); ++it )
+  for ( it = mTmpFiles.constBegin(); it != mTmpFiles.constEnd(); ++it )
   {
     QString tmpFileName = it.value();
     QString origFileName = it.key();
@@ -141,7 +141,7 @@ void TestVectorLayerCache::testCacheOverflow()
   }
   it.close();
 
-  QVERIFY ( i == 17 );
+  QVERIFY( i == 17 );
 }
 
 void TestVectorLayerCache::testCacheAttrActions()
@@ -179,9 +179,9 @@ void TestVectorLayerCache::testFeatureActions()
   mPointsLayer->startEditing();
   QVERIFY( mPointsLayer->addFeature( f ) );
 
-  connect( mPointsLayer, SIGNAL(committedFeaturesAdded(QString,QgsFeatureList)), SLOT(onCommittedFeaturesAdded(QString,QgsFeatureList)));
+  connect( mPointsLayer, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ), SLOT( onCommittedFeaturesAdded( QString, QgsFeatureList ) ) );
   mPointsLayer->commitChanges();
-  disconnect( mPointsLayer, SIGNAL(committedFeaturesAdded(QString,QgsFeatureList)), this,SLOT(onCommittedFeaturesAdded(QString,QgsFeatureList)));
+  disconnect( mPointsLayer, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ), this, SLOT( onCommittedFeaturesAdded( QString, QgsFeatureList ) ) );
 
   QgsFeatureId fid = mAddedFeatures.last().id();
 
@@ -197,7 +197,7 @@ void TestVectorLayerCache::testFeatureActions()
 
 void TestVectorLayerCache::onCommittedFeaturesAdded( QString layerId, QgsFeatureList features )
 {
-  Q_UNUSED ( layerId )
+  Q_UNUSED( layerId )
   mAddedFeatures.append( features );
 }
 

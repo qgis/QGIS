@@ -71,9 +71,9 @@ class SextantePostprocessing:
             QApplication.restoreOverrideCursor()
             dlg = CouldNotLoadResultsDialog(wrongLayers, alg)
             dlg.exec_()
-        
+
         if showResults and htmlResults and not wrongLayers:
             QApplication.restoreOverrideCursor()
             dlg = ResultsDialog()
             dlg.exec_()
-        
+

@@ -6244,11 +6244,11 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 
     virtual bool evalCommand( QString command, QString &result )
     {
-        if  ( mPythonUtils && mPythonUtils->isEnabled() )
-        {
-            return mPythonUtils->evalString( command, result );
-        }
-        return false;
+      if ( mPythonUtils && mPythonUtils->isEnabled() )
+      {
+        return mPythonUtils->evalString( command, result );
+      }
+      return false;
     }
 
   protected:

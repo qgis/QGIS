@@ -73,7 +73,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.openButton.setToolTip(self.tr("Open existing model"))
         self.buttonBox.addButton(self.openButton, QDialogButtonBox.ActionRole)
         self.saveButton = QPushButton(self.tr("Save"))
-        self.saveButton.setToolTip(self.tr("Save current model"))        
+        self.saveButton.setToolTip(self.tr("Save current model"))
         self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
         self.saveAsButton = QPushButton(self.tr("Save as ..."))
         self.saveAsButton.setToolTip(self.tr("Save current model as"))
@@ -144,12 +144,12 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             alg = self.alg.getCopy()
             dlg = ParametersDialog(alg)
             dlg.exec_()
-        
+
     def save(self):
         self.saveModel(False)
-        
+
     def saveAs(self):
-        self.saveModel(True)        
+        self.saveModel(True)
 
     def saveModel(self, saveAs):
         if unicode(self.textGroup.text()).strip() == "" or unicode(self.textName.text()).strip() == "":
@@ -210,7 +210,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.scene = ModelerScene()
         self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE, ModelerAlgorithm.CANVAS_SIZE))
         self.scene.paintModel(self.alg)
-        self.view.setScene(self.scene)        
+        self.view.setScene(self.scene)
 
     def addInput(self):
         item = self.inputsTree.currentItem()

@@ -53,11 +53,11 @@ class ParametersTest(unittest.TestCase):
         assert param.name == param2.name
 
 def suite():
-    suite = unittest.makeSuite(ParametersTest, 'test')    
+    suite = unittest.makeSuite(ParametersTest, 'test')
     return suite
 
 def runtests():
-    result = unittest.TestResult()    
+    result = unittest.TestResult()
     testsuite = suite()
     testsuite.run(result)
     return result

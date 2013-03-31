@@ -153,7 +153,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 try:
                                     dependencies.append(int(index))
                                 except:
-                                    pass #a quick fix fwhile I figure out how to solve problems when parsing this 
+                                    pass #a quick fix fwhile I figure out how to solve problems when parsing this
                         for param in alg.parameters:
                             line = lines.readline().strip("\n").strip("\r")
                             if line==str(None):
@@ -303,7 +303,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         '''This method returns a list with the indexes of algorithms a given one depends on'''
         algs = []
         algs.extend(self.dependencies[algIndex])
-        index = -1        
+        index = -1
         for aap in self.algParameters[algIndex].values():
             index += 1
             if aap is not None:

@@ -19,18 +19,18 @@ class ParametrizedTestCase(unittest.TestCase):
         for name in testnames:
             suite.addTest(testcase_klass(name, useTempFiles=useTempFiles))
         return suite
-    
+
 class RunAlgTest(ParametrizedTestCase):
-    '''This test takes a reduced set of algorithms and executes them in different ways, changing 
-    parameters such as whether to use temp outputs, the output file format, etc. 
+    '''This test takes a reduced set of algorithms and executes them in different ways, changing
+    parameters such as whether to use temp outputs, the output file format, etc.
     Basically, it uses some algorithms to test other parts of SEXTANTE, not the algorithms themselves'''
-           
+
     def getOutputFile(self):
         if self.useTempFiles:
             return None
         else:
             return SextanteUtils.getTempFilename('shp')
-    
+
     def test_qgiscountpointsinpolygon(self):
         outputs=sextante.runalg("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS", self.getOutputFile())
         output=outputs['OUTPUT']
@@ -49,16 +49,15 @@ class RunAlgTest(ParametrizedTestCase):
         expectedvalues=["1","1.1","string a","6"]
         values=[str(attr.toString()) for attr in attrs]
         self.assertEqual(expectedvalues, values)
-                
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(ParametrizedTestCase.parametrize(RunAlgTest, False))
-    suite.addTest(ParametrizedTestCase.parametrize(RunAlgTest, True))    
+    suite.addTest(ParametrizedTestCase.parametrize(RunAlgTest, True))
     return suite
 
 def runtests():
-    result = unittest.TestResult()    
+    result = unittest.TestResult()
     testsuite = suite()
     testsuite.run(result)
     return result
-    

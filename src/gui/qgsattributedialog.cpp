@@ -349,8 +349,8 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     /* Reload the module if the DEBUGMODE switch has been set in the module.
      If set to False you have to reload QGIS to reset it to True due to Python
      module caching */
-    QString reload = QString("if hasattr(%1,'DEBUGMODE') and %1.DEBUGMODE:"
-                             "    reload(%1)").arg( module.left( pos ) );
+    QString reload = QString( "if hasattr(%1,'DEBUGMODE') and %1.DEBUGMODE:"
+                              "    reload(%1)" ).arg( module.left( pos ) );
 
     QgsPythonRunner::run( reload );
 

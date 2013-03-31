@@ -44,7 +44,7 @@ QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
     , mValid( false )
     , mFields( &fields )
 {
-    initAttributes( fields.count() );
+  initAttributes( fields.count() );
 }
 
 QgsFeature::QgsFeature( QgsFeature const & rhs )

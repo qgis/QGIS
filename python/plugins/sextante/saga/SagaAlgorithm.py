@@ -101,7 +101,7 @@ class SagaAlgorithm(GeoAlgorithm):
         self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
         while line != "":
             line = line.strip("\n").strip()
-            if line.startswith("Hardcoded"):                
+            if line.startswith("Hardcoded"):
                 self.hardcodedStrings.append(line[len("Harcoded|")+1:])
             elif line.startswith("Parameter"):
                 self.addParameter(ParameterFactory.getFromString(line))
@@ -237,11 +237,11 @@ class SagaAlgorithm(GeoAlgorithm):
             command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
         else:
             command = "lib" + self.undecoratedGroup  + " \"" + self.cmdname + "\""
-        
+
         if self.hardcodedStrings:
             for s in self.hardcodedStrings:
                 command += " " + s
-                                   
+
         for param in self.parameters:
             if param.value is None:
                 continue
@@ -355,7 +355,7 @@ class SagaAlgorithm(GeoAlgorithm):
             return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer + "\""
 
 
-    def checkBeforeOpeningParametersDialog(self):        
+    def checkBeforeOpeningParametersDialog(self):
         return SagaUtils.checkSagaIsInstalled()
 
 
