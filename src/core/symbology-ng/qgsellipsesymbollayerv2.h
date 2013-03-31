@@ -18,6 +18,8 @@
 #include "qgsmarkersymbollayerv2.h"
 #include <QPainterPath>
 
+class QgsExpression;
+
 /**A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*/
 class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
 {
@@ -91,6 +93,12 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
+    const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    QString dataDefinedPropertyString( const QString& property ) const;
+    void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    void removeDataDefinedProperty( const QString& property );
+    void removeDataDefinedProperties();
+
   private:
     QString mSymbolName;
     double mSymbolWidth;
@@ -102,23 +110,6 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
 
-#if 0
-    /**Take width from attribute (-1  if fixed width)*/
-    QPair<int, QString> mWidthField;
-    /**Take height from attribute (-1 if fixed height)*/
-    QPair<int, QString> mHeightField;
-    /**Take symbol rotation from attribute (-1 if fixed rotation)*/
-    QPair<int, QString> mRotationField;
-    /**Take outline width from attribute (-1 if fixed outline width)*/
-    QPair<int, QString> mOutlineWidthField;
-    /**Take fill color from attribute (-1 if fixed fill color)*/
-    QPair<int, QString> mFillColorField;
-    /**Take outline color from attribute (-1 if fixed outline color)*/
-    QPair<int, QString> mOutlineColorField;
-    /**Take shape name from attribute (-1 if fixed shape type)*/
-    QPair<int, QString> mSymbolNameField;
-#endif //0
-
     //data defined property fields
     QString mWidthField;
     QString mHeightField;
@@ -127,6 +118,14 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QString mFillColorField;
     QString mOutlineColorField;
     QString mSymbolNameField;
+
+    QgsExpression* mWidthExpression;
+    QgsExpression* mHeightExpression;
+    QgsExpression* mRotationExpression;
+    QgsExpression* mOutlineWidthExpression;
+    QgsExpression* mFillColorExpression;
+    QgsExpression* mOutlineColorExpression;
+    QgsExpression* mSymbolNameExpression;
 
     //field indices for data defined properties
     //resolved in startRender method
@@ -151,6 +150,8 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
 
     /**True if this symbol layer uses a data defined property*/
     bool hasDataDefinedProperty() const;
+
+    void prepareExpressions( const QgsVectorLayer* vl );
 };
 
 #endif // QGSELLIPSESYMBOLLAYERV2_H
