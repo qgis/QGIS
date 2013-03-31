@@ -7,9 +7,9 @@ ParameterMultipleInput|-io.vd|Vector Data List|-1|False
 ParameterFile|-io.imstat|XML image statistics file|
 OutputFile|-io.out|Output SVM model
 *ParameterSelection|-elev|Elevation management|dem;average|1
-*ParameterFile|-elev.dem.path|DEM directory|
-*ParameterFile|-elev.dem.geoid|Geoid File|
-*ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
+*ParameterFile|-elev.dem|DEM directory|
+*ParameterFile|-elev.geoid|Geoid File|
+*ParameterNumber|-elev.default|Average Elevation|None|None|0.0
 *ParameterNumber|-sample.mt|Maximum training sample size|None|None|-1
 *ParameterNumber|-sample.mv|Maximum validation sample size|None|None|-1
 *ParameterBoolean|-sample.edg|On edge pixel inclusion|
