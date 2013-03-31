@@ -36,13 +36,6 @@ QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSy
   mBrush.setStyle( Qt::SolidPattern );
 
   mAngle = 0;
-  mWidthIndex = -1;
-  mHeightIndex = -1;
-  mRotationIndex = -1;
-  mOutlineWidthIndex = -1;
-  mFillColorIndex = -1;
-  mOutlineColorIndex = -1;
-  mSymbolNameIndex = -1;
 }
 
 QgsEllipseSymbolLayerV2::~QgsEllipseSymbolLayerV2()
@@ -270,16 +263,16 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   QString angleFunc = props.value( "angle", "" );
   if ( angleFunc.isEmpty() )  // symbol has no angle set
   {
-    if ( !mRotationField.isEmpty() )
-      angleFunc = mRotationField;
+    if ( mRotationExpression )
+      angleFunc = mRotationExpression->dump();
     else if ( !doubleNear( mAngle, 0.0 ) )
       angleFunc = QString::number( mAngle );
   }
-  else if ( !mRotationField.isEmpty() )
+  else if ( mRotationExpression )
   {
     // the symbol has an angle and the symbol layer have a rotation
     // property set
-    angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( mRotationField );
+    angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( mRotationExpression->dump() );
   }
   else if ( !doubleNear( mAngle, 0.0 ) )
   {
@@ -355,20 +348,13 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   map["symbol_name"] = mSymbolName;
   map["symbol_width"] = QString::number( mSymbolWidth );
   map["symbol_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolWidthUnit );
-  map["width_field"] = mWidthField;
   map["symbol_height"] = QString::number( mSymbolHeight );
   map["symbol_height_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolHeightUnit );
-  map["height_field"] = mHeightField;
   map["angle"] = QString::number( mAngle );
-  map["rotation_field"] = mRotationField;
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
-  map["outline_width_field"] = mOutlineWidthField;
   map["fill_color"] = QgsSymbolLayerV2Utils::encodeColor( mFillColor );
-  map["fill_color_field"] = mFillColorField;
   map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mOutlineColor );
-  map["outline_color_field"] = mOutlineColorField;
-  map["symbol_name_field"] = mSymbolNameField;
 
   //data defined properties
   if ( mWidthExpression )

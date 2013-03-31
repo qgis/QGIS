@@ -43,41 +43,20 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setSymbolName( const QString& name ) { mSymbolName = name; }
     QString symbolName() const { return mSymbolName; }
 
-    void setSymbolNameField( const QString& field ) { mSymbolNameField = field; }
-    const QString& symbolNameField() const { return mSymbolNameField; }
-
     void setSymbolWidth( double w ) { mSymbolWidth = w; }
     double symbolWidth() const { return mSymbolWidth; }
-
-    void setWidthField( const QString& field ) { mWidthField = field; }
-    const QString& widthField() const { return mWidthField; }
 
     void setSymbolHeight( double h ) { mSymbolHeight = h; }
     double symbolHeight() const { return mSymbolHeight; }
 
-    void setHeightField( const QString& field ) { mHeightField = field; }
-    const QString& heightField() const { return mHeightField; }
-
-    void setRotationField( const QString& field ) { mRotationField = field; }
-    const QString& rotationField() const { return mRotationField; }
-
     void setOutlineWidth( double w ) { mOutlineWidth = w; }
     double outlineWidth() const { return mOutlineWidth; }
-
-    void setOutlineWidthField( const QString& field ) { mOutlineWidthField = field; }
-    const QString& outlineWidthField() const { return mOutlineWidthField; }
 
     void setFillColor( const QColor& c ) { mFillColor = c;}
     QColor fillColor() const { return mFillColor; }
 
-    void setFillColorField( const QString& field ) { mFillColorField = field; }
-    const QString& fillColorField() const { return mFillColorField; }
-
     void setOutlineColor( const QColor& c ) { mOutlineColor = c; }
     QColor outlineColor() const { return mOutlineColor; }
-
-    void setOutlineColorField( const QString& field ) { mOutlineColorField = field; }
-    const QString& outlineColorField() const { return mOutlineColorField; }
 
     QSet<QString> usedAttributes() const;
 
@@ -111,14 +90,6 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
 
     //data defined property fields
-    QString mWidthField;
-    QString mHeightField;
-    QString mRotationField;
-    QString mOutlineWidthField;
-    QString mFillColorField;
-    QString mOutlineColorField;
-    QString mSymbolNameField;
-
     QgsExpression* mWidthExpression;
     QgsExpression* mHeightExpression;
     QgsExpression* mRotationExpression;
@@ -126,16 +97,6 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QgsExpression* mFillColorExpression;
     QgsExpression* mOutlineColorExpression;
     QgsExpression* mSymbolNameExpression;
-
-    //field indices for data defined properties
-    //resolved in startRender method
-    int mWidthIndex;
-    int mHeightIndex;
-    int mRotationIndex;
-    int mOutlineWidthIndex;
-    int mFillColorIndex;
-    int mOutlineColorIndex;
-    int mSymbolNameIndex;
 
     QPainterPath mPainterPath;
 
