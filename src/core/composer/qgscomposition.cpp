@@ -46,6 +46,7 @@
 #include <QSettings>
 #include <QDir>
 
+
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
     QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ), mSnapGridResolution( 10.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ), mAlignmentSnapTolerance( 2 ),
@@ -64,6 +65,7 @@ QgsComposition::QgsComposition():
     mAlignmentSnapTolerance( 2 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ), mAtlasComposition( this )
 {
   loadSettings();
+
 }
 
 QgsComposition::~QgsComposition()

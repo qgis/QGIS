@@ -23,6 +23,7 @@
 #include <QGraphicsView>
 #include <QPainter>
 #include <QUuid>
+#include <QGraphicsEffect>
 
 #include "qgsproject.h"
 
@@ -35,6 +36,7 @@
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
+#include "qgsmaprenderer.h" //for getCompositionMode
 
 #include <cmath>
 
@@ -52,6 +54,8 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
@@ -71,6 +75,8 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
@@ -95,6 +101,11 @@ void QgsComposerItem::init( bool manageZValue )
   {
     mComposition->addItemToZList( this );
   }
+
+  // Setup composer effect
+  mEffect = new QgsComposerEffect();
+  setGraphicsEffect( mEffect );
+
 }
 
 QgsComposerItem::~QgsComposerItem()
@@ -105,6 +116,7 @@ QgsComposerItem::~QgsComposerItem()
   }
 
   delete mBoundingResizeRectangle;
+  delete mEffect;
   deleteAlignItems();
 }
 
@@ -191,6 +203,12 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   bgColorElem.setAttribute( "blue", QString::number( bgColor.blue() ) );
   bgColorElem.setAttribute( "alpha", QString::number( bgColor.alpha() ) );
   composerItemElem.appendChild( bgColorElem );
+
+  //blend mode
+  composerItemElem.setAttribute( "blendMode", QString::number( mBlendMode ) );
+
+  //transparency
+  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
 
   itemElem.appendChild( composerItemElem );
 
@@ -311,6 +329,13 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
       setBrush( QBrush( brushColor ) );
     }
   }
+
+  //blend mode
+  setBlendMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode" , "0" ).toInt() );
+
+  //transparency
+  setTransparency( itemElem.attribute( "transparency" , "0" ).toInt() );
+
   return true;
 }
 
@@ -857,6 +882,20 @@ void QgsComposerItem::drawBackground( QPainter* p )
     p->setRenderHint( QPainter::Antialiasing, true );
     p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
+}
+
+void QgsComposerItem::setBlendMode( QgsMapRenderer::BlendMode blendMode )
+{
+  mBlendMode = blendMode;
+  // Update the composer effect to use the new blend mode
+  mEffect->setCompositionMode( QgsMapRenderer::getCompositionMode( mBlendMode ) );
+}
+
+void QgsComposerItem::setTransparency( int transparency )
+{
+  mTransparency = transparency;
+  // Set the QGraphicItem's opacity
+  setOpacity( 1. - ( transparency / 100. ) );
 }
 
 void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
