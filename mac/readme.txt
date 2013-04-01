@@ -12,12 +12,3 @@ option QGIS_MACAPP_BUNDLE, and one that always occurs:
 
 A third level that is not finished will additionally bundle frameworks.
 This would create the "standalone" QGIS.
-
-
-The 'extras' folder scripts are for packaging the old v1.0 build.  All the
-bundling is now handled in the cmake install, so these scripts are
-essentially deprecated.
-
-
-The Xcode project is now deprecated since the bundling now happens in the
-cmake build, including making sure library paths are all correct.
