@@ -203,6 +203,11 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /** Sets the item's composition blending mode*/
     void setBlendMode( QgsMapRenderer::BlendMode blendMode );
 
+    /** Returns the item's transparency */
+    int transparency() const {return mTransparency;}
+    /** Sets the item's transparency */
+    void setTransparency( int transparency );
+
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
@@ -319,6 +324,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     QgsMapRenderer::BlendMode mBlendMode;
 
     QgsComposerEffect *mEffect;
+
+    /**Item transparency*/
+    int mTransparency;
 
     /**The item's position mode
     @note: this member was added in version 2.0*/

@@ -355,6 +355,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mItemIdLineEdit->blockSignals( true );
   mItemUuidLineEdit->blockSignals( true );
   mBlendModeCombo->blockSignals( true );
+  mTransparencySlider->blockSignals( true );
 //  mTransparencySpinBox->blockSignals( true );
 
   mBackgroundColorButton->setColor( mItem->brush().color() );
@@ -373,6 +374,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mFrameGroupBox->setChecked( mItem->hasFrame() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
+  mTransparencySlider->setValue( mItem->transparency() );
 
 //  mTransparencySlider->blockSignals( false );
   mOutlineWidthSpinBox->blockSignals( false );
@@ -381,6 +383,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mItemIdLineEdit->blockSignals( false );
   mItemUuidLineEdit->blockSignals( false );
   mBlendModeCombo->blockSignals( false );
+  mTransparencySlider->blockSignals( false );
 //  mTransparencySpinBox->blockSignals( false );
 }
 
@@ -390,6 +393,14 @@ void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
   if ( mItem )
   {
     mItem->setBlendMode(( QgsMapRenderer::BlendMode ) mBlendModeCombo->blendMode() );
+  }
+}
+
+void QgsComposerItemWidget::on_mTransparencySlider_valueChanged( int value )
+{
+  if ( mItem )
+  {
+    mItem->setTransparency( value );
   }
 }
 

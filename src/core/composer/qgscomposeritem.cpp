@@ -55,6 +55,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
     , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
@@ -75,6 +76,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
     , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
     , mId( "" )
     , mUuid( QUuid::createUuid().toString() )
@@ -205,6 +207,9 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   //blend mode
   composerItemElem.setAttribute( "blendMode", QString::number( mBlendMode ) );
 
+  //transparency
+  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
+
   itemElem.appendChild( composerItemElem );
 
   return true;
@@ -327,6 +332,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //blend mode
   setBlendMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode" , "0" ).toInt() );
+
+  //transparency
+  setTransparency( itemElem.attribute( "transparency" , "0" ).toInt() );
 
   return true;
 }
@@ -883,6 +891,12 @@ void QgsComposerItem::setBlendMode( QgsMapRenderer::BlendMode blendMode )
   mEffect->setCompositionMode( QgsMapRenderer::getCompositionMode( mBlendMode ) );
 }
 
+void QgsComposerItem::setTransparency( int transparency )
+{
+  mTransparency = transparency;
+  // Set the QGraphicItem's opacity
+  setOpacity( 1. - ( transparency / 100. ) );
+}
 
 void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
 {
