@@ -318,8 +318,7 @@ void QgsFieldsProperties::loadRows()
   mAttributesList->setHorizontalHeaderItem( attrWFSCol, new QTableWidgetItem( "WFS" ) );
   mAttributesList->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
-  mAttributesList->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
-  mAttributesList->horizontalHeader()->setResizeMode( 7, QHeaderView::Stretch );
+  mAttributesList->setSortingEnabled( true );
   mAttributesList->setSelectionBehavior( QAbstractItemView::SelectRows );
   mAttributesList->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mAttributesList->verticalHeader()->hide();

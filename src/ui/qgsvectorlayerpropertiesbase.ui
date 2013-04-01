@@ -257,6 +257,9 @@
        <string>Fields</string>
       </attribute>
       <layout class="QGridLayout" name="mFieldsGridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QFrame" name="mFieldsFrame">
          <property name="frameShape">
@@ -297,8 +300,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>906</width>
-            <height>720</height>
+            <width>914</width>
+            <height>746</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -796,8 +799,8 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>866</width>
-            <height>688</height>
+            <width>896</width>
+            <height>728</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -908,8 +911,8 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>866</width>
-            <height>688</height>
+            <width>896</width>
+            <height>728</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1016,6 +1019,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnQueryBuilder</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
