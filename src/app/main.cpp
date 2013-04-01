@@ -540,11 +540,11 @@ int main( int argc, char *argv[] )
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QString path = optionpath.isEmpty() ? configpath : optionpath;
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
-    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, "QuantumGIS", "QGISCUSTOMIZATION" );
+    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, "QuantumGIS", "QGISCUSTOMIZATION2" );
   }
   else
   {
-    customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION" );
+    customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION2" );
   }
 
   // Using the customizationfile option always overrides the option and config path options.
