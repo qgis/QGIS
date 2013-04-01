@@ -140,7 +140,7 @@ def findPlugins(path):
 
 
 def updateAvailablePlugins():
-  """ go thrgouh the plugin_paths list and find out what plugins are available """
+  """ Go through the plugin_paths list and find out what plugins are available. """
   # merge the lists
   plugins = []
   metadata_parser = {}

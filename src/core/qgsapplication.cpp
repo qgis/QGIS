@@ -84,7 +84,7 @@ void QgsApplication::init( QString customConfigPath )
 {
   if ( customConfigPath.isEmpty() )
   {
-    customConfigPath = QDir::homePath() + QString( "/.qgis/" );
+    customConfigPath = QDir::homePath() + QString( "/.qgis2/" );
   }
 
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
