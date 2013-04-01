@@ -140,7 +140,7 @@ void QgsColorButton::setColor( const QColor &color )
     {
       // TODO: May be beneficial to have the option to set color without emitting this signal.
       //       Now done by blockSignals( bool ) where button is used
-      emit( colorChanged( mColor ) );
+      emit colorChanged( mColor );
     }
   }
 }

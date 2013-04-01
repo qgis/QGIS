@@ -535,6 +535,7 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::UuidGenerator:
     case QgsVectorLayer::Webview:
+    case QgsVectorLayer::Color:
       break;
   }
 
@@ -746,6 +747,7 @@ void QgsFieldsProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::UuidGenerator, tr( "UUID generator" ) );
   editTypeMap.insert( QgsVectorLayer::Photo, tr( "Photo" ) );
   editTypeMap.insert( QgsVectorLayer::Webview, tr( "Webview" ) );
+  editTypeMap.insert( QgsVectorLayer::Color, tr( "Color" ) );
 }
 
 QString QgsFieldsProperties::editTypeButtonText( QgsVectorLayer::EditType type )
@@ -891,6 +893,7 @@ void QgsFieldsProperties::apply()
       case QgsVectorLayer::TextEdit:
       case QgsVectorLayer::UuidGenerator:
       case QgsVectorLayer::Webview:
+      case QgsVectorLayer::Color:
         break;
     }
 

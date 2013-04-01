@@ -85,6 +85,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
     void loadUrl( const QString & );
     void loadPixmap( const QString & );
     void updateUrl();
+    void updateColor();
 
   private:
     QgsVectorLayer *mLayer;

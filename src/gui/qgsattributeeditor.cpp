@@ -27,6 +27,7 @@
 #include <qgslogger.h>
 #include <qgsexpression.h>
 #include <qgsfilterlineedit.h>
+#include <qgscolorbutton.h>
 
 #include <QScrollArea>
 #include <QPushButton>
@@ -185,6 +186,42 @@ void QgsAttributeEditor::updateUrl()
   le->blockSignals( true );
   le->setText( ww->url().toString() );
   le->blockSignals( false );
+}
+
+void QgsAttributeEditor::updateColor()
+{
+  QString color;
+  QgsColorButton *scb = qobject_cast<QgsColorButton *>( sender() );
+  QLineEdit *sle = qobject_cast<QLineEdit *>( sender() );
+
+  if ( !scb && !sle )
+    return;
+
+  QWidget *hbox = qobject_cast<QWidget *>( sender()->parent() );
+  if ( !hbox )
+    return;
+
+  QgsColorButton *cb = hbox->findChild<QgsColorButton *>();
+  if ( !cb )
+    return;
+
+  QLineEdit *le = hbox->findChild<QLineEdit *>();
+  if ( !le )
+    return;
+
+  if ( scb )
+  {
+    le->blockSignals( true );
+    le->setText( scb->color().name() );
+    le->blockSignals( false );
+  }
+
+  if ( sle )
+  {
+    cb->blockSignals( true );
+    cb->setColor( QColor( sle->text() ) );
+    cb->blockSignals( false );
+  }
 }
 
 QComboBox *QgsAttributeEditor::comboBox( QWidget *editor, QWidget *parent )
@@ -672,6 +709,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     case QgsVectorLayer::Calendar:
     case QgsVectorLayer::Photo:
     case QgsVectorLayer::Webview:
+    case QgsVectorLayer::Color:
     {
       QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
       if ( cw )
@@ -694,6 +732,13 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         break;
       }
 
+      QgsColorButton *cb = qobject_cast<QgsColorButton *>( editor );
+      if ( cb )
+      {
+        myWidget = cb;
+        break;
+      }
+
       QPushButton *pb = 0;
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
       if ( le )
@@ -709,10 +754,24 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       else
       {
         le = new QgsFilterLineEdit();
-        if ( editType == QgsVectorLayer::FileName || editType == QgsVectorLayer::Photo )
-          pb = new QPushButton( tr( "..." ) );
-        else
-          pb = new QPushButton( tr( "<" ) );
+        switch ( editType )
+        {
+          case QgsVectorLayer::FileName:
+          case QgsVectorLayer::Photo:
+            pb = new QPushButton( tr( "..." ) );
+            break;
+
+          case QgsVectorLayer::Webview:
+            pb = new QPushButton( tr( "<" ) );
+            break;
+
+          case QgsVectorLayer::Color:
+            pb = new QgsColorButton();
+            break;
+
+          default:
+            break;
+        }
 
         int row = 0;
         QGridLayout *layout = new QGridLayout();
@@ -746,6 +805,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           connect( le, SIGNAL( textChanged( const QString & ) ), new QgsAttributeEditor( le, vl, idx ), SLOT( loadUrl( const QString & ) ) );
         if ( lw )
           connect( le, SIGNAL( textChanged( const QString & ) ), new QgsAttributeEditor( le, vl, idx ), SLOT( loadPixmap( const QString & ) ) );
+        if ( editType == QgsVectorLayer::Color )
+          connect( le, SIGNAL( textChanged( const QString & ) ), new QgsAttributeEditor( le ), SLOT( updateColor() ) );
       }
 
       if ( pb )
@@ -756,6 +817,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( updateUrl() ) );
         if ( editType == QgsVectorLayer::Calendar )
           connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectDate() ) );
+        if ( editType == QgsVectorLayer::Color )
+          connect( pb, SIGNAL( colorChanged( const QColor & ) ), new QgsAttributeEditor( pb ), SLOT( updateColor() ) );
       }
     }
     break;
@@ -1135,6 +1198,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::Calendar:
     case QgsVectorLayer::Photo:
     case QgsVectorLayer::Webview:
+    case QgsVectorLayer::Color:
     {
       QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
       if ( cw )
@@ -1152,8 +1216,12 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
       QLabel *lw = qobject_cast<QLabel *>( editor );
       if ( lw )
-      {
+        break;
 
+      QgsColorButton *cb = qobject_cast<QgsColorButton *>( editor );
+      if ( cb )
+      {
+        cb->setColor( QColor( value.toString() ) );
         break;
       }
 
@@ -1165,9 +1233,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
         fle = qobject_cast<QgsFilterLineEdit *>( le );
       }
       if ( !le )
-      {
         return false;
-      }
 
       if ( fle && !( myFieldType == QVariant::Int || myFieldType == QVariant::Double || myFieldType == QVariant::LongLong || myFieldType == QVariant::Date ) )
       {

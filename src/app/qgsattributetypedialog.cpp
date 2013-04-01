@@ -338,6 +338,10 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
     case QgsVectorLayer::Webview:
       setPage( 15 );
       break;
+
+    case QgsVectorLayer::Color:
+      setPage( 16 );
+      break;
   }
 }
 
@@ -524,6 +528,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::UuidGenerator:
     case QgsVectorLayer::Webview:
+    case QgsVectorLayer::Color:
       break;
   }
 }
@@ -698,6 +703,9 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 15:
       mEditType = QgsVectorLayer::Webview;
+      break;
+    case 16:
+      mEditType = QgsVectorLayer::Color;
       break;
   }
 
