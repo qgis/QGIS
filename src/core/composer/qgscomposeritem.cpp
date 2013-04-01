@@ -103,6 +103,7 @@ void QgsComposerItem::init( bool manageZValue )
   // Setup composer effect
   mEffect = new QgsComposerEffect();
   setGraphicsEffect( mEffect );
+
 }
 
 QgsComposerItem::~QgsComposerItem()

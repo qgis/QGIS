@@ -35,7 +35,28 @@ void QgsComposerEffect::draw( QPainter *painter )
 
   // Set desired composition mode then draw source
   painter->setCompositionMode( mCompositionMode );
-  drawSource( painter );
+
+  if ( mCompositionMode == QPainter::CompositionMode_SourceOver )
+  {
+    // Normal (sourceover) blending, do faster drawSource operation
+    drawSource( painter );
+    return;
+  }
+
+  // Otherwise, draw using pixmap so QPrinter output works as expected
+  if ( sourceIsPixmap() )
+  {
+    // No point in drawing in device coordinates (pixmap will be scaled anyways).
+    pixmap = sourcePixmap( Qt::LogicalCoordinates, &offset );
+  }
+  else
+  {
+    // Draw pixmap in device coordinates to avoid pixmap scaling;
+    pixmap = sourcePixmap( Qt::DeviceCoordinates, &offset );
+    painter->setWorldTransform( QTransform() );
+  }
+
+  painter->drawPixmap( offset, pixmap );
 
 }
 
