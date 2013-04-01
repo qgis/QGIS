@@ -310,10 +310,21 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
     {
       FetchJoinInfo info;
       info.joinInfo = joinInfo;
-      info.indexOffset = *attIt - sourceLayerIndex;
       info.joinLayer = joinLayer;
-      info.targetField = fields.indexFromName( joinInfo->targetFieldName );
-      info.joinField = joinLayer->pendingFields().indexFromName( joinInfo->joinFieldName );
+
+      if ( joinInfo->targetFieldName.isEmpty() )
+        info.targetField = joinInfo->targetFieldIndex;    //for compatibility with 1.x
+      else
+        info.targetField = fields.indexFromName( joinInfo->targetFieldName );
+
+      if ( joinInfo->joinFieldName.isEmpty() )
+        info.joinField = joinInfo->joinFieldIndex;      //for compatibility with 1.x
+      else
+        info.joinField = joinLayer->pendingFields().indexFromName( joinInfo->joinFieldName );
+
+      info.indexOffset = *attIt - sourceLayerIndex;
+      if ( info.joinField < sourceLayerIndex )
+        info.indexOffset++;
 
       // for joined fields, we always need to request the targetField from the provider too
       if ( !fetchAttributes.contains( info.targetField ) )
@@ -389,7 +400,13 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
     subsetString.append( " AND " );
   }
 
-  subsetString.append( "\"" + joinInfo->joinFieldName + "\"" + " = " + "\"" + joinValue.toString() + "\"" );
+  QString joinFieldName;
+  if ( joinInfo->joinFieldName.isEmpty() && joinInfo->joinFieldIndex >= 0 && joinInfo->joinFieldIndex < joinLayer->pendingFields().count() )
+    joinFieldName = joinLayer->pendingFields().field( joinInfo->joinFieldIndex ).name();   // for compatibility with 1.x
+  else
+    joinFieldName = joinInfo->joinFieldName;
+
+  subsetString.append( "\"" + joinFieldName + "\"" + " = " + "\"" + joinValue.toString() + "\"" );
   joinLayer->dataProvider()->setSubsetString( subsetString, false );
 
   // select (no geometry)
