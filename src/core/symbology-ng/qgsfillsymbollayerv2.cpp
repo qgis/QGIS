@@ -2134,7 +2134,7 @@ const QgsExpression* QgsPointPatternFillSymbolLayer::dataDefinedProperty( const 
 QString QgsPointPatternFillSymbolLayer::dataDefinedPropertyString( const QString& property ) const
 {
   const QgsExpression* ex = dataDefinedProperty( property );
-  return ( ex ? ex->dump() : QString() );
+  return ex ? ex->dump() : QString();
 }
 
 void QgsPointPatternFillSymbolLayer::setDataDefinedProperty( const QString& property, const QString& expressionString )
