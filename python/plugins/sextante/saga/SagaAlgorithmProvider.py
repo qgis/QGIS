@@ -98,7 +98,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         html += ("<p>This algorithm requires SAGA to be run. A test to check if SAGA is correctly installed "
                 "and configured in your system has been performed, with the following result:</p><ul><i>")
         if msg is None:
-            html += "Saga seems to be correctly installed and configured</li></ul>"
+            html += "SAGA seems to be correctly installed and configured</li></ul>"
         else:
             html += msg + "</i></li></ul>"
             html += '<p><a href= "http://docs.qgis.org/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'

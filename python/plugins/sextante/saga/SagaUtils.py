@@ -142,4 +142,4 @@ class SagaUtils:
             s = traceback.format_exc()
             return "Error while checking SAGA installation. SAGA might not be correctly configured.\n" + s;
 
-        settings.setValue("/SextanteQGIS/SagaInstalled", True)
+        settings.setValue(SAGA_INSTALLED, True)

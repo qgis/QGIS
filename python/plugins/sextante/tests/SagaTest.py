@@ -2,18 +2,37 @@ import sextante
 import unittest
 from sextante.tests.TestData import points, points2, polygons, polygons2, lines, union,\
     table, polygonsGeoJson
+    table, polygonsGeoJson, raster
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
+from osgeo.gdalconst import GA_ReadOnly
+import os
+from osgeo import gdal
 
 class SagaTest(unittest.TestCase):
     '''tests for saga algorithms'''
 
+    def test_sagametricconversions(self):
+        outputs=sextante.runalg("saga:metricconversions",raster(),0,None)
+        output=outputs['CONV']
+        self.assertTrue(os.path.isfile(output))
+        dataset=gdal.Open(output, GA_ReadOnly)
+        strhash=hash(str(dataset.ReadAsArray(0).tolist()))
+        self.assertEqual(strhash,-2137931723)
+    
+    def test_sagasortgrid(self):
+        outputs=sextante.runalg("saga:sortgrid",raster(),True,None)
+        output=outputs['OUTPUT']
+        self.assertTrue(os.path.isfile(output))
+        dataset=gdal.Open(output, GA_ReadOnly)
+        strhash=hash(str(dataset.ReadAsArray(0).tolist()))
+        self.assertEqual(strhash,1320073153)
 
-    '''the following tests are not meant to test the algorithms themselves,
-    but the algorithm provider, testing things such as the file conversion,
+    '''the following tests are not meant to test the algorithms themselves, 
+    but the algorithm provider, testing things such as the file conversion, 
     the selection awareness of SAGA process, etc'''
 
-    def test_SagaVvectorAlgorithmWithSelection(self):
+    def test_SagaVectorAlgorithmWithSelection(self):
         layer = sextante.getobject(polygons2());
         feature = layer.getFeatures().next()
         selected = [feature.id()]
@@ -63,7 +82,13 @@ class SagaTest(unittest.TestCase):
         self.assertEqual(expectedvalues, values)
         wkt='POINT(270787.49991451 4458955.46775295)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
-
+    def test_SagaRasterAlgorithmWithUnsupportedOutputFormat(self):
+        outputs=sextante.runalg("saga:convergenceindex",raster(),0,0,None)
+        output=outputs['RESULT']
+        self.assertTrue(os.path.isfile(output))
+        dataset=gdal.Open(output, GA_ReadOnly)
+        strhash=hash(str(dataset.ReadAsArray(0).tolist()))
+        self.assertEqual(strhash,485390137)
 
 
 

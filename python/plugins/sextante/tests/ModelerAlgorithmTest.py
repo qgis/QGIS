@@ -108,6 +108,13 @@ class ModelerAlgorithmTest(unittest.TestCase):
         strhash=hash(str(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash,2026100494)
 
+    def test_modelernotinorder(self):
+        outputs=sextante.runalg("modeler:notinorder",raster(),None)
+        output=outputs['CAREA_ALG0']
+        self.assertTrue(os.path.isfile(output))
+        dataset=gdal.Open(output, GA_ReadOnly)
+        strhash=hash(str(dataset.ReadAsArray(0).tolist()))
+        self.assertEqual(strhash,-1557050506)
 
 
 def suite():

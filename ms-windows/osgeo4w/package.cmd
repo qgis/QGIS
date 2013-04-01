@@ -192,15 +192,16 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/memoryprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/ogrprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/osmprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/owsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/postgresprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/qgissqlanyconnection.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialiteprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/sqlanywhereprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/qgissqlanyconnection.dll" ^
+	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
@@ -241,6 +242,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/evis.dll" ^
 	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/heatmapplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/interpolationplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/oracleplugin.dll" ^
@@ -249,8 +251,8 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/spatialqueryplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/spitplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/sqlanywhereplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/zonalstatisticsplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/heatmapplugin.dll" ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^
         "apps/qt4/plugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/python/" ^
@@ -273,6 +275,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz
 	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/libgrass_gis.%GRASS_VERSION%.dll" ^
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
@@ -314,3 +317,4 @@ if exist %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGEN
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1
+
