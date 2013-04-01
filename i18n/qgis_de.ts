@@ -6153,9 +6153,6 @@ Falsche Zeile: %1</translation>
         <translation>Index außerhalb des Bereichs</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1040"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1041"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1042"/>
         <location filename="../src/core/qgsexpression.cpp" line="1043"/>
         <location filename="../src/core/qgsexpression.cpp" line="1044"/>
         <location filename="../src/core/qgsexpression.cpp" line="1045"/>
@@ -6167,42 +6164,42 @@ Falsche Zeile: %1</translation>
         <location filename="../src/core/qgsexpression.cpp" line="1051"/>
         <location filename="../src/core/qgsexpression.cpp" line="1052"/>
         <location filename="../src/core/qgsexpression.cpp" line="1053"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1054"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1055"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1056"/>
         <source>Math</source>
         <translation>Mathematik</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1054"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1055"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1056"/>
         <location filename="../src/core/qgsexpression.cpp" line="1057"/>
         <location filename="../src/core/qgsexpression.cpp" line="1058"/>
         <location filename="../src/core/qgsexpression.cpp" line="1059"/>
         <location filename="../src/core/qgsexpression.cpp" line="1060"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1061"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1062"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1063"/>
         <source>Conversions</source>
         <translation>Umwandlungen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1061"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1064"/>
         <source>Conditionals</source>
         <translation>Bedingungen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1062"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1063"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1064"/>
         <location filename="../src/core/qgsexpression.cpp" line="1065"/>
         <location filename="../src/core/qgsexpression.cpp" line="1066"/>
         <location filename="../src/core/qgsexpression.cpp" line="1067"/>
         <location filename="../src/core/qgsexpression.cpp" line="1068"/>
         <location filename="../src/core/qgsexpression.cpp" line="1069"/>
         <location filename="../src/core/qgsexpression.cpp" line="1070"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1071"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1072"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1073"/>
         <source>Date and Time</source>
         <translation>Datum und Zeit</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1071"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1072"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1073"/>
         <location filename="../src/core/qgsexpression.cpp" line="1074"/>
         <location filename="../src/core/qgsexpression.cpp" line="1075"/>
         <location filename="../src/core/qgsexpression.cpp" line="1076"/>
@@ -6216,13 +6213,13 @@ Falsche Zeile: %1</translation>
         <location filename="../src/core/qgsexpression.cpp" line="1084"/>
         <location filename="../src/core/qgsexpression.cpp" line="1085"/>
         <location filename="../src/core/qgsexpression.cpp" line="1086"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1087"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1088"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1089"/>
         <source>String</source>
         <translation>Zeichenketten</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1087"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1088"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1089"/>
         <location filename="../src/core/qgsexpression.cpp" line="1090"/>
         <location filename="../src/core/qgsexpression.cpp" line="1091"/>
         <location filename="../src/core/qgsexpression.cpp" line="1092"/>
@@ -6248,50 +6245,53 @@ Falsche Zeile: %1</translation>
         <location filename="../src/core/qgsexpression.cpp" line="1112"/>
         <location filename="../src/core/qgsexpression.cpp" line="1113"/>
         <location filename="../src/core/qgsexpression.cpp" line="1114"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1115"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1116"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1117"/>
         <source>Geometry</source>
         <translation>Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1115"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1116"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1117"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1167"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1118"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1119"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1120"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1170"/>
         <source>Record</source>
         <translation>Datensatz</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1118"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1121"/>
         <source>Special</source>
         <translation>Speziell</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1264"/>
-        <location filename="../src/core/qgsexpression.cpp" line="1276"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1267"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1279"/>
         <source>No root node! Parsing failed?</source>
         <translation>Kein Wurzelknoten! Parsen gescheitert?</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1297"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1300"/>
         <source>(no root)</source>
         <translation>(Keine Wurzel)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1428"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1431"/>
         <source>Unary minus only for numeric values.</source>
         <translation>Negatives Vorzeichen nur für nummerische Werte.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1478"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1481"/>
         <source>Can&apos;t preform /, *, or % on DateTime and Interval</source>
         <translation>Kann /, * or % nicht auf Daten oder Intervallen ausführen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1818"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1821"/>
         <source>[unsupported type;%1; value:%2]</source>
         <translation>[nicht unterstützter Typ;%1; Wert:%2]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="1843"/>
+        <location filename="../src/core/qgsexpression.cpp" line="1846"/>
         <source>Column &apos;%1&apos; not found</source>
         <translation>Spalte &apos;%1&apos; nicht gefunden</translation>
     </message>
@@ -16582,6 +16582,29 @@ und aktuelle Datei istt [%3]</translation>
     </message>
 </context>
 <context>
+    <name>QgsDataDefinedSymbolDialog</name>
+    <message>
+        <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="14"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="36"/>
+        <source>Property</source>
+        <translation>Eigenschaft</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="41"/>
+        <source>Field</source>
+        <translation>Feld</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsdatadefinedsymboldialogbase.ui" line="46"/>
+        <source>Expression</source>
+        <translation>Ausdruck</translation>
+    </message>
+</context>
+<context>
     <name>QgsDbSourceSelectBase</name>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="14"/>
@@ -18053,6 +18076,44 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsEllipseSymbolLayerV2Widget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="199"/>
+        <source>Symbol width</source>
+        <translation>Symbolbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="200"/>
+        <source>Symbol height</source>
+        <translation>Symbolhöhe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="201"/>
+        <source>Rotation</source>
+        <translation>Drehung</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="202"/>
+        <source>Outline width</source>
+        <translation>Umrandungsstärke</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="203"/>
+        <source>Fill color</source>
+        <translation>Füllfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="204"/>
+        <source>Border color</source>
+        <translation>Randfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsellipsesymbollayerv2widget.cpp" line="205"/>
+        <source>Symbol name</source>
+        <translation>Symbolname</translation>
+    </message>
+</context>
+<context>
     <name>QgsEncodingFileDialog</name>
     <message>
         <location filename="../src/gui/qgsencodingfiledialog.cpp" line="36"/>
@@ -18604,130 +18665,130 @@ Der Ausdruck ist ungültig (siehe (mehr Information) für Näheres)</translation
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="577"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="637"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="576"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="636"/>
         <source>Name conflict</source>
         <translation>Namenskonflikt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="577"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="637"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="576"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="636"/>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
         <translation>Das Attribut konnte nicht eingefügt werden, da der Name bereits vorhanden ist.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="589"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="588"/>
         <source>Added attribute</source>
         <translation>Attribut hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="614"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="658"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="613"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="657"/>
         <source>Deleted attribute</source>
         <translation>Attribut gelöscht</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="731"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="730"/>
         <source>Line edit</source>
         <translation>Eingabezeile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="732"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="731"/>
         <source>Unique values</source>
         <translation>Eindeutige Werte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="733"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="732"/>
         <source>Unique values editable</source>
         <translation>Eindeutige Werte (bearbeitbar)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="734"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="733"/>
         <source>Classification</source>
         <translation>Klassifikation</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="735"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="734"/>
         <source>Value map</source>
         <translation>Wertabbildung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="736"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="735"/>
         <source>Edit range</source>
         <translation>Eingabezeile mit Bereich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="737"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="736"/>
         <source>Slider range</source>
         <translation>Schieberbereich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="738"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="737"/>
         <source>Dial range</source>
         <translation>Drehreglerbereich</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="739"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="738"/>
         <source>File name</source>
         <translation>Dateiname</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="740"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="739"/>
         <source>Enumeration</source>
         <translation>Aufzählung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="741"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="740"/>
         <source>Immutable</source>
         <translation>Unveränderbar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="742"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="741"/>
         <source>Hidden</source>
         <translation>Versteckt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="743"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="742"/>
         <source>Checkbox</source>
         <translation>Kontrollkästchen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="744"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="743"/>
         <source>Text edit</source>
         <translation>Texteditor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="745"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="744"/>
         <source>Calendar</source>
         <translation>Kalender</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="746"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="745"/>
         <source>Value relation</source>
         <translation>Wertbeziehung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="747"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="746"/>
         <source>UUID generator</source>
         <translation>UUID-Generator</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="748"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="747"/>
         <source>Photo</source>
         <translation>Foto</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="749"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="748"/>
         <source>Webview</source>
         <translation>Webview</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="790"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="789"/>
         <source>Select edit form</source>
         <translation>Bearbeitungsformular wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="790"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="789"/>
         <source>UI file</source>
         <translation>UI-Dateien</translation>
     </message>
@@ -26106,6 +26167,29 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     </message>
 </context>
 <context>
+    <name>QgsLinePatternFillSymbolLayerWidget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1546"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1547"/>
+        <source>Distance</source>
+        <translation>Entfernung</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1548"/>
+        <source>Line width</source>
+        <translation>Linienbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1549"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+</context>
+<context>
     <name>QgsManageConnectionsDialog</name>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="84"/>
@@ -27340,6 +27424,24 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
     <message>
         <source>kilometers</source>
         <translation>Kilometer</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMarkerLineSymbolLayerV2Widget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="667"/>
+        <source>Interval</source>
+        <translation>Intervall</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="668"/>
+        <source>Line offset</source>
+        <translation>Linienversatz</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="669"/>
+        <source>Placement</source>
+        <translation>Platzierung</translation>
     </message>
 </context>
 <context>
@@ -34342,6 +34444,29 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPointPatternFillSymbolLayerWidget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1692"/>
+        <source>Horizontal distance</source>
+        <translation>Horizontaler Abstand</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1693"/>
+        <source>Vertical distance</source>
+        <translation>Vertikaler Abstand</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1694"/>
+        <source>Horizontal displacement</source>
+        <translation>Horizontalverschiebung</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1695"/>
+        <source>Vertical displacement</source>
+        <translation>Vertikalverschiebung</translation>
+    </message>
+</context>
+<context>
     <name>QgsPostgresConn</name>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="195"/>
@@ -34865,42 +34990,42 @@ SQL: %2</translation>
 <context>
     <name>QgsProject</name>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="801"/>
+        <location filename="../src/core/qgsproject.cpp" line="802"/>
         <source>Unable to open %1</source>
         <translation>Konnte %1 nicht öffnen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="814"/>
+        <location filename="../src/core/qgsproject.cpp" line="815"/>
         <source>Project File Read Error</source>
         <translation>Projektlesefehler</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="815"/>
+        <location filename="../src/core/qgsproject.cpp" line="816"/>
         <source>%1 at line %2 column %3</source>
         <translation>%1 in Zeile %2, Spalte %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="818"/>
+        <location filename="../src/core/qgsproject.cpp" line="819"/>
         <source>Project file read error: %1 at line %2 column %3</source>
         <translation>Projektdateifehler: %1 in Zeile %2, Spalte %3</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="825"/>
+        <location filename="../src/core/qgsproject.cpp" line="826"/>
         <source>%1 for file %2</source>
         <translation>%1 in Datei %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="946"/>
+        <location filename="../src/core/qgsproject.cpp" line="947"/>
         <source>Unable to save to file %1</source>
         <translation>Konnte nicht in Datei %1 speichern</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="955"/>
+        <location filename="../src/core/qgsproject.cpp" line="956"/>
         <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 ist nicht beschreibbar. Bitte passen Sie die Zugriffsrechte (wenn möglich) und versuchen Sie es erneut.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsproject.cpp" line="1058"/>
+        <location filename="../src/core/qgsproject.cpp" line="1059"/>
         <source>Unable to save to file %1. Your project may be corrupted on disk. Try clearing some space on the volume and check file permissions before pressing save again.</source>
         <translation>Konnte nicht in Datei %1 speichern. Das Projekt könnten auf der Festplatte defekt sein. Bitte machen sie etwas Platz auf der Festplatte frei und überprüfen Sie die Zugriffsrechte bevor Sie es erneut versuchen.</translation>
     </message>
@@ -38817,9 +38942,39 @@ datasets with maximum width and height specified below.</source>
 <context>
     <name>QgsSVGFillSymbolLayerWidget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1055"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1216"/>
         <source>Select svg texture file</source>
         <translation>SVG-Texturdatei wählen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1394"/>
+        <source>Texture width</source>
+        <translation>Texturbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1395"/>
+        <source>SVG file</source>
+        <translation>SVG-Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1396"/>
+        <source>Rotation</source>
+        <translation>Drehung</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1397"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1398"/>
+        <source>Border color</source>
+        <translation>Randfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1399"/>
+        <source>Border width</source>
+        <translation>Randbreite</translation>
     </message>
 </context>
 <context>
@@ -39046,6 +39201,90 @@ Der Fehler war:
         <translation>Der Fehler war:
 %1
 </translation>
+    </message>
+</context>
+<context>
+    <name>QgsSimpleFillSymbolLayerV2Widget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="523"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="524"/>
+        <source>Border color</source>
+        <translation>Randfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="525"/>
+        <source>Border width</source>
+        <translation>Randbreite</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSimpleLineSymbolLayerV2Widget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="195"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="196"/>
+        <source>Pen width</source>
+        <translation>Stiftbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="197"/>
+        <source>Offset</source>
+        <translation>Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="198"/>
+        <source>Dash pattern</source>
+        <translation>Strichlierungsmuster</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="199"/>
+        <source>Join style</source>
+        <translation>Verbindungsstil</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="200"/>
+        <source>Cap style</source>
+        <translation>Endstil</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSimpleMarkerSymbolLayerV2Widget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="380"/>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="381"/>
+        <source>Fill color</source>
+        <translation>Füllfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="382"/>
+        <source>Border color</source>
+        <translation>Randfarbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="383"/>
+        <source>Size</source>
+        <translation>Größe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="384"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="385"/>
+        <source>Offset</source>
+        <translation>Versatz</translation>
     </message>
 </context>
 <context>
@@ -41600,14 +41839,49 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
 <context>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="845"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="971"/>
         <source>Select SVG file</source>
         <translation>SVG-Datei wählen</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="847"/>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="973"/>
         <source>SVG files</source>
         <translation>SVG-Dateien</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1081"/>
+        <source>Size</source>
+        <translation>Größe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1082"/>
+        <source>Border width</source>
+        <translation>Randbreite</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1083"/>
+        <source>Angle</source>
+        <translation>Winkel</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1084"/>
+        <source>Offset</source>
+        <translation>Versatz</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1085"/>
+        <source>SVG file</source>
+        <translation>SVG-Datei</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1086"/>
+        <source>Color</source>
+        <translation>Farbe</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1087"/>
+        <source>Border color</source>
+        <translation>Randfarbe</translation>
     </message>
 </context>
 <context>
@@ -42517,166 +42791,166 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="1516"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="1517"/>
         <source>Updating feature count for layer %1</source>
         <translation>Objektanzahl des Layers %1 aktualsieren</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="1516"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="1517"/>
         <source>Abort</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2240"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2241"/>
         <source>No renderer object</source>
         <translation>Kein Darstellungsobjekt</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2246"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2247"/>
         <source>Classification field not found</source>
         <translation>Klassifikationsfeld nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2605"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2606"/>
         <source>renderer failed to save</source>
         <translation>Darstellung konnte nicht gespeichert werden</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2612"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2613"/>
         <source>no renderer</source>
         <translation>Keine Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3063"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3064"/>
         <source>ERROR: no provider</source>
         <translation>FEHLER: kein Datenlieferant</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3069"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3070"/>
         <source>ERROR: layer not editable</source>
         <translation>FEHLER: Layer ist nicht veränderbar</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3084"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3085"/>
         <source>Commit errors:
   %1</source>
         <translation>Commit-Fehler:
   %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4143"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4144"/>
         <source>General:</source>
         <translation>Allgemein:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4150"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4151"/>
         <source>Layer comment: %1</source>
         <translation>Layerkommentar: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4156"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4157"/>
         <source>Storage type of this layer: %1</source>
         <translation>Datenspeicher dieses Layers: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4161"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4162"/>
         <source>Source for this layer: %1</source>
         <translation>Quelle dieses Layers: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4177"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4178"/>
         <source>Geometry type of the features in this layer: %1</source>
         <translation>Geometrietyp der Objekte dieses Layers: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4185"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4186"/>
         <source>Primary key attributes: </source>
         <translation>Primärschlüsselattribute:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4196"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4197"/>
         <source>The number of features in this layer: %1</source>
         <translation>Anzahl der Objekte dieses Layers: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4200"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4201"/>
         <source>Editing capabilities of this layer: %1</source>
         <translation>Bearbeitungseigenschaften dieses Layers: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4207"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4208"/>
         <source>Extents:</source>
         <translation>Ausdehnung:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4210"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4211"/>
         <source>In layer spatial reference system units : </source>
         <translation>In Bezugssystemeinheiten des Projekts : </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4259"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4278"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4260"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4279"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin,yMin %1;%2 : xMax,yMax %3;%4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4264"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4265"/>
         <source>unknown extent</source>
         <translation>Unbekannte Ausmaße</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4277"/>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4315"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4278"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4316"/>
         <source>In project spatial reference system units : </source>
         <translation>In Bezugssystemeinheiten des Projekts : </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4290"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4291"/>
         <source>Layer Spatial Reference System:</source>
         <translation>Räumliches Bezugssystem des Layers:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4302"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4303"/>
         <source>Project (Output) Spatial Reference System:</source>
         <translation>Räumliches Bezugssystem des Projekts (Ausgabe):</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4316"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4317"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(Transformation der Layerausdehnung ungültig)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4326"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4327"/>
         <source>Attribute field info:</source>
         <translation>Attributfeldinformationen:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4333"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4334"/>
         <source>Field</source>
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4336"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4337"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4339"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4340"/>
         <source>Length</source>
         <translation>Länge</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4342"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4343"/>
         <source>Precision</source>
         <translation>Genauigkeit</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="4345"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="4346"/>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2234"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2235"/>
         <source>Unknown renderer</source>
         <translation>Unbekannte Darstellung</translation>
     </message>
@@ -42906,12 +43180,12 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Layereigenschaften als Stildatei speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="910"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="918"/>
         <source>Save Style</source>
         <translation>Stil speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="941"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="949"/>
         <source>Save Style...</source>
         <translation>Stil speichern...</translation>
     </message>
@@ -42927,12 +43201,12 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Gespeicherter Stil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="877"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="885"/>
         <source>Symbology</source>
         <translation>Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="878"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="886"/>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
         <translation>Wollen Sie die neue Darstellungsimplementierung für diesen Layer nutzen?</translation>
     </message>
@@ -42990,33 +43264,33 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Felder</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="278"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="281"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="308"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="311"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="328"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="331"/>
         <source>Create Spatial Index</source>
         <translation>Räumlichen Index erstellen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="335"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="338"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="341"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation>Koordinatenbezugsssystem der Geometrie des Layers angeben.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="341"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="344"/>
         <source>Specify CRS</source>
         <translation>KBS angeben</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="348"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="351"/>
         <source>Update Extents</source>
         <translation>Ausmaße aktualisieren</translation>
     </message>
@@ -43026,107 +43300,107 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Beschriftung (alt)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="321"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="324"/>
         <source>CRS</source>
         <translation>KBS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="584"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="587"/>
         <source>Provider-specific options</source>
         <translation>Datenlieferanteneinstellungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="593"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="596"/>
         <source>Encoding</source>
         <translation>Kodierung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="615"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="618"/>
         <source>Display</source>
         <translation>Anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="621"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="624"/>
         <source>Map Tip display text</source>
         <translation>Kartentippanzeigetext</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="638"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="641"/>
         <source>Inserts an expression into the action</source>
         <translation>Einen Ausdruck in die Aktion einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="641"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="644"/>
         <source>Insert expression...</source>
         <translation>Ausdruck einfügen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="667"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="670"/>
         <source>The valid attribute names for this layer</source>
         <translation>Die gültigen Attributnamen für diesen Layer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="683"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="686"/>
         <source>Inserts the selected field into the action</source>
         <translation>Fügt das gewählte Feld in die Aktion ein</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="686"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="689"/>
         <source>Insert field</source>
         <translation>Attribut einfügen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="704"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="707"/>
         <source>HTML</source>
         <translation>HTML</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="728"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="731"/>
         <source>Field</source>
         <translation>Feld</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="749"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="752"/>
         <source>Layer name</source>
         <translation>Layername</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="759"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="762"/>
         <source>displayed as</source>
         <translation>angezeigt als</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="807"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="810"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="817"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="820"/>
         <source>Abstract</source>
         <translation>Zusammenfassung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="892"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="895"/>
         <source>Joins</source>
         <translation>Verknüpfungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="958"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="961"/>
         <source>Join layer</source>
         <translation>Joinlayer</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="963"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="966"/>
         <source>Join field</source>
         <translation>Verknüpfungsfeld</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="968"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="971"/>
         <source>Target field</source>
         <translation>Zielfeld</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="985"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="988"/>
         <source>Diagrams</source>
         <translation>Diagramme</translation>
     </message>
@@ -43136,17 +43410,17 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Neue Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="371"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="374"/>
         <source>Use scale dependent rendering</source>
         <translation>Maßstabsabhängig zeichnen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="536"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="539"/>
         <source>Subset</source>
         <translation>Untermenge</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="574"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="577"/>
         <source>Query Builder</source>
         <translation>Abfrageerstellung</translation>
     </message>
@@ -43161,13 +43435,13 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Transparenz</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="383"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="450"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="386"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="453"/>
         <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
         <translation>Kleinster Maßstab, d.h. größter Maßstabsnenner. Die Grenze ist ausschließlich, d.h. der Layer wird bei diesem Maßstab nicht mehr angezeigt.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="386"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="389"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -43182,13 +43456,13 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(exklusive)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="404"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="431"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="407"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="434"/>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
         <translation>Größter Maßstab (d.h. kleinster Maßstabsnenner). Diese Grenze ist einschließlich, d.h. der Layer wird bis zu diesem Maßstab angezeigt.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="407"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="410"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -43203,13 +43477,13 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(inklusive)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="457"/>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="464"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="460"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="467"/>
         <source>Current</source>
         <translation>Aktuell</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="780"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="783"/>
         <source>Metadata</source>
         <translation>Metadaten</translation>
     </message>
@@ -43224,7 +43498,7 @@ p, li { white-space: pre-wrap; }
         <translation>Beschriftungen anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="865"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="868"/>
         <source>Actions</source>
         <translation>Aktionen</translation>
     </message>
@@ -46397,94 +46671,99 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Formular</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="27"/>
         <source>Settings</source>
-        <translation>Einstellungen</translation>
+        <translation type="obsolete">Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="33"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="53"/>
         <source>Border color</source>
         <translation>Randfarbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="54"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="77"/>
         <source>Symbol width unit</source>
         <translation>Symbolbreiteneinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="62"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="103"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="205"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="33"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="99"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="174"/>
         <source>Millimeter</source>
         <translation>Millimeter</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="67"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="108"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="210"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="38"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="104"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="179"/>
         <source>Map unit</source>
         <translation>Karteneinheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="126"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="70"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="91"/>
+        <source>Change</source>
+        <translation>Ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="166"/>
         <source>Outline width unit</source>
         <translation>Umrißbreiteneinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="173"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="262"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="216"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="229"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="46"/>
         <source>Fill color</source>
         <translation>Füllfarbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="180"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="232"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="112"/>
         <source>Symbol width</source>
         <translation>Symbolbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="75"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="252"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="84"/>
         <source>Outline width</source>
         <translation>Umrandungsstärke</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="187"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="242"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="190"/>
         <source>Symbol height</source>
         <translation>Symbolhöhe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="95"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="295"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="119"/>
         <source>Rotation</source>
         <translation>Drehung</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="40"/>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="47"/>
         <source>Change...</source>
-        <translation>Ändern...</translation>
+        <translation type="obsolete">Ändern...</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="218"/>
+        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="207"/>
         <source>Symbol height unit</source>
         <translation>Symbolhöheneinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="226"/>
         <source>Data defined settings</source>
-        <translation>Datendefinierte Einstellungen</translation>
+        <translation type="obsolete">Datendefinierte Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="272"/>
         <source>Outline color</source>
-        <translation>Umrandungsfarbe</translation>
+        <translation type="obsolete">Umrandungsfarbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="282"/>
         <source>Shape</source>
-        <translation>Form</translation>
+        <translation type="obsolete">Form</translation>
     </message>
 </context>
 <context>
@@ -46598,61 +46877,75 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="46"/>
         <source>Change...</source>
-        <translation>Ändern...</translation>
+        <translation type="obsolete">Ändern...</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="53"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="30"/>
         <source>Angle</source>
         <translation>Winkel</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="68"/>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="117"/>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="158"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="45"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="66"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="165"/>
         <source>Millimeter</source>
         <translation>Millimeter</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="73"/>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="122"/>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="163"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="50"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="71"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="170"/>
         <source>Map unit</source>
         <translation>Karteneinheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="81"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="37"/>
         <source>Distance</source>
         <translation>Entfernung</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="88"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="113"/>
         <source>Distance unit</source>
         <translation>Distanzeinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="95"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="58"/>
         <source>Line width</source>
         <translation>Linienbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="102"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="23"/>
         <source>Line width unit</source>
         <translation>Linienbreiteneinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="109"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="130"/>
+        <source>Change</source>
+        <translation>Ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="137"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="171"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="180"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="193"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="86"/>
         <source>Offset unit</source>
         <translation>Versatzeinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="130"/>
+        <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="93"/>
         <source>Offset</source>
         <translation>Versatz</translation>
     </message>
@@ -46665,56 +46958,66 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="81"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="129"/>
         <source>Line offset</source>
         <translation>Linienversatz</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="23"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="122"/>
         <source>Marker placement</source>
         <translation>Markierungsplatzierung</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="30"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="105"/>
         <source>with interval</source>
         <translation>mit Intervall</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="53"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="115"/>
         <source>on every vertex</source>
         <translation>auf jedem Stützpunkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="60"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="23"/>
         <source>on last vertex only</source>
         <translation>nur auf letztem Stützpunkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="67"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="149"/>
         <source>on first vertex only</source>
         <translation>nur auf erstem Stützpunkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="74"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="30"/>
         <source>Rotate marker</source>
         <translation>Markierung rotieren</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="121"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="37"/>
         <source>on central point</source>
         <translation>auf Mittelpunkt</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="129"/>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="143"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="45"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="66"/>
         <source>Millimeter</source>
         <translation>Millimeter</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="134"/>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="148"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="50"/>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="71"/>
         <source>Map unit</source>
         <translation>Karteneinheiten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="158"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="171"/>
+        <source>...</source>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -46725,58 +47028,68 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="64"/>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="78"/>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="133"/>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="147"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="31"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="92"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="106"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="158"/>
         <source>Millimeter</source>
         <translation>Millimeter</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="69"/>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="83"/>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="138"/>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="152"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="36"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="97"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="111"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="163"/>
         <source>Map unit</source>
         <translation>Karteneinheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="105"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="84"/>
         <source>Horizontal distance</source>
         <translation>Horizontaler Abstand</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="160"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="181"/>
         <source>Horizontal distance unit</source>
         <translation>Horizontale Abstandseinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="167"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="190"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="203"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="126"/>
         <source>Vertical distance unit</source>
         <translation>Vertikale Abstandseinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="174"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="150"/>
         <source>Horizontal displacement unit</source>
         <translation>Horizontalverschiebungseinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="181"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="143"/>
         <source>Vertical displacement unit</source>
         <translation>Vertikalverschiebungseinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="33"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="77"/>
         <source>Vertical distance</source>
         <translation>Vertikaler Abstand</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="98"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="23"/>
         <source>Horizontal displacement</source>
         <translation>Horizontalverschiebung</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="91"/>
+        <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="119"/>
         <source>Vertical displacement</source>
         <translation>Vertikalverschiebung</translation>
     </message>
@@ -46789,70 +47102,76 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="56"/>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="70"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="107"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="121"/>
         <source>Change...</source>
         <translation>Ändern...</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="91"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="142"/>
         <source>Texture width</source>
         <translation>Texturbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="77"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="128"/>
         <source>Rotation</source>
         <translation>Drehung</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="84"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="135"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="35"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="86"/>
         <source>Border color</source>
         <translation>Randfarbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="42"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="93"/>
         <source>Border width</source>
         <translation>Randbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="63"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="114"/>
         <source>Texture width unit</source>
         <translation>Texturbreiteneinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="106"/>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="120"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="157"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="171"/>
         <source>Millimeter</source>
         <translation>Millimeter</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="111"/>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="125"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="162"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="176"/>
         <source>Map unit</source>
         <translation>Karteneinheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="133"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="184"/>
         <source>Border width unit</source>
         <translation>Randbreiteneinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="144"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="195"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="25"/>
         <source>SVG Groups</source>
         <translation>SVG-Gruppen</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="151"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="32"/>
         <source>SVG Symbols</source>
         <translation>SVG-Symbole</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="184"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="65"/>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="208"/>
         <source>...</source>
         <translation>...</translation>
     </message>
@@ -46865,60 +47184,74 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="25"/>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="46"/>
         <source>Change...</source>
-        <translation>Ändern...</translation>
+        <translation type="obsolete">Ändern...</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="83"/>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="117"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="113"/>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="59"/>
         <source>Fill style</source>
         <translation>Füllstil</translation>
     </message>
     <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="36"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="128"/>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="149"/>
         <source>Millimeter</source>
         <translation>Millimeter</translation>
     </message>
     <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="41"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="133"/>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="154"/>
         <source>Map unit</source>
         <translation>Karteneinheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="141"/>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="110"/>
         <source>Border width unit</source>
         <translation>Randbreiteneinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="162"/>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="173"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="186"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="96"/>
         <source>Offset unit</source>
         <translation>Versatzeinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="39"/>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="103"/>
         <source>Border color</source>
         <translation>Randfarbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="120"/>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="141"/>
         <source>Border style</source>
         <translation>Randstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="93"/>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="49"/>
         <source>Border width</source>
         <translation>Randbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="32"/>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="148"/>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="155"/>
+        <source>Change</source>
+        <translation>Ändern</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="162"/>
         <source>Offset X,Y</source>
         <translation>X-,Y-Versatz</translation>
     </message>
@@ -46970,14 +47303,23 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Stiftstil</translation>
     </message>
     <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="196"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="209"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="47"/>
         <source>Join style</source>
         <translation>Verbindungsstil</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="197"/>
         <source>Cap style</source>
-        <translation>Endstil</translation>
+        <translation type="obsolete">Endstil</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="173"/>
@@ -47041,6 +47383,16 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Versatzeinheit</translation>
     </message>
     <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="213"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="226"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="52"/>
         <source>Size</source>
         <translation>Größe</translation>
@@ -47064,82 +47416,88 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="59"/>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="87"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="130"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="158"/>
         <source>Change...</source>
         <translation>Ändern...</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="121"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="192"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="101"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="172"/>
         <source>Angle</source>
         <translation>Winkel</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="39"/>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="185"/>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="199"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="110"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="256"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="270"/>
         <source>Millimeter</source>
         <translation>Millimeter</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="44"/>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="190"/>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="204"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="115"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="261"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="275"/>
         <source>Map unit</source>
         <translation>Karteneinheiten</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="52"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="123"/>
         <source>Offset X,Y</source>
         <translation>X-,Y-Versatz</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="66"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="137"/>
         <source>Size unit</source>
         <translation>Größeneinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="73"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="144"/>
         <source>Color</source>
         <translation>Farbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="80"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="151"/>
         <source>Border width</source>
         <translation>Randbreite</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="108"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="179"/>
         <source>Border color</source>
         <translation>Randfarbe</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="177"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="248"/>
         <source>Border width unit</source>
         <translation>Randbreiteneinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="212"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="283"/>
         <source>Offset unit</source>
         <translation>Versatzeinheit</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="221"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="294"/>
+        <source>Data defined properties</source>
+        <translation>Datendefinierte Eigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="44"/>
         <source>SVG Groups</source>
         <translation>SVG-Gruppen</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="228"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="23"/>
         <source>SVG Image</source>
         <translation>SVG-Bild</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="283"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="35"/>
+        <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="307"/>
         <source>...</source>
         <translation>...</translation>
     </message>

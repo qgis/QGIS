@@ -521,7 +521,7 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
 
   QMap<QString, QPair< QString, QString> > dataDefinedProperties;
   dataDefinedProperties.insert( "color", qMakePair( tr( "Color" ), mLayer->dataDefinedPropertyString( "color" ) ) );
-  dataDefinedProperties.insert( "color_border", qMakePair( tr( "Bordere color" ), mLayer->dataDefinedPropertyString( "color_border" ) ) );
+  dataDefinedProperties.insert( "color_border", qMakePair( tr( "Border color" ), mLayer->dataDefinedPropertyString( "color_border" ) ) );
   dataDefinedProperties.insert( "width_border", qMakePair( tr( "Border width" ), mLayer->dataDefinedPropertyString( "width_border" ) ) );
 
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
