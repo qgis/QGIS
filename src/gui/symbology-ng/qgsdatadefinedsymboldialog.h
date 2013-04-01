@@ -7,7 +7,7 @@
 class QgsVectorLayer;
 class QComboBox;
 
-class QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsDataDefinedSymbolDialog
+class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsDataDefinedSymbolDialog
 {
     Q_OBJECT
   public:
