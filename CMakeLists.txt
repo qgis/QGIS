@@ -440,6 +440,13 @@ ELSE (WIN32)
     IF (WITH_GLOBE)
         SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
     ENDIF (WITH_GLOBE)
+    # recent cmakes force SDKs, recent SDKs don't have user symlinks
+    # need to find non-system frameworks
+    # cmake bug #0007250 - CMAKE_SHARED_LINKER_FLAGS ignored when creating
+    # a framework, so these need to be manually handled with LINK_FLAGS options
+    SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -F/Library/Frameworks")
+    SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -F/Library/Frameworks")
+    SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -F/Library/Frameworks")
 
   ELSE (APPLE)
     # UNIX
