@@ -877,7 +877,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
   {
     interval = mIntervalExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
-  if ( !interval > 0 )
+  if ( interval <= 0 )
   {
     interval = 0.1;
   }
