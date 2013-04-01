@@ -32,7 +32,6 @@ __revision__ = '$Format:%H$'
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteVectorWriter import SextanteVectorWriter
 
 #Here we define the input and outputs
@@ -46,15 +45,15 @@ from sextante.core.SextanteVectorWriter import SextanteVectorWriter
 
 #input layers values are always a string with its location.
 #That string can be converted into a QGIS object (a QgsVectorLayer in this case))
-#using the Sextante.getObjectFromUri() method
-vectorLayer = QGisLayers.getObjectFromUri(input)
+#using the sextante.getobject() method
+vectorLayer = sextante.getobject(input)
 
 #And now we can process
 
 #First we create the output layer.
 #To do so, we create a SextanteVectorWriter, that we can later use to add features.
 provider = vectorLayer.dataProvider()
-writer = SextanteVectorWriter(output, None, provider.fields(), provider.geometryType(), vectorLayer.crs() )
+writer = SextanteVectorWriter(output, None, provider.fields(), provider.geometryType(), vectorLayer.crs())
 
 #Now we take the selected features and add them to the output layer
 selection = vectorLayer.selectedFeatures()
