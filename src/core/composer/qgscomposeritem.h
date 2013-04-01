@@ -18,6 +18,8 @@
 #define QGSCOMPOSERITEM_H
 
 #include "qgscomposeritemcommand.h"
+#include "qgscomposereffect.h"
+#include "qgsmaprenderer.h" // for blend mode functions & enums
 #include <QGraphicsRectItem>
 #include <QObject>
 
@@ -195,6 +197,17 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     void setBackgroundEnabled( bool drawBackground ) {mBackground = drawBackground;}
 
+    /** Returns the item's composition blending mode */
+    QgsMapRenderer::BlendMode blendMode() const {return mBlendMode;}
+
+    /** Sets the item's composition blending mode*/
+    void setBlendMode( QgsMapRenderer::BlendMode blendMode );
+
+    /** Returns the item's transparency */
+    int transparency() const {return mTransparency;}
+    /** Sets the item's transparency */
+    void setTransparency( int transparency );
+
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
@@ -297,7 +310,6 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**True if item background needs to be painted*/
     bool mBackground;
 
-
     /**True if item position  and size cannot be changed with mouse move
     @note: this member was added in version 1.2*/
     bool mItemPositionLocked;
@@ -307,6 +319,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Item rotation in degrees, clockwise*/
     double mRotation;
+
+    /**Composition blend mode for item*/
+    QgsMapRenderer::BlendMode mBlendMode;
+
+    QgsComposerEffect *mEffect;
+
+    /**Item transparency*/
+    int mTransparency;
 
     /**The item's position mode
     @note: this member was added in version 2.0*/
