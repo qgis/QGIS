@@ -56,6 +56,7 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( colorChanged( const QColor& ) ) );
   connect( cboPenStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
   connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+  connect( cboCapStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
   updatePatternIcon();
 
@@ -87,10 +88,13 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffset->setValue( mLayer->offset() );
   cboPenStyle->blockSignals( true );
   cboJoinStyle->blockSignals( true );
+  cboCapStyle->blockSignals( true );
   cboPenStyle->setPenStyle( mLayer->penStyle() );
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
+  cboCapStyle->setPenCapStyle( mLayer->penCapStyle() );
   cboPenStyle->blockSignals( false );
   cboJoinStyle->blockSignals( false );
+  cboCapStyle->blockSignals( false );
 
   //use a custom dash pattern?
   bool useCustomDashPattern = mLayer->useCustomDashPattern();
@@ -126,6 +130,7 @@ void QgsSimpleLineSymbolLayerV2Widget::penStyleChanged()
 {
   mLayer->setPenStyle( cboPenStyle->penStyle() );
   mLayer->setPenJoinStyle( cboJoinStyle->penJoinStyle() );
+  mLayer->setPenCapStyle( cboCapStyle->penCapStyle() );
   emit changed();
 }
 
