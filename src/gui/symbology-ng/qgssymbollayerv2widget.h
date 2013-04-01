@@ -70,7 +70,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void on_mPenWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
     void on_mDashPatternUnitComboBox_currentIndexChanged( int index );
-
+    void on_mDataDefinedPropertiesButton_clicked();
 
   protected:
     QgsSimpleLineSymbolLayerV2* mLayer;
@@ -107,6 +107,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void setOffset();
     void on_mSizeUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 
   protected:
     QgsSimpleMarkerSymbolLayerV2* mLayer;
@@ -140,6 +141,7 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void offsetChanged();
     void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 
   protected:
     QgsSimpleFillSymbolLayerV2* mLayer;
@@ -173,6 +175,7 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void setPlacement();
     void on_mIntervalUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 
   protected:
 
@@ -214,6 +217,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
     void on_mSizeUnitComboBox_currentIndexChanged( int index );
     void on_mBorderWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 
   protected:
 
@@ -290,6 +294,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void on_mBorderWidthSpinBox_valueChanged( double d );
     void on_mTextureWidthUnitComboBox_currentIndexChanged( int index );
     void on_mSvgOutlineWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 };
 
 //////////
@@ -322,6 +327,7 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
     void on_mDistanceUnitComboBox_currentIndexChanged( int index );
     void on_mLineWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOffsetUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 };
 
 //////////
@@ -353,6 +359,7 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Wi
     void on_mVerticalDistanceUnitComboBox_currentIndexChanged( int index );
     void on_mHorizontalDisplacementUnitComboBox_currentIndexChanged( int index );
     void on_mVerticalDisplacementUnitComboBox_currentIndexChanged( int index );
+    void on_mDataDefinedPropertiesButton_clicked();
 };
 
 /////////

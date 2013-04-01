@@ -156,6 +156,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
+    const QgsRenderContext& renderContext() const { return mRenderContext; }
     //void setRenderContext( QgsRenderContext& c ) { mRenderContext = c;}
 
     QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }

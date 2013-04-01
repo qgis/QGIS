@@ -7,311 +7,232 @@
     <x>0</x>
     <y>0</y>
     <width>336</width>
-    <height>357</height>
+    <height>466</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <property name="margin">
-    <number>1</number>
-   </property>
    <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>Settings</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QLabel" name="label">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="mWidthSpinBox">
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QComboBox" name="mSymbolWidthUnitComboBox">
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Map unit</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Fill color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Border color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QgsColorButtonV2" name="btnChangeColorBorder">
+       <property name="text">
+        <string>Change</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="mSymbolWidthUnitLabel">
+       <property name="text">
+        <string>Symbol width unit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="mOutlineWidthLabel">
+       <property name="text">
+        <string>Outline width</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QgsColorButtonV2" name="btnChangeColorFill">
+       <property name="text">
+        <string>Change</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <widget class="QComboBox" name="mSymbolHeightUnitComboBox">
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Map unit</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mSymbolWidthLabel">
+       <property name="text">
+        <string>Symbol width</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="mRotationLabel">
+       <property name="text">
+        <string>Rotation</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0" colspan="2">
+      <widget class="QListWidget" name="mShapeListWidget">
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::NoDragDrop</enum>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="movement">
+        <enum>QListView::Static</enum>
+       </property>
+       <property name="flow">
+        <enum>QListView::LeftToRight</enum>
+       </property>
+       <property name="resizeMode">
+        <enum>QListView::Adjust</enum>
+       </property>
+       <property name="spacing">
+        <number>4</number>
+       </property>
+       <property name="gridSize">
+        <size>
+         <width>30</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="viewMode">
+        <enum>QListView::IconMode</enum>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="selectionRectVisible">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="mOutlineWidthUnitLabel">
+       <property name="text">
+        <string>Outline width unit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QComboBox" name="mOutlineWidthUnitComboBox">
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Map unit</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QDoubleSpinBox" name="mRotationSpinBox"/>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="mSymbolHeightLabel">
+       <property name="text">
+        <string>Symbol height</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QDoubleSpinBox" name="mHeightSpinBox">
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>999999999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0">
+      <widget class="QLabel" name="mSymbolHeightUnitLabel">
+       <property name="text">
+        <string>Symbol height unit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0" colspan="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="mDataDefinedPropertiesLabel">
          <property name="text">
-          <string>Border color</string>
+          <string>Data defined properties</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QgsColorButton" name="btnChangeColorFill">
+       <item>
+        <widget class="QPushButton" name="mDataDefinedPropertiesButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
-          <string>Change...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QgsColorButton" name="btnChangeColorBorder">
-         <property name="text">
-          <string>Change...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="mSymbolWidthUnitLabel">
-         <property name="text">
-          <string>Symbol width unit</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QComboBox" name="mOutlineWidthUnitComboBox">
-         <item>
-          <property name="text">
-           <string>Millimeter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map unit</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="mOutlineWidthLabel">
-         <property name="text">
-          <string>Outline width</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="maximum">
-          <double>999999999.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QDoubleSpinBox" name="mRotationSpinBox"/>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="mRotationLabel">
-         <property name="text">
-          <string>Rotation</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="mSymbolWidthUnitComboBox">
-         <item>
-          <property name="text">
-           <string>Millimeter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map unit</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QDoubleSpinBox" name="mHeightSpinBox">
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="maximum">
-          <double>999999999.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="mOutlineWidthUnitLabel">
-         <property name="text">
-          <string>Outline width unit</string>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="0" colspan="2">
-        <widget class="QListWidget" name="mShapeListWidget">
-         <property name="dragDropMode">
-          <enum>QAbstractItemView::NoDragDrop</enum>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>20</width>
-           <height>20</height>
-          </size>
-         </property>
-         <property name="movement">
-          <enum>QListView::Static</enum>
-         </property>
-         <property name="flow">
-          <enum>QListView::LeftToRight</enum>
-         </property>
-         <property name="resizeMode">
-          <enum>QListView::Adjust</enum>
-         </property>
-         <property name="spacing">
-          <number>4</number>
-         </property>
-         <property name="gridSize">
-          <size>
-           <width>30</width>
-           <height>24</height>
-          </size>
-         </property>
-         <property name="viewMode">
-          <enum>QListView::IconMode</enum>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-         <property name="selectionRectVisible">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Fill color</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="mSymbolWidthLabel">
-         <property name="text">
-          <string>Symbol width</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="mSymbolHeightLabel">
-         <property name="text">
-          <string>Symbol height</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="mWidthSpinBox">
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="maximum">
-          <double>999999999.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QComboBox" name="mSymbolHeightUnitComboBox">
-         <item>
-          <property name="text">
-           <string>Millimeter</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map unit</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="mSymbolHeightUnitLabel">
-         <property name="text">
-          <string>Symbol height unit</string>
+          <string>...</string>
          </property>
         </widget>
        </item>
       </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>Data defined settings</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <widget class="QLabel" name="mDdSymbolWidthLabel">
-         <property name="text">
-          <string>Symbol width</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="mDDSymbolWidthComboBox"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="mDdSymbolHeightLabel">
-         <property name="text">
-          <string>Symbol height</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QComboBox" name="mDDSymbolHeightComboBox"/>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="mDDOutlineWidthLabel">
-         <property name="text">
-          <string>Outline width</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QComboBox" name="mDDOutlineWidthComboBox"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="mDDFillColorLabel">
-         <property name="text">
-          <string>Fill color</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QComboBox" name="mDDFillColorComboBox"/>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="mDDOutlineLabel">
-         <property name="text">
-          <string>Outline color</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QComboBox" name="mDDOutlineColorComboBox"/>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="mDDShapeLabel">
-         <property name="text">
-          <string>Shape</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="mDDRotationComboBox"/>
-       </item>
-       <item row="6" column="1">
-        <widget class="QComboBox" name="mDDShapeComboBox"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="mDDRotationLabel">
-         <property name="text">
-          <string>Rotation</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0" colspan="2">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

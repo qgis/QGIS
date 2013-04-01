@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsellipsesymbollayerv2.h"
+#include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
@@ -24,7 +25,9 @@
 #include <QDomElement>
 
 QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSymbolWidth( 4 ), mSymbolWidthUnit( QgsSymbolV2::MM ), mSymbolHeight( 3 ),
-    mSymbolHeightUnit( QgsSymbolV2::MM ), mFillColor( Qt::black ), mOutlineColor( Qt::white ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
+    mSymbolHeightUnit( QgsSymbolV2::MM ), mFillColor( Qt::white ), mOutlineColor( Qt::black ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM ),
+    mWidthExpression( 0 ), mHeightExpression( 0 ), mRotationExpression( 0 ), mOutlineWidthExpression( 0 ), mFillColorExpression( 0 ),
+    mOutlineColorExpression( 0 ), mSymbolNameExpression( 0 )
 {
   mPen.setColor( mOutlineColor );
   mPen.setWidth( 1.0 );
@@ -33,13 +36,6 @@ QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSy
   mBrush.setStyle( Qt::SolidPattern );
 
   mAngle = 0;
-  mWidthIndex = -1;
-  mHeightIndex = -1;
-  mRotationIndex = -1;
-  mOutlineWidthIndex = -1;
-  mFillColorIndex = -1;
-  mOutlineColorIndex = -1;
-  mSymbolNameIndex = -1;
 }
 
 QgsEllipseSymbolLayerV2::~QgsEllipseSymbolLayerV2()
@@ -91,33 +87,63 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   }
 
   //data defined properties
-  if ( properties.contains( "height_field" ) )
+  if ( properties.contains( "width_expression" ) )
   {
-    layer->setHeightField( properties["height_field"] );
+    layer->setDataDefinedProperty( "width", properties["width_expression"] );
   }
-  if ( properties.contains( "width_field" ) )
+  if ( properties.contains( "height_expression" ) )
   {
-    layer->setWidthField( properties["width_field"] );
+    layer->setDataDefinedProperty( "height", properties["height_expression"] );
   }
-  if ( properties.contains( "rotation_field" ) )
+  if ( properties.contains( "rotation_expression" ) )
   {
-    layer->setRotationField( properties["rotation_field"] );
+    layer->setDataDefinedProperty( "rotation", properties["rotation_expression"] );
   }
-  if ( properties.contains( "outline_width_field" ) )
+  if ( properties.contains( "outline_width_expression" ) )
   {
-    layer->setOutlineWidthField( properties["outline_width_field"] );
+    layer->setDataDefinedProperty( "outline_width", properties[ "outline_width_expression" ] );
   }
-  if ( properties.contains( "fill_color_field" ) )
+  if ( properties.contains( "fill_color_expression" ) )
   {
-    layer->setFillColorField( properties["fill_color_field"] );
+    layer->setDataDefinedProperty( "fill_color", properties["fill_color_expression"] );
   }
-  if ( properties.contains( "outline_color_field" ) )
+  if ( properties.contains( "outline_color_expression" ) )
   {
-    layer->setOutlineColorField( properties["outline_color_field"] );
+    layer->setDataDefinedProperty( "outline_color", properties["outline_color_expression"] );
   }
-  if ( properties.contains( "symbol_name_field" ) )
+  if ( properties.contains( "symbol_name_expression" ) )
   {
-    layer->setSymbolNameField( properties["symbol_name_field"] );
+    layer->setDataDefinedProperty( "symbol_name", properties["symbol_name_expression"] );
+  }
+
+  //compatibility with old project file format
+  if ( !properties["width_field"].isEmpty() )
+  {
+    layer->setDataDefinedProperty( "width", properties["width_field"] );
+  }
+  if ( !properties["height_field"].isEmpty() )
+  {
+    layer->setDataDefinedProperty( "height", properties["height_field"] );
+  }
+  if ( !properties["rotation_field"].isEmpty() )
+  {
+    layer->setDataDefinedProperty( "rotation", properties["rotation_field"] );
+  }
+  if ( !properties["outline_width_field"].isEmpty() )
+  {
+    layer->setDataDefinedProperty( "outline_width", properties[ "outline_width_field" ] );
+  }
+  if ( !properties["fill_color_field"].isEmpty() )
+  {
+    layer->setDataDefinedProperty( "fill_color", properties["fill_color_field"] );
+  }
+  if ( !properties["outline_color_field"].isEmpty() )
+  {
+    layer->setDataDefinedProperty( "outline_color", properties["outline_color_field"] );
+  }
+  if ( !properties["symbol_name_field"].isEmpty() )
+  {
+    layer->setDataDefinedProperty( "symbol_name", properties["symbol_name_field"] );
   }
 
   return layer;
@@ -125,29 +151,31 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
 
 void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
-  const QgsFeature* f = context.feature();
 
-  if ( f )
+  if ( mOutlineWidthExpression )
   {
-    if ( mOutlineWidthIndex != -1 )
+    double width = mOutlineWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    width *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit );
+    mPen.setWidthF( width );
+  }
+  if ( mFillColorExpression )
+  {
+    QString colorString = mFillColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    mBrush.setColor( QColor( colorString ) );
+  }
+  if ( mOutlineColorExpression )
+  {
+    QString colorString = mOutlineColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    mPen.setColor( QColor( colorString ) );
+  }
+  if ( mWidthExpression || mHeightExpression || mSymbolNameExpression )
+  {
+    QString symbolName =  mSymbolName;
+    if ( mSymbolNameExpression )
     {
-      double width = f->attribute( mOutlineWidthIndex ).toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit );
-      mPen.setWidthF( width );
+      symbolName = mSymbolNameExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     }
-    if ( mFillColorIndex != -1 )
-    {
-      mBrush.setColor( QColor( f->attribute( mFillColorIndex ).toString() ) );
-    }
-    if ( mOutlineColorIndex != -1 )
-    {
-      mPen.setColor( QColor( f->attribute( mOutlineColorIndex ).toString() ) );
-    }
-
-    if ( mWidthIndex != -1 || mHeightIndex != -1 || mSymbolNameIndex != -1 )
-    {
-      QString symbolName = ( mSymbolNameIndex == -1 ) ? mSymbolName : f->attribute( mSymbolNameIndex ).toString();
-      preparePath( symbolName, context, f );
-    }
+    preparePath( symbolName, context, context.feature() );
   }
 
   QPainter* p = context.renderContext().painter();
@@ -158,9 +186,9 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
 
   //priority for rotation: 1. data defined symbol level, 2. symbol layer rotation (mAngle)
   double rotation = 0.0;
-  if ( f && mRotationIndex != -1 )
+  if ( mRotationExpression )
   {
-    rotation = f->attribute( mRotationIndex ).toDouble();
+    rotation = mRotationExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
   else if ( !doubleNear( mAngle, 0.0 ) )
   {
@@ -193,19 +221,7 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
   mPen.setColor( mOutlineColor );
   mPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
   mBrush.setColor( mFillColor );
-
-  //resolve data defined attribute indices
-  const QgsVectorLayer* vlayer = context.layer();
-  if ( vlayer )
-  {
-    mWidthIndex = vlayer->fieldNameIndex( mWidthField );
-    mHeightIndex = vlayer->fieldNameIndex( mHeightField );
-    mRotationIndex = vlayer->fieldNameIndex( mRotationField );
-    mOutlineWidthIndex = vlayer->fieldNameIndex( mOutlineWidthField );
-    mFillColorIndex = vlayer->fieldNameIndex( mFillColorField );
-    mOutlineColorIndex = vlayer->fieldNameIndex( mOutlineColorField );
-    mSymbolNameIndex = vlayer->fieldNameIndex( mSymbolNameField );
-  }
+  prepareExpressions( context.layer() );
 }
 
 void QgsEllipseSymbolLayerV2::stopRender( QgsSymbolV2RenderContext & )
@@ -247,16 +263,16 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   QString angleFunc = props.value( "angle", "" );
   if ( angleFunc.isEmpty() )  // symbol has no angle set
   {
-    if ( !mRotationField.isEmpty() )
-      angleFunc = mRotationField;
+    if ( mRotationExpression )
+      angleFunc = mRotationExpression->dump();
     else if ( !doubleNear( mAngle, 0.0 ) )
       angleFunc = QString::number( mAngle );
   }
-  else if ( !mRotationField.isEmpty() )
+  else if ( mRotationExpression )
   {
     // the symbol has an angle and the symbol layer have a rotation
     // property set
-    angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( mRotationField );
+    angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( mRotationExpression->dump() );
   }
   else if ( !doubleNear( mAngle, 0.0 ) )
   {
@@ -332,27 +348,74 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   map["symbol_name"] = mSymbolName;
   map["symbol_width"] = QString::number( mSymbolWidth );
   map["symbol_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolWidthUnit );
-  map["width_field"] = mWidthField;
   map["symbol_height"] = QString::number( mSymbolHeight );
   map["symbol_height_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mSymbolHeightUnit );
-  map["height_field"] = mHeightField;
   map["angle"] = QString::number( mAngle );
-  map["rotation_field"] = mRotationField;
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
-  map["outline_width_field"] = mOutlineWidthField;
   map["fill_color"] = QgsSymbolLayerV2Utils::encodeColor( mFillColor );
-  map["fill_color_field"] = mFillColorField;
   map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mOutlineColor );
-  map["outline_color_field"] = mOutlineColorField;
-  map["symbol_name_field"] = mSymbolNameField;
+
+  //data defined properties
+  if ( mWidthExpression )
+  {
+    map["width_expression"] = mWidthExpression->dump();
+  }
+  if ( mHeightExpression )
+  {
+    map["height_expression"] = mHeightExpression->dump();
+  }
+  if ( mRotationExpression )
+  {
+    map["rotation_expression"] = mRotationExpression->dump();
+  }
+  if ( mOutlineWidthExpression )
+  {
+    map["outline_width_expression"] = mOutlineWidthExpression->dump();
+  }
+  if ( mFillColorExpression )
+  {
+    map["fill_color_expression"] = mFillColorExpression->dump();
+  }
+  if ( mOutlineColorExpression )
+  {
+    map["outline_color_expression"] = mOutlineColorExpression->dump();
+  }
+  if ( mSymbolNameExpression )
+  {
+    map["symbol_name_expression"] = mSymbolNameExpression->dump();
+  }
   return map;
 }
 
 bool QgsEllipseSymbolLayerV2::hasDataDefinedProperty() const
 {
-  return ( mWidthIndex != -1 || mHeightIndex != -1 || mOutlineWidthIndex != -1
-           || mFillColorIndex != -1 || mOutlineColorIndex != -1 );
+  return ( mWidthExpression || mHeightExpression || mRotationExpression || mOutlineWidthExpression ||
+           mFillColorExpression || mOutlineColorExpression || mSymbolNameExpression );
+}
+
+void QgsEllipseSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
+{
+  if ( !vl )
+  {
+    return;
+  }
+
+  const QgsFields& fields = vl->pendingFields();
+  if ( mWidthExpression )
+    mWidthExpression->prepare( fields );
+  if ( mHeightExpression )
+    mHeightExpression->prepare( fields );
+  if ( mRotationExpression )
+    mRotationExpression->prepare( fields );
+  if ( mOutlineWidthExpression )
+    mOutlineWidthExpression->prepare( fields );
+  if ( mFillColorExpression )
+    mFillColorExpression->prepare( fields );
+  if ( mOutlineColorExpression )
+    mOutlineColorExpression->prepare( fields );
+  if ( mSymbolNameExpression )
+    mSymbolNameExpression->prepare( fields );
 }
 
 void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, const QgsFeature* f )
@@ -362,32 +425,34 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
 
   double width = 0;
 
-  if ( f && mWidthIndex != -1 ) //1. priority: data defined setting on symbol layer level
+  if ( mWidthExpression ) //1. priority: data defined setting on symbol layer level
   {
-    width = f->attribute( mWidthIndex ).toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolWidthUnit );
+    width = mWidthExpression->evaluate( const_cast<QgsFeature*>( f ) ).toDouble();
   }
   else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
   {
-    width = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolWidthUnit );
+    width = mSize;
   }
   else //3. priority: global width setting
   {
-    width = mSymbolWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolWidthUnit );
+    width = mSymbolWidth;
   }
+  width *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolWidthUnit );
 
   double height = 0;
-  if ( f && mHeightIndex != -1 ) //1. priority: data defined setting on symbol layer level
+  if ( mHeightExpression ) //1. priority: data defined setting on symbol layer level
   {
-    height =  f->attribute( mHeightIndex ).toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolHeightUnit );
+    height =  mHeightExpression->evaluate( const_cast<QgsFeature*>( f ) ).toDouble();
   }
   else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
   {
-    height = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolHeightUnit );
+    height = mSize;
   }
   else //3. priority: global height setting
   {
-    height = mSymbolHeight * QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolHeightUnit );
+    height = mSymbolHeight;
   }
+  height *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( ct, mSymbolHeightUnit );
 
   if ( symbolName == "circle" )
   {
@@ -415,36 +480,31 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
 
 QSet<QString> QgsEllipseSymbolLayerV2::usedAttributes() const
 {
-  QSet<QString> dataDefinedAttributes;
-  if ( !mWidthField.isEmpty() )
+  QSet<QString> attributes;
+
+  //add data defined attributes
+  QStringList columns;
+  if ( mWidthExpression )
+    columns.append( mWidthExpression->referencedColumns() );
+  if ( mHeightExpression )
+    columns.append( mHeightExpression->referencedColumns() );
+  if ( mRotationExpression )
+    columns.append( mRotationExpression->referencedColumns() );
+  if ( mOutlineWidthExpression )
+    columns.append( mOutlineWidthExpression->referencedColumns() );
+  if ( mFillColorExpression )
+    columns.append( mFillColorExpression->referencedColumns() );
+  if ( mOutlineColorExpression )
+    columns.append( mOutlineColorExpression->referencedColumns() );
+  if ( mSymbolNameExpression )
+    columns.append( mSymbolNameExpression->referencedColumns() );
+
+  QStringList::const_iterator it = columns.constBegin();
+  for ( ; it != columns.constEnd(); ++it )
   {
-    dataDefinedAttributes.insert( mWidthField );
+    attributes.insert( *it );
   }
-  if ( !mHeightField.isEmpty() )
-  {
-    dataDefinedAttributes.insert( mHeightField );
-  }
-  if ( !mRotationField.isEmpty() )
-  {
-    dataDefinedAttributes.insert( mRotationField );
-  }
-  if ( !mOutlineWidthField.isEmpty() )
-  {
-    dataDefinedAttributes.insert( mOutlineWidthField );
-  }
-  if ( !mFillColorField.isEmpty() )
-  {
-    dataDefinedAttributes.insert( mFillColorField );
-  }
-  if ( !mOutlineColorField.isEmpty() )
-  {
-    dataDefinedAttributes.insert( mOutlineColorField );
-  }
-  if ( !mSymbolNameField.isEmpty() )
-  {
-    dataDefinedAttributes.insert( mSymbolNameField );
-  }
-  return dataDefinedAttributes;
+  return attributes;
 }
 
 void QgsEllipseSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
@@ -462,4 +522,118 @@ QgsSymbolV2::OutputUnit QgsEllipseSymbolLayerV2::outputUnit() const
     return QgsSymbolV2::Mixed;
   }
   return unit;
+}
+
+const QgsExpression* QgsEllipseSymbolLayerV2::dataDefinedProperty( const QString& property ) const
+{
+  if ( property == "width" )
+  {
+    return mWidthExpression;
+  }
+  else if ( property == "height" )
+  {
+    return mHeightExpression;
+  }
+  else if ( property == "rotation" )
+  {
+    return mRotationExpression;
+  }
+  else if ( property == "outline_width" )
+  {
+    return mOutlineWidthExpression;
+  }
+  else if ( property == "fill_color" )
+  {
+    return mFillColorExpression;
+  }
+  else if ( property == "outline_color" )
+  {
+    return mOutlineColorExpression;
+  }
+  else if ( property == "symbol_name" )
+  {
+    return mSymbolNameExpression;
+  }
+  return 0;
+}
+
+QString QgsEllipseSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
+{
+  const QgsExpression* ex = dataDefinedProperty( property );
+  return ( ex ? ex->dump() : QString() );
+}
+
+void QgsEllipseSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
+{
+  if ( property == "width" )
+  {
+    delete mWidthExpression; mWidthExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "height" )
+  {
+    delete mHeightExpression; mHeightExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "rotation" )
+  {
+    delete mRotationExpression; mRotationExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "outline_width" )
+  {
+    delete mOutlineWidthExpression; mOutlineWidthExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "fill_color" )
+  {
+    delete mFillColorExpression; mFillColorExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "outline_color" )
+  {
+    delete mOutlineColorExpression; mOutlineColorExpression = new QgsExpression( expressionString );
+  }
+  else if ( property == "symbol_name" )
+  {
+    delete mSymbolNameExpression; mSymbolNameExpression = new QgsExpression( expressionString );
+  }
+}
+
+void QgsEllipseSymbolLayerV2::removeDataDefinedProperty( const QString& property )
+{
+  if ( property == "width" )
+  {
+    delete mWidthExpression; mWidthExpression = 0;
+  }
+  else if ( property == "height" )
+  {
+    delete mHeightExpression; mHeightExpression = 0;
+  }
+  else if ( property == "rotation" )
+  {
+    delete mRotationExpression; mRotationExpression = 0;
+  }
+  else if ( property == "outline_width" )
+  {
+    delete mOutlineWidthExpression; mOutlineWidthExpression = 0;
+  }
+  else if ( property == "fill_color" )
+  {
+    delete mFillColorExpression; mFillColorExpression = 0;
+  }
+  else if ( property == "outline_color" )
+  {
+    delete mOutlineColorExpression; mOutlineColorExpression = 0;
+  }
+  else if ( property == "symbol_name" )
+  {
+    delete mSymbolNameExpression; mSymbolNameExpression = 0;
+  }
+}
+
+void QgsEllipseSymbolLayerV2::removeDataDefinedProperties()
+{
+  delete mWidthExpression; mWidthExpression = 0;
+  delete mHeightExpression; mHeightExpression = 0;
+  delete mRotationExpression; mRotationExpression = 0;
+  delete mOutlineWidthExpression; mOutlineWidthExpression = 0;
+  delete mFillColorExpression; mFillColorExpression = 0;
+  delete mOutlineColorExpression; mOutlineColorExpression = 0;
+  delete mSymbolNameExpression; mSymbolNameExpression = 0;
 }

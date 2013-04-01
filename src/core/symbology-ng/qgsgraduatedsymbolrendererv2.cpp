@@ -1131,6 +1131,15 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
   this->setSourceSymbol( sym->clone() );
 }
 
+void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  mScaleMethod = scaleMethod;
+  foreach ( QgsRendererRangeV2 range, mRanges )
+  {
+    setScaleMethodToSymbol( range.symbol(), scaleMethod );
+  }
+}
+
 void QgsGraduatedSymbolRendererV2::addClass( QgsSymbolV2* symbol )
 {
   QgsSymbolV2* newSymbol = symbol->clone();

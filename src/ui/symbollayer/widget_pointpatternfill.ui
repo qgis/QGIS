@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>283</width>
-    <height>244</height>
+    <width>289</width>
+    <height>252</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,24 +17,38 @@
    <property name="margin">
     <number>1</number>
    </property>
-   <item row="2" column="1">
-    <widget class="QDoubleSpinBox" name="mVerticalDistanceSpinBox">
+   <item row="4" column="0">
+    <widget class="QLabel" name="mHorizontalDisplacementLabel">
+     <property name="text">
+      <string>Horizontal displacement</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1">
+    <widget class="QComboBox" name="mVerticalDisplacementUnitComboBox">
+     <item>
+      <property name="text">
+       <string>Millimeter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Map unit</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QDoubleSpinBox" name="mHorizontalDisplacementSpinBox">
      <property name="decimals">
       <number>5</number>
      </property>
      <property name="maximum">
-      <double>999999999.990000009536743</double>
+      <double>9999999.990000000223517</double>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mVerticalDistanceLabel">
-     <property name="text">
-      <string>Vertical distance</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
+   <item row="9" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -57,8 +71,22 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QComboBox" name="mVerticalDistanceUnitComboBox">
+   <item row="2" column="0">
+    <widget class="QLabel" name="mVerticalDistanceLabel">
+     <property name="text">
+      <string>Vertical distance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="mHorizontalDistanceLabel">
+     <property name="text">
+      <string>Horizontal distance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="mHorizontalDisplacementUnitComboBox">
      <item>
       <property name="text">
        <string>Millimeter</string>
@@ -71,8 +99,8 @@
      </item>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="mHorizontalDistanceUnitComboBox">
+   <item row="3" column="1">
+    <widget class="QComboBox" name="mVerticalDistanceUnitComboBox">
      <item>
       <property name="text">
        <string>Millimeter</string>
@@ -92,18 +120,49 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mHorizontalDisplacementLabel">
+   <item row="3" column="0">
+    <widget class="QLabel" name="mVerticalDistanceUnitLabel">
      <property name="text">
-      <string>Horizontal displacement</string>
+      <string>Vertical distance unit</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mHorizontalDistanceLabel">
-     <property name="text">
-      <string>Horizontal distance</string>
+   <item row="2" column="1">
+    <widget class="QDoubleSpinBox" name="mVerticalDistanceSpinBox">
+     <property name="decimals">
+      <number>5</number>
      </property>
+     <property name="maximum">
+      <double>999999999.990000009536743</double>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="mVerticalDisplacementUnitLabel">
+     <property name="text">
+      <string>Vertical displacement unit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mHorizontalDisplacementUnitLabel">
+     <property name="text">
+      <string>Horizontal displacement unit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="mHorizontalDistanceUnitComboBox">
+     <item>
+      <property name="text">
+       <string>Millimeter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Map unit</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="0" column="1">
@@ -116,44 +175,6 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QDoubleSpinBox" name="mHorizontalDisplacementSpinBox">
-     <property name="decimals">
-      <number>5</number>
-     </property>
-     <property name="maximum">
-      <double>9999999.990000000223517</double>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QComboBox" name="mHorizontalDisplacementUnitComboBox">
-     <item>
-      <property name="text">
-       <string>Millimeter</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Map unit</string>
-      </property>
-     </item>
-    </widget>
-   </item>
-   <item row="7" column="1">
-    <widget class="QComboBox" name="mVerticalDisplacementUnitComboBox">
-     <item>
-      <property name="text">
-       <string>Millimeter</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Map unit</string>
-      </property>
-     </item>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="mHorizontalDistanceUnitLabel">
      <property name="text">
@@ -161,26 +182,29 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mVerticalDistanceUnitLabel">
-     <property name="text">
-      <string>Vertical distance unit</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mHorizontalDisplacementUnitLabel">
-     <property name="text">
-      <string>Horizontal displacement unit</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="mVerticalDisplacementUnitLabel">
-     <property name="text">
-      <string>Vertical displacement unit</string>
-     </property>
-    </widget>
+   <item row="8" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="mDataDefinedPropertiesLabel">
+       <property name="text">
+        <string>Data defined properties</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mDataDefinedPropertiesButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

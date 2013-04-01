@@ -12,6 +12,7 @@ raster/qgsrasterhistogramwidget.cpp
 symbology-ng/qgsbrushstylecombobox.cpp
 symbology-ng/qgscolorrampcombobox.cpp
 symbology-ng/qgsdashspacedialog.cpp
+symbology-ng/qgsdatadefinedsymboldialog.cpp
 symbology-ng/qgspenstylecombobox.cpp
 symbology-ng/qgssymbollayerv2widget.cpp
 symbology-ng/qgsrendererv2widget.cpp
@@ -136,6 +137,7 @@ symbology-ng/qgsdashspacedialog.h
 symbology-ng/qgssymbollayerv2widget.h
 symbology-ng/qgssinglesymbolrendererv2widget.h
 symbology-ng/qgscategorizedsymbolrendererv2widget.h
+symbology-ng/qgsdatadefinedsymboldialog.h
 symbology-ng/qgsgraduatedsymbolrendererv2widget.h
 symbology-ng/qgsrulebasedrendererv2widget.h
 symbology-ng/qgsrendererv2widget.h

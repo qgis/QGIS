@@ -144,7 +144,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     QString sizeScaleField() const { return mSizeScaleField; }
 
     //! @note added in 2.0
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod ) { mScaleMethod = scaleMethod; }
+    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
 

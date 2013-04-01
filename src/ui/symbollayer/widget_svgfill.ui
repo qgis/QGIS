@@ -17,6 +17,57 @@
    <property name="margin">
     <number>1</number>
    </property>
+   <item row="2" column="0">
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="mSymbolGroupLabel">
+       <property name="text">
+        <string>SVG Groups</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="mSymbolListLabel">
+       <property name="text">
+        <string>SVG Symbols</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QTreeView" name="mSvgTreeView"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QListView" name="mSvgListView">
+       <property name="flow">
+        <enum>QListView::LeftToRight</enum>
+       </property>
+       <property name="layoutMode">
+        <enum>QListView::Batched</enum>
+       </property>
+       <property name="viewMode">
+        <enum>QListView::IconMode</enum>
+       </property>
+       <property name="uniformItemSizes">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLineEdit" name="mSVGLineEdit"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBrowseToolButton">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="1">
@@ -137,49 +188,22 @@
     </layout>
    </item>
    <item row="1" column="0">
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="mSymbolGroupLabel">
-       <property name="text">
-        <string>SVG Groups</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="mSymbolListLabel">
-       <property name="text">
-        <string>SVG Symbols</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QTreeView" name="mSvgTreeView"/>
-     </item>
-     <item row="1" column="1">
-      <widget class="QListView" name="mSvgListView">
-       <property name="flow">
-        <enum>QListView::LeftToRight</enum>
-       </property>
-       <property name="layoutMode">
-        <enum>QListView::Batched</enum>
-       </property>
-       <property name="viewMode">
-        <enum>QListView::IconMode</enum>
-       </property>
-       <property name="uniformItemSizes">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QLineEdit" name="mSVGLineEdit"/>
+      <widget class="QLabel" name="mDataDefinedPropertiesLabel">
+       <property name="text">
+        <string>Data defined properties</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mBrowseToolButton">
+      <widget class="QPushButton" name="mDataDefinedPropertiesButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
