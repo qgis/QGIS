@@ -17,6 +17,7 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QMap< QString, QPa
   }
 
   mTableWidget->setRowCount( properties.size() );
+
   int i = 0;
   QMap< QString, QPair< QString, QString > >::const_iterator it = properties.constBegin();
   for ( ; it != properties.constEnd(); ++it )
@@ -25,6 +26,8 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QMap< QString, QPa
     QCheckBox* cb = new QCheckBox( this );
     cb->setChecked( !it.value().second.isEmpty() );
     mTableWidget->setCellWidget( i, 0, cb );
+    mTableWidget->setColumnWidth(0, cb->width() );
+
 
     //property name
     QTableWidgetItem* propertyItem = new QTableWidgetItem( it.value().first );
