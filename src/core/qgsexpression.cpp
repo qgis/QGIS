@@ -950,6 +950,9 @@ static QVariant fcnRound( const QVariantList& values , QgsFeature *f, QgsExpress
 
 static QVariant fcnPi( const QVariantList& values , QgsFeature *f, QgsExpression* parent )
 {
+  Q_UNUSED( values );
+  Q_UNUSED( f );
+  Q_UNUSED( parent );
   return M_PI;
 }
 

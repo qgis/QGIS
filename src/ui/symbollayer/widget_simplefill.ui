@@ -143,14 +143,14 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QgsColorButtonV2" name="btnChangeBorderColor">
+      <widget class="QgsColorButton" name="btnChangeBorderColor">
        <property name="text">
         <string>Change</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QgsColorButtonV2" name="btnChangeColor">
+      <widget class="QgsColorButton" name="btnChangeColor">
        <property name="text">
         <string>Change</string>
        </property>
