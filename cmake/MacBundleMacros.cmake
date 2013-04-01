@@ -38,7 +38,7 @@ FUNCTION (GET_INSTALL_NAME LIBFILE LIBNAME OUTVAR)
         IF (iname)
             # find libname
             STRING (REGEX MATCH "[^\n\t ]*${LIBNAME}[^\n]*" iname "${iname}")
-            STRING (REGEX REPLACE " \(compatibility version .*, current version .*\)$" "" iname "${iname}")
+            STRING (REGEX REPLACE " \\(compatibility version .*, current version .*\\)" "" iname "${iname}")
         ENDIF (iname)
         SET (${OUTVAR} ${iname} PARENT_SCOPE)
     ELSE ()
