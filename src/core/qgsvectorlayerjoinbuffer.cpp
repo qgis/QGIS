@@ -63,7 +63,11 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
   QgsVectorLayer* cacheLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo.joinLayerId ) );
   if ( cacheLayer )
   {
-    int joinFieldIndex = cacheLayer->pendingFields().indexFromName( joinInfo.joinFieldName );
+    int joinFieldIndex;
+    if ( joinInfo.joinFieldName.isEmpty() )
+      joinFieldIndex = joinInfo.joinFieldIndex;   //for compatibility with 1.x
+    else
+      joinFieldIndex = cacheLayer->pendingFields().indexFromName( joinInfo.joinFieldName );
 
     joinInfo.cachedAttributes.clear();
 
@@ -88,15 +92,17 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
       continue;
     }
 
-    joinIt->tmpTargetField = fields.indexFromName( joinIt->targetFieldName );
-
     const QgsFields& joinFields = joinLayer->pendingFields();
-    joinIt->tmpJoinField = joinFields.indexFromName( joinIt->joinFieldName );
+    QString joinFieldName;
+    if ( joinIt->joinFieldName.isEmpty() && joinIt->joinFieldIndex >= 0 && joinIt->joinFieldIndex < joinFields.count() )
+      joinFieldName = joinFields.field( joinIt->joinFieldIndex ).name();  //for compatibility with 1.x
+    else
+      joinFieldName = joinIt->joinFieldName;
 
     for ( int idx = 0; idx < joinFields.count(); ++idx )
     {
       //skip the join field to avoid double field names (fields often have the same name)
-      if ( joinFields[idx].name() != joinIt->joinFieldName )
+      if ( joinFields[idx].name() != joinFieldName )
       {
         QgsField f = joinFields[idx];
         f.setName( joinLayer->name() + "_" + f.name() );
@@ -124,9 +130,18 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& doc
   for ( ; joinIt != mVectorJoins.constEnd(); ++joinIt )
   {
     QDomElement joinElem = document.createElement( "join" );
-    joinElem.setAttribute( "targetFieldName", joinIt->targetFieldName );
+
+    if ( joinIt->targetFieldName.isEmpty() )
+      joinElem.setAttribute( "targetField", joinIt->targetFieldIndex );   //for compatibility with 1.x
+    else
+      joinElem.setAttribute( "targetFieldName", joinIt->targetFieldName );
+
     joinElem.setAttribute( "joinLayerId", joinIt->joinLayerId );
-    joinElem.setAttribute( "joinFieldName", joinIt->joinFieldName );
+    if ( joinIt->joinFieldName.isEmpty() )
+      joinElem.setAttribute( "joinField", joinIt->joinFieldIndex );   //for compatibility with 1.x
+    else
+      joinElem.setAttribute( "joinFieldName", joinIt->joinFieldName );
+
     joinElem.setAttribute( "memoryCache", !joinIt->cachedAttributes.isEmpty() );
     vectorJoinsElem.appendChild( joinElem );
   }
@@ -143,10 +158,14 @@ void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
     {
       QDomElement infoElem = joinList.at( i ).toElement();
       QgsVectorJoinInfo info;
-      info.joinFieldName = infoElem.attribute( "joinFieldName" ); // TODO[MD]: compatibility with 1.x?
+      info.joinFieldName = infoElem.attribute( "joinFieldName" );
       info.joinLayerId = infoElem.attribute( "joinLayerId" );
-      info.targetFieldName = infoElem.attribute( "targetFieldName" ); // TODO[MD]: compatibility with 1.x?
+      info.targetFieldName = infoElem.attribute( "targetFieldName" );
       info.memoryCache = infoElem.attribute( "memoryCache" ).toInt();
+
+      info.joinFieldIndex = infoElem.attribute( "joinField" ).toInt();   //for compatibility with 1.x
+      info.targetFieldIndex = infoElem.attribute( "targetField" ).toInt();   //for compatibility with 1.x
+
       addJoin( info );
     }
   }

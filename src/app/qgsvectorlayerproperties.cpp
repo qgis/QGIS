@@ -451,7 +451,7 @@ void QgsVectorLayerProperties::apply()
   {
     if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SetEncoding )
     {
-      layer->dataProvider()->setEncoding( cboProviderEncoding->currentText() );
+      layer->setProviderEncoding( cboProviderEncoding->currentText() );
     }
   }
 
@@ -844,15 +844,23 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
   QTreeWidgetItem* joinItem = new QTreeWidgetItem();
 
   QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join.joinLayerId ) );
-  if ( !joinLayer )
+  if ( !layer || !joinLayer )
   {
     return;
   }
 
   joinItem->setText( 0, joinLayer->name() );
   joinItem->setData( 0, Qt::UserRole, join.joinLayerId );
-  joinItem->setText( 1, join.joinFieldName );
-  joinItem->setText( 2, join.targetFieldName );
+
+  if ( join.joinFieldName.isEmpty() && join.joinFieldIndex >= 0 && join.joinFieldIndex < joinLayer->pendingFields().count() )
+    joinItem->setText( 1, joinLayer->pendingFields().field( join.joinFieldIndex ).name() );   //for compatibility with 1.x
+  else
+    joinItem->setText( 1, join.joinFieldName );
+
+  if ( join.targetFieldName.isEmpty() && join.targetFieldIndex >= 0 && join.targetFieldIndex < layer->pendingFields().count() )
+    joinItem->setText( 2, layer->pendingFields().field( join.targetFieldIndex ).name() );   //for compatibility with 1.x
+  else
+    joinItem->setText( 2, join.targetFieldName );
 
   mJoinTreeWidget->addTopLevelItem( joinItem );
 }
