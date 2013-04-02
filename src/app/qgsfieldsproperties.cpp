@@ -113,29 +113,30 @@ bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const
   {
     QByteArray itemData = data->data( "application/x-qabstractitemmodeldatalist" );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
-    int r, c;
-    QMap<int, QVariant> roleDataMap;
-    stream >> r >> c >> roleDataMap;
+    int row, col;
 
-    QString itemType = roleDataMap.value( Qt::UserRole ).toString();
-    QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
+    while ( !stream.atEnd() )
+    {
+      QMap<int,  QVariant> roleDataMap;
+      stream >> row >> col >> roleDataMap;
 
-    if ( itemType == "field" ) //
-    {
-      if ( parent )
+      if ( col == 1 )
       {
-        addItem( parent, itemName );
-        bDropSuccessful = true;
+        /* do something with the data */
+
+        QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
+
+        if ( parent )
+        {
+          addItem( parent, itemName );
+          bDropSuccessful = true;
+        }
+        else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent, but actually does happen. Qt?
+        {
+          // addItem( invisibleRootItem(), itemName );
+          // bDropSuccessful = true;
+        }
       }
-      else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent, but actually does happen. Qt?
-      {
-        // addItem( invisibleRootItem(), itemName );
-        // bDropSuccessful = true;
-      }
-    }
-    else
-    {
-      bDropSuccessful = QTreeWidget::dropMimeData( parent, index, data, Qt::MoveAction );
     }
   }
 
@@ -150,30 +151,9 @@ void QgsAttributesTree::dropEvent( QDropEvent *event )
   if ( event->source() == this )
   {
     event->setDropAction( Qt::MoveAction );
-    QTreeWidget::dropEvent( event );
   }
-  else
-  {
-    // Qt::DropAction dropAction;
-    QByteArray itemData = event->mimeData()->data( "application/x-qabstractitemmodeldatalist" );
-    QDataStream stream( &itemData, QIODevice::ReadOnly );
-    int r, c, rDummy, cDummy;
-    QMap<int, QVariant> roleDataMap, newRoleDataMap, roleDataMapDummy;
-    stream >> rDummy >> cDummy >> roleDataMapDummy >> r >> c >> roleDataMap; // fieldName is in second column
 
-    QString fieldName = roleDataMap.value( Qt::DisplayRole ).toString();
-    newRoleDataMap.insert( Qt::UserRole , "field" );
-    newRoleDataMap.insert( Qt::DisplayRole , fieldName );
-
-    QMimeData * mimeData = new QMimeData();
-    QByteArray mdata;
-    QDataStream newStream( &mdata, QIODevice::WriteOnly );
-    newStream << r << c << newRoleDataMap;
-    mimeData->setData( QString( "application/x-qabstractitemmodeldatalist" ), mdata );
-    QDropEvent newEvent = QDropEvent( event->pos(), Qt::CopyAction , mimeData, event->mouseButtons(), event->keyboardModifiers() );
-
-    QTreeWidget::dropEvent( &newEvent );
-  }
+  QTreeWidget::dropEvent( event );
 }
 
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
