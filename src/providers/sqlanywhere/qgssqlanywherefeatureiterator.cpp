@@ -305,7 +305,7 @@ QgsSqlAnywhereFeatureIterator::prepareStatement( QString whereClause )
          || !mStmt->describe_bind_param( 2, xmaxParam )
          || !mStmt->describe_bind_param( 3, ymaxParam ) )
     {
-      P->reportError( P->tr( "Error describing bind parameters" ), mStmt );
+      P->reportError( QObject::tr( "Error describing bind parameters" ), mStmt );
       return false;
     }
 
@@ -329,7 +329,7 @@ QgsSqlAnywhereFeatureIterator::prepareStatement( QString whereClause )
          || !mStmt->bind_param( 2, xmaxParam )
          || !mStmt->bind_param( 3, ymaxParam ) )
     {
-      P->reportError( P->tr( "Error binding parameters" ), mStmt );
+      P->reportError( QObject::tr( "Error binding parameters" ), mStmt );
       return false;
     }
   }
