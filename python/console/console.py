@@ -187,6 +187,16 @@ class PythonConsoleWidget(QWidget):
         self.loadQtGuiButton.setIconVisibleInMenu(True)
         self.loadQtGuiButton.setToolTip(loadQtGuiBt)
         self.loadQtGuiButton.setText(loadQtGuiBt)
+        ## Import GRASS modules
+        loadGRASSBt = QCoreApplication.translate("PythonConsole", "Import PyGRASS class")
+        self.loadGRASSButton = QAction(parent)
+        self.loadGRASSButton.setCheckable(False)
+        self.loadGRASSButton.setEnabled(True)
+        self.loadGRASSButton.setIcon(QgsApplication.getThemeIcon("console/iconGRASSConsole.png"))
+        self.loadGRASSButton.setMenuRole(QAction.PreferencesRole)
+        self.loadGRASSButton.setIconVisibleInMenu(True)
+        self.loadGRASSButton.setToolTip(loadGRASSBt)
+        self.loadGRASSButton.setText(loadGRASSBt)
         ## Action for Open File
         openFileBt = QCoreApplication.translate("PythonConsole", "Open script file")
         self.openFileButton = QAction(parent)
@@ -237,6 +247,7 @@ class PythonConsoleWidget(QWidget):
         ## Menu Import Class
         self.classMenu = QMenu(self)
         self.classMenu.addAction(self.loadSextanteButton)
+        self.classMenu.addAction(self.loadGRASSButton)
         self.classMenu.addAction(self.loadQtCoreButton)
         self.classMenu.addAction(self.loadQtGuiButton)
         cM = self.toolBar.widgetForAction(self.actionClass)
@@ -283,6 +294,7 @@ class PythonConsoleWidget(QWidget):
         self.clearButton.triggered.connect(self.textEditOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
         self.loadSextanteButton.triggered.connect(self.sextante)
+        self.loadGRASSButton.triggered.connect(self.grass)
         self.loadQtCoreButton.triggered.connect(self.qtCore)
         self.loadQtGuiButton.triggered.connect(self.qtGui)
         self.runButton.triggered.connect(self.edit.entered)
@@ -300,6 +312,9 @@ class PythonConsoleWidget(QWidget):
 
     def qtGui(self):
        self.edit.commandConsole('qtGui')
+       
+    def grass(self):
+       self.edit.commandConsole('grass')
 
     def openScriptFile(self):
         settings = QSettings()

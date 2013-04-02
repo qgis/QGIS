@@ -533,6 +533,7 @@
         <file>themes/default/console/imgHelpConsole.png</file>
         <file>themes/default/console/imgHelpMenu.png</file>
         <file>themes/default/console/iconHideToolConsole.png</file>
+        <file>themes/default/console/iconGRASSConsole.png</file>
         <file>flags/sr_Cyrl.png</file>
         <file>flags/sr_Latn.png</file>
         <file>flags/sw.png</file>
