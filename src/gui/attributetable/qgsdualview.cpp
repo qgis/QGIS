@@ -27,6 +27,7 @@
 #include <QDialog>
 #include <QMenu>
 #include <QProgressDialog>
+#include <QMessageBox>
 
 QgsDualView::QgsDualView( QWidget* parent )
     : QStackedWidget( parent )
@@ -262,7 +263,16 @@ void QgsDualView::previewColumnChanged( QObject* action )
 
   if ( previewAction )
   {
-    mFeatureList->setDisplayExpression( previewAction->text() );
+    if ( !mFeatureList->setDisplayExpression( previewAction->text() ) )
+    {
+      QMessageBox::warning( this
+                            , tr( "Could not set preview column" )
+                            , tr( "Could not set column '%1' as preview column.\nParser error:\n%2" )
+                              .arg( previewAction->text() )
+                              .arg( mFeatureList->parserErrorString() )
+                          );
+    }
+
     mFeatureListPreviewButton->setDefaultAction( previewAction );
     mFeatureListPreviewButton->setPopupMode( QToolButton::InstantPopup );
   }

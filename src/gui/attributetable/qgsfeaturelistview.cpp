@@ -71,14 +71,19 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
   connect( mCurrentEditSelectionModel, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( editSelectionChanged( QItemSelection, QItemSelection ) ) );
 }
 
-void QgsFeatureListView::setDisplayExpression( const QString expression )
+bool QgsFeatureListView::setDisplayExpression( const QString expression )
 {
-  mModel->setDisplayExpression( expression );
+  return mModel->setDisplayExpression( expression );
 }
 
 const QString& QgsFeatureListView::displayExpression() const
 {
   return mModel->displayExpression();
+}
+
+QString QgsFeatureListView::parserErrorString()
+{
+  return mModel->parserErrorString();
 }
 
 void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
