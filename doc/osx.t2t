@@ -362,9 +362,6 @@ Retrieve the Qt version of the Scintilla-based text editor widget from
 
 http://www.riverbankcomputing.co.uk/software/qscintilla/download
 
-__Note:__The editor uses API files for code completion in the PyQGIS console. To
-have PyQt4's API automatically created, install QScintilla2 library first.
-
 Double-click the tarball to unpack it. Then, cd to the QScintilla2.x.x source
 folder in a Terminal.
 
@@ -425,7 +422,7 @@ cd to the source folder.  Then for your chosen Python:
 __python.org Python__
 
 ```
-python configure.py
+python configure.py -n /usr/local/Qt-4.8/qsci
 yes
 ```
 
@@ -435,7 +432,7 @@ PyQt wants to install in the system path -- this is not a good idea.
 More configuration is needed to install outside the system path:
 
 ```
-python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
+python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
 ```
 
 __Snow Leopard system Python__
@@ -449,13 +446,15 @@ Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
 If you are using 32-bit Qt (Qt Carbon):
 
 ```
-python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-n /usr/local/Qt-4.8/qsci --use-arch i386
 ```
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
 ```
-python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-n /usr/local/Qt-4.8/qsci --use-arch x86_64
 ```
 
 __Lion and Mt. Lion system Python__
@@ -464,7 +463,7 @@ Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the arch option:
 
 ```
-python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
 ```
 
 __continue...__

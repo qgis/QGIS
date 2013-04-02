@@ -77,12 +77,12 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>Quantum GIS (QGIS)</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Monday April 01, 2013</H3>
+<H3>Tuesday April 02, 2013</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Monday April 01, 2013
+Last Updated: Tuesday April 02, 2013
 Last Change : Saturday December 08, 2012
 </P>
 <DIV CLASS="toc">
@@ -2118,10 +2118,6 @@ Retrieve the Qt version of the Scintilla-based text editor widget from
 <A HREF="http://www.riverbankcomputing.co.uk/software/qscintilla/download">http://www.riverbankcomputing.co.uk/software/qscintilla/download</A>
 </P>
 <P>
-<U>Note:</U>The editor uses API files for code completion in the PyQGIS console. To
-have PyQt4's API automatically created, install QScintilla2 library first.
-</P>
-<P>
 Double-click the tarball to unpack it. Then, cd to the QScintilla2.x.x source
 folder in a Terminal.
 </P>
@@ -2201,7 +2197,7 @@ cd to the source folder.  Then for your chosen Python:
 </P>
 
 <div class="code"><PRE>
-python configure.py
+python configure.py -n /usr/local/Qt-4.8/qsci
 yes
 </PRE></div>
 
@@ -2214,7 +2210,7 @@ More configuration is needed to install outside the system path:
 </P>
 
 <div class="code"><PRE>
-python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
+python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
 </PRE></div>
 
 <P>
@@ -2232,7 +2228,8 @@ If you are using 32-bit Qt (Qt Carbon):
 </P>
 
 <div class="code"><PRE>
-python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-n /usr/local/Qt-4.8/qsci --use-arch i386
 </PRE></div>
 
 <P>
@@ -2240,7 +2237,8 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 </P>
 
 <div class="code"><PRE>
-python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-n /usr/local/Qt-4.8/qsci --use-arch x86_64
 </PRE></div>
 
 <P>
@@ -2252,7 +2250,7 @@ But you don't need the arch option:
 </P>
 
 <div class="code"><PRE>
-python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
 </PRE></div>
 
 <P>

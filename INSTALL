@@ -1,9 +1,9 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Monday April 01, 2013
+Tuesday April 02, 2013
 
 
-Last Updated: Monday April 01, 2013
+Last Updated: Tuesday April 02, 2013
 Last Change : Saturday December 08, 2012
 
 
@@ -1504,9 +1504,6 @@ Retrieve the Qt version of the Scintilla-based text editor widget from
 
 http://www.riverbankcomputing.co.uk/software/qscintilla/download
 
-Note:The editor uses API files for code completion in the PyQGIS console. To
-have PyQt4's API automatically created, install QScintilla2 library first.
-
 Double-click the tarball to unpack it. Then, cd to the QScintilla2.x.x source
 folder in a Terminal.
 
@@ -1564,7 +1561,7 @@ cd to the source folder.  Then for your chosen Python:
 
 python.org Python
 
-  python configure.py
+  python configure.py -n /usr/local/Qt-4.8/qsci
   yes
 
 Leopard system Python
@@ -1572,7 +1569,7 @@ Leopard system Python
 PyQt wants to install in the system path -- this is not a good idea.
 More configuration is needed to install outside the system path:
 
-  python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
+  python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
 
 Snow Leopard system Python
 
@@ -1584,18 +1581,20 @@ Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
 
 If you are using 32-bit Qt (Qt Carbon):
 
-  python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
+  python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+  -n /usr/local/Qt-4.8/qsci --use-arch i386
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
-  python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
+  python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+  -n /usr/local/Qt-4.8/qsci --use-arch x86_64
 
 Lion and Mt. Lion system Python
 
 Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the arch option:
 
-  python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin
+  python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
 
 continue...
 
