@@ -60,6 +60,11 @@ ENDIF (APPLE)
 # Fake GRASS gis library
 #
 
+# only process functions if qgsgrassgislibfunctions.cpp/h not present
+# or gisdefs.h is newer
+
+IF("${GRASS_INCLUDE_DIR}/grass/gisdefs.h" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.cpp" OR "${GRASS_INCLUDE_DIR}/grass/gisdefs.h" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.h")
+
 # Generate function mapping for functions used in original version
 # Create list of functions to be mapped
 SET ( FUNCTIONS
@@ -496,6 +501,8 @@ LIST ( APPEND PROTOTYPES "}\n" )
 
 FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.cpp" ${FUNCTIONS_MAP})
 FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.h" ${PROTOTYPES})
+
+ENDIF() # process functions
 
 # Build fake library
 IF(MSVC)
