@@ -296,6 +296,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   bool fetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   if ( fetchGeometry && P->mGeometryColumn.isNull() )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Trying to fetch geometry on a layer without geometry." ), QObject::tr( "PostgreSQL" ) );
     return false;
   }
 

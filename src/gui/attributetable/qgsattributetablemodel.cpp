@@ -36,6 +36,11 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 {
   QgsDebugMsg( "entered." );
 
+  if ( layerCache->layer()->geometryType() == QGis::NoGeometry )
+  {
+    mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
+  }
+
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
 
   loadAttributes();
@@ -302,7 +307,7 @@ void QgsAttributeTableModel::loadLayer()
   removeRows( 0, rowCount() );
   endRemoveRows();
 
-  QgsFeatureIterator features = layer()->getFeatures( mFeatureRequest );
+  QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
 
   int i = 0;
 
