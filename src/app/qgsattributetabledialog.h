@@ -81,7 +81,6 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void on_mSaveEditsButton_clicked();
 
-    void on_mTableView_selectionChangeFinished( const QgsFeatureIds &selectedFeatures );
     /**
      * Inverts selection
      */

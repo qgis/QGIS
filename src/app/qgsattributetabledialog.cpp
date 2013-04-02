@@ -355,11 +355,6 @@ void QgsAttributeTableDialog::on_mSaveEditsButton_clicked()
   QgisApp::instance()->saveEdits( mLayer, true, true );
 }
 
-void QgsAttributeTableDialog::on_mTableView_selectionChangeFinished( const QgsFeatureIds &selectedFeatures )
-{
-  mLayer->setSelectedFeatures( selectedFeatures );
-}
-
 void QgsAttributeTableDialog::on_mAddFeature_clicked()
 {
   if ( !mLayer->isEditable() )
