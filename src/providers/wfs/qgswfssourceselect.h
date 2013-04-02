@@ -21,8 +21,24 @@
 #include "ui_qgswfssourceselectbase.h"
 #include "qgscontexthelp.h"
 
+#include <QItemDelegate>
+#include <QStandardItemModel>
+#include <QSortFilterProxyModel>
+
 class QgsGenericProjectionSelector;
 class QgsWFSCapabilities;
+
+class QgsWFSItemDelegate : public QItemDelegate
+{
+  Q_OBJECT
+
+  public:
+
+      QgsWFSItemDelegate(QObject *parent=0) : QItemDelegate(parent){ }
+
+      virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+};
 
 class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 {
@@ -47,6 +63,11 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     QAbstractButton* btnAdd;
     QgsWFSCapabilities* mCapabilities;
     QString mUri;            // data source URI
+    QgsWFSItemDelegate* mItemDelegate;
+    QStandardItemModel* mModel;
+    QSortFilterProxyModel* mModelProxy;
+    QPushButton *mBuildQueryButton;
+    QPushButton *mAddButton;
 
     void populateConnectionList();
 
@@ -63,16 +84,21 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void deleteEntryOfServerList();
     void connectToServer();
     void addLayer();
+    void buildQuery( const QModelIndex& index );
     void changeCRS();
     void changeCRSFilter();
     void on_cmbConnections_activated( int index );
     void capabilitiesReplyFinished();
     void on_btnSave_clicked();
     void on_btnLoad_clicked();
-    void on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
+    void on_treeWidget_itemDoubleClicked( const QModelIndex & index );
+    void on_treeWidget_currentRowChanged( const QModelIndex & current, const QModelIndex & previous);
+    void on_mBuildQueryButton_clicked();
+    void filterChanged(QString text);
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
 };
+
 
 #endif
