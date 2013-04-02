@@ -107,7 +107,7 @@ QItemSelectionModel* QgsFeatureListModel::masterSelection()
   return mFilterModel->masterSelection();
 }
 
-void QgsFeatureListModel::setDisplayExpression( const QString expression )
+bool QgsFeatureListModel::setDisplayExpression( const QString expression )
 {
   const QgsFields fields = mFilterModel->layer()->dataProvider()->fields();
 
@@ -117,15 +117,21 @@ void QgsFeatureListModel::setDisplayExpression( const QString expression )
 
   if ( exp->hasParserError() )
   {
-    QString msg = exp->parserErrorString();
+    mParserErrorString = exp->parserErrorString();
     delete exp;
-    throw QgsException( msg );
+    return false;
   }
 
   delete mExpression;
   mExpression = exp;
 
   emit( dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) ) );
+  return true;
+}
+
+QString QgsFeatureListModel::parserErrorString()
+{
+  return mParserErrorString;
 }
 
 const QString& QgsFeatureListModel::displayExpression() const

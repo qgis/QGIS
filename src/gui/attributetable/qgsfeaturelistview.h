@@ -80,7 +80,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * @see QgsExpression
      */
-    void setDisplayExpression( const QString displayExpression );
+    bool setDisplayExpression( const QString displayExpression );
 
     /**
      * Returns the expression which is currently used to render the features.
@@ -91,6 +91,12 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     const QString& displayExpression() const;
 
+    /**
+     * Returns a detailed message about errors while parsing a QgsExpression.
+     *
+     * @return A message containg information about the parser error.
+     */
+    QString parserErrorString();
 
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );

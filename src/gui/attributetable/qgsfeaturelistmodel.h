@@ -53,10 +53,18 @@ class QgsFeatureListModel : public QAbstractProxyModel
     QItemSelectionModel* masterSelection();
 
     /**
-     * @throws QgsException in case the expression cannot be parsed
+     *  @param  expression   A {@link QgsExpression} compatible string.
+     *  @return true if the expression could be set, false if there was a parse error.
+     *          If it fails, the old expression will still be applied. Call {@link parserErrorString()}
+     *          for a meaningful error message.
      */
-    void setDisplayExpression( const QString expression );
+    bool setDisplayExpression( const QString expression );
 
+    /**
+     * @brief Returns a detailed message about errors while parsing a QgsExpression.
+     * @return A message containg information about the parser error.
+     */
+    QString parserErrorString();
 
     const QString& displayExpression() const;
     bool featureByIndex( const QModelIndex& index, QgsFeature& feat );
@@ -87,6 +95,7 @@ class QgsFeatureListModel : public QAbstractProxyModel
   private:
     QgsExpression* mExpression;
     QgsAttributeTableFilterModel* mFilterModel;
+    QString mParserErrorString;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )
