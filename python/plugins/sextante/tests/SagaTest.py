@@ -19,7 +19,7 @@ class SagaTest(unittest.TestCase):
         dataset=gdal.Open(output, GA_ReadOnly)
         strhash=hash(str(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash,-2137931723)
-    
+
     def test_sagasortgrid(self):
         outputs=sextante.runalg("saga:sortgrid",raster(),True,None)
         output=outputs['OUTPUT']
@@ -28,8 +28,8 @@ class SagaTest(unittest.TestCase):
         strhash=hash(str(dataset.ReadAsArray(0).tolist()))
         self.assertEqual(strhash,1320073153)
 
-    '''the following tests are not meant to test the algorithms themselves, 
-    but the algorithm provider, testing things such as the file conversion, 
+    '''the following tests are not meant to test the algorithms themselves,
+    but the algorithm provider, testing things such as the file conversion,
     the selection awareness of SAGA process, etc'''
 
     def test_SagaVectorAlgorithmWithSelection(self):

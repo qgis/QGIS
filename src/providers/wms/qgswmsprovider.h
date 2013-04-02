@@ -1064,7 +1064,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! Password for basic http authentication
     QString mPassword;
-    
+
     //! Referer for http requests
     QString mReferer;
 

@@ -268,8 +268,8 @@ void QgsDualView::previewColumnChanged( QObject* action )
       QMessageBox::warning( this
                             , tr( "Could not set preview column" )
                             , tr( "Could not set column '%1' as preview column.\nParser error:\n%2" )
-                              .arg( previewAction->text() )
-                              .arg( mFeatureList->parserErrorString() )
+                            .arg( previewAction->text() )
+                            .arg( mFeatureList->parserErrorString() )
                           );
     }
 

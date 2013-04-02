@@ -26,7 +26,7 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QMap< QString, QPa
     QCheckBox* cb = new QCheckBox( this );
     cb->setChecked( !it.value().second.isEmpty() );
     mTableWidget->setCellWidget( i, 0, cb );
-    mTableWidget->setColumnWidth(0, cb->width() );
+    mTableWidget->setColumnWidth( 0, cb->width() );
 
 
     //property name

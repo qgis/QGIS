@@ -55,7 +55,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     cbxIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
     cbxInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
     cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
-    
+
     txtReferer->setText( settings.value( key + "/referer" ).toString() );
 
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
@@ -81,7 +81,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
     cbxIgnoreGetFeatureInfoURI->setVisible( false );
     mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
-    
+
     txtReferer->setVisible( false );
     mGroupBox->layout()->removeWidget( txtReferer );
     lblReferer->setVisible( false );

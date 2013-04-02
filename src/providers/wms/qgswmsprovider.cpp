@@ -162,7 +162,7 @@ bool QgsWmsProvider::parseUri( QString uriString )
 
   mPassword = uri.param( "password" );
   QgsDebugMsg( "set password to " + mPassword );
-  
+
   mReferer = uri.param( "referer" );
   QgsDebugMsg( "set referer to " + mReferer );
 
@@ -1601,7 +1601,7 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabili
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if ( !e.isNull() )
     {
-      QgsDebugMsg(e.tagName() ); // the node really is an element.
+      QgsDebugMsg( e.tagName() ); // the node really is an element.
 
       if ( e.tagName() == "Service" || e.tagName() == "ows:ServiceProvider" || e.tagName() == "ows:ServiceIdentification" )
       {
@@ -3010,7 +3010,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if ( !e.isNull() )
     {
-      QgsDebugMsg(e.tagName() ); // the node really is an element.
+      QgsDebugMsg( e.tagName() ); // the node really is an element.
 
       QString tagName = e.tagName();
       if ( tagName.startsWith( "wms:" ) )
@@ -4364,10 +4364,10 @@ void QgsWmsProvider::setAuthorization( QNetworkRequest &request ) const
   {
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
   }
-  
+
   if ( !mReferer.isNull() )
   {
-      request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toAscii() );
+    request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toAscii() );
   }
 }
 

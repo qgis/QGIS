@@ -30,13 +30,13 @@ class QgsWFSCapabilities;
 
 class QgsWFSItemDelegate : public QItemDelegate
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
 
-      QgsWFSItemDelegate(QObject *parent=0) : QItemDelegate(parent){ }
+    QgsWFSItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
 
-      virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
 };
 
@@ -92,9 +92,9 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void on_btnSave_clicked();
     void on_btnLoad_clicked();
     void on_treeWidget_itemDoubleClicked( const QModelIndex & index );
-    void on_treeWidget_currentRowChanged( const QModelIndex & current, const QModelIndex & previous);
+    void on_treeWidget_currentRowChanged( const QModelIndex & current, const QModelIndex & previous );
     void on_mBuildQueryButton_clicked();
-    void filterChanged(QString text);
+    void filterChanged( QString text );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 

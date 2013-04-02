@@ -94,8 +94,8 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
   mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
   treeView->setModel( mModelProxy );
 
-  connect( treeView, SIGNAL( doubleClicked(const QModelIndex&) ), this, SLOT( on_treeWidget_itemDoubleClicked(const QModelIndex&) ) );
-  connect( treeView->selectionModel(), SIGNAL( currentRowChanged ( QModelIndex, QModelIndex) ), this, SLOT( on_treeWidget_currentRowChanged(const QModelIndex&, const QModelIndex&) ) );
+  connect( treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( on_treeWidget_itemDoubleClicked( const QModelIndex& ) ) );
+  connect( treeView->selectionModel(), SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ), this, SLOT( on_treeWidget_currentRowChanged( const QModelIndex&, const QModelIndex& ) ) );
 }
 
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
@@ -229,7 +229,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     cachedItem->setCheckState( Qt::Checked );
 
     typedef QList< QStandardItem* > StandardItemList;
-    mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << cachedItem << filterItem);
+    mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << cachedItem << filterItem );
 
     // insert the available CRS into mAvailableCRS
     std::list<QString> currentCRSList;
@@ -246,16 +246,16 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     treeView->resizeColumnToContents( 1 );
     treeView->resizeColumnToContents( 2 );
     treeView->resizeColumnToContents( 3 );
-    for  ( int i = 0; i < 2; i++ )
+    for ( int i = 0; i < 2; i++ )
     {
-        if ( treeView->columnWidth( i ) > 300 )
-        {
-            treeView->setColumnWidth( i, 300 );
-        }
+      if ( treeView->columnWidth( i ) > 300 )
+      {
+        treeView->setColumnWidth( i, 300 );
+      }
     }
     if ( treeView->columnWidth( 2 ) > 150 )
     {
-        treeView->setColumnWidth( 2, 150 );
+      treeView->setColumnWidth( 2, 150 );
     }
     btnChangeSpatialRefSys->setEnabled( true );
     treeView->selectionModel()->select( mModel->index( 0, 0 ), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows );
@@ -311,7 +311,7 @@ void QgsWFSSourceSelect::connectToServer()
   btnConnect->setEnabled( false );
   if ( mModel )
   {
-      mModel->removeRows( 0, mModel->rowCount() );
+    mModel->removeRows( 0, mModel->rowCount() );
   }
   if ( mCapabilities )
   {
@@ -382,7 +382,7 @@ void QgsWFSSourceSelect::addLayer()
     QString layerName = typeName;
     if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
     {
-        layerName = titleName;
+      layerName = titleName;
     }
     QgsDebugMsg( "Layer " + typeName + " Filter is " + filter );
     //is "cache features" checked?
@@ -401,44 +401,44 @@ void QgsWFSSourceSelect::addLayer()
 
 void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
 {
-    if ( !index.isValid() )
-    {
-        return;
-    }
-    QModelIndex filterIndex = index.sibling( index.row(), 4 );
-    QString typeName = index.sibling( index.row(), 1 ).data().toString();
+  if ( !index.isValid() )
+  {
+    return;
+  }
+  QModelIndex filterIndex = index.sibling( index.row(), 4 );
+  QString typeName = index.sibling( index.row(), 1 ).data().toString();
 
-    //get available fields for wfs layer
-    QgsWFSProvider p( "" );  //bypasses most provider instantiation logic
-    QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
-    QgsWFSCapabilities conn( connection.uri().encodedUri() );
-    QString uri = conn.uriDescribeFeatureType( typeName );
+  //get available fields for wfs layer
+  QgsWFSProvider p( "" );  //bypasses most provider instantiation logic
+  QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
+  QgsWFSCapabilities conn( connection.uri().encodedUri() );
+  QString uri = conn.uriDescribeFeatureType( typeName );
 
-    QgsFields fields;
-    QString geometryAttribute;
-    QGis::WkbType geomType;
-    if ( p.describeFeatureType( uri, geometryAttribute, fields, geomType ) != 0 )
-    {
-      return;
-    }
+  QgsFields fields;
+  QString geometryAttribute;
+  QGis::WkbType geomType;
+  if ( p.describeFeatureType( uri, geometryAttribute, fields, geomType ) != 0 )
+  {
+    return;
+  }
 
-    //show expression builder
-    QgsExpressionBuilderDialog d( 0, filterIndex.data().toString() );
+  //show expression builder
+  QgsExpressionBuilderDialog d( 0, filterIndex.data().toString() );
 
-    //add available attributes to expression builder
-    QgsExpressionBuilderWidget* w = d.expressionBuilder();
-    if ( !w )
-    {
-      return;
-    }
+  //add available attributes to expression builder
+  QgsExpressionBuilderWidget* w = d.expressionBuilder();
+  if ( !w )
+  {
+    return;
+  }
 
-    w->loadFieldNames( fields );
+  w->loadFieldNames( fields );
 
-    if ( d.exec() == QDialog::Accepted )
-    {
-      QgsDebugMsg( "Expression text = " + w->expressionText() );
-      mModelProxy->setData( filterIndex, QVariant( w->expressionText() ) );
-    }
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsDebugMsg( "Expression text = " + w->expressionText() );
+    mModelProxy->setData( filterIndex, QVariant( w->expressionText() ) );
+  }
 }
 
 void QgsWFSSourceSelect::changeCRS()
@@ -452,7 +452,7 @@ void QgsWFSSourceSelect::changeCRS()
 
 void QgsWFSSourceSelect::changeCRSFilter()
 {
-  QgsDebugMsg("changeCRSFilter called");
+  QgsDebugMsg( "changeCRSFilter called" );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
@@ -527,7 +527,7 @@ void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( const QModelIndex& ind
   buildQuery( index );
 }
 
-void QgsWFSSourceSelect::on_treeWidget_currentRowChanged( const QModelIndex & current, const QModelIndex & previous)
+void QgsWFSSourceSelect::on_treeWidget_currentRowChanged( const QModelIndex & current, const QModelIndex & previous )
 {
   Q_UNUSED( previous )
   QgsDebugMsg( "treeWidget_currentRowChanged called" );
@@ -542,7 +542,7 @@ void QgsWFSSourceSelect::on_mBuildQueryButton_clicked()
   buildQuery( treeView->selectionModel()->currentIndex() );
 }
 
-void QgsWFSSourceSelect::filterChanged(QString text)
+void QgsWFSSourceSelect::filterChanged( QString text )
 {
   QgsDebugMsg( "WFS FeatureType filter changed to :" + text );
   QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
@@ -552,16 +552,16 @@ void QgsWFSSourceSelect::filterChanged(QString text)
   mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
 }
 
-QSize QgsWFSItemDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-    QVariant indexData;
-    indexData = index.data(Qt::DisplayRole);
-    if ( indexData.isNull() )
-    {
-        return QSize();
-    }
-    QString data = indexData.toString();
-    QSize size = option.fontMetrics.boundingRect(data).size();
-    size.setHeight(size.height() + 2);
-    return size;
+  QVariant indexData;
+  indexData = index.data( Qt::DisplayRole );
+  if ( indexData.isNull() )
+  {
+    return QSize();
+  }
+  QString data = indexData.toString();
+  QSize size = option.fontMetrics.boundingRect( data ).size();
+  size.setHeight( size.height() + 2 );
+  return size;
 }
