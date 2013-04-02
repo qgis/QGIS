@@ -345,6 +345,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
       el.setAttribute( "ignoreGetFeatureInfoURI", settings.value( path + connections[i] + "/ignoreGetFeatureInfoURI", false ).toBool() ? "true" : "false" );
       el.setAttribute( "ignoreAxisOrientation", settings.value( path + connections[i] + "/ignoreAxisOrientation", false ).toBool() ? "true" : "false" );
       el.setAttribute( "invertAxisOrientation", settings.value( path + connections[i] + "/invertAxisOrientation", false ).toBool() ? "true" : "false" );
+      el.setAttribute( "referer", settings.value( path + connections[ i ] + "/referer", "" ).toString() );
     }
 
     path = "/Qgis/" + service.toUpper() + "/";
@@ -371,6 +372,8 @@ QDomDocument QgsManageConnectionsDialog::saveWFSConnections( const QStringList &
     QDomElement el = doc.createElement( "wfs" );
     el.setAttribute( "name", connections[ i ] );
     el.setAttribute( "url", settings.value( path + connections[ i ] + "/url", "" ).toString() );
+
+    el.setAttribute( "referer", settings.value( path + connections[ i ] + "/referer", "" ).toString() );
 
     path = "/Qgis/WFS/";
     el.setAttribute( "username", settings.value( path + connections[ i ] + "/username", "" ).toString() );
@@ -576,6 +579,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     settings.setValue( QString( "/" + connectionName + "/ignoreGetFeatureInfoURI" ), child.attribute( "ignoreGetFeatureInfoURI" ) == "true" );
     settings.setValue( QString( "/" + connectionName + "/ignoreAxisOrientation" ), child.attribute( "ignoreAxisOrientation" ) == "true" );
     settings.setValue( QString( "/" + connectionName + "/invertAxisOrientation" ), child.attribute( "invertAxisOrientation" ) == "true" );
+    settings.setValue( QString( "/" + connectionName + "/referer" ), child.attribute( "referer" ) );
     settings.endGroup();
 
     if ( !child.attribute( "username" ).isEmpty() )

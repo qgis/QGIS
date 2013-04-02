@@ -1064,6 +1064,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! Password for basic http authentication
     QString mPassword;
+    
+    //! Referer for http requests
+    QString mReferer;
 
     //! layer is tiled, tile layer and active matrix set
     bool                    mTiled;
