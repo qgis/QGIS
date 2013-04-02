@@ -31,12 +31,15 @@
 #include <limits>
 
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent )
-    : QAbstractTableModel( parent ),
-    mLayerCache( layerCache )
+    : QAbstractTableModel( parent )
+    , mLayerCache( layerCache )
 {
   QgsDebugMsg( "entered." );
 
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
+
+  if ( !layer()->hasGeometryType() )
+    mFeatureRequest.setFlags( QgsFeatureRequest::NoGeometry );
 
   loadAttributes();
 

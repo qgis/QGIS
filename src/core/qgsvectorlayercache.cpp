@@ -49,7 +49,7 @@ int QgsVectorLayerCache::cacheSize()
 
 void QgsVectorLayerCache::setCacheGeometry( bool cacheGeometry )
 {
-  mCacheGeometry = cacheGeometry;
+  mCacheGeometry = cacheGeometry && mLayer->hasGeometryType();
   if ( cacheGeometry )
   {
     connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), SLOT( geometryChanged( QgsFeatureId, QgsGeometry& ) ) );
@@ -277,7 +277,7 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest& feat
 {
   QgsAttributeList requestedAttributes;
 
-  if ( false == featureRequest.flags().testFlag( QgsFeatureRequest::SubsetOfAttributes ) )
+  if ( !featureRequest.flags().testFlag( QgsFeatureRequest::SubsetOfAttributes ) )
   {
     requestedAttributes = mLayer->pendingAllAttributesList();
   }
@@ -296,8 +296,8 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest& feat
   }
 
   // If the request needs geometry but we don't cache this...
-  if ( false == featureRequest.flags().testFlag( QgsFeatureRequest::NoGeometry )
-       && false == mCacheGeometry )
+  if ( !featureRequest.flags().testFlag( QgsFeatureRequest::NoGeometry )
+       && !mCacheGeometry )
   {
     return false;
   }
