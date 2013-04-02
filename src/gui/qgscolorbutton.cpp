@@ -51,7 +51,8 @@ QgsColorButton::QgsColorButton( QWidget *parent, QString cdt, QColorDialog::Colo
 
 QgsColorButton::~QgsColorButton()
 {
-  mTempPNG.remove();
+  if ( mTempPNG.exists() )
+    mTempPNG.remove();
 }
 
 const QPixmap& QgsColorButton::transpBkgrd()
@@ -194,20 +195,10 @@ void QgsColorButton::setButtonBackground()
   {
     // generate temp background image file with checkerboard canvas to be used via stylesheet
 
-    // set flat, or inline spacing (widget margins) needs to be manually calcualted and set
+    // set flat, or inline spacing (widget margins) needs to be manually calculated and set
     setFlat( true );
 
     bool useAlpha = ( mColorDialogOptions & QColorDialog::ShowAlphaChannel );
-
-    QColor tmpColor( mColor );
-    QString border( "110" );
-    if ( !isEnabled() ) // fake disabled look (use just Qt::lightGray instead?)
-    {
-      int tmpValue = ( 255 - tmpColor.value() ) / 3 + tmpColor.value();
-      tmpColor.setHsv( tmpColor.hue(), tmpColor.saturation() / 2, tmpValue, useAlpha ? tmpColor.alpha() : 255 );
-
-      border = "128";
-    }
 
     // in case margins need to be adjusted
     QString margin = QString( "%1px %2px %3px %4px" ).arg( 0 ).arg( 0 ).arg( 0 ).arg( 0 );
@@ -215,12 +206,12 @@ void QgsColorButton::setButtonBackground()
     //QgsDebugMsg( QString( "%1 margin: %2" ).arg( objectName() ).arg( margin ) );
 
     QString bkgrd = QString( " background-color: rgba(%1,%2,%3,%4);" )
-                    .arg( tmpColor.red() )
-                    .arg( tmpColor.green() )
-                    .arg( tmpColor.blue() )
-                    .arg( useAlpha ? tmpColor.alpha() : 255 );
+                    .arg( mColor.red() )
+                    .arg( mColor.green() )
+                    .arg( mColor.blue() )
+                    .arg( useAlpha ? mColor.alpha() : 255 );
 
-    if ( useAlpha && tmpColor.alpha() < 255 )
+    if ( useAlpha && mColor.alpha() < 255 )
     {
       QPixmap pixmap = transpBkgrd();
       QRect rect( 0, 0, pixmap.width(), pixmap.height() );
@@ -229,7 +220,7 @@ void QgsColorButton::setButtonBackground()
       p.begin( &pixmap );
       p.setRenderHint( QPainter::Antialiasing );
       p.setPen( Qt::NoPen );
-      p.setBrush( tmpColor );
+      p.setBrush( mColor );
       p.drawRect( rect );
       p.end();
 
@@ -254,7 +245,7 @@ void QgsColorButton::setButtonBackground()
                             " padding: 2px;"
                             " margin: %2;"
                             " outline: none;"
-                            " border-style: outset;"
+                            " border-style: %4;"
                             " border-width: 1px;"
                             " border-color: rgb(%3,%3,%3);"
                             " border-radius: 3px;} "
@@ -272,7 +263,8 @@ void QgsColorButton::setButtonBackground()
                             " border-radius: 4px;} " )
                    .arg( bkgrd )
                    .arg( margin )
-                   .arg( border ) );
+                   .arg( isEnabled() ? "128" : "110" )
+                   .arg( isEnabled() ? "outset" : "dotted" ) );
   }
 }
 

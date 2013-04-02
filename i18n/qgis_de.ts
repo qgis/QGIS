@@ -11534,8 +11534,8 @@ Fehler war:%2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="106"/>
-        <source>Webview</source>
-        <translation>Webview</translation>
+        <source>Web view</source>
+        <translation>Webansicht</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="137"/>

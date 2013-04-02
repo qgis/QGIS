@@ -2424,7 +2424,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         case UniqueValues:
         case UniqueValuesEditable:
         case UuidGenerator:
-        case Webview:
+        case WebView:
         case Color:
           break;
       }
@@ -2750,7 +2750,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         case Enumeration:
         case Immutable:
         case UuidGenerator:
-        case Webview:
+        case WebView:
         case Color:
           break;
       }

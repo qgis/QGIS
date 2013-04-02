@@ -28,6 +28,7 @@
 #include <qgsexpression.h>
 #include <qgsfilterlineedit.h>
 #include <qgscolorbutton.h>
+#include <qgsnetworkaccessmanager.h>
 
 #include <QScrollArea>
 #include <QPushButton>
@@ -159,7 +160,7 @@ void QgsAttributeEditor::loadPixmap( const QString &name )
     size.setHeight( size.width() * pm.size().height() / pm.size().width() );
   }
 
-  pm = pm.scaled( size, Qt::KeepAspectRatio );
+  pm = pm.scaled( size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
   lw->setPixmap( pm );
   lw->setMinimumSize( size );
@@ -652,7 +653,9 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       if ( myWidget )
       {
         if ( editType == QgsVectorLayer::Immutable )
+        {
           myWidget->setDisabled( true );
+        }
 
         QgsStringRelay* relay = NULL;
 
@@ -708,7 +711,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
     case QgsVectorLayer::Photo:
-    case QgsVectorLayer::Webview:
+    case QgsVectorLayer::WebView:
     case QgsVectorLayer::Color:
     {
       QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );
@@ -721,6 +724,12 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       QWebView *ww = qobject_cast<QWebView *>( editor );
       if ( ww )
       {
+        ww->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+        ww->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+        ww->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
+#ifdef QGISDEBUG
+        ww->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+#endif
         myWidget = ww;
         break;
       }
@@ -753,37 +762,48 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       }
       else
       {
-        le = new QgsFilterLineEdit();
+        myWidget = new QWidget( parent );
+        myWidget->setBackgroundRole( QPalette::Window );
+        myWidget->setAutoFillBackground( true );
+
+        le = new QgsFilterLineEdit( myWidget );
         switch ( editType )
         {
           case QgsVectorLayer::FileName:
           case QgsVectorLayer::Photo:
-            pb = new QPushButton( tr( "..." ) );
+            pb = new QPushButton( tr( "..." ), myWidget );
             break;
 
-          case QgsVectorLayer::Webview:
-            pb = new QPushButton( tr( "<" ) );
+          case QgsVectorLayer::WebView:
+            pb = new QPushButton( tr( "<" ), myWidget );
             break;
 
           case QgsVectorLayer::Color:
-            pb = new QgsColorButton();
+            pb = new QgsColorButton( myWidget );
             break;
 
           default:
             break;
         }
 
+
         int row = 0;
-        QGridLayout *layout = new QGridLayout();
+        QGridLayout *layout = new QGridLayout( myWidget );
         if ( editType == QgsVectorLayer::Photo )
         {
-          lw = new QLabel();
+          lw = new QLabel( myWidget );
           layout->addWidget( lw, 0, 0, 1, 2 );
           row++;
         }
-        else if ( editType == QgsVectorLayer::Webview )
+        else if ( editType == QgsVectorLayer::WebView )
         {
-          ww = new QWebView();
+          ww = new QWebView( myWidget );
+          ww->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+          ww->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+          ww->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
+#ifdef QGISDEBUG
+          ww->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+#endif
           layout->addWidget( ww, 0, 0, 1, 2 );
           row++;
         }
@@ -791,9 +811,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         layout->addWidget( le, row, 0 );
         layout->addWidget( pb, row, 1 );
 
-        myWidget = new QWidget( parent );
-        myWidget->setBackgroundRole( QPalette::Window );
-        myWidget->setAutoFillBackground( true );
         myWidget->setLayout( layout );
       }
 
@@ -813,7 +830,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       {
         if ( editType == QgsVectorLayer::FileName || editType == QgsVectorLayer::Photo )
           connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectFileName() ) );
-        if ( editType == QgsVectorLayer::Webview )
+        if ( editType == QgsVectorLayer::WebView )
           connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( updateUrl() ) );
         if ( editType == QgsVectorLayer::Calendar )
           connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectDate() ) );
@@ -1197,7 +1214,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
     case QgsVectorLayer::Photo:
-    case QgsVectorLayer::Webview:
+    case QgsVectorLayer::WebView:
     case QgsVectorLayer::Color:
     {
       QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( editor );

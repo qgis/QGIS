@@ -41,6 +41,7 @@
 #include <QDialog>
 #include <QVBoxLayout>
 #include <QLineEdit>
+#include <QWebView>
 
 int QgsAttributeDialog::smFormCounter = 0;
 
@@ -202,7 +203,28 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
       {
-        myWidget->setEnabled( vl->isEditable() && vl->fieldEditable( fldIdx ) );
+        if ( vl->isEditable() && vl->fieldEditable( fldIdx ) )
+        {
+          myWidget->setEnabled( true );
+        }
+        else if ( vl->editType( fldIdx ) == QgsVectorLayer::Photo )
+        {
+          foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
+          {
+            w->setEnabled( qobject_cast<QLabel *>( w ) ? true : false );
+          }
+        }
+        else if ( vl->editType( fldIdx ) == QgsVectorLayer::WebView )
+        {
+          foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
+          {
+            w->setEnabled( qobject_cast<QWebView *>( w ) ? true : false );
+          }
+        }
+        else
+        {
+          myWidget->setEnabled( false );
+        }
       }
 
       mypInnerLayout->addWidget( myWidget, index, 1 );
@@ -232,13 +254,34 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       if ( myWidgets.isEmpty() )
         continue;
 
-      foreach ( QWidget *w, myWidgets )
+      foreach ( QWidget *myWidget, myWidgets )
       {
-        QgsAttributeEditor::createAttributeEditor( mDialog, w, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
+        QgsAttributeEditor::createAttributeEditor( mDialog, myWidget, vl, fldIdx, myAttributes[fldIdx], mProxyWidgets );
 
-        if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable && w->isEnabled() )
+        if ( vl->editType( fldIdx ) != QgsVectorLayer::Immutable )
         {
-          w->setEnabled( vl->isEditable() && vl->fieldEditable( fldIdx ) );
+          if ( vl->isEditable() && vl->fieldEditable( fldIdx ) )
+          {
+            myWidget->setEnabled( true );
+          }
+          else if ( vl->editType( fldIdx ) == QgsVectorLayer::Photo )
+          {
+            foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
+            {
+              w->setEnabled( qobject_cast<QLabel *>( w ) ? true : false );
+            }
+          }
+          else if ( vl->editType( fldIdx ) == QgsVectorLayer::WebView )
+          {
+            foreach ( QWidget *w, myWidget->findChildren<QWidget *>() )
+            {
+              w->setEnabled( qobject_cast<QWebView *>( w ) ? true : false );
+            }
+          }
+          else
+          {
+            myWidget->setEnabled( false );
+          }
         }
       }
     }

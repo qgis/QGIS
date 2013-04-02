@@ -115,6 +115,9 @@ class QgsVectorLayer : QgsMapLayer
       DialRange,     /* dial range @added in 1.5 */
       ValueRelation, /* value map from an table @added in 1.8 */
       UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
+      Photo,         /* phote widget @added in 1.9 */
+      WebView,       /* webview widget @added in 1.9 */
+      Color,         /* color @added in 1.9 */
     };
 
     struct RangeData
@@ -595,6 +598,15 @@ class QgsVectorLayer : QgsMapLayer
     /** delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
+    /**
+     * Deletes a list of attribute fields (but does not commit it)
+     *
+     * @param  attrs the indices of the attributes to delete
+     * @return true if at least one attribute has been deleted
+     *
+     */
+    bool deleteAttributes( QList<int> attrs );
+
     /** Insert a copy of the given features into the layer  (but does not commit it) */
     bool addFeatures( QList<QgsFeature> features, bool makeSelected = true );
 
@@ -679,6 +691,11 @@ class QgsVectorLayer : QgsMapLayer
      */
     QString &dateFormat( int idx );
 
+    /**access widget size for photo and webview widget
+     * @note added in 1.9
+     */
+    QSize &widgetSize( int idx );
+
     /**is edit widget editable
      * @note added in 1.9
      **/
@@ -741,6 +758,10 @@ class QgsVectorLayer : QgsMapLayer
     /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
       @note public and static from version 1.4 */
     static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
+
+    /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
+     @note added in 1.7 */
+    void updateFields();
 
     /** Caches joined attributes if required (and not already done)
       @note added in 1.7 */

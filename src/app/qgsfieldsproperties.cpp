@@ -534,7 +534,7 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::UuidGenerator:
-    case QgsVectorLayer::Webview:
+    case QgsVectorLayer::WebView:
     case QgsVectorLayer::Color:
       break;
   }
@@ -746,7 +746,7 @@ void QgsFieldsProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::ValueRelation, tr( "Value relation" ) );
   editTypeMap.insert( QgsVectorLayer::UuidGenerator, tr( "UUID generator" ) );
   editTypeMap.insert( QgsVectorLayer::Photo, tr( "Photo" ) );
-  editTypeMap.insert( QgsVectorLayer::Webview, tr( "Webview" ) );
+  editTypeMap.insert( QgsVectorLayer::WebView, tr( "Web view" ) );
   editTypeMap.insert( QgsVectorLayer::Color, tr( "Color" ) );
 }
 
@@ -892,7 +892,7 @@ void QgsFieldsProperties::apply()
       case QgsVectorLayer::Hidden:
       case QgsVectorLayer::TextEdit:
       case QgsVectorLayer::UuidGenerator:
-      case QgsVectorLayer::Webview:
+      case QgsVectorLayer::WebView:
       case QgsVectorLayer::Color:
         break;
     }

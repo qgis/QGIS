@@ -335,7 +335,7 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
       setPage( 14 );
       break;
 
-    case QgsVectorLayer::Webview:
+    case QgsVectorLayer::WebView:
       setPage( 15 );
       break;
 
@@ -527,7 +527,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::UuidGenerator:
-    case QgsVectorLayer::Webview:
+    case QgsVectorLayer::WebView:
     case QgsVectorLayer::Color:
       break;
   }
@@ -702,7 +702,7 @@ void QgsAttributeTypeDialog::accept()
       mWidgetSize = QSize( sbWidgetWidth->value(), sbWidgetHeight->value() );
       break;
     case 15:
-      mEditType = QgsVectorLayer::Webview;
+      mEditType = QgsVectorLayer::WebView;
       break;
     case 16:
       mEditType = QgsVectorLayer::Color;

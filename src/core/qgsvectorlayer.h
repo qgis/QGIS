@@ -178,7 +178,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       ValueRelation, /* value map from an table @added in 1.8 */
       UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
       Photo,         /* phote widget @added in 1.9 */
-      Webview,       /* webview widget @added in 1.9 */
+      WebView,       /* webview widget @added in 1.9 */
       Color,         /* color @added in 1.9 */
     };
 
