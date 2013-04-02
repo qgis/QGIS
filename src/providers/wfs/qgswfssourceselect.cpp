@@ -78,8 +78,9 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
   treeView->setItemDelegate( mItemDelegate );
 
   QSettings settings;
-  QgsDebugMsg( "restoring geometry" );
+  QgsDebugMsg( "restoring settings" );
   restoreGeometry( settings.value( "/Windows/WFSSourceSelect/geometry" ).toByteArray() );
+  cbxUseTitleLayerName->setChecked( settings.value( "/Windows/WFSSourceSelect/UseTitleLayerName", false ).toBool() );
 
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( 0, new QStandardItem( "Title" ) );
@@ -100,8 +101,9 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
 {
   QSettings settings;
-  QgsDebugMsg( "saving geometry" );
+  QgsDebugMsg( "saving settings" );
   settings.setValue( "/Windows/WFSSourceSelect/geometry", saveGeometry() );
+  settings.setValue( "/Windows/WFSSourceSelect/UseTitleLayerName", cbxUseTitleLayerName->isChecked() );
 
   delete mItemDelegate;
   delete mProjectionSelector;
@@ -377,7 +379,13 @@ void QgsWFSSourceSelect::addLayer()
     }
     int row = idx.row();
     QString typeName = mModel->item( row,  1 )->text(); //WFS repository's name for layer
+    QString titleName = mModel->item( row,  0 )->text(); //WFS type name title for layer name (if option is set)
     QString filter = mModel->item( row,  4 )->text(); //optional filter specified by user
+    QString layerName = typeName;
+    if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
+    {
+        layerName = titleName;
+    }
     QgsDebugMsg( "Layer " + typeName + " Filter is " + filter );
     //is "cache features" checked?
     if ( mModel->item( row,  3 )->checkState() == Qt::Checked )
@@ -388,7 +396,7 @@ void QgsWFSSourceSelect::addLayer()
     { //no: include BBOX of current canvas extent in URI
       mUri = conn.uriGetFeature( typeName, pCrsString, filter, extent );
     }
-    emit addWfsLayer( mUri, typeName );
+    emit addWfsLayer( mUri, layerName );
   }
   accept();
 }

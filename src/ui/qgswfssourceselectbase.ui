@@ -14,7 +14,17 @@
    <string>Add WFS Layer from a Server</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0">
+   <item row="5" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QGroupBox" name="gbCRS">
      <property name="title">
       <string>Coordinate reference system</string>
@@ -60,16 +70,6 @@
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
-     </property>
     </widget>
    </item>
    <item row="1" column="0">
@@ -208,6 +208,13 @@
      <attribute name="headerVisible">
       <bool>true</bool>
      </attribute>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="cbxUseTitleLayerName">
+     <property name="text">
+      <string>Use title for layer name</string>
+     </property>
     </widget>
    </item>
   </layout>
