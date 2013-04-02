@@ -339,8 +339,6 @@ void QgsWFSSourceSelect::addLayer()
   QVariant extentVariant = property( "MapExtent" );
   if ( extentVariant.isValid() )
   {
-    QString crs;
-    QgsCoordinateTransform xform;
     QString extentString = extentVariant.toString();
     QStringList minMaxSplit = extentString.split( ":" );
     if ( minMaxSplit.size() > 1 )
