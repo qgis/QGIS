@@ -509,7 +509,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   //color
   if ( mStrokeColorExpression )
   {
-    pen.setColor( QColor( mStrokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+    pen.setColor( QgsSymbolLayerV2Utils::decodeColor( mStrokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
   }
 
   //offset

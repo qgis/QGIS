@@ -512,11 +512,11 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
 
     if ( mColorExpression )
     {
-      mBrush.setColor( QColor( mColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+      mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( mColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
     }
     if ( mColorBorderExpression )
     {
-      mPen.setColor( QColor( mColorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+      mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( mColorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
     }
 
     p->setBrush( context.selected() ? mSelBrush : mBrush );
@@ -1093,15 +1093,13 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   QColor fillColor = mFillColor;
   if ( mFillExpression )
   {
-    QString colorString = mFillExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    fillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+    fillColor = QgsSymbolLayerV2Utils::decodeColor( mFillExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
 
   QColor outlineColor = mOutlineColor;
   if ( mOutlineExpression )
   {
-    QString colorString = mOutlineExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    outlineColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+    outlineColor = QgsSymbolLayerV2Utils::decodeColor( mOutlineExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
 
 

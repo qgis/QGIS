@@ -154,11 +154,11 @@ void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 {
   if ( mColorExpression )
   {
-    brush.setColor( QColor( mColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+    brush.setColor( QgsSymbolLayerV2Utils::decodeColor( mColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
   }
   if ( mColorBorderExpression )
   {
-    pen.setColor( QColor( mColorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+    pen.setColor( QgsSymbolLayerV2Utils::decodeColor( mColorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
   }
   if ( mWidthBorderExpression )
   {
@@ -1147,14 +1147,12 @@ void QgsSVGFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderCon
   QColor svgFillColor = mSvgFillColor;
   if ( mFillColorExpression )
   {
-    QString colorString = mFillColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    svgFillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+    svgFillColor = QgsSymbolLayerV2Utils::decodeColor( mFillColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
   QColor svgOutlineColor = mSvgOutlineColor;
   if ( mOutlineColorExpression )
   {
-    QString colorString = mOutlineColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
-    svgOutlineColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+    svgOutlineColor = QgsSymbolLayerV2Utils::decodeColor( mOutlineColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
   double outlineWidth = mSvgOutlineWidth;
   if ( mOutlineWidthExpression )
@@ -1733,7 +1731,7 @@ void QgsLinePatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2R
   QColor color = mColor;
   if ( mColorExpression )
   {
-    color = QColor( mColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    color = QgsSymbolLayerV2Utils::decodeColor( mColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
   applyPattern( context, mBrush, lineAngle, distance, lineWidth, color );
 }
