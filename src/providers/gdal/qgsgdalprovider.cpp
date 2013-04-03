@@ -1133,6 +1133,13 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
     return false;
   }
 
+  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+      userNoDataValue( theBandNo ).size() > 0 )
+  {
+    QgsDebugMsg( "Custom no data values -> GDAL histogram not sufficient." );
+    return false;
+  }
+
   QgsDebugMsg( "Looking for GDAL histogram" );
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
@@ -1208,9 +1215,16 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
     }
   }
 
+  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+      userNoDataValue( theBandNo ).size() > 0 )
+  {
+    QgsDebugMsg( "Custom no data values, using generic histogram." );
+    return QgsRasterDataProvider::histogram( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
+  }
+
   if ( myHistogram.extent != extent() )
   {
-    QgsDebugMsg( "Using generic histogram." );
+    QgsDebugMsg( "Not full extent, using generic histogram." );
     return QgsRasterDataProvider::histogram( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
   }
 
@@ -2035,6 +2049,13 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
 
+  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+      userNoDataValue( theBandNo ).size() > 0 )
+  {
+    QgsDebugMsg( "Custom no data values -> GDAL statistics not sufficient." );
+    return false;
+  }
+
   // If not cached, check if supported by GDAL
   int supportedStats = QgsRasterBandStats::Min | QgsRasterBandStats::Max
                        | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
@@ -2120,6 +2141,15 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
     }
   }
 
+  // We cannot use GDAL stats if user disabled src no data value or set
+  // custom  no data values
+  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+      userNoDataValue( theBandNo ).size() > 0 )
+  {
+    QgsDebugMsg( "Custom no data values, using generic statistics." );
+    return QgsRasterDataProvider::bandStatistics( theBandNo, theStats, theExtent, theSampleSize );
+  }
+
   int supportedStats = QgsRasterBandStats::Min | QgsRasterBandStats::Max
                        | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
                        | QgsRasterBandStats::StdDev;
@@ -2129,7 +2159,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   if ( myRasterBandStats.extent != extent() ||
        ( theStats & ( ~supportedStats ) ) )
   {
-    QgsDebugMsg( "Using generic statistics." );
+    QgsDebugMsg( "Statistics not supported by provider, using generic statistics." );
     return QgsRasterDataProvider::bandStatistics( theBandNo, theStats, theExtent, theSampleSize );
   }
 
