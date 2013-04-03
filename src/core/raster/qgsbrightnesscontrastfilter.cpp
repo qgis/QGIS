@@ -22,7 +22,6 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-
 QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface* input )
     : QgsRasterInterface( input ),
     mBrightness( 0 ),
@@ -147,7 +146,7 @@ QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  c
   QRgb myNoDataColor = qRgba( 0, 0, 0, 0 );
   QRgb myColor;
 
-  int r, g, b;
+  int r, g, b, alpha;
   double f = qPow(( mContrast + 100 ) / 100.0, 2 );
 
   for ( size_t i = 0; i < ( size_t )width*height; i++ )
@@ -159,15 +158,36 @@ QgsRasterBlock * QgsBrightnessContrastFilter::block( int bandNo, QgsRectangle  c
     }
 
     myColor = inputBlock->color( i );
-    r = qBound( 0, ( int )((((( qRed( myColor ) / 255.0 ) - 0.5 ) * f ) + 0.5 ) * 255 ) + mBrightness, 255 );
-    g = qBound( 0, ( int )((((( qGreen( myColor ) / 255.0 ) - 0.5 ) * f ) + 0.5 ) * 255 ) + mBrightness, 255 );
-    b = qBound( 0, ( int )((((( qBlue( myColor ) / 255.0 ) - 0.5 ) * f ) + 0.5 ) * 255 ) + mBrightness, 255 );
+    alpha = qAlpha( myColor );
 
-    outputBlock->setColor( i, qRgb( r, g, b ) );
+    r = adjustColorComponent( qRed( myColor ), alpha, mBrightness, f );
+    g = adjustColorComponent( qGreen( myColor ), alpha, mBrightness, f );
+    b = adjustColorComponent( qBlue( myColor ), alpha, mBrightness, f );
+
+    outputBlock->setColor( i, qRgba( r, g, b, alpha ) );
   }
 
   delete inputBlock;
   return outputBlock;
+}
+
+int QgsBrightnessContrastFilter::adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor ) const
+{
+  if ( alpha == 255 )
+  {
+    // Opaque pixel, do simpler math
+    return qBound( 0, ( int )(((((( colorComponent / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255 );
+  }
+  else
+  {
+    // Semi-transparent pixel. We need to adjust the math since we are using QGis::ARGB32_Premultiplied
+    // and color values have been premultiplied by alpha
+    double alphaFactor = alpha / 255.;
+    double adjustedColor = colorComponent / alphaFactor;
+
+    // Make sure to return a premultiplied color
+    return alphaFactor * qBound( 0., (((((( adjustedColor / 255.0 ) - 0.5 ) * contrastFactor ) + 0.5 ) * 255 ) + brightness ), 255. );
+  }
 }
 
 void QgsBrightnessContrastFilter::writeXML( QDomDocument& doc, QDomElement& parentElem )

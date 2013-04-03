@@ -52,7 +52,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
 
-    void setSaturation( int saturation ) { mSaturation = qBound( -100, saturation, 100 ); }
+    void setSaturation( int saturation );
     int saturation() const { return mSaturation; }
 
     void setGrayscaleMode( QgsHueSaturationFilter::GrayscaleMode grayscaleMode ) { mGrayscaleMode = grayscaleMode; }
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     void setColorizeOn( bool colorizeOn ) { mColorizeOn = colorizeOn; }
     bool colorizeOn() const { return mColorizeOn; }
-    void setColorizeColor( QColor colorizeColor ) { mColorizeColor = colorizeColor; }
+    void setColorizeColor( QColor colorizeColor );
     QColor colorizeColor() const { return mColorizeColor; }
     void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
     int colorizeStrength() const { return mColorizeStrength; }
@@ -71,8 +71,14 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     void readXML( const QDomElement& filterElem );
 
   private:
+    /** Process a change in saturation and update resultant HSL & RGB values*/
+    void processSaturation( int &r, int &g, int &b, int &h, int &s, int &l );
+    /** Process a colorization and update resultant HSL & RGB values*/
+    void processColorization( int &r, int &g, int &b, int &h, int &s, int &l ) ;
+
     /**Current saturation value. Range: -100 (desaturated) ... 0 (no change) ... 100 (increased)*/
     int mSaturation;
+    double mSaturationScale;
 
     /**Current grayscale mode*/
     QgsHueSaturationFilter::GrayscaleMode mGrayscaleMode;
@@ -80,6 +86,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     /**Colorize settings*/
     bool mColorizeOn;
     QColor mColorizeColor;
+    int mColorizeH, mColorizeS;
     int mColorizeStrength;
 
 };

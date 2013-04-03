@@ -54,6 +54,9 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void readXML( const QDomElement& filterElem );
 
   private:
+    /**Adjusts a color component by the specified brightness and contrast factor*/
+    int  adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor ) const;
+
     /** Current brightness coefficient value. Default: 0. Range: -255...255 */
     int mBrightness;
 
