@@ -147,17 +147,11 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
 
   // adjust image
   QRgb myNoDataColor = qRgba( 0, 0, 0, 0 );
+  QRgb myRgb;
   QColor myColor;
   int h, s, l;
-  int r, g, b;
-
-  // Scale saturation value to [0-2], where 0 = desaturated
-  double saturationScale = (( double ) mSaturation / 100 ) + 1;
-
-  // Get hue, saturation for colorized color
-  int colorizeH, colorizeS;
-  colorizeH = mColorizeColor.hue();
-  colorizeS = mColorizeColor.saturation();
+  int r, g, b, alpha;
+  double alphaFactor;
 
   for ( size_t i = 0; i < ( size_t )width*height; i++ )
   {
@@ -167,93 +161,172 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
       continue;
     }
 
-    // Get hsv and rgb for color
-    myColor = QColor( inputBlock->color( i ) );
-    myColor.getHsl( &h, &s, &l );
-    myColor.getRgb( &r, &g, &b );
+    myRgb = inputBlock->color( i );
+    myColor = QColor( myRgb );
 
-    switch ( mGrayscaleMode )
+    // Alpha must be taken from QRgb, since conversion from QRgb->QColor loses alpha
+    alpha = qAlpha( myRgb );
+
+    // Get rgb for color
+    myColor.getRgb( &r, &g, &b );
+    if ( alpha != 255 )
     {
-      case GrayscaleLightness:
-      {
-        // Lightness mode, set saturation to zero
-        s = 0;
-        myColor = QColor::fromHsl( h, s, l );
-        break;
-      }
-      case GrayscaleLuminosity:
-      {
-        // Grayscale by weighted rgb components
-        int luminosity = 0.21 * r + 0.72 * g + 0.07 * b;
-        r = g = b = luminosity;
-        myColor = QColor::fromRgb( r, g, b );
-        break;
-      }
-      case GrayscaleAverage:
-      {
-        // Grayscale by average of rgb components
-        int average = ( r + g + b ) / 3;
-        r = g = b = average;
-        myColor = QColor::fromRgb( r, g, b );
-        break;
-      }
-      case GrayscaleOff:
-      {
-        // Not being made grayscale, do saturation change
-        if ( saturationScale < 1 )
-        {
-          // Lowering the saturation. Use a simple linear relationship
-          s = qMin(( int )( s * saturationScale ), 255 );
-        }
-        else
-        {
-          // Raising the saturation. Use a saturation curve to prevent
-          // clipping at maximum saturation with ugly results.
-          s = qMin(( int )( 255. * ( 1 - pow( 1 - (( double )s / 255. )  , saturationScale * 2 ) ) ), 255 );
-        }
-        myColor = QColor::fromHsl( h, s, l );
-        break;
-      }
+      // Semi-transparent pixel. We need to adjust the colors since we are using QGis::ARGB32_Premultiplied
+      // and color values have been premultiplied by alpha
+      alphaFactor = alpha / 255.;
+      r /= alphaFactor;
+      g /= alphaFactor;
+      b /= alphaFactor;
+      myColor = QColor::fromRgb( r, g, b );
+    }
+
+    myColor.getHsl( &h, &s, &l );
+
+    // Changing saturation?
+    if (( mGrayscaleMode != GrayscaleOff ) || ( mSaturationScale != 1 ) )
+    {
+      processSaturation( r, g, b, h, s, l );
     }
 
     // Colorizing?
     if ( mColorizeOn )
     {
-      // Update hsl, rgb values (these may have changed with saturation/grayscale adjustments)
-      myColor.getHsl( &h, &s, &l );
-      myColor.getRgb( &r, &g, &b );
-
-      // Overwrite hue and saturation with values from colorize color
-      h = colorizeH;
-      s = colorizeS;
-      QColor colorizedColor = QColor::fromHsl( h, s, l );
-
-      if ( mColorizeStrength == 100 )
-      {
-        // Full strength
-        myColor = colorizedColor;
-      }
-      else
-      {
-        // Get rgb for colorized color
-        int colorizedR, colorizedG, colorizedB;
-        colorizedColor.getRgb( &colorizedR, &colorizedG, &colorizedB );
-
-        // Now, linearly scale by colorize strength
-        double p = ( double ) mColorizeStrength / 100.;
-        r = p * colorizedR + ( 1 - p ) * r;
-        g = p * colorizedG + ( 1 - p ) * g;
-        b = p * colorizedB + ( 1 - p ) * b;
-        myColor = QColor::fromRgb( r, g, b );
-      }
+      processColorization( r, g, b, h, s, l );
     }
 
     // Convert back to rgb
-    outputBlock->setColor( i, myColor.rgb() );
+    if ( alpha != 255 )
+    {
+      // Transparent pixel, need to premultiply color components
+      r *= alphaFactor;
+      g *= alphaFactor;
+      b *= alphaFactor;
+    }
+
+    outputBlock->setColor( i, qRgba( r, g, b, alpha ) );
   }
 
   delete inputBlock;
   return outputBlock;
+}
+
+// Process a colorization and update resultant HSL & RGB values
+void QgsHueSaturationFilter::processColorization( int &r, int &g, int &b, int &h, int &s, int &l )
+{
+  QColor myColor;
+
+  // Overwrite hue and saturation with values from colorize color
+  h = mColorizeH;
+  s = mColorizeS;
+
+
+  QColor colorizedColor = QColor::fromHsl( h, s, l );
+
+  if ( mColorizeStrength == 100 )
+  {
+    // Full strength
+    myColor = colorizedColor;
+
+    // RGB may have changed, update them
+    myColor.getRgb( &r, &g, &b );
+  }
+  else
+  {
+    // Get rgb for colorized color
+    int colorizedR, colorizedG, colorizedB;
+    colorizedColor.getRgb( &colorizedR, &colorizedG, &colorizedB );
+
+    // Now, linearly scale by colorize strength
+    double p = ( double ) mColorizeStrength / 100.;
+    r = p * colorizedR + ( 1 - p ) * r;
+    g = p * colorizedG + ( 1 - p ) * g;
+    b = p * colorizedB + ( 1 - p ) * b;
+
+    // RGB changed, so update HSL values
+    myColor = QColor::fromRgb( r, g, b );
+    myColor.getHsl( &h, &s, &l );
+  }
+}
+
+// Process a change in saturation and update resultant HSL & RGB values
+void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, int &s, int &l )
+{
+
+  QColor myColor;
+
+  // Are we converting layer to grayscale?
+  switch ( mGrayscaleMode )
+  {
+    case GrayscaleLightness:
+    {
+      // Lightness mode, set saturation to zero
+      s = 0;
+
+      // Saturation changed, so update rgb values
+      myColor = QColor::fromHsl( h, s, l );
+      myColor.getRgb( &r, &g, &b );
+      return;
+    }
+    case GrayscaleLuminosity:
+    {
+      // Grayscale by weighted rgb components
+      int luminosity = 0.21 * r + 0.72 * g + 0.07 * b;
+      r = g = b = luminosity;
+
+      // RGB changed, so update HSL values
+      myColor = QColor::fromRgb( r, g, b );
+      myColor.getHsl( &h, &s, &l );
+      return;
+    }
+    case GrayscaleAverage:
+    {
+      // Grayscale by average of rgb components
+      int average = ( r + g + b ) / 3;
+      r = g = b = average;
+
+      // RGB changed, so update HSL values
+      myColor = QColor::fromRgb( r, g, b );
+      myColor.getHsl( &h, &s, &l );
+      return;
+    }
+    case GrayscaleOff:
+    {
+      // Not being made grayscale, do saturation change
+      if ( mSaturationScale < 1 )
+      {
+        // Lowering the saturation. Use a simple linear relationship
+        s = qMin(( int )( s * mSaturationScale ), 255 );
+      }
+      else
+      {
+        // Raising the saturation. Use a saturation curve to prevent
+        // clipping at maximum saturation with ugly results.
+        s = qMin(( int )( 255. * ( 1 - pow( 1 - ( s / 255. )  , mSaturationScale * 2 ) ) ), 255 );
+      }
+
+      // Saturation changed, so update rgb values
+      myColor = QColor::fromHsl( h, s, l );
+      myColor.getRgb( &r, &g, &b );
+      return;
+    }
+  }
+}
+
+void QgsHueSaturationFilter::setSaturation( int saturation )
+{
+  mSaturation = qBound( -100, saturation, 100 );
+
+  // Scale saturation value to [0-2], where 0 = desaturated
+  mSaturationScale = (( double ) mSaturation / 100 ) + 1;
+}
+
+void QgsHueSaturationFilter::setColorizeColor( QColor colorizeColor )
+{
+  mColorizeColor = colorizeColor;
+
+  // Get hue, saturation for colorized color
+  mColorizeH = mColorizeColor.hue();
+  mColorizeS = mColorizeColor.saturation();
 }
 
 void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentElem )
@@ -283,14 +356,14 @@ void QgsHueSaturationFilter::readXML( const QDomElement& filterElem )
     return;
   }
 
-  mSaturation = filterElem.attribute( "saturation", "0" ).toInt();
+  setSaturation( filterElem.attribute( "saturation", "0" ).toInt() );
   mGrayscaleMode = ( QgsHueSaturationFilter::GrayscaleMode )filterElem.attribute( "grayscaleMode", "0" ).toInt();
 
   mColorizeOn = ( bool )filterElem.attribute( "colorizeOn", "0" ).toInt();
   int mColorizeRed = filterElem.attribute( "colorizeRed", "255" ).toInt();
   int mColorizeGreen = filterElem.attribute( "colorizeGreen", "0" ).toInt();
   int mColorizeBlue = filterElem.attribute( "colorizeBlue", "0" ).toInt();
-  mColorizeColor = QColor::fromRgb( mColorizeRed, mColorizeGreen, mColorizeBlue );
+  setColorizeColor( QColor::fromRgb( mColorizeRed, mColorizeGreen, mColorizeBlue ) );
   mColorizeStrength = filterElem.attribute( "colorizeStrength", "100" ).toInt();
 
 }
