@@ -47,7 +47,7 @@ QColor QgsSymbolLayerV2Utils::decodeColor( QString str )
   QStringList lst = str.split( "," );
   if ( lst.count() < 3 )
   {
-    return QColor();
+    return QColor( str );
   }
   int red, green, blue, alpha;
   red = lst[0].toInt();
