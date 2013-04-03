@@ -47,6 +47,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
   setStyleMargin( QgsComposerLegendStyle::Subgroup, QgsComposerLegendStyle::Top, 2 );
   setStyleMargin( QgsComposerLegendStyle::Symbol, QgsComposerLegendStyle::Top, 2 );
   setStyleMargin( QgsComposerLegendStyle::SymbolLabel, QgsComposerLegendStyle::Top, 2 );
+  setStyleMargin( QgsComposerLegendStyle::SymbolLabel, QgsComposerLegendStyle::Left, 2 );
   rstyle( QgsComposerLegendStyle::Title ).rfont().setPointSizeF( 16.0 );
   rstyle( QgsComposerLegendStyle::Group ).rfont().setPointSizeF( 14.0 );
   rstyle( QgsComposerLegendStyle::Subgroup ).rfont().setPointSizeF( 12.0 );
