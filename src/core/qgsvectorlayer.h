@@ -879,6 +879,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     inline QgsGeometryCache* cache() { return mCache; }
 
+    /**
+     * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
+     * @note added in 2.0
+     */
+    virtual void onCacheImageDelete();
+
   signals:
 
     /** This signal is emited when selection was changed */
@@ -1107,6 +1113,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     // Feature counts for each renderer symbol
     QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
+
+    QgsRenderContext* mCurrentRendererContext;
 
     friend class QgsVectorLayerFeatureIterator;
 };

@@ -331,6 +331,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @note This method was added in QGIS 1.4 **/
     void setCacheImage( QImage * thepImage );
 
+    /**
+     * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
+     * @note added in 2.0
+     */
+    virtual void onCacheImageDelete() {};
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
