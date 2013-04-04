@@ -1249,6 +1249,7 @@ void QgsMapLayer::setCacheImage( QImage * thepImage )
 
   if ( mpCacheImage )
   {
+    onCacheImageDelete();
     delete mpCacheImage;
   }
   mpCacheImage = thepImage;

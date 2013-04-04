@@ -544,7 +544,8 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           delete mRenderContext.painter();
           mRenderContext.setPainter( mypContextPainter );
           //draw from cached image that we created further up
-          mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
+          if ( ml->cacheImage() )
+            mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
         }
       }
       disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
