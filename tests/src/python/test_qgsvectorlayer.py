@@ -29,7 +29,7 @@ from utilities import (unitTestDataPath,
                        TestCase,
                        unittest,
                        #expectedFailure
-                       # )
+                      )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 def createEmptyLayer():
