@@ -107,6 +107,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
     , mSymbolFeatureCounted( false )
+    , mCurrentRendererContext( 0 )
+
 {
   mActions = new QgsAttributeAction( this );
 
@@ -718,6 +720,8 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
   if ( !hasGeometryType() )
     return;
 
+  mCurrentRendererContext = &rendererContext;
+
   QSettings settings;
   bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
 
@@ -735,10 +739,6 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
       if ( !fet.geometry() )
         continue; // skip features without geometry
 
-      if ( rendererContext.renderingStopped() )
-      {
-        break;
-      }
 #ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
 #ifdef Q_WS_X11
       if ( !mEnableBackbuffer ) // do not handle events, as we're already inside a paint event
@@ -759,6 +759,11 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
       }
 #endif // Q_WS_X11
 #endif // Q_WS_MAC
+
+      if ( rendererContext.renderingStopped() )
+      {
+        break;
+      }
 
       bool sel = mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mEditBuffer && ( !vertexMarkerOnlyForSelection || sel ) );
@@ -797,6 +802,8 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
   }
 
   stopRendererV2( rendererContext, NULL );
+
+  mCurrentRendererContext = NULL;
 
 #ifndef Q_WS_MAC
   QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
@@ -4384,6 +4391,12 @@ QString QgsVectorLayer::metadata()
 
   myMetadata += "</body></html>";
   return myMetadata;
+}
+
+void QgsVectorLayer::onCacheImageDelete()
+{
+  if ( mCurrentRendererContext )
+    mCurrentRendererContext->setRenderingStopped( true );
 }
 
 QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
