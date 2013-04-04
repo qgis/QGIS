@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>378</width>
-    <height>301</height>
+    <height>327</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,58 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Size</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="mSizeUnitLabel">
+       <property name="text">
+        <string>Size unit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="mSizeUnitComboBox">
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Map unit</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Border color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Angle</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox"/>
+     </item>
+     <item row="1" column="1">
+      <widget class="QgsColorButton" name="btnChangeColorFill">
+       <property name="text">
+        <string>Change...</string>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="1">
       <widget class="QDoubleSpinBox" name="spinSize">
        <property name="decimals">
@@ -32,28 +84,34 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Border color</string>
+     <item row="7" column="1">
+      <widget class="QDoubleSpinBox" name="spinAngle">
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>5.000000000000000</double>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QgsColorButton" name="btnChangeColorBorder">
-       <property name="text">
-        <string>Change...</string>
-       </property>
+     <item row="9" column="1">
+      <widget class="QComboBox" name="mOffsetUnitComboBox">
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Map unit</string>
+        </property>
+       </item>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Size</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
+     <item row="8" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetX">
@@ -77,38 +135,11 @@
        </item>
       </layout>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="mSizeUnitLabel">
+     <item row="9" column="0">
+      <widget class="QLabel" name="mOffsetUnitLabel">
        <property name="text">
-        <string>Size unit</string>
+        <string>Offset unit</string>
        </property>
-      </widget>
-     </item>
-     <item row="5" column="1">
-      <widget class="QDoubleSpinBox" name="spinAngle">
-       <property name="decimals">
-        <number>2</number>
-       </property>
-       <property name="maximum">
-        <double>360.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>5.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="QComboBox" name="mSizeUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
       </widget>
      </item>
      <item row="1" column="0">
@@ -118,36 +149,29 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Angle</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QgsColorButton" name="btnChangeColorFill">
+     <item row="0" column="1">
+      <widget class="QgsColorButton" name="btnChangeColorBorder">
        <property name="text">
         <string>Change...</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="8" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>Offset X,Y</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="mOffsetUnitLabel">
+     <item row="5" column="0">
+      <widget class="QLabel" name="mOutlineWidthLabel">
        <property name="text">
-        <string>Offset unit</string>
+        <string>Outline width</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
-      <widget class="QComboBox" name="mOffsetUnitComboBox">
+     <item row="6" column="1">
+      <widget class="QComboBox" name="mOutlineWidthUnitComboBox">
        <item>
         <property name="text">
          <string>Millimeter</string>
@@ -158,6 +182,13 @@
          <string>Map unit</string>
         </property>
        </item>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="mOutlineWidthUnitLabel">
+       <property name="text">
+        <string>Outline width unit</string>
+       </property>
       </widget>
      </item>
     </layout>

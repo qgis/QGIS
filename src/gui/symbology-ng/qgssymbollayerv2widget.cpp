@@ -298,6 +298,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   btnChangeColorFill->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   spinSize->setValue( mLayer->size() );
   spinAngle->setValue( mLayer->angle() );
+  mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
 
   // without blocking signals the value gets changed because of slot setOffset()
   spinOffsetX->blockSignals( true );
@@ -313,6 +314,9 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mOffsetUnitComboBox->blockSignals( true );
   mOffsetUnitComboBox->setCurrentIndex( mLayer->offsetUnit() );
   mOffsetUnitComboBox->blockSignals( false );
+  mOutlineWidthUnitComboBox->blockSignals( true );
+  mOutlineWidthUnitComboBox->setCurrentIndex( mLayer->outlineWidthUnit() );
+  mOutlineWidthUnitComboBox->blockSignals( false );
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2Widget::symbolLayer()
@@ -356,6 +360,15 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setOffset()
   emit changed();
 }
 
+void QgsSimpleMarkerSymbolLayerV2Widget::on_mOutlineWidthSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setOutlineWidth( d );
+    emit changed();
+  }
+}
+
 void QgsSimpleMarkerSymbolLayerV2Widget::on_mSizeUnitComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
@@ -374,6 +387,15 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChan
   }
 }
 
+void QgsSimpleMarkerSymbolLayerV2Widget::on_mOutlineWidthUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOutlineWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
 void QgsSimpleMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
 {
   if ( !mLayer )
@@ -385,6 +407,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked
   dataDefinedProperties.insert( "name", qMakePair( tr( "Name" ), mLayer->dataDefinedPropertyString( "name" ) ) );
   dataDefinedProperties.insert( "color", qMakePair( tr( "Fill color" ), mLayer->dataDefinedPropertyString( "color" ) ) );
   dataDefinedProperties.insert( "color_border", qMakePair( tr( "Border color" ), mLayer->dataDefinedPropertyString( "color_border" ) ) );
+  dataDefinedProperties.insert( "outline_width", qMakePair( tr( "Outline width" ), mLayer->dataDefinedPropertyString( "outline_width" ) ) );
   dataDefinedProperties.insert( "size", qMakePair( tr( "Size" ), mLayer->dataDefinedPropertyString( "size" ) ) );
   dataDefinedProperties.insert( "angle", qMakePair( tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ) ) );
   dataDefinedProperties.insert( "offset", qMakePair( tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ) ) );
