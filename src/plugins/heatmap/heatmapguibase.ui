@@ -285,6 +285,26 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mInputVectorCombo</tabstop>
+  <tabstop>mOutputRasterLineEdit</tabstop>
+  <tabstop>mFormatCombo</tabstop>
+  <tabstop>mBufferLineEdit</tabstop>
+  <tabstop>mRadiusUnitCombo</tabstop>
+  <tabstop>advancedGroupBox</tabstop>
+  <tabstop>rowLineEdit</tabstop>
+  <tabstop>columnLineEdit</tabstop>
+  <tabstop>cellXLineEdit</tabstop>
+  <tabstop>cellYLineEdit</tabstop>
+  <tabstop>kernelShapeCombo</tabstop>
+  <tabstop>useRadius</tabstop>
+  <tabstop>radiusFieldCombo</tabstop>
+  <tabstop>radiusFieldUnitCombo</tabstop>
+  <tabstop>useWeight</tabstop>
+  <tabstop>weightFieldCombo</tabstop>
+  <tabstop>mDecayLineEdit</tabstop>
+  <tabstop>mButtonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
