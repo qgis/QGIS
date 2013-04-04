@@ -210,12 +210,12 @@ void QgsBench::render()
   mLogMap.insert( "iterations", mTimes.size() );
 
   // Calc stats: user, sys, total
-  double min[3], max[3];
-  double stdev[3] = {0.};
-  double maxdev[3] = {0.};
-  double avg[3] = {0.};
+  double min[4], max[4];
+  double stdev[4] = {0.};
+  double maxdev[4] = {0.};
+  double avg[4] = {0.};
 
-  for ( int t = 0; t < 3; t++ )
+  for ( int t = 0; t < 4; t++ )
   {
     for ( int i = 0; i < mTimes.size(); i++ )
     {
@@ -228,7 +228,7 @@ void QgsBench::render()
   }
 
   QMap<QString, QVariant> timesMap;
-  for ( int t = 0; t < 3; t++ )
+  for ( int t = 0; t < 4; t++ )
   {
     if ( mIterations > 1 )
     {
@@ -242,7 +242,7 @@ void QgsBench::render()
       stdev[t] = sqrt( stdev[t] / mTimes.size() );
     }
 
-    const char *pre[] = { "user", "sys", "total" } ;
+    const char *pre[] = { "user", "sys", "total", "wall" };
 
     QMap<QString, QVariant> map;
 
@@ -322,6 +322,7 @@ void QgsBench::start()
   getrusage( RUSAGE_SELF, &usage );
   mUserStart = usage.ru_utime.tv_sec + usage.ru_utime.tv_usec / 1000000.;
   mSysStart = usage.ru_stime.tv_sec + usage.ru_stime.tv_usec / 1000000.;
+  mWallTime.start();
 }
 
 void QgsBench::elapsed()
@@ -332,9 +333,10 @@ void QgsBench::elapsed()
   double userEnd = usage.ru_utime.tv_sec + usage.ru_utime.tv_usec / 1000000.;
   double sysEnd = usage.ru_stime.tv_sec + usage.ru_stime.tv_usec / 1000000.;
 
-  double *t = new double[3];
+  double *t = new double[4];
   t[0] = userEnd - mUserStart;
   t[1] = sysEnd - mSysStart;
   t[2] = t[0] + t[1];
+  t[3] = mWallTime.elapsed() / 1000.;
   mTimes.append( t );
 }
