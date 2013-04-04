@@ -333,6 +333,14 @@ QgsVectorFileWriter::QgsVectorFileWriter(
         ogrType = OFTReal;
         break;
 
+      case QVariant::Date:
+        ogrType = OFTDate;
+        break;
+
+      case QVariant::DateTime:
+        ogrType = OFTDateTime;
+        break;
+
       default:
         //assert(0 && "invalid variant type!");
         mErrorMessage = QObject::tr( "unsupported type for field %1" )
@@ -542,6 +550,23 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       case QVariant::LongLong:
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
+        break;
+      case QVariant::Date:
+        OGR_F_SetFieldDateTime( poFeature, ogrField,
+                                attrValue.toDate().year(),
+                                attrValue.toDate().month(),
+                                attrValue.toDate().day(),
+                                0, 0, 0, 0 );
+        break;
+      case QVariant::DateTime:
+        OGR_F_SetFieldDateTime( poFeature, ogrField,
+                                attrValue.toDateTime().date().year(),
+                                attrValue.toDateTime().date().month(),
+                                attrValue.toDateTime().date().day(),
+                                attrValue.toDateTime().time().hour(),
+                                attrValue.toDateTime().time().minute(),
+                                attrValue.toDateTime().time().second(),
+                                0 );
         break;
       case QVariant::Invalid:
         break;

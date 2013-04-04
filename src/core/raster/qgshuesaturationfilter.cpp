@@ -155,7 +155,7 @@ QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const 
   QColor myColor;
   int h, s, l;
   int r, g, b, alpha;
-  double alphaFactor;
+  double alphaFactor = 1.0;
 
   for ( size_t i = 0; i < ( size_t )width*height; i++ )
   {
