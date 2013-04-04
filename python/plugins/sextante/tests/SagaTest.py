@@ -1,7 +1,6 @@
 import sextante
 import unittest
 from sextante.tests.TestData import points, points2, polygons, polygons2, lines, union,\
-    table, polygonsGeoJson
     table, polygonsGeoJson, raster
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
