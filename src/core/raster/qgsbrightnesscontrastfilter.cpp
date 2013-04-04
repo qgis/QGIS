@@ -38,6 +38,7 @@ QgsRasterInterface * QgsBrightnessContrastFilter::clone() const
   QgsDebugMsg( "Entered" );
   QgsBrightnessContrastFilter * filter = new QgsBrightnessContrastFilter( 0 );
   filter->setBrightness( mBrightness );
+  filter->setContrast( mContrast );
   return filter;
 }
 
