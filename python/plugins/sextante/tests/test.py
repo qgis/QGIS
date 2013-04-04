@@ -10,6 +10,7 @@ Contact : ole.moller.nielsen@gmail.com
      (at your option) any later version.
 
 """
+import sextante
 
 __author__ = 'tim@linfiniti.com'
 __version__ = '0.3.0'
@@ -59,7 +60,7 @@ class bcolors:
 
 class SextantePluginTest(unittest.TestCase):
     """Test suite for Sextante QGis plugin"""
-        
+
     def test_createplugin(self):
         """Initialize plugin"""
         self.sextanteplugin = SextantePlugin(IFACE)
@@ -129,15 +130,15 @@ class SextanteProviderTestCase(unittest.TestCase):
 
     def setUp(self):
         SextanteConfig.setSettingValue(SextanteConfig.USE_THREADS, self.threaded)
-        print 
+        print
         print bcolors.INFO, self.msg, bcolors.ENDC,
         print "Parameters: ", self.alg.parameters,
         print "Outputs: ", [out for out in self.alg.outputs if not out.hidden],
         self.args = list(self.gen_test_parameters(self.alg, True))
         print ' => ', self.args, bcolors.WARNING,
-    
+
     def runalg_none(self):
-        result = Sextante.runalg(self.alg, *self.args)
+        result = sextante.runalg(self.alg, *self.args)
         print bcolors.ENDC
         self.assertIsNotNone(result, self.msg)
         if not result:
@@ -159,7 +160,7 @@ class SextanteProviderTestCase(unittest.TestCase):
 
     def tearDown(self):
         print bcolors.ENDC
-        
+
 
 def algSuite(dialog = "none", threaded = True, unthreaded = True, provider = None, algName = None):
     s = unittest.TestSuite()
@@ -200,13 +201,13 @@ if __name__ == '__main__':
     parser.add_argument('-u', dest='uOnly', action='store_true', help='Enable unthreaded execution only.')
     parser.add_argument('-r', dest='raster', help='Use specified raster as input.', default='data/raster')
     parser.add_argument('-v', dest='vector', help='Use specified vectro as input.', default='data/vector')
-    
+
     args = parser.parse_args()
 
     threaded = not args.uOnly or args.tOnly
     unthreaded = not args.tOnly or args.uOnly
-    
-    
+
+
     try:
         loadSuite = unittest.TestLoader().loadTestsFromTestCase(SextantePluginTest)
         unittest.TextTestRunner(verbosity=2).run(loadSuite)

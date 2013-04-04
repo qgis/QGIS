@@ -19,6 +19,7 @@
 #define QGSRECT_H
 
 #include <iosfwd>
+#include <QDomDocument>
 
 class QString;
 class QRectF;
@@ -80,8 +81,6 @@ class CORE_EXPORT QgsRectangle
     QgsPoint center() const;
     //! Scale the rectangle around its center point
     void scale( double scaleFactor, const QgsPoint *c = 0 );
-    //! Deprecated in 1.9, use scale instead
-    Q_DECL_DEPRECATED void expand( double scaleFactor, const QgsPoint *c = 0 ) { return scale( scaleFactor * 2.0, c ); }
     //! return the intersection with the given rectangle
     QgsRectangle intersect( const QgsRectangle *rect ) const;
     //! returns true when rectangle intersects with other rectangle

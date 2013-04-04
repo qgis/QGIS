@@ -24,6 +24,7 @@
 #include "qgsproviderregistry.h"
 
 #include "qgsbrowsermodel.h"
+#include "qgsproject.h"
 
 #include <QSettings>
 
@@ -40,8 +41,18 @@ QgsBrowserModel::~QgsBrowserModel()
 
 void QgsBrowserModel::addRootItems()
 {
-  // give the home directory a prominent first place
-  QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
+  QgsDirectoryItem *item;
+
+  QString home = QgsProject::instance()->homePath();
+
+  if ( !home.isNull() )
+  {
+    item = new QgsDirectoryItem( NULL, tr( "Project home" ), home );
+    mRootItems << item;
+  }
+
+  // give the home directory a prominent second place
+  item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
@@ -398,4 +409,20 @@ QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
   QgsDataItem *d = reinterpret_cast<QgsDataItem*>( v );
   Q_ASSERT( !v || d );
   return d;
+}
+
+bool QgsBrowserModel::canFetchMore( const QModelIndex & parent ) const
+{
+  QgsDataItem* item = dataItem( parent );
+  // if ( item )
+  //   QgsDebugMsg( QString( "path = %1 canFetchMore = %2" ).arg( item->path() ).arg( item && ! item->isPopulated() ) );
+  return ( item && ! item->isPopulated() );
+}
+
+void QgsBrowserModel::fetchMore( const QModelIndex & parent )
+{
+  QgsDataItem* item = dataItem( parent );
+  if ( item )
+    item->populate();
+  QgsDebugMsg( "path = " + item->path() );
 }

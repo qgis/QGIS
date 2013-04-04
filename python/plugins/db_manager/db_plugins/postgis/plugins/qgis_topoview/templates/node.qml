@@ -57,7 +57,7 @@
     <property key="labeling/displayAll" value="false"/>
     <property key="labeling/dist" value="0"/>
     <property key="labeling/distInMapUnits" value="false"/>
-    <property key="labeling/enabled" value="true"/>
+    <property key="labeling/enabled" value="false"/>
     <property key="labeling/fieldName" value="node_id"/>
     <property key="labeling/fontCapitals" value="0"/>
     <property key="labeling/fontFamily" value="Sans"/>
@@ -76,6 +76,8 @@
     <property key="labeling/mergeLines" value="false"/>
     <property key="labeling/minFeatureSize" value="0"/>
     <property key="labeling/multiLineLabels" value="false"/>
+    <property key="labeling/multilineAlign" value="0"/>
+    <property key="labeling/multilineHeight" value="1"/>
     <property key="labeling/namedStyle" value=""/>
     <property key="labeling/obstacle" value="true"/>
     <property key="labeling/placement" value="1"/>
@@ -90,12 +92,14 @@
     <property key="labeling/textColorG" value="41"/>
     <property key="labeling/textColorR" value="14"/>
     <property key="labeling/textTransp" value="0"/>
+    <property key="labeling/upsidedownLabels" value="0"/>
     <property key="labeling/wrapChar" value=""/>
     <property key="labeling/xOffset" value="0"/>
     <property key="labeling/xQuadOffset" value="0"/>
     <property key="labeling/yOffset" value="0"/>
     <property key="labeling/yQuadOffset" value="0"/>
   </customproperties>
+  <editorlayout>generatedlayout</editorlayout>
   <displayfield>node_id</displayfield>
   <label>0</label>
   <labelattributes>
@@ -125,5 +129,7 @@
   <editform>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</editform>
   <editforminit></editforminit>
   <annotationform>../../../../../../../../../src/qgis/plugins/db_manager/db_manager/db_plugins/postgis/plugins/qgis_topoview</annotationform>
+  <excludeAttributesWMS/>
+  <excludeAttributesWFS/>
   <attributeactions/>
 </qgis>

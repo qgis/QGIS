@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.gui.ParametersDialog import ParametersDialog
+from sextante.core.QGisLayers import QGisLayers
+from sextante.modeler.Providers import Providers
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -39,7 +42,7 @@ class EditRScriptDialog(QtGui.QDialog):
         else:
             self.filename = None
         QtGui.QDialog.__init__(self)
-        self.setModal(True)
+        self.setModal(False)
         self.setupUi()
         self.update = False
         self.help = None
@@ -62,9 +65,13 @@ class EditRScriptDialog(QtGui.QDialog):
         self.saveButton = QtGui.QPushButton()
         self.saveButton.setText("Save")
         self.buttonBox.addButton(self.saveButton, QtGui.QDialogButtonBox.ActionRole)
+        self.runButton = QtGui.QPushButton()
+        self.runButton.setText("Run")
+        self.buttonBox.addButton(self.runButton, QtGui.QDialogButtonBox.ActionRole)
         self.closeButton = QtGui.QPushButton()
         self.closeButton.setText("Close")
         self.buttonBox.addButton(self.closeButton, QtGui.QDialogButtonBox.ActionRole)
+        QObject.connect(self.runButton, QtCore.SIGNAL("clicked()"), self.runAlgorithm)
         QObject.connect(self.saveButton, QtCore.SIGNAL("clicked()"), self.saveAlgorithm)
         QObject.connect(self.closeButton, QtCore.SIGNAL("clicked()"), self.cancelPressed)
         layout.addWidget(self.text)
@@ -86,11 +93,31 @@ class EditRScriptDialog(QtGui.QDialog):
             self.help = dlg.descriptions
 
 
+    def runAlgorithm(self):
+        alg = RAlgorithm(None, unicode(self.text.toPlainText()))
+        alg.provider = Providers.providers['r']
+        dlg = alg.getCustomParametersDialog()
+        if not dlg:
+            dlg = ParametersDialog(alg)
+        canvas = QGisLayers.iface.mapCanvas()
+        prevMapTool = canvas.mapTool()
+        dlg.show()
+        dlg.exec_()
+        if canvas.mapTool()!=prevMapTool:
+            try:
+                canvas.mapTool().reset()
+            except:
+                pass
+            canvas.setMapTool(prevMapTool)
+
+
     def saveAlgorithm(self):
         if self.filename is None:
-            self.filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", RUtils.RScriptsFolder(), "SEXTANTE R script (*.rsx)")
+            self.filename = str(QtGui.QFileDialog.getSaveFileName(self, "Save Script", RUtils.RScriptsFolder(), "SEXTANTE R script (*.rsx)"))
 
         if self.filename:
+            if not self.filename.endswith(".rsx"):
+                self.filename += ".rsx"
             text = str(self.text.toPlainText())
             if self.alg is not None:
                 self.alg.script = text

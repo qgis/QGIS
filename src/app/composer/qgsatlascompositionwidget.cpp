@@ -39,6 +39,8 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsCompos
       mAtlasCoverageLayerComboBox->insertItem( idx++, it.value()->name(), /* userdata */ qVariantFromValue(( void* )it.value() ) );
     }
   }
+  // update sort columns
+  fillSortColumns();
 
   // Connect to addition / removal of layers
   QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
@@ -57,6 +59,11 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsCompos
   {
     mComposerMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), qVariantFromValue(( void* )*mapItemIt ) );
   }
+
+  // Sort direction
+  mAtlasSortFeatureDirectionButton->setEnabled( false );
+
+  mAtlasSortFeatureKeyComboBox->setEnabled( false );
 
   // Connect to addition / removal of maps
   connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( onComposerMapAdded( QgsComposerMap* ) ) );
@@ -78,12 +85,22 @@ void QgsAtlasCompositionWidget::on_mUseAtlasCheckBox_stateChanged( int state )
   if ( state == Qt::Checked )
   {
     atlasMap->setEnabled( true );
-    mAtlasFrame->setEnabled( true );
+    mConfigurationGroup->setEnabled( true );
+    mVisibilityGroup->setEnabled( true );
+    mSortingGroup->setEnabled( true );
+    mFilteringGroup->setEnabled( true );
+    mScalingGroup->setEnabled( true );
+    mOutputGroup->setEnabled( true );
   }
   else
   {
     atlasMap->setEnabled( false );
-    mAtlasFrame->setEnabled( false );
+    mConfigurationGroup->setEnabled( false );
+    mVisibilityGroup->setEnabled( false );
+    mSortingGroup->setEnabled( false );
+    mFilteringGroup->setEnabled( false );
+    mScalingGroup->setEnabled( false );
+    mOutputGroup->setEnabled( false );
   }
 }
 
@@ -159,11 +176,17 @@ void QgsAtlasCompositionWidget::on_mAtlasCoverageLayerComboBox_currentIndexChang
   if ( index == -1 )
   {
     atlasMap->setCoverageLayer( 0 );
+
+    // clean up the sorting columns
+    mAtlasSortFeatureKeyComboBox->clear();
   }
   else
   {
     QgsVectorLayer* layer = reinterpret_cast<QgsVectorLayer*>( mAtlasCoverageLayerComboBox->itemData( index ).value<void*>() );
     atlasMap->setCoverageLayer( layer );
+
+    // update sorting columns
+    fillSortColumns();
   }
 }
 
@@ -254,7 +277,137 @@ void QgsAtlasCompositionWidget::on_mAtlasSingleFileCheckBox_stateChanged( int st
   {
     return;
   }
+  if ( state == Qt::Checked )
+  {
+    mAtlasFilenamePatternEdit->setEnabled( false );
+    mAtlasFilenameExpressionButton->setEnabled( false );
+  }
+  else
+  {
+    mAtlasFilenamePatternEdit->setEnabled( true );
+    mAtlasFilenameExpressionButton->setEnabled( true );
+  }
   atlasMap->setSingleFile( state == Qt::Checked );
+}
+
+void QgsAtlasCompositionWidget::on_mAtlasSortFeatureCheckBox_stateChanged( int state )
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap )
+  {
+    return;
+  }
+
+  if ( state == Qt::Checked )
+  {
+    mAtlasSortFeatureDirectionButton->setEnabled( true );
+    mAtlasSortFeatureKeyComboBox->setEnabled( true );
+  }
+  else
+  {
+    mAtlasSortFeatureDirectionButton->setEnabled( false );
+    mAtlasSortFeatureKeyComboBox->setEnabled( false );
+  }
+  atlasMap->setSortFeatures( state == Qt::Checked );
+}
+
+void QgsAtlasCompositionWidget::on_mAtlasSortFeatureKeyComboBox_currentIndexChanged( int index )
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap )
+  {
+    return;
+  }
+
+  if ( index != -1 )
+  {
+    atlasMap->setSortKeyAttributeIndex( index );
+  }
+}
+
+void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int state )
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap )
+  {
+    return;
+  }
+
+  if ( state == Qt::Checked )
+  {
+    mAtlasFeatureFilterEdit->setEnabled( true );
+    mAtlasFeatureFilterButton->setEnabled( true );
+  }
+  else
+  {
+    mAtlasFeatureFilterEdit->setEnabled( false );
+    mAtlasFeatureFilterButton->setEnabled( false );
+  }
+  atlasMap->setFilterFeatures( state == Qt::Checked );
+}
+
+void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_textChanged( const QString& text )
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap )
+  {
+    return;
+  }
+
+  atlasMap->setFeatureFilter( text );
+}
+
+void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap || !atlasMap->coverageLayer() )
+  {
+    return;
+  }
+
+  QgsExpressionBuilderDialog exprDlg( atlasMap->coverageLayer(), mAtlasFeatureFilterEdit->text(), this );
+  exprDlg.setWindowTitle( tr( "Expression based filter" ) );
+  if ( exprDlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  exprDlg.expressionText();
+    if ( !expression.isEmpty() )
+    {
+      // will emit a textChanged signal
+      mAtlasFeatureFilterEdit->setText( expression );
+    }
+  }
+}
+
+void QgsAtlasCompositionWidget::on_mAtlasSortFeatureDirectionButton_clicked()
+{
+  Qt::ArrowType at = mAtlasSortFeatureDirectionButton->arrowType();
+  at = ( at == Qt::UpArrow ) ? Qt::DownArrow : Qt::UpArrow;
+  mAtlasSortFeatureDirectionButton->setArrowType( at );
+
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap )
+  {
+    return;
+  }
+
+  atlasMap->setSortAscending( at == Qt::UpArrow );
+}
+
+void QgsAtlasCompositionWidget::fillSortColumns()
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap || !atlasMap->coverageLayer() )
+  {
+    return;
+  }
+
+  mAtlasSortFeatureKeyComboBox->clear();
+  // Get fields of the selected coverage layer
+  const QgsFields& fields = atlasMap->coverageLayer()->pendingFields();
+  for ( int i = 0; i < fields.count(); ++i )
+  {
+    mAtlasSortFeatureKeyComboBox->insertItem( i, fields.at( i ).name() );
+  }
 }
 
 void QgsAtlasCompositionWidget::updateGuiElements()
@@ -285,10 +438,20 @@ void QgsAtlasCompositionWidget::updateGuiElements()
   mAtlasFixedScaleCheckBox->setCheckState( atlasMap->fixedScale() ? Qt::Checked : Qt::Unchecked );
   mAtlasHideCoverageCheckBox->setCheckState( atlasMap->hideCoverage() ? Qt::Checked : Qt::Unchecked );
   mAtlasSingleFileCheckBox->setCheckState( atlasMap->singleFile() ? Qt::Checked : Qt::Unchecked );
+  mAtlasSortFeatureCheckBox->setCheckState( atlasMap->sortFeatures() ? Qt::Checked : Qt::Unchecked );
+  mAtlasSortFeatureKeyComboBox->setCurrentIndex( atlasMap->sortKeyAttributeIndex() );
+  mAtlasSortFeatureDirectionButton->setArrowType( atlasMap->sortAscending() ? Qt::UpArrow : Qt::DownArrow );
+  mAtlasFeatureFilterEdit->setText( atlasMap->featureFilter() );
+  mAtlasFeatureFilterCheckBox->setCheckState( atlasMap->filterFeatures() ? Qt::Checked : Qt::Unchecked );
 }
 
 void QgsAtlasCompositionWidget::blockAllSignals( bool b )
 {
   mUseAtlasCheckBox->blockSignals( b );
-  mAtlasFrame->blockSignals( b );
+  mConfigurationGroup->blockSignals( b );
+  mVisibilityGroup->blockSignals( b );
+  mSortingGroup->blockSignals( b );
+  mFilteringGroup->blockSignals( b );
+  mScalingGroup->blockSignals( b );
+  mOutputGroup->blockSignals( b );
 }

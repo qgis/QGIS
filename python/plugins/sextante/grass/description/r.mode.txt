@@ -1,6 +1,6 @@
 r.mode
-r.mode - Finds the mode of values in a cover map within areas assigned the same category value in a user-specified base map.
+r.mode - Finds the mode of values in a cover layer within areas assigned the same category value in a user-specified base layer.
 Raster (r.*)
-ParameterRaster|base|Base map to be reclassified|False
-ParameterRaster|cover|Name of cover raster map|False
-OutputRaster|output|Name for output raster map
+ParameterRaster|base|Base layer to be reclassified|False
+ParameterRaster|cover|Categories layer|False
+OutputRaster|output|Output layer

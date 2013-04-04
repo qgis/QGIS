@@ -1,7 +1,0 @@
-Table Calculator (Shapes)
-table_calculus
-ParameterString|FORMULA|Formula|
-ParameterString|NAME|Field Name|
-ParameterVector|TABLE|Shapes|-1|False
-ParameterTableField|FIELD|Field|TABLE
-OutputVector|RESULT|Result

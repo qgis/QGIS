@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import os
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -73,7 +74,13 @@ class ParameterRaster(ParameterDataObject):
                 if layer.name() == self.value:
                     self.value = unicode(layer.dataProvider().dataSourceUri())
                     return True
-        return True
+            return os.path.exists(self.value)
+
+    def getFileFilter(self):
+        exts = QGisLayers.getSupportedOutputRasterLayerExtensions()
+        for i in range(len(exts)):
+            exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
+        return ";;".join(exts)
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

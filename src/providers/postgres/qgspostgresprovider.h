@@ -23,12 +23,12 @@
 #include "qgsvectorlayerimport.h"
 #include "qgspostgresconn.h"
 
-#include <QVector>
-#include <QQueue>
 
 class QgsFeature;
 class QgsField;
 class QgsGeometry;
+
+class QgsPostgresFeatureIterator;
 
 #include "qgsdatasourceuri.h"
 
@@ -49,7 +49,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
-      const QgsFieldMap &fields,
+      const QgsFields &fields,
       QGis::WkbType wkbType,
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
@@ -81,37 +81,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     virtual QgsCoordinateReferenceSystem crs();
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature& feature );
-
-    /**
-      * Gets the feature at the given feature ID.
-      * @param featureId id of the feature
-      * @param feature feature which will receive the data
-      * @param fetchGeoemtry if true, geometry will be fetched from the provider
-      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-      * @return True when feature was found, otherwise false
-      */
-    virtual bool featureAtId( QgsFeatureId featureId,
-                              QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QgsAttributeList fetchAttributes = QgsAttributeList() );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -133,11 +103,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Get the number of features in the layer
      */
     long featureCount() const;
-
-    /**
-     * Get the number of fields in the layer
-     */
-    uint fieldCount() const;
 
     /**
      * Return a string representation of the endian-ness for the layer
@@ -166,18 +131,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Get the field information for the layer
      * @return vector of QgsField objects
      */
-    const QgsFieldMap &fields() const;
+    const QgsFields &fields() const;
 
     /**
      * Return a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
     QString dataComment() const;
-
-    /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
-     * pointer, setting it to 0 and reloading the field list
-     */
-    void rewind();
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
@@ -204,6 +164,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool isValid();
 
     QgsAttributeList attributeIndexes();
+
+    QgsAttributeList pkAttributeIndexes() { return mPrimaryKeyAttrs; }
 
     /**Returns the default value for field specified by @c fieldName */
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
@@ -335,7 +297,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                      const QgsAttributeList &fetchAttributes );
 
     QString geomParam( int offset ) const;
-    QString pkParamWhereClause( int offset ) const;
+    /** Get parametrized primary key clause
+     * @param offset specifies offset to use for the pk value parameter
+     * @param alias specifies an optional alias given to the subject table
+     */
+    QString pkParamWhereClause( int offset, const char* alias = 0 ) const;
     QString whereClause( QgsFeatureId featureId ) const;
 
     bool hasSufficientPermsAndCapabilities();
@@ -362,10 +328,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     bool parseDomainCheckConstraint( QStringList& enumValues, const QString& attributeName ) const;
 
-    bool mFetching; // true if a cursor was declared
-    int mFetched; // number of retrieved features
-    QVector<QgsFeature> mFeatures;
-    QgsFieldMap mAttributeFields;
+    QgsFields mAttributeFields;
     QString mDataComment;
 
     //! Data source URI struct for this layer
@@ -423,15 +386,23 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString mDetectedSrid;            //! Spatial reference detected in the database
     QString mRequestedSrid;           //! Spatial reference requested in the uri
 
-    /**
-     * Feature queue that GetNextFeature will retrieve from
-     * before the next fetch from PostgreSQL
-     */
-    QQueue<QgsFeature> mFeatureQueue;
-
-    int mFeatureQueueSize;  //! Maximal size of the feature queue
-
     bool getGeometryDetails();
+
+    //! @{ Only used with TopoGeometry layers
+
+    struct TopoLayerInfo
+    {
+      QString topologyName;
+      long    layerId;
+    };
+
+    TopoLayerInfo mTopoLayerInfo;
+
+    bool getTopoLayerInfo();
+
+    void dropOrphanedTopoGeoms();
+
+    //! @}
 
     /* Use estimated metadata. Uses fast table counts, geometry type and extent determination */
     bool mUseEstimatedMetadata;
@@ -493,12 +464,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
 
     static int sProviderIds;
-    static const int sFeatureQueueSize;
 
     QMap<QVariant, QgsFeatureId> mKeyToFid;  // map key values to feature id
     QMap<QgsFeatureId, QVariant> mFidToKey;  // map feature back to fea
     QgsFeatureId mFidCounter;       // next feature id if map is used
     QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
+
+    friend class QgsPostgresFeatureIterator;
+    QgsPostgresFeatureIterator* mActiveIterator; //!< pointer to currently active iterator (0 if none)
 };
 
 #endif

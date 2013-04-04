@@ -165,8 +165,8 @@ expression:
             exp_error("Function is not known");
             YYERROR;
           }
-          if ( QgsExpression::BuiltinFunctions()[fnIndex].mParams != -1
-               && QgsExpression::BuiltinFunctions()[fnIndex].mParams != $3->count() )
+          if ( QgsExpression::Functions()[fnIndex]->params() != -1
+               && QgsExpression::Functions()[fnIndex]->params() != $3->count() )
           {
             exp_error("Function is called with wrong number of arguments");
             YYERROR;

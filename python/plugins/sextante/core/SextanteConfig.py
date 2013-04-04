@@ -29,6 +29,7 @@ from PyQt4 import QtGui
 
 class SextanteConfig():
 
+    USE_CATEGORIES = "USE_CATEGORIES"
     TABLE_LIKE_PARAM_PANEL = "TABLE_LIKE_PARAM_PANEL"
     OUTPUT_FOLDER = "OUTPUT_FOLDER"
     RASTER_STYLE = "RASTER_STYLE"
@@ -42,6 +43,10 @@ class SextanteConfig():
     USE_THREADS = "USE_THREADS"
     SHOW_DEBUG_IN_DIALOG = "SHOW_DEBUG_IN_DIALOG"
     RECENT_ALGORITHMS = "RECENT_ALGORITHMS"
+    PRE_EXECUTION_SCRIPT = "PRE_EXECUTION_SCRIPT"
+    POST_EXECUTION_SCRIPT = "POST_EXECUTION_SCRIPT"
+    SHOW_CRS_DEF = "SHOW_CRS_DEF"
+    WARN_UNMATCHING_CRS = "WARN_UNMATCHING_CRS"
 
     settings = {}
     settingIcons= {}
@@ -53,17 +58,23 @@ class SextanteConfig():
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_THREADS, "Run algorithms in a new thread (still unstable)", False))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_DEBUG_IN_DIALOG, "Show debug information and commands executed in the execution dialog's Log panel (threaded execution only)", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.KEEP_DIALOG_OPEN, "Keep dialog open after running an algorithm", False))
-        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features in external applications", True))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.TABLE_LIKE_PARAM_PANEL, "Show table-like parameter panels", False))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_FILENAME_AS_LAYER_NAME, "Use filename as layer name", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_RECENT_ALGORITHMS, "Show recently executed algorithms", True))
-        SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER,
-                                           "Output folder", SextanteUtils.tempFolder()))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_CATEGORIES, "Use categories to classify algorithms, instead of providers", False))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.OUTPUT_FOLDER, "Output folder", SextanteUtils.tempFolder()))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_CRS_DEF, "Show layer CRS definition in selection boxes", True))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.WARN_UNMATCHING_CRS, "Warn before executing if layer CRS's do not match", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.RASTER_STYLE,"Style for raster layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POINT_STYLE,"Style for point layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_LINE_STYLE,"Style for line layers",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POLYGON_STYLE,"Style for polygon layers",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.VECTOR_POLYGON_STYLE,"Style for polygon layers",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.PRE_EXECUTION_SCRIPT,"Pre-execution script",""))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.POST_EXECUTION_SCRIPT,"Post-execution script",""))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.RECENT_ALGORITHMS,"Recent algs","", hidden=True))
+
 
     @staticmethod
     def setGroupIcon(group, icon):

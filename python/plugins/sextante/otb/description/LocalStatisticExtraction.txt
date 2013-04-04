@@ -1,0 +1,9 @@
+Local Statistic Extraction
+otbcli_LocalStatisticExtraction
+Local Statistic Extraction
+Feature Extraction
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image
+ParameterNumber|-channel|Selected Channel|None|None|1
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterNumber|-radius|Neighborhood radius|None|None|3

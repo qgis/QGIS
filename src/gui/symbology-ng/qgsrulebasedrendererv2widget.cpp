@@ -115,7 +115,7 @@ void QgsRuleBasedRendererV2Widget::addRule()
   QgsSymbolV2* s = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRuleBasedRendererV2::Rule* newrule = new QgsRuleBasedRendererV2::Rule( s );
 
-  QgsRendererRulePropsDialog dlg( newrule, mLayer, mStyle );
+  QgsRendererRulePropsDialog dlg( newrule, mLayer, mStyle, this );
   if ( dlg.exec() )
   {
     QgsRuleBasedRendererV2::Rule* current = currentRule();
@@ -159,7 +159,7 @@ void QgsRuleBasedRendererV2Widget::editRule( const QModelIndex& index )
     return;
   QgsRuleBasedRendererV2::Rule* rule = mModel->ruleForIndex( index );
 
-  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle );
+  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle, this );
   if ( dlg.exec() )
   {
     // model should know about the change and emit dataChanged signal for the view
@@ -419,7 +419,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
     countMap[rule].duplicateCount = 0;
   }
 
-  mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
 
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 ); // ignore scale
@@ -431,7 +431,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   int featuresCounted = 0;
 
   QgsFeature f;
-  while ( mLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     QgsRuleBasedRendererV2::RuleList featureRuleList = mRenderer->rootRule()->rulesForFeature( f );
 
@@ -478,10 +478,13 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 
 ///////////
 
-QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style )
-    : mRule( rule ), mLayer( layer ), mSymbolSelector( NULL ), mSymbol( NULL )
+QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent )
+    : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( NULL ), mSymbol( NULL )
 {
   setupUi( this );
+#ifdef Q_WS_MAC
+  setWindowModality( Qt::WindowModal );
+#endif
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
@@ -541,7 +544,7 @@ void QgsRendererRulePropsDialog::testFilter()
     return;
   }
 
-  const QgsFieldMap& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->pendingFields();
 
   if ( !filter.prepare( fields ) )
   {
@@ -551,11 +554,11 @@ void QgsRendererRulePropsDialog::testFilter()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  mLayer->select( fields.keys(), QgsRectangle(), false );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
 
   int count = 0;
   QgsFeature f;
-  while ( mLayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     QVariant value = filter.evaluate( &f );
     if ( value.toInt() != 0 )

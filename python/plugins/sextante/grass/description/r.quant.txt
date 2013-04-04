@@ -1,8 +1,8 @@
 r.quant
 r.quant - Produces the quantization file for a floating-point map.
 Raster (r.*)
-ParameterMultipleInput|input|Raster map(s) to be quantized|1.0|False
-ParameterRaster|basemap|Base map to take quant rules from|False
+ParameterMultipleInput|input|Raster layer(s) to be quantized|1.0|False
+ParameterRaster|basemap|Base layer to take quant rules from|False
 ParameterRange|fprange|Floating point range: dmin,dmax|0,1
 ParameterRange|range|Integer range: min,max|1,255
 ParameterBoolean|-t|Truncate floating point data|False

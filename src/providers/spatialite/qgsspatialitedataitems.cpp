@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
+#include "qgsmessageoutput.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -200,7 +201,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     if ( srcLayer->isValid() )
     {
-      destUri.setDataSource( QString(), u.name, "geomm" );
+      destUri.setDataSource( QString(), u.name, "geom" );
       QgsDebugMsg( "URI " + destUri.uri() );
       QgsVectorLayerImport::ImportError err;
       QString importError;
@@ -226,14 +227,16 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   if ( hasError )
   {
-    QMessageBox::warning( 0, tr( "Import to SpatiaLite database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ) );
+    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    output->setTitle( tr( "Import to SpatiaLite database" ) );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ), QgsMessageOutput::MessageText );
+    output->showMessage();
   }
   else
   {
     QMessageBox::information( 0, tr( "Import to SpatiaLite database" ), tr( "Import was successful." ) );
+    refresh();
   }
-
-  refresh();
 
   return true;
 }

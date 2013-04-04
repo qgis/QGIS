@@ -37,6 +37,7 @@ class QTcpSocket;
 class QValidator;
 
 class QgisAppInterface;
+class QgisAppStyleSheet;
 class QgsAnnotationItem;
 class QgsClipboard;
 class QgsComposer;
@@ -86,6 +87,7 @@ class QgsTileScaleWidget;
 
 #include "qgsconfig.h"
 #include "qgsfeature.h"
+#include "qgsfeaturestore.h"
 #include "qgspoint.h"
 #include "qgsrasterlayer.h"
 #include "qgssnappingdialog.h"
@@ -175,13 +177,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setTheme( QString themeName = "default" );
 
     void setIconSizes( int size );
-    void setFontSize( int fontSize );
-    //! Set app font family
-    //! @note added in 2.0
-    void setFontFamily( const QString& fontFamily );
-    //! Set app stylesheet from settings
-    //! @note added in 2.0
-    void setAppStyleSheet();
+
+    //! Get stylesheet builder object for app and print composers
+    //! @note added in 1.9
+    QgisAppStyleSheet* styleSheetBuilder();
 
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
@@ -215,10 +214,21 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**Returns the print composers*/
     QSet<QgsComposer*> printComposers() const {return mPrintComposers;}
+    /** Get a unique title from user for new and duplicate composers
+     * @param acceptEmpty whether to accept empty titles (one will be generated)
+     * @param currentTitle base name for initial title choice
+     * @return QString::null if user cancels input dialog
+     * @note added in 1.9
+     */
+    QString uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const QString& currentTitle = QString( "" ) );
     /**Creates a new composer and returns a pointer to it*/
-    QgsComposer* createNewComposer();
+    QgsComposer* createNewComposer( QString title = QString( "" ) );
     /**Deletes a composer and removes entry from Set*/
     void deleteComposer( QgsComposer* c );
+    /** Duplicates a composer and adds it to Set
+     * @note added in 1.9
+     */
+    QgsComposer* duplicateComposer( QgsComposer* currentComposer, QString title = QString( "" ) );
 
     /** overloaded function used to sort menu entries alphabetically */
     QMenu* createPopupMenu();
@@ -231,6 +241,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSaveProjectAs() { return mActionSaveProjectAs; }
     QAction *actionSaveMapAsImage() { return mActionSaveMapAsImage; }
     QAction *actionProjectProperties() { return mActionProjectProperties; }
+    QAction *actionShowComposerManager() { return mActionShowComposerManager; }
     QAction *actionNewPrintComposer() { return mActionNewPrintComposer; }
     QAction *actionExit() { return mActionExit; }
 
@@ -240,6 +251,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionAddFeature() { return mActionAddFeature; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
+    QAction *actionRotateFeature() { return mActionRotateFeature;}
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddPart() { return mActionAddPart; }
@@ -280,17 +292,35 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
-    QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
+    QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; }
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
+    /** @note added in 1.9 */
+    QAction *actionCopyLayerStyle() { return mActionCopyStyle; }
+    /** @note added in 1.9 */
+    QAction *actionPasteLayerStyle() { return mActionPasteStyle; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
+    /** @note added in 1.9 */
+    QAction *actionSaveActiveLayerEdits() { return mActionSaveLayerEdits; }
+    /** @note added in 1.9 */
+    QAction *actionAllEdits() { return mActionAllEdits; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
+    /** @note added in 1.9 */
+    QAction *actionSaveAllEdits() { return mActionSaveAllEdits; }
+    /** @note added in 1.9 */
+    QAction *actionRollbackEdits() { return mActionRollbackEdits; }
+    /** @note added in 1.9 */
+    QAction *actionRollbackAllEdits() { return mActionRollbackAllEdits; }
+    /** @note added in 1.9 */
+    QAction *actionCancelEdits() { return mActionCancelEdits; }
+    /** @note added in 1.9 */
+    QAction *actionCancelAllEdits() { return mActionCancelAllEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
-    /** @note added in 2.0 */
+    /** @note added in 1.9 */
     QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
@@ -332,6 +362,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
+    //! @note added in 2.0
+    QMenu *newLayerMenu() { return mNewLayerMenu; }
     QMenu *settingsMenu() { return mSettingsMenu; }
     QMenu *pluginMenu() { return mPluginMenu; }
     QMenu *databaseMenu() { return mDatabaseMenu; }
@@ -373,6 +405,16 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! returns pointer to map legend
     QgsLegend *legend();
 
+    /** Return vector layers in edit mode
+     * @param modified whether to return only layers that have been modified
+     * @returns list of layers in legend order, or empty list
+     * @note added in 1.9 */
+    QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
+
+    /** Get timeout for timed messages: default of 5 seconds
+     * @note added in 1.9 */
+    int messageTimeout();
+
 #ifdef Q_OS_WIN
     //! ugly hack
     void skipNextContextMenuEvent();
@@ -382,7 +424,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! @note added in 1.6
     void completeInitialization();
 
-    void emitCustomSrsValidation( QgsCoordinateReferenceSystem *crs );
+    void emitCustomSrsValidation( QgsCoordinateReferenceSystem &crs );
 
     QList<QgsDecorationItem*> decorationItems() { return mDecorationItems; }
     void addDecorationItem( QgsDecorationItem* item ) { mDecorationItems.append( item ); }
@@ -417,6 +459,52 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     */
     void removingLayers( QStringList );
 
+    //! starts/stops editing mode of the current layer
+    void toggleEditing();
+
+    //! starts/stops editing mode of a layer
+    bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
+
+    /** Save edits for active vector layer and start new transactions
+     * @note added in 1.9 */
+    void saveActiveLayerEdits();
+
+    /** Save edits of a layer
+     * @param leaveEditable leave the layer in editing mode when done (added in QGIS 1.9)
+     * @param triggerRepaint send layer signal to repaint canvas when done (added in QGIS 1.9)
+     */
+    void saveEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
+
+    /** Cancel edits for a layer
+      * @param leaveEditable leave the layer in editing mode when done
+      * @param triggerRepaint send layer signal to repaint canvas when done
+      * @note added in 1.9
+      */
+    void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
+
+    //! Save current edits for selected layer(s) and start new transaction(s)
+    void saveEdits();
+
+    /** Save edits for all layers and start new transactions
+     * @note added in 1.9 */
+    void saveAllEdits( bool verifyAction = true );
+
+    /** Rollback current edits for selected layer(s) and start new transaction(s)
+      * @note added in 1.9 */
+    void rollbackEdits();
+
+    /** Rollback edits for all layers and start new transactions
+     * @note added in 1.9 */
+    void rollbackAllEdits( bool verifyAction = true );
+
+    /** Cancel edits for selected layer(s) and toggle off editing
+      * @note added in 1.9 */
+    void cancelEdits();
+
+    /** Cancel all edits for all layers and toggle off editing
+     * @note added in 1.9 */
+    void cancelAllEdits( bool verifyAction = true );
+
     void updateUndoActions();
 
     //! cuts selected features on the active layer to the clipboard
@@ -437,18 +525,22 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                 (defaults to the active layer on the legend)
      */
     void editPaste( QgsMapLayer * destinationLayer = 0 );
-
+    //! copies style of the active layer to the clipboard
     /**
        \param sourceLayer  The layer where the style will be taken from
                                         (defaults to the active layer on the legend)
      */
     void copyStyle( QgsMapLayer * sourceLayer = 0 );
-    //! copies style on the clipboard to the active layer
+    //! pastes style on the clipboard to the active layer
     /**
        \param destinatioLayer  The layer that the clipboard will be pasted to
                                 (defaults to the active layer on the legend)
      */
     void pasteStyle( QgsMapLayer * destinationLayer = 0 );
+
+    //! copies features to internal clipboard
+    void copyFeatures( QgsFeatureStore & featureStore );
+
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
     void loadGDALSublayers( QString uri, QStringList list );
 
@@ -460,6 +552,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! project was read
     void readProject( const QDomDocument & );
+
+    //! Set app stylesheet from settings
+    //! @note added in 1.9
+    void setAppStyleSheet( const QString& stylesheet );
 
     //! request credentials for network manager
     void namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth );
@@ -511,7 +607,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
   private slots:
     //! validate a SRS
-    void validateSrs( QgsCoordinateReferenceSystem *crs );
+    void validateSrs( QgsCoordinateReferenceSystem &crs );
 
     //! QGis Sponsors
     void sponsors();
@@ -530,8 +626,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addSpatiaLiteLayer();
     //#endif
     //#ifdef HAVE_MSSQL
-    //! Add a SpatiaLite layer to the map
+    //! Add a MSSQL layer to the map
     void addMssqlLayer();
+    //#endif
+    //#ifdef HAVE_ORACLE
+    //! Add a Oracle layer to the map
+    void addOracleLayer();
     //#endif
     /** toggles whether the current selected layer is in overview or not */
     void isInOverview();
@@ -546,7 +646,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Remove a layer from the map and legend
     void removeLayer();
     /** Duplicate map layer(s) in legend
-     * @note added in 2.0 */
+     * @note added in 1.9 */
     void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
     //! Set CRS of a layer
     void setLayerCRS();
@@ -570,6 +670,22 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void localCumulativeCutStretch();
     /** Perform a full extent cumulative cut stretch */
     void fullCumulativeCutStretch();
+    /**Increase raster brightness
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void increaseBrightness();
+    /**Decrease raster brightness
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void decreaseBrightness();
+    /**Increase raster contrast
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void increaseContrast();
+    /**Decrease raster contrast
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void decreaseContrast();
     //! plugin manager
     void showPluginManager();
     //! load python support if possible
@@ -649,9 +765,16 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileNewBlank();
     //! As above but allows forcing without prompt and forcing blank project
     void fileNew( bool thePromptToSaveFlag, bool forceBlank = false );
+    /** What type of project to open after launch
+     * @note Added in QGIS 1.9 */
+    void fileOpenAfterLaunch();
+    /** After project read, set any auto-opened project as successful
+     * @note Added in QGIS 1.9 */
+    void fileOpenedOKAfterLaunch();
     //! Create a new file from a template project
     bool fileNewFromTemplate( QString fileName );
     void fileNewFromTemplateAction( QAction * qAction );
+    void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
     void embedLayers();
@@ -761,20 +884,29 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! deselect features from all layers
     void deselectAll();
 
+    //! select features by expression
+    void selectByExpression();
+
     //! refresh map canvas
     void refreshMapCanvas();
 
-    //! starts/stops editing mode of the current layer
-    void toggleEditing();
+    /** Dialog for verification of action on many edits
+     * @note added in 1.9 */
+    bool verifyEditsActionDialog( const QString& act, const QString& upon );
 
-    //! save current edits and start new transaction
-    void saveEdits();
+    /** Update gui actions/menus when layers are modified
+     * @note added in 1.9 */
+    void updateLayerModifiedActions();
 
     //! change layer subset of current vector layer
     void layerSubsetString();
 
     //! map tool changed
     void mapToolChanged( QgsMapTool *tool );
+
+    /** Called when some layer's editing mode was toggled on/off
+     * @note added in 1.9 */
+    void layerEditStateChanged();
 
     /** Activates or deactivates actions depending on the current maplayer type.
     Is called from the legend when the current legend item has changed*/
@@ -830,16 +962,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addFormAnnotation();
     void addTextAnnotation();
     void addHtmlAnnotation();
+    void addSvgAnnotation();
     void modifyAnnotation();
 
     //! shows label settings dialog (for labeling-ng)
     void labeling();
-
-    //! starts/stops editing mode of a layer
-    bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
-
-    //! save edits of a layer
-    void saveEdits( QgsMapLayer *layer );
 
     //! save current vector layer
     void saveAsFile();
@@ -885,6 +1012,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /**Creates the composer instances in a project file and adds them to the menu*/
     bool loadComposersFromProject( const QDomDocument& doc );
 
+    /** Slot to handle display of composers menu, e.g. sorting
+     * @note added in 1.9
+     */
+    void on_mPrintComposersMenu_aboutToShow();
+
     bool loadAnnotationItemsFromProject( const QDomDocument& doc );
 
     //! Toggles whether to show pinned labels
@@ -895,6 +1027,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void showHideLabels();
     //! Activates the move label tool
     void moveLabel();
+    //! Activates rotate feature tool
+    void rotateFeature();
     //! Activates rotate label tool
     void rotateLabel();
     //! Activates label property tool
@@ -908,6 +1042,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! trust and load project macros
     void enableProjectMacros();
+
+    void osmDownloadDialog();
+    void osmImportDialog();
+    void osmExportDialog();
 
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
@@ -949,7 +1087,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
      @note added in version 1.6*/
     void initializationCompleted();
 
-    void customSrsValidation( QgsCoordinateReferenceSystem *crs );
+    void customSrsValidation( QgsCoordinateReferenceSystem &crs );
 
   private:
     /** This method will open a dialog so the user can select GDAL sublayers to load
@@ -983,7 +1121,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Read Well Known Binary stream from PostGIS
     //void readWKB(const char *, QStringList tables);
     //! shows the paste-transformations dialog
-    void pasteTransformations();
+    // void pasteTransformations();
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
@@ -1023,6 +1161,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**Do histogram stretch for singleband gray / multiband color rasters*/
     void histogramStretch( bool visibleAreaOnly = false, QgsRasterLayer::ContrastEnhancementLimits theLimits = QgsRasterLayer::ContrastEnhancementMinMax );
+
+    /**Apply raster brightness
+     * @note Added in QGIS 2.0 */
+    void adjustBrightnessContrast( int delta, bool updateBrightness = true );
+
+    QgisAppStyleSheet* mStyleSheetBuilder;
 
     // actions for menus and toolbars -----------------
 
@@ -1099,10 +1243,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mAnnotation;
         QgsMapTool* mFormAnnotation;
         QgsMapTool* mHtmlAnnotation;
+        QgsMapTool* mSvgAnnotation;
         QgsMapTool* mTextAnnotation;
         QgsMapTool* mPinLabels;
         QgsMapTool* mShowHideLabels;
         QgsMapTool* mMoveLabel;
+        QgsMapTool* mRotateFeature;
         QgsMapTool* mRotateLabel;
         QgsMapTool* mChangeLabelProperties;
     } mMapTools;
@@ -1139,8 +1285,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu * mPopupMenu;
     //! Top level database menu
     QMenu *mDatabaseMenu;
-    //! Top level vector menu
-    QMenu *mVectorMenu;
     //! Top level web menu
     QMenu *mWebMenu;
     //! Popup menu for the map overview tools
@@ -1214,6 +1358,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //!flag to indicate that the previous screen mode was 'maximised'
     bool mPrevScreenModeMaximized;
 
+    /** Flag to indicate an edits save/rollback for active layer is in progress
+     * @note added in QGIS 1.9
+     */
+    bool mSaveRollbackInProgress;
+
     QgsPythonUtils* mPythonUtils;
 
     static QgisApp *smInstance;
@@ -1221,6 +1370,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsUndoWidget* mUndoWidget;
 
     QgsBrowserDockWidget* mBrowserWidget;
+    QgsBrowserDockWidget* mBrowserWidget2;
 
     QgsSnappingDialog* mSnappingDialog;
 
@@ -1263,11 +1413,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
 #ifdef ANDROID
 #define QGIS_ICON_SIZE 32
-//TODO find a better default fontsize maybe using DPI detection or so
-#define QGIS_DEFAULT_FONTSIZE 8
 #else
 #define QGIS_ICON_SIZE 24
-#define QGIS_DEFAULT_FONTSIZE qApp->font().pointSize()
 #endif
 
 #endif

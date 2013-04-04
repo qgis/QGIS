@@ -1,10 +1,11 @@
 v.class
 v.class - Classifies attribute data, e.g. for thematic mapping.
 Vector (v.*)
-ParameterVector|map|Name of input vector map|-1|False
+ParameterVector|map|Input vector layer|-1|False
 ParameterTableField|column|Column name or expression|map
 ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
 ParameterSelection|algorithm|Algorithm to use for classification|int;std;qua;equ;dis
 ParameterNumber|nbclasses|Number of classes to define|2.0|None|3
 ParameterBoolean|-g|Print only class breaks (without min and max)|True
+OutputHTML|html|Classification
 

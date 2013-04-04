@@ -189,6 +189,11 @@ class QgsComposerItem: QObject, QGraphicsRectItem
       @note: this method was added in version 1.6*/
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft );
 
+    /**Returns item's last used position mode.
+      @note: This property has no effect on actual's item position, which is always the top-left corner.
+      @note: this method was added in version 2.0*/
+    ItemPositionMode lastUsedPositionMode();
+
     /**Sets this items bound in scene coordinates such that 1 item size units
      corresponds to 1 scene size unit*/
     virtual void setSceneRect( const QRectF& rectangle );
@@ -212,23 +217,12 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     /** Whether this item has a frame or not.
-     * @return boolean - true if there is a frame around this item, otherwise false.
-     * @note deprecated since 1.8 don't use!
-     * @see hasFrame
-     */
-    bool frame() /Deprecated/;
-    /** Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
      * @note introduced since 1.8
      * @see hasFrame
      */
     bool hasFrame();
-    /** Set whether this item has a frame drawn around it or not.
-     * @returns void
-     * @note deprecated since 1.8 don't use!
-     * @see setFrameEnabled
-     */
-    void setFrame( bool drawFrame ) /Deprecated/;
+
     /** Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
      * @returns nothing
@@ -263,7 +257,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     void drawText( QPainter* p, double x, double y, const QString& text, const QFont& font ) const;
 
     /**Like the above, but with a rectangle for multiline text*/
-    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignement = Qt::AlignLeft, Qt::AlignmentFlag valignement = Qt::AlignTop ) const;
+    void drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop ) const;
 
     /**Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
@@ -298,15 +292,18 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem();
 
-    /**Get item identification name
+    /**Get item's id (which is not necessarly unique)
       @note this method was added in version 1.7*/
     QString id() const;
 
-    /**Set item identification name
-      @note this method was added in version 1.7
-                     This method was moved from qgscomposerlabel so that every object can have a
-                      id (NathanW)*/
+    /**Set item's id (which is not necessarly unique)
+      @note this method was added in version 1.7*/
     void setId( const QString& id );
+
+    /**Get item identification name
+      @note this method was added in version 2.0
+      @note there is not setter since one can't manually set the id*/
+    QString uuid() const;
 
   public slots:
     virtual void setRotation( double r );

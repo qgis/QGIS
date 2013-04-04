@@ -29,7 +29,8 @@ class TestQgsFeature(TestCase):
 
     def test_CreateFeature(self):
         feat = QgsFeature()
-        feat.addAttribute(1, "text")
+        feat.initAttributes(1)
+        feat.setAttribute(0, "text")
         feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(123,456)))
         myId = feat.id()
         myExpectedId = 0
@@ -40,77 +41,44 @@ class TestQgsFeature(TestCase):
         myPath = os.path.join(unitTestDataPath(), 'points.shp')
         myLayer = QgsVectorLayer(myPath, 'Points', 'ogr')
         provider = myLayer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
-        
+        fit = provider.getFeatures()
         feat = QgsFeature()
-        provider.nextFeature(feat)
+        fit.nextFeature(feat)
         myValidValue = feat.isValid()
         myMessage = '\nExpected: %s\nGot: %s' % ("True", myValidValue)
         assert myValidValue == True, myMessage
 
-    def test_TypeName(self):
+    def test_Attributes(self):
         myPath = os.path.join(unitTestDataPath(), 'lines.shp')
         myLayer = QgsVectorLayer(myPath, 'Lines', 'ogr')
         provider = myLayer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
-        
+        fit = provider.getFeatures()
         feat = QgsFeature()
-        provider.nextFeature(feat)
-        myTypeName = feat.typeName()
-        myExpectedTypeName = "lines"
-        myMessage = '\nExpected: %s\nGot: %s' % (myExpectedTypeName, myTypeName)
-        assert myTypeName == myExpectedTypeName, myMessage
+        fit.nextFeature(feat)
+        myAttributes = feat.attributes()
+        myExpectedAttributes = [ QVariant("Highway"), QVariant(1) ]
 
-    def test_AttributeMap(self):
-        myPath = os.path.join(unitTestDataPath(), 'lines.shp')
-        myLayer = QgsVectorLayer(myPath, 'Lines', 'ogr')
-        provider = myLayer.dataProvider()
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
-        feat = QgsFeature()
-        provider.nextFeature(feat)
-        
-        myAttributeMap = feat.attributeMap()
-        myExpectedAttributeMap = {0: QVariant("Highway"), 1: QVariant(1)}
-        
-        # Only for printing purposes 
-        myAttributeDict = {
-            0:str(myAttributeMap[0].toString()),
-            1:int(myAttributeMap[1].toString())}
-        myExpectedAttributeDict = {0: "Highway", 1: 1}
-        myMessage = '\nExpected: %s\nGot: %s' % (myExpectedAttributeDict, 
-            myAttributeDict)
-            
-        assert myAttributeMap == myExpectedAttributeMap, myMessage
+        # Only for printing purposes
+        myAttributeDict = [
+            str(myAttributes[0].toString()),
+            int(myAttributes[1].toString()) ]
+        myExpectedAttributes = [ "Highway",  1 ]
+        myMessage = '\nExpected: %s\nGot: %s' % (myExpectedAttributes,
+            myAttributes)
 
-    def test_AddAttribute(self):
-        feat = QgsFeature()
-        feat.addAttribute(1, "text")
-        myCount = len(feat.attributeMap())
-        myExpectedCount = 1
-        myMessage = '\nExpected: %s\nGot: %s' % (myExpectedCount, myCount)
-        assert myCount == myExpectedCount, myMessage        
-
-    def test_ChangeAttribute(self):
-        feat = QgsFeature()
-        feat.addAttribute(1, "text")
-        feat.changeAttribute(1, "changed")
-        myChangedAttribute = feat.attributeMap()[1].toString()
-        myExpectedAttribute = "changed"
-        myMessage = '\nExpected: %s\nGot: %s' % (myExpectedAttribute, 
-            myChangedAttribute)
-        assert myChangedAttribute == myExpectedAttribute, myMessage        
+        assert myAttributes == myExpectedAttributes, myMessage
 
     def test_DeleteAttribute(self):
         feat = QgsFeature()
-        feat.addAttribute(1, "text")
+        feat.initAttributes(3)
+        feat[0] = QVariant("text1")
+        feat[1] = QVariant("text2")
+        feat[2] = QVariant("text3")
         feat.deleteAttribute(1)
-        myCount = len(feat.attributeMap())
-        myExpectedCount = 0
-        myMessage = '\nExpected: %s\nGot: %s' % (myExpectedCount, myCount)
-        assert myCount == myExpectedCount, myMessage        
+        myAttrs = [ str(feat[0].toString()), str(feat[1].toString()) ]
+        myExpectedAttrs = [ "text1", "text3" ]
+        myMessage = '\nExpected: %s\nGot: %s' % (str(myExpectedAttrs), str(myAttrs))
+        assert myAttrs == myExpectedAttrs, myMessage
 
     def test_SetGeometry(self):
         feat = QgsFeature()
@@ -122,4 +90,3 @@ class TestQgsFeature(TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

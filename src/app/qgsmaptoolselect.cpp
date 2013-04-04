@@ -40,7 +40,7 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   {
     return;
   }
-  QgsRubberBand rubberBand( mCanvas, true );
+  QgsRubberBand rubberBand( mCanvas, QGis::Polygon );
   QRect selectRect( 0, 0, 0, 0 );
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
@@ -48,5 +48,5 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
   bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
   QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
   delete selectGeom;
-  rubberBand.reset( true );
+  rubberBand.reset( QGis::Polygon );
 }

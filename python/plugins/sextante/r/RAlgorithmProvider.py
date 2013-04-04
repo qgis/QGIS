@@ -27,6 +27,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os.path
 from sextante.script.WrongScriptException import WrongScriptException
+from sextante.r.DeleteRScriptAction import DeleteRScriptAction
 from sextante.core.SextanteConfig import SextanteConfig, Setting
 from sextante.core.SextanteLog import SextanteLog
 from sextante.core.AlgorithmProvider import AlgorithmProvider
@@ -43,19 +44,21 @@ class RAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.__init__(self)
         self.activate = False
         self.actions.append(CreateNewRScriptAction())
-        self.contextMenuActions = [EditRScriptAction()]
+        self.contextMenuActions = [EditRScriptAction(), DeleteRScriptAction()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         SextanteConfig.addSetting(Setting(self.getDescription(), RUtils.RSCRIPTS_FOLDER, "R Scripts folder", RUtils.RScriptsFolder()))
         if SextanteUtils.isWindows():
             SextanteConfig.addSetting(Setting(self.getDescription(), RUtils.R_FOLDER, "R folder", RUtils.RFolder()))
+            SextanteConfig.addSetting(Setting(self.getDescription(), RUtils.R_USE64, "Use 64 bit version", False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         SextanteConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
         if SextanteUtils.isWindows():
             SextanteConfig.removeSetting(RUtils.R_FOLDER)
+            SextanteConfig.removeSetting(RUtils.R_USE64)
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + "/../images/r.png")
@@ -69,17 +72,25 @@ class RAlgorithmProvider(AlgorithmProvider):
 
     def _loadAlgorithms(self):
         folder = RUtils.RScriptsFolder()
+        self.loadFromFolder(folder)
+        folder = os.path.join(os.path.dirname(__file__), "scripts")
+        self.loadFromFolder(folder)
+
+
+    def loadFromFolder(self, folder):
+        if not os.path.exists(folder):
+            return
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("rsx"):
                 try:
-                    fullpath = os.path.join(RUtils.RScriptsFolder(), descriptionFile)
+                    fullpath = os.path.join(folder, descriptionFile)
                     alg = RAlgorithm(fullpath)
                     if alg.name.strip() != "":
                         self.algs.append(alg)
                 except WrongScriptException,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR,e.msg)
                 except Exception, e:
-                    SextanteLog.addToLog(SextanteLog.LOG_ERROR,"Could not load R script:" + descriptionFile)
+                    SextanteLog.addToLog(SextanteLog.LOG_ERROR,"Could not load R script:" + descriptionFile + "\n" + str(e))
 
 
 

@@ -44,4 +44,8 @@ scripts/RelWithDebInfo
 qgis-test.ctest
 i18n/*.qm
 .project
+.pydevproject
 .idea
+/python/plugins/sextante/resources_rc.py
+/python/plugins/sextante/about/ui_aboutdialogbase.py
+scripts/qgisstyle

@@ -10,8 +10,10 @@
 %Include qgisinterface.sip
 %Include qgsannotationitem.sip
 %Include qgsattributeeditor.sip
+%Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
 %Include qgscolorbutton.sip
+%Include qgscolordialog.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
 %Include qgsdetaileditemdata.sip
@@ -39,6 +41,7 @@
 %Include qgsmaptip.sip
 %Include qgsmaptool.sip
 %Include qgsmaptoolemitpoint.sip
+%Include qgsmaptoolidentify.sip
 %Include qgsmaptoolpan.sip
 %Include qgsmaptooltouch.sip
 %Include qgsmaptoolzoom.sip
@@ -62,7 +65,6 @@
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
 
-%Include attributetable/qgsattributetablemodel.sip
 %Include attributetable/qgsattributetableview.sip
 
 %Include raster/qgsmultibandcolorrendererwidget.sip

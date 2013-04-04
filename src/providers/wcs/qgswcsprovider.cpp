@@ -32,6 +32,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkreplyparser.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
 
@@ -59,6 +60,14 @@
 #include "ogr_spatialref.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8F(x) (x).toUtf8().constData()
+#define FROM8(x) QString::fromUtf8(x)
+#else
+#define TO8F(x) QFile::encodeName( x ).constData()
+#define FROM8(x) QString::fromLocal8Bit(x)
+#endif
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WCS provider")
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
@@ -311,23 +320,23 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     double myInternalNoDataValue;
     switch ( srcDataType( i ) )
     {
-      case QgsRasterBlock::Byte:
+      case QGis::Byte:
         myInternalNoDataValue = -32768.0;
         myInternalGdalDataType = GDT_Int16;
         break;
-      case QgsRasterBlock::Int16:
+      case QGis::Int16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterBlock::UInt16:
+      case QGis::UInt16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterBlock::Int32:
+      case QGis::Int32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = -2147483648.0;
         break;
-      case QgsRasterBlock::UInt32:
+      case QGis::UInt32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = 4294967295.0;
         break;
@@ -840,6 +849,7 @@ void QgsWcsProvider::cacheReplyFinished()
     }
 
     QVariant status = mCacheReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+    QgsDebugMsg( QString( "status = %1" ).arg( status.toInt() ) );
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QVariant phrase = mCacheReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
@@ -894,111 +904,44 @@ void QgsWcsProvider::cacheReplyFinished()
     }
 
     // WCS 1.1 gives response as multipart, e.g.
-    //   multipart/mixed; boundary=wcs
-    //   multipart/mixed; boundary="wcs"\n
-    if ( contentType.startsWith( "multipart/", Qt::CaseInsensitive ) )
+    if ( QgsNetworkReplyParser::isMultipart( mCacheReply ) )
     {
-      // It seams that Qt does not have currently support for multipart reply
-      // and it is not even possible to create QNetworkReply from raw data
-      // so we have to parse response
-      QRegExp re( ".*boundary=\"?([^\"]+)\"?\\s?", Qt::CaseInsensitive );
+      QgsDebugMsg( "reply is multipart" );
+      QgsNetworkReplyParser parser( mCacheReply );
 
-      if ( !re.indexIn( contentType ) == 0 )
+      if ( !parser.isValid() )
       {
-        QgsMessageLog::logMessage( tr( "Cannot find boundary in multipart content type" ), tr( "WCS" ) );
+        QgsMessageLog::logMessage( tr( "Cannot parse multipart response: %1" ).arg( parser.error() ), tr( "WCS" ) );
         clearCache();
         mCacheReply->deleteLater();
         mCacheReply = 0;
         return;
       }
 
-      QString boundary = re.cap( 1 );
-      QgsDebugMsg( "boundary = " + boundary );
-      boundary = "--" + boundary;
-
-      // Lines should be terminated by CRLF ("\r\n") but any new line combination may appear
-      QByteArray data = mCacheReply->readAll();
-      int from, to;
-      from = data.indexOf( boundary.toAscii(), 0 ) + boundary.length() + 1 ;
-      QVector<QByteArray> partHeaders;
-      QVector<QByteArray> partBodies;
-      while ( true )
+      if ( parser.parts() < 2 )
       {
-        to = data.indexOf( boundary.toAscii(), from );
-        if ( to < 0 )
-        {
-          // It may happent that bondary is missing at the end (GeoServer)
-          // in that case, take everything to th end
-          if ( data.size() - from > 1 )
-          {
-            to = data.size(); // out of range OK
-          }
-          else
-          {
-            break;
-          }
-        }
-        QgsDebugMsg( QString( "part %1 - %2" ).arg( from ).arg( to ) );
-        QByteArray part = data.mid( from, to - from );
-        // Remove possible new line from beginning
-        while ( part.size() > 0 && ( part.at( 0 ) == '\r' || part.at( 0 ) == '\n' ) )
-        {
-          part.remove( 0, 1 );
-        }
-        // Split header and data (find empty new line)
-        // New lines should be CRLF, but we support also CRLFCRLF, LFLF to find empty line
-        int pos = 0; // body start
-        while ( pos < part.size() - 1 )
-        {
-          if ( part.at( pos ) == '\n' && ( part.at( pos + 1 ) == '\n' || part.at( pos + 1 ) == '\r' ) )
-          {
-            if ( part.at( pos + 1 ) == '\r' ) pos++;
-            pos += 2;
-            break;
-          }
-          pos++;
-        }
-        partHeaders.append( part.left( pos ) );
-        partBodies.append( part.mid( pos ) );
-        QgsDebugMsg( "Part header:\n" + partHeaders.last() );
-
-        from = to + boundary.length() + 1;
-      }
-      if ( partBodies.size() < 2 )
-      {
-        QgsMessageLog::logMessage( tr( "Expected 2 parts, %1 received" ).arg( partBodies.size() ), tr( "WCS" ) );
+        QgsMessageLog::logMessage( tr( "Expected 2 parts, %1 received" ).arg( parser.parts() ), tr( "WCS" ) );
         clearCache();
         mCacheReply->deleteLater();
         mCacheReply = 0;
         return;
       }
-      else if ( partBodies.size() > 2 )
+      else if ( parser.parts() > 2 )
       {
         // We will try the second one
-        QgsMessageLog::logMessage( tr( "More than 2 parts (%1) received" ).arg( partBodies.size() ), tr( "WCS" ) );
+        QgsMessageLog::logMessage( tr( "More than 2 parts (%1) received" ).arg( parser.parts() ), tr( "WCS" ) );
       }
 
-      QStringList headerRows = QString( partHeaders.value( 1 ) ).split( QRegExp( "[\n\r]+" ) );
-      QString transferEncoding;
-      foreach ( QString row, headerRows )
-      {
-        QgsDebugMsg( "row = " + row );
-        //Content-Transfer-Encoding: base64
-        QStringList kv = row.split( ": " );
-        if ( kv.value( 0 ) == "Content-Transfer-Encoding" )
-        {
-          transferEncoding = kv.value( 1 );
-          break;
-        }
-      }
+      QString transferEncoding = parser.rawHeader( 1, QString( "Content-Transfer-Encoding" ).toAscii() );
       QgsDebugMsg( "transferEncoding = " + transferEncoding );
 
       // It may happen (GeoServer) that in part header is for example
       // Content-Type: image/tiff and Content-Transfer-Encoding: base64
       // but content is xml ExceptionReport which is not in base64
-      if ( partBodies.value( 1 ).startsWith( "<?xml" ) )
+      QByteArray body = parser.body( 1 );
+      if ( body.startsWith( "<?xml" ) )
       {
-        if ( parseServiceExceptionReportDom( partBodies.value( 1 ) ) )
+        if ( parseServiceExceptionReportDom( body ) )
         {
           QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
                                      .arg( mErrorCaption ).arg( mError )
@@ -1007,7 +950,7 @@ void QgsWcsProvider::cacheReplyFinished()
         else
         {
           QgsMessageLog::logMessage( tr( "Map request error (Response: %1; URL:%2)" )
-                                     .arg( QString::fromUtf8( partBodies.value( 1 ) ) )
+                                     .arg( QString::fromUtf8( body ) )
                                      .arg( mCacheReply->url().toString() ), tr( "WCS" ) );
         }
 
@@ -1018,11 +961,11 @@ void QgsWcsProvider::cacheReplyFinished()
 
       if ( transferEncoding == "binary" )
       {
-        mCachedData = partBodies.value( 1 );
+        mCachedData = body;
       }
       else if ( transferEncoding == "base64" )
       {
-        mCachedData = QByteArray::fromBase64( partBodies.value( 1 ) );
+        mCachedData = QByteArray::fromBase64( body );
       }
       else
       {
@@ -1043,6 +986,7 @@ void QgsWcsProvider::cacheReplyFinished()
       mCachedData = mCacheReply->readAll();
     }
 
+    QgsDebugMsg( QString( "%1 bytes received" ).arg( mCachedData.size() ) );
     if ( mCachedData.size() == 0 )
     {
       QgsMessageLog::logMessage( tr( "No data received" ), tr( "WCS" ) );
@@ -1051,7 +995,6 @@ void QgsWcsProvider::cacheReplyFinished()
       mCacheReply = 0;
       return;
     }
-    QgsDebugMsg( QString( "%1 bytes received" ).arg( mCachedData.size() ) );
 
 #if 0
     QFile myFile( "/tmp/qgiswcscache.dat" );
@@ -1132,21 +1075,21 @@ void QgsWcsProvider::cacheReplyFinished()
 }
 
 // This could be shared with GDAL provider
-QgsRasterBlock::DataType QgsWcsProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsWcsProvider::srcDataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mSrcGdalDataType.size() )
   {
-    return QgsRasterBlock::UnknownDataType;
+    return QGis::UnknownDataType;
   }
 
   return dataTypeFromGdal( mSrcGdalDataType[bandNo-1] );
 }
 
-QgsRasterBlock::DataType QgsWcsProvider::dataType( int bandNo ) const
+QGis::DataType QgsWcsProvider::dataType( int bandNo ) const
 {
   if ( bandNo < 0 || bandNo > mGdalDataType.size() )
   {
-    return QgsRasterBlock::UnknownDataType;
+    return QGis::UnknownDataType;
   }
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
@@ -1418,7 +1361,8 @@ bool QgsWcsProvider::calculateExtent()
 
   QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
 
-  // It may happen (GeoServer) that extent reported in spatialDomain.Envelope is larger  // than the coverage. Then if that larger BBOX is requested, the server returns
+  // It may happen (GeoServer) that extent reported in spatialDomain.Envelope is larger
+  // than the coverage. Then if that larger BBOX is requested, the server returns
   // request BBOX intersected with coverage box scaled to requested WIDTH and HEIGHT.
   // GDAL WCS client does not suffer from this probably because it probably takes
   // extent from lonLatEnvelope (it probably does not calculate it from
@@ -1460,9 +1404,18 @@ bool QgsWcsProvider::calculateExtent()
   }
   else
   {
+    // Unfortunately it may also happen that a server (cubewerx.com) does not have
+    // overviews and it is not able to respond for the whole extent within timeout.
+    // It returns timeout error.
+    // In that case (if request failed) we do not report error to allow to work
+    // with such servers on smaller portions of extent
+    // (http://lists.osgeo.org/pipermail/qgis-developer/2013-January/024019.html)
+
+    // Unfortunately even if we get over this 10x10 check, QGIS also requests
+    // 32x32 thumbnail where it is waiting for another timeout
+
     QgsDebugMsg( "Cannot get cache to verify extent" );
-    setError( mCachedError );
-    return false;
+    QgsMessageLog::logMessage( tr( "Cannot verify coverage full extent: %1" ).arg( mCachedError.message() ), tr( "WCS" ) );
   }
 
   return true;

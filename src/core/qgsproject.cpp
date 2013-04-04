@@ -31,6 +31,7 @@
 #include "qgsprojectversion.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
+#include "qgsdatasourceuri.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -706,7 +707,7 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
   for ( ; vIt != vLayerList.end(); ++vIt )
   {
     vIt->first->createJoinCaches();
-    vIt->first->updateFieldMap();
+    vIt->first->updateFields();
     //for old symbology, it is necessary to read the symbology again after having the complete field map
     if ( !vIt->first->isUsingRendererV2() )
     {
@@ -739,14 +740,14 @@ bool QgsProject::addLayer( const QDomElement& layerElem, QList<QDomNode>& broken
     mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
   }
 
-  Q_CHECK_PTR( mapLayer );
-
   if ( !mapLayer )
   {
     QgsDebugMsg( "Unable to create layer" );
 
     return false;
   }
+
+  Q_CHECK_PTR( mapLayer );
 
   // have the layer restore state that is stored in Dom node
   if ( mapLayer->readXML( layerElem ) && mapLayer->isValid() )
@@ -1064,6 +1065,8 @@ bool QgsProject::write()
 
   dirty( false );               // reset to pristine state
 
+  emit projectSaved();
+
   return true;
 } // QgsProject::write
 
@@ -1366,11 +1369,11 @@ QString QgsProject::readPath( QString src ) const
     // That means that it was saved with an earlier version of "relative path support",
     // where the source file had to exist and only the project directory was stripped
     // from the filename.
-    QFileInfo pfi( fileName() );
-    if ( !pfi.exists() )
+    QString home = homePath();
+    if ( home.isNull() )
       return src;
 
-    QFileInfo fi( pfi.canonicalPath() + "/" + src );
+    QFileInfo fi( home + "/" + src );
 
     if ( !fi.exists() )
     {
@@ -1542,7 +1545,7 @@ QString QgsProject::layerIsEmbedded( const QString& id ) const
     return QString();
   }
   return it.value().first;
-};
+}
 
 bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                                       QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag )
@@ -1596,13 +1599,31 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
       //change datasource path from relative to absolute if necessary
       if ( !useAbsolutePathes )
       {
-        QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
-        QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
-        QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
-        if ( absoluteDs.exists() )
+        QDomElement provider = mapLayerElem.firstChildElement( "provider" );
+        if ( provider.text() == "spatialite" )
         {
-          dsElem.removeChild( dsElem.childNodes().at( 0 ) );
-          dsElem.appendChild( projectDocument.createTextNode( absoluteDs.absoluteFilePath() ) );
+          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
+
+          QgsDataSourceURI uri( dsElem.text() );
+
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + uri.database() );
+          if ( absoluteDs.exists() )
+          {
+            uri.setDatabase( absoluteDs.absoluteFilePath() );
+            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
+            dsElem.appendChild( projectDocument.createTextNode( uri.uri() ) );
+          }
+        }
+        else
+        {
+          QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
+          QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+          if ( absoluteDs.exists() )
+          {
+            dsElem.removeChild( dsElem.childNodes().at( 0 ) );
+            dsElem.appendChild( projectDocument.createTextNode( absoluteDs.absoluteFilePath() ) );
+          }
         }
       }
 
@@ -1761,4 +1782,11 @@ void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers
   // just ignore any bad layers
 }
 
+QString QgsProject::homePath() const
+{
+  QFileInfo pfi( fileName() );
+  if ( !pfi.exists() )
+    return QString::null;
 
+  return pfi.canonicalPath();
+}

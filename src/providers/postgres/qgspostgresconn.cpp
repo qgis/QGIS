@@ -273,7 +273,7 @@ QStringList QgsPostgresConn::pkCandidates( QString schemaName, QString viewName 
 {
   QStringList cols;
 
-  QString sql = QString( "SELECT attname FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE pg_type.typname IN ('int2','int4','int8','oid','serial','serial8') AND attrelid=regclass('%1.%2')" )
+  QString sql = QString( "SELECT attname FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2')" )
                 .arg( quotedIdentifier( schemaName ) )
                 .arg( quotedIdentifier( viewName ) );
   QgsDebugMsg( sql );
@@ -309,7 +309,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   for ( int i = 0; i < 3; i++ )
   {
     QString sql, tableName, schemaName, columnName, typeName, sridName, gtableName;
-    QgsPostgresGeometryColumnType columnType;
+    QgsPostgresGeometryColumnType columnType = sctGeometry;
 
     if ( i == 0 )
     {
@@ -388,6 +388,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    .arg( srid )
                    .arg( relkind ) );
 
+      layerProperty.pkCols.clear();
       layerProperty.type = type;
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
@@ -403,6 +404,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
           continue;
         }
       }
+
       layerProperty.srid = srid;
       layerProperty.sql = "";
 
@@ -940,13 +942,16 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
   size_t s = PQgetlength( queryResult.result(), row, col );
 
 #ifdef QGISDEBUG
-  QString buf = "";
-  for ( size_t i = 0; i < s; i++ )
+  if ( QgsLogger::debugLevel() >= 4 )
   {
-    buf += QString( "%1 " ).arg( *( unsigned char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
-  }
+    QString buf;
+    for ( size_t i = 0; i < s; i++ )
+    {
+      buf += QString( "%1 " ).arg( *( unsigned char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
+    }
 
-  QgsDebugMsgLevel( QString( "int in hex:%1" ).arg( buf ), 4 );
+    QgsDebugMsg( QString( "int in hex:%1" ).arg( buf ) );
+  }
 #endif
 
   switch ( s )
@@ -1091,7 +1096,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
   }
 
 
-  // it is possible that the where clause restricts the feature type or srid
+  // our estimatation ignores that a where clause might restrict the feature type or srid
   if ( useEstimatedMetadata )
   {
     table = QString( "(SELECT %1 FROM %2 WHERE %1 IS NOT NULL%3 LIMIT %4) AS t" )
@@ -1476,7 +1481,14 @@ bool QgsPostgresConn::geometryColumnsOnly( QString theConnName )
 {
   QSettings settings;
 
-  return settings.value( "/PostgreSQL/connections/" + theConnName + "/geometrycolumnsOnly", false ).toBool();
+  return settings.value( "/PostgreSQL/connections/" + theConnName + "/geometryColumnsOnly", false ).toBool();
+}
+
+bool QgsPostgresConn::dontResolveType( QString theConnName )
+{
+  QSettings settings;
+
+  return settings.value( "/PostgreSQL/connections/" + theConnName + "/dontResolveType", false ).toBool();
 }
 
 bool QgsPostgresConn::allowGeometrylessTables( QString theConnName )

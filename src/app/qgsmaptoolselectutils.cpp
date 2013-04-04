@@ -16,6 +16,8 @@ email                : jpalmer at linz dot govt dot nz
 #include <limits>
 
 #include "qgsmaptoolselectutils.h"
+#include "qgisapp.h"
+#include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
@@ -35,10 +37,11 @@ QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canv
   if ( !canvas->currentLayer()
        || ( vlayer = qobject_cast<QgsVectorLayer *>( canvas->currentLayer() ) ) == NULL )
   {
-    QMessageBox::warning( canvas, QObject::tr( "No active vector layer" ),
-                          QObject::tr( "To select features, you must choose a "
-                                       "vector layer by clicking on its name in the legend"
-                                     ) );
+    QgisApp::instance()->messageBar()->pushMessage(
+      QObject::tr( "No active vector layer" ),
+      QObject::tr( "To select features, choose a vector layer in the legend" ),
+      QgsMessageBar::INFO,
+      QgisApp::instance()->messageTimeout() );
   }
   return vlayer;
 }
@@ -51,7 +54,7 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
 
   if ( rubberBand )
   {
-    rubberBand->reset( true );
+    rubberBand->reset( QGis::Polygon );
     rubberBand->addPoint( ll, false );
     rubberBand->addPoint( QgsPoint( ur.x(), ll.y() ), false );
     rubberBand->addPoint( ur, false );
@@ -128,14 +131,14 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QgsDebugMsg( "doContains: " + QString( doContains ? "T" : "F" ) );
   QgsDebugMsg( "doDifference: " + QString( doDifference ? "T" : "F" ) );
 
-  vlayer->select( QgsAttributeList(), selectGeomTrans.boundingBox(), true, true );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectGeomTrans.boundingBox() ).setFlags( QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeatureIds newSelectedFeatures;
   QgsFeature f;
   QgsFeatureId closestFeatureId = 0;
   bool foundSingleFeature = false;
   double closestFeatureDist = std::numeric_limits<double>::max();
-  while ( vlayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
     QgsGeometry* g = f.geometry();
     if ( doContains )

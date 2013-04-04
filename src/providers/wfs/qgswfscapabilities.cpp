@@ -16,7 +16,7 @@
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgswfsutils.h"
+#include "qgsogcutils.h"
 #include <QDomDocument>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -106,9 +106,10 @@ QString QgsWFSCapabilities::uriGetFeature( QString typeName, QString crsString, 
     {
       //if not, if must be a QGIS expression
       QgsExpression filterExpression( filter );
-      if ( !QgsWFSUtils::expressionToOGCFilter( filterExpression, filterDoc ) )
+      QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( filterExpression, filterDoc );
+      if ( !filterElem.isNull() )
       {
-        //error
+        filterDoc.appendChild( filterElem );
       }
 
     }
@@ -202,6 +203,16 @@ void QgsWFSCapabilities::capabilitiesReplyFinished()
   }
 
   mCaps.clear();
+
+  //test wfs version
+  QString version = capabilitiesDocument.documentElement().attribute( "version" );
+  if ( version != "1.0.0" && version != "1.0" )
+  {
+    mErrorCode = WFSVersionNotSupported;
+    mErrorMessage = tr( "Either the WFS server does not support WFS version 1.0.0 or the WFS url is wrong" );
+    emit gotCapabilities();
+    return;
+  }
 
   // get the <FeatureType> elements
   QDomNodeList featureTypeList = capabilitiesDocument.elementsByTagNameNS( WFS_NAMESPACE, "FeatureType" );

@@ -43,10 +43,16 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent* e )
   mGeometryModified = false;
   mForceCopy = false;
 
+  if ( !mCanvas )
+  {
+    return;
+  }
+
   //get selected features or snap to nearest feature if no selection
   QgsVectorLayer* layer = currentVectorLayer();
-  if ( !mCanvas || !layer )
+  if ( !layer )
   {
+    notifyNotVectorLayer();
     return;
   }
 
@@ -65,7 +71,7 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent* e )
       mSourceLayerId = snapResult.layer->id();
 
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mSourceLayerId ) );
-      if ( vl && vl->featureAtId( snapResult.snappedAtGeometry, fet ) )
+      if ( vl && vl->getFeatures( QgsFeatureRequest().setFilterFid( snapResult.snappedAtGeometry ) ).nextFeature( fet ) )
       {
         mForceCopy = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
         mOriginalGeometry = createOriginGeometry( vl, snapResult, fet );
@@ -116,14 +122,13 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
     f.setGeometry( mModifiedGeometry );
 
     //add empty values for all fields (allows to insert attribute values via the feature form in the same session)
-    QgsAttributeMap attMap;
-    const QgsFieldMap& fields = vlayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = fields.constBegin();
-    for ( ; fieldIt != fields.constEnd(); ++fieldIt )
+    QgsAttributes attrs( vlayer->pendingFields().count() );
+    const QgsFields& fields = vlayer->pendingFields();
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      attMap.insert( fieldIt.key(), QVariant() );
+      attrs[idx] = QVariant();
     }
-    f.setAttributeMap( attMap );
+    f.setAttributes( attrs );
     editOk = vlayer->addFeature( f );
   }
 
@@ -355,7 +360,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
     int quadSegments = s.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt();
     double mitreLimit = s.value( "/qgis/digitizing/offset_miter_limit", 5.0 ).toDouble();
 
-    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, ( leftSide > 0 ) ? offset : -offset, quadSegments, joinStyle, mitreLimit );
+    GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, leftSide ? offset : -offset, quadSegments, joinStyle, mitreLimit );
     if ( !offsetGeom )
     {
       deleteRubberBandAndGeometry();

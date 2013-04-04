@@ -54,8 +54,8 @@ class Dialog(QDialog, Ui_Dialog):
         self.inField.clear()
         changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         changedField = ftools_utils.getFieldList(changedLayer)
-        for i in changedField:
-            self.inField.addItem(unicode(changedField[i].name()))
+        for f in changedField:
+            self.inField.addItem(unicode(f.name()))
         maxFeatures = changedLayer.dataProvider().featureCount()
         self.spnNumber.setMaximum( maxFeatures )
 
@@ -83,9 +83,6 @@ class Dialog(QDialog, Ui_Dialog):
         mlayer = ftools_utils.getMapLayerByName(inVect)
         mlayer.removeSelection(True)
         vlayer = ftools_utils.getVectorLayerByName(inVect)
-        vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select(allAttrs)
         index = vprovider.fieldNameIndex(inField)
         #unique = []
         #vprovider.uniqueValues(index, unique)
@@ -96,12 +93,13 @@ class Dialog(QDialog, Ui_Dialog):
         nElement = 0
         self.progressBar.setValue(0)
         self.progressBar.setRange(0, nFeat)
+	fit = vprovider.getFeatures()
         if not len(unique) == mlayer.featureCount():
             for i in unique:
-                vprovider.rewind()
+                fit.rewind()
                 FIDs= []
-                while vprovider.nextFeature(inFeat):
-                    atMap = inFeat.attributeMap()
+                while fit.nextFeature(inFeat):
+                    atMap = inFeat.attributes()
                     if atMap[index] == QVariant(i):
                         FID = inFeat.id()
                         FIDs.append(FID)

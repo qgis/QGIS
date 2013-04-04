@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposerarrow.h"
+#include "qgscomposition.h"
 #include <QPainter>
 #include <QSvgRenderer>
 

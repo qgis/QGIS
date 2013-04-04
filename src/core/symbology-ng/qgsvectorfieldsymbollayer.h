@@ -81,9 +81,16 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     void setAngleUnits( AngleUnits units ) { mAngleUnits = units; }
     AngleUnits angleUnits() const { return mAngleUnits; }
 
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    void setDistanceUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceUnit = unit; }
+    QgsSymbolV2::OutputUnit distanceUnit() const { return mDistanceUnit; }
+
   private:
     QString mXAttribute;
     QString mYAttribute;
+    QgsSymbolV2::OutputUnit mDistanceUnit;
     double mScale;
     VectorFieldType mVectorFieldType;
     AngleOrientation mAngleOrientation;

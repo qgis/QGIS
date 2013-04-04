@@ -208,4 +208,18 @@ class QgsDataProvider : QObject
      */
     void fullExtentCalculated();
 
+    /**
+     *   This is emitted whenever an asynchronous operation has finished
+     *   and the data should be redrawn
+     *   @note added in 1.5
+     */
+    void dataChanged();
+
+    /**
+     *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
+     *   @param changed binary combination of changes
+     *   @note added in 1.7
+     */
+    void dataChanged( int changed );
+
 };

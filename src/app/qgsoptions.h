@@ -21,6 +21,7 @@
 #include "ui_qgsoptionsbase.h"
 #include "qgisgui.h"
 #include "qgisapp.h"
+#include "qgisappstylesheet.h"
 #include "qgscontexthelp.h"
 
 #include <qgscoordinatereferencesystem.h>
@@ -75,11 +76,16 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     void themeChanged( const QString & );
 
     void iconSizeChanged( const QString &iconSize );
-    /*!
-    * Slot to temporarily apply settings to app stylesheet
-    * @note added in QGIS 2.0
-    */
-    void updateAppStyleSheet();
+
+    /** Slot to handle when type of project to open after launch is changed
+     * @note added in QGIS 1.9
+     */
+    void on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
+
+    /** Slot to choose path to project to open after launch
+     * @note added in QGIS 1.9
+     */
+    void on_mProjectOnLaunchPushBtn_pressed();
 
     //! Slot to change backbuffering. This is handled when the user changes
     // the value of the checkbox
@@ -91,31 +97,62 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      * true.
      */
     bool newVisible();
-    /*!
-     * Slot to select the default map selection color
-     */
-    void on_pbnSelectionColor_clicked();
 
-    /*!
-     * Slot to select the default measure tool color
+    /** Slot to select the default font point size for app
+     * @note added in QGIS 1.9
      */
-    void on_pbnMeasureColor_clicked();
+    void on_spinFontSize_valueChanged( int fontSize );
 
-    /*!
-     * Slot to select the default map selection color
+    /** Slot to set font family for app to Qt default
+     * @note added in QGIS 1.9
      */
-    void on_pbnCanvasColor_clicked();
+    void on_mFontFamilyRadioQt_released();
 
-    /*!
-     * Slot to select the color of the digitizing rubber band
+    /** Slot to set font family for app to custom choice
+     * @note added in QGIS 1.9
      */
-    void on_mLineColorToolButton_clicked();
+    void on_mFontFamilyRadioCustom_released();
+
+    /** Slot to select custom font family choice for app
+     * @note added in QGIS 1.9
+     */
+    void on_mFontFamilyComboBox_currentFontChanged( const QFont& font );
+
+    /** Slot to set whether to use custom group boxes
+     * @note added in QGIS 1.9
+     */
+    void on_mCustomGroupBoxChkBx_clicked( bool chkd );
+
+    /** Slot to set whether to bold group box titles
+     * @note added in QGIS 1.9
+     */
+    void on_mBoldGroupBoxTitleChkBx_clicked( bool chkd );
 
     /**Add a new URL to exclude from Proxy*/
     void on_mAddUrlPushButton_clicked();
 
     /**Remove an URL to exclude from Proxy*/
     void on_mRemoveUrlPushButton_clicked();
+
+    /** Slot to enable custom environment variables table and buttons
+     * @note added in QGIS 1.9
+     */
+    void on_mCustomVariablesChkBx_toggled( bool chkd );
+
+    /** Slot to add a custom environment variable to the app
+     * @note added in QGIS 1.9
+     */
+    void on_mAddCustomVarBtn_clicked();
+
+    /** Slot to remove a custom environment variable from the app
+     * @note added in QGIS 1.9
+     */
+    void on_mRemoveCustomVarBtn_clicked();
+
+    /** Slot to filter out current environment variables not specific to QGIS
+     * @note added in QGIS 1.9
+     */
+    void on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific );
 
     /* Let the user add a path to the list of search paths
      * used for finding user Plugin libs.
@@ -174,10 +211,15 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void on_pbnExportScales_clicked();
 
-    /** Auto slot executed when the active page in the main widget stack is changed
-     * @note added in 2.0
+    /** Auto slot executed when the active page in the option section widget is changed
+     * @note added in 1.9
      */
-    void on_tabWidget_currentChanged( int theTab );
+    void on_mOptionsStackedWidget_currentChanged( int theIndx );
+
+    /** Slot to update widget of vertical tabs
+     * @note added in QGIS 1.9
+     */
+    void updateVerticalTabs();
 
     /* Load the list of drivers available in GDAL
      * @note added in 2.0
@@ -189,12 +231,6 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      */
     void saveGdalDriverList();
 
-    /* Update ComboBox accorindg to the selected new index
-     * Also sets the new selected Ellipsoid.
-     * @note added in 2.0
-     */
-    void updateEllipsoidUI( int newIndex );
-
   private:
     QStringList i18nList();
     void initContrastEnhancement( QComboBox *cbox, QString name, QString defaultVal );
@@ -203,21 +239,18 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
 
-    // List for all ellispods, also None and Custom
-    struct EllipsoidDefs
-    {
-      QString acronym;
-      QString description;
-      double semiMajor;
-      double semiMinor;
-    };
-    QList<EllipsoidDefs> mEllipsoidList;
-    int mEllipsoidIndex;
+    /** Generate table row for custom environment variables
+     * @note added in QGIS 1.9
+     */
+    void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );
 
-    //! Populates list with ellipsoids from Sqlite3 db
-    void populateEllipsoidList();
+  protected:
+    void showEvent( QShowEvent * e );
+    void paintEvent( QPaintEvent * e );
 
-    static const char * GEO_NONE_DESC;
+    QgisAppStyleSheet* mStyleSheetBuilder;
+    QMap<QString, QVariant> mStyleSheetNewOpts;
+    QMap<QString, QVariant> mStyleSheetOldOpts;
 };
 
 #endif // #ifndef QGSOPTIONS_H

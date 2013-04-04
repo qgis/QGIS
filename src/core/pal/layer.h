@@ -301,14 +301,23 @@ namespace pal
        * @param labelPosX x position of the label (in case of fixed label position)
        * @param labelPosY y position of the label (in case of fixed label position)
        * @param fixedPos true if a single fixed position for this label is needed
+       * @param angle fixed angle (in radians) to rotate the label
+       * @param fixedAngle whether to use provided fixed angle
+       * @param xQuadOffset move label to quadrant: left, don't move, right (-1, 0, 1)
+       * @param yQuadOffset move label to quadrant: down, don't move, up (-1, 0, 1)
+       * @param xOffset map unit (+/-) to x-offset the label
+       * @param yOffset map unit (+/-) to y-offset the label
+       * @param alwaysShow whether to skip priority and always show the label (causes overlapping)
        *
        * @throws PalException::FeatureExists
        *
        * @return true on success (i.e. valid geometry)
        */
       bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
-                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0, bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
-                            int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0 );
+                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0,
+                            bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
+                            int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
+                            bool alwaysShow = false );
 
       /** return pointer to feature or NULL if doesn't exist */
       Feature* getFeature( const char* geom_id );

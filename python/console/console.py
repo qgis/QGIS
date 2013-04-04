@@ -26,6 +26,7 @@ from console_sci import PythonEdit
 from console_output import EditorOutput
 from console_help import HelpDialog
 from console_settings import optionsDialog
+from qgis.core import QgsApplication
 
 import sys
 import os
@@ -64,7 +65,7 @@ class PythonConsole(QDockWidget):
         QDockWidget.__init__(self, parent)
         self.setObjectName("PythonConsole")
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
-        #self.setAllowedAreas(Qt.BottomDockWidgetArea) 
+        #self.setAllowedAreas(Qt.BottomDockWidgetArea)
 
         self.console = PythonConsoleWidget(self)
         self.setWidget( self.console )
@@ -78,7 +79,7 @@ class PythonConsole(QDockWidget):
         self.activateWindow()
         self.raise_()
         QDockWidget.setFocus(self)
-        
+
     def closeEvent(self, event):
         self.console.edit.writeHistoryFile()
         QWidget.closeEvent(self, event)
@@ -86,17 +87,18 @@ class PythonConsole(QDockWidget):
 class PythonConsoleWidget(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))        
+        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
         self.widgetButton = QWidget()
         #self.widgetEditors = QWidget()
-        
+
         self.options = optionsDialog(self)
-        
+        self.helpDlg = HelpDialog(self)
+
         self.splitter = QSplitter(self)
         self.splitter.setOrientation(Qt.Vertical)
         self.splitter.setHandleWidth(3)
         self.splitter.setChildrenCollapsible(False)
-        
+
         self.toolBar = QToolBar()
         self.toolBar.setEnabled(True)
         self.toolBar.setFocusPolicy(Qt.NoFocus)
@@ -120,7 +122,7 @@ class PythonConsoleWidget(QWidget):
         self.clearButton = QAction(parent)
         self.clearButton.setCheckable(False)
         self.clearButton.setEnabled(True)
-        self.clearButton.setIcon(QIcon(":/images/console/iconClearConsole.png"))
+        self.clearButton.setIcon(QgsApplication.getThemeIcon("console/iconClearConsole.png"))
         self.clearButton.setMenuRole(QAction.PreferencesRole)
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip(clearBt)
@@ -130,7 +132,7 @@ class PythonConsoleWidget(QWidget):
         self.optionsButton = QAction(parent)
         self.optionsButton.setCheckable(False)
         self.optionsButton.setEnabled(True)
-        self.optionsButton.setIcon(QIcon(":/images/console/iconSettingsConsole.png"))
+        self.optionsButton.setIcon(QgsApplication.getThemeIcon("console/iconSettingsConsole.png"))
         self.optionsButton.setMenuRole(QAction.PreferencesRole)
         self.optionsButton.setIconVisibleInMenu(True)
         self.optionsButton.setToolTip(optionsBt)
@@ -140,7 +142,7 @@ class PythonConsoleWidget(QWidget):
         self.actionClass = QAction(parent)
         self.actionClass.setCheckable(False)
         self.actionClass.setEnabled(True)
-        self.actionClass.setIcon(QIcon(":/images/console/iconClassConsole.png"))
+        self.actionClass.setIcon(QgsApplication.getThemeIcon("console/iconClassConsole.png"))
         self.actionClass.setMenuRole(QAction.PreferencesRole)
         self.actionClass.setIconVisibleInMenu(True)
         self.actionClass.setToolTip(actionClassBt)
@@ -150,7 +152,7 @@ class PythonConsoleWidget(QWidget):
         self.actionScript = QAction(parent)
         self.actionScript.setCheckable(False)
         self.actionScript.setEnabled(True)
-        self.actionScript.setIcon(QIcon(":/images/console/iconScriptConsole.png"))
+        self.actionScript.setIcon(QgsApplication.getThemeIcon("console/iconScriptConsole.png"))
         self.actionScript.setMenuRole(QAction.PreferencesRole)
         self.actionScript.setIconVisibleInMenu(True)
         self.actionScript.setToolTip(actionScriptBt)
@@ -160,27 +162,17 @@ class PythonConsoleWidget(QWidget):
         self.loadSextanteButton = QAction(parent)
         self.loadSextanteButton.setCheckable(False)
         self.loadSextanteButton.setEnabled(True)
-        self.loadSextanteButton.setIcon(QIcon(":/images/console/iconSextanteConsole.png"))
+        self.loadSextanteButton.setIcon(QgsApplication.getThemeIcon("console/iconSextanteConsole.png"))
         self.loadSextanteButton.setMenuRole(QAction.PreferencesRole)
         self.loadSextanteButton.setIconVisibleInMenu(True)
         self.loadSextanteButton.setToolTip(loadSextanteBt)
         self.loadSextanteButton.setText(loadSextanteBt)
-        ## Import QgisInterface class
-        loadIfaceBt = QCoreApplication.translate("PythonConsole", "Import QgisInterface class")
-        self.loadIfaceButton = QAction(parent)
-        self.loadIfaceButton.setCheckable(False)
-        self.loadIfaceButton.setEnabled(True)
-        self.loadIfaceButton.setIcon(QIcon(":/images/console/iconIfaceConsole.png"))
-        self.loadIfaceButton.setMenuRole(QAction.PreferencesRole)
-        self.loadIfaceButton.setIconVisibleInMenu(True)
-        self.loadIfaceButton.setToolTip(loadIfaceBt)
-        self.loadIfaceButton.setText(loadIfaceBt)
         ## Import QtCore class
         loadQtCoreBt = QCoreApplication.translate("PythonConsole", "Import PyQt.QtCore class")
         self.loadQtCoreButton = QAction(parent)
         self.loadQtCoreButton.setCheckable(False)
         self.loadQtCoreButton.setEnabled(True)
-        self.loadQtCoreButton.setIcon(QIcon(":/images/console/iconQtCoreConsole.png"))
+        self.loadQtCoreButton.setIcon(QgsApplication.getThemeIcon("console/iconQtCoreConsole.png"))
         self.loadQtCoreButton.setMenuRole(QAction.PreferencesRole)
         self.loadQtCoreButton.setIconVisibleInMenu(True)
         self.loadQtCoreButton.setToolTip(loadQtCoreBt)
@@ -190,7 +182,7 @@ class PythonConsoleWidget(QWidget):
         self.loadQtGuiButton = QAction(parent)
         self.loadQtGuiButton.setCheckable(False)
         self.loadQtGuiButton.setEnabled(True)
-        self.loadQtGuiButton.setIcon(QIcon(":/images/console/iconQtGuiConsole.png"))
+        self.loadQtGuiButton.setIcon(QgsApplication.getThemeIcon("console/iconQtGuiConsole.png"))
         self.loadQtGuiButton.setMenuRole(QAction.PreferencesRole)
         self.loadQtGuiButton.setIconVisibleInMenu(True)
         self.loadQtGuiButton.setToolTip(loadQtGuiBt)
@@ -200,7 +192,7 @@ class PythonConsoleWidget(QWidget):
         self.openFileButton = QAction(parent)
         self.openFileButton.setCheckable(False)
         self.openFileButton.setEnabled(True)
-        self.openFileButton.setIcon(QIcon(":/images/console/iconOpenConsole.png"))
+        self.openFileButton.setIcon(QgsApplication.getThemeIcon("console/iconOpenConsole.png"))
         self.openFileButton.setMenuRole(QAction.PreferencesRole)
         self.openFileButton.setIconVisibleInMenu(True)
         self.openFileButton.setToolTip(openFileBt)
@@ -210,7 +202,7 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton = QAction(parent)
         self.saveFileButton.setCheckable(False)
         self.saveFileButton.setEnabled(True)
-        self.saveFileButton.setIcon(QIcon(":/images/console/iconSaveConsole.png"))
+        self.saveFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveConsole.png"))
         self.saveFileButton.setMenuRole(QAction.PreferencesRole)
         self.saveFileButton.setIconVisibleInMenu(True)
         self.saveFileButton.setToolTip(saveFileBt)
@@ -220,7 +212,7 @@ class PythonConsoleWidget(QWidget):
         self.runButton = QAction(parent)
         self.runButton.setCheckable(False)
         self.runButton.setEnabled(True)
-        self.runButton.setIcon(QIcon(":/images/console/iconRunConsole.png"))
+        self.runButton.setIcon(QgsApplication.getThemeIcon("console/iconRunConsole.png"))
         self.runButton.setMenuRole(QAction.PreferencesRole)
         self.runButton.setIconVisibleInMenu(True)
         self.runButton.setToolTip(runBt)
@@ -230,7 +222,7 @@ class PythonConsoleWidget(QWidget):
         self.helpButton = QAction(parent)
         self.helpButton.setCheckable(False)
         self.helpButton.setEnabled(True)
-        self.helpButton.setIcon(QIcon(":/images/console/iconHelpConsole.png"))
+        self.helpButton.setIcon(QgsApplication.getThemeIcon("console/iconHelpConsole.png"))
         self.helpButton.setMenuRole(QAction.PreferencesRole)
         self.helpButton.setIconVisibleInMenu(True)
         self.helpButton.setToolTip(helpBt)
@@ -244,7 +236,6 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.addAction(self.runButton)
         ## Menu Import Class
         self.classMenu = QMenu(self)
-        self.classMenu.addAction(self.loadIfaceButton)
         self.classMenu.addAction(self.loadSextanteButton)
         self.classMenu.addAction(self.loadQtCoreButton)
         self.classMenu.addAction(self.loadQtGuiButton)
@@ -262,9 +253,9 @@ class PythonConsoleWidget(QWidget):
         self.b.addWidget(self.toolBar)
         self.edit = PythonEdit(self)
         self.textEditOut = EditorOutput(self)
-        
+
         self.setFocusProxy(self.edit)
-        
+
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -273,10 +264,10 @@ class PythonConsoleWidget(QWidget):
 
         self.splitter.addWidget(self.textEditOut)
         self.splitter.addWidget(self.edit)
-        
+
         sizes = self.splitter.sizes()
         self.splitter.setSizes(sizes)
-                
+
         self.f.addWidget(self.widgetButton, 0, 0)
         self.f.addWidget(self.splitter, 0, 1)
 
@@ -288,10 +279,9 @@ class PythonConsoleWidget(QWidget):
 
         self.textEditOut.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.edit.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        
+
         self.clearButton.triggered.connect(self.textEditOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
-        self.loadIfaceButton.triggered.connect(self.iface)
         self.loadSextanteButton.triggered.connect(self.sextante)
         self.loadQtCoreButton.triggered.connect(self.qtCore)
         self.loadQtGuiButton.triggered.connect(self.qtGui)
@@ -299,18 +289,15 @@ class PythonConsoleWidget(QWidget):
         self.openFileButton.triggered.connect(self.openScriptFile)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
-        QObject.connect(self.options.buttonBox, SIGNAL("accepted()"), 
+        QObject.connect(self.options.buttonBox, SIGNAL("accepted()"),
                         self.prefChanged)
 
     def sextante(self):
        self.edit.commandConsole('sextante')
 
-    def iface(self):
-       self.edit.commandConsole('iface')
-       
     def qtCore(self):
        self.edit.commandConsole('qtCore')
-    
+
     def qtGui(self):
        self.edit.commandConsole('qtGui')
 
@@ -353,18 +340,21 @@ class PythonConsoleWidget(QWidget):
                         sF.write('\n')
                     sF.write(s)
             sF.close()
-        
+            self.callWidgetMessageBar('Script was correctly saved.')
+
     def openHelp(self):
-        dlg = HelpDialog(self)
-        dlg.exec_()
-        
+        self.helpDlg.show()
+        self.helpDlg.activateWindow()
+
     def openSettings(self):
-        #options = optionsDialog()
         self.options.exec_()
-        
+
     def prefChanged(self):
         self.edit.refreshLexerProperties()
         self.textEditOut.refreshLexerProperties()
+
+    def callWidgetMessageBar(self, text):
+        self.textEditOut.widgetMessageBar(iface, text)
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)

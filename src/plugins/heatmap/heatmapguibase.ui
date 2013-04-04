@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
-    <height>380</height>
+    <width>460</width>
+    <height>415</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,7 +26,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="mInputLabel">
      <property name="text">
-      <string>Input Point Vector</string>
+      <string>Input point layer</string>
      </property>
     </widget>
    </item>
@@ -36,7 +36,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="mOutputLabel">
      <property name="text">
-      <string>Output Raster</string>
+      <string>Output raster</string>
      </property>
     </widget>
    </item>
@@ -59,7 +59,7 @@
    <item row="3" column="0">
     <widget class="QLabel" name="mFormatLabel">
      <property name="text">
-      <string>Output Format</string>
+      <string>Output format</string>
      </property>
     </widget>
    </item>
@@ -101,20 +101,6 @@
      </item>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mDecayLabel">
-     <property name="text">
-      <string>Decay Ratio</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QLineEdit" name="mDecayLineEdit">
-     <property name="text">
-      <string>0.1</string>
-     </property>
-    </widget>
-   </item>
    <item row="6" column="0" colspan="3">
     <widget class="QGroupBox" name="advancedGroupBox">
      <property name="sizePolicy">
@@ -151,7 +137,7 @@
         <item row="1" column="0">
          <widget class="QLabel" name="cellsizeXLabel">
           <property name="text">
-           <string>Cell Size X</string>
+           <string>Cell size X</string>
           </property>
           <property name="buddy">
            <cstring>cellXLineEdit</cstring>
@@ -171,7 +157,7 @@
         <item row="1" column="2">
          <widget class="QLabel" name="cellsizeYLabel">
           <property name="text">
-           <string>Cell Size Y</string>
+           <string>Cell size Y</string>
           </property>
           <property name="buddy">
            <cstring>cellYLineEdit</cstring>
@@ -194,21 +180,21 @@
       </item>
       <item row="1" column="0">
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="0" column="0">
+        <item row="1" column="0">
          <widget class="QCheckBox" name="useRadius">
           <property name="text">
-           <string>Use Radius from field</string>
+           <string>Use radius from field</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="1" column="1">
          <widget class="QComboBox" name="radiusFieldCombo">
           <property name="enabled">
            <bool>false</bool>
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
+        <item row="1" column="2">
          <widget class="QComboBox" name="radiusFieldUnitCombo">
           <property name="enabled">
            <bool>false</bool>
@@ -225,17 +211,70 @@
           </item>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="2" column="0">
          <widget class="QCheckBox" name="useWeight">
           <property name="text">
-           <string>Use Weight from field</string>
+           <string>Use weight from field</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1" colspan="2">
+        <item row="2" column="1" colspan="2">
          <widget class="QComboBox" name="weightFieldCombo">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="2">
+         <widget class="QLineEdit" name="mDecayLineEdit">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>0.0</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="mDecayLabel">
+          <property name="text">
+           <string>Decay ratio</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" colspan="2">
+         <widget class="QComboBox" name="kernelShapeCombo">
+          <item>
+           <property name="text">
+            <string>Quartic (biweight)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Triangular</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Uniform</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Triweight</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Epanechnikov</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="kernelShapeLable">
+          <property name="text">
+           <string>Kernel shape</string>
           </property>
          </widget>
         </item>

@@ -66,6 +66,21 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool singleFile() const { return mSingleFile; }
     void setSingleFile( bool single ) { mSingleFile = single; }
 
+    bool sortFeatures() const { return mSortFeatures; }
+    void setSortFeatures( bool doSort ) { mSortFeatures = doSort; }
+
+    bool sortAscending() const { return mSortAscending; }
+    void setSortAscending( bool ascending ) { mSortAscending = ascending; }
+
+    bool filterFeatures() const { return mFilterFeatures; }
+    void setFilterFeatures( bool doFilter ) { mFilterFeatures = doFilter; }
+
+    QString featureFilter() const { return mFeatureFilter; }
+    void setFeatureFilter( const QString& expression ) { mFeatureFilter = expression; }
+
+    size_t sortKeyAttributeIndex() const { return mSortKeyAttributeIdx; }
+    void setSortKeyAttributeIndex( size_t idx ) { mSortKeyAttributeIdx = idx; }
+
     /** Begins the rendering. */
     void beginRender();
     /** Ends the rendering. Restores original extent */
@@ -103,7 +118,26 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     QgsCoordinateTransform mTransform;
     QString mCurrentFilename;
+    // feature ordering
+    bool mSortFeatures;
+    // sort direction
+    bool mSortAscending;
+  public:
+    typedef std::map< QgsFeatureId, QVariant > SorterKeys;
+  private:
+    // value of field that is used for ordering of features
+    SorterKeys mFeatureKeys;
+    // key (attribute index) used for ordering
+    size_t mSortKeyAttributeIdx;
+
+    // feature filtering
+    bool mFilterFeatures;
+    // feature expression filter
+    QString mFeatureFilter;
+
+    // id of each iterated feature (after filtering and sorting)
     std::vector<QgsFeatureId> mFeatureIds;
+
     QgsFeature mCurrentFeature;
     QgsRectangle mOrigExtent;
     bool mRestoreLayer;

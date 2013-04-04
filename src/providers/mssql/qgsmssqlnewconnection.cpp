@@ -49,6 +49,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
     {
       txtUsername->setText( settings.value( key + "/username" ).toString() );
       chkStoreUsername->setChecked( true );
+      cb_trustedConnection->setChecked( false );
     }
 
     if ( settings.value( key + "/savePassword" ).toString() == "true" )
@@ -71,6 +72,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
 
     txtName->setText( connName );
   }
+  on_cb_trustedConnection_clicked();
 }
 /** Autoconnected SLOTS **/
 void QgsMssqlNewConnection::accept()
@@ -125,6 +127,22 @@ void QgsMssqlNewConnection::accept()
 void QgsMssqlNewConnection::on_btnConnect_clicked()
 {
   testConnection();
+}
+
+void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
+{
+  if ( cb_trustedConnection->checkState() == Qt::Checked )
+  {
+    txtUsername->setEnabled( false );
+    txtUsername->setText( "" );
+    txtPassword->setEnabled( false );
+    txtPassword->setText( "" );
+  }
+  else
+  {
+    txtUsername->setEnabled( true );
+    txtPassword->setEnabled( true );
+  }
 }
 
 /** end  Autoconnected SLOTS **/

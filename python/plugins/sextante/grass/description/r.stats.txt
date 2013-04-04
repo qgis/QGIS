@@ -1,8 +1,7 @@
 r.stats
-r.stats - Generates area statistics for raster map layers.
+r.stats - Generates area statistics for raster layers.
 Raster (r.*)
 ParameterMultipleInput|input|Name of input raster map|3.0|False
-OutputFile|output|Name for output file (if omitted or "-" output to stdout)
 ParameterString|fs|Output field separator|space
 ParameterString|nv|String representing no data cell value|*
 ParameterString|nsteps|Number of fp subranges to collect stats from|255
@@ -19,3 +18,4 @@ ParameterBoolean|-n|Suppress reporting of any NULLs|False
 ParameterBoolean|-N|Suppress reporting of NULLs when all values are NULL|False
 ParameterBoolean|-C|Report for cats fp ranges (fp maps only)|False
 ParameterBoolean|-i|Read fp map as integer (use map's quant rules)|False
+OutputHTML|html|Output stats file

@@ -66,7 +66,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>change</string>
+        <string>Change...</string>
        </property>
       </widget>
      </item>
@@ -94,6 +94,12 @@
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::InternalMove</enum>
+     </property>
+     <property name="defaultDropAction">
+      <enum>Qt::IgnoreAction</enum>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
@@ -104,6 +110,9 @@
       </size>
      </property>
      <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="itemsExpandable">
       <bool>false</bool>
      </property>
      <property name="sortingEnabled">
@@ -131,7 +140,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnDeleteCategory">
+      <widget class="QPushButton" name="btnDeleteCategories">
        <property name="text">
         <string>Delete</string>
        </property>
@@ -191,7 +200,7 @@
   <tabstop>cboCategorizedColorRamp</tabstop>
   <tabstop>viewCategories</tabstop>
   <tabstop>btnAddCategories</tabstop>
-  <tabstop>btnDeleteCategory</tabstop>
+  <tabstop>btnDeleteCategories</tabstop>
   <tabstop>btnDeleteAllCategories</tabstop>
   <tabstop>btnJoinCategories</tabstop>
  </tabstops>

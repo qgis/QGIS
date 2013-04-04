@@ -7,45 +7,28 @@ class QgsVectorDataProvider : QgsDataProvider
 
   public:
 
-  QgsVectorDataProvider* __iter__();
-%MethodCode
-    sipRes = sipCpp;
-%End
-
-  SIP_PYOBJECT __next__();
-%MethodCode
-    QgsFeature* f = new QgsFeature;
-    if (sipCpp->nextFeature(*f))
-      sipRes = sipConvertFromInstance(f, sipClass_QgsFeature, Py_None);
-    else
+    // If you add to this, please also add to capabilitiesString()
+    /**
+     * enumeration with capabilities that providers might implement
+     */
+    enum Capability
     {
-      delete f;
-      PyErr_SetString(PyExc_StopIteration,"");
-    }
-%End
-
-      // If you add to this, please also add to capabilitiesString()
-      /**
-       * enumeration with capabilities that providers might implement
-       */
-      enum Capability
-      {
-        NoCapabilities =               0,
-        AddFeatures =                  1,
-        DeleteFeatures =               2,
-        ChangeAttributeValues =        4,
-        AddAttributes =                8,
-        DeleteAttributes =             16,
-        SaveAsShapefile =              32,
-        CreateSpatialIndex =           64,
-        SelectAtId =                   128,
-        ChangeGeometries =             256,
-        SelectGeometryAtId =           512,
-        RandomSelectGeometryAtId =     1024,
-        SequentialSelectGeometryAtId = 2048,
-        CreateAttributeIndex =         4096,
-        SetEncoding =                  8192,
-      };
+      NoCapabilities =               0,
+      AddFeatures =                  1,
+      DeleteFeatures =               2,
+      ChangeAttributeValues =        4,
+      AddAttributes =                8,
+      DeleteAttributes =             16,
+      SaveAsShapefile =              32,
+      CreateSpatialIndex =           64,
+      SelectAtId =                   128,
+      ChangeGeometries =             256,
+      SelectGeometryAtId =           512,
+      RandomSelectGeometryAtId =     1024,
+      SequentialSelectGeometryAtId = 2048,
+      CreateAttributeIndex =         4096,
+      SetEncoding =                  8192,
+    };
 
     /** bitmask of all provider's editing capabilities */
     static const int EditingCapabilities;
@@ -66,46 +49,10 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual QString storageType() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     * @param fetchAttributes list of attributes which should be fetched
-     * @param rect spatial filter
-     * @param fetchGeometry true if the feature geometry should be fetched
-     * @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QList<int> fetchAttributes = QList<int>(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false ) = 0;
-
     /**
-     * This function does nothing useful, it's kept only for compatibility.
-     * @todo to be removed
+     * Query the provider for features specified in request.
      */
-    virtual long updateFeatureCount() /Deprecated/;
-
-    /**
-     * Gets the feature at the given feature ID.
-     * @param featureId id of the feature
-     * @param feature feature which will receive the data
-     * @param fetchGeometry if true, geometry will be fetched from the provider
-     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-     * @return True when feature was found, otherwise false
-     *
-     * Default implementation traverses all features until it finds the one with correct ID.
-     * In case the provider supports reading the feature directly, override this function.
-     */
-    virtual bool featureAtId( qint64 featureId,
-                              QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QList<int> fetchAttributes = QList<int>());
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature& feature ) = 0;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) = 0;
 
     /**
      * Get feature type.
@@ -120,25 +67,17 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual long featureCount() const = 0;
 
     /**
-     * Number of attribute fields for a feature in the layer
-     */
-    virtual uint fieldCount() const = 0;
-
-    /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
      * @see QgsFieldMap
      */
-    virtual const QMap<int, QgsField> &fields() const = 0;
+    virtual const QgsFields &fields() const = 0;
 
     /**
      * Return a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
     virtual QString dataComment() const;
-
-    /** Restart reading features from previous select operation */
-    virtual void rewind() = 0;
 
     /**
      * Returns the minimum value of an attribute
@@ -181,7 +120,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * Adds a list of features
      * @return true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QList<QgsFeature> & flist /In,Out/ );
+    virtual bool addFeatures( QList<QgsFeature> &flist /In,Out/ );
 
     /**
      * Deletes one or more features
@@ -197,14 +136,6 @@ class QgsVectorDataProvider : QgsDataProvider
      * @note added in 1.2
      */
     virtual bool addAttributes( const QList<QgsField> &attributes );
-
-    /**
-     * Add new attributes
-     * @param attributes map of attributes name as key and type as value
-     * @return true in case of success and false in case of failure
-     * @deprecated
-     */
-    virtual bool addAttributes( const QMap<QString, QString> &attributes ) /Deprecated/;
 
     /**
      * Deletes existing attributes
@@ -227,9 +158,10 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Changes geometries of existing features
-     * @param geometry_map   A std::map containing the feature IDs to change the geometries of. 
-     *                       the second map parameter being the new geometries themselves
-     * @return               true in case of success and false in case of failure
+     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
+     *                       that will have their geometries changed.
+     *                       The second map parameter being the new geometries themselves
+     * @return               True in case of success and false in case of failure
      */
     virtual bool changeGeometryValues( QMap<qint64, QgsGeometry> & geometry_map );
 
@@ -278,6 +210,17 @@ class QgsVectorDataProvider : QgsDataProvider
     QList<int> attributeIndexes();
 
     /**
+     * Return list of indexes of fields that make up the primary key
+     * @note added in 2.0
+     */
+    virtual QList<int> pkAttributeIndexes();
+
+    /**
+     * Return list of indexes to names for QgsPalLabeling fix
+     */
+    virtual QHash<int, QString> palAttributeIndexNames() const;
+
+    /**
      * Set whether provider should also return features that don't have
      * associated geometry. false by default
      */
@@ -291,7 +234,15 @@ class QgsVectorDataProvider : QgsDataProvider
 
     struct NativeType
     {
-	NativeType( QString typeDesc, QString typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
+      NativeType( QString typeDesc, QString typeName, QVariant::Type type, int minLen = 0, int maxLen = 0, int minPrec = 0, int maxPrec = 0 );
+
+      QString mTypeDesc;
+      QString mTypeName;
+      QVariant::Type mType;
+      int mMinLen;
+      int mMaxLen;
+      int mMinPrec;
+      int mMaxPrec;
     };
 
     /**
@@ -299,12 +250,6 @@ class QgsVectorDataProvider : QgsDataProvider
      * @note added in 1.2
      */
     const QList< QgsVectorDataProvider::NativeType > &nativeTypes() const;
-
-    /**
-     * Returns the names of the supported types
-     * @deprecated use nativeTypes()
-     */
-    const QMap<QString,QVariant::Type> &supportedNativeTypes() const /Deprecated/;
 
     /** Returns true if the provider is strict about the type of inserted features
           (e.g. no multipolygon in a polygon layer)

@@ -21,6 +21,7 @@
 #include <QEvent>
 #include <QString>
 #include <QMetaType>
+#include <QVariant>
 #include <stdlib.h>
 #include <cfloat>
 #include <cmath>
@@ -66,6 +67,50 @@ class CORE_EXPORT QGis
       WKBMultiPolygon25D,
     };
 
+    static WkbType singleType( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBMultiPoint:         return WKBPoint;
+        case WKBMultiLineString:    return WKBLineString;
+        case WKBMultiPolygon:       return WKBPolygon;
+        case WKBMultiPoint25D:      return WKBPoint25D;
+        case WKBMultiLineString25D: return WKBLineString25D;
+        case WKBMultiPolygon25D:    return WKBPolygon25D;
+        default:                    return type;
+      }
+    }
+
+    static WkbType flatType( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBPoint25D:           return WKBPoint;
+        case WKBLineString25D:      return WKBLineString;
+        case WKBPolygon25D:         return WKBPolygon;
+        case WKBMultiPoint25D:      return WKBMultiPoint;
+        case WKBMultiLineString25D: return WKBMultiLineString;
+        case WKBMultiPolygon25D:    return WKBMultiPolygon;
+        default:                    return type;
+      }
+    }
+
+    static int wkbDimensions( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBUnknown:            return 0;
+        case WKBNoGeometry:         return 0;
+        case WKBPoint25D:           return 3;
+        case WKBLineString25D:      return 3;
+        case WKBPolygon25D:         return 3;
+        case WKBMultiPoint25D:      return 3;
+        case WKBMultiLineString25D: return 3;
+        case WKBMultiPolygon25D:    return 3;
+        default:                    return 2;
+      }
+    }
+
     enum GeometryType
     {
       Point,
@@ -75,13 +120,65 @@ class CORE_EXPORT QGis
       NoGeometry
     };
 
-    // String representation of geometry types (set in qgis.cpp)
-    //! @note not available in python bindings
-    static const char *qgisVectorGeometryType[];
+    //! description strings for geometry types
+    static const char *vectorGeometryType( GeometryType type )
+    {
+      switch ( type )
+      {
+        case Point:           return "Point";
+        case Line:            return "Line";
+        case Polygon:         return "Polygon";
+        case UnknownGeometry: return "Unknown geometry";
+        case NoGeometry:      return "No geometry";
+        default:              return "Invalid type";
+      }
+    }
 
     //! description strings for feature types
-    //! @note not available in python bindings
-    static const char *qgisFeatureTypes[];
+    static const char *featureType( WkbType type )
+    {
+      switch ( type )
+      {
+        case WKBUnknown:            return "WKBUnknown";
+        case WKBPoint:              return "WKBPoint";
+        case WKBLineString:         return "WKBLineString";
+        case WKBPolygon:            return "WKBPolygon";
+        case WKBMultiPoint:         return "WKBMultiLineString";
+        case WKBMultiPolygon:       return "WKBMultiPolygon";
+        case WKBNoGeometry:         return "WKBNoGeometry";
+        case WKBPoint25D:           return "WKBPoint25D";
+        case WKBLineString25D:      return "WKBLineString25D";
+        case WKBPolygon25D:         return "WKBPolygon25D";
+        case WKBMultiPoint25D:      return "WKBMultiPoint25D";
+        case WKBMultiLineString25D: return "WKBMultiLineString25D";
+        case WKBMultiPolygon25D:    return "WKBMultiPolygon25D";
+        default:                    return "invalid wkbtype";
+      }
+    }
+
+    /** Raster data types.
+     *  This is modified and extended copy of GDALDataType.
+     */
+    enum DataType
+    {
+      /*! Unknown or unspecified type */                UnknownDataType = 0,
+      /*! Eight bit unsigned integer (quint8) */        Byte = 1,
+      /*! Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
+      /*! Sixteen bit signed integer (qint16) */        Int16 = 3,
+      /*! Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
+      /*! Thirty two bit signed integer (qint32) */     Int32 = 5,
+      /*! Thirty two bit floating point (float) */      Float32 = 6,
+      /*! Sixty four bit floating point (double) */     Float64 = 7,
+      /*! Complex Int16 */                              CInt16 = 8,
+      /*! Complex Int32 */                              CInt32 = 9,
+      /*! Complex Float32 */                            CFloat32 = 10,
+      /*! Complex Float64 */                            CFloat64 = 11,
+      /*! Color, alpha, red, green, blue, 4 bytes the same as
+          QImage::Format_ARGB32 */                      ARGB32 = 12,
+      /*! Color, alpha, red, green, blue, 4 bytes  the same as
+          QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
+    };
+
 
     /** Map units that qgis supports
      * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
@@ -173,6 +270,10 @@ inline bool doubleNearSig( double a, double b, int significantDigits = 10 )
          qRound( ar * pow( 10.0, significantDigits ) ) == qRound( br * pow( 10.0, significantDigits ) ) ;
 }
 
+bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
+
+bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
+
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
     @param size size in bytes
@@ -195,30 +296,8 @@ void CORE_EXPORT QgsFree( void *ptr );
 /** Wkt string that represents a geographic coord sys
  * @note added in 1.8 to replace GEOWkt
  */
-const QString GEOWKT =
-  "GEOGCS[\"WGS 84\", "
-  "  DATUM[\"WGS_1984\", "
-  "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
-  "      AUTHORITY[\"EPSG\",7030]], "
-  "    TOWGS84[0,0,0,0,0,0,0], "
-  "    AUTHORITY[\"EPSG\",6326]], "
-  "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
-  "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
-  "  AXIS[\"Lat\",NORTH], "
-  "  AXIS[\"Long\",EAST], "
-  "  AUTHORITY[\"EPSG\",4326]]";
-/** Wkt string that represents a geographic coord sys
- * @note deprecated in 1.8 due to violation of coding conventions (globals
- *  should be in all caps).
- */
-#ifndef _MSC_VER
-Q_DECL_DEPRECATED
-#endif
-const QString GEOWkt = GEOWKT;
-
-const QString PROJECT_SCALES =
-  "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
-  "1:10000,1:5000,1:2500,1:1000,1:500";
+extern CORE_EXPORT const QString GEOWKT;
+extern CORE_EXPORT const QString PROJECT_SCALES;
 
 /** PROJ4 string that represents a geographic coord sys */
 extern CORE_EXPORT const QString GEOPROJ4;
@@ -229,7 +308,7 @@ const long GEOCRS_ID = 3452;
 /** Magic number for a geographic coord sys in EpsgCrsId ID format */
 const long GEO_EPSG_CRS_ID = 4326;
 /** Geographic coord sys from EPSG authority */
-const QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
+extern CORE_EXPORT const QString GEO_EPSG_CRS_AUTHID;
 /** The length of the string "+proj=" */
 const int PROJ_PREFIX_LEN = 6;
 /** The length of the string "+ellps=" */
@@ -242,7 +321,7 @@ const int USER_CRS_START_ID = 100000;
 
 //! Constant that holds the string representation for "No ellips/No CRS"
 // Added in version 2.0
-const QString GEO_NONE = "NONE";
+extern CORE_EXPORT const QString GEO_NONE;
 
 //
 // Constants for point symbols
@@ -256,6 +335,8 @@ const double DEFAULT_LINE_WIDTH = 0.26;
 
 /** default snapping tolerance for segments (@note added in 1.8) */
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
+
+typedef QMap<QString, QString> QgsStringMap;
 
 // FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN

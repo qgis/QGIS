@@ -94,6 +94,10 @@ class OTBAlgorithm(GeoAlgorithm):
                     if param.name == "-elev.dem.geoid":
                         param.default = OTBUtils.otbGeoidPath()
                     self.addParameter(param)
+                elif line.startswith("*Parameter"):
+                    param = ParameterFactory.getFromString(line[1:])
+                    param.isAdvanced = True
+                    self.addParameter(param)
                 elif line.startswith("Extent"):
                     self.addParameter(ParameterExtent(self.REGION_OF_INTEREST, "Region of interest", "0,1,0,1"))
                     self.hasROI = True
@@ -128,7 +132,7 @@ class OTBAlgorithm(GeoAlgorithm):
                     self.roiVectors[param.value] = roiFile
                 else:
                     commands.append(param.value)
-            if isinstance(param, ParameterRaster):
+            elif isinstance(param, ParameterRaster):
                 commands.append(param.name)
                 if self.hasROI:
                     roiFile = SextanteUtils.getTempFilename('tif')
@@ -192,5 +196,5 @@ class OTBAlgorithm(GeoAlgorithm):
             progress.setCommand(line)
 
         SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
-        
+
         OTBUtils.executeOtb(commands, progress)

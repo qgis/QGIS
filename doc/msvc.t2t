@@ -2,7 +2,7 @@
 ==Building with Microsoft Visual Studio==
 
 This section describes how to build QGIS using Visual Studio on Windows.  This
-is currently also who the binary QGIS packages are made (earlier versions used
+is currently also how the binary QGIS packages are made (earlier versions used
 MinGW).
 
 This section describes the setup required to allow Visual Studio to be used to
@@ -56,6 +56,7 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 - libspatialindex-devel
 - python-qscintilla
 
+
 This will also select packages the above packages depend on.
 
 Additionally QGIS also needs the include file ``unistd.h``, which normally
@@ -105,14 +106,15 @@ git clone git://github.com/qgis/Quantum-GIS.git
 Create a 'build' directory somewhere. This will be where all the build output
 will be generated.
 
-Now run ``cmake-gui`` and in the //Where is the source code:// box, browse to
-the top level QGIS directory.
+Now run ``cmake-gui`` (still from ``cmd``) and in the //Where is the source code://
+box, browse to the top level QGIS directory.
 
 In the //Where to build the binaries:// box, browse to the 'build' directory you
 created.
 
-Adjust the path to bison and flex so that the shortened ``C:/Progra~1`` is used 
-rather than ``C:/Program Files``.
+If the path to bison and flex contains blanks, you need to use the short name
+for the directory (i.e. ``C:\Program Files`` should be rewritten to
+``C:\Progra~n``, where ``n`` is the number as shown in `dir /x C:\``).
 
 Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
 bindings are placed into the output directory when you run the INSTALL target.

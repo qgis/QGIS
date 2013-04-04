@@ -15,9 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscomposerlegendstyle.h"
 #include "qgscomposerlegenditem.h"
+#include "qgscomposerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgsrenderer.h"
+#include "qgsrendererv2.h"
 #include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
@@ -26,15 +30,18 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsComposerLegendItem::QgsComposerLegendItem(): QStandardItem()
+QgsComposerLegendItem::QgsComposerLegendItem( QgsComposerLegendStyle::Style s ): QStandardItem()
+    , mStyle( s )
 {
 }
 
-QgsComposerLegendItem::QgsComposerLegendItem( const QString& text ): QStandardItem( text )
+QgsComposerLegendItem::QgsComposerLegendItem( const QString& text, QgsComposerLegendStyle::Style s ): QStandardItem( text )
+    , mStyle( s )
 {
 }
 
-QgsComposerLegendItem::QgsComposerLegendItem( const QIcon& icon, const QString& text ): QStandardItem( icon, text )
+QgsComposerLegendItem::QgsComposerLegendItem( const QIcon& icon, const QString& text, QgsComposerLegendStyle::Style s ): QStandardItem( icon, text )
+    , mStyle( s )
 {
 }
 
@@ -58,15 +65,15 @@ void QgsComposerLegendItem::writeXMLChildren( QDomElement& elem, QDomDocument& d
 
 //////////////////////////////QgsComposerSymbolItem
 
-QgsComposerSymbolItem::QgsComposerSymbolItem(): QgsComposerLegendItem(), mSymbol( 0 )
+QgsComposerSymbolItem::QgsComposerSymbolItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbol( 0 )
 {
 }
 
-QgsComposerSymbolItem::QgsComposerSymbolItem( const QString& text ): QgsComposerLegendItem( text ), mSymbol( 0 )
+QgsComposerSymbolItem::QgsComposerSymbolItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbol( 0 )
 {
 }
 
-QgsComposerSymbolItem::QgsComposerSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text ), mSymbol( 0 )
+QgsComposerSymbolItem::QgsComposerSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbol( 0 )
 {
 }
 
@@ -155,15 +162,15 @@ void QgsComposerSymbolItem::readXML( const QDomElement& itemElem, bool xServerAv
 
 #include "qgssymbolv2.h"
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item(): QgsComposerLegendItem(), mSymbolV2( 0 )
+QgsComposerSymbolV2Item::QgsComposerSymbolV2Item(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
 {
 }
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QString& text ): QgsComposerLegendItem( text ), mSymbolV2( 0 )
+QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
 {
 }
 
-QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text ), mSymbolV2( 0 )
+QgsComposerSymbolV2Item::QgsComposerSymbolV2Item( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
 {
 }
 
@@ -234,15 +241,15 @@ void QgsComposerSymbolV2Item::setSymbolV2( QgsSymbolV2* s )
 
 ////////////////////QgsComposerRasterSymbolItem
 
-QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem(): QgsComposerLegendItem()
+QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol )
 {
 }
 
-QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QString& text ): QgsComposerLegendItem( text )
+QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol )
 {
 }
 
-QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text )
+QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol )
 {
 }
 
@@ -287,11 +294,13 @@ void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem, bool xSe
 
 ////////////////////QgsComposerLayerItem
 
-QgsComposerLayerItem::QgsComposerLayerItem(): QgsComposerLegendItem()
+QgsComposerLayerItem::QgsComposerLayerItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Subgroup )
+    , mShowFeatureCount( false )
 {
 }
 
-QgsComposerLayerItem::QgsComposerLayerItem( const QString& text ): QgsComposerLegendItem( text )
+QgsComposerLayerItem::QgsComposerLayerItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Subgroup )
+    , mShowFeatureCount( false )
 {
 }
 
@@ -312,6 +321,8 @@ void QgsComposerLayerItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
   QDomElement layerItemElem = doc.createElement( "LayerItem" );
   layerItemElem.setAttribute( "layerId", mLayerID );
   layerItemElem.setAttribute( "text", text() );
+  layerItemElem.setAttribute( "showFeatureCount", showFeatureCount() );
+  layerItemElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
   writeXMLChildren( layerItemElem, doc );
   elem.appendChild( layerItemElem );
 }
@@ -324,6 +335,8 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
   }
   setText( itemElem.attribute( "text", "" ) );
   setLayerID( itemElem.attribute( "layerId", "" ) );
+  setShowFeatureCount( itemElem.attribute( "showFeatureCount", "" ) == "1" ? true : false );
+  setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( "style", "subgroup" ) ) );
 
   //now call readXML for all the child items
   QDomNodeList childList = itemElem.childNodes();
@@ -363,13 +376,36 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
   }
 }
 
+void QgsComposerLayerItem::setDefaultStyle()
+{
+  // set default style according to number of symbols
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID() ) );
+  if ( vLayer )
+  {
+    QgsFeatureRendererV2* renderer = vLayer->rendererV2();
+    if ( renderer )
+    {
+      QPair<QString, QgsSymbolV2*> symbolItem = renderer->legendSymbolItems().value( 0 );
+      if ( renderer->legendSymbolItems().size() > 1 || !symbolItem.first.isEmpty() )
+      {
+        setStyle( QgsComposerLegendStyle::Subgroup );
+      }
+      else
+      {
+        // Hide title by default for single symbol
+        setStyle( QgsComposerLegendStyle::Hidden );
+      }
+    }
+  }
+}
+
 ////////////////////QgsComposerGroupItem
 
-QgsComposerGroupItem::QgsComposerGroupItem(): QgsComposerLegendItem()
+QgsComposerGroupItem::QgsComposerGroupItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Group )
 {
 }
 
-QgsComposerGroupItem::QgsComposerGroupItem( const QString& text ): QgsComposerLegendItem( text )
+QgsComposerGroupItem::QgsComposerGroupItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Group )
 {
 }
 
@@ -388,6 +424,7 @@ void QgsComposerGroupItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
 {
   QDomElement layerGroupElem = doc.createElement( "GroupItem" );
   layerGroupElem.setAttribute( "text", text() );
+  layerGroupElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
   writeXMLChildren( layerGroupElem, doc );
   elem.appendChild( layerGroupElem );
 }
@@ -399,6 +436,8 @@ void QgsComposerGroupItem::readXML( const QDomElement& itemElem, bool xServerAva
     return;
   }
   setText( itemElem.attribute( "text", "" ) );
+
+  setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( "style", "group" ) ) );
 
   //now call readXML for all the child items
   QDomNodeList childList = itemElem.childNodes();
@@ -431,6 +470,22 @@ void QgsComposerGroupItem::readXML( const QDomElement& itemElem, bool xServerAva
       continue; //unsupported child item type
     }
     currentChildItem->readXML( currentElem, xServerAvailable );
-    appendRow( currentChildItem );
+
+    QList<QStandardItem *> itemsList;
+    itemsList << currentChildItem << new QgsComposerStyleItem( currentChildItem );
+    appendRow( itemsList );
   }
+}
+
+QgsComposerStyleItem::QgsComposerStyleItem(): QStandardItem()
+{
+}
+
+QgsComposerStyleItem::QgsComposerStyleItem( QgsComposerLegendItem *item ): QStandardItem()
+{
+  setData( QgsComposerLegendStyle::styleLabel( item->style() ) , Qt::DisplayRole );
+}
+
+QgsComposerStyleItem::~QgsComposerStyleItem()
+{
 }

@@ -47,9 +47,7 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.core.LayerExporter import LayerExporter
-import subprocess
 from sextante.parameters.ParameterExtent import ParameterExtent
-from PyQt4 import QtGui
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
 from sextante.core.SextanteLog import SextanteLog
 
@@ -88,6 +86,7 @@ class SagaAlgorithm(GeoAlgorithm):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")
 
     def defineCharacteristicsFromFile(self):
+        self.hardcodedStrings = []
         lines = open(self.descriptionFile)
         line = lines.readline().strip("\n").strip()
         self.name = line
@@ -102,7 +101,9 @@ class SagaAlgorithm(GeoAlgorithm):
         self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
         while line != "":
             line = line.strip("\n").strip()
-            if line.startswith("Parameter"):
+            if line.startswith("Hardcoded"):
+                self.hardcodedStrings.append(line[len("Harcoded|")+1:])
+            elif line.startswith("Parameter"):
                 self.addParameter(ParameterFactory.getFromString(line))
             elif line.startswith("DontResample"):
                 self.resample = False
@@ -176,7 +177,6 @@ class SagaAlgorithm(GeoAlgorithm):
             path = SagaUtils.sagaPath()
             if path == "":
                 raise GeoAlgorithmExecutionException("SAGA folder is not configured.\nPlease configure it before running SAGA algorithms.")
-        #useSelection = SextanteConfig.getSetting(SagaUtils.SAGA_USE_SELECTED)
         commands = list()
         self.exportedLayers = {}
 
@@ -205,9 +205,12 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterTable):
                 if param.value == None:
                     continue
-                value = param.value
-                if not value.endswith("dbf"):
-                    raise GeoAlgorithmExecutionException("Unsupported file format")
+                table = QGisLayers.getObjectFromUri(param.value, False)
+                if table:
+                    filename = LayerExporter.exportTable(table)
+                    self.exportedLayers[param.value]=filename
+                elif not param.value.endswith("shp"):
+                        raise GeoAlgorithmExecutionException("Unsupported file format")
             if isinstance(param, ParameterMultipleInput):
                 if param.value == None:
                     continue
@@ -235,20 +238,24 @@ class SagaAlgorithm(GeoAlgorithm):
         else:
             command = "lib" + self.undecoratedGroup  + " \"" + self.cmdname + "\""
 
+        if self.hardcodedStrings:
+            for s in self.hardcodedStrings:
+                command += " " + s
+
         for param in self.parameters:
             if param.value is None:
                 continue
-            if isinstance(param, (ParameterRaster, ParameterVector)):
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable)):
                 value = param.value
                 if value in self.exportedLayers.keys():
-                    command+=(" -" + param.name + " \"" + self.exportedLayers[value] + "\"")
+                    command += (" -" + param.name + " \"" + self.exportedLayers[value] + "\"")
                 else:
-                    command+=(" -" + param.name + " " + value)
+                    command += (" -" + param.name + " \"" + value + "\"")
             elif isinstance(param, ParameterMultipleInput):
                 s = param.value
                 for layer in self.exportedLayers.keys():
                     s = s.replace(layer, self.exportedLayers[layer])
-                command+=(" -" + param.name + " \"" + s + "\"");
+                command += (" -" + param.name + " \"" + s + "\"");
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     command+=(" -" + param.name);
@@ -256,12 +263,12 @@ class SagaAlgorithm(GeoAlgorithm):
                 tempTableFile  = SextanteUtils.getTempFilename("txt")
                 f = open(tempTableFile, "w")
                 f.write('\t'.join([col for col in param.cols]) + "\n")
-                values = param.value.split(",")                
+                values = param.value.split(",")
                 for i in range(0, len(values), 3):
                     s = values[i] + "\t" + values[i+1] + "\t" + values[i+2] + "\n"
                     f.write(s)
                 f.close()
-                command+=( " -" + param.name + " " + tempTableFile)
+                command+=( " -" + param.name + " \"" + tempTableFile + "\"")
             elif isinstance(param, ParameterExtent):
                 #'we have to substract/add half cell size, since saga is center based, not corner based
                 halfcell = self.getOutputCellsize() / 2
@@ -276,23 +283,14 @@ class SagaAlgorithm(GeoAlgorithm):
 
         for out in self.outputs:
             if isinstance(out, OutputRaster):
-                filename = out.value
-                if not filename.endswith(".tif"):
-                    filename += ".tif"
-                    out.value = filename
+                filename = out.getCompatibleFileName(self)
                 filename = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
                 command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputVector):
-                filename = out.value
-                if not filename.endswith(".shp"):
-                    filename += ".shp"
-                    out.value = filename
+                filename = out.getCompatibleFileName(self)
                 command+=(" -" + out.name + " \"" + filename + "\"");
             if isinstance(out, OutputTable):
-                filename = out.value
-                if not filename.endswith(".dbf"):
-                    filename += ".dbf"
-                    out.value = filename
+                filename = out.getCompatibleFileName(self)
                 command+=(" -" + out.name + " \"" + filename + "\"");
 
         commands.append(command)
@@ -300,7 +298,7 @@ class SagaAlgorithm(GeoAlgorithm):
         #3:Export resulting raster layers
         for out in self.outputs:
             if isinstance(out, OutputRaster):
-                filename = out.value
+                filename = out.getCompatibleFileName(self)
                 filename2 = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
                 if SextanteUtils.isWindows():
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
@@ -318,7 +316,7 @@ class SagaAlgorithm(GeoAlgorithm):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress);
 
-    
+
     def getOutputCellsize(self):
         '''tries to guess the cellsize of the output, searching for a parameter with an appropriate name for it'''
         cellsize = 0;
@@ -327,8 +325,8 @@ class SagaAlgorithm(GeoAlgorithm):
                 cellsize = float(param.value)
                 break;
         return cellsize
-    
-    
+
+
     def resampleRasterLayer(self,layer):
         '''this is supposed to be run after having exported all raster layers'''
         if layer in self.exportedLayers.keys():
@@ -349,7 +347,7 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def exportRasterLayer(self, layer):
-        destFilename = SextanteUtils.getTempFilename("sgrd")
+        destFilename = SextanteUtils.getTempFilenameInTempFolder(os.path.basename(layer)[0:5] + ".sgrd")
         self.exportedLayers[layer]= destFilename
         if SextanteUtils.isWindows():
             return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer+"\""
@@ -358,22 +356,26 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def checkBeforeOpeningParametersDialog(self):
-        if SextanteUtils.isWindows():
-            path = SagaUtils.sagaPath()
-            if path == "":
-                return "SAGA folder is not configured.\nPlease configure it before running SAGA algorithms."
-        else:
-            SAGA_INSTALLED = "SAGA_INSTALLED"
-            settings = QSettings()
-            if settings.contains(SAGA_INSTALLED):
-                return
-            command = ["saga_cmd"]
-            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
-            for line in iter(proc.readline, ""):
-                if "________" in line:
-                    settings.setValue(SAGA_INSTALLED, True)
-                    return
-            return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
+        return SagaUtils.checkSagaIsInstalled()
+
+
+    def checkParameterValuesBeforeExecuting(self):
+        '''We check that there are no multiband layers, which are not supported by SAGA'''
+        for param in self.parameters:
+            if isinstance(param, ParameterRaster):
+                value = param.value
+                layer = QGisLayers.getObjectFromUri(value)
+                if layer is not None and layer.bandCount() > 1:
+                        return ("Input layer " + str(layer.name()) + " has more than one band.\n"
+                                + "Multiband layers are not supported by SAGA")
+
 
     def helpFile(self):
         return  os.path.join(os.path.dirname(__file__), "help", self.name.replace(" ", "") + ".html")
+
+
+    def commandLineName(self):
+        name = self.provider.getName().lower() + ":" + self.cmdname.lower()
+        validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:"
+        name = ''.join(c for c in name if c in validChars)
+        return name

@@ -74,16 +74,6 @@ class QgsCoordinateReferenceSystem
     bool createFromWkt( const QString theWkt );
 
     /*! Set up this srs by fetching the appropriate information from the
-     * sqlite backend. First the system level read only srs.db will be checked
-     * and then the users ~/.qgis/qgis.db database will be checked for a match.
-     * @note Any members will be overwritten during this process.
-     * @param theEpsg The EpsgCrsId for the desired spatial reference system.
-     * @return bool TRUE if success else false
-     * @deprecated use createFromOgcWmsCrs()
-     */
-     bool createFromEpsg(const long theEpsg) /Deprecated/;
-
-    /*! Set up this srs by fetching the appropriate information from the
      * sqlite backend. If the srsid is < 100000, only the system srs.db
      * will be checked. If the srsid > 100000 the srs will be retrieved from
      * the ~/.qgis/qgis.db
@@ -197,13 +187,6 @@ class QgsCoordinateReferenceSystem
       *  Returns opposite bool value to operator ==
      */
     bool operator!=( const QgsCoordinateReferenceSystem &theSrs ) const;
-    /*! Overloaded == operator used to compare to CRS's.
-     *  Internally it will use OGR isSameCRS() or isSameGeoCRS() methods as appropriate.
-     *  Additionally logic may also be applied if the result from the OGR methods
-     *  is inconclusive.
-     * @deprecated in 1.8 as the same proj.4 string not necessarily means the same CRS
-     */
-     bool equals(QString theProj4String) /Deprecated/;
 
     /*! Restores state from the given Dom node.
      * @param theNode The node from which state will be restored
@@ -251,12 +234,6 @@ class QgsCoordinateReferenceSystem
      * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
      */
     long postgisSrid() const;
-
-    /*! Get the EpsgCrsId identifier for this srs
-     * @return  long theEpsg the EPSG identifier for this srs (defaults to 0)
-     * @deprecated there are other authorities - use authid()
-     */
-    long epsg() const /Deprecated/;
 
     /*! Get the authority identifier for this srs
      * @return  QString the Authority identifier for this srs

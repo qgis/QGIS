@@ -13,12 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsfieldcalculator.h"
+#include "qgsdistancearea.h"
 #include "qgsexpression.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QSettings>
 
 QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
     : QDialog()
@@ -78,6 +83,15 @@ QgsFieldCalculator::~QgsFieldCalculator()
 
 void QgsFieldCalculator::accept()
 {
+
+  // Set up QgsDistanceArea each time we (re-)calculate
+  QgsDistanceArea myDa;
+
+  myDa.setSourceCrs( mVectorLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
 
@@ -118,14 +132,13 @@ void QgsFieldCalculator::accept()
     }
 
     //get index of the new field
-    const QgsFieldMap fieldList = mVectorLayer->pendingFields();
+    const QgsFields& fields = mVectorLayer->pendingFields();
 
-    QgsFieldMap::const_iterator it = fieldList.constBegin();
-    for ( ; it != fieldList.constEnd(); ++it )
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      if ( it.value().name() == mOutputFieldNameLineEdit->text() )
+      if ( fields[idx].name() == mOutputFieldNameLineEdit->text() )
       {
-        mAttributeId = it.key();
+        mAttributeId = idx;
         break;
       }
     }
@@ -145,14 +158,11 @@ void QgsFieldCalculator::accept()
   bool onlySelected = mOnlyUpdateSelectedCheckBox->isChecked();
   QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
 
-  // block layerModified signals (that would trigger table update)
-  mVectorLayer->blockSignals( true );
-
   bool useGeometry = exp.needsGeometry();
   int rownum = 1;
 
-  mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), useGeometry, false );
-  while ( mVectorLayer->nextFeature( feature ) )
+  QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+  while ( fit.nextFeature( feature ) )
   {
     if ( onlySelected )
     {
@@ -163,6 +173,7 @@ void QgsFieldCalculator::accept()
     }
 
     exp.setCurrentRowNumber( rownum );
+    exp.setGeomCalculator( myDa );
 
     QVariant value = exp.evaluate( &feature );
     if ( exp.hasEvalError() )
@@ -173,15 +184,15 @@ void QgsFieldCalculator::accept()
     }
     else
     {
+      // FIXME workaround while QgsVectorLayer::changeAttributeValue's emitSignal is ignored (see #7071)
+      mVectorLayer->blockSignals( true );
       mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, false );
+      mVectorLayer->blockSignals( false );
     }
 
     rownum++;
   }
 
-  // stop blocking layerModified signals and make sure that one layerModified signal is emitted
-  mVectorLayer->blockSignals( false );
-  mVectorLayer->setModified( true, false );
 
   if ( !calculationSuccess )
   {
@@ -267,15 +278,14 @@ void QgsFieldCalculator::populateFields()
   if ( !mVectorLayer )
     return;
 
-  const QgsFieldMap fieldMap = mVectorLayer->pendingFields();
-  QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
-  for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
+  const QgsFields& fields = mVectorLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
 
-    QString fieldName = fieldIt.value().name();
+    QString fieldName = fields[idx].name();
 
     //insert into field list and field combo box
-    mFieldMap.insert( fieldName, fieldIt.key() );
+    mFieldMap.insert( fieldName, idx );
     mExistingFieldComboBox->addItem( fieldName );
   }
 }

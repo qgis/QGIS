@@ -29,15 +29,23 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 {
     Q_OBJECT
   public:
-    QgsFilterLineEdit( QWidget* parent = 0 );
+    QgsFilterLineEdit( QWidget* parent = 0, QString nullValue = QString::null );
+
+    void setNullValue( QString nullValue ) { mNullValue = nullValue; }
+
+  signals:
+    void cleared();
 
   protected:
     void resizeEvent( QResizeEvent * );
+    void changeEvent( QEvent * );
 
   private slots:
+    void clear();
     void toggleClearButton( const QString &text );
 
   private:
+    QString mNullValue;
     QToolButton *btnClear;
 };
 

@@ -20,7 +20,7 @@
    <item row="1" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -141,15 +141,11 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item row="1" column="0">
-        <widget class="QTextEdit" name="txtVersion">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
+        <widget class="QWebView" name="txtVersion">
+         <property name="url">
+          <url>
+           <string>about:blank</string>
+          </url>
          </property>
         </widget>
        </item>
@@ -179,7 +175,7 @@ p, li { white-space: pre-wrap; }
       <attribute name="title">
        <string>Developers</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0" rowspan="2">
         <widget class="QListWidget" name="lstDevelopers">
          <property name="alternatingRowColors">
@@ -293,6 +289,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>lstContributors</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

@@ -86,7 +86,10 @@ class NumberInputDialog(QtGui.QDialog):
         layers = QGisLayers.getRasterLayers()
         for layer in layers:
             for i in range(layer.bandCount()):
-                stats = layer.bandStatistics(i)
+                if QGis.QGIS_VERSION_INT >= 10900:
+                    stats = layer.dataProvider().bandStatistics(i+1)
+                else:
+                    stats = layer.bandStatistics(i)
                 layerItem = QtGui.QTreeWidgetItem()
                 layerItem.setText(0, unicode(layer.name()))
                 layerItem.addChild(TreeValueItem("Mean", stats.mean))

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>501</height>
+    <width>457</width>
+    <height>1086</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,363 +17,244 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Map options</string>
+   <string>Map Options</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_8">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QToolBox" name="toolBox">
-     <property name="lineWidth">
-      <number>0</number>
+   <item>
+    <widget class="QLabel" name="label_3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="currentIndex">
-      <number>0</number>
+     <property name="styleSheet">
+      <string notr="true">padding: 2px; font-weight: bold; background-color: rgb(200, 200, 200);</string>
      </property>
-     <widget class="QWidget" name="page">
+     <property name="text">
+      <string>Map</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>450</width>
-        <height>408</height>
+        <y>-202</y>
+        <width>440</width>
+        <height>1310</height>
        </rect>
       </property>
-      <attribute name="label">
-       <string>Map</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="7" column="1">
-        <widget class="QComboBox" name="mOverviewFrameMapComboBox"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QComboBox" name="mPreviewModeComboBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" colspan="2">
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="9" column="0" colspan="2">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Expanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="4" column="1">
-        <widget class="QPushButton" name="mUpdatePreviewButton">
-         <property name="text">
-          <string>Update preview</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="mOverviewFrameStyleLabel">
-         <property name="text">
-          <string>Overview style</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QPushButton" name="mOverviewFrameStyleButton">
-         <property name="text">
-          <string>Change...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="mOverviewFrameMapLabel">
-         <property name="text">
-          <string>Overview frame</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0" colspan="2">
-        <layout class="QFormLayout" name="formLayout_2">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <item row="2" column="0">
-          <widget class="QLabel" name="textLabel1">
-           <property name="text">
-            <string>Width</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-           <property name="buddy">
-            <cstring>mWidthLineEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="mWidthLineEdit"/>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Height</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-           <property name="buddy">
-            <cstring>mHeightLineEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="mHeightLineEdit"/>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Scale</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-           <property name="buddy">
-            <cstring>mScaleLineEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="mScaleLineEdit">
-           <property name="inputMask">
-            <string/>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
-          <widget class="QLabel" name="mRotationLabel">
-           <property name="text">
-            <string>Rotation</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="1">
-          <widget class="QDoubleSpinBox" name="mRotationSpinBox">
-           <property name="suffix">
-            <string> degrees</string>
-           </property>
-           <property name="maximum">
-            <double>360.000000000000000</double>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="0" colspan="2">
-          <widget class="QCheckBox" name="mKeepLayerListCheckBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Lock layers for map item</string>
-           </property>
-          </widget>
-         </item>
-         <item row="9" column="0" colspan="2">
-          <widget class="QCheckBox" name="mDrawCanvasItemsCheckBox">
-           <property name="text">
-            <string>Draw map canvas items</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="5" column="0" colspan="2">
-        <spacer name="verticalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>15</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="page_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>199</width>
-        <height>177</height>
-       </rect>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <attribute name="label">
-       <string>Extents</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <property name="margin">
-        <number>3</number>
-       </property>
-       <item row="0" column="0">
-        <layout class="QFormLayout" name="formLayout_3">
-         <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-         </property>
-         <property name="margin">
-          <number>3</number>
-         </property>
-         <item row="1" column="0">
-          <widget class="QLabel" name="mXMinLabel">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="text">
-            <string>X min</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-           <property name="buddy">
-            <cstring>mXMinLineEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="mXMinLineEdit"/>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="mXMaxLabel">
-           <property name="text">
-            <string>X max</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-           <property name="buddy">
-            <cstring>mXMaxLineEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="mXMaxLineEdit"/>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="mYMinLabel">
-           <property name="text">
-            <string>Y min</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-           <property name="buddy">
-            <cstring>mYMinLineEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="mYMinLineEdit"/>
-         </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="mYMaxLabel">
-           <property name="text">
-            <string>Y max</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-           <property name="buddy">
-            <cstring>mYMaxLineEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="1">
-          <widget class="QLineEdit" name="mYMaxLineEdit"/>
-         </item>
-         <item row="5" column="0" colspan="2">
-          <widget class="QPushButton" name="mSetToMapCanvasExtentButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Set to map canvas extent</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="page_3">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>277</width>
-        <height>921</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Grid</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="mGridCheckBox">
+      <layout class="QVBoxLayout" name="mainLayout">
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
          <property name="title">
-          <string>Show grid?</string>
+          <string>Main properties</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QComboBox" name="mPreviewModeComboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mUpdatePreviewButton">
+              <property name="text">
+               <string>Update preview</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Scale</string>
+            </property>
+            <property name="buddy">
+             <cstring>mScaleLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="mScaleLineEdit">
+            <property name="inputMask">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mRotationLabel">
+            <property name="text">
+             <string>Rotation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="mRotationSpinBox">
+            <property name="suffix">
+             <string> degrees</string>
+            </property>
+            <property name="maximum">
+             <double>360.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="mDrawCanvasItemsCheckBox">
+            <property name="text">
+             <string>Draw map canvas items</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QCheckBox" name="mKeepLayerListCheckBox">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Lock layers for map item</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mExtentsCheckBox">
+         <property name="title">
+          <string>Extents</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="mYMaxLineEdit"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="mXMaxLineEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mXMaxLabel">
+            <property name="text">
+             <string>X max</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mXMaxLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mYMinLabel">
+            <property name="text">
+             <string>Y min</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mYMinLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mYMaxLabel">
+            <property name="text">
+             <string>Y max</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mYMaxLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="mXMinLineEdit"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="mYMinLineEdit"/>
+          </item>
+          <item row="4" column="0" colspan="4">
+           <widget class="QPushButton" name="mSetToMapCanvasExtentButton">
+            <property name="text">
+             <string>Set to map canvas extent</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mXMinLabel">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>X min</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mXMinLineEdit</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mGridCheckBox">
+         <property name="title">
+          <string>Show grid</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -381,73 +262,85 @@
          <property name="checked">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <item row="0" column="1">
-           <widget class="QLabel" name="mGridTypeLabel">
-            <property name="accessibleName">
-             <string extracomment="Hello translotor"/>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <layout class="QFormLayout" name="formLayout_2">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
             </property>
-            <property name="text">
-             <string>Grid &amp;type</string>
+            <property name="labelAlignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
+            <property name="bottomMargin">
+             <number>6</number>
             </property>
-            <property name="buddy">
-             <cstring>mGridTypeComboBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QComboBox" name="mGridTypeComboBox"/>
-          </item>
-          <item row="1" column="0" colspan="4">
-           <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0">
-             <widget class="QLabel" name="mIntervalXLabel">
+             <widget class="QLabel" name="mGridTypeLabel">
+              <property name="accessibleName">
+               <string extracomment="Hello translotor"/>
+              </property>
               <property name="text">
-               <string>Interval X</string>
+               <string>Grid &amp;type</string>
               </property>
               <property name="wordWrap">
-               <bool>true</bool>
+               <bool>false</bool>
+              </property>
+              <property name="buddy">
+               <cstring>mGridTypeComboBox</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="mGridTypeComboBox"/>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="mIntervalXLabel">
+              <property name="text">
+               <string>Interval</string>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
               </property>
               <property name="buddy">
                <cstring>mIntervalXSpinBox</cstring>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
-              <property name="decimals">
-               <number>5</number>
-              </property>
-              <property name="maximum">
-               <double>9999999.000000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="mIntervalYLabel">
-              <property name="text">
-               <string>Interval Y</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mIntervalYSpinBox</cstring>
-              </property>
-             </widget>
-            </item>
             <item row="1" column="1">
-             <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
-              <property name="decimals">
-               <number>5</number>
-              </property>
-              <property name="maximum">
-               <double>9999999.000000000000000</double>
-              </property>
-             </widget>
+             <layout class="QVBoxLayout" name="verticalLayout_7">
+              <item>
+               <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
+                <property name="prefix">
+                 <string>X </string>
+                </property>
+                <property name="decimals">
+                 <number>5</number>
+                </property>
+                <property name="maximum">
+                 <double>9999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
+                <property name="prefix">
+                 <string>Y </string>
+                </property>
+                <property name="decimals">
+                 <number>5</number>
+                </property>
+                <property name="maximum">
+                 <double>9999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item row="2" column="0">
              <widget class="QLabel" name="mOffsetXLabel">
@@ -455,7 +348,7 @@
                <string>Offset X</string>
               </property>
               <property name="wordWrap">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="buddy">
                <cstring>mOffsetXSpinBox</cstring>
@@ -463,327 +356,312 @@
              </widget>
             </item>
             <item row="2" column="1">
-             <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
-              <property name="decimals">
-               <number>5</number>
-              </property>
-              <property name="maximum">
-               <double>9999999.000000000000000</double>
-              </property>
-             </widget>
+             <layout class="QVBoxLayout" name="verticalLayout_8">
+              <item>
+               <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
+                <property name="prefix">
+                 <string>X </string>
+                </property>
+                <property name="decimals">
+                 <number>5</number>
+                </property>
+                <property name="maximum">
+                 <double>9999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
+                <property name="prefix">
+                 <string>Y </string>
+                </property>
+                <property name="decimals">
+                 <number>5</number>
+                </property>
+                <property name="maximum">
+                 <double>9999999.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item row="3" column="0">
-             <widget class="QLabel" name="mOffsetYLabel">
-              <property name="text">
-               <string>Offset Y</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mOffsetYSpinBox</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
-              <property name="decimals">
-               <number>5</number>
-              </property>
-              <property name="maximum">
-               <double>9999999.000000000000000</double>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
              <widget class="QLabel" name="mCrossWidthLabel">
               <property name="text">
                <string>Cross width</string>
               </property>
               <property name="wordWrap">
-               <bool>true</bool>
+               <bool>false</bool>
               </property>
               <property name="buddy">
                <cstring>mCrossWidthSpinBox</cstring>
               </property>
              </widget>
             </item>
-            <item row="4" column="1">
+            <item row="3" column="1">
              <widget class="QDoubleSpinBox" name="mCrossWidthSpinBox">
               <property name="decimals">
                <number>5</number>
               </property>
              </widget>
             </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="mLineWidthLabel">
-              <property name="text">
-               <string>Line width</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mLineWidthSpinBox</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="1">
-             <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
-              <property name="decimals">
-               <number>5</number>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
+            <item row="4" column="0">
              <widget class="QLabel" name="mFrameStyleLabel">
               <property name="text">
                <string>Frame style</string>
               </property>
-             </widget>
-            </item>
-            <item row="6" column="1">
-             <widget class="QComboBox" name="mFrameStyleComboBox"/>
-            </item>
-            <item row="7" column="0">
-             <widget class="QLabel" name="mFrameWidthLabel">
-              <property name="text">
-               <string>Frame width</string>
-              </property>
-             </widget>
-            </item>
-            <item row="7" column="1">
-             <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox"/>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="0" colspan="4">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="mLineColorLabel">
-              <property name="text">
-               <string>Line color</string>
-              </property>
               <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mLineColorButton</cstring>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QgsColorButton" name="mLineColorButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="3" column="0" colspan="2">
-           <widget class="QCheckBox" name="mDrawAnnotationCheckBox">
-            <property name="text">
-             <string>Draw annotation</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="4">
-           <layout class="QGridLayout" name="gridLayout_2">
-            <item row="1" column="0">
-             <widget class="QLabel" name="mAnnotationPositionLabelLeft">
-              <property name="text">
-               <string>Annotation position left side</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mAnnotationPositionLeftComboBox</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="mAnnotationPositionLabelRight">
-              <property name="text">
-               <string>Annotation position right side</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mAnnotationPositionRightComboBox</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="mAnnotationPositionLabelTop">
-              <property name="text">
-               <string>Annotation position top side</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mAnnotationPositionTopComboBox</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="mAnnotationPositionLabelBottom">
-              <property name="text">
-               <string>Annotation position bottom side</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mAnnotationPositionRightComboBox</cstring>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
             <item row="4" column="1">
-             <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
+             <widget class="QComboBox" name="mFrameStyleComboBox"/>
             </item>
             <item row="5" column="0">
-             <widget class="QLabel" name="mAnnotationDirectionLabelLeft">
-              <property name="frameShape">
-               <enum>QFrame::NoFrame</enum>
-              </property>
+             <widget class="QLabel" name="mFrameWidthLabel">
               <property name="text">
-               <string>Annotation direction left side</string>
+               <string>Frame width</string>
               </property>
               <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mAnnotationDirectionComboBoxLeft</cstring>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
             <item row="5" column="1">
-             <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
+             <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox"/>
             </item>
             <item row="6" column="0">
-             <widget class="QLabel" name="mAnnotationDirectionLabelRight">
+             <widget class="QLabel" name="mLineStyleLabel">
               <property name="text">
-               <string>Annotation direction right side</string>
+               <string>Line style</string>
               </property>
               <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-              <property name="buddy">
-               <cstring>mAnnotationDirectionComboBoxRight</cstring>
+               <bool>false</bool>
               </property>
              </widget>
             </item>
             <item row="6" column="1">
-             <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
-            </item>
-            <item row="7" column="0">
-             <widget class="QLabel" name="mAnnotationDirectionLabelTop">
+             <widget class="QPushButton" name="mGridLineStyleButton">
               <property name="text">
-               <string>Annotation direction top side</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
+               <string>change...</string>
               </property>
              </widget>
-            </item>
-            <item row="7" column="1">
-             <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
-            </item>
-            <item row="8" column="0">
-             <widget class="QLabel" name="mAnnotationDirectionLabeBottom">
-              <property name="text">
-               <string>Annotation direction bottom side</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="8" column="1">
-             <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="mAnnotationFormatLabel">
-              <property name="text">
-               <string>Annotation format</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="mAnnotationFormatComboBox"/>
             </item>
            </layout>
           </item>
-          <item row="6" column="0">
-           <widget class="QPushButton" name="mAnnotationFontButton">
-            <property name="text">
-             <string>Font...</string>
+          <item>
+           <widget class="QgsCollapsibleGroupBoxBasic" name="mDrawAnnotationCheckableGroupBox">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
-           </widget>
-          </item>
-          <item row="7" column="0" colspan="2">
-           <widget class="QLabel" name="mDistanceToFrameLabel">
-            <property name="text">
-             <string>Distance to map frame</string>
+            <property name="title">
+             <string>Draw coordinates</string>
             </property>
-            <property name="wordWrap">
+            <property name="flat">
+             <bool>false</bool>
+            </property>
+            <property name="checkable">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mDistanceToMapFrameSpinBox</cstring>
+            <property name="syncGroup" stdset="0">
+             <string/>
             </property>
-           </widget>
-          </item>
-          <item row="7" column="2" colspan="2">
-           <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
-          </item>
-          <item row="8" column="0" colspan="2">
-           <widget class="QLabel" name="mCoordinatePrecisionLabel">
-            <property name="text">
-             <string>Coordinate precision</string>
-            </property>
-            <property name="wordWrap">
+            <property name="collapsed" stdset="0">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mCoordinatePrecisionSpinBox</cstring>
+            <layout class="QFormLayout" name="formLayout_4">
+             <property name="fieldGrowthPolicy">
+              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+             </property>
+             <property name="labelAlignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             </property>
+             <property name="leftMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="mAnnotationFormatLabel">
+               <property name="text">
+                <string>Format</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="mAnnotationFormatComboBox"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="mAnnotationPositionLabelLeft">
+               <property name="text">
+                <string>Left</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="buddy">
+                <cstring>mAnnotationPositionLeftComboBox</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="mAnnotationPositionLabelRight">
+               <property name="text">
+                <string>Right</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="buddy">
+                <cstring>mAnnotationPositionRightComboBox</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
+             </item>
+             <item row="4" column="1">
+              <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="mAnnotationPositionLabelTop">
+               <property name="text">
+                <string>Top</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="buddy">
+                <cstring>mAnnotationPositionTopComboBox</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
+             </item>
+             <item row="6" column="1">
+              <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
+             </item>
+             <item row="7" column="0">
+              <widget class="QLabel" name="mAnnotationPositionLabelBottom">
+               <property name="text">
+                <string>Bottom</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="buddy">
+                <cstring>mAnnotationPositionRightComboBox</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
+             </item>
+             <item row="8" column="1">
+              <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
+             </item>
+             <item row="9" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Font</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="1">
+              <widget class="QPushButton" name="mAnnotationFontButton">
+               <property name="text">
+                <string>Font...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0">
+              <widget class="QLabel" name="mDistanceToFrameLabel">
+               <property name="text">
+                <string>Distance to map frame</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="buddy">
+                <cstring>mDistanceToMapFrameSpinBox</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="1">
+              <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
+             </item>
+             <item row="11" column="0">
+              <widget class="QLabel" name="mCoordinatePrecisionLabel">
+               <property name="text">
+                <string>Coordinate precision</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+               <property name="buddy">
+                <cstring>mCoordinatePrecisionSpinBox</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="11" column="1">
+              <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_2">
+         <property name="title">
+          <string>Overview</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <property name="labelAlignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mOverviewFrameMapLabel">
+            <property name="text">
+             <string>Overview frame</string>
             </property>
            </widget>
           </item>
-          <item row="8" column="2" colspan="2">
-           <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mOverviewFrameMapComboBox"/>
           </item>
-          <item row="9" column="0">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mOverviewFrameStyleLabel">
+            <property name="text">
+             <string>Overview style</string>
             </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="mOverviewFrameStyleButton">
+            <property name="text">
+             <string>Change...</string>
             </property>
-           </spacer>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -797,15 +675,12 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>mDrawAnnotationCheckBox</tabstop>
-  <tabstop>mAnnotationFontButton</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

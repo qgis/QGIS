@@ -139,6 +139,10 @@ class Dialog( QDialog, Ui_Dialog ):
       baseDir = self.leInputDir.text()
       # look for shapes with specified geometry type
       self.inputFiles = ftools_utils.getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
+      if self.inputFiles is None:
+        QMessageBox.warning( self, self.tr( "No shapefiles found" ),
+          self.tr( "There are no shapefiles with the given geometry type. Please select an available geometry type." ) )
+        return
       self.progressFiles.setRange( 0, self.inputFiles.count() )
 
     outFile = QFile( self.outFileName )
@@ -236,26 +240,39 @@ class ShapeMergeThread( QThread ):
 
     # create attribute list with uniquie fields
     # from all selected layers
-    mergedFields = {}
-    count = 0
+    mergedFields = []
     self.emit( SIGNAL( "rangeChanged( PyQt_PyObject )" ), len( self.shapes ) )
     self.emit( SIGNAL( "checkStarted()" ) )
+
+    shapeIndex = 0
+    fieldMap = {}
     for fileName in self.shapes:
       layerPath = QFileInfo( self.baseDir + "/" + fileName ).absoluteFilePath()
       newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
       if not newLayer.isValid():
         continue
+
       vprovider = newLayer.dataProvider()
-      layerFields = vprovider.fields()
-      for layerIndex, layerField in layerFields.iteritems():
+
+      fieldIndex = 0
+      for layerField in vprovider.fields():
         fieldFound = False
-        for mergedIndex, mergedField in mergedFields.iteritems():
-          if ( mergedField.name() == layerField.name() ) and ( mergedField.type() == layerField.type() ):
+        for mergedField in mergedFields:
+          if mergedField.name() == layerField.name() and mergedField.type() == layerField.type():
             fieldFound = True
+	    break
 
         if not fieldFound:
-          mergedFields[ count ] = layerField
-          count += 1
+	  if not fieldMap.has_key(shapeIndex):
+            fieldMap[shapeIndex]={}
+
+          fieldMap[shapeIndex][fieldIndex] = len(mergedFields)
+
+          mergedFields.append( layerField )
+
+        fieldIndex += 1
+
+      shapeIndex += 1
       self.emit( SIGNAL( "featureProcessed()" ) )
     self.emit( SIGNAL( "checkFinished()" ) )
 
@@ -265,11 +282,11 @@ class ShapeMergeThread( QThread ):
     self.crs = newLayer.crs()
     self.geom = newLayer.wkbType()
     vprovider = newLayer.dataProvider()
-    self.fields = mergedFields
 
     writer = QgsVectorFileWriter( self.outputFileName, self.outputEncoding,
-             self.fields, self.geom, self.crs )
+             mergedFields, self.geom, self.crs )
 
+    shapeIndex = 0
     for fileName in self.shapes:
       layerPath = QFileInfo( self.baseDir + "/" + fileName ).absoluteFilePath()
       newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
@@ -278,25 +295,26 @@ class ShapeMergeThread( QThread ):
       vprovider = newLayer.dataProvider()
       vprovider.setEncoding( self.inputEncoding )
       layerFields = vprovider.fields()
-      allAttrs = vprovider.attributeIndexes()
-      vprovider.select( allAttrs )
       nFeat = vprovider.featureCount()
       self.emit( SIGNAL( "rangeChanged( PyQt_PyObject )" ), nFeat )
       self.emit( SIGNAL( "fileNameChanged( PyQt_PyObject )" ), fileName )
       inFeat = QgsFeature()
       outFeat = QgsFeature()
       inGeom = QgsGeometry()
-      while vprovider.nextFeature( inFeat ):
-        atMap = inFeat.attributeMap()
-        mergedAttrs = {}
+      fit = vprovider.getFeatures()
+      while fit.nextFeature( inFeat ):
+        mergedAttrs = [QVariant()] * len(mergedFields)
+
         # fill available attributes with values
-        for layerIndex, layerField in layerFields.iteritems():
-          for mergedIndex, mergedField in self.fields.iteritems():
-            if ( mergedField.name() == layerField.name() ) and ( mergedField.type() == layerField.type() ):
-              mergedAttrs[ mergedIndex ] = atMap[ layerIndex ]
+	fieldIndex = 0
+        for v in inFeat.attributes():
+	  if fieldMap.has_key(shapeIndex) and fieldMap[shapeIndex].has_key(layerIndex):
+	    mergedAttrs[ fieldMap[shapeIndex][layerIndex] ] = v
+          fieldIndex += 1
+
         inGeom = QgsGeometry( inFeat.geometry() )
         outFeat.setGeometry( inGeom )
-        outFeat.setAttributeMap( mergedAttrs )
+        outFeat.setAttributes( mergedAttrs )
         writer.addFeature( outFeat )
         self.emit( SIGNAL( "featureProcessed()" ) )
 
@@ -304,9 +322,12 @@ class ShapeMergeThread( QThread ):
       self.mutex.lock()
       s = self.stopMe
       self.mutex.unlock()
+
       if s == 1:
         interrupted = True
         break
+
+      shapeIndex += 1
 
     del writer
 

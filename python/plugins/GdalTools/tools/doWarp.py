@@ -66,8 +66,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           (self.cacheSpin, SIGNAL("valueChanged(int)"), self.cacheCheck),
           ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" ), self.resizeGroupBox ),
           (self.multithreadCheck, SIGNAL("stateChanged(int)")),
-          (self.noDataEdit, SIGNAL( "textChanged( const QString & )" ), self.noDataCheck), 
-          (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck, "1.6.0"), 
+          (self.noDataEdit, SIGNAL( "textChanged( const QString & )" ), self.noDataCheck),
+          (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck, "1.6.0"),
         ]
       )
 

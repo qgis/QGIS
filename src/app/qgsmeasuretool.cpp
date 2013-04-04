@@ -35,7 +35,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
 {
   mMeasureArea = measureArea;
 
-  mRubberBand = new QgsRubberBand( canvas, mMeasureArea );
+  mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QGis::Polygon : QGis::Line );
 
   QPixmap myCrossHairQPixmap = QPixmap(( const char ** ) cross_hair_cursor );
   mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
@@ -44,7 +44,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
   // Append point we will move
   mPoints.append( QgsPoint( 0, 0 ) );
 
-  mDialog = new QgsMeasureDialog( this );
+  mDialog = new QgsMeasureDialog( this, Qt::WindowStaysOnTopHint );
   mSnapper.setMapCanvas( canvas );
 
   connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
@@ -103,7 +103,7 @@ void QgsMeasureTool::restart()
 {
   mPoints.clear();
 
-  mRubberBand->reset( mMeasureArea );
+  mRubberBand->reset( mMeasureArea ? QGis::Polygon : QGis::Line );
 
   // re-read settings
   updateSettings();

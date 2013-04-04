@@ -28,17 +28,32 @@ QGIS utilities module
 
 """
 
-from PyQt4.QtCore import QCoreApplication,QLocale
-from qgis.core import QGis
+from PyQt4.QtCore import QCoreApplication, QLocale, QString
+from qgis.core import QGis, QgsExpression, QgsMessageLog
+from string import Template
 import sys
 import traceback
 import glob
 import os.path
 import re
 import ConfigParser
+import warnings
 
 #######################
 # ERROR HANDLING
+
+warnings.simplefilter('default')
+warnings.filterwarnings("ignore", "the sets module is deprecated")
+
+def showWarning(message, category, filename, lineno, file=None, line=None):
+  stk = ""
+  for s in traceback.format_stack()[:-2]:
+    stk += s.decode('utf-8', 'replace')
+  QgsMessageLog.logMessage(
+    "warning:%s\ntraceback:%s" % ( warnings.formatwarning(message, category, filename, lineno), stk),
+    QCoreApplication.translate( "Python", "Python" )
+  )
+warnings.showwarning = showWarning
 
 def showException(type, value, tb, msg):
   lst = traceback.format_exception(type, value, tb)
@@ -104,33 +119,37 @@ def findPlugins(path):
   """ for internal use: return list of plugins in given path """
   plugins = []
   for plugin in glob.glob(path + "/*"):
-    if os.path.isdir(plugin) and os.path.exists(os.path.join(plugin, '__init__.py')):
-      plugins.append( os.path.basename(plugin) )
+    if not os.path.isdir(plugin):
+      continue
+    if not os.path.exists(os.path.join(plugin, '__init__.py')):
+      continue
+
+    metadataFile = os.path.join(plugin, 'metadata.txt')
+    if not os.path.exists(metadataFile):
+      continue
+
+    cp = ConfigParser.ConfigParser()
+    res = cp.read(metadataFile)
+    if len(res) == 0:
+      return None # reading of metadata file failed
+
+    pluginName = os.path.basename(plugin)
+    plugins.append( (pluginName, cp) )
+
   return plugins
 
-def _checkMetadataFile(pluginpath, plugin):
-  """ Check whether there exists a metadata.txt file.
-      That is now a preferred way to store plugin's metadata """
-  metadataFile = os.path.join(pluginpath, plugin, 'metadata.txt')
-  if not os.path.exists(metadataFile):
-    return None
-  cp = ConfigParser.ConfigParser()
-  res = cp.read(metadataFile)
-  if len(res) == 0:
-    return None # reading of metadata file failed
-  return cp
 
 def updateAvailablePlugins():
-  """ go thrgouh the plugin_paths list and find out what plugins are available """
+  """ Go through the plugin_paths list and find out what plugins are available. """
   # merge the lists
   plugins = []
   metadata_parser = {}
   for pluginpath in plugin_paths:
     for p in findPlugins(pluginpath):
-      if p not in plugins:
-        plugins.append(p)
-        cp = _checkMetadataFile(pluginpath, p)
-        if cp: metadata_parser[p] = cp
+      pluginName = p[0]
+      if pluginName not in plugins:
+        plugins.append(pluginName)
+        metadata_parser[pluginName] = p[1]
 
   global available_plugins
   available_plugins = plugins
@@ -139,16 +158,12 @@ def updateAvailablePlugins():
 
 
 def pluginMetadata(packageName, fct):
-  """ fetch metadata from a plugin """
+  """ fetch metadata from a plugin - use values from metadata.txt """
   try:
-    # try to use values from metadata.txt if available
-    if plugins_metadata_parser.has_key(packageName):
-      return plugins_metadata_parser[packageName].get('general', fct)
-    # otherwise fall back to old method, using __init__.py
-    package = sys.modules[packageName]
-    return getattr(package, fct)()
-  except:
+    return plugins_metadata_parser[packageName].get('general', fct)
+  except Exception:
     return "__error__"
+
 
 def loadPlugin(packageName):
   """ load plugin's package """
@@ -229,7 +244,7 @@ def canUninstallPlugin(packageName):
 def unloadPlugin(packageName):
   """ unload and delete plugin! """
   global plugins, active_plugins
-  
+
   if not plugins.has_key(packageName): return False
   if packageName not in active_plugins: return False
 
@@ -303,11 +318,11 @@ def showPluginHelp(packageName=None,filename="index",section=""):
   helpfile = os.path.join(path,filename+"-"+locale+".html")
   if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+"-"+locale.split("_")[0]+".html")
-  if not os.path.exists(helpfile):    
+  if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+"-en.html")
-  if not os.path.exists(helpfile):    
+  if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+"-en_US.html")
-  if not os.path.exists(helpfile):    
+  if not os.path.exists(helpfile):
     helpfile = os.path.join(path,filename+".html")
   if os.path.exists(helpfile):
     url = "file://"+helpfile
@@ -371,6 +386,59 @@ def closeProjectMacro():
     mod.closeProject()
 
 
+def qgsfunction(args, group, **kwargs):
+  """
+  Decorator function used to define a user expression function.
+
+  Custom functions should take (values, feature, parent) as args,
+  they can also shortcut naming feature and parent args by using *args
+  if they are not needed in the function.
+
+  Functions should return a value compatible with QVariant
+
+  Eval errors can be raised using parent.setEvalErrorString()
+
+  Functions must be unregistered when no longer needed using
+  QgsExpression.unregisterFunction
+
+  Example:
+    @qgsfunction(2, 'test'):
+    def add(values, feature, parent):
+      pass
+
+    Will create and register a function in QgsExpression called 'add' in the
+    'test' group that takes two arguments.
+
+    or not using feature and parent:
+
+    @qgsfunction(2, 'test'):
+    def add(values, *args):
+      pass
+  """
+  helptemplate = Template("""<h3>$name function</h3><br>$doc""")
+  class QgsExpressionFunction(QgsExpression.Function):
+    def __init__(self, name, args, group, helptext=''):
+      QgsExpression.Function.__init__(self, name, args, group, QString(helptext))
+
+    def func(self, values, feature, parent):
+      pass
+
+  def wrapper(func):
+    name = kwargs.get('name', func.__name__)
+    help = func.__doc__ or ''
+    help = help.strip()
+    if args == 0 and not name[0] == '$':
+      name = '${0}'.format(name)
+    func.__name__ = name
+    help = helptemplate.safe_substitute(name=name, doc=help)
+    f = QgsExpressionFunction(name, args, group, help)
+    f.func = func
+    register = kwargs.get('register', True)
+    if register:
+      QgsExpression.registerFunction(f)
+    return f
+  return wrapper
+
 #######################
 # IMPORT wrapper
 
@@ -386,7 +454,7 @@ def _import(name, globals={}, locals={}, fromlist=[], level=-1):
   if mod and '__file__' in mod.__dict__:
     module_name = mod.__name__
     package_name = module_name.split('.')[0]
-    # check whether the module belongs to one of our plugins 
+    # check whether the module belongs to one of our plugins
     if package_name in available_plugins:
       if package_name not in _plugin_modules:
         _plugin_modules[package_name] = set()

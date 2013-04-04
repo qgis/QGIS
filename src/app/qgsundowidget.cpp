@@ -35,8 +35,11 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
   undoButton->setDisabled( true );
   redoButton->setDisabled( true );
   mMapCanvas = mapCanvas;
-  mUndoView = NULL;
+  mUndoView = new QUndoView( dockWidgetContents );
+  gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   mUndoStack = NULL;
+  mPreviousIndex = 0;
+  mPreviousCount = 0;
 }
 
 
@@ -58,13 +61,15 @@ void QgsUndoWidget::destroyStack()
 {
   if ( mUndoStack != NULL )
   {
-    mUndoStack->clear();
+    // do not clear undo stack here, just null pointer
     mUndoStack = NULL;
   }
   if ( mUndoView != NULL )
   {
     mUndoView->close();
-    mUndoView = NULL;
+    delete mUndoView;
+    mUndoView = new QUndoView( dockWidgetContents );
+    gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   }
 }
 
@@ -80,13 +85,46 @@ void QgsUndoWidget::redoChanged( bool value )
   emit undoStackChanged();
 }
 
-
-void QgsUndoWidget::indexChanged( int value )
+void QgsUndoWidget::indexChanged( int curIndx )
 {
-  Q_UNUSED( value );
-  //redoButton->setDisabled( !value );
-  //canvas refresh
-  mMapCanvas->refresh();
+  // this is called twice when a non-current command is clicked in QUndoView
+  //   first call has offset, second call will have offset of 0
+  int curCount = 0;
+  bool canRedo = true;
+  if ( mUndoStack )
+  {
+    canRedo = mUndoStack->canRedo();
+    curCount = mUndoStack->count();
+  }
+  int offset = qAbs( mPreviousIndex - curIndx );
+
+  // when individually redoing, differentiate between last redo and a new command added to stack
+  bool lastRedo = ( mPreviousIndex == ( mPreviousCount - 1 ) && mPreviousCount == curCount && !canRedo );
+
+  if ( offset != 0 )
+  {
+    QgsDebugMsg( QString( "curIndx : %1" ).arg( curIndx ) );
+    QgsDebugMsg( QString( "offset  : %1" ).arg( offset ) );
+    QgsDebugMsg( QString( "curCount: %1" ).arg( curCount ) );
+    if ( lastRedo )
+    {
+      QgsDebugMsg( QString( "lastRedo: true" ) );
+    }
+  }
+
+  // avoid canvas redraws when only new command was added to stack (i.e. no user undo/redo action)
+  // or when user has clicked back in QUndoView history then added a new command to the stack
+  if ( offset > 1 || ( offset == 1 && ( canRedo || lastRedo ) ) )
+  {
+    if ( mMapCanvas )
+    {
+      QgsDebugMsg( QString( "trigger redraw" ) );
+      mMapCanvas->refresh();
+    }
+  }
+
+  mPreviousIndex = curIndx;
+  mPreviousCount = curCount;
 }
 
 void QgsUndoWidget::undo( )
@@ -111,20 +149,19 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
   }
 
   mUndoStack = undoStack;
+  mPreviousIndex = mUndoStack->index();
+  mPreviousCount = mUndoStack->count();
 
   mUndoView = new QUndoView( dockWidgetContents );
   mUndoView->setStack( undoStack );
   mUndoView->setObjectName( "undoView" );
   gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   setWidget( dockWidgetContents );
-  connect( mUndoStack,  SIGNAL( canUndoChanged( bool ) ), this, SLOT( undoChanged( bool ) ) );
-  connect( mUndoStack,  SIGNAL( canRedoChanged( bool ) ), this, SLOT( redoChanged( bool ) ) );
+  connect( mUndoStack, SIGNAL( canUndoChanged( bool ) ), this, SLOT( undoChanged( bool ) ) );
+  connect( mUndoStack, SIGNAL( canRedoChanged( bool ) ), this, SLOT( redoChanged( bool ) ) );
 
-  // indexChanged() triggers a refresh. but it gets triggered also when a new action
-  // is done, resulting in two refreshes. For now let's trigger the refresh from
-  // vector layer: it causes potentially multiple refreshes when moving more commands
-  // back, but avoids double refresh in common case when adding commands to the stack
-  //connect(mUndoStack,  SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
+  // gets triggered also when a new command is added to stack, and twice when clicking a command in QUndoView
+  connect( mUndoStack, SIGNAL( indexChanged( int ) ), this, SLOT( indexChanged( int ) ) );
 
   undoButton->setDisabled( !mUndoStack->canUndo() );
   redoButton->setDisabled( !mUndoStack->canRedo() );

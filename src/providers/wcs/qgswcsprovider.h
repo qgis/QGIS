@@ -45,14 +45,6 @@ class QNetworkRequest;
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
-
 /**
 
   \brief Data provider for OGC WCS layers.
@@ -145,8 +137,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     // Reimplemented QgsRasterDataProvider virtual methods
     int capabilities() const;
-    QgsRasterBlock::DataType dataType( int bandNo ) const;
-    QgsRasterBlock::DataType srcDataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType srcDataType( int bandNo ) const;
     int bandCount() const;
     //double noDataValue() const;
     int xBlockSize() const;

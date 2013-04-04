@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgscategorizedsymbolrendererv2widget.h"
 
 #include "qgscategorizedsymbolrendererv2.h"
@@ -31,8 +32,292 @@
 #include <QMessageBox>
 #include <QStandardItemModel>
 #include <QStandardItem>
+#include <QPen>
+#include <QPainter>
+
+QgsCategorizedSymbolRendererV2Model::QgsCategorizedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
+    , mRenderer( 0 )
+    , mMimeFormat( "application/x-qgscategorizedsymbolrendererv2model" )
+{
+}
+
+void QgsCategorizedSymbolRendererV2Model::setRenderer( QgsCategorizedSymbolRendererV2* renderer )
+{
+  if ( mRenderer )
+  {
+    beginRemoveRows( QModelIndex(), 0, mRenderer->categories().size() - 1 );
+    mRenderer = 0;
+    endRemoveRows();
+  }
+  if ( renderer )
+  {
+    beginInsertRows( QModelIndex(), 0, renderer->categories().size() - 1 );
+    mRenderer = renderer;
+    endInsertRows();
+  }
+}
+
+void QgsCategorizedSymbolRendererV2Model::addCategory( const QgsRendererCategoryV2 &cat )
+{
+  if ( !mRenderer ) return;
+  int idx = mRenderer->categories().size();
+  beginInsertRows( QModelIndex(), idx, idx );
+  mRenderer->addCategory( cat );
+  endInsertRows();
+}
 
 
+Qt::ItemFlags QgsCategorizedSymbolRendererV2Model::flags( const QModelIndex & index ) const
+{
+  Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+  if ( index.column() == 1 || index.column() == 2 )
+  {
+    flags |= Qt::ItemIsEditable;
+  }
+  return flags;
+}
+
+Qt::DropActions QgsCategorizedSymbolRendererV2Model::supportedDropActions() const
+{
+  return Qt::MoveAction;
+}
+
+QVariant QgsCategorizedSymbolRendererV2Model::data( const QModelIndex &index, int role ) const
+{
+  if ( !index.isValid() || !mRenderer ) return QVariant();
+
+  const QgsRendererCategoryV2 category = mRenderer->categories().value( index.row() );
+
+  if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
+  {
+    switch ( index.column() )
+    {
+      case 1: return category.value().toString();
+      case 2: return category.label();
+      default: return QVariant();
+    }
+  }
+  else if ( role == Qt::DecorationRole && index.column() == 0 && category.symbol() )
+  {
+    return QgsSymbolLayerV2Utils::symbolPreviewIcon( category.symbol(), QSize( 16, 16 ) );
+  }
+  else if ( role == Qt::TextAlignmentRole )
+  {
+    return ( index.column() == 0 ) ? Qt::AlignHCenter : Qt::AlignLeft;
+  }
+  else if ( role == Qt::EditRole )
+  {
+    switch ( index.column() )
+    {
+      case 1: return category.value();
+      case 2: return category.label();
+      default: return QVariant();
+    }
+  }
+
+  return QVariant();
+}
+
+bool QgsCategorizedSymbolRendererV2Model::setData( const QModelIndex & index, const QVariant & value, int role )
+{
+  if ( !index.isValid() || role != Qt::EditRole )
+    return false;
+
+  switch ( index.column() )
+  {
+    case 1: // value
+    {
+      // try to preserve variant type for this value
+      QVariant val;
+      switch ( mRenderer->categories().value( index.row() ).value().type() )
+      {
+        case QVariant::Int:
+          val = value.toInt();
+          break;
+        case QVariant::Double:
+          val = value.toDouble();
+          break;
+        default:
+          val = value.toString();
+          break;
+      }
+      mRenderer->updateCategoryValue( index.row(), val );
+      break;
+    }
+    case 2: // label
+      mRenderer->updateCategoryLabel( index.row(), value.toString() );
+      break;
+    default:
+      return false;
+  }
+
+  emit dataChanged( index, index );
+  return true;
+}
+
+QVariant QgsCategorizedSymbolRendererV2Model::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Horizontal && role == Qt::DisplayRole && section >= 0 && section < 3 )
+  {
+    QStringList lst; lst << tr( "Symbol" ) << tr( "Value" ) << tr( "Label" );
+    return lst.value( section );
+  }
+  return QVariant();
+}
+
+int QgsCategorizedSymbolRendererV2Model::rowCount( const QModelIndex &parent ) const
+{
+  if ( parent.column() > 0 || !mRenderer ) return 0;
+  return mRenderer->categories().size();
+}
+
+int QgsCategorizedSymbolRendererV2Model::columnCount( const QModelIndex & index ) const
+{
+  Q_UNUSED( index );
+  return 3;
+}
+
+QModelIndex QgsCategorizedSymbolRendererV2Model::index( int row, int column, const QModelIndex &parent ) const
+{
+  if ( hasIndex( row, column, parent ) )
+  {
+    return createIndex( row, column, 0 );
+  }
+  return QModelIndex();
+}
+
+QModelIndex QgsCategorizedSymbolRendererV2Model::parent( const QModelIndex &index ) const
+{
+  Q_UNUSED( index );
+  return QModelIndex();
+}
+
+QStringList QgsCategorizedSymbolRendererV2Model::mimeTypes() const
+{
+  QStringList types;
+  types << mMimeFormat;
+  return types;
+}
+
+QMimeData *QgsCategorizedSymbolRendererV2Model::mimeData( const QModelIndexList &indexes ) const
+{
+  QMimeData *mimeData = new QMimeData();
+  QByteArray encodedData;
+
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+
+  // Create list of rows
+  foreach ( const QModelIndex &index, indexes )
+  {
+    if ( !index.isValid() || index.column() != 0 )
+      continue;
+
+    stream << index.row();
+  }
+  mimeData->setData( mMimeFormat, encodedData );
+  return mimeData;
+}
+
+bool QgsCategorizedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+{
+  Q_UNUSED( row );
+  Q_UNUSED( column );
+  if ( action != Qt::MoveAction ) return true;
+
+  if ( !data->hasFormat( mMimeFormat ) ) return false;
+
+  QByteArray encodedData = data->data( mMimeFormat );
+  QDataStream stream( &encodedData, QIODevice::ReadOnly );
+
+  QVector<int> rows;
+  while ( !stream.atEnd() )
+  {
+    int r;
+    stream >> r;
+    rows.append( r );
+  }
+
+  int to = parent.row();
+  // to is -1 if dragged outside items, i.e. below any item,
+  // then move to the last position
+  if ( to == -1 ) to = mRenderer->categories().size(); // out of rang ok, will be decreased
+  for ( int i = rows.size() - 1; i >= 0; i-- )
+  {
+    QgsDebugMsg( QString( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
+    int t = to;
+    // moveCategory first removes and then inserts
+    if ( rows[i] < to ) t--;
+    mRenderer->moveCategory( rows[i], t );
+    // current moved under another, shift its index up
+    for ( int j = 0; j < i; j++ )
+    {
+      if ( to < rows[j] && rows[i] > rows[j] ) rows[j] += 1;
+    }
+    // removed under 'to' so the target shifted down
+    if ( rows[i] < to ) to--;
+  }
+  emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->categories().size(), 0 ) );
+  emit rowsMoved();
+  return false;
+}
+
+void QgsCategorizedSymbolRendererV2Model::deleteRows( QList<int> rows )
+{
+  for ( int i = rows.size() - 1; i >= 0; i-- )
+  {
+    beginRemoveRows( QModelIndex(), rows[i], rows[i] );
+    mRenderer->deleteCategory( rows[i] );
+    endRemoveRows();
+  }
+}
+
+void QgsCategorizedSymbolRendererV2Model::removeAllRows( )
+{
+  beginRemoveRows( QModelIndex(), 0, mRenderer->categories().size() - 1 );
+  mRenderer->deleteAllCategories();
+  endRemoveRows();
+}
+
+void QgsCategorizedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
+{
+  QgsDebugMsg( "Entered" );
+  if ( column == 0 )
+  {
+    return;
+  }
+  if ( column == 1 )
+  {
+    mRenderer->sortByValue( order );
+  }
+  else if ( column == 2 )
+  {
+    mRenderer->sortByLabel( order );
+  }
+  emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->categories().size(), 0 ) );
+  QgsDebugMsg( "Done" );
+}
+
+// ------------------------------ View style --------------------------------
+QgsCategorizedSymbolRendererV2ViewStyle::QgsCategorizedSymbolRendererV2ViewStyle( QStyle* style )
+    : QProxyStyle( style )
+{}
+
+void QgsCategorizedSymbolRendererV2ViewStyle::drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget ) const
+{
+  if ( element == QStyle::PE_IndicatorItemViewItemDrop && !option->rect.isNull() )
+  {
+    QStyleOption opt( *option );
+    opt.rect.setLeft( 0 );
+    // draw always as line above, because we move item to that index
+    opt.rect.setHeight( 0 );
+    if ( widget ) opt.rect.setRight( widget->width() );
+    QProxyStyle::drawPrimitive( element, &opt, painter, widget );
+    return;
+  }
+  QProxyStyle::drawPrimitive( element, option, painter, widget );
+}
+
+// ------------------------------ Widget ------------------------------------
 QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsCategorizedSymbolRendererV2Widget( layer, style, renderer );
@@ -40,6 +325,8 @@ QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLaye
 
 QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
+    , mRenderer( 0 )
+    , mModel( 0 )
 {
 
   // try to recognize the previous renderer
@@ -75,13 +362,18 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
       cboCategorizedColorRamp->setCurrentIndex( index );
   }
 
-  QStandardItemModel* m = new QStandardItemModel( this );
-  QStringList labels;
-  labels << tr( "Symbol" ) << tr( "Value" ) << tr( "Label" );
-  m->setHorizontalHeaderLabels( labels );
-  viewCategories->setModel( m );
+  mModel = new QgsCategorizedSymbolRendererV2Model( this );
+  mModel->setRenderer( mRenderer );
+  viewCategories->setModel( mModel );
+  viewCategories->resizeColumnToContents( 0 );
+  viewCategories->resizeColumnToContents( 1 );
+  viewCategories->resizeColumnToContents( 2 );
+
+  viewCategories->setStyle( new QgsCategorizedSymbolRendererV2ViewStyle( viewCategories->style() ) );
 
   mCategorizedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
+
+  connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
 
   connect( cboCategorizedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( categoryColumnChanged() ) );
 
@@ -90,10 +382,9 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
   connect( btnChangeCategorizedSymbol, SIGNAL( clicked() ), this, SLOT( changeCategorizedSymbol() ) );
   connect( btnAddCategories, SIGNAL( clicked() ), this, SLOT( addCategories() ) );
-  connect( btnDeleteCategory, SIGNAL( clicked() ), this, SLOT( deleteCategory() ) );
+  connect( btnDeleteCategories, SIGNAL( clicked() ), this, SLOT( deleteCategories() ) );
   connect( btnDeleteAllCategories, SIGNAL( clicked() ), this, SLOT( deleteAllCategories() ) );
   connect( btnAddCategory, SIGNAL( clicked() ), this, SLOT( addCategory() ) );
-  connect( m, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( changeCurrentValue( QStandardItem * ) ) );
 
   // update GUI from renderer
   updateUiFromRenderer();
@@ -113,14 +404,15 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
 
 QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
 {
-  delete mRenderer;
+  if ( mRenderer ) delete mRenderer;
+  if ( mModel ) delete mModel;
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateUiFromRenderer()
 {
-
   updateCategorizedSymbolIcon();
-  populateCategories();
+
+  //mModel->setRenderer ( mRenderer ); // necessary?
 
   // set column
   disconnect( cboCategorizedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( categoryColumnChanged() ) );
@@ -153,10 +445,9 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2Widget::renderer()
 
 void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
 {
-  QItemSelectionModel* m = viewCategories->selectionModel();
-  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+  QList<int> selectedCats = selectedCategories();
 
-  if ( m && selectedIndexes.size() > 0 )
+  if ( selectedCats.size() > 0 )
   {
     QgsSymbolV2* newSymbol = mCategorizedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
@@ -166,19 +457,15 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
-    foreach ( QModelIndex idx, selectedIndexes )
+    foreach ( const int idx, selectedCats )
     {
-      if ( idx.isValid() )
-      {
-        int catIdx = mRenderer->categoryIndexForValue( idx.data( Qt::UserRole + 1 ) );
-        QgsSymbolV2* newCatSymbol = newSymbol->clone();
-        newCatSymbol->setColor( mRenderer->categories()[catIdx].symbol()->color() );
-        mRenderer->updateCategorySymbol( catIdx, newCatSymbol );
-      }
+      QgsRendererCategoryV2 category = mRenderer->categories().value( idx );
+
+      QgsSymbolV2* newCatSymbol = newSymbol->clone();
+      newCatSymbol->setColor( mRenderer->categories()[idx].symbol()->color() );
+      mRenderer->updateCategorySymbol( idx, newCatSymbol );
     }
   }
-
-  populateCategories();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
@@ -207,7 +494,6 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
   updateCategorizedSymbolIcon();
 
   mRenderer->updateSymbols( mCategorizedSymbol );
-  populateCategories();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
@@ -218,54 +504,17 @@ void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
 
 void QgsCategorizedSymbolRendererV2Widget::populateCategories()
 {
-  QStandardItemModel* m = qobject_cast<QStandardItemModel*>( viewCategories->model() );
-  m->clear();
 
-  QStringList labels;
-  labels << tr( "Symbol" ) << tr( "Value" ) << tr( "Label" );
-  m->setHorizontalHeaderLabels( labels );
-
-  int i, count = mRenderer->categories().count();
-
-  // TODO: sort?? utils.sortVariantList(keys);
-
-  for ( i = 0; i < count; i++ )
-  {
-    const QgsRendererCategoryV2 &cat = mRenderer->categories()[i];
-    addCategory( cat );
-  }
-
-  viewCategories->resizeColumnToContents( 0 );
-  viewCategories->resizeColumnToContents( 1 );
-  viewCategories->resizeColumnToContents( 2 );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::populateColumns()
 {
   cboCategorizedColumn->clear();
-  const QgsFieldMap& flds = mLayer->pendingFields();
-  QgsFieldMap::ConstIterator it = flds.begin();
-  for ( ; it != flds.end(); ++it )
+  const QgsFields& flds = mLayer->pendingFields();
+  for ( int idx = 0; idx < flds.count(); ++idx )
   {
-    cboCategorizedColumn->addItem( it->name() );
+    cboCategorizedColumn->addItem( flds[idx].name() );
   }
-}
-
-
-void QgsCategorizedSymbolRendererV2Widget::addCategory( const QgsRendererCategoryV2 &cat )
-{
-  QSize iconSize( 16, 16 );
-
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( cat.symbol(), iconSize );
-  QStandardItem *symbolItem = new QStandardItem( icon, "" );
-  symbolItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-
-  QStandardItem *valueItem = new QStandardItem( cat.value().toString() );
-  valueItem->setData( cat.value() ); // set attribute value as user role
-
-  QList<QStandardItem *> list;
-  list << symbolItem << valueItem << new QStandardItem( cat.label() );
-  qobject_cast<QStandardItemModel *>( viewCategories->model() )->appendRow( list );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged()
@@ -281,29 +530,32 @@ void QgsCategorizedSymbolRendererV2Widget::categoriesDoubleClicked( const QModel
 
 void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
 {
-  QVariant k = currentCategory();
-  if ( !k.isValid() )
-    return;
+  int catIdx = currentCategoryRow();
+  QgsRendererCategoryV2 category = mRenderer->categories().value( currentCategoryRow() );
 
-  int catIdx = mRenderer->categoryIndexForValue( k );
-  QgsSymbolV2* newSymbol = mRenderer->categories()[catIdx].symbol()->clone();
+  QgsSymbolV2 *symbol = category.symbol();
+  if ( symbol )
+  {
+    symbol = symbol->clone();
+  }
+  else
+  {
+    symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
+  }
 
-  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
+  QgsSymbolV2SelectorDialog dlg( symbol, mStyle, mLayer, this );
   if ( !dlg.exec() )
   {
-    delete newSymbol;
+    delete symbol;
     return;
   }
 
-  mRenderer->updateCategorySymbol( catIdx, newSymbol );
-
-  populateCategories();
+  mRenderer->updateCategorySymbol( catIdx, symbol );
 }
 
 static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol, QgsVectorColorRampV2* ramp )
 {
   // sort the categories first
-  //TODO: make the order configurable?
   QgsSymbolLayerV2Utils::sortVariantList( values, Qt::AscendingOrder );
 
   int num = values.count();
@@ -339,6 +591,19 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   int idx = mLayer->fieldNameIndex( attrName );
   QList<QVariant> unique_vals;
   mLayer->uniqueValues( idx, unique_vals );
+
+  // ask to abort if too many classes
+  if ( unique_vals.size() >= 1000 )
+  {
+    int res = QMessageBox::warning( 0, tr( "High number of classes!" ),
+                                    tr( "Classification would yield %1 entries which might not be expected. Continue?" ).arg( unique_vals.size() ),
+                                    QMessageBox::Ok | QMessageBox::Cancel,
+                                    QMessageBox::Cancel );
+    if ( res == QMessageBox::Cancel )
+    {
+      return;
+    }
+  }
 
   //DlgAddCategories dlg(mStyle, createDefaultSymbol(), unique_vals, this);
   //if (!dlg.exec())
@@ -423,10 +688,13 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   r->setScaleMethod( mRenderer->scaleMethod() );
   r->setSizeScaleField( mRenderer->sizeScaleField() );
   r->setRotationField( mRenderer->rotationField() );
+
+  if ( mModel )
+  {
+    mModel->setRenderer( r );
+  }
   delete mRenderer;
   mRenderer = r;
-
-  populateCategories();
 }
 
 int QgsCategorizedSymbolRendererV2Widget::currentCategoryRow()
@@ -437,87 +705,38 @@ int QgsCategorizedSymbolRendererV2Widget::currentCategoryRow()
   return idx.row();
 }
 
-QVariant QgsCategorizedSymbolRendererV2Widget::currentCategory()
+QList<int> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
 {
-  int row = currentCategoryRow();
-  if ( row == -1 )
-    return QVariant();
-  QStandardItemModel* m = qobject_cast<QStandardItemModel*>( viewCategories->model() );
-  return m->item( row, 1 )->data();
-}
+  QList<int> rows;
+  QModelIndexList selectedRows = viewCategories->selectionModel()->selectedRows();
 
-QList<QVariant> QgsCategorizedSymbolRendererV2Widget::selectedCategories()
-{
-  QList<QVariant> categories;
-  QModelIndexList rows = viewCategories->selectionModel()->selectedRows();
-  QStandardItemModel* m = qobject_cast<QStandardItemModel*>( viewCategories->model() );
-
-  foreach ( QModelIndex r, rows )
+  foreach ( QModelIndex r, selectedRows )
   {
     if ( r.isValid() )
     {
-      categories.append( m->item( r.row(), 1 )->data() );
+      rows.append( r.row() );
     }
   }
-
-  return categories;
+  return rows;
 }
 
-void QgsCategorizedSymbolRendererV2Widget::deleteCategory()
+void QgsCategorizedSymbolRendererV2Widget::deleteCategories()
 {
-  QList<QVariant> categories = selectedCategories();
-
-  if ( !categories.size() )
-    return;
-
-  foreach ( const QVariant k, categories )
-  {
-    if ( k.isValid() )
-    {
-      int idx = mRenderer->categoryIndexForValue( k );
-      if ( idx >= 0 )
-      {
-        mRenderer->deleteCategory( idx );
-      }
-    }
-  }
-  populateCategories();
+  QList<int> categoryIndexes = selectedCategories();
+  mModel->deleteRows( categoryIndexes );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::deleteAllCategories()
 {
-  mRenderer->deleteAllCategories();
-  populateCategories();
-}
-
-void QgsCategorizedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * item )
-{
-  int idx = item->row();
-  QString newtext = item->text();
-  if ( item->column() == 1 )
-  {
-    QVariant value = newtext;
-    // try to preserve variant type for this value
-    QVariant::Type t = item->data().type();
-    if ( t == QVariant::Int )
-      value = newtext.toInt();
-    else if ( t == QVariant::Double )
-      value = newtext.toDouble();
-    mRenderer->updateCategoryValue( idx, value );
-    item->setData( value );
-  }
-  else if ( item->column() == 2 )
-  {
-    mRenderer->updateCategoryLabel( idx, newtext );
-  }
+  mModel->removeAllRows();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::addCategory()
 {
+  if ( !mModel ) return;
   QgsSymbolV2 *symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRendererCategoryV2 cat( QString(), symbol, QString() );
-  addCategory( cat );
-  mRenderer->addCategory( cat );
+  mModel->addCategory( cat );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
@@ -548,14 +767,11 @@ QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
     {
-      QStandardItem* currentItem = qobject_cast<const QStandardItemModel*>( m->model() )->itemFromIndex( *indexIt );
-      if ( currentItem )
+      int row = ( *indexIt ).row();
+      QgsSymbolV2* s = categories[row].symbol();
+      if ( s )
       {
-        QgsSymbolV2* s = categories[mRenderer->categoryIndexForValue( currentItem->data() )].symbol();
-        if ( s )
-        {
-          selectedSymbols.append( s );
-        }
+        selectedSymbols.append( s );
       }
     }
   }
@@ -565,4 +781,9 @@ QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()
 void QgsCategorizedSymbolRendererV2Widget::showSymbolLevels()
 {
   showSymbolLevelsDialog( mRenderer );
+}
+
+void QgsCategorizedSymbolRendererV2Widget::rowsMoved()
+{
+  viewCategories->selectionModel()->clear();
 }

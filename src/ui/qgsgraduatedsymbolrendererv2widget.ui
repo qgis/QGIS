@@ -45,7 +45,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>change</string>
+        <string>Change...</string>
        </property>
       </widget>
      </item>
@@ -116,7 +116,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Quantile</string>
+         <string>Quantile (Equal Count)</string>
         </property>
        </item>
        <item>
@@ -156,10 +156,19 @@
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::InternalMove</enum>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
      <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="itemsExpandable">
       <bool>false</bool>
      </property>
      <property name="sortingEnabled">
@@ -186,7 +195,14 @@
      <item>
       <widget class="QPushButton" name="btnGraduatedDelete">
        <property name="text">
-        <string>Delete class</string>
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnDeleteAllClasses">
+       <property name="text">
+        <string>Delete all</string>
        </property>
       </widget>
      </item>

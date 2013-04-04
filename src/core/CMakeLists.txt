@@ -5,9 +5,6 @@
 
 SET(QGIS_CORE_SRCS
 
-  gps/qextserialport/qextserialport.cpp
-  gps/qextserialport/qextserialenumerator.cpp
-
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsnmeaconnection.cpp
@@ -43,15 +40,18 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgspointdisplacementrenderer.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
   symbology-ng/qgscolorbrewerpalette.cpp
-  
+
   diagram/qgsdiagram.cpp
   diagram/qgspiediagram.cpp
   diagram/qgstextdiagram.cpp
   diagram/qgshistogramdiagram.cpp
-  
+
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
+  qgscachedfeatureiterator.cpp
+  qgscacheindex.cpp
+  qgscacheindexfeatureid.cpp
   qgsbrowsermodel.cpp
   qgscentralpointpositionmanager.cpp
   qgsclipper.cpp
@@ -66,9 +66,15 @@ SET(QGIS_CORE_SRCS
   qgserror.cpp
   qgsexpression.cpp
   qgsfeature.cpp
+  qgsfeatureiterator.cpp
+  qgsfeaturerequest.cpp
+  qgsfeaturestore.cpp
   qgsfield.cpp
   qgsgeometry.cpp
+  qgsgeometrycache.cpp
   qgsgeometryvalidator.cpp
+  qgsgml.cpp
+  qgsgmlschema.cpp
   qgshttptransaction.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
@@ -81,7 +87,10 @@ SET(QGIS_CORE_SRCS
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
   qgsmessagelog.cpp
+  qgsnetworkreplyparser.cpp
   qgscredentials.cpp
+  qgsofflineediting.cpp
+  qgsogcutils.cpp
   qgsoverlayobject.cpp
   qgsowsconnection.cpp
   qgspalgeometry.cpp
@@ -108,8 +117,13 @@ SET(QGIS_CORE_SRCS
   qgscoordinatereferencesystem.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
+  qgsvectorlayercache.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
+  qgsvectorlayercache.cpp
+  qgsvectorlayereditbuffer.cpp
+  qgsvectorlayereditutils.cpp
+  qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
@@ -134,9 +148,11 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposertexttable.cpp
   composer/qgscomposerscalebar.cpp
   composer/qgscomposershape.cpp
+  composer/qgscomposereffect.cpp
   composer/qgsatlascomposition.cpp
   composer/qgslegendmodel.cpp
   composer/qgscomposerlegend.cpp
+  composer/qgscomposerlegendstyle.cpp
   composer/qgspaperitem.cpp
   composer/qgsscalebarstyle.cpp
   composer/qgsdoubleboxscalebarstyle.cpp
@@ -195,6 +211,8 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandcolordatarenderer.cpp
   raster/qgssinglebandgrayrenderer.cpp
   raster/qgssinglebandpseudocolorrenderer.cpp
+  raster/qgsbrightnesscontrastfilter.cpp
+  raster/qgshuesaturationfilter.cpp  
 
   renderer/qgscontinuouscolorrenderer.cpp
   renderer/qgsgraduatedsymbolrenderer.cpp
@@ -212,23 +230,34 @@ SET(QGIS_CORE_SRCS
   qgsscaleutils.cpp
 )
 
-IF(WIN32)
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
-    gps/qextserialport/win_qextserialport.cpp
+IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # spatialindex headers produce warnings
+  SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    gps/qextserialport/qextserialport.cpp
+    gps/qextserialport/qextserialenumerator.cpp
   )
-  ADD_DEFINITIONS(-D_TTY_WIN_)
-ELSE(WIN32)
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
-    gps/qextserialport/posix_qextserialport.cpp
-  )
-  ADD_DEFINITIONS(-D_TTY_POSIX_)
-ENDIF(WIN32)
+
+  IF(WIN32)
+    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      gps/qextserialport/win_qextserialport.cpp
+    )
+    ADD_DEFINITIONS(-D_TTY_WIN_)
+  ELSE(WIN32)
+    SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+      gps/qextserialport/posix_qextserialport.cpp
+    )
+    ADD_DEFINITIONS(-D_TTY_POSIX_)
+  ENDIF(WIN32)
+ELSE (WITH_INTERNAL_QEXTSERIALPORT)
+  INCLUDE_DIRECTORIES(${QEXTSERIALPORT_INCLUDE_DIR})
+ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -250,8 +279,7 @@ IF (WITH_INTERNAL_SPATIALITE)
   ADD_DEFINITIONS(-D_LARGE_FILE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE=1)
   ADD_DEFINITIONS(-DSQLITE_ENABLE_RTREE=1)
 
-  SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     spatialite/sqlite3.c
     spatialite/spatialite.c
     )
@@ -263,7 +291,9 @@ IF (WITH_INTERNAL_SPATIALITE)
     SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS -w)
   ENDIF(MSVC)
 
-  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
+  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite spatialite/headers)
+ELSE (WITH_INTERNAL_SPATIALITE)
+  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
@@ -277,19 +307,25 @@ SET(QGIS_CORE_MOC_HDRS
   qgscoordinatetransform.h
   qgsdataitem.h
   qgsdataprovider.h
+  qgsgml.h
+  qgsgmlschema.h
   qgshttptransaction.h
   qgsmaplayer.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
   qgsmessageoutput.h
   qgsmessagelog.h
+  qgsnetworkreplyparser.h
+  qgsofflineediting.h
   qgscredentials.h
   qgspluginlayer.h
   qgsproject.h
   qgsrunprocess.h
   qgsvectorlayer.h
+  qgsvectorlayereditbuffer.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
+  qgsvectorlayercache.h
   qgsgeometryvalidator.h
 
   composer/qgsaddremoveitemcommand.h
@@ -304,6 +340,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerattributetable.h
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
+  composer/qgscomposereffect.h
   composer/qgsatlascomposition.h
   composer/qgscomposition.h
 
@@ -316,16 +353,20 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdetector.h
   gps/qgsnmeaconnection.h
   gps/qgsgpsdconnection.h
-  gps/qextserialport/qextserialport.h
-  gps/qextserialport/qextserialenumerator.h
 
   symbology-ng/qgscptcityarchive.h
+  symbology-ng/qgssvgcache.h
 )
 
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
+    gps/qextserialport/qextserialport.h
+    gps/qextserialport/qextserialenumerator.h
+  )
+ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-  SET(QGIS_CORE_MOC_HDRS
-    ${QGIS_CORE_MOC_HDRS}
+  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
     gps/qgsqtlocationconnection.h
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -343,6 +384,9 @@ SET(QGIS_CORE_HDRS
   qgis.h
   qgsapplication.h
   qgsattributeaction.h
+  qgscachedfeatureiterator.h
+  qgscacheindex.h
+  qgscacheindexfeatureid.h
   qgscentralpointpositionmanager.h
   qgsclipper.h
   qgscontexthelp.h
@@ -355,8 +399,14 @@ SET(QGIS_CORE_HDRS
   qgsexception.h
   qgsexpression.h
   qgsfeature.h
+  qgsfeatureiterator.h
+  qgsfeaturerequest.h
+  qgsfeaturestore.h
   qgsfield.h
   qgsgeometry.h
+  qgsgml.h
+  qgsgmlschema.h
+  qgsgeometrycache.h
   qgshttptransaction.h
   qgslabel.h
   qgslabelattributes.h
@@ -367,7 +417,10 @@ SET(QGIS_CORE_HDRS
   qgsmaptopixel.h
   qgsmessageoutput.h
   qgsmimedatautils.h
+  qgsnetworkreplyparser.h
   qgscredentials.h
+  qgsofflineediting.h
+  qgsogcutils.h
   qgsoverlayobjectpositionmanager.h
   qgsowsconnection.h
   qgspallabeling.h
@@ -392,9 +445,15 @@ SET(QGIS_CORE_HDRS
   qgssnapper.h
   qgscoordinatereferencesystem.h
   qgsvectordataprovider.h
+  qgsvectorlayercache.h
   qgsvectorfilewriter.h
   qgsvectorlayer.h
+  qgsvectorlayercache.h
+  qgsvectorlayereditbuffer.h
+  qgsvectorlayereditutils.h
+  qgsvectorlayerfeatureiterator.h
   qgsvectorlayerimport.h
+  qgsvectorlayerundocommand.h
   qgsvectoroverlay.h
   qgstolerance.h
 
@@ -403,7 +462,7 @@ SET(QGIS_CORE_HDRS
   diagram/qgstextdiagram.h
   diagram/qgshistogramdiagram.h
 
-  
+
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 
@@ -474,8 +533,7 @@ SET(QGIS_CORE_HDRS
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND)
-  SET(QGIS_CORE_HDRS
-    ${QGIS_CORE_HDRS}
+  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
     gps/qgsqtlocationconnection.h
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -531,9 +589,10 @@ ELSE(NOT APPLE)
     FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
     MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
     MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_core
+    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis2_core
     BUILD_WITH_INSTALL_RPATH TRUE
     PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
+    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
 ENDIF(NOT APPLE)
 
@@ -558,6 +617,10 @@ IF(APPLE)
   TARGET_LINK_LIBRARIES(qgis_core "-framework CoreFoundation -framework IOKit")
 ENDIF(APPLE)
 
+IF (NOT WITH_INTERNAL_QEXTSERIALPORT)
+  TARGET_LINK_LIBRARIES(qgis_core ${QEXTSERIALPORT_LIBRARY})
+ENDIF (NOT WITH_INTERNAL_QEXTSERIALPORT)
+
 IF (QT_MOBILITY_LOCATION_FOUND)
     TARGET_LINK_LIBRARIES(qgis_core ${QT_MOBILITY_LOCATION_LIBRARY})
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
@@ -575,6 +638,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${GEOS_LIBRARY}
   ${GDAL_LIBRARY}
   ${SPATIALINDEX_LIBRARY}
+  ${EXPAT_LIBRARY}
 )
 
 IF (WITH_INTERNAL_SPATIALITE)
@@ -588,7 +652,7 @@ IF (WITH_INTERNAL_SPATIALITE)
     TARGET_LINK_LIBRARIES(qgis_core pthread ${CMAKE_DL_LIBS})
   ENDIF (UNIX AND NOT ANDROID)
 ELSE (WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
+  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY} ${SPATIALITE_LIBRARY})
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 # install

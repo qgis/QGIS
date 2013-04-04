@@ -12,16 +12,25 @@ class QgsRasterPyramidsOptionsWidget: QWidget
     QgsRasterPyramidsOptionsWidget( QWidget* parent = 0, QString provider = "gdal" );
     ~QgsRasterPyramidsOptionsWidget();
 
-    QStringList createOptions() const;
+    QStringList configOptions() const;
     QgsRasterFormatSaveOptionsWidget* createOptionsWidget() /Factory/;
     const QList<int> overviewList() const;
     QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const;
     QString resamplingMethod() const;
+    void setRasterLayer( QgsRasterLayer* rasterLayer );
+    void setRasterFileName( const QString& file );
 
   public slots:
 
     void apply();
     void checkAllLevels( bool checked );
+
+  private slots:
+
+    void on_cbxPyramidsLevelsCustom_toggled( bool toggled );
+    void on_cbxPyramidsFormat_currentIndexChanged( int index );
+    void setOverviewList();
+    void updateUi();
 
   signals:
     void overviewListChanged();

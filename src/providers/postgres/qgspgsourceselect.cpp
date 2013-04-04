@@ -132,8 +132,8 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool manag
   mAddButton = new QPushButton( tr( "&Add" ) );
   mAddButton->setEnabled( false );
 
-  mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
-  mBuildQueryButton->setToolTip( tr( "Build query" ) );
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
+  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
   if ( !mManagerMode )
@@ -444,6 +444,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
     bool searchPublicOnly = QgsPostgresConn::publicSchemaOnly( cmbConnections->currentText() );
     bool searchGeometryColumnsOnly = QgsPostgresConn::geometryColumnsOnly( cmbConnections->currentText() );
+    bool dontResolveType = QgsPostgresConn::dontResolveType( cmbConnections->currentText() );
     bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
 
     QVector<QgsPostgresLayerProperty> layers;
@@ -456,8 +457,14 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
         QString srid = layer.srid;
         if ( !layer.geometryColName.isNull() )
         {
-          if ( type == "GEOMETRY" || type.isNull() || srid.isEmpty() )
+          if ( QgsPostgresConn::wkbTypeFromPostgis( type ) == QGis::WKBUnknown || srid.isEmpty() )
           {
+            if ( dontResolveType )
+            {
+              QgsDebugMsg( QString( "skipping column %1.%2 without type constraint" ).arg( layer.schemaName ).arg( layer.tableName ) );
+              continue;
+            }
+
             addSearchGeometryColumn( layer );
             type = "";
             srid = "";
@@ -500,7 +507,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     // Let user know we couldn't initialise the Postgres/PostGIS provider
     QMessageBox::warning( this,
                           tr( "Postgres/PostGIS Provider" ),
-                          tr( "Could not open the Postgres/PostGIS Provider" ) );
+                          tr( "Could not open the Postgres/PostGIS Provider.\nCheck message log for possible errors." ) );
   }
 }
 
@@ -522,7 +529,7 @@ void QgsPgSourceSelect::finishList()
   if ( mTablesTreeView->model()->rowCount() == 0 )
     QMessageBox::information( this,
                               tr( "Postgres/PostGIS Provider" ),
-                              tr( "No accessible tables or views found.  Check the message log for possible errors." ) );
+                              tr( "No accessible tables or views found.\nCheck the message log for possible errors." ) );
 
 }
 

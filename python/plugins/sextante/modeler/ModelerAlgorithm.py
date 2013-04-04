@@ -23,26 +23,32 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import traceback
+import copy
+import os.path
+import codecs
+import time
+from qgis.core import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterFactory import ParameterFactory
 from sextante.modeler.WrongModelException import WrongModelException
 from sextante.modeler.ModelerUtils import ModelerUtils
-import copy
+from sextante.parameters.ParameterRaster import ParameterRaster
+from sextante.core.QGisLayers import QGisLayers
+from sextante.parameters.ParameterExtent import ParameterExtent
 from PyQt4 import QtCore, QtGui
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-import os.path
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputNumber import OutputNumber
+from sextante.outputs.OutputString import OutputString
 from sextante.parameters.Parameter import Parameter
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.gui.Help2Html import Help2Html
-import codecs
-import time
 
 class ModelerAlgorithm(GeoAlgorithm):
 
@@ -53,6 +59,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         newone = ModelerAlgorithm()
         newone.openModel(self.descriptionFile)
         newone.provider = self.provider
+        newone.deactivated = self.deactivated
         return newone
 
     def __init__(self):
@@ -68,6 +75,13 @@ class ModelerAlgorithm(GeoAlgorithm):
         #Each entry is a map with (paramname, paramvalue) values for algs[i].
         #paramvalues are instances of AlgorithmAndParameter
         self.algParameters = []
+
+        #algorithms that each algorithm depends on.
+        #This is just a list of dependencies not set by outputs and inputs
+        #but explicitely entered instead, meaning that an algorithm must ''wait''
+        #for another to finish
+        #Each entry is a list with algorithm indexes
+        self.dependencies = []
 
         #outputs of Geoalgorithms in self.algs.
         #Each entry is a map with (output, outputvalue) values for algs[i].
@@ -96,10 +110,11 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.algParameters = []
         self.algOutputs = []
         self.paramValues = {}
+        self.dependencies = []
 
         self.descriptionFile = filename
         lines = codecs.open(filename, "r", encoding='utf-8')
-        line = lines.readline().strip("\n")
+        line = lines.readline().strip("\n").strip("\r")
         iAlg = 0
         try:
             while line != "":
@@ -109,14 +124,13 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if param:
                         self.parameters.append(param)
                     else:
-                        raise WrongModelException("Error in line: " + line)
+                        raise WrongModelException("Error in parameter line: " + line)
                     line = lines.readline().strip("\n")
                     tokens = line.split(",")
                     self.paramPos.append(QtCore.QPointF(float(tokens[0]), float(tokens[1])))
                 elif line.startswith("VALUE:"):
                     valueLine = line[len("VALUE:"):]
                     tokens = valueLine.split("===")
-                    
                     self.paramValues[tokens[0]] = tokens[1].replace(ModelerAlgorithm.LINE_BREAK_STRING, '\n')
                 elif line.startswith("NAME:"):
                     self.name = line[len("NAME:"):]
@@ -127,20 +141,28 @@ class ModelerAlgorithm(GeoAlgorithm):
                     algOutputs={}
                     algLine = line[len("ALGORITHM:"):]
                     alg = ModelerUtils.getAlgorithm(algLine)
-                    if alg:
-                        posline = lines.readline().strip("\n")
+                    if alg is not None:
+                        posline = lines.readline().strip("\n").strip("\r")
                         tokens = posline.split(",")
                         self.algPos.append(QtCore.QPointF(float(tokens[0]), float(tokens[1])))
                         self.algs.append(alg)
+                        dependenceline = lines.readline().strip("\n").strip("\r")
+                        dependencies = [];
+                        if dependenceline != str(None):
+                            for index in dependenceline.split(","):
+                                try:
+                                    dependencies.append(int(index))
+                                except:
+                                    pass #a quick fix fwhile I figure out how to solve problems when parsing this
                         for param in alg.parameters:
-                            line = lines.readline().strip("\n")
+                            line = lines.readline().strip("\n").strip("\r")
                             if line==str(None):
                                 algParams[param.name] = None
                             else:
                                 tokens = line.split("|")
                                 algParams[param.name] = AlgorithmAndParameter(int(tokens[0]), tokens[1])
                         for out in alg.outputs:
-                            line = lines.readline().strip("\n")
+                            line = lines.readline().strip("\n").strip("\r")
                             if str(None)!=line:
                                 algOutputs[out.name] = line
                                 #we add the output to the algorithm, with a name indicating where it comes from
@@ -153,12 +175,16 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 algOutputs[out.name] = None
                         self.algOutputs.append(algOutputs)
                         self.algParameters.append(algParams)
+                        self.dependencies.append(dependencies)
                         iAlg += 1
                     else:
-                        raise WrongModelException("Error in line: " + line)
-                line = lines.readline().strip("\n")
-        except WrongModelException:
-            raise WrongModelException(line)
+                        raise WrongModelException("Error in algorithm name: " + algLine)
+                line = lines.readline().strip("\n").strip("\r")
+        except Exception, e:
+            if isinstance (e, WrongModelException):
+                raise e
+            else:
+                raise WrongModelException("Error in model definition line:"  + line.strip() + " : " + traceback.format_exc())
 
     def addParameter(self, param):
         self.parameters.append(param)
@@ -168,23 +194,26 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.parameters[paramIndex] = param
         #self.updateModelerView()
 
-    def addAlgorithm(self, alg, parametersMap, valuesMap, outputsMap):
+    def addAlgorithm(self, alg, parametersMap, valuesMap, outputsMap, dependencies):
         self.algs.append(alg)
         self.algParameters.append(parametersMap)
         self.algOutputs.append(outputsMap)
+        self.dependencies.append(dependencies)
         for value in valuesMap.keys():
             self.paramValues[value] = valuesMap[value]
         self.algPos.append(self.getPositionForAlgorithmItem())
 
-    def updateAlgorithm(self, algIndex, parametersMap, valuesMap, outputsMap):
+    def updateAlgorithm(self, algIndex, parametersMap, valuesMap, outputsMap, dependencies):
         self.algParameters[algIndex] = parametersMap
         self.algOutputs[algIndex] = outputsMap
+        self.dependencies[algIndex] =  dependencies
         for value in valuesMap.keys():
             self.paramValues[value] = valuesMap[value]
         self.updateModelerView()
 
 
     def removeAlgorithm(self, index):
+        '''returns true if the algorithm could be removed, false if others depend on it and could not be removed'''
         if self.hasDependencies(self.algs[index], index):
             return False
         for out in self.algs[index].outputs:
@@ -196,10 +225,25 @@ class ModelerAlgorithm(GeoAlgorithm):
         del self.algParameters[index]
         del self.algOutputs[index]
         del self.algPos[index]
+
+        i = -1
+        for paramValues in self.algParameters:
+            i += 1
+            newValues = {}
+            for name, value in paramValues.iteritems():
+                if value:
+                    if value.alg > index:
+                        newValues[name] = AlgorithmAndParameter(value.alg - 1, value.param, value.algName, value.paramName)
+                    else:
+                        newValues[name] = value
+                else:
+                    newValues[name] = value
+            self.algParameters[i] = newValues
         self.updateModelerView()
         return True
 
     def removeParameter(self, index):
+        '''returns true if the parameter could be removed, false if others depend on it and could not be removed'''
         if self.hasDependencies(self.parameters[index], index):
             return False
         del self.parameters[index]
@@ -236,10 +280,8 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def deactivateAlgorithm(self, algIndex, update = False):
         if algIndex not in self.deactivated:
-            self.deactivated.append(algIndex)
             dependent = self.getDependentAlgorithms(algIndex)
-            for alg in dependent:
-                self.deactivateAlgorithm(alg)
+            self.deactivated.extend(dependent)
         if update:
             self.updateModelerView()
 
@@ -247,36 +289,56 @@ class ModelerAlgorithm(GeoAlgorithm):
         if algIndex in self.deactivated:
             dependsOn = self.getDependsOnAlgorithms(algIndex)
             for alg in dependsOn:
-                if alg in self.deactivated:
+                if alg in self.deactivated and alg != algIndex:
                     return False
             self.deactivated.remove(algIndex)
             dependent = self.getDependentAlgorithms(algIndex)
             for alg in dependent:
-                self.activateAlgorithm(alg)
+                self.deactivated.remove(alg)
         if update:
             self.updateModelerView()
         return True
 
     def getDependsOnAlgorithms(self, algIndex):
-        '''This method returns a list with the indexes of algorithm a given one depends on'''
+        '''This method returns a list with the indexes of algorithms a given one depends on'''
         algs = []
+        algs.extend(self.dependencies[algIndex])
+        index = -1
         for aap in self.algParameters[algIndex].values():
+            index += 1
             if aap is not None:
                 if aap.alg != AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.alg not in algs:
                     algs.append(aap.alg)
+                    dep = self.getDependsOnAlgorithms(aap.alg)
+                    for alg in dep:
+                        if alg not in algs:
+                            algs.append(alg)
         return algs
 
     def getDependentAlgorithms(self, algIndex):
-        '''This method returns a list with the indexes of algorithm depending on a given one'''
-        dependent = []
+        '''This method returns a list with the indexes of algorithms depending on a given one'''
+        dependent = [algIndex]
         index = -1
         for alg in self.algParameters:
             index += 1
+            if index in dependent:
+                continue
             for aap in alg.values():
                 if aap is not None:
                     if aap.alg == algIndex:
-                        dependent.append(index)
+                        dep = self.getDependentAlgorithms(index)
+                        for alg in dep:
+                            if alg not in dependent:
+                                dependent.append(alg)
                         break
+        index = -1
+        for dep in self.dependencies:
+            index += 1
+            if algIndex in dep:
+                dep = self.getDependentAlgorithms(index)
+                for alg in dep:
+                    if alg not in dependent:
+                        dependent.append(alg)
 
         return dependent
 
@@ -322,6 +384,10 @@ class ModelerAlgorithm(GeoAlgorithm):
             s+="ALGORITHM:" + alg.commandLineName()+"\n"
             pt = self.algPos[i]
             s +=  str(pt.x()) + "," + str(pt.y()) + "\n"
+            if len(self.dependencies[i]) != 0:
+                s += ",".join([str(index) for index in self.dependencies[i]]) + "\n"
+            else:
+                s += str(None) + "\n"
             for param in alg.parameters:
                 value = self.algParameters[i][param.name]
                 if value:
@@ -342,6 +408,12 @@ class ModelerAlgorithm(GeoAlgorithm):
         for param in alg.parameters:
             aap = self.algParameters[iAlg][param.name]
             if aap == None:
+                if isinstance(param, ParameterExtent):
+                    value = self.getValueFromAlgorithmAndParameter(aap)
+                    if value is None:
+                        value = self.getMinCoveringExtent()
+                    if not param.setValue(value):
+                        raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
                 continue
             if isinstance(param, ParameterMultipleInput):
                 value = self.getValueFromAlgorithmAndParameter(aap)
@@ -355,6 +427,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                 value = ";".join(layerslist)
                 if not param.setValue(value):
                     raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
+
             else:
                 value = self.getValueFromAlgorithmAndParameter(aap)
                 if not param.setValue(value):
@@ -367,11 +440,53 @@ class ModelerAlgorithm(GeoAlgorithm):
             else:
                 out.value = None
 
+
+    def getMinCoveringExtent(self):
+        first = True
+        found = False
+        for param in self.parameters:
+            if param.value:
+                if isinstance(param, (ParameterRaster, ParameterVector)):
+                    found = True
+                    if isinstance(param.value, (QgsRasterLayer, QgsVectorLayer)):
+                        layer = param.value
+                    else:
+                        layer = QGisLayers.getObjectFromUri(param.value)
+                    self.addToRegion(layer, first)
+                    first = False
+                elif isinstance(param, ParameterMultipleInput):
+                    found = True
+                    layers = param.value.split(";")
+                    for layername in layers:
+                        layer = QGisLayers.getObjectFromUri(layername)
+                        self.addToRegion(layer, first)
+                        first = False
+        if found:
+            return str(self.xmin) + "," + str(self.xmax) + "," + str(self.ymin) + "," + str(self.ymax)
+        else:
+            return None
+
+
+    def addToRegion(self, layer, first):
+        if first:
+            self.xmin = layer.extent().xMinimum()
+            self.xmax = layer.extent().xMaximum()
+            self.ymin = layer.extent().yMinimum()
+            self.ymax = layer.extent().yMaximum()
+        else:
+            self.xmin = min(self.xmin, layer.extent().xMinimum())
+            self.xmax = max(self.xmax, layer.extent().xMaximum())
+            self.ymin = min(self.ymin, layer.extent().yMinimum())
+            self.ymax = max(self.ymax, layer.extent().yMaximum())
+
+
     def getSafeNameForOutput(self, ialg, out):
         return out.name +"_ALG" + str(ialg)
 
 
     def getValueFromAlgorithmAndParameter(self, aap):
+        if aap is None:
+            return None
         if float(aap.alg) == float(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM):
                 for key in self.paramValues.keys():
                     if aap.param == key:
@@ -392,7 +507,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     canExecute = True
                     required = self.getDependsOnAlgorithms(iAlg)
                     for requiredAlg in required:
-                        if requiredAlg not in executed:
+                        if requiredAlg != iAlg and requiredAlg not in executed:
                             canExecute = False
                             break
                     if canExecute:
@@ -419,7 +534,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                             progress.setDebugInfo("Failed")
                             raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
                 else:
-                    progress.setDebugInfo("Algorithm %s deactivated (or already executed)" % alg.name)
+                    pass
+                    #progress.setDebugInfo("Algorithm %s deactivated (or already executed)" % alg.name)
                 iAlg += 1
         progress.setDebugInfo("Model processed ok. Executed %i algorithms total" % iAlg)
 
@@ -436,6 +552,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                     return "output html"
                 elif isinstance(out, OutputNumber):
                     return "output number"
+                elif isinstance(out, OutputString):
+                    return "output string"
 
 
     def getAsPythonCode(self):
@@ -508,7 +626,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             return None
 
     def commandLineName(self):
-        return "modeler:" + os.path.basename(self.descriptionFile)[:-5].lower()
+        return "modeler:" + os.path.basename(self.descriptionFile)[:-6].lower()
 
     def setModelerView(self, dialog):
         self.modelerdialog = dialog

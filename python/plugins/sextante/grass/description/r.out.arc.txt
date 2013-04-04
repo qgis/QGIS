@@ -1,8 +1,0 @@
-r.out.arc
-r.out.arc - Converts a raster map layer into an ESRI ARCGRID file.
-Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterNumber|dp|Number of decimal places|None|None|8.0
-ParameterBoolean|-h|Suppress printing of header information|False
-ParameterBoolean|-1|List one entry per line instead of full row|False
-OutputFile|output|Name of an output ARC-GRID map (use out=- for stdout)

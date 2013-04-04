@@ -45,41 +45,14 @@ void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QS
   mActions << QgsAction( type, name, action, capture );
 }
 
-void QgsAttributeAction::doAction( int index, const QgsAttributeMap &attributes,
-                                   int defaultValueIndex, void ( *executePython )( const QString & ) )
-{
-  if ( index < 0 || index >= size() )
-    return;
-
-  const QgsAction &action = at( index );
-  if ( !action.runable() )
-    return;
-
-  // A couple of extra options for running the action may be
-  // useful. For example,
-  // - run the action inside a terminal (on unix)
-  // - capture the stdout from the process and display in a dialog
-  //   box
-  //
-  // The capture stdout one is partially implemented. It just needs
-  // the UI and the code in this function to select on the
-  // action.capture() return value.
-
-  QString expandedAction = expandAction( action.action(), attributes, defaultValueIndex );
-  if ( expandedAction.isEmpty() )
-    return;
-
-  QgsAction newAction( action.type(), action.name(), expandedAction, action.capture() );
-  runAction( newAction, executePython );
-}
-
 void QgsAttributeAction::doAction( int index, QgsFeature &feat, int defaultValueIndex )
 {
   QMap<QString, QVariant> substitutionMap;
   if ( defaultValueIndex >= 0 )
   {
-    if ( feat.attributeMap().contains( defaultValueIndex ) )
-      substitutionMap.insert( "$currfield", feat.attributeMap()[ defaultValueIndex ] );
+    QVariant defaultValue = feat.attribute( defaultValueIndex );
+    if ( defaultValue.isValid() )
+      substitutionMap.insert( "$currfield", defaultValue );
   }
 
   doAction( index, feat, &substitutionMap );
@@ -164,23 +137,23 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
   else
     expanded_action = action;
 
-  const QgsFieldMap &fields = mLayer->pendingFields();
+  const QgsFields &fields = mLayer->pendingFields();
 
   for ( int i = 0; i < 4; i++ )
   {
     for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
     {
-      QgsFieldMap::const_iterator fit = fields.find( it.key() );
-      if ( fit == fields.constEnd() )
+      int attrIdx = it.key();
+      if ( attrIdx < 0 || attrIdx >= fields.count() )
         continue;
 
       QString to_replace;
       switch ( i )
       {
-        case 0: to_replace = "[%" + fit->name() + "]"; break;
-        case 1: to_replace = "[%" + mLayer->attributeDisplayName( it.key() ) + "]"; break;
-        case 2: to_replace = "%" + fit->name(); break;
-        case 3: to_replace = "%" + mLayer->attributeDisplayName( it.key() ); break;
+        case 0: to_replace = "[%" + fields[attrIdx].name() + "]"; break;
+        case 1: to_replace = "[%" + mLayer->attributeDisplayName( attrIdx ) + "]"; break;
+        case 2: to_replace = "%" + fields[attrIdx].name(); break;
+        case 3: to_replace = "%" + mLayer->attributeDisplayName( attrIdx ); break;
       }
 
       expanded_action = expanded_action.replace( to_replace, it.value().toString() );

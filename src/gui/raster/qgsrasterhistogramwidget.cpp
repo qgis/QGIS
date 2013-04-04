@@ -422,7 +422,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
     QVector<double> myY2Data;
 #endif
     // calculate first bin x value and bin step size if not Byte data
-    if ( mRasterLayer->dataProvider()->srcDataType( myIteratorInt ) != QgsRasterBlock::Byte )
+    if ( mRasterLayer->dataProvider()->srcDataType( myIteratorInt ) != QGis::Byte )
     {
       //myBinXStep = myRasterBandStats.range / BINCOUNT;
       //myBinX = myRasterBandStats.minimumValue + myBinXStep / 2.0;

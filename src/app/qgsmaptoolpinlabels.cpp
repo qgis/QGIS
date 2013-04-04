@@ -52,7 +52,7 @@ void QgsMapToolPinLabels::canvasPressEvent( QMouseEvent * e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
-  mRubberBand = new QgsRubberBand( mCanvas, true );
+  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
 }
 
 void QgsMapToolPinLabels::canvasMoveEvent( QMouseEvent * e )
@@ -105,7 +105,7 @@ void QgsMapToolPinLabels::canvasReleaseEvent( QMouseEvent * e )
 
     delete selectGeom;
 
-    mRubberBand->reset( true );
+    mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
     mRubberBand = 0;
   }
@@ -134,7 +134,7 @@ void QgsMapToolPinLabels::updatePinnedLabels()
   if ( mShowPinned )
   {
     QgsDebugMsg( QString( "Updating highlighting due to layer editing mode change" ) );
-    mCanvas->refresh();
+    highlightPinnedLabels();
   }
 }
 
@@ -287,11 +287,11 @@ void QgsMapToolPinLabels::pinUnpinLabels( const QgsRectangle& ext, QMouseEvent *
     mCurrentLabelPos = *it;
 
 #ifdef QGISDEBUG
-    QString labeltxt = currentLabelText();
     QString labellyr = currentLayer()->name();
+    QString labeltxt = currentLabelText();
 #endif
-    QgsDebugMsg( QString( "Label: %0" ).arg( labeltxt ) );
     QgsDebugMsg( QString( "Layer: %0" ).arg( labellyr ) );
+    QgsDebugMsg( QString( "Label: %0" ).arg( labeltxt ) );
 
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( mCurrentLabelPos.layerID );
     if ( !layer )
@@ -390,7 +390,8 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
   // edit attribute table
   int fid = labelpos.featureId;
 
-  QString failedWrite = QString( "Failed write to attribute table" );
+  bool writeFailed = false;
+  QString labelText = currentLabelText( 24 );
 
   if ( pin )
   {
@@ -416,49 +417,44 @@ bool QgsMapToolPinLabels::pinUnpinLabel( QgsVectorLayer* vlayer,
       labelY = transformedPoint.y();
     }
 
-    vlayer->beginEditCommand( tr( "Label pinned" ) );
-    if ( !vlayer->changeAttributeValue( fid, xCol, labelX, false ) )
-    {
-      QgsDebugMsg( failedWrite );
-      return false;
-    }
-    if ( !vlayer->changeAttributeValue( fid, yCol, labelY, false ) )
-    {
-      QgsDebugMsg( failedWrite );
-      return false;
-    }
+    vlayer->beginEditCommand( tr( "Pinned label" ) + QString( " '%1'" ).arg( labelText ) );
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, labelX, true );
+    writeFailed = !vlayer->changeAttributeValue( fid, yCol, labelY, true );
     if ( hasRCol && !preserveRot )
     {
-      if ( !vlayer->changeAttributeValue( fid, rCol, labelR, false ) )
-      {
-        QgsDebugMsg( failedWrite );
-        return false;
-      }
+      writeFailed = !vlayer->changeAttributeValue( fid, rCol, labelR, true );
     }
     vlayer->endEditCommand();
   }
   else
   {
-    vlayer->beginEditCommand( tr( "Label unpinned" ) );
-    if ( !vlayer->changeAttributeValue( fid, xCol, QVariant(), false ) )
-    {
-      QgsDebugMsg( failedWrite );
-      return false;
-    }
-    if ( !vlayer->changeAttributeValue( fid, yCol, QVariant(), false ) )
-    {
-      QgsDebugMsg( failedWrite );
-      return false;
-    }
+    vlayer->beginEditCommand( tr( "Unpinned label" ) + QString( " '%1'" ).arg( labelText ) );
+    writeFailed = !vlayer->changeAttributeValue( fid, xCol, QVariant( QString::null ), true );
+    writeFailed = !vlayer->changeAttributeValue( fid, yCol, QVariant( QString::null ), true );
     if ( hasRCol && !preserveRot )
     {
-      if ( !vlayer->changeAttributeValue( fid, rCol, QVariant(), false ) )
-      {
-        QgsDebugMsg( failedWrite );
-        return false;
-      }
+      writeFailed = !vlayer->changeAttributeValue( fid, rCol, QVariant( QString::null ), true );
     }
     vlayer->endEditCommand();
   }
+
+  if ( writeFailed )
+  {
+    QgsDebugMsg( QString( "Write to attribute table failed" ) );
+
+#if 0
+    QgsDebugMsg( QString( "Undoing and removing failed command from layer's undo stack" ) );
+    int lastCmdIndx = vlayer->undoStack()->count();
+    const QgsUndoCommand* lastCmd = qobject_cast<const QgsUndoCommand *>( vlayer->undoStack()->command( lastCmdIndx ) );
+    if ( lastCmd )
+    {
+      vlayer->undoEditCommand( lastCmd );
+      delete vlayer->undoStack()->command( lastCmdIndx );
+    }
+#endif
+
+    return false;
+  }
+
   return true;
 }

@@ -1,6 +1,7 @@
 r.contour
 r.contour.level - Create vector contour from raster at specified levels
 Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
+ParameterRaster|input|Input raster|False
 ParameterString|levels|List of contour levels|
-OutputVector|output|Name of output vector map
+ParameterString|cut|Minimum number of points for a contour line (0 -> no limit)|0
+OutputVector|output|Contours

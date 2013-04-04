@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>637</width>
-    <height>207</height>
+    <height>230</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,6 +72,9 @@
        </item>
        <item>
         <widget class="QToolButton" name="mSortButton">
+         <property name="toolTip">
+          <string>Sort colormap items</string>
+         </property>
          <property name="text">
           <string>...</string>
          </property>
@@ -155,15 +158,6 @@
        <attribute name="headerStretchLastSection">
         <bool>true</bool>
        </attribute>
-       <attribute name="headerDefaultSectionSize">
-        <number>70</number>
-       </attribute>
-       <attribute name="headerMinimumSectionSize">
-        <number>10</number>
-       </attribute>
-       <attribute name="headerStretchLastSection">
-        <bool>true</bool>
-       </attribute>
        <column>
         <property name="text">
          <string>Value</string>
@@ -181,6 +175,13 @@
        </column>
       </widget>
      </item>
+     <item>
+      <widget class="QCheckBox" name="mClipCheckBox">
+       <property name="text">
+        <string>Clip</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -193,6 +194,45 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QgsColorRampComboBox" name="mColorRampComboBox"/>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="mClassificationModeLabel">
+            <property name="text">
+             <string>Mode</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="mClassificationModeComboBox"/>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item>
            <widget class="QLabel" name="mNumberOfEntriesLabel">
             <property name="text">
@@ -216,49 +256,6 @@
             </property>
            </widget>
           </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Colors</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsColorRampComboBox" name="mColorRampComboBox"/>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_6">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QPushButton" name="mClassifyButton">
-            <property name="text">
-             <string>Classify</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </item>
         <item>
@@ -275,6 +272,19 @@
           </item>
           <item>
            <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -310,14 +320,44 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="mClassificationModeLabel">
+           <spacer name="horizontalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mInvertCheckBox">
             <property name="text">
-             <string>Mode</string>
+             <string>Invert</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="mClassificationModeComboBox"/>
+           <spacer name="horizontalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mClassifyButton">
+            <property name="text">
+             <string>Classify</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -344,13 +384,6 @@
            </widget>
           </item>
          </layout>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="mInvertCheckBox">
-          <property name="text">
-           <string>Invert colors order</string>
-          </property>
-         </widget>
         </item>
        </layout>
       </widget>

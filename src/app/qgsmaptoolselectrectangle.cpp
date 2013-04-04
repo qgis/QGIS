@@ -42,7 +42,7 @@ void QgsMapToolSelectRectangle::canvasPressEvent( QMouseEvent *e )
 {
   Q_UNUSED( e );
   mSelectRect.setRect( 0, 0, 0, 0 );
-  mRubberBand = new QgsRubberBand( mCanvas, true );
+  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
 }
 
 
@@ -66,6 +66,13 @@ void QgsMapToolSelectRectangle::canvasReleaseEvent( QMouseEvent *e )
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
   if ( vlayer == NULL )
   {
+    if ( mRubberBand )
+    {
+      mRubberBand->reset( QGis::Polygon );
+      delete mRubberBand;
+      mRubberBand = 0;
+      mDragging = false;
+    }
     return;
   }
 
@@ -97,7 +104,7 @@ void QgsMapToolSelectRectangle::canvasReleaseEvent( QMouseEvent *e )
     QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, e );
     delete selectGeom;
 
-    mRubberBand->reset( true );
+    mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
     mRubberBand = 0;
   }

@@ -16,7 +16,13 @@
  ***************************************************************************/
 
 #include "qgssvgcache.h"
+#include "qgis.h"
 #include "qgslogger.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsmessagelog.h"
+#include <QApplication>
+#include <QCoreApplication>
+#include <QCursor>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
@@ -24,8 +30,11 @@
 #include <QPainter>
 #include <QPicture>
 #include <QSvgRenderer>
+#include <QFileInfo>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
-QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
+QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0.0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
     outline( Qt::black ), image( 0 ), picture( 0 )
 {
 }
@@ -81,7 +90,11 @@ QgsSvgCache* QgsSvgCache::instance()
   return mInstance;
 }
 
-QgsSvgCache::QgsSvgCache(): mTotalSize( 0 ), mLeastRecentEntry( 0 ), mMostRecentEntry( 0 )
+QgsSvgCache::QgsSvgCache( QObject *parent )
+    : QObject( parent )
+    , mTotalSize( 0 )
+    , mLeastRecentEntry( 0 )
+    , mMostRecentEntry( 0 )
 {
 }
 
@@ -95,28 +108,52 @@ QgsSvgCache::~QgsSvgCache()
 }
 
 
-const QImage& QgsSvgCache::svgAsImage( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                       double widthScaleFactor, double rasterScaleFactor )
+const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                       double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache )
 {
+  fitsInCache = true;
   QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
   //if current entry image is 0: cache image for entry
+  // checks to see if image will fit into cache
   //update stats for memory usage
   if ( !currentEntry->image )
   {
-    cacheImage( currentEntry );
+    QSvgRenderer r( currentEntry->svgContent );
+    double hwRatio = 1.0;
+    if ( r.viewBoxF().width() > 0 )
+    {
+      hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+    }
+    long cachedDataSize = 0;
+    cachedDataSize += currentEntry->svgContent.size();
+    cachedDataSize += ( int )( currentEntry->size * currentEntry->size * hwRatio * 32 );
+    if ( cachedDataSize > mMaximumSize / 2 )
+    {
+      fitsInCache = false;
+      delete currentEntry->image;
+      currentEntry->image = 0;
+      //currentEntry->image = new QImage( 0, 0 );
+
+      // instead cache picture
+      cachePicture( currentEntry );
+    }
+    else
+    {
+      cacheImage( currentEntry );
+    }
     trimToMaximumSize();
   }
 
   return *( currentEntry->image );
 }
 
-const QPicture& QgsSvgCache::svgAsPicture( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
-  //if current entry image is 0: cache image for entry
+  //if current entry picture is 0: cache picture for entry
   //update stats for memory usage
   if ( !currentEntry->picture )
   {
@@ -127,7 +164,7 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, int size, const 
   return *( currentEntry->picture );
 }
 
-QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( file, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline );
@@ -163,14 +200,8 @@ void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColo
   defaultOutlineColor = QColor( Qt::black );
   defaultOutlineWidth = 1.0;
 
-  QFile svgFile( path );
-  if ( !svgFile.open( QIODevice::ReadOnly ) )
-  {
-    return;
-  }
-
   QDomDocument svgDoc;
-  if ( !svgDoc.setContent( &svgFile ) )
+  if ( !svgDoc.setContent( getImageData( path ) ) )
   {
     return;
   }
@@ -186,14 +217,8 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
     return;
   }
 
-  QFile svgFile( entry->file );
-  if ( !svgFile.open( QIODevice::ReadOnly ) )
-  {
-    return;
-  }
-
   QDomDocument svgDoc;
-  if ( !svgDoc.setContent( &svgFile ) )
+  if ( !svgDoc.setContent( getImageData( entry->file ) ) )
   {
     return;
   }
@@ -206,6 +231,116 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
   mTotalSize += entry->svgContent.size();
 }
 
+QByteArray QgsSvgCache::getImageData( const QString &path ) const
+{
+  // is it a path to local file?
+  QFile svgFile( path );
+  if ( svgFile.exists() )
+  {
+    if ( svgFile.open( QIODevice::ReadOnly ) )
+    {
+      return svgFile.readAll();
+    }
+    else
+    {
+      return QByteArray();
+    }
+  }
+
+  // maybe it's a url...
+  QUrl svgUrl( path );
+  if ( !svgUrl.isValid() )
+  {
+    return QByteArray();
+  }
+
+  // check whether it's a url pointing to a local file
+  if ( svgUrl.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
+  {
+    svgFile.setFileName( svgUrl.toLocalFile() );
+    if ( svgFile.exists() )
+    {
+      if ( svgFile.open( QIODevice::ReadOnly ) )
+      {
+        return svgFile.readAll();
+      }
+    }
+
+    // not found...
+    return QByteArray();
+  }
+
+  // the url points to a remote resource, download it!
+  QNetworkReply *reply = 0;
+
+  // The following code blocks until the file is downloaded...
+  // TODO: use signals to get reply finished notification, in this moment
+  // it's executed while rendering.
+  while ( 1 )
+  {
+    QgsDebugMsg( QString( "get svg: %1" ).arg( svgUrl.toString() ) );
+    QNetworkRequest request( svgUrl );
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+    reply = QgsNetworkAccessManager::instance()->get( request );
+    connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( downloadProgress( qint64, qint64 ) ) );
+
+    //emit statusChanged( tr( "Downloading svg." ) );
+
+    // wait until the image download finished
+    // TODO: connect to the reply->finished() signal
+    while ( !reply->isFinished() )
+    {
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, 500 );
+    }
+
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+      QgsMessageLog::logMessage( tr( "SVG request failed [error: %1 - url: %2]" ).arg( reply->errorString() ).arg( reply->url().toString() ), tr( "SVG" ) );
+
+      reply->deleteLater();
+      return QByteArray();
+    }
+
+    QVariant redirect = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+    if ( redirect.isNull() )
+    {
+      // neither network error nor redirection
+      // TODO: cache the image
+      break;
+    }
+
+    // do a new request to the redirect url
+    svgUrl = redirect.toUrl();
+    reply->deleteLater();
+  }
+
+  QVariant status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  if ( !status.isNull() && status.toInt() >= 400 )
+  {
+    QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+    QgsMessageLog::logMessage( tr( "SVG request error [status: %1 - reason phrase: %2]" ).arg( status.toInt() ).arg( phrase.toString() ), tr( "SVG" ) );
+
+    reply->deleteLater();
+    return QByteArray();
+  }
+
+  QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+  QgsDebugMsg( "contentType: " + contentType );
+  if ( !contentType.startsWith( "image/svg+xml", Qt::CaseInsensitive ) )
+  {
+    reply->deleteLater();
+    return QByteArray();
+  }
+
+  // read the image data
+  QByteArray ba = reply->readAll();
+  reply->deleteLater();
+
+  return ba;
+}
+
 void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
 {
   if ( !entry )
@@ -216,21 +351,38 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   delete entry->image;
   entry->image = 0;
 
-  int imageSize = entry->size;
-  QImage* image = new QImage( imageSize, imageSize, QImage::Format_ARGB32_Premultiplied );
+  QSvgRenderer r( entry->svgContent );
+  double hwRatio = 1.0;
+  if ( r.viewBoxF().width() > 0 )
+  {
+    hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+  }
+  double wSize = entry->size;
+  int wImgSize = ( int )wSize;
+  if ( wImgSize < 1 )
+  {
+    wImgSize = 1;
+  }
+  double hSize = wSize * hwRatio;
+  int hImgSize = ( int )hSize;
+  if ( hImgSize < 1 )
+  {
+    hImgSize = 1;
+  }
+  // cast double image sizes to int for QImage
+  QImage* image = new QImage( wImgSize, hImgSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
   QPainter p( image );
-  QSvgRenderer r( entry->svgContent );
-  if ( r.viewBox().width() == r.viewBox().height() )
+  if ( r.viewBoxF().width() == r.viewBoxF().height() )
   {
     r.render( &p );
   }
   else
   {
-    QSize s( r.viewBox().size() );
-    s.scale( imageSize, imageSize, Qt::KeepAspectRatio );
-    QRect rect(( imageSize - s.width() ) / 2, ( imageSize - s.height() ) / 2, s.width(), s.height() );
+    QSizeF s( r.viewBoxF().size() );
+    s.scale( wSize, hSize, Qt::KeepAspectRatio );
+    QRectF rect(( wImgSize - s.width() ) / 2, ( hImgSize - s.height() ) / 2, s.width(), s.height() );
     r.render( &p, rect );
   }
 
@@ -250,18 +402,39 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
 
   //correct QPictures dpi correction
   QPicture* picture = new QPicture();
-  double pictureSize = entry->size  /  25.4 / ( entry->rasterScaleFactor * entry->widthScaleFactor )  * picture->logicalDpiX();
-  QRectF rect( QPointF( -pictureSize / 2.0, -pictureSize / 2.0 ), QSizeF( pictureSize, pictureSize ) );
+  QRectF rect;
+  QSvgRenderer r( entry->svgContent );
+  double hwRatio = 1.0;
+  if ( r.viewBoxF().width() > 0 )
+  {
+    hwRatio = r.viewBoxF().height() / r.viewBoxF().width();
+  }
+  bool drawOnScreen = doubleNear( entry->rasterScaleFactor, 1.0, 0.1 );
+  if ( drawOnScreen )
+  {
+    // fix to ensure rotated symbols scale with composer page (i.e. not map item) zoom
+    double wSize = entry->size;
+    double hSize = wSize * hwRatio;
+    QSizeF s( r.viewBoxF().size() );
+    s.scale( wSize, hSize, Qt::KeepAspectRatio );
+    rect = QRectF( -s.width() / 2.0, -s.height() / 2.0, s.width(), s.height() );
+  }
+  else
+  {
+    // output for print or image saving @ specific dpi
+    double scaledSize = entry->size / 25.4 / ( entry->rasterScaleFactor * entry->widthScaleFactor );
+    double wSize = scaledSize * picture->logicalDpiX();
+    double hSize = scaledSize * picture->logicalDpiY() * r.viewBoxF().height() / r.viewBoxF().width();
+    rect = QRectF( QPointF( -wSize / 2.0, -hSize / 2.0 ), QSizeF( wSize, hSize ) );
+  }
 
-
-  QSvgRenderer renderer( entry->svgContent );
-  QPainter painter( picture );
-  renderer.render( &painter, rect );
+  QPainter p( picture );
+  r.render( &p, rect );
   entry->picture = picture;
   mTotalSize += entry->picture->size();
 }
 
-QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
+QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
   //search entries in mEntryLookup
@@ -272,7 +445,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, int size, const 
   for ( ; entryIt != entries.end(); ++entryIt )
   {
     QgsSvgCacheEntry* cacheEntry = *entryIt;
-    if ( cacheEntry->file == file && cacheEntry->size == size && cacheEntry->fill == fill && cacheEntry->outline == outline &&
+    if ( cacheEntry->file == file && doubleNear( cacheEntry->size, size ) && cacheEntry->fill == fill && cacheEntry->outline == outline &&
          cacheEntry->outlineWidth == outlineWidth && cacheEntry->widthScaleFactor == widthScaleFactor && cacheEntry->rasterScaleFactor == rasterScaleFactor )
     {
       currentEntry = cacheEntry;
@@ -553,3 +726,9 @@ void QgsSvgCache::takeEntryFromList( QgsSvgCacheEntry* entry )
   }
 }
 
+void QgsSvgCache::downloadProgress( qint64 bytesReceived, qint64 bytesTotal )
+{
+  QString msg = tr( "%1 of %2 bytes of svg image downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QgsDebugMsg( msg );
+  emit statusChanged( msg );
+}

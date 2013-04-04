@@ -89,7 +89,7 @@ class PostGisDBPlugin(DBPlugin):
 			uri.setConnection(service, database, username, password, sslmode)
 		else:
 			uri.setConnection(host, port, database, username, password, sslmode)
-			
+
 		uri.setUseEstimatedMetadata(useEstimatedMetadata)
 
 		err = QString()
@@ -163,7 +163,7 @@ class PGDatabase(Database):
 		Database.registerDatabaseActions(self, mainWindow)
 
 		# add a separator
-		separator = QAction(self); 
+		separator = QAction(self);
 		separator.setSeparator(True)
 		mainWindow.registerAction( separator, "&Table" )
 
@@ -288,9 +288,9 @@ class PGRasterTable(PGTable, RasterTable):
 	def mimeUri(self):
 		uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
 		return QString( uri )
-	
+
 	def toMapLayer(self):
-		from qgis.core import QgsRasterLayer 
+		from qgis.core import QgsRasterLayer
 		rl = QgsRasterLayer(self.gdalUri(), self.name)
 		if rl.isValid():
 			rl.setContrastEnhancementAlgorithm("StretchToMinimumMaximum")

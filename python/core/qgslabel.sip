@@ -7,7 +7,7 @@ class QgsLabel
 %End
 
   public:
-    QgsLabel( const QMap<int, QgsField> & fields );
+    QgsLabel( const QgsFields & fields );
 
     ~QgsLabel();
 
@@ -47,24 +47,6 @@ class QgsLabel
     };
 
     /** \brief render label
-     *  \param painter painter to render label in
-     *  \param viewExtent extent to render labels in
-     *  \param coordinateTransform coordinate transformation to use
-     *  \param transform transformation from coordinate to canvas pixels
-     *  \param feature feature to label
-     *  \param selected feature is selected
-     *  \param classAttributes attributes to create label from
-     *  \param sizeScale scale
-     *  \param rasterScaleFactor raster scale
-     *  \deprecated
-     */
-    void renderLabel( QPainter* painter, const QgsRectangle& viewExtent,
-                      QgsCoordinateTransform* coordinateTransform,
-                      const QgsMapToPixel *transform,
-                      QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0,
-                      double sizeScale = 1.0, double rasterScaleFactor = 1.0 ) /Deprecated/;
-
-    /** \brief render label
      *  \param renderContext the render context
      *  \param feature feature to render the label for
      *  \param selected feature is selected
@@ -85,15 +67,10 @@ class QgsLabel
     void addRequiredFields( QList<int> & fields ) const;
 
     //! Set available fields
-    void setFields( const QMap<int, QgsField> & fields );
+    void setFields( const QgsFields & fields );
 
     //! Available vector fields
-    QMap<int, QgsField> & fields();
-
-    /** Pointer to default attributes.
-     * @deprecated in version 2 as it is badly named. Rather use attributes.
-     * @see labelAttributes method rather */
-    QgsLabelAttributes *layerAttributes() /Deprecated/;
+    const QgsFields & fields();
 
     /** Pointer to default attributes.
      * @note this replaces the to-be-deprecated layerAttributes method.

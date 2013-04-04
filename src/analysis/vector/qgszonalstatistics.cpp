@@ -87,8 +87,8 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, NULL );
 
   //get geometry info about raster layer
-  int nCellsX = GDALGetRasterXSize( inputDataset );
-  int nCellsY = GDALGetRasterYSize( inputDataset );
+  int nCellsXGDAL = GDALGetRasterXSize( inputDataset );
+  int nCellsYGDAL = GDALGetRasterYSize( inputDataset );
   double geoTransform[6];
   if ( GDALGetGeoTransform( inputDataset, geoTransform ) != CE_None )
   {
@@ -105,7 +105,8 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   {
     cellsizeY = -cellsizeY;
   }
-  QgsRectangle rasterBBox( geoTransform[0], geoTransform[3] - ( nCellsY * cellsizeY ), geoTransform[0] + ( nCellsX * cellsizeX ), geoTransform[3] );
+  QgsRectangle rasterBBox( geoTransform[0], geoTransform[3] - ( nCellsYGDAL * cellsizeY ),
+                           geoTransform[0] + ( nCellsXGDAL * cellsizeX ), geoTransform[3] );
 
   //add the new count, sum, mean fields to the provider
   QList<QgsField> newFieldList;
@@ -136,16 +137,17 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
 
   //iterate over each polygon
-  vectorProvider->select( QgsAttributeList(), QgsRectangle(), true, false );
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureIterator fi = vectorProvider->getFeatures( request );
   QgsFeature f;
   double count = 0;
   double sum = 0;
   double mean = 0;
   int featureCounter = 0;
 
-  while ( vectorProvider->nextFeature( f ) )
+  while ( fi.nextFeature( f ) )
   {
-    qWarning( "%d", featureCounter );
     if ( p )
     {
       p->setValue( featureCounter );
@@ -163,15 +165,32 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
       continue;
     }
 
-    int offsetX, offsetY, nCellsX, nCellsY;
-    if ( cellInfoForBBox( rasterBBox, featureGeometry->boundingBox(), cellsizeX, cellsizeY, offsetX, offsetY, nCellsX, nCellsY ) != 0 )
+    QgsRectangle featureRect = featureGeometry->boundingBox().intersect( &rasterBBox );
+    if ( featureRect.isEmpty() )
     {
       ++featureCounter;
       continue;
     }
 
-    statisticsFromMiddlePointTest_improved( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
-                                            rasterBBox, sum, count );
+    int offsetX, offsetY, nCellsX, nCellsY;
+    if ( cellInfoForBBox( rasterBBox, featureRect, cellsizeX, cellsizeY, offsetX, offsetY, nCellsX, nCellsY ) != 0 )
+    {
+      ++featureCounter;
+      continue;
+    }
+
+    //avoid access to cells outside of the raster (may occur because of rounding)
+    if (( offsetX + nCellsX ) > nCellsXGDAL )
+    {
+      nCellsX = nCellsXGDAL - offsetX;
+    }
+    if (( offsetY + nCellsY ) > nCellsYGDAL )
+    {
+      nCellsY = nCellsYGDAL - offsetY;
+    }
+
+    statisticsFromMiddlePointTest( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
+                                   rasterBBox, sum, count );
 
     if ( count <= 1 )
     {
@@ -208,7 +227,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   }
 
   GDALClose( inputDataset );
-  mPolygonLayer->updateFieldMap();
 
   if ( p && p->wasCanceled() )
   {
@@ -246,21 +264,44 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
     int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count )
 {
   double cellCenterX, cellCenterY;
-  QgsPoint currentCellCenter;
 
   float* scanLine = ( float * ) CPLMalloc( sizeof( float ) * nCellsX );
   cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   count = 0;
   sum = 0;
 
+  GEOSGeometry* polyGeos = poly->asGeos();
+  if ( !polyGeos )
+  {
+    return;
+  }
+
+  const GEOSPreparedGeometry* polyGeosPrepared = GEOSPrepare( poly->asGeos() );
+  if ( !polyGeosPrepared )
+  {
+    return;
+  }
+
+  GEOSCoordSequence* cellCenterCoords = 0;
+  GEOSGeometry* currentCellCenter = 0;
+
   for ( int i = 0; i < nCellsY; ++i )
   {
-    GDALRasterIO( band, GF_Read, pixelOffsetX, pixelOffsetY + i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 );
+    if ( GDALRasterIO( band, GF_Read, pixelOffsetX, pixelOffsetY + i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 )
+         != CPLE_None )
+    {
+      continue;
+    }
     cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
     for ( int j = 0; j < nCellsX; ++j )
     {
-      currentCellCenter = QgsPoint( cellCenterX, cellCenterY );
-      if ( poly->contains( &currentCellCenter ) )
+      GEOSGeom_destroy( currentCellCenter );
+      cellCenterCoords = GEOSCoordSeq_create( 1, 2 );
+      GEOSCoordSeq_setX( cellCenterCoords, 0, cellCenterX );
+      GEOSCoordSeq_setY( cellCenterCoords, 0, cellCenterY );
+      currentCellCenter = GEOSGeom_createPoint( cellCenterCoords );
+
+      if ( GEOSPreparedContains( polyGeosPrepared, currentCellCenter ) )
       {
         if ( scanLine[j] != mInputNodataValue ) //don't consider nodata values
         {
@@ -273,6 +314,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
     cellCenterY -= cellSizeY;
   }
   CPLFree( scanLine );
+  GEOSPreparedGeom_destroy( polyGeosPrepared );
 }
 
 void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX,
@@ -317,126 +359,6 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
     currentY -= cellSizeY;
   }
   CPLFree( pixelData );
-}
-
-void QgsZonalStatistics::statisticsFromMiddlePointTest_improved( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
-    double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count )
-{
-  double cellCenterX, cellCenterY;
-  QgsPoint currentCellCenter;
-
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) * nCellsX );
-  cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
-  count = 0;
-  sum = 0;
-
-  for ( int i = 0; i < nCellsY; ++i )
-  {
-    GDALRasterIO( band, GF_Read, pixelOffsetX, pixelOffsetY + i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 );
-    cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
-
-    //do intersection of scanline with geometry
-    GEOSCoordSequence* scanLineSequence = GEOSCoordSeq_create( 2, 2 );
-    GEOSCoordSeq_setX( scanLineSequence, 0, cellCenterX );
-    GEOSCoordSeq_setY( scanLineSequence, 0, cellCenterY );
-    GEOSCoordSeq_setX( scanLineSequence, 1, cellCenterX + nCellsX * cellSizeX );
-    GEOSCoordSeq_setY( scanLineSequence, 1, cellCenterY );
-    GEOSGeometry* scanLineGeos = GEOSGeom_createLineString( scanLineSequence ); //todo: delete
-    GEOSGeometry* polyGeos = poly->asGeos();
-    GEOSGeometry* scanLineIntersection = GEOSIntersection( scanLineGeos, polyGeos );
-    GEOSGeom_destroy( scanLineGeos );
-    if ( !scanLineIntersection )
-    {
-      cellCenterY -= cellSizeY;
-      continue;
-    }
-
-    //debug
-    //char* scanLineIntersectionType = GEOSGeomType( scanLineIntersection );
-
-    int numGeoms = GEOSGetNumGeometries( scanLineIntersection );
-    if ( numGeoms < 1 )
-    {
-      GEOSGeom_destroy( scanLineIntersection );
-      cellCenterY -= cellSizeY;
-      continue;
-    }
-
-    QList<double> scanLineList;
-    double currentValue;
-    GEOSGeometry* currentGeom = 0;
-    for ( int z = 0; z < numGeoms; ++z )
-    {
-      if ( numGeoms == 1 )
-      {
-        currentGeom = scanLineIntersection;
-      }
-      else
-      {
-        currentGeom = GEOSGeom_clone( GEOSGetGeometryN( scanLineIntersection, z ) );
-      }
-      const GEOSCoordSequence* scanLineCoordSequence = GEOSGeom_getCoordSeq( currentGeom );
-      if ( !scanLineCoordSequence )
-      {
-        //error
-      }
-      unsigned int scanLineIntersectionSize;
-      GEOSCoordSeq_getSize( scanLineCoordSequence, &scanLineIntersectionSize );
-      if ( !scanLineCoordSequence || scanLineIntersectionSize < 2 || ( scanLineIntersectionSize & 1 ) )
-      {
-        //error
-      }
-      for ( unsigned int k = 0; k < scanLineIntersectionSize; ++k )
-      {
-        GEOSCoordSeq_getX( scanLineCoordSequence, k, &currentValue );
-        scanLineList.push_back( currentValue );
-      }
-
-      if ( numGeoms != 1 )
-      {
-        GEOSGeom_destroy( currentGeom );
-      }
-    }
-    GEOSGeom_destroy( scanLineIntersection );
-    qSort( scanLineList );
-
-    if ( scanLineList.size() < 1 )
-    {
-      cellCenterY -= cellSizeY;
-      continue;
-    }
-
-    int listPlace = -1;
-    for ( int j = 0; j < nCellsX; ++j )
-    {
-      //currentCellCenter = QgsPoint( cellCenterX, cellCenterY );
-
-      //instead of doing a contained test every time, find the place of scanLineList and check if even / odd
-      if ( listPlace >= scanLineList.size() - 1 )
-      {
-        break;
-      }
-      if ( cellCenterX >= scanLineList.at( listPlace + 1 ) )
-      {
-        ++listPlace;
-        if ( listPlace >= scanLineList.size() )
-        {
-          break;
-        }
-      }
-      if ( listPlace >= 0 && listPlace < ( scanLineList.size() - 1 ) && !( listPlace & 1 ) )
-      {
-        if ( scanLine[j] != mInputNodataValue ) //don't consider nodata values
-        {
-          sum += scanLine[j];
-          ++count;
-        }
-      }
-      cellCenterX += cellSizeX;
-    }
-    cellCenterY -= cellSizeY;
-  }
-  CPLFree( scanLine );
 }
 
 

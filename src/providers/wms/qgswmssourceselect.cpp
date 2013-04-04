@@ -58,6 +58,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
     : QDialog( parent, fl )
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
+    , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
     , mCurrentTileset( 0 )
 {
   setupUi( this );
@@ -117,7 +118,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
       QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::InternalCrsId );
       if ( currentRefSys.isValid() )
       {
-        mCRS = currentRefSys.authid();
+        mDefaultCRS = mCRS = currentRefSys.authid();
       }
     }
 
@@ -138,9 +139,10 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
     tabLayers->layout()->removeWidget( gbCRS );
   }
 
+  clear();
+
   // set up the WMS connections we already know about
   populateConnectionList();
-
 
   QSettings settings;
   QgsDebugMsg( "restoring geometry" );
@@ -269,18 +271,26 @@ QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
   return item;
 }
 
-bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
+void QgsWMSSourceSelect::clear()
 {
-  mCRSs.clear();
+  lstLayers->clear();
+  lstTilesets->clearContents();
 
-  QVector<QgsWmsLayerProperty> layers;
-  if ( !wmsProvider->supportedLayers( layers ) )
-    return false;
+  mCRSs.clear();
 
   foreach ( QAbstractButton *b, mImageFormatGroup->buttons() )
   {
     b->setHidden( true );
   }
+
+  mFeatureCount->setEnabled( false );
+}
+
+bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
+{
+  QVector<QgsWmsLayerProperty> layers;
+  if ( !wmsProvider->supportedLayers( layers ) )
+    return false;
 
   foreach ( QString encoding, wmsProvider->supportedImageEncodings() )
   {
@@ -301,7 +311,6 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   QMap<int, QStringList> layerParentNames;
   wmsProvider->layerParents( layerParents, layerParentNames );
 
-  lstLayers->clear();
   lstLayers->setSortingEnabled( true );
 
   int layerAndStyleCount = -1;
@@ -409,12 +418,16 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
     lstLayers->expandItem( lstLayers->topLevelItem( 0 ) );
   }
 
+  on_lstLayers_itemSelectionChanged();
+
   return true;
 }
 
 
 void QgsWMSSourceSelect::on_btnConnect_clicked()
 {
+  clear();
+
   mConnName = cmbConnections->currentText();
 
   QgsWMSConnection connection( cmbConnections->currentText() );
@@ -433,6 +446,15 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
     if ( !populateLayerList( wmsProvider ) )
     {
       showError( wmsProvider );
+    }
+    else
+    {
+      int capabilities = wmsProvider->identifyCapabilities();
+      QgsDebugMsg( "capabilities = " + QString::number( capabilities ) );
+      if ( capabilities ) // at least one identify capability
+      {
+        mFeatureCount->setEnabled( true );
+      }
     }
 
     delete wmsProvider;
@@ -528,15 +550,13 @@ void QgsWMSSourceSelect::addClicked()
   uri.setParam( "styles", styles );
   uri.setParam( "format", format );
   uri.setParam( "crs", crs );
+  QgsDebugMsg( QString( "crs=%2 " ).arg( crs ) );
 
   if ( mFeatureCount->text().toInt() > 0 )
   {
     uri.setParam( "featureCount", mFeatureCount->text() );
   }
 
-  QgsDebugMsg( QString( "crs=%2 " ).arg( crs ) );
-
-  QgsDebugMsg( "uri = " + uri.encodedUri() );
   emit addRasterLayer( uri.encodedUri(),
                        leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
                        "wms" );
@@ -741,7 +761,6 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
   mCurrentSelection = lstLayers->selectedItems();
   lstLayers->blockSignals( false );
 
-
   // selected layers with styles
   QStringList layers;
   QStringList styles;
@@ -801,7 +820,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
-      if ( *it == GEO_EPSG_CRS_AUTHID )
+      if ( *it == mDefaultCRS )
         defaultCRS = *it;
     }
 
@@ -813,7 +832,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
     }
 
   }
-  else if ( mCRSs.isEmpty() )
+  else if ( layers.isEmpty() || mCRSs.isEmpty() )
   {
     mCRS = "";
     labelCoordRefSys->setText( "" );

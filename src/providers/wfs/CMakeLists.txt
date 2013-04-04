@@ -6,13 +6,11 @@ SET(WFS_SRCS
   qgswfsprovider.cpp
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
-  qgswfsdata.cpp
+  qgswfsfeatureiterator.cpp
   qgswfssourceselect.cpp
-  qgswfsutils.cpp
 )
 
 SET (WFS_MOC_HDRS
-  qgswfsdata.h
   qgswfscapabilities.h
   qgswfsdataitems.h
   qgswfsprovider.h

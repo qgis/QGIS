@@ -85,9 +85,9 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QgsColorButtonV2" name="btnColor">
+        <widget class="QgsColorButton" name="btnColor">
          <property name="text">
-          <string>Change</string>
+          <string>Change...</string>
          </property>
         </widget>
        </item>
@@ -285,6 +285,9 @@
        <height>48</height>
       </size>
      </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
      <property name="flow">
       <enum>QListView::LeftToRight</enum>
      </property>
@@ -333,7 +336,7 @@
      <item>
       <widget class="QPushButton" name="btnStyle">
        <property name="text">
-        <string>Style</string>
+        <string>Symbol</string>
        </property>
       </widget>
      </item>
@@ -350,7 +353,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>

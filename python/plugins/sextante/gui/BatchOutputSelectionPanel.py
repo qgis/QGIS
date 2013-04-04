@@ -68,7 +68,8 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
             if dlg.mode != None:
                 try:
                     if dlg.mode == AutofillDialog.DO_NOT_AUTOFILL:
-                        self.text.setValue(filename)
+                        #self.text.setValue(filename)
+                        self.table.cellWidget(self.row, self.col).setValue(filename)
                     elif dlg.mode == AutofillDialog.FILL_WITH_NUMBERS:
                         n = self.table.rowCount() - self.row
                         for i in range(n):

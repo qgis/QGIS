@@ -227,11 +227,6 @@ void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
   applySelection( QGIS_CRS_ID_COLUMN, QString::number( theCRSID ) );
 }
 
-void QgsProjectionSelector::setSelectedEpsg( long id )
-{
-  setSelectedAuthId( QString( "EPSG:%1" ).arg( id ) );
-}
-
 void QgsProjectionSelector::setSelectedAuthId( QString id )
 {
   applySelection( AUTHID_COLUMN, id );
@@ -438,18 +433,6 @@ QString QgsProjectionSelector::getSelectedExpression( QString expression )
   return attributeValue;
 }
 
-long QgsProjectionSelector::selectedEpsg()
-{
-  if ( getSelectedExpression( "auth_name" ).compare( "EPSG", Qt::CaseInsensitive ) == 0 )
-  {
-    return getSelectedExpression( "auth_id" ).toLong();
-  }
-  else
-  {
-    QgsDebugMsg( "selected projection is NOT EPSG" );
-    return 0;
-  }
-}
 
 long QgsProjectionSelector::selectedPostgresSrId()
 {

@@ -68,11 +68,6 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
   double x, y;
-#ifdef ANDROID
-  qreal z;
-#else
-  double z;
-#endif //ANDROID
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
 
@@ -88,7 +83,8 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   {
     pts.resize( nPoints );
 
-    for ( unsigned int i = 0; i < nPoints; ++i )
+    QPointF* ptr = pts.data();
+    for ( unsigned int i = 0; i < nPoints; ++i, ++ptr )
     {
       x = *(( double * ) wkb );
       wkb += sizeof( double );
@@ -98,19 +94,20 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
       if ( hasZValue ) // ignore Z value
         wkb += sizeof( double );
 
-      pts[i] = QPointF( x, y );
+      *ptr = QPointF( x, y );
     }
   }
 
   //transform the QPolygonF to screen coordinates
-  for ( int i = 0; i < pts.size(); ++i )
+  if ( ct )
   {
-    if ( ct )
-    {
-      z = 0;
-      ct->transformInPlace( pts[i].rx(), pts[i].ry(), z );
-    }
-    mtp.transformInPlace( pts[i].rx(), pts[i].ry() );
+    ct->transformPolygon( pts );
+  }
+
+  QPointF* ptr = pts.data();
+  for ( int i = 0; i < pts.size(); ++i, ++ptr )
+  {
+    mtp.transformInPlace( ptr->rx(), ptr->ry() );
   }
 
 
@@ -134,11 +131,6 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
-#ifdef ANDROID
-  qreal z = 0; // dummy variable for coordiante transform
-#else
-  double z = 0; // dummy variable for coordiante transform
-#endif
   const QgsRectangle& e = context.extent();
   double cw = e.width() / 10; double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
@@ -151,12 +143,13 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
     QPolygonF poly( nPoints );
 
     // Extract the points from the WKB and store in a pair of vectors.
-    for ( unsigned int jdx = 0; jdx < nPoints; jdx++ )
+    QPointF* ptr = poly.data();
+    for ( unsigned int jdx = 0; jdx < nPoints; ++jdx, ++ptr )
     {
       x = *(( double * ) wkb ); wkb += sizeof( double );
       y = *(( double * ) wkb ); wkb += sizeof( double );
 
-      poly[jdx] = QPointF( x, y );
+      *ptr = QPointF( x, y );
 
       if ( hasZValue )
         wkb += sizeof( double );
@@ -169,14 +162,16 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
     QgsClipper::trimPolygon( poly, clipRect );
 
     //transform the QPolygonF to screen coordinates
-    for ( int i = 0; i < poly.size(); ++i )
+    if ( ct )
     {
-      if ( ct )
-      {
-        z = 0;
-        ct->transformInPlace( poly[i].rx(), poly[i].ry(), z );
-      }
-      mtp.transformInPlace( poly[i].rx(), poly[i].ry() );
+      ct->transformPolygon( poly );
+    }
+
+
+    ptr = poly.data();
+    for ( int i = 0; i < poly.size(); ++i, ++ptr )
+    {
+      mtp.transformInPlace( ptr->rx(), ptr->ry() );
     }
 
     if ( idx == 0 )
@@ -186,6 +181,21 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
   }
 
   return wkb;
+}
+
+void QgsFeatureRendererV2::setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod )
+{
+  if ( symbol )
+  {
+    if ( symbol->type() == QgsSymbolV2::Marker )
+    {
+      QgsMarkerSymbolV2* ms = static_cast<QgsMarkerSymbolV2*>( symbol );
+      if ( ms )
+      {
+        ms->setScaleMethod(( QgsSymbolV2::ScaleMethod )scaleMethod );
+      }
+    }
+  }
 }
 
 
@@ -348,7 +358,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
     break;
 
     default:
-      QgsDebugMsg( "unsupported wkb type for rendering" );
+      QgsDebugMsg( QString( "feature %1: unsupported wkb type 0x%2 for rendering" ).arg( feature.id() ).arg( geom->wkbType(), 0, 16 ) );
   }
 }
 

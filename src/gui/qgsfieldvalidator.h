@@ -31,11 +31,13 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     Q_OBJECT
 
   public:
-    QgsFieldValidator( QObject *parent, const QgsField &field );
+    QgsFieldValidator( QObject *parent, const QgsField &field, QString dateFormat );
     ~QgsFieldValidator();
 
     virtual State validate( QString &, int & ) const;
     virtual void fixup( QString & ) const;
+
+    QString dateFormat() const { return mDateFormat; }
 
   private:
     // Disables copy constructing
@@ -44,6 +46,7 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     QValidator *mValidator;
     QgsField mField;
     QString mNullValue;
+    QString mDateFormat;
 };
 
 #endif // QGSFIELDVALIDATOR_H

@@ -146,26 +146,31 @@ void QgsScaleComboBox::fixupScale()
 {
   double newScale;
   double oldScale = mScale;
-  bool ok;
-  QStringList txtList;
+  bool ok, userSetScale;
+  QStringList txtList = currentText().split( ':' );
+  txtList.size() == 2 ? userSetScale = false : userSetScale = true ;
 
   // QgsDebugMsg( QString( "entered with oldScale: %1" ).arg( oldScale ) );
   newScale = toDouble( currentText(), &ok );
-  if ( ok )
+
+  // Valid string representation
+  if ( ok && ( newScale != oldScale ) )
   {
-    // Valid string representation
-    if ( newScale != oldScale )
+    // if a user types scale = 2345, we transform to 1:2345
+    if ( userSetScale && newScale >= 1.0 )
     {
-      // Scale has change, update.
-      // QgsDebugMsg( QString( "New scale OK!: %1" ).arg( newScale ) );
-      mScale = newScale;
-      setScale( mScale );
-      emit scaleChanged();
+      mScale = 1 / newScale;
     }
+    else
+    {
+      mScale = newScale;
+    }
+    setScale( mScale );
+    emit scaleChanged();
   }
   else
   {
-    // Invalid string representation
+    // Invalid string representation or same scale
     // Reset to the old
     setScale( mScale );
   }

@@ -203,9 +203,9 @@ namespace osgEarth
   namespace Util
   {
 #ifdef USE_BACKPORTED_CONTROLS
-  namespace Controls21
+    namespace Controls21
 #else
-  namespace Controls
+    namespace Controls
 #endif
     {
       class NavigationControlHandler : public ControlEventHandler

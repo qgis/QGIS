@@ -65,6 +65,12 @@ class QgsComposition : QGraphicsScene
     void setGridStyle( GridStyle s );
     GridStyle gridStyle() const;
 
+    void setAlignmentSnap( bool s );
+    bool alignmentSnap() const;
+
+    void setAlignmentSnapTolerance( double t );
+    double alignmentSnapTolerance() const;
+
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack();
 
@@ -100,12 +106,24 @@ class QgsComposition : QGraphicsScene
     const QgsComposerHtml* getComposerHtmlByItem( QgsComposerItem *item ) const;
 
     /**Returns a composer item given its text identifier.
+      Ids are not necessarely unique, but this function returns only one element.
       @note added in 2.0
       @param theId - A QString representing the identifier of the item to
         retrieve.
       @return QgsComposerItem pointer or 0 pointer if no such item exists.
       **/
     const QgsComposerItem* getComposerItemById( QString theId ) const;
+
+
+    /**Returns a composer item given its unique identifier.
+      Warning : ids are not necessarely unique, but this function returns only one element.
+      @note added in 2.0
+      @param theId - A QString representing the UUID of the item to retrieve.
+      @param inAllComposers - Whether the search should be done in all composers of the project
+      @return QgsComposerItem pointer or 0 pointer if no such item exists.
+      **/
+    //const QgsComposerItem* getComposerItemByUuid( QString theUuid, bool inAllComposers = false ) const;
+    const QgsComposerItem* getComposerItemByUuid( QString theUuid ) const;
 
     int printResolution() const;
     void setPrintResolution( int dpi );

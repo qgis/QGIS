@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-test_qgsatlascomposition.py 
+test_qgsatlascomposition.py
                      --------------------------------------
                Date                 : Oct 2012
                Copyright            : (C) 2012 by Dr. Hugo Mercier
@@ -16,7 +16,7 @@ test_qgsatlascomposition.py
 '''
 import unittest
 from utilities import *
-from PyQt4.QtCore import * 
+from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4.QtXml import *
 from qgis.core import *
@@ -25,14 +25,14 @@ from qgscompositionchecker import QgsCompositionChecker
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 class TestQgsAtlasComposition(unittest.TestCase):
-        
+
     def testCase(self):
-        self.TEST_DATA_DIR = unitTestDataPath()        
+        self.TEST_DATA_DIR = unitTestDataPath()
         vectorFileInfo = QFileInfo( self.TEST_DATA_DIR + QDir().separator().toAscii() + "france_parts.shp")
         mVectorLayer = QgsVectorLayer( vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr" )
 
-        QgsMapLayerRegistry.instance().addMapLayer( mVectorLayer )
-        
+        QgsMapLayerRegistry.instance().addMapLayers( [mVectorLayer] )
+
         # create composition with composer map
         mMapRenderer = QgsMapRenderer()
         layerStringList = QStringList()
@@ -95,7 +95,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.autoscale_render_test()
         self.fixedscale_render_test()
         self.hidden_render_test()
-        
+
     def filename_test( self ):
 
         self.mAtlas.setFilenamePattern( "'output_' || $feature" )
@@ -124,7 +124,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
                                                QString( "autoscale_%1.png" ).arg( i ) )
             assert res[0] == True
         self.mAtlas.endRender()
-        
+
     def fixedscale_render_test( self ):
         self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
         self.mAtlas.setFixedScale( True )
@@ -161,6 +161,54 @@ class TestQgsAtlasComposition(unittest.TestCase):
                                                "control_images" + QDir.separator() + \
                                                "expected_composermapatlas" + QDir.separator() + \
                                                QString( "hiding_%1.png" ).arg( i ) )
+            assert res[0] == True
+        self.mAtlas.endRender()
+
+    def sorting_render_test( self ):
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlas.setFixedScale( True )
+        self.mAtlas.setHideCoverage( False )
+
+        self.mAtlas.setSortFeatures( True )
+        self.mAtlas.setSortKeyAttributeIndex( 4 ) # departement name
+        self.mAtlas.setSortAscending( False )
+
+        self.mAtlas.beginRender()
+
+        for i in range(0, 2):
+            self.mAtlas.prepareForFeature( i )
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsCompositionChecker()
+            res = checker.testComposition( "Atlas sorting test", self.mComposition, \
+                                               QString( self.TEST_DATA_DIR ) + QDir.separator() + \
+                                               "control_images" + QDir.separator() + \
+                                               "expected_composermapatlas" + QDir.separator() + \
+                                               QString( "sorting_%1.png" ).arg( i ) )
+            assert res[0] == True
+        self.mAtlas.endRender()
+
+    def filtering_render_test( self ):
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) );
+        self.mAtlas.setFixedScale( True )
+        self.mAtlas.setHideCoverage( False )
+
+        self.mAtlas.setSortFeatures( False )
+
+        self.mAtlas.setFeatureFilter( "substr(NAME_1,1,1)='P'" ) # select only 'Pays de la loire'
+
+        self.mAtlas.beginRender()
+
+        for i in range(0, 1):
+            self.mAtlas.prepareForFeature( i )
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsCompositionChecker()
+            res = checker.testComposition( "Atlas filtering test", self.mComposition, \
+                                               QString( self.TEST_DATA_DIR ) + QDir.separator() + \
+                                               "control_images" + QDir.separator() + \
+                                               "expected_composermapatlas" + QDir.separator() + \
+                                               QString( "filtering_%1.png" ).arg( i ) )
             assert res[0] == True
         self.mAtlas.endRender()
 

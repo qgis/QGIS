@@ -45,6 +45,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
     : QDialog( parent ), mStyle( style ), mModified( false )
 {
   setupUi( this );
+#ifdef Q_WS_MAC
+  setWindowModality( Qt::WindowModal );
+#endif
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/StyleV2Manager/geometry" ).toByteArray() );
@@ -350,6 +353,10 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   }
 
   // get symbol design
+  // NOTE : Set the parent widget as "this" to notify the Symbol selector
+  //        that, it is being called by Style Manager, so recursive calling
+  //        of style manger and symbol slector can be arrested
+  //        Look Also: editSymbol()
   QgsSymbolV2SelectorDialog dlg( symbol, mStyle, NULL, this );
   if ( dlg.exec() == 0 )
   {
@@ -466,9 +473,17 @@ QString QgsStyleV2ManagerDialog::addColorRampStatic( QWidget* parent, QgsStyleV2
       delete cptCityRamp;
       return QString();
     }
-    ramp = cptCityRamp;
     // name = dlg.selectedName();
     name = QFileInfo( cptCityRamp->schemeName() ).baseName() + cptCityRamp->variantName();
+    if ( dlg.saveAsGradientRamp() )
+    {
+      ramp = cptCityRamp->cloneGradientRamp();
+      delete cptCityRamp;
+    }
+    else
+    {
+      ramp = cptCityRamp;
+    }
   }
   else
   {
@@ -631,6 +646,11 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
     {
       delete ramp;
       return false;
+    }
+    if ( dlg.saveAsGradientRamp() )
+    {
+      ramp = cptCityRamp->cloneGradientRamp();
+      delete cptCityRamp;
     }
   }
   else

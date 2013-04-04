@@ -341,7 +341,7 @@ void QgsProjectFileTransform::transform0110to1000()
       {
         return;
       }
-      QgsFieldMap theFieldMap = theProvider->fields();
+      QgsFields theFields = theProvider->fields();
 
       //read classificationfield
       QDomNodeList classificationFieldList = layerElem.elementsByTagName( "classificationfield" );
@@ -349,10 +349,9 @@ void QgsProjectFileTransform::transform0110to1000()
       {
         QDomElement classificationFieldElem = classificationFieldList.at( j ).toElement();
         int fieldNumber = classificationFieldElem.text().toInt();
-        QgsFieldMap::const_iterator field_it = theFieldMap.find( fieldNumber );
-        if ( field_it != theFieldMap.constEnd() )
+        if ( fieldNumber >= 0 && fieldNumber < theFields.count() )
         {
-          QDomText fieldName = mDom.createTextNode( field_it.value().name() );
+          QDomText fieldName = mDom.createTextNode( theFields[fieldNumber].name() );
           QDomNode nameNode = classificationFieldElem.firstChild();
           classificationFieldElem.replaceChild( fieldName, nameNode );
         }
@@ -533,6 +532,40 @@ void QgsProjectFileTransform::transform1800to1900()
     }
   }
 
+  //Composer: move all items under Composition element
+  QDomNodeList composerList = mDom.elementsByTagName( "Composer" );
+  for ( int i = 0; i < composerList.size(); ++i )
+  {
+    QDomElement composerElem = composerList.at( i ).toElement();
+
+    //find <QgsComposition element
+    QDomElement compositionElem = composerElem.firstChildElement( "Composition" );
+    if ( compositionElem.isNull() )
+    {
+      continue;
+    }
+
+    QDomNodeList composerChildren = composerElem.childNodes();
+
+    if ( composerChildren.size() < 1 )
+    {
+      continue;
+    }
+
+    for ( int j = composerChildren.size() - 1; j >= 0; --j )
+    {
+      QDomElement childElem = composerChildren.at( j ).toElement();
+      if ( childElem.tagName() == "Composition" )
+      {
+        continue;
+      }
+
+      composerElem.removeChild( childElem );
+      compositionElem.appendChild( childElem );
+
+    }
+  }
+
   // SimpleFill symbol layer v2: avoid double transparency
   // replacing alpha value of symbol layer's color with 255 (the
   // transparency value is already stored as symbol transparency).
@@ -617,6 +650,31 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument& doc, QDomNo
 
   //convert renderer specific properties
   QString drawingStyle = rasterPropertiesElem.firstChildElement( "mDrawingStyle" ).text();
+
+  // While PalettedColor should normaly contain only integer values, usually
+  // color palette 0-255, it may happen (Tim, issue #7023) that it contains
+  // colormap classification with double values and text labels
+  // (which should normaly only appear in SingleBandPseudoColor drawingStyle)
+  // => we have to check first the values and change drawingStyle if necessary
+  if ( drawingStyle == "PalettedColor" )
+  {
+    QDomElement customColorRampElem = rasterPropertiesElem.firstChildElement( "customColorRamp" );
+    QDomNodeList colorRampEntryList = customColorRampElem.elementsByTagName( "colorRampEntry" );
+
+    for ( int i = 0; i < colorRampEntryList.size(); ++i )
+    {
+      QDomElement colorRampEntryElem = colorRampEntryList.at( i ).toElement();
+      QString strValue = colorRampEntryElem.attribute( "value" );
+      double value = strValue.toDouble();
+      if ( value < 0 || value > 10000 || value != ( int )value )
+      {
+        QgsDebugMsg( QString( "forcing SingleBandPseudoColor value = %1" ).arg( value ) );
+        drawingStyle = "SingleBandPseudoColor";
+        break;
+      }
+    }
+  }
+
   if ( drawingStyle == "SingleBandGray" )
   {
     rasterRendererElem.setAttribute( "type", "singlebandgray" );

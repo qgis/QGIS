@@ -29,12 +29,16 @@
 #include "qgswmsconnection.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgsfeaturestore.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkreplyparser.h"
+#include "qgsgml.h"
+#include "qgsgmlschema.h"
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -42,6 +46,11 @@
 
 #if QT_VERSION >= 0x40500
 #include <QNetworkDiskCache>
+#endif
+
+#if QT_VERSION >= 0x40600
+#include <QtXmlPatterns/QXmlSchema>
+#include <QtXmlPatterns/QXmlSchemaValidator>
 #endif
 
 #include <QUrl>
@@ -88,6 +97,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mErrors( 0 )
     , mUserName( QString::null )
     , mPassword( QString::null )
+    , mReferer( QString::null )
     , mTiled( false )
     , mTileLayer( 0 )
     , mTileMatrixSetId( QString::null )
@@ -95,6 +105,8 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mFeatureCount( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
+
+  mSupportedGetFeatureFormats = QStringList() << "text/html" << "text/plain" << "text/xml" << "application/vnd.ogc.gml";
 
   mValid = false;
 
@@ -117,9 +129,6 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
   // 1) http://xxx.xxx.xx/yyy/yyy
   // 2) http://xxx.xxx.xx/yyy/yyy?
   // 3) http://xxx.xxx.xx/yyy/yyy?zzz=www
-
-
-  mSupportedGetFeatureFormats = QStringList() << "text/html" << "text/plain" << "text/xml";
 
   mValid = true;
   QgsDebugMsg( "exiting constructor." );
@@ -153,6 +162,9 @@ bool QgsWmsProvider::parseUri( QString uriString )
 
   mPassword = uri.param( "password" );
   QgsDebugMsg( "set password to " + mPassword );
+
+  mReferer = uri.param( "referer" );
+  QgsDebugMsg( "set referer to " + mReferer );
 
   addLayers( uri.params( "layers" ), uri.params( "styles" ) );
   setImageEncoding( uri.param( "format" ) );
@@ -807,8 +819,24 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         setQueryItem( url, "STYLES", mActiveSubStyles.join( "," ) );
         setQueryItem( url, "FORMAT", mImageMimeType );
         setQueryItem( url, crsKey, mImageCrs );
+
         if ( mTiled )
+        {
           setQueryItem( url, "TILED", "true" );
+        }
+
+        if ( mDpi != -1 )
+        {
+          setQueryItem( url, "DPI", QString::number( mDpi ) ); //QGIS server
+          setQueryItem( url, "MAP_RESOLUTION", QString::number( mDpi ) ); //UMN mapserver
+          setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
+        }
+
+        if ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
+             !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
+        {
+          setQueryItem( url, "TRANSPARENT", "TRUE" );  // some servers giving error for 'true' (lowercase)
+        }
 
         int i = 0;
         for ( int row = row0; row <= row1; row++ )
@@ -970,7 +998,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
   return mCachedImage;
 }
 
-//void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *block )
 void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
 {
   Q_UNUSED( bandNo );
@@ -1103,7 +1130,8 @@ void QgsWmsProvider::tileReplyFinished()
 
     QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( !contentType.startsWith( "image/", Qt::CaseInsensitive ) )
+    if ( !contentType.startsWith( "image/", Qt::CaseInsensitive ) &&
+         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) != 0 )
     {
       QByteArray text = reply->readAll();
       if ( contentType.toLower() == "text/xml" && parseServiceExceptionReportDom( text ) )
@@ -1165,7 +1193,8 @@ void QgsWmsProvider::tileReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( reply->url().toString() ), tr( "WMS" ) );
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL: %2]" )
+                                   .arg( contentType ).arg( reply->url().toString() ), tr( "WMS" ) );
       }
     }
     else
@@ -1240,7 +1269,8 @@ void QgsWmsProvider::cacheReplyFinished()
 
     QString contentType = mCacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
     QgsDebugMsg( "contentType: " + contentType );
-    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) )
+    if ( contentType.startsWith( "image/", Qt::CaseInsensitive ) ||
+         contentType.compare( "application/octet-stream", Qt::CaseInsensitive ) == 0 )
     {
       QImage myLocalImage = QImage::fromData( mCacheReply->readAll() );
       if ( !myLocalImage.isNull() )
@@ -1250,7 +1280,8 @@ void QgsWmsProvider::cacheReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [Content-Type:%1; URL:%2]" )
+                                   .arg( contentType ).arg( mCacheReply->url().toString() ), tr( "WMS" ) );
       }
     }
     else
@@ -1264,9 +1295,10 @@ void QgsWmsProvider::cacheReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; URL:%3)" )
+        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)" )
                                    .arg( status.toInt() )
                                    .arg( QString::fromUtf8( text ) )
+                                   .arg( contentType )
                                    .arg( mCacheReply->url().toString() ), tr( "WMS" ) );
       }
 
@@ -1370,7 +1402,41 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
       return false;
     }
+    else
+    {
+      // get identify formats
+      foreach ( QString f, mCapabilities.capability.request.getFeatureInfo.format )
+      {
+        // Don't use mSupportedGetFeatureFormats, there are too many possibilities
+#if 0
+        if ( mSupportedGetFeatureFormats.contains( f ) )
+        {
+#endif
+          QgsDebugMsg( "supported format = " + f );
+          // 1.0: MIME - server shall choose format, we presume it to be plain text
+          //      GML.1, GML.2, or GML.3
+          // 1.1.0, 1.3.0 - mime types, GML should use application/vnd.ogc.gml
+          //      but in UMN Mapserver it may be also OUTPUTFORMAT, e.g. OGRGML
+          IdentifyFormat format = IdentifyFormatUndefined;
+          if ( f == "MIME" )
+            format = IdentifyFormatText; // 1.0
+          else if ( f == "text/plain" )
+            format = IdentifyFormatText;
+          else if ( f == "text/html" )
+            format = IdentifyFormatHtml;
+          else if ( f.startsWith( "GML." ) )
+            format = IdentifyFormatFeature; // 1.0
+          else if ( f == "application/vnd.ogc.gml" )
+            format = IdentifyFormatFeature;
+          else if ( f.contains( "gml", Qt::CaseInsensitive ) )
+            format = IdentifyFormatFeature;
 
+          mIdentifyFormats.insert( format, f );
+#if 0
+        }
+#endif
+      }
+    }
   }
 
   QgsDebugMsg( "exiting." );
@@ -1389,26 +1455,40 @@ void QgsWmsProvider::capabilitiesReplyFinished()
     {
       emit statusChanged( tr( "Capabilities request redirected." ) );
 
-      QNetworkRequest request( redirect.toUrl() );
-      setAuthorization( request );
-      request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
-      request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+      const QUrl& toUrl = redirect.toUrl();
+      mCapabilitiesReply->request();
+      if ( toUrl == mCapabilitiesReply->url() )
+      {
+        mErrorFormat = "text/plain";
+        mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
+        QgsMessageLog::logMessage( mError, tr( "WMS" ) );
+        mHttpCapabilitiesResponse.clear();
+      }
+      else
+      {
+        QNetworkRequest request( toUrl );
+        setAuthorization( request );
+        request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+        request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
-      mCapabilitiesReply->deleteLater();
-      QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
-      mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+        mCapabilitiesReply->deleteLater();
+        QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
+        mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
-      connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
-      connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
-      return;
+        connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
+        connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
+        return;
+      }
     }
-
-    mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
-
-    if ( mHttpCapabilitiesResponse.isEmpty() )
+    else
     {
-      mErrorFormat = "text/plain";
-      mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
+      mHttpCapabilitiesResponse = mCapabilitiesReply->readAll();
+
+      if ( mHttpCapabilitiesResponse.isEmpty() )
+      {
+        mErrorFormat = "text/plain";
+        mError = tr( "empty of capabilities: %1" ).arg( mCapabilitiesReply->errorString() );
+      }
     }
   }
   else
@@ -1419,20 +1499,19 @@ void QgsWmsProvider::capabilitiesReplyFinished()
     mHttpCapabilitiesResponse.clear();
   }
 
-
   mCapabilitiesReply->deleteLater();
   mCapabilitiesReply = 0;
 }
 
-QgsRasterBlock::DataType QgsWmsProvider::dataType( int bandNo ) const
+QGis::DataType QgsWmsProvider::dataType( int bandNo ) const
 {
   return srcDataType( bandNo );
 }
 
-QgsRasterBlock::DataType QgsWmsProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsWmsProvider::srcDataType( int bandNo ) const
 {
   Q_UNUSED( bandNo );
-  return QgsRasterBlock::ARGB32;
+  return QGis::ARGB32;
 }
 
 int QgsWmsProvider::bandCount() const
@@ -1522,7 +1601,7 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabili
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if ( !e.isNull() )
     {
-      //QgsDebugMsg(e.tagName() ); // the node really is an element.
+      QgsDebugMsg( e.tagName() ); // the node really is an element.
 
       if ( e.tagName() == "Service" || e.tagName() == "ows:ServiceProvider" || e.tagName() == "ows:ServiceIdentification" )
       {
@@ -2157,7 +2236,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      //QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
+      QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
 
       QString tagName = e1.tagName();
       if ( tagName.startsWith( "wms:" ) )
@@ -2931,7 +3010,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if ( !e.isNull() )
     {
-      //QgsDebugMsg(e.tagName() ); // the node really is an element.
+      QgsDebugMsg( e.tagName() ); // the node really is an element.
 
       QString tagName = e.tagName();
       if ( tagName.startsWith( "wms:" ) )
@@ -2960,6 +3039,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e )
   QString seCode = e.attribute( "code" );
   QString seText = e.text();
 
+  mErrorCaption = tr( "Service Exception" );
   mErrorFormat = "text/plain";
 
   // set up friendly descriptions for the service exception
@@ -3029,11 +3109,8 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e )
 
   // TODO = e.attribute("locator");
 
-  QgsMessageLog::logMessage( tr( "composed error message '%1'." ).arg( mError ), tr( "WMS" ) );
-  QgsDebugMsg( "exiting." );
+  QgsDebugMsg( QString( "exiting with composed error message '%1'." ).arg( mError ) );
 }
-
-
 
 QgsRectangle QgsWmsProvider::extent()
 {
@@ -3191,7 +3268,6 @@ bool QgsWmsProvider::calculateExtent()
     QgsDebugMsg( "exiting with '"  + mLayerExtent.toString() + "'." );
     return true;
   }
-  return false; // should not be reached
 }
 
 
@@ -3221,20 +3297,25 @@ int QgsWmsProvider::capabilities() const
 
   if ( canIdentify )
   {
-    foreach ( QString f, mCapabilities.capability.request.getFeatureInfo.format )
+    if ( identifyCapabilities() )
     {
-      if ( mSupportedGetFeatureFormats.contains( f ) )
-      {
-        // Collect all the test results into one bitmask
-        capability |= QgsRasterDataProvider::Identify;
-        if ( f == "text/html" ) capability |= QgsRasterDataProvider::IdentifyHtml;
-        else if ( f == "text/plain" ) capability |= QgsRasterDataProvider::IdentifyText;
-      }
+      capability |= identifyCapabilities() | Identify;
     }
   }
+  QgsDebugMsg( QString( "capability = %1" ).arg( capability ) );
+  return capability;
+}
 
-  QgsDebugMsg( "exiting with '"  + QString::number( capability, 2 )  + "'." );
+int QgsWmsProvider::identifyCapabilities() const
+{
+  int capability = NoCapabilities;
 
+  foreach ( IdentifyFormat f, mIdentifyFormats.keys() )
+  {
+    capability |= identifyFormatToCapability( f );
+  }
+
+  QgsDebugMsg( QString( "capability = %1" ).arg( capability ) );
   return capability;
 }
 
@@ -3792,25 +3873,15 @@ QString QgsWmsProvider::metadata()
 
 QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsg( QString( "theFormat = %1" ).arg( theFormat ) );
   QStringList resultStrings;
   QMap<int, QVariant> results;
 
   QString format;
-  if ( theFormat == IdentifyFormatHtml )
-  {
-    if ( !( capabilities() & IdentifyHtml ) ) return results;
-    format = "text/html";
-  }
-  else if ( theFormat == IdentifyFormatText )
-  {
-    if ( !( capabilities() & IdentifyText ) ) return results;
-    format = "text/plain";
-  }
-  else
-  {
-    return results;
-  }
+  format = mIdentifyFormats.value( theFormat );
+  if ( format.isEmpty() ) return results;
+
+  QgsDebugMsg( QString( "theFormat = %1 format = %2" ).arg( theFormat ).arg( format ) );
 
   if ( !extent().contains( thePoint ) )
   {
@@ -3882,6 +3953,9 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
                  .arg( myExtent.xMaximum(), 0, 'f', 16 )
                  .arg( myExtent.yMaximum(), 0, 'f', 16 );
 
+  //QgsFeatureList featureList;
+
+  int count = -1;
   // Test for which layers are suitable for querying with
   for ( QStringList::const_iterator
         layers  = mActiveSubLayers.begin(),
@@ -3889,13 +3963,23 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
         layers != mActiveSubLayers.end();
         ++layers, ++styles )
   {
+    count++;
+
     // Is sublayer visible?
     if ( !mActiveSubLayerVisibility.find( *layers ).value() )
+    {
+      // TODO: something better?
+      // we need to keep all sublayers so that we can get their names in identify tool
+      results.insert( count, false );
       continue;
+    }
 
     // Is sublayer queryable?
     if ( !mQueryableForLayer.find( *layers ).value() )
+    {
+      results.insert( count, false );
       continue;
+    }
 
     QgsDebugMsg( "Layer '" + *layers + "' is queryable." );
 
@@ -3940,27 +4024,242 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
     }
 
-    resultStrings << mIdentifyResult;
+    if ( mIdentifyResultBodies.size() == 0 ) // no result
+    {
+      QgsDebugMsg( "mIdentifyResultBodies is empty" );
+      continue;
+    }
+    else if ( mIdentifyResultBodies.size() == 1 )
+    {
+      // Check for service exceptions (exceptions with ogr/gml are in the body)
+      bool isXml = false;
+      bool isGml = false;
+
+      const QgsNetworkReplyParser::RawHeaderMap &headers = mIdentifyResultHeaders.value( 0 );
+      foreach ( const QByteArray &v, headers.keys() )
+      {
+        if ( QString( v ).compare( "Content-Type", Qt::CaseInsensitive ) == 0 )
+        {
+          isXml = QString( headers.value( v ) ).compare( "text/xml", Qt::CaseInsensitive ) == 0;
+          isGml = QString( headers.value( v ) ).compare( "ogr/gml", Qt::CaseInsensitive ) == 0;
+          if ( isXml || isGml )
+            break;
+        }
+      }
+
+      if ( isGml || isXml )
+      {
+        QByteArray body = mIdentifyResultBodies.value( 0 );
+
+        if ( isGml && body.startsWith( "Content-Type: text/xml\r\n\r\n" ) )
+        {
+          body = body.data() + strlen( "Content-Type: text/xml\r\n\r\n" );
+          isXml = true;
+        }
+
+        if ( isXml && parseServiceExceptionReportDom( body ) )
+        {
+          QgsMessageLog::logMessage( tr( "Get feature info request error (Title:%1; Error:%2; URL: %3)" )
+                                     .arg( mErrorCaption ).arg( mError )
+                                     .arg( requestUrl.toString() ), tr( "WMS" ) );
+          continue;
+        }
+      }
+    }
+
+    if ( theFormat == IdentifyFormatHtml || theFormat == IdentifyFormatText )
+    {
+      //resultStrings << mIdentifyResult;
+      //results.insert( count, mIdentifyResult );
+      results.insert( count, QString::fromUtf8( mIdentifyResultBodies.value( 0 ) ) );
+    }
+    else if ( theFormat == IdentifyFormatFeature ) // GML
+    {
+      // The response maybe
+      // 1) simple GML
+      //    To get also geometry from UMN Mapserver, it must be enabled for layer, e.g.:
+      //      LAYER
+      //        METADATA
+      //          "ows_geometries" "mygeom"
+      //          "ows_mygeom_type" "polygon"
+      //        END
+      //      END
+
+      // 2) multipart GML + XSD
+      //    Multipart is supplied by UMN Mapserver following format is used
+      //      OUTPUTFORMAT
+      //        NAME "OGRGML"
+      //        DRIVER "OGR/GML"
+      //        FORMATOPTION "FORM=multipart"
+      //      END
+      //      WEB
+      //        METADATA
+      //          "wms_getfeatureinfo_formatlist" "OGRGML,text/html"
+      //        END
+      //      END
+      //    GetFeatureInfo multipart response does not seem to be defined in
+      //    OGC specification.
+
+
+      int gmlPart = -1;
+      int xsdPart = -1;
+      for ( int i = 0; i < mIdentifyResultHeaders.size(); i++ )
+      {
+        if ( xsdPart == -1 && mIdentifyResultHeaders[i].value( "Content-Disposition" ).contains( ".xsd" ) )
+        {
+          xsdPart = i;
+        }
+        else if ( gmlPart == -1 && mIdentifyResultHeaders[i].value( "Content-Disposition" ).contains( ".dat" ) )
+        {
+          gmlPart = i;
+        }
+
+        if ( gmlPart != -1 && xsdPart != -1 )
+          break;
+      }
+
+      if ( xsdPart == -1 && gmlPart == -1 )
+      {
+        if ( mIdentifyResultBodies.size() == 1 ) // GML
+        {
+          gmlPart = 0;
+        }
+        if ( mIdentifyResultBodies.size() == 2 ) // GML+XSD
+        {
+          QgsDebugMsg( "Multipart with 2 parts - expected GML + XSD" );
+          // How to find which part is GML and which XSD? Both have
+          // Content-Type: application/binary
+          // different are Content-Disposition but it is not reliable.
+          // We could analyze beginning of bodies...
+          gmlPart = 0;
+          xsdPart = 1;
+        }
+      }
+
+      QgsDebugMsg( "GML (first 2000 bytes):\n" + QString::fromUtf8( mIdentifyResultBodies.value( gmlPart ).left( 2000 ) ) );
+      QGis::WkbType wkbType;
+      QgsGmlSchema gmlSchema;
+
+      if ( xsdPart >= 0 )  // XSD available
+      {
+#if QT_VERSION >= 0x40600
+#if 0
+        // Validate GML by schema
+        // Loading schema takes ages! It needs to load all XSD referenced in the schema,
+        // for example:
+        // http://schemas.opengis.net/gml/2.1.2/feature.xsd
+        // http://schemas.opengis.net/gml/2.1.2/gml.xsd
+        // http://schemas.opengis.net/gml/2.1.2/geometry.xsd
+        // http://www.w3.org/1999/xlink.xsd
+        // http://www.w3.org/2001/xml.xsd <- this takes 30s to download (2/2013)
+
+        QXmlSchema schema;
+        schema.load( mIdentifyResultBodies.value( xsdPart ) );
+        // Unfortunately the schema cannot be successfully loaded, it reports error
+        // "Element {http://www.opengis.net/gml}_Feature already defined"
+        // there is probably a bug in QXmlSchema:
+        // https://bugreports.qt-project.org/browse/QTBUG-8394
+        // xmlpatternsvalidator gives the same error on XSD generated by OGR
+        if ( !schema.isValid() )
+        {
+          // TODO: return QgsError
+          results.insert( count, tr( "GML schema is not valid" ) );
+          continue;
+        }
+        QXmlSchemaValidator validator( schema );
+        if ( !validator.validate( mIdentifyResultBodies.value( gmlPart ) ) )
+        {
+          results.insert( count, tr( "GML is not valid" ) );
+          continue;
+        }
+#endif
+#endif
+        gmlSchema.parseXSD( mIdentifyResultBodies.value( xsdPart ) );
+      }
+      else
+      {
+        // guess from GML
+        gmlSchema.guessSchema( mIdentifyResultBodies.value( gmlPart ) );
+      }
+
+      QStringList featureTypeNames = gmlSchema.typeNames();
+      QgsDebugMsg( QString( "%1 featureTypeNames found" ).arg( featureTypeNames.size() ) );
+
+      // Each sublayer may have more features of different types, for example
+      // if GROUP of multiple vector layers is used with UMN MapServer
+      // Note: GROUP of layers in UMN MapServer is not queryable by default
+      // (and I could not find a way to force it), it is possible however
+      // to add another RASTER layer with the same name as group which is queryable
+      // and has no DATA defined. Then such a layer may be add to QGIS and both
+      // GetMap and GetFeatureInfo will return data for the group of the same name.
+      // https://github.com/mapserver/mapserver/issues/318#issuecomment-4923208
+      QgsFeatureStoreList featureStoreList;
+      foreach ( QString featureTypeName, featureTypeNames )
+      {
+        QgsDebugMsg( QString( "featureTypeName = %1" ).arg( featureTypeName ) );
+
+        QString geometryAttribute = gmlSchema.geometryAttributes( featureTypeName ).value( 0 );
+        QList<QgsField> fieldList = gmlSchema.fields( featureTypeName );
+        QgsDebugMsg( QString( "%1 fields found" ).arg( fieldList.size() ) );
+        QgsFields fields;
+        for ( int i = 0; i < fieldList.size(); i++ )
+        {
+          fields.append( fieldList[i] );
+        }
+        QgsGml gml( featureTypeName, geometryAttribute, fields );
+        // TODO: avoid converting to string and back
+        int ret = gml.getFeatures( mIdentifyResultBodies.value( gmlPart ), &wkbType );
+#ifdef QGISDEBUG
+        QgsDebugMsg( QString( "parsing result = %1" ).arg( ret ) );
+#else
+        Q_UNUSED( ret );
+#endif
+        // TODO: all features coming from this layer should probably have the same CRS
+        // the same as this layer, because layerExtentToOutputExtent() may be used
+        // for results -> verify CRS and reprojects if necessary
+        QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
+        QgsDebugMsg( QString( "%1 features read" ).arg( features.size() ) );
+        QgsFeatureStore featureStore( fields, crs() );
+        featureStore.params().insert( "sublayer", *layers );
+        featureStore.params().insert( "featureType", featureTypeName );
+        featureStore.params().insert( "getFeatureInfoUrl", requestUrl.toString() );
+        foreach ( QgsFeatureId id, features.keys() )
+        {
+          QgsFeature * feature = features.value( id );
+
+          QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
+
+          featureStore.features().append( QgsFeature( *feature ) );
+        }
+        featureStoreList.append( featureStore );
+      }
+      results.insert( count, qVariantFromValue( featureStoreList ) );
+    }
   }
 
+#if 0
   QString str;
 
   if ( theFormat == IdentifyFormatHtml )
   {
     str = "<table>\n<tr><td>" + resultStrings.join( "</td></tr>\n<tr><td>" ) + "</td></tr>\n</table>";
+    results.insert( 1, str );
   }
   else if ( theFormat == IdentifyFormatText )
   {
     str = resultStrings.join( "\n-------------\n" );
+    results.insert( 1, str );
   }
-
-  results.insert( 1, str );
+#endif
 
   return results;
 }
 
 void QgsWmsProvider::identifyReplyFinished()
 {
+  mIdentifyResultHeaders.clear();
+  mIdentifyResultBodies.clear();
+
   if ( mIdentifyReply->error() == QNetworkReply::NoError )
   {
     QVariant redirect = mIdentifyReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
@@ -3986,15 +4285,33 @@ void QgsWmsProvider::identifyReplyFinished()
       mError = tr( "Map getfeatureinfo error %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
       emit statusChanged( mError );
 
-      mIdentifyResult = "";
+      //mIdentifyResult = "";
     }
 
-    mIdentifyResult = QString::fromUtf8( mIdentifyReply->readAll() );
+    QgsNetworkReplyParser parser( mIdentifyReply );
+    if ( !parser.isValid() )
+    {
+      QgsDebugMsg( "Cannot parse reply" );
+      mErrorFormat = "text/plain";
+      mError = tr( "Cannot parse getfeatureinfo: %1" ).arg( parser.error() );
+      emit statusChanged( mError );
+      //mIdentifyResult = "";
+    }
+    else
+    {
+      // TODO: check headers, xsd ...
+      QgsDebugMsg( QString( "%1 parts" ).arg( parser.parts() ) );
+      mIdentifyResultBodies = parser.bodies();
+      mIdentifyResultHeaders = parser.headers();
+    }
   }
   else
   {
-    mIdentifyResult = tr( "ERROR: GetFeatureInfo failed" );
-    QgsMessageLog::logMessage( tr( "Map getfeatureinfo error: %1 [%2]" ).arg( mIdentifyReply->errorString() ).arg( mIdentifyReply->url().toString() ), tr( "WMS" ) );
+    //mIdentifyResult = tr( "ERROR: GetFeatureInfo failed" );
+    mErrorFormat = "text/plain";
+    mError = tr( "Map getfeatureinfo error: %1 [%2]" ).arg( mIdentifyReply->errorString() ).arg( mIdentifyReply->url().toString() );
+    emit statusChanged( mError );
+    QgsMessageLog::logMessage( mError, tr( "WMS" ) );
   }
 
   mIdentifyReply->deleteLater();
@@ -4046,6 +4363,11 @@ void QgsWmsProvider::setAuthorization( QNetworkRequest &request ) const
   if ( !mUserName.isNull() || !mPassword.isNull() )
   {
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+  }
+
+  if ( !mReferer.isNull() )
+  {
+    request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toAscii() );
   }
 }
 

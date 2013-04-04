@@ -19,6 +19,8 @@
 #include "qgsprojectproperties.h"
 
 //qgis includes
+#include "qgsapplication.h"
+#include "qgsdistancearea.h"
 #include "qgisapp.h"
 #include "qgscomposer.h"
 #include "qgscontexthelp.h"
@@ -50,18 +52,35 @@
 #include <QHeaderView>  // Qt 4.4
 #include <QMessageBox>
 
+const char * QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
+
 //stdc++ includes
 
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl )
+    : QgsOptionsDialogBase( "ProjectProperties", parent, fl )
     , mMapCanvas( mapCanvas )
+    , mEllipsoidList()
+    , mEllipsoidIndex( 0 )
+
 {
   setupUi( this );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
+  // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
+  // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
+  initOptionsBase( false );
+
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( setMapUnitsToCurrentProjection() ) );
+
+  connect( cmbEllipsoid, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateEllipsoidUI( int ) ) );
+
+  connect( radMeters, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
+  connect( radFeet, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setDisabled( bool ) ) );
+  connect( radDegrees, SIGNAL( toggled( bool ) ), btnGrpDegreeDisplay, SLOT( setEnabled( bool ) ) );
+
+  connect( radAutomatic, SIGNAL( toggled( bool ) ), mPrecisionFrame, SLOT( setDisabled( bool ) ) );
+  connect( radManual, SIGNAL( toggled( bool ) ), mPrecisionFrame, SLOT( setEnabled( bool ) ) );
 
   ///////////////////////////////////////////////////////////
   // Properties stored in map canvas's QgsMapRenderer
@@ -71,17 +90,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QGis::UnitType myUnit = myRenderer->mapUnits();
   setMapUnits( myUnit );
 
-  // we need to initialize it, since the on_cbxProjectionEnabled_stateChanged()
-  // callback triggered by setChecked() might use it.
+  // we need to initialize it, since the on_cbxProjectionEnabled_toggled()
+  // slot triggered by setChecked() might use it.
   mProjectSrsId = myRenderer->destinationCrs().srsid();
-
-  //see if the user wants on the fly projection enabled
-  bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
-  cbxProjectionEnabled->setChecked( myProjectionEnabled );
 
   QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
   projectionSelector->setSelectedCrsId( mProjectSrsId );
-  projectionSelector->setEnabled( myProjectionEnabled );
+
+  // see end of constructor for updating of projection selector
 
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
@@ -90,19 +106,47 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
 
   // get the manner in which the number of decimal places in the mouse
   // position display is set (manual or automatic)
-  bool automaticPrecision = QgsProject::instance()->readBoolEntry( "PositionPrecision", "/Automatic" );
+  bool automaticPrecision = QgsProject::instance()->readBoolEntry( "PositionPrecision", "/Automatic", true );
   if ( automaticPrecision )
   {
     radAutomatic->setChecked( true );
-    spinBoxDP->setDisabled( true );
-    labelDP->setDisabled( true );
+    mPrecisionFrame->setEnabled( false );
   }
   else
   {
     radManual->setChecked( true );
+    mPrecisionFrame->setEnabled( true );
   }
 
   cbxAbsolutePath->setCurrentIndex( QgsProject::instance()->readBoolEntry( "Paths", "/Absolute", true ) ? 0 : 1 );
+
+  // populate combo box with ellipsoids
+
+  QgsDebugMsg( "Setting upp ellipsoid" );
+
+  populateEllipsoidList();
+
+  // Reading ellipsoid from setttings
+  QStringList mySplitEllipsoid = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ).split( ':' );
+
+  int myIndex = 0;
+  for ( int i = 0; i < mEllipsoidList.length(); i++ )
+  {
+    if ( mEllipsoidList[ i ].acronym.startsWith( mySplitEllipsoid[ 0 ] ) )
+    {
+      myIndex = i;
+      break;
+    }
+  }
+  // Update paramaters if present.
+  if ( mySplitEllipsoid.length() >= 3 )
+  {
+    mEllipsoidList[ myIndex ].semiMajor =  mySplitEllipsoid[ 1 ].toDouble();
+    mEllipsoidList[ myIndex ].semiMinor =  mySplitEllipsoid[ 2 ].toDouble();
+  }
+
+  updateEllipsoidUI( myIndex );
+
 
   int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
   spinBoxDP->setValue( dp );
@@ -122,6 +166,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   int myAlphaInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt, myAlphaInt );
   pbnSelectionColor->setColor( myColor );
+  pbnSelectionColor->setColorDialogTitle( tr( "Selection color" ) );
+  pbnSelectionColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   //get the color for map canvas background and set button color accordingly (default white)
   myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
@@ -395,6 +441,18 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     resetPythonMacros();
   }
 
+  // Update projection selector (after mLayerSrsId is set)
+  bool myProjectionEnabled = myRenderer->hasCrsTransformEnabled();
+  bool onFlyChecked = cbxProjectionEnabled->isChecked();
+  cbxProjectionEnabled->setChecked( myProjectionEnabled );
+
+  if ( onFlyChecked == myProjectionEnabled )
+  {
+    // ensure selector is updated if cbxProjectionEnabled->toggled signal not sent
+    on_cbxProjectionEnabled_toggled( myProjectionEnabled );
+  }
+
+  restoreOptionsBaseUi();
   restoreState();
 }
 
@@ -403,14 +461,11 @@ QgsProjectProperties::~QgsProjectProperties()
   saveState();
 }
 
-
-
 // return the map units
 QGis::UnitType QgsProjectProperties::mapUnits() const
 {
   return mMapCanvas->mapRenderer()->mapUnits();
 }
-
 
 void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
 {
@@ -427,20 +482,16 @@ void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
   mMapCanvas->mapRenderer()->setMapUnits( unit );
 }
 
-
 QString QgsProjectProperties::title() const
 {
   return titleEdit->text();
 } //  QgsProjectPropertires::title() const
-
 
 void QgsProjectProperties::title( QString const & title )
 {
   titleEdit->setText( title );
   QgsProject::instance()->title( title );
 } // QgsProjectProperties::title( QString const & title )
-
-
 
 //when user clicks apply button
 void QgsProjectProperties::apply()
@@ -506,6 +557,26 @@ void QgsProjectProperties::apply()
   emit displayPrecisionChanged();
 
   QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex() == 0 );
+
+  if ( mEllipsoidList[ mEllipsoidIndex ].acronym.startsWith( "PARAMETER" ) )
+  {
+    double major = mEllipsoidList[ mEllipsoidIndex ].semiMajor;
+    double minor = mEllipsoidList[ mEllipsoidIndex ].semiMinor;
+    // If the user fields have changed, use them instead.
+    if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
+    {
+      QgsDebugMsg( "Using paramteric major/minor" );
+      major = QLocale::system().toDouble( leSemiMajor->text() );
+      minor = QLocale::system().toDouble( leSemiMinor->text() );
+    }
+    QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", QString( "PARAMETER:%1:%2" )
+                                        .arg( major, 0, 'g', 17 )
+                                        .arg( minor, 0, 'g', 17 ) );
+  }
+  else
+  {
+    QgsProject::instance()->writeEntry( "Measure", "/Ellipsoid", mEllipsoidList[ mEllipsoidIndex ].acronym );
+  }
 
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();
@@ -710,7 +781,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "DefaultStyles", "/Line", cboStyleLine->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/Fill", cboStyleFill->currentText() );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/ColorRamp", cboStyleColorRamp->currentText() );
-  QgsProject::instance()->writeEntry( "DefaultStyles", "/AlphaInt", 255 - mTransparencySlider->value() );
+  QgsProject::instance()->writeEntry( "DefaultStyles", "/AlphaInt", ( int )( 255 - ( mTransparencySlider->value() * 2.55 ) ) );
   QgsProject::instance()->writeEntry( "DefaultStyles", "/RandomColors", cbxStyleRandomColors->isChecked() );
 
   // store project macros
@@ -733,46 +804,38 @@ bool QgsProjectProperties::isProjected()
 
 void QgsProjectProperties::showProjectionsTab()
 {
-  tabWidget->setCurrentIndex( 1 );
+  mOptionsListWidget->setCurrentRow( 1 );
 }
 
-void QgsProjectProperties::on_pbnSelectionColor_clicked()
+void QgsProjectProperties::on_cbxProjectionEnabled_toggled( bool onFlyEnabled )
 {
-#if QT_VERSION >= 0x040500
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), 0, tr( "Selection color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color() );
-#endif
-
-  if ( color.isValid() )
+  QString measureOnFlyState = tr( "Measure tool (CRS transformation: %1)" );
+  QString unitsOnFlyState = tr( "Canvas units (CRS transformation: %1)" );
+  if ( !onFlyEnabled )
   {
-    pbnSelectionColor->setColor( color );
-  }
-}
-
-void QgsProjectProperties::on_pbnCanvasColor_clicked()
-{
-  QColor color = QColorDialog::getColor( pbnCanvasColor->color(), this );
-  if ( color.isValid() )
-  {
-    pbnCanvasColor->setColor( color );
-  }
-}
-
-void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
-{
-  projectionSelector->setEnabled( state == Qt::Checked );
-
-  if ( state != Qt::Checked )
-  {
-    mProjectSrsId = projectionSelector->selectedCrsId();
+    if ( !mProjectSrsId )
+    {
+      mProjectSrsId = projectionSelector->selectedCrsId();
+    }
     projectionSelector->setSelectedCrsId( mLayerSrsId );
+
+    btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "OFF" ) ) );
+    btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "OFF" ) ) );
   }
   else
   {
-    mLayerSrsId = projectionSelector->selectedCrsId();
+    if ( !mLayerSrsId )
+    {
+      mLayerSrsId = projectionSelector->selectedCrsId();
+    }
     projectionSelector->setSelectedCrsId( mProjectSrsId );
+
+    btnGrpMeasureEllipsoid->setTitle( measureOnFlyState.arg( tr( "ON" ) ) );
+    btnGrpMapUnits->setTitle( unitsOnFlyState.arg( tr( "ON" ) ) );
   }
+
+  // Enable/Disable selector and update tool-tip
+  updateEllipsoidUI( mEllipsoidIndex );
 }
 
 void QgsProjectProperties::on_cbxWFSPublied_stateChanged( int aIdx )
@@ -834,7 +897,7 @@ void QgsProjectProperties::on_cbxWFSDelete_stateChanged( int aIdx )
 void QgsProjectProperties::setMapUnitsToCurrentProjection()
 {
   long myCRSID = projectionSelector->selectedCrsId();
-  if ( myCRSID )
+  if ( isProjected() && myCRSID )
   {
     QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
     //set radio button to crs map unit type
@@ -847,23 +910,17 @@ void QgsProjectProperties::setMapUnitsToCurrentProjection()
 }
 
 /*!
- * Function to save dialog window state
+ * Function to save non-base dialog states
  */
 void QgsProjectProperties::saveState()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/ProjectProperties/geometry", saveGeometry() );
-  settings.setValue( "/Windows/ProjectProperties/tab", tabWidget->currentIndex() );
 }
 
 /*!
- * Function to restore dialog window state
+ * Function to restore non-base dialog states
  */
 void QgsProjectProperties::restoreState()
 {
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/ProjectProperties/geometry" ).toByteArray() );
-  tabWidget->setCurrentIndex( settings.value( "/Windows/ProjectProperties/tab" ).toInt() );
 }
 
 /*!
@@ -1173,9 +1230,8 @@ void QgsProjectProperties::populateStyles()
   cbxStyleRandomColors->setChecked( QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) );
 
   // alpha transparency
-  int transparencyInt = 255 - QgsProject::instance()->readNumEntry( "DefaultStyles", "/AlphaInt", 255 );
+  int transparencyInt = ( 255 - QgsProject::instance()->readNumEntry( "DefaultStyles", "/AlphaInt", 255 ) ) / 2.55;
   mTransparencySlider->setValue( transparencyInt );
-  on_mTransparencySlider_valueChanged( transparencyInt );
 }
 
 void QgsProjectProperties::on_pbtnStyleManager_clicked()
@@ -1209,9 +1265,16 @@ void QgsProjectProperties::on_pbtnStyleColorRamp_clicked()
 
 void QgsProjectProperties::on_mTransparencySlider_valueChanged( int value )
 {
-  double alpha = 1 - ( value / 255.0 );
-  double transparencyPercent = ( 1 - alpha ) * 100;
-  mTransparencyLabel->setText( tr( "Transparency %1%" ).arg(( int ) transparencyPercent ) );
+  mTransparencySpinBox->blockSignals( true );
+  mTransparencySpinBox->setValue( value );
+  mTransparencySpinBox->blockSignals( false );
+}
+
+void QgsProjectProperties::on_mTransparencySpinBox_valueChanged( int value )
+{
+  mTransparencySlider->blockSignals( true );
+  mTransparencySlider->setValue( value );
+  mTransparencySlider->blockSignals( false );
 }
 
 void QgsProjectProperties::editSymbol( QComboBox* cbo )
@@ -1251,4 +1314,143 @@ void QgsProjectProperties::resetPythonMacros()
   ptePythonMacros->setPlainText( "def openProject():\n    pass\n\n" \
                                  "def saveProject():\n    pass\n\n" \
                                  "def closeProject():\n    pass\n" );
+}
+
+void QgsProjectProperties::populateEllipsoidList()
+{
+  //
+  // Populate the ellipsoid list
+  //
+  sqlite3      *myDatabase;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+  EllipsoidDefs myItem, i;
+
+  myItem.acronym = GEO_NONE;
+  myItem.description =  tr( GEO_NONE_DESC );
+  myItem.semiMajor = 0.0;
+  myItem.semiMinor = 0.0;
+  mEllipsoidList.append( myItem );
+
+  myItem.acronym = QString( "PARAMETER:6370997:6370997" );
+  myItem.description = tr( "Parameters :" );
+  myItem.semiMajor = 6370997.0;
+  myItem.semiMinor = 6370997.0;
+  mEllipsoidList.append( myItem );
+
+  //check the db is available
+  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
+  if ( myResult )
+  {
+    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
+    // XXX This will likely never happen since on open, sqlite creates the
+    //     database if it does not exist.
+    Q_ASSERT( myResult == 0 );
+  }
+
+  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
+  QString mySql = "select acronym, name, radius, parameter2 from tbl_ellipsoid order by name";
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+  // XXX Need to free memory from the error msg if one is set
+  if ( myResult == SQLITE_OK )
+  {
+    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    {
+      QString para1, para2;
+      myItem.acronym = ( const char * )sqlite3_column_text( myPreparedStatement, 0 );
+      myItem.description = ( const char * )sqlite3_column_text( myPreparedStatement, 1 );
+
+      // Copied from QgsDistanecArea. Should perhaps be moved there somehow?
+      // No error checking, this values are for show only, never used in calculations.
+
+      // Fall-back values
+      myItem.semiMajor = 0.0;
+      myItem.semiMinor = 0.0;
+      // Crash if no column?
+      para1 = ( const char * )sqlite3_column_text( myPreparedStatement, 2 );
+      para2 = ( const char * )sqlite3_column_text( myPreparedStatement, 3 );
+      myItem.semiMajor = para1.mid( 2 ).toDouble();
+      if ( para2.left( 2 ) == "b=" )
+      {
+        myItem.semiMinor = para2.mid( 2 ).toDouble();
+      }
+      else if ( para2.left( 3 ) == "rf=" )
+      {
+        double invFlattening = para2.mid( 3 ).toDouble();
+        if ( invFlattening != 0.0 )
+        {
+          myItem.semiMinor = myItem.semiMajor - ( myItem.semiMajor / invFlattening );
+        }
+      }
+      mEllipsoidList.append( myItem );
+    }
+  }
+
+  // close the sqlite3 statement
+  sqlite3_finalize( myPreparedStatement );
+  sqlite3_close( myDatabase );
+
+  // Add all items to selector
+
+  foreach ( i, mEllipsoidList )
+  {
+    cmbEllipsoid->addItem( i.description );
+  }
+}
+
+void QgsProjectProperties::updateEllipsoidUI( int newIndex )
+{
+  // Just return if the list isn't populated yet
+  if ( mEllipsoidList.isEmpty() )
+  {
+    return;
+  }
+  // Called whenever settings change, adjusts the UI accordingly
+  // Pre-select current ellipsoid
+
+  // Check if CRS transformation is on, or else turn everything off
+  double myMajor =  mEllipsoidList[ newIndex ].semiMajor;
+  double myMinor =  mEllipsoidList[ newIndex ].semiMinor;
+
+  // If user has modified the radii (only possible if parametric!), before
+  // changing ellipsoid, save the modified coordinates
+  if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
+  {
+    QgsDebugMsg( "Saving major/minor" );
+    mEllipsoidList[ mEllipsoidIndex ].semiMajor = QLocale::system().toDouble( leSemiMajor->text() );
+    mEllipsoidList[ mEllipsoidIndex ].semiMinor = QLocale::system().toDouble( leSemiMinor->text() );
+  }
+
+  mEllipsoidIndex = newIndex;
+  leSemiMajor->setEnabled( false );
+  leSemiMinor->setEnabled( false );
+  leSemiMajor->setText( "" );
+  leSemiMinor->setText( "" );
+  if ( cbxProjectionEnabled->isChecked() )
+  {
+    cmbEllipsoid->setEnabled( true );
+    cmbEllipsoid->setToolTip( "" );
+    if ( mEllipsoidList[ mEllipsoidIndex ].acronym.startsWith( "PARAMETER:" ) )
+    {
+      leSemiMajor->setEnabled( true );
+      leSemiMinor->setEnabled( true );
+    }
+    else
+    {
+      leSemiMajor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
+      leSemiMinor->setToolTip( QString( "Select %1 from pull-down menu to adjust radii" ).arg( tr( "Parameters:" ) ) );
+    }
+    cmbEllipsoid->setCurrentIndex( mEllipsoidIndex ); // Not always necessary
+    if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
+    {
+      leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
+      leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
+    }
+  }
+  else
+  {
+    cmbEllipsoid->setEnabled( false );
+    cmbEllipsoid->setToolTip( tr( "Can only use ellipsoidal calculations when CRS transformation is enabled" ) );
+  }
 }

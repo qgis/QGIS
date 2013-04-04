@@ -22,8 +22,10 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
     /**Adds a class manually to the classification*/
     void addClass();
-    /**Removes a class from the classification*/
-    void deleteCurrentClass();
+    /**Removes currently selected classes */
+    void deleteClasses();
+    /**Removes all classes from the classification*/
+    void deleteAllClasses();
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
@@ -31,19 +33,23 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
 
     void showSymbolLevels();
 
+    void rowsMoved();
+
   protected:
     void updateUiFromRenderer();
 
     void updateGraduatedSymbolIcon();
 
+    //! return a list of indexes for the classes under selection
+    QList<int> selectedClasses();
+
     //! populate column combos in categorized and graduated page
     void populateColumns();
 
-    //! populate ranges of graduated symbol renderer
-    void populateRanges();
-
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );
+
+    void changeSelectedSymbols();
 
     QList<QgsSymbolV2*> selectedSymbols();
     QgsSymbolV2* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;

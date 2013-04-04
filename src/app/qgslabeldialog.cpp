@@ -61,12 +61,12 @@ void QgsLabelDialog::init( )
   QgsLabelAttributes * myLabelAttributes = mLabel->labelAttributes();
   //populate a string list with all the field names which will be used to set up the
   //data bound combos
-  QgsFieldMap& myFieldsMap = mLabel->fields();
+  const QgsFields& myFields = mLabel->fields();
   QStringList myFieldStringList;
   myFieldStringList.append( "" );
-  for ( QgsFieldMap::iterator it = myFieldsMap.begin(); it != myFieldsMap.end(); ++it )
+  for ( int i = 0; i < myFields.count(); ++i )
   {
-    myFieldStringList.append( it->name() );
+    myFieldStringList.append( myFields[i].name() );
   }
   //
   //now set all the combos that need field lists using the string list
@@ -406,11 +406,11 @@ void QgsLabelDialog::apply()
 
 int QgsLabelDialog::fieldIndexFromName( QString name )
 {
-  const QgsFieldMap& fields = mLabel->fields();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  const QgsFields& fields = mLabel->fields();
+  for ( int i = 0; i < fields.count(); ++i )
   {
-    if ( it->name() == name )
-      return it.key();
+    if ( fields[i].name() == name )
+      return i;
   }
   return -1;
 }

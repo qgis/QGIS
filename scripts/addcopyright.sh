@@ -18,7 +18,16 @@
 
 set -e
 
-for i in $(<files); do
+if [ $# -gt 0 ]; then
+	FILES="$@"
+elif [ -f files ]; then
+	FILES=$(<files)
+else
+	echo no files
+	exit 1
+fi
+
+for i in $FILES; do
 	echo $i >&2
 	author=
 	authordate=
@@ -32,7 +41,7 @@ for i in $(<files); do
 		author=volayaf
 		;;
 
-	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/spatialite/*|src/core/spatialindex/src/*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/pyspatialite/*|src/providers/sqlanywhere/sqlanyconnection/*)
+	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/spatialite/*|src/core/spatialindex/src/*|src/core/gps/qextserialport/*|src/astyle/*|python/pyspatialite/*|src/providers/sqlanywhere/sqlanyconnection/*)
 		# Skip third party files
                 echo $f skipped
                 continue

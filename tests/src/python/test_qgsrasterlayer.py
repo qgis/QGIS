@@ -151,6 +151,18 @@ class TestQgsRasterLayer(TestCase):
         myResultFlag = myChecker.runTest("raster_transparency_python");
         assert myResultFlag, "Raster transparency rendering test failed"
 
+    def testIssue7023(self):
+        """Check if converting a raster from 1.8 to 2 works."""
+        myPath = os.path.join(unitTestDataPath('raster'),
+                              'raster-pallette-crash2.tif')
+        myFileInfo = QFileInfo(myPath)
+        myBaseName = myFileInfo.baseName()
+        myRasterLayer = QgsRasterLayer(myPath, myBaseName)
+        myMessage = 'Raster not loaded: %s' % myPath
+        assert myRasterLayer.isValid(), myMessage
+        # crash on next line
+        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
+
     def testShaderCrash(self):
         """Check if we assign a shader and then reassign it no crash occurs."""
         myPath = os.path.join(unitTestDataPath('raster'),

@@ -37,11 +37,13 @@ class QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogBase
 
   public slots:
     void on_mTypeBox_currentIndexChanged( int idx );
+    void on_mLength_editingFinished();
     void accept();
 
   private:
     QString mLayerType;
 
+    void setPrecisionMinMax();
 };
 
 #endif

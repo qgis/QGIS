@@ -2,8 +2,8 @@ Fragmentation (Standard)
 grid_analysis
 ParameterRaster|CLASSES|Classification|False
 ParameterNumber|CLASS|Class Identifier|None|None|1
-ParameterNumber|NEIGHBORHOOD_MIN|Neighborhood|1.0|None|3
-ParameterNumber|NEIGHBORHOOD_MAX|Neighborhood|1.0|None|3
+ParameterNumber|NEIGHBORHOOD_MIN|Neighborhood Min|1.0|None|1
+ParameterNumber|NEIGHBORHOOD_MAX|Neighborhood Max|1.0|None|3
 ParameterSelection|AGGREGATION|Level Aggregation|[0] average;[1] multiplicative
 ParameterBoolean|BORDER|Add Border|True
 ParameterNumber|WEIGHT|Connectivity Weighting|None|None|1.1

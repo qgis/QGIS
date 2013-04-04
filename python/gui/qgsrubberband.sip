@@ -5,13 +5,37 @@ class QgsRubberBand: QgsMapCanvasItem
 %End
 
   public:
-    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, bool isPolygon = false );
+    /** Icons
+     *  Added in 1.9 */
+    enum IconType
+    {
+      ICON_NONE,
+      ICON_CROSS,
+      ICON_X,
+      ICON_BOX,
+      ICON_CIRCLE
+    };
+
+    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, QGis::GeometryType geometryType = QGis::Line );
+    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, bool isPolygon );
     ~QgsRubberBand();
 
+    /** Set the color for the rubberband */
     void setColor( const QColor & color );
+
+    /** Set the width of the line. Outline width for polygon. */
     void setWidth( int width );
 
-    void reset( bool isPolygon = false );
+    /** Set the icon type to highlight point geometries.
+     *  Added in 1.9 */
+    void setIcon( IconType icon );
+
+    /** Set the size of the point icons
+     *   Added in 1.9 */
+    void setIconSize ( int iconSize );
+
+    void reset( QGis::GeometryType geometryType = QGis::Line );
+    void reset( bool isPolygon );
 
     //! Add point to rubberband and update canvas
     //! If adding more points consider using update=false for better performance
@@ -28,6 +52,7 @@ class QgsRubberBand: QgsMapCanvasItem
 
     /**Sets this rubber band to the geometry of an existing feature.
      This is useful for feature highlighting.
+     In contrast to addGeometry, this method does also change the geometry type of the rubberband.
     @param geom the geometry object
     @param layer the layer containing the feature, used for coord transformation to map
     crs. In case of 0 pointer, the coordinates are not going to be transformed.

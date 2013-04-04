@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -34,6 +33,8 @@ from sextante.script.WrongScriptException import WrongScriptException
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputRaster import OutputRaster
+from sextante.outputs.OutputNumber import OutputNumber
+from sextante.outputs.OutputString import OutputString
 from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterBoolean import ParameterBoolean
@@ -43,6 +44,8 @@ from sextante.outputs.OutputHTML import OutputHTML
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterFile import ParameterFile
 from sextante.outputs.OutputFile import OutputFile
+from sextante.parameters.ParameterFactory import ParameterFactory
+from sextante.outputs.OutputFactory import OutputFactory
 import sys
 from sextante.gui.Help2Html import Help2Html
 
@@ -85,7 +88,6 @@ class ScriptAlgorithm(GeoAlgorithm):
             line = lines.readline()
         lines.close()
 
-
     def defineCharacteristicsFromScript(self):
         lines = self.script.split("\n")
         self.silentOutputs = []
@@ -105,10 +107,18 @@ class ScriptAlgorithm(GeoAlgorithm):
         param = None
         out = None
         line = line.replace("#", "");
+        # If the line is in the format of the text description files for normal algorithms,
+        # then process it using parameter and output factories
+        if '|' in line:
+            self.processDescriptionParameterLine(line)
+            return
         tokens = line.split("=");
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == "group":
             self.group = tokens[0]
+            return
+        if tokens[1].lower().strip() == "name":
+            self.name = tokens[0]
             return
         if tokens[1].lower().strip() == "raster":
             param = ParameterRaster(tokens[0], desc, False)
@@ -159,6 +169,10 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputHTML()
         elif tokens[1].lower().strip().startswith("output file"):
             out = OutputFile()
+        elif tokens[1].lower().strip().startswith("output number"):
+            out = OutputNumber()
+        elif tokens[1].lower().strip().startswith("output string"):
+            out = OutputString()
 
         if param != None:
             self.addParameter(param)
@@ -169,20 +183,36 @@ class ScriptAlgorithm(GeoAlgorithm):
         else:
             raise WrongScriptException("Could not load script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
 
+    def processDescriptionParameterLine(self, line):
+        try:
+            if line.startswith("Parameter"):
+                self.addParameter(ParameterFactory.getFromString(line))
+            elif line.startswith("*Parameter"):
+                param = ParameterFactory.getFromString(line[1:])
+                param.isAdvanced = True
+                self.addParameter(param)
+            else:
+                self.addOutput(OutputFactory.getFromString(line))
+        except Exception:
+            raise WrongScriptException("Could not load script:" + self.descriptionFile + ".\n Problem with line \"" + line + "\"")
+
     def processAlgorithm(self, progress):
 
-        script = "from sextante.core.Sextante import Sextante\n"
+        script = "import sextante\n"
+
+        ns = {}
+        ns['progress'] = progress
+
         for param in self.parameters:
-            script += param.name + "=" + param.getValueAsCommandLineParameter() + "\n"
+            ns[param.name] = param.value
 
         for out in self.outputs:
-            script += out.name + "=" + out.getValueAsCommandLineParameter() + "\n"
+            ns[out.name] = out.value
 
         script+=self.script
-        redirection = Redirection(progress)
-        sys.stdout = redirection
-        exec(script)
-        sys.stdout = sys.__stdout__
+        exec(script) in ns
+        for out in self.outputs:
+            out.setValue(ns[out.name])
 
     def helpFile(self):
         helpfile = self.descriptionFile + ".help"
@@ -192,14 +222,3 @@ class ScriptAlgorithm(GeoAlgorithm):
         else:
             return None
 
-class Redirection():
-    def __init__(self, progress):
-        self.progress = progress
-
-    def write(self, string):
-        try:
-            n = int(string)
-            self.progress.setPercentage(n)
-        except:
-            self.progress.setText(string)
-            pass

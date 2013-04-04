@@ -73,14 +73,11 @@ void QgsSearchQueryBuilder::populateFields()
     return;
 
   QgsDebugMsg( "entering." );
-  QRegExp reQuote( "[A-Za-z_][A-Za-z0-9_]*" );
-  const QgsFieldMap& fields = mLayer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  const QgsFields& fields = mLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QString fieldName = it->name();
-    mFieldMap[fieldName] = it.key();
-    if ( !reQuote.exactMatch( fieldName ) ) // quote if necessary
-      fieldName = QgsExpression::quotedColumnRef( fieldName );
+    QString fieldName = fields[idx].name();
+    mFieldMap[fieldName] = idx;
     QStandardItem *myItem = new QStandardItem( fieldName );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
@@ -126,7 +123,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   QgsAttributeList attrs;
   attrs.append( fieldIndex );
 
-  mLayer->select( attrs, QgsRectangle(), false );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attrs ) );
 
   lstValues->setCursor( Qt::WaitCursor );
   // Block for better performance
@@ -136,11 +133,10 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   /**MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
   QSet<QString> insertedValues;
 
-  while ( mLayer->nextFeature( feat ) &&
+  while ( fit.nextFeature( feat ) &&
           ( limit == 0 || mModelValues->rowCount() != limit ) )
   {
-    const QgsAttributeMap& attributes = feat.attributeMap();
-    value = attributes[fieldIndex].toString();
+    value = feat.attribute( fieldIndex ).toString();
 
     if ( !numeric )
     {
@@ -203,7 +199,7 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   int count = 0;
   QgsFeature feat;
-  const QgsFieldMap& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->pendingFields();
 
   if ( !search.prepare( fields ) )
   {
@@ -213,10 +209,9 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsAttributeList allAttributes = mLayer->pendingAllAttributesList();
-  mLayer->select( allAttributes, QgsRectangle(), fetchGeom );
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( fetchGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
 
-  while ( mLayer->nextFeature( feat ) )
+  while ( fit.nextFeature( feat ) )
   {
     QVariant value = search.evaluate( &feat );
     if ( value.toInt() != 0 )
@@ -314,7 +309,7 @@ void QgsSearchQueryBuilder::setSearchString( QString searchString )
 
 void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertPlainText( "\"" + mModelFields->data( index ).toString() + "\"" );
+  txtSQL->insertPlainText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
 }
 
 void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )

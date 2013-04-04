@@ -36,6 +36,8 @@
 
 QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
 {
+  setColumnCount( 2 );
+
   if ( QgsMapLayerRegistry::instance() )
   {
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
@@ -82,7 +84,6 @@ void QgsLegendModel::setLayerSetAndGroups( const QStringList& layerIds, const QL
         {
           return; //should never happen
         }
-        //QString layerID = currentItem->data(Qt::UserRole + 2).toString();
         QString layerID = layerItem->layerID();
         if ( layerList.contains( layerID ) )
         {
@@ -123,20 +124,24 @@ QStandardItem* QgsLegendModel::addGroup( QString text, int position )
     text = tr( "Group" );
 
   QgsComposerGroupItem* groupItem = new QgsComposerGroupItem( text );
+
   if ( position == -1 )
   {
-    invisibleRootItem()->insertRow( invisibleRootItem()->rowCount(), groupItem );
+    position = invisibleRootItem()->rowCount();
   }
-  else
-  {
-    invisibleRootItem()->insertRow( position, groupItem );
-  }
+  QList<QStandardItem *> itemsList;
+  itemsList << groupItem << new QgsComposerStyleItem( groupItem );
+  invisibleRootItem()->insertRow( position, itemsList );
+
+  emit layersChanged();
   return groupItem;
 }
 
 int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer )
 {
-  if ( !layerItem || !vlayer )
+  QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
+
+  if ( !layerItem || !lItem || !vlayer )
   {
     return 1;
   }
@@ -147,11 +152,29 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     return 2;
   }
 
+  if ( lItem->showFeatureCount() )
+  {
+    if ( !vlayer->countSymbolFeatures() )
+    {
+      QgsDebugMsg( "Cannot get feature counts" );
+    }
+  }
+
   QgsLegendSymbolList lst = renderer->legendSymbolItems();
   QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
   for ( ; symbolIt != lst.constEnd(); ++symbolIt )
   {
-    QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( symbolIt->first );
+    QString label = symbolIt->first;
+    if ( lItem->showFeatureCount() )
+    {
+      // Add counts to multi symbols layers only or labeled single symbols,
+      // so that single symbol layers are still drawn on single line
+      if ( lst.size() > 1 || !label.isEmpty() )
+      {
+        label += QString( " [%1]" ).arg( vlayer->featureCount( symbolIt->second ) );
+      }
+    }
+    QgsComposerSymbolV2Item* currentSymbolItem = new QgsComposerSymbolV2Item( label );
     currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     if ( symbolIt->second )
     {
@@ -186,15 +209,15 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsVectorLaye
   QSettings settings;
   if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
   {
-    QgsFieldMap layerFields = vlayer->pendingFields();
+    const QgsFields& layerFields = vlayer->pendingFields();
     QgsAttributeList attributes = vectorRenderer->classificationAttributes();
     QgsAttributeList::const_iterator att_it = attributes.constBegin();
     for ( ; att_it != attributes.constEnd(); ++att_it )
     {
-      QgsFieldMap::const_iterator fieldIt = layerFields.find( *att_it );
-      if ( fieldIt != layerFields.constEnd() )
+      int idx = *att_it;
+      if ( idx >= 0 && idx < layerFields.count() )
       {
-        QString attributeName = vlayer->attributeDisplayName( fieldIt.key() );
+        QString attributeName = vlayer->attributeDisplayName( idx );
         QStandardItem* attributeItem = new QStandardItem( attributeName );
         attributeItem->setData( QgsLegendModel::ClassificationItem, Qt::UserRole + 1 ); //first user data stores the item type
         attributeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -282,6 +305,7 @@ void QgsLegendModel::updateItem( QStandardItem* item )
 
 void QgsLegendModel::updateLayer( QStandardItem* layerItem )
 {
+  QgsDebugMsg( "Entered." );
   QgsComposerLayerItem* lItem = dynamic_cast<QgsComposerLayerItem*>( layerItem );
   if ( lItem )
   {
@@ -295,10 +319,16 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
         lItem->removeRow( i );
       }
 
-      //set layer name as item text
-      layerItem->setText( mapLayer->name() );
-
       QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
+
+      //set layer name as item text
+      QString label = mapLayer->name();
+      if ( vLayer && lItem->showFeatureCount() )
+      {
+        label += QString( " [%1]" ).arg( vLayer->featureCount() );
+      }
+      layerItem->setText( label );
+
       if ( vLayer )
       {
         if ( vLayer->isUsingRendererV2() )
@@ -349,9 +379,12 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
 
   QgsComposerLayerItem* layerItem = new QgsComposerLayerItem( theMapLayer->name() );
   layerItem->setLayerID( theMapLayer->id() );
+  layerItem->setDefaultStyle();
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-  invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), layerItem );
+  QList<QStandardItem *> itemsList;
+  itemsList << layerItem << new QgsComposerStyleItem( layerItem );
+  invisibleRootItem()->appendRow( itemsList );
 
   switch ( theMapLayer->type() )
   {
@@ -520,7 +553,10 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
       currentItem = new QgsComposerGroupItem();
     }
     currentItem->readXML( currentElem, mHasTopLevelWindow );
-    appendRow( currentItem );
+
+    QList<QStandardItem *> itemsList;
+    itemsList << currentItem << new QgsComposerStyleItem( currentItem );
+    appendRow( itemsList );
   }
 
   setAutoUpdate( legendModelElem.attribute( "autoUpdate", "1" ).toInt() );
@@ -555,6 +591,29 @@ Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
     else if ( type == QgsComposerLegendItem::LayerItem )
     {
       flags |= Qt::ItemIsDragEnabled;
+    }
+  }
+  if ( index.column() == 1 && item )
+  {
+    // Style
+    QStandardItem* firstColumnItem = 0;
+    if ( item->parent() )
+    {
+      firstColumnItem = item->parent()->child( index.row(), 0 );
+    }
+    else
+    {
+      firstColumnItem = QgsLegendModel::item( index.row(), 0 );
+    }
+    cItem = dynamic_cast<QgsComposerLegendItem*>( firstColumnItem );
+
+    if ( cItem )
+    {
+      if ( cItem->itemType() == QgsComposerLegendItem::GroupItem ||
+           cItem->itemType() == QgsComposerLegendItem::LayerItem )
+      {
+        flags |= Qt::ItemIsEditable;
+      }
     }
   }
   return flags;
@@ -678,14 +737,18 @@ bool QgsLegendModel::dropMimeData( const QMimeData *data, Qt::DropAction action,
       continue;
     }
     currentItem->readXML( currentElem );
+    int index;
     if ( row < 0 )
     {
-      dropIntoItem->insertRow( dropIntoItem->rowCount(), currentItem );
+      index = dropIntoItem->rowCount();
     }
     else
     {
-      dropIntoItem->insertRow( row + i, currentItem );
+      index = row + i;
     }
+    QList<QStandardItem *> itemsList;
+    itemsList << currentItem << new QgsComposerStyleItem( currentItem );
+    dropIntoItem->insertRow( index, itemsList );
   }
   emit layersChanged();
   return true;

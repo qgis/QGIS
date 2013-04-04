@@ -1,8 +1,10 @@
 r.neighbors
-r.neighbors - Makes each cell category value a function of the category values assigned to the cells around it, and stores new cell values in an output raster map layer.
+r.neighbors - Makes each cell category value a function of the category values assigned to the cells around it
 Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
+ParameterRaster|input|Input raster layer|False
 ParameterSelection|method|Neighborhood operation|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion
-ParameterNumber|size|Neighborhood size|1.0|None|3
+ParameterNumber|size|Neighborhood size|1|None|3
 ParameterBoolean|-c|Use circular neighborhood|False
-OutputRaster|output|Name for output raster map
+*ParameterBoolean|-a|Do not align output with the input|False
+*ParameterFile|weight|File containing weights|False
+OutputRaster|output|Output layer

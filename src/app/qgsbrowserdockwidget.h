@@ -16,17 +16,20 @@
 #define QGSBROWSERDOCKWIDGET_H
 
 #include <QDockWidget>
+#include <ui_qgsbrowserdockwidgetbase.h>
 
 class QgsBrowserModel;
 class QModelIndex;
-class QTreeView;
+class QgsBrowserTreeView;
 class QgsLayerItem;
+class QgsDataItem;
+class QgsBrowserTreeFilterProxyModel;
 
-class QgsBrowserDockWidget : public QDockWidget
+class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidgetBase
 {
     Q_OBJECT
   public:
-    explicit QgsBrowserDockWidget( QWidget *parent = 0 );
+    explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
 
   signals:
 
@@ -40,10 +43,15 @@ class QgsBrowserDockWidget : public QDockWidget
 
     void refresh();
 
+    void showFilterWidget( bool visible );
+    void setFilterSyntax( QAction * );
+    void setFilter();
+
     // layer menu items
     void addCurrentLayer();
     void addSelectedLayers();
     void showProperties();
+    void toggleFastScan();
 
   protected:
     void addFavouriteDirectory( QString favDir );
@@ -54,8 +62,11 @@ class QgsBrowserDockWidget : public QDockWidget
 
     void addLayer( QgsLayerItem *layerItem );
 
-    QTreeView* mBrowserView;
+    // removed dataItem(), call mModel->dataItem directly (to avoid passing index from the wrong model)
+
+    QgsBrowserTreeView* mBrowserView;
     QgsBrowserModel* mModel;
+    QgsBrowserTreeFilterProxyModel* mProxyModel;
 };
 
 #endif // QGSBROWSERDOCKWIDGET_H

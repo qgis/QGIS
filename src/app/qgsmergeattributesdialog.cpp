@@ -83,23 +83,27 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   mTableWidget->setRowCount( mFeatureList.size() + 2 );
 
   //create combo boxes and insert attribute names
-  const QgsFieldMap& fieldMap = mVectorLayer->pendingFields();
+  const QgsFields& fields = mVectorLayer->pendingFields();
+  QgsAttributeList pkAttrList = mVectorLayer->pendingPkAttributesList();
 
   int col = 0;
-  for ( QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
-        fieldIt != fieldMap.constEnd();
-        ++fieldIt )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( mVectorLayer->editType( fieldIt.key() ) == QgsVectorLayer::Hidden ||
-         mVectorLayer->editType( fieldIt.key() ) == QgsVectorLayer::Immutable )
+    if ( mVectorLayer->editType( idx ) == QgsVectorLayer::Hidden ||
+         mVectorLayer->editType( idx ) == QgsVectorLayer::Immutable )
       continue;
 
     mTableWidget->setColumnCount( col + 1 );
 
-    mTableWidget->setCellWidget( 0, col, createMergeComboBox( fieldIt->type() ) );
+    QComboBox *cb = createMergeComboBox( fields[idx].type() );
+    if ( pkAttrList.contains( idx ) )
+    {
+      cb->setCurrentIndex( cb->findText( tr( "Skip attribute" ) ) );
+    }
+    mTableWidget->setCellWidget( 0, col, cb );
 
-    QTableWidgetItem *item = new QTableWidgetItem( fieldIt.value().name() );
-    item->setData( Qt::UserRole, fieldIt.key() );
+    QTableWidgetItem *item = new QTableWidgetItem( fields[idx].name() );
+    item->setData( Qt::UserRole, idx );
     mTableWidget->setHorizontalHeaderItem( col++, item );
   }
 
@@ -111,7 +115,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   {
     verticalHeaderLabels << FID_TO_STRING( mFeatureList[i].id() );
 
-    const QgsAttributeMap &attrs = mFeatureList[i].attributeMap();
+    const QgsAttributes &attrs = mFeatureList[i].attributes();
 
     for ( int j = 0; j < mTableWidget->columnCount(); j++ )
     {
@@ -135,14 +139,14 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   }
 }
 
-QComboBox* QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType ) const
+QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnType ) const
 {
-  QComboBox* newComboBox = new QComboBox();
+  QComboBox *newComboBox = new QComboBox();
   //add items for feature
   QgsFeatureList::const_iterator f_it = mFeatureList.constBegin();
   for ( ; f_it != mFeatureList.constEnd(); ++f_it )
   {
-    newComboBox->addItem( tr( "feature %1" ).arg( f_it->id() ) );
+    newComboBox->addItem( tr( "Feature %1" ).arg( f_it->id() ) );
   }
 
   if ( columnType == QVariant::Double || columnType == QVariant::Int )
@@ -183,7 +187,7 @@ int QgsMergeAttributesDialog::findComboColumn( QComboBox* c ) const
 void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
 {
   Q_UNUSED( text );
-  QComboBox* senderComboBox = qobject_cast<QComboBox *>( sender() );
+  QComboBox *senderComboBox = qobject_cast<QComboBox *>( sender() );
   if ( !senderComboBox )
   {
     return;
@@ -547,18 +551,18 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( int featureId )
   mSelectionRubberBand = new QgsRubberBand( mMapCanvas, mVectorLayer->geometryType() == QGis::Polygon );
   mSelectionRubberBand->setColor( QColor( 255, 0, 0 ) );
   QgsFeature featureToSelect;
-  mVectorLayer->featureAtId( featureId, featureToSelect, true, false );
+  mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( featureToSelect );
   mSelectionRubberBand->setToGeometry( featureToSelect.geometry(), mVectorLayer );
 }
 
-QgsAttributeMap QgsMergeAttributesDialog::mergedAttributesMap() const
+QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
 {
   if ( mFeatureList.size() < 1 )
   {
-    return QgsAttributeMap();
+    return QgsAttributes();
   }
 
-  QgsAttributeMap resultMap;
+  QgsAttributes results( mTableWidget->columnCount() );
   for ( int i = 0; i < mTableWidget->columnCount(); i++ )
   {
     int idx = mTableWidget->horizontalHeaderItem( i )->data( Qt::UserRole ).toInt();
@@ -571,8 +575,10 @@ QgsAttributeMap QgsMergeAttributesDialog::mergedAttributesMap() const
     if ( !currentItem )
       continue;
 
-    resultMap.insert( idx, currentItem->text() );
+    if ( idx >= results.count() )
+      results.resize( idx + 1 ); // make sure the results vector is long enough (maybe not necessary)
+    results[idx] = currentItem->text();
   }
 
-  return resultMap;
+  return results;
 }

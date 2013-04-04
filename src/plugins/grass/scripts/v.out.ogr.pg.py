@@ -74,7 +74,7 @@ __revision__ = '$Format:%H$'
 #% key: host
 #% type: string
 #% label: Host
-#% description: Host name of the machine on which the server is running. 
+#% description: Host name of the machine on which the server is running.
 #% required : no
 #%end
 
@@ -109,7 +109,7 @@ __revision__ = '$Format:%H$'
 #% key: user
 #% type: string
 #% label: User
-#% description: Connect to the database as the user username instead of the  default. 
+#% description: Connect to the database as the user username instead of the  default.
 #% required : no
 #%end
 
@@ -157,7 +157,7 @@ def main():
 
     if grass.run_command('v.out.ogr', flags=flags_string, input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer ) != 0:
          grass.fatal("Cannot export vector to database.")
-	
+
 if __name__ == "__main__":
     options, flags = grass.parser()
     flags_string = "".join([k for k in flags.keys() if flags[k] and k != 'r'])

@@ -30,6 +30,7 @@
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsfieldcalculator.h"
+#include "qgsfieldsproperties.h"
 #include "qgsgraduatedsymboldialog.h"
 #include "qgslabeldialog.h"
 #include "qgslabelinggui.h"
@@ -78,31 +79,17 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     , mRendererDialog( 0 )
 {
   setupUi( this );
-  setupEditTypes();
+
+  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.png" ) );
+  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.png" ) );
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
-  connect( mAddAttributeButton, SIGNAL( clicked() ), this, SLOT( addAttribute() ) );
-  connect( mDeleteAttributeButton, SIGNAL( clicked() ), this, SLOT( deleteAttribute() ) );
-
-  connect( mToggleEditingButton, SIGNAL( clicked() ), this, SLOT( toggleEditing() ) );
-  connect( this, SIGNAL( toggleEditing( QgsMapLayer* ) ),
-           QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer* ) ) );
-
-  connect( layer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
-  connect( layer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
 
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
   connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
-
-  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
-  mDeleteAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
-  mToggleEditingButton->setIcon( QgsApplication::getThemeIcon( "/mActionToggleEditing.png" ) );
-  mCalculateFieldButton->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
 
   connect( btnUseNewSymbology, SIGNAL( clicked() ), this, SLOT( useNewSymbology() ) );
 
@@ -136,7 +123,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // Create the Actions dialog tab
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
   actionLayout->setMargin( 0 );
-  const QgsFieldMap &fields = layer->pendingFields();
+  const QgsFields &fields = layer->pendingFields();
   actionDialog = new QgsAttributeActionDialog( layer->actions(), fields, actionOptionsFrame );
   actionLayout->addWidget( actionDialog );
 
@@ -146,12 +133,19 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mSaveAsMenu->addAction( tr( "SLD File" ) );
   QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ), this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
 
+  mFieldsPropertiesDialog = new QgsFieldsProperties( layer, mFieldsFrame );
+  mFieldsFrame->setLayout( new QVBoxLayout( mFieldsFrame ) );
+  mFieldsFrame->layout()->addWidget( mFieldsPropertiesDialog );
+
+  connect( mFieldsPropertiesDialog, SIGNAL( toggleEditing() ), this, SLOT( toggleEditing() ) );
+  connect( this, SIGNAL( toggleEditing( QgsMapLayer* ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer* ) ) );
+
   reset();
 
   if ( layer->dataProvider() )//enable spatial index button group if supported by provider
   {
     int capabilities = layer->dataProvider()->capabilities();
-    if ( !( capabilities&QgsVectorDataProvider::CreateSpatialIndex ) )
+    if ( !( capabilities & QgsVectorDataProvider::CreateSpatialIndex ) )
     {
       pbnIndex->setEnabled( false );
     }
@@ -175,13 +169,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     }
   }
 
-  updateButtons();
-
   leSpatialRefSys->setText( layer->crs().authid() + " - " + layer->crs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
-
-  leEditForm->setText( layer->editForm() );
-  leEditFormInit->setText( layer->editFormInit() );
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
 
@@ -238,134 +227,6 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
   settings.setValue( "/Windows/VectorLayerProperties/row", tabWidget->currentIndex() );
 }
 
-void QgsVectorLayerProperties::loadRows()
-{
-  QObject::disconnect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
-  const QgsFieldMap &fields = layer->pendingFields();
-
-  tblAttributes->clear();
-
-  tblAttributes->setColumnCount( attrColCount );
-  tblAttributes->setRowCount( fields.size() );
-  tblAttributes->setHorizontalHeaderItem( attrIdCol, new QTableWidgetItem( tr( "Id" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrNameCol, new QTableWidgetItem( tr( "Name" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrTypeCol, new QTableWidgetItem( tr( "Type" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrLengthCol, new QTableWidgetItem( tr( "Length" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrPrecCol, new QTableWidgetItem( tr( "Precision" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrCommentCol, new QTableWidgetItem( tr( "Comment" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrEditTypeCol, new QTableWidgetItem( tr( "Edit widget" ) ) );
-  tblAttributes->setHorizontalHeaderItem( attrWMSCol, new QTableWidgetItem( "WMS" ) );
-  tblAttributes->setHorizontalHeaderItem( attrWFSCol, new QTableWidgetItem( "WFS" ) );
-  tblAttributes->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
-
-  tblAttributes->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
-  tblAttributes->horizontalHeader()->setResizeMode( 7, QHeaderView::Stretch );
-  tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
-  tblAttributes->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  tblAttributes->verticalHeader()->hide();
-
-  int row = 0;
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++, row++ )
-    setRow( row, it.key(), it.value() );
-
-  tblAttributes->resizeColumnsToContents();
-  QObject::connect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
-}
-
-void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
-{
-  tblAttributes->setItem( row, attrIdCol, new QTableWidgetItem( QString::number( idx ) ) );
-  tblAttributes->setItem( row, attrNameCol, new QTableWidgetItem( field.name() ) );
-  tblAttributes->setItem( row, attrTypeCol, new QTableWidgetItem( field.typeName() ) );
-  tblAttributes->setItem( row, attrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
-  tblAttributes->setItem( row, attrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
-  tblAttributes->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
-
-  for ( int i = 0; i < attrEditTypeCol; i++ )
-    tblAttributes->item( row, i )->setFlags( tblAttributes->item( row, i )->flags() & ~Qt::ItemIsEditable );
-
-  QPushButton *pb = new QPushButton( editTypeButtonText( layer->editType( idx ) ) );
-  tblAttributes->setCellWidget( row, attrEditTypeCol, pb );
-  connect( pb, SIGNAL( pressed() ), this, SLOT( attributeTypeDialog( ) ) );
-  mButtonMap.insert( idx, pb );
-
-  //set the alias for the attribute
-  tblAttributes->setItem( row, attrAliasCol, new QTableWidgetItem( layer->attributeAlias( idx ) ) );
-
-  //published WMS/WFS attributes
-  QTableWidgetItem* wmsAttrItem = new QTableWidgetItem();
-  wmsAttrItem->setCheckState( layer->excludeAttributesWMS().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
-  wmsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  tblAttributes->setItem( row, attrWMSCol, wmsAttrItem );
-  QTableWidgetItem* wfsAttrItem = new QTableWidgetItem();
-  wfsAttrItem->setCheckState( layer->excludeAttributesWFS().contains( field.name() ) ? Qt::Unchecked : Qt::Checked );
-  wfsAttrItem->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-  tblAttributes->setItem( row, attrWFSCol, wfsAttrItem );
-}
-
-void QgsVectorLayerProperties::attributeTypeDialog( )
-{
-  QPushButton *pb = qobject_cast<QPushButton *>( sender() );
-  if ( !pb )
-    return;
-
-  int index = mButtonMap.key( pb, -1 );
-  if ( index == -1 )
-    return;
-
-  QgsAttributeTypeDialog attributeTypeDialog( layer );
-
-  attributeTypeDialog.setValueMap( mValueMaps.value( index, layer->valueMap( index ) ) );
-  attributeTypeDialog.setRange( mRanges.value( index, layer->range( index ) ) );
-  attributeTypeDialog.setValueRelation( mValueRelationData.value( index, layer->valueRelation( index ) ) );
-
-  QPair<QString, QString> checkStates = mCheckedStates.value( index, layer->checkedState( index ) );
-  attributeTypeDialog.setCheckedState( checkStates.first, checkStates.second );
-
-  attributeTypeDialog.setIndex( index, mEditTypeMap.value( index, layer->editType( index ) ) );
-
-  if ( !attributeTypeDialog.exec() )
-    return;
-
-  QgsVectorLayer::EditType editType = attributeTypeDialog.editType();
-
-  mEditTypeMap.insert( index, editType );
-
-  QString buttonText;
-  switch ( editType )
-  {
-    case QgsVectorLayer::ValueMap:
-      mValueMaps.insert( index, attributeTypeDialog.valueMap() );
-      break;
-    case QgsVectorLayer::EditRange:
-    case QgsVectorLayer::SliderRange:
-    case QgsVectorLayer::DialRange:
-      mRanges.insert( index, attributeTypeDialog.rangeData() );
-      break;
-    case QgsVectorLayer::CheckBox:
-      mCheckedStates.insert( index, attributeTypeDialog.checkedState() );
-      break;
-    case QgsVectorLayer::ValueRelation:
-      mValueRelationData.insert( index, attributeTypeDialog.valueRelationData() );
-      break;
-    case QgsVectorLayer::LineEdit:
-    case QgsVectorLayer::TextEdit:
-    case QgsVectorLayer::UniqueValues:
-    case QgsVectorLayer::UniqueValuesEditable:
-    case QgsVectorLayer::Classification:
-    case QgsVectorLayer::FileName:
-    case QgsVectorLayer::Enumeration:
-    case QgsVectorLayer::Immutable:
-    case QgsVectorLayer::Hidden:
-    case QgsVectorLayer::Calendar:
-    case QgsVectorLayer::UuidGenerator:
-      break;
-  }
-
-  pb->setText( editTypeButtonText( editType ) );
-}
-
-
 void QgsVectorLayerProperties::toggleEditing()
 {
   emit toggleEditing( layer );
@@ -375,110 +236,6 @@ void QgsVectorLayerProperties::toggleEditing()
   if ( layer->isEditable() )
   {
     pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
-  }
-}
-
-void QgsVectorLayerProperties::attributeAdded( int idx )
-{
-  const QgsFieldMap &fields = layer->pendingFields();
-  int row = tblAttributes->rowCount();
-  tblAttributes->insertRow( row );
-  setRow( row, idx, fields[idx] );
-  tblAttributes->setCurrentCell( row, idx );
-}
-
-
-void QgsVectorLayerProperties::attributeDeleted( int idx )
-{
-  for ( int i = 0; i < tblAttributes->rowCount(); i++ )
-  {
-    if ( tblAttributes->item( i, 0 )->text().toInt() == idx )
-    {
-      tblAttributes->removeRow( i );
-      break;
-    }
-  }
-}
-
-void QgsVectorLayerProperties::addAttribute()
-{
-  QgsAddAttrDialog dialog( layer, this );
-  if ( dialog.exec() == QDialog::Accepted )
-  {
-    layer->beginEditCommand( "Attribute added" );
-    if ( !addAttribute( dialog.field() ) )
-    {
-      layer->destroyEditCommand();
-      QMessageBox::information( this, tr( "Name conflict" ), tr( "The attribute could not be inserted. The name already exists in the table." ) );
-    }
-    else
-    {
-      layer->endEditCommand();
-    }
-  }
-}
-
-bool QgsVectorLayerProperties::addAttribute( const QgsField &field )
-{
-  QgsDebugMsg( "inserting attribute " + field.name() + " of type " + field.typeName() );
-  layer->beginEditCommand( tr( "Added attribute" ) );
-  if ( layer->addAttribute( field ) )
-  {
-    layer->endEditCommand();
-    return true;
-  }
-  else
-  {
-    layer->destroyEditCommand();
-    return false;
-  }
-}
-
-void QgsVectorLayerProperties::deleteAttribute()
-{
-  QList<QTableWidgetItem*> items = tblAttributes->selectedItems();
-  QList<int> idxs;
-
-  for ( QList<QTableWidgetItem*>::const_iterator it = items.begin(); it != items.end(); it++ )
-  {
-    if (( *it )->column() == 0 )
-      idxs << ( *it )->text().toInt();
-  }
-  for ( QList<int>::const_iterator it = idxs.begin(); it != idxs.end(); it++ )
-  {
-    layer->beginEditCommand( tr( "Deleted attribute" ) );
-    layer->deleteAttribute( *it );
-    layer->endEditCommand();
-  }
-}
-
-void QgsVectorLayerProperties::editingToggled()
-{
-  if ( !layer->isEditable() )
-    loadRows();
-
-  updateButtons();
-}
-
-void QgsVectorLayerProperties::updateButtons()
-{
-  if ( layer->isEditable() )
-  {
-    int cap = layer->dataProvider()->capabilities();
-    mAddAttributeButton->setEnabled( cap & QgsVectorDataProvider::AddAttributes );
-    mDeleteAttributeButton->setEnabled( cap & QgsVectorDataProvider::DeleteAttributes );
-    mCalculateFieldButton->setEnabled( cap & ( QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::AddAttributes ) );
-    mToggleEditingButton->setChecked( true );
-  }
-  else
-  {
-    int cap = layer->dataProvider()->capabilities();
-    bool canChangeAttributes = cap & QgsVectorDataProvider::ChangeAttributeValues;
-    mAddAttributeButton->setEnabled( false );
-    mDeleteAttributeButton->setEnabled( false );
-    mToggleEditingButton->setChecked( false );
-    mToggleEditingButton->setEnabled( canChangeAttributes && !layer->isReadOnly() );
-    mCalculateFieldButton->setEnabled( false );
   }
 }
 
@@ -579,9 +336,8 @@ void QgsVectorLayerProperties::setDisplayField( QString name )
 //! @note in raster props, this method is called sync()
 void QgsVectorLayerProperties::reset( void )
 {
-  QObject::disconnect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
-
   // populate the general information
+  mLayerOrigNameLineEdit->setText( layer->originalName() );
   txtDisplayName->setText( layer->name() );
   pbnQueryBuilder->setWhatsThis( tr( "This button opens the query "
                                      "builder and allows you to create a subset of features to display on "
@@ -606,11 +362,11 @@ void QgsVectorLayerProperties::reset( void )
   }
 
   //get field list for display field combo
-  const QgsFieldMap& myFields = layer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it )
+  const QgsFields& myFields = layer->pendingFields();
+  for ( int idx = 0; idx < myFields.count(); ++idx )
   {
-    displayFieldComboBox->addItem( it->name() );
-    fieldComboBox->addItem( it->name() );
+    displayFieldComboBox->addItem( myFields[idx].name() );
+    fieldComboBox->addItem( myFields[idx].name() );
   }
 
   setDisplayField( layer-> displayField() );
@@ -654,61 +410,24 @@ void QgsVectorLayerProperties::reset( void )
   labelCheckBox->setChecked( layer->hasLabelsEnabled() );
   labelOptionsFrame->setEnabled( layer->hasLabelsEnabled() );
 
+  mFieldsPropertiesDialog->init();
+
   //set the transparency slider
   sliderTransparency->setValue( 255 - layer->getTransparency() );
   //update the transparency percentage label
   sliderTransparency_valueChanged( 255 - layer->getTransparency() );
 
-  loadRows();
-  QObject::connect( tblAttributes, SIGNAL( cellChanged( int, int ) ), this, SLOT( on_tblAttributes_cellChanged( int, int ) ) );
   QObject::connect( labelCheckBox, SIGNAL( clicked( bool ) ), this, SLOT( enableLabelOptions( bool ) ) );
 } // reset()
 
 
-//
-// methods reimplemented from qt designer base class
-//
-
-QMap< QgsVectorLayer::EditType, QString > QgsVectorLayerProperties::editTypeMap;
-
-void QgsVectorLayerProperties::setupEditTypes()
-{
-  if ( !editTypeMap.isEmpty() )
-    return;
-
-  editTypeMap.insert( QgsVectorLayer::LineEdit, tr( "Line edit" ) );
-  editTypeMap.insert( QgsVectorLayer::UniqueValues, tr( "Unique values" ) );
-  editTypeMap.insert( QgsVectorLayer::UniqueValuesEditable, tr( "Unique values editable" ) );
-  editTypeMap.insert( QgsVectorLayer::Classification, tr( "Classification" ) );
-  editTypeMap.insert( QgsVectorLayer::ValueMap, tr( "Value map" ) );
-  editTypeMap.insert( QgsVectorLayer::EditRange, tr( "Edit range" ) );
-  editTypeMap.insert( QgsVectorLayer::SliderRange, tr( "Slider range" ) );
-  editTypeMap.insert( QgsVectorLayer::DialRange, tr( "Dial range" ) );
-  editTypeMap.insert( QgsVectorLayer::FileName, tr( "File name" ) );
-  editTypeMap.insert( QgsVectorLayer::Enumeration, tr( "Enumeration" ) );
-  editTypeMap.insert( QgsVectorLayer::Immutable, tr( "Immutable" ) );
-  editTypeMap.insert( QgsVectorLayer::Hidden, tr( "Hidden" ) );
-  editTypeMap.insert( QgsVectorLayer::CheckBox, tr( "Checkbox" ) );
-  editTypeMap.insert( QgsVectorLayer::TextEdit, tr( "Text edit" ) );
-  editTypeMap.insert( QgsVectorLayer::Calendar, tr( "Calendar" ) );
-  editTypeMap.insert( QgsVectorLayer::ValueRelation, tr( "Value relation" ) );
-  editTypeMap.insert( QgsVectorLayer::UuidGenerator, tr( "UUID generator" ) );
-}
-
-QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )
-{
-  return editTypeMap[ type ];
-}
-
-QgsVectorLayer::EditType QgsVectorLayerProperties::editTypeFromButtonText( QString text )
-{
-  return editTypeMap.key( text );
-}
 
 void QgsVectorLayerProperties::apply()
 {
   if ( labelingDialog )
-    labelingDialog->apply();
+  {
+    labelingDialog->writeSettingsToLayer();
+  }
 
   //
   // Set up sql subset query if applicable
@@ -732,7 +451,7 @@ void QgsVectorLayerProperties::apply()
   {
     if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SetEncoding )
     {
-      layer->dataProvider()->setEncoding( cboProviderEncoding->currentText() );
+      layer->setProviderEncoding( cboProviderEncoding->currentText() );
     }
   }
 
@@ -747,89 +466,17 @@ void QgsVectorLayerProperties::apply()
     layer->setDisplayField( displayFieldComboBox->currentText() );
   }
 
-  layer->setEditForm( leEditForm->text() );
-  layer->setEditFormInit( leEditFormInit->text() );
-
   actionDialog->apply();
 
   if ( labelDialog )
     labelDialog->apply();
   layer->enableLabels( labelCheckBox->isChecked() );
-  layer->setLayerName( displayName() );
+  layer->setLayerName( mLayerOrigNameLineEdit->text() );
 
   QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
 
-  for ( int i = 0; i < tblAttributes->rowCount(); i++ )
-  {
-    int idx = tblAttributes->item( i, attrIdCol )->text().toInt();
-
-    QPushButton *pb = qobject_cast<QPushButton *>( tblAttributes->cellWidget( i, attrEditTypeCol ) );
-    if ( !pb )
-      continue;
-
-    QgsVectorLayer::EditType editType = editTypeFromButtonText( pb->text() );
-    layer->setEditType( idx, editType );
-
-    switch ( editType )
-    {
-      case QgsVectorLayer::ValueMap:
-        if ( mValueMaps.contains( idx ) )
-        {
-          QMap<QString, QVariant> &map = layer->valueMap( idx );
-          map.clear();
-          map = mValueMaps[idx];
-        }
-        break;
-
-      case QgsVectorLayer::EditRange:
-      case QgsVectorLayer::SliderRange:
-      case QgsVectorLayer::DialRange:
-        if ( mRanges.contains( idx ) )
-        {
-          layer->range( idx ) = mRanges[idx];
-        }
-        break;
-
-      case QgsVectorLayer::CheckBox:
-        if ( mCheckedStates.contains( idx ) )
-        {
-          layer->setCheckedState( idx, mCheckedStates[idx].first, mCheckedStates[idx].second );
-        }
-        break;
-
-      case QgsVectorLayer::ValueRelation:
-        if ( mValueRelationData.contains( idx ) )
-        {
-          layer->valueRelation( idx ) = mValueRelationData[idx];
-        }
-        break;
-
-      case QgsVectorLayer::LineEdit:
-      case QgsVectorLayer::UniqueValues:
-      case QgsVectorLayer::UniqueValuesEditable:
-      case QgsVectorLayer::Classification:
-      case QgsVectorLayer::FileName:
-      case QgsVectorLayer::Enumeration:
-      case QgsVectorLayer::Immutable:
-      case QgsVectorLayer::Hidden:
-      case QgsVectorLayer::TextEdit:
-      case QgsVectorLayer::Calendar:
-      case QgsVectorLayer::UuidGenerator:
-        break;
-    }
-
-    if ( tblAttributes->item( i, attrWMSCol )->checkState() == Qt::Unchecked )
-    {
-      excludeAttributesWMS.insert( tblAttributes->item( i, attrNameCol )->text() );
-    }
-    if ( tblAttributes->item( i, attrWFSCol )->checkState() == Qt::Unchecked )
-    {
-      excludeAttributesWFS.insert( tblAttributes->item( i, attrNameCol )->text() );
-    }
-  }
-
-  layer->setExcludeAttributesWMS( excludeAttributesWMS );
-  layer->setExcludeAttributesWFS( excludeAttributesWFS );
+  // Apply fields settings
+  mFieldsPropertiesDialog->apply();
 
   if ( layer->isUsingRendererV2() )
   {
@@ -940,7 +587,10 @@ QString QgsVectorLayerProperties::metadata()
   return layer->metadata();
 }
 
-
+void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QString& text )
+{
+  txtDisplayName->setText( layer->capitaliseLayerName( text ) );
+}
 
 void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 {
@@ -1117,50 +767,6 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   myQSettings.setValue( "style/lastStyleDir", myPath );
 }
 
-void QgsVectorLayerProperties::on_tblAttributes_cellChanged( int row, int column )
-{
-  if ( column == attrAliasCol && layer ) //only consider attribute aliases in this function
-  {
-    int idx = tblAttributes->item( row, attrIdCol )->text().toInt();
-
-    const QgsFieldMap &fields = layer->pendingFields();
-
-    if ( !fields.contains( idx ) )
-    {
-      return; // index must be wrong
-    }
-
-    QTableWidgetItem *aliasItem = tblAttributes->item( row, column );
-    if ( aliasItem )
-    {
-      layer->addAttributeAlias( idx, aliasItem->text() );
-    }
-  }
-}
-
-void QgsVectorLayerProperties::on_mCalculateFieldButton_clicked()
-{
-  if ( !layer )
-  {
-    return;
-  }
-
-  QgsFieldCalculator calc( layer );
-  calc.exec();
-}
-
-void QgsVectorLayerProperties::on_pbnSelectEditForm_clicked()
-{
-  QSettings myQSettings;
-  QString lastUsedDir = myQSettings.value( "style/lastUIDir", "." ).toString();
-  QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
-
-  if ( uifilename.isNull() )
-    return;
-
-  leEditForm->setText( uifilename );
-}
-
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const
 {
   QList<QgsVectorOverlayPlugin*> pluginList;
@@ -1209,9 +815,9 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
   if ( d.exec() == QDialog::Accepted )
   {
     QgsVectorJoinInfo info;
-    info.targetField = d.targetField();
+    info.targetFieldName = d.targetFieldName();
     info.joinLayerId = d.joinedLayerId();
-    info.joinField = d.joinField();
+    info.joinFieldName = d.joinFieldName();
     info.memoryCache = d.cacheInMemory();
     if ( layer )
     {
@@ -1221,12 +827,11 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
         QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
         if ( joinLayer )
         {
-          joinLayer->dataProvider()->createAttributeIndex( info.joinField );
+          joinLayer->dataProvider()->createAttributeIndex( joinLayer->pendingFields().indexFromName( info.joinFieldName ) );
         }
       }
 
       layer->addJoin( info );
-      loadRows(); //update attribute tab
       addJoinToTreeWidget( info );
       pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                    !layer->isEditable() && layer->vectorJoins().size() < 1 );
@@ -1239,19 +844,23 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
   QTreeWidgetItem* joinItem = new QTreeWidgetItem();
 
   QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join.joinLayerId ) );
-  if ( !joinLayer )
+  if ( !layer || !joinLayer )
   {
     return;
   }
 
   joinItem->setText( 0, joinLayer->name() );
   joinItem->setData( 0, Qt::UserRole, join.joinLayerId );
-  QString joinFieldName = joinLayer->pendingFields().value( join.joinField ).name();
-  QString targetFieldName = layer->pendingFields().value( join.targetField ).name();
-  joinItem->setText( 1, joinFieldName );
-  joinItem->setData( 1, Qt::UserRole, join.joinField );
-  joinItem->setText( 2, targetFieldName );
-  joinItem->setData( 2, Qt::UserRole, join.targetField );
+
+  if ( join.joinFieldName.isEmpty() && join.joinFieldIndex >= 0 && join.joinFieldIndex < joinLayer->pendingFields().count() )
+    joinItem->setText( 1, joinLayer->pendingFields().field( join.joinFieldIndex ).name() );   //for compatibility with 1.x
+  else
+    joinItem->setText( 1, join.joinFieldName );
+
+  if ( join.targetFieldName.isEmpty() && join.targetFieldIndex >= 0 && join.targetFieldIndex < layer->pendingFields().count() )
+    joinItem->setText( 2, layer->pendingFields().field( join.targetFieldIndex ).name() );   //for compatibility with 1.x
+  else
+    joinItem->setText( 2, join.targetFieldName );
 
   mJoinTreeWidget->addTopLevelItem( joinItem );
 }
@@ -1265,7 +874,6 @@ void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
   }
 
   layer->removeJoin( currentJoinItem->data( 0, Qt::UserRole ).toString() );
-  loadRows();
   mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
   pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                !layer->isEditable() && layer->vectorJoins().size() < 1 );

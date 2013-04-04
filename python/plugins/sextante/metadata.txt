@@ -2,8 +2,8 @@
 name=SEXTANTE
 description=SEXTANTE Geoprocessing Platform for QGIS
 category=Analysis
-version=1.0.8
-qgisMinimumVersion=1.0
+version=1.1
+qgisMinimumVersion=1.9
 
 author=Victor Olaya
 email=volayaf@gmail.com

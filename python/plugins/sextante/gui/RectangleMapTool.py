@@ -34,7 +34,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
       self.canvas = canvas
       QgsMapToolEmitPoint.__init__(self, self.canvas)
 
-      self.rubberBand = QgsRubberBand( self.canvas, True )    # true, its a polygon
+      self.rubberBand = QgsRubberBand( self.canvas, QGis.Polygon )
       self.rubberBand.setColor( Qt.red )
       self.rubberBand.setWidth( 1 )
 
@@ -43,7 +43,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
   def reset(self):
       self.startPoint = self.endPoint = None
       self.isEmittingPoint = False
-      self.rubberBand.reset( True )    # true, its a polygon
+      self.rubberBand.reset( QGis.Polygon )
 
   def canvasPressEvent(self, e):
       self.startPoint = self.toMapCoordinates( e.pos() )
@@ -65,7 +65,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
       self.showRect(self.startPoint, self.endPoint)
 
   def showRect(self, startPoint, endPoint):
-      self.rubberBand.reset( True )    # true, it's a polygon
+      self.rubberBand.reset( QGis.Polygon )
       if startPoint.x() == endPoint.x() or startPoint.y() == endPoint.y():
         return
 

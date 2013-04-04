@@ -21,6 +21,7 @@
 #define QGSWMSPROVIDER_H
 
 #include "qgsrasterdataprovider.h"
+#include "qgsnetworkreplyparser.h"
 #include "qgsrectangle.h"
 
 #include <QString>
@@ -642,10 +643,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
       */
     int capabilities() const;
 
-    QgsRasterBlock::DataType dataType( int bandNo ) const;
-    QgsRasterBlock::DataType srcDataType( int bandNo ) const;
-    int bandCount() const;
+    /** Server identify capabilities, used by source select. */
+    int identifyCapabilities() const;
 
+    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType srcDataType( int bandNo ) const;
+    int bandCount() const;
 
     /**
      * Get metadata in a format suitable for feeding directly
@@ -997,7 +1000,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * The result of the identify reply
      */
-    QString mIdentifyResult;
+    //QString mIdentifyResult;
+    QList< QgsNetworkReplyParser::RawHeaderMap > mIdentifyResultHeaders;
+    QList<QByteArray> mIdentifyResultBodies;
+
+    // TODO: better
+    QString mIdentifyResultXsd;
 
     /**
      * The previous parameters to draw().
@@ -1057,6 +1065,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Password for basic http authentication
     QString mPassword;
 
+    //! Referer for http requests
+    QString mReferer;
+
     //! layer is tiled, tile layer and active matrix set
     bool                    mTiled;
     QgsWmtsTileLayer        *mTileLayer;
@@ -1077,7 +1088,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! supported formats for GetFeatureInfo in order of preference
     QStringList mSupportedGetFeatureFormats;
 
+    //! Formats supported by server and provider
+    QMap<IdentifyFormat, QString> mIdentifyFormats;
+
     QgsCoordinateReferenceSystem mCrs;
+
 };
 
 

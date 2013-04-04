@@ -24,10 +24,13 @@
 
 class QgisApp;
 class QgsComposerArrow;
+class QgsComposerFrame;
+class QgsComposerHtml;
 class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerPicture;
 class QgsComposerPictureWidget;
+class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
@@ -60,10 +63,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void setupTheme();
 
     void setIconSizes( int size );
-    void setFontSize( int size );
-    //! Set app stylesheet from main app
-    //! @note added in 2.0
-    void setAppStyleSheet();
 
     //! Open and show, set defaults if first time
     void open();
@@ -88,6 +87,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     const QString& title() const {return mTitle;}
     void setTitle( const QString& title );
 
+    //! Load template into current or blank composer
+    //! @param newCompser whether to create a new composer first
+    //! @note added in 1.9
+    void loadTemplate( bool newCompser );
+
   protected:
     //! Move event
     virtual void moveEvent( QMoveEvent * );
@@ -111,7 +115,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void composerAdded( QgsComposerView* v );
     //!Composer deletes the old composerview when loading a template
     void composerWillBeRemoved( QgsComposerView* v );
-
 
   public slots:
     //! Zoom to full extent of the paper
@@ -173,8 +176,28 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     void on_mActionAddHtml_triggered();
 
+    //! Save parent project
+    //! @note added in 1.9
+    void on_mActionSaveProject_triggered();
+
+    //! Create new composer
+    //! @note added in 1.9
+    void on_mActionNewComposer_triggered();
+
+    //! Duplicate current composer
+    //! @note added in 1.9
+    void on_mActionDuplicateComposer_triggered();
+
+    //! Show composer manager
+    //! @note added in 1.9
+    void on_mActionComposerManager_triggered();
+
     //! Save composer as template
     void on_mActionSaveAsTemplate_triggered();
+
+    //! Load template into blank composer
+    //! @note added in 1.9
+    void on_mActionNewFromTemplate_triggered();
 
     void on_mActionLoadFromTemplate_triggered();
 
@@ -264,6 +287,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Stores state in Dom node
     void writeXML( QDomDocument& doc );
 
+    //! Stores only template as base Dom node
+    void templateXML( QDomDocument& doc );
+
     //! Sets state from Dom document
     void readXML( const QDomDocument& doc );
     void readXML( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate = false );
@@ -303,11 +329,17 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! To make loading from project faster, the previews are generated when the composer becomes visible.
     void initialiseComposerPicturePreviews();
 
+    //! Create composer view and rulers
+    void createComposerView();
+
     /**Composer title*/
     QString mTitle;
 
     //! Pointer to composer view
     QgsComposerView *mView;
+    QGridLayout* mViewLayout;
+    QgsComposerRuler* mHorizontalRuler;
+    QgsComposerRuler* mVerticalRuler;
 
     //! Current composition
     QgsComposition *mComposition;
@@ -346,6 +378,40 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QMenu* mPanelMenu;
     QMenu* mToolbarMenu;
+
+    //! Print Composers menu as mirror of main app's
+    //! @note added in 1.9
+    QMenu* mPrintComposersMenu;
+
+    //! Window menu as mirror of main app's (on Mac)
+    //! @note added in 1.9
+    QMenu* mWindowMenu;
+
+    //! Help menu as mirror of main app's (on Mac)
+    //! @note added in 1.9
+    QMenu* mHelpMenu;
+
+  private slots:
+
+    //! Populate Print Composers menu from main app's
+    //! @note added in 1.9
+    void populatePrintComposersMenu();
+
+    //! Populate Window menu from main app's (on Mac)
+    //! @note added in 1.9
+    void populateWindowMenu();
+
+    //! Populate Help menu from main app's (on Mac)
+    //! @note added in 1.9
+    void populateHelpMenu();
+
+    //! Populate one menu from another menu (for Mac)
+    //! @note added in 1.9
+    void populateWithOtherMenu( QMenu* thisMenu, QMenu* otherMenu );
+
+    //! Create a duplicate of a menu (for Mac)
+    //! @note added in 1.9
+    QMenu* mirrorOtherMenu( QMenu* otherMenu );
 };
 
 #endif

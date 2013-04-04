@@ -38,6 +38,7 @@ QgsRasterInterface * QgsSingleBandGrayRenderer::clone() const
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
   renderer->setRasterTransparency( mRasterTransparency );
+  renderer->setGradient( mGradient );
   if ( mContrastEnhancement )
   {
     renderer->setContrastEnhancement( new QgsContrastEnhancement( *mContrastEnhancement ) );
@@ -115,7 +116,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
     alphaBlock = inputBlock;
   }
 
-  if ( !outputBlock->reset( QgsRasterBlock::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
   {
     delete inputBlock;
     delete alphaBlock;

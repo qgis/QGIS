@@ -28,7 +28,7 @@ class CORE_EXPORT QgsComposerAttributeTableCompare
 {
   public:
     QgsComposerAttributeTableCompare();
-    bool operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 );
+    bool operator()( const QgsAttributes& m1, const QgsAttributes& m2 );
     void setSortColumn( int col ) { mCurrentSortColumn = col; }
     void setAscending( bool asc ) { mAscending = asc; }
   private:
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     /**Retrieves feature attributes
      * @note not available in python bindings
      */
-    bool getFeatureAttributes( QList<QgsAttributeMap>& attributes );
+    bool getFeatureAttributes( QList<QgsAttributes>& attributes );
 
     //! @note not available in python bindings
     QMap<int, QString> getHeaderLabels() const;

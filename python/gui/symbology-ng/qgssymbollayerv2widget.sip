@@ -34,7 +34,7 @@ class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public slots:
     void penWidthChanged();
-    void colorChanged();
+    void colorChanged( const QColor& color );
     void penStyleChanged();
     void offsetChanged();
     void on_mCustomCheckBox_stateChanged( int state );
@@ -65,8 +65,8 @@ class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public slots:
     void setName();
-    void setColorBorder();
-    void setColorFill();
+    void setColorBorder( const QColor& color );
+    void setColorFill( const QColor& color );
     void setSize();
     void setAngle();
     void setOffset();
@@ -90,8 +90,8 @@ class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     virtual QgsSymbolLayerV2* symbolLayer();
 
   public slots:
-    void setColor();
-    void setBorderColor();
+    void setColor( const QColor& color );
+    void setBorderColor( const QColor& color );
     void setBrushStyle();
     void borderWidthChanged();
     void borderStyleChanged();
@@ -150,8 +150,8 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void setOffset();
     void on_mFileToolButton_clicked();
     void on_mFileLineEdit_textEdited( const QString& text );
-    void on_mChangeColorButton_clicked();
-    void on_mChangeBorderColorButton_clicked();
+    void on_mChangeColorButton_colorChanged( const QColor& color );
+    void on_mChangeBorderColorButton_colorChanged( const QColor& color );
     void on_mBorderWidthSpinBox_valueChanged( double d );
 
   protected:
@@ -180,7 +180,7 @@ class QgsLineDecorationSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     virtual QgsSymbolLayerV2* symbolLayer();
 
   public slots:
-    void colorChanged();
+    void colorChanged( const QColor& color );
     void penWidthChanged();
 };
 
@@ -252,7 +252,7 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public slots:
     void setFontFamily( const QFont& font );
-    void setColor();
+    void setColor( const QColor& color );
     void setSize( double size );
     void setAngle( double angle );
     void setCharacter( const QChar& chr );

@@ -42,7 +42,7 @@ class TestQgsDataItem: public QObject
 
   private:
     QgsDirectoryItem* mDirItem;
-    int mScanItemsSetting;
+    QString mScanItemsSetting;
     bool isValidDirItem( QgsDirectoryItem *item );
 };
 
@@ -62,7 +62,7 @@ void TestQgsDataItem::initTestCase()
   QCoreApplication::setApplicationName( "QGIS-TEST" );
   // save current scanItemsSetting value
   QSettings settings;
-  mScanItemsSetting = settings.value( "/qgis/scanItemsInBrowser", 0 ).toInt();
+  mScanItemsSetting = settings.value( "/qgis/scanItemsInBrowser2", QVariant( "" ) ).toString();
 
   //create a directory item that will be used in all tests...
   mDirItem = new QgsDirectoryItem( 0, "Test", TEST_DATA_DIR );
@@ -72,7 +72,7 @@ void TestQgsDataItem::cleanupTestCase()
 {
   // restore scanItemsSetting
   QSettings settings;
-  settings.setValue( "/qgis/scanItemsInBrowser", mScanItemsSetting );
+  settings.setValue( "/qgis/scanItemsInBrowser2", mScanItemsSetting );
   if ( mDirItem )
     delete mDirItem;
 }
@@ -94,9 +94,11 @@ void TestQgsDataItem::testValid()
 void TestQgsDataItem::testDirItemChildren()
 {
   QSettings settings;
-  for ( int iSetting = 0 ; iSetting <= 1 ; iSetting++ )
+  QStringList tmpSettings;
+  tmpSettings << "" << "contents" << "extension";
+  foreach ( QString tmpSetting, tmpSettings )
   {
-    settings.setValue( "/qgis/scanItemsInBrowser", iSetting );
+    settings.setValue( "/qgis/scanItemsInBrowser2", tmpSetting );
     QgsDirectoryItem* dirItem = new QgsDirectoryItem( 0, "Test", TEST_DATA_DIR );
     QVERIFY( isValidDirItem( dirItem ) );
 
@@ -112,15 +114,15 @@ void TestQgsDataItem::testDirItemChildren()
       QFileInfo info( layerItem->path() );
       QString lFile = info.fileName();
       QString lProvider = layerItem->providerKey();
-      QString errStr = QString( "layer #%1 - %2 provider = %3 iSetting = %4" ).arg( i ).arg( lFile ).arg( lProvider ).arg( iSetting );
+      QString errStr = QString( "layer #%1 - %2 provider = %3 tmpSetting = %4" ).arg( i ).arg( lFile ).arg( lProvider ).arg( tmpSetting );
 
-      QgsDebugMsg( QString( "testing child name=%1 provider=%2 path=%3" ).arg( layerItem->name() ).arg( lProvider ).arg( lFile ) );
+      QgsDebugMsg( QString( "testing child name=%1 provider=%2 path=%3 tmpSetting = %4" ).arg( layerItem->name() ).arg( lProvider ).arg( lFile ).arg( tmpSetting ) );
 
       if ( lFile == "landsat.tif" )
       {
         QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "points.vrt", errStr.toLocal8Bit().constData() )
+      else if ( lFile == "points.vrt" )
       {
         QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
       }
@@ -139,7 +141,7 @@ void TestQgsDataItem::testDirItemChildren()
 
       // test layerName() does not include extension for gdal and ogr items (bug #5621)
       QString lName = layerItem->layerName();
-      errStr = QString( "layer #%1 - %2 lName = %3 iSetting = %4" ).arg( i ).arg( lFile ).arg( lName ).arg( iSetting );
+      errStr = QString( "layer #%1 - %2 lName = %3 tmpSetting = %4" ).arg( i ).arg( lFile ).arg( lName ).arg( tmpSetting );
 
       if ( lFile == "landsat.tif" )
       {

@@ -27,8 +27,8 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterCrs(Parameter):
 
-    def __init__(self, name="", description="", default = "4326"):
-        '''The value is the EPSG code of the CRS'''
+    def __init__(self, name="", description="", default = "EPSG:4326"):
+        '''The value is the auth id of the CRS'''
         Parameter.__init__(self, name, description)
         self.value = None
         self.default = default
@@ -37,6 +37,7 @@ class ParameterCrs(Parameter):
         if value is None:
             self.value = self.default
             return True
+        #TODO: check it is a valid authid
         self.value = str(value)
         return True
 
@@ -49,6 +50,8 @@ class ParameterCrs(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
+        if tokens[2]==str(None):
+            tokens[2] = None
         return ParameterCrs(tokens[0], tokens[1], tokens[2])
 
     def getAsScriptCode(self):

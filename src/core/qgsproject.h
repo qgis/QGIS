@@ -310,6 +310,11 @@ class CORE_EXPORT QgsProject : public QObject
         @note added in version 1.9*/
     bool topologicalEditing() const;
 
+    /** Return project's home path
+    @return home path of project (or QString::null if not set)
+        @note added in version 2.0 */
+    QString homePath() const;
+
   protected:
 
     /** Set error message from read/write operation
@@ -331,6 +336,9 @@ class CORE_EXPORT QgsProject : public QObject
 
     //! emitted when project is being written
     void writeProject( QDomDocument & );
+
+    //! emitted when the project file has been written and closed
+    void projectSaved();
 
     //! emitted when an old project file is read.
     void oldProjectVersionWarning( QString );

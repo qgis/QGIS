@@ -37,6 +37,7 @@ class ModelerScene(QtGui.QGraphicsScene):
         super(ModelerScene, self).__init__(parent)
         self.paramItems = []
         self.algItems = []
+        self.setItemIndexMethod(QtGui.QGraphicsScene.NoIndex);
 
     def getParameterPositions(self):
         pos = []
@@ -116,8 +117,10 @@ class ModelerScene(QtGui.QGraphicsScene):
                     for sourceItem in sourceItems:
                         arrow = ModelerArrowItem(sourceItem, self.algItems[iAlg])
                         self.addItem(arrow)
+            for depend in model.dependencies[iAlg]:
+                arrow = ModelerArrowItem(self.algItems[depend], self.algItems[iAlg])
+                self.addItem(arrow)
             iAlg+=1
-
 
     def mousePressEvent(self, mouseEvent):
         if (mouseEvent.button() != QtCore.Qt.LeftButton):

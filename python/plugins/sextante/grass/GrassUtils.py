@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.tests.TestData import points
+import traceback
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,8 +36,6 @@ import plugin_installer
 
 class GrassUtils:
 
-    GRASS_LATLON = "GRASS_LATLON"
-    #GRASS_AUTO_REGION = "GRASS_AUTO_REGION"
     GRASS_REGION_XMIN = "GRASS_REGION_XMIN"
     GRASS_REGION_YMIN = "GRASS_REGION_YMIN"
     GRASS_REGION_XMAX = "GRASS_REGION_XMAX"
@@ -46,9 +46,11 @@ class GrassUtils:
     GRASS_WIN_SHELL = "GRASS_WIN_SHELL"
     GRASS_LOG_COMMANDS = "GRASS_LOG_COMMANDS"
     GRASS_LOG_CONSOLE = "GRASS_LOG_CONSOLE"
-    
+
     sessionRunning = False
     sessionLayers = {}
+    projectionSet = False
+
 
     @staticmethod
     def grassBatchJobFilename():
@@ -128,11 +130,11 @@ class GrassUtils:
         #temporary gisrc file
         output = open(gisrc, "w")
         location = "temp_location"
-        mapset = "user"
-        gisdbase = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata")
+        gisdbase = GrassUtils.grassDataFolder()
+        #gisdbase = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata")
         output.write("GISDBASE: " + gisdbase + "\n");
         output.write("LOCATION_NAME: " + location + "\n");
-        output.write("MAPSET: " + mapset + "\n");
+        output.write("MAPSET: PERMANENT \n");
         output.write("GRASS_GUI: text\n");
         output.close()
 
@@ -157,7 +159,7 @@ class GrassUtils:
         output.write("set PATHEXT=%PATHEXT%;.PY\n")
         output.write("set PYTHONPATH=%PYTHONPATH%;%WINGISBASE%\\etc\\python;%WINGISBASE%\\etc\\wxpython\\n")
         output.write("\n")
-        output.write("g.gisenv.exe set=\"MAPSET=" + mapset + "\"\n")
+        output.write("g.gisenv.exe set=\"MAPSET=PERMANENT\"\n")
         output.write("g.gisenv.exe set=\"LOCATION=" + location + "\"\n")
         output.write("g.gisenv.exe set=\"LOCATION_NAME=" + location + "\"\n")
         output.write("g.gisenv.exe set=\"GISDBASE=" + gisdbase + "\"\n")
@@ -178,7 +180,13 @@ class GrassUtils:
 
     @staticmethod
     def grassMapsetFolder():
-        tempfolder = os.path.join(os.path.expanduser("~"), "sextante", "tempdata", "grassdata", "temp_location")
+        folder = os.path.join(GrassUtils.grassDataFolder(), "temp_location")
+        mkdir(folder)
+        return folder
+
+    @staticmethod
+    def grassDataFolder():
+        tempfolder = os.path.join(SextanteUtils.tempFolder(), "grassdata")
         mkdir(tempfolder)
         return tempfolder
 
@@ -186,88 +194,50 @@ class GrassUtils:
     @staticmethod
     def createTempMapset():
         '''Creates a temporary location and mapset(s) for GRASS data processing. A minimal set of folders and files is created in the
-         system's default temporary directory. The settings files are written with sane defaults, so GRASS can do its work. File
-        structure and content will vary slightly depending on whether the user wants to process lat/lon or x/y data.'''
+         system's default temporary directory. The settings files are written with sane defaults, so GRASS can do its work. The mapset
+         projection will be set later, based on the projection of the first input image or vector'''
 
-        latlon = SextanteConfig.getSetting(GrassUtils.GRASS_LATLON)
         folder = GrassUtils.grassMapsetFolder()
         mkdir(os.path.join(folder, "PERMANENT"))
-        mkdir(os.path.join(folder, "user"))
         mkdir(os.path.join(folder, "PERMANENT", ".tmp"))
         GrassUtils.writeGrassWindow(os.path.join(folder, "PERMANENT", "DEFAULT_WIND"));
         outfile = open(os.path.join(folder, "PERMANENT", "MYNAME"), "w")
-        if not latlon:
-            outfile.write("SEXTANTE GRASS interface: temporary x/y data processing location.\n");
-        else:
-            outfile.write("SEXTANTE GRASS interface: temporary lat/lon data processing location.\n")
+        outfile.write("SEXTANTE GRASS interface: temporary data processing location.\n");
         outfile.close();
-        if latlon:
-            outfile = open(os.path.join(folder, "PERMANENT", "PROJ_INFO"), "w")
-            outfile.write("name: Latitude-Longitude\n")
-            outfile.write("proj: ll\n")
-            outfile.write("ellps: wgs84\n")
-            outfile.close()
-            outfile = open(os.path.join(folder, "PERMANENT", "PROJ_UNITS"), "w")
-            outfile.write("unit: degree\n")
-            outfile.write("units: degrees\n")
-            outfile.write("meters: 1.0\n")
-            outfile.close();
         GrassUtils.writeGrassWindow(os.path.join(folder, "PERMANENT", "WIND"))
-        mkdir(os.path.join(folder, "user", "dbf"))
-        mkdir(os.path.join(folder, "user", ".tmp"))
-        outfile = open(os.path.join(folder, "user", "VAR"), "w")
+        mkdir(os.path.join(folder, "PERMANENT", "dbf"))
+        outfile = open(os.path.join(folder, "PERMANENT", "VAR"), "w")
         outfile.write("DB_DRIVER: dbf\n")
         outfile.write("DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\n")
         outfile.close()
-        GrassUtils.writeGrassWindow(os.path.join(folder, "user", "WIND"))
 
     @staticmethod
     def writeGrassWindow(filename):
         out = open(filename, "w")
-        latlon = SextanteConfig.getSetting(GrassUtils.GRASS_LATLON)
-        if not latlon:
-            out.write("proj:       0\n")
-            out.write("zone:       0\n")
-            out.write("north:      1\n")
-            out.write("south:      0\n")
-            out.write("east:       1\n")
-            out.write("west:       0\n")
-            out.write("cols:       1\n")
-            out.write("rows:       1\n")
-            out.write("e-w resol:  1\n")
-            out.write("n-s resol:  1\n")
-            out.write("top:        1\n")
-            out.write("bottom:     0\n")
-            out.write("cols3:      1\n")
-            out.write("rows3:      1\n")
-            out.write("depths:     1\n")
-            out.write("e-w resol3: 1\n")
-            out.write("n-s resol3: 1\n")
-            out.write("t-b resol:  1\n")
-        else:
-            out.write("proj:       3\n")
-            out.write("zone:       0\n")
-            out.write("north:      1N\n")
-            out.write("south:      0\n")
-            out.write("east:       1E\n")
-            out.write("west:       0\n")
-            out.write("cols:       1\n")
-            out.write("rows:       1\n")
-            out.write("e-w resol:  1\n")
-            out.write("n-s resol:  1\n")
-            out.write("top:        1\n")
-            out.write("bottom:     0\n")
-            out.write("cols3:      1\n")
-            out.write("rows3:      1\n")
-            out.write("depths:     1\n")
-            out.write("e-w resol3: 1\n")
-            out.write("n-s resol3: 1\n")
-            out.write("t-b resol:  1\n")
+        out.write("proj:       0\n")
+        out.write("zone:       0\n")
+        out.write("north:      1\n")
+        out.write("south:      0\n")
+        out.write("east:       1\n")
+        out.write("west:       0\n")
+        out.write("cols:       1\n")
+        out.write("rows:       1\n")
+        out.write("e-w resol:  1\n")
+        out.write("n-s resol:  1\n")
+        out.write("top:        1\n")
+        out.write("bottom:     0\n")
+        out.write("cols3:      1\n")
+        out.write("rows3:      1\n")
+        out.write("depths:     1\n")
+        out.write("e-w resol3: 1\n")
+        out.write("n-s resol3: 1\n")
+        out.write("t-b resol:  1\n")
+
         out.close()
 
 
     @staticmethod
-    def executeGrass(commands, progress):
+    def prepareGrassExecution(commands):
         if SextanteUtils.isWindows():
             GrassUtils.createGrassScript(commands)
             command = ["cmd.exe", "/C ", GrassUtils.grassScriptFilename()]
@@ -279,11 +249,18 @@ class GrassUtils:
             GrassUtils.createGrassBatchJobFileFromGrassCommands(commands)
             os.chmod(GrassUtils.grassBatchJobFilename(), stat.S_IEXEC | stat.S_IREAD | stat.S_IWRITE)
             if SextanteUtils.isMac():
-                command = GrassUtils.grassPath() + os.sep + "grass.sh " + GrassUtils.grassMapsetFolder() + "/user"
+                command = GrassUtils.grassPath() + os.sep + "grass.sh " + GrassUtils.grassMapsetFolder() + "/PERMANENT"
             else:
-                command = "grass64 " + GrassUtils.grassMapsetFolder() + "/user"
+                command = "grass64 " + GrassUtils.grassMapsetFolder() + "/PERMANENT"
+
+        return command
+
+    @staticmethod
+    def executeGrass(commands, progress, outputCommands = None):
         loglines = []
         loglines.append("GRASS execution console output")
+        grassOutDone = False
+        command = GrassUtils.prepareGrassExecution(commands)
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
             if "GRASS_INFO_PERCENT" in line:
@@ -292,10 +269,28 @@ class GrassUtils:
                 except:
                     pass
             else:
+                if "r.out" in line or "v.out" in line:
+                    grassOutDone = True
                 loglines.append(line)
                 progress.setConsoleInfo(line)
+        # Some GRASS scripts, like r.mapcalculator or r.fillnulls, call other GRASS scripts during execution. This may override any commands that are
+        # still to be executed by the subprocess, which are usually the output ones. If that is the case runs the output commands again.
+        if not grassOutDone and outputCommands:
+            command = GrassUtils.prepareGrassExecution(outputCommands)
+            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+            for line in iter(proc.readline, ""):
+                if "GRASS_INFO_PERCENT" in line:
+                    try:
+                        progress.setPercentage(int(line[len("GRASS_INFO_PERCENT")+ 2:]))
+                    except:
+                        pass
+                else:
+                    loglines.append(line)
+                    progress.setConsoleInfo(line)
+
         if SextanteConfig.getSetting(GrassUtils.GRASS_LOG_CONSOLE):
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        return loglines;
 
     @staticmethod
     def getGrassVersion():
@@ -315,21 +310,51 @@ class GrassUtils:
             GrassUtils.sessionRunning = True
 
     # End session by removing the temporary GRASS mapset and all the layers.
-    @staticmethod    
+    @staticmethod
     def endGrassSession():
         shutil.rmtree(GrassUtils.grassMapsetFolder(), True)
         GrassUtils.sessionRunning = False
         GrassUtils.sessionLayers = {}
-    
+        GrassUtils.projectionSet = False
+
     @staticmethod
     def getSessionLayers():
         return GrassUtils.sessionLayers
-    
+
     @staticmethod
     def addSessionLayers(exportedLayers):
         GrassUtils.sessionLayers = dict(GrassUtils.sessionLayers.items() + exportedLayers.items())
 
-        
+    @staticmethod
+    def checkGrassIsInstalled(ignoreRegistrySettings=False):
+        if SextanteUtils.isWindows():
+            path = GrassUtils.grassPath()
+            if path == "":
+                return "GRASS folder is not configured.\nPlease configure it before running SAGA algorithms."
+            cmdpath = os.path.join(path, "bin\r.out.exe")
+            if not os.path.exists(cmdpath):
+                return ("The specified GRASS folder does not contain a valid set of GRASS modules.\n"
+                        + "Please, go to the SEXTANTE settings dialog, and check that the GRASS\n"
+                        + "folder is correctly configured")
+
+        if not ignoreRegistrySettings:
+            GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"
+            settings = QSettings()
+            if settings.contains(GRASS_INSTALLED):
+                return
+
+        try:
+            from sextante.core.Sextante import runalg
+            result = runalg("grass:v.voronoi", points(),False,False,"270778.60198,270855.745301,4458921.97814,4458983.8488",-1,0.0001,None)
+            if not os.path.exists(result['output']):
+                return "It seems that GRASS is not correctly installed and configured in your system.\nPlease install it before running GRASS algorithms."
+        except:
+            s = traceback.format_exc()
+            return "Error while checking GRASS installation. GRASS might not be correctly configured.\n" + s;
+
+        settings.setValue(GRASS_INSTALLED, True)
+
+
 
 
 

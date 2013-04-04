@@ -24,12 +24,15 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
 #include "qgsproviderregistry.h"
+#include "qgsdatasourceuri.h"
+
+#include <QProgressDialog>
 
 #define FEATURE_BUFFER_SIZE 200
 
 typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
   const QString &uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType geometryType,
   const QgsCoordinateReferenceSystem *destCRS,
   bool overwrite,
@@ -41,12 +44,14 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
 
 QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QString &providerKey,
-    const QgsFieldMap& fields,
+    const QgsFields& fields,
     QGis::WkbType geometryType,
     const QgsCoordinateReferenceSystem* crs,
     bool overwrite,
-    const QMap<QString, QVariant> *options )
+    const QMap<QString, QVariant> *options,
+    QProgressDialog *progress )
     : mErrorCount( 0 )
+    , mProgress( progress )
 {
   mProvider = NULL;
 
@@ -80,10 +85,20 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     return;
   }
 
+  mAttributeCount = -1;
+
+  foreach ( int idx, mOldToNewAttrIdx.values() )
+  {
+    if ( idx > mAttributeCount )
+      mAttributeCount = idx;
+  }
+
+  mAttributeCount++;
+
   QgsDebugMsg( "Created empty layer" );
 
   QgsVectorDataProvider *vectorProvider = ( QgsVectorDataProvider* ) pReg->provider( providerKey, uri );
-  if ( !vectorProvider || !vectorProvider->isValid() )
+  if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;
     mErrorMessage = QObject::tr( "Loading of layer failed" );
@@ -118,20 +133,24 @@ QString QgsVectorLayerImport::errorMessage()
 
 bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
 {
-  const QgsAttributeMap &attrs = feat.attributeMap();
+  const QgsAttributes &attrs = feat.attributes();
 
   QgsFeature newFeat;
-  newFeat.setGeometry( *feat.geometry() );
+  if ( feat.geometry() )
+    newFeat.setGeometry( *feat.geometry() );
 
-  for ( QgsAttributeMap::const_iterator it = attrs.begin(); it != attrs.end(); it++ )
+  newFeat.initAttributes( mAttributeCount );
+
+  for ( int i = 0; i < attrs.count(); ++i )
   {
-    // add only mapped attributes (un-mapped ones are not present in the
+    // add only mapped attributes (un-mapped ones will not be present in the
     // destination layer)
-    if ( mOldToNewAttrIdx.contains( it.key() ) )
-    {
-      QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( it.key() ).arg( mOldToNewAttrIdx.value( it.key() ) ), 3 );
-      newFeat.addAttribute( mOldToNewAttrIdx.value( it.key() ), *it );
-    }
+    int dstIdx = mOldToNewAttrIdx.value( i, -1 );
+    if ( dstIdx < 0 )
+      continue;
+
+    QgsDebugMsgLevel( QString( "moving field from pos %1 to %2" ).arg( i ).arg( dstIdx ), 3 );
+    newFeat.setAttribute( dstIdx, attrs[i] );
   }
 
   mFeatureBuffer.append( newFeat );
@@ -171,6 +190,17 @@ bool QgsVectorLayerImport::flushBuffer()
   return true;
 }
 
+bool QgsVectorLayerImport::createSpatialIndex()
+{
+  if ( mProvider && ( mProvider->capabilities() & QgsVectorDataProvider::CreateSpatialIndex ) != 0 )
+  {
+    return mProvider->createSpatialIndex();
+  }
+  else
+  {
+    return true;
+  }
+}
 
 QgsVectorLayerImport::ImportError
 QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
@@ -180,7 +210,8 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
                                    bool onlySelected,
                                    QString *errorMessage,
                                    bool skipAttributeCreation,
-                                   QMap<QString, QVariant> *options )
+                                   QMap<QString, QVariant> *options,
+                                   QProgressDialog *progress )
 {
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
@@ -203,24 +234,58 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     outputCRS = &layer->crs();
   }
 
-  QgsFieldMap fields = skipAttributeCreation ? QgsFieldMap() : layer->pendingFields();
-  if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
-  {
-    // convert field names to lowercase
-    for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
-    {
-      fldIt.value().setName( fldIt.value().name().toLower() );
-    }
-  }
 
   bool overwrite = false;
+  bool forceSinglePartGeom = false;
   if ( options )
   {
     overwrite = options->take( "overwrite" ).toBool();
+    forceSinglePartGeom = options->take( "forceSinglePartGeometryType" ).toBool();
+  }
+
+  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
+  QGis::WkbType wkbType = layer->wkbType();
+
+  // Special handling for Shapefiles
+  if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
+  {
+    // convert field names to lowercase
+    for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
+    {
+      fields[fldIdx].setName( fields[fldIdx].name().toLower() );
+    }
+
+    if ( !forceSinglePartGeom )
+    {
+      // convert wkbtype to multipart (see #5547)
+      switch ( wkbType )
+      {
+        case QGis::WKBPoint:
+          wkbType = QGis::WKBMultiPoint;
+          break;
+        case QGis::WKBLineString:
+          wkbType = QGis::WKBMultiLineString;
+          break;
+        case QGis::WKBPolygon:
+          wkbType = QGis::WKBMultiPolygon;
+          break;
+        case QGis::WKBPoint25D:
+          wkbType = QGis::WKBMultiPoint25D;
+          break;
+        case QGis::WKBLineString25D:
+          wkbType = QGis::WKBMultiLineString25D;
+          break;
+        case QGis::WKBPolygon25D:
+          wkbType = QGis::WKBMultiPolygon25D;
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   QgsVectorLayerImport * writer =
-    new QgsVectorLayerImport( uri, providerKey, fields, layer->wkbType(), outputCRS, overwrite, options );
+    new QgsVectorLayerImport( uri, providerKey, fields, wkbType, outputCRS, overwrite, options, progress );
 
   // check whether file creation was successful
   ImportError err = writer->hasError();
@@ -240,7 +305,13 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
   QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
   QgsFeature fet;
 
-  layer->select( allAttr, QgsRectangle(), layer->wkbType() != QGis::WKBNoGeometry );
+  QgsFeatureRequest req;
+  if ( wkbType == QGis::WKBNoGeometry )
+    req.setFlags( QgsFeatureRequest::NoGeometry );
+  if ( skipAttributeCreation )
+    req.setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator fit = layer->getFeatures( req );
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
@@ -263,9 +334,23 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     *errorMessage = QObject::tr( "Feature write errors:" );
   }
 
-  // write all features
-  while ( layer->nextFeature( fet ) )
+  if ( progress )
   {
+    progress->setRange( 0, layer->featureCount() );
+  }
+
+  // write all features
+  while ( fit.nextFeature( fet ) )
+  {
+    if ( progress && progress->wasCanceled() )
+    {
+      if ( errorMessage )
+      {
+        *errorMessage += "\n" + QObject::tr( "Import was canceled at %1 of %2" ).arg( progress->value() ).arg( progress->maximum() );
+      }
+      break;
+    }
+
     if ( writer->errorCount() > 1000 )
     {
       if ( errorMessage )
@@ -292,8 +377,8 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
         delete ct;
         delete writer;
 
-        QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
-                      .arg( fet.typeName() ).arg( e.what() );
+        QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
+                      .arg( fet.id() ).arg( e.what() );
         QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
           *errorMessage += "\n" + msg;
@@ -303,7 +388,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
     if ( skipAttributeCreation )
     {
-      fet.clearAttributeMap();
+      fet.initAttributes( 0 );
     }
     if ( !writer->addFeature( fet ) )
     {
@@ -313,6 +398,11 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
       }
     }
     n++;
+
+    if ( progress )
+    {
+      progress->setValue( n );
+    }
   }
 
   // flush the buffer to be sure that all features are written
@@ -324,6 +414,14 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     }
   }
   int errors = writer->errorCount();
+
+  if ( !writer->createSpatialIndex() )
+  {
+    if ( writer->hasError() && errorMessage )
+    {
+      *errorMessage += "\n" + writer->errorMessage();
+    }
+  }
 
   delete writer;
 

@@ -110,8 +110,11 @@ class QgsPostgresConn : public QObject
     //! encode wkb in hex
     bool useWkbHex() { return mUseWkbHex; }
 
-    //! major PostgreSQL version
+    //! major PostGIS version
     int majorVersion() { return mPostgisVersionMajor; }
+
+    //! minor PostGIS version
+    int minorVersion() { return mPostgisVersionMinor; }
 
     //! PostgreSQL version
     int pgVersion() { return mPostgresqlVersion; }
@@ -192,6 +195,7 @@ class QgsPostgresConn : public QObject
     static QgsDataSourceURI connUri( QString theConnName );
     static bool publicSchemaOnly( QString theConnName );
     static bool geometryColumnsOnly( QString theConnName );
+    static bool dontResolveType( QString theConnName );
     static bool allowGeometrylessTables( QString theConnName );
     static void deleteConnection( QString theConnName );
 

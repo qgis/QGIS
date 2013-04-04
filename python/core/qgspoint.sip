@@ -1,6 +1,6 @@
 
 
-class QgsPoint 
+class QgsPoint
 {
 
 %TypeHeaderCode
@@ -11,7 +11,7 @@ class QgsPoint
   public:
     /// Default constructor
     QgsPoint();
-    
+
     /*! Create a point from another point */
     QgsPoint( const QgsPoint& p );
 
@@ -32,7 +32,7 @@ class QgsPoint
      * @param y y coordinate
      */
     void setY( double y );
-    
+
     /*! Sets the x and y value of the point */
     void set( double x, double y );
 
@@ -116,7 +116,7 @@ class QgsPoint
 
 
   SIP_PYOBJECT __getitem__(int);
-%MethodCode    
+%MethodCode
     if (a0 == 0) {
         sipRes = Py_BuildValue("d",sipCpp->x());
     } else if (a0 == 1) {

@@ -18,6 +18,7 @@
 #include "qgsconfigcache.h"
 #include "qgslogger.h"
 #include "qgsmslayercache.h"
+#include "qgsprojectfiletransform.h"
 #include "qgsprojectparser.h"
 #include "qgssldparser.h"
 #include <QCoreApplication>
@@ -115,6 +116,9 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
   }
   else if ( documentElem.tagName() == "qgis" )
   {
+    //convert project file to current version first
+    QgsProjectFileTransform pt( *configDoc, QgsProjectVersion( documentElem.attribute( "version" ) ) );
+    pt.updateRevision( QgsProjectVersion( QGis::QGIS_VERSION ) );
     configParser = new QgsProjectParser( configDoc, filePath );
   }
   else

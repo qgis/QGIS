@@ -20,6 +20,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposition.h"
 #include <QDoubleValidator>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -36,11 +37,10 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
-  mWidthLineEdit->setValidator( new QDoubleValidator( this ) );
-  mHeightLineEdit->setValidator( new QDoubleValidator( this ) );
   setGuiElementValues();
+  mPreviewsLoadingLabel->hide();
 
   mPreviewListWidget->setIconSize( QSize( 30, 30 ) );
 
@@ -115,41 +115,6 @@ void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
   }
 }
 
-void QgsComposerPictureWidget::on_mWidthLineEdit_editingFinished()
-{
-  if ( mPicture )
-  {
-    QRectF pictureRect = mPicture->rect();
-
-    bool conversionOk;
-    double newWidth = mWidthLineEdit->text().toDouble( &conversionOk );
-    if ( conversionOk )
-    {
-      mPicture->beginCommand( tr( "Picture width changed" ) );
-      QRectF newSceneRect( mPicture->transform().dx(), mPicture->transform().dy(), newWidth, pictureRect.height() );
-      mPicture->setSceneRect( newSceneRect );
-      mPicture->endCommand();
-    }
-  }
-}
-
-void QgsComposerPictureWidget::on_mHeightLineEdit_editingFinished()
-{
-  if ( mPicture )
-  {
-    QRectF pictureRect = mPicture->rect();
-
-    bool conversionOk;
-    double newHeight = mHeightLineEdit->text().toDouble( &conversionOk );
-    if ( conversionOk )
-    {
-      mPicture->beginCommand( tr( "Picture height changed" ) );
-      QRectF newSceneRect( mPicture->transform().dx(), mPicture->transform().dy(), pictureRect.width(), newHeight );
-      mPicture->setSceneRect( newSceneRect );
-      mPicture->endCommand();
-    }
-  }
-}
 
 void QgsComposerPictureWidget::on_mRotationSpinBox_valueChanged( double d )
 {
@@ -345,17 +310,13 @@ void QgsComposerPictureWidget::setGuiElementValues()
   //set initial gui values
   if ( mPicture )
   {
-    mWidthLineEdit->blockSignals( true );
-    mHeightLineEdit->blockSignals( true );
     mRotationSpinBox->blockSignals( true );
     mPictureLineEdit->blockSignals( true );
     mComposerMapComboBox->blockSignals( true );
     mRotationFromComposerMapCheckBox->blockSignals( true );
 
     mPictureLineEdit->setText( mPicture->pictureFile() );
-    QRectF pictureRect = mPicture->rect();
-    mWidthLineEdit->setText( QString::number( pictureRect.width() ) );
-    mHeightLineEdit->setText( QString::number( pictureRect.height() ) );
+//    QRectF pictureRect = mPicture->rect();
     mRotationSpinBox->setValue( mPicture->rotation() );
 
     refreshMapComboBox();
@@ -381,8 +342,6 @@ void QgsComposerPictureWidget::setGuiElementValues()
 
 
     mRotationFromComposerMapCheckBox->blockSignals( false );
-    mWidthLineEdit->blockSignals( false );
-    mHeightLineEdit->blockSignals( false );
     mRotationSpinBox->blockSignals( false );
     mPictureLineEdit->blockSignals( false );
     mComposerMapComboBox->blockSignals( false );
@@ -530,5 +489,20 @@ void QgsComposerPictureWidget::showEvent( QShowEvent * event )
 {
   Q_UNUSED( event );
   refreshMapComboBox();
+
+  if ( mPreviewListWidget->count() == 0 )
+  {
+    mPreviewListWidget->hide();
+    mPreviewsLoadingLabel->show();
+    addStandardDirectoriesToPreview();
+    mPreviewsLoadingLabel->hide();
+    mPreviewListWidget->show();
+  }
+}
+
+void QgsComposerPictureWidget::resizeEvent( QResizeEvent * event )
+{
+  Q_UNUSED( event );
+  mSearchDirectoriesComboBox->setMinimumWidth( mPreviewListWidget->sizeHint().width() );
 }
 

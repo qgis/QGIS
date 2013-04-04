@@ -55,10 +55,13 @@ ENDIF (WITH_POSTGRESQL)
 
 SET (WITH_INTERNAL_QWTPOLAR TRUE CACHE BOOL "Use internal build of QwtPolar")
 
+SET (WITH_INTERNAL_QEXTSERIALPORT TRUE CACHE BOOL "Use internal build of Qextserialport")
+
 SET (WITH_SPATIALITE TRUE CACHE BOOL "Determines whether SPATIALITE support should be built")
 IF (WITH_SPATIALITE)
   SET (WITH_INTERNAL_SPATIALITE FALSE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
   SET (WITH_PYSPATIALITE FALSE CACHE BOOL "Determines whether PYSPATIALITE should be built")
+  SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
   IF(WITH_INTERNAL_SPATIALITE)
     SET(SPATIALITE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/spatialite/headers)
     SET(HAVE_SPATIALITE TRUE)
@@ -68,6 +71,11 @@ IF (WITH_SPATIALITE)
   ENDIF (WITH_INTERNAL_SPATIALITE)
 ENDIF (WITH_SPATIALITE)
 
+SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
+IF(WITH_ORACLE)
+  SET(HAVE_ORACLE TRUE)
+ENDIF(WITH_ORACLE)
+
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
 IF (WITH_BINDINGS)
@@ -76,10 +84,14 @@ IF (WITH_BINDINGS)
   # as otherwise user has to use PYTHONPATH environemnt variable to add
   # QGIS bindings to package search path
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
-  SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities, console and installer are always staged)")
+  SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
   SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
   # concatenate QScintilla2 API files
   SET (WITH_QSCIAPI TRUE CACHE BOOL "Determines whether the QScintilla2 API files will be updated and concatenated")
+  # path to custom Python framework on Mac
+  IF (APPLE)
+    SET (PYTHON_CUSTOM_FRAMEWORK "" CACHE PATH "Path to custom Python.framework on Mac. (should not have to specify other Python options)")
+  ENDIF (APPLE)
 ENDIF (WITH_BINDINGS)
 
 #BUILD WITH QtMobility by default on android only. Other platform can force it
@@ -112,6 +124,11 @@ SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 # hide this variable because building of python bindings might fail
 # if set to other directory than expected
 MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
+
+IF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
+  # following variable is also used in qgsconfig.h
+  SET (USING_NMAKE TRUE)
+ENDIF (MSVC AND CMAKE_GENERATOR MATCHES "NMake")
 
 #############################################################
 # check if lexer and parser are not missing
@@ -155,13 +172,19 @@ ENDIF(NOT WIN32 AND NOT ANDROID)
 FIND_PACKAGE(Proj)
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
-FIND_PACKAGE(Expat)
+FIND_PACKAGE(Expat REQUIRED)
 FIND_PACKAGE(Spatialindex REQUIRED)
-
 FIND_PACKAGE(Qwt REQUIRED)
+
 IF (NOT WITH_INTERNAL_QWTPOLAR)
   FIND_PACKAGE(QwtPolar REQUIRED)
 ENDIF(NOT WITH_INTERNAL_QWTPOLAR)
+
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  SET(QEXTSERIALPORT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/gps/qextserialport)
+ELSE (WITH_INTERNAL_QEXTSERIALPORT)
+  FIND_PACKAGE(Qextserialport REQUIRED)
+ENDIF(WITH_INTERNAL_QEXTSERIALPORT)
 
 IF (NOT WITH_INTERNAL_SPATIALITE)
   FIND_PACKAGE(Sqlite3)
@@ -277,22 +300,42 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 IF (PEDANTIC)
   MESSAGE (STATUS "Pedantic compiler settings enabled")
   IF(MSVC)
-    ADD_DEFINITIONS( /W4 )
+    IF (NOT USING_NMAKE)
+      ADD_DEFINITIONS( /W4 )
+    ENDIF (NOT USING_NMAKE)
 
     # disable warnings
     ADD_DEFINITIONS( /wd4100 )  # unused formal parameters
     ADD_DEFINITIONS( /wd4127 )  # constant conditional expressions (used in Qt template classes)
+    ADD_DEFINITIONS( /wd4505 )  # unreferenced local function has been removed (QgsRasterDataProvider::extent)
     ADD_DEFINITIONS( /wd4510 )  # default constructor could not be generated (sqlite3_index_info, QMap)
     ADD_DEFINITIONS( /wd4512 )  # assignment operator could not be generated (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4706 )  # assignment within conditional expression (pal)
   ELSE (MSVC)
-    ADD_DEFINITIONS( -Wall -Wextra  -Wno-long-long -Wformat-security -Wno-strict-aliasing )
+    # add warnings via flags (not as definitions as on Mac -Wall can not be overridden per language )
+    SET(_warnings "-Wall -Wextra -Wno-long-long -Wformat-security -Wno-strict-aliasing")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
+
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
     # There are redundant declarations in Qt and GDAL
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
+
+    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual")
+    ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   ENDIF (MSVC)
+
 ENDIF (PEDANTIC)
+
+IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
+  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986
@@ -336,8 +379,10 @@ IF (WIN32)
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
 
     IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-      MESSAGE (STATUS "Generating browse files")
-      ADD_DEFINITIONS( /FR )
+      IF (NOT USING_NMAKE)
+        MESSAGE (STATUS "Generating browse files")
+        ADD_DEFINITIONS( /FR )
+      ENDIF (NOT USING_NMAKE)
     ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
     IF (INSTALL_DEPS)
@@ -395,6 +440,13 @@ ELSE (WIN32)
     IF (WITH_GLOBE)
         SET (OSG_PLUGINS_PATH "" CACHE PATH "Path to OSG plugins for bundling")
     ENDIF (WITH_GLOBE)
+    # recent cmakes force SDKs, recent SDKs don't have user symlinks
+    # need to find non-system frameworks
+    # cmake bug #0007250 - CMAKE_SHARED_LINKER_FLAGS ignored when creating
+    # a framework, so these need to be manually handled with LINK_FLAGS options
+    SET (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -F/Library/Frameworks")
+    SET (CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -F/Library/Frameworks")
+    SET (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -F/Library/Frameworks")
 
   ELSE (APPLE)
     # UNIX

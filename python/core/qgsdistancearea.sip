@@ -17,18 +17,12 @@ class QgsDistanceArea
 
     //! sets whether coordinates must be projected to ellipsoid before measuring
     void setEllipsoidalMode( bool flag );
-    void setProjectionsEnabled( bool flag ) /Deprecated/;
 
     //! returns projections enabled flag
     bool ellipsoidalEnabled() const;
-    bool hasCrsTransformEnabled() /Deprecated/;
 
     //! sets source spatial reference system (by QGIS CRS)
     void setSourceCrs( long srsid );
-
-    //! sets source spatial reference system (by EpsgCrsId)
-    // @deprecated use setSourceAuthid()
-    void setSourceEpsgCrsId( long epsgId ) /Deprecated/;
 
     //! sets source spatial reference system by authid
     void setSourceAuthId( QString authid );
@@ -76,6 +70,6 @@ class QgsDistanceArea
     static QString textUnit( double value, int decimals, QGis::UnitType u, bool isArea, bool keepBaseUnit = false );
 
     //! Helper for conversion between physical units
-    void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea );
+    void convertMeasurement( double &measure /In,Out/, QGis::UnitType &measureUnits /In,Out/, QGis::UnitType displayUnits, bool isArea );
 
 };

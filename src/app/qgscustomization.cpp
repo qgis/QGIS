@@ -46,6 +46,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings* sett
 {
   mSettings = settings;
   setupUi( this );
+
   init();
   QStringList myHeaders;
   myHeaders << tr( "Object name" ) << tr( "Label" ) << tr( "Description" );
@@ -181,6 +182,12 @@ void QgsCustomizationDialog::reset()
 {
   mSettings->sync();
   settingsToTree( mSettings );
+
+  QSettings settings;
+  bool enabled = settings.value( "/UI/Customization/enabled", "false" ).toString() == "true";
+  mCustomizationEnabledCheckBox->setChecked( enabled );
+  treeWidget->setEnabled( enabled );
+  toolBar->setEnabled( enabled );
 }
 
 void QgsCustomizationDialog::ok()
@@ -194,6 +201,9 @@ void QgsCustomizationDialog::apply()
   treeToSettings( mSettings );
   mSettings->setValue( QgsCustomization::instance()->statusPath(), QgsCustomization::User );
   mSettings->sync();
+
+  QSettings settings;
+  settings.setValue( "/UI/Customization/enabled", mCustomizationEnabledCheckBox->isChecked() );
 }
 
 void QgsCustomizationDialog::cancel()
@@ -261,6 +271,12 @@ void QgsCustomizationDialog::on_actionSelectAll_triggered( bool checked )
   {
     ( *i )->setCheckState( 0, Qt::Checked );
   }
+}
+
+void QgsCustomizationDialog::on_mCustomizationEnabledCheckBox_toggled( bool checked )
+{
+  treeWidget->setEnabled( checked );
+  toolBar->setEnabled( checked );
 }
 
 void QgsCustomizationDialog::init()
@@ -538,7 +554,7 @@ void QgsCustomization::createTreeItemToolbars( )
 void QgsCustomization::createTreeItemDocks( )
 {
   QStringList data;
-  data << "Docks";
+  data << "Panels";
 
   QTreeWidgetItem *topItem = new QTreeWidgetItem( data );
 
@@ -598,10 +614,13 @@ QgsCustomization *QgsCustomization::instance()
 
 QgsCustomization::QgsCustomization()
     : pDialog( 0 )
-    , mEnabled( true )
+    , mEnabled( false )
     , mStatusPath( "/Customization/status" )
 {
   QgsDebugMsg( "Entered" );
+
+  QSettings settings;
+  mEnabled = settings.value( "/UI/Customization/enabled", "false" ).toString() == "true";
 }
 
 QgsCustomization::~QgsCustomization()
@@ -885,6 +904,19 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
         pDialog->setCatch( !pDialog->catchOn() );
       }
     }
+  }
+}
+
+QString QgsCustomization::splashPath()
+{
+  if ( isEnabled() )
+  {
+    QString path = mSettings->value( "/Customization/splashpath", QgsApplication::splashPath() ).toString();
+    return path;
+  }
+  else
+  {
+    return QgsApplication::splashPath();
   }
 }
 

@@ -28,7 +28,12 @@ from PyQt4.QtGui import *
 import subprocess
 from sextante.core.SextanteLog import SextanteLog
 import os
-import gdal
+
+try:
+    from osgeo import gdal
+    gdalAvailable = True
+except:
+    gdalAvailable = False
 
 class GdalUtils():
 
@@ -57,6 +62,9 @@ class GdalUtils():
 
     @staticmethod
     def getSupportedRasters():
+        if not gdalAvailable:
+            return {}
+
         '''this has been adapted from GdalTools plugin'''
         if GdalUtils.supportedRasters != None:
             return GdalUtils.supportedRasters
@@ -73,6 +81,8 @@ class GdalUtils():
 
             shortName = str(QString(driver.ShortName).remove( QRegExp( '\(.*$' ) ).trimmed())
             metadata = driver.GetMetadata()
+            if not metadata.has_key(gdal.DCAP_CREATE) or metadata[gdal.DCAP_CREATE] != 'YES':
+                continue
             if metadata.has_key(gdal.DMD_EXTENSION):
                 extensions = metadata[gdal.DMD_EXTENSION].split("/")
                 if extensions:
@@ -85,7 +95,7 @@ class GdalUtils():
         allexts = ["tif"]
         for exts in GdalUtils.getSupportedRasters().values():
             for ext in exts:
-                if ext not in allexts:
+                if ext not in allexts and ext != "":
                     allexts.append(ext)
         return allexts
 

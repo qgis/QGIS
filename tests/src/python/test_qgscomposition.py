@@ -101,7 +101,7 @@ class TestQgsComposition(TestCase):
         myPipe = myRasterLayer.pipe()
         assert myPipe.set( myRenderer ), "Cannot set pipe renderer"
 
-        QgsMapLayerRegistry.instance().addMapLayer(myRasterLayer)
+        QgsMapLayerRegistry.instance().addMapLayers([myRasterLayer])
 
         myMapRenderer = QgsMapRenderer()
         myLayerStringList = QStringList()
@@ -138,8 +138,9 @@ class TestQgsComposition(TestCase):
         # rendering.
         myFileSize = QFileInfo(myImagePath).size()
         myExpectedFileSize = 100000
-        myMessage = ('Expected file size to be greater than %s, got %s' %
-                     (myExpectedFileSize, myFileSize))
+        myMessage = ('Expected file size to be greater than %s, got %s'
+                     ' for %s' %
+                     (myExpectedFileSize, myFileSize, myImagePath))
         assert myFileSize > myExpectedFileSize, myMessage
 
 if __name__ == '__main__':

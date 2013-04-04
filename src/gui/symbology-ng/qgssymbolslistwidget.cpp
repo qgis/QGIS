@@ -62,11 +62,18 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   viewSymbols->setModel( model );
   connect( viewSymbols->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( setSymbolFromStyle( const QModelIndex & ) ) );
 
+  if ( parent )
+  {
+    if ( dynamic_cast<QgsStyleV2ManagerDialog*>( parent->parentWidget() ) )
+    {
+      btnStyle->setVisible( false );
+    }
+  }
   // Set the Style Menu under btnStyle
   QMenu *styleMenu = new QMenu( btnStyle );
   QAction *styleMgrAction = new QAction( "Style Manager", styleMenu );
   styleMenu->addAction( styleMgrAction );
-  QAction *saveStyle = new QAction( "Save as style", styleMenu );
+  QAction *saveStyle = new QAction( "Save in symbol library...", styleMenu );
   styleMenu->addAction( saveStyle );
   connect( styleMgrAction, SIGNAL( triggered() ), this, SLOT( openStyleManager() ) );
   connect( saveStyle, SIGNAL( triggered() ), this, SLOT( addSymbolToStyle() ) );
@@ -92,12 +99,14 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   // select correct page in stacked widget
   // there's a correspondence between symbol type number and page numbering => exploit it!
   stackedWidget->setCurrentIndex( symbol->type() );
-  connect( btnColor, SIGNAL( clicked() ), this, SLOT( setSymbolColor() ) );
+  connect( btnColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setSymbolColor( const QColor& ) ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerAngle( double ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerSize( double ) ) );
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( setLineWidth( double ) ) );
 
-
+  // Live color updates are not undoable to child symbol layers
+  btnColor->setAcceptLiveUpdates( false );
+  btnColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   // Set symbol color in btnColor
   updateSymbolColor();
 }
@@ -150,9 +159,14 @@ void QgsSymbolsListWidget::populateSymbols( QStringList names )
       continue;
     }
     QStandardItem* item = new QStandardItem( names[i] );
-    item->setData( names[i], Qt::UserRole ); //so we can show a label when it is clicked
-    item->setText( "" ); //set the text to nothing and show in label when clicked rather
+    item->setData( names[i], Qt::UserRole ); //so we can load symbol with that name
+    item->setText( names[i] );
+    item->setToolTip( names[i] );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    // Set font to 10points to show reasonable text
+    QFont itemFont = item->font();
+    itemFont.setPointSize( 10 );
+    item->setFont( itemFont );
     // create preview icon
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( s, previewSize );
     item->setIcon( icon );
@@ -170,21 +184,9 @@ void QgsSymbolsListWidget::openStyleManager()
   populateSymbolView();
 }
 
-void QgsSymbolsListWidget::setSymbolColor()
+void QgsSymbolsListWidget::setSymbolColor( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
-  // FIXME need to also check max QT_VERSION when Qt bug fixed
-  QColor color = QColorDialog::getColor( mSymbol->color(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-  QColor color = QColorDialog::getColor( mSymbol->color(), this );
-#endif
-  if ( !color.isValid() )
-    return;
-
   mSymbol->setColor( color );
-  updateSymbolColor();
   emit changed();
 }
 
@@ -275,7 +277,9 @@ void QgsSymbolsListWidget::displayTransparency( double alpha )
 
 void QgsSymbolsListWidget::updateSymbolColor()
 {
+  btnColor->blockSignals( true );
   btnColor->setColor( mSymbol->color() );
+  btnColor->blockSignals( false );
 }
 
 void QgsSymbolsListWidget::updateSymbolInfo()

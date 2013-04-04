@@ -45,7 +45,7 @@ void QgsMapToolShowHideLabels::canvasPressEvent( QMouseEvent * e )
   mSelectRect.setRect( 0, 0, 0, 0 );
   mSelectRect.setTopLeft( e->pos() );
   mSelectRect.setBottomRight( e->pos() );
-  mRubberBand = new QgsRubberBand( mCanvas, true );
+  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
 }
 
 void QgsMapToolShowHideLabels::canvasMoveEvent( QMouseEvent * e )
@@ -93,7 +93,7 @@ void QgsMapToolShowHideLabels::canvasReleaseEvent( QMouseEvent * e )
 
     showHideLabels( e );
 
-    mRubberBand->reset( true );
+    mRubberBand->reset( QGis::Polygon );
     delete mRubberBand;
     mRubberBand = 0;
   }
@@ -156,9 +156,15 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
 
   QgsDebugMsg( "Number of selected labels or features: " + QString::number( selectedFeatIds.size() ) );
 
+  if ( selectedFeatIds.isEmpty() )
+  {
+    return;
+  }
 
   bool labelChanged = false;
+  QString editTxt = doHide ? tr( "Hid labels" ) : tr( "Showed labels" );
 
+  vlayer->beginEditCommand( editTxt );
   foreach ( const QgsFeatureId &fid, selectedFeatIds )
   {
     if ( showHideLabel( vlayer, fid, doHide ) )
@@ -167,10 +173,15 @@ void QgsMapToolShowHideLabels::showHideLabels( QMouseEvent * e )
       labelChanged = true;
     }
   }
+  vlayer->endEditCommand();
 
   if ( labelChanged )
   {
     mCanvas->refresh();
+  }
+  else
+  {
+    vlayer->destroyEditCommand();
   }
 }
 
@@ -210,16 +221,14 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer* vlayer,
   QgsDebugMsg( "Selection layer: " + vlayer->name() );
   QgsDebugMsg( "Selection polygon: " + selectGeomTrans.exportToWkt() );
 
-  vlayer->select( QgsAttributeList(), selectGeomTrans.boundingBox(), false, true );
+  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
+                           .setFilterRect( selectGeomTrans.boundingBox() )
+                           .setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect )
+                           .setSubsetOfAttributes( QgsAttributeList() ) );
 
   QgsFeature f;
-  while ( vlayer->nextFeature( f ) )
+  while ( fit.nextFeature( f ) )
   {
-    QgsGeometry* g = f.geometry();
-
-    if ( !selectGeomTrans.intersects( g ) )
-      continue;
-
     selectedFeatIds.insert( f.id() );
   }
 
@@ -273,21 +282,33 @@ bool QgsMapToolShowHideLabels::showHideLabel( QgsVectorLayer* vlayer,
   // verify attribute table has proper field setup
   bool showSuccess;
   int showCol;
-  int show;
+  int showVal;
 
-  if ( !dataDefinedShowHide( vlayer, fid, show, showSuccess, showCol ) )
+  if ( !dataDefinedShowHide( vlayer, fid, showVal, showSuccess, showCol ) )
   {
     return false;
   }
 
-  // edit attribute table
-  QString editTxt = hide ? tr( "Label hidden" ) : tr( "Label shown" );
-  vlayer->beginEditCommand( editTxt );
-  if ( !vlayer->changeAttributeValue( fid, showCol, ( hide ? 0 : 1 ), false ) )
+  int curVal = hide ? 0 : 1;
+
+  // check if attribute value is already the same
+  if ( showSuccess && showVal == curVal )
+  {
+    return false;
+  }
+
+  // allow NULL (maybe default) value to stand for show label (i.e. 1)
+  // skip NULL attributes if trying to show label
+  if ( !showSuccess && curVal == 1 )
+  {
+    return false;
+  }
+
+  // different attribute value, edit table
+  if ( !vlayer->changeAttributeValue( fid, showCol, curVal, false ) )
   {
     QgsDebugMsg( "Failed write to attribute table" );
     return false;
   }
-  vlayer->endEditCommand();
   return true;
 }

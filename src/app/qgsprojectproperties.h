@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 
+#include "qgsoptionsdialogbase.h"
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
 #include "qgisgui.h"
@@ -30,7 +31,7 @@ class QgsStyleV2;
   @note actual state is stored in QgsProject singleton instance
 
  */
-class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBase
+class QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase
 {
     Q_OBJECT
 
@@ -72,16 +73,6 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      * Slot to show the projections tab when the dialog is opened
      */
     void showProjectionsTab();
-
-    /*!
-     * Slot to select the map selection color
-     */
-    void on_pbnSelectionColor_clicked();
-
-    /*!
-     * Slot to select the map selection color
-     */
-    void on_pbnCanvasColor_clicked();
 
     /*! Let the user add a scale to the list of project scales
      * used in scale combobox instead of global ones
@@ -132,13 +123,14 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void on_pbtnStyleFill_clicked();
     void on_pbtnStyleColorRamp_clicked();
     void on_mTransparencySlider_valueChanged( int value );
+    void on_mTransparencySpinBox_valueChanged( int value );
 
     /*!
      * Slot to show the context help for this dialog
      */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-    void on_cbxProjectionEnabled_stateChanged( int state );
+    void on_cbxProjectionEnabled_toggled( bool onFlyEnabled );
 
     /*!
      * Slot to link WFS checkboxes
@@ -153,6 +145,12 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
       */
     void setMapUnitsToCurrentProjection();
 
+    /* Update ComboBox accorindg to the selected new index
+     * Also sets the new selected Ellipsoid.
+     * @note added in 2.0
+     */
+    void updateEllipsoidUI( int newIndex );
+
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
@@ -163,7 +161,6 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     //! let listening canvases know to refresh
     void refresh();
 
-
   private:
     QgsMapCanvas* mMapCanvas;
     QgsStyleV2* mStyle;
@@ -172,12 +169,12 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void editSymbol( QComboBox* cbo );
 
     /*!
-     * Function to save dialog window state
+     * Function to save non-base dialog states
      */
     void saveState();
 
     /*!
-     * Function to restore dialog window state
+     * Function to restore non-base dialog states
      */
     void restoreState();
 
@@ -188,4 +185,21 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
 
     long mProjectSrsId;
     long mLayerSrsId;
+
+    // List for all ellispods, also None and Custom
+    struct EllipsoidDefs
+    {
+      QString acronym;
+      QString description;
+      double semiMajor;
+      double semiMinor;
+    };
+    QList<EllipsoidDefs> mEllipsoidList;
+    int mEllipsoidIndex;
+
+    //! Populates list with ellipsoids from Sqlite3 db
+    void populateEllipsoidList();
+
+    static const char * GEO_NONE_DESC;
+
 };

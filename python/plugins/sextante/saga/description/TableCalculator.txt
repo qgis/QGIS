@@ -1,7 +1,0 @@
-Table Calculator
-table_calculus
-ParameterString|FORMULA|Formula|
-ParameterString|NAME|Field Name|
-ParameterTable|TABLE|Table|False
-ParameterTableField|FIELD|Field|TABLE
-OutputTable|RESULT|Result

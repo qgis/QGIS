@@ -1,11 +1,15 @@
-
 ########################################################
 # Files
+
+IF(WITH_QSPATIALITE)
+  SUBDIRS(qspatialite)
+ENDIF(WITH_QSPATIALITE)
 
 SET(SPATIALITE_SRCS
   qgsspatialiteprovider.cpp
   qgsspatialitedataitems.cpp
   qgsspatialiteconnection.cpp
+  qgsspatialitefeatureiterator.cpp
   qgsspatialitesourceselect.cpp
   qgsspatialitetablemodel.cpp
 )
@@ -23,6 +27,10 @@ SET(SPATIALITE_MOC_HDRS
 # Build
 
 QT4_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
+
+IF(SPATIALITE_VERSION_GE_4_0_0)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPATIALITE_VERSION_GE_4_0_0")
+ENDIF(SPATIALITE_VERSION_GE_4_0_0)
 
 
 INCLUDE_DIRECTORIES(
@@ -56,7 +64,7 @@ ENDIF(NOT WITH_INTERNAL_SPATIALITE)
 
 ########################################################
 # Install
-                
+
 INSTALL(TARGETS spatialiteprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})

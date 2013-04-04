@@ -203,8 +203,8 @@ void QgsDataItem::populate()
 
 int QgsDataItem::rowCount()
 {
-  if ( !mPopulated )
-    populate();
+  // if ( !mPopulated )
+  //   populate();
   return mChildren.size();
 }
 bool QgsDataItem::hasChildren()
@@ -472,10 +472,8 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
     QString path = dir.absoluteFilePath( name );
     QFileInfo fileInfo( path );
 
-    QString vsiPrefix = QgsZipItem::vsiPrefix( path );
     // vsizip support was added to GDAL/OGR 1.6 but GDAL_VERSION_NUM not available here
-    if (( settings.value( "/qgis/scanZipInBrowser", QVariant( "basic" ) ).toString() != "no" ) &&
-        ( vsiPrefix == "/vsizip/" || vsiPrefix == "/vsitar/" ) )
+    //   so we assume it's available anyway
     {
       QgsDataItem * item = QgsZipItem::itemFromPath( this, path, name );
       if ( item )
@@ -857,7 +855,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
   QString tmpPath;
   QString childPath;
   QSettings settings;
-  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
 
   mZipFileList.clear();
 
@@ -868,14 +866,6 @@ QVector<QgsDataItem*> QgsZipItem::createChildren( )
   {
     return children;
   }
-
-  // if scanZipBrowser == passthru: do not scan zip and allow to open directly with /vsizip/
-  // if ( scanZipSetting == 1 )
-  // {
-  //   mPath = "/vsizip/" + path(); // should check for extension
-  //   QgsDebugMsg( "set path to " + path() );
-  //   return children;
-  // }
 
   // first get list of files
   getZipFileList();
@@ -955,7 +945,7 @@ QString QgsZipItem::vsiPrefix( QString path )
 QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QString name )
 {
   QSettings settings;
-  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
   QString vsiPath = path;
   int zipFileCount = 0;
   QStringList zipFileList;
@@ -966,21 +956,15 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QStrin
 
   QgsDebugMsgLevel( QString( "path = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( path ).arg( name ).arg( scanZipSetting ).arg( vsiPrefix ), 3 );
 
-  // if scanZipBrowser == no: don't read the zip file
+  // don't scan if scanZipBrowser == no
   if ( scanZipSetting == "no" )
-  {
     return 0;
-  }
-  // if scanZipBrowser == passthru: do not scan zip and allow to open directly with /vsizip/
-  // else if ( scanZipSetting == 1 )
-  // {
-  //   vsizipPath = "/vsizip/" + path;
-  //   zipItem = 0;
-  // }
-  else
-  {
-    zipItem = new QgsZipItem( parent, name, path );
-  }
+
+  // don't scan if this file is not a /vsizip/ or /vsitar/ item
+  if (( vsiPrefix != "/vsizip/" && vsiPrefix != "/vsitar/" ) )
+    return 0;
+
+  zipItem = new QgsZipItem( parent, name, path );
 
   if ( zipItem )
   {
@@ -1036,7 +1020,6 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QStrin
         // try first with normal path (Passthru)
         // this is to simplify .qml handling, and without this some tests will fail
         // (e.g. testZipItemVectorTransparency(), second test)
-        // if (( scanZipSetting == 1 ) ||
         if (( mProviderNames[i] == "ogr" ) ||
             ( mProviderNames[i] == "gdal" && zipFileCount == 1 ) )
           item = dataItem( path, parent );
@@ -1059,7 +1042,7 @@ const QStringList & QgsZipItem::getZipFileList()
 
   QString tmpPath;
   QSettings settings;
-  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser", "basic" ).toString();
+  QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
 
   QgsDebugMsgLevel( QString( "path = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( path() ).arg( name() ).arg( scanZipSetting ).arg( mVsiPrefix ), 3 );
 

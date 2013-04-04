@@ -113,11 +113,11 @@ int QgsRasterProjector::bandCount() const
   return 0;
 }
 
-QgsRasterBlock::DataType QgsRasterProjector::dataType( int bandNo ) const
+QGis::DataType QgsRasterProjector::dataType( int bandNo ) const
 {
   if ( mInput ) return mInput->dataType( bandNo );
 
-  return QgsRasterBlock::UnknownDataType;
+  return QGis::UnknownDataType;
 }
 
 void QgsRasterProjector::setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS )
@@ -701,9 +701,9 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
+    QgsDebugMsg( "Input not set" );
     return outputBlock;
   }
-
 
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
@@ -723,6 +723,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
   if ( srcRows() <= 0 || srcCols() <= 0 )
   {
+    QgsDebugMsg( "Zero srcRows or srcCols" );
     return outputBlock;
   }
 
@@ -737,13 +738,15 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
 
   size_t pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
 
-  if ( !outputBlock->reset( QgsRasterBlock::ARGB32_Premultiplied, width, height ) )
+  if ( !outputBlock->reset( mInput->dataType( bandNo ), width, height ) )
   {
+    QgsDebugMsg( "Cannot reset block" );
     delete inputBlock;
     return outputBlock;
   }
+  outputBlock->setNoDataValue( mInput->noDataValue( bandNo ) );
 
-  // TODO: fill by transparent
+  // TODO: fill by no data or transparent
 
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
@@ -751,6 +754,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     for ( int j = 0; j < width; ++j )
     {
       srcRowCol( i, j, &srcRow, &srcCol );
+      QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
       size_t srcIndex = srcRow * mSrcCols + srcCol;
       size_t destIndex = i * width + j;
 

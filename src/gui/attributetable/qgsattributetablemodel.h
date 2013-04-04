@@ -23,34 +23,59 @@
 #include <QHash>
 #include <QQueue>
 
-#include "qgsfeature.h" // QgsAttributeMap
 #include "qgsvectorlayer.h" // QgsAttributeList
-#include "qgsattributetableidcolumnpair.h"
+#include "qgsvectorlayercache.h"
 
 class QgsMapCanvas;
 
+/**
+ * A model backed by a {@link QgsVectorLayerCache} which is able to provide
+ * feature/attribute information to a QAbstractItemView.
+ *
+ * @brief
+ * Is able to generate editor widgets for its QModelIndexes as well.
+ * Is mostly referred to as "master model" within this doc and the source.
+ *
+ * @see <a href="http://doc.qt.digia.com/qt/model-view-programming.html">Qt Model View Programming</a>
+ */
 class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 {
     Q_OBJECT
 
   public:
+    enum Role
+    {
+      SortRole = Qt::UserRole + 1
+    };
+
+  public:
     /**
      * Constructor
-     * @param canvas map canvas pointer
-     * @param theLayer layer pointer
-     * @param parent parent pointer
+     * @param layerCache  A layer cache to use as backend
+     * @param parent      The parent QObject (owner)
      */
-    QgsAttributeTableModel( QgsMapCanvas *canvas, QgsVectorLayer *theLayer, QObject *parent = 0 );
+    QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
+
+    virtual ~QgsAttributeTableModel();
+
+    /**
+     * Loads the layer into the model
+     * Preferably to be called, before basing any other models on this model
+     */
+    virtual void loadLayer();
+
     /**
      * Returns the number of rows
      * @param parent parent index
      */
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
     /**
      * Returns the number of columns
      * @param parent parent index
      */
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
     /**
      * Returns header data
      * @param section required section
@@ -58,12 +83,14 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param role data role
      */
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
     /**
      * Returns data on the given index
      * @param index model index
      * @param role data role
      */
     virtual QVariant data( const QModelIndex &index, int role ) const;
+
     /**
      * Updates data on given index
      * @param index model index
@@ -71,6 +98,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param role data role
      */
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
     /**
      * Returns item flags for the index
      * @param index model index
@@ -83,46 +111,41 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param index2 end index
      */
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
+
     /**
      * Remove rows
      */
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
     /**
      * Resets the model
      */
     void resetModel();
-    /**
-     * Layout has been changed
-     */
-    void changeLayout();
-    /**
-     * Layout will be changed
-     */
-    void incomingChangeLayout();
+
     /**
      * Maps feature id to table row
      * @param id feature id
      */
     int idToRow( QgsFeatureId id ) const;
+
+    QModelIndex idToIndex( QgsFeatureId id ) const;
+
     /**
      * get field index from column
      */
     int fieldIdx( int col ) const;
+
     /**
      * get column from field index
      */
     int fieldCol( int idx ) const;
+
     /**
      * Maps row to feature id
      * @param row row number
      */
     QgsFeatureId rowToId( int row ) const;
-    /**
-     * Sorts the model
-     * @param column column to sort by
-     * @param order sorting order
-     */
-    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+
     /**
      * Swaps two rows
      * @param a first row
@@ -131,14 +154,22 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void swapRows( QgsFeatureId a, QgsFeatureId b );
 
     /**
-     * Returns layer pointer
+     * Returns the layer this model uses as backend. Retrieved from the layer cache.
      */
-    QgsVectorLayer* layer() const { return mLayer; }
+    inline QgsVectorLayer* layer() const { return mLayerCache ? mLayerCache->layer() : NULL; }
 
-    /** Execute an action */
+    /**
+     * Returns the layer cache this model uses as backend.
+     */
+    inline QgsVectorLayerCache* layerCache() const { return mLayerCache; }
+
+    /**
+     * Execute an action
+     */
     void executeAction( int action, const QModelIndex &idx ) const;
 
-    /** return feature attributes at given index */
+    /**
+     * return feature attributes at given index */
     QgsFeature feature( const QModelIndex &idx ) const;
 
   signals:
@@ -150,11 +181,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     //! @note not available in python bindings
     void progress( int i, bool &cancel );
     void finished();
-
-  public slots:
-    void extentsChanged();
-
-    void layerRepaintRequested();
 
   private slots:
     /**
@@ -194,43 +220,33 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void layerDeleted();
 
   protected:
-    QgsMapCanvas *mCanvas;
-    QgsVectorLayer *mLayer;
+    QgsVectorLayerCache *mLayerCache;
     int mFieldCount;
 
     mutable QgsFeature mFeat;
-    mutable QHash<QgsFeatureId, QgsFeature> mFeatureMap;
 
     QgsAttributeList mAttributes;
     QMap< int, const QMap<QString, QVariant> * > mValueMaps;
 
-    QList<QgsAttributeTableIdColumnPair> mSortList;
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
-
-    //! useful when showing only features from a particular extent
-    QgsRectangle mCurrentExtent;
 
     /**
       * Gets mFieldCount, mAttributes and mValueMaps
       */
     virtual void loadAttributes();
 
-  public:
-    /**
-     * Loads the layer into the model
-     */
-    virtual void loadLayer();
-
   private:
-    mutable QQueue<QgsFeatureId> mFeatureQueue;
-
     /**
-     * load feature fid into mFeat
-     * @param fid feature id
+     * Load feature fid into local cache (mFeat)
+     *
+     * @param  fid     feature id
+     *
      * @return feature exists
      */
-    virtual bool featureAtId( QgsFeatureId fid ) const;
+    virtual bool loadFeatureAtId( QgsFeatureId fid ) const;
+
+    QgsFeatureRequest mFeatureRequest;
 };
 
 

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.tests.TestData import points
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,11 +25,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from sextante.core.SextanteUtils import SextanteUtils
+import stat
+import traceback
 import subprocess
+from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
-import stat
+from qgis.core import *
+from PyQt4.QtCore import *
+from sextante.core.SextanteVectorWriter import SextanteVectorWriter
+from sextante.core.QGisLayers import QGisLayers
+
 
 class SagaUtils:
 
@@ -76,12 +83,8 @@ class SagaUtils:
             fout.write("PATH=PATH;%SAGA%;%SAGA_MLB%\n");
         else:
             pass
-            #fout.write("export SAGA_MLB=" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
-            #fout.write("PATH=$PATH:" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
-            #fout.write("export PATH\n");
-
         for command in commands:
-            fout.write("saga_cmd " + command + "\n")
+            fout.write("saga_cmd " + command.encode("utf8") + "\n")
 
         fout.write("exit")
         fout.close()
@@ -99,7 +102,10 @@ class SagaUtils:
         for line in iter(proc.readline, ""):
             if "%" in line:
                 s = "".join([x for x in line if x.isdigit()])
-                progress.setPercentage(int(s))
+                try:
+                    progress.setPercentage(int(s))
+                except:
+                    pass
             else:
                 line = line.strip()
                 if line!="/" and line!="-" and line !="\\" and line!="|":
@@ -109,6 +115,31 @@ class SagaUtils:
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
 
+    @staticmethod
+    def checkSagaIsInstalled(ignoreRegistrySettings=False):
+        if SextanteUtils.isWindows():
+            path = SagaUtils.sagaPath()
+            if path == "":
+                return "SAGA folder is not configured.\nPlease configure it before running SAGA algorithms."
+            cmdpath = os.path.join(path, "saga_cmd.exe")
+            if not os.path.exists(cmdpath):
+                return ("The specified SAGA folder does not contain a valid SAGA executable.\n"
+                        + "Please, go to the SEXTANTE settings dialog, and check that the SAGA\n"
+                        + "folder is correctly configured")
 
+        if not ignoreRegistrySettings:
+            SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
+            settings = QSettings()
+            if settings.contains(SAGA_INSTALLED):
+                return
 
+        try:
+            from sextante.core.Sextante import runalg
+            result = runalg("saga:thiessenpolygons", points(), None)
+            if not os.path.exists(result['POLYGONS']):
+                return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
+        except:
+            s = traceback.format_exc()
+            return "Error while checking SAGA installation. SAGA might not be correctly configured.\n" + s;
 
+        settings.setValue(SAGA_INSTALLED, True)

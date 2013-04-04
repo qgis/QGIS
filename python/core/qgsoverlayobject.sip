@@ -10,17 +10,6 @@ class QgsOverlayObject
     //copy constructor and assignment operator necessary because of mGeometry
     QgsOverlayObject( const QgsOverlayObject& other );
 
-
-    /**Returns the feature geometry in geos format. The calling function does _not_ take
-     * ownership of the generated object. The geometry is in map coordinates
-     * @deprecated Please use geometry() and QgsGeometry::asGeos instead
-     */
-    // GEOSGeometry* getGeosGeometry() /Deprecated/;
-    /**Feature geometry is released when object is destructed so this function is empty.
-     * @deprecated nop
-     */
-    // void releaseGeosGeometry( GEOSGeometry *the_geom ) /Deprecated/;
-
     //getters
     int width() const;
     int height() const;

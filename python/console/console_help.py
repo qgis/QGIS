@@ -23,7 +23,6 @@ __copyright__ = '(C) 2012, Salvatore Larosa'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtWebKit import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from ui_console_help import Ui_Help
@@ -33,12 +32,11 @@ import os
 class HelpDialog(QDialog, Ui_Help):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
-        self.setModal(True)
         self.setupUi(self)
 
         self.setWindowTitle(QCoreApplication.translate("PythonConsole","Help Python Console"))
-        self.setMaximumSize(500, 300)
-        
+        self.setMaximumSize(530, 300)
+
         qgisDataDir = QgsApplication.pkgDataPath()
         listFile = os.listdir(qgisDataDir + "/python/console/console_help/i18n")
         localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()

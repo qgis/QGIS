@@ -78,10 +78,17 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   mActiveLayer = currentVectorLayer();
   if ( !mActiveLayer )
   {
+    notifyNotVectorLayer();
     return;
   }
 
-  if ( mActiveLayer->geometryType() != QGis::Point || !mActiveLayer->isEditable() )
+  if ( !mActiveLayer->isEditable() )
+  {
+    notifyNotEditableLayer();
+    return;
+  }
+
+  if ( mActiveLayer->geometryType() != QGis::Point )
   {
     return;
   }
@@ -113,18 +120,17 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
 
   //find out initial arrow direction
   QgsFeature pointFeature;
-  if ( !mActiveLayer->featureAtId( mFeatureNumber, pointFeature, false, true ) )
+  if ( !mActiveLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setFilterFid( mFeatureNumber ) ).nextFeature( pointFeature ) )
   {
     return;
   }
-  const QgsAttributeMap pointFeatureAttributes = pointFeature.attributeMap();
-  const QgsAttributeMap::const_iterator attIt = pointFeatureAttributes.find( mCurrentRotationAttributes.at( 0 ) );
-  if ( attIt == pointFeatureAttributes.constEnd() )
+  QVariant attrVal = pointFeature.attribute( mCurrentRotationAttributes.at( 0 ) );
+  if ( !attrVal.isValid() )
   {
     return;
   }
 
-  mCurrentRotationFeature = attIt.value().toDouble();
+  mCurrentRotationFeature = attrVal.toDouble();
   createPixmapItem( pointFeature );
   if ( mRotationItem )
   {

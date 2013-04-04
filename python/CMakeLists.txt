@@ -2,6 +2,7 @@ SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 
 ADD_SUBDIRECTORY(plugins)
 ADD_SUBDIRECTORY(qsci_apis)
+ADD_SUBDIRECTORY(console)
 
 IF (WITH_PYSPATIALITE)
   ADD_SUBDIRECTORY(pyspatialite)
@@ -20,32 +21,32 @@ SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 
 INCLUDE_DIRECTORIES(
-    ${PYTHON_INCLUDE_PATH}
-    ${SIP_INCLUDE_DIR}
-    ${QT_QTCORE_INCLUDE_DIR}
-    ${QT_QTGUI_INCLUDE_DIR}
-    ${QT_QTNETWORK_INCLUDE_DIR}
-    ${QT_QTSVG_INCLUDE_DIR}
-    ${QT_QTXML_INCLUDE_DIR}
-    ${GDAL_INCLUDE_DIR}
-    ${GEOS_INCLUDE_DIR}
-    ${QWT_INCLUDE_DIR}
+  ${PYTHON_INCLUDE_PATH}
+  ${SIP_INCLUDE_DIR}
+  ${QT_QTCORE_INCLUDE_DIR}
+  ${QT_QTGUI_INCLUDE_DIR}
+  ${QT_QTNETWORK_INCLUDE_DIR}
+  ${QT_QTSVG_INCLUDE_DIR}
+  ${QT_QTXML_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${QWT_INCLUDE_DIR}
+  ${QEXTSERIALPORT_INCLUDE_DIR}
 
-    ../src/core
-    ../src/core/pal
-    ../src/core/composer
-    ../src/core/diagram
-    ../src/core/gps
-    ../src/core/gps/qextserialport
-    ../src/core/raster
-    ../src/core/renderer
-    ../src/core/symbology
-    ../src/core/symbology-ng
+  ../src/core
+  ../src/core/pal
+  ../src/core/composer
+  ../src/core/diagram
+  ../src/core/gps
+  ../src/core/raster
+  ../src/core/renderer
+  ../src/core/symbology
+  ../src/core/symbology-ng
 
-    ../src/gui/raster
-    ../src/gui/attributetable
+  ../src/gui/raster
+  ../src/gui/attributetable
 
-    ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
+  ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )
 
 IF(NOT WITH_TOUCH)
@@ -80,11 +81,11 @@ ADD_SIP_PYTHON_MODULE(qgis.core core/core.sip qgis_core)
 
 # additional gui includes
 INCLUDE_DIRECTORIES(
-    ../src/gui
-    ../src/gui/symbology-ng
-    ../src/plugins
-    ${CMAKE_BINARY_DIR}/src/gui
-    ${CMAKE_BINARY_DIR}/src/ui
+  ../src/gui
+  ../src/gui/symbology-ng
+  ../src/plugins
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
 )
 
 # gui module
@@ -95,22 +96,22 @@ ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
 
 # additional analysis includes
 INCLUDE_DIRECTORIES(
-    ../src/analysis/vector
-    ../src/analysis/raster
-    ../src/analysis/network
-    ../src/analysis/interpolation
-    ${CMAKE_BINARY_DIR}/src/analysis/vector
-    ${CMAKE_BINARY_DIR}/src/analysis/network
-    ${CMAKE_BINARY_DIR}/src/analysis/raster
-    ${CMAKE_BINARY_DIR}/src/analysis/interpolation
+  ../src/analysis/vector
+  ../src/analysis/raster
+  ../src/analysis/network
+  ../src/analysis/interpolation
+  ${CMAKE_BINARY_DIR}/src/analysis/vector
+  ${CMAKE_BINARY_DIR}/src/analysis/network
+  ${CMAKE_BINARY_DIR}/src/analysis/raster
+  ${CMAKE_BINARY_DIR}/src/analysis/interpolation
 )
 
 # analysis module
 FILE(GLOB sip_files_analysis
-	analysis/*.sip
-	analysis/raster/*.sip
-	analysis/vector/*.sip
-	analysis/interpolation/*.sip
+  analysis/*.sip
+  analysis/raster/*.sip
+  analysis/vector/*.sip
+  analysis/interpolation/*.sip
 )
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
 SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
@@ -150,7 +151,7 @@ ADD_CUSTOM_TARGET(pyutils ALL)
 INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}")
 
 # stage to output to make available when QGIS is run from build directory
-FOREACH(pyfile ${PY_FILES} ${PYUI_FILES})
+FOREACH(pyfile ${PY_FILES})
   ADD_CUSTOM_COMMAND(TARGET pyutils
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} "${QGIS_PYTHON_OUTPUT_DIRECTORY}"
@@ -158,8 +159,6 @@ FOREACH(pyfile ${PY_FILES} ${PYUI_FILES})
     DEPENDS ${pyfile}
   )
 ENDFOREACH(pyfile)
-
-ADD_SUBDIRECTORY(console)
 
 # Byte-compile staged PyQGIS utilities
 IF(WITH_PY_COMPILE)
@@ -170,4 +169,3 @@ IF(WITH_PY_COMPILE)
     DEPENDS pyutils
   )
 ENDIF(WITH_PY_COMPILE)
-

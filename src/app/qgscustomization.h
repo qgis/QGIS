@@ -89,6 +89,8 @@ class QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationD
     void on_actionCollapseAll_triggered( bool checked );
     void on_actionSelectAll_triggered( bool checked );
 
+    void on_mCustomizationEnabledCheckBox_toggled( bool checked );
+
   private:
     void init();
     QTreeWidgetItem * createTreeItemWidgets( );
@@ -125,6 +127,9 @@ class QgsCustomization : public QObject
     bool isEnabled() const { return mEnabled; }
 
     void setSettings( QSettings* settings ) { mSettings = settings ;}
+
+    // Return the path to the splash screen
+    QString splashPath();
 
     // Load and set default customization
     void loadDefault();

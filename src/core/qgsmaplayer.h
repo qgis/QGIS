@@ -24,10 +24,12 @@
 #include <QVariant>
 #include <QImage>
 #include <QDomNode>
+#include <QPainter>
 
 #include "qgis.h"
 #include "qgserror.h"
 #include "qgsrectangle.h"
+#include "qgsmaprenderer.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
@@ -73,11 +75,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString id() const;
 
-    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
-     * @deprecated use id()
-     */
-    Q_DECL_DEPRECATED QString getLayerID() const { return id(); }
-
     /** Set the display name of the layer
      * @param name New name for the layer
      */
@@ -88,11 +85,21 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     const QString & name() const;
 
+    /** Get the original name of the layer
+     * @note added in 1.9
+     */
+    const QString & originalName() const { return mLayerOrigName; }
+
     void setTitle( const QString& title ) { mTitle = title; }
     const QString& title() const { return mTitle; }
 
     void setAbstract( const QString& abstract ) { mAbstract = abstract; }
     const QString& abstract() const { return mAbstract; }
+
+    /* Set the blending mode used for rendering a layer */
+    void setBlendMode( const QgsMapRenderer::BlendMode blendMode );
+    /* Returns the current blending mode for a layer */
+    QgsMapRenderer::BlendMode blendMode() const;
 
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
@@ -191,12 +198,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  @note Added in v1.4 */
     void removeCustomProperty( const QString& key );
 
-    /** Copies the symbology settings from another layer. Returns true in case of success */
-    virtual bool copySymbologySettings( const QgsMapLayer& other ) = 0;
-
-    /** Returns true if this layer can be in the same symbology group with another layer */
-    virtual bool hasCompatibleSymbology( const QgsMapLayer& other ) const = 0;
-
     /** Accessor for transparency level. */
     unsigned int getTransparency();
 
@@ -230,19 +231,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     const QgsCoordinateReferenceSystem& crs() const;
 
-    /** Returns layer's spatial reference system
-    @note This method is here for API compatibility
-    and will be deprecated in 2.0
-    @deprecated use crs()
-    */
-    Q_DECL_DEPRECATED const QgsCoordinateReferenceSystem& srs();
-
     /** Sets layer's spatial reference system
     @note emitSignal added in 1.4 */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
-    /** A convenience function to capitalise the layer name */
-    static QString capitaliseLayerName( const QString name );
+    /** A convenience function to (un)capitalise the layer name */
+    static QString capitaliseLayerName( const QString& name );
 
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a
@@ -446,6 +440,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Name of the layer - used for display */
     QString mLayerName;
 
+    /** Original name of the layer
+     *  @note added in 1.9
+     */
+    QString mLayerOrigName;
+
     QString mTitle;
 
     /**Description of the layer*/
@@ -470,6 +469,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Type of the layer (eg. vector, raster) */
     QgsMapLayer::LayerType mLayerType;
+
+    /** Blend mode for the layer */
+    QgsMapRenderer::BlendMode mBlendMode;
 
     /** Tag for embedding additional information */
     QString mTag;

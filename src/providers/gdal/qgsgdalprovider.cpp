@@ -92,17 +92,24 @@ int CPL_STDCALL progressCallback( double dfComplete,
   return true;
 }
 
+QgsGdalProvider::QgsGdalProvider( QString const & uri, QgsError error )
+    : QgsRasterDataProvider( uri )
+    , mValid( false )
+    , mGdalBaseDataset( 0 )
+    , mGdalDataset( 0 )
+{
+  setError( error );
+}
 
-QgsGdalProvider::QgsGdalProvider( QString const & uri )
+QgsGdalProvider::QgsGdalProvider( QString const & uri, bool update )
     : QgsRasterDataProvider( uri )
     , QgsGdalProviderBase()
-    , mValid( true )
+    , mUpdate( update )
+    , mValid( false )
+    , mGdalBaseDataset( 0 )
+    , mGdalDataset( 0 )
 {
-  QgsDebugMsg( "QgsGdalProvider: constructing with uri '" + uri + "'." );
-
-  mValid = false;
-  mGdalBaseDataset = 0;
-  mGdalDataset = 0;
+  QgsDebugMsg( "constructing with uri '" + uri + "'." );
 
   QgsGdalProviderBase::registerGdalDrivers();
 
@@ -116,7 +123,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     return;
   }
 
-  mGdalDataset = NULL;
+  mGdalDataset = 0;
 
   // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
   QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
@@ -130,7 +137,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   QString gdalUri = dataSourceUri();
 
   CPLErrorReset();
-  mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), GA_ReadOnly );
+  mGdalBaseDataset = GDALOpen( TO8F( gdalUri ), mUpdate ? GA_Update : GA_ReadOnly );
 
   if ( !mGdalBaseDataset )
   {
@@ -152,7 +159,8 @@ QgsRasterInterface * QgsGdalProvider::clone() const
 
 bool QgsGdalProvider::crsFromWkt( const char *wkt )
 {
-  void *hCRS = OSRNewSpatialReference( NULL );
+
+  OGRSpatialReferenceH hCRS = OSRNewSpatialReference( NULL );
 
   if ( OSRImportFromWkt( hCRS, ( char ** ) &wkt ) == OGRERR_NONE )
   {
@@ -189,7 +197,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
 
 QgsGdalProvider::~QgsGdalProvider()
 {
-  QgsDebugMsg( "QgsGdalProvider: deconstructing." );
+  QgsDebugMsg( "entering." );
   if ( mGdalBaseDataset )
   {
     GDALDereferenceDataset( mGdalBaseDataset );
@@ -289,21 +297,23 @@ QString QgsGdalProvider::metadata()
   myMetadata += "</p>\n";
 
   //just use the first band
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, 1 );
-  if ( GDALGetOverviewCount( myGdalBand ) > 0 )
+  if ( GDALGetRasterCount( mGdalDataset ) > 0 )
   {
-    int myOverviewInt;
-    for ( myOverviewInt = 0;
-          myOverviewInt < GDALGetOverviewCount( myGdalBand );
-          myOverviewInt++ )
+    GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, 1 );
+    if ( GDALGetOverviewCount( myGdalBand ) > 0 )
     {
-      GDALRasterBandH myOverview;
-      myOverview = GDALGetOverview( myGdalBand, myOverviewInt );
-      myMetadata += "<p>X : " + QString::number( GDALGetRasterBandXSize( myOverview ) );
-      myMetadata += ",Y " + QString::number( GDALGetRasterBandYSize( myOverview ) ) + "</p>";
+      int myOverviewInt;
+      for ( myOverviewInt = 0;
+            myOverviewInt < GDALGetOverviewCount( myGdalBand );
+            myOverviewInt++ )
+      {
+        GDALRasterBandH myOverview;
+        myOverview = GDALGetOverview( myGdalBand, myOverviewInt );
+        myMetadata += "<p>X : " + QString::number( GDALGetRasterBandXSize( myOverview ) );
+        myMetadata += ",Y " + QString::number( GDALGetRasterBandYSize( myOverview ) ) + "</p>";
+      }
     }
   }
-  myMetadata += "</p>\n";
 
   if ( GDALGetGeoTransform( mGdalDataset, mGeoTransform ) != CE_None )
   {
@@ -350,6 +360,19 @@ QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth,
   return image;
 }
 
+QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight )
+{
+  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
+
+  if ( block->isEmpty() )
+  {
+    return block;
+  }
+
+  readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
+  block->applyNodataValues( userNoDataValue( theBandNo ) );
+  return block;
+}
 
 void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *block )
 {
@@ -382,14 +405,17 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   int dataSize = dataTypeSize( theBandNo );
 
-  // fill with null values
-  QByteArray ba = QgsRasterBlock::valueBytes( dataType( theBandNo ), noDataValue( theBandNo ) );
-  char *nodata = ba.data();
-  char *block = ( char * ) theBlock;
-  for ( int i = 0; i < thePixelWidth * thePixelHeight; i++ )
+  if ( !mExtent.contains( theExtent ) )
   {
-    memcpy( block, nodata, dataSize );
-    block += dataSize;
+    // fill with null values
+    QByteArray ba = QgsRasterBlock::valueBytes( dataType( theBandNo ), noDataValue( theBandNo ) );
+    char *nodata = ba.data();
+    char *block = ( char * ) theBlock;
+    for ( int i = 0; i < thePixelWidth * thePixelHeight; i++ )
+    {
+      memcpy( block, nodata, dataSize );
+      block += dataSize;
+    }
   }
 
   QgsRectangle myRasterExtent = theExtent.intersect( &mExtent );
@@ -548,23 +574,28 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   double tmpXRes = srcWidth * srcXRes / tmpWidth;
   double tmpYRes = srcHeight * srcYRes / tmpHeight; // negative
 
+  double y = myRasterExtent.yMaximum() - 0.5 * yRes;
   for ( int row = 0; row < height; row++ )
   {
-    double y = myRasterExtent.yMaximum() - ( row + 0.5 ) * yRes;
     int tmpRow = static_cast<int>( floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
 
     char *srcRowBlock = tmpBlock + dataSize * tmpRow * tmpWidth;
     char *dstRowBlock = ( char * )theBlock + dataSize * ( top + row ) * thePixelWidth;
-    for ( int col = 0; col < width; col++ )
+
+    double x = myRasterExtent.xMinimum() + 0.5 * xRes; // cell center
+    char* dst = dstRowBlock + dataSize * left;
+    char* src = 0;
+    int tmpCol = 0;
+    for ( int col = 0; col < width; ++col )
     {
-      // cell center
-      double x = myRasterExtent.xMinimum() + ( col + 0.5 ) * xRes;
       // floor() is quite slow! Use just cast to int.
-      int tmpCol = static_cast<int>(( x - tmpXMin ) / tmpXRes ) ;
-      char *src = srcRowBlock + dataSize * tmpCol;
-      char *dst = dstRowBlock + dataSize * ( left + col );
+      tmpCol = static_cast<int>(( x - tmpXMin ) / tmpXRes ) ;
+      src = srcRowBlock + dataSize * tmpCol;
       memcpy( dst, src, dataSize );
+      dst += dataSize;
+      x += xRes;
     }
+    y -= yRes;
   }
 
   QgsFree( tmpBlock );
@@ -757,7 +788,7 @@ double  QgsGdalProvider::noDataValue() const
 }
 #endif
 
-void QgsGdalProvider::computeMinMax( int theBandNo )
+void QgsGdalProvider::computeMinMax( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1 mMinMaxComputed = %2" ).arg( theBandNo ).arg( mMinMaxComputed[theBandNo-1] ) );
   if ( mMinMaxComputed[theBandNo-1] )
@@ -780,11 +811,21 @@ void QgsGdalProvider::computeMinMax( int theBandNo )
 double  QgsGdalProvider::minimumValue( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
+  if ( !mMinMaxComputed[theBandNo-1] )
+  {
+    computeMinMax( theBandNo );
+    mMinMaxComputed[theBandNo-1] = true;
+  }
   return  mMinimum[theBandNo-1];
 }
 double  QgsGdalProvider::maximumValue( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
+  if ( !mMinMaxComputed[theBandNo-1] )
+  {
+    computeMinMax( theBandNo );
+    mMinMaxComputed[theBandNo-1] = true;
+  }
   return  mMaximum[theBandNo-1];
 }
 
@@ -935,60 +976,60 @@ int QgsGdalProvider::capabilities() const
   return capability;
 }
 
-QgsRasterBlock::DataType QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
+QGis::DataType QgsGdalProvider::dataTypeFormGdal( int theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
     case GDT_Unknown:
-      return QgsRasterBlock::UnknownDataType;
+      return QGis::UnknownDataType;
       break;
     case GDT_Byte:
-      return QgsRasterBlock::Byte;
+      return QGis::Byte;
       break;
     case GDT_UInt16:
-      return QgsRasterBlock::UInt16;
+      return QGis::UInt16;
       break;
     case GDT_Int16:
-      return QgsRasterBlock::Int16;
+      return QGis::Int16;
       break;
     case GDT_UInt32:
-      return QgsRasterBlock::UInt32;
+      return QGis::UInt32;
       break;
     case GDT_Int32:
-      return QgsRasterBlock::Int32;
+      return QGis::Int32;
       break;
     case GDT_Float32:
-      return QgsRasterBlock::Float32;
+      return QGis::Float32;
       break;
     case GDT_Float64:
-      return QgsRasterBlock::Float64;
+      return QGis::Float64;
       break;
     case GDT_CInt16:
-      return QgsRasterBlock::CInt16;
+      return QGis::CInt16;
       break;
     case GDT_CInt32:
-      return QgsRasterBlock::CInt32;
+      return QGis::CInt32;
       break;
     case GDT_CFloat32:
-      return QgsRasterBlock::CFloat32;
+      return QGis::CFloat32;
       break;
     case GDT_CFloat64:
-      return QgsRasterBlock::CFloat64;
+      return QGis::CFloat64;
       break;
   }
-  return QgsRasterBlock::UnknownDataType;
+  return QGis::UnknownDataType;
 }
 
-QgsRasterBlock::DataType QgsGdalProvider::srcDataType( int bandNo ) const
+QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
   return dataTypeFromGdal( myGdalDataType );
 }
 
-QgsRasterBlock::DataType QgsGdalProvider::dataType( int bandNo ) const
+QGis::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
-  if ( mGdalDataType.size() == 0 ) return QgsRasterBlock::UnknownDataType;
+  if ( mGdalDataType.size() == 0 ) return QGis::UnknownDataType;
 
   return dataTypeFromGdal( mGdalDataType[bandNo-1] );
 }
@@ -1092,6 +1133,13 @@ bool QgsGdalProvider::hasHistogram( int theBandNo,
     return false;
   }
 
+  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+      userNoDataValue( theBandNo ).size() > 0 )
+  {
+    QgsDebugMsg( "Custom no data values -> GDAL histogram not sufficient." );
+    return false;
+  }
+
   QgsDebugMsg( "Looking for GDAL histogram" );
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
@@ -1167,9 +1215,16 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
     }
   }
 
+  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+      userNoDataValue( theBandNo ).size() > 0 )
+  {
+    QgsDebugMsg( "Custom no data values, using generic histogram." );
+    return QgsRasterDataProvider::histogram( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
+  }
+
   if ( myHistogram.extent != extent() )
   {
-    QgsDebugMsg( "Using generic histogram." );
+    QgsDebugMsg( "Not full extent, using generic histogram." );
     return QgsRasterDataProvider::histogram( theBandNo, theBinCount, theMinimum, theMaximum, theExtent, theSampleSize, theIncludeOutOfRange );
   }
 
@@ -1291,8 +1346,9 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
  * @param theTryInternalFlag - Try to make the pyramids internal if supported (e.g. geotiff). If not supported it will revert to creating external .ovr file anyway.
  * @return null string on success, otherwise a string specifying error
  */
-QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRasterPyramidList,
-                                        QString const & theResamplingMethod, RasterPyramidsFormat theFormat )
+QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
+                                        const QString & theResamplingMethod, RasterPyramidsFormat theFormat,
+                                        const QStringList & theConfigOptions )
 {
   //TODO: Consider making theRasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
   //without requiring the user to rebuild the pyramid list to get the updated infomation
@@ -1307,14 +1363,6 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
 
   // TODO add signal and connect from rasterlayer
   //emit drawingProgress( 0, 0 );
-  //first test if the file is writable
-  //QFileInfo myQFile( mDataSource );
-  QFileInfo myQFile( dataSourceUri() );
-
-  if ( !myQFile.isWritable() )
-  {
-    return "ERROR_WRITE_ACCESS";
-  }
 
   if ( mGdalDataset != mGdalBaseDataset )
   {
@@ -1325,6 +1373,16 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
   // check if building internally
   if ( theFormat == PyramidsInternal )
   {
+
+    // test if the file is writable
+    //QFileInfo myQFile( mDataSource );
+    QFileInfo myQFile( dataSourceUri() );
+
+    if ( !myQFile.isWritable() )
+    {
+      return "ERROR_WRITE_ACCESS";
+    }
+
     // libtiff < 4.0 has a bug that prevents safe building of overviews on JPEG compressed files
     // we detect libtiff < 4.0 by checking that BIGTIFF is not in the creation options of the GTiff driver
     // see https://trac.osgeo.org/qgis/ticket/1357
@@ -1339,9 +1397,12 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
       }
     }
 
-    //if needed close the gdal dataset and reopen it in read / write mode
+    // if needed close the gdal dataset and reopen it in read / write mode
+    // TODO this doesn't seem to work anymore... must fix it before 2.0!!!
+    // no errors are reported, but pyramids are not present in file.
     if ( GDALGetAccess( mGdalDataset ) == GA_ReadOnly )
     {
+      QgsDebugMsg( "re-opening the dataset in read/write mode" );
       GDALClose( mGdalDataset );
       //mGdalBaseDataset = GDALOpen( QFile::encodeName( dataSourceUri() ).constData(), GA_Update );
 
@@ -1359,11 +1420,28 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
   }
 
   // are we using Erdas Imagine external overviews?
-  char* myConfigUseRRD = strdup( CPLGetConfigOption( "USE_RRD", "NO" ) );
+  QgsStringMap myConfigOptionsOld;
+  myConfigOptionsOld[ "USE_RRD" ] = CPLGetConfigOption( "USE_RRD", "NO" );
   if ( theFormat == PyramidsErdas )
     CPLSetConfigOption( "USE_RRD", "YES" );
   else
     CPLSetConfigOption( "USE_RRD", "NO" );
+
+  // add any driver-specific configuration options, save values to be restored later
+  if ( theFormat != PyramidsErdas && ! theConfigOptions.isEmpty() )
+  {
+    foreach ( QString option, theConfigOptions )
+    {
+      QStringList opt = option.split( "=" );
+      QByteArray key = opt[0].toLocal8Bit();
+      QByteArray value = opt[1].toLocal8Bit();
+      // save previous value
+      myConfigOptionsOld[ opt[0] ] = QString( CPLGetConfigOption( key.data(), NULL ) );
+      // set temp. value
+      CPLSetConfigOption( key.data(), value.data() );
+      QgsDebugMsg( QString( "set option %1=%2" ).arg( key.data() ).arg( value.data() ) );
+    }
+  }
 
   //
   // Iterate through the Raster Layer Pyramid Vector, building any pyramid
@@ -1390,36 +1468,20 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
       myOverviewLevelsVector.append( myRasterPyramidIterator->level );
     }
   }
-  /* From : http://remotesensing.org/gdal/classGDALDataset.html#a23
-   * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "AVERAGE", "MODE", "AVERAGE_MAGPHASE" or "NONE"
-   *                 controlling the downsampling method applied.
+  /* From : http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
+   * pszResampling : one of "NEAREST", "GAUSS", "CUBIC", "AVERAGE", "MODE", "AVERAGE_MAGPHASE" or "NONE" controlling the downsampling method applied.
    * nOverviews : number of overviews to build.
    * panOverviewList : the list of overview decimation factors to build.
-   * nBand : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
+   * nListBands : number of bands to build overviews for in panBandList. Build for all bands if this is 0.
    * panBandList : list of band numbers.
    * pfnProgress : a function to call to report progress, or NULL.
    * pProgressData : application data to pass to the progress function.
    */
 
-  const char* theMethod;
-  if ( theResamplingMethod == tr( "Gauss" ) )
-    theMethod = "GAUSS";
-  else if ( theResamplingMethod == tr( "Cubic" ) )
-    theMethod = "CUBIC";
-  else if ( theResamplingMethod == tr( "Average" ) )
-    theMethod = "AVERAGE";
-  else if ( theResamplingMethod == tr( "Mode" ) )
-    theMethod = "MODE";
-  //NOTE magphase is disabled in the gui since it tends
-  //to create corrupted images. The images can be repaired
-  //by running one of the other resampling strategies below.
-  //see ticket #284
-  // else if ( theResamplingMethod == tr( "Average Magphase" ) )
-  //   theMethod = "AVERAGE_MAGPHASE";
-  else if ( theResamplingMethod == tr( "None" ) )
-    theMethod = "NONE";
-  else // fall back to nearest neighbor
-    theMethod = "NEAREST";
+  // resampling method is now passed directly, via QgsRasterDataProvider::pyramidResamplingArg()
+  // average_mp and average_magphase have been removed from the gui
+  QByteArray ba = theResamplingMethod.toLocal8Bit();
+  const char *theMethod = ba.data();
 
   //build the pyramid and show progress to console
   QgsDebugMsg( QString( "Building overviews at %1 levels using resampling method %2"
@@ -1437,18 +1499,26 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
 
     if ( myError == CE_Failure || CPLGetLastErrorNo() == CPLE_NotSupported )
     {
-      QgsDebugMsg( "Building pyramids failed" );
+      QgsDebugMsg( QString( "Building pyramids failed using resampling method [%1]" ).arg( theMethod ) );
       //something bad happenend
       //QString myString = QString (CPLGetLastError());
       GDALClose( mGdalBaseDataset );
-      mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+      mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
       //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
       mGdalDataset = mGdalBaseDataset;
 
       //emit drawingProgress( 0, 0 );
-      // restore former USE_RRD config (Erdas)
-      CPLSetConfigOption( "USE_RRD", myConfigUseRRD );
-      free( myConfigUseRRD );
+
+      // restore former configOptions
+      for ( QgsStringMap::const_iterator it = myConfigOptionsOld.begin();
+            it != myConfigOptionsOld.end(); ++it )
+      {
+        QByteArray key = it.key().toLocal8Bit();
+        QByteArray value = it.value().toLocal8Bit();
+        CPLSetConfigOption( key.data(), value.data() );
+      }
+
+      // TODO print exact error message
       return "FAILED_NOT_SUPPORTED";
     }
     else
@@ -1463,9 +1533,14 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
     QgsLogger::warning( "Pyramid overview building failed!" );
   }
 
-  // restore former USE_RRD config (Erdas)
-  CPLSetConfigOption( "USE_RRD", myConfigUseRRD );
-  free( myConfigUseRRD );
+  // restore former configOptions
+  for ( QgsStringMap::const_iterator it = myConfigOptionsOld.begin();
+        it != myConfigOptionsOld.end(); ++it )
+  {
+    QByteArray key = it.key().toLocal8Bit();
+    QByteArray value = it.value().toLocal8Bit();
+    CPLSetConfigOption( key.data(), value.data() );
+  }
 
   QgsDebugMsg( "Pyramid overviews built" );
 
@@ -1483,7 +1558,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
     QgsDebugMsg( "Reopening dataset ..." );
     //close the gdal dataset and reopen it in read only mode
     GDALClose( mGdalBaseDataset );
-    mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), GA_ReadOnly );
+    mGdalBaseDataset = GDALOpen( TO8F( dataSourceUri() ), mUpdate ? GA_Update : GA_ReadOnly );
     //Since we are not a virtual warped dataset, mGdalDataSet and mGdalBaseDataset are supposed to be the same
     mGdalDataset = mGdalBaseDataset;
   }
@@ -1897,7 +1972,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
   // VSIFileHandler (see qgsogrprovider.cpp)
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
   QSettings settings;
-  if ( settings.value( "/qgis/scanZipInBrowser", "basic" ).toString() != "no" )
+  if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() != "no" )
   {
     QString glob = "*.zip";
     glob += " *.gz";
@@ -1942,10 +2017,10 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   else if ( GDALGetRasterCount( myDataset ) == 0 )
   {
     QStringList layers = QgsGdalProvider::subLayers( myDataset );
+    GDALClose( myDataset );
+    myDataset = NULL;
     if ( layers.size() == 0 )
     {
-      GDALClose( myDataset );
-      myDataset = NULL;
       retErrMsg = QObject::tr( "This raster file has no bands and is invalid as a raster layer." );
       return false;
     }
@@ -1973,6 +2048,13 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
 
   QgsRasterBandStats myRasterBandStats;
   initStatistics( myRasterBandStats, theBandNo, theStats, theExtent, theSampleSize );
+
+  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+      userNoDataValue( theBandNo ).size() > 0 )
+  {
+    QgsDebugMsg( "Custom no data values -> GDAL statistics not sufficient." );
+    return false;
+  }
 
   // If not cached, check if supported by GDAL
   int supportedStats = QgsRasterBandStats::Min | QgsRasterBandStats::Max
@@ -2059,6 +2141,15 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
     }
   }
 
+  // We cannot use GDAL stats if user disabled src no data value or set
+  // custom  no data values
+  if (( srcHasNoDataValue( theBandNo ) && !useSrcNoDataValue( theBandNo ) ) ||
+      userNoDataValue( theBandNo ).size() > 0 )
+  {
+    QgsDebugMsg( "Custom no data values, using generic statistics." );
+    return QgsRasterDataProvider::bandStatistics( theBandNo, theStats, theExtent, theSampleSize );
+  }
+
   int supportedStats = QgsRasterBandStats::Min | QgsRasterBandStats::Max
                        | QgsRasterBandStats::Range | QgsRasterBandStats::Mean
                        | QgsRasterBandStats::StdDev;
@@ -2068,7 +2159,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   if ( myRasterBandStats.extent != extent() ||
        ( theStats & ( ~supportedStats ) ) )
   {
-    QgsDebugMsg( "Using generic statistics." );
+    QgsDebugMsg( "Statistics not supported by provider, using generic statistics." );
     return QgsRasterDataProvider::bandStatistics( theBandNo, theStats, theExtent, theSampleSize );
   }
 
@@ -2291,7 +2382,6 @@ void QgsGdalProvider::initBaseDataset()
   //mValidNoDataValue = true;
   for ( int i = 1; i <= GDALGetRasterCount( mGdalBaseDataset ); i++ )
   {
-    computeMinMax( i );
     GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
     GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
 
@@ -2318,23 +2408,23 @@ void QgsGdalProvider::initBaseDataset()
     double myInternalNoDataValue = 123;
     switch ( srcDataType( i ) )
     {
-      case QgsRasterBlock::Byte:
+      case QGis::Byte:
         myInternalNoDataValue = -32768.0;
         myInternalGdalDataType = GDT_Int16;
         break;
-      case QgsRasterBlock::Int16:
+      case QGis::Int16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterBlock::UInt16:
+      case QGis::UInt16:
         myInternalNoDataValue = -2147483648.0;
         myInternalGdalDataType = GDT_Int32;
         break;
-      case QgsRasterBlock::Int32:
+      case QGis::Int32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = -2147483648.0;
         break;
-      case QgsRasterBlock::UInt32:
+      case QGis::UInt32:
         // We believe that such values is no used in real data
         myInternalNoDataValue = 4294967295.0;
         break;
@@ -2361,61 +2451,71 @@ char** papszFromStringList( const QStringList& list )
   return papszRetList;
 }
 
+#if 0
 bool QgsGdalProvider::create( const QString& format, int nBands,
-                              QgsRasterBlock::DataType type,
+                              QGis::DataType type,
                               int width, int height, double* geoTransform,
                               const QgsCoordinateReferenceSystem& crs,
                               QStringList createOptions )
+#endif
+QGISEXTERN QgsGdalProvider * create(
+  const QString &uri,
+  const QString& format, int nBands,
+  QGis::DataType type,
+  int width, int height, double* geoTransform,
+  const QgsCoordinateReferenceSystem& crs,
+  QStringList createOptions )
 {
   //get driver
   GDALDriverH driver = GDALGetDriverByName( format.toLocal8Bit().data() );
   if ( !driver )
   {
-    return false;
+    QgsError error( "Cannot load GDAL driver " + format, "GDAL provider" );
+    return new QgsGdalProvider( uri, error );
   }
 
-  QString tmpStr = "create options:";
-  foreach ( QString option, createOptions )
-    tmpStr += " " + option;
-  QgsDebugMsg( tmpStr );
+  QgsDebugMsg( "create options: " + createOptions.join( " " ) );
 
   //create dataset
+  CPLErrorReset();
   char **papszOptions = papszFromStringList( createOptions );
-  GDALDatasetH dataset = GDALCreate( driver, dataSourceUri().toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
+  GDALDatasetH dataset = GDALCreate( driver, uri.toLocal8Bit().data(), width, height, nBands, ( GDALDataType )type, papszOptions );
   CSLDestroy( papszOptions );
   if ( dataset == NULL )
   {
-    return false;
+    QgsError error( QString( "Cannot create new dataset  %1:\n%2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), "GDAL provider" );
+    QgsDebugMsg( error.summary() );
+    return new QgsGdalProvider( uri, error );
   }
 
-  mGeoTransform[0] = geoTransform[0];
-  mGeoTransform[1] = geoTransform[1];
-  mGeoTransform[2] = geoTransform[2];
-  mGeoTransform[3] = geoTransform[3];
-  mGeoTransform[4] = geoTransform[4];
-  mGeoTransform[5] = geoTransform[5];
-
-  GDALSetGeoTransform( dataset, mGeoTransform );
+  GDALSetGeoTransform( dataset, geoTransform );
   GDALSetProjection( dataset, crs.toWkt().toLocal8Bit().data() );
+  GDALClose( dataset );
 
-  mGdalBaseDataset = dataset;
-  initBaseDataset();
-  return mValid;
+  return new QgsGdalProvider( uri, true );
 }
 
 bool QgsGdalProvider::write( void* data, int band, int width, int height, int xOffset, int yOffset )
 {
-  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
-  if ( rasterBand == NULL )
+  if ( !mGdalDataset )
   {
     return false;
   }
-  return ( GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None );
+
+  GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, band );
+  if ( !rasterBand )
+  {
+    return false;
+  }
+  return GDALRasterIO( rasterBand, GF_Write, xOffset, yOffset, width, height, data, width, height, GDALGetRasterDataType( rasterBand ), 0, 0 ) == CE_None;
 }
 
 bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
 {
-  if ( !mGdalDataset ) return false;
+  if ( !mGdalDataset )
+  {
+    return false;
+  }
 
   GDALRasterBandH rasterBand = GDALGetRasterBand( mGdalDataset, bandNo );
   CPLErrorReset();
@@ -2481,17 +2581,25 @@ QGISEXTERN QString helpCreationOptionsFormat( QString format )
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
   if ( myGdalDriver )
   {
-    // need to serialize xml to get newlines
-    // should we make the basic xml prettier?
+    // first report details and help page
+    char ** GDALmetadata = GDALGetMetadata( myGdalDriver, NULL );
+    message += "Format Details:\n";
+    message += QString( "  Extension: %1\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_EXTENSION ) );
+    message += QString( "  Short Name: %1" ).arg( GDALGetDriverShortName( myGdalDriver ) );
+    message += QString( "  /  Long Name: %1\n" ).arg( GDALGetDriverLongName( myGdalDriver ) );
+    message += QString( "  Help page:  http://www.gdal.org/%1\n\n" ).arg( CSLFetchNameValue( GDALmetadata, GDAL_DMD_HELPTOPIC ) );
+
+    // next get creation options
+    // need to serialize xml to get newlines, should we make the basic xml prettier?
     CPLXMLNode *psCOL = CPLParseXMLString( GDALGetMetadataItem( myGdalDriver,
                                            GDAL_DMD_CREATIONOPTIONLIST, "" ) );
     char *pszFormattedXML = CPLSerializeXMLTree( psCOL );
     if ( pszFormattedXML )
-      message = QString( pszFormattedXML );
+      message += QString( pszFormattedXML );
     if ( psCOL )
       CPLDestroyXMLNode( psCOL );
     if ( pszFormattedXML )
-      QgsFree( pszFormattedXML );
+      CPLFree( pszFormattedXML );
   }
   return message;
 }
@@ -2567,4 +2675,39 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
   }
 
   return message;
+}
+
+QString QgsGdalProvider::validatePyramidsCreationOptions( RasterPyramidsFormat pyramidsFormat,
+    const QStringList & theConfigOptions, const QString & fileFormat )
+{
+  // Erdas Imagine format does not support config options
+  if ( pyramidsFormat == PyramidsErdas )
+  {
+    if ( ! theConfigOptions.isEmpty() )
+      return "Erdas Imagine format does not support config options";
+    else
+      return QString();
+  }
+  // Internal pyramids format only supported for gtiff/georaster/hfa/jp2kak/mrsid/nitf files
+  else if ( pyramidsFormat == PyramidsInternal )
+  {
+    QStringList supportedFormats;
+    supportedFormats << "gtiff" << "georaster" << "hfa" << "jp2kak" << "mrsid" << "nitf";
+    if ( ! supportedFormats.contains( fileFormat.toLower() ) )
+      return QString( "Internal pyramids format only supported for gtiff/georaster/hfa/jp2kak/mrsid/nitf files (using %1)" ).arg( fileFormat );
+    // TODO - check arguments for georaster hfa jp2kak mrsid nitf
+    // for now, only test gtiff
+    else if ( fileFormat.toLower() != "gtiff" )
+      return QString();
+  }
+
+  // for gtiff external or internal pyramids, validate gtiff-specific values
+  // PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)
+  if ( theConfigOptions.contains( "PHOTOMETRIC_OVERVIEW=YCBCR" ) )
+  {
+    if ( GDALGetRasterCount( mGdalDataset ) != 3 )
+      return "PHOTOMETRIC_OVERVIEW=YCBCR requires a source raster with only 3 bands (RGB)";
+  }
+
+  return QString();
 }

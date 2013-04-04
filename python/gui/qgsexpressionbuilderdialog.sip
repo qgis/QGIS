@@ -17,6 +17,11 @@ class QgsExpressionBuilderDialog : QDialog
 
     QString expressionText();
 
+    /** Sets geometry calculator used in distance/area calculations.
+      * @note added in version 2.0
+      */
+    void setGeomCalculator( const QgsDistanceArea & da );
+
   protected:
     /**
      * Handle closing of the window

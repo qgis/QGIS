@@ -32,7 +32,6 @@
 # Utility functions
 # -------------------------------------------------
 #
-# combineVectorAttributes( QgsAttributeMap, QgsAttributeMap )
 # convertFieldNameType( QgsField.name() )
 # combineVectorFields( QgsVectorLayer, QgsVectorLayer )
 # checkCRSCompatibility( QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem )
@@ -63,15 +62,6 @@ from qgis.gui import *
 
 import locale
 
-# From two input attribute maps, create single attribute map
-def combineVectorAttributes( atMapA, atMapB ):
-    attribA = atMapA.values()
-    lengthA = len(attribA)
-    attribB = atMapB.values()
-    lengthB = len(attribB)
-    attribA.extend( attribB )
-    return dict( zip( range( 0, lengthB + lengthA ), attribA ) )
-
 # For use with memory provider/layer, converts full field type to simple string
 def convertFieldNameType( inName ):
     if inName == "Integer":
@@ -83,12 +73,11 @@ def convertFieldNameType( inName ):
 
 # From two input field maps, create single field map
 def combineVectorFields( layerA, layerB ):
-    fieldsA = layerA.dataProvider().fields().values()
-    fieldsB = layerB.dataProvider().fields().values()
+    fieldsA = layerA.dataProvider().fields()
+    fieldsB = layerB.dataProvider().fields()
     fieldsB = testForUniqueness( fieldsA, fieldsB )
-    seq = range( 0, len( fieldsA ) + len( fieldsB ) )
-    fieldsA.extend( fieldsB )
-    fieldsA = dict( zip ( seq, fieldsA ) )
+    for f in fieldsB:
+      fieldsA.append( f )
     return fieldsA
 
 # Check if two input CRSs are identical
@@ -104,7 +93,7 @@ def writeVectorLayerToShape( vlayer, outputPath, encoding ):
     if not mCodec:
         return False
     #Here we should check that the output path is valid
-    QgsVectorFileWriter.writeAsShapefile( vlayer, outputPath, encoding, vlayer.dataProvider().crs(), False )
+    QgsVectorFileWriter.writeAsVectorFormat( vlayer, outputPath, encoding, vlayer.dataProvider().crs(), "ESRI Shapefile", False )
     return True
 
 # For use with memory provider/layer, converts QGis vector type definition to simple string
@@ -167,10 +156,10 @@ def testForUniqueness( fieldList1, fieldList2 ):
     changed = True
     while changed:
         changed = False
-        for i in fieldList1:
-            for j in fieldList2:
-                if j.name() == i.name():
-                    j = createUniqueFieldName( j )
+        for i in range(0,len(fieldList1)):
+            for j in range(0,len(fieldList2)):
+                if fieldList1[i].name() == fieldList2[j].name():
+                    fieldList2[j] = createUniqueFieldName( fieldList2[j] )
                     changed = True
     return fieldList2
 
@@ -195,7 +184,7 @@ def createUniqueFieldName( field ):
 # Return list of field names with more than 10 characters length
 def checkFieldNameLength( fieldList ):
     longNames = QStringList()
-    for num, field in fieldList.iteritems():
+    for field in fieldList:
         if field.name().size() > 10:
             longNames << unicode( field.name() )
     return longNames
@@ -221,7 +210,7 @@ def getLayerNames( vTypes ):
 def getFieldNames( vlayer ):
     fieldmap = getFieldList( vlayer )
     fieldlist = []
-    for name, field in fieldmap.iteritems():
+    for field in fieldmap:
         if not field.name() in fieldlist:
             fieldlist.append( unicode( field.name() ) )
     return sorted( fieldlist, cmp=locale.strcoll )
@@ -258,20 +247,14 @@ def getMapLayerByName( myName ):
 
 # Return the field list of a vector layer
 def getFieldList( vlayer ):
-    vprovider = vlayer.dataProvider()
-    feat = QgsFeature()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    myFields = vprovider.fields()
-    return myFields
+    return vlayer.dataProvider().fields()
 
 # Convinience function to create a spatial index for input QgsVectorDataProvider
 def createIndex( provider ):
     feat = QgsFeature()
     index = QgsSpatialIndex()
-    provider.rewind()
-    provider.select()
-    while provider.nextFeature( feat ):
+    fit = provider.getFeatures()
+    while fit.nextFeature( feat ):
         index.insertFeature( feat )
     return index
 
@@ -283,17 +266,15 @@ def addShapeToCanvas( shapefile_path ):
     else:
         return False
     vlayer_new = QgsVectorLayer( shapefile_path, layer_name, "ogr" )
-    print layer_name
     if vlayer_new.isValid():
-        QgsMapLayerRegistry.instance().addMapLayer( vlayer_new )
+        QgsMapLayerRegistry.instance().addMapLayers( [vlayer_new] )
         return True
     else:
         return False
 
 # Return all unique values in field based on field index
 def getUniqueValues( provider, index ):
-    values = provider.uniqueValues( index )
-    return values
+    return provider.uniqueValues( index )
 
 # Generate a save file dialog with a dropdown box for choosing encoding style
 def saveDialog( parent, filtering="Shapefiles (*.shp *.SHP)"):
@@ -318,14 +299,12 @@ def openDialog( parent, filtering="Shapefiles (*.shp *.SHP)", dialogMode="Single
     dirName = settings.value( "/UI/lastShapefileDir" ).toString()
     encode = settings.value( "/UI/encoding" ).toString()
     fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, QString(filtering), encode )
-    #fileDialog.setFileMode( QFileDialog.AnyFile )
     fileDialog.setFileMode( QFileDialog.ExistingFiles )
     fileDialog.setAcceptMode( QFileDialog.AcceptOpen )
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
-    #return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
     if dialogMode == "SingleFile":
       return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
     else:
@@ -343,34 +322,33 @@ def dirDialog( parent ):
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     folders = fileDialog.selectedFiles()
-    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( folders.first() ) ) ) )
+    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( folders.first() ) ).absolutePath() ) )
     return ( unicode( folders.first() ), unicode( fileDialog.encoding() ) )
 
 # Return field type from it's name
 def getFieldType(vlayer, fieldName):
-    fields = vlayer.dataProvider().fields()
-    for name, field in fields.iteritems():
+    for field in vlayer.dataProvider().fields():
         if field.name() == fieldName:
             return field.typeName()
 
 # return the number of unique values in field
 def getUniqueValuesCount( vlayer, fieldIndex, useSelection ):
-    vprovider = vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
     count = 0
     values = []
     if useSelection:
         selection = vlayer.selectedFeatures()
         for f in selection:
-            if f.attributeMap()[ fieldIndex ].toString() not in values:
-                values.append( f.attributeMap()[ fieldIndex ].toString() )
+            v = f.attributes()[ fieldIndex ].toString()
+            if v not in values:
+                values.append( v )
                 count += 1
     else:
         feat = QgsFeature()
-        while vprovider.nextFeature( feat ):
-            if feat.attributeMap()[ fieldIndex ].toString() not in values:
-                values.append( feat.attributeMap()[ fieldIndex ].toString() )
+        fit = vlayer.dataProvider().getFeatures()
+        while fit.nextFeature( feat ):
+            v = feat.attributes()[ fieldIndex ].toString()
+            if v not in values:
+                values.append( v )
                 count += 1
     return count
 

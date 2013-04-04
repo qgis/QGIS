@@ -43,7 +43,6 @@ class QgsComposerMultiFrame: QObject
     /**Removes and deletes all frames from mComposition*/
     void deleteFrames();
 
-    int nFrames() const /Deprecated/;
     /** Return the number of frames associated with this multiframeset.
        @note added in 2.0, replaces nFrames
     **/

@@ -6,5 +6,4 @@ ParameterNumber|zmin|Minimum z height for 3D output|None|None|0.0
 ParameterNumber|zmax|Maximum z height for 3D output|None|None|0.0
 ParameterString|column|Column for Z values|z
 *ParameterBoolean|-d|Use drand48() function instead of rand()|False
-OutputVector|output|Name for output vector map
-
+OutputVector|output|Output layer

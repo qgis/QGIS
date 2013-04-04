@@ -28,6 +28,12 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 {
     Q_OBJECT
   public:
+    enum Mode
+    {
+      Continuous = 1, // Using breaks from color palette
+      EqualInterval = 2
+    };
+
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsSingleBandPseudoColorRendererWidget();
 
@@ -56,6 +62,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void on_mMaxLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
     void on_mMinLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
     void on_mMaxLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
+    void on_mClassificationModeComboBox_currentIndexChanged( int index );
+    void on_mColorRampComboBox_currentIndexChanged( int index );
 
   private:
     void setLineEditValue( QLineEdit *theLineEdit, double theValue );

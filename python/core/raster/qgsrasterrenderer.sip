@@ -1,3 +1,4 @@
+
 class QgsRasterRenderer : QgsRasterInterface
 {
 %TypeHeaderCode
@@ -33,7 +34,7 @@ class QgsRasterRenderer : QgsRasterInterface
 
     virtual int bandCount() const;
 
-    virtual QgsRasterBlock::DataType dataType( int bandNo ) const;
+    virtual QGis::DataType dataType( int bandNo ) const;
 
     virtual QString type() const;
 
@@ -46,7 +47,7 @@ class QgsRasterRenderer : QgsRasterInterface
     void setOpacity( double opacity );
     double opacity() const;
 
-    void setRasterTransparency( QgsRasterTransparency* t );
+    void setRasterTransparency( QgsRasterTransparency* t /Transfer/);
     const QgsRasterTransparency* rasterTransparency() const;
 
     void setAlphaBand( int band );

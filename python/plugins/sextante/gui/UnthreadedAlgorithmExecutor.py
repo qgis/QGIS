@@ -45,7 +45,7 @@ class UnthreadedAlgorithmExecutor:
             QMessageBox.critical(None, "Error", e.msg)
             return False
         except Exception:
-            QMessageBox.critical(None, "Error", traceback.format_exc())
+            QMessageBox.critical(None, "Uncaught error", traceback.format_exc())
             return False
 
     @staticmethod
@@ -64,7 +64,7 @@ class UnthreadedAlgorithmExecutor:
         while provider.nextFeature(feat):
             output = SextanteUtils.getTempFilename("shp")
             filelist.append(output)
-            writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
+            writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), layer.crs() )
             writer.addFeature(feat)
             del writer
 
@@ -84,7 +84,7 @@ class UnthreadedAlgorithmExecutor:
             progress.setText("Executing iteration " + str(i) + "/" + str(len(filelist)) + "...")
             progress.setPercentage((i * 100) / len(filelist))
             if UnthreadedAlgorithmExecutor.runalg(alg, SilentProgress()):
-                SextantePostprocessing.handleAlgorithmResults(alg, False)
+                SextantePostprocessing.handleAlgorithmResults(alg, progress, False)
                 i+=1
             else:
                 return False;

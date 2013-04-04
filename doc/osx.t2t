@@ -75,7 +75,10 @@ On Lion and Mt. Lion, using Xcode 4.4+, the developer command line tools can be
 installed via the Xcode preferences. The tools now appear to require an install
 of Xcode, regardless of using a separate DMG installer for just the tools.
 
-Xcode 4.4+ also introduces the clang frontend to the LLVM compiler as default.
+Xcode 4.3+ also introduces the clang frontend to the LLVM compiler as default.
+
+**Note:** In XCODE 4.5 installed from the app store, you need to install the 
+command line tools from XCode -> Preferences -> Downloads and choose command line tools.
 
 http://clang.llvm.org/
 
@@ -93,7 +96,7 @@ If you have trouble building some of the dependencies listed below with clang
 
 == Install Qt4 from disk image ==
 
-You need a minimum of Qt-4.4.0. I suggest getting the latest.  There is no need
+You need a minimum of Qt-4.4.0. I suggest getting the latest (Qt 4, not 5).  There is no need
 for the full Qt SDK, so save yourself some download time and get the frameworks
 only.  This is available in the Libraries section of the Qt download page.
 
@@ -103,15 +106,17 @@ support in the Qt Cocoa branch. Appropriate installers are available for both
 as of Qt-4.5.2, though they stopped making Carbon packages at Qt 4.7.4.
 Qt 4.6+ is recommended for Cocoa.
 Starting with Lion, Carbon may not work properly, if at all.
+Starting with Qt 4.8, only 64bit Cocoa installers are available.
 
-__Mt. Lion note:__ Any Qt version < 4.8.3 will cause a 'This version of Mac OS X
-is unsupported' error when building QGIS.
+__General note:__ Support for new system versions in any given Qt version may
+not be present and may cause a 'This version of Mac OS X
+is unsupported' error when building QGIS.  Try the next Qt version.
 
 __PPC note:__ The readymade Qt Cocoa installers don't include PPC support, you'd
 have to compile Qt yourself.  But, there appear to be issues with Qt Cocoa on
 PPC Macs anyways.  Qt Carbon is recommended on PPC Macs.
 
-http://qt.nokia.com/downloads
+http://qt-project.org/downloads
 
 If you want debug frameworks, Qt also provides a separate download with these.
 These are in addition to the non-debug frameworks.
@@ -123,7 +128,7 @@ of the download page.  Files are in the qt/source (yes, even the binary packages
 Once downloaded open the disk image and run the installer. Note you need admin
 privileges to install.
 
-__Leopard note:__ Qt includes a couple non-framework libraries in /usr/lib.
+__Leopard+ note:__ Qt includes a couple non-framework libraries in /usr/lib.
 When using a system SDK these libraries will not be found.  To fix this problem,
 add symlinks to /usr/local:
 
@@ -147,7 +152,7 @@ Binary installers are available for OS X, but they are not recommended
 (2.4 versions install in /usr instead of /usr/local, and 2.6+ versions are a
 strange application). Instead, download the source.
 NOTE: 2.8.5 is broken for detecting part of Qt.  Fixed in 2.8.6.
-Double-click the source tarball, then cd to the source folder and:
+Double-click the source tarball to unpack it, then cd to the source folder and:
 
 ```
 ./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
@@ -202,9 +207,9 @@ osgEarth), try bypassing ccache.
 
 Download William Kyngesburye's excellent GDAL Complete package that includes
 PROJ, GEOS, GDAL, SQLite3, Spatialite, and image libraries, as frameworks.
-There is also a GSL framework.
+There are also GSL and FreeType frameworks.
 
-http://www.kyngchaos.com/wiki/software/frameworks
+http://www.kyngchaos.com/software/frameworks
 
 Once downloaded, open and install the frameworks.
 
@@ -213,11 +218,11 @@ support).  QGIS just needs the libpq client library, so unless you want to
 setup the full Postgres + PostGIS server, all you need is the client-only
 package.  It's available here:
 
-http://www.kyngchaos.com/wiki/software/postgres
+http://www.kyngchaos.com/software/postgres
 
 Also available is a GRASS application:
 
-http://www.kyngchaos.com/wiki/software/grass
+http://www.kyngchaos.com/software/grass
 
 Old versions of these packages for older systems are available in the
 software archive section.
@@ -238,7 +243,7 @@ have problems and you are on your own with those.
 === Additional dependencies: Expat ===
 
 __Snow Leopard+ note:__ Snow Leopard includes a usable expat, so this step is
-not necessary on Snow Leopard or Lion.
+not necessary on Snow Leopard or above.
 
 Get the expat sources:
 
@@ -271,7 +276,7 @@ sudo make install
 === Additional dependencies: Python ===
 
 __Leopard+ note:__ Starting with Leopard a usable Python is included
-in the system.  This Python 2.5, 2.6 and 2.7, respectively for Leo, Snow and Lion.
+in the system.  This is Python 2.5, 2.6 and 2.7, respectively for Leo, Snow and Lion+.
 So there is no need to install Python on Leopard and newer.
 You can still install Python from python.org if preferred.
 
@@ -332,11 +337,10 @@ python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin
 -e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.6.sdk
 ```
 
-__Lion system Python__
+__Lion+ system Python__
 
 Similar to Snow Leopard, you should install outside the system Python path.
-There is no need for the SDK option (the CLI tools for Lion don't include SDKs)
-or arch option:
+There is no need for the SDK option or arch option:
 
 ```
 python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
@@ -358,9 +362,6 @@ Retrieve the Qt version of the Scintilla-based text editor widget from
 
 http://www.riverbankcomputing.co.uk/software/qscintilla/download
 
-__Note:__The editor uses API files for code completion in the PyQGIS console. To
-have PyQt4's API automatically created, install QScintilla2 library first.
-
 Double-click the tarball to unpack it. Then, cd to the QScintilla2.x.x source
 folder in a Terminal.
 
@@ -381,15 +382,15 @@ current line --> new line
 target.path = $$[QT_INSTALL_LIBS]  -->  target.path = /usr/local/lib
 header.path = $$[QT_INSTALL_HEADERS]  -->  header.path = /usr/local/include
 ```
-Save the qscintilla.pro file and build the QScintilla2 C++ library:
+Save the qscintilla.pro file and build the QScintilla2 C++ library (adjust the install_name_tool command for the version installed):
 
 ```
 qmake -spec macx-g++ qscintilla.pro
 make -j [#cpus]
 sudo make install
 
-sudo install_name_tool -id /usr/local/lib/libqscintilla2.8.dylib \
-  /usr/local/lib/libqscintilla2.8.dylib
+sudo install_name_tool -id /usr/local/lib/libqscintilla2.9.dylib \
+  /usr/local/lib/libqscintilla2.9.dylib
 ```
 This installs QScintilla2's dylib in /usr/local/lib/ and the header files in
 /usr/local/include/Qsci/, both of which should be automatically found when
@@ -421,7 +422,7 @@ cd to the source folder.  Then for your chosen Python:
 __python.org Python__
 
 ```
-python configure.py
+python configure.py -n /usr/local/Qt-4.8/qsci
 yes
 ```
 
@@ -431,7 +432,7 @@ PyQt wants to install in the system path -- this is not a good idea.
 More configuration is needed to install outside the system path:
 
 ```
-python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
+python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
 ```
 
 __Snow Leopard system Python__
@@ -445,22 +446,24 @@ Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
 If you are using 32-bit Qt (Qt Carbon):
 
 ```
-python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-n /usr/local/Qt-4.8/qsci --use-arch i386
 ```
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
 ```
-python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
+python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-n /usr/local/Qt-4.8/qsci --use-arch x86_64
 ```
 
-__Lion system Python__
+__Lion and Mt. Lion system Python__
 
 Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the arch option:
 
 ```
-python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin -n /usr/local/Qt-4.8/qsci
 ```
 
 __continue...__
@@ -477,13 +480,17 @@ Then make again.
 === Additional dependencies: QScintilla2 Python Module ===
 
 This will create the Qsci.so module in /Library/Python/2.x/site-packages/PyQt4.
+Like PyQt, it needs help to not install in system locations.
 
 __Snow Leopard:__ substitute '2.6' for Python version
 
 ```
 cd <QScintilla2 source dir>
 cd Python
-python2.7 configure.py -o /usr/local/lib -n /usr/local/include
+python2.7 configure.py -o /usr/local/lib -n /usr/local/include \
+-d /Library/Python/2.7/site-packages/PyQt4 -v /usr/local/share/sip/PyQt4 \
+--pyqt-sipdir=/usr/local/share/sip/PyQt4
+qmake -spec macx-g++ Qsci.pro
 make -j [#cpus]
 sudo make install
 ```
@@ -525,7 +532,31 @@ cd <Qwt 6.x.x source directory>
 qmake -spec macx-g++
 make -j [#cpus]
 sudo make install
+```
 
+**TODO:** Remedy for :
+
+```
+shrub:qwt-6.1-rc3 timlinux$ sudo make install
+Password:
+cd src/ && make -f Makefile install
+rm -f -r "/usr/local/qwt-6.1.0-rc3/lib/qwt.framework"
+cp -f -R "../lib/qwt.framework" "/usr/local/qwt-6.1.0-rc3/lib/qwt.framework"
+cp -f -R /Users/timlinux/dev/cpp/qwt-6.1-rc3/doc/html /usr/local/qwt-6.1.0-rc3/doc/
+cp -f -R /Users/timlinux/dev/cpp/qwt-6.1-rc3/doc/man /usr/local/qwt-6.1.0-rc3/doc/
+cd textengines/ && make -f Makefile install
+make[1]: Nothing to be done for `install'.
+cd designer/ && make -f Makefile install
+rm -f libqwt_designer_plugin.dylib
+linking plugins/designer/libqwt_designer_plugin.dylib
+ld: library not found for -lqwt
+collect2: ld returned 1 exit status
+make[1]: *** [plugins/designer/libqwt_designer_plugin.dylib] Error 1
+make: *** [sub-designer-install_subtargets-ordered] Error 2
+```
+
+
+```
 sudo install_name_tool -id /usr/local/qwt-6.0.1/lib/qwt.framework/Versions/6/qwt \
   /usr/local/qwt-6.0.1/lib/qwt.framework/Versions/6/qwt
 ```
@@ -589,14 +620,8 @@ sudo make install
 
 If you want the Globe plugin in QGIS (default OFF), OSG and osgEarth are needed.
 
-First, **OpenSceneGraph**.  The main site is:
-
-http://www.openscenegraph.org/
-
-Get the tarball (or zip) for the the latest 3.x version.
-Binary availability is unknown at this time as the site is down.
-
-Another place to get the source is github:
+First, **OpenSceneGraph**.  The main site is very out of date, just go to
+github:
 
 http://github.com/openscenegraph/osg/tags
 
@@ -610,6 +635,38 @@ temporary location first.  You could stage it to the folder that the OSG source
 folder is in, or a common staging area like /Users/Shared/unix/osg.  Pick a
 folder not hidden and that doesn't need admin permissions to write to for simplicity.
 
+If you are building on Leopard, its configure forces a old ppc/i386 32bit build.
+If you want 64bit you need to fix CMakeLists.txt - in a text editor, find the
+if-block that starts with:
+
+```
+ELSEIF(${OSG_OSX_SDK_NAME} STREQUAL "macosx10.6" OR ${OSG_OSX_SDK_NAME} STREQUAL "macosx10.5")
+```
+
+In that section before the next ELSEIF, change:
+
+```
+ppc;i386
+```
+
+to:
+
+```
+i386;x86_64
+```
+
+and change:
+
+```
+mmacosx-version-min=10.5
+```
+
+to:
+
+```
+mmacosx-version-min=10.6
+```
+
 In a new Terminal cd to the source folder and:
 
 ```
@@ -618,6 +675,10 @@ cd build
 cmake -D CMAKE_INSTALL_PREFIX=/path/to/some/staging/folder \
 -D OSG_COMPILE_FRAMEWORKS=ON \
 -D OSG_PLUGIN_SEARCH_INSTALL_DIR_FOR_PLUGINS=OFF \
+-D JASPER_LIBRARY=/Library/Frameworks/UnixImageIO.framework \
+-D JASPER_INCLUDE_DIR=/Library/Frameworks/UnixImageIO.framework/Headers \
+-D TIFF_LIBRARY=/Library/Frameworks/UnixImageIO.framework \
+-D TIFF_INCLUDE_DIR=/Library/Frameworks/UnixImageIO.framework/Headers \
 ..
 make
 make install
@@ -628,7 +689,7 @@ Enter the staging path you chose for the CMAKE_INSTALL_PREFIX option above.
 
 Now move all .frameworks from the lib/ folder in the staging area to /Library/Frameworks.  Move the files in the osgPlugins folder in the lib/ folder
 to /Library/Application Support/OpenSceneGraph/PlugIns.  The bin/ executables
-can be left where they are, we don't need them.
+can be left where they are.
 
 
 Next up is **libzip**.  Get the latest tarball at:

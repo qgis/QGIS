@@ -2,7 +2,11 @@
 ########################################################
 # Files
 
-SET (GPX_SRCS qgsgpxprovider.cpp gpsdata.cpp)
+SET (GPX_SRCS
+  qgsgpxprovider.cpp
+  qgsgpxfeatureiterator.cpp
+  gpsdata.cpp
+)
 
 SET (GPX_MOC_HDRS
 	qgsgpxprovider.h

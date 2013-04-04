@@ -49,7 +49,7 @@ void QgsMapToolZoom::canvasMoveEvent( QMouseEvent * e )
   {
     mDragging = true;
     delete mRubberBand;
-    mRubberBand = new QgsRubberBand( mCanvas, true );
+    mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
     mZoomRect.setTopLeft( e->pos() );
   }
   mZoomRect.setBottomRight( e->pos() );

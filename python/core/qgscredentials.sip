@@ -16,7 +16,7 @@ class QgsCredentials
 
   protected:
     //! request a password
-    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) = 0;
+    virtual bool request( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null ) = 0;
 
     //! register instance
     void setInstance( QgsCredentials *theInstance );
@@ -37,5 +37,5 @@ class QgsCredentialsConsole : QObject, QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null );
+    virtual bool request( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null );
 };

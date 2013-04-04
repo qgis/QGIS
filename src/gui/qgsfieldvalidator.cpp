@@ -29,9 +29,10 @@
 #include "qgslonglongvalidator.h"
 #include "qgsfield.h"
 
-QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field )
+QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QString dateFormat )
     : QValidator( parent )
     , mField( field )
+    , mDateFormat( dateFormat )
 {
   switch ( mField.type() )
   {
@@ -128,11 +129,11 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   }
   else if ( mField.type() == QVariant::Date )
   {
-    return QDate::fromString( s ).isValid() ? Acceptable : Intermediate;
+    return QDate::fromString( s, mDateFormat ).isValid() ? Acceptable : Intermediate;
   }
   else
   {
-    QgsDebugMsg( "unsupported type for validation" );
+    QgsDebugMsg( QString( "unsupported type %1 for validation" ).arg( mField.type() ) );
     return Invalid;
   }
 

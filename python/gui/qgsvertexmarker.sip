@@ -6,7 +6,7 @@ class QgsVertexMarker : QgsMapCanvasItem
 %End
 
   public:
-    
+
     //! Icons
     enum IconType
     {

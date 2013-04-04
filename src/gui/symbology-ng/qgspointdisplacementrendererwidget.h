@@ -46,9 +46,9 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererV2Widget,
     void on_mRendererComboBox_currentIndexChanged( int index );
     void on_mLabelFontButton_clicked();
     void on_mCircleWidthSpinBox_valueChanged( double d );
-    void on_mCircleColorButton_clicked();
+    void on_mCircleColorButton_colorChanged( const QColor& newColor );
     void on_mDistanceSpinBox_valueChanged( double d );
-    void on_mLabelColorButton_clicked();
+    void on_mLabelColorButton_colorChanged( const QColor& newColor );
     void on_mCircleModificationSpinBox_valueChanged( double d );
     void on_mScaleDependentLabelsCheckBox_stateChanged( int state );
     void on_mMaxScaleDenominatorEdit_textChanged( const QString & text );

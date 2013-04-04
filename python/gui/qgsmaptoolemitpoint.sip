@@ -4,7 +4,7 @@ class QgsMapToolEmitPoint : QgsMapTool
 %TypeHeaderCode
 #include <qgsmaptoolemitpoint.h>
 %End
-  
+
   public:
     //! constructor
     QgsMapToolEmitPoint( QgsMapCanvas* canvas );

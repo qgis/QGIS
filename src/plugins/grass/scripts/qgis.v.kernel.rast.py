@@ -79,7 +79,7 @@ def main():
 
     if grass.run_command('v.kernel', input=input, stddeviation=stddeviation, output=output ) != 0:
          grass.fatal("Cannot run v.kernel.")
-	
+
 if __name__ == "__main__":
     options, flags = grass.parser()
     main()

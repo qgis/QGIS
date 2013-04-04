@@ -44,8 +44,8 @@ class merge(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "merge"
-        self.group = "Miscellaneous"
+        self.name = "Merge"
+        self.group = "[GDAL] Miscellaneous"
         self.addParameter(ParameterMultipleInput(merge.INPUT, "Input layers", ParameterMultipleInput.TYPE_RASTER))
         self.addParameter(ParameterBoolean(merge.PCT, "Grab pseudocolor table from first layer", False))
         self.addParameter(ParameterBoolean(merge.SEPARATE, "Layer stack", False))
@@ -60,10 +60,12 @@ class merge(GeoAlgorithm):
             commands.append("-separate")
         if self.getParameterValue(merge.PCT):
             commands.append("-pct")
-        commands.append("-of")
+        commands.append("-o")
         out = self.getOutputValue(merge.OUTPUT)
+        commands.append(out)
+        commands.append("-of")
         commands.append(GdalUtils.getFormatShortNameFromFilename(out))
         commands.append(self.getParameterValue(merge.INPUT).replace(";", " "))
-        commands.append(out)
+
 
         GdalUtils.runGdal(commands, progress)

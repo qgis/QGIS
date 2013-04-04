@@ -94,7 +94,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
 void QgsMapToolDeletePart::deletePart( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer )
 {
   QgsFeature f;
-  vlayer->featureAtId( fId, f );
+  vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fId ) ).nextFeature( f );
 
   // find out the part number
   QgsGeometry* g = f.geometry();

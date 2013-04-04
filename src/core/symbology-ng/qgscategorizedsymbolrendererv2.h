@@ -27,6 +27,7 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsRendererCategoryV2
 {
   public:
+    QgsRendererCategoryV2( );
 
     //! takes ownership of symbol
     QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol, QString label );
@@ -34,7 +35,10 @@ class CORE_EXPORT QgsRendererCategoryV2
     //! copy constructor
     QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );
 
+
     ~QgsRendererCategoryV2();
+
+    QgsRendererCategoryV2& operator=( const QgsRendererCategoryV2& cat );
 
     QVariant value() const;
     QgsSymbolV2* symbol() const;
@@ -100,6 +104,12 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     bool deleteCategory( int catIndex );
     void deleteAllCategories();
 
+    //! Moves the category at index position from to index position to.
+    void moveCategory( int from, int to );
+
+    void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
+    void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
+
     QString classAttribute() const { return mAttrName; }
     void setClassAttribute( QString attr ) { mAttrName = attr; }
 
@@ -134,7 +144,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     QString sizeScaleField() const { return mSizeScaleField; }
 
     //! @note added in 2.0
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod ) { mScaleMethod = scaleMethod; }
+    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
 

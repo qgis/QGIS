@@ -43,6 +43,9 @@
 
 #define NO_DATA -9999
 
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 static const QString sName = QObject::tr( "Heatmap" );
 static const QString sDescription = QObject::tr( "Creates a Heatmap raster for the input point vector" );
@@ -107,8 +110,12 @@ void Heatmap::run()
     QgsRectangle myBBox = d.bbox();
     int columns = d.columns();
     int rows = d.rows();
-    float cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
-    float myDecay = d.decayRatio();
+    double cellsize = d.cellSizeX(); // or d.cellSizeY();  both have the same value
+    mDecay = d.decayRatio();
+    int kernelShape = d.kernelShape();
+
+    // Start working on the input vector
+    QgsVectorLayer* inputLayer = d.inputVectorLayer();
 
     // Getting the rasterdataset in place
     GDALAllRegister();
@@ -126,6 +133,8 @@ void Heatmap::run()
     double geoTransform[6] = { myBBox.xMinimum(), cellsize, 0, myBBox.yMinimum(), 0, cellsize };
     emptyDataset = myDriver->Create( d.outputFilename().toUtf8(), columns, rows, 1, GDT_Float32, NULL );
     emptyDataset->SetGeoTransform( geoTransform );
+    // Set the projection on the raster destination to match the input layer
+    emptyDataset->SetProjection( inputLayer->crs().toWkt().toLocal8Bit().data() );
 
     GDALRasterBand *poBand;
     poBand = emptyDataset->GetRasterBand( 1 );
@@ -153,33 +162,43 @@ void Heatmap::run()
       return;
     }
     poBand = heatmapDS->GetRasterBand( 1 );
-    // Start working on the input vector
-    QgsVectorLayer* inputLayer = d.inputVectorLayer();
-    QgsVectorDataProvider* myVectorProvider = inputLayer->dataProvider();
-    if ( !myVectorProvider )
-    {
-      QMessageBox::information( 0, tr( "Point layer error" ), tr( "Could not identify the vector data provider." ) );
-      return;
-    }
 
     QgsAttributeList myAttrList;
     int rField = 0;
     int wField = 0;
+
+    // Handle different radius options
+    double radius;
+    double radiusToMapUnits = 1;
+    int myBuffer = 0;
     if ( d.variableRadius() )
     {
       rField = d.radiusField();
       myAttrList.append( rField );
       QgsDebugMsg( QString( "Radius Field index received: %1" ).arg( rField ) );
+
+      // If not using map units, then calculate a conversion factor to convert the radii to map units
+      if ( d.radiusUnit() == HeatmapGui::Meters )
+      {
+        radiusToMapUnits = mapUnitsOf( 1, inputLayer->crs() );
+      }
     }
+    else
+    {
+      radius = d.radius(); // radius returned by d.radius() is already in map units
+      myBuffer = bufferSize( radius, cellsize );
+    }
+
     if ( d.weighted() )
     {
       wField = d.weightField();
       myAttrList.append( wField );
     }
+
     // This might have attributes or mightnot have attibutes at all
     // based on the variableRadius() and weighted()
-    myVectorProvider->select( myAttrList );
-    int totalFeatures = myVectorProvider->featureCount();
+    QgsFeatureIterator fit = inputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( myAttrList ) );
+    int totalFeatures = inputLayer->featureCount();
     int counter = 0;
 
     QProgressDialog p( "Creating Heatmap ... ", "Abort", 0, totalFeatures );
@@ -187,7 +206,7 @@ void Heatmap::run()
 
     QgsFeature myFeature;
 
-    while ( myVectorProvider->nextFeature( myFeature ) )
+    while ( fit.nextFeature( myFeature ) )
     {
       counter++;
       p.setValue( counter );
@@ -207,27 +226,14 @@ void Heatmap::run()
       {
         continue;
       }
-      float radius;
+
+      // If radius is variable then fetch it and calculate new pixel buffer size
       if ( d.variableRadius() )
       {
-        QgsAttributeMap myAttrMap = myFeature.attributeMap();
-        radius = myAttrMap.value( rField ).toFloat();
+        radius = myFeature.attribute( rField ).toDouble() * radiusToMapUnits;
+        myBuffer = bufferSize( radius, cellsize );
       }
-      else
-      {
-        radius = d.radius();
-      }
-      //convert the radius to map units if it is in meters
-      if ( d.radiusUnit() == HeatmapGui::Meters )
-      {
-        radius = mapUnitsOf( radius, inputLayer->crs() );
-      }
-      // convert radius in map units to pixel count
-      int myBuffer = radius / cellsize;
-      if ( radius - ( cellsize * myBuffer ) > 0.5 )
-      {
-        ++myBuffer;
-      }
+
       int blockSize = 2 * myBuffer + 1; //Block SIDE would be more appropriate
       // calculate the pixel position
       unsigned int xPosition, yPosition;
@@ -239,19 +245,25 @@ void Heatmap::run()
       poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize,
                         dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
 
-      float weight = 1.0;
+      double weight = 1.0;
       if ( d.weighted() )
       {
-        QgsAttributeMap myAttrMap = myFeature.attributeMap();
-        weight = myAttrMap.value( wField ).toFloat();
+        weight = myFeature.attribute( wField ).toDouble();
       }
 
       for ( int xp = 0; xp <= myBuffer; xp++ )
       {
         for ( int yp = 0; yp <= myBuffer; yp++ )
         {
-          float distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
-          float pixelValue = weight * ( 1 - (( 1 - myDecay ) * distance / myBuffer ) );
+          double distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
+
+          // is pixel outside search bandwidth of feature?
+          if ( distance > myBuffer )
+          {
+            continue;
+          }
+
+          double pixelValue = weight * calculateKernelValue( distance, myBuffer, kernelShape );
 
           // clearing anamolies along the axes
           if ( xp == 0 && yp == 0 )
@@ -263,21 +275,18 @@ void Heatmap::run()
             pixelValue /= 2;
           }
 
-          if ( distance <= myBuffer )
+          int pos[4];
+          pos[0] = ( myBuffer + xp ) * blockSize + ( myBuffer + yp );
+          pos[1] = ( myBuffer + xp ) * blockSize + ( myBuffer - yp );
+          pos[2] = ( myBuffer - xp ) * blockSize + ( myBuffer + yp );
+          pos[3] = ( myBuffer - xp ) * blockSize + ( myBuffer - yp );
+          for ( int p = 0; p < 4; p++ )
           {
-            int pos[4];
-            pos[0] = ( myBuffer + xp ) * blockSize + ( myBuffer + yp );
-            pos[1] = ( myBuffer + xp ) * blockSize + ( myBuffer - yp );
-            pos[2] = ( myBuffer - xp ) * blockSize + ( myBuffer + yp );
-            pos[3] = ( myBuffer - xp ) * blockSize + ( myBuffer - yp );
-            for ( int p = 0; p < 4; p++ )
+            if ( dataBuffer[ pos[p] ] == NO_DATA )
             {
-              if ( dataBuffer[ pos[p] ] == NO_DATA )
-              {
-                dataBuffer[ pos[p] ] = 0;
-              }
-              dataBuffer[ pos[p] ] += pixelValue;
+              dataBuffer[ pos[p] ] = 0;
             }
+            dataBuffer[ pos[p] ] += pixelValue;
           }
         }
       }
@@ -286,7 +295,7 @@ void Heatmap::run()
                         dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
       CPLFree( dataBuffer );
     }
-    //Finally close the dataset
+    // Finally close the dataset
     GDALClose(( GDALDatasetH ) heatmapDS );
 
     // Open the file in QGIS window
@@ -299,7 +308,8 @@ void Heatmap::run()
  * Local functions
  *
  */
-float Heatmap::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
+
+double Heatmap::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs )
 {
   // Worker to transform metres input to mapunits
   QgsDistanceArea da;
@@ -310,6 +320,97 @@ float Heatmap::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
     da.setEllipsoidalMode( true );
   }
   return meters / da.measureLine( QgsPoint( 0.0, 0.0 ), QgsPoint( 0.0, 1.0 ) );
+}
+
+int Heatmap::bufferSize( double radius, double cellsize )
+{
+  // Calculate the buffer size in pixels
+
+  int buffer = radius / cellsize;
+  if ( radius - ( cellsize * buffer ) > 0.5 )
+  {
+    ++buffer;
+  }
+  return buffer;
+}
+
+double Heatmap::calculateKernelValue( double distance, int bandwidth, int kernelShape )
+{
+  switch ( kernelShape )
+  {
+    case Heatmap::Triangular:
+      return triangularKernel( distance , bandwidth );
+
+    case Heatmap::Uniform:
+      return uniformKernel( distance, bandwidth );
+
+    case Heatmap::Quartic:
+      return quarticKernel( distance, bandwidth );
+
+    case Heatmap::Triweight:
+      return triweightKernel( distance, bandwidth );
+
+    case Heatmap::Epanechnikov:
+      return epanechnikovKernel( distance, bandwidth );
+  }
+  return 0;
+
+}
+
+/* The kernel functions below are taken from "Kernel Smoothing" by Wand and Jones (1995), p. 175
+ *
+ * Each kernel is multiplied by a normalizing constant "k", which normalizes the kernel area
+ * to 1 for a given bandwidth size.
+ *
+ * k is calculated by polar double integration of the kernel function
+ * between a radius of 0 to the specified bandwidth and equating the area to 1. */
+
+double Heatmap::uniformKernel( double distance, int bandwidth )
+{
+  Q_UNUSED( distance );
+  // Normalizing constant
+  double k = 2. / ( M_PI * ( double )bandwidth );
+
+  // Derived from Wand and Jones (1995), p. 175
+  return k * ( 0.5 / ( double )bandwidth );
+}
+
+double Heatmap::quarticKernel( double distance, int bandwidth )
+{
+  // Normalizing constant
+  double k = 16. / ( 5. * M_PI * pow(( double )bandwidth, 2 ) );
+
+  // Derived from Wand and Jones (1995), p. 175
+  return k * ( 15. / 16. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 2 );
+}
+
+double Heatmap::triweightKernel( double distance, int bandwidth )
+{
+  // Normalizing constant
+  double k = 128. / ( 35. * M_PI * pow(( double )bandwidth, 2 ) );
+
+  // Derived from Wand and Jones (1995), p. 175
+  return k * ( 35. / 32. ) * pow( 1. - pow( distance / ( double )bandwidth, 2 ), 3 );
+}
+
+double Heatmap::epanechnikovKernel( double distance, int bandwidth )
+{
+  // Normalizing constant
+  double k = 8. / ( 3. * M_PI * pow(( double )bandwidth, 2 ) );
+
+  // Derived from Wand and Jones (1995), p. 175
+  return k * ( 3. / 4. ) * ( 1. - pow( distance / ( double )bandwidth, 2 ) );
+}
+
+double Heatmap::triangularKernel( double distance, int bandwidth )
+{
+  // Normalizing constant. In this case it's calculated a little different
+  // due to the inclusion of the non-standard "decay" parameter
+
+  double k = 3. / (( 1. + 2. * mDecay ) * M_PI * pow(( double )bandwidth, 2 ) );
+
+  // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
+  return k * ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
 }
 
 // Unload the plugin by cleaning up the GUI

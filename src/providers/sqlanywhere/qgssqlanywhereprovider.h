@@ -2,8 +2,8 @@
     qgssqlanywhereprovider.h - QGIS data provider for SQL Anywhere DBMS
     ------------------------
     begin                : Dec 2010
-    copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author               : David DeHaan
+    copyright            : (C) 2013 by SAP AG or an SAP affiliate company.
+    author               : David DeHaan, Mary Steele
     email                : ddehaan at sybase dot com
 
  ***************************************************************************
@@ -63,14 +63,8 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     /** Get the QgsCoordinateReferenceSystem for this layer */
     QgsCoordinateReferenceSystem crs() { return mCrs; }
 
-    /** Gets the feature at the given feature ID
-      *  @param featureId of feature to retrieve
-      *  @param feature which will receive data from the provider
-      *  @param fetchGeometry true if the feature geometry should be fetched
-      *  @param fetchAttributes list of attributes which should be fetched
-      */
-    virtual bool featureAtId( QgsFeatureId featureId,
-                              QgsFeature & feature, bool fetchGeometry = true, QgsAttributeList fetchAttributes = QgsAttributeList() );
+    /** Query for features specified in request. **/
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /** Accessor for sql where clause used to limit dataset */
     virtual QString subsetString();
@@ -78,23 +72,6 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     /** mutator for sql where clause used to limit dataset size */
     virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
     virtual bool supportsSubsetString() { return true; }
-
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(), bool fetchGeometry = true, bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature & feature );
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -123,20 +100,10 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     virtual QgsRectangle extent();
 
     /**
-     * Get the number of fields in the layer
-     */
-    uint fieldCount() const { return mAttributeFields.size(); }
-
-    /**
       * Get the field information for the layer
       * @return vector of QgsField objects
       */
-    const QgsFieldMap & fields() const { return mAttributeFields; }
-
-    /**
-     * Restart reading features from previous select operation
-     */
-    void rewind();
+    const QgsFields & fields() const { return mAttributeFields; }
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
@@ -152,9 +119,21 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
      *  @param limit maximum number of values (added in 1.4) */
     virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 );
 
+    /** Returns the possible enum values of an attribute.
+    * Returns an empty stringlist if a provider does not support enum types
+    * or if the given attribute is not an enum type.
+    * @param index the index of the attribute
+    * @param enumList reference to the list to fill
+    * @note: added in version 1.2
+    * SQLAnywhere does not currently support enumerated types.
+    */
+    //virtual void enumValues( int index, QStringList& enumList );
+
     /**Returns true if layer is valid
     */
     bool isValid() { return mValid; }
+
+    QgsAttributeList attributeIndexes();
 
     /**Returns the default value for field specified by @c fieldId */
     QVariant defaultValue( int fieldId ) { return mAttributeDefaults[fieldId]; }
@@ -270,16 +249,12 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     * internal utility functions used to handle common database tasks
     */
     void    closeDb();
-    void    closeCursors() { closeConnROCursors(); }
-    void    closeConnROCursors();
     void    closeConnRO();
     void    closeConnRW();
     QString quotedIdentifier( QString id ) const;
     QString quotedValue( QString value ) const;
     QString getWhereClause() const { return mSubsetString.isEmpty() ? "1=1 " : "( " + mSubsetString + ") "; }
     bool    hasUniqueData( QString colName );
-    QString makeSelectSql( QString whereClause ) const;
-    bool    nextFeature( QgsFeature & feature, SqlAnyStatement *stmt );
     QString geomSampleSet();
     QString geomColIdent() const { return quotedIdentifier( mGeometryColumn ) + mGeometryProjStr; }
 
@@ -302,7 +277,7 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     /**
      * map of field index number to field type
      */
-    QgsFieldMap mAttributeFields;
+    QgsFields mAttributeFields;
     /**
      * map of field index number to field default value
      */
@@ -393,22 +368,6 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
     long mNumberFeatures;
 
     /**
-     * Statement handle for fetching of features by bounding rectangle
-     */
-    SqlAnyStatement *mStmt;
-    QgsAttributeList mStmtAttributesToFetch;
-    bool  mStmtFetchGeom;
-    QgsRectangle mStmtRect;
-    bool  mStmtUseIntersect;
-
-    /**
-     * Statement handle for fetching of features by ID
-     */
-    SqlAnyStatement *mIdStmt;
-    QgsAttributeList mIdStmtAttributesToFetch;
-    bool  mIdStmtFetchGeom;
-
-    /**
      * Read-only connection to SQL Anywhere database
      */
     SqlAnyConnection   *mConnRO;
@@ -416,6 +375,8 @@ class QgsSqlAnywhereProvider: public QgsVectorDataProvider
      * Read-write connection to SQL Anywhere database
      */
     SqlAnyConnection   *mConnRW;
+
+    friend class QgsSqlAnywhereFeatureIterator;
 
 }; // class QgsSqlAnywhereProvider
 

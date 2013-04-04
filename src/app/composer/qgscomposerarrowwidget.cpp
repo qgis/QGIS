@@ -36,7 +36,7 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QWidg
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mArrow );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
   setGuiElementValues();
 
@@ -77,25 +77,17 @@ void QgsComposerArrowWidget::on_mArrowHeadWidthSpinBox_valueChanged( double d )
   mArrow->endCommand();
 }
 
-void QgsComposerArrowWidget::on_mArrowColorButton_clicked()
+void QgsComposerArrowWidget::on_mArrowColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mArrow )
   {
     return;
   }
 
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( mArrow->arrowColor(), 0, tr( "Arrow color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( mArrow->arrowColor() );
-#endif
-  if ( newColor.isValid() )
-  {
-    mArrow->beginCommand( tr( "Arrow color changed" ) );
-    mArrow->setArrowColor( newColor );
-    mArrow->update();
-    mArrow->endCommand();
-  }
+  mArrow->beginCommand( tr( "Arrow color changed" ) );
+  mArrow->setArrowColor( newColor );
+  mArrow->update();
+  mArrow->endCommand();
 }
 
 void QgsComposerArrowWidget::blockAllSignals( bool block )
@@ -120,6 +112,9 @@ void QgsComposerArrowWidget::setGuiElementValues()
   }
 
   blockAllSignals( true );
+  mArrowColorButton->setColor( mArrow->arrowColor() );
+  mArrowColorButton->setColorDialogTitle( tr( "Select arrow color" ) );
+  mArrowColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   mOutlineWidthSpinBox->setValue( mArrow->outlineWidth() );
   mArrowHeadWidthSpinBox->setValue( mArrow->arrowHeadWidth() );
 

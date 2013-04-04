@@ -17,19 +17,93 @@
 
 #include "qgscomposerlegendwidget.h"
 #include "qgscomposerlegend.h"
+#include "qgscomposerlegenditem.h"
 #include "qgscomposerlegenditemdialog.h"
 #include "qgscomposerlegendlayersdialog.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include <QFontDialog>
+#include <QColorDialog>
 
 #include "qgsapplegendinterface.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+
+QgsComposerLegendWidgetStyleDelegate::QgsComposerLegendWidgetStyleDelegate( QObject *parent ): QItemDelegate( parent )
+{
+}
+
+QWidget *QgsComposerLegendWidgetStyleDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem & item, const QModelIndex & index ) const
+{
+  Q_UNUSED( item );
+  Q_UNUSED( index );
+  QgsDebugMsg( "Entered" );
+
+  QComboBox *editor = new QComboBox( parent );
+  QList<QgsComposerLegendStyle::Style> list;
+  list << QgsComposerLegendStyle::Group << QgsComposerLegendStyle::Subgroup << QgsComposerLegendStyle::Hidden;
+  foreach ( QgsComposerLegendStyle::Style s, list )
+  {
+    editor->addItem( QgsComposerLegendStyle::styleLabel( s ), s );
+  }
+
+  return editor;
+}
+
+void QgsComposerLegendWidgetStyleDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QgsDebugMsg( "Entered" );
+  //int s = index.model()->data(index, Qt::UserRole).toInt();
+  QComboBox *comboBox = static_cast<QComboBox*>( editor );
+
+  const QStandardItemModel * standardModel = dynamic_cast<const QStandardItemModel*>( index.model() );
+  if ( standardModel )
+  {
+    QModelIndex firstColumnIndex = standardModel->index( index.row(), 0, index.parent() );
+    QStandardItem* firstColumnItem = standardModel->itemFromIndex( firstColumnIndex );
+
+    QgsComposerLegendItem* cItem = dynamic_cast<QgsComposerLegendItem*>( firstColumnItem );
+    if ( cItem )
+    {
+      comboBox->setCurrentIndex( comboBox->findData( cItem->style() ) );
+    }
+  }
+}
+
+void QgsComposerLegendWidgetStyleDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  QgsDebugMsg( "Entered" );
+  QComboBox *comboBox = static_cast<QComboBox*>( editor );
+  QgsComposerLegendStyle::Style s = ( QgsComposerLegendStyle::Style ) comboBox->itemData( comboBox->currentIndex() ).toInt();
+  model->setData( index, s, Qt::UserRole );
+  model->setData( index, QgsComposerLegendStyle::styleLabel( s ), Qt::DisplayRole );
+  QStandardItemModel * standardModel = dynamic_cast<QStandardItemModel*>( model );
+  if ( standardModel )
+  {
+    QModelIndex firstColumnIndex = standardModel->index( index.row(), 0, index.parent() );
+    QStandardItem* firstColumnItem = standardModel->itemFromIndex( firstColumnIndex );
+
+    QgsComposerLegendItem* cItem = dynamic_cast<QgsComposerLegendItem*>( firstColumnItem );
+    if ( cItem )
+    {
+      cItem->setStyle( s );
+    }
+  }
+}
+
+void QgsComposerLegendWidgetStyleDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & index ) const
+{
+  Q_UNUSED( index );
+  editor->setGeometry( option.rect );
+}
+
 
 QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): mLegend( legend )
 {
@@ -41,15 +115,22 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
   mRemoveToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
   mMoveUpToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
   mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
+  mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.png" ) ) );
 
   //add widget for item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, legend );
-  toolBox->addItem( itemPropertiesWidget, tr( "General Options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
   if ( legend )
   {
+    legend->model()->setHorizontalHeaderLabels( QStringList() << tr( "Item" ) << tr( "Title style" ) );
     mItemTreeView->setModel( legend->model() );
   }
+
+  QgsComposerLegendWidgetStyleDelegate* styleDelegate = new QgsComposerLegendWidgetStyleDelegate();
+  mItemTreeView->setItemDelegateForColumn( 0, styleDelegate );
+  mItemTreeView->setItemDelegateForColumn( 1, styleDelegate );
+  mItemTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
 
   mItemTreeView->setDragEnabled( true );
   mItemTreeView->setAcceptDrops( true );
@@ -58,7 +139,9 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
   mWrapCharLineEdit->setText( legend->wrapChar() );
 
   setGuiElements();
-  connect( mItemTreeView, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
+
+  connect( mItemTreeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
+           this, SLOT( selectedChanged( const QModelIndex &, const QModelIndex & ) ) );
 }
 
 QgsComposerLegendWidget::QgsComposerLegendWidget(): mLegend( 0 )
@@ -80,13 +163,18 @@ void QgsComposerLegendWidget::setGuiElements()
 
   blockAllSignals( true );
   mTitleLineEdit->setText( mLegend->title() );
+  mColumnCountSpinBox->setValue( mLegend->columnCount() );
+  mSplitLayerCheckBox->setChecked( mLegend->splitLayer() );
+  mEqualColumnWidthCheckBox->setChecked( mLegend->equalColumnWidth() );
   mSymbolWidthSpinBox->setValue( mLegend->symbolWidth() );
   mSymbolHeightSpinBox->setValue( mLegend->symbolHeight() );
-  mGroupSpaceSpinBox->setValue( mLegend->groupSpace() );
-  mLayerSpaceSpinBox->setValue( mLegend->layerSpace() );
-  mSymbolSpaceSpinBox->setValue( mLegend->symbolSpace() );
-  mIconLabelSpaceSpinBox->setValue( mLegend->iconLabelSpace() );
+  mGroupSpaceSpinBox->setValue( mLegend->style( QgsComposerLegendStyle::Group ).margin( QgsComposerLegendStyle::Top ) );
+  mLayerSpaceSpinBox->setValue( mLegend->style( QgsComposerLegendStyle::Subgroup ).margin( QgsComposerLegendStyle::Top ) );
+  // We keep Symbol and SymbolLabel Top in sync for now
+  mSymbolSpaceSpinBox->setValue( mLegend->style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top ) );
+  mIconLabelSpaceSpinBox->setValue( mLegend->style( QgsComposerLegendStyle::SymbolLabel ).margin( QgsComposerLegendStyle::Left ) );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
+  mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
   if ( mLegend->model() )
   {
     mCheckBoxAutoUpdate->setChecked( mLegend->model()->autoUpdate() );
@@ -102,7 +190,6 @@ void QgsComposerLegendWidget::setGuiElements()
   {
     mMapComboBox->setCurrentIndex( mMapComboBox->findData( -1 ) );
   }
-
   blockAllSignals( false );
 }
 
@@ -124,6 +211,44 @@ void QgsComposerLegendWidget::on_mTitleLineEdit_textChanged( const QString& text
   {
     mLegend->beginCommand( tr( "Legend title changed" ), QgsComposerMergeCommand::ComposerLegendText );
     mLegend->setTitle( text );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mColumnCountSpinBox_valueChanged( int c )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend column count" ), QgsComposerMergeCommand::LegendColumnCount );
+    mLegend->setColumnCount( c );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+  mSplitLayerCheckBox->setEnabled( c > 1 );
+  mEqualColumnWidthCheckBox->setEnabled( c > 1 );
+}
+
+void QgsComposerLegendWidget::on_mSplitLayerCheckBox_toggled( bool checked )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend split layers" ), QgsComposerMergeCommand::LegendSplitLayer );
+    mLegend->setSplitLayer( checked );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mEqualColumnWidthCheckBox_toggled( bool checked )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend equal column width" ), QgsComposerMergeCommand::LegendEqualColumnWidth );
+    mLegend->setEqualColumnWidth( checked );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -159,7 +284,7 @@ void QgsComposerLegendWidget::on_mGroupSpaceSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Legend group space" ), QgsComposerMergeCommand::LegendGroupSpace );
-    mLegend->setGroupSpace( d );
+    mLegend->rstyle( QgsComposerLegendStyle::Group ).setMargin( QgsComposerLegendStyle::Top, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -171,7 +296,7 @@ void QgsComposerLegendWidget::on_mLayerSpaceSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Legend layer space" ), QgsComposerMergeCommand::LegendLayerSpace );
-    mLegend->setLayerSpace( d );
+    mLegend->rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( QgsComposerLegendStyle::Top, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -183,7 +308,9 @@ void QgsComposerLegendWidget::on_mSymbolSpaceSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Legend symbol space" ), QgsComposerMergeCommand::LegendSymbolSpace );
-    mLegend->setSymbolSpace( d );
+    // We keep Symbol and SymbolLabel Top in sync for now
+    mLegend->rstyle( QgsComposerLegendStyle::Symbol ).setMargin( QgsComposerLegendStyle::Top, d );
+    mLegend->rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Top, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -195,7 +322,7 @@ void QgsComposerLegendWidget::on_mIconLabelSpaceSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Legend icon label space" ), QgsComposerMergeCommand::LegendIconSymbolSpace );
-    mLegend->setIconLabelSpace( d );
+    mLegend->rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Left, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -209,14 +336,14 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
     bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->titleFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->titleFont() );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font() );
 #endif
     if ( ok )
     {
       mLegend->beginCommand( tr( "Title font changed" ) );
-      mLegend->setTitleFont( newFont );
+      mLegend->setStyleFont( QgsComposerLegendStyle::Title, newFont );
       mLegend->adjustBoxSize();
       mLegend->update();
       mLegend->endCommand();
@@ -231,14 +358,14 @@ void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
     bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->groupFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->groupFont() );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font() );
 #endif
     if ( ok )
     {
       mLegend->beginCommand( tr( "Legend group font changed" ) );
-      mLegend->setGroupFont( newFont );
+      mLegend->setStyleFont( QgsComposerLegendStyle::Group, newFont );
       mLegend->adjustBoxSize();
       mLegend->update();
       mLegend->endCommand();
@@ -253,14 +380,14 @@ void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
     bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->layerFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->layerFont() );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font() );
 #endif
     if ( ok )
     {
       mLegend->beginCommand( tr( "Legend layer font changed" ) );
-      mLegend->setLayerFont( newFont );
+      mLegend->setStyleFont( QgsComposerLegendStyle::Subgroup, newFont );
       mLegend->adjustBoxSize();
       mLegend->update();
       mLegend->endCommand();
@@ -275,14 +402,14 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
     bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->itemFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->itemFont() );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font() );
 #endif
     if ( ok )
     {
       mLegend->beginCommand( tr( "Legend item font changed" ) );
-      mLegend->setItemFont( newFont );
+      mLegend->setStyleFont( QgsComposerLegendStyle::SymbolLabel, newFont );
       mLegend->adjustBoxSize();
       mLegend->update();
       mLegend->endCommand();
@@ -290,6 +417,26 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
   }
 }
 
+void QgsComposerLegendWidget::on_mFontColorPushButton_clicked()
+{
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  QColor oldColor = mLegend->fontColor();
+  QColor newColor = QColorDialog::getColor( oldColor, 0 );
+
+  if ( !newColor.isValid() ) //user canceled the dialog
+  {
+    return;
+  }
+
+  mLegend->beginCommand( tr( "Legend font color changed" ) );
+  mLegend->setFontColor( newColor );
+  mLegend->update();
+  mLegend->endCommand();
+}
 
 void QgsComposerLegendWidget::on_mBoxSpaceSpinBox_valueChanged( double d )
 {
@@ -297,6 +444,18 @@ void QgsComposerLegendWidget::on_mBoxSpaceSpinBox_valueChanged( double d )
   {
     mLegend->beginCommand( tr( "Legend box space" ), QgsComposerMergeCommand::LegendBoxSpace );
     mLegend->setBoxSpace( d );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mColumnSpaceSpinBox_valueChanged( double d )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend box space" ), QgsComposerMergeCommand::LegendColumnSpace );
+    mLegend->setColumnSpace( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -612,6 +771,52 @@ void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
   mLegend->endCommand();
 }
 
+void QgsComposerLegendWidget::on_mCountToolButton_clicked( bool checked )
+{
+  QgsDebugMsg( "Entered." );
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  //get current item
+  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
+  if ( !itemModel )
+  {
+    return;
+  }
+
+  //get current item
+  QModelIndex currentIndex = mItemTreeView->currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    return;
+  }
+
+  QStandardItem* currentItem = itemModel->itemFromIndex( currentIndex );
+  if ( !currentItem )
+  {
+    return;
+  }
+
+  QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem *>( currentItem );
+
+  if ( !layerItem )
+  {
+    return;
+  }
+
+  mLegend->beginCommand( tr( "Legend updated" ) );
+  layerItem->setShowFeatureCount( checked );
+  if ( mLegend->model() )
+  {
+    mLegend->model()->updateItem( currentItem );
+  }
+  mLegend->update();
+  mLegend->adjustBoxSize();
+  mLegend->endCommand();
+}
+
 void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()
 {
   updateLegend();
@@ -665,6 +870,9 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mItemTreeView->blockSignals( b );
   mCheckBoxAutoUpdate->blockSignals( b );
   mMapComboBox->blockSignals( b );
+  mColumnCountSpinBox->blockSignals( b );
+  mSplitLayerCheckBox->blockSignals( b );
+  mEqualColumnWidthCheckBox->blockSignals( b );
   mSymbolWidthSpinBox->blockSignals( b );
   mSymbolHeightSpinBox->blockSignals( b );
   mGroupSpaceSpinBox->blockSignals( b );
@@ -672,6 +880,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mSymbolSpaceSpinBox->blockSignals( b );
   mIconLabelSpaceSpinBox->blockSignals( b );
   mBoxSpaceSpinBox->blockSignals( b );
+  mColumnSpaceSpinBox->blockSignals( b );
 }
 
 void QgsComposerLegendWidget::refreshMapComboBox()
@@ -714,4 +923,28 @@ void QgsComposerLegendWidget::showEvent( QShowEvent * event )
 {
   refreshMapComboBox();
   QWidget::showEvent( event );
+}
+
+void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, const QModelIndex & previous )
+{
+  Q_UNUSED( previous );
+  QgsDebugMsg( "Entered" );
+
+  mCountToolButton->setChecked( false );
+  mCountToolButton->setEnabled( false );
+
+  QStandardItemModel* itemModel = qobject_cast<QStandardItemModel *>( mItemTreeView->model() );
+  if ( !itemModel ) return;
+
+  QStandardItem* currentItem = itemModel->itemFromIndex( current );
+  if ( !currentItem ) return;
+
+  QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem *>( currentItem );
+  if ( !layerItem ) return;
+
+  QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerItem->layerID() ) );
+  if ( !vectorLayer ) return;
+
+  mCountToolButton->setChecked( layerItem->showFeatureCount() );
+  mCountToolButton->setEnabled( true );
 }

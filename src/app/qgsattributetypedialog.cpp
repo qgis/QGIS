@@ -19,7 +19,10 @@
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvectordataprovider.h"
 #include "qgsmaplayerregistry.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
 #include "qgslogger.h"
 
 #include <QTableWidgetItem>
@@ -42,6 +45,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   connect( loadFromLayerButton, SIGNAL( clicked() ), this, SLOT( loadFromLayerButtonPushed() ) );
   connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
   connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
+  connect( valueRelationEditExpression, SIGNAL( clicked() ), this, SLOT( editValueRelationExpression() ) );
 
   valueRelationLayer->clear();
   foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
@@ -52,7 +56,6 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   }
 
   connect( valueRelationLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateLayerColumns( int ) ) );
-  connect( valueRelationFilterColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateFilterColumn( int ) ) );
   valueRelationLayer->setCurrentIndex( -1 );
 }
 
@@ -76,9 +79,29 @@ QgsVectorLayer::ValueRelationData QgsAttributeTypeDialog::valueRelationData()
   return mValueRelationData;
 }
 
+QString QgsAttributeTypeDialog::dateFormat()
+{
+  return mDateFormat;
+}
+
+QSize QgsAttributeTypeDialog::widgetSize()
+{
+  return mWidgetSize;
+}
+
 QMap<QString, QVariant> &QgsAttributeTypeDialog::valueMap()
 {
   return mValueMap;
+}
+
+bool QgsAttributeTypeDialog::fieldEditable()
+{
+  return isFieldEditableCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setFieldEditable( bool editable )
+{
+  isFieldEditableCheckBox->setChecked( editable );
 }
 
 QPair<QString, QString> QgsAttributeTypeDialog::checkedState()
@@ -122,6 +145,29 @@ void QgsAttributeTypeDialog::removeSelectedButtonPushed()
   {
     tableWidget->removeRow( rowsToRemove.values()[i] - removed );
     removed++;
+  }
+}
+
+void QgsAttributeTypeDialog::editValueRelationExpression()
+{
+  QString id = valueRelationLayer->itemData( valueRelationLayer->currentIndex() ).toString();
+
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+  if ( !vl )
+    return;
+
+  QgsExpressionBuilderDialog dlg( vl, valueRelationFilterExpression->toPlainText(), this );
+  dlg.setWindowTitle( tr( "Edit filter expression" ) );
+
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( vl->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+  dlg.setGeomCalculator( myDa );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    valueRelationFilterExpression->setText( dlg.expressionBuilder()->expressionText() );
   }
 }
 
@@ -284,6 +330,18 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
     case QgsVectorLayer::UuidGenerator:
       setPage( 13 );
       break;
+
+    case QgsVectorLayer::Photo:
+      setPage( 14 );
+      break;
+
+    case QgsVectorLayer::WebView:
+      setPage( 15 );
+      break;
+
+    case QgsVectorLayer::Color:
+      setPage( 16 );
+      break;
   }
 }
 
@@ -302,6 +360,16 @@ void QgsAttributeTypeDialog::setValueRelation( QgsVectorLayer::ValueRelationData
   mValueRelationData = valueRelation;
 }
 
+void QgsAttributeTypeDialog::setDateFormat( QString dateFormat )
+{
+  mDateFormat = dateFormat;
+}
+
+void QgsAttributeTypeDialog::setWidgetSize( QSize widgetSize )
+{
+  mWidgetSize = widgetSize;
+}
+
 void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editType )
 {
   mIndex = index;
@@ -310,9 +378,11 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
   setWindowTitle( defaultWindowTitle() + " \"" + mLayer->pendingFields()[index].name() + "\"" );
   QgsAttributeList attributeList = QgsAttributeList();
   attributeList.append( index );
-  mLayer->select( attributeList, QgsRectangle(), false );
+
+  QgsFeatureIterator fit = mLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attributeList ) );
 
   QgsFeature f;
+
   QString text;
   //calculate min and max for range for this field
   if ( mLayer->pendingFields()[index].type() == QVariant::Int )
@@ -321,9 +391,9 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     rangeWidget->addItems( QStringList() << tr( "Editable" ) << tr( "Slider" ) << tr( "Dial" ) );
     int min = INT_MIN;
     int max = INT_MAX;
-    while ( mLayer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
-      QVariant val = f.attributeMap()[index];
+      QVariant val = f.attribute( index );
       if ( val.isValid() && !val.isNull() )
       {
         int valInt = val.toInt();
@@ -342,9 +412,9 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
 
     rangeWidget->clear();
     rangeWidget->addItems( QStringList() << tr( "Editable" ) << tr( "Slider" ) );
-    while ( mLayer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
-      QVariant val = f.attributeMap()[index];
+      QVariant val = f.attribute( index );
       if ( val.isValid() && !val.isNull() )
       {
         double dVal =  val.toDouble();
@@ -408,6 +478,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
         maximumDoubleSpinBox->setValue( mRangeData.mMax.toDouble() );
         stepDoubleSpinBox->setValue( mRangeData.mStep.toDouble() );
       }
+
       if ( editType == QgsVectorLayer::EditRange )
       {
         rangeWidget->setCurrentIndex( 0 );
@@ -434,6 +505,16 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
       valueRelationAllowNull->setChecked( mValueRelationData.mAllowNull );
       valueRelationOrderByValue->setChecked( mValueRelationData.mOrderByValue );
       valueRelationAllowMulti->setChecked( mValueRelationData.mAllowMulti );
+      valueRelationFilterExpression->setText( mValueRelationData.mFilterExpression );
+      break;
+
+    case QgsVectorLayer::Calendar:
+      leDateFormat->setText( mDateFormat );
+      break;
+
+    case QgsVectorLayer::Photo:
+      sbWidgetWidth->setValue( mWidgetSize.width() );
+      sbWidgetHeight->setValue( mWidgetSize.height() );
       break;
 
     case QgsVectorLayer::LineEdit:
@@ -445,12 +526,12 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::TextEdit:
-    case QgsVectorLayer::Calendar:
     case QgsVectorLayer::UuidGenerator:
+    case QgsVectorLayer::WebView:
+    case QgsVectorLayer::Color:
       break;
   }
 }
-
 
 void QgsAttributeTypeDialog::setPage( int index )
 {
@@ -502,6 +583,7 @@ void QgsAttributeTypeDialog::setStackPage( int index )
     }
 
   }
+
   stackedWidget->currentWidget()->setDisabled( okDisabled );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( okDisabled );
 }
@@ -509,6 +591,8 @@ void QgsAttributeTypeDialog::setStackPage( int index )
 void QgsAttributeTypeDialog::accept()
 {
   //store data to output variables
+  mFieldEditable = isFieldEditableCheckBox->isChecked();
+
   switch ( selectionListWidget->currentRow() )
   {
     default:
@@ -598,6 +682,7 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 11:
       mEditType = QgsVectorLayer::Calendar;
+      mDateFormat = leDateFormat->text();
       break;
     case 12:
       mEditType = QgsVectorLayer::ValueRelation;
@@ -607,19 +692,20 @@ void QgsAttributeTypeDialog::accept()
       mValueRelationData.mAllowNull = valueRelationAllowNull->isChecked();
       mValueRelationData.mOrderByValue = valueRelationOrderByValue->isChecked();
       mValueRelationData.mAllowMulti = valueRelationAllowMulti->isChecked();
-      if ( valueRelationFilterColumn->currentIndex() == 0 )
-      {
-        mValueRelationData.mFilterAttributeColumn = QString::null;
-        mValueRelationData.mFilterAttributeValue = QString::null;
-      }
-      else
-      {
-        mValueRelationData.mFilterAttributeColumn = valueRelationFilterColumn->currentText();
-        mValueRelationData.mFilterAttributeValue = valueRelationFilterValue->currentText();
-      }
+      mValueRelationData.mFilterExpression = valueRelationFilterExpression->toPlainText();
       break;
     case 13:
       mEditType = QgsVectorLayer::UuidGenerator;
+      break;
+    case 14:
+      mEditType = QgsVectorLayer::Photo;
+      mWidgetSize = QSize( sbWidgetWidth->value(), sbWidgetHeight->value() );
+      break;
+    case 15:
+      mEditType = QgsVectorLayer::WebView;
+      break;
+    case 16:
+      mEditType = QgsVectorLayer::Color;
       break;
   }
 
@@ -642,51 +728,14 @@ void QgsAttributeTypeDialog::updateLayerColumns( int idx )
   if ( !vl )
     return;
 
-  valueRelationFilterColumn->addItem( tr( "No filter" ), -1 );
-
-  const QgsFieldMap &fields = vl->pendingFields();
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  const QgsFields &fields = vl->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    valueRelationKeyColumn->addItem( it->name() );
-    valueRelationValueColumn->addItem( it->name() );
-    valueRelationFilterColumn->addItem( it->name(), it.key() );
+    QString fieldName = fields[idx].name();
+    valueRelationKeyColumn->addItem( fieldName );
+    valueRelationValueColumn->addItem( fieldName );
   }
 
   valueRelationKeyColumn->setCurrentIndex( valueRelationKeyColumn->findText( mValueRelationData.mKey ) );
   valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
-
-  if ( mValueRelationData.mFilterAttributeColumn.isNull() )
-  {
-    valueRelationFilterColumn->setCurrentIndex( 0 );
-  }
-  else
-  {
-    valueRelationFilterColumn->setCurrentIndex( valueRelationFilterColumn->findText( mValueRelationData.mFilterAttributeColumn ) );
-  }
-}
-
-void QgsAttributeTypeDialog::updateFilterColumn( int idx )
-{
-  valueRelationFilterValue->clear();
-  valueRelationFilterValue->setEnabled( idx > 0 );
-  if ( idx == 0 )
-    return;
-
-  QString id = valueRelationLayer->itemData( valueRelationLayer->currentIndex() ).toString();
-
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
-  if ( !vl )
-    return;
-
-  int fidx = valueRelationFilterColumn->itemData( idx ).toInt();
-
-  QList<QVariant> uniqueValues;
-  vl->uniqueValues( fidx, uniqueValues );
-
-  foreach ( const QVariant &v, uniqueValues )
-  {
-    valueRelationFilterValue->addItem( v.toString(), v );
-  }
-
-  valueRelationFilterValue->setCurrentIndex( valueRelationFilterValue->findText( mValueRelationData.mFilterAttributeValue ) );
 }

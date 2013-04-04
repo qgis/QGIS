@@ -248,22 +248,22 @@ bool KPty::open()
     {
       d->ttyName = ptsn;
 #else
-  int ptyno;
-  if ( !ioctl( d->masterFd, TIOCGPTN, &ptyno ) )
-  {
-    d->ttyName = QByteArray( "/dev/pts/" ) + QByteArray::number( ptyno );
+      int ptyno;
+      if ( !ioctl( d->masterFd, TIOCGPTN, &ptyno ) )
+      {
+        d->ttyName = QByteArray( "/dev/pts/" ) + QByteArray::number( ptyno );
 #endif
 #ifdef HAVE_GRANTPT
-      if ( !grantpt( d->masterFd ) )
-        goto grantedpt;
+        if ( !grantpt( d->masterFd ) )
+          goto grantedpt;
 #else
 
-  goto gotpty;
+        goto gotpty;
 #endif
+      }
+      ::close( d->masterFd );
+      d->masterFd = -1;
     }
-    ::close( d->masterFd );
-    d->masterFd = -1;
-  }
 #endif // HAVE_PTSNAME || TIOCGPTN
 
   // Linux device names, FIXME: Trouble on other systems?
@@ -299,8 +299,8 @@ bool KPty::open()
               p = getgrnam( "wheel" );
             gid_t gid = p ? p->gr_gid : getgid();
 
-            chown( d->ttyName.data(), getuid(), gid );
-            chmod( d->ttyName.data(), S_IRUSR | S_IWUSR | S_IWGRP );
+            ( void ) chown( d->ttyName.data(), getuid(), gid );
+            ( void ) chmod( d->ttyName.data(), S_IRUSR | S_IWUSR | S_IWGRP );
           }
           goto gotpty;
         }
@@ -393,7 +393,7 @@ void KPty::close()
       struct stat st;
       if ( !stat( d->ttyName.data(), &st ) )
       {
-        chown( d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1 );
+        ( void ) chown( d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1 );
         chmod( d->ttyName.data(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH );
       }
     }
@@ -556,29 +556,29 @@ void KPty::logout()
   if (( ut = getutxline( &l_struct ) ) )
   {
 #  else
-  utmpname( _PATH_UTMP );
-  setutent();
-  if (( ut = getutline( &l_struct ) ) )
-  {
+    utmpname( _PATH_UTMP );
+    setutent();
+    if (( ut = getutline( &l_struct ) ) )
+    {
 #  endif
-    memset( ut->ut_name, 0, sizeof( *ut->ut_name ) );
-    memset( ut->ut_host, 0, sizeof( *ut->ut_host ) );
+      memset( ut->ut_name, 0, sizeof( *ut->ut_name ) );
+      memset( ut->ut_host, 0, sizeof( *ut->ut_host ) );
 #  ifdef HAVE_STRUCT_UTMP_UT_SYSLEN
-    ut->ut_syslen = 0;
+      ut->ut_syslen = 0;
 #  endif
 #  ifdef HAVE_STRUCT_UTMP_UT_TYPE
-    ut->ut_type = DEAD_PROCESS;
+      ut->ut_type = DEAD_PROCESS;
 #  endif
 #  ifdef HAVE_UTMPX
-    gettimeofday( ut->ut_tv, 0 );
-    pututxline( ut );
-  }
-  endutxent();
+      gettimeofday( ut->ut_tv, 0 );
+      pututxline( ut );
+    }
+    endutxent();
 #  else
-  ut->ut_time = time( 0 );
-  pututline( ut );
-}
-endutent();
+    ut->ut_time = time( 0 );
+    pututline( ut );
+  }
+  endutent();
 #  endif
 # endif
 #endif

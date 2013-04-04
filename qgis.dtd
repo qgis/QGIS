@@ -1,6 +1,7 @@
 <!-- DTD for QGIS project file
 * This DTD describes the maplayers and their symbology and
 * is used when saving/restoring a QGIS project.
+* This file is in the public domain
 -->
 
 <!--

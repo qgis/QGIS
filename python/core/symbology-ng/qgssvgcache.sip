@@ -34,7 +34,7 @@ class QgsSvgCacheEntry
 /**A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
 according to the svg params specification (http://www.w3.org/TR/2009/WD-SVGParamPrimer-20090616/). Supported are
 the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"*/
-class QgsSvgCache
+class QgsSvgCache : QObject
 {
 %TypeHeaderCode
 #include <qgssvgcache.h>
@@ -46,7 +46,7 @@ class QgsSvgCache
     ~QgsSvgCache();
 
     const QImage& svgAsImage( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
-                              double widthScaleFactor, double rasterScaleFactor );
+                              double widthScaleFactor, double rasterScaleFactor, bool& fitsInCache );
     const QPicture& svgAsPicture( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
@@ -56,7 +56,8 @@ class QgsSvgCache
                          double& defaultOutlineWidth ) const;
 
   protected:
-    QgsSvgCache();
+    //! protected constructor
+    QgsSvgCache( QObject* parent = 0 );
 
     /**Creates new cache entry and returns pointer to it*/
     QgsSvgCacheEntry* insertSVG( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,

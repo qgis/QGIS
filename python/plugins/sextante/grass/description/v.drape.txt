@@ -1,11 +1,11 @@
 v.drape
 v.drape - Converts vector map to 3D by sampling of elevation raster map.
 Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
+ParameterVector|input|Iput vector layer|-1|False
 ParameterRaster|rast|Elevation raster map for height extraction|False
 ParameterSelection|method|Sampling method|nearest;bilinear;cubic
 ParameterString|scale|Scale factor for sampled raster values|1.0
 ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
 ParameterString|null_value|Vector Z value for unknown height|
-OutputVector|output|Name for output vector map
+OutputVector|output|Output layer
 

@@ -133,6 +133,9 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Selected CRS
     QString mCRS;
 
+    //! Default CRS
+    QString mDefaultCRS;
+
     //! Common CRSs for selected layers
     QSet<QString> mCRSs;
 
@@ -145,6 +148,10 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     //! Map mime types to supported formats
     QMap<QString, int> mMimeMap;
+
+
+    // Clear layers list, crs, encodings ...
+    void clear();
 
     /**
      * \brief Populate the layer list - private for now.

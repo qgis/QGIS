@@ -22,31 +22,31 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
-from ui_console_settings import Ui_SettingsDialog
+from ui_console_settings import Ui_SettingsDialogPythonConsole
 
-class optionsDialog(QDialog, Ui_SettingsDialog):
+class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
-        self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Settings Python Console"))
+        self.setWindowTitle(QCoreApplication.translate("SettingsDialogPythonConsole", "Settings Python Console"))
         #self.iface = iface
         self.parent = parent
         self.setupUi(self)
         #self.show()
-        
+
         self.listPath = []
-        
+
         self.restoreSettings()
         self.initialCheck()
         self.fontConfig()
-        
+
         self.lineEdit.setReadOnly(True)
-        
+
         self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.png"))
         self.addAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Add API path"))
         self.removeAPIpath.setIcon(QIcon(":/images/themes/default/symbologyRemove.png"))
         self.removeAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Remove API path"))
-        
-        self.connect( self.preloadAPI, 
+
+        self.connect( self.preloadAPI,
                       SIGNAL("stateChanged(int)"), self.initialCheck)
         self.connect(self.browseButton,
                      SIGNAL("clicked()"), self.loadAPIFile)
@@ -60,7 +60,7 @@ class optionsDialog(QDialog, Ui_SettingsDialog):
             self.enableDisable(False)
         else:
             self.enableDisable(True)
-            
+
     def enableDisable(self, value):
         self.tableWidget.setEnabled(value)
         self.lineEdit.setEnabled(value)
@@ -74,10 +74,10 @@ class optionsDialog(QDialog, Ui_SettingsDialog):
         fileAPI = QFileDialog.getOpenFileName(
                         self, "Open API File", lastDirPath, "API file (*.api)")
         self.lineEdit.setText(fileAPI)
-        
+
         lastDirPath = QFileInfo(fileAPI).path()
         settings.setValue("pythonConsole/lastDirAPIPath", QVariant(fileAPI))
-        
+
     def accept(self):
         if not self.preloadAPI.isChecked():
             if self.tableWidget.rowCount() == 0:
@@ -87,7 +87,7 @@ class optionsDialog(QDialog, Ui_SettingsDialog):
         self.saveSettings()
         self.listPath = []
         QDialog.accept( self )
-        
+
     def addAPI(self):
         if self.lineEdit.text() == "":
             return
@@ -110,17 +110,17 @@ class optionsDialog(QDialog, Ui_SettingsDialog):
 
     def removeAPI(self):
         listItemSel = self.tableWidget.selectedIndexes()
-        #row = self.tableWidget.currentRow() 
+        #row = self.tableWidget.currentRow()
         for indx in listItemSel:
             self.tableWidget.removeRow(indx.row())
-        
+
     def fontConfig(self):
         #fontFamily = ['Courier','Monospace','Aurulent Sans','Bitstream Vera Serif']
         #for i in range(0, len(fontFamily)):
             #self.comboBox.addItem(fontFamily[i])
         settings = QSettings()
         self.fontComboBox.setCurrentIndex(settings.value("pythonConsole/fontfamilyindex").toInt()[0])
-            
+
     def saveSettings(self):
         settings = QSettings()
         settings.setValue("pythonConsole/preloadAPI", QVariant(self.preloadAPI.isChecked()))
@@ -134,11 +134,11 @@ class optionsDialog(QDialog, Ui_SettingsDialog):
             self.listPath.append(text)
         settings.setValue("pythonConsole/fontsize", QVariant(fontSize))
         settings.setValue("pythonConsole/userAPI", QVariant(self.listPath))
-                
+
     def restoreSettings(self):
         settings = QSettings()
         self.spinBox.setValue(settings.value("pythonConsole/fontsize").toInt()[0])
-        self.preloadAPI.setChecked(settings.value( "pythonConsole/preloadAPI" ).toBool())
+        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True).toBool())
         itemTable = settings.value("pythonConsole/userAPI").toStringList()
         for i in range(len(itemTable)):
             self.tableWidget.insertRow(i)
@@ -152,6 +152,6 @@ class optionsDialog(QDialog, Ui_SettingsDialog):
             self.tableWidget.horizontalHeader().show()
             self.tableWidget.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
         #self.comboBox.setCurrentIndex(settings.value("pythonConsole/fontfamilyindex").toInt()[0])
-        
+
     def reject( self ):
         QDialog.reject( self )

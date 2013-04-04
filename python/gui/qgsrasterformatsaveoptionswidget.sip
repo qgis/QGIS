@@ -4,7 +4,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
 %TypeHeaderCode
 #include <qgsrasterformatsaveoptionswidget.h>
 %End
- 
+
   public:
 
     enum Type
@@ -24,8 +24,10 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void setFormat( QString format );
     void setProvider( QString provider );
     void setRasterLayer( QgsRasterLayer* rasterLayer );
+    void setRasterFileName( const QString& file );
     QStringList options() const;
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
+    void setPyramidsFormat( QgsRasterDataProvider::RasterPyramidsFormat format );
 
   public slots:
 

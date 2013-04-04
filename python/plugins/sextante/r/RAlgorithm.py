@@ -76,28 +76,30 @@ class RAlgorithm(GeoAlgorithm):
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split("\n")
-        self.silentOutputs = []
         self.name = "[Unnamed algorithm]"
         self.group = "User R scripts"
-        for line in lines:
-            if line.startswith("##"):
-                try:
-                    self.processParameterLine(line.strip("\n"))
-                except:
-                    pass
+        self.parseDescription(iter(lines))
+
 
     def defineCharacteristicsFromFile(self):
+        filename = os.path.basename(self.descriptionFile)
+        self.name = filename[:filename.rfind(".")].replace("_", " ")
+        self.group = "User R scripts"
+        with open(self.descriptionFile, 'r') as f:
+            lines = [line.strip() for line in f]
+        self.parseDescription(iter(lines))
+
+    def parseDescription(self, lines):
         self.script = ""
         self.commands=[]
         self.showPlots = False
         self.showConsoleOutput = False
+        self.useRasterPackage = True
+        self.passFileNames = False
         self.verboseCommands = []
-        filename = os.path.basename(self.descriptionFile)
-        self.name = filename[:filename.rfind(".")].replace("_", " ")
-        self.group = "User R scripts"
-        lines = open(self.descriptionFile)
-        line = lines.readline().strip("\n").strip("\r")
-        while line != "":
+        ender = 0
+        line = lines.next().strip("\n").strip("\r")
+        while ender < 10:
             if line.startswith("##"):
                 try:
                     self.processParameterLine(line)
@@ -110,10 +112,16 @@ class RAlgorithm(GeoAlgorithm):
                     self.addOutput(OutputHTML(RAlgorithm.R_CONSOLE_OUTPUT, "R Console Output"))
                 self.showConsoleOutput = True
             else:
+                if line == '':
+                    ender += 1
+                else:
+                    ender=0
                 self.commands.append(line)
             self.script += line + "\n"
-            line = lines.readline().strip("\n").strip("\r")
-        lines.close()
+            try:
+                line = lines.next().strip("\n").strip("\r")
+            except:
+                break
 
     def getVerboseCommands(self):
         return self.verboseCommands
@@ -129,18 +137,24 @@ class RAlgorithm(GeoAlgorithm):
             self.showPlots = True
             self.addOutput(OutputHTML(RAlgorithm.RPLOTS, "R Plots"));
             return
+        if line.lower().strip().startswith("dontuserasterpackage"):
+            self.useRasterPackage = False
+            return
+        if line.lower().strip().startswith("passfilenames"):
+            self.passFileNames = True
+            return
         tokens = line.split("=");
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == "group":
             self.group = tokens[0]
             return
-        if tokens[1].lower().strip() == "raster":
+        if tokens[1].lower().strip().startswith("raster"):
             param = ParameterRaster(tokens[0], desc, False)
         elif tokens[1].lower().strip() == "vector":
             param = ParameterVector(tokens[0],  desc,ParameterVector.VECTOR_TYPE_ANY)
         elif tokens[1].lower().strip() == "table":
             param = ParameterTable(tokens[0], desc, False)
-        elif tokens[1].lower().strip() == "multiple raster":
+        elif tokens[1].lower().strip().startswith("multiple raster"):
             param = ParameterMultipleInput(tokens[0], desc, ParameterMultipleInput.TYPE_RASTER)
             param.optional = False
         elif tokens[1].lower().strip() == "multiple vector":
@@ -230,10 +244,13 @@ class RAlgorithm(GeoAlgorithm):
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 value = out.value
-                if not value.endswith("tif"):
-                    value = value + ".tif"
                 value = value.replace("\\", "/")
-                commands.append("writeGDAL(" + out.name + ",\"" + value + "\")")
+                if self.useRasterPackage or self.passFileNames:
+                    commands.append("writeRaster(" + out.name + ",\"" + value + "\", overwrite=TRUE)")
+                else:
+                    if not value.endswith("tif"):
+                        value = value + ".tif"
+                    commands.append("writeGDAL(" + out.name + ",\"" + value + "\")")
             if isinstance(out, OutputVector):
                 value = out.value
                 if not value.endswith("shp"):
@@ -253,58 +270,87 @@ class RAlgorithm(GeoAlgorithm):
     def getImportCommands(self):
         commands = []
         # if rgdal is not available, try to install it
-        # just use US mirror
-        commands.append('options("repos"="http://cran.us.r-project.org")')
+        # just use main mirror
+        commands.append('options("repos"="http://cran.at.r-project.org/")')
         rLibDir = "%s/rlibs" % SextanteUtils.userFolder().replace("\\","/")
-        if not os.path.isdir(rLibDir): os.mkdir(rLibDir)
+        if not os.path.isdir(rLibDir):
+            os.mkdir(rLibDir)
+        # .libPaths("%s") substitutes the personal libPath with "%s"! With '.libPaths(c("%s",deflibloc))' it is added without replacing and we can use all installed R packages!
+        commands.append('deflibloc <- .libPaths()[1]')
+        commands.append('.libPaths(c("%s",deflibloc))' % rLibDir )
         commands.append(
-            'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", lib="%s"))' % rLibDir)
+            'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", dependencies=TRUE, lib="%s"))' % rLibDir)
         commands.append("library(\"rgdal\")");
+        if not self.useRasterPackage or self.passFileNames:
+            commands.append(
+                'tryCatch(find.package("raster"), error=function(e) install.packages("raster", dependencies=TRUE, lib="%s"))' % rLibDir)
+            commands.append("library(\"raster\")");
+
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 value = param.value
                 value = value.replace("\\", "/")
-                commands.append(param.name + " = " + "readGDAL(\"" + value + "\")")
+                if self.passFileNames:
+                    commands.append(param.name + " = \"" + value + "\"")
+                elif self.useRasterPackage:
+                    commands.append(param.name + " = " + "brick(\"" + value + "\")")
+                else:
+                    commands.append(param.name + " = " + "readGDAL(\"" + value + "\")")
             if isinstance(param, ParameterVector):
                 value = param.getSafeExportedLayer()
                 value = value.replace("\\", "/")
                 filename = os.path.basename(value)
                 filename = filename[:-4]
-                commands.append(param.name + " = readOGR(\"" + value + "\",layer=\"" + filename + "\")")
+                folder = os.path.dirname(value)
+                if self.passFileNames:
+                    commands.append(param.name + " = \"" + value + "\"")
+                else:
+                    commands.append(param.name + " = readOGR(\"" + folder + "\",layer=\"" + filename + "\")")
             if isinstance(param, ParameterTable):
                 value = param.value
                 if not value.lower().endswith("csv"):
                     raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + value)
-                commands.append(param.name + " <- read.csv(\"" + value + "\", head=TRUE, sep=\",\")")
-            if isinstance(param, (ParameterTableField, ParameterString)):
+                if self.passFileNames:
+                    commands.append(param.name + " = \"" + value + "\"")
+                else:
+                    commands.append(param.name + " <- read.csv(\"" + value + "\", head=TRUE, sep=\",\")")
+            elif isinstance(param, (ParameterTableField, ParameterString, ParameterFile)):
                 commands.append(param.name + "=\"" + param.value + "\"")
-            if isinstance(param, (ParameterNumber, ParameterSelection)):
+            elif isinstance(param, (ParameterNumber, ParameterSelection)):
                 commands.append(param.name + "=" + str(param.value))
-            if isinstance(param, ParameterBoolean):
+            elif isinstance(param, ParameterBoolean):
                 if param.value:
                     commands.append(param.name + "=TRUE")
                 else:
                     commands.append(param.name + "=FALSE")
-            if isinstance(param, ParameterMultipleInput):
+            elif isinstance(param, ParameterMultipleInput):
                 iLayer = 0;
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                     layers = param.value.split(";")
                     for layer in layers:
-                        if not layer.lower().endswith("asc") and not layer.lower().endswith("tif"):
-                            raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
+                        #if not layer.lower().endswith("asc") and not layer.lower().endswith("tif") and not self.passFileNames:
+                            #raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
                         layer = layer.replace("\\", "/")
-                        commands.append("tempvar" + str(iLayer)+ " = " + "readGDAL(\"" + layer + "\"")
+                        if self.passFileNames:
+                            commands.append("tempvar" + str(iLayer)+ " <- \"" + layer + "\"")
+                        elif self.useRasterPackage:
+                            commands.append("tempvar" + str(iLayer)+ " <- " + "brick(\"" + layer + "\")")
+                        else:
+                            commands.append("tempvar" + str(iLayer)+ " <- " + "readGDAL(\"" + layer + "\")")
                         iLayer+=1
                 else:
                     exported = param.getSafeExportedLayers()
                     layers = exported.split(";")
                     for layer in layers:
-                        if not layer.lower().endswith("shp"):
+                        if not layer.lower().endswith("shp") and not self.passFileNames:
                             raise GeoAlgorithmExecutionException("Unsupported input file format.\n" + layer)
                         layer = layer.replace("\\", "/")
                         filename = os.path.basename(layer)
                         filename = filename[:-4]
-                        commands.append("tempvar" + str(iLayer) + " = " + "readOGR(\"" + layer + "\",layer=\"" + filename + "\")")
+                        if self.passFileNames:
+                            commands.append("tempvar" + str(iLayer)+ " <- \"" + layer + "\"")
+                        else:
+                            commands.append("tempvar" + str(iLayer) + " <- " + "readOGR(\"" + layer + "\",layer=\"" + filename + "\")")
                         iLayer+=1
                 s = ""
                 s += param.name
@@ -331,7 +377,7 @@ class RAlgorithm(GeoAlgorithm):
         return self.commands
 
     def helpFile(self):
-        helpfile = self.descriptionFile + ".help"
+        helpfile = unicode(self.descriptionFile) + ".help"
         if os.path.exists(helpfile):
             h2h = Help2Html()
             return h2h.getHtmlFile(self, helpfile)

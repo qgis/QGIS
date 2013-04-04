@@ -29,7 +29,7 @@ class QgsArcProperter
      * default constructor
      */
     QgsArcProperter();
-    
+
     /**
      * QgsGraphDirector call this method for fetching attribute from source layer
      * \return required attributes list

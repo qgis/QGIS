@@ -8,7 +8,7 @@ Date                 : May 23, 2011
 copyright            : (C) 2011 by Giuseppe Sucameli
 email                : brush.tyler@gmail.com
 
-The content of this file is based on 
+The content of this file is based on
 - PG_Manager by Martin Dobias <wonder.sk@gmail.com> (GPLv2 license)
  ***************************************************************************/
 
@@ -47,15 +47,15 @@ class PostGisDBConnector(DBConnector):
 		self.dbname = uri.database()
 		self.user = uri.username()
 		self.passwd = uri.password()
-				
+
 		if self.dbname == '' or self.dbname is None:
 			self.dbname = self.user
-		
+
 		try:
 			self.connection = psycopg2.connect( self._connectionInfo().encode('utf-8') )
 		except self.connection_error_types(), e:
 			raise ConnectionError(e)
-		
+
 		self._checkSpatial()
 		self._checkRaster()
 		self._checkGeometryColumnsTable()
@@ -70,20 +70,20 @@ class PostGisDBConnector(DBConnector):
 		self._execute(c, u"SELECT COUNT(*) FROM pg_proc WHERE proname = 'postgis_version'")
 		self.has_spatial = c.fetchone()[0] > 0
 		return self.has_spatial
-	
+
 	def _checkRaster(self):
 		""" check whether postgis_version is present in catalog """
 		c = self._get_cursor()
 		self._execute(c, u"SELECT COUNT(*) FROM pg_proc WHERE proname = 'postgis_raster_lib_version'")
 		self.has_raster = c.fetchone()[0] > 0
 		return self.has_raster
-	
+
 	def _checkGeometryColumnsTable(self):
 		c = self._get_cursor()
 		self._execute(c, u"SELECT relkind = 'v' FROM pg_class WHERE relname = 'geometry_columns' AND relkind IN ('v', 'r')")
 		res = c.fetchone()
 		self.has_geometry_columns = (res != None and len(res) != 0)
-		
+
 		if not self.has_geometry_columns:
 			self.has_geometry_columns_access = self.is_geometry_columns_view = False
 		else:
@@ -98,7 +98,7 @@ class PostGisDBConnector(DBConnector):
 		self._execute(c, u"SELECT relkind = 'v' FROM pg_class WHERE relname = 'raster_columns' AND relkind IN ('v', 'r')")
 		res = c.fetchone()
 		self.has_raster_columns = (res != None and len(res) != 0)
-		
+
 		if not self.has_raster_columns:
 			self.has_raster_columns_access = self.is_raster_columns_view = False
 		else:
@@ -115,18 +115,17 @@ class PostGisDBConnector(DBConnector):
 	def getSpatialInfo(self):
 		""" returns tuple about postgis support:
 			- lib version
-			- installed scripts version
-			- released scripts version
 			- geos version
 			- proj version
-			- whether uses stats
+			- installed scripts version
+			- released scripts version
 		"""
 		if not self.has_spatial:
 			return
 
 		c = self._get_cursor()
 		try:
-			self._execute(c, u"SELECT postgis_lib_version(), postgis_scripts_installed(), postgis_scripts_released(), postgis_geos_version(), postgis_proj_version(), postgis_uses_stats()")
+			self._execute(c, u"SELECT postgis_lib_version(), postgis_geos_version(), postgis_proj_version(), postgis_scripts_installed(), postgis_scripts_released()")
 		except DbError:
 			return
 
@@ -151,7 +150,7 @@ class PostGisDBConnector(DBConnector):
 			"integer", "bigint", "smallint", # integers
 			"serial", "bigserial", # auto-incrementing ints
 			"real", "double precision", "numeric", # floats
-			"varchar", "varchar(n)", "char(n)", "text", # strings
+			"varchar", "varchar(255)", "char(20)", "text", # strings
 			"date", "time", "timestamp" # date/time
 		]
 
@@ -163,7 +162,7 @@ class PostGisDBConnector(DBConnector):
 		c = self._get_cursor()
 		self._execute(c, sql)
 		return c.fetchone()
-		
+
 	def getSchemaPrivileges(self, schema):
 		""" schema privileges: (can create new objects, can access objects in schema) """
 		schema = 'current_schema()' if schema == None else self.quoteString(schema)
@@ -171,7 +170,7 @@ class PostGisDBConnector(DBConnector):
 		c = self._get_cursor()
 		self._execute(c, sql)
 		return c.fetchone()
-	
+
 	def getTablePrivileges(self, table):
 		""" table privileges: (select, insert, update, delete) """
 
@@ -200,7 +199,7 @@ class PostGisDBConnector(DBConnector):
 		tablenames = []
 		items = []
 
-		sys_tables = [ "spatial_ref_sys", "geography_columns", "geometry_columns", 
+		sys_tables = [ "spatial_ref_sys", "geography_columns", "geometry_columns",
 				"raster_columns", "raster_overviews" ]
 
 		try:
@@ -225,24 +224,24 @@ class PostGisDBConnector(DBConnector):
 
 		c = self._get_cursor()
 
-		sys_tables = [ "spatial_ref_sys", "geography_columns", "geometry_columns", 
+		sys_tables = [ "spatial_ref_sys", "geography_columns", "geometry_columns",
 				"raster_columns", "raster_overviews" ]
-		
+
 		if schema:
 			schema_where = u" AND nspname = %s " % self.quoteString(schema)
 		else:
 			schema_where = u" AND (nspname != 'information_schema' AND nspname !~ 'pg_') "
-			
+
 		# get all tables and views
-		sql = u"""SELECT 
-						cla.relname, nsp.nspname, cla.relkind = 'v', 
-						pg_get_userbyid(relowner), reltuples, relpages, 
+		sql = u"""SELECT
+						cla.relname, nsp.nspname, cla.relkind = 'v',
+						pg_get_userbyid(relowner), reltuples, relpages,
 						pg_catalog.obj_description(cla.oid)
-					FROM pg_class AS cla 
+					FROM pg_class AS cla
 					JOIN pg_namespace AS nsp ON nsp.oid = cla.relnamespace
 					WHERE cla.relkind IN ('v', 'r') """ + schema_where + """
 					ORDER BY nsp.nspname, cla.relname"""
-						  
+
 		self._execute(c, sql)
 
 		for tbl in c.fetchall():
@@ -260,13 +259,13 @@ class PostGisDBConnector(DBConnector):
 				name (table name)
 				namespace (schema)
 				type = 'view' (is a view?)
-				owner 
+				owner
 				tuples
 				pages
 				geometry_column:
 					f_geometry_column (or pg_attribute.attname, the geometry column name)
 					type (or pg_attribute.atttypid::regtype, the geometry column type name)
-					coord_dimension 
+					coord_dimension
 					srid
 		"""
 
@@ -274,44 +273,44 @@ class PostGisDBConnector(DBConnector):
 			return []
 
 		c = self._get_cursor()
-		
+
 		if schema:
 			schema_where = u" AND nspname = %s " % self.quoteString(schema)
 		else:
 			schema_where = u" AND (nspname != 'information_schema' AND nspname !~ 'pg_') "
 
 		geometry_column_from = u""
-		geometry_fields_select = u"""att.attname, 
-						textin(regtypeout(att.atttypid::regtype)), 
+		geometry_fields_select = u"""att.attname,
+						textin(regtypeout(att.atttypid::regtype)),
 						NULL, NULL"""
 		if self.has_geometry_columns and self.has_geometry_columns_access:
-			geometry_column_from = u"""LEFT OUTER JOIN geometry_columns AS geo ON 
-						cla.relname = geo.f_table_name AND nsp.nspname = f_table_schema AND 
+			geometry_column_from = u"""LEFT OUTER JOIN geometry_columns AS geo ON
+						cla.relname = geo.f_table_name AND nsp.nspname = f_table_schema AND
 						lower(att.attname) = lower(f_geometry_column)"""
-			geometry_fields_select = u"""CASE WHEN geo.f_geometry_column IS NOT NULL THEN geo.f_geometry_column ELSE att.attname END, 
-						CASE WHEN geo.type IS NOT NULL THEN geo.type ELSE textin(regtypeout(att.atttypid::regtype)) END, 
+			geometry_fields_select = u"""CASE WHEN geo.f_geometry_column IS NOT NULL THEN geo.f_geometry_column ELSE att.attname END,
+						CASE WHEN geo.type IS NOT NULL THEN geo.type ELSE textin(regtypeout(att.atttypid::regtype)) END,
 						geo.coord_dimension, geo.srid"""
-			
+
 
 		# discovery of all tables and whether they contain a geometry column
-		sql = u"""SELECT 
-						cla.relname, nsp.nspname, cla.relkind = 'v', 
-						pg_get_userbyid(relowner), cla.reltuples, cla.relpages, 
-						pg_catalog.obj_description(cla.oid), 
+		sql = u"""SELECT
+						cla.relname, nsp.nspname, cla.relkind = 'v',
+						pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
+						pg_catalog.obj_description(cla.oid),
 						""" + geometry_fields_select + """
 
-					FROM pg_class AS cla 
-					JOIN pg_namespace AS nsp ON 
+					FROM pg_class AS cla
+					JOIN pg_namespace AS nsp ON
 						nsp.oid = cla.relnamespace
 
-					JOIN pg_attribute AS att ON 
-						att.attrelid = cla.oid AND 
-						att.atttypid = 'geometry'::regtype OR 
-						att.atttypid IN (SELECT oid FROM pg_type WHERE typbasetype='geometry'::regtype ) 
+					JOIN pg_attribute AS att ON
+						att.attrelid = cla.oid AND
+						att.atttypid = 'geometry'::regtype OR
+						att.atttypid IN (SELECT oid FROM pg_type WHERE typbasetype='geometry'::regtype )
 
-					""" + geometry_column_from + """ 
+					""" + geometry_column_from + """
 
-					WHERE cla.relkind IN ('v', 'r') """ + schema_where + """ 
+					WHERE cla.relkind IN ('v', 'r') """ + schema_where + """
 					ORDER BY nsp.nspname, cla.relname, att.attname"""
 
 		self._execute(c, sql)
@@ -321,7 +320,7 @@ class PostGisDBConnector(DBConnector):
 			item = list(tbl)
 			item.insert(0, Table.VectorType)
 			items.append( item )
-			
+
 		return items
 
 	def getRasterTables(self, schema=None):
@@ -330,7 +329,7 @@ class PostGisDBConnector(DBConnector):
 				name (table name)
 				namespace (schema)
 				type = 'view' (is a view?)
-				owner 
+				owner
 				tuples
 				pages
 				raster_column:
@@ -347,7 +346,7 @@ class PostGisDBConnector(DBConnector):
 			return []
 
 		c = self._get_cursor()
-		
+
 		if schema:
 			schema_where = u" AND nspname = %s " % self.quoteString(schema)
 		else:
@@ -356,10 +355,10 @@ class PostGisDBConnector(DBConnector):
 		raster_column_from = u""
 		raster_fields_select = u"""att.attname, NULL, NULL, NULL, NULL, NULL"""
 		if self.has_raster_columns and self.has_raster_columns_access:
-			raster_column_from = u"""LEFT OUTER JOIN raster_columns AS rast ON 
-						cla.relname = rast.r_table_name AND nsp.nspname = r_table_schema AND 
+			raster_column_from = u"""LEFT OUTER JOIN raster_columns AS rast ON
+						cla.relname = rast.r_table_name AND nsp.nspname = r_table_schema AND
 						lower(att.attname) = lower(r_raster_column)"""
-			raster_fields_select = u"""CASE WHEN rast.r_raster_column IS NOT NULL THEN rast.r_raster_column ELSE att.attname END, 
+			raster_fields_select = u"""CASE WHEN rast.r_raster_column IS NOT NULL THEN rast.r_raster_column ELSE att.attname END,
 						rast.pixel_types,
 						rast.scale_x,
 						rast.scale_y,
@@ -368,24 +367,24 @@ class PostGisDBConnector(DBConnector):
 
 
 		# discovery of all tables and whether they contain a raster column
-		sql = u"""SELECT 
-						cla.relname, nsp.nspname, cla.relkind = 'v', 
-						pg_get_userbyid(relowner), cla.reltuples, cla.relpages, 
-						pg_catalog.obj_description(cla.oid), 
+		sql = u"""SELECT
+						cla.relname, nsp.nspname, cla.relkind = 'v',
+						pg_get_userbyid(relowner), cla.reltuples, cla.relpages,
+						pg_catalog.obj_description(cla.oid),
 						""" + raster_fields_select + """
 
-					FROM pg_class AS cla 
-					JOIN pg_namespace AS nsp ON 
+					FROM pg_class AS cla
+					JOIN pg_namespace AS nsp ON
 						nsp.oid = cla.relnamespace
 
-					JOIN pg_attribute AS att ON 
-						att.attrelid = cla.oid AND 
-						att.atttypid = 'raster'::regtype OR 
-						att.atttypid IN (SELECT oid FROM pg_type WHERE typbasetype='raster'::regtype ) 
+					JOIN pg_attribute AS att ON
+						att.attrelid = cla.oid AND
+						att.atttypid = 'raster'::regtype OR
+						att.atttypid IN (SELECT oid FROM pg_type WHERE typbasetype='raster'::regtype )
 
-					""" + raster_column_from + """ 
+					""" + raster_column_from + """
 
-					WHERE cla.relkind IN ('v', 'r') """ + schema_where + """ 
+					WHERE cla.relkind IN ('v', 'r') """ + schema_where + """
 					ORDER BY nsp.nspname, cla.relname, att.attname"""
 
 		self._execute(c, sql)
@@ -395,7 +394,7 @@ class PostGisDBConnector(DBConnector):
 			item = list(tbl)
 			item.insert(0, Table.RasterType)
 			items.append( item )
-			
+
 		return items
 
 
@@ -418,7 +417,7 @@ class PostGisDBConnector(DBConnector):
 				a.atttypmod AS modifier,
 				a.attnotnull AS notnull,
 				a.atthasdef AS hasdefault,
-				adef.adsrc AS default_value, 
+				adef.adsrc AS default_value,
 				pg_catalog.format_type(a.atttypid,a.atttypmod) AS formatted_type
 			FROM pg_class c
 			JOIN pg_attribute a ON a.attrelid = c.oid
@@ -437,20 +436,20 @@ class PostGisDBConnector(DBConnector):
 		schema, tablename = self.getSchemaTableName(table)
 		schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
-		sql = u"""SELECT idxcls.relname, indkey, indisunique = 't' 
-						FROM pg_index JOIN pg_class ON pg_index.indrelid=pg_class.oid 
-						JOIN pg_class AS idxcls ON pg_index.indexrelid=idxcls.oid 
-						JOIN pg_namespace nsp ON pg_class.relnamespace = nsp.oid 
-							WHERE pg_class.relname=%s %s 
+		sql = u"""SELECT idxcls.relname, indkey, indisunique = 't'
+						FROM pg_index JOIN pg_class ON pg_index.indrelid=pg_class.oid
+						JOIN pg_class AS idxcls ON pg_index.indexrelid=idxcls.oid
+						JOIN pg_namespace nsp ON pg_class.relnamespace = nsp.oid
+							WHERE pg_class.relname=%s %s
 							AND indisprimary != 't' """ % (self.quoteString(tablename), schema_where)
 		c = self._get_cursor()
 		self._execute(c, sql)
 		return c.fetchall()
-	
-	
+
+
 	def getTableConstraints(self, table):
 		c = self._get_cursor()
-		
+
 		schema, tablename = self.getSchemaTableName(table)
 		schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
@@ -460,14 +459,14 @@ class PostGisDBConnector(DBConnector):
 			LEFT JOIN pg_class t2 ON c.confrelid = t2.oid
 			JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
 			WHERE t.relname = %s %s """ % (self.quoteString(tablename), schema_where)
-		
+
 		self._execute(c, sql)
 		return c.fetchall()
 
 
 	def getTableTriggers(self, table):
 		c = self._get_cursor()
-		
+
 		schema, tablename = self.getSchemaTableName(table)
 		schema_where = u" AND nspname=%s " % self.quoteString(schema) if schema is not None else ""
 
@@ -476,35 +475,35 @@ class PostGisDBConnector(DBConnector):
 							LEFT JOIN pg_proc p ON trig.tgfoid = p.oid
 							JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
 							WHERE t.relname = %s %s """ % (self.quoteString(tablename), schema_where)
-	
+
 		self._execute(c, sql)
 		return c.fetchall()
 
 	def enableAllTableTriggers(self, enable, table):
 		""" enable or disable all triggers on table """
 		self.enableTableTrigger(None, enable, table)
-		
+
 	def enableTableTrigger(self, trigger, enable, table):
 		""" enable or disable one trigger on table """
 		trigger = self.quoteId(trigger) if trigger != None else "ALL"
 		sql = u"ALTER TABLE %s %s TRIGGER %s" % (self.quoteId(table), "ENABLE" if enable else "DISABLE", trigger)
 		self._execute_and_commit(sql)
-		
+
 	def deleteTableTrigger(self, trigger, table):
 		""" delete trigger on table """
 		sql = u"DROP TRIGGER %s ON %s" % (self.quoteId(trigger), self.quoteId(table))
 		self._execute_and_commit(sql)
-		
-	
+
+
 	def getTableRules(self, table):
 		c = self._get_cursor()
-		
+
 		schema, tablename = self.getSchemaTableName(table)
 		schema_where = u" AND schemaname=%s " % self.quoteString(schema) if schema is not None else ""
 
 		sql = u"""SELECT rulename, definition FROM pg_rules
 					WHERE tablename=%s %s """ % (self.quoteString(tablename), schema_where)
-	
+
 		self._execute(c, sql)
 		return c.fetchall()
 
@@ -538,7 +537,7 @@ class PostGisDBConnector(DBConnector):
 		except DbError, e:	# no statistics for the current table
 			return
 		return c.fetchone()
-	
+
 	def getViewDefinition(self, view):
 		""" returns definition of the view """
 
@@ -555,7 +554,7 @@ class PostGisDBConnector(DBConnector):
 	def getSpatialRefInfo(self, srid):
 		if not self.has_spatial:
 			return
-		
+
 		try:
 			c = self._get_cursor()
 			self._execute(c, "SELECT srtext FROM spatial_ref_sys WHERE srid = '%d'" % srid)
@@ -588,7 +587,7 @@ class PostGisDBConnector(DBConnector):
 			c = self._execute(None, sql)
 			res = c.fetchone()
 			return res != None and res[0] > 0
-		return False		
+		return False
 
 
 	def createTable(self, table, field_defs, pkey):
@@ -635,7 +634,7 @@ class PostGisDBConnector(DBConnector):
 
 		sql = u"ALTER TABLE %s RENAME TO %s" % (self.quoteId(table), self.quoteId(new_table))
 		self._execute(c, sql)
-		
+
 		# update geometry_columns if postgis is enabled
 		if self.has_geometry_columns and not self.is_geometry_columns_view:
 			schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
@@ -652,7 +651,7 @@ class PostGisDBConnector(DBConnector):
 
 		sql = u"ALTER TABLE %s SET SCHEMA %s" % (self.quoteId(table), self.quoteId(new_schema))
 		self._execute(c, sql)
-		
+
 		# update geometry_columns if postgis is enabled
 		if self.has_geometry_columns and not self.is_geometry_columns_view:
 			schema, tablename = self.getSchemaTableName(table)
@@ -664,7 +663,7 @@ class PostGisDBConnector(DBConnector):
 
 	def moveTable(self, table, new_table, new_schema=None):
 		schema, tablename = self.getSchemaTableName(table)
-		if new_schema == schema and new_table == tablename: 
+		if new_schema == schema and new_table == tablename:
 			return
 		if new_schema == schema:
 			return self.renameTable(table, new_table)
@@ -692,29 +691,29 @@ class PostGisDBConnector(DBConnector):
 			self._execute(c, sql)
 
 		self._commit()
-		
+
 	def createView(self, view, query):
 		sql = u"CREATE VIEW %s AS %s" % (self.quoteId(view), query)
 		self._execute_and_commit(sql)
-	
+
 	def deleteView(self, view):
 		sql = u"DROP VIEW %s" % self.quoteId(view)
 		self._execute_and_commit(sql)
-	
+
 	def renameView(self, view, new_name):
 		""" rename view in database """
 		self.renameTable(view, new_name)
-		
+
 	def createSchema(self, schema):
 		""" create a new empty schema in database """
 		sql = u"CREATE SCHEMA %s" % self.quoteId(schema)
 		self._execute_and_commit(sql)
-		
+
 	def deleteSchema(self, schema):
 		""" drop (empty) schema from database """
 		sql = u"DROP SCHEMA %s" % self.quoteId(schema)
 		self._execute_and_commit(sql)
-		
+
 	def renameSchema(self, schema, new_schema):
 		""" rename a schema in database """
 		sql = u"ALTER SCHEMA %s RENAME TO %s" % (self.quoteId(schema), self.quoteId(new_schema))
@@ -739,7 +738,7 @@ class PostGisDBConnector(DBConnector):
 		""" add a column to table """
 		sql = u"ALTER TABLE %s ADD %s" % (self.quoteId(table), field_def)
 		self._execute_and_commit(sql)
-		
+
 	def deleteTableColumn(self, table, column):
 		""" delete column from a table """
 		if self.isGeometryColumn(table, column):
@@ -761,7 +760,7 @@ class PostGisDBConnector(DBConnector):
 		col_actions = QStringList()
 		if data_type != None:
 			col_actions << u"TYPE %s" % data_type
-		if not_null != None: 
+		if not_null != None:
 			col_actions << (u"SET NOT NULL" if not_null else u"DROP NOT NULL")
 		if default != None:
 			if default and default != '':
@@ -792,17 +791,17 @@ class PostGisDBConnector(DBConnector):
 	def renameTableColumn(self, table, column, new_name):
 		""" rename column in a table """
 		return self.updateTableColumn(table, column, new_name)
-		
+
 	def setTableColumnType(self, table, column, data_type):
 		""" change column type """
 		return self.updateTableColumn(table, column, None, data_type)
-		
+
 	def setTableColumnNull(self, table, column, is_null):
 		""" change whether column can contain null values """
 		return self.updateTableColumn(table, column, None, None, not is_null)
 
 	def setTableColumnDefault(self, table, column, default):
-		""" change column's default value. 
+		""" change column's default value.
 			If default=None or an empty string drop default value """
 		return self.updateTableColumn(table, column, None, None, None, default)
 
@@ -848,7 +847,7 @@ class PostGisDBConnector(DBConnector):
 		""" create index on one column using default options """
 		sql = u"CREATE INDEX %s ON %s (%s)" % (self.quoteId(name), self.quoteId(table), self.quoteId(column))
 		self._execute_and_commit(sql)
-		
+
 	def deleteTableIndex(self, table, name):
 		schema, tablename = self.getSchemaTableName(table)
 		sql = u"DROP INDEX %s" % self.quoteId( (schema, name) )
@@ -867,7 +866,7 @@ class PostGisDBConnector(DBConnector):
 
 
 	def execution_error_types(self):
-		return psycopg2.Error, psycopg2.ProgrammingError
+		return psycopg2.Error, psycopg2.ProgrammingError, psycopg2.Warning
 
 	def connection_error_types(self):
 		return psycopg2.InterfaceError, psycopg2.OperationalError
@@ -910,8 +909,8 @@ class PostGisDBConnector(DBConnector):
 
 		# get schemas, tables and field names
 		items = []
-		sql = u"""SELECT nspname FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' 
-UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r') 
+		sql = u"""SELECT nspname FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema'
+UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r')
 UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
 		c = self._execute(None, sql)
 		for row in c.fetchall():

@@ -1,7 +1,0 @@
-FILE(GLOB PY_FILES *.py)
-FILE(GLOB OTHER_FILES algnames.txt)
-
-ADD_SUBDIRECTORY(html)
-ADD_SUBDIRECTORY(scripts)
-
-PLUGIN_INSTALL(sextante ./pymorph ${PY_FILES} ${OTHER_FILES})

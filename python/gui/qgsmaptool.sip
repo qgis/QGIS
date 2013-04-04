@@ -6,6 +6,7 @@
 #include <qgsmaptoolzoom.h>
 #include <qgsmaptoolpan.h>
 #include <qgsmaptoolemitpoint.h>
+#include <qgsmaptoolidentify.h>
 %End
 
 %Feature HAVE_TOUCH
@@ -23,12 +24,14 @@ class QgsMapTool : QObject
     sipClass = sipClass_QgsMapToolPan;
   else if (dynamic_cast<QgsMapToolEmitPoint*>(sipCpp) != NULL)
     sipClass = sipClass_QgsMapToolEmitPoint;
+  else if (dynamic_cast<QgsMapToolIdentify*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsMapToolIdentify;
   else
     sipClass = NULL;
 %End
 
   public:
-    
+
     //! virtual destructor
     virtual ~QgsMapTool();
 
@@ -43,6 +46,10 @@ class QgsMapTool : QObject
 
     //! Mouse release event for overriding. Default implementation does nothing.
     virtual void canvasReleaseEvent( QMouseEvent * e );
+
+    //! Mouse wheel event for overriding. Default implementation does nothing.
+    //! Added in version 2.0
+    virtual void wheelEvent( QWheelEvent * e );
 
     //! Key event for overriding. Default implementation does nothing.
     virtual void keyPressEvent( QKeyEvent* e );
@@ -118,5 +125,5 @@ class QgsMapTool : QObject
     //! transformation from map coordinates to screen coordinates
     QPoint toCanvasCoordinates( const QgsPoint& point );
 
-   
+
 };

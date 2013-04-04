@@ -27,21 +27,32 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterFile(Parameter):
 
-    def __init__(self, name="", description="", isFolder = False):
+    def __init__(self, name="", description="", isFolder = False, optional = True):
         Parameter.__init__(self, name, description)
         self.value = None
         self.isFolder = isFolder
+        self.optional = optional
 
     def getValueAsCommandLineParameter(self):
         return "\"" + str(self.value) + "\""
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
-                        "|" + str(self.isFolder)
+                        "|" + str(self.isFolder) + "|" + str(self.optional)
+
+    def setValue(self, obj):
+        self.value = str(obj)
+        if self.value.strip() == "":
+            if not self.optional:
+                return False
+        return True
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterFile(tokens[0], tokens[1], tokens[2] == str(True))
+        if len(tokens) == 4:
+            return ParameterFile(tokens[0], tokens[1], tokens[2] == str(True), tokens[3] == str(True))
+        else:
+            return ParameterFile(tokens[0], tokens[1], tokens[2] == str(True))
 
     def getAsScriptCode(self):
         if self.isFolder:

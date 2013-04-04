@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.saga.SplitRGBBands import SplitRGBBands
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,10 +24,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from sextante.saga.SagaAlgorithm import SagaAlgorithm
-from sextante.saga.SagaUtils import SagaUtils
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from sextante.saga.SagaAlgorithm import SagaAlgorithm
+from sextante.saga.SplitRGBBands import SplitRGBBands
+from sextante.saga.SagaUtils import SagaUtils
 from sextante.core.SextanteConfig import SextanteConfig, Setting
 from sextante.core.AlgorithmProvider import AlgorithmProvider
 from sextante.core.SextanteLog import SextanteLog
@@ -80,9 +80,9 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                     else:
                         SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
                 except Exception,e:
-                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile)
+                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open SAGA algorithm: " + descriptionFile +"\n" + str(e))
         self.preloadedAlgs.append(SplitRGBBands())
-        
+
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 
@@ -91,6 +91,29 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def getName(self):
         return "saga"
+
+    def getPostProcessingErrorMessage(self, wrongLayers):
+        html = AlgorithmProvider.getPostProcessingErrorMessage(self, wrongLayers)
+        msg = SagaUtils.checkSagaIsInstalled(True)
+        html += ("<p>This algorithm requires SAGA to be run. A test to check if SAGA is correctly installed "
+                "and configured in your system has been performed, with the following result:</p><ul><i>")
+        if msg is None:
+            html += "SAGA seems to be correctly installed and configured</li></ul>"
+        else:
+            html += msg + "</i></li></ul>"
+            html += '<p><a href= "http://docs.qgis.org/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
+
+        return html
+
+    def getSupportedOutputVectorLayerExtensions(self):
+        return ["shp"]
+
+    def getSupportedOutputRasterLayerExtensions(self):
+        return ["tif"]
+
+    def getSupportedOutputTableLayerExtensions(self):
+        return ["dbf"]
+
 
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")

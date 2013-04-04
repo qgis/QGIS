@@ -15,7 +15,7 @@
 # This class exports a QGIS project file to a mapserver .map file.
 # All the work is done in the writeMapFile method. The msexport binary
 # presents a Qt based GUI that collects the needed information for this
-# script. 
+# script.
 # Matthew Perry contributed major portions of this work.
 # Adapted by Erik van de Pol
 #
@@ -57,7 +57,7 @@ qgis2map_aligment2position = {
 }
 
 # the keys are fonts that must be available in QGis
-# the values in this dictionary must correspond to 
+# the values in this dictionary must correspond to
 # the fonts in the file denoted by the FONTSET in the mapfile
 #
 # "MS Shell Dlg 2" is the default label font in QGis.
@@ -129,7 +129,7 @@ class Qgis2Map:
 
   def setQgsProject(self, projectFileName):
     try:
-      self.projectFileName = projectFileName 
+      self.projectFileName = projectFileName
       # create the DOM
       self.qgs = minidom.parse(unicode(self.projectFileName))
       return True
@@ -199,7 +199,7 @@ class Qgis2Map:
       if len(lyr.getElementsByTagName("renderer-v2"))>0:
         return True
     return False
-      
+
 
   ## All real work happens here by calling methods to write the
   ## various sections of the map file
@@ -208,7 +208,7 @@ class Qgis2Map:
     print "creating the map file"
     self.outFile = open(self.mapFile, 'w')
     logmsg = "Starting\n"
-    
+
     if self.exportLayersOnly == False:
         # write the general map and web settings
         print " --- python : map section "
@@ -275,10 +275,10 @@ class Qgis2Map:
     self.outFile.write("  NAME \"" + self.mapName + "\"\n")
     self.outFile.write("  # Map image size\n")
     if self.width == '' or self.height == '':
-      self.outFile.write("  SIZE 0 0\n") 
+      self.outFile.write("  SIZE 0 0\n")
     else:
       self.outFile.write("  SIZE " + str(self.width) + " " + str(self.height) + "\n")
-      
+
     self.outFile.write("  UNITS %s\n" % (self.units))
     self.outFile.write("\n")
     # extents
@@ -329,19 +329,19 @@ class Qgis2Map:
           self.outFile.write("    IMAGEMODE RGBA\n")
         self.outFile.write("    EXTENSION '" + lower(self.imageType) + "'\n")
     self.outFile.write("  END\n")
-    
+
 
   # Write Projection section
   def writeProjectionSection(self):
     # Need to get the destination srs from one of the map layers since
-    # the project file doesn't contain the epsg id or proj4 text for 
+    # the project file doesn't contain the epsg id or proj4 text for
     # the map apart from that defined in each layer
 
     self.outFile.write("  PROJECTION\n")
 
     # Get the proj4 text from the first map layer's destination SRS
-    destsrs = self.qgs.getElementsByTagName("destinationsrs")[0] 
-    proj4Text = destsrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
+    destsrs = self.qgs.getElementsByTagName("destinationsrs")[0]
+    proj4Text = destsrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8')
     # the proj4 text string needs to be reformatted to make mapserver happy
     self.outFile.write(self.formatProj4(proj4Text))
 
@@ -411,13 +411,13 @@ class Qgis2Map:
 
     self.outFile.write("    #Scale range at which web interface will operate\n")
     if self.minimumScale != "":
-      self.outFile.write("    MINSCALE " + self.minimumScale + "\n") 
+      self.outFile.write("    MINSCALE " + self.minimumScale + "\n")
     if self.maximumScale != "":
-      self.outFile.write("    MAXSCALE " + self.maximumScale + "\n") 
+      self.outFile.write("    MAXSCALE " + self.maximumScale + "\n")
 
     self.outFile.write("    # Template and header/footer settings\n")
     self.outFile.write("    # Only the template parameter is required to display a map. See MapServer documentation\n")
-    
+
     if self.template != "":
       self.outFile.write("    TEMPLATE '" + self.template + "'\n")
     if self.header != "":
@@ -428,7 +428,7 @@ class Qgis2Map:
     return resultMsg
 
   # Write the map layers - we have to defer writing to disk so we
-  # can invert the order of the layes, since they are opposite in QGIS 
+  # can invert the order of the layes, since they are opposite in QGIS
   # compared to mapserver
   def writeMapLayers(self):
     resultMsg = ''
@@ -467,9 +467,9 @@ class Qgis2Map:
       layer_names.append(layer_name)
       layer_def += "    NAME '%s'\n" % layer_name
 
-      if lyr.getAttribute("type").encode('utf-8') == 'vector':  
+      if lyr.getAttribute("type").encode('utf-8') == 'vector':
         layer_def += "    TYPE " + lyr.getAttribute("geometry").encode('utf-8').upper() + "\n"
-      elif lyr.getAttribute("type").encode('utf-8') == 'raster':  
+      elif lyr.getAttribute("type").encode('utf-8') == 'raster':
         layer_def += "    TYPE " + lyr.getAttribute("type").encode('utf-8').upper() + "\n"
 
       # Use (global) default value from the gui
@@ -477,7 +477,7 @@ class Qgis2Map:
       # id dump = true: add TEMPLATE to be able to use getFeatureInfoRequests
       if self.dump=="true":
         layer_def += "    TEMPLATE fooOnlyForWMSGetFeatureInfo\n"
-        
+
       # Set min/max scales
       if lyr.getAttribute('hasScaleBasedVisibilityFlag').encode('utf-8') == 1:
         layer_def += "    MINSCALE " + lyr.getAttribute('minimumScale').encode('utf-8') + "\n"
@@ -504,7 +504,7 @@ class Qgis2Map:
         # if connectionInfo does NOT contain a password, warn user:
         if connectionInfo.find("password")<0:
           resultMsg += " ! No password in connection string for postgres layer '" +  layer_name + \
-            "' \n  Add it, or make sure mapserver can connect to postgres.\n"  
+            "' \n  Add it, or make sure mapserver can connect to postgres.\n"
         layer_def += "    CONNECTION \"" + connectionInfo + "\"\n"
         # EvdP: it seems that the uri.geometryColumn() is quoted automatically by PostGIS.
         # To prevent double quoting, we don't quote here.
@@ -518,24 +518,24 @@ class Qgis2Map:
             resultMsg += " ! No primary key found for postgres layer '" +  layer_name + \
             "' \n  Make sure you edit the mapfile and change the DATA-string \n    containing '" + uniqueId + "'\n"
         epsg = self.getEpsg(lyr)
-        
+
         layer_def += "    DATA '" + uri.geometryColumn() + " FROM " + uri.quotedTablename() + " USING UNIQUE " + uniqueId + " USING srid=" + epsg + "'\n"
         # don't write the filter keyword if there isn't one
         if uri.sql() != "":
           layer_def += "    FILTER ( " + uri.sql() + " )\n"
 
       elif providerString == 'wms' and lyr.getAttribute("type").encode('utf-8').upper() == 'RASTER':
-        # it's a WMS layer 
+        # it's a WMS layer
         layer_def += "    CONNECTIONTYPE WMS\n"
         layer_def += "    CONNECTION '" + dataString + "'\n"
         rasterProp = lyr.getElementsByTagName("rasterproperties")[0]
-        # loop thru wmsSubLayers  
+        # loop thru wmsSubLayers
         wmsSubLayers = rasterProp.getElementsByTagName('wmsSublayer')
         wmsNames = []
         wmsStyles = []
-        for wmsLayer in wmsSubLayers: 
+        for wmsLayer in wmsSubLayers:
           wmsNames.append( wmsLayer.getElementsByTagName('name')[0].childNodes[0].nodeValue.encode('utf-8').replace("\"", "") )
-          try: 
+          try:
             wmsStyles.append( wmsLayer.getElementsByTagName('style')[0].childNodes[0].nodeValue.encode('utf-8') )
           except:
             wmsStyles.append( '' )
@@ -553,7 +553,7 @@ class Qgis2Map:
           # TODO: add epsg to all METADATA tags??
         except:
           print "ERROR while trying to write ows_srs METADATA"
-	  pass
+          pass
         layer_def += "      'wms_format' '" + format + "'\n"
         layer_def += "      'wms_style' '" + ','.join(wmsStyles) + "'\n"
         layer_def += "    END\n"
@@ -561,10 +561,10 @@ class Qgis2Map:
       elif providerString == 'ogr':
         layer_def += "    DATA '" + dataString.split('|')[0] + "'\n"
 
-      else: 
+      else:
         # it's a standard gdal or grass layer
         layer_def += "    DATA '" + dataString + "'\n"
-      
+
       # WMS settings for all layers
       layer_def += "    METADATA\n"
       layer_def += "      'ows_title' '" + layer_name + "'\n"
@@ -580,23 +580,23 @@ class Qgis2Map:
 #      else:
 #        layer_def += "    STATUS OFF\n"
 
-      opacity = int ( 100.0 * 
-           float(lyr.getElementsByTagName("transparencyLevelInt")[0].childNodes[0].nodeValue.encode('utf-8')) / 255.0 ) 
+      opacity = int ( 100.0 *
+           float(lyr.getElementsByTagName("transparencyLevelInt")[0].childNodes[0].nodeValue.encode('utf-8')) / 255.0 )
       layer_def += "    TRANSPARENCY " + str(opacity) + "\n"
 
       layer_def += "    PROJECTION\n"
-      
-       # Get the destination srs for this layer and use it to create the projection section 
-      destsrs = self.qgs.getElementsByTagName("destinationsrs")[0]  
+
+       # Get the destination srs for this layer and use it to create the projection section
+      destsrs = self.qgs.getElementsByTagName("destinationsrs")[0]
       proj4Text = destsrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8')
       # TODO: you would think: take DATA-srs here, but often projected
       # shapefiles do not contain srs data ... If we want to do this
       # we should take make the map-srs the qgs-project srs first
-      # instead of taking the srs of the first layer 
-      # Get the data srs for this layer and use it to create the projection section 
-      # datasrs = lyr.getElementsByTagName("srs")[0]  
-      # proj4Text = datasrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8') 
-      
+      # instead of taking the srs of the first layer
+      # Get the data srs for this layer and use it to create the projection section
+      # datasrs = lyr.getElementsByTagName("srs")[0]
+      # proj4Text = datasrs.getElementsByTagName("proj4")[0].childNodes[0].nodeValue.encode('utf-8')
+
       # the proj4 text string needs to be reformatted to make mapserver happy
       layer_def += self.formatProj4(proj4Text)
       layer_def += "    END\n"
@@ -626,7 +626,7 @@ class Qgis2Map:
       except:
         # no labels
         pass
-    
+
       # write the CLASS section for rendering
       # First see if there is a single symbol renderer
       if lyr.getElementsByTagName("singlesymbol").length > 0:
@@ -655,7 +655,7 @@ class Qgis2Map:
     try:
       srs = lyr.getElementsByTagName('srs')[0].getElementsByTagName('spatialrefsys')[0]
       return srs.getElementsByTagName('srid')[0].childNodes[0].nodeValue.encode('utf-8')
-    except:  
+    except:
       #Use 4326 as a sensible default if the above fails
       return "4326"
 
@@ -667,7 +667,7 @@ class Qgis2Map:
     This is obviously a lousy solution at best.
 
     This script requires the project you export to be open in QGis!!
-    
+
     This method will return either the primary key of this table, or
     the string %tablename% in case we're not able to find it...
     """
@@ -675,21 +675,23 @@ class Qgis2Map:
     mlr = QgsMapLayerRegistry.instance()
     layers = mlr.mapLayers()
     if not QString(layerId) in layers:
-      # layerId of this postgis layer NOT in the layerlist... 
-      # probably the project is not loaded in qgis 
+      # layerId of this postgis layer NOT in the layerlist...
+      # probably the project is not loaded in qgis
       #raise Exception("ERROR: layer not found in project layers.... \nThis happens with postgis layers in a project which \nis not loaded in QGis.\nDid you load this project into QGis? \nIf not please load project first, and then export it to mapserver.")
       return str("%" + tableName + "_id%")
-      
+
     layer = layers[QString(layerId)]
     dataProvider = layer.dataProvider()
     fields = dataProvider.fields()
 
     intTypes = [QVariant.Int, QVariant.LongLong, QVariant.UInt, QVariant.ULongLong]
-    
+
     integerFields = []
-    for id, field in fields.iteritems():
+    id = 0
+    for field in fields:
       if field.type() in intTypes:
         integerFields.append(id)
+      id += 1
 
     # fid end
     fidIntegerFields = []
@@ -742,7 +744,7 @@ class Qgis2Map:
     return colorNode.getAttribute('red').encode('utf-8') + ' ' + colorNode.getAttribute('green').encode('utf-8') + ' ' + colorNode.getAttribute('blue').encode('utf-8')
 
 
-  # Get a size (multiplied by symbolSizeMultiplier) from given sizeNode's child with elementName 
+  # Get a size (multiplied by symbolSizeMultiplier) from given sizeNode's child with elementName
   def getSizeStringFromNode(self, symbolNode, elementName):
     if symbolNode == None or symbolNode.getElementsByTagName(elementName).length == 0:
         return ''
@@ -802,9 +804,9 @@ class Qgis2Map:
 
     class_def += self.writeClassStyleContent(symbolNode, geometry)
 
-    class_def += self.msLabel( layerNode ) 
+    class_def += self.msLabel( layerNode )
 
-    # end of CLASS  
+    # end of CLASS
     class_def += "    END\n"
 
     return class_def
@@ -816,7 +818,7 @@ class Qgis2Map:
     geometry = layerNode.getAttribute("geometry").encode('utf-8').upper()
 
     # get the renderer field for building up the classes
-    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')  
+    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')
     # write the render item
     class_def = "    CLASSITEM '" + classField + "'\n"
 
@@ -827,12 +829,12 @@ class Qgis2Map:
 
       lower = cls.getElementsByTagName('lowervalue')[0].childNodes[0].nodeValue.encode('utf-8')
       upper = cls.getElementsByTagName('uppervalue')[0].childNodes[0].nodeValue.encode('utf-8')
-    
+
       # If there's a label use it, otherwise autogenerate one
       try:
         label = cls.getElementsByTagName('label')[0].childNodes[0].nodeValue.encode('utf-8')
         class_def += "      NAME '" + label + "'\n"
-      except: 
+      except:
         class_def += "      NAME '" + lower + " < " + classField + " < " + upper + "'\n"
 
       class_def += "      EXPRESSION ( ([" + classField + "] >= " + lower + ") AND ([" + classField + "] <= " + upper + ") )\n"
@@ -840,9 +842,9 @@ class Qgis2Map:
       class_def += self.writeClassStyleContent(cls, geometry)
 
       # label
-      class_def += self.msLabel( layerNode ) 
+      class_def += self.msLabel( layerNode )
 
-      # end of CLASS  
+      # end of CLASS
       class_def += "    END\n"
 
     return class_def
@@ -854,7 +856,7 @@ class Qgis2Map:
     geometry = layerNode.getAttribute("geometry").encode('utf-8').upper()
 
     # get the renderer field for building up the classes
-    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')  
+    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')
 
     # write the rendering info for each class
     class_def = "    CLASS\n"
@@ -872,7 +874,7 @@ class Qgis2Map:
     outlineNode = lower.getElementsByTagName('outlinecolor')[0]
 
     class_def += "      STYLE\n"
-    
+
     # The first and last color of the ramp ( r g b r g b )
     class_def += "        COLORRANGE " + lowerColor.getAttribute('red').encode('utf-8') + " " + lowerColor.getAttribute('green').encode('utf-8') + " " + lowerColor.getAttribute('blue').encode('utf-8') + " " + upperColor.getAttribute('red').encode('utf-8') + " " + upperColor.getAttribute('green').encode('utf-8') + " " + upperColor.getAttribute('blue').encode('utf-8') + "\n"
 
@@ -909,7 +911,7 @@ class Qgis2Map:
         class_def += "         COLOR " + fillcolor + "\n"
 
     class_def += "      END\n"
-    
+
     # only outlines for polygons
     outline = symbolNode.getElementsByTagName('polygonoutline')
     if geometry == 'POLYGON' and outline is not None and '1' == outline[0].childNodes[0].nodeValue.encode('utf-8'):
@@ -921,7 +923,7 @@ class Qgis2Map:
     # label
     class_def +=  self.msLabel( layerNode )
 
-    # end of CLASS  
+    # end of CLASS
     class_def += "    END\n"
 
     return class_def
@@ -930,11 +932,11 @@ class Qgis2Map:
   # Unique value renderer output
   def uniqueRenderer(self, layerNode, symbolNode):
     # get the renderer field for building up the classes
-    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')  
+    classField = layerNode.getElementsByTagName('classificationattribute')[0].childNodes[0].nodeValue.encode('utf-8')
 
     # get the layers geometry type
     geometry = layerNode.getAttribute("geometry").encode('utf-8').upper()
-    
+
     # write the render item
     class_def = "    CLASSITEM '" + classField + "'\n"
 
@@ -963,7 +965,7 @@ class Qgis2Map:
       # label
       class_def +=  self.msLabel( layerNode )
 
-      # end of CLASS  
+      # end of CLASS
       class_def += "    END\n"
 
     return class_def
@@ -988,7 +990,7 @@ class Qgis2Map:
       keyValue = p.split("=")
 
       key = keyValue[0]
-      
+
       value = ""
       try:    value = keyValue[1]
       except: value = ""
@@ -1074,7 +1076,7 @@ class Qgis2Map:
             fontMs = qgis2map_fontset[sortedKeys[0]]
         else:
           fontMs = ""
-          
+
       bold = bool(int(labelNode.getElementsByTagName('bold')[0].getAttribute('on').encode("utf-8")))
       italic = bool(int(labelNode.getElementsByTagName('italic')[0].getAttribute('on').encode("utf-8")))
 
@@ -1082,7 +1084,7 @@ class Qgis2Map:
       # font can be both bold and italic
       labelBlock += "      FONT " + fontMs
       if bold:   labelBlock += "-bold"
-      if italic: labelBlock += "-italic" 
+      if italic: labelBlock += "-italic"
       labelBlock += "\n"
 
       labelBlock += "      TYPE truetype\n"
@@ -1119,14 +1121,14 @@ class Qgis2Map:
         b = int(colorNode.getAttribute("blue"))
         color = str(r) + " " + str(g) + " " + str(b)
       labelBlock += "      COLOR " + color + "\n"
- 
+
       # Include label angle if specified
       # Note that angles only work for truetype fonts
       angle = self.getFieldName(labelNode, 'angle')
       if angle == "":
         angle = labelNode.getElementsByTagName('angle')[0].getAttribute('value').encode('utf-8')
       labelBlock += "      ANGLE " + angle + "\n"
-     
+
       # Include label buffer if specified
       # Note that the buffer has different meaning in qgis vs mapserver
       # mapserver just adds blank space around the label while

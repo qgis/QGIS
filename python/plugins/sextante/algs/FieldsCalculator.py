@@ -31,9 +31,6 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.parameters.ParameterString import ParameterString
 from sextante.core.QGisLayers import QGisLayers
-import os
-from PyQt4 import QtGui
-from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 
 class FieldsCalculator(GeoAlgorithm):
@@ -41,14 +38,16 @@ class FieldsCalculator(GeoAlgorithm):
     INPUT_LAYER = "INPUT_LAYER"
     FIELD_NAME = "FIELD_NAME"
     FORMULA = "FORMULA"
-    OUTPUT_LAYER ="OUTPUT_LAYER"
+    OUTPUT_LAYER = "OUTPUT_LAYER"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
+    #===========================================================================
 
     def defineCharacteristics(self):
         self.name = "Field calculator"
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name"))
         self.addParameter(ParameterString(self.FORMULA, "Formula"))
@@ -60,33 +59,34 @@ class FieldsCalculator(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
         fields = vprovider.fields()
-        fields[len(fields)] = QgsField(fieldname, QVariant.Double)
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vprovider.crs() )
-        inFeat = QgsFeature()
+        fields.append(QgsField(fieldname, QVariant.Double))
+        writer = output.getVectorWriter(fields, vprovider.geometryType(), vlayer.crs())
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nFeat = vprovider.featureCount()
         nElement = 0
-        while vprovider.nextFeature(inFeat):
-            progress.setPercentage(int((100 * nElement)/nFeat))
-            attrs = inFeat.attributeMap()
+        features = QGisLayers.features(vlayer)
+        for inFeat in features:
+            progress.setPercentage(int((100 * nElement) / nFeat))
+            attrs = inFeat.attributes()
             expression = formula
-            for (k,attr) in attrs.iteritems():
+            k = 0
+            for attr in attrs:
                 expression = expression.replace(str(fields[k].name()), str(attr.toString()))
+                k += 1
             try:
                 result = eval(expression)
             except Exception:
-                raise GeoAlgorithmExecutionException("Problem evaluation formula: Wrong field values or formula")
+                result = None
+                #raise GeoAlgorithmExecutionException("Problem evaluation formula: Wrong field values or formula")
             nElement += 1
             inGeom = inFeat.geometry()
-            outFeat.setGeometry( inGeom )
-            atMap = inFeat.attributeMap()
-            outFeat.setAttributeMap( atMap )
-            outFeat.addAttribute( len(vprovider.fields()), QVariant(result) )
-            writer.addFeature( outFeat )
+            outFeat.setGeometry(inGeom)
+            attrs = inFeat.attributes()
+            attrs.append(QVariant(result))
+            outFeat.setAttributes(attrs)
+            writer.addFeature(outFeat)
         del writer
 
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>352</width>
-    <height>500</height>
+    <width>408</width>
+    <height>556</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -203,7 +203,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QCheckBox" name="cb_publicSchemaOnly">
         <property name="toolTip">
          <string>Restrict the search to the public schema for spatial tables not in the geometry_columns table</string>
@@ -244,7 +244,7 @@
         </item>
        </layout>
       </item>
-      <item row="5" column="0">
+      <item row="6" column="0">
        <widget class="QCheckBox" name="cb_useEstimatedMetadata">
         <property name="toolTip">
          <string>Use estimated table statistics for the layer metadata.</string>
@@ -265,13 +265,26 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="5" column="0">
        <widget class="QCheckBox" name="cb_allowGeometrylessTables">
         <property name="text">
          <string>Also list tables with no geometry</string>
         </property>
         <property name="checked">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="cb_dontResolveType">
+        <property name="toolTip">
+         <string>Restrict the displayed tables to those that are in the layer registries.</string>
+        </property>
+        <property name="whatsThis">
+         <string>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</string>
+        </property>
+        <property name="text">
+         <string>Don't resolve type of unrestricted columns (GEOMETRY)</string>
         </property>
        </widget>
       </item>

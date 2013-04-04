@@ -44,18 +44,17 @@ class GdalToolsSRSDialog(QDialog):
       self.connect(buttonBox, SIGNAL("accepted()"), self.accept)
       self.connect(buttonBox, SIGNAL("rejected()"), self.reject)
 
-  def epsg(self):
-      return "EPSG:" + str(self.selector.selectedEpsg())
+  def authid(self):
+      return str(self.selector.selectedAuthId())
 
   def proj4string(self):
       return self.selector.selectedProj4String()
 
   def getProjection(self):
-      if self.selector.selectedEpsg() != 0:
-        return self.epsg()
+      if self.authid().startswith("EPSG:", Qt.CaseInsensitive):
+        return self.authid()
 
       if not self.selector.selectedProj4String().isEmpty():
         return self.proj4string()
 
       return QString()
-

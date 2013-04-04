@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatetransform.h"
+#include "qgscrscache.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 
@@ -22,6 +23,7 @@
 #include <QDomNode>
 #include <QDomElement>
 #include <QApplication>
+#include <QPolygonF>
 #include <QVector>
 
 extern "C"
@@ -148,9 +150,8 @@ void QgsCoordinateTransform::initialise()
   if ( !mDestCRS.isValid() )
   {
     //No destination projection is set so we set the default output projection to
-    //be the same as input proj. This only happens on the first layer loaded
-    //whatever that may be...
-    mDestCRS.createFromOgcWmsCrs( mSourceCRS.authid() );
+    //be the same as input proj.
+    mDestCRS = QgsCRSCache::instance()->crsByAuthId( mSourceCRS.authid() );
   }
 
   // init the projections (destination and source)
@@ -315,6 +316,42 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
     // rethrow the exception
     QgsDebugMsg( "rethrowing exception" );
     throw cse;
+  }
+}
+
+void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirection direction ) const
+{
+  //create x, y arrays
+  int nVertices = poly.size();
+
+  QVector<double> x( nVertices );
+  QVector<double> y( nVertices );
+  QVector<double> z( nVertices );
+
+  for ( int i = 0; i < nVertices; ++i )
+  {
+    const QPointF& pt = poly.at( i );
+    x[i] = pt.x();
+    y[i] = pt.y();
+    z[i] = 0;
+  }
+
+  try
+  {
+    transformCoords( nVertices, x.data(), y.data(), z.data(), direction );
+  }
+  catch ( QgsCsException &cse )
+  {
+    // rethrow the exception
+    QgsDebugMsg( "rethrowing exception" );
+    throw cse;
+  }
+
+  for ( int i = 0; i < nVertices; ++i )
+  {
+    QPointF& pt = poly[i];
+    pt.rx() = x[i];
+    pt.ry() = y[i];
   }
 }
 

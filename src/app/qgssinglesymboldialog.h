@@ -71,8 +71,8 @@ class QgsSingleSymbolDialog: public QDialog, private Ui::QgsSingleSymbolDialogBa
     void refreshMarkers();
 
   protected slots:
-    void selectOutlineColor();
-    void selectFillColor();
+    void selectOutlineColor( const QColor& color );
+    void selectFillColor( const QColor& color );
     void selectTextureImage();
     void symbolChanged( const QModelIndex &current, const QModelIndex &previous );
   private:

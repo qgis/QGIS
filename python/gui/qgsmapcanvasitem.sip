@@ -4,7 +4,7 @@ class QgsMapCanvasItem : QGraphicsItem
 %TypeHeaderCode
 #include <qgsmapcanvasitem.h>
 %End
-  
+
   protected:
 
     //! protected constructor: cannot be constructed directly

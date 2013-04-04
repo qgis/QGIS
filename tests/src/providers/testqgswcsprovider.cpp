@@ -109,14 +109,22 @@ void TestQgsWcsProvider::read( )
   identifiers << "band3_float32_noct_epsg4326";
 
   // How to reasonably log multiple fails within this loop?
+  QTemporaryFile* tmpFile = new QTemporaryFile( "qgis-wcs-test-XXXXXX.tif" );
+  tmpFile->open();
+  QString tmpFilePath = tmpFile->fileName();
+  delete tmpFile; // removes the file
   foreach ( QString version, versions )
   {
     foreach ( QString identifier, identifiers )
     {
-      foreach ( QString ext, QStringList() << ".tif" << ".tif.aux.xml" )
+      // copy to temporary to avoid creation/changes/use of GDAL .aux.xml files
+      QString testFilePath = mTestDataDir + "/" + identifier + ".tif";
+      qDebug() << "copy " <<  testFilePath << " to " << tmpFilePath;
+      if ( !QFile::copy( testFilePath, tmpFilePath ) )
       {
-        QFile::remove( QDir::tempPath() + "/" + identifier + ext );
-        QVERIFY( QFile::copy( mTestDataDir + "/" + identifier + ext, QDir::tempPath() + "/" + identifier + ext ) );
+        mReport += QString( "Cannot copy %1 to %2" ).arg( testFilePath ).arg( tmpFilePath );
+        ok = false;
+        continue;
       }
 
       QgsDataSourceURI uri;
@@ -126,10 +134,11 @@ void TestQgsWcsProvider::read( )
       uri.setParam( "version", version );
       uri.setParam( "cache", "AlwaysNetwork" );
 
-      if ( !read( identifier, uri.encodedUri(), QDir::tempPath() + "/" + identifier + ".tif", mReport ) )
+      if ( !read( identifier, uri.encodedUri(), tmpFilePath, mReport ) )
       {
         ok = false;
       }
+      QFile::remove( tmpFilePath );
     }
   }
   QVERIFY2( ok, "Reading data failed. See report for details." );

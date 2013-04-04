@@ -58,6 +58,8 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
 {
   setupUi( this );
 
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/CptCityColorRampV2Dialog/geometry" ).toByteArray() );
   mSplitter->setSizes( QList<int>() << 250 << 550 );
@@ -93,7 +95,6 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
     mStackedWidget->addWidget( edit );
     mStackedWidget->setCurrentIndex( 1 );
     tabBar->setVisible( false );
-    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
     // dlg.layout()->addWidget( edit );
     // dlg.resize(500,400);
     // dlg.exec();
@@ -154,6 +155,8 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
         setTreeModel( mSelectionsModel );
       }
     }
+    if ( found )
+      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
   }
 
   tabBar->blockSignals( false );
@@ -261,6 +264,8 @@ void QgsCptCityColorRampV2Dialog::on_mTreeView_clicked( const QModelIndex &index
   QgsCptCityDataItem *item = mModel->dataItem( sourceIndex );
   if ( ! item )
     return;
+  QgsDebugMsg( QString( "item %1 clicked" ).arg( item->name() ) );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   updateTreeView( item );
 }
 
@@ -293,6 +298,14 @@ void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool
     clearCopyingInfo( );
     updateListWidget( item );
   }
+  else if ( item->type() == QgsCptCityDataItem::AllRamps )
+  {
+    lblSchemePath->setText( "" );
+    // lblCollectionName->setText( item->path() );
+    clearCopyingInfo( );
+    updateListWidget( item );
+    lblCollectionInfo->setText( tr( "All Ramps (%1)" ).arg( item->rowCount() ) );
+  }
   else
   {
     QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( item->path() ).arg(( int )item->type() ) );
@@ -304,6 +317,7 @@ void QgsCptCityColorRampV2Dialog::on_mListWidget_itemClicked( QListWidgetItem * 
   QgsCptCityColorRampItem *rampItem = mListRamps.at( item->data( Qt::UserRole ).toInt() );
   if ( rampItem )
   {
+    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
     lblSchemeName->setText( QFileInfo( rampItem->name() ).fileName() );
     mRamp->copy( &rampItem->ramp() );
     QgsDebugMsg( QString( "variant= %1 - %2 variants" ).arg( mRamp->variantName() ).arg( mRamp->variantList().count() ) );
@@ -479,9 +493,17 @@ void QgsCptCityColorRampV2Dialog::on_cboVariantName_currentIndexChanged( int ind
 
 void QgsCptCityColorRampV2Dialog::onFinished()
 {
+  // save settings
   QSettings settings;
   settings.setValue( "/Windows/CptCityColorRampV2Dialog/geometry", saveGeometry() );
   settings.setValue( "/Windows/CptCityColorRampV2Dialog/splitter", mSplitter->saveState() );
+}
+
+bool QgsCptCityColorRampV2Dialog::saveAsGradientRamp() const
+{
+  QgsDebugMsg( QString( "result: %1 checked: %2" ).arg( result() ).arg( cboConvertStandard->isChecked() ) );
+  // if "save as standard gradient" is checked, convert to QgsVectorGradientColorRampV2
+  return ( result() == Accepted && cboConvertStandard->isChecked() );
 }
 
 void QgsCptCityColorRampV2Dialog::updateListWidget( QgsCptCityDataItem *item )
@@ -552,8 +574,11 @@ bool QgsCptCityColorRampV2Dialog::updateRamp()
   mListWidget->clear();
   mListRamps.clear();
   cboVariantName->clear();
-  updatePreview( true );
   clearCopyingInfo( );
+  lblCollectionInfo->clear();
+
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  updatePreview( true );
 
   QgsDebugMsg( "schemeName= " + mRamp->schemeName() );
   if ( mRamp->schemeName() == "" )
@@ -598,6 +623,7 @@ bool QgsCptCityColorRampV2Dialog::updateRamp()
       populateVariants();
       mListWidget->scrollToItem( listItem, QAbstractItemView::EnsureVisible );
       // mListView->selectionModel()->select( childIndex, QItemSelectionModel::Select );
+      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
       return true;
     }
   }

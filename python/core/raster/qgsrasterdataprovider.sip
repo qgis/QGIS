@@ -15,25 +15,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
   public:
 
-    //! If you add to this, please also add to capabilitiesString()
-    enum Capability
-    {
-      NoCapabilities,
-      Identify,
-      ExactMinimumMaximum,
-      ExactResolution,
-      EstimatedMinimumMaximum,
-      BuildPyramids,
-      Histogram,
-      Size,
-      Create,
-      Remove,
-      IdentifyValue,
-      IdentifyText,
-      IdentifyHtml,
-      IdentifyFeature
-    };
-
     // This is modified copy of GDALColorInterp
     enum ColorInterpretation
     {
@@ -60,10 +41,11 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     enum IdentifyFormat
     {
-      IdentifyFormatValue,
-      IdentifyFormatText,
-      IdentifyFormatHtml,
-      IdentifyFormatFeature
+      IdentifyFormatUndefined = 0,
+      IdentifyFormatValue = 1,
+      IdentifyFormatText  = 2,
+      IdentifyFormatHtml  = 4,
+      IdentifyFormatFeature = 8
     };
 
     // Progress types
@@ -104,30 +86,19 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      */
     virtual QImage* draw( const QgsRectangle & viewExtent, int pixelWidth, int pixelHeight ) = 0;
 
-    /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on whether
-        a spatial filter is active on this provider, so it may
-        be prudent to check this value per intended operation.
-      */
-    virtual int capabilities() const;
-
-    /**
-     *  Returns the above in friendly format.
-     */
-    QString capabilitiesString() const;
-
-
     // TODO: Get the supported formats by this provider
 
     // TODO: Get the file masks supported by this provider, suitable for feeding into the file open dialog box
 
+    virtual QgsRectangle extent() = 0;
+
     /** Returns data type for the band specified by number */
-    virtual QgsRasterBlock::DataType dataType( int bandNo ) const = 0;
+    virtual QGis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual QgsRasterBlock::DataType srcDataType( int bandNo ) const = 0;
+    virtual QGis::DataType srcDataType( int bandNo ) const = 0;
 
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const;
@@ -162,7 +133,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) / Factory /;
 
     /* Read a value from a data block at a given index. */
-    virtual double readValue( void *data, int type, int index );
+    //virtual double readValue( void *data, int type, int index );
 
     /* Return true if source band has no data value */
     virtual bool srcHasNoDataValue( int bandNo ) const;
@@ -198,55 +169,12 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
 
-    /** \brief Get histogram. Histograms are cached in providers.
-     * @param theBandNo The band (number).
-     * @param theBinCount Number of bins (intervals,buckets). If 0, the number of bins is decided automaticaly according to data type, raster size etc.
-     * @param theMinimum Minimum value, if NaN, raster minimum value will be used.
-     * @param theMaximum Maximum value, if NaN, raster minimum value will be used.
-     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     * @param theIncludeOutOfRange include out of range values
-     * @return Vector of non NULL cell counts for each bin.
-     */
-    virtual QgsRasterHistogram histogram( int theBandNo,
-                                          int theBinCount,
-                                          double theMinimum,
-                                          double theMaximum,
-                                          const QgsRectangle & theExtent = QgsRectangle(),
-                                          int theSampleSize = 0,
-                                          bool theIncludeOutOfRange = false );
-
-    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram() */
-    virtual bool hasHistogram( int theBandNo,
-                               int theBinCount,
-                               double theMinimum,
-                               double theMaximum,
-                               const QgsRectangle & theExtent = QgsRectangle(),
-                               int theSampleSize = 0,
-                               bool theIncludeOutOfRange = false );
-
-    /** \brief Find values for cumulative pixel count cut.
-     * @param theBandNo The band (number).
-     * @param theLowerCount The lower count as fraction of 1, e.g. 0.02 = 2%
-     * @param theUpperCount The upper count as fraction of 1, e.g. 0.98 = 98%
-     * @param theLowerValue Location into which the lower value will be set.
-     * @param theUpperValue  Location into which the upper value will be set.
-     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     */
-    virtual void cumulativeCut( int theBandNo,
-                                double theLowerCount,
-                                double theUpperCount,
-                                double &theLowerValue,
-                                double &theUpperValue,
-                                const QgsRectangle & theExtent = QgsRectangle(),
-                                int theSampleSize = 0 );
-
     /** \brief Create pyramid overviews */
-    virtual QString buildPyramids( const QList<QgsRasterPyramid>  & thePyramidList,
-                                   const QString &  theResamplingMethod = "NEAREST",
-                                   RasterPyramidsFormat theFormat = PyramidsGTiff );
-
+    virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
+                                   const QString & theResamplingMethod = "NEAREST",
+                                   RasterPyramidsFormat theFormat = PyramidsGTiff,
+                                   const QStringList & theConfigOptions = QStringList() );
+ 
     /** \brief Accessor for ths raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
@@ -258,32 +186,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     /** \brief Returns true if raster has at least one populated histogram. */
     bool hasPyramids();
-
-    /** If the provider supports it, return band stats for the
-        given band. Default behaviour is to blockwise read the data
-        and generate the stats unless the provider overloads this function. */
-    //virtual QgsRasterBandStats bandStatistics( int theBandNo );
-
-    /** \brief Get band statistics.
-     * @param theBandNo The band (number).
-     * @param theStats Requested statistics
-     * @param theExtent Extent used to calc histogram, if empty, whole raster extent is used.
-     * @param theSampleSize Approximate number of cells in sample. If 0, all cells (whole raster will be used). If raster does not have exact size (WCS without exact size for example), provider decides size of sample.
-     * @return Band statistics.
-     */
-    virtual QgsRasterBandStats bandStatistics( int theBandNo,
-        int theStats = QgsRasterBandStats::All,
-        const QgsRectangle & theExtent = QgsRectangle(),
-        int theSampleSize = 0 );
-
-    /** \brief Returns true if histogram is available (cached, already calculated), the parameters are the same as in histogram() */
-    virtual bool hasStatistics( int theBandNo,
-                                int theStats = QgsRasterBandStats::All,
-                                const QgsRectangle & theExtent = QgsRectangle(),
-                                int theSampleSize = 0 );
-
-    /** \brief helper function to create zero padded band names */
-    QString  generateBandName( int theBandNumber ) const;
 
     /**
      * Get metadata in a format suitable for feeding directly
@@ -349,8 +251,10 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
-    virtual bool create( const QString& format, int nBands,
-                         QgsRasterBlock::DataType type,
+    static QgsRasterDataProvider* create( const QString &providerKey,
+                         const QString &uri,
+                         const QString& format, int nBands,
+                         QGis::DataType type,
                          int width, int height, double* geoTransform,
                          const QgsCoordinateReferenceSystem& crs,
                          QStringList createOptions = QStringList() /*e.v. color table*/ );
@@ -367,13 +271,22 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Remove dataset*/
     virtual bool remove();
 
-    static QStringList pyramidResamplingMethods( QString providerKey );
+    /** Returns a list of pyramid resampling method names for given provider */
+    static QStringList pyramidResamplingMethods( QString providerKey = "gdal" );
+    /** Returns the pyramid resampling argument that corresponds to a given method */
+    static QString pyramidResamplingArg( QString method, QString providerKey = "gdal" );
 
-    /** Validates creation options for a specific dataset and destination format - used by GDAL provider only.
-     * See also validateCreationOptionsFormat() in gdal provider for validating options based on format only. */
-    virtual QString validateCreationOptions( const QStringList& createOptions, QString format );
+    /** Validates creation options for a specific dataset and destination format.
+     * @note used by GDAL provider only
+     * @note see also validateCreationOptionsFormat() in gdal provider for validating options based on format only */
+     virtual QString validateCreationOptions( const QStringList& createOptions, QString format );
 
-  signals:
+    /** Validates pyramid creation options for a specific dataset and destination format
+     * @note used by GDAL provider only */
+    virtual QString validatePyramidsConfigOptions( RasterPyramidsFormat pyramidsFormat,
+        const QStringList & theConfigOptions, const QString & fileFormat );
+
+   signals:
     /** Emit a signal to notify of the progress event.
       * Emited theProgress is in percents (0.0-100.0) */
     void progress( int theType, double theProgress, QString theMessage );

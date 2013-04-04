@@ -1,10 +1,10 @@
 v.distance
 v.distance.toattr - Finds the nearest element in vector map 'to' for elements in vector map 'from'.
 Vector (v.*)
-ParameterVector|from|Name of existing vector map (from)|0|False
-ParameterVector|to|Name of existing vector map (to)|-1|False
+ParameterVector|from|"from" input layer|0|False
+ParameterVector|to|"to" input layer|-1|False
 ParameterSelection|upload|Values describing the relation between two nearest features|to_attr
 ParameterTableField|column|Column where values specified by 'upload' option will be uploaded|to
 ParameterTableField|to_column|Column name of nearest feature|to
 ParameterBoolean|-a|Calculate distances to all features within the threshold|False
-OutputVector|output|Name for output vector map
+OutputVector|output|Output layer

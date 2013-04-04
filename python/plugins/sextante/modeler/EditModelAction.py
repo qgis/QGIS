@@ -36,7 +36,7 @@ class EditModelAction(ContextAction):
         return isinstance(self.alg, ModelerAlgorithm)
 
     def execute(self):
-        dlg = ModelerDialog(self.alg)
+        dlg = ModelerDialog(self.alg.getCopy())
         dlg.exec_()
         if dlg.update:
             self.toolbox.updateTree()

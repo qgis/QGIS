@@ -18,6 +18,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
+#include "qgscomposition.h"
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QWidget>
@@ -29,7 +30,7 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, scaleBar );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
   blockMemberSignals( true );
 
@@ -204,7 +205,7 @@ void QgsComposerScaleBarWidget::on_mLineWidthSpinBox_valueChanged( double d )
 
   mComposerScaleBar->beginCommand( tr( "Scalebar line width" ), QgsComposerMergeCommand::ScaleBarLineWidth );
   disconnectUpdateSignal();
-  QPen newPen( QColor( 0, 0, 0 ) );
+  QPen newPen( mComposerScaleBar->pen().color() );
   newPen.setWidthF( d );
   mComposerScaleBar->setPen( newPen );
   mComposerScaleBar->update();
@@ -297,6 +298,29 @@ void QgsComposerScaleBarWidget::on_mFontButton_clicked()
   mComposerScaleBar->update();
 }
 
+void QgsComposerScaleBarWidget::on_mFontColorPushButton_clicked()
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  QColor oldColor = mComposerScaleBar->fontColor();
+  QColor newColor = QColorDialog::getColor( oldColor, 0 );
+
+  if ( !newColor.isValid() ) //user canceled the dialog
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar font color changed" ) );
+  disconnectUpdateSignal();
+  mComposerScaleBar->setFontColor( newColor );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
+}
+
 void QgsComposerScaleBarWidget::on_mColorPushButton_clicked()
 {
   if ( !mComposerScaleBar )
@@ -316,6 +340,31 @@ void QgsComposerScaleBarWidget::on_mColorPushButton_clicked()
   disconnectUpdateSignal();
   QBrush newBrush( newColor );
   mComposerScaleBar->setBrush( newBrush );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
+}
+
+void QgsComposerScaleBarWidget::on_mStrokeColorPushButton_clicked()
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  QColor oldColor = mComposerScaleBar->pen().color();
+  QColor newColor = QColorDialog::getColor( oldColor, 0 );
+
+  if ( !newColor.isValid() ) //user canceled the dialog
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar stroke color changed" ) );
+  disconnectUpdateSignal();
+  QPen newPen = mComposerScaleBar->pen();
+  newPen.setColor( newColor );
+  mComposerScaleBar->setPen( newPen );
   mComposerScaleBar->update();
   connectUpdateSignal();
   mComposerScaleBar->endCommand();

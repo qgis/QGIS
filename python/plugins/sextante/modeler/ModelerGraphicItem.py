@@ -103,7 +103,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
                 dlg = ModelerParametersDialog(self.element, self.model, self.elementIndex)
             dlg.exec_()
             if dlg.params != None:
-                self.model.updateAlgorithm(self.elementIndex, dlg.params, dlg.values, dlg.outputs)
+                self.model.updateAlgorithm(self.elementIndex, dlg.params, dlg.values, dlg.outputs, dlg.dependencies)
 
     def removeElement(self):
         if isinstance(self.element, Parameter):

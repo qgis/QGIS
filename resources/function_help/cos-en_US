@@ -1,0 +1,12 @@
+<h3>cos() function</h3>
+Returns cosinus of an angle.
+
+
+<p><h4>Syntax</h4>
+     cos(<i>real</i>)</p>
+
+<p><h4>Arguments</h4>
+<i>real</i> -> angle in radians.</p>
+
+<p><h4>Example</h4>
+     cos(1.571) -> 0.000796326710733263</p>

@@ -24,8 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from sextante.core.SextanteUtils import SextanteUtils
-from sextante.core.SextanteUtils import mkdir
+from sextante.core.SextanteUtils import mkdir, SextanteUtils
 from sextante.core.SextanteConfig import SextanteConfig
 
 class ModelerUtils:
@@ -37,11 +36,10 @@ class ModelerUtils:
     def modelsFolder():
         folder = SextanteConfig.getSetting(ModelerUtils.MODELS_FOLDER)
         if folder == None:
-            #folder = os.path.join(os.path.dirname(__file__), "models")
-            folder = SextanteUtils.userFolder() + os.sep + "models"
+            folder = unicode(os.path.join(SextanteUtils.userFolder(), "models"))
         mkdir(folder)
 
-        return folder
+        return os.path.abspath(folder)
 
     @staticmethod
     def getAlgorithm(name):
@@ -50,12 +48,6 @@ class ModelerUtils:
                 return provider[name]
         return None
 
-
     @staticmethod
     def getAlgorithms():
         return ModelerUtils.allAlgs
-
-
-
-
-

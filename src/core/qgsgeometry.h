@@ -89,11 +89,6 @@ class CORE_EXPORT QgsGeometry
     /** static method that creates geometry from Wkt */
     static QgsGeometry* fromWkt( QString wkt );
 
-    /** static method that creates geometry from GML2
-      @note added in 1.9
-      */
-    static QgsGeometry* fromGML2( const QDomNode& geometryNode );
-
     /** construct geometry from a point */
     static QgsGeometry* fromPoint( const QgsPoint& point );
     /** construct geometry from a multipoint */
@@ -271,7 +266,6 @@ class CORE_EXPORT QgsGeometry
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
     int addPart( const QList<QgsPoint> &points );
-    Q_DECL_DEPRECATED int addIsland( const QList<QgsPoint> &points ) { return addPart( points ); }
 
     /**Translate this geometry by dx, dy
      @return 0 in case of success*/
@@ -389,12 +383,6 @@ class CORE_EXPORT QgsGeometry
      */
     QString exportToGeoJSON();
 
-    /** Exports the geometry to mGML2
-        @return true in case of success and false else
-     *  @note added in 1.9
-     */
-    QDomElement exportToGML2( QDomDocument& doc );
-
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point
@@ -499,24 +487,6 @@ class CORE_EXPORT QgsGeometry
 
 
     // Private functions
-
-    /** static method that creates geometry from GML2 Point */
-    bool setFromGML2Point( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML2 LineString */
-    bool setFromGML2LineString( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML2 Polygon */
-    bool setFromGML2Polygon( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML2 MultiPoint */
-    bool setFromGML2MultiPoint( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML2 MultiLineString */
-    bool setFromGML2MultiLineString( const QDomElement& geometryElement );
-    /** static method that creates geometry from GML2 MultiPolygon */
-    bool setFromGML2MultiPolygon( const QDomElement& geometryElement );
-    /**Reads the <gml:coordinates> element and extracts the coordinates as points
-       @param coords list where the found coordinates are appended
-       @param elem the <gml:coordinates> element
-       @return boolean for success*/
-    bool readGML2Coordinates( std::list<QgsPoint>& coords, const QDomElement elem ) const;
 
     /** Converts from the WKB geometry to the GEOS geometry.
         @return   true in case of success and false else
@@ -623,9 +593,8 @@ class CORE_EXPORT QgsGeometry
 
     /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x1,y2*/
     double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
-
-
-    static int refcount;
 }; // class QgsGeometry
+
+Q_DECLARE_METATYPE( QgsGeometry );
 
 #endif

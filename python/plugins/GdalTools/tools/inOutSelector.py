@@ -143,7 +143,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
           fn = fn.join( "," )
         else:
           fn = QString()
-          
+
       else:
         fn = QString()
 
@@ -167,8 +167,8 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       prevFn, prevLayer = self.filename(), self.layer()
 
       if isinstance(layer, QgsMapLayer):
-        if self.combo.findData(layer.getLayerID()) >= 0:
-          index = self.combo.findData( layer.getLayerID() )
+        if self.combo.findData(layer.id()) >= 0:
+          index = self.combo.findData( layer.id() )
           self.combo.setCurrentIndex( index )
         else:
           self.combo.setCurrentIndex( -1 )
@@ -199,7 +199,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
 
       self.combo.clear()
       for l in layers:
-        self.combo.addItem( l.name(), l.getLayerID() )
+        self.combo.addItem( l.name(), l.id() )
 
       self.restoreComboState()
       self.blockSignals( False )
@@ -207,7 +207,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
         self.filenameChanged()
       if self.layer() != prevLayer:
         self.layerChanged()
-      
+
 
   def clearComboState(self):
       self.prevState = None

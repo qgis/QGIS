@@ -20,6 +20,7 @@
 
 #include <QDomDocument>
 #include <QMap>
+#include <QPair>
 #include <QString>
 #include <map>
 
@@ -28,10 +29,12 @@ class QgsComposerLayerItem;
 class QgsComposerLegendItem;
 class QgsComposition;
 class QgsConfigParser;
+class QgsFeatureRendererV2;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;
 class QgsRasterLayer;
+class QgsRasterRenderer;
 class QgsRectangle;
 class QgsRenderContext;
 class QgsVectorLayer;
@@ -157,12 +160,29 @@ class QgsWMSServer
     /**Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
     bool testFilterStringSafety( const QString& filter ) const;
+    /**Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes*/
+    static void groupStringList( QStringList& list, const QString& groupString );
 
     /**Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
       @return list with layer ids where selections have been created*/
     QStringList applyFeatureSelections( const QStringList& layerList ) const;
     /**Clear all feature selections in the given layers*/
     void clearFeatureSelections( const QStringList& layerIds ) const;
+
+    /**Applies opacity on layer/group level*/
+    void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+                         QList< QPair< QgsVectorLayer*, unsigned int> >& vectorOld,
+                         QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
+                         QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
+                         QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies
+                       );
+
+    /**Restore original opacities*/
+    void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
+                           QList< QPair <QgsVectorLayer*, unsigned int> >& vectorOld,
+                           QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
+                           QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
+                           QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies );
 
     void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
 

@@ -28,15 +28,10 @@ __revision__ = '$Format:%H$'
 #******************************************************************************
 ##src_filename=raster
 ##dst_filename=output raster
-##Analysis=group
+##[GDAL] Analysis=group
 from sextante.gdal.GdalUtils import GdalUtils
 
-try:
-    from osgeo import gdal, ogr
-except ImportError:
-    import gdal
-    import ogr
-
+from osgeo import gdal, ogr
 
 def CopyBand( srcband, dstband ):
     for line in range(srcband.YSize):

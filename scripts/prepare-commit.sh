@@ -29,6 +29,11 @@ if ! type -p colordiff >/dev/null; then
 	}
 fi
 
+if [ "$1" = "-c" ]; then
+	echo "Cleaning..."
+	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" \) -print -delete
+fi
+
 set -e
 
 # determine changed files
@@ -61,13 +66,22 @@ ASTYLEDIFF=astyle.$REV.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/spatialite/*|src/core/gps/qextserialport/*)
+	src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
                 echo $f skipped
 		continue
 		;;
 
         *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
                 ;;
+
+	*.py)
+		perl -i.prepare -pe "s/[\t ]+$//;" $f
+		if diff -u $f.prepare $f >>$ASTYLEDIFF; then
+			# no difference found
+			rm $f.prepare
+		fi
+		continue
+		;;
 
         *)
                 continue

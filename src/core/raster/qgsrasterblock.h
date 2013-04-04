@@ -20,10 +20,9 @@
 
 #include <limits>
 #include <QImage>
+#include "qgis.h"
 #include "qgslogger.h"
 #include "qgsrectangle.h"
-
-#include "gdal.h" // only for data types for now
 
 /** \ingroup core
  * Raster data container.
@@ -32,30 +31,6 @@
 class CORE_EXPORT QgsRasterBlock
 {
   public:
-
-    /** Data types.
-     *  This is modified and extended copy of GDALDataType.
-     */
-    enum DataType
-    {
-      /*! Unknown or unspecified type */          UnknownDataType = 0,
-      /*! Eight bit unsigned integer */           Byte = 1,
-      /*! Sixteen bit unsigned integer */         UInt16 = 2,
-      /*! Sixteen bit signed integer */           Int16 = 3,
-      /*! Thirty two bit unsigned integer */      UInt32 = 4,
-      /*! Thirty two bit signed integer */        Int32 = 5,
-      /*! Thirty two bit floating point */        Float32 = 6,
-      /*! Sixty four bit floating point */        Float64 = 7,
-      /*! Complex Int16 */                        CInt16 = 8,
-      /*! Complex Int32 */                        CInt32 = 9,
-      /*! Complex Float32 */                      CFloat32 = 10,
-      /*! Complex Float64 */                      CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as
-          QImage::Format_ARGB32 */                ARGB32 = 12,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as
-          QImage::Format_ARGB32_Premultiplied */  ARGB32_Premultiplied = 13
-    };
-
     struct Range
     {
       double min;
@@ -74,7 +49,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theHeight height of data matrix
      *  @param theNoDataValue the value representing no data (NULL)
      */
-    QgsRasterBlock( DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
+    QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
 
     virtual ~QgsRasterBlock();
 
@@ -85,7 +60,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theNoDataValue the value representing no data (NULL)
      *  @return true on success
      */
-    bool reset( DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
+    bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
@@ -98,29 +73,29 @@ class CORE_EXPORT QgsRasterBlock
       // Modified and extended copy from GDAL
       switch ( dataType )
       {
-        case Byte:
+        case QGis::Byte:
           return 1;
 
-        case UInt16:
-        case Int16:
+        case QGis::UInt16:
+        case QGis::Int16:
           return 2;
 
-        case UInt32:
-        case Int32:
-        case Float32:
-        case CInt16:
+        case QGis::UInt32:
+        case QGis::Int32:
+        case QGis::Float32:
+        case QGis::CInt16:
           return 4;
 
-        case Float64:
-        case CInt32:
-        case CFloat32:
+        case QGis::Float64:
+        case QGis::CInt32:
+        case QGis::CFloat32:
           return 8;
 
-        case CFloat64:
+        case QGis::CFloat64:
           return 16;
 
-        case ARGB32:
-        case ARGB32_Premultiplied:
+        case QGis::ARGB32:
+        case QGis::ARGB32_Premultiplied:
           return 4;
 
         default:
@@ -136,16 +111,16 @@ class CORE_EXPORT QgsRasterBlock
     }
 
     /** Returns true if data type is numeric */
-    static bool typeIsNumeric( DataType type );
+    static bool typeIsNumeric( QGis::DataType type );
 
     /** Returns true if data type is color */
-    static bool typeIsColor( DataType type );
+    static bool typeIsColor( QGis::DataType type );
 
     /** Returns data type */
-    DataType dataType() const { return mDataType; }
+    QGis::DataType dataType() const { return mDataType; }
 
     /** For given data type returns wider type and sets no data value */
-    static DataType typeWithNoDataValue( DataType dataType, double *noDataValue );
+    static QGis::DataType typeWithNoDataValue( QGis::DataType dataType, double *noDataValue );
 
     /** Return no data value.
      * @return No data value */
@@ -168,7 +143,7 @@ class CORE_EXPORT QgsRasterBlock
     bool isNoDataValue( double value ) const;
 
     // get byte array representing no data value
-    static QByteArray valueBytes( DataType theDataType, double theValue );
+    static QByteArray valueBytes( QGis::DataType theDataType, double theValue );
 
     /** \brief Read a single value
      *  @param row row index
@@ -267,7 +242,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param destDataType dest data type
      *  @return true on success
      */
-    bool convert( QgsRasterBlock::DataType destDataType );
+    bool convert( QGis::DataType destDataType );
 
     QImage image() const;
     bool setImage( const QImage * image );
@@ -298,22 +273,24 @@ class CORE_EXPORT QgsRasterBlock
      *  @param destDataType dest data type
      *  @param size block size (width * height)
      *  @return block of data in destDataType */
-    static void * convert( void *srcData, QgsRasterBlock::DataType srcDataType, QgsRasterBlock::DataType destDataType, size_t size );
+    static void * convert( void *srcData, QGis::DataType srcDataType, QGis::DataType destDataType, size_t size );
 
-    inline static double readValue( void *data, QgsRasterBlock::DataType type, size_t index );
+    inline static double readValue( void *data, QGis::DataType type, size_t index );
 
-    inline static void writeValue( void *data, QgsRasterBlock::DataType type, size_t index, double value );
+    inline static void writeValue( void *data, QGis::DataType type, size_t index, double value );
+
+    void applyNodataValues( const QList<Range>& rangeList );
 
   private:
 
-    static QImage::Format imageFormat( QgsRasterBlock::DataType theDataType );
-    static DataType dataType( QImage::Format theFormat );
+    static QImage::Format imageFormat( QGis::DataType theDataType );
+    static QGis::DataType dataType( QImage::Format theFormat );
 
     // Valid
     //bool isValid;
 
     // Data type
-    DataType mDataType;
+    QGis::DataType mDataType;
 
     // Data type size in bytes, to make bits() fast
     int mTypeSize;
@@ -335,7 +312,7 @@ class CORE_EXPORT QgsRasterBlock
     QImage *mImage;
 };
 
-inline double QgsRasterBlock::readValue( void *data, QgsRasterBlock::DataType type, size_t index )
+inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, size_t index )
 {
 #if 0
   if ( !mInput )
@@ -352,25 +329,25 @@ inline double QgsRasterBlock::readValue( void *data, QgsRasterBlock::DataType ty
   // TODO: define QGIS types to avoid cpl_port.h
   switch ( type )
   {
-    case QgsRasterBlock::Byte:
-      return ( double )(( GByte * )data )[index];
+    case QGis::Byte:
+      return ( double )(( quint8 * )data )[index];
       break;
-    case QgsRasterBlock::UInt16:
-      return ( double )(( GUInt16 * )data )[index];
+    case QGis::UInt16:
+      return ( double )(( quint16 * )data )[index];
       break;
-    case QgsRasterBlock::Int16:
-      return ( double )(( GInt16 * )data )[index];
+    case QGis::Int16:
+      return ( double )(( qint16 * )data )[index];
       break;
-    case QgsRasterBlock::UInt32:
-      return ( double )(( GUInt32 * )data )[index];
+    case QGis::UInt32:
+      return ( double )(( quint32 * )data )[index];
       break;
-    case QgsRasterBlock::Int32:
-      return ( double )(( GInt32 * )data )[index];
+    case QGis::Int32:
+      return ( double )(( qint32 * )data )[index];
       break;
-    case QgsRasterBlock::Float32:
+    case QGis::Float32:
       return ( double )(( float * )data )[index];
       break;
-    case QgsRasterBlock::Float64:
+    case QGis::Float64:
       return ( double )(( double * )data )[index];
       break;
     default:
@@ -383,31 +360,31 @@ inline double QgsRasterBlock::readValue( void *data, QgsRasterBlock::DataType ty
   return std::numeric_limits<double>::quiet_NaN();
 }
 
-inline void QgsRasterBlock::writeValue( void *data, QgsRasterBlock::DataType type, size_t index, double value )
+inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, size_t index, double value )
 {
   if ( !data ) return;
 
   switch ( type )
   {
-    case QgsRasterBlock::Byte:
-      (( GByte * )data )[index] = ( GByte ) value;
+    case QGis::Byte:
+      (( quint8 * )data )[index] = ( quint8 ) value;
       break;
-    case QgsRasterBlock::UInt16:
-      (( GUInt16 * )data )[index] = ( GUInt16 ) value;
+    case QGis::UInt16:
+      (( quint16 * )data )[index] = ( quint16 ) value;
       break;
-    case QgsRasterBlock::Int16:
-      (( GInt16 * )data )[index] = ( GInt16 ) value;
+    case QGis::Int16:
+      (( qint16 * )data )[index] = ( qint16 ) value;
       break;
-    case QgsRasterBlock::UInt32:
-      (( GUInt32 * )data )[index] = ( GUInt32 ) value;
+    case QGis::UInt32:
+      (( quint32 * )data )[index] = ( quint32 ) value;
       break;
-    case QgsRasterBlock::Int32:
-      (( GInt32 * )data )[index] = ( GInt32 ) value;
+    case QGis::Int32:
+      (( qint32 * )data )[index] = ( qint32 ) value;
       break;
-    case QgsRasterBlock::Float32:
+    case QGis::Float32:
       (( float * )data )[index] = ( float ) value;
       break;
-    case QgsRasterBlock::Float64:
+    case QGis::Float64:
       (( double * )data )[index] = value;
       break;
     default:
@@ -426,6 +403,28 @@ inline bool QgsRasterBlock::valueInRange( double value, const QList<QgsRasterBlo
     {
       return true;
     }
+  }
+  return false;
+}
+
+inline double QgsRasterBlock::value( size_t index ) const
+{
+  /*if ( index >= ( size_t )mWidth*mHeight )
+  {
+    QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+    return mNoDataValue;
+  }*/
+  return readValue( mData, mDataType, index );
+}
+
+inline bool QgsRasterBlock::isNoDataValue( double value ) const
+{
+  // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
+  // not important and slower
+  if ( qIsNaN( value ) ||
+       doubleNear( value, mNoDataValue ) )
+  {
+    return true;
   }
   return false;
 }

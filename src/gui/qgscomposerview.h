@@ -32,6 +32,7 @@ class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerMap;
 class QgsComposerPicture;
+class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
@@ -89,6 +90,12 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; }
     bool paintingEnabled() const { return mPaintingEnabled; }
 
+    /**Update rulers with current scene rect*/
+    void updateRulers();
+
+    void setHorizontalRuler( QgsComposerRuler* r ) { mHorizontalRuler = r; }
+    void setVerticalRuler( QgsComposerRuler* r ) { mVerticalRuler = r; }
+
   protected:
     void mousePressEvent( QMouseEvent* );
     void mouseReleaseEvent( QMouseEvent* );
@@ -96,7 +103,6 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void mouseDoubleClickEvent( QMouseEvent* e );
 
     void keyPressEvent( QKeyEvent * e );
-    void keyReleaseEvent( QKeyEvent * e );
 
     void wheelEvent( QWheelEvent* event );
 
@@ -105,9 +111,10 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void hideEvent( QHideEvent* e );
     void showEvent( QShowEvent* e );
 
+    void resizeEvent( QResizeEvent* event );
+    void scrollContentsBy( int dx, int dy );
+
   private:
-    /**Status of shift key (used for multiple selection)*/
-    bool mShiftKeyPressed;
     /**Current composer tool*/
     QgsComposerView::Tool mCurrentTool;
     /**Rubber band item*/
@@ -122,6 +129,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QPointF mRubberBandStartPos;
 
     bool mPaintingEnabled;
+
+    QgsComposerRuler* mHorizontalRuler;
+    QgsComposerRuler* mVerticalRuler;
 
     /** Draw a shape on the canvas */
     void addShape( Tool currentTool );

@@ -23,6 +23,9 @@
 #include <QList>
 #include <QPair>
 
+class QSvgRenderer;
+class QTextDocument;
+
 //Information about relationship between groups and layers
 //key: group name (or null strings for single layers without groups)
 //value: containter with layer ids contained in the group
@@ -43,6 +46,8 @@ class QgsProjectParser: public QgsConfigParser
     virtual void featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const;
 
     virtual void describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const;
+    /**Returns one or possibly several maplayers for a given type name. If no layers/style are found, an empty list is returned*/
+    virtual QList<QgsMapLayer*> mapLayerFromTypeName( const QString& tName, bool useCache = true ) const;
 
     int numberOfLayers() const;
 
@@ -123,6 +128,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Return feature info in format SIA2045?*/
     bool featureInfoFormatSIA2045() const;
 
+    /**Draw text annotation items from the QGIS projectfile*/
+    void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
+
   private:
 
     //forbidden
@@ -144,6 +152,10 @@ class QgsProjectParser: public QgsConfigParser
     QHash< QString, QDomElement > mProjectLayerElementsByName;
     /**Names of layers and groups which should not be published*/
     QSet<QString> mRestrictedLayers;
+    /**Watermark text items*/
+    QList< QPair< QTextDocument*, QDomElement > > mTextAnnotationItems;
+    /**Watermark items (content cached in QgsSVGCache)*/
+    QList< QPair< QSvgRenderer*, QDomElement > > mSvgAnnotationElems;
 
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
@@ -197,6 +209,8 @@ class QgsProjectParser: public QgsConfigParser
     void setMaxWidthHeight();
     /**Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)*/
     void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const;
+    /**Adds drawing order info from layer element or group element (recursive)*/
+    void addDrawingOrder( QDomElement elem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const;
     /**Returns project layers by id*/
     void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
 
@@ -206,6 +220,39 @@ class QgsProjectParser: public QgsConfigParser
     QSet<QString> restrictedLayers() const;
     /**Adds sublayers of an embedded group to layer set*/
     static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );
+    /**Returns visible extent from the project file (or an empty rectangle in case of error)*/
+    QgsRectangle projectExtent() const;
+
+    void createTextAnnotationItems();
+    void createSvgAnnotationItems();
+
+    void cleanupSvgAnnotationItems();
+    void cleanupTextAnnotationItems();
+
+    /**Calculates annotation position to provide the same distance to the lower right corner as in the QGIS project file
+    @param width output image pixel width
+    @param height output image pixel height
+    @param itemWidth item width in pixels in the QGIS project (screen pixels)
+    @param itemHeight item height in pixels in the QGIS project (screen pixels)
+    @param xPos out: x-coordinate of the item in the output image
+    @param yPos out: y-coordinate of the item in the output image*/
+    static bool annotationPosition( const QDomElement& elem, double scaleFactor, double& xPos, double& yPos );
+
+    /**Draws background rectangle and frame for an annotation
+    @param elem <Annotation> xml element
+    @param scaleFactor dpi related scale factor
+    @param xPos x-position of the item
+    @param yPos y-position of the item
+    @param itemWidth item width in pixels in the QGIS project (screen pixels)
+    @param itemHeight item height in pixels in the QGIS project (screen pixels)*/
+    static void drawAnnotationRectangle( QPainter* p, const QDomElement& elem, double scaleFactor, double xPos, double yPos, int itemWidth, int itemHeight );
+
+    void addDrawingOrderEmbeddedGroup( const QDomElement& groupElem, QMap<int, QString>& orderedLayerList, bool useDrawingOrder ) const;
+
+    /**Reads service metadata from projectfile or falls back to parent class method if not there
+     * This is for WFS Services
+     **/
+    void serviceWFSCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 };
 
 #endif // QGSPROJECTPARSER_H

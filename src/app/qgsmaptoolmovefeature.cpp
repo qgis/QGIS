@@ -56,14 +56,13 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
   QgsVectorLayer* vlayer = currentVectorLayer();
   if ( !vlayer )
   {
+    notifyNotVectorLayer();
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
-                            );
+    notifyNotEditableLayer();
     return;
   }
 
@@ -76,7 +75,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
   if ( vlayer->selectedFeatureCount() == 0 )
   {
-    vlayer->select( QgsAttributeList(), selectRect, true );
+    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
     //find the closest feature
     QgsGeometry* pointGeometry = QgsGeometry::fromPoint( layerCoords );
@@ -89,7 +88,7 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
 
     QgsFeature cf;
     QgsFeature f;
-    while ( vlayer->nextFeature( f ) )
+    while ( fit.nextFeature( f ) )
     {
       if ( f.geometry() )
       {

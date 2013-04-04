@@ -33,6 +33,8 @@ extern "C"
 class QgsFeature;
 class QgsField;
 
+class QgsSpatiaLiteFeatureIterator;
+
 #include "qgsdatasourceuri.h"
 
 /**
@@ -50,7 +52,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
       const QString& uri,
-      const QgsFieldMap &fields,
+      const QgsFields &fields,
       QGis::WkbType wkbType,
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
@@ -80,15 +82,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     virtual QgsCoordinateReferenceSystem crs();
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-      *  @param fetchAttributes list of attributes which should be fetched
-      *  @param rect spatial filter
-      *  @param fetchGeometry true if the feature geometry should be fetched
-      *  @param useIntersect true if an accurate intersection test should be used,
-      *                     false if a test based on bounding box is sufficient
-      */
-    virtual bool featureAtId( QgsFeatureId featureId,
-                              QgsFeature & feature, bool fetchGeometry = true, QgsAttributeList fetchAttributes = QgsAttributeList() );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /** Accessor for sql where clause used to limit dataset */
     virtual QString subsetString();
@@ -97,23 +91,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
 
     virtual bool supportsSubsetString() { return true; }
-
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(), bool fetchGeometry = true, bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     */
-    virtual bool nextFeature( QgsFeature & feature );
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -139,11 +116,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     long featureCount() const;
 
-    /**
-     * Get the number of fields in the layer
-     */
-    uint fieldCount() const;
-
     /** Return the extent for this data layer
     */
     virtual QgsRectangle extent();
@@ -160,10 +132,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       * Get the field information for the layer
       * @return vector of QgsField objects
       */
-    const QgsFieldMap & fields() const;
-
-    /** Reset the layer */
-    void rewind();
+    const QgsFields & fields() const;
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
@@ -286,7 +255,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** convert a QgsField to work with SL */
     static bool convertField( QgsField &field );
 
-    QgsFieldMap attributeFields;
+    QString geomParam() const;
+
+    //! get SpatiaLite version string
+    QString spatialiteVersion();
+
+    QgsFields attributeFields;
     /**
        * Flag indicating if the layer data source is a valid SpatiaLite layer
        */
@@ -348,10 +322,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     sqlite3 *sqliteHandle;
     /**
-      * SQLite statement handle
-     */
-    sqlite3_stmt *sqliteStatement;
-    /**
      * String used to define a subset of the layer
      */
     QString mSubsetString;
@@ -393,8 +363,17 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     const QgsField & field( int index ) const;
 
-    /** geometry column index used when fetching geometry */
-    int mGeomColIdx;
+    //! SpatiaLite version string
+    QString mSpatialiteVersionInfo;
+
+    //! Are mSpatialiteVersionMajor, mSpatialiteVersionMinor valid?
+    bool mGotSpatialiteVersion;
+
+    //! SpatiaLite major version
+    int mSpatialiteVersionMajor;
+
+    //! SpatiaLite minor version
+    int mSpatialiteVersionMinor;
 
     /**
     * internal utility functions used to handle common SQLite tasks
@@ -409,6 +388,14 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getQueryGeometryDetails();
     bool getSridDetails();
     bool getTableSummary();
+#ifdef SPATIALITE_VERSION_GE_4_0_0
+    // only if libspatialite version is >= 4.0.0
+    bool checkLayerTypeAbstractInterface( gaiaVectorLayerPtr lyr );
+    bool getGeometryDetailsAbstractInterface( gaiaVectorLayerPtr lyr );
+    bool getTableSummaryAbstractInterface( gaiaVectorLayerPtr lyr );
+    void loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr );
+    void getViewSpatialIndexName();
+#endif
     bool prepareStatement( sqlite3_stmt *&stmt,
                            const QgsAttributeList &fetchAttributes,
                            bool fetchGeometry,
@@ -521,4 +508,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * sqlite3 handles pointer
      */
     SqliteHandles *handle;
+
+    friend class QgsSpatiaLiteFeatureIterator;
+    QgsSpatiaLiteFeatureIterator* mActiveIterator;
 };

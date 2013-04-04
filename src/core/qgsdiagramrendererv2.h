@@ -128,6 +128,7 @@ class CORE_EXPORT QgsDiagramSettings
     double barWidth;
     int transparency; // 0 - 100
     bool scaleByArea;
+    int angleOffset;
 
     //scale range (-1 if no lower / upper bound )
     double minScaleDenominator;
@@ -161,14 +162,14 @@ class CORE_EXPORT QgsDiagramRendererV2
     virtual ~QgsDiagramRendererV2();
 
     /**Returns size of the diagram for feature f in map units. Returns an invalid QSizeF in case of error*/
-    virtual QSizeF sizeMapUnits( const QgsAttributeMap& attributes, const QgsRenderContext& c );
+    virtual QSizeF sizeMapUnits( const QgsAttributes& attributes, const QgsRenderContext& c );
 
     virtual QString rendererName() const = 0;
 
     /**Returns attribute indices needed for diagram rendering*/
     virtual QList<int> diagramAttributes() const = 0;
 
-    void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QPointF& pos );
+    void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QPointF& pos );
 
     void setDiagram( QgsDiagram* d );
     const QgsDiagram* diagram() const { return mDiagram; }
@@ -186,10 +187,10 @@ class CORE_EXPORT QgsDiagramRendererV2
      * @param c render context
      * @param s out: diagram settings for the feature
      */
-    virtual bool diagramSettings( const QgsAttributeMap& att, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
+    virtual bool diagramSettings( const QgsAttributes& att, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
 
     /**Returns size of the diagram (in painter units) or an invalid size in case of error*/
-    virtual QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c ) = 0;
+    virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c ) = 0;
 
     /**Converts size from mm to map units*/
     void convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const;
@@ -224,9 +225,9 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
     void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
 
   protected:
-    bool diagramSettings( const QgsAttributeMap&, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsAttributes&, const QgsRenderContext& c, QgsDiagramSettings& s );
 
-    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c );
+    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c );
 
   private:
     QgsDiagramSettings mSettings;
@@ -266,9 +267,9 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
 
   protected:
-    bool diagramSettings( const QgsAttributeMap&, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsAttributes&, const QgsRenderContext& c, QgsDiagramSettings& s );
 
-    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c );
+    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c );
 
   private:
     QgsDiagramSettings mSettings;

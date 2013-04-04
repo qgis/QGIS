@@ -1,3 +1,6 @@
 FILE(GLOB PY_FILES *.py)
 
+ADD_SUBDIRECTORY(mmqgisx)
+ADD_SUBDIRECTORY(ftools)
+
 PLUGIN_INSTALL(sextante ./algs ${PY_FILES})

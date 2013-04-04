@@ -70,6 +70,16 @@ class Heatmap: public QObject, public QgisPlugin
     //! Destructor
     virtual ~Heatmap();
 
+    // Kernel shape type
+    enum kernelShape
+    {
+      Quartic,
+      Triangular,
+      Uniform,
+      Triweight,
+      Epanechnikov
+    };
+
   public slots:
     //! init the gui
     virtual void initGui();
@@ -81,8 +91,25 @@ class Heatmap: public QObject, public QgisPlugin
     void help();
 
   private:
+    double mDecay;
+
     //! Worker to convert meters to map units
-    float mapUnitsOf( float meters, QgsCoordinateReferenceSystem crs );
+    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs );
+    //! Worker to calculate buffer size in pixels
+    int bufferSize( double radius, double cellsize );
+    //! Calculate the value given to a point width a given distance for a specified kernel shape
+    double calculateKernelValue( double distance, int bandwidth, int kernelShape );
+    //! Uniform kernel function
+    double uniformKernel( double distance, int bandwidth );
+    //! Quartic kernel function
+    double quarticKernel( double distance, int bandwidth );
+    //! Triweight kernel function
+    double triweightKernel( double distance, int bandwidth );
+    //! Epanechnikov kernel function
+    double epanechnikovKernel( double distance, int bandwidth );
+    //! Triangular kernel function
+    double triangularKernel( double distance, int bandwidth );
+
     // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
 
     int mPluginType;

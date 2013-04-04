@@ -21,6 +21,7 @@
 #include <QKeyEvent>
 #include <QClipboard>
 #include <QMimeData>
+#include <QGridLayout>
 
 #include "qgscomposerview.h"
 #include "qgscomposerarrow.h"
@@ -31,6 +32,7 @@
 #include "qgscomposermap.h"
 #include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
+#include "qgscomposerruler.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
@@ -39,11 +41,12 @@
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
-    , mShiftKeyPressed( false )
     , mRubberBandItem( 0 )
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
     , mPaintingEnabled( true )
+    , mHorizontalRuler( 0 )
+    , mVerticalRuler( 0 )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -51,6 +54,7 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
+  setFrameShape( QFrame::NoFrame );
 }
 
 void QgsComposerView::mousePressEvent( QMouseEvent* e )
@@ -84,7 +88,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       //select/deselect items and pass mouse event further
     case Select:
     {
-      if ( !mShiftKeyPressed ) //keep selection if shift key pressed
+      if ( !( e->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
       {
         composition()->clearSelection();
       }
@@ -239,6 +243,18 @@ void QgsComposerView::addShape( Tool currentTool )
   }
 }
 
+void QgsComposerView::updateRulers()
+{
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->setSceneTransform( viewportTransform() );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->setSceneTransform( viewportTransform() );
+  }
+}
+
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( !composition() )
@@ -351,6 +367,16 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
     return;
   }
 
+  updateRulers();
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->updateMarker( e->posF() );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->updateMarker( e->posF() );
+  }
+
   if ( e->buttons() == Qt::NoButton )
   {
     if ( mCurrentTool == Select )
@@ -448,10 +474,7 @@ void QgsComposerView::mouseDoubleClickEvent( QMouseEvent* e )
 
 void QgsComposerView::keyPressEvent( QKeyEvent * e )
 {
-  if ( e->key() == Qt::Key_Shift )
-  {
-    mShiftKeyPressed = true;
-  }
+  //TODO : those should be actions (so we could also display menu items and/or toolbar items)
 
   if ( !composition() )
   {
@@ -485,13 +508,30 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       }
     }
     doc.appendChild( documentElement );
+
+    //if it's a copy, we have to remove the UUIDs since we don't want any duplicate UUID
+    if ( e->matches( QKeySequence::Copy ) )
+    {
+      // remove all uuid attributes
+      QDomNodeList composerItemsNodes = doc.elementsByTagName( "ComposerItem" );
+      for ( int i = 0; i < composerItemsNodes.count(); ++i )
+      {
+        QDomNode composerItemNode = composerItemsNodes.at( i );
+        if ( composerItemNode.isElement() )
+        {
+          composerItemNode.toElement().removeAttribute( "uuid" );
+        }
+      }
+    }
+
     QMimeData *mimeData = new QMimeData;
     mimeData->setData( "text/xml", doc.toByteArray() );
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setMimeData( mimeData );
   }
 
-  if ( e->matches( QKeySequence::Paste ) )
+  //TODO : "Ctrl+Shift+V" is one way to paste, but on some platefoms you can use Shift+Ins and F18
+  if ( e->matches( QKeySequence::Paste ) || ( e->key() == Qt::Key_V && e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier ) )
   {
     QDomDocument doc;
     QClipboard *clipboard = QApplication::clipboard();
@@ -503,7 +543,8 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         if ( composition() )
         {
           QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
-          composition()->addItemsFromXML( docElem, doc, 0, true, &pt );
+          bool pasteInPlace = ( e->modifiers() & Qt::ShiftModifier );
+          composition()->addItemsFromXML( docElem, doc, 0, true, &pt, pasteInPlace );
         }
       }
     }
@@ -559,14 +600,6 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   }
 }
 
-void QgsComposerView::keyReleaseEvent( QKeyEvent * e )
-{
-  if ( e->key() == Qt::Key_Shift )
-  {
-    mShiftKeyPressed = false;
-  }
-}
-
 void QgsComposerView::wheelEvent( QWheelEvent* event )
 {
   QPointF scenePoint = mapToScene( event->pos() );
@@ -610,9 +643,29 @@ void QgsComposerView::showEvent( QShowEvent* e )
   e->ignore();
 }
 
+void QgsComposerView::resizeEvent( QResizeEvent* event )
+{
+  QGraphicsView::resizeEvent( event );
+  updateRulers();
+}
+
+void QgsComposerView::scrollContentsBy( int dx, int dy )
+{
+  QGraphicsView::scrollContentsBy( dx, dy );
+  updateRulers();
+}
+
 void QgsComposerView::setComposition( QgsComposition* c )
 {
   setScene( c );
+  if ( mHorizontalRuler )
+  {
+    mHorizontalRuler->setComposition( c );
+  }
+  if ( mVerticalRuler )
+  {
+    mVerticalRuler->setComposition( c );
+  }
 }
 
 QgsComposition* QgsComposerView::composition()

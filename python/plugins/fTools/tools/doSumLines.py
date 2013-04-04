@@ -81,7 +81,7 @@ class Dialog(QDialog, Ui_Dialog):
             addToTOC = QMessageBox.question(self, self.tr("Sum line lengths"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
                 self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
@@ -100,16 +100,11 @@ class Dialog(QDialog, Ui_Dialog):
         lineProvider = lineLayer.dataProvider()
         if polyProvider.crs() <> lineProvider.crs():
             QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
-        allAttrs = polyProvider.attributeIndexes()
-        polyProvider.select(allAttrs)
-        allAttrs = lineProvider.attributeIndexes()
-        lineProvider.select(allAttrs)
         fieldList = ftools_utils.getFieldList(polyLayer)
         index = polyProvider.fieldNameIndex(unicode(inField))
         if index == -1:
-            index = polyProvider.fieldCount()
-            field = QgsField(unicode(inField), QVariant.Double, "real", 24, 15, self.tr("length field"))
-            fieldList[index] = field
+            index = polyProvider.fields().count()
+            fieldList.append( QgsField(unicode(inField), QVariant.Double, "real", 24, 15, self.tr("length field")) )
         sRs = polyProvider.crs()
         inFeat = QgsFeature()
         inFeatB = QgsFeature()
@@ -117,7 +112,6 @@ class Dialog(QDialog, Ui_Dialog):
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
         distArea = QgsDistanceArea()
-        lineProvider.rewind()
         start = 15.00
         add = 85.00 / polyProvider.featureCount()
         check = QFile(self.shapefileName)
@@ -125,29 +119,27 @@ class Dialog(QDialog, Ui_Dialog):
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 return
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, polyProvider.geometryType(), sRs)
-        #writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, polyProvider.geometryType(), sRs)
         spatialIndex = ftools_utils.createIndex( lineProvider )
-        while polyProvider.nextFeature(inFeat):
+        polyFit = polyProvider.getFeatures()
+        while polyFit.nextFeature(inFeat):
             inGeom = QgsGeometry(inFeat.geometry())
-            atMap = inFeat.attributeMap()
+            atMap = inFeat.attributes()
             lineList = []
             length = 0
-            #(check, lineList) = lineLayer.featuresInRectangle(inGeom.boundingBox(), True, False)
-            #lineLayer.select(inGeom.boundingBox(), False)
-            #lineList = lineLayer.selectedFeatures()
             lineList = spatialIndex.intersects(inGeom.boundingBox())
             if len(lineList) > 0: check = 0
             else: check = 1
             if check == 0:
                 for i in lineList:
-                    lineProvider.featureAtId( int( i ), inFeatB , True, allAttrs )
+                    lineProvider.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
                     tmpGeom = QgsGeometry( inFeatB.geometry() )
                     if inGeom.intersects(tmpGeom):
                         outGeom = inGeom.intersection(tmpGeom)
                         length = length + distArea.measure(outGeom)
             outFeat.setGeometry(inGeom)
-            outFeat.setAttributeMap(atMap)
-            outFeat.addAttribute(index, QVariant(length))
+            atMap.append(QVariant(length))
+            outFeat.setAttributes(atMap)
+            #outFeat.setAttribute(index, QVariant(length))
             writer.addFeature(outFeat)
             start = start + 1
             progressBar.setValue(start)

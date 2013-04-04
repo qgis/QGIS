@@ -85,14 +85,14 @@ class Dialog(QDialog, Ui_Dialog):
                 crs = mLayer.crs()
             else:
                 boundBox = QgsRectangle(float(self.xMin.text()), float(self.yMin.text()), float(self.xMax.text()), float(self.yMax.text()))
-                crs = self.mapCanvas.mapRenderer().destinationSrs()
+                crs = self.mapCanvas.mapRenderer().destinationCrs()
                 print crs.isValid()
                 if not crs.isValid(): crs = None
             self.regularize(boundBox, outPath, offset, value, self.rdoSpacing.isChecked(), self.spnInset.value(), crs)
             addToTOC = QMessageBox.question(self, self.tr("Generate Regular Points"), self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
                 self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
@@ -126,13 +126,15 @@ class Dialog(QDialog, Ui_Dialog):
             # Calculate grid spacing
             pointSpacing = sqrt(area / value)
         outFeat = QgsFeature()
-        fields = { 0 : QgsField("ID", QVariant.Int) }
+        outFeat.initAttributes(1)
+        fields = QgsFields()
+        fields.append( QgsField("ID", QVariant.Int) )
+        outFeat.setFields( fields )
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 return
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, QGis.WKBPoint, crs)
-        #writer = QgsVectorFileWriter(unicode(outPath), "CP1250", fields, QGis.WKBPoint, None)
         idVar = 0
         count = 10.00
         add = 90.00 / (area / pointSpacing)
@@ -147,7 +149,7 @@ class Dialog(QDialog, Ui_Dialog):
                     pGeom = QgsGeometry().fromPoint(QgsPoint(x, y))
                 if pGeom.intersects(bound):
                     outFeat.setGeometry(pGeom)
-                    outFeat.addAttribute(0, QVariant(idVar))
+                    outFeat.setAttribute(0, QVariant(idVar))
                     writer.addFeature(outFeat)
                     idVar = idVar + 1
                     x = x + pointSpacing
@@ -155,4 +157,3 @@ class Dialog(QDialog, Ui_Dialog):
                     self.progressBar.setValue(count)
             y = y - pointSpacing
         del writer
-

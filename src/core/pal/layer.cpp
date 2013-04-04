@@ -228,7 +228,7 @@ namespace pal
 
   bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y, const char* labelText,
                                double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle,
-                               int xQuadOffset, int yQuadOffset, double xOffset, double yOffset )
+                               int xQuadOffset, int yQuadOffset, double xOffset, double yOffset, bool alwaysShow )
   {
     if ( !geom_id || label_x < 0 || label_y < 0 )
       return false;
@@ -268,6 +268,8 @@ namespace pal
     {
       f->setFixedAngle( angle );
     }
+
+    f->setAlwaysShow( alwaysShow );
 
     bool first_feat = true;
 

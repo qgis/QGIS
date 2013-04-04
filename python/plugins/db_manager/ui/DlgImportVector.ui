@@ -1,46 +1,144 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DlgImportVector</class>
- <widget class="QDialog" name="DlgImportVector">
+ <class>DbManagerDlgImportVector</class>
+ <widget class="QDialog" name="DbManagerDlgImportVector">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>514</width>
-    <height>461</height>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Import vector layer</string>
   </property>
-  <layout class="QVBoxLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Schema:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QComboBox" name="cboSchema"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Table:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QComboBox" name="cboTable">
-       <property name="editable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QWidget" name="wdgInput" native="true">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Input</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QToolButton" name="btnChooseInputFile">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="4">
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QComboBox" name="cboInputLayer">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::NoInsert</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="4">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnUpdateInputLayer">
+          <property name="text">
+           <string>Update options</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Output table</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Schema</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="cboSchema">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Table</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cboTable">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+        <property name="insertPolicy">
+         <enum>QComboBox::NoInsert</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+     <zorder>cboTable</zorder>
+     <zorder>label_2</zorder>
+     <zorder>cboSchema</zorder>
+     <zorder>label_3</zorder>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
@@ -91,7 +189,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Append data into table</string>
+         <string>Append data to table</string>
         </property>
        </widget>
       </item>
@@ -107,56 +205,91 @@
       <item row="0" column="0">
        <widget class="QCheckBox" name="chkPrimaryKey">
         <property name="text">
-         <string>Primary key:</string>
+         <string>Primary key</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="editPrimaryKey"/>
+       <widget class="QLineEdit" name="editPrimaryKey">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="chkGeomColumn">
         <property name="text">
-         <string>Geometry column:</string>
+         <string>Geometry column</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="editGeomColumn"/>
+       <widget class="QLineEdit" name="editGeomColumn">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QCheckBox" name="chkSourceSrid">
           <property name="text">
-           <string>Source SRID:</string>
+           <string>Source SRID</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="editSourceSrid"/>
+         <widget class="QLineEdit" name="editSourceSrid">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="spacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QCheckBox" name="chkTargetSrid">
           <property name="text">
-           <string>Target SRID:</string>
+           <string>Target SRID</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="editTargetSrid"/>
+         <widget class="QLineEdit" name="editTargetSrid">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
       <item row="3" column="0">
        <widget class="QCheckBox" name="chkEncoding">
         <property name="text">
-         <string>Encoding:</string>
+         <string>Encoding</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
        <widget class="QComboBox" name="cboEncoding">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="editable">
          <bool>true</bool>
         </property>
@@ -164,9 +297,6 @@
       </item>
       <item row="4" column="0" colspan="2">
        <widget class="QCheckBox" name="chkSinglePart">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
         <property name="text">
          <string>Create single-part geometries instead of multi-part</string>
         </property>
@@ -193,10 +323,13 @@
     </widget>
    </item>
   </layout>
+  <zorder>groupBox</zorder>
+  <zorder>groupBox_2</zorder>
+  <zorder>buttonBox</zorder>
+  <zorder>groupBox_3</zorder>
+  <zorder>wdgInput</zorder>
  </widget>
  <tabstops>
-  <tabstop>cboSchema</tabstop>
-  <tabstop>cboTable</tabstop>
   <tabstop>radCreate</tabstop>
   <tabstop>chkDropTable</tabstop>
   <tabstop>radAppend</tabstop>
@@ -213,16 +346,128 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>DlgImportVector</receiver>
+   <receiver>DbManagerDlgImportVector</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>325</x>
+     <y>518</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
      <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkPrimaryKey</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editPrimaryKey</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>108</x>
+     <y>347</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>207</x>
+     <y>345</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkGeomColumn</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editGeomColumn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>120</x>
+     <y>367</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>188</x>
+     <y>367</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkSourceSrid</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editSourceSrid</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>390</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>166</x>
+     <y>394</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkTargetSrid</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>editTargetSrid</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>360</x>
+     <y>396</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>435</x>
+     <y>394</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkEncoding</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cboEncoding</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>98</x>
+     <y>415</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>201</x>
+     <y>414</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radCreate</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>chkDropTable</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>131</x>
+     <y>216</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>140</x>
+     <y>245</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>DbManagerDlgImportVector</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>452</x>
+     <y>505</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>508</x>
+     <y>243</y>
     </hint>
    </hints>
   </connection>

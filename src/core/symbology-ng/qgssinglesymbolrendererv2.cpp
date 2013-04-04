@@ -47,11 +47,11 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   double sizeScale = 1;
   if ( mRotationFieldIdx != -1 )
   {
-    rotation = feature.attributeMap()[mRotationFieldIdx].toDouble();
+    rotation = feature.attribute( mRotationFieldIdx ).toDouble();
   }
   if ( mSizeScaleFieldIdx != -1 )
   {
-    sizeScale = feature.attributeMap()[mSizeScaleFieldIdx].toDouble();
+    sizeScale = feature.attribute( mSizeScaleFieldIdx ).toDouble();
   }
 
   if ( mTempSymbol->type() == QgsSymbolV2::Marker )
@@ -164,6 +164,12 @@ void QgsSingleSymbolRendererV2::setSymbol( QgsSymbolV2* s )
   Q_ASSERT( s );
   delete mSymbol;
   mSymbol = s;
+}
+
+void QgsSingleSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  mScaleMethod = scaleMethod;
+  setScaleMethodToSymbol( mSymbol, scaleMethod );
 }
 
 QString QgsSingleSymbolRendererV2::dump()

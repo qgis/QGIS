@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsAttributeTableDialog</class>
  <widget class="QDialog" name="QgsAttributeTableDialog">
@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>775</width>
+    <width>891</width>
     <height>570</height>
    </rect>
   </property>
@@ -17,97 +17,7 @@
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QgsAttributeTableView" name="mView">
-     <property name="alternatingRowColors">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout">
-     <property name="leftMargin">
-      <number>3</number>
-     </property>
-     <property name="rightMargin">
-      <number>3</number>
-     </property>
-     <item>
-      <widget class="QCheckBox" name="cbxShowSelectedOnly">
-       <property name="text">
-        <string>Show selected only</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="cbxSearchSelectedOnly">
-       <property name="text">
-        <string>Search selected only</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="cbxCaseSensitive">
-       <property name="text">
-        <string>Case sensitive</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mAdvancedSearchButton">
-       <property name="toolTip">
-        <string>Opens the search query builder</string>
-       </property>
-       <property name="text">
-        <string>Advanced search</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>12</width>
-         <height>12</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mHelpButton">
-       <property name="minimumSize">
-        <size>
-         <width>85</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>?</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mCloseButton">
-       <property name="text">
-        <string>Close</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
+   <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <property name="leftMargin">
       <number>3</number>
@@ -115,6 +25,134 @@
      <property name="rightMargin">
       <number>3</number>
      </property>
+     <item>
+      <widget class="QToolButton" name="mToggleEditingButton">
+       <property name="toolTip">
+        <string>Toggle editing mode (Ctrl+E)</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+E</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mSaveEditsButton">
+       <property name="toolTip">
+        <string>Save Edits (Ctrl+S)</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionSaveEdits.svg</normaloff>:/images/themes/default/mActionSaveEdits.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+E</string>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mAddFeature">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Add feature</string>
+       </property>
+       <property name="text">
+        <string>+</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mDeleteSelectedButton">
+       <property name="toolTip">
+        <string>Delete selected features (Ctrl+D)</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionDeleteSelected.png</normaloff>../../images/themes/default/mActionDeleteSelected.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+D</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mExpressionSelectButton">
+       <property name="toolTip">
+        <string>Select features using an expression</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/gis/mIconExpressionSelect.svg</normaloff>:/images/themes/gis/mIconExpressionSelect.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QToolButton" name="mRemoveSelectionButton">
        <property name="toolTip">
@@ -159,6 +197,9 @@
        <property name="shortcut">
         <string>Ctrl+T</string>
        </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -181,58 +222,6 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+S</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mCopySelectedRowsButton">
-       <property name="toolTip">
-        <string>Copy selected rows to clipboard (Ctrl+C)</string>
-       </property>
-       <property name="whatsThis">
-        <string/>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../../images/themes/default/mActionEditCopy.png</normaloff>../../images/themes/default/mActionEditCopy.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>18</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+C</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mZoomMapToSelectedRowsButton">
-       <property name="toolTip">
-        <string>Zoom map to the selected rows (Ctrl+J)</string>
-       </property>
-       <property name="whatsThis">
-        <string/>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../../images/themes/default/mActionZoomToSelected.png</normaloff>../../images/themes/default/mActionZoomToSelected.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>18</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+J</string>
        </property>
       </widget>
      </item>
@@ -263,9 +252,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mToggleEditingButton">
+      <widget class="QToolButton" name="mZoomMapToSelectedRowsButton">
        <property name="toolTip">
-        <string>Toggle editing mode (Ctrl+E)</string>
+        <string>Zoom map to the selected rows (Ctrl+J)</string>
        </property>
        <property name="whatsThis">
         <string/>
@@ -275,7 +264,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../images/themes/default/mActionToggleEditing.png</normaloff>../../images/themes/default/mActionToggleEditing.png</iconset>
+         <normaloff>../../images/themes/default/mActionZoomToSelected.png</normaloff>../../images/themes/default/mActionZoomToSelected.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -284,17 +273,14 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+E</string>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
+        <string>Ctrl+J</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mSaveEditsButton">
+      <widget class="QToolButton" name="mCopySelectedRowsButton">
        <property name="toolTip">
-        <string>Save Edits (Ctrl+S)</string>
+        <string>Copy selected rows to clipboard (Ctrl+C)</string>
        </property>
        <property name="whatsThis">
         <string/>
@@ -304,7 +290,7 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>../../images/themes/default/mActionSaveEdits.png</normaloff>../../images/themes/default/mActionSaveEdits.png</iconset>
+         <normaloff>../../images/themes/default/mActionEditCopy.png</normaloff>../../images/themes/default/mActionEditCopy.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -313,56 +299,14 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+E</string>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
+        <string>Ctrl+C</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mDeleteSelectedButton">
-       <property name="toolTip">
-        <string>Delete selected features (Ctrl+D)</string>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../../images/themes/default/mActionDeleteSelected.png</normaloff>../../images/themes/default/mActionDeleteSelected.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>18</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+D</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mAddAttribute">
-       <property name="toolTip">
-        <string>New column (Ctrl+W)</string>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>18</width>
-         <height>18</height>
-        </size>
-       </property>
-       <property name="shortcut">
-        <string>Ctrl+W</string>
+      <widget class="Line" name="line_3">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
       </widget>
      </item>
@@ -390,15 +334,25 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="mAddFeature">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QToolButton" name="mAddAttribute">
        <property name="toolTip">
-        <string>Add feature</string>
+        <string>New column (Ctrl+W)</string>
        </property>
        <property name="text">
-        <string>+</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+W</string>
        </property>
       </widget>
      </item>
@@ -426,72 +380,239 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="searchFor">
-       <property name="text">
-        <string>Look for</string>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsFilterLineEdit" name="query"/>
-     </item>
-     <item>
-      <widget class="QLabel" name="searchIn">
-       <property name="text">
-        <string>in</string>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
        </property>
-      </widget>
+      </spacer>
      </item>
      <item>
-      <widget class="QComboBox" name="columnBox"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="searchButton">
-       <property name="toolTip">
-        <string>Looks for the given value in the given attribute column</string>
+      <widget class="QToolButton" name="mHelpButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
        </property>
        <property name="text">
-        <string>&amp;Search</string>
+        <string>?</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
+   <item row="4" column="0">
+    <widget class="QgsDualView" name="mMainView">
+     <property name="currentIndex">
+      <number>-1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <layout class="QHBoxLayout">
+     <property name="leftMargin">
+      <number>3</number>
+     </property>
+     <property name="rightMargin">
+      <number>3</number>
+     </property>
+     <item>
+      <widget class="QToolButton" name="mFilterButton">
+       <property name="toolTip">
+        <string>The filter defines, which features are currently shown in the list or on the table</string>
+       </property>
+       <property name="text">
+        <string>Filter</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionFilter.png</normaloff>../../images/themes/default/mActionFilter.png</iconset>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::MenuButtonPopup</enum>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextBesideIcon</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
+     </item>
+     <item>
+      <widget class="QWidget" name="mSpacer" native="true"/>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mApplyFilterButton">
+       <property name="toolTip">
+        <string>Filters the visible features according to the current filter selection and filter string.</string>
+       </property>
+       <property name="text">
+        <string>Apply</string>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextOnly</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mCbxCaseSensitive">
+       <property name="text">
+        <string>Case sensitive</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QToolButton" name="mAttributeViewButton">
+         <property name="text">
+          <string>Attribute View</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../images/themes/default/mActionPropertyItem.png</normaloff>../../images/themes/default/mActionPropertyItem.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">mMainViewButtonGroup</string>
+         </attribute>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="mTableViewButton">
+         <property name="text">
+          <string>Table View</string>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../images/themes/default/mActionOpenTable.png</normaloff>../../images/themes/default/mActionOpenTable.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <attribute name="buttonGroup">
+          <string notr="true">mMainViewButtonGroup</string>
+         </attribute>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
   </layout>
+  <action name="mActionAdvancedFilter">
+   <property name="icon">
+    <iconset>
+     <normaloff>../../images/themes/default/mActionFilter.png</normaloff>../../images/themes/default/mActionFilter.png</iconset>
+   </property>
+   <property name="text">
+    <string>Advanced Filter (Expression)</string>
+   </property>
+   <property name="toolTip">
+    <string>Use the Expression Builder to define the filter</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="mActionShowAllFilter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show All</string>
+   </property>
+  </action>
+  <action name="mActionSelectedFilter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Selected</string>
+   </property>
+  </action>
+  <action name="mActionVisibleFilter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show Features Visible On Map</string>
+   </property>
+  </action>
+  <action name="mActionFilterColumnsMenu">
+   <property name="text">
+    <string>Column Filter</string>
+   </property>
+  </action>
+  <action name="mActionEditedFilter">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+   </property>
+   <property name="text">
+    <string>Filter Edited</string>
+   </property>
+   <property name="toolTip">
+    <string>Filter all the features which have been edited but not yet saved</string>
+   </property>
+  </action>
+  <action name="mActionApplyFilter">
+   <property name="text">
+    <string>Apply</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QgsAttributeTableView</class>
-   <extends>QTableView</extends>
-   <header>qgsattributetableview.h</header>
-  </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsDualView</class>
+   <extends>QStackedWidget</extends>
+   <header>qgsdualview.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mView</tabstop>
-  <tabstop>columnBox</tabstop>
-  <tabstop>query</tabstop>
-  <tabstop>searchButton</tabstop>
-  <tabstop>cbxShowSelectedOnly</tabstop>
-  <tabstop>cbxSearchSelectedOnly</tabstop>
-  <tabstop>mAdvancedSearchButton</tabstop>
-  <tabstop>mHelpButton</tabstop>
   <tabstop>mRemoveSelectionButton</tabstop>
   <tabstop>mSelectedToTopButton</tabstop>
   <tabstop>mInvertSelectionButton</tabstop>
   <tabstop>mCopySelectedRowsButton</tabstop>
-  <tabstop>mZoomMapToSelectedRowsButton</tabstop>
-  <tabstop>mToggleEditingButton</tabstop>
-  <tabstop>mDeleteSelectedButton</tabstop>
-  <tabstop>mAddAttribute</tabstop>
   <tabstop>mRemoveAttribute</tabstop>
   <tabstop>mOpenFieldCalculator</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>mToggleEditingButton</sender>
@@ -509,5 +630,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mMainViewButtonGroup</sender>
+   <signal>buttonClicked(int)</signal>
+   <receiver>mMainView</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>266</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="mMainViewButtonGroup"/>
+ </buttongroups>
 </ui>

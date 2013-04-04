@@ -25,12 +25,16 @@
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsdataprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
 #include <typeinfo>
@@ -47,7 +51,7 @@ extern "C"
 #include <grass/glocale.h>
 }
 
-#include <gdal.h>         // to collect version information
+//#include <gdal.h>         // to collect version information
 
 bool QgsGrassModule::mExecPathInited = 0;
 QStringList QgsGrassModule::mExecPath;
@@ -145,8 +149,8 @@ QStringList QgsGrassModule::execArguments( QString module )
 }
 
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                                QString path, QWidget * parent, Qt::WFlags f )
-    : QgsGrassModuleBase( ), mSuccess( false )
+                                QString path, bool direct, QWidget * parent, Qt::WFlags f )
+    : QgsGrassModuleBase( ), mSuccess( false ), mDirect( direct )
 {
   Q_UNUSED( f );
   QgsDebugMsg( "called" );
@@ -234,7 +238,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   else
   {
     mOptions = new QgsGrassModuleStandardOptions( mTools, this,
-        mIface, mXName, qDocElem, mTabWidget->widget( 0 ) );
+        mIface, mXName, qDocElem, mDirect, mTabWidget->widget( 0 ) );
   }
 
   // Hide display if there is no output
@@ -278,13 +282,14 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
 
 QgsGrassModuleOptions::QgsGrassModuleOptions(
   QgsGrassTools *tools, QgsGrassModule *module,
-  QgisInterface *iface )
+  QgisInterface *iface, bool direct )
+    : mIface( iface )
+    , mTools( tools )
+    , mModule( module )
+    , mDirect( direct )
 {
   QgsDebugMsg( "called." );
 
-  mTools = tools;
-  mModule = module;
-  mIface = iface;
   mCanvas = mIface->mapCanvas();
 }
 
@@ -303,9 +308,9 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QgsGrassTools *tools, QgsGrassModule *module,
   QgisInterface *iface,
   QString xname, QDomElement qDocElem,
-  QWidget * parent, Qt::WFlags f )
+  bool direct, QWidget * parent, Qt::WFlags f )
     : QWidget( parent, f ),
-    QgsGrassModuleOptions( tools, module, iface )
+    QgsGrassModuleOptions( tools, module, iface, direct )
 {
   //QgsDebugMsg( "called." );
   QgsDebugMsg( QString( "PATH = %1" ).arg( getenv( "PATH" ) ) );
@@ -332,6 +337,19 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   arguments.append( "--interface-description" );
 
   QProcess process( this );
+
+  QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+  if ( mDirect )
+  {
+    // Set path to GRASS gis fake library
+
+    QgsGrassModule::setDirectLibraryPath( environment );
+    environment.insert( "QGIS_PREFIX_PATH", QgsApplication::prefixPath() );
+    // Window to avoid crash in G__gisinit
+    environment.insert( "GRASS_REGION", "west:0;south:0;east:1;north:1;cols:1;rows:1;proj:0;zone:0" );
+    process.setProcessEnvironment( environment );
+  }
+
   process.start( cmd, arguments );
 
   // ? Does binary on Win need .exe extension ?
@@ -343,20 +361,75 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
        || ( process.exitCode() != 0 && process.exitCode() != 255 &&
             ( !cmd.endsWith( ".py" ) || process.exitCode() != 1 ) ) )
   {
+    QString pathVariable = QgsGrassModule::libraryPathVariable();
     QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
-    QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "Cannot start module %1" ).arg( mXName )
-                          + tr( "<br>command: %1 %2<br>%3<br>%4" )
-                          .arg( cmd ).arg( arguments.join( " " ) )
-                          .arg( process.readAllStandardOutput().constData() )
-                          .arg( process.readAllStandardError().constData() ) );
+    QString msg = tr( "Cannot start module %1" ).arg( mXName )
+                  + "<br>" + pathVariable + "=" + environment.value( pathVariable )
+                  + "<br>QGIS_PREFIX_PATH=" + environment.value( "QGIS_PREFIX_PATH" )
+                  + tr( "<br>command: %1 %2<br>%3<br>%4" )
+                  .arg( cmd ).arg( arguments.join( " " ) )
+                  .arg( process.readAllStandardOutput().constData() )
+                  .arg( process.readAllStandardError().constData() );
+    QgsDebugMsg( msg );
+    QMessageBox::warning( 0, tr( "Warning" ), msg );
     return;
   }
 
+  QByteArray baDesc = process.readAllStandardOutput();
+
+  // GRASS commands usually output text in system default encoding.
+  // Let's use the System codec whether Qt doesn't recognize the encoding
+  // of the interface description (see http://hub.qgis.org/issues/4547)
+  QTextCodec *codec = 0;
+
+  QgsDebugMsg( "trying to get encoding name from XML interface description..." );
+
+  // XXX: getting the encoding using a regular expression works
+  // until GRASS will use UTF-16 or UTF-32.
+  // TODO: We should check the correct encoding by using the BOM (Byte
+  // Order Mark) from the beginning of the data.
+  QString xmlDeclaration = QString::fromUtf8( baDesc ).section( '>', 0, 0, QString::SectionIncludeTrailingSep );
+  QRegExp reg( "<\\?xml\\s+.*encoding\\s*=\\s*(['\"])([A-Za-z][-a-zA-Z0-9_.]*)\\1\\s*\\?>" );
+  if ( reg.indexIn( xmlDeclaration ) != -1 )
+  {
+    QByteArray enc = reg.cap( 2 ).toLocal8Bit();
+    QgsDebugMsg( QString( "found encoding name '%1'" ).arg( QString::fromUtf8( enc ) ) );
+
+    codec = QTextCodec::codecForName( enc );
+    if ( !codec )
+    {
+      QgsDebugMsg( "unrecognized encoding name. Let's use 'System' codec" );
+      codec = QTextCodec::codecForName( "System" );
+      Q_ASSERT( codec );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "unable to get encoding name from XML content. Will let Qt detects encoding!" );
+  }
+
+  bool ok = false;
   QDomDocument gDoc( "task" );
   QString err;
-  int line, column;
-  if ( !gDoc.setContent( &process, false, &err, &line, &column ) )
+  int line = -1, column = -1;
+
+  if ( codec )
+  {
+    QgsDebugMsg( QString( "parsing XML interface description using '%1' codec..." ).arg( QString::fromUtf8( codec->name() ) ) );
+    ok = gDoc.setContent( codec->toUnicode( baDesc ), false, &err, &line, &column );
+    if ( !ok )
+    {
+      QgsDebugMsg( "parse FAILED. Will let Qt detects encoding" );
+      codec = 0;
+    }
+  }
+
+  if ( !codec )
+  {
+    ok = gDoc.setContent( baDesc, false, &err, &line, &column );
+  }
+
+  if ( !ok )
   {
     QString errmsg = tr( "Cannot read module description (%1):" ).arg( mXName )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
@@ -383,6 +456,17 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   mypScrollArea->setWidget( mypInnerFrame );
   mypScrollArea->setWidgetResizable( true );
   QVBoxLayout *mypInnerFrameLayout = new QVBoxLayout( mypInnerFrame );
+
+  QFrame * mypRegionModeFrame = new QFrame();
+  QHBoxLayout * mypRegionModeFrameLayout = new QHBoxLayout( mypRegionModeFrame );
+  QLabel * mypRegionModeLabel = new QLabel( tr( "Region" ) );
+  mRegionModeComboBox = new QComboBox();
+  mRegionModeComboBox->addItem( tr( "Input layers" ), RegionInput );
+  mRegionModeComboBox->addItem( tr( "Current map canvas" ), RegionCurrent );
+  mRegionModeComboBox->setSizePolicy( QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred ) );
+  mypRegionModeFrameLayout->addWidget( mypRegionModeLabel );
+  mypRegionModeFrameLayout->addWidget( mRegionModeComboBox );
+
   // Add frames for simple/advanced options
   QFrame * mypSimpleFrame = new QFrame();
   mypSimpleFrame->setFrameShape( QFrame::NoFrame );
@@ -396,12 +480,17 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   mypAdvancedPushButtonFrameLayout->addWidget( &mAdvancedPushButton );
   mypAdvancedPushButtonFrameLayout->addStretch( 1 );
 
+  if ( mDirect )
+  {
+    mypInnerFrameLayout->addWidget( mypRegionModeFrame );
+  }
+
   mypInnerFrameLayout->addWidget( mypSimpleFrame );
   mypInnerFrameLayout->addWidget( mypAdvancedPushButtonFrame );
   mypInnerFrameLayout->addWidget( &mAdvancedFrame );
   mypInnerFrameLayout->addStretch( 1 );
 
-  // Hide advanced and set butto next
+  // Hide advanced and set button next
   switchAdvanced();
 
   QVBoxLayout *mypSimpleLayout = new QVBoxLayout( mypSimpleFrame );
@@ -459,7 +548,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
           if ( age == "old" && ( element == "vector" || element == "cell" ) )
           {
             QgsGrassModuleInput *mi = new QgsGrassModuleInput(
-              mModule, this, key, e, gDocElem, gnode, mParent );
+              mModule, this, key, e, gDocElem, gnode, mDirect, mParent );
 
             layout->addWidget( mi );
             created = true;
@@ -470,7 +559,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
         if ( !created )
         {
           QgsGrassModuleOption *so = new QgsGrassModuleOption(
-            mModule, key, e, gDocElem, gnode, mParent );
+            mModule, key, e, gDocElem, gnode, mDirect, mParent );
 
           layout->addWidget( so );
           created = true;
@@ -481,7 +570,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       {
         QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput(
           mModule, QgsGrassModuleGdalInput::Ogr, key, e,
-          gDocElem, gnode, mParent );
+          gDocElem, gnode, mDirect, mParent );
         layout->addWidget( mi );
         mItems.push_back( mi );
       }
@@ -489,7 +578,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       {
         QgsGrassModuleGdalInput *mi = new QgsGrassModuleGdalInput(
           mModule, QgsGrassModuleGdalInput::Gdal, key, e,
-          gDocElem, gnode, mParent );
+          gDocElem, gnode, mDirect, mParent );
         layout->addWidget( mi );
         mItems.push_back( mi );
       }
@@ -497,7 +586,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       {
         QgsGrassModuleField *mi = new QgsGrassModuleField(
           mModule, this, key, e,
-          gDocElem, gnode, mParent );
+          gDocElem, gnode, mDirect, mParent );
         layout->addWidget( mi );
         mItems.push_back( mi );
       }
@@ -505,21 +594,21 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
       {
         QgsGrassModuleSelection *mi = new QgsGrassModuleSelection(
           mModule, this, key, e,
-          gDocElem, gnode, mParent );
+          gDocElem, gnode, mDirect, mParent );
         layout->addWidget( mi );
         mItems.push_back( mi );
       }
       else if ( optionType == "file" )
       {
         QgsGrassModuleFile *mi = new QgsGrassModuleFile(
-          mModule, key, e, gDocElem, gnode, mParent );
+          mModule, key, e, gDocElem, gnode, mDirect, mParent );
         layout->addWidget( mi );
         mItems.push_back( mi );
       }
       else if ( optionType == "flag" )
       {
         QgsGrassModuleFlag *flag = new QgsGrassModuleFlag(
-          mModule, key, e, gDocElem, gnode, mParent );
+          mModule, key, e, gDocElem, gnode, mDirect, mParent );
 
         layout->addWidget( flag );
         mItems.push_back( flag );
@@ -923,87 +1012,208 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
   return list;
 }
 
-bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, bool all )
+bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all )
 {
   QgsDebugMsg( "called." );
 
-  // Get current resolution
-  if ( !QgsGrass::region( QgsGrass::getDefaultGisdbase(),
-                          QgsGrass::getDefaultLocation(),
-                          QgsGrass::getDefaultMapset(), window ) )
+  RegionMode mode = ( QgsGrassModuleOptions::RegionMode ) mRegionModeComboBox->itemData( mRegionModeComboBox->currentIndex() ).toInt();
+  if ( mDirect && mode == RegionCurrent )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get current region" ) );
-    return false;
-  }
-
-  int rasterCount = 0;
-  int vectorCount = 0;
-  for ( unsigned int i = 0; i < mItems.size(); i++ )
-  {
-    struct Cell_head mapWindow;
-
-    QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mItems[i] );
-    if ( !item )
-      continue;
-
-    if ( !all && !item->useRegion() )
-      continue;
-
-    QgsGrass::MapType mapType = QgsGrass::Vector;
-
-    switch ( item->type() )
+    // TODO: warn if outside region
+    if ( mCanvas->hasCrsTransformEnabled() )
     {
-      case QgsGrassModuleInput::Raster :
-        mapType = QgsGrass::Raster;
-        break;
-      case QgsGrassModuleInput::Vector :
-        mapType = QgsGrass::Vector;
-        break;
-    }
-
-    QStringList mm = item->currentMap().split( "@" );
-    QString map = mm.at( 0 );
-    QString mapset = QgsGrass::getDefaultMapset();
-    if ( mm.size() > 1 )
-      mapset = mm.at( 1 );
-    if ( !QgsGrass::mapRegion( mapType,
-                               QgsGrass::getDefaultGisdbase(),
-                               QgsGrass::getDefaultLocation(), mapset, map,
-                               &mapWindow ) )
-    {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot set region of map %1" ).arg( item->currentMap() ) );
-      return false;
-    }
-
-    // TODO: best way to set resolution ?
-    if ( item->type() == QgsGrassModuleInput::Raster
-         && rasterCount == 0 )
-    {
-      QgsGrass::copyRegionResolution( &mapWindow, window );
-    }
-    if ( rasterCount + vectorCount == 0 )
-    {
-      QgsGrass::copyRegionExtent( &mapWindow, window );
+      crs = mCanvas->mapRenderer()->destinationCrs();
     }
     else
     {
-      QgsGrass::extendRegion( &mapWindow, window );
+      crs = QgsCoordinateReferenceSystem();
+    }
+    QgsRectangle rect = mCanvas->extent();
+
+    QgsGrass::initRegion( window );
+    window->west = rect.xMinimum();
+    window->south = rect.yMinimum();
+    window->east = rect.xMaximum();
+    window->north = rect.yMaximum();
+    window->rows = ( int ) mCanvas->mapRenderer()->outputSize().height();
+    window->cols = ( int ) mCanvas->mapRenderer()->outputSize().width();
+
+    char* err = G_adjust_Cell_head( window, 1, 1 );
+    if ( err )
+    {
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot set region" ) + QString( err ) );
+      return false;
+    }
+  }
+  else
+  {
+    if ( mDirect )
+    {
+      QgsGrass::initRegion( window );
+    }
+    else
+    {
+      // Get current resolution
+      if ( !QgsGrass::region( QgsGrass::getDefaultGisdbase(),
+                              QgsGrass::getDefaultLocation(),
+                              QgsGrass::getDefaultMapset(), window ) )
+      {
+        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get current region" ) );
+        return false;
+      }
     }
 
-    if ( item->type() == QgsGrassModuleInput::Raster )
-      rasterCount++;
-    else if ( item->type() == QgsGrassModuleInput::Vector )
-      vectorCount++;
+    int rasterCount = 0;
+    int vectorCount = 0;
+    for ( unsigned int i = 0; i < mItems.size(); i++ )
+    {
+      struct Cell_head mapWindow;
+
+      QgsGrassModuleInput *item = dynamic_cast<QgsGrassModuleInput *>( mItems[i] );
+      if ( !item )
+        continue;
+
+      if ( mDirect )
+      {
+        QgsGrass::initRegion( &mapWindow );
+        QgsMapLayer * layer = item->currentLayer();
+        if ( !layer )
+        {
+          QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get selected layer" ) );
+          return false;
+        }
+
+        QgsCoordinateReferenceSystem sourceCrs;
+        QgsRasterLayer* rasterLayer = 0;
+        QgsVectorLayer* vectorLayer = 0;
+        if ( layer->type() == QgsMapLayer::RasterLayer )
+        {
+          rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+          if ( !rasterLayer || !rasterLayer->dataProvider() )
+          {
+            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get provider" ) );
+            return false;
+          }
+          sourceCrs = rasterLayer->dataProvider()->crs();
+        }
+        else if ( layer->type() == QgsMapLayer::VectorLayer )
+        {
+          vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+          if ( !vectorLayer || !vectorLayer->dataProvider() )
+          {
+            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get provider" ) );
+            return false;
+          }
+          sourceCrs = vectorLayer->dataProvider()->crs();
+        }
+
+        QgsDebugMsg( "layer crs = " + layer->crs().toProj4() );
+        QgsDebugMsg( "source crs = " + sourceCrs.toProj4() );
+
+        // TODO: Problem: Layer may have defined in QGIS running application
+        // a different CRS from that defined in data source (provider)
+        // Currently we don't have system of passing such info to module
+        // and result may be wrong -> error in such cases
+        if ( layer->crs() != sourceCrs )
+        {
+          QMessageBox::warning( 0, tr( "Warning" ), tr( "The layer CRS (defined in QGIS) and data source CRS differ. We are not yet able to pass the layer CRS to GRASS module. Please set correct data source CRS or change layer CRS to data source CRS." ) );
+          return false;
+        }
+
+        QgsRectangle rect = layer->extent();
+        if ( rasterCount + vectorCount == 0 )
+        {
+          crs = layer->crs();
+        }
+        else if ( layer->crs() != crs )
+        {
+          QgsCoordinateTransform transform( layer->crs(), crs );
+          rect = transform.transformBoundingBox( rect );
+        }
+        QgsGrass::setRegion( &mapWindow, rect );
+
+        if ( layer->type() == QgsMapLayer::RasterLayer )
+        {
+          if ( !rasterLayer || !rasterLayer->dataProvider() )
+          {
+            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get raster provider" ) );
+            return false;
+          }
+          QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider*>( rasterLayer->dataProvider() );
+          mapWindow.cols = provider->xSize();
+          mapWindow.rows = provider->ySize();
+
+          char* err = G_adjust_Cell_head( &mapWindow, 1, 1 );
+          if ( err )
+          {
+            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot set region" ) + QString( err ) );
+            return false;
+          }
+        }
+      }
+      else
+      {
+        if ( !all && !item->useRegion() )
+          continue;
+
+        QgsGrass::MapType mapType = QgsGrass::Vector;
+
+        switch ( item->type() )
+        {
+          case QgsGrassModuleInput::Raster :
+            mapType = QgsGrass::Raster;
+            break;
+          case QgsGrassModuleInput::Vector :
+            mapType = QgsGrass::Vector;
+            break;
+        }
+
+        QStringList mm = item->currentMap().split( "@" );
+        QString map = mm.at( 0 );
+        QString mapset = QgsGrass::getDefaultMapset();
+        if ( mm.size() > 1 )
+          mapset = mm.at( 1 );
+        if ( !QgsGrass::mapRegion( mapType,
+                                   QgsGrass::getDefaultGisdbase(),
+                                   QgsGrass::getDefaultLocation(), mapset, map,
+                                   &mapWindow ) )
+        {
+          QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot set region of map %1" ).arg( item->currentMap() ) );
+          return false;
+        }
+      }
+
+      // TODO: best way to set resolution ?
+      if ( item->type() == QgsGrassModuleInput::Raster
+           && rasterCount == 0 )
+      {
+        QgsGrass::copyRegionResolution( &mapWindow, window );
+      }
+      if ( rasterCount + vectorCount == 0 )
+      {
+        QgsGrass::copyRegionExtent( &mapWindow, window );
+      }
+      else
+      {
+        QgsGrass::extendRegion( &mapWindow, window );
+      }
+
+      if ( item->type() == QgsGrassModuleInput::Raster )
+        rasterCount++;
+      else if ( item->type() == QgsGrassModuleInput::Vector )
+        vectorCount++;
+    }
+
+    G_adjust_Cell_head3( window, 0, 0, 0 );
   }
-
-  G_adjust_Cell_head3( window, 0, 0, 0 );
-
   return true;
 }
 
 bool QgsGrassModuleStandardOptions::requestsRegion()
 {
   QgsDebugMsg( "called." );
+
+  if ( mDirect ) return true;
 
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
@@ -1042,7 +1252,7 @@ QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
 {
 }
 
-QString QgsGrassModule::label( QString path )
+QgsGrassModule::Description QgsGrassModule::description( QString path )
 {
   QgsDebugMsg( "called." );
 
@@ -1051,11 +1261,11 @@ QString QgsGrassModule::label( QString path )
   QFile qFile( path );
   if ( !qFile.exists() )
   {
-    return tr( "Not available, description not found (%1)" ).arg( path );
+    return Description( tr( "Not available, description not found (%1)" ).arg( path ) );
   }
   if ( ! qFile.open( QIODevice::ReadOnly ) )
   {
-    return tr( "Not available, cannot open description (%1)" ).arg( path );
+    return Description( tr( "Not available, cannot open description (%1)" ).arg( path ) );
   }
   QDomDocument qDoc( "qgisgrassmodule" );
   QString err;
@@ -1067,12 +1277,19 @@ QString QgsGrassModule::label( QString path )
     QgsDebugMsg( errmsg );
     QMessageBox::warning( 0, tr( "Warning" ), errmsg );
     qFile.close();
-    return tr( "Not available, incorrect description (%1)" ).arg( path );
+    return Description( tr( "Not available, incorrect description (%1)" ).arg( path ) );
   }
   qFile.close();
   QDomElement qDocElem = qDoc.documentElement();
 
-  return QApplication::translate( "grasslabel", qDocElem.attribute( "label" ).trimmed().toUtf8() );
+  QString label = QApplication::translate( "grasslabel", qDocElem.attribute( "label" ).trimmed().toUtf8() );
+  bool direct = qDocElem.attribute( "direct" ) == "1";
+  return Description( label, direct );
+}
+
+QString QgsGrassModule::label( QString path )
+{
+  return description( path ).label;
 }
 
 QPixmap QgsGrassModule::pixmap( QString path, int height )
@@ -1297,9 +1514,10 @@ void QgsGrassModule::run()
     // Check/set region
     struct Cell_head tempWindow;
     bool resetRegion = false;
-    if ( mOptions->requestsRegion() )
+    QgsCoordinateReferenceSystem crs;
+    if ( mOptions->requestsRegion() ) // direct always
     {
-      if ( !mOptions->inputRegion( &tempWindow, false ) )
+      if ( !mOptions->inputRegion( &tempWindow, crs, false ) )
       {
         QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get input region" ) );
         return;
@@ -1328,7 +1546,7 @@ void QgsGrassModule::run()
 
         if ( resetRegion )
         {
-          if ( !mOptions->inputRegion( &tempWindow, true ) )
+          if ( !mOptions->inputRegion( &tempWindow, crs, true ) )
           {
             QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get input region" ) );
             return;
@@ -1337,23 +1555,27 @@ void QgsGrassModule::run()
       }
     }
 
-    // Check if output exists
-    QStringList outputExists = mOptions->checkOutput();
-    if ( outputExists.size() > 0 )
+    // In direct mode user is warned by select file dialog
+    if ( !mDirect )
     {
-      QMessageBox::StandardButton ret = QMessageBox::question( 0, "Warning",
-                                        tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( "," ) ),
-                                        QMessageBox::Ok | QMessageBox::Cancel );
-
-      if ( ret == QMessageBox::Cancel )
-        return;
-
-      // r.mapcalc does not use standard parser
-      if ( typeid( *mOptions ) != typeid( QgsGrassMapcalc ) )
+      // Check if output exists
+      QStringList outputExists = mOptions->checkOutput();
+      if ( outputExists.size() > 0 )
       {
-        arguments.append( "--o" );
-        //mProcess.addArgument( "--o" );
-        //command.append ( " --o" );
+        QMessageBox::StandardButton ret = QMessageBox::question( 0, "Warning",
+                                          tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( "," ) ),
+                                          QMessageBox::Ok | QMessageBox::Cancel );
+
+        if ( ret == QMessageBox::Cancel )
+          return;
+
+        // r.mapcalc does not use standard parser
+        if ( typeid( *mOptions ) != typeid( QgsGrassMapcalc ) )
+        {
+          arguments.append( "--o" );
+          //mProcess.addArgument( "--o" );
+          //command.append ( " --o" );
+        }
       }
     }
 
@@ -1398,16 +1620,8 @@ void QgsGrassModule::run()
 
     mOutputTextBrowser->clear();
 
-    QString commandHtml = mXName + " " + argumentsHtml.join( " " );
-
-    QgsDebugMsg( "command: " + commandHtml );
-    commandHtml.replace( "&", "&amp;" );
-    commandHtml.replace( "<", "&lt;" );
-    commandHtml.replace( ">", "&gt;" );
-    mOutputTextBrowser->append( "<B>" +  commandHtml + "</B>" );
-
-    QStringList environment = QProcess::systemEnvironment();
-    environment.append( "GRASS_HTML_BROWSER=" + QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
+    QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+    environment.insert( "GRASS_HTML_BROWSER", QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
 
     // Warning: it is not useful to write requested region to WIND file and
     //          reset then to original beacuse it is reset before
@@ -1418,8 +1632,43 @@ void QgsGrassModule::run()
     {
       QString reg = QgsGrass::regionString( &tempWindow );
       QgsDebugMsg( "reg: " + reg );
-      environment.append( "GRASS_REGION=" + reg );
+      environment.insert( "GRASS_REGION", reg );
     }
+
+    if ( mDirect )
+    {
+      QStringList variables;
+      setDirectLibraryPath( environment );
+#ifdef Q_OS_WIN
+      variables << "PATH";
+#elif defined(Q_OS_MAC)
+      variables << "DYLD_LIBRARY_PATH";
+#else
+      variables << "LD_LIBRARY_PATH";
+#endif
+      environment.insert( "QGIS_PREFIX_PATH", QgsApplication::prefixPath() );
+      if ( crs.isValid() ) // it should always be valid
+      {
+        environment.insert( "QGIS_GRASS_CRS", crs.toProj4() );
+      }
+      // Suppress debug output
+      environment.insert( "QGIS_DEBUG", "-1" );
+
+      // Print some important variables
+      variables << "QGIS_PREFIX_PATH" << "QGIS_GRASS_CRS" << "GRASS_REGION";
+      foreach ( QString v, variables )
+      {
+        mOutputTextBrowser->append( v + "=" + environment.value( v ) + "<BR>" );
+      }
+    }
+
+    QString commandHtml = mXName + " " + argumentsHtml.join( " " );
+
+    QgsDebugMsg( "command: " + commandHtml );
+    commandHtml.replace( "&", "&amp;" );
+    commandHtml.replace( "<", "&lt;" );
+    commandHtml.replace( ">", "&gt;" );
+    mOutputTextBrowser->append( "<B>" +  commandHtml + "</B>" );
 
     // I was not able to get scripts working on Windows
     // via QProcess and sh.exe (MinGW). g.parser runs well
@@ -1449,21 +1698,21 @@ void QgsGrassModule::run()
       for ( int i = 0; i < arguments.size(); i++ )
       {
         QString arg = arguments.at( i );
-        QString env;
+        //QString env;
         if ( arg.at( 0 ) == '-' ) //flag
         {
-          env = "GIS_FLAG_" + QString( arg.at( 1 ).toUpper() )
-                + "=1";
+          //env = "GIS_FLAG_" + QString( arg.at( 1 ).toUpper() ) + "=1";
+          environment.insert( "GIS_FLAG_" + QString( arg.at( 1 ).toUpper() ), "1" );
           usedFlagNames.append( arg.at( 1 ) );
         }
         else // option
         {
           QStringList opt = arg.split( "=" );
-          env = "GIS_OPT_" + opt.takeFirst().toUpper();
-          env += "=" + opt.join( "=" ); // rejoin rest
+          //env = "GIS_OPT_" + opt.takeFirst().toUpper();
+          //env += "=" + opt.join( "=" ); // rejoin rest
+          environment.insert( "GIS_OPT_" + opt.takeFirst().toUpper(), opt.join( "=" ) );
         }
-        QgsDebugMsg( "set: " + env );
-        environment.append( env );
+        //environment.append( env );
       }
 
       // Set remaining flags
@@ -1481,11 +1730,12 @@ void QgsGrassModule::run()
         }
         if ( used )
           continue;
-        QString env = "GIS_FLAG_"
-                      + QString( allFlagNames.at( i ).toUpper() )
-                      + "=0";
-        QgsDebugMsg( "set: " + env );
-        environment.append( env );
+        //QString env = "GIS_FLAG_"
+        //              + QString( allFlagNames.at( i ).toUpper() )
+        //              + "=0";
+        //QgsDebugMsg( "set: " + env );
+        //environment.append( env );
+        environment.insert( "GIS_FLAG_" + QString( allFlagNames.at( i ).toUpper() ), "0" );
       }
 
       arguments.clear();
@@ -1499,7 +1749,7 @@ void QgsGrassModule::run()
     // Freeze output vector on Windows
     mOptions->freezeOutput();
 
-    mProcess.setEnvironment( environment );
+    mProcess.setProcessEnvironment( environment );
     mProcess.start( cmd, execArguments );
     emit moduleStarted();
 
@@ -1555,9 +1805,9 @@ void QgsGrassModule::readStdout()
   mProcess.setReadChannel( QProcess::StandardOutput );
   while ( mProcess.canReadLine() )
   {
-    //line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromUtf8( ba ).replace( '\n', "" );
+    //line = QString::fromUtf8( ba ).replace( '\n', "" );
+    line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
@@ -1578,8 +1828,6 @@ void QgsGrassModule::readStderr()
 {
   QgsDebugMsg( "called." );
 
-  mProcess.setReadChannel( QProcess::StandardError );
-
   QString line;
   QRegExp rxpercent( "GRASS_INFO_PERCENT: (\\d+)" );
   QRegExp rxmessage( "GRASS_INFO_MESSAGE\\(\\d+,\\d+\\): (.*)" );
@@ -1587,12 +1835,12 @@ void QgsGrassModule::readStderr()
   QRegExp rxerror( "GRASS_INFO_ERROR\\(\\d+,\\d+\\): (.*)" );
   QRegExp rxend( "GRASS_INFO_END\\(\\d+,\\d+\\)" );
 
-
+  mProcess.setReadChannel( QProcess::StandardError );
   while ( mProcess.canReadLine() )
   {
-    //line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromUtf8( ba ).replace( '\n', "" );
+    //line = QString::fromUtf8( ba ).replace( '\n', "" );
+    line = QString::fromLocal8Bit( ba ).replace( '\n', "" );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     if ( rxpercent.indexIn( line ) != -1 )
@@ -1643,39 +1891,46 @@ void QgsGrassModule::viewOutput()
   {
     QString map = mOutputVector.at( i );
 
-    QStringList layers = QgsGrass::vectorLayers(
-                           QgsGrass::getDefaultGisdbase(),
-                           QgsGrass::getDefaultLocation(),
-                           QgsGrass::getDefaultMapset(), map );
-
-    // check whether there are 1_* layers
-    // if so, 0_* layers won't be added
-    bool onlyLayer1 = false;
-    for ( int j = 0; j < layers.count(); j++ )
+    if ( mDirect )
     {
-      if ( layers[j].left( 1 ) == "1" )
-      {
-        onlyLayer1 = true;
-        break;
-      }
+      // TODO, maybe
     }
-
-    // TODO common method for add all layers
-    for ( int j = 0; j < layers.count(); j++ )
+    else
     {
-      QString uri = QgsGrass::getDefaultGisdbase() + "/"
-                    + QgsGrass::getDefaultLocation() + "/"
-                    + QgsGrass::getDefaultMapset() + "/"
-                    + map + "/" + layers[j];
+      QStringList layers = QgsGrass::vectorLayers(
+                             QgsGrass::getDefaultGisdbase(),
+                             QgsGrass::getDefaultLocation(),
+                             QgsGrass::getDefaultMapset(), map );
 
-      // skip 0_* layers
-      if ( onlyLayer1 && layers[j].left( 1 ) != "1" )
-        continue;
+      // check whether there are 1_* layers
+      // if so, 0_* layers won't be added
+      bool onlyLayer1 = false;
+      for ( int j = 0; j < layers.count(); j++ )
+      {
+        if ( layers[j].left( 1 ) == "1" )
+        {
+          onlyLayer1 = true;
+          break;
+        }
+      }
 
-      QString name = QgsGrassUtils::vectorLayerName(
-                       map, layers[j], 1 );
+      // TODO common method for add all layers
+      for ( int j = 0; j < layers.count(); j++ )
+      {
+        QString uri = QgsGrass::getDefaultGisdbase() + "/"
+                      + QgsGrass::getDefaultLocation() + "/"
+                      + QgsGrass::getDefaultMapset() + "/"
+                      + map + "/" + layers[j];
 
-      mIface->addVectorLayer( uri, name, "grass" );
+        // skip 0_* layers
+        if ( onlyLayer1 && layers[j].left( 1 ) != "1" )
+          continue;
+
+        QString name = QgsGrassUtils::vectorLayerName(
+                         map, layers[j], 1 );
+
+        mIface->addVectorLayer( uri, name, "grass" );
+      }
     }
   }
 
@@ -1683,13 +1938,20 @@ void QgsGrassModule::viewOutput()
   {
     QString map = mOutputRaster.at( i );
 
-    QString uri = QgsGrass::getDefaultGisdbase() + "/"
-                  + QgsGrass::getDefaultLocation() + "/"
-                  + QgsGrass::getDefaultMapset()
-                  + "/cellhd/" + map;
+    if ( mDirect )
+    {
+      QString baseName = QFileInfo( map ).baseName();
+      mIface->addRasterLayer( map, baseName, "gdal" );
+    }
+    else
+    {
+      QString uri = QgsGrass::getDefaultGisdbase() + "/"
+                    + QgsGrass::getDefaultLocation() + "/"
+                    + QgsGrass::getDefaultMapset()
+                    + "/cellhd/" + map;
 
-    //mIface->addRasterLayer( uri, map );
-    mIface->addRasterLayer( uri, map, "grassraster" );
+      mIface->addRasterLayer( uri, map, "grassraster" );
+    }
   }
 }
 
@@ -1737,12 +1999,40 @@ QDomNode QgsGrassModule::nodeByKey( QDomElement elem, QString key )
   return QDomNode();
 }
 
+QString QgsGrassModule::libraryPathVariable()
+{
+#ifdef Q_OS_WIN
+  return "PATH";
+#elif defined(Q_OS_MAC)
+  return "DYLD_LIBRARY_PATH";
+#else
+  return "LD_LIBRARY_PATH";
+#endif
+}
+
+void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
+{
+  QString pathVariable = libraryPathVariable();
+  QString separator;
+#ifdef Q_OS_WIN
+  separator = ";";
+#elif defined(Q_OS_MAC)
+  separator = ":";
+#else
+  separator = ":";
+#endif
+  QString lp = environment.value( pathVariable );
+  lp =  QgsApplication::pluginPath() + separator + lp;
+  environment.insert( pathVariable, lp );
+  QgsDebugMsg( pathVariable + "=" + lp );
+}
+
 /******************* QgsGrassModuleOption ****************************/
 
 QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-    QWidget * parent )
-    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
+    bool direct, QWidget * parent )
+    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent ),
     mControlType( NoControl ), mValueType( String ), mOutputType( None ), mHaveLimits( false ), mIsOutput( false )
 {
   QgsDebugMsg( "called." );
@@ -1956,12 +2246,12 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
   else
   {
     QgsDebugMsg( "\n\n\n\n**************************" );
-    QgsDebugMsg( "isOutput = " + isOutput() );
-    QgsDebugMsg( "mOutputType = " + mOutputType );
+    QgsDebugMsg( QString( "isOutput = %1" ).arg( isOutput() ) );
+    QgsDebugMsg( QString( "mOutputType = %1" ).arg( mOutputType ) );
     if ( isOutput() && mOutputType == Raster )
       mUsesRegion = true;
   }
-  QgsDebugMsg( "mUsesRegion = " + mUsesRegion );
+  QgsDebugMsg( QString( "mUsesRegion = %1" ).arg( mUsesRegion ) );
 }
 
 void QgsGrassModuleOption::addLineEdit()
@@ -2013,7 +2303,39 @@ void QgsGrassModuleOption::addLineEdit()
     lineEdit->setValidator( mValidator );
   }
 
-  mLayout->addWidget( lineEdit );
+  if ( mIsOutput && mDirect )
+  {
+    QHBoxLayout *l = new QHBoxLayout();
+    l->addWidget( lineEdit );
+    lineEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
+    QPushButton *button = new QPushButton( tr( "Browse" ) );
+    l->addWidget( button );
+    mLayout->addItem( l );
+    connect( button, SIGNAL( clicked( bool ) ), this, SLOT( browse( bool ) ) );
+  }
+  else
+  {
+    mLayout->addWidget( lineEdit );
+  }
+}
+
+void QgsGrassModuleOption::browse( bool checked )
+{
+  Q_UNUSED( checked );
+  QgsDebugMsg( "called." );
+
+  QSettings settings;
+  QString lastDir = settings.value( "/GRASS/lastDirectOutputDir", "" ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Output file" ), lastDir, tr( "GeoTIFF" ) + " (*.tif)" );
+  if ( !fileName.isEmpty() )
+  {
+    if ( !fileName.endsWith( ".tif", Qt::CaseInsensitive ) && !fileName.endsWith( ".tiff", Qt::CaseInsensitive ) )
+    {
+      fileName = fileName + ".tif";
+    }
+    mLineEdits.at( 0 )->setText( fileName );
+    settings.setValue( "/GRASS/lastDirectOutputDir",  QFileInfo( fileName ).absolutePath() );
+  }
 }
 
 void QgsGrassModuleOption::removeLineEdit()
@@ -2179,8 +2501,8 @@ QgsGrassModuleOption::~QgsGrassModuleOption()
 
 QgsGrassModuleFlag::QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                                        QWidget * parent )
-    : QgsGrassModuleCheckBox( "", parent ), QgsGrassModuleItem( module, key, qdesc, gdesc, gnode )
+                                        bool direct, QWidget * parent )
+    : QgsGrassModuleCheckBox( "", parent ), QgsGrassModuleItem( module, key, qdesc, gdesc, gnode, direct )
 {
   QgsDebugMsg( "called." );
 
@@ -2215,8 +2537,8 @@ QgsGrassModuleFlag::~QgsGrassModuleFlag()
 QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     QgsGrassModuleStandardOptions *options, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-    QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent )
+    bool direct, QWidget * parent )
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
     , mModuleStandardOptions( options )
     , mGeometryTypeOption( "" )
     , mVectorLayerOption( "" )
@@ -2379,15 +2701,18 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     mRegionButton->setCheckable( true );
     mRegionButton->setSizePolicy( QSizePolicy::Minimum,
                                   QSizePolicy:: Preferred );
-    l->addWidget( mRegionButton );
+
+    if ( !mDirect )
+    {
+      l->addWidget( mRegionButton );
+    }
   }
 
-  // Of course, activated(int) is not enough, but there is no signal BEFORE the cobo is opened
-  //connect ( mLayerComboBox, SIGNAL( activated(int) ), this, SLOT(updateQgisLayers()) );
-
-  // Connect to canvas
-  QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
-  connect( canvas, SIGNAL( layersChanged() ), this, SLOT( updateQgisLayers() ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
+           this, SLOT( updateQgisLayers() ) );
+  // layersWillBeRemoved is emited AFTER the layer was removed from registry
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
+           this, SLOT( updateQgisLayers() ) );
 
   connect( mLayerComboBox, SIGNAL( activated( int ) ), this, SLOT( changed( int ) ) );
 
@@ -2435,6 +2760,7 @@ void QgsGrassModuleInput::updateQgisLayers()
   mGeometryTypes.clear();
   mVectorLayerNames.clear();
   mMapLayers.clear();
+  mBands.clear();
   mVectorFields.clear();
 
   // If not required, add an empty item to combobox and a padding item into
@@ -2444,10 +2770,9 @@ void QgsGrassModuleInput::updateQgisLayers()
     mMaps.push_back( QString( "" ) );
     mVectorLayerNames.push_back( QString( "" ) );
     mMapLayers.push_back( NULL );
+    mBands.append( 0 );
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
   }
-
-  QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
 
   // Find map option
   QString sourceMap;
@@ -2465,10 +2790,12 @@ void QgsGrassModuleInput::updateQgisLayers()
   //QChar sep = QDir::separator();
   QChar sep = '/';
 
-  int nlayers = canvas->layerCount();
-  for ( int i = 0; i < nlayers; i++ )
+  //QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
+  //int nlayers = canvas->layerCount();
+  foreach ( QString layerId, QgsMapLayerRegistry::instance()->mapLayers().keys() )
   {
-    QgsMapLayer *layer = canvas->layer( i );
+    //QgsMapLayer *layer = canvas->layer( i );
+    QgsMapLayer *layer =  QgsMapLayerRegistry::instance()->mapLayers().value( layerId );
 
     QgsDebugMsg( "layer->type() = " + QString::number( layer->type() ) );
 
@@ -2573,56 +2900,86 @@ void QgsGrassModuleInput::updateQgisLayers()
       mVectorLayerNames.push_back( grassLayer );
 
       // convert from QgsFieldMap to std::vector<QgsField>
-      QgsFieldMap flds = vector->dataProvider()->fields();
-      std::vector<QgsField> fields;
-      for ( QgsFieldMap::iterator it = flds.begin(); it != flds.end(); ++it )
-        fields.push_back( it.value() );
-      mVectorFields.push_back( fields );
+      mVectorFields.push_back( vector->dataProvider()->fields() );
     }
     else if ( mType == Raster && layer->type() == QgsMapLayer::RasterLayer )
     {
-      // Check if it is GRASS raster
-      QString source = QDir::cleanPath( layer->source() );
+      if ( mDirect )
+      {
+        // Add item for each numeric band
+        QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+        if ( rasterLayer && rasterLayer->dataProvider() )
+        {
+          QString providerKey = rasterLayer->dataProvider()->name();
+          // TODO: GRASS itself is not supported for now because module is run
+          // with fake GRASS gis lib and the provider needs true gis lib
+          if ( providerKey == "grassraster" ) continue;
+          // Cannot use WCS until the problem with missing QThread is solved
+          if ( providerKey == "wcs" ) continue;
+          for ( int i = 1; i <= rasterLayer->dataProvider()->bandCount(); i++ )
+          {
+            if ( QgsRasterBlock::typeIsNumeric( rasterLayer->dataProvider()->dataType( i ) ) )
+            {
+              QString uri = rasterLayer->dataProvider()->dataSourceUri();
+              mMaps.push_back( uri );
 
-      if ( source.contains( "cellhd" ) == 0 )
-        continue;
+              QString label = tr( "%1 (band %2)" ).arg( rasterLayer->name() ).arg( i );
+              mLayerComboBox->addItem( label );
+              mMapLayers.push_back( layer );
+              mBands.append( i );
 
-      // Most probably GRASS layer, check GISBASE and LOCATION
-      QStringList split = source.split( sep, QString::SkipEmptyParts );
+              if ( label == current )
+                mLayerComboBox->setCurrentIndex( mLayerComboBox->count() - 1 );
+            }
+          }
+        }
+      }
+      else
+      {
+        // Check if it is GRASS raster
+        QString source = QDir::cleanPath( layer->source() );
 
-      if ( split.size() < 4 )
-        continue;
+        if ( source.contains( "cellhd" ) == 0 )
+          continue;
 
-      QString map = split.last();
-      split.pop_back(); // map
-      if ( split.last() != "cellhd" )
-        continue;
-      split.pop_back(); // cellhd
+        // Most probably GRASS layer, check GISBASE and LOCATION
+        QStringList split = source.split( sep, QString::SkipEmptyParts );
 
-      QString mapset = split.last();
-      split.pop_back(); // mapset
+        if ( split.size() < 4 )
+          continue;
 
-      //QDir locDir ( sep + split.join ( QString(sep) ) ) ;
-      //QString loc = locDir.canonicalPath();
-      QString loc =  source.remove( QRegExp( "/[^/]+/[^/]+/[^/]+$" ) );
-      loc = QDir( loc ).canonicalPath();
+        QString map = split.last();
+        split.pop_back(); // map
+        if ( split.last() != "cellhd" )
+          continue;
+        split.pop_back(); // cellhd
 
-      QDir curlocDir( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
-      QString curloc = curlocDir.canonicalPath();
+        QString mapset = split.last();
+        split.pop_back(); // mapset
 
-      if ( loc != curloc )
-        continue;
+        //QDir locDir ( sep + split.join ( QString(sep) ) ) ;
+        //QString loc = locDir.canonicalPath();
+        QString loc =  source.remove( QRegExp( "/[^/]+/[^/]+/[^/]+$" ) );
+        loc = QDir( loc ).canonicalPath();
 
-      if ( mUpdate && mapset != QgsGrass::getDefaultMapset() )
-        continue;
+        QDir curlocDir( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
+        QString curloc = curlocDir.canonicalPath();
 
-      mMaps.push_back( map + "@" + mapset );
+        if ( loc != curloc )
+          continue;
 
-      QString label = layer->name() + " ( " + map + "@" + mapset + " )";
+        if ( mUpdate && mapset != QgsGrass::getDefaultMapset() )
+          continue;
 
-      mLayerComboBox->addItem( label );
-      if ( label == current )
-        mLayerComboBox->setCurrentIndex( mLayerComboBox->count() - 1 );
+        mMaps.push_back( map + "@" + mapset );
+        mMapLayers.push_back( layer );
+
+        QString label = layer->name() + " ( " + map + "@" + mapset + " )";
+
+        mLayerComboBox->addItem( label );
+        if ( label == current )
+          mLayerComboBox->setCurrentIndex( mLayerComboBox->count() - 1 );
+      }
     }
   }
 }
@@ -2636,34 +2993,92 @@ QStringList QgsGrassModuleInput::options()
   if ( current < 0 ) // not found
     return list;
 
-  // TODO: this is hack for network nodes, do it somehow better
-  if ( mMapId.isEmpty() )
+  if ( mDirect )
   {
-    if ( current <  mMaps.size() )
+    QgsMapLayer *layer = mMapLayers[current];
+
+    if ( layer->type() == QgsMapLayer::RasterLayer )
     {
-      if ( ! mMaps[current].isEmpty() )
+      QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+      if ( !rasterLayer || !rasterLayer->dataProvider() )
       {
-        list.push_back( mKey + "=" + mMaps[current] );
+        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get provider" ) );
+        return list;
       }
+      QString grassUri;
+      QString providerUri = rasterLayer->dataProvider()->dataSourceUri();
+      QString providerKey = rasterLayer->dataProvider()->name();
+      int band = mBands.value( current );
+      if ( providerKey == "gdal" && band == 1 )
+      {
+        // GDAL provider and band 1 are defaults, thus we can use simply GDAL path
+        grassUri = providerUri;
+      }
+      else
+      {
+        // Need to encode more info into uri
+        QgsDataSourceURI uri;
+        if ( providerKey == "gdal" )
+        {
+          // providerUri is simple file path
+          // encoded uri is not currently supported by GDAL provider, it is only used here and decoded in fake gis lib
+          uri.setParam( "path", providerUri );
+        }
+        else // WCS
+        {
+          // providerUri is encoded QgsDataSourceURI
+          uri.setEncodedUri( providerUri );
+        }
+        uri.setParam( "provider", providerKey );
+        uri.setParam( "band", QString::number( band ) );
+        grassUri = uri.encodedUri();
+      }
+      opt = mKey + "=" + grassUri;
+      list.push_back( opt );
+    }
+    else if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      QgsVectorLayer* vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( !vectorLayer || !vectorLayer->dataProvider() )
+      {
+        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get provider" ) );
+        return list;
+      }
+      opt = mKey + "=" + vectorLayer->dataProvider()->dataSourceUri();
+      list.push_back( opt );
     }
   }
-
-  if ( !mGeometryTypeOption.isEmpty() && current < mGeometryTypes.size() )
+  else
   {
-    opt = mGeometryTypeOption + "=" + mGeometryTypes[current] ;
-    list.push_back( opt );
-  }
+    // TODO: this is hack for network nodes, do it somehow better
+    if ( mMapId.isEmpty() )
+    {
+      if ( current <  mMaps.size() )
+      {
+        if ( ! mMaps[current].isEmpty() )
+        {
+          list.push_back( mKey + "=" + mMaps[current] );
+        }
+      }
+    }
 
-  if ( !mVectorLayerOption.isEmpty() && current < mVectorLayerNames.size() )
-  {
-    opt = mVectorLayerOption + "=" + mVectorLayerNames[current] ;
-    list.push_back( opt );
+    if ( !mGeometryTypeOption.isEmpty() && current < mGeometryTypes.size() )
+    {
+      opt = mGeometryTypeOption + "=" + mGeometryTypes[current] ;
+      list.push_back( opt );
+    }
+
+    if ( !mVectorLayerOption.isEmpty() && current < mVectorLayerNames.size() )
+    {
+      opt = mVectorLayerOption + "=" + mVectorLayerNames[current] ;
+      list.push_back( opt );
+    }
   }
 
   return list;
 }
 
-std::vector<QgsField> QgsGrassModuleInput::currentFields()
+QgsFields QgsGrassModuleInput::currentFields()
 {
   QgsDebugMsg( "called." );
 
@@ -2671,7 +3086,7 @@ std::vector<QgsField> QgsGrassModuleInput::currentFields()
   if ( !mRequired )
     limit = 1;
 
-  std::vector<QgsField> fields;
+  QgsFields fields;
 
   unsigned int current = mLayerComboBox->currentIndex();
   if ( current < limit )
@@ -2752,11 +3167,12 @@ QgsGrassModuleInput::~QgsGrassModuleInput()
 /********************** QgsGrassModuleItem *************************/
 
 QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
-                                        QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode )
+                                        QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct )
     : mModule( module )
     , mKey( key )
     , mHidden( false )
     , mRequired( false )
+    , mDirect( direct )
 {
   Q_UNUSED( gdesc );
   //mAnswer = qdesc.attribute("answer", "");
@@ -2835,9 +3251,9 @@ QgsGrassModuleItem::~QgsGrassModuleItem() {}
 
 QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-    QWidget * parent )
+    bool direct, QWidget * parent )
     : QGroupBox( parent ),
-    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode )
+    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode, direct )
 {
   adjustTitle();
 
@@ -2864,8 +3280,8 @@ void QgsGrassModuleGroupBoxItem::adjustTitle()
 
 QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   QgsGrassModule *module, int type, QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent )
+  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
     , mType( type )
     , mOgrLayerOption( "" )
     , mOgrWhereOption( "" )
@@ -2930,19 +3346,11 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 
   lbl->setBuddy( mLayerPassword );
 
-  connect( mLayerComboBox, SIGNAL( activated( int ) ), this, SLOT( changed( int ) ) );
-
-  // Of course, activated(int) is not enough, but there is no signal
-  // BEFORE the cobo is opened
-  // connect ( mLayerComboBox, SIGNAL( activated(int) ), this, SLOT(updateQgisLayers()) );
-
-  // Connect to canvas
-  QgsMapCanvas *canvas = mModule->qgisIface()->mapCanvas();
-
-  // It seems that addedLayer/removedLayer does not work
-  //connect ( canvas, SIGNAL(addedLayer(QgsMapLayer *)), this, SLOT(updateQgisLayers()) );
-  //connect ( canvas, SIGNAL(removedLayer(QString)), this, SLOT(updateQgisLayers()) );
-  connect( canvas, SIGNAL( layersChanged() ), this, SLOT( updateQgisLayers() ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
+           this, SLOT( updateQgisLayers() ) );
+  // layersWillBeRemoved is emited after the layer was removed from registry
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
+           this, SLOT( updateQgisLayers() ) );
 
   // Fill in QGIS layers
   updateQgisLayers();
@@ -3155,8 +3563,8 @@ QgsGrassModuleGdalInput::~QgsGrassModuleGdalInput()
 QgsGrassModuleField::QgsGrassModuleField(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
+  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
+    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent ),
     mModuleStandardOptions( options ), mLayerInput( 0 )
 {
   if ( mTitle.isEmpty() )
@@ -3207,9 +3615,9 @@ void QgsGrassModuleField::updateFields()
   if ( mLayerInput == 0 )
     return;
 
-  std::vector<QgsField> fields = mLayerInput->currentFields();
+  QgsFields fields = mLayerInput->currentFields();
 
-  for ( unsigned int i = 0; i < fields.size(); i++ )
+  for ( int i = 0; i < fields.size(); i++ )
   {
     if ( mType.contains( fields[i].typeName() ) )
     {
@@ -3244,8 +3652,8 @@ QgsGrassModuleField::~QgsGrassModuleField()
 QgsGrassModuleSelection::QgsGrassModuleSelection(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
+  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
+    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent ),
     mModuleStandardOptions( options ), mLayerInput( 0 ),
     mVectorLayer( 0 )
 {
@@ -3302,16 +3710,16 @@ void QgsGrassModuleSelection::updateSelection()
     return;
 
   QString cats;
-  provider->select( allAttributes, QgsRectangle(), true );
+  QgsFeatureIterator fi = provider->getFeatures( QgsFeatureRequest() );
   QgsFeature feature;
 
   int i = 0;
-  while ( provider->nextFeature( feature ) )
+  while ( fi.nextFeature( feature ) )
   {
     if ( !selected.contains( feature.id() ) )
       continue;
 
-    QgsAttributeMap attr = feature.attributeMap();
+    const QgsAttributes& attr = feature.attributes();
     if ( attr.size() > keyField )
     {
       if ( i > 0 )
@@ -3356,8 +3764,8 @@ QgsGrassModuleSelection::~QgsGrassModuleSelection()
 QgsGrassModuleFile::QgsGrassModuleFile(
   QgsGrassModule *module,
   QString key, QDomElement &qdesc,
-  QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
+  QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
+    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent ),
     mType( Old )
 {
   if ( mTitle.isEmpty() )

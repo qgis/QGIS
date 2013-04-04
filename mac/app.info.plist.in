@@ -7,7 +7,7 @@
 	<key>CFBundleName</key>
 	<string>QGIS</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.qgis.qgis</string>
+	<string>org.qgis.qgis2</string>
 	<key>CFBundleExecutable</key>
 	<string>${QGIS_APP_NAME}</string>
 	<key>CFBundlePackageType</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleSignature</key>
 	<string>QGIS</string>
 	<key>CFBundleGetInfoString</key>
-	<string>${QGIS_APP_NAME} ${COMPLETE_VERSION}-${RELEASE_NAME} (${REVISION}), © 2002-2012 QGIS Development Team</string>
+	<string>${QGIS_APP_NAME} ${COMPLETE_VERSION}-${RELEASE_NAME} (${REVISION}), © 2002-2013 QGIS Development Team</string>
 	<key>CFBundleShortVersionString</key>
 	<string>${COMPLETE_VERSION}</string>
 	<key>CFBundleVersion</key>

@@ -21,13 +21,12 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
   setupUi( this );
   if ( mVectorLayer )
   {
-    const QgsFieldMap& fm = mVectorLayer->pendingFields();
-    QgsFieldMap::const_iterator fieldIt = fm.constBegin();
+    const QgsFields& fm = mVectorLayer->pendingFields();
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
-    for ( ; fieldIt != fm.constEnd(); ++fieldIt )
+    for ( int idx = 0; idx < fm.count(); ++idx )
     {
-      QString fieldName = fieldIt.value().name();
+      QString fieldName = fm[idx].name();
       mXAttributeComboBox->addItem( fieldName );
       mYAttributeComboBox->addItem( fieldName );
     }
@@ -87,6 +86,11 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
   {
     mRadiansRadioButton->setChecked( true );
   }
+
+  mDistanceUnitComboBox->blockSignals( true );
+  mDistanceUnitComboBox->setCurrentIndex( mLayer->distanceUnit() );
+  mDistanceUnitComboBox->blockSignals( false );
+
   emit changed();
 }
 
@@ -192,6 +196,15 @@ void QgsVectorFieldSymbolLayerWidget::on_mCounterclockwiseFromEastRadioButton_to
   if ( mLayer && checked )
   {
     mLayer->setAngleOrientation( QgsVectorFieldSymbolLayer::CounterclockwiseFromEast );
+    emit changed();
+  }
+}
+
+void QgsVectorFieldSymbolLayerWidget::on_mDistanceUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setDistanceUnit(( QgsSymbolV2::OutputUnit ) index );
     emit changed();
   }
 }

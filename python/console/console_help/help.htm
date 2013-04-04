@@ -8,17 +8,28 @@
 	
 	<style>
 		body{
-    		font-family: verdana,arial,helvetica,sans-serif;
-    		/*font-family:Verdana,Geneva,sans-serif;*/
+    		font-family: 'Trebuchet MS', sans-serif;
     		font-size : 12px;
 		}
 		#header{
-    		background: #cccccc;
+    		background: #f6f6f6;
+    		border-bottom: 3px solid #000;
     		width: 100%;
 		}
 		#headerTool td{
     		background: #f6f6f6;
     		/*width: 100%;*/
+		}
+		._titleP {
+			padding: 5px;
+			font-size: 15px;
+			font-weight: bold;
+			color: #000;
+		}
+		._title {
+			font-size: 20px;
+			font-weight: bold;
+			color: #000;
 		}
 	</style>
 </head>
@@ -26,25 +37,48 @@
 	<table id="header">
 		<tr>
 		<td>
-			<img src="qrc:/images/console/imgHelpDialog.png" />
+			<img src="qrc:/images/themes/default/console/imgHelpDialog.png" />
 		</td>
 		<td>
-			<h2 id="headerTitle">Python Console for QGIS</h2>
+			<span id="headerTitle" class="_title">Python Console for QGIS</span>
 		</td>
 		</tr>
+		</table>
+		<table>
+		<tr>
+			<td>
+				<p align="justify">
+					<span id="headerSubject">Python Console based on PyQScintilla2.</span>
+					<br><br>
+					<span id="headerSubjectMain">To access Quantum GIS environment from this console
+					use qgis.utils.iface object (instance of QgisInterface class).
+					To import the class QgisInterface can also use the dedicated 
+					button on the toolbar on the left.</span>
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td><img src="qrc:/images/themes/default/console/imgHelpConsole.png" /></td>
+		</tr>
+		<tr>
+			<td>
+				<p align="justify">
+					<span id="headerSubjectA">The console is splitted in two main panes, output and input areas.
+					Both are resizable by using the horizontal splitter.
+					Output area pane is a widget read-only which shows the commands output.
+					You can drag and drop or copy text into input area (no matter if selected text contains >>> or ...).
+					Use 'Share on codepad' from contextual menu for sharing snippets code.
+					The context menu looks like the image below.</span><br><br>
+					<img src="qrc:/images/themes/default/console/imgHelpMenu.png"><br>
+					<span id="headerSubjectB">Input area pane is the interactive python shell for input commands.</span>
+				</p>
+			</td>
+		</tr>
 	</table>
-	<p align="justify">
-		<span id="headerSubject">Python Console based on PyQScintilla2.</span>
-		<br><br>
-		<span id="headerSubjectMain">To access Quantum GIS environment from this console
-		use qgis.utils.iface object (instance of QgisInterface class).
-		To import the class QgisInterface can also use the dedicated 
-		button on the toolbar on the left.</span>
-	</p>
 	<table id="header">
 		<tr>
 		<td>
-			<h4 id="features">Features</h4>
+			<span id="features" class="_titleP">Features</span>
 		</td>
 		</tr>
 	</table>
@@ -86,70 +120,59 @@
 	<table id="header">
 		<tr>
 		<td>
-			<h4 id="toolbar">Toolbar</h4>
+			<span id="toolbar" class="_titleP">Toolbar</span>
 		</td>
 		</tr>
 	</table>
 	<p><span id="toolbarTitle">The following is a description of the tools in the toolbar:</span></p>		
 	<table width="100%" border="0" id="headerTool">
 		<tr>
-			<td><img src="qrc:/images/console/iconClearConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconClearConsole.png" /></td>
 			<td colspan="2"><span id="toolbarClear">Tool to clear python console</span></td>
 		</tr>
 		<tr>
-			<td><img src="qrc:/images/console/iconClassConsole.png" /></td>
-			<td><img src="qrc:/images/console/iconIfaceConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconClassConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconIfaceConsole.png" /></td>
 			<td><span id="toolbarIfaceClass">Tool to import QgisInterface class</span></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><img src="qrc:/images/console/iconSextanteConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconSextanteConsole.png" /></td>
 			<td><span id="toolbarSextClass">Tool to import Sextante class</span></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><img src="qrc:/images/console/iconQtCoreConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconQtCoreConsole.png" /></td>
 			<td><span id="toolbarQtCoreClass">Tool to import PyQt4.QtCore class</span></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><img src="qrc:/images/console/iconQtGuiConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconQtGuiConsole.png" /></td>
 			<td><span id="toolbarQtGuiClass">Tool to import PyQt4.QtGui class</span></td>
 		</tr>
 		<tr>
-			<td><img src="qrc:/images/console/iconScriptConsole.png" /></td>
-			<td><img src="qrc:/images/console/iconOpenConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconScriptConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconOpenConsole.png" /></td>
 			<td><span id="toolbarScriptOpen">Tool to open a python script and load in console</span></td>
 		</tr>
 		<tr>
 			<td></td>
-			<td><img src="qrc:/images/console/iconSaveConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconSaveConsole.png" /></td>
 			<td><span id="toolbarScriptSave">Tool to save a python script</span></td>
 		</tr>
 		<tr>
-			<td><img src="qrc:/images/console/iconSettingsConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconSettingsConsole.png" /></td>
 			<td colspan="2"><span id="toolbarSettings">Settings</span></td>
 		</tr>
 		<tr>
-			<td><img src="qrc:/images/console/iconHelpConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconHelpConsole.png" /></td>
 			<td colspan="2"><span id="toolbarHelp">Help</span></td>
 		</tr>
 		<tr>
-			<td><img src="qrc:/images/console/iconRunConsole.png" /></td>
+			<td><img src="qrc:/images/themes/default/console/iconRunConsole.png" /></td>
 			<td colspan="2"><span id="toolbarRun">Run command (like Enter key pressed)</span></td>
 		</tr>
 	</table>
-	<br>
-	<table id="header">
-		<tr>
-		<td>
-			<h4 id="thanks">Acknowledgments</h4>
-		</td>
-		</tr>
-	</table>
-	<p>
-		<span id="thanksText">Thanks to Larry Shaffer who provided the API files.</span>
-	</p>
 </body>
 <script type="text/javascript">
 	var parameter =  window.location.search.replace( "?", "" );

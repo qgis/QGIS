@@ -1,7 +1,7 @@
 v.to.rast
-v.to.rast.attribute - Converts (rasterize) a vector map into a raster map.
+v.to.rast.attribute - Converts (rasterize) a vector layer into a raster layer.
 Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
+ParameterVector|input|Input vector layer|-1|False
 ParameterSelection|use|Source of raster values|attr
-ParameterTableField|column|Name of column for 'attr' parameter (data type must be numeric)|input
-OutputRaster|output|Name for output raster map
+ParameterTableField|column|Name of column for 'attr' parameter (data type must be numeric)|input|0
+OutputRaster|output|Rasterized layer

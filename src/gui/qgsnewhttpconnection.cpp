@@ -56,6 +56,8 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     cbxInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
     cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
 
+    txtReferer->setText( settings.value( key + "/referer" ).toString() );
+
     txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
     txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
   }
@@ -79,6 +81,11 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 
     cbxIgnoreGetFeatureInfoURI->setVisible( false );
     mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+
+    txtReferer->setVisible( false );
+    mGroupBox->layout()->removeWidget( txtReferer );
+    lblReferer->setVisible( false );
+    mGroupBox->layout()->removeWidget( lblReferer );
 
     // Adjust height
     int w = width();
@@ -157,6 +164,8 @@ void QgsNewHttpConnection::accept()
   {
     settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
   }
+
+  settings.setValue( key + "/referer", txtReferer->text() );
 
   settings.setValue( credentialsKey + "/username", txtUserName->text() );
   settings.setValue( credentialsKey + "/password", txtPassword->text() );

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmaprenderer.h"
@@ -48,7 +49,9 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 {
   mComposition = composition;
   mOverviewFrameMapSymbol = 0;
+  mGridLineSymbol = 0;
   createDefaultOverviewFrameSymbol();
+  createDefaultGridLineSymbol();
 
   mId = 0;
   assignFreeId();
@@ -74,7 +77,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
   }
   setSceneRect( QRectF( x, y, width, height ) );
   setToolTip( tr( "Map %1" ).arg( mId ) );
-  mGridPen.setCapStyle( Qt::FlatCap );
 
   initGridAnnotationFormatFromProject();
 }
@@ -88,6 +90,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mOverviewFrameMapSymbol = 0;
+  mGridLineSymbol = 0;
   createDefaultOverviewFrameSymbol();
 
   //Offset
@@ -103,7 +106,6 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
   mCurrentRectangle = rect();
 
   setToolTip( tr( "Map %1" ).arg( mId ) );
-  mGridPen.setCapStyle( Qt::FlatCap );
 
   initGridAnnotationFormatFromProject();
 }
@@ -111,11 +113,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
 QgsComposerMap::~QgsComposerMap()
 {
   delete mOverviewFrameMapSymbol;
-}
-
-void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi )
-{
-  draw( painter, extent, QSizeF( size.width(), size.height() ), dpi );
+  delete mGridLineSymbol;
 }
 
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
@@ -230,7 +228,8 @@ void QgsComposerMap::cache( void )
   double forcedWidthScaleFactor = w / requestExtent.width() / mapUnitsToMM();
 
   mCacheImage = QImage( w, h,  QImage::Format_ARGB32 );
-  mCacheImage.fill( brush().color().rgb() ); //consider the item background brush
+  mCacheImage.fill( QColor( 255, 255, 255, 0 ).rgba() ); // the background is drawn by composerItem, but we still need to start with that empty fill to avoid artifacts
+
   double mapUnitsPerPixel = mExtent.width() / w;
 
   // WARNING: ymax in QgsMapToPixel is device height!!!
@@ -702,13 +701,11 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   gridElem.setAttribute( "intervalY", QString::number( mGridIntervalY ) );
   gridElem.setAttribute( "offsetX", QString::number( mGridOffsetX ) );
   gridElem.setAttribute( "offsetY", QString::number( mGridOffsetY ) );
-  gridElem.setAttribute( "penWidth",  QString::number( mGridPen.widthF() ) );
-  gridElem.setAttribute( "penColorRed", mGridPen.color().red() );
-  gridElem.setAttribute( "penColorGreen", mGridPen.color().green() );
-  gridElem.setAttribute( "penColorBlue", mGridPen.color().blue() );
   gridElem.setAttribute( "crossLength",  QString::number( mCrossLength ) );
   gridElem.setAttribute( "gridFrameStyle", mGridFrameStyle );
   gridElem.setAttribute( "gridFrameWidth", QString::number( mGridFrameWidth ) );
+  QDomElement gridLineStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mGridLineSymbol, doc );
+  gridElem.appendChild( gridLineStyleElem );
 
   //grid annotation
   QDomElement annotationElem = doc.createElement( "Annotation" );
@@ -838,13 +835,25 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mGridIntervalY = gridElem.attribute( "intervalY", "0" ).toDouble();
     mGridOffsetX = gridElem.attribute( "offsetX", "0" ).toDouble();
     mGridOffsetY = gridElem.attribute( "offsetY", "0" ).toDouble();
-    mGridPen.setWidthF( gridElem.attribute( "penWidth", "0" ).toDouble() );
-    mGridPen.setColor( QColor( gridElem.attribute( "penColorRed", "0" ).toInt(),
-                               gridElem.attribute( "penColorGreen", "0" ).toInt(),
-                               gridElem.attribute( "penColorBlue", "0" ).toInt() ) );
     mCrossLength = gridElem.attribute( "crossLength", "3" ).toDouble();
     mGridFrameStyle = ( QgsComposerMap::GridFrameStyle )gridElem.attribute( "gridFrameStyle", "0" ).toInt();
     mGridFrameWidth = gridElem.attribute( "gridFrameWidth", "2.0" ).toDouble();
+
+    QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
+    delete mGridLineSymbol;
+    if ( gridSymbolElem.isNull( ) )
+    {
+      //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
+      mGridLineSymbol = QgsLineSymbolV2::createSimple( QgsStringMap() );
+      mGridLineSymbol->setWidth( gridElem.attribute( "penWidth", "0" ).toDouble() );
+      mGridLineSymbol->setColor( QColor( gridElem.attribute( "penColorRed", "0" ).toInt(),
+                                         gridElem.attribute( "penColorGreen", "0" ).toInt(),
+                                         gridElem.attribute( "penColorBlue", "0" ).toInt() ) );
+    }
+    else
+    {
+      mGridLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( gridSymbolElem ) );
+    }
 
     QDomNodeList annotationNodeList = gridElem.elementsByTagName( "Annotation" );
     if ( annotationNodeList.size() > 0 )
@@ -916,8 +925,6 @@ void QgsComposerMap::syncLayerSet()
 
 void QgsComposerMap::drawGrid( QPainter* p )
 {
-  p->setPen( mGridPen );
-
   QList< QPair< double, QLineF > > verticalLines;
   yGridLines( verticalLines );
   QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
@@ -933,12 +940,12 @@ void QgsComposerMap::drawGrid( QPainter* p )
   {
     for ( ; vIt != verticalLines.constEnd(); ++vIt )
     {
-      p->drawLine( vIt->second );
+      drawGridLine( vIt->second, p );
     }
 
     for ( ; hIt != horizontalLines.constEnd(); ++hIt )
     {
-      p->drawLine( hIt->second );
+      drawGridLine( hIt->second, p );
     }
   }
   else //cross
@@ -948,7 +955,7 @@ void QgsComposerMap::drawGrid( QPainter* p )
     {
       //start mark
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p1(), vIt->second.p2(), mCrossLength );
-      p->drawLine( vIt->second.p1(), crossEnd1 );
+      drawGridLine( QLineF( vIt->second.p1(), crossEnd1 ), p );
 
       //test for intersection with every horizontal line
       hIt = horizontalLines.constBegin();
@@ -958,12 +965,12 @@ void QgsComposerMap::drawGrid( QPainter* p )
         {
           crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p1(), mCrossLength );
           crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, vIt->second.p2(), mCrossLength );
-          p->drawLine( crossEnd1, crossEnd2 );
+          drawGridLine( QLineF( crossEnd1, crossEnd2 ), p );
         }
       }
       //end mark
       QPointF crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( vIt->second.p2(), vIt->second.p1(), mCrossLength );
-      p->drawLine( vIt->second.p2(), crossEnd2 );
+      drawGridLine( QLineF( vIt->second.p2(), crossEnd2 ), p );
     }
 
     hIt = horizontalLines.constBegin();
@@ -971,7 +978,7 @@ void QgsComposerMap::drawGrid( QPainter* p )
     {
       //start mark
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p1(), hIt->second.p2(), mCrossLength );
-      p->drawLine( hIt->second.p1(), crossEnd1 );
+      drawGridLine( QLineF( hIt->second.p1(), crossEnd1 ), p );
 
       vIt = verticalLines.constBegin();
       for ( ; vIt != verticalLines.constEnd(); ++vIt )
@@ -980,15 +987,13 @@ void QgsComposerMap::drawGrid( QPainter* p )
         {
           crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, hIt->second.p1(), mCrossLength );
           crossEnd2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( intersectionPoint, hIt->second.p2(), mCrossLength );
-          p->drawLine( crossEnd1, crossEnd2 );
+          drawGridLine( QLineF( crossEnd1, crossEnd2 ), p );
         }
       }
       //end mark
       crossEnd1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( hIt->second.p2(), hIt->second.p1(), mCrossLength );
-      p->drawLine( hIt->second.p2(), crossEnd1 );
+      drawGridLine( QLineF( hIt->second.p2(), crossEnd1 ), p );
     }
-
-
   }
 
   p->setClipRect( thisPaintRect , Qt::NoClip );
@@ -1018,6 +1023,33 @@ void QgsComposerMap::drawGridFrame( QPainter* p, const QList< QPair< double, QLi
   drawGridFrameBorder( p, rightGridFrame, QgsComposerMap::Right );
   drawGridFrameBorder( p, topGridFrame, QgsComposerMap::Top );
   drawGridFrameBorder( p, bottomGridFrame, QgsComposerMap::Bottom );
+}
+
+void QgsComposerMap::drawGridLine( const QLineF& line, QPainter* p )
+{
+  if ( !mGridLineSymbol || !p )
+  {
+    return;
+  }
+
+  //setup render context
+  QgsRenderContext context;
+  context.setPainter( p );
+  if ( mPreviewMode == Rectangle )
+  {
+    return;
+  }
+  else
+  {
+    context.setScaleFactor( 1.0 );
+    context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
+  }
+
+  QPolygonF poly;
+  poly << line.p1() << line.p2();
+  mGridLineSymbol->startRender( context );
+  mGridLineSymbol->renderPolyline( poly, 0, context );
+  mGridLineSymbol->stopRender( context );
 }
 
 void QgsComposerMap::drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border )
@@ -1433,12 +1465,36 @@ int QgsComposerMap::yGridLines( QList< QPair< double, QLineF > >& lines ) const
 
 void QgsComposerMap::setGridPenWidth( double w )
 {
-  mGridPen.setWidthF( w );
+  if ( mGridLineSymbol )
+  {
+    mGridLineSymbol->setWidth( w );
+  }
 }
 
 void QgsComposerMap::setGridPenColor( const QColor& c )
 {
-  mGridPen.setColor( c );
+  if ( mGridLineSymbol )
+  {
+    mGridLineSymbol->setColor( c );
+  }
+}
+
+void QgsComposerMap::setGridPen( const QPen& p )
+{
+  setGridPenWidth( p.widthF() );
+  setGridPenColor( p.color() );
+}
+
+QPen QgsComposerMap::gridPen() const
+{
+  QPen p;
+  if ( mGridLineSymbol )
+  {
+    p.setWidthF( mGridLineSymbol->width() );
+    p.setColor( mGridLineSymbol->color() );
+    p.setCapStyle( Qt::FlatCap );
+  }
+  return p;
 }
 
 QRectF QgsComposerMap::boundingRect() const
@@ -1625,6 +1681,12 @@ void QgsComposerMap::setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol )
 {
   delete mOverviewFrameMapSymbol;
   mOverviewFrameMapSymbol = symbol;
+}
+
+void QgsComposerMap::setGridLineSymbol( QgsLineSymbolV2* symbol )
+{
+  delete mGridLineSymbol;
+  mGridLineSymbol = symbol;
 }
 
 void QgsComposerMap::transformShift( double& xShift, double& yShift ) const
@@ -1987,6 +2049,16 @@ void QgsComposerMap::createDefaultOverviewFrameSymbol()
   properties.insert( "style_border", "no" );
   mOverviewFrameMapSymbol = QgsFillSymbolV2::createSimple( properties );
   mOverviewFrameMapSymbol->setAlpha( 0.3 );
+}
+
+void QgsComposerMap::createDefaultGridLineSymbol()
+{
+  delete mGridLineSymbol;
+  QgsStringMap properties;
+  properties.insert( "color", "0,0,0,255" );
+  properties.insert( "width", "0.3" );
+  properties.insert( "capstyle", "flat" );
+  mGridLineSymbol = QgsLineSymbolV2::createSimple( properties );
 }
 
 void QgsComposerMap::initGridAnnotationFormatFromProject()

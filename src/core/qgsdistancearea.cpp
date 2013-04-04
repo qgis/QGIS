@@ -98,13 +98,6 @@ void QgsDistanceArea::setSourceCrs( long srsid )
   mCoordTransform->setSourceCrs( srcCRS );
 }
 
-void QgsDistanceArea::setSourceEpsgCrsId( long epsgId )
-{
-  QgsCoordinateReferenceSystem srcCRS;
-  srcCRS.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgId ) );
-  mCoordTransform->setSourceCrs( srcCRS );
-}
-
 void QgsDistanceArea::setSourceAuthId( QString authId )
 {
   QgsCoordinateReferenceSystem srcCRS;
@@ -543,16 +536,15 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
 
         if ( perimeter )
         {
-          *perimeter += measureLine( points );
+          if ( idx == 0 )
+          {
+            // exterior ring
+            *perimeter += measureLine( points );
+          }
         }
       }
 
       points.clear();
-
-      if ( !area )
-      {
-        break;
-      }
     }
   }
   catch ( QgsCsException &cse )

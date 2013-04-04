@@ -28,7 +28,7 @@
 
 QgsRasterBlock::QgsRasterBlock()
 //mValid (false)
-    : mDataType( UnknownDataType )
+    : mDataType( QGis::UnknownDataType )
     , mTypeSize( 0 )
     , mWidth( 0 )
     , mHeight( 0 )
@@ -38,7 +38,7 @@ QgsRasterBlock::QgsRasterBlock()
 {
 }
 
-QgsRasterBlock::QgsRasterBlock( DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
+QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
 //mValid(true)
     : mDataType( theDataType )
     , mTypeSize( 0 )
@@ -57,7 +57,7 @@ QgsRasterBlock::~QgsRasterBlock()
   delete mImage;
 }
 
-bool QgsRasterBlock::reset( DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
+bool QgsRasterBlock::reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
 {
   QgsDebugMsg( QString( "theWidth= %1 theHeight = %2 theDataType = %3 theNoDataValue = %4" ).arg( theWidth ).arg( theHeight ).arg( theDataType ).arg( theNoDataValue ) );
 
@@ -65,7 +65,7 @@ bool QgsRasterBlock::reset( DataType theDataType, int theWidth, int theHeight, d
   mData = 0;
   delete mImage;
   mImage = 0;
-  mDataType = QgsRasterBlock::UnknownDataType;
+  mDataType = QGis::UnknownDataType;
   mTypeSize = 0;
   mWidth = 0;
   mHeight = 0;
@@ -106,30 +106,30 @@ bool QgsRasterBlock::reset( DataType theDataType, int theWidth, int theHeight, d
   return true;
 }
 
-QImage::Format QgsRasterBlock::imageFormat( QgsRasterBlock::DataType theDataType )
+QImage::Format QgsRasterBlock::imageFormat( QGis::DataType theDataType )
 {
-  if ( theDataType == QgsRasterBlock::ARGB32 )
+  if ( theDataType == QGis::ARGB32 )
   {
     return QImage::Format_ARGB32;
   }
-  else if ( theDataType == QgsRasterBlock::ARGB32_Premultiplied )
+  else if ( theDataType == QGis::ARGB32_Premultiplied )
   {
     return QImage::Format_ARGB32_Premultiplied;
   }
   return QImage::Format_Invalid;
 }
 
-QgsRasterBlock::DataType QgsRasterBlock::dataType( QImage::Format theFormat )
+QGis::DataType QgsRasterBlock::dataType( QImage::Format theFormat )
 {
   if ( theFormat == QImage::Format_ARGB32 )
   {
-    return QgsRasterBlock::ARGB32;
+    return QGis::ARGB32;
   }
   else if ( theFormat == QImage::Format_ARGB32_Premultiplied )
   {
-    return QgsRasterBlock::ARGB32_Premultiplied;
+    return QGis::ARGB32_Premultiplied;
   }
-  return QgsRasterBlock::UnknownDataType;
+  return QGis::UnknownDataType;
 }
 
 bool QgsRasterBlock::isEmpty() const
@@ -144,83 +144,83 @@ bool QgsRasterBlock::isEmpty() const
   return false;
 }
 
-bool QgsRasterBlock::typeIsNumeric( DataType dataType )
+bool QgsRasterBlock::typeIsNumeric( QGis::DataType dataType )
 {
   switch ( dataType )
   {
-    case Byte:
-    case UInt16:
-    case Int16:
-    case UInt32:
-    case Int32:
-    case Float32:
-    case CInt16:
-    case Float64:
-    case CInt32:
-    case CFloat32:
-    case CFloat64:
+    case QGis::Byte:
+    case QGis::UInt16:
+    case QGis::Int16:
+    case QGis::UInt32:
+    case QGis::Int32:
+    case QGis::Float32:
+    case QGis::CInt16:
+    case QGis::Float64:
+    case QGis::CInt32:
+    case QGis::CFloat32:
+    case QGis::CFloat64:
       return true;
 
-    case UnknownDataType:
-    case ARGB32:
-    case ARGB32_Premultiplied:
+    case QGis::UnknownDataType:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
       return false;
   }
   return false;
 }
 
-bool QgsRasterBlock::typeIsColor( DataType dataType )
+bool QgsRasterBlock::typeIsColor( QGis::DataType dataType )
 {
   switch ( dataType )
   {
-    case ARGB32:
-    case ARGB32_Premultiplied:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
       return true;
 
-    case UnknownDataType:
-    case Byte:
-    case UInt16:
-    case Int16:
-    case UInt32:
-    case Int32:
-    case Float32:
-    case CInt16:
-    case Float64:
-    case CInt32:
-    case CFloat32:
-    case CFloat64:
+    case QGis::UnknownDataType:
+    case QGis::Byte:
+    case QGis::UInt16:
+    case QGis::Int16:
+    case QGis::UInt32:
+    case QGis::Int32:
+    case QGis::Float32:
+    case QGis::CInt16:
+    case QGis::Float64:
+    case QGis::CInt32:
+    case QGis::CFloat32:
+    case QGis::CFloat64:
       return false;
   }
   return false;
 }
 
-QgsRasterBlock::DataType QgsRasterBlock::typeWithNoDataValue( DataType dataType, double *noDataValue )
+QGis::DataType QgsRasterBlock::typeWithNoDataValue( QGis::DataType dataType, double *noDataValue )
 {
-  DataType newDataType;
+  QGis::DataType newDataType;
 
   switch ( dataType )
   {
-    case QgsRasterBlock::Byte:
+    case QGis::Byte:
       *noDataValue = -32768.0;
-      newDataType = QgsRasterBlock::Int16;
+      newDataType = QGis::Int16;
       break;
-    case QgsRasterBlock::Int16:
+    case QGis::Int16:
       *noDataValue = -2147483648.0;
-      newDataType = QgsRasterBlock::Int32;
+      newDataType = QGis::Int32;
       break;
-    case QgsRasterBlock::UInt16:
+    case QGis::UInt16:
       *noDataValue = -2147483648.0;
-      newDataType = QgsRasterBlock::Int32;
+      newDataType = QGis::Int32;
       break;
-    case QgsRasterBlock::UInt32:
-    case QgsRasterBlock::Int32:
-    case QgsRasterBlock::Float32:
-    case QgsRasterBlock::Float64:
+    case QGis::UInt32:
+    case QGis::Int32:
+    case QGis::Float32:
+    case QGis::Float64:
       *noDataValue = std::numeric_limits<double>::max() * -1.0;
-      newDataType = QgsRasterBlock::Float64;
+      newDataType = QGis::Float64;
     default:
       QgsDebugMsg( QString( "Unknow data type %1" ).arg( dataType ) );
-      return UnknownDataType;
+      return QGis::UnknownDataType;
       break;
   }
   QgsDebugMsg( QString( "newDataType = %1 noDataValue = %2" ).arg( newDataType ).arg( *noDataValue ) );
@@ -237,28 +237,6 @@ bool QgsRasterBlock::isNoDataValue( double value, double noDataValue )
     return true;
   }
   return false;
-}
-
-bool QgsRasterBlock::isNoDataValue( double value ) const
-{
-  // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
-  // not important and slower
-  if ( qIsNaN( value ) ||
-       doubleNear( value, mNoDataValue ) )
-  {
-    return true;
-  }
-  return false;
-}
-
-double QgsRasterBlock::value( size_t index ) const
-{
-  if ( index >= ( size_t )mWidth*mHeight )
-  {
-    QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
-    return mNoDataValue;
-  }
-  return readValue( mData, mDataType, index );
 }
 
 double QgsRasterBlock::value( int row, int column ) const
@@ -397,7 +375,7 @@ char * QgsRasterBlock::bits( int row, int column )
   return bits(( size_t )row*mWidth + column );
 }
 
-bool QgsRasterBlock::convert( QgsRasterBlock::DataType destDataType )
+bool QgsRasterBlock::convert( QGis::DataType destDataType )
 {
   if ( isEmpty() ) return false;
   if ( destDataType == mDataType ) return true;
@@ -413,12 +391,16 @@ bool QgsRasterBlock::convert( QgsRasterBlock::DataType destDataType )
     }
     QgsFree( mData );
     mData = data;
+    mDataType = destDataType;
+    mTypeSize = typeSize( mDataType );
   }
   else if ( typeIsColor( mDataType ) && typeIsColor( destDataType ) )
   {
     QImage::Format format = imageFormat( destDataType );
     QImage image = mImage->convertToFormat( format );
     *mImage = image;
+    mDataType = destDataType;
+    mTypeSize = typeSize( mDataType );
   }
   else
   {
@@ -426,6 +408,24 @@ bool QgsRasterBlock::convert( QgsRasterBlock::DataType destDataType )
   }
 
   return true;
+}
+
+void QgsRasterBlock::applyNodataValues( const QList<Range>& rangeList )
+{
+  if ( rangeList.isEmpty() )
+  {
+    return;
+  }
+
+  size_t size = mWidth * mHeight;
+  for ( size_t i = 0; i < size; ++i )
+  {
+    double val = value( i );
+    if ( valueInRange( val, rangeList ) )
+    {
+      setValue( i, mNoDataValue );
+    }
+  }
 }
 
 QImage QgsRasterBlock::image() const
@@ -507,7 +507,7 @@ QString QgsRasterBlock::printValue( double value )
   return s;
 }
 
-void * QgsRasterBlock::convert( void *srcData, QgsRasterBlock::DataType srcDataType, QgsRasterBlock::DataType destDataType, size_t size )
+void * QgsRasterBlock::convert( void *srcData, QGis::DataType srcDataType, QGis::DataType destDataType, size_t size )
 {
   int destDataTypeSize = typeSize( destDataType );
   void *destData = QgsMalloc( destDataTypeSize * size );
@@ -516,52 +516,51 @@ void * QgsRasterBlock::convert( void *srcData, QgsRasterBlock::DataType srcDataT
     double value = readValue( srcData, srcDataType, i );
     writeValue( destData, destDataType, i, value );
     //double newValue = readValue( destData, destDataType, i );
-    //QgsDebugMsg( QString("convert type %1 to %2: %3 -> %4").arg(srcDataType).arg(destDataType).arg( value ).arg( newValue ) );
+    //QgsDebugMsg( QString("convert %1 type %2 to %3: %4 -> %5").arg(i).arg(srcDataType).arg(destDataType).arg( value ).arg( newValue ) );
   }
   return destData;
 }
 
-QByteArray QgsRasterBlock::valueBytes( DataType theDataType, double theValue )
+QByteArray QgsRasterBlock::valueBytes( QGis::DataType theDataType, double theValue )
 {
   size_t size = QgsRasterBlock::typeSize( theDataType );
   QByteArray ba;
   ba.resize(( int )size );
   char * data = ba.data();
-  unsigned char uc;
-  unsigned short us;
-  short s;
-  unsigned int ui;
-  int i;
+  quint8 uc;
+  quint16 us;
+  qint16 s;
+  quint32 ui;
+  qint32 i;
   float f;
   double d;
-  // TODO: define correct data types (typedef) like in GDAL
   switch ( theDataType )
   {
-    case QgsRasterBlock::Byte:
-      uc = ( unsigned char )theValue;
+    case QGis::Byte:
+      uc = ( quint8 )theValue;
       memcpy( data, &uc, size );
       break;
-    case QgsRasterBlock::UInt16:
-      us = ( unsigned short )theValue;
+    case QGis::UInt16:
+      us = ( quint16 )theValue;
       memcpy( data, &us, size );
       break;
-    case QgsRasterBlock::Int16:
-      s = ( short )theValue;
+    case QGis::Int16:
+      s = ( qint16 )theValue;
       memcpy( data, &s, size );
       break;
-    case QgsRasterBlock::UInt32:
-      ui = ( unsigned int )theValue;
+    case QGis::UInt32:
+      ui = ( quint32 )theValue;
       memcpy( data, &ui, size );
       break;
-    case QgsRasterBlock::Int32:
-      i = ( int )theValue;
+    case QGis::Int32:
+      i = ( qint32 )theValue;
       memcpy( data, &i, size );
       break;
-    case QgsRasterBlock::Float32:
+    case QGis::Float32:
       f = ( float )theValue;
       memcpy( data, &f, size );
       break;
-    case QgsRasterBlock::Float64:
+    case QGis::Float64:
       d = ( double )theValue;
       memcpy( data, &d, size );
       break;

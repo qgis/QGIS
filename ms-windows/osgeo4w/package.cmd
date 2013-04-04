@@ -13,7 +13,7 @@ REM *   (at your option) any later version.                                   *
 REM *                                                                         *
 REM ***************************************************************************
 @echo off
-set GRASS_VERSION=6.4.3RC1
+set GRASS_VERSION=6.4.3RC2
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -27,7 +27,7 @@ set PACKAGE=%2
 set PACKAGENAME=%3
 if "%VERSION%"=="" goto error
 if "%PACKAGE%"=="" goto error
-if "%PACKAGENAME%"=="" set PACKAGENAME=qgis-dev
+if "%PACKAGENAME%"=="" set PACKAGENAME=qgis
 
 path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES%\CMake 2.8\bin
 set PYTHONPATH=
@@ -100,23 +100,25 @@ if errorlevel 1 goto error
 
 set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
+set GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION%
 
 cmake -G "Visual Studio 9 2008" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_SPATIALITE=TRUE ^
+	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_MAPSERVER=TRUE ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
+	-D WITH_ORACLE=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c_i.lib ^
+	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c.lib ^
 	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
 	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python27/include ^
 	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python27/libs/python27.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
-	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION% ^
 	-D QT_BINARY_DIR=%O4W_ROOT%/bin ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/include/qt4 ^
@@ -190,15 +192,16 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/memoryprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/ogrprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/osmprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/owsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/postgresprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/qgissqlanyconnection.dll" ^
 	"apps/%PACKAGENAME%/plugins/spatialiteprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/sqlanywhereprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/qgissqlanyconnection.dll" ^
+	"apps/%PACKAGENAME%/plugins/wcsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wfsprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/wmsprovider.dll" ^
-	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
@@ -239,6 +242,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/evis.dll" ^
 	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/heatmapplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/interpolationplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/oracleplugin.dll" ^
@@ -247,9 +251,10 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/spatialqueryplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/spitplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/sqlanywhereplugin.dll" ^
+	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/zonalstatisticsplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/heatmapplugin.dll" ^
 	"apps/%PACKAGENAME%/qgis_help.exe" ^
+        "apps/qt4/plugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/python/" ^
 	"apps/%PACKAGENAME%/resources/context_help/" ^
 	"apps/%PACKAGENAME%/resources/function_help/" ^
@@ -270,6 +275,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz
 	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/libgrass_gis.%GRASS_VERSION%.dll" ^
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
@@ -278,6 +284,12 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz
 	--exclude "*.pyc" ^
 	"apps/%PACKAGENAME%/globe" ^
 	"apps/%PACKAGENAME%/plugins/globeplugin.dll" ^
+	>>%LOG% 2>&1
+if errorlevel 1 goto error
+
+tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 ^
+	"apps/%PACKAGENAME%/plugins/oracleprovider.dll" ^
+        apps/qt4/plugins/sqldrivers/qsqlocispatial.dll ^
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
@@ -301,6 +313,8 @@ if exist %PACKAGENAME%-server-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-serv
 if exist %PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-devel-%VERSION%-%PACKAGE%.tar.bz2
 if exist %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2
 if exist %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2
+if exist %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1
+

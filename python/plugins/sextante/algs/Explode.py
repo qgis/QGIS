@@ -24,8 +24,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-import os.path
-from PyQt4 import QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -38,29 +36,29 @@ class Explode(GeoAlgorithm):
     INPUT = "INPUT"
     OUTPUT = "OUTPUT"
 
-    def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
+    # def getIcon(self):
+    #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
+    #===========================================================================
 
     def processAlgorithm(self, progress):
         vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
-        allAttrs = vprovider.attributeIndexes()
-        vprovider.select( allAttrs )
         fields = vprovider.fields()
-        writer = output.getVectorWriter(fields, QGis.WKBLineString, vprovider.crs() )
-        inFeat = QgsFeature()
+        writer = output.getVectorWriter(fields, QGis.WKBLineString, vlayer.crs() )
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
-        nFeat = vprovider.featureCount()
         nElement = 0
-        while vprovider.nextFeature( inFeat ):
+        features = QGisLayers.features(vlayer)
+        nFeat = len(features)
+        for feature in features:
             nElement += 1
             progress.setPercentage((nElement*100)/nFeat)
-            inGeom = inFeat.geometry()
-            atMap = inFeat.attributeMap()
+            inGeom = feature.geometry()
+            atMap = feature.attributes()
             segments = self.extractAsSingleSegments( inGeom )
-            outFeat.setAttributeMap( atMap )
+            outFeat.setAttributes( atMap )
             for segment in segments:
                 outFeat.setGeometry(segment)
                 writer.addFeature(outFeat)
@@ -88,7 +86,7 @@ class Explode(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.name = "Explode lines"
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector geometry tools"
         self.addParameter(ParameterVector(self.INPUT, "Input layer",ParameterVector.VECTOR_TYPE_LINE))
         self.addOutput(OutputVector(self.OUTPUT, "Output layer"))
 

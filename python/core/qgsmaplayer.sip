@@ -63,11 +63,6 @@ class QgsMapLayer : QObject
      */
     QString id() const;
 
-    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
-     * @deprecated use id()
-     */
-    QString getLayerID() const /Deprecated/;
-
     /** Set the display name of the layer
      * @param name New name for the layer
      */
@@ -77,6 +72,11 @@ class QgsMapLayer : QObject
      * @return the layer name
      */
     const QString & name() const;
+
+    /** Get the original name of the layer
+     * @note added in 1.9
+     */
+    const QString & originalName() const;
 
     void setTitle( const QString& title );
     const QString& title() const;
@@ -181,12 +181,6 @@ class QgsMapLayer : QObject
      *  @note Added in v1.4 */
     void removeCustomProperty( const QString& key );
 
-    /** Copies the symbology settings from another layer. Returns true in case of success */
-    virtual bool copySymbologySettings( const QgsMapLayer& other ) = 0;
-
-    /** Returns true if this layer can be in the same symbology group with another layer */
-    virtual bool hasCompatibleSymbology( const QgsMapLayer& other ) const = 0;
-
     /** Accessor for transparency level. */
     unsigned int getTransparency();
 
@@ -214,19 +208,12 @@ class QgsMapLayer : QObject
     */
     const QgsCoordinateReferenceSystem& crs() const;
 
-    /** Returns layer's spatial reference system
-    @note This method is here for API compatibility
-    and will be deprecated in 2.0
-    @deprecated use crs()
-    */
-    const QgsCoordinateReferenceSystem& srs() /Deprecated/;
-
     /** Sets layer's spatial reference system
     @note emitSignal added in 1.4 */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
-    /** A convenience function to capitalise the layer name */
-    static QString capitaliseLayerName( const QString name );
+    /** A convenience function to (un)capitalise the layer name */
+    static QString capitaliseLayerName( const QString& name );
 
     /** Retrieve the style URI for this layer
      * (either as a .qml file on disk or as a

@@ -204,7 +204,7 @@ int QgsMapToolCapture::addVertex( const QPoint &p )
 
   if ( !mRubberBand )
   {
-    mRubberBand = createRubberBand( mCaptureMode == CapturePolygon );
+    mRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
   }
 
   mRubberBand->addPoint( mapPoint );

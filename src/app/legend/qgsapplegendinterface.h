@@ -46,7 +46,10 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Return the relationship between groups and layers in the legend
     QList< GroupLayerInfo > groupLayerRelationship();
 
-    //! Return all layers in the project in legend order
+    //! Returns the currently selected layers of QgsLegendLayers.
+    QList<QgsMapLayer *> selectedLayers( bool inDrawOrder = false ) const;
+
+    //! Return all layers in the project in drawing order
     QList< QgsMapLayer * > layers() const;
 
     //! Check if a group exists
@@ -58,8 +61,19 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Check if a group is visible
     bool isGroupVisible( int groupIndex );
 
+    //! Check if a layer is expanded
+    bool isLayerExpanded( QgsMapLayer * ml );
+
     //! Check if a layer is visible
     bool isLayerVisible( QgsMapLayer * ml );
+
+    void addLegendLayerAction( QAction* action, QString menu, QString id,
+                               QgsMapLayer::LayerType type, bool allLayers );
+    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
+    bool removeLegendLayerAction( QAction* action );
+
+    QgsMapLayer* currentLayer();
+    bool setCurrentLayer( QgsMapLayer *layer );
 
   public slots:
 
@@ -80,6 +94,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
 
     //! Collapse or expand a group
     virtual void setGroupExpanded( int groupIndex, bool expand );
+
+    //! Collapse or expand a layer
+    virtual void setLayerExpanded( QgsMapLayer * ml, bool expand );
 
     //! Set the visibility of a group
     virtual void setGroupVisible( int groupIndex, bool visible );

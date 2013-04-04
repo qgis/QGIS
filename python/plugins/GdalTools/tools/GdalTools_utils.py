@@ -35,9 +35,8 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
-from osgeo import gdal
+from osgeo import gdal, ogr
 from osgeo.gdalconst import *
-from osgeo import ogr
 
 import os
 # to know the os
@@ -164,7 +163,7 @@ class LayerRegistry(QObject):
        self.emit( SIGNAL( "layersChanged" ) )
 
     def removeLayer(self, layerId):
-       LayerRegistry.layers = filter( lambda x: x.getLayerID() != layerId, LayerRegistry.layers)
+       LayerRegistry.layers = filter( lambda x: x.id() != layerId, LayerRegistry.layers)
        self.emit( SIGNAL( "layersChanged" ) )
 
     def removeAllLayers(self):
@@ -176,7 +175,7 @@ class LayerRegistry(QObject):
       # only gdal raster layers
       if layer.type() != layer.RasterLayer:
         return False
-      if layer.usesProvider() and layer.providerKey() != 'gdal':
+      if layer.providerType() != 'gdal':
         return False
       return True
 
@@ -258,9 +257,9 @@ def fillVectorOutputFormat(aFilter = None, filename = None):
   return shortName
 
 class UnsupportedOGRFormat(Exception):
-    def __init__(self): 
+    def __init__(self):
       msg = QCoreApplication.translate( "GdalTools", "The selected file is not a supported OGR format" )
-      Exception.__init__(self, msg) 
+      Exception.__init__(self, msg)
 
 def getVectorFields(vectorFile):
     hds = ogr.Open( unicode(vectorFile).encode('utf8') )
@@ -312,10 +311,10 @@ def getRasterExtent(parent, fileName):
     if processSRS.waitForFinished():
       arr = processSRS.readAllStandardOutput()
       processSRS.close()
-      
+
     if arr.isEmpty():
       return
-      
+
     info = QString( arr ).split( "\n" )
     ulCoord = info[ info.indexOf( QRegExp( "^Upper\sLeft.*" ) ) ].simplified()
     lrCoord = info[ info.indexOf( QRegExp( "^Lower\sRight.*" ) ) ].simplified()
@@ -426,7 +425,7 @@ class FileFilter:
       QgsRasterLayer.buildSupportedRasterFileFilter(self.rastersFilter)
 
       # workaround for QGis < 1.5 (see #2376)
-      # separates multiple extensions that joined by a slash 
+      # separates multiple extensions that joined by a slash
       if QGis.QGIS_VERSION[0:3] < "1.5":
           formats = self.rastersFilter.split( ";;" )
           self.rastersFilter = QString()
@@ -499,6 +498,10 @@ class GdalConfig:
   @classmethod
   def version(self):
       return Version(gdal.VersionInfo("RELEASE_NAME"))
+
+  @classmethod
+  def versionNum(self):
+      return int(gdal.VersionInfo("VERSION_NUM"))
 
   # store the supported rasters info
   supportedRasters = None
@@ -771,7 +774,7 @@ class Version:
       vers = ['0', '0', '0']
 
       nums = str(string).split(".")
-      
+
       if len(nums) > 0:
         vers[0] = nums[0]
       if len(nums) > 1:
@@ -797,8 +800,9 @@ class Version:
 
 def setProcessEnvironment(process):
     envvar_list = {
-        "PATH" : getGdalBinPath(), 
-        "PYTHONPATH" : getGdalPymodPath()
+        "PATH" : getGdalBinPath(),
+        "PYTHONPATH" : getGdalPymodPath(),
+        "GDAL_FILENAME_IS_UTF8" : "NO"
     }
 
     sep = os.pathsep
@@ -836,15 +840,16 @@ def setMacOSXDefaultEnvironment():
   # QgsApplication.prefixPath() contains the path to qgis executable (i.e. .../Qgis.app/MacOS)
   # get the path to Qgis application folder
   qgis_app = u"%s/.." % QgsApplication.prefixPath()
-  qgis_app = QDir( qgis_app ).absolutePath()   
+  qgis_app = QDir( qgis_app ).absolutePath()
 
   qgis_bin = u"%s/bin" % QgsApplication.prefixPath()   # path to QGis bin folder
   qgis_python = u"%s/Resources/python" % qgis_app    # path to QGis python folder
 
   # path to the GDAL framework within the Qgis application folder (QGis standalone only)
-  qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app   
+  qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app
 
   # path to the GDAL framework when installed as external framework
+  # TODO adjust this for gdal 1.10
   gdal_bin_path = u"/Library/Frameworks/GDAL.framework/Versions/%s/Programs" % str(GdalConfig.version())[:3]
 
   if os.path.exists( qgis_standalone_gdal_path ):  # qgis standalone

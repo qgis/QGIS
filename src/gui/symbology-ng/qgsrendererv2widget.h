@@ -80,8 +80,8 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
 
 class QMenu;
 class QgsField;
+class QgsFields;
 
-typedef QMap<int, QgsField> QgsFieldMap;
 
 /**
 Utility class for prividing GUI for data-defined rendering.
@@ -92,7 +92,7 @@ class QgsRendererV2DataDefinedMenus : public QObject
 
   public:
 
-    QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFieldMap& flds, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
+    QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFields& flds, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
     ~QgsRendererV2DataDefinedMenus();
 
     void populateMenu( QMenu* menu, const char* slot, QString fieldName, QActionGroup *actionGroup );
@@ -117,7 +117,7 @@ class QgsRendererV2DataDefinedMenus : public QObject
     QActionGroup *mSizeMethodActionGroup;
     QActionGroup *mRotationAttributeActionGroup;
     QActionGroup *mSizeAttributeActionGroup;
-    const QgsFieldMap& mFlds;
+    const QgsFields& mFlds;
 };
 
 #endif // QGSRENDERERV2WIDGET_H

@@ -43,6 +43,15 @@ class QgsAtlasCompositionWidget:
     void on_mAtlasFixedScaleCheckBox_stateChanged( int state );
     void on_mAtlasSingleFileCheckBox_stateChanged( int state );
 
+    void on_mAtlasSortFeatureCheckBox_stateChanged( int state );
+    void on_mAtlasSortFeatureKeyComboBox_currentIndexChanged( int index );
+    void on_mAtlasSortFeatureDirectionButton_clicked();
+    void on_mAtlasFeatureFilterEdit_textChanged( const QString& text );
+    void on_mAtlasFeatureFilterButton_clicked();
+    void on_mAtlasFeatureFilterCheckBox_stateChanged( int state );
+
+    // extract fields from the current coverage layer and populate the corresponding combo box
+    void fillSortColumns();
   private slots:
     void onLayerRemoved( QString );
     void onLayerAdded( QgsMapLayer* );

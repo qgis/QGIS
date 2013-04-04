@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.core.QGisLayers import QGisLayers
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,22 +25,39 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
-
+from qgis.core import *
 from sextante.outputs.Output import Output
 from sextante.core.SextanteVectorWriter import SextanteVectorWriter
+from sextante.core.SextanteUtils import SextanteUtils
+
 
 class OutputVector(Output):
 
     encoding = None
+    compatible = None
 
     def getFileFilter(self,alg):
-        exts = alg.provider.getSupportedOutputVectorLayerExtensions()
+        exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
         return ";;".join(exts)
 
+
     def getDefaultFileExtension(self, alg):
         return alg.provider.getSupportedOutputVectorLayerExtensions()[0]
+
+    def getCompatibleFileName(self, alg):
+        '''Returns a filename that is compatible with the algorithm that is going to generate this output.
+        If the algorithm supports the file format of the current output value, it returns that value. If not,
+        it returns a temporary file with a supported file format, to be used to generate the output result.'''
+        ext = self.value[self.value.rfind(".") + 1:]
+        if ext in alg.provider.getSupportedOutputVectorLayerExtensions():
+            return self.value
+        else:
+            if self.compatible is None:
+                self.compatible = SextanteUtils.getTempFilename(self.getDefaultFileExtension(alg))
+            return self.compatible;
+
 
     def getVectorWriter(self, fields, geomType, crs, options=None):
         '''Returns a suitable writer to which features can be added as a
@@ -52,12 +70,12 @@ class OutputVector(Output):
         result in previous data being replaced, thus rendering a previously
         obtained writer useless
 
-        @param fields   a dict of int-QgsField
+        @param fields   a list  of QgsField
         @param geomType a suitable geometry type, as it would be passed
                         to a QgsVectorFileWriter constructor
         @param crs      the crs of the layer to create
 
-        @return writer  instance of the vectoe writer class
+        @return writer  instance of the vector writer class
         '''
 
         if self.encoding is None:

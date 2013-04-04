@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSMSSQLPROVIDER_H
+#define QGSMSSQLPROVIDER_H
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
@@ -30,6 +32,8 @@ class QgsFeature;
 class QgsField;
 class QFile;
 class QTextStream;
+
+class QgsMssqlFeatureIterator;
 
 #include "qgsdatasourceuri.h"
 #include "qgsgeometry.h"
@@ -67,7 +71,7 @@ class QgsMssqlGeometryParser
 
   protected:
     void CopyBytes( void* src, int len );
-    void CopyCoordinates( unsigned char* src );
+    void CopyCoordinates( int iPoint );
     void CopyPoint( int iPoint );
     void ReadPoint( int iShape );
     void ReadMultiPoint( int iShape );
@@ -121,18 +125,6 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      */
     virtual QStringList subLayers() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
     /**
      * Returns the minimum value of an attribute
      * @param index the index of the attribute
@@ -164,27 +156,10 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
     /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     *
-     * mFile should be open with the file pointer at the record of the next
-     * feature, or EOF.  The feature found on the current line is parsed.
+     * Get feature iterator.
+     * @return QgsFeatureIterator to iterate features
      */
-    virtual bool nextFeature( QgsFeature& feature );
-
-    /**
-     * Gets the feature at the given feature ID.
-     * @param featureId id of the feature
-     * @param feature feature which will receive the data
-     * @param fetchGeoemtry if true, geometry will be fetched from the provider
-     * @param fetchAttributes a list containing the indexes of the attribute fields to copy
-     * @return True when feature was found, otherwise false
-     */
-    virtual bool featureAtId( QgsFeatureId featureId,
-                              QgsFeature& feature,
-                              bool fetchGeometry = true,
-                              QgsAttributeList fetchAttributes = QgsAttributeList() );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /**
      * Get feature type.
@@ -198,11 +173,6 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      */
     virtual long featureCount() const;
 
-    /**
-     * Number of attribute fields for a feature in the layer
-     */
-    virtual uint fieldCount() const;
-
     /** update the extent, feature count, wkb type and srid for this layer */
     void UpdateStatistics( bool estimate );
 
@@ -210,10 +180,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
      * Return a map of indexes with field names for this layer
      * @return map of fields
      */
-    virtual const QgsFieldMap & fields() const;
-
-    /** Restart reading features from previous select operation */
-    virtual void rewind();
+    virtual const QgsFields & fields() const;
 
     /** Accessor for sql where clause used to limit dataset */
     QString subsetString();
@@ -334,12 +301,10 @@ class QgsMssqlProvider : public QgsVectorDataProvider
   private:
 
     //! Fields
-    QgsFieldMap mAttributeFields;
+    QgsFields mAttributeFields;
     QMap<int, QVariant> mDefaultValues;
 
     QgsMssqlGeometryParser parser;
-
-    int mFieldCount;  // Note: this includes field count for wkt field
 
     //! Layer extent
     QgsRectangle mExtent;
@@ -353,10 +318,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     int mGeomType;
 
     long mNumberFeatures;
-    long mFidCol;
     QString mFidColName;
     long mSRId;
-    long mGeometryCol;
     QString mGeometryColName;
     QString mGeometryColType;
 
@@ -394,4 +357,8 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     static void mssqlWkbTypeAndDimension( QGis::WkbType wkbType, QString &geometryType, int &dim );
     static QGis::WkbType getWkbType( QString geometryType, int dim );
+
+    friend class QgsMssqlFeatureIterator;
 };
+
+#endif // QGSMSSQLPROVIDER_H

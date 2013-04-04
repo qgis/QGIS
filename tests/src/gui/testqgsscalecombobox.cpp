@@ -75,12 +75,12 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scaleString(), QString( "1:50" ) );
   QCOMPARE( s->scale(), ( double ) 0.02 );
 
-  // Testing conversion from number to "x:1"
+  // Testing conversion from number to "1:x"
   l->setText( "" );
   QTest::keyClicks( l, QLocale::system().toString( 42 ) );
   QTest::keyClick( l, Qt::Key_Return );
-  QCOMPARE( s->scaleString(), QString( "42:1" ) );
-  QCOMPARE( s->scale(), ( double ) 42 );
+  QCOMPARE( s->scaleString(), QString( "1:42" ) );
+  QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 42.0 );
 
   // Testing rounding and conversion from illegal
 

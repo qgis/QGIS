@@ -20,7 +20,12 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsexpression.h"
+#include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgsogcutils.h"
 
+#include "qgsapplication.h"
+#include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 
@@ -42,7 +47,7 @@ QColor QgsSymbolLayerV2Utils::decodeColor( QString str )
   QStringList lst = str.split( "," );
   if ( lst.count() < 3 )
   {
-    return QColor();
+    return QColor( str );
   }
   int red, green, blue, alpha;
   red = lst[0].toInt();
@@ -600,8 +605,8 @@ static QPointF offsetPoint( QPointF pt, double angle, double dist )
 // calc intersection of two (infinite) lines defined by one point and tangent
 static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
 {
-  // parallel lines? (or the difference between angles is less than cca 0.1 degree)
-  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || qAbs( t1 - t2 ) < 0.001 )
+  // parallel lines? (or the difference between angles is less than appr. 10 degree)
+  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || qAbs( atan( t1 ) - atan( t2 ) ) < 0.175 )
     return QPointF();
 
   double x, y;
@@ -734,7 +739,10 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
     return NULL;
   }
 
-  symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+  if ( element.hasAttribute( "outputUnit" ) )
+  {
+    symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+  }
   symbol->setAlpha( element.attribute( "alpha", "1.0" ).toDouble() );
 
   return symbol;
@@ -781,7 +789,6 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
   QDomElement symEl = doc.createElement( "symbol" );
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
-  symEl.setAttribute( "outputUnit", encodeOutputUnit( symbol->outputUnit() ) );
   symEl.setAttribute( "alpha", QString::number( symbol->alpha() ) );
   QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
 
@@ -2090,6 +2097,90 @@ void QgsSymbolLayerV2Utils::labelTextToSld( QDomDocument &doc, QDomElement &elem
   }
 }
 
+QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleFactor, double mapUnitScaleFactor, const QColor& c,
+    Qt::PenJoinStyle joinStyle,
+    Qt::PenCapStyle capStyle,
+    double offset,
+    const QVector<qreal>* dashPattern )
+{
+  QString penStyle;
+  penStyle.append( "PEN(" );
+  penStyle.append( "c:" );
+  penStyle.append( c.name() );
+  penStyle.append( ",w:" );
+  //dxf driver writes ground units as mm? Should probably be changed in ogr
+  penStyle.append( QString::number( width * mmScaleFactor ) );
+  penStyle.append( "mm" );
+
+  //dash dot vector
+  if ( dashPattern && dashPattern->size() > 0 )
+  {
+    penStyle.append( ",p:\"" );
+    QVector<qreal>::const_iterator pIt = dashPattern->constBegin();
+    for ( ; pIt != dashPattern->constEnd(); ++pIt )
+    {
+      if ( pIt != dashPattern->constBegin() )
+      {
+        penStyle.append( " " );
+      }
+      penStyle.append( QString::number( *pIt * mapUnitScaleFactor ) );
+      penStyle.append( "g" );
+    }
+    penStyle.append( "\"" );
+  }
+
+  //cap
+  penStyle.append( ",cap:" );
+  switch ( capStyle )
+  {
+    case Qt::SquareCap:
+      penStyle.append( "p" );
+      break;
+    case Qt::RoundCap:
+      penStyle.append( "r" );
+      break;
+    case Qt::FlatCap:
+    default:
+      penStyle.append( "b" );
+  }
+
+  //join
+  penStyle.append( ",j:" );
+  switch ( joinStyle )
+  {
+    case Qt::BevelJoin:
+      penStyle.append( "b" );
+      break;
+    case Qt::RoundJoin:
+      penStyle.append( "r" );
+      break;
+    case Qt::MiterJoin:
+    default:
+      penStyle.append( "m" );
+  }
+
+  //offset
+  if ( !doubleNear( offset, 0.0 ) )
+  {
+    penStyle.append( ",dp:" );
+    penStyle.append( QString::number( offset * mapUnitScaleFactor ) );
+    penStyle.append( "g" );
+  }
+
+  penStyle.append( ")" );
+  return penStyle;
+}
+
+QString QgsSymbolLayerV2Utils::ogrFeatureStyleBrush( const QColor& fillColor )
+{
+  QString brushStyle;
+  brushStyle.append( "BRUSH(" );
+  brushStyle.append( "fc:" );
+  brushStyle.append( fillColor.name() );
+  brushStyle.append( ")" );
+  return brushStyle;
+}
+
 void QgsSymbolLayerV2Utils::createGeometryElement( QDomDocument &doc, QDomElement &element, QString geomFunc )
 {
   if ( geomFunc.isEmpty() )
@@ -2142,7 +2233,9 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
     element.appendChild( doc.createComment( "Parser Error: " + expr.parserErrorString() + " - Expression was: " + function ) );
     return false;
   }
-  expr.toOgcFilter( doc, element );
+  QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( expr, doc );
+  if ( !filterElem.isNull() )
+    element.appendChild( filterElem );
   return true;
 }
 
@@ -2150,7 +2243,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 {
   QgsDebugMsg( "Entered." );
 
-  QgsExpression *expr = QgsExpression::createFromOgcFilter( element );
+  QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( element );
   if ( !expr )
     return false;
 
@@ -2171,9 +2264,18 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
 void QgsSymbolLayerV2Utils::createOnlineResourceElement( QDomDocument &doc, QDomElement &element,
     QString path, QString format )
 {
+  QString relpath = symbolPathToName( path );
+
+  // convert image path to url
+  QUrl url( relpath );
+  if ( !url.isValid() || url.scheme().isEmpty() )
+  {
+    url.setUrl( QUrl::fromLocalFile( relpath ).toString() );
+  }
+
   QDomElement onlineResourceElem = doc.createElement( "se:OnlineResource" );
   onlineResourceElem.setAttribute( "xlink:type", "simple" );
-  onlineResourceElem.setAttribute( "xlink:href", path );
+  onlineResourceElem.setAttribute( "xlink:href", url.toString() );
   element.appendChild( onlineResourceElem );
 
   QDomElement formatElem = doc.createElement( "se:Format" );
@@ -2291,7 +2393,6 @@ void QgsSymbolLayerV2Utils::saveProperties( QgsStringMap props, QDomDocument& do
   }
 }
 
-// XXX Not used by QgStyleV2 anymore, But renderers use it still
 QgsSymbolV2Map QgsSymbolLayerV2Utils::loadSymbols( QDomElement& element )
 {
   // go through symbols one-by-one and load them
@@ -2441,7 +2542,7 @@ QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr )
   return QColor( p[0].toInt(), p[1].toInt(), p[2].toInt() );
 }
 
-double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
 {
 
   if ( u == QgsSymbolV2::MM )
@@ -2462,7 +2563,7 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext& c, QgsSymb
   }
 }
 
-double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
 {
   if ( u == QgsSymbolV2::MM )
   {
@@ -2528,6 +2629,7 @@ void QgsSymbolLayerV2Utils::multiplyImageOpacity( QImage* image, qreal alpha )
   }
 }
 
+#if 0
 static bool _QVariantLessThan( const QVariant& lhs, const QVariant& rhs )
 {
   switch ( lhs.type() )
@@ -2559,16 +2661,19 @@ static bool _QVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
 {
   return ! _QVariantLessThan( lhs, rhs );
 }
+#endif
 
 void QgsSymbolLayerV2Utils::sortVariantList( QList<QVariant>& list, Qt::SortOrder order )
 {
   if ( order == Qt::AscendingOrder )
   {
-    qSort( list.begin(), list.end(), _QVariantLessThan );
+    //qSort( list.begin(), list.end(), _QVariantLessThan );
+    qSort( list.begin(), list.end(), qgsVariantLessThan );
   }
   else // Qt::DescendingOrder
   {
-    qSort( list.begin(), list.end(), _QVariantGreaterThan );
+    //qSort( list.begin(), list.end(), _QVariantGreaterThan );
+    qSort( list.begin(), list.end(), qgsVariantGreaterThan );
   }
 }
 
@@ -2580,3 +2685,153 @@ QPointF QgsSymbolLayerV2Utils::pointOnLineWithDistance( const QPointF& startPoin
   double scaleFactor = distance / length;
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
+
+
+QStringList QgsSymbolLayerV2Utils::listSvgFiles()
+{
+  // copied from QgsMarkerCatalogue - TODO: unify
+  QStringList list;
+  QStringList svgPaths = QgsApplication::svgPaths();
+
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QDir dir( svgPaths[i] );
+    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    {
+      svgPaths.insert( i + 1, dir.path() + "/" + item );
+    }
+
+    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    {
+      // TODO test if it is correct SVG
+      list.append( dir.path() + "/" + item );
+    }
+  }
+  return list;
+}
+
+// Stripped down version of listSvgFiles() for specified directory
+QStringList QgsSymbolLayerV2Utils::listSvgFilesAt( QString directory )
+{
+  // TODO anything that applies for the listSvgFiles() applies this also
+
+  QStringList list;
+  QStringList svgPaths;
+  svgPaths.append( directory );
+
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QDir dir( svgPaths[i] );
+    foreach ( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    {
+      svgPaths.insert( i + 1, dir.path() + "/" + item );
+    }
+
+    foreach ( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    {
+      list.append( dir.path() + "/" + item );
+    }
+  }
+  return list;
+
+}
+
+QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
+{
+  // copied from QgsSymbol::setNamedPointSymbol - TODO: unify
+
+  // we might have a full path...
+  if ( QFile( name ).exists() )
+    return QFileInfo( name ).canonicalFilePath();
+
+  // or it might be an url...
+  QUrl url( name );
+  if ( url.isValid() && !url.scheme().isEmpty() )
+  {
+    if ( url.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
+    {
+      // it's a url to a local file
+      name = url.toLocalFile();
+      if ( QFile( name ).exists() )
+      {
+        return QFileInfo( name ).canonicalFilePath();
+      }
+    }
+    else
+    {
+      // it's a url pointing to a online resource
+      return name;
+    }
+  }
+
+  // SVG symbol not found - probably a relative path was used
+
+  QStringList svgPaths = QgsApplication::svgPaths();
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QgsDebugMsg( "SvgPath: " + svgPaths[i] );
+    QFileInfo myInfo( name );
+    QString myFileName = myInfo.fileName(); // foo.svg
+    QString myLowestDir = myInfo.dir().dirName();
+    QString myLocalPath = svgPaths[i] + "/" + myLowestDir + "/" + myFileName;
+
+    QgsDebugMsg( "Alternative svg path: " + myLocalPath );
+    if ( QFile( myLocalPath ).exists() )
+    {
+      QgsDebugMsg( "Svg found in alternative path" );
+      return QFileInfo( myLocalPath ).canonicalFilePath();
+    }
+    else if ( myInfo.isRelative() )
+    {
+      QFileInfo pfi( QgsProject::instance()->fileName() );
+      QString alternatePath = pfi.canonicalPath() + QDir::separator() + name;
+      if ( pfi.exists() && QFile( alternatePath ).exists() )
+      {
+        QgsDebugMsg( "Svg found in alternative path" );
+        return QFileInfo( alternatePath ).canonicalFilePath();
+      }
+      else
+      {
+        QgsDebugMsg( "Svg not found in project path" );
+      }
+    }
+    else
+    {
+      //couldnt find the file, no happy ending :-(
+      QgsDebugMsg( "Computed alternate path but no svg there either" );
+    }
+  }
+  return QString();
+}
+
+QString QgsSymbolLayerV2Utils::symbolPathToName( QString path )
+{
+  // copied from QgsSymbol::writeXML
+
+  QFileInfo fi( path );
+  if ( !fi.exists() )
+    return path;
+
+  path = fi.canonicalFilePath();
+
+  QStringList svgPaths = QgsApplication::svgPaths();
+
+  bool isInSvgPathes = false;
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
+
+    if ( !dir.isEmpty() && path.startsWith( dir ) )
+    {
+      path = path.mid( dir.size() );
+      isInSvgPathes = true;
+      break;
+    }
+  }
+
+  if ( isInSvgPathes )
+    return path;
+
+  return QgsProject::instance()->writePath( path );
+}
+

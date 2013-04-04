@@ -1,0 +1,12 @@
+<h3>exp() function</h3>
+Returns exponential of an value.
+
+
+<p><h4>Syntax</h4>
+     exp(<i>real</i>)</p>
+
+<p><h4>Arguments</h4>
+<i>real</i> -> number.</p>
+
+<p><h4>Example</h4>
+     exp(1.0) -> 2.71828182845905</p>

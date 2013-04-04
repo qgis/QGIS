@@ -20,6 +20,7 @@
 //#include "ui_qgscomposermapbase.h"
 #include "qgscomposeritem.h"
 #include "qgsrectangle.h"
+#include <QFont>
 #include <QGraphicsRectItem>
 
 class QgsComposition;
@@ -30,6 +31,7 @@ class QDomDocument;
 class QGraphicsView;
 class QPainter;
 class QgsFillSymbolV2;
+class QgsLineSymbolV2;
 class QgsVectorLayer;
 
 /** \ingroup MapComposer
@@ -101,9 +103,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
       Bottom,
       Top
     };
-
-    /**This function is deprecated*/
-    Q_DECL_DEPRECATED void draw( QPainter *painter, const QgsRectangle& extent, const QSize& size, int dpi );
 
     /** \brief Draw to paint device
         @param painter painter
@@ -228,8 +227,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Sets the pen to draw composer grid
     @note this function was added in version 1.4*/
-    void setGridPen( const QPen& p ) { mGridPen = p; }
-    QPen gridPen() const { return mGridPen; }
+    void setGridPen( const QPen& p );
+    QPen gridPen() const;
 
     /**Sets with of grid pen
     @note this function was added in version 1.4*/
@@ -313,6 +312,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
     QgsFillSymbolV2* overviewFrameMapSymbol() { return mOverviewFrameMapSymbol; }
 
+    void setGridLineSymbol( QgsLineSymbolV2* symbol );
+    QgsLineSymbolV2* gridLineSymbol() { return mGridLineSymbol; }
+
     /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();
@@ -377,6 +379,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     int mOverviewFrameMapId;
     /**Drawing style for overview farme*/
     QgsFillSymbolV2* mOverviewFrameMapSymbol;
+    QgsLineSymbolV2* mGridLineSymbol;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();
@@ -396,8 +399,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mGridOffsetX;
     /**Grid line offset in y-direction*/
     double mGridOffsetY;
-    /**Grid line pen*/
-    QPen mGridPen;
     /**Font for grid line annotation*/
     QFont mGridAnnotationFont;
     /**Digits after the dot*/
@@ -487,8 +488,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, Border border );
+    void drawGridLine( const QLineF& line, QPainter* p );
     void drawOverviewMapExtent( QPainter* p );
     void createDefaultOverviewFrameSymbol();
+    void createDefaultGridLineSymbol();
     void initGridAnnotationFormatFromProject();
 };
 

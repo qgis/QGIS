@@ -109,17 +109,6 @@ class  CORE_EXPORT QgsAttributeAction
     // dialog box.
     void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
 
-    /*! Does the action using the given values. defaultValueIndex is an
-     *  index into values which indicates which value in the values vector
-     *  is to be used if the action has a default placeholder.
-     *  @note parameter executePython deprecated (and missing in python binding)
-     *  @deprecated
-     */
-    Q_DECL_DEPRECATED void doAction( int index,
-                                     const QgsAttributeMap &attributes,
-                                     int defaultValueIndex = 0,
-                                     void ( *executePython )( const QString & ) = 0 );
-
     /*! Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note added in 1.9

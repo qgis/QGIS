@@ -24,38 +24,7 @@
 #include <stdlib.h> // for random()
 #include <QTime>
 
-QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( QColor color1, QColor color2 )
-    : mColor1( color1 ), mColor2( color2 )
-{
-}
-
-QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& props )
-{
-  QColor color1 = DEFAULT_GRADIENT_COLOR1;
-  QColor color2 = DEFAULT_GRADIENT_COLOR2;
-  if ( props.contains( "color1" ) )
-    color1 = QgsSymbolLayerV2Utils::decodeColor( props["color1"] );
-  if ( props.contains( "color2" ) )
-    color2 = QgsSymbolLayerV2Utils::decodeColor( props["color2"] );
-
-  StopsMap stops;
-  if ( props.contains( "stops" ) )
-  {
-    foreach ( QString stop, props["stops"].split( ':' ) )
-    {
-      int i = stop.indexOf( ';' );
-      if ( i == -1 )
-        continue;
-
-      QColor c = QgsSymbolLayerV2Utils::decodeColor( stop.mid( i + 1 ) );
-      stops.insert( stop.left( i ).toDouble(), c );
-    }
-  }
-
-  QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( color1, color2 );
-  r->setStops( stops );
-  return r;
-}
+//////////////
 
 static QColor _interpolate( QColor c1, QColor c2, double value )
 {
@@ -67,28 +36,107 @@ static QColor _interpolate( QColor c1, QColor c2, double value )
   return QColor::fromRgb( r, g, b, a );
 }
 
+//////////////
+
+QgsVectorGradientColorRampV2::QgsVectorGradientColorRampV2( QColor color1, QColor color2,
+    bool discrete, QgsGradientStopsList stops )
+    : mColor1( color1 ), mColor2( color2 ), mDiscrete( discrete ), mStops( stops )
+{
+}
+
+QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& props )
+{
+  // color1 and color2
+  QColor color1 = DEFAULT_GRADIENT_COLOR1;
+  QColor color2 = DEFAULT_GRADIENT_COLOR2;
+  if ( props.contains( "color1" ) )
+    color1 = QgsSymbolLayerV2Utils::decodeColor( props["color1"] );
+  if ( props.contains( "color2" ) )
+    color2 = QgsSymbolLayerV2Utils::decodeColor( props["color2"] );
+
+  //stops
+  QgsGradientStopsList stops;
+  if ( props.contains( "stops" ) )
+  {
+    foreach ( QString stop, props["stops"].split( ':' ) )
+    {
+      int i = stop.indexOf( ';' );
+      if ( i == -1 )
+        continue;
+
+      QColor c = QgsSymbolLayerV2Utils::decodeColor( stop.mid( i + 1 ) );
+      stops.append( QgsGradientStop( stop.left( i ).toDouble(), c ) );
+    }
+  }
+
+  // discrete vs. continuous
+  bool discrete = false;
+  if ( props.contains( "discrete" ) )
+  {
+    if ( props["discrete"] == "1" )
+      discrete = true;
+  }
+
+  // search for information keys starting with "info_"
+  QgsStringMap info;
+  for ( QgsStringMap::const_iterator it = props.constBegin();
+        it != props.constEnd(); ++it )
+  {
+    if ( it.key().startsWith( "info_" ) )
+      info[ it.key().mid( 5 )] = it.value();
+  }
+
+  QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( color1, color2, discrete, stops );
+  r->setInfo( info );
+  return r;
+}
+
+double QgsVectorGradientColorRampV2::value( int index ) const
+{
+  if ( index <= 0 )
+  {
+    return 0;
+  }
+  else if ( index >= mStops.size() + 1 )
+  {
+    return 1;
+  }
+  else
+  {
+    return mStops[index-1].offset;
+  }
+}
+
 QColor QgsVectorGradientColorRampV2::color( double value ) const
 {
   if ( mStops.isEmpty() )
   {
+    if ( mDiscrete )
+      return mColor1;
     return _interpolate( mColor1, mColor2, value );
   }
   else
   {
-    double lower = 0, upper;
+    double lower = 0, upper = 0;
     QColor c1 = mColor1, c2;
-    for ( StopsMap::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
+    for ( QgsGradientStopsList::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
     {
-      if ( it.key() >= value )
+      if ( it->offset > value )
       {
-        upper = it.key();
-        c2 = it.value();
+        if ( mDiscrete )
+          return c1;
+
+        upper = it->offset;
+        c2 = it->color;
 
         return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
       }
-      lower = it.key();
-      c1 = it.value();
+      lower = it->offset;
+      c1 = it->color;
     }
+
+    if ( mDiscrete )
+      return c1;
 
     upper = 1;
     c2 = mColor2;
@@ -98,8 +146,9 @@ QColor QgsVectorGradientColorRampV2::color( double value ) const
 
 QgsVectorColorRampV2* QgsVectorGradientColorRampV2::clone() const
 {
-  QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( mColor1, mColor2 );
-  r->setStops( mStops );
+  QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( mColor1, mColor2,
+      mDiscrete, mStops );
+  r->setInfo( mInfo );
   return r;
 }
 
@@ -111,13 +160,63 @@ QgsStringMap QgsVectorGradientColorRampV2::properties() const
   if ( !mStops.isEmpty() )
   {
     QStringList lst;
-    for ( StopsMap::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
+    for ( QgsGradientStopsList::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
     {
-      lst.append( QString( "%1;%2" ).arg( it.key() ).arg( QgsSymbolLayerV2Utils::encodeColor( it.value() ) ) );
+      lst.append( QString( "%1;%2" ).arg( it->offset ).arg( QgsSymbolLayerV2Utils::encodeColor( it->color ) ) );
     }
     map["stops"] = lst.join( ":" );
   }
+
+  map["discrete"] = mDiscrete ? "1" : "0";
+
+  for ( QgsStringMap::const_iterator it = mInfo.constBegin();
+        it != mInfo.constEnd(); ++it )
+  {
+    map["info_" + it.key()] = it.value();
+  }
+
   return map;
+}
+void QgsVectorGradientColorRampV2::convertToDiscrete( bool discrete )
+{
+  if ( discrete == mDiscrete )
+    return;
+
+  // if going to/from Discrete, re-arrange stops
+  // this will only work when stops are equally-spaced
+  QgsGradientStopsList newStops;
+  if ( discrete )
+  {
+    // re-arrange stops offset
+    int numStops = mStops.count() + 2;
+    int i = 1;
+    for ( QgsGradientStopsList::const_iterator it = mStops.begin();
+          it != mStops.end(); ++it )
+    {
+      newStops.append( QgsGradientStop(( double ) i / numStops, it->color ) );
+      if ( i == numStops - 1 )
+        break;
+      i++;
+    }
+    // replicate last color
+    newStops.append( QgsGradientStop(( double ) i / numStops, mColor2 ) );
+  }
+  else
+  {
+    // re-arrange stops offset, remove duplicate last color
+    int numStops = mStops.count() + 2;
+    int i = 1;
+    for ( QgsGradientStopsList::const_iterator it = mStops.begin();
+          it != mStops.end(); ++it )
+    {
+      newStops.append( QgsGradientStop(( double ) i / ( numStops - 2 ), it->color ) );
+      if ( i == numStops - 3 )
+        break;
+      i++;
+    }
+  }
+  mStops = newStops;
+  mDiscrete = discrete;
 }
 
 //////////////
@@ -147,6 +246,12 @@ QgsVectorColorRampV2* QgsVectorRandomColorRampV2::create( const QgsStringMap& pr
   if ( props.contains( "valMax" ) ) valMax = props["valMax"].toInt();
 
   return new QgsVectorRandomColorRampV2( count, hueMin, hueMax, satMin, satMax, valMin, valMax );
+}
+
+double QgsVectorRandomColorRampV2::value( int index ) const
+{
+  if ( mColors.size() < 1 ) return 0;
+  return index / mColors.size() - 1;
 }
 
 QColor QgsVectorRandomColorRampV2::color( double value ) const
@@ -229,6 +334,12 @@ QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants( QString schemeNa
   return QgsColorBrewerPalette::listSchemeVariants( schemeName );
 }
 
+double QgsVectorColorBrewerColorRampV2::value( int index ) const
+{
+  if ( mPalette.size() < 1 ) return 0;
+  return index / mPalette.size() - 1;
+}
+
 QColor QgsVectorColorBrewerColorRampV2::color( double value ) const
 {
   if ( mPalette.isEmpty() || value < 0 || value > 1 )
@@ -256,33 +367,12 @@ QgsStringMap QgsVectorColorBrewerColorRampV2::properties() const
 
 ////////////
 
-/*
-TODO
-- return a suitable name (scheme_variant) ??
-- re-organize and rename colorramp classes and widgets
- */
-
-/*
-TODO load schemes
-- don't show empty dirs? (e.g. jjg/hatch)
-
-- better grouping:
-  - cl/fs2????
-  - cw
-  - dca
-  - dirs with one scheme ( cl/ es/ ma/ occ/ wkp/
-      jjg/neo10/env/green-crystal jjg/neo10/face/eyes/blue )
-
-- fix rendering:
-  - ibcao
-
-*/
 
 QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName,
     bool doLoadFile )
-    : mSchemeName( schemeName ), mVariantName( variantName ),
-    mVariantList( QStringList() ), mFileLoaded( false ),
-    mGradientType( Continuous )
+    : QgsVectorGradientColorRampV2(),
+    mSchemeName( schemeName ), mVariantName( variantName ),
+    mVariantList( QStringList() ), mFileLoaded( false ), mMultiStops( false )
 {
   // TODO replace this with hard-coded data in the default case
   // don't load file if variant is missing
@@ -292,9 +382,9 @@ QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString varian
 
 QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName,  QStringList variantList,
     QString variantName, bool doLoadFile )
-    : mSchemeName( schemeName ), mVariantName( variantName ),
-    mVariantList( variantList ), mFileLoaded( false ),
-    mGradientType( Continuous )
+    : QgsVectorGradientColorRampV2(),
+    mSchemeName( schemeName ), mVariantName( variantName ),
+    mVariantList( variantList ), mFileLoaded( false ), mMultiStops( false )
 {
   mVariantList = variantList;
 
@@ -317,41 +407,6 @@ QgsVectorColorRampV2* QgsCptCityColorRampV2::create( const QgsStringMap& props )
   return new QgsCptCityColorRampV2( schemeName, variantName );
 }
 
-QColor QgsCptCityColorRampV2::color( double value ) const
-{
-  int numStops = mPalette.count();
-  if ( mPalette.isEmpty() || value < 0 || value > 1 || numStops < 2 )
-    return QColor( 255, 0, 0 ); // red color as a warning :)
-
-  double lower = 0, upper = 0;
-  QColor c1, c2;
-  c1 = mPalette[0].second;
-  for ( int i = 0; i < numStops; i++ )
-  {
-    if ( mPalette[i].first > value )
-    {
-      if ( mGradientType == Discrete )
-        return c1;
-
-      upper = mPalette[i].first;
-      c2 = mPalette[i].second;
-
-      return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
-    }
-
-    lower = mPalette[i].first;
-    c1 = mPalette[i].second;
-  }
-
-  if ( mGradientType == Discrete )
-    return c1;
-
-  upper = 1;
-  c2 = mPalette[ numStops - 1 ].second;
-
-  return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
-}
-
 QgsVectorColorRampV2* QgsCptCityColorRampV2::clone() const
 {
   QgsCptCityColorRampV2* ramp = new QgsCptCityColorRampV2( "", "", false );
@@ -363,16 +418,31 @@ void QgsCptCityColorRampV2::copy( const QgsCptCityColorRampV2* other )
 {
   if ( ! other )
     return;
+  mColor1 = other->color1();
+  mColor2 = other->color2();
+  mDiscrete = other->isDiscrete();
+  mStops = other->stops();
   mSchemeName = other->mSchemeName;
   mVariantName = other->mVariantName;
   mVariantList = other->mVariantList;
   mFileLoaded = other->mFileLoaded;
-  if ( other->mFileLoaded )
-  {
-    mGradientType = other->mGradientType;
-    mPalette = other->mPalette;
-  }
 }
+
+QgsVectorGradientColorRampV2* QgsCptCityColorRampV2::cloneGradientRamp() const
+{
+  QgsVectorGradientColorRampV2* ramp =
+    new QgsVectorGradientColorRampV2( mColor1, mColor2, mDiscrete, mStops );
+  // add author and copyright information
+  // TODO also add COPYING.xml file/link?
+  QgsStringMap info = copyingInfo();
+  info["cpt-city-gradient"] = "<cpt-city>/" + mSchemeName + mVariantName + ".svg";
+  QString copyingFilename = copyingFileName();
+  copyingFilename.remove( QgsCptCityArchive::defaultBaseDir() );
+  info["cpt-city-license"] = "<cpt-city>" + copyingFilename;
+  ramp->setInfo( info );
+  return ramp;
+}
+
 
 QgsStringMap QgsCptCityColorRampV2::properties() const
 {
@@ -405,7 +475,7 @@ QString QgsCptCityColorRampV2::descFileName() const
                                           QgsCptCityArchive::defaultBaseDir() );
 }
 
-QMap< QString, QString > QgsCptCityColorRampV2::copyingInfo( ) const
+QgsStringMap QgsCptCityColorRampV2::copyingInfo( ) const
 {
   return QgsCptCityArchive::copyingInfo( copyingFileName() );
 }
@@ -434,12 +504,13 @@ bool QgsCptCityColorRampV2::loadFile()
 
   // add colors to palette
   mFileLoaded = false;
-  mPalette.clear();
+  mStops.clear();
   QMap<double, QPair<QColor, QColor> >::const_iterator it, prev;
   // first detect if file is gradient is continuous or dicrete
   // discrete: stop contains 2 colors and first color is identical to previous second
   // multi: stop contains 2 colors and no relation with previous stop
-  mGradientType = Continuous;
+  mDiscrete = false;
+  mMultiStops = false;
   it = prev = colorMap.constBegin();
   while ( it != colorMap.constEnd() )
   {
@@ -448,12 +519,12 @@ bool QgsCptCityColorRampV2::loadFile()
     {
       if ( it.value().first == prev.value().second )
       {
-        mGradientType = Discrete;
+        mDiscrete = true;
         break;
       }
       else
       {
-        mGradientType = ContinuousMulti;
+        mMultiStops = true;
         break;
       }
     }
@@ -461,25 +532,34 @@ bool QgsCptCityColorRampV2::loadFile()
     ++it;
   }
 
+  // fill all stops
   it = prev = colorMap.constBegin();
   while ( it != colorMap.constEnd() )
   {
-    if ( mGradientType == Discrete )
+    if ( mDiscrete )
     {
-      mPalette << qMakePair( it.key(), it.value().second );
+      // mPalette << qMakePair( it.key(), it.value().second );
+      mStops.append( QgsGradientStop( it.key(), it.value().second ) );
     }
     else
     {
-      mPalette << qMakePair( it.key(), it.value().first );
-      if (( mGradientType == ContinuousMulti ) &&
+      // mPalette << qMakePair( it.key(), it.value().first );
+      mStops.append( QgsGradientStop( it.key(), it.value().first ) );
+      if (( mMultiStops ) &&
           ( it.key() != 0.0 && it.key() != 1.0 ) )
       {
-        mPalette << qMakePair( it.key(), it.value().second );
+        mStops.append( QgsGradientStop( it.key(), it.value().second ) );
       }
     }
     prev = it;
     ++it;
   }
+
+  // remove first and last items (mColor1 and mColor2)
+  if ( ! mStops.isEmpty() && mStops.first().offset == 0.0 )
+    mColor1 = mStops.takeFirst().color;
+  if ( ! mStops.isEmpty() && mStops.last().offset == 1.0 )
+    mColor2 = mStops.takeLast().color;
 
   mFileLoaded = true;
   return true;

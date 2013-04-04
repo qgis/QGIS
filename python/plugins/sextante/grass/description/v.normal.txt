@@ -6,4 +6,5 @@ ParameterString|tests|Lists of tests (1-15): e.g. 1,3-8,13|1-3
 ParameterTableField|column|Attribute column|map
 ParameterBoolean|-r|Use only points in current region|True
 ParameterBoolean|-l|lognormal|False
+OutputHTML|html|Output
 

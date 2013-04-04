@@ -111,6 +111,8 @@ void QgsDiagramSettings::readXML( const QDomElement& elem )
 
   barWidth = elem.attribute( "barWidth" ).toDouble();
 
+  angleOffset = elem.attribute( "angleOffset" ).toInt();
+
   minimumSize = elem.attribute( "minimumSize" ).toDouble();
 
   //colors
@@ -204,6 +206,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc 
 
   categoryElem.setAttribute( "barWidth", QString::number( barWidth ) );
   categoryElem.setAttribute( "minimumSize", QString::number( minimumSize ) );
+  categoryElem.setAttribute( "angleOffset", QString::number( angleOffset ) );
 
   QString colors;
   for ( int i = 0; i < categoryColors.size(); ++i )
@@ -245,7 +248,7 @@ void QgsDiagramRendererV2::setDiagram( QgsDiagram* d )
   mDiagram = d;
 }
 
-void QgsDiagramRendererV2::renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QPointF& pos )
+void QgsDiagramRendererV2::renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QPointF& pos )
 {
   if ( !mDiagram )
   {
@@ -261,7 +264,7 @@ void QgsDiagramRendererV2::renderDiagram( const QgsAttributeMap& att, QgsRenderC
   mDiagram->renderDiagram( att, c, s, pos );
 }
 
-QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsAttributeMap& attributes, const QgsRenderContext& c )
+QSizeF QgsDiagramRendererV2::sizeMapUnits( const QgsAttributes& attributes, const QgsRenderContext& c )
 {
   QgsDiagramSettings s;
   if ( !diagramSettings( attributes, c, s ) )
@@ -341,14 +344,14 @@ QgsSingleCategoryDiagramRenderer::~QgsSingleCategoryDiagramRenderer()
 {
 }
 
-bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsAttributeMap&, const QgsRenderContext& c, QgsDiagramSettings& s )
+bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsAttributes&, const QgsRenderContext& c, QgsDiagramSettings& s )
 {
   Q_UNUSED( c );
   s = mSettings;
   return true;
 }
 
-QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsAttributeMap &attributes, const QgsRenderContext &c )
+QSizeF QgsSingleCategoryDiagramRenderer::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c )
 {
   return mDiagram->diagramSize( attributes, c, mSettings );
 }
@@ -396,7 +399,7 @@ QList<QgsDiagramSettings> QgsLinearlyInterpolatedDiagramRenderer::diagramSetting
   return settingsList;
 }
 
-bool QgsLinearlyInterpolatedDiagramRenderer::diagramSettings( const QgsAttributeMap& attributes, const QgsRenderContext& c, QgsDiagramSettings& s )
+bool QgsLinearlyInterpolatedDiagramRenderer::diagramSettings( const QgsAttributes& attributes, const QgsRenderContext& c, QgsDiagramSettings& s )
 {
   s = mSettings;
   s.size = diagramSize( attributes, c );
@@ -413,7 +416,7 @@ QList<int> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
   return attributes;
 }
 
-QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c )
+QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c )
 {
   return mDiagram->diagramSize( attributes, c, mSettings, mInterpolationSettings );
 }

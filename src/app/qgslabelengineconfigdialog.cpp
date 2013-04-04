@@ -15,6 +15,9 @@
 #include "qgslabelengineconfigdialog.h"
 
 #include "qgspallabeling.h"
+#include <pal/pal.h>
+
+#include <QPushButton>
 
 QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWidget* parent )
     : QDialog( parent ), mLBL( lbl )
@@ -22,6 +25,8 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWi
   setupUi( this );
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
+  connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), SIGNAL( clicked() ),
+           this, SLOT( setDefaults() ) );
 
   // search method
   cboSearchMethod->setCurrentIndex( mLBL->searchMethod() );
@@ -36,6 +41,8 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWi
   chkShowCandidates->setChecked( mLBL->isShowingCandidates() );
 
   chkShowAllLabels->setChecked( mLBL->isShowingAllLabels() );
+
+  mSaveWithProjectChkBox->setChecked( mLBL->isStoredWithProject() );
 }
 
 
@@ -52,5 +59,24 @@ void QgsLabelEngineConfigDialog::onOK()
 
   mLBL->setShowingAllLabels( chkShowAllLabels->isChecked() );
 
+  if ( mSaveWithProjectChkBox->isChecked() )
+  {
+    mLBL->saveEngineSettings();
+  }
+  else if ( mLBL->isStoredWithProject() )
+  {
+    mLBL->clearEngineSettings();
+  }
   accept();
+}
+
+void QgsLabelEngineConfigDialog::setDefaults()
+{
+  pal::Pal p;
+  cboSearchMethod->setCurrentIndex(( int )p.getSearch() );
+  spinCandPoint->setValue( p.getPointP() );
+  spinCandLine->setValue( p.getLineP() );
+  spinCandPolygon->setValue( p.getPolyP() );
+  chkShowCandidates->setChecked( false );
+  chkShowAllLabels->setChecked( false );
 }

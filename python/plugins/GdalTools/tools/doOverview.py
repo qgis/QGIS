@@ -54,21 +54,24 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       self.setParamsStatus(
         [
-          (self.inSelector, SIGNAL("filenameChanged()")),
+          ( self.inSelector, SIGNAL("filenameChanged()")),
           ( self.algorithmCombo, SIGNAL( "currentIndexChanged( int )" ), self.algorithmCheck ),
           ( self.levelsEdit, SIGNAL( "textChanged( const QString & )" ) ),
-          ( self.roModeCheck, SIGNAL( "stateChanged( int )" ), None, "1.6.0" ),
+          ( self.roModeCheck, SIGNAL( "stateChanged( int )" ), None, 1600 ),
           ( self.rrdCheck, SIGNAL( "stateChanged(int)" ) ),
           ( self.jpegQualitySpin, SIGNAL( "valueChanged (int)" ) ),
           ( self.jpegQualityContainer, None, self.tiffjpegCheck),
-          ( self.jpegQualityContainer, None, None, "1.7.0"),
-          ( self.cleanCheck, SIGNAL( "stateChanged(int)" ), None, "1.7.0" )
+          ( self.jpegQualityContainer, None, None, 1700),
+          ( self.cleanCheck, SIGNAL( "stateChanged(int)" ), None, 1700 ),
+          ( self.mPyramidOptionsWidget, SIGNAL( "overviewListChanged()" )),
+          ( self.mPyramidOptionsWidget, SIGNAL( "someValueChanged()" ))
         ]
       )
 
       self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
 
+      self.init = False #workaround bug that pyramid options widgets are not initialized at first
 
   # switch to batch or normal mode
   def switchToolMode( self ):
@@ -101,6 +104,8 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       self.inSelector.setFilename( inputFile )
 
+      self.mPyramidOptionsWidget.setRasterLayer(None)
+
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files" ))
       if inputDir.isEmpty():
@@ -110,27 +115,44 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
   def getArguments( self ):
       arguments = QStringList()
-      if self.algorithmCheck.isChecked() and self.algorithmCombo.currentIndex() >= 0:
-        arguments << "-r"
-        arguments << self.resampling_method[self.algorithmCombo.currentIndex()]
-      if self.roModeCheck.isChecked():
+
+      arguments << "-r"
+      arguments << self.mPyramidOptionsWidget.resamplingMethod();
+
+      format = self.mPyramidOptionsWidget.pyramidsFormat()
+      if format == QgsRasterDataProvider.PyramidsGTiff:
         arguments << "-ro"
-      if self.rrdCheck.isChecked():
+      elif format == QgsRasterDataProvider.PyramidsErdas:
         arguments << "--config" << "USE_RRD" << "YES"
-      if self.tiffjpegCheck.isChecked():
-        arguments << "--config" << "COMPRESS_OVERVIEW" << "JPEG" << "--config" << "PHOTOMETRIC_OVERVIEW" << "YCBCR" << "--config" << "INTERLEAVE_OVERVIEW" << "PIXEL"
-        if self.jpegQualityContainer.isVisible():
-            arguments << "--config" << "JPEG_QUALITY_OVERVIEW" << self.jpegQualitySpin.cleanText()
+
+      for option in self.mPyramidOptionsWidget.configOptions():
+        (k,v) = option.split("=")
+        arguments << "--config" << str(k) << str(v)
+
       if self.cleanCheck.isChecked():
           arguments << "-clean"
+
       if self.isBatchEnabled():
         return arguments
 
       arguments << self.getInputFileName()
-      if not self.levelsEdit.text().isEmpty():
-        arguments << self.levelsEdit.text().split( " " )
+
+      if len(self.mPyramidOptionsWidget.overviewList()) == 0:
+        arguments << "[levels]"
+      for level in self.mPyramidOptionsWidget.overviewList():
+        arguments << str(level)
+
+      # set creation options filename/layer for validation
+      if self.init:
+        if self.isBatchEnabled():
+          self.mPyramidOptionsWidget.setRasterLayer(None)
+        elif self.inSelector.layer():
+          self.mPyramidOptionsWidget.setRasterLayer(self.inSelector.layer())
+        else:
+          self.mPyramidOptionsWidget.setRasterFileName(self.getInputFileName())
       else:
-        arguments << "2" << "4" << "8" << "16" << "32"
+        self.init = True
+
       return arguments
 
   def getInputFileName( self ):
@@ -160,7 +182,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         BasePluginWidget.onFinished(self, exitCode, status)
         return
 
-      msg = QString( self.base.process.readAllStandardError() )
+      msg = QString.fromLocal8Bit( self.base.process.readAllStandardError() )
       if not msg.isEmpty():
         self.errors.append( ">> " + self.inFiles[self.batchIndex] + "<br>" + msg.replace( "\n", "<br>" ) )
 

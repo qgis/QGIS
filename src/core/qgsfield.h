@@ -18,6 +18,7 @@
 
 #include <QString>
 #include <QVariant>
+#include <QVector>
 
 /** \ingroup core
   * Encapsulate a field in an attribute table or data source.
@@ -51,6 +52,7 @@ class CORE_EXPORT QgsField
     ~QgsField();
 
     bool operator==( const QgsField& other ) const;
+    bool operator!=( const QgsField& other ) const;
 
     //! Gets the name of the field
     const QString & name() const;
@@ -120,6 +122,9 @@ class CORE_EXPORT QgsField
       */
     void setComment( const QString & comment );
 
+    /**Formats string for display*/
+    QString displayString( const QVariant& v ) const;
+
   private:
 
     //! Name
@@ -144,5 +149,61 @@ class CORE_EXPORT QgsField
 
 // key = field index, value=field data
 typedef QMap<int, QgsField> QgsFieldMap;
+
+
+
+class CORE_EXPORT QgsFields
+{
+  public:
+
+    enum FieldOrigin { OriginUnknown, OriginProvider, OriginJoin, OriginEdit };
+    typedef struct Field
+    {
+      Field(): origin( OriginUnknown ), originIndex( -1 ) {}
+      Field( const QgsField& f, FieldOrigin o, int oi ): field( f ), origin( o ), originIndex( oi ) {}
+
+      QgsField field;
+      FieldOrigin origin; // TODO[MD]: originIndex or QVariant originID?
+      int originIndex;
+    } Field;
+
+    void clear() { mFields.clear(); mNameToIndex.clear(); }
+    /** append: fields must have unique names! */
+    bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 )
+    {
+      if ( mNameToIndex.contains( field.name() ) )
+        return false;
+
+      if ( originIndex == -1 && origin == OriginProvider )
+        originIndex = mFields.count();
+      mFields.append( Field( field, origin, originIndex ) );
+
+      mNameToIndex.insert( field.name(), mFields.count() - 1 );
+      return true;
+    }
+    void remove( int fieldIdx ) { mNameToIndex.remove( mFields[fieldIdx].field.name() ); mFields.remove( fieldIdx ); }
+
+    inline bool isEmpty() const { return mFields.isEmpty(); }
+    inline int count() const { return mFields.count(); }
+    inline int size() const { return mFields.count(); } // TODO[MD]: delete?
+    inline const QgsField& operator[]( int i ) const { return mFields[i].field; }
+    inline QgsField& operator[]( int i ) { return mFields[i].field; }
+    const QgsField& at( int i ) const { return mFields[i].field; }
+    QList<QgsField> toList() const { QList<QgsField> lst; for ( int i = 0; i < mFields.count(); ++i ) lst.append( mFields[i].field ); return lst; } // TODO[MD]: delete?
+
+    const QgsField& field( int fieldIdx ) const { return mFields[fieldIdx].field; }
+    const QgsField& field( const QString& name ) const { return mFields[ indexFromName( name )].field; }
+    FieldOrigin fieldOrigin( int fieldIdx ) const { return mFields[fieldIdx].origin; }
+    int fieldOriginIndex( int fieldIdx ) const { return mFields[fieldIdx].originIndex; }
+
+    int indexFromName( const QString& name ) const { return mNameToIndex.value( name, -1 ); }
+
+  protected:
+    QVector<Field> mFields;
+
+    //! map for quick resolution of name to index
+    QHash<QString, int> mNameToIndex;
+};
+
 
 #endif

@@ -1,7 +1,10 @@
 
+typedef qint64 QgsFeatureId;
 
 // key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
+
+typedef QVector<QVariant> QgsAttributes;
 
 // key = feature id, value = changed attributes
 typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
@@ -14,6 +17,7 @@ typedef QMap<int, QString> QgsFieldNameMap;
 
 typedef QList<QgsFeature> QgsFeatureList;
 
+typedef QMap<int, QgsField> QgsFieldMap;
 
 class QgsFeature
 {
@@ -28,32 +32,65 @@ class QgsFeature
 
     SIP_PYOBJECT __getitem__(int key);
 %MethodCode
-  const QgsAttributeMap& attrMap = sipCpp->attributeMap();
-  QgsAttributeMap::const_iterator it = attrMap.find(a0);
-  if (it == attrMap.end())
+  const QgsAttributes& attrs = sipCpp->attributes();
+  if (a0 < 0 || a0 >= attrs.count())
     PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
   else
   {
-    QVariant* v = new QVariant(it.value());
+    QVariant* v = new QVariant(attrs[a0]);
+    sipRes = sipConvertFromInstance(v, sipClass_QVariant, Py_None);
+  }
+%End
+
+    SIP_PYOBJECT __getitem__(const QString& name);
+%MethodCode
+  int fieldIdx = sipCpp->fieldNameIndex(*a0);
+  if (fieldIdx == -1)
+    PyErr_SetString(PyExc_KeyError, a0->toAscii());
+  else
+  {
+    QVariant* v = new QVariant( sipCpp->attribute(fieldIdx) );
     sipRes = sipConvertFromInstance(v, sipClass_QVariant, Py_None);
   }
 %End
 
     void __setitem__(int key, QVariant value);
 %MethodCode
-  sipCpp->addAttribute(a0, *a1);
+  sipCpp->setAttribute(a0, *a1);
+%End
+
+    void __setitem__(const QString& key, QVariant value);
+%MethodCode
+  int fieldIdx = sipCpp->fieldNameIndex(*a0);
+  if (fieldIdx == -1)
+    PyErr_SetString(PyExc_KeyError, a0->toAscii());
+  else
+  {
+    sipCpp->setAttribute(fieldIdx, *a1);
+  }
 %End
 
     void __delitem__(int key);
 %MethodCode
-  if (sipCpp->attributeMap().contains(a0))
+  if (a0 >= 0 && a0 < sipCpp->attributes().count())
     sipCpp->deleteAttribute(a0);
   else
     PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
 %End
 
+    void __delitem__(const QString& name);
+%MethodCode
+  int fieldIdx = sipCpp->fieldNameIndex(*a0);
+  if (fieldIdx == -1)
+    PyErr_SetString(PyExc_KeyError, a0->toAscii());
+  else
+    sipCpp->deleteAttribute(fieldIdx);
+%End
+
     //! Constructor
-    QgsFeature( qint64 id = 0, QString typeName = "" );
+    QgsFeature( qint64 id = 0 );
+
+    QgsFeature( const QgsFields& fields, qint64 id = 0 );
 
     /** copy ctor needed due to internal pointer */
     QgsFeature( const QgsFeature & rhs );
@@ -73,43 +110,14 @@ class QgsFeature
      */
     void setFeatureId( qint64 id );
 
-
-    /** returns the feature's type name
-     */
-    QString typeName() const;
-
-
-    /** sets the feature's type name
-     */
-    void setTypeName( QString typeName );
-
-    /**
-     * Get the attributes for this feature.
-     * @return A std::map containing the field name/value mapping
-     */
-    const QMap<int, QVariant> & attributeMap() const;
-
-
-    /**Sets all the attributes in one go*/
-    void setAttributeMap( const QMap<int, QVariant> & attributeMap );
-
-    /** Clear attribute map
-     * added in 1.5
-     */
-    void clearAttributeMap();
-
-    /**
-     * Add an attribute to the map
-     */
-    void addAttribute( int field, QVariant attr );
+    const QgsAttributes& attributes() const;
+    //QgsAttributes& attributes();
+    void setAttributes(const QgsAttributes& attrs);
+    bool setAttribute( int field, const QVariant& attr );
+    void initAttributes( int fieldCount );
 
     /**Deletes an attribute and its value*/
     void deleteAttribute( int field );
-
-    /**Changes an existing attribute value
-       @param field index of the field
-       @param attr attribute name and value to be set */
-    void changeAttribute( int field, QVariant attr );
 
     /**
      * Return the validity of this feature. This is normally set by
@@ -122,18 +130,6 @@ class QgsFeature
      * Set the validity of the feature.
      */
     void setValid( bool validity );
-
-    /**
-     * Return the dirty state of this feature.
-     * Dirty is set if (e.g.) the feature's geometry has been modified in-memory.
-     */
-    bool isDirty() const;
-
-    /**
-     * Reset the dirtiness of the feature.  (i.e. make clean)
-     * You would normally do this after it's saved to permanent storage (e.g. disk, an ACID-compliant database)
-     */
-    void clean();
 
     /**
      * Get the geometry object associated with this feature
@@ -162,5 +158,40 @@ class QgsFeature
      */
     void setGeometryAndOwnership( unsigned char * geom /Transfer/, size_t length );
 
+    /** Assign a field map with the feature to allow attribute access by attribute name
+     *  @note added in 2.0
+     */
+    void setFields( const QgsFields* fields );
+
+    /** Get associated field map. may be NULL
+     *  @note added in 2.0
+     */
+    const QgsFields* fields() const;
+
+    /** Insert a value into attribute. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool setAttribute( const QString& name, QVariant value );
+
+    /** Remove an attribute value. Returns false if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    bool deleteAttribute( const QString& name );
+
+    /** Lookup attribute value from attribute name. Returns invalid variant if attribute name could not be converted to index.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    QVariant attribute( const QString& name ) const;
+
+    /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
+     *  Field map must be associated to make this work.
+     *  @note added in 2.0
+     */
+    int fieldNameIndex( const QString& fieldName ) const;
+
 }; // class QgsFeature
 
+typedef QSet<QgsFeatureId> QgsFeatureIds;

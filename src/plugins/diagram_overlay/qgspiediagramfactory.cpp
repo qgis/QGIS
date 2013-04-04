@@ -30,7 +30,7 @@ QgsPieDiagramFactory::~QgsPieDiagramFactory()
 
 QImage* QgsPieDiagramFactory::createDiagram( int size, const QgsFeature& f, const QgsRenderContext& renderContext ) const
 {
-  QgsAttributeMap dataValues = f.attributeMap();
+  const QgsAttributes& dataValues = f.attributes();
   double sizeScaleFactor = diagramSizeScaleFactor( renderContext );
 
   //create transparent QImage
@@ -46,15 +46,14 @@ QImage* QgsPieDiagramFactory::createDiagram( int size, const QgsFeature& f, cons
   double sum = 0;
   QList<double> valueList; //cash the values to use them in drawing later
 
-  QgsAttributeMap::const_iterator value_it;
   QList<QgsDiagramCategory>::const_iterator it = mCategories.constBegin();
   for ( ; it != mCategories.constEnd(); ++it )
   {
-    value_it = dataValues.find( it->propertyIndex() );
-    valueList.push_back( value_it->toDouble() );
-    if ( value_it != dataValues.constEnd() )
+    int idx = it->propertyIndex();
+    if ( idx >= 0 && idx < dataValues.count() )
     {
-      sum += value_it->toDouble();
+      valueList.push_back( dataValues[idx].toDouble() );
+      sum += dataValues[idx].toDouble();
     }
   }
 

@@ -70,8 +70,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           ([self.nearestRadius1Spin, self.nearestRadius2Spin, self.nearestAngleSpin, self.nearestNoDataSpin], SIGNAL("valueChanged(double)")),
           (self.datametricsCombo, SIGNAL("currentIndexChanged(int)")),
           ([self.datametricsRadius1Spin, self.datametricsRadius2Spin, self.datametricsAngleSpin, self.datametricsNoDataSpin], SIGNAL("valueChanged(double)")),
-          (self.datametricsMinPointsSpin, SIGNAL("valueChanged(int)")), 
-          (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentGroup), 
+          (self.datametricsMinPointsSpin, SIGNAL("valueChanged(int)")),
+          (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentGroup),
           ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" ), self.resizeGroupBox )
         ]
       )
@@ -98,7 +98,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.lastEncoding = self.inSelector.layer().dataProvider().encoding()
       self.loadFields( self.getInputFileName() )
-      
+
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
       inputFile, encoding = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Grid" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)

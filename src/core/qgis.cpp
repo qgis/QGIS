@@ -20,6 +20,9 @@
 #include "qgsversion.h"
 #endif
 #include <QCoreApplication>
+#include <QDate>
+#include <QTime>
+#include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
 
@@ -42,32 +45,31 @@ const int QGis::QGIS_VERSION_INT = VERSION_INT;
 const char* QGis::QGIS_RELEASE_NAME = RELEASE_NAME;
 
 #if GDAL_VERSION_NUM >= 1800
-const QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
+const CORE_EXPORT QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
 #else
-const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+const CORE_EXPORT QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 #endif
 
-const char* QGis::qgisVectorGeometryType[] =
-{
-  "Point",
-  "Line",
-  "Polygon",
-  "Unknown geometry",
-  "No geometry",
-};
+const CORE_EXPORT QString GEOWKT =
+  "GEOGCS[\"WGS 84\", "
+  "  DATUM[\"WGS_1984\", "
+  "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
+  "      AUTHORITY[\"EPSG\",7030]], "
+  "    TOWGS84[0,0,0,0,0,0,0], "
+  "    AUTHORITY[\"EPSG\",6326]], "
+  "  PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",8901]], "
+  "  UNIT[\"DMSH\",0.0174532925199433,AUTHORITY[\"EPSG\",9108]], "
+  "  AXIS[\"Lat\",NORTH], "
+  "  AXIS[\"Long\",EAST], "
+  "  AUTHORITY[\"EPSG\",4326]]";
 
-// description strings for feature types
-const char* QGis::qgisFeatureTypes[] =
-{
-  "Null",
-  "WKBPoint",
-  "WKBLineString",
-  "WKBPolygon",
-  "WKBMultiPoint",
-  "WKBMultiLineString",
-  "WKBMultiPolygon"
-};
+const CORE_EXPORT QString PROJECT_SCALES =
+  "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
+  "1:10000,1:5000,1:2500,1:1000,1:500";
 
+const CORE_EXPORT QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
+
+const CORE_EXPORT QString GEO_NONE = "NONE";
 
 const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
 
@@ -140,3 +142,36 @@ void QgsFree( void *ptr )
 {
   free( ptr );
 }
+
+bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs )
+{
+  switch ( lhs.type() )
+  {
+    case QVariant::Int:
+      return lhs.toInt() < rhs.toInt();
+    case QVariant::UInt:
+      return lhs.toUInt() < rhs.toUInt();
+    case QVariant::LongLong:
+      return lhs.toLongLong() < rhs.toLongLong();
+    case QVariant::ULongLong:
+      return lhs.toULongLong() < rhs.toULongLong();
+    case QVariant::Double:
+      return lhs.toDouble() < rhs.toDouble();
+    case QVariant::Char:
+      return lhs.toChar() < rhs.toChar();
+    case QVariant::Date:
+      return lhs.toDate() < rhs.toDate();
+    case QVariant::Time:
+      return lhs.toTime() < rhs.toTime();
+    case QVariant::DateTime:
+      return lhs.toDateTime() < rhs.toDateTime();
+    default:
+      return QString::localeAwareCompare( lhs.toString(), rhs.toString() ) < 0;
+  }
+}
+
+bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs )
+{
+  return ! qgsVariantLessThan( lhs, rhs );
+}
+

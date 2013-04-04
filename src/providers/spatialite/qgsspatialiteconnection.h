@@ -21,6 +21,8 @@
 extern "C"
 {
 #include <sqlite3.h>
+#include <spatialite/gaiageo.h>
+#include <spatialite.h>
 }
 
 class QgsSpatiaLiteConnection : public QObject
@@ -54,6 +56,13 @@ class QgsSpatiaLiteConnection : public QObject
       FailedToGetTables,
     };
 
+    enum DbLayoutVersion
+    {
+      LayoutUnknown,
+      LayoutLegacy,
+      LayoutCurrent,
+    };
+
     Error fetchTables( bool loadGeometrylessTables );
 
     /** return list of tables. fetchTables() function has to be called before */
@@ -62,16 +71,34 @@ class QgsSpatiaLiteConnection : public QObject
     /** return additional error message (if an error occurred before) */
     QString errorMessage() { return mErrorMsg; }
 
+    /**Updates the Internal Statistics*/
+    bool updateStatistics();
+
   protected:
     // SpatiaLite DB open / close
     sqlite3 *openSpatiaLiteDb( QString path );
     void closeSpatiaLiteDb( sqlite3 * handle );
 
     /**Checks if geometry_columns and spatial_ref_sys exist and have expected layout*/
-    bool checkHasMetadataTables( sqlite3* handle );
+    int checkHasMetadataTables( sqlite3* handle );
 
-    /**Inserts information about the spatial tables into mTables*/
+    /**Inserts information about the spatial tables into mTables
+      @return true if querying of tables was successful, false on error */
     bool getTableInfo( sqlite3 * handle, bool loadGeometrylessTables );
+
+#ifdef SPATIALITE_VERSION_GE_4_0_0
+    // only if libspatialite version is >= 4.0.0
+    /**
+       Inserts information about the spatial tables into mTables
+       please note: this method is fully based on the Abstract Interface
+       implemented in libspatialite starting since v.4.0
+
+       using the Abstract Interface is highly reccommended, because all
+       version-dependent implementation details become completly transparent,
+       thus completely freeing the client application to take care of them.
+    */
+    bool getTableInfoAbstractInterface( sqlite3 * handle, bool loadGeometrylessTables );
+#endif
 
     /**cleaning well-formatted SQL strings*/
     QString quotedValue( QString value ) const;

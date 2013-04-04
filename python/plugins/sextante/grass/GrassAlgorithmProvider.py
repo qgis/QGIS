@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.grass.nviz import nviz
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -37,10 +38,6 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        #=======================================================================
-        # self.actions.append(DefineGrassRegionAction())
-        # self.actions.append(DefineGrassRegionFromLayerAction())
-        #=======================================================================
         self.createAlgsList() #preloading algorithms to speed up
 
     def initializeSettings(self):
@@ -50,7 +47,6 @@ class GrassAlgorithmProvider(AlgorithmProvider):
             SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_WIN_SHELL, "Msys folder", GrassUtils.grassWinShell()))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_COMMANDS, "Log execution commands", False))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_CONSOLE, "Log console output", False))
-        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LATLON, "Coordinates are lat/lon", False))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_HELP_FOLDER, "GRASS help folder", GrassUtils.grassHelpPath()))
 
     def unload(self):
@@ -58,7 +54,6 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         if SextanteUtils.isWindows() or SextanteUtils.isMac():
             SextanteConfig.removeSetting(GrassUtils.GRASS_FOLDER)
             SextanteConfig.removeSetting(GrassUtils.GRASS_WIN_SHELL)
-        SextanteConfig.removeSetting(GrassUtils.GRASS_LATLON)
         SextanteConfig.removeSetting(GrassUtils.GRASS_HELP_FOLDER)
         SextanteConfig.removeSetting(GrassUtils.GRASS_LOG_COMMANDS)
         SextanteConfig.removeSetting(GrassUtils.GRASS_LOG_CONSOLE)
@@ -76,7 +71,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                         SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
                 except Exception,e:
                     SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + descriptionFile)
-        #self.preloadedAlgs.append(nviz())
+        self.preloadedAlgs.append(nviz())
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
@@ -89,6 +84,25 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")
+
+    def getPostProcessingErrorMessage(self, wrongLayers):
+        html = AlgorithmProvider.getPostProcessingErrorMessage(self, wrongLayers)
+        msg = GrassUtils.checkGrassIsInstalled(True)
+        html += ("<p>This algorithm requires GRASS to be run. A test to check if GRASS is correctly installed "
+                "and configured in your system has been performed, with the following result:</p><ul><i>")
+        if msg is None:
+            html += "GRASS seems to be correctly installed and configured</li></ul>"
+        else:
+            html += msg + "</i></li></ul>"
+            html += '<p><a href= "http://docs.qgis.org/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure GRASS to be used with SEXTANTE</p>'
+
+        return html
+
+    def getSupportedOutputVectorLayerExtensions(self):
+        return ["shp"]
+
+    def getSupportedOutputRasterLayerExtensions(self):
+        return ["tif"]
 
     def createDescriptionFiles(self):
         folder = "C:\\descs\\grass"

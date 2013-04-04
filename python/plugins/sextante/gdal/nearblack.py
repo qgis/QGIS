@@ -44,8 +44,8 @@ class nearblack(GeoAlgorithm):
         return QtGui.QIcon(filepath)
 
     def defineCharacteristics(self):
-        self.name = "nearblack"
-        self.group = "Analysis"
+        self.name = "Nearblack"
+        self.group = "[GDAL] Analysis"
         self.addParameter(ParameterRaster(nearblack.INPUT, "Input layer", False))
         self.addParameter(ParameterNumber(nearblack.NEAR, "How far from black (white)", 0, None, 15))
         self.addParameter(ParameterBoolean(nearblack.WHITE, "Search for nearly white pixels instead of nearly black", False))

@@ -47,7 +47,7 @@ from xml.dom import minidom
 from PyQt4 import Qwt5 as qwt_plot
 sys.modules['qwt_plot'] = qwt_plot
 
-# loadUi is looking for custom widget in module which is lowercase version of 
+# loadUi is looking for custom widget in module which is lowercase version of
 # the class, which do not exist (AFAIK) -> preload them, problems anyway:
 # missing in gui: QgsColorRampComboBox, QgsRendererRulesTreeWidget,
 # QgsRendererRulesTreeWidget, QgsAttributeTableView
@@ -60,16 +60,16 @@ class UiInspector:
 	def __init__(self ):
 		self.ui_dir = os.path.abspath ( os.path.join(  os.path.dirname(__file__)	, '../src/ui/*.ui' ) )
 		self.printMsg ( "Loading UI files " + self.ui_dir )
-		# list of widget classes we want to follow 
+		# list of widget classes we want to follow
 		self.follow = [
-			QWidget, QDialog, 
+			QWidget, QDialog,
 			QCheckBox, QComboBox, QDial, QPushButton, QLabel, QLCDNumber, QLineEdit, QRadioButton, QScrollBar, QSlider, QSpinBox, QTextEdit,
 			QDateEdit, QTimeEdit, QDateTimeEdit, QListView, QProgressBar, QTableView, QTabWidget, QTextBrowser, QDialogButtonBox,
       QScrollArea, QGroupBox, QStackedWidget,
 		]
 
 	def printMsg ( self, msg ):
-		sys.stderr.write( msg + "\n" ) 
+		sys.stderr.write( msg + "\n" )
 
 	def widgetXml(self, element, widget, level = 0, label = None ):
 		#print tostring ( element )
@@ -78,7 +78,7 @@ class UiInspector:
 		#self.printMsg ( "windowTitle: " + widget.windowTitle() )
 
 		if not widget.objectName(): return
-	
+
 		lab = label
 		if hasattr( widget, 'text' ):
 			lab = widget.text()
@@ -104,14 +104,14 @@ class UiInspector:
 			w  = child['widget']
 			if w.isWidgetType() and ( type(w) in self.follow ):
 				self.widgetXml ( sub_element, w, level+1, child['label'] )
-		
+
 
 	def treeXml(self, element ):
 		xml = ''
     # debug
 		for p in glob.glob( self.ui_dir ):
-		#for p in ['/home/radim/devel/qgis_trunk/src/ui/qgsabout.ui']: 
-		#for p in ['/home/radim/devel/qgis_trunk/src/ui/qgsrasterlayerpropertiesbase.ui']: 
+		#for p in ['/home/radim/devel/qgis_trunk/src/ui/qgsabout.ui']:
+		#for p in ['/home/radim/devel/qgis_trunk/src/ui/qgsrasterlayerpropertiesbase.ui']:
 			self.printMsg ( "Loading " + p )
 			# qgsrasterlayerpropertiesbase.ui is giving: No module named qwt_plot
 			try:
@@ -134,7 +134,7 @@ class UiInspector:
 		reparsed = minidom.parseString(string)
 		xml = reparsed.toprettyxml(indent="  ")
 		return xml
-		
+
 
 if __name__ == '__main__':
 	app = QApplication(sys.argv) # required by loadUi

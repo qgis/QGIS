@@ -21,6 +21,7 @@
 #include <QRectF>
 #include <QString>
 #include <QTextStream>
+#include <QRegExp>
 #include <qnumeric.h>
 
 #include "qgspoint.h"
@@ -53,6 +54,7 @@ QgsRectangle::QgsRectangle( const QgsRectangle &r )
   xmax = r.xMaximum();
   ymax = r.yMaximum();
 }
+
 
 void QgsRectangle::set( const QgsPoint& p1, const QgsPoint& p2 )
 {
@@ -185,10 +187,10 @@ bool QgsRectangle::isEmpty() const
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =
-    QString::number( xmin, 'f', 16 ) + " " +
-    QString::number( ymin, 'f', 16 ) + ", " +
-    QString::number( xmax, 'f', 16 ) + " " +
-    QString::number( ymax, 'f', 16 );
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) );
 
   return rep;
 }
@@ -197,16 +199,16 @@ QString QgsRectangle::asWktPolygon() const
 {
   QString rep =
     QString( "POLYGON((" ) +
-    QString::number( xmin, 'f', 16 ) + " " +
-    QString::number( ymin, 'f', 16 ) + ", " +
-    QString::number( xmax, 'f', 16 ) + " " +
-    QString::number( ymin, 'f', 16 ) + ", " +
-    QString::number( xmax, 'f', 16 ) + " " +
-    QString::number( ymax, 'f', 16 ) + ", " +
-    QString::number( xmin, 'f', 16 ) + " " +
-    QString::number( ymax, 'f', 16 ) + ", " +
-    QString::number( xmin, 'f', 16 ) + " " +
-    QString::number( ymin, 'f', 16 ) +
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) +
     QString( "))" );
 
   return rep;

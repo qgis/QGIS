@@ -27,6 +27,9 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterString(Parameter):
 
+    NEWLINE = "\n"
+    ESCAPED_NEWLINE = "\\n"
+
     def __init__(self, name="", description="", default="", multiline = False):
         Parameter.__init__(self, name, description)
         self.default = default
@@ -37,11 +40,11 @@ class ParameterString(Parameter):
         if obj is None:
             self.value = self.default
             return True
-        self.value = str(obj)
+        self.value = str(obj).replace(ParameterString.ESCAPED_NEWLINE,ParameterString.NEWLINE)
         return True
 
     def getValueAsCommandLineParameter(self):
-        return "\"" + str(self.value) + "\""
+        return "\"" + str(self.value.replace(ParameterString.NEWLINE,ParameterString.ESCAPED_NEWLINE)) + "\""
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

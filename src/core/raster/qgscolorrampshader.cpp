@@ -169,10 +169,11 @@ bool QgsColorRampShader::interpolatedColor( double theValue, int*
       QgsColorRampShader::ColorRampItem myPreviousColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex - 1 );
       myCurrentRampRange = myColorRampItem.value - myPreviousColorRampItem.value;
       myOffsetInRange = theValue - myPreviousColorRampItem.value;
+      double scale = myOffsetInRange / myCurrentRampRange;
 
-      *theReturnRedValue = ( int )(( double ) myPreviousColorRampItem.color.red() + ((( double )( myColorRampItem.color.red() - myPreviousColorRampItem.color.red() ) / myCurrentRampRange ) * myOffsetInRange ) );
-      *theReturnGreenValue = ( int )(( double ) myPreviousColorRampItem.color.green() + ((( double )( myColorRampItem.color.green() - myPreviousColorRampItem.color.green() ) / myCurrentRampRange ) * myOffsetInRange ) );
-      *theReturnBlueValue = ( int )(( double ) myPreviousColorRampItem.color.blue() + ((( double )( myColorRampItem.color.blue() - myPreviousColorRampItem.color.blue() ) / myCurrentRampRange ) * myOffsetInRange ) );
+      *theReturnRedValue = ( int )(( double ) myPreviousColorRampItem.color.red() + (( double )( myColorRampItem.color.red() - myPreviousColorRampItem.color.red() ) * scale ) ) ;
+      *theReturnGreenValue = ( int )(( double ) myPreviousColorRampItem.color.green() + (( double )( myColorRampItem.color.green() - myPreviousColorRampItem.color.green() ) * scale ) );
+      *theReturnBlueValue = ( int )(( double ) myPreviousColorRampItem.color.blue() + (( double )( myColorRampItem.color.blue() - myPreviousColorRampItem.color.blue() ) * scale ) );
       if ( mMaximumColorCacheSize >= mColorCache.size() )
       {
         QColor myNewColor( *theReturnRedValue, *theReturnGreenValue, *theReturnBlueValue );
@@ -180,11 +181,13 @@ bool QgsColorRampShader::interpolatedColor( double theValue, int*
       }
       return true;
     }
-    else if ( mCurrentColorRampItemIndex == 0 && theValue <= myColorRampItem.value )
+    // Values outside total range are rendered if mClip is false
+    else if (( mCurrentColorRampItemIndex == 0 && ( myTinyDiff <= DOUBLE_DIFF_THRESHOLD || ( !mClip && theValue <= myColorRampItem.value ) ) )
+             || ( mCurrentColorRampItemIndex == myColorRampItemCount - 1 && ( myTinyDiff <= DOUBLE_DIFF_THRESHOLD || ( !mClip && theValue >= myColorRampItem.value ) ) ) )
     {
-      QgsColorRampShader::ColorRampItem myPreviousColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex - 1 );
-      myCurrentRampRange = myColorRampItem.value - myPreviousColorRampItem.value;
-      myOffsetInRange = theValue - myPreviousColorRampItem.value;
+      //QgsColorRampShader::ColorRampItem myPreviousColorRampItem = mColorRampItemList.value( mCurrentColorRampItemIndex - 1 );
+      //myCurrentRampRange = myColorRampItem.value - myPreviousColorRampItem.value;
+      //myOffsetInRange = theValue - myPreviousColorRampItem.value;
 
       *theReturnRedValue = myColorRampItem.color.red();
       *theReturnGreenValue = myColorRampItem.color.green();

@@ -18,6 +18,7 @@
 #define QGSCOMPOSERLABEL_H
 
 #include "qgscomposeritem.h"
+#include <QFont>
 
 class QgsVectorLayer;
 class QgsFeature;
@@ -43,6 +44,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 
     QString text() { return mText; }
     void setText( const QString& text );
+
+    int htmlSate() { return mHtmlState; }
+    void setHtmlSate( int state ) {mHtmlState = state;}
 
     /**Returns the text as it appears on screen (with replaced data field)
       @note this function was added in version 1.2*/
@@ -103,6 +107,14 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
   private:
     // Text
     QString mText;
+
+    // Html state
+    int mHtmlState;
+    double mHtmlUnitsToMM;
+    double htmlUnitsToMM(); //calculate scale factor
+
+    /**Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment*/
+    void itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const;
 
     // Font
     QFont mFont;

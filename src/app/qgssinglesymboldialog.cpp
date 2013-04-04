@@ -113,8 +113,8 @@ QgsSingleSymbolDialog::QgsSingleSymbolDialog( QgsVectorLayer * layer, bool disab
   lstSymbols->setContextMenuPolicy( Qt::ActionsContextMenu );
 
   //do the signal/slot connections
-  connect( btnOutlineColor, SIGNAL( clicked() ), this, SLOT( selectOutlineColor() ) );
-  connect( btnFillColor, SIGNAL( clicked() ), this, SLOT( selectFillColor() ) );
+  connect( btnOutlineColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( selectOutlineColor( const QColor& ) ) );
+  connect( btnFillColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( selectFillColor( const QColor& ) ) );
   connect( outlinewidthspinbox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mLabelEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( resendSettingsChanged() ) );
   connect( mPointSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( resendSettingsChanged() ) );
@@ -149,25 +149,23 @@ void QgsSingleSymbolDialog::refreshMarkers()
   QgsVectorDataProvider *provider = mVectorLayer->dataProvider();
   if ( provider )
   {
-    const QgsFieldMap & fields = provider->fields();
-    QString str;
+    const QgsFields & fields = provider->fields();
 
     mRotationClassificationComboBox->addItem( DO_NOT_USE_STR, -1 );
     mScaleClassificationComboBox->addItem( DO_NOT_USE_STR, -1 );
     mSymbolComboBox->addItem( DO_NOT_USE_STR, -1 );
-    for ( QgsFieldMap::const_iterator it = fields.begin();
-          it != fields.end();
-          ++it )
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      QVariant::Type type = ( *it ).type();
+      QVariant::Type type = fields[idx].type();
+      QString fieldName = fields[idx].name();
       if ( type == QVariant::Int || type == QVariant::Double )
       {
-        mRotationClassificationComboBox->addItem( it->name(), it.key() );
-        mScaleClassificationComboBox->addItem( it->name(), it.key() );
+        mRotationClassificationComboBox->addItem( fieldName, idx );
+        mScaleClassificationComboBox->addItem( fieldName, idx );
       }
       else if ( type == QVariant::String )
       {
-        mSymbolComboBox->addItem( it->name(), it.key() );
+        mSymbolComboBox->addItem( fieldName, idx );
       }
     }
   }
@@ -250,40 +248,16 @@ QgsSingleSymbolDialog::~QgsSingleSymbolDialog()
   QgsDebugMsg( "entered." );
 }
 
-void QgsSingleSymbolDialog::selectOutlineColor()
+void QgsSingleSymbolDialog::selectOutlineColor( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QColor c = QColorDialog::getColor( btnOutlineColor->color(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-  QColor c = QColorDialog::getColor( btnOutlineColor->color(), this );
-#endif
-
-  if ( c.isValid() )
-  {
-    btnOutlineColor->setColor( c );
-    emit settingsChanged();
-  }
-
-  activateWindow();
+  Q_UNUSED( color )
+  emit settingsChanged();
 }
 
-void QgsSingleSymbolDialog::selectFillColor()
+void QgsSingleSymbolDialog::selectFillColor( const QColor& color )
 {
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QColor c = QColorDialog::getColor( btnFillColor->color(), this, "", QColorDialog::DontUseNativeDialog );
-#else
-  QColor c = QColorDialog::getColor( btnFillColor->color(), this );
-#endif
-
-  if ( c.isValid() )
-  {
-    btnFillColor->setColor( c );
-    emit settingsChanged();
-  }
-
-  activateWindow();
+  Q_UNUSED( color )
+  emit settingsChanged();
 }
 
 //should this method have a different name?

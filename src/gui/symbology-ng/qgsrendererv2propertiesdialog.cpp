@@ -87,6 +87,9 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   // initialize registry's widget functions
   _initRendererWidgetFunctions();
 
+  // Blend mode
+  mBlendModeComboBox->setBlendMode( mLayer->blendMode() );
+
   QPixmap pix;
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QStringList renderers = reg->renderersList();
@@ -177,6 +180,9 @@ void QgsRendererV2PropertiesDialog::apply()
   {
     mLayer->setRendererV2( renderer->clone() );
   }
+
+  // set the blend mode for the layer
+  mLayer->setBlendMode(( QgsMapRenderer::BlendMode ) mBlendModeComboBox->blendMode() );
 }
 
 void QgsRendererV2PropertiesDialog::onOK()

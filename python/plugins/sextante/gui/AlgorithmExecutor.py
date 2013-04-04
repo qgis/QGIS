@@ -41,6 +41,7 @@ class AlgorithmExecutor(QThread):
     commandSet = pyqtSignal(str)
     debugInfoSet = pyqtSignal(str)
     consoleInfoSet = pyqtSignal(str)
+    algExecuted = pyqtSignal()
     #started & finished inherited from QThread
 
     def __init__(self, alg, iterParam = None, parent = None):
@@ -80,7 +81,7 @@ class AlgorithmExecutor(QThread):
             while provider.nextFeature(feat):
                 output = SextanteUtils.getTempFilename("shp")
                 self.filelist.append(output)
-                writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), provider.crs() )
+                writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), layer.crs() )
                 writer.addFeature(feat)
                 del writer
         else:
@@ -93,6 +94,7 @@ class AlgorithmExecutor(QThread):
     def runalg(self):
         try:
             self.algorithm.execute(self.progress)
+            self.algExecuted.emit()
         except GeoAlgorithmExecutionException, e :
             self.error.emit(e.msg)
         except BaseException, e:

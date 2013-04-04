@@ -168,9 +168,9 @@ class QgsSymbolLayerV2Utils
     static QColor parseColor( QString colorStr );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
-    static double lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double lineWidthScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    static double pixelSizeScaleFactor( const QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 
@@ -181,4 +181,16 @@ class QgsSymbolLayerV2Utils
     static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
     static QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance );
+
+    //! Return a list of all available svg files
+    static QStringList listSvgFiles();
+
+    //! Return a list of svg files at the specified directory
+    static QStringList listSvgFilesAt( QString directory );
+
+    //! Get symbol's path from its name
+    static QString symbolNameToPath( QString name );
+
+    //! Get symbols's name from its path
+    static QString symbolPathToName( QString path );
 };

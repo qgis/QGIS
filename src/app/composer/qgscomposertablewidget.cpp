@@ -30,7 +30,7 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   setupUi( this );
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mComposerTable );
-  mToolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
 
@@ -55,7 +55,7 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   if ( mComposerTable )
   {
     QObject::connect( mComposerTable, SIGNAL( maximumNumberOfFeaturesChanged( int ) ), this, SLOT( setMaximumNumberOfFeatures( int ) ) );
-    QObject::connect( mComposerTable, SIGNAL( itemChanged ), this, SLOT( updateGuiElements() ) );
+    QObject::connect( mComposerTable, SIGNAL( itemChanged() ), this, SLOT( updateGuiElements() ) );
   }
 }
 
@@ -265,43 +265,28 @@ void QgsComposerTableWidget::on_mGridStrokeWidthSpinBox_valueChanged( double d )
   mComposerTable->endCommand();
 }
 
-void QgsComposerTableWidget::on_mGridColorButton_clicked()
+void QgsComposerTableWidget::on_mGridColorButton_colorChanged( const QColor& newColor )
 {
   if ( !mComposerTable )
   {
     return;
   }
 
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( mComposerTable->gridColor(), 0, tr( "Select grid color" ) );
-#else
-  QColor newColor = QColorDialog::getColor( mComposerTable->gridColor(), 0 );
-#endif
-  if ( !newColor.isValid() )
-  {
-    return;
-  }
   mComposerTable->beginCommand( tr( "Table grid color" ) );
-  mGridColorButton->setColor( newColor );
   mComposerTable->setGridColor( newColor );
   mComposerTable->update();
   mComposerTable->endCommand();
 }
 
-void QgsComposerTableWidget::on_mShowGridCheckBox_stateChanged( int state )
+void QgsComposerTableWidget::on_mShowGridGroupCheckBox_toggled( bool state )
 {
   if ( !mComposerTable )
   {
     return;
   }
 
-  bool showGrid = false;
-  if ( state == Qt::Checked )
-  {
-    showGrid = true;
-  }
   mComposerTable->beginCommand( tr( "Table grid toggled" ) );
-  mComposerTable->setShowGrid( showGrid );
+  mComposerTable->setShowGrid( state );
   mComposerTable->update();
   mComposerTable->endCommand();
 }
@@ -341,13 +326,15 @@ void QgsComposerTableWidget::updateGuiElements()
   mMarginSpinBox->setValue( mComposerTable->lineTextDistance() );
   mGridStrokeWidthSpinBox->setValue( mComposerTable->gridStrokeWidth() );
   mGridColorButton->setColor( mComposerTable->gridColor() );
+  mGridColorButton->setColorDialogTitle( tr( "Select grid color" ) );
+  mGridColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
   if ( mComposerTable->showGrid() )
   {
-    mShowGridCheckBox->setCheckState( Qt::Checked );
+    mShowGridGroupCheckBox->setChecked( true );
   }
   else
   {
-    mShowGridCheckBox->setCheckState( Qt::Unchecked );
+    mShowGridGroupCheckBox->setChecked( false );
   }
 
   if ( mComposerTable->displayOnlyVisibleFeatures() )
@@ -369,7 +356,7 @@ void QgsComposerTableWidget::blockAllSignals( bool b )
   mMarginSpinBox->blockSignals( b );
   mGridColorButton->blockSignals( b );
   mGridStrokeWidthSpinBox->blockSignals( b );
-  mShowGridCheckBox->blockSignals( b );
+  mShowGridGroupCheckBox->blockSignals( b );
   mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
 }
 

@@ -9,6 +9,7 @@ class QgsVectorLayerImport
 %TypeHeaderCode
 #include <qgsvectorlayerimport.h>
 #include <qgsfield.h>
+class QProgressDialog;
 %End
 
   public:
@@ -37,17 +38,19 @@ class QgsVectorLayerImport
                                     bool onlySelected = false,
                                     QString *errorMessage /Out/ = 0,
                                     bool skipAttributeCreation = false,
-                                    QMap<QString, QVariant> *options = 0
+                                    QMap<QString, QVariant> *options = 0,
+                                    QProgressDialog *progress = 0
                                   );
 
     /** create a empty layer and add fields to it */
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
-                          const QMap<int, QgsField> &fields,
+                          const QgsFields &fields,
                           QGis::WkbType geometryType,
                           const QgsCoordinateReferenceSystem* crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = 0
+                          const QMap<QString, QVariant> *options = 0,
+                          QProgressDialog *progress = 0
                         );
 
     /** checks whether there were any errors */
@@ -68,5 +71,7 @@ class QgsVectorLayerImport
     /** flush the buffer writing the features to the new layer */
     bool flushBuffer();
 
+    /** create index */
+    bool createSpatialIndex();
 };
 

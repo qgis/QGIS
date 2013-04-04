@@ -34,6 +34,13 @@ class QgsPalLayerSettings
       ShowAll // show upside down for all labels, including dynamic ones
     };
 
+    enum DirectionSymbols
+    {
+      SymbolLeftRight, // place direction symbols on left/right of label
+      SymbolAbove, // place direction symbols on above label
+      SymbolBelow // place direction symbols on below label
+    };
+
     enum MultiLineAlign
     {
       MultiLeft = 0,
@@ -41,7 +48,7 @@ class QgsPalLayerSettings
       MultiRight
     };
 
-    // increment iterator in _writeDataDefinedPropertyMap() when adding more
+    // update mDataDefinedNames QList in constructor when adding/deleting enum value
     enum DataDefinedProperties
     {
       Size = 0,
@@ -64,7 +71,7 @@ class QgsPalLayerSettings
       MaxScale,
       FontTransp,
       BufferTransp,
-      PropertyCount, // keep last entry
+      AlwaysShow
     };
 
     QString fieldName;
@@ -116,11 +123,23 @@ class QgsPalLayerSettings
     bool displayAll;  // if true, all features will be labelled even though overlaps occur
     bool mergeLines;
     double minFeatureSize; // minimum feature size to be labelled (in mm)
-    // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring
+    bool limitNumLabels; // whether to limit the number of labels to be drawn
+    int maxNumLabels; // maximum number of labels to be drawn
+    // Adds '<' or '>', or user-defined symbol to the label string pointing to the
+    // direction of the line / polygon ring
     // Works only if Placement == Line
     bool addDirectionSymbol;
+    QString leftDirectionSymbol;
+    QString rightDirectionSymbol;
+    bool reverseDirectionSymbol;
+    DirectionSymbols placeDirectionSymbol; // whether to place left/right, above or below label
     unsigned int upsidedownLabels; // whether, or how, to show upsidedown labels
+    double maxCurvedCharAngleIn; // maximum angle between inside curved label characters (defaults to 20.0, range 20.0 to 60.0)
+    double maxCurvedCharAngleOut; // maximum angle between outside curved label characters (defaults to -20.0, range -20.0 to -95.0)
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
+    bool fontLimitPixelSize; // true is label should be limited by fontMinPixelSize/fontMaxPixelSize
+    int fontMinPixelSize; // minimum pixel size for showing rendered map unit labels (1 - 1000)
+    int fontMaxPixelSize; // maximum pixel size for showing rendered map unit labels (1 - 10000)
     bool bufferSizeInMapUnits; //true if buffer is in map units (otherwise in mm)
     bool labelOffsetInMapUnits; //true if label offset is in map units (otherwise in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
@@ -137,11 +156,11 @@ class QgsPalLayerSettings
     void writeToLayer( QgsVectorLayer* layer );
 
     /**Set a property as data defined*/
-    void setDataDefinedProperty( DataDefinedProperties p, int attributeIndex );
+    void setDataDefinedProperty( DataDefinedProperties p, QString attributeName );
     /**Set a property to static instead data defined*/
     void removeDataDefinedProperty( DataDefinedProperties p );
 
-    /**Stores field indices for data defined layer properties*/
+    /**Stores field names for data defined layer properties*/
     // QMap< DataDefinedProperties, int > dataDefinedProperties;
 
     bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
@@ -152,6 +171,11 @@ class QgsPalLayerSettings
      @param buffer whether it buffer size being calculated
      @return font pixel size*/
     int sizeToPixel( double size, const QgsRenderContext& c , bool buffer = false ) const;
+
+    /** List of data defined enum names
+     * @note adding in 1.9
+     */
+    QList<QString> dataDefinedNames() const;
 };
 
 class QgsLabelCandidate

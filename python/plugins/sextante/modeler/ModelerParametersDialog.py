@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.parameters.ParameterCrs import ParameterCrs
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -24,12 +23,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os.path
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from PyQt4 import QtCore, QtGui, QtWebKit
-
+from sextante.modeler.MultilineTextPanel import MultilineTextPanel
+from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
+from sextante.parameters.ParameterCrs import ParameterCrs
+from sextante.outputs.OutputString import OutputString
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
@@ -59,6 +59,7 @@ class ModelerParametersDialog(QtGui.QDialog):
 
     ENTER_NAME = "[Enter name if this is a final result]"
     NOT_SELECTED = "[Not selected]"
+    USE_MIN_COVERING_EXTENT = "[Use min covering extent]"
 
     def __init__(self, alg, model, algIndex = None):
         QtGui.QDialog.__init__(self)
@@ -129,6 +130,13 @@ class ModelerParametersDialog(QtGui.QDialog):
                 self.verticalLayout.addWidget(item)
                 self.valueItems[output.name] = item
 
+        label = QtGui.QLabel(" ")
+        self.verticalLayout.addWidget(label)
+        label = QtGui.QLabel("Parent algorithms")
+        self.dependenciesPanel = self.getDependenciesPanel()
+        self.verticalLayout.addWidget(label)
+        self.verticalLayout.addWidget(self.dependenciesPanel)
+
         self.verticalLayout.addStretch(1000)
         self.setLayout(self.verticalLayout)
 
@@ -138,10 +146,10 @@ class ModelerParametersDialog(QtGui.QDialog):
         self.verticalLayout2.setSpacing(2)
         self.verticalLayout2.setMargin(0)
         self.tabWidget = QtGui.QTabWidget()
-        self.tabWidget.setMinimumWidth(300)        
+        self.tabWidget.setMinimumWidth(300)
         self.paramPanel = QtGui.QWidget()
         self.paramPanel.setLayout(self.verticalLayout)
-        self.scrollArea = QtGui.QScrollArea()        
+        self.scrollArea = QtGui.QScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
         self.tabWidget.addTab(self.scrollArea, "Parameters")
@@ -171,6 +179,24 @@ class ModelerParametersDialog(QtGui.QDialog):
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
         QtCore.QMetaObject.connectSlotsByName(self)
 
+
+    def getAvailableDependencies(self):
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+        opts = []
+        i=0
+        for alg in self.model.algs:
+            if i not in dependent:
+                opts.append(str(i+1) + ":" + alg.name)
+            i+=1
+        return opts
+
+    def getDependenciesPanel(self):
+        return MultipleInputPanel(self.getAvailableDependencies())
+
+
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
         if self.showAdvanced:
@@ -181,7 +207,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             if param.isAdvanced:
                 self.labels[param.name].setVisible(self.showAdvanced)
                 self.widgets[param.name].setVisible(self.showAdvanced)
- 
+
     def getRasterLayers(self):
         layers = []
         params = self.model.parameters
@@ -193,7 +219,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             dependent = []
         else:
             dependent = self.model.getDependentAlgorithms(self.algIndex)
-            dependent.append(self.algIndex)
+            #dependent.append(self.algIndex)
 
         i=0
         for alg in self.model.algs:
@@ -216,7 +242,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             dependent = []
         else:
             dependent = self.model.getDependentAlgorithms(self.algIndex)
-            dependent.append(self.algIndex)
+            #dependent.append(self.algIndex)
 
         i=0
         for alg in self.model.algs:
@@ -239,7 +265,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             dependent = []
         else:
             dependent = self.model.getDependentAlgorithms(self.algIndex)
-            dependent.append(self.algIndex)
+            #dependent.append(self.algIndex)
 
         i=0
         for alg in self.model.algs:
@@ -270,7 +296,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             dependent = []
         else:
             dependent = self.model.getDependentAlgorithms(self.algIndex)
-            dependent.append(self.algIndex)
+            #dependent.append(self.algIndex)
 
         i=0
         for alg in self.model.algs:
@@ -292,7 +318,7 @@ class ModelerParametersDialog(QtGui.QDialog):
             dependent = []
         else:
             dependent = self.model.getDependentAlgorithms(self.algIndex)
-            dependent.append(self.algIndex)
+            #dependent.append(self.algIndex)
 
         i=0
         for alg in self.model.algs:
@@ -317,6 +343,20 @@ class ModelerParametersDialog(QtGui.QDialog):
         for param in params:
             if isinstance(param, ParameterString):
                 strings.append(AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, param.name, "", param.description))
+
+        if self.algIndex is None:
+            dependent = []
+        else:
+            dependent = self.model.getDependentAlgorithms(self.algIndex)
+            #dependent.append(self.algIndex)
+
+        i=0
+        for alg in self.model.algs:
+            if i not in dependent:
+                for out in alg.outputs:
+                    if isinstance(out, OutputString):
+                        strings.append(AlgorithmAndParameter(i, out.name, alg.name, out.description))
+            i+=1
         return strings
 
     def getTableFields(self):
@@ -376,12 +416,16 @@ class ModelerParametersDialog(QtGui.QDialog):
                 opts.append(opt.name())
             item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterString):
-            item = QtGui.QComboBox()
-            item.setEditable(True)
             strings = self.getStrings()
-            for s in strings:
-                item.addItem(s.name(), s)
-            item.setEditText(str(param.default))
+            if param.multiline:
+                item = MultilineTextPanel(strings)
+                item.setText(str(param.default))
+            else:
+                item = QtGui.QComboBox()
+                item.setEditable(True)
+                for s in strings:
+                    item.addItem(s.name(), s)
+                item.setEditText(str(param.default))
         elif isinstance(param, ParameterTableField):
             item = QtGui.QComboBox()
             item.setEditable(True)
@@ -395,13 +439,18 @@ class ModelerParametersDialog(QtGui.QDialog):
             for n in numbers:
                 item.addItem(n.name(), n)
             item.setEditText(str(param.default))
+        elif isinstance(param, ParameterCrs):
+            item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterExtent):
             item = QtGui.QComboBox()
             item.setEditable(True)
             extents = self.getExtents()
+            if self.canUseAutoExtent():
+                item.addItem(self.USE_MIN_COVERING_EXTENT, None)
             for ex in extents:
                 item.addItem(ex.name(), ex)
-            item.setEditText(str(param.default))
+            if not self.canUseAutoExtent():
+                item.setEditText(str(param.default))
         elif isinstance(param, ParameterFile):
             item = QtGui.QComboBox()
             item.setEditable(True)
@@ -415,6 +464,13 @@ class ModelerParametersDialog(QtGui.QDialog):
             except:
                 pass
         return item
+
+    def canUseAutoExtent(self):
+        for param in self.alg.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector)):
+                return True
+            if isinstance(param, ParameterMultipleInput):
+                return True
 
     def setTableContent(self):
         params = self.alg.parameters
@@ -487,14 +543,32 @@ class ModelerParametersDialog(QtGui.QDialog):
                 if isinstance(param, (ParameterRaster, ParameterVector,
                                       ParameterTable, ParameterTableField,
                                       ParameterSelection, ParameterNumber,
-                                      ParameterString,ParameterBoolean, ParameterExtent)):
+                                      ParameterBoolean, ParameterExtent)):
                     self.setComboBoxValue(widget, value, param)
+                elif isinstance(param, ParameterString):
+                    if param.multiline:
+                        widget.setValue(value)
+                    else:
+                        self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterCrs):
-                    widget.setText(unicode(value))
+                    value = self.model.getValueFromAlgorithmAndParameter(value)
+                    widget.setAuthid(value)
                 elif isinstance(param, ParameterFixedTable):
                     pass
                 elif isinstance(param, ParameterMultipleInput):
-                    pass
+                    value = self.model.getValueFromAlgorithmAndParameter(value)
+                    values = value.split(";")
+                    selectedoptions = []
+                    if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                        options = self.getVectorLayers()
+                    else:
+                        options = self.getRasterLayers()
+                    for i in range(len(options)):
+                        option = options[i]
+                        for aap in (values):
+                            if str(option) == aap:
+                                selectedoptions.append(i)
+                    widget.setSelectedItems(selectedoptions)
                 else:
                     pass
 
@@ -504,7 +578,16 @@ class ModelerParametersDialog(QtGui.QDialog):
                     if value is not None:
                         widget = self.valueItems[out.name].setText(unicode(value))
 
-            #TODO
+            selected = []
+            dependencies = self.getAvailableDependencies()
+            index = -1
+            for dependency in dependencies:
+                index += 1
+                n = int(dependency[:dependency.find(":")]) - 1
+                if n in self.model.dependencies[self.algIndex]:
+                    selected.append(index)
+
+            self.dependenciesPanel.setSelectedItems(selected)
 
 
     def setParamValues(self):
@@ -521,34 +604,36 @@ class ModelerParametersDialog(QtGui.QDialog):
                 return False
         for output in outputs:
             if output.hidden:
-               self.outputs[output.name] = None
+                self.outputs[output.name] = None
             else:
                 name= unicode(self.valueItems[output.name].text())
                 if name.strip()!="" and name != ModelerParametersDialog.ENTER_NAME:
                     self.outputs[output.name]=name
                 else:
                     self.outputs[output.name] = None
+
+        selectedOptions = self.dependenciesPanel.selectedoptions
+        #this index are based on the list of available dependencies.
+        #we translate them into indices based on the whole set of algorithm in the model
+        #We just take the values in the beginning of the string representing the algorithm
+        availableDependencies = self.getAvailableDependencies()
+        self.dependencies = []
+        for selected in selectedOptions:
+            s = availableDependencies[selected]
+            n = int(s[:s.find(":")]) - 1
+            self.dependencies.append(n);
+
         return True
 
 
     def setParamValueLayerOrTable(self, param, widget):
-        idx = widget.findText(widget.currentText())
+        idx = widget.currentIndex()
         if idx < 0:
-            name =  self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            s = str(widget.currentText())
-            self.values[name] = s
+            return False
         else:
             value = widget.itemData(widget.currentIndex()).toPyObject()
             self.params[param.name] = value
-        return True
-
-        if widget.currentIndex() < 0:
-            return False
-        value = widget.itemData(widget.currentIndex()).toPyObject()
-        self.params[param.name] = value
-        return True
+            return True
 
     def setParamBooleanValue(self, param, widget):
         if widget.currentIndex() < 2:
@@ -579,17 +664,30 @@ class ModelerParametersDialog(QtGui.QDialog):
         return True
 
     def setParamStringValue(self, param, widget):
-        if widget.currentText() == "":
-            return False
-        idx = widget.findText(widget.currentText())
-        if idx < 0:
-            name =  self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
-            self.params[param.name] = value
-            self.values[name] = str(widget.currentText())
+        if param.multiline:
+            option = widget.getOption()
+            value = widget.getValue()
+            if option == MultilineTextPanel.USE_TEXT:
+                if value == "":
+                    return False
+                name =  self.getSafeNameForHarcodedParameter(param)
+                self.values[name] = value
+                paramValue = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+                self.params[param.name] = paramValue
+            else:
+                self.params[param.name] = value
         else:
-            value = widget.itemData(widget.currentIndex()).toPyObject()
-            self.params[param.name] = value
+            if widget.currentText() == "":
+                return False
+            idx = widget.findText(widget.currentText())
+            if idx < 0:
+                name =  self.getSafeNameForHarcodedParameter(param)
+                value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+                self.params[param.name] = value
+                self.values[name] = str(widget.currentText())
+            else:
+                value = widget.itemData(widget.currentIndex()).toPyObject()
+                self.params[param.name] = value
         return True
 
     def setParamFileValue(self, param, widget):
@@ -667,6 +765,16 @@ class ModelerParametersDialog(QtGui.QDialog):
             value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             self.params[param.name] = value
             self.values[name] = str(widget.getValue())
+            return True
+        elif isinstance(param, ParameterCrs):
+            authid = widget.getValue()
+            if authid is None:
+                self.params[param.name] = None
+            else:
+                name =  self.getSafeNameForHarcodedParameter(param)
+                value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
+                self.params[param.name] = value
+                self.values[name] = authid
             return True
         elif isinstance(param, ParameterFixedTable):
             name =  self.getSafeNameForHarcodedParameter(param)

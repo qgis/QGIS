@@ -12,6 +12,7 @@
 // qgis includes
 #include "qgis.h"
 #include "heatmapgui.h"
+#include "heatmap.h"
 #include "qgscontexthelp.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
@@ -170,7 +171,7 @@ void HeatmapGui::on_columnLineEdit_editingFinished()
 
 void HeatmapGui::on_cellXLineEdit_editingFinished()
 {
-  mXcellsize = cellXLineEdit->text().toFloat();
+  mXcellsize = cellXLineEdit->text().toDouble();
   mYcellsize = mXcellsize;
   mRows = mBBox.height() / mYcellsize + 1;
   mColumns = mBBox.width() / mXcellsize + 1;
@@ -180,7 +181,7 @@ void HeatmapGui::on_cellXLineEdit_editingFinished()
 
 void HeatmapGui::on_cellYLineEdit_editingFinished()
 {
-  mYcellsize = cellYLineEdit->text().toFloat();
+  mYcellsize = cellYLineEdit->text().toDouble();
   mXcellsize = mYcellsize;
   mRows = mBBox.height() / mYcellsize + 1;
   mColumns = mBBox.width() / mXcellsize + 1;
@@ -203,13 +204,57 @@ void HeatmapGui::on_mRadiusUnitCombo_currentIndexChanged( int index )
   updateBBox();
 }
 
+/*
+ * Estimate a good default radius for the heatmap, based on the
+ * bounding box size of the layer
+ */
+double HeatmapGui::estimateRadius()
+{
+
+  QgsVectorLayer *inputLayer = inputVectorLayer();
+
+  // No input layer? Default to radius of 100
+  if ( !inputLayer )
+    return 100;
+
+  // Find max dimension of layer bounding box
+  QgsRectangle mExtent = inputLayer->extent();
+  double extentWidth = abs( mExtent.xMinimum() - mExtent.xMaximum() );
+  double extentHeight = abs( mExtent.yMinimum() - mExtent.yMaximum() );
+  double maxExtent = max( extentWidth, extentHeight );
+
+  // Return max dimension divided by 30. This is fairly arbitrary
+  // but approximately corresponds to the default value chosen by ArcMap
+  // TODO - a better solution is to let the data define the radius
+  // choice by setting the radius equal to the average Nearest
+  // Neighbour Index for the closest n points
+
+  double estimate = maxExtent / 30;
+
+  if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
+  {
+    // metres selected, so convert estimate from map units
+    QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
+    estimate = estimate / mapUnitsOf( 1, layerCrs );
+  }
+
+  // Make estimate pretty by rounding off to first digit only (eg 356->300, 0.567->0.5)
+  double tens = pow( 10, floor( log10( estimate ) ) );
+  return floor( estimate / tens + 0.5 ) * tens;
+}
+
 void HeatmapGui::on_mInputVectorCombo_currentIndexChanged( int index )
 {
   Q_UNUSED( index );
+
+  // Set initial value for radius field based on layer's extent
+  mBufferLineEdit->setText( QString::number( estimateRadius() ) );
+
+  updateBBox();
+
   if ( advancedGroupBox->isChecked() )
   {
     populateFields();
-    updateBBox();
   }
   QgsDebugMsg( QString( "Input vector index changed to %1" ).arg( index ) );
 }
@@ -225,6 +270,14 @@ void HeatmapGui::on_mBufferLineEdit_editingFinished()
 {
   updateBBox();
 }
+
+void HeatmapGui::on_kernelShapeCombo_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  // Only enable the decay edit if the kernel shape is set to triangular
+  mDecayLineEdit->setEnabled( index == Heatmap::Triangular );
+}
+
 /*
  *
  * Private Functions
@@ -250,17 +303,15 @@ void HeatmapGui::populateFields()
 
   // The fields
   QgsVectorDataProvider* provider = inputLayer->dataProvider();
-  QgsFieldMap fieldMap = provider->fields();
+  const QgsFields& fields = provider->fields();
   // Populate fields
   radiusFieldCombo->clear();
   weightFieldCombo->clear();
 
-  QMap<int, QgsField>::const_iterator i = fieldMap.constBegin();
-  while ( i != fieldMap.constEnd() )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    radiusFieldCombo->addItem( i.value().name(), QVariant( i.key() ) );
-    weightFieldCombo->addItem( i.value().name(), QVariant( i.key() ) );
-    ++i;
+    radiusFieldCombo->addItem( fields[idx].name(), QVariant( idx ) );
+    weightFieldCombo->addItem( fields[idx].name(), QVariant( idx ) );
   }
 
 }
@@ -283,10 +334,10 @@ void HeatmapGui::updateBBox()
   mBBox = inputLayer->extent();
   QgsCoordinateReferenceSystem layerCrs = inputLayer->crs();
 
-  float radiusInMapUnits = 0.0;
+  double radiusInMapUnits = 0.0;
   if ( useRadius->isChecked() )
   {
-    float maxInField = inputLayer->maximumValue( radiusFieldCombo->itemData( radiusFieldCombo->currentIndex() ).toInt() ).toFloat();
+    double maxInField = inputLayer->maximumValue( radiusFieldCombo->itemData( radiusFieldCombo->currentIndex() ).toInt() ).toDouble();
 
     if ( radiusFieldUnitCombo->currentIndex() == HeatmapGui::Meters )
     {
@@ -299,7 +350,7 @@ void HeatmapGui::updateBBox()
   }
   else
   {
-    float radiusValue = mBufferLineEdit->text().toFloat();
+    double radiusValue = mBufferLineEdit->text().toDouble();
     if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
     {
       radiusInMapUnits = mapUnitsOf( radiusValue, layerCrs );
@@ -327,7 +378,7 @@ void HeatmapGui::updateBBox()
   }
 }
 
-float HeatmapGui::mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs )
+double HeatmapGui::mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs )
 {
   // converter function to transform metres input to mapunits
   // so that bounding box can be updated
@@ -358,9 +409,9 @@ bool HeatmapGui::variableRadius()
   return useRadius->isChecked();
 }
 
-float HeatmapGui::radius()
+double HeatmapGui::radius()
 {
-  float radius = mBufferLineEdit->text().toInt();
+  double radius = mBufferLineEdit->text().toDouble();
   if ( mRadiusUnitCombo->currentIndex() == HeatmapGui::Meters )
   {
     radius = mapUnitsOf( radius, inputVectorLayer()->crs() );
@@ -377,9 +428,14 @@ int HeatmapGui::radiusUnit()
   return mRadiusUnitCombo->currentIndex();
 }
 
-float HeatmapGui::decayRatio()
+int HeatmapGui::kernelShape()
 {
-  return mDecayLineEdit->text().toFloat();
+  return kernelShapeCombo->currentIndex();
+}
+
+double HeatmapGui::decayRatio()
+{
+  return mDecayLineEdit->text().toDouble();
 }
 
 int HeatmapGui::radiusField()

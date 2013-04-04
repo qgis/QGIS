@@ -1,4 +1,4 @@
-Wind Effect (Windward / Leeward Index)
+Wind effect|Wind Effect (Windward / Leeward Index)
 ta_morphometry
 ParameterRaster|DEM|Elevation|False
 ParameterRaster|DIR|Wind Direction|True

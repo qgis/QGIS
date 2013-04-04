@@ -83,6 +83,24 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void setValueRelation( QgsVectorLayer::ValueRelationData valueRelationData );
 
     /**
+     * Setter to date format
+     * @param dateFormat date format
+     */
+    void setDateFormat( QString dateFormat );
+
+    /**
+     * Setter to widget size
+     * @param widgetSize size of widget
+     */
+    void setWidgetSize( QSize widgetSize );
+
+    /**
+     * Setter for checkbox for editable state of field
+     * @param bool editable
+     */
+    void setFieldEditable( bool editable );
+
+    /**
      * Getter for checked state after editing
      * @return string representing the checked
      */
@@ -104,6 +122,21 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * Getter for value relation data
      */
     QgsVectorLayer::ValueRelationData valueRelationData();
+
+    /**
+     * Getter for date format
+     */
+    QString dateFormat();
+
+    /**
+     * Getter for widget size
+     */
+    QSize widgetSize();
+
+    /**
+     * Getter for checkbox for editable state of field
+     */
+    bool fieldEditable();
 
   private slots:
     /**
@@ -140,9 +173,9 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void updateLayerColumns( int idx );
 
     /**
-     * update filter value list
+     * edit the filter expression
      */
-    void updateFilterColumn( int idx );
+    void editValueRelationExpression();
 
   private:
 
@@ -160,6 +193,7 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      */
     void updateMap( const QMap<QString, QVariant> &map );
 
+    bool mFieldEditable;
 
     QMap<QString, QVariant> mValueMap;
 
@@ -169,6 +203,8 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     QgsVectorLayer::RangeData mRangeData;
     QgsVectorLayer::ValueRelationData mValueRelationData;
     QgsVectorLayer::EditType mEditType;
+    QString mDateFormat;
+    QSize mWidgetSize;
 };
 
 #endif

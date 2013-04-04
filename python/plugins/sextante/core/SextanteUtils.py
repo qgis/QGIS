@@ -26,6 +26,9 @@ __revision__ = '$Format:%H$'
 import os
 import time
 import sys
+import uuid
+from PyQt4.QtCore import *
+from qgis.core import *
 
 class SextanteUtils:
 
@@ -33,10 +36,11 @@ class SextanteUtils:
 
     @staticmethod
     def userFolder():
-        userfolder = os.path.expanduser("~") + os.sep + "sextante"
-        mkdir(userfolder)
+        userDir = QFileInfo(QgsApplication.qgisUserDbFilePath()).path() + "/sextante"
+        if not QDir(userDir).exists():
+            QDir().mkpath(userDir)
 
-        return userfolder
+        return unicode(QDir.toNativeSeparators(userDir))
 
     @staticmethod
     def isWindows():
@@ -48,19 +52,20 @@ class SextanteUtils:
 
     @staticmethod
     def tempFolder():
-        tempfolder = os.path.expanduser("~") + os.sep + "sextante" + os.sep + "tempdata"
-        mkdir(tempfolder)
+        tempDir = os.path.join(unicode(QDir.tempPath()), "sextante")
+        if not QDir(tempDir).exists():
+            QDir().mkpath(tempDir)
 
-        return tempfolder
+        return unicode(os.path.abspath(tempDir))
 
     @staticmethod
     def setTempOutput(out, alg):
         ext = out.getDefaultFileExtension(alg)
         validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
         safeCmdName = ''.join(c for c in alg.commandLineName() if c in validChars)
-        filename = SextanteUtils.tempFolder() + os.sep + safeCmdName + str(SextanteUtils.NUM_EXPORTED) + "." + ext
+        uniqueSufix = str(uuid.uuid4()).replace("-","")
+        filename = SextanteUtils.tempFolder() + os.sep + safeCmdName + uniqueSufix + "." + ext
         out.value = filename
-        SextanteUtils.NUM_EXPORTED += 1
 
     @staticmethod
     def getTempFilename(ext):
@@ -69,6 +74,15 @@ class SextanteUtils:
             filename = path + os.sep + str(time.time()) + str(SextanteUtils.getNumExportedLayers())
         else:
             filename = path + os.sep + str(time.time()) + str(SextanteUtils.getNumExportedLayers()) + "." + ext
+        return filename
+
+    @staticmethod
+    def getTempFilenameInTempFolder(basename):
+        '''returns a temporary filename for a given file, putting it into a temp folder but not changing its basename'''
+        path = SextanteUtils.tempFolder()
+        tempFolder = os.path.join(path, str(uuid.uuid4()).replace("-",""))
+        mkdir(tempFolder)
+        filename =  os.path.join(tempFolder, basename)
         return filename
 
     @staticmethod
@@ -85,5 +99,3 @@ def mkdir(newdir):
             mkdir(head)
         if tail:
             os.mkdir(newdir)
-
-

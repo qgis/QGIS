@@ -108,7 +108,7 @@ class GdalToolsBasePluginWidget:
 
       outFn = QString(outFn)
       if outFn.isEmpty():
-        QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "No output file created." ) ) 
+        QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "No output file created." ) )
         return
 
       fileInfo = QFileInfo(outFn)
@@ -120,8 +120,8 @@ class GdalToolsBasePluginWidget:
         QMessageBox.warning(self, self.tr( "Warning" ), self.tr( "%1 not created." ).arg( outFn ) )
 
   # This method is useful to set up options for the command. It sets for each passed widget:
-  # 1. its passed signals to connect to the BasePluginWidget.someValueChanged() slot, 
-  # 2. its enabler checkbox or enabled status, 
+  # 1. its passed signals to connect to the BasePluginWidget.someValueChanged() slot,
+  # 2. its enabler checkbox or enabled status,
   # 3. its status as visible (hide) if the installed gdal version is greater or equal (lesser) then the passed version
   #
   # wdgts_sgnls_chk_ver_list: list of wdgts_sgnls_chk_ver
@@ -166,7 +166,18 @@ class GdalToolsBasePluginWidget:
         return
 
       # if check version fails, disable the widget then hide both it and its enabler checkbox
-      if ver != None:
+      # new check for gdal 1.10, must update all widgets for this and then remove previous check
+      if ver != None and isinstance(ver, int):
+        gdalVerNum = Utils.GdalConfig.versionNum()
+        if ver > gdalVerNum:
+          wdgt.setVisible(False)
+          if isinstance(chk, QWidget):
+            chk.setVisible(False)
+            chk.setChecked(False)
+          sgnls = None
+          chk = False
+
+      elif ver != None:
         if not isinstance(ver, Utils.Version):
           ver = Utils.Version(ver)
         gdalVer = Utils.GdalConfig.version()

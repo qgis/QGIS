@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>213</width>
-    <height>152</height>
+    <width>221</width>
+    <height>172</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <widget class="QCheckBox" name="mMapPositionFixedCheckBox">
      <property name="text">
@@ -22,8 +22,22 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="1">
+      <widget class="QgsColorButton" name="mFrameColorButton">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mBackgroundColorLabel">
+       <property name="text">
+        <string>Background color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
       <widget class="QLabel" name="mMapMarkerLabel">
        <property name="text">
         <string>Map marker</string>
@@ -33,18 +47,21 @@
        </property>
       </widget>
      </item>
-     <item>
+     <item row="2" column="1">
+      <widget class="QgsColorButton" name="mBackgroundColorButton">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
       <widget class="QPushButton" name="mMapMarkerButton">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
+     <item row="1" column="0">
       <widget class="QLabel" name="mFrameWidthLabel">
        <property name="text">
         <string>Frame width</string>
@@ -54,33 +71,13 @@
        </property>
       </widget>
      </item>
-     <item>
+     <item row="1" column="1">
       <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox"/>
      </item>
-    </layout>
-   </item>
-   <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
+     <item row="3" column="0">
       <widget class="QLabel" name="mFrameColorLabel">
        <property name="text">
         <string>Frame color</string>
-       </property>
-       <property name="buddy">
-        <cstring>mFrameColorButton</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsColorButton" name="mFrameColorButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string/>
        </property>
       </widget>
      </item>
@@ -91,7 +88,7 @@
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
+   <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>

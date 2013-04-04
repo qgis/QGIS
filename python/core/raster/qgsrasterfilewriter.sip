@@ -59,8 +59,10 @@ class QgsRasterFileWriter
     void setMaxTileHeight( int h );
     int maxTileHeight() const;
 
-    // for now not putting createOptions in all methods, use createOptions()
     void setCreateOptions( const QStringList& list );
     QStringList createOptions() const;
+
+    QStringList pyramidsConfigOptions() const;
+    void setPyramidsConfigOptions( const QStringList& list );
 };
 

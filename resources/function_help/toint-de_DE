@@ -1,0 +1,13 @@
+<h3>Funktion toint()</h3>
+Wandelt eine Zeichenkette in eine ganze Zahl um.  Bricht ab, wenn die Zeichenkette nicht in eine Zahl umgewandelt werden kann ('123asd' ist z.B. ungültig).
+
+<p><h4>Syntax</h4>
+     toint(<i>zeichenkette</i>)</p>
+
+<p><h4>Argumente</h4>
+<!-- List args for functions here-->
+<i>  zeichenkette</i> -> ist eine Zeichenkette.  Die in eine ganze Zahl umzuwandelnde Zeichenkette.</p>
+
+<p><h4>Beispiel</h4>
+<!-- Show example of function.-->
+     toint('123') -> 123</p>

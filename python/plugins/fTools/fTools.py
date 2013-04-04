@@ -43,7 +43,7 @@ import doGeometry, doGeoprocessing, doVisual
 import doIntersectLines, doSelectByLocation, doVectorSplit, doMeanCoords
 import doPointDistance, doPointsInPolygon, doRandom, doRandPoints, doRegPoints
 import doSpatialJoin, doSubsetSelect, doSumLines, doVectorGrid, doMergeShapes
-import doValidate, doSimplify, doDefineProj, doSpatialIndex
+import doValidate, doSimplify, doDefineProj, doSpatialIndex, doEliminate
 
 class fToolsPlugin:
   def __init__(self,iface):
@@ -94,6 +94,7 @@ class fToolsPlugin:
     self.clip.setIcon(QIcon(self.getThemeIcon("clip.png")))
     self.dissolve.setIcon(QIcon(self.getThemeIcon("dissolve.png")))
     self.erase.setIcon(QIcon(self.getThemeIcon("difference.png")))
+    self.eliminate.setIcon(QIcon(self.getThemeIcon("eliminate.png")))
 
     self.conversionMenu.setIcon(QIcon(self.getThemeIcon("geometry.png")))
     self.compGeo.setIcon(QIcon(self.getThemeIcon("export_geometry.png")))
@@ -134,7 +135,7 @@ class fToolsPlugin:
     self.meanCoords = QAction(QCoreApplication.translate("fTools", "Mean coordinate(s)"),self.iface.mainWindow())
     self.intLines = QAction(QCoreApplication.translate("fTools", "Line intersections") ,self.iface.mainWindow())
     self.analysisMenu.addActions([self.distMatrix, self.sumLines, self.pointsPoly,
-    self.listUnique, self.compStats, self.nearestNeigh, self.meanCoords, self.intLines])
+        self.listUnique, self.compStats, self.nearestNeigh, self.meanCoords, self.intLines])
 
     self.researchMenu = QMenu(QCoreApplication.translate("fTools", "&Research Tools"))
     self.randSel = QAction(QCoreApplication.translate("fTools", "Random selection"),self.iface.mainWindow())
@@ -145,7 +146,7 @@ class fToolsPlugin:
     self.selectLocation = QAction(QCoreApplication.translate("fTools", "Select by location"), self.iface.mainWindow())
     self.layerExtent = QAction(QCoreApplication.translate("fTools", "Polygon from layer extent"), self.iface.mainWindow())
     self.researchMenu.addActions([self.randSel, self.randSub, self.randPoints,
-    self.regPoints, self.vectGrid, self.selectLocation, self.layerExtent])
+        self.regPoints, self.vectGrid, self.selectLocation, self.layerExtent])
 
     self.geoMenu = QMenu(QCoreApplication.translate("fTools", "&Geoprocessing Tools"))
     self.minConvex = QAction(QCoreApplication.translate("fTools", "Convex hull(s)"),self.iface.mainWindow())
@@ -156,8 +157,10 @@ class fToolsPlugin:
     self.clip = QAction(QCoreApplication.translate("fTools", "Clip"),self.iface.mainWindow())
     self.dissolve = QAction(QCoreApplication.translate("fTools", "Dissolve"),self.iface.mainWindow())
     self.erase = QAction(QCoreApplication.translate("fTools", "Difference"),self.iface.mainWindow())
+    self.eliminate = QAction( QCoreApplication.translate( "fTools", "Eliminate sliver polygons" ),self.iface.mainWindow() )
     self.geoMenu.addActions([self.minConvex, self.dynaBuffer, self.intersect,
-    self.union, self.symDifference, self.clip, self.erase, self.dissolve])
+        self.union, self.symDifference, self.clip, self.erase, self.dissolve,
+        self.eliminate])
 
     self.conversionMenu = QMenu(QCoreApplication.translate("fTools", "G&eometry Tools"))
     self.compGeo = QAction(QCoreApplication.translate("fTools", "Export/Add geometry columns"),self.iface.mainWindow())
@@ -173,8 +176,8 @@ class fToolsPlugin:
     self.polysToLines = QAction(QCoreApplication.translate("fTools", "Polygons to lines"),self.iface.mainWindow())
     self.linesToPolys = QAction(QCoreApplication.translate("fTools", "Lines to polygons"),self.iface.mainWindow())
     self.conversionMenu.addActions([self.checkGeom, self.compGeo, self.centroids, self.delaunay, self.voronoi,
-    self.simplify, self.densify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.linesToPolys,
-    self.extNodes])
+        self.simplify, self.densify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.linesToPolys,
+        self.extNodes])
 
     self.dataManageMenu = QMenu(QCoreApplication.translate("fTools", "&Data Management Tools"))
     self.define = QAction(QCoreApplication.translate("fTools", "Define current projection"), self.iface.mainWindow())
@@ -183,6 +186,7 @@ class fToolsPlugin:
     self.mergeShapes = QAction(QCoreApplication.translate("fTools", "Merge shapefiles to one"), self.iface.mainWindow())
     self.spatialIndex = QAction(QCoreApplication.translate("fTools", "Create spatial index"), self.iface.mainWindow())
     self.dataManageMenu.addActions([self.define, self.spatJoin, self.splitVect, self.mergeShapes, self.spatialIndex])
+
     self.updateThemeIcons("theme")
 
     self.tmpAct = QAction( self.iface.mainWindow() )
@@ -220,6 +224,7 @@ class fToolsPlugin:
     QObject.connect(self.union, SIGNAL("triggered()"), self.dounion)
     QObject.connect(self.clip, SIGNAL("triggered()"), self.doclip)
     QObject.connect(self.dynaBuffer, SIGNAL("triggered()"), self.dodynaBuffer)
+    QObject.connect(self.eliminate, SIGNAL("triggered()"), self.doEliminate)
 
     QObject.connect(self.multiToSingle, SIGNAL("triggered()"), self.domultiToSingle)
     QObject.connect(self.singleToMulti, SIGNAL("triggered()"), self.dosingleToMulti)
@@ -415,4 +420,8 @@ class fToolsPlugin:
   def doSpatIndex(self):
     d = doSpatialIndex.Dialog(self.iface)
     d.show()
+    d.exec_()
+
+  def doEliminate(self):
+    d = doEliminate.Dialog(self.iface)
     d.exec_()

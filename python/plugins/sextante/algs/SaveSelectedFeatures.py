@@ -30,7 +30,6 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.core.QGisLayers import QGisLayers
-import os
 
 
 class SaveSelectedFeatures(GeoAlgorithm):
@@ -55,10 +54,10 @@ class SaveSelectedFeatures(GeoAlgorithm):
         with some other properties'''
 
         #the name that the user will see in the toolbox
-        self.name = "Create new layer with selected features"
+        self.name = "Save selected features"
 
         #the branch of the toolbox under which the algorithm will appear
-        self.group = "Algorithms for vector layers"
+        self.group = "Vector general tools"
 
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument
@@ -66,8 +65,6 @@ class SaveSelectedFeatures(GeoAlgorithm):
         # we add a vector layer as output
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer with selected features"))
 
-    def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
 
     def processAlgorithm(self, progress):
         '''Here is where the processing itself takes place'''
@@ -88,12 +85,16 @@ class SaveSelectedFeatures(GeoAlgorithm):
         #To do so, we call the getVectorWriter method in the Output object.
         #That will give as a SextanteVectorWriter, that we can later use to add features.
         provider = vectorLayer.dataProvider()
-        writer = output.getVectorWriter( provider.fields(), provider.geometryType(), provider.crs() )
+        writer = output.getVectorWriter( provider.fields(), provider.geometryType(), vectorLayer.crs() )
 
         #Now we take the selected features and add them to the output layer
-        selection = vectorLayer.selectedFeatures()
-        for feat in selection:
+        features = QGisLayers.features(vectorLayer)
+        total = len(features)
+        i = 0
+        for feat in features:
             writer.addFeature(feat)
+            progress.setPercentage(100 * i / float(total))
+            i += 1
         del writer
 
         #There is nothing more to do here. We do not have to open the layer that we have created.

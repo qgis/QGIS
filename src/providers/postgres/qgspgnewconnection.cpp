@@ -51,7 +51,8 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
     txtPort->setText( port );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
     cb_publicSchemaOnly->setChecked( settings.value( key + "/publicOnly", false ).toBool() );
-    cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometrycolumnsOnly", true ).toBool() );
+    cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometryColumnsOnly", true ).toBool() );
+    cb_dontResolveType->setChecked( settings.value( key + "/dontResolveType", false ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
     // Ensure that cb_publicSchemaOnly is set correctly
     on_cb_geometryColumnsOnly_clicked();
@@ -131,6 +132,7 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
   settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
   settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
+  settings.setValue( baseKey + "/dontResolveType", cb_dontResolveType->isChecked() );
   settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
   settings.setValue( baseKey + "/sslmode", cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );

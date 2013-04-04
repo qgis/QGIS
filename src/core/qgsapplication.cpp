@@ -25,6 +25,7 @@
 #include <QFileOpenEvent>
 #include <QMessageBox>
 #include <QPalette>
+#include <QProcess>
 #include <QSettings>
 #include <QIcon>
 #include <QPixmap>
@@ -50,6 +51,7 @@ QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
+QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
 QString ABISYM( QgsApplication::mConfigPath );
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
 QString ABISYM( QgsApplication::mBuildSourcePath );
@@ -82,7 +84,7 @@ void QgsApplication::init( QString customConfigPath )
 {
   if ( customConfigPath.isEmpty() )
   {
-    customConfigPath = QDir::homePath() + QString( "/.qgis/" );
+    customConfigPath = QDir::homePath() + QString( "/.qgis2/" );
   }
 
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
@@ -116,7 +118,7 @@ void QgsApplication::init( QString customConfigPath )
   {
     // we run from source directory - not installed to destination (specified prefix)
     ABISYM( mPrefixPath ) = QString(); // set invalid path
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && ! defined(USING_NMAKE)
     setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) + "/" + ABISYM( mCfgIntDir ) );
 #else
     setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
@@ -151,6 +153,19 @@ void QgsApplication::init( QString customConfigPath )
   }
 
   ABISYM( mDefaultSvgPaths ) << qgisSettingsDirPath() + QString( "svg/" );
+
+  // store system environment variables passed to application, before they are adjusted
+  QMap<QString, QString> systemEnvVarMap;
+  foreach ( const QString &varStr, QProcess::systemEnvironment() )
+  {
+    int pos = varStr.indexOf( QLatin1Char( '=' ) );
+    if ( pos == -1 )
+      continue;
+    QString varStrName = varStr.left( pos );
+    QString varStrValue = varStr.mid( pos + 1 );
+    systemEnvVarMap.insert( varStrName, varStrValue );
+  }
+  ABISYM( mSystemEnvVars ) = systemEnvVarMap;
 
   // set a working directory up for gdal to write .aux.xml files into
   // for cases where the raster dir is read only to the user
@@ -428,11 +443,6 @@ const QString QgsApplication::translatorsFilePath()
   return ABISYM( mPkgDataPath ) + QString( "/doc/TRANSLATORS" );
 }
 
-const QString QgsApplication::developerPath()
-{
-  return QString(); // developer images are no longer shipped!
-}
-
 /*!
   Returns the path to the help application.
 */
@@ -540,15 +550,6 @@ const QStringList QgsApplication::svgPaths()
 
   myPathList << ABISYM( mDefaultSvgPaths );
   return myPathList;
-}
-
-/*!
-  Returns the path to the applications svg directories.
-*/
-const QString QgsApplication::svgPath()
-{
-  QString svgSubDir( ABISYM( mRunningFromBuildDir ) ? "/images/svg/" : "/svg/" );
-  return ABISYM( mPkgDataPath ) + svgSubDir;
 }
 
 const QString QgsApplication::userStyleV2Path()
@@ -858,3 +859,5 @@ void QgsApplication::applyGdalSkippedDrivers()
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
 }
+
+

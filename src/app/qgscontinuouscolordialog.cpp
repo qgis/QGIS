@@ -34,20 +34,20 @@ QgsContinuousColorDialog::QgsContinuousColorDialog( QgsVectorLayer * layer )
   setupUi( this );
   QgsDebugMsg( "entered." );
 
-  QObject::connect( btnMinValue, SIGNAL( clicked() ), this, SLOT( selectMinimumColor() ) );
-  QObject::connect( btnMaxValue, SIGNAL( clicked() ), this, SLOT( selectMaximumColor() ) );
+  QObject::connect( btnMinValue, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( selectMinimumColor( const QColor& ) ) );
+  QObject::connect( btnMaxValue, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( selectMaximumColor( const QColor& ) ) );
 
   //find out the numerical fields of mVectorLayer
-  const QgsFieldMap & fields = mVectorLayer->pendingFields();
+  const QgsFields & fields = mVectorLayer->pendingFields();
   QString displayName;
 
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QVariant::Type type = it->type();
+    QVariant::Type type = fields[idx].type();
     if ( type == QVariant::Int || type == QVariant::Double || type == QVariant::LongLong )
     {
-      displayName = mVectorLayer->attributeDisplayName( it.key() );
-      classificationComboBox->addItem( displayName, it.key() );
+      displayName = mVectorLayer->attributeDisplayName( idx );
+      classificationComboBox->addItem( displayName, idx );
     }
   }
 
@@ -175,24 +175,14 @@ void QgsContinuousColorDialog::apply()
   renderer->setDrawPolygonOutline( drawOutline );
 }
 
-void QgsContinuousColorDialog::selectMinimumColor()
+void QgsContinuousColorDialog::selectMinimumColor( const QColor& color )
 {
-  QColor mincolor = QColorDialog::getColor( btnMinValue->color(), this );
-  if ( mincolor.isValid() )
-  {
-    btnMinValue->setColor( mincolor );
-  }
-  activateWindow();
+  Q_UNUSED( color )
 }
 
-void QgsContinuousColorDialog::selectMaximumColor()
+void QgsContinuousColorDialog::selectMaximumColor( const QColor& color )
 {
-  QColor maxcolor = QColorDialog::getColor( btnMaxValue->color(), this );
-  if ( maxcolor.isValid() )
-  {
-    btnMaxValue->setColor( maxcolor );
-  }
-  activateWindow();
+  Q_UNUSED( color )
 }
 
 void QgsContinuousColorDialog::on_cb_polygonOutline_clicked()

@@ -1,4 +1,0 @@
-Transpose Table
-table_tools
-ParameterTable|INPUT|Input|False
-OutputTable|OUTPUT|Output

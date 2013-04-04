@@ -17,6 +17,7 @@
 #include <cfloat>
 
 #include "qgscoordinatetransform.h"
+#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsmaprenderer.h"
@@ -46,8 +47,6 @@ QgsMapRenderer::QgsMapRenderer()
   mScale = 1.0;
   mScaleCalculator = new QgsScaleCalculator;
   mDistArea = new QgsDistanceArea;
-  mCachedTrForLayer = 0;
-  mCachedTr = 0;
 
   mDrawing = false;
   mOverview = false;
@@ -71,7 +70,6 @@ QgsMapRenderer::~QgsMapRenderer()
   delete mDistArea;
   delete mDestCRS;
   delete mLabelingEngine;
-  delete mCachedTr;
 }
 
 QgsRectangle QgsMapRenderer::extent() const
@@ -266,7 +264,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
   mDrawing = true;
 
-  QgsCoordinateTransform* ct;
+  const QgsCoordinateTransform* ct;
 
 #ifdef QGISDEBUG
   QgsDebugMsg( "Starting to render layer stack." );
@@ -379,13 +377,18 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       continue;
     }
 
-    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  extent:%5" )
+    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  extent:%5  blendmode:%6" )
                  .arg( ml->name() )
                  .arg( ml->minimumScale() )
                  .arg( ml->maximumScale() )
                  .arg( ml->hasScaleBasedVisibility() )
                  .arg( ml->extent().toString() )
+                 .arg( ml->blendMode() )
                );
+
+    // Set the QPainter composition mode so that this layer is rendered using
+    // the desired blending mode
+    mypContextPainter->setCompositionMode( getCompositionMode( ml->blendMode() ) );
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {
@@ -402,7 +405,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       {
         r1 = mExtent;
         split = splitLayersExtent( ml, r1, r2 );
-        ct = new QgsCoordinateTransform( ml->crs(), *mDestCRS );
+        ct = QgsCoordinateTransformCache::instance()->transform( ml->crs().authid(), mDestCRS->authid() );
         mRenderContext.setExtent( r1 );
         QgsDebugMsg( "  extent 1: " + r1.toString() );
         QgsDebugMsg( "  extent 2: " + r2.toString() );
@@ -556,6 +559,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
   QgsDebugMsg( "Done rendering map layers" );
 
+  // Reset the composition mode before rendering the labels
+  mRenderContext.painter()->setCompositionMode( QPainter::CompositionMode_SourceOver );
+
   if ( !mOverview )
   {
     // render all labels for vector layers in the stack, starting at the base
@@ -692,7 +698,6 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
       rect = transform.transformBoundingBox( mExtent );
     }
 
-    invalidateCachedLayerCrs();
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );
     mDistArea->setSourceCrs( crs.srsid() );
     *mDestCRS = crs;
@@ -734,7 +739,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
       // extent separately.
       static const double splitCoord = 180.0;
 
-      if ( mCachedTr->sourceCrs().geographicFlag() )
+      if ( layer->crs().geographicFlag() )
       {
         // Note: ll = lower left point
         //   and ur = upper right point
@@ -1138,35 +1143,51 @@ void QgsMapRenderer::setLabelingEngine( QgsLabelingEngineInterface* iface )
   mLabelingEngine = iface;
 }
 
-QgsCoordinateTransform *QgsMapRenderer::tr( QgsMapLayer *layer )
+const QgsCoordinateTransform* QgsMapRenderer::tr( QgsMapLayer *layer )
 {
-  if ( mCachedTrForLayer != layer )
+  if ( !layer || !mDestCRS )
   {
-    invalidateCachedLayerCrs();
-
-    delete mCachedTr;
-    mCachedTr = new QgsCoordinateTransform( layer->crs(), *mDestCRS );
-    mCachedTrForLayer = layer;
-
-    connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( invalidateCachedLayerCrs() ) );
-    connect( layer, SIGNAL( destroyed() ), this, SLOT( cachedLayerDestroyed() ) );
+    return 0;
   }
-
-  return mCachedTr;
+  return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid() );
 }
 
-void QgsMapRenderer::cachedLayerDestroyed()
+/** Returns a QPainter::CompositionMode corresponding to a QgsMapRenderer::BlendMode
+ */
+QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRenderer::BlendMode blendMode )
 {
-  if ( mCachedTrForLayer == sender() )
-    mCachedTrForLayer = 0;
-}
-
-void QgsMapRenderer::invalidateCachedLayerCrs()
-{
-  if ( mCachedTrForLayer )
-    disconnect( mCachedTrForLayer, SIGNAL( layerCrsChanged() ), this, SLOT( invalidateCachedLayerCrs() ) );
-
-  mCachedTrForLayer = 0;
+  // Map QgsMapRenderer::BlendNormal to QPainter::CompositionMode
+  switch ( blendMode )
+  {
+    case QgsMapRenderer::BlendNormal:
+      return QPainter::CompositionMode_SourceOver;
+    case QgsMapRenderer::BlendLighten:
+      return QPainter::CompositionMode_Lighten;
+    case QgsMapRenderer::BlendScreen:
+      return QPainter::CompositionMode_Screen;
+    case QgsMapRenderer::BlendDodge:
+      return QPainter::CompositionMode_ColorDodge;
+    case QgsMapRenderer::BlendAddition:
+      return QPainter::CompositionMode_Plus;
+    case QgsMapRenderer::BlendDarken:
+      return QPainter::CompositionMode_Darken;
+    case QgsMapRenderer::BlendMultiply:
+      return QPainter::CompositionMode_Multiply;
+    case QgsMapRenderer::BlendBurn:
+      return QPainter::CompositionMode_ColorBurn;
+    case QgsMapRenderer::BlendOverlay:
+      return QPainter::CompositionMode_Overlay;
+    case QgsMapRenderer::BlendSoftLight:
+      return QPainter::CompositionMode_SoftLight;
+    case QgsMapRenderer::BlendHardLight:
+      return QPainter::CompositionMode_HardLight;
+    case QgsMapRenderer::BlendDifference:
+      return QPainter::CompositionMode_Difference;
+    case QgsMapRenderer::BlendSubtract:
+      return QPainter::CompositionMode_Exclusion;
+    default:
+      return QPainter::CompositionMode_SourceOver;
+  }
 }
 
 bool QgsMapRenderer::mDrawing = false;

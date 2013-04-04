@@ -5,7 +5,7 @@ class QgsAnnotationItem: QgsMapCanvasItem
 %TypeHeaderCode
 #include <qgsannotationitem.h>
 %End
-  
+
   public:
     enum MouseMoveAction
     {

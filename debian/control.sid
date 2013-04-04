@@ -130,7 +130,7 @@ Description: GRASS plugin for Quantum GIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), python-pyspatialite, python-qscintilla2, ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), python-pyspatialite, python-psycopg2, python-qscintilla2, ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
 Description: Python bindings to Quantum GIS
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -141,7 +141,7 @@ Package: python-qgis-common
 Section: python
 Architecture: all
 Provides: ${python:Provides}
-Depends: gdal-bin, python-gdal, libjs-jquery, libjs-underscore, ${misc:Depends}
+Depends: gdal-bin, python-gdal, python-matplotlib, libjs-jquery, libjs-underscore, ${misc:Depends}
 Description: Python bindings to Quantum GIS - architecture-independent files
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.

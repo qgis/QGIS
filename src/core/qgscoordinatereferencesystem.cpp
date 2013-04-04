@@ -283,21 +283,17 @@ void QgsCoordinateReferenceSystem::validate()
 
   // try to validate using custom validation routines
   if ( mCustomSrsValidation )
-    mCustomSrsValidation( this );
+    mCustomSrsValidation( *this );
 
   if ( !mIsValidFlag )
-    // set the default
-    createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+  {
+    *this = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
+  }
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrid( long id )
 {
   return loadFromDb( QgsApplication::srsDbFilePath(), "srid", QString::number( id ) );
-}
-
-bool QgsCoordinateReferenceSystem::createFromEpsg( long id )
-{
-  return createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( id ) );
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
@@ -818,14 +814,6 @@ long QgsCoordinateReferenceSystem::postgisSrid() const
 
 }
 
-long QgsCoordinateReferenceSystem::epsg() const
-{
-  if ( mAuthId.startsWith( "EPSG:", Qt::CaseInsensitive ) )
-    return mAuthId.mid( 5 ).toLong();
-  else
-    return 0;
-}
-
 QString QgsCoordinateReferenceSystem::authid() const
 {
   return mAuthId;
@@ -1129,13 +1117,6 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
 bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &theSrs ) const
 {
   return  !( *this == theSrs );
-}
-
-bool QgsCoordinateReferenceSystem::equals( QString theProj4String )
-{
-  QgsCoordinateReferenceSystem r;
-  r.createFromProj4( theProj4String );
-  return *this == r;
 }
 
 QString QgsCoordinateReferenceSystem::toWkt() const

@@ -71,13 +71,38 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
     return FailedToOpen;
   }
 
-  checkHasMetadataTables( handle );
-  if ( !mErrorMsg.isNull() )
+  int ret = checkHasMetadataTables( handle );
+  if ( !mErrorMsg.isNull() || ret == LayoutUnknown )
   {
     // unexpected error; invalid SpatiaLite DB
     return FailedToCheckMetadata;
   }
 
+  bool recentVersion = false;
+#ifdef SPATIALITE_VERSION_GE_4_0_0
+  // only if libspatialite version is >= 4.0.0
+  recentVersion = true;
+#endif
+
+  if ( ret == LayoutCurrent && recentVersion == false )
+  {
+    // obsolete library version
+    mErrorMsg = tr( "obsolete libspatialite: connecting to this DB requires using v.4.0 (or any subsequent)" );
+    return FailedToCheckMetadata;
+  }
+
+#ifdef SPATIALITE_VERSION_GE_4_0_0
+  // only if libspatialite version is >= 4.0.0
+  // using v.4.0 Abstract Interface
+  if ( !getTableInfoAbstractInterface( handle, loadGeometrylessTables ) )
+  {
+    return FailedToGetTables;
+  }
+  closeSpatiaLiteDb( handle );
+  return NoError;
+#endif
+
+// obsolete library: still using the traditional approach
   if ( !getTableInfo( handle, loadGeometrylessTables ) )
   {
     return FailedToGetTables;
@@ -87,11 +112,38 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
   return NoError;
 }
 
+bool QgsSpatiaLiteConnection::updateStatistics()
+{
+#ifdef SPATIALITE_VERSION_GE_4_0_0
+  QFileInfo fi( mPath );
+  if ( !fi.exists() )
+  {
+    return false;
+  }
+
+  sqlite3* handle = openSpatiaLiteDb( fi.canonicalFilePath() );
+  if ( handle == NULL )
+  {
+    return false;
+  }
+
+  bool ret = update_layer_statistics( handle, NULL, NULL );
+
+  closeSpatiaLiteDb( handle );
+
+  return ret;
+#else
+  return false;
+#endif
+}
 
 sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( QString path )
 {
   sqlite3 *handle = NULL;
   int ret;
+  // activating the SpatiaLite library
+  spatialite_init( 0 );
+
   // trying to open the SQLite DB
   ret = sqlite3_open_v2( path.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
   if ( ret )
@@ -109,21 +161,25 @@ void QgsSpatiaLiteConnection::closeSpatiaLiteDb( sqlite3 * handle )
     sqlite3_close( handle );
 }
 
-bool QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
+int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
 {
   bool gcSpatiaLite = false;
   bool rsSpatiaLite = false;
+  bool gcSpatiaLite4 = false;
+  bool rsSpatiaLite4 = false;
   bool tableName = false;
   bool geomColumn = false;
   bool coordDims = false;
   bool gcSrid = false;
   bool type = false;
+  bool geometry_type = false;
   bool spatialIndex = false;
   bool srsSrid = false;
   bool authName = false;
   bool authSrid = false;
   bool refSysName = false;
   bool proj4text = false;
+  bool srtext = false;
   int ret;
   const char *name;
   int i;
@@ -153,6 +209,8 @@ bool QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
         gcSrid = true;
       if ( strcasecmp( name, "type" ) == 0 )
         type = true;
+      if ( strcasecmp( name, "geometry_type" ) == 0 )
+        geometry_type = true;
       if ( strcasecmp( name, "spatial_index_enabled" ) == 0 )
         spatialIndex = true;
     }
@@ -160,6 +218,8 @@ bool QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
   sqlite3_free_table( results );
   if ( tableName && geomColumn && type && coordDims && gcSrid && spatialIndex )
     gcSpatiaLite = true;
+  if ( tableName && geomColumn && geometry_type && coordDims && gcSrid && spatialIndex )
+    gcSpatiaLite4 = true;
 
   // checking if table SPATIAL_REF_SYS exists and has the expected layout
   ret = sqlite3_get_table( handle, "PRAGMA table_info(spatial_ref_sys)", &results, &rows, &columns, &errMsg );
@@ -182,18 +242,24 @@ bool QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
         refSysName = true;
       if ( strcasecmp( name, "proj4text" ) == 0 )
         proj4text = true;
+      if ( strcasecmp( name, "srtext" ) == 0 )
+        srtext = true;
     }
   }
   sqlite3_free_table( results );
   if ( srsSrid && authName && authSrid && refSysName && proj4text )
     rsSpatiaLite = true;
+  if ( srsSrid && authName && authSrid && refSysName && proj4text && srtext )
+    rsSpatiaLite4 = true;
 
   // OK, this one seems to be a valid SpatiaLite DB
+  if ( gcSpatiaLite4 && rsSpatiaLite4 )
+    return LayoutCurrent;
   if ( gcSpatiaLite && rsSpatiaLite )
-    return true;
+    return LayoutLegacy;
 
   // this seems to be a valid SQLite DB, but not a SpatiaLite's one
-  return false;
+  return LayoutUnknown;
 
 error:
   // unexpected IO error
@@ -206,7 +272,9 @@ error:
   return false;
 }
 
-bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometrylessTables )
+#ifdef SPATIALITE_VERSION_GE_4_0_0
+// only if libspatialite version is >= 4.0.0
+bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 * handle, bool loadGeometrylessTables )
 {
   int ret;
   int i;
@@ -214,88 +282,71 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
   int rows;
   int columns;
   char *errMsg = NULL;
-  bool ok = false;
   QString sql;
+  gaiaVectorLayersListPtr list;
 
-  // the following query return the tables containing a Geometry column
-  sql = "SELECT f_table_name, f_geometry_column, type "
-        "FROM geometry_columns";
-  ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
-  if ( ret != SQLITE_OK )
-    goto error;
-  if ( rows < 1 )
-    ;
+  const char *version = spatialite_version();
+  if ( isdigit( *version ) && *version >= '4' )
+    ; // OK, linked against libspatialite v.4.0 (or any subsequent)
   else
   {
-    for ( i = 1; i <= rows; i++ )
-    {
-      if ( isRasterlite1Datasource( handle, results[( i * columns ) + 0] ) )
-        continue;
-      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-      QString column = QString::fromUtf8( results[( i * columns ) + 1] );
-      QString type = results[( i * columns ) + 2];
-      if ( isDeclaredHidden( handle, tableName, column ) )
-        continue;
+    mErrorMsg = tr( "obsolete libspatialite: AbstractInterface is unsupported" );
+    return false;
+  }
 
+// attempting to load the VectorLayersList
+  list = gaiaGetVectorLayersList( handle, NULL, NULL, GAIA_VECTORS_LIST_FAST );
+  if ( list != NULL )
+  {
+    gaiaVectorLayerPtr lyr = list->First;
+    while ( lyr != NULL )
+    {
+      // populating the QGIS own Layers List
+      if ( lyr->AuthInfos )
+      {
+        if ( lyr->AuthInfos->IsHidden )
+        {
+          // skipping any Hidden layer
+          lyr = lyr->Next;
+          continue;
+        }
+      }
+
+      QString tableName = QString::fromUtf8( lyr->TableName );
+      QString column = QString::fromUtf8( lyr->GeometryName );
+      QString type = tr( "UNKNOWN" );
+      switch ( lyr->GeometryType )
+      {
+        case GAIA_VECTOR_GEOMETRY:
+          type = tr( "GEOMETRY" );
+          break;
+        case GAIA_VECTOR_POINT:
+          type = tr( "POINT" );
+          break;
+        case GAIA_VECTOR_LINESTRING:
+          type = tr( "LINESTRING" );
+          break;
+        case GAIA_VECTOR_POLYGON:
+          type = tr( "POLYGON" );
+          break;
+        case GAIA_VECTOR_MULTIPOINT:
+          type = tr( "MULTIPOINT" );
+          break;
+        case GAIA_VECTOR_MULTILINESTRING:
+          type = tr( "MULTILINESTRING" );
+          break;
+        case GAIA_VECTOR_MULTIPOLYGON:
+          type = tr( "MULTIPOLYGON" );
+          break;
+        case GAIA_VECTOR_GEOMETRYCOLLECTION:
+          type = tr( "GEOMETRYCOLLECTION" );
+          break;
+      };
       mTables.append( TableEntry( tableName, column, type ) );
+
+      lyr = lyr->Next;
     }
-    ok = true;
-  }
-  sqlite3_free_table( results );
-
-  if ( checkViewsGeometryColumns( handle ) )
-  {
-    // the following query return the views supporting a Geometry column
-    sql = "SELECT view_name, view_geometry, type "
-          "FROM views_geometry_columns "
-          "JOIN geometry_columns USING (f_table_name, f_geometry_column)";
-    ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
-    if ( ret != SQLITE_OK )
-      goto error;
-    if ( rows < 1 )
-      ;
-    else
-    {
-      for ( i = 1; i <= rows; i++ )
-      {
-        QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-        QString column = QString::fromUtf8( results[( i * columns ) + 1] );
-        QString type = results[( i * columns ) + 2];
-        if ( isDeclaredHidden( handle, tableName, column ) )
-          continue;
-
-        mTables.append( TableEntry( tableName, column, type ) );
-      }
-      ok = true;
-    }
-    sqlite3_free_table( results );
-  }
-
-  if ( checkVirtsGeometryColumns( handle ) )
-  {
-    // the following query return the VirtualShapefiles
-    sql = "SELECT virt_name, virt_geometry, type "
-          "FROM virts_geometry_columns";
-    ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
-    if ( ret != SQLITE_OK )
-      goto error;
-    if ( rows < 1 )
-      ;
-    else
-    {
-      for ( i = 1; i <= rows; i++ )
-      {
-        QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-        QString column = QString::fromUtf8( results[( i * columns ) + 1] );
-        QString type = results[( i * columns ) + 2];
-        if ( isDeclaredHidden( handle, tableName, column ) )
-          continue;
-
-        mTables.append( TableEntry( tableName, column, type ) );
-      }
-      ok = true;
-    }
-    sqlite3_free_table( results );
+    gaiaFreeVectorLayersList( list );
   }
 
   if ( loadGeometrylessTables )
@@ -316,12 +367,115 @@ bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometryl
         QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
         mTables.append( TableEntry( tableName, QString(), "qgis_table" ) );
       }
-      ok = true;
     }
     sqlite3_free_table( results );
   }
 
-  return ok;
+  return true;
+
+error:
+  // unexpected IO error
+  mErrorMsg = tr( "unknown error cause" );
+  if ( errMsg != NULL )
+  {
+    mErrorMsg = errMsg;
+    sqlite3_free( errMsg );
+  }
+  return false;
+}
+#endif
+
+bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 * handle, bool loadGeometrylessTables )
+{
+  int ret;
+  int i;
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = NULL;
+  QString sql;
+
+  // the following query return the tables containing a Geometry column
+  sql = "SELECT f_table_name, f_geometry_column, type "
+        "FROM geometry_columns";
+  ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
+  if ( ret != SQLITE_OK )
+    goto error;
+  for ( i = 1; i <= rows; i++ )
+  {
+    if ( isRasterlite1Datasource( handle, results[( i * columns ) + 0] ) )
+      continue;
+    QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+    QString column = QString::fromUtf8( results[( i * columns ) + 1] );
+    QString type = results[( i * columns ) + 2];
+    if ( isDeclaredHidden( handle, tableName, column ) )
+      continue;
+
+    mTables.append( TableEntry( tableName, column, type ) );
+  }
+  sqlite3_free_table( results );
+
+  if ( checkViewsGeometryColumns( handle ) )
+  {
+    // the following query return the views supporting a Geometry column
+    sql = "SELECT view_name, view_geometry, type "
+          "FROM views_geometry_columns "
+          "JOIN geometry_columns USING (f_table_name, f_geometry_column)";
+    ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
+    if ( ret != SQLITE_OK )
+      goto error;
+    for ( i = 1; i <= rows; i++ )
+    {
+      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      QString column = QString::fromUtf8( results[( i * columns ) + 1] );
+      QString type = results[( i * columns ) + 2];
+      if ( isDeclaredHidden( handle, tableName, column ) )
+        continue;
+
+      mTables.append( TableEntry( tableName, column, type ) );
+    }
+    sqlite3_free_table( results );
+  }
+
+  if ( checkVirtsGeometryColumns( handle ) )
+  {
+    // the following query return the VirtualShapefiles
+    sql = "SELECT virt_name, virt_geometry, type "
+          "FROM virts_geometry_columns";
+    ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
+    if ( ret != SQLITE_OK )
+      goto error;
+    for ( i = 1; i <= rows; i++ )
+    {
+      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      QString column = QString::fromUtf8( results[( i * columns ) + 1] );
+      QString type = results[( i * columns ) + 2];
+      if ( isDeclaredHidden( handle, tableName, column ) )
+        continue;
+
+      mTables.append( TableEntry( tableName, column, type ) );
+    }
+    sqlite3_free_table( results );
+  }
+
+  if ( loadGeometrylessTables )
+  {
+    // get all tables
+    sql = "SELECT name "
+          "FROM sqlite_master "
+          "WHERE type in ('table', 'view')";
+    ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
+    if ( ret != SQLITE_OK )
+      goto error;
+    for ( i = 1; i <= rows; i++ )
+    {
+      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      mTables.append( TableEntry( tableName, QString(), "qgis_table" ) );
+    }
+    sqlite3_free_table( results );
+  }
+
+  return true;
 
 error:
   // unexpected IO error

@@ -26,9 +26,13 @@
 %Include qgsdistancearea.sip
 %Include qgsexpression.sip
 %Include qgsfeature.sip
+%Include qgsfeatureiterator.sip
+%Include qgsfeaturerequest.sip
 %Include qgsfield.sip
 %Include qgsgeometry.sip
 %Include qgsgeometryvalidator.sip
+%Include qgsgml.sip
+%Include qgsgmlschema.sip
 %Include qgshttptransaction.sip
 %Include qgslabel.sip
 %Include qgslabelattributes.sip
@@ -42,6 +46,8 @@
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
 %Include qgsnetworkaccessmanager.sip
+%Include qgsofflineediting.sip
+%Include qgsogcutils.sip
 %Include qgsoverlayobject.sip
 %Include qgsowsconnection.sip
 %Include qgspaintenginehack.sip
@@ -71,6 +77,8 @@
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
+%Include qgsvectorlayercache.sip
+%Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayerundocommand.sip
@@ -151,7 +159,7 @@
 %Include raster/qgssinglebandcolordatarenderer.sip
 %Include raster/qgssinglebandpseudocolorrenderer.sip
 %Include raster/qgssinglebandgrayrenderer.sip
-%Include raster/qgspaletterasterrenderer.sip
+%Include raster/qgspalettedrasterrenderer.sip
 %Include raster/qgscubicrasterresampler.sip
 %Include raster/qgsmultibandcolorrenderer.sip
 

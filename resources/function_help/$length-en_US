@@ -1,5 +1,5 @@
 <h3>$length function</h3>
-Returns the length the current feature.
+Returns the length of the current feature.
 
 <h4>Syntax</h4>
 <pre>$length</pre>
@@ -9,4 +9,3 @@ None
 
 <h4>Example</h4>
 <pre>$length &rarr; 42.4711</pre>
-

@@ -17,21 +17,26 @@
 #include <QWidget>
 #include <QDomNode>
 #include <QFile>
+#include <QGraphicsLineItem>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QPainter>
+#include <QUuid>
+#include <QGraphicsEffect>
+
+#include "qgsproject.h"
 
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerframe.h"
-
 
 #include <limits>
 #include "qgsapplication.h"
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
+#include "qgsmaprenderer.h" //for getCompositionMode
 
 #include <cmath>
 
@@ -42,10 +47,18 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , QGraphicsRectItem( 0 )
     , mComposition( composition )
     , mBoundingResizeRectangle( 0 )
+    , mHAlignSnapItem( 0 )
+    , mVAlignSnapItem( 0 )
     , mFrame( false )
+    , mBackground( true )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mTransparency( 0 )
+    , mLastUsedPositionMode( UpperLeft )
+    , mId( "" )
+    , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
 }
@@ -55,10 +68,18 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , QGraphicsRectItem( 0, 0, width, height, 0 )
     , mComposition( composition )
     , mBoundingResizeRectangle( 0 )
+    , mHAlignSnapItem( 0 )
+    , mVAlignSnapItem( 0 )
     , mFrame( false )
+    , mBackground( true )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mTransparency( 0 )
+    , mLastUsedPositionMode( UpperLeft )
+    , mId( "" )
+    , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
   QTransform t;
@@ -80,6 +101,11 @@ void QgsComposerItem::init( bool manageZValue )
   {
     mComposition->addItemToZList( this );
   }
+
+  // Setup composer effect
+  mEffect = new QgsComposerEffect();
+  setGraphicsEffect( mEffect );
+
 }
 
 QgsComposerItem::~QgsComposerItem()
@@ -90,6 +116,8 @@ QgsComposerItem::~QgsComposerItem()
   }
 
   delete mBoundingResizeRectangle;
+  delete mEffect;
+  deleteAlignItems();
 }
 
 void QgsComposerItem::setSelected( bool s )
@@ -124,14 +152,26 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
     composerItemElem.setAttribute( "frame", "false" );
   }
 
+  //frame
+  if ( mBackground )
+  {
+    composerItemElem.setAttribute( "background", "true" );
+  }
+  else
+  {
+    composerItemElem.setAttribute( "background", "false" );
+  }
+
   //scene rect
   composerItemElem.setAttribute( "x", QString::number( transform().dx() ) );
   composerItemElem.setAttribute( "y", QString::number( transform().dy() ) );
   composerItemElem.setAttribute( "width", QString::number( rect().width() ) );
   composerItemElem.setAttribute( "height", QString::number( rect().height() ) );
+  composerItemElem.setAttribute( "positionMode", QString::number(( int ) mLastUsedPositionMode ) );
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "rotation",  QString::number( mRotation ) );
+  composerItemElem.setAttribute( "uuid", mUuid );
   composerItemElem.setAttribute( "id", mId );
   //position lock for mouse moves/resizes
   if ( mItemPositionLocked )
@@ -164,6 +204,12 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   bgColorElem.setAttribute( "alpha", QString::number( bgColor.alpha() ) );
   composerItemElem.appendChild( bgColorElem );
 
+  //blend mode
+  composerItemElem.setAttribute( "blendMode", QString::number( mBlendMode ) );
+
+  //transparency
+  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
+
   itemElem.appendChild( composerItemElem );
 
   return true;
@@ -180,8 +226,12 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   //rotation
   mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
 
+  //uuid
+  mUuid = itemElem.attribute( "uuid", QUuid::createUuid().toString() );
+
   //id
-  mId = itemElem.attribute( "id", "" );
+  QString id = itemElem.attribute( "id", "" );
+  setId( id );
 
   //frame
   QString frame = itemElem.attribute( "frame" );
@@ -192,6 +242,17 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   else
   {
     mFrame = false;
+  }
+
+  //frame
+  QString background = itemElem.attribute( "background" );
+  if ( background.compare( "true", Qt::CaseInsensitive ) == 0 )
+  {
+    mBackground = true;
+  }
+  else
+  {
+    mBackground = false;
   }
 
   //position lock for mouse moves/resizes
@@ -207,12 +268,17 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //position
   double x, y, width, height;
-  bool xOk, yOk, widthOk, heightOk;
+  bool xOk, yOk, widthOk, heightOk, positionModeOK;
 
   x = itemElem.attribute( "x" ).toDouble( &xOk );
   y = itemElem.attribute( "y" ).toDouble( &yOk );
   width = itemElem.attribute( "width" ).toDouble( &widthOk );
   height = itemElem.attribute( "height" ).toDouble( &heightOk );
+  mLastUsedPositionMode = ( ItemPositionMode )itemElem.attribute( "positionMode" ).toInt( &positionModeOK );
+  if ( !positionModeOK )
+  {
+    mLastUsedPositionMode = UpperLeft;
+  }
 
   if ( !xOk || !yOk || !widthOk || !heightOk )
   {
@@ -263,6 +329,13 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
       setBrush( QBrush( brushColor ) );
     }
   }
+
+  //blend mode
+  setBlendMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode" , "0" ).toInt() );
+
+  //transparency
+  setTransparency( itemElem.attribute( "transparency" , "0" ).toInt() );
+
   return true;
 }
 
@@ -336,6 +409,8 @@ void QgsComposerItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
     delete mBoundingResizeRectangle;
     mBoundingResizeRectangle = 0;
   }
+  deleteAlignItems();
+
   //create and show bounding rectangle
   mBoundingResizeRectangle = new QGraphicsRectItem( 0 );
   scene()->addItem( mBoundingResizeRectangle );
@@ -384,6 +459,8 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
   beginItemCommand( tr( "Change item position" ) );
   changeItemRectangle( mouseMoveStopPoint, mMouseMoveStartPos, this, diffX, diffY, this );
   endItemCommand();
+
+  deleteAlignItems();
 
   //reset default action
   mCurrentMouseMoveAction = QgsComposerItem::MoveItem;
@@ -503,8 +580,36 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
 
   double mx = 0.0, my = 0.0, rx = 0.0, ry = 0.0;
   QPointF snappedPosition = mComposition->snapPointToGrid( currentPosition );
-  //double diffX = snappedPosition.x() - mouseMoveStartPos.x();
-  //double diffY = snappedPosition.y() - mouseMoveStartPos.y();
+
+  //snap to grid and align to other items
+  if ( mComposition->alignmentSnap() && mCurrentMouseMoveAction != QgsComposerItem::MoveItem )
+  {
+    double alignX = 0;
+    double alignY = 0;
+    snappedPosition = mComposition->alignPos( snappedPosition, dynamic_cast<const QgsComposerItem*>( originalItem ), alignX, alignY );
+    if ( alignX != -1 )
+    {
+      QGraphicsLineItem* item = hAlignSnapItem();
+      item->setLine( QLineF( alignX, 0, alignX,  mComposition->paperHeight() ) );
+      item->show();
+    }
+    else
+    {
+      deleteHAlignSnapItem();
+    }
+
+    if ( alignY != -1 )
+    {
+      QGraphicsLineItem* item = vAlignSnapItem();
+      item->setLine( QLineF( 0, alignY, mComposition->paperWidth(), alignY ) );
+      item->show();
+    }
+    else
+    {
+      deleteVAlignSnapItem();
+    }
+  }
+
   double diffX = 0;
   double diffY = 0;
 
@@ -566,6 +671,42 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
       QPointF upperLeftPoint( originalItem->transform().dx() + moveX, originalItem->transform().dy() + moveY );
       QPointF snappedLeftPoint = mComposition->snapPointToGrid( upperLeftPoint );
 
+      if ( snappedLeftPoint != upperLeftPoint ) //don't do align snap if grid snap has been done
+      {
+        deleteAlignItems();
+      }
+      else if ( mComposition->alignmentSnap() ) //align item
+      {
+        double alignX = 0;
+        double alignY = 0;
+        snappedLeftPoint = mComposition->alignItem( dynamic_cast<const QgsComposerItem*>( originalItem ), alignX, alignY, moveX, moveY );
+        if ( alignX != -1 )
+        {
+          QGraphicsLineItem* item = hAlignSnapItem();
+          int numPages = mComposition->numPages();
+          double yLineCoord = 300; //default in case there is no single page
+          if ( numPages > 0 )
+          {
+            yLineCoord = mComposition->paperHeight() * numPages + mComposition->spaceBetweenPages() * ( numPages - 1 );
+          }
+          item->setLine( QLineF( alignX, 0, alignX,  yLineCoord ) );
+          item->show();
+        }
+        else
+        {
+          deleteHAlignSnapItem();
+        }
+        if ( alignY != -1 )
+        {
+          QGraphicsLineItem* item = vAlignSnapItem();
+          item->setLine( QLineF( 0, alignY, mComposition->paperWidth(), alignY ) );
+          item->show();
+        }
+        else
+        {
+          deleteVAlignSnapItem();
+        }
+      }
       double moveRectX = snappedLeftPoint.x() - originalItem->transform().dx();
       double moveRectY = snappedLeftPoint.y() - originalItem->transform().dy();
 
@@ -674,6 +815,9 @@ void QgsComposerItem::setItemPosition( double x, double y, double width, double 
   double upperLeftX = x;
   double upperLeftY = y;
 
+  //store the item position mode
+  mLastUsedPositionMode = itemPoint;
+
   //adjust x-coordinate if placement is not done to a left point
   if ( itemPoint == UpperMiddle || itemPoint == Middle || itemPoint == LowerMiddle )
   {
@@ -731,13 +875,27 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
 
 void QgsComposerItem::drawBackground( QPainter* p )
 {
-  if ( p )
+  if ( mBackground && p )
   {
-    p->setBrush( brush() );
+    p->setBrush( brush() );//this causes a problem in atlas generation
     p->setPen( Qt::NoPen );
     p->setRenderHint( QPainter::Antialiasing, true );
     p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
+}
+
+void QgsComposerItem::setBlendMode( QgsMapRenderer::BlendMode blendMode )
+{
+  mBlendMode = blendMode;
+  // Update the composer effect to use the new blend mode
+  mEffect->setCompositionMode( QgsMapRenderer::getCompositionMode( mBlendMode ) );
+}
+
+void QgsComposerItem::setTransparency( int transparency )
+{
+  mTransparency = transparency;
+  // Set the QGraphicItem's opacity
+  setOpacity( 1. - ( transparency / 100. ) );
 }
 
 void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
@@ -758,14 +916,13 @@ void QgsComposerItem::drawText( QPainter* p, double x, double y, const QString& 
 
   p->save();
   p->setFont( textFont );
-  p->setPen( QColor( 0, 0, 0 ) ); //draw text always in black
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
   p->drawText( QPointF( x * FONT_WORKAROUND_SCALE, y * FONT_WORKAROUND_SCALE ), text );
   p->restore();
 }
 
-void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignement, Qt::AlignmentFlag valignment ) const
+void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& text, const QFont& font, Qt::AlignmentFlag halignment, Qt::AlignmentFlag valignment ) const
 {
   QFont textFont = scaledFontPixelSize( font );
 
@@ -776,7 +933,7 @@ void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& 
   p->setFont( textFont );
   double scaleFactor = 1.0 / FONT_WORKAROUND_SCALE;
   p->scale( scaleFactor, scaleFactor );
-  p->drawText( scaledRect, halignement | valignment | Qt::TextWordWrap, text );
+  p->drawText( scaledRect, halignment | valignment | Qt::TextWordWrap, text );
   p->restore();
 }
 void QgsComposerItem::drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const
@@ -835,6 +992,13 @@ double QgsComposerItem::fontAscentMillimeters( const QFont& font ) const
   QFont metricsFont = scaledFontPixelSize( font );
   QFontMetricsF fontMetrics( metricsFont );
   return ( fontMetrics.ascent() / FONT_WORKAROUND_SCALE );
+}
+
+double QgsComposerItem::fontDescentMillimeters( const QFont& font ) const
+{
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.descent() / FONT_WORKAROUND_SCALE );
 }
 
 double QgsComposerItem::pixelFontSize( double pointSize ) const
@@ -1087,7 +1251,63 @@ void QgsComposerItem::rotate( double angle, double& x, double& y ) const
   y = yRot;
 }
 
+QGraphicsLineItem* QgsComposerItem::hAlignSnapItem()
+{
+  if ( !mHAlignSnapItem )
+  {
+    mHAlignSnapItem = new QGraphicsLineItem( 0 );
+    mHAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
+    scene()->addItem( mHAlignSnapItem );
+    mHAlignSnapItem->setZValue( 90 );
+  }
+  return mHAlignSnapItem;
+}
+
+QGraphicsLineItem* QgsComposerItem::vAlignSnapItem()
+{
+  if ( !mVAlignSnapItem )
+  {
+    mVAlignSnapItem = new QGraphicsLineItem( 0 );
+    mVAlignSnapItem->setPen( QPen( QColor( Qt::red ) ) );
+    scene()->addItem( mVAlignSnapItem );
+    mVAlignSnapItem->setZValue( 90 );
+  }
+  return mVAlignSnapItem;
+}
+
+void QgsComposerItem::deleteHAlignSnapItem()
+{
+  if ( mHAlignSnapItem )
+  {
+    scene()->removeItem( mHAlignSnapItem );
+    delete mHAlignSnapItem;
+    mHAlignSnapItem = 0;
+  }
+}
+
+void QgsComposerItem::deleteVAlignSnapItem()
+{
+  if ( mVAlignSnapItem )
+  {
+    scene()->removeItem( mVAlignSnapItem );
+    delete mVAlignSnapItem;
+    mVAlignSnapItem = 0;
+  }
+}
+
+void QgsComposerItem::deleteAlignItems()
+{
+  deleteHAlignSnapItem();
+  deleteVAlignSnapItem();
+}
+
 void QgsComposerItem::repaint()
 {
   update();
+}
+
+void QgsComposerItem::setId( const QString& id )
+{
+  setToolTip( id );
+  mId = id;
 }

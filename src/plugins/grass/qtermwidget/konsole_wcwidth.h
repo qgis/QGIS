@@ -2,6 +2,8 @@
 /* Adaptions for KDE by Waldo Bastian <bastian@kde.org> */
 /*
     Rewritten for QT4 by e_k <e_k at users.sourceforge.net>
+
+* This file is in the public domain
 */
 
 

@@ -25,37 +25,41 @@ __revision__ = '$Format:%H$'
 
 import os
 import locale
+
 from PyQt4 import QtCore, QtGui
-from sextante.gui.OutputSelectionPanel import OutputSelectionPanel
+
 from sextante.core.QGisLayers import QGisLayers
-from sextante.parameters.ParameterRaster import ParameterRaster
+from sextante.core.SextanteConfig import SextanteConfig
+
+from sextante.gui.OutputSelectionPanel import OutputSelectionPanel
 from sextante.gui.InputLayerSelectorPanel import InputLayerSelectorPanel
+from sextante.gui.FixedTablePanel import FixedTablePanel
+from sextante.gui.RangePanel import RangePanel
+from sextante.gui.MultipleInputPanel import MultipleInputPanel
+from sextante.gui.NumberInputPanel import NumberInputPanel
+from sextante.gui.ExtentSelectionPanel import ExtentSelectionPanel
+from sextante.gui.FileSelectionPanel import FileSelectionPanel
+from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
+
+from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
-from sextante.gui.FixedTablePanel import FixedTablePanel
 from sextante.parameters.ParameterRange import ParameterRange
-from sextante.gui.RangePanel import RangePanel
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.parameters.ParameterNumber import ParameterNumber
-from sextante.gui.MultipleInputPanel import MultipleInputPanel
-from sextante.gui.NumberInputPanel import NumberInputPanel
-from sextante.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from sextante.parameters.ParameterExtent import ParameterExtent
-from sextante.core.SextanteConfig import SextanteConfig
 from sextante.parameters.ParameterFile import ParameterFile
-from sextante.gui.FileSelectionPanel import FileSelectionPanel
 from sextante.parameters.ParameterCrs import ParameterCrs
-from sextante.gui.CrsSelectionPanel import CrsSelectionPanel
+from sextante.parameters.ParameterString import ParameterString
+
 from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
-from sextante.outputs.OutputNumber import OutputNumber
-from sextante.parameters.ParameterString import ParameterString
 
 class ParametersPanel(QtGui.QWidget):
 
@@ -102,7 +106,7 @@ class ParametersPanel(QtGui.QWidget):
                 if param.isAdvanced:
                     self.advancedButton = QtGui.QPushButton()
                     self.advancedButton.setText("Show advanced parameters")
-                    self.advancedButton.setMaximumWidth(150)
+                    self.advancedButton.setMaximumWidth(250)
                     QtCore.QObject.connect(self.advancedButton, QtCore.SIGNAL("clicked()"), self.showAdvancedParametersClicked)
                     self.verticalLayout.addWidget(self.advancedButton)
                     break
@@ -153,7 +157,7 @@ class ParametersPanel(QtGui.QWidget):
                 widget = OutputSelectionPanel(output,self.alg)
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
-                if isinstance(output, (OutputRaster, OutputVector, OutputTable, OutputHTML)):
+                if isinstance(output, (OutputRaster, OutputVector, OutputTable)):
                     check = QtGui.QCheckBox()
                     check.setText("Open output file after running algorithm")
                     check.setChecked(True)
@@ -188,6 +192,13 @@ class ParametersPanel(QtGui.QWidget):
                 if button is not sender:
                     button.setChecked(False)
 
+    def getExtendedLayerName(self, layer):
+        authid = layer.crs().authid()
+        if SextanteConfig.getSetting(SextanteConfig.SHOW_CRS_DEF) and authid is not None:
+            return layer.name() + " [" + str(authid) +"]"
+        else:
+            return layer.name()
+
     def getWidgetFromParameter(self, param):
         if isinstance(param, ParameterRaster):
             layers = QGisLayers.getRasterLayers()
@@ -195,7 +206,7 @@ class ParametersPanel(QtGui.QWidget):
             if (param.optional):
                 items.append((self.NOT_SELECTED, None))
             for layer in layers:
-                items.append((layer.name(), layer))
+                items.append((self.getExtendedLayerName(layer), layer))
             item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterVector):
             if self.somethingDependsOnThisParameter(param):
@@ -204,7 +215,7 @@ class ParametersPanel(QtGui.QWidget):
                 if (param.optional):
                     item.addItem(self.NOT_SELECTED, None)
                 for layer in layers:
-                    item.addItem(layer.name(), layer)
+                    item.addItem(self.getExtendedLayerName(layer), layer)
                 item.currentIndexChanged.connect(self.updateDependentFields)
                 item.name = param.name
             else:
@@ -213,7 +224,7 @@ class ParametersPanel(QtGui.QWidget):
                 if (param.optional):
                     items.append((self.NOT_SELECTED, None))
                 for layer in layers:
-                    items.append((layer.name(), layer))
+                    items.append((self.getExtendedLayerName(layer), layer))
                 item = InputLayerSelectorPanel(items)
         elif isinstance(param, ParameterTable):
             if self.somethingDependsOnThisParameter(param):
@@ -275,8 +286,8 @@ class ParametersPanel(QtGui.QWidget):
                 options = QGisLayers.getVectorLayers(param.datatype)
             opts = []
             for opt in options:
-                opts.append(opt.name())
-            item = MultipleInputPanel(opts, param.datatype)
+                opts.append(self.getExtendedLayerName(opt))
+            item = MultipleInputPanel(opts)
         elif isinstance(param, ParameterNumber):
             item = NumberInputPanel(param.default, param.isInteger)
         elif isinstance(param, ParameterExtent):
@@ -321,13 +332,13 @@ class ParametersPanel(QtGui.QWidget):
             fieldTypes = [QtCore.QVariant.Int, QtCore.QVariant.Double]
 
         fieldNames = []
-        fieldMap = layer.pendingFields()
+        fields = layer.pendingFields()
         if len(fieldTypes) == 0:
-            for idx, field in fieldMap.iteritems():
+            for field in fields:
                 if not field.name() in fieldNames:
                     fieldNames.append( unicode( field.name() ) )
         else:
-            for idx, field in fieldMap.iteritems():
+            for field in fields:
                 if field.type() in fieldTypes and not field.name() in fieldNames:
                     fieldNames.append( unicode( field.name() ) )
         return sorted( fieldNames, cmp=locale.strcoll )
@@ -376,4 +387,3 @@ class ParametersPanel(QtGui.QWidget):
             self.tableWidget.setCellWidget(i,1, item)
             self.tableWidget.setRowHeight(i,22)
             i+=1
-

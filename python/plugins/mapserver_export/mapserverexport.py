@@ -19,7 +19,7 @@
 /* Adapted by Erik van de Pol */
 """
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import * 
+from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from xml.dom import minidom
 from qgis.core import *
@@ -30,7 +30,7 @@ from mapserverexportdialog import MapServerExportDialog
 # Import the ms_export script that does the real work
 from ms_export import *
 
-class MapServerExport: 
+class MapServerExport:
 
   def __init__(self, iface):
     # Save reference to the QGIS interface
@@ -54,12 +54,12 @@ class MapServerExport:
     else:
       return QIcon()
 
-  def initGui(self):  
+  def initGui(self):
     # Create action that will start plugin configuration
     self.action = QAction(self.getThemeIcon("mapserver_export.png"), \
         "MapServer Export", self.iface.mainWindow())
     # connect the action to the run method
-    QObject.connect(self.action, SIGNAL("triggered()"), self.run) 
+    QObject.connect(self.action, SIGNAL("triggered()"), self.run)
     QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
     # Add toolbar button and menu item
     self.iface.addWebToolBarIcon(self.action)
@@ -71,8 +71,8 @@ class MapServerExport:
     self.iface.removeWebToolBarIcon(self.action)
 
   # run method that performs all the real work
-  def run(self): 
-    # create and show the MapServerExport dialog 
+  def run(self):
+    # create and show the MapServerExport dialog
     self.dlg = MapServerExportDialog(self.iface.mainWindow())
     # attach events to inputs and buttons
     QObject.connect(self.dlg.ui.btnChooseFile, SIGNAL("clicked()"), self.setMapFile)
@@ -92,7 +92,7 @@ class MapServerExport:
     # defaults are defined in ms_export.py and set in mapserverexportdialog.py
     settings = QSettings()
     # map-file name and force mapfileChanged to enable/disable ok button
-    self.dlg.ui.txtMapFilePath.setText(settings.value("/MapserverExport/mapfileName", QVariant("")).toString ()) 
+    self.dlg.ui.txtMapFilePath.setText(settings.value("/MapserverExport/mapfileName", QVariant("")).toString ())
     self.mapfileChanged(self.dlg.ui.txtMapFilePath.text())
     # map width and height
     if settings.contains("/MapserverExport/mapWidth"):
@@ -113,7 +113,7 @@ class MapServerExport:
       title = "QGIS-MAP"
     self.dlg.ui.txtMapName.setText(title)
     # TODO: fetch units used from current project
-    # QGIS: Meters, Feet, Degrees, UnknownUnit since 1.4 also: DecimalDegrees, DegreesMinutesSeconds, DegreesDecimalMinutes 	
+    # QGIS: Meters, Feet, Degrees, UnknownUnit since 1.4 also: DecimalDegrees, DegreesMinutesSeconds, DegreesDecimalMinutes
     # Mapserver: UNITS [feet|inches|kilometers|meters|miles|dd]
     self.dlg.show()
 
@@ -138,12 +138,12 @@ class MapServerExport:
       #if self.dlg.ui.txtQgisFilePath.text().size() == 0:
       # reload path of current project
       self.dlg.ui.txtQgisFilePath.setText(QgsProject.instance().fileName())
-    else:  
+    else:
       # open dialog to choose project file
       self.setProjectFile()
-    
 
-  def saveMapFile(self):   
+
+  def saveMapFile(self):
     # get the settings from the dialog and export the map file
     print "Creating exporter using '%s' and '%s'" % (self.dlg.ui.txtQgisFilePath.text(), self.dlg.ui.txtMapFilePath.text())
     exporter = Qgis2Map(unicode(self.dlg.ui.txtMapFilePath.text()))
@@ -183,7 +183,7 @@ class MapServerExport:
       return
     # ok succesfull: write some setting for a next session
     settings = QSettings()
-    # mapfile name 
+    # mapfile name
     settings.setValue("/MapserverExport/mapfileName", QVariant(self.dlg.ui.txtMapFilePath.text()))
     # map width and heigth
     settings.setValue("/MapserverExport/mapWidth", QVariant(self.dlg.ui.txtMapWidth.text()))
@@ -201,7 +201,7 @@ class MapServerExport:
     if text.size() > 0:
       btnOk.setEnabled(True)
     else:
-      btnOk.setEnabled(False)      
+      btnOk.setEnabled(False)
 
   def checkMapFile(self):
     # Check if map file name is provided
@@ -221,7 +221,7 @@ class MapServerExport:
         return False
     # mapfile ok, extension ok, overwrite  ok
     return True
-    
+
   # check if current project is saved and or dirty (has modifications)
   def checkCurrentProject(self, forUnload=False):
     project = QgsProject.instance()
@@ -264,10 +264,10 @@ class MapServerExport:
       elif shouldSave == QMessageBox.Cancel:
         # user cancelled
         return False
-    else: 
+    else:
       # project saved and not dirty
       return True
-      
+
   def setMapFile(self):
     mapFileName = QFileDialog.getSaveFileName(self.dlg, "Name for the map file", \
       self.dlg.ui.txtMapFilePath.text(), "MapServer map files (*.map);;All files (*.*)","Filter list for selecting files from a dialog box")
@@ -280,7 +280,7 @@ class MapServerExport:
     qgisProjectFile = QFileDialog.getOpenFileName(self.dlg, "Choose a QGIS Project", \
       ".", "QGIS Project Files (*.qgs);;", "Filter list for selecting files from a dialog box")
     if not qgisProjectFile:
-      # cancelled: check checkBoxCurrentProject again 
+      # cancelled: check checkBoxCurrentProject again
       self.dlg.ui.checkBoxCurrentProject.setChecked(True)
       self.dlg.ui.txtQgisFilePath.setEnabled(False)
       return
@@ -293,7 +293,7 @@ class MapServerExport:
         # project file OK !!
         pass
       if exporter.projectHasPostgisLayers():
-        loadProject = QMessageBox.question(self.dlg, "Load project?", 
+        loadProject = QMessageBox.question(self.dlg, "Load project?",
             "The project you selected holds one or more postgis layers. \nTo be able to export a valid DATA string in the map file,\nthe project should be loaded into QGIS. \nNot loading can result in non valid DATA strings in map file.\nSo, should we load it into qgis?",
             QMessageBox.Yes, QMessageBox.No)
         if loadProject == QMessageBox.Yes:
@@ -325,7 +325,7 @@ class MapServerExport:
     footerFile = QFileDialog.getOpenFileName(self.dlg, "Choose the MapServer footer file", \
         ".", "All files (*.*)", "Filter list for selecting files from a dialog box")
     self.dlg.ui.txtWebFooter.setText(footerFile)
-  
+
   def toggleLayersOnly(self, isChecked):
     # disable other sections if only layer export is desired
     self.dlg.ui.grpPaths.setEnabled(not isChecked)

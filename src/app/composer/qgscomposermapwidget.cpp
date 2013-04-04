@@ -17,6 +17,7 @@
 
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposition.h"
 #include "qgsmaprenderer.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
@@ -39,10 +40,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  mainLayout->addWidget( itemPropertiesWidget );
 
-  mWidthLineEdit->setValidator( new QDoubleValidator( mWidthLineEdit ) );
-  mHeightLineEdit->setValidator( new QDoubleValidator( mHeightLineEdit ) );
   mScaleLineEdit->setValidator( new QDoubleValidator( mScaleLineEdit ) );
 
   mXMinLineEdit->setValidator( new QDoubleValidator( mXMinLineEdit ) );
@@ -75,12 +74,16 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
   mFrameStyleComboBox->insertItem( 0, tr( "No frame" ) );
   mFrameStyleComboBox->insertItem( 1, tr( "Zebra" ) );
 
+  connect( mGridCheckBox, SIGNAL( toggled( bool ) ),
+           mDrawAnnotationCheckableGroupBox, SLOT( setEnabled( bool ) ) );
+
   if ( composerMap )
   {
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
   }
 
   updateOverviewSymbolMarker();
+  updateLineSymbolMarker();
 
   updateGuiElements();
   blockAllSignals( false );
@@ -88,47 +91,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QWidg
 
 QgsComposerMapWidget::~QgsComposerMapWidget()
 {
-}
-
-void QgsComposerMapWidget::on_mWidthLineEdit_editingFinished()
-{
-  if ( mComposerMap )
-  {
-    bool conversionSuccess = true;
-    double newWidth = mWidthLineEdit->text().toDouble( &conversionSuccess );
-    if ( !conversionSuccess )
-    {
-      return;
-    }
-    QRectF composerMapRect = mComposerMap->rect();
-    QTransform composerMapTransform = mComposerMap->transform();
-
-    QRectF newRect( composerMapTransform.dx(), composerMapTransform.dy(), newWidth, composerMapRect.height() );
-
-    mComposerMap->beginCommand( tr( "Change item width" ) );
-    mComposerMap->setSceneRect( newRect );
-    mComposerMap->endCommand();
-  }
-}
-
-void QgsComposerMapWidget::on_mHeightLineEdit_editingFinished()
-{
-  if ( mComposerMap )
-  {
-    bool conversionSuccess = true;
-    double newHeight = mHeightLineEdit->text().toDouble( &conversionSuccess );
-    if ( !conversionSuccess )
-    {
-      return;
-    }
-    QRectF composerMapRect = mComposerMap->rect();
-    QTransform composerMapTransform = mComposerMap->transform();
-
-    QRectF newRect( composerMapTransform.dx(), composerMapTransform.dy(), composerMapRect.width(), newHeight );
-    mComposerMap->beginCommand( tr( "Change item height" ) );
-    mComposerMap->setSceneRect( newRect );
-    mComposerMap->endCommand();
-  }
 }
 
 void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
@@ -263,15 +225,11 @@ void QgsComposerMapWidget::on_mYMaxLineEdit_editingFinished()
 
 void QgsComposerMapWidget::setGuiElementValues()
 {
-  mHeightLineEdit->blockSignals( true );
-  mWidthLineEdit->blockSignals( true );
   mScaleLineEdit->blockSignals( true );
   mPreviewModeComboBox->blockSignals( true );
 
   updateGuiElements();
 
-  mHeightLineEdit->blockSignals( false );
-  mWidthLineEdit->blockSignals( false );
   mScaleLineEdit->blockSignals( false );
   mPreviewModeComboBox->blockSignals( false );
 }
@@ -283,9 +241,7 @@ void QgsComposerMapWidget::updateGuiElements()
     blockAllSignals( true );
 
     //width, height, scale
-    QRectF composerMapRect = mComposerMap->rect();
-    mWidthLineEdit->setText( QString::number( composerMapRect.width() ) );
-    mHeightLineEdit->setText( QString::number( composerMapRect.height() ) );
+//    QRectF composerMapRect = mComposerMap->rect();
     mScaleLineEdit->setText( QString::number( mComposerMap->scale(), 'f', 0 ) );
 
     //preview mode
@@ -403,18 +359,14 @@ void QgsComposerMapWidget::updateGuiElements()
 
     if ( mComposerMap->showGridAnnotation() )
     {
-      mDrawAnnotationCheckBox->setCheckState( Qt::Checked );
+      mDrawAnnotationCheckableGroupBox->setChecked( true );
     }
     else
     {
-      mDrawAnnotationCheckBox->setCheckState( Qt::Unchecked );
+      mDrawAnnotationCheckableGroupBox->setChecked( false );
     }
 
     mCoordinatePrecisionSpinBox->setValue( mComposerMap->gridAnnotationPrecision() );
-
-    QPen gridPen = mComposerMap->gridPen();
-    mLineWidthSpinBox->setValue( gridPen.widthF() );
-    mLineColorButton->setColor( gridPen.color() );
 
     blockAllSignals( false );
   }
@@ -451,8 +403,6 @@ void QgsComposerMapWidget::updateComposerExtentFromGui()
 
 void QgsComposerMapWidget::blockAllSignals( bool b )
 {
-  mWidthLineEdit->blockSignals( b );
-  mHeightLineEdit->blockSignals( b );
   mScaleLineEdit->blockSignals( b );
   mXMinLineEdit->blockSignals( b );
   mXMaxLineEdit->blockSignals( b );
@@ -468,9 +418,8 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mKeepLayerListCheckBox->blockSignals( b );
   mSetToMapCanvasExtentButton->blockSignals( b );
   mUpdatePreviewButton->blockSignals( b );
-  mLineWidthSpinBox->blockSignals( b );
-  mLineColorButton->blockSignals( b );
-  mDrawAnnotationCheckBox->blockSignals( b );
+  mGridLineStyleButton->blockSignals( b );
+  mDrawAnnotationCheckableGroupBox->blockSignals( b );
   mAnnotationFontButton->blockSignals( b );
   mAnnotationFormatComboBox->blockSignals( b );
   mAnnotationPositionLeftComboBox->blockSignals( b );
@@ -696,20 +645,19 @@ void QgsComposerMapWidget::on_mLineWidthSpinBox_valueChanged( double d )
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mLineColorButton_clicked()
+void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
 {
   if ( !mComposerMap )
   {
     return;
   }
-  QColor newColor = QColorDialog::getColor( mLineColorButton->color() );
-  if ( newColor.isValid() )
+
+  QgsSymbolV2SelectorDialog d( mComposerMap->gridLineSymbol(), QgsStyleV2::defaultStyle(), 0 );
+  if ( d.exec() == QDialog::Accepted )
   {
-    mComposerMap->beginCommand( tr( "Grid pen changed" ) );
-    mLineColorButton->setColor( newColor );
-    mComposerMap->setGridPenColor( newColor );
-    mComposerMap->endCommand();
+    updateLineSymbolMarker();
   }
+
   mComposerMap->update();
 }
 
@@ -817,7 +765,7 @@ void QgsComposerMapWidget::on_mAnnotationPositionBottomComboBox_currentIndexChan
   handleChangedAnnotationPosition( QgsComposerMap::Bottom, text );
 }
 
-void QgsComposerMapWidget::on_mDrawAnnotationCheckBox_stateChanged( int state )
+void QgsComposerMapWidget::on_mDrawAnnotationCheckableGroupBox_toggled( bool state )
 {
   if ( !mComposerMap )
   {
@@ -825,7 +773,7 @@ void QgsComposerMapWidget::on_mDrawAnnotationCheckBox_stateChanged( int state )
   }
 
   mComposerMap->beginCommand( tr( "Annotation toggled" ) );
-  if ( state == Qt::Checked )
+  if ( state )
   {
     mComposerMap->setShowGridAnnotation( true );
   }
@@ -912,7 +860,9 @@ void QgsComposerMapWidget::showEvent( QShowEvent * event )
 
 void QgsComposerMapWidget::addPageToToolbox( QWidget* widget, const QString& name )
 {
-  toolBox->addItem( widget, name );
+  Q_UNUSED( name );
+  //TODO : wrap the widget in a collapsibleGroupBox to be more consistent with previous implementation
+  mainLayout->addWidget( widget );
 }
 
 void QgsComposerMapWidget::insertAnnotationPositionEntries( QComboBox* c )
@@ -1019,6 +969,15 @@ void QgsComposerMapWidget::updateOverviewSymbolMarker()
   {
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->overviewFrameMapSymbol(), mOverviewFrameStyleButton->iconSize() );
     mOverviewFrameStyleButton->setIcon( icon );
+  }
+}
+
+void QgsComposerMapWidget::updateLineSymbolMarker()
+{
+  if ( mComposerMap )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mComposerMap->gridLineSymbol(), mGridLineStyleButton->iconSize() );
+    mGridLineStyleButton->setIcon( icon );
   }
 }
 

@@ -102,7 +102,11 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
           int start = i;
           QString col;
           while ( i < uri.length() && uri[i] != ')' )
+          {
+            if ( uri[i] == '\\' )
+              i++;
             i++;
+          }
 
           if ( i == uri.length() )
           {
@@ -110,6 +114,8 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
           }
 
           mGeometryColumn = uri.mid( start, i - start );
+          mGeometryColumn.replace( "\\)", ")" );
+          mGeometryColumn.replace( "\\\\", "\\" );
 
           i++;
         }
@@ -480,6 +486,10 @@ QString QgsDataSourceURI::connectionInfo() const
   else if ( mHost != "" )
   {
     connectionItems << "host=" + mHost;
+  }
+
+  if ( mService.isEmpty() )
+  {
     if ( mPort != "" )
       connectionItems << "port=" + mPort;
   }
@@ -580,9 +590,13 @@ QString QgsDataSourceURI::uri() const
     theUri += QString( " selectatid=false" );
   }
 
+  QString columnName( mGeometryColumn );
+  columnName.replace( "\\", "\\\\" );
+  columnName.replace( ")", "\\)" );
+
   theUri += QString( " table=%1%2 sql=%3" )
             .arg( quotedTablename() )
-            .arg( mGeometryColumn.isNull() ? QString() : QString( " (%1)" ).arg( mGeometryColumn ) )
+            .arg( mGeometryColumn.isNull() ? QString() : QString( " (%1)" ).arg( columnName ) )
             .arg( mSql );
 
   return theUri;

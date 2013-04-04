@@ -56,6 +56,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     //TODO: Verify that these all need to be public
     /** \brief Applies the settings made in the dialog without closing the box */
     void apply();
+    /** \brief Slot to update layer display name as original is edited
+     * @note added in QGIS 1.9 */
+    void on_mLayerOrigNameLineEd_textEdited( const QString& text );
     /** \brief this slot asks the rasterlayer to construct pyramids */
     void on_buttonBuildPyramids_clicked();
     /** \brief slot executed when user presses "Add Values From Display" button on the transparency page */
@@ -99,6 +102,12 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
+
+    /**Enable or disable saturation controls depending on choice of grayscale mode */
+    void toggleSaturationControls( int grayscaleMode );
+
+    /**Enable or disable colorize controls depending on checkbox */
+    void toggleColorizeControls( bool colorizeEnabled );
 
     /** Update items in pipe list */
     void pipeItemClicked( QTreeWidgetItem * item, int column );

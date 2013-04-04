@@ -1,0 +1,12 @@
+<h3>Funktion sqrt()</h3>
+Gibt die Quadratwurzel eines Werts zurück.
+
+
+<p><h4>Syntax</h4>
+     sqrt(<i>radikant</i>)</p>
+
+<p><h4>Argumente</h4>
+<i>radikant</i> -> Zahl aus der die Wurzel gezogen werden soll.</p>
+
+<p><h4>Beispiel</h4>
+     sqrt(9) -> 3</p>

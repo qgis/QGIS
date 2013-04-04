@@ -13,6 +13,9 @@ __copyright__ = 'Copyright 2012, The Quantum GIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+
+from PyQt4.QtCore import QVariant
+
 from qgis.core import (QgsGeometry,
                        QgsVectorLayer,
                        QgsFeature,
@@ -23,7 +26,8 @@ from utilities import (getQgisTestApp,
                        TestCase,
                        unittest,
                        expectedFailure,
-                       unitTestDataPath)
+                       unitTestDataPath,
+                       writeShape)
 # Convenience instances in case you may need them
 # not used in this test
 
@@ -240,6 +244,104 @@ class TestQgsGeometry(TestCase):
             myStartLength, myEndLength, myTolerance)
         myMinimumLength = len('POLYGON(())')
         assert myEndLength > myMinimumLength, myMessage
+
+    def testClipping(self):
+        """Test that we can clip geometries using other geometries."""
+        myMemoryLayer = QgsVectorLayer(
+            ('LineString?crs=epsg:4326&field=name:string(20)&index=yes'),
+            'clip-in',
+            'memory')
+
+        assert myMemoryLayer is not None, 'Provider not initialised'
+        myProvider = myMemoryLayer.dataProvider()
+        assert myProvider is not None
+
+        myFeature1 = QgsFeature()
+        myFeature1.setGeometry(QgsGeometry.fromPolyline([
+            QgsPoint(10,10),
+            QgsPoint(20,10),
+            QgsPoint(30,10),
+            QgsPoint(40,10),
+            ]
+        ))
+        myFeature1.setAttributes([QVariant('Johny')])
+
+        myFeature2 = QgsFeature()
+        myFeature2.setGeometry(QgsGeometry.fromPolyline([
+            QgsPoint(10,10),
+            QgsPoint(20,20),
+            QgsPoint(30,30),
+            QgsPoint(40,40),
+            ]
+        ))
+        myFeature2.setAttributes([QVariant('Be')])
+
+        myFeature3 = QgsFeature()
+        myFeature3.setGeometry(QgsGeometry.fromPolyline([
+            QgsPoint(10,10),
+            QgsPoint(10,20),
+            QgsPoint(10,30),
+            QgsPoint(10,40),
+            ]
+        ))
+
+        myFeature3.setAttributes([QVariant('Good')])
+
+        myResult, myFeatures = myProvider.addFeatures(
+            [myFeature1, myFeature2, myFeature3])
+        assert myResult == True
+        assert len(myFeatures) == 3
+
+        myClipPolygon = QgsGeometry.fromPolygon([[
+            QgsPoint(20,20),
+            QgsPoint(20,30),
+            QgsPoint(30,30),
+            QgsPoint(30,20),
+            QgsPoint(20,20),
+            ]]
+        )
+        print 'Clip: %s' % myClipPolygon.exportToWkt()
+        writeShape(myMemoryLayer, 'clipGeometryBefore.shp')
+        fit = myProvider.getFeatures()
+        myFeatures = []
+        myFeature = QgsFeature()
+        while fit.nextFeature(myFeature):
+            myGeometry = myFeature.geometry()
+            if myGeometry.intersects(myClipPolygon):
+                # Adds nodes where the clip and the line intersec
+                myCombinedGeometry = myGeometry.combine(myClipPolygon)
+                # Gives you the areas inside the clip
+                mySymmetricalGeometry = myGeometry.symDifference(
+                    myCombinedGeometry)
+                # Gives you areas outside the clip area
+                # myDifferenceGeometry = myCombinedGeometry.difference(
+                #    myClipPolygon)
+                #print 'Original: %s' % myGeometry.exportToWkt()
+                #print 'Combined: %s' % myCombinedGeometry.exportToWkt()
+                #print 'Difference: %s' % myDifferenceGeometry.exportToWkt()
+                print 'Symmetrical: %s' % mySymmetricalGeometry.exportToWkt()
+
+                myExpectedWkt = 'LINESTRING(20.0 20.0, 30.0 30.0)'
+                # There should only be one feature that intersects this clip
+                # poly so this assertion should work.
+                self.assertEqual(myExpectedWkt,
+                                 mySymmetricalGeometry.exportToWkt())
+
+                myNewFeature = QgsFeature()
+                myNewFeature.setAttributes(myFeature.attributes())
+                myNewFeature.setGeometry(mySymmetricalGeometry)
+                myFeatures.append(myNewFeature)
+
+        myNewMemoryLayer = QgsVectorLayer(
+            ('LineString?crs=epsg:4326&field=name:string(20)&index=yes'),
+            'clip-out',
+            'memory')
+        myNewProvider = myNewMemoryLayer.dataProvider()
+        myResult, myFeatures = myNewProvider.addFeatures(myFeatures)
+        self.assertTrue(myResult)
+        self.assertEqual(len(myFeatures), 1)
+
+        writeShape(myNewMemoryLayer, 'clipGeometryAfter.shp')
 
 if __name__ == '__main__':
     unittest.main()

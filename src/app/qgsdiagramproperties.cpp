@@ -44,6 +44,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   setupUi( this );
 
+  mBackgroundColorButton->setColorDialogTitle( tr( "Background color" ) );
+  mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+  mDiagramPenColorButton->setColorDialogTitle( tr( "Pen color" ) );
+  mDiagramPenColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
   mValueLineEdit->setValidator( new QDoubleValidator( mValueLineEdit ) );
   mMinimumDiagramScaleLineEdit->setValidator( new QDoubleValidator( mMinimumDiagramScaleLineEdit ) );
   mMaximumDiagramScaleLineEdit->setValidator( new QDoubleValidator( mMaximumDiagramScaleLineEdit ) );
@@ -103,30 +108,29 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mScaleDependencyComboBox->addItem( tr( "Area" ), true );
   mScaleDependencyComboBox->addItem( tr( "Diameter" ), false );
 
+  mDataDefinedXComboBox->addItem( tr( "None" ), -1 );
+  mDataDefinedYComboBox->addItem( tr( "None" ), -1 );
+
+  mAngleOffsetComboBox->addItem( tr( "Top" ), 90 * 16 );
+  mAngleOffsetComboBox->addItem( tr( "Right" ), 0 );
+  mAngleOffsetComboBox->addItem( tr( "Bottom" ), 270 * 16 );
+  mAngleOffsetComboBox->addItem( tr( "Left" ), 180 * 16 );
+
   //insert all attributes into the combo boxes
-  const QgsFieldMap& layerFields = layer->pendingFields();
-  QgsFieldMap::const_iterator fieldIt = layerFields.constBegin();
-  for ( ; fieldIt != layerFields.constEnd(); ++fieldIt )
+  const QgsFields& layerFields = layer->pendingFields();
+  for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
-    newItem->setText( 0, fieldIt.value().name() );
-    newItem->setData( 0, Qt::UserRole, fieldIt.key() );
+    newItem->setText( 0, layerFields[idx].name() );
+    newItem->setData( 0, Qt::UserRole, idx );
     newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
-    if ( fieldIt.value().type() != QVariant::String )
+    if ( layerFields[idx].type() != QVariant::String )
     {
-      mSizeAttributeComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
+      mSizeAttributeComboBox->addItem( layerFields[idx].name(), idx );
     }
-  }
 
-  mDataDefinedXComboBox->addItem( tr( "None" ), -1 );
-  for ( fieldIt = layerFields.constBegin(); fieldIt != layerFields.constEnd(); ++fieldIt )
-  {
-    mDataDefinedXComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
-  }
-  mDataDefinedYComboBox->addItem( tr( "None" ), -1 );
-  for ( fieldIt = layerFields.constBegin(); fieldIt != layerFields.constEnd(); ++fieldIt )
-  {
-    mDataDefinedYComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
+    mDataDefinedXComboBox->addItem( layerFields[idx].name(), idx );
+    mDataDefinedYComboBox->addItem( layerFields[idx].name(), idx );
   }
 
   const QgsDiagramRendererV2* dr = layer->diagramRenderer();
@@ -197,6 +201,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       {
         mLabelPlacementComboBox->setCurrentIndex( 1 );
       }
+
+      mAngleOffsetComboBox->setCurrentIndex( mAngleOffsetComboBox->findData( settingList.at( 0 ).angleOffset ) );
 
       mOrientationLeftButton->setProperty( "direction", QgsDiagramSettings::Left );
       mOrientationRightButton->setProperty( "direction", QgsDiagramSettings::Right );
@@ -303,11 +309,15 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
   {
     mLabelPlacementComboBox->show();
     mLabelPlacementLabel->show();
+    mBackgroundColorLabel->show();
+    mBackgroundColorButton->show();
   }
   else
   {
     mLabelPlacementComboBox->hide();
     mLabelPlacementLabel->hide();
+    mBackgroundColorLabel->hide();
+    mBackgroundColorButton->hide();
   }
 
   if ( DIAGRAM_NAME_HISTOGRAM == diagramType )
@@ -341,6 +351,17 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
   {
     mScaleDependencyComboBox->hide();
     mScaleDependencyLabel->hide();
+  }
+
+  if ( DIAGRAM_NAME_PIE == diagramType )
+  {
+    mAngleOffsetComboBox->show();
+    mAngleOffsetLabel->show();
+  }
+  else
+  {
+    mAngleOffsetComboBox->hide();
+    mAngleOffsetLabel->hide();
   }
 }
 void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
@@ -388,19 +409,6 @@ void QgsDiagramProperties::on_mRemoveCategoryPushButton_clicked()
   }
 }
 
-void QgsDiagramProperties::on_mBackgroundColorButton_clicked()
-{
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( mBackgroundColorButton->color(), 0, tr( "Background color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( mBackgroundColorButton->color() );
-#endif
-  if ( newColor.isValid() )
-  {
-    mBackgroundColorButton->setColor( newColor );
-  }
-}
-
 void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
 {
   //get maximum value from provider (ignoring not-commited edits)
@@ -411,19 +419,6 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
     {
       mValueLineEdit->setText( provider->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toString() );
     }
-  }
-}
-
-void QgsDiagramProperties::on_mDiagramPenColorButton_clicked()
-{
-#if QT_VERSION >= 0x040500
-  QColor newColor = QColorDialog::getColor( mDiagramPenColorButton->color(), 0, tr( "Pen color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor newColor = QColorDialog::getColor( mDiagramPenColorButton->color() );
-#endif
-  if ( newColor.isValid() )
-  {
-    mDiagramPenColorButton->setColor( newColor );
   }
 }
 
@@ -542,6 +537,9 @@ void QgsDiagramProperties::apply()
       ds.minScaleDenominator = -1;
       ds.maxScaleDenominator = -1;
     }
+
+    // Diagram angle offset (pie)
+    ds.angleOffset = mAngleOffsetComboBox->itemData( mAngleOffsetComboBox->currentIndex() ).toInt();
 
     // Diagram orientation (histogram)
     ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );

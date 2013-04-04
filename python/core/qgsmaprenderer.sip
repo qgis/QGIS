@@ -6,7 +6,7 @@ class QgsLabelPosition
 #include <qgsmaprenderer.h>
 %End
   public:
-    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false, bool pinned = false );
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, bool upside_down, bool diagram = false, bool pinned = false );
     QgsLabelPosition();
     int featureId;
     double rotation;
@@ -15,6 +15,7 @@ class QgsLabelPosition
     double width;
     double height;
     QString layerID;
+    QString labelText;
     bool upsideDown;
     bool isDiagram;
     bool isPinned;
@@ -40,6 +41,9 @@ class QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
+    //! returns PAL layer settings for a registered layer
+    //! @note: this method was added in version 1.9
+    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s );
     //! called for every feature
@@ -91,7 +95,7 @@ class QgsMapRenderer : QObject
 
     //! starts rendering
     //! @ param forceWidthScale Force a specific scale factor for line widths and marker sizes. Automatically calculated from output device DPI if 0
-    void render( QPainter* painter, double* forceWidthScale = 0 );
+    void render( QPainter* painter );
 
     //! sets extent and checks whether suitable (returns false if not)
     bool setExtent( const QgsRectangle& extent );
@@ -113,9 +117,6 @@ class QgsMapRenderer : QObject
     //! Recalculate the map scale
     void updateScale();
 
-    //! Return the measuring object
-    //! @deprecated
-    QgsDistanceArea* distanceArea() /Deprecated/;
     QGis::UnitType mapUnits() const;
     void setMapUnits( QGis::UnitType u );
 
@@ -151,18 +152,6 @@ class QgsMapRenderer : QObject
 
     //! returns true if projections are enabled for this layer set
     bool hasCrsTransformEnabled() const;
-
-    /** sets destination coordinate reference system
-     * @note deprecated by qgis 1.7
-     * @see setDestinationCrs
-     */
-    void setDestinationSrs( const QgsCoordinateReferenceSystem& srs ) /Deprecated/;
-
-    /** returns CRS of destination coordinate reference system
-     * @note deprecated by qgis 1.7
-     * @see destinationCrs
-     */
-    const QgsCoordinateReferenceSystem& destinationSrs() /Deprecated/;
 
     //! sets destination coordinate reference system
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
@@ -223,12 +212,6 @@ class QgsMapRenderer : QObject
 
     //! called by signal from layer current being drawn
     void onDrawingProgress( int current, int total );
-
-    //! invalidate cached layer CRS
-    void invalidateCachedLayerCrs();
-
-    //! cached layer was destroyed
-    void cachedLayerDestroyed();
 
   protected:
 

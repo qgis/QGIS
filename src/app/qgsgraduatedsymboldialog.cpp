@@ -37,17 +37,17 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
   setOrientation( Qt::Vertical );
 
   //find out the numerical fields of mVectorLayer
-  const QgsFieldMap & fields = layer->pendingFields();
+  const QgsFields & fields = layer->pendingFields();
   QString displayName;
 
-  for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    QVariant::Type type = ( *it ).type();
+    QVariant::Type type = fields[idx].type();
     if ( type == QVariant::Int || type == QVariant::Double || type == QVariant::LongLong )
     {
-      displayName = layer->attributeDisplayName( it.key() );
+      displayName = layer->attributeDisplayName( idx );
       classificationComboBox->addItem( displayName );
-      mFieldMap.insert( std::make_pair( displayName, it.key() ) );
+      mFieldMap.insert( std::make_pair( displayName, idx ) );
     }
   }
 
@@ -500,11 +500,10 @@ int QgsGraduatedSymbolDialog::quantilesFromVectorLayer( std::list<double>& resul
     double currentValue;
     int index = 0;
 
-    mVectorLayer->select( attList, QgsRectangle(), false );
-    while ( mVectorLayer->nextFeature( currentFeature ) )
+    QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( attList ) );
+    while ( fit.nextFeature( currentFeature ) )
     {
-      currentAttributeMap = currentFeature.attributeMap();
-      currentValue = currentAttributeMap[attributeIndex].toDouble();
+      currentValue = currentFeature.attribute( attributeIndex ).toDouble();
       attributeValues[index] = currentValue;
       ++index;
     }

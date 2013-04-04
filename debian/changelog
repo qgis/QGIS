@@ -8,11 +8,14 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * support DEB_BUILD_OPTIONS' parallel=n
   * add python-unittest2 build dependency for maverick and squeeze
   * disable PyQgsRectangle test on lucid (depends on unittest2)
-  * add python-qscintilla2 dependency to python-qgis
-  * add support for ubuntu quantal
+  * add python-psycopg2 and python-qscintilla2 dependency to python-qgis
+  * add python-matplotlib dependency to python-qgis-common (for sextante)
+  * add support for ubuntu quantal and raring
   * remove js files and add libjs-jquery/libjs-underscore dependency
+  * add spatialite qt sql driver
+  * include topology plugin
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 18 Sep 2012 22:18:25 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 27 Mar 2013 11:03:31 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

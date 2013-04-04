@@ -43,16 +43,6 @@ QgsOverlayObject& QgsOverlayObject::operator=( const QgsOverlayObject & other )
   return *this;
 }
 
-GEOSGeometry* QgsOverlayObject::getGeosGeometry()
-{
-  if ( !mGeometry )
-  {
-    return 0;
-  }
-
-  return mGeometry->asGeos();
-}
-
 void QgsOverlayObject::addPosition( const QgsPoint& position )
 {
   mPositions.push_back( position );

@@ -21,6 +21,8 @@
 #include "qgslogicalfilter.h"
 #include "qgsspatialfilter.h"
 #include "qgsvectordataprovider.h"
+#include "qgsogcutils.h"
+
 #include <QDomElement>
 #include <QStringList>
 #include "qgsvectorlayer.h"
@@ -39,7 +41,7 @@ QgsFilter::~QgsFilter()
 
 QVariant QgsFilter::propertyIndexValue( const QgsFeature& f ) const
 {
-  return f.attributeMap().value( mPropertyIndex );
+  return f.attribute( mPropertyIndex );
 }
 
 QList<int> QgsFilter::attributeIndices() const
@@ -96,7 +98,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
   // if the filter is spatial
   if ( filterName == "BBOX" || filterName == "CONTAINS" || filterName == "CROSSES" || filterName == "DISJOINT" || filterName == "EQUALS" || filterName == "INTERSECTS" || filterName == "OVERLAPS" || filterName == "TOUCHES" || filterName == "WITHIN" )
   {
-    QgsGeometry* geom;
+    QgsGeometry *geom = 0;
 
     QDomNodeList bNodes = filterElem.elementsByTagName( "Box" );
     if ( bNodes.size() > 0 )
@@ -129,7 +131,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -139,7 +141,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -149,7 +151,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -159,7 +161,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -169,7 +171,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 
@@ -179,7 +181,7 @@ QgsFilter* QgsFilter::createFilterFromXml( const QDomElement& filterElem, QgsVec
       if ( gNodes.size() > 0 )
       {
         QDomElement gElem = gNodes.at( 0 ).toElement();
-        geom = QgsGeometry::fromGML2( gElem );
+        geom = QgsOgcUtils::geometryFromGML( gElem );
       }
     }
 

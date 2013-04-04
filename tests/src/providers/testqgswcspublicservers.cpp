@@ -434,7 +434,7 @@ void TestQgsWcsPublicServers::test( )
             myGdalXmlFile.close();
           }
 
-          QgsRasterLayer * myLayer = new QgsRasterLayer( uri, myCoverage.identifier, provider, true );
+          QgsRasterLayer * myLayer = new QgsRasterLayer( uri, myCoverage.identifier, provider );
           if ( myLayer->isValid() )
           {
             myLog << provider + "_crs:" + myLayer->dataProvider()->crs().authid();

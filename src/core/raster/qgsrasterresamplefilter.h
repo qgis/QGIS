@@ -38,7 +38,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     int bandCount() const;
 
-    QgsRasterBlock::DataType dataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
 
     bool setInput( QgsRasterInterface* input );
 
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     void writeXML( QDomDocument& doc, QDomElement& parentElem );
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& resamplefilterElem );
+    void readXML( const QDomElement& filterElem );
 
   protected:
     /**Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/

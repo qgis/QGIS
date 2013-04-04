@@ -16,7 +16,7 @@ ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise quantal raring sid-oracle"))
 	DISTRIBUTION := sid
 endif
 
@@ -32,6 +32,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"lucid"))
 TESTMAKE += ARGS="-E PyQgsRectangle"
 endif
 
+
 QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
@@ -46,18 +47,30 @@ CMAKE_OPTS := \
 	-D BINDINGS_GLOBAL_INSTALL=TRUE \
 	-D PEDANTIC=TRUE \
 	-D WITH_SPATIALITE=TRUE \
+	-D WITH_QSPATIALITE=TRUE \
 	-D WITH_MAPSERVER=TRUE \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-D WITH_APIDOC=TRUE
 
 MAKEFLAGS += VERBOSE=YES
 
-ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-         NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
-         MAKEFLAGS += -j$(NUMJOBS)
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid"))
+	CMAKE_OPTS += -D WITH_STAGED_PLUGINS=FALSE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise"))
+ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric"))
+	DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
+	QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
+else
+	QT_PLUGIN_DIR = usr/lib/qt4/plugins
+endif
+
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+	MAKEFLAGS += -j$(NUMJOBS)
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze wheezy lucid maverick natty oneiric precise raring"))
 	CMAKE_OPTS += -D WITH_PYSPATIALITE=TRUE
 endif
 
@@ -69,6 +82,14 @@ ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric"))
 	CMAKE_OPTS += -D WITH_GLOBE=FALSE
 else
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
+endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"raring"))
+	CMAKE_OPTS += -D PYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
+endif
+
+ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
+	CMAKE_OPTS += -D WITH_ORACLE=TRUE
 endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid"))
@@ -95,7 +116,7 @@ ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 endif
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
-	CMAKE_OPTS += -D ENABLE_TESTS=TRUE
+	CMAKE_OPTS += -D ENABLE_TESTS=FALSE
 endif
 
 ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
@@ -107,6 +128,8 @@ endif
 define gentemplate
 $(2): $(1)
 	sed \
+		-e "s/{DEB_BUILD_GNU_TYPE}/$(DEB_BUILD_GNU_TYPE)/g" \
+		-e "s#{QT_PLUGIN_DIR}#$(QT_PLUGIN_DIR)#g" \
 		-e "s/{QGIS_ABI}/$(QGIS_ABI)/g" \
 		-e "s/{GRASS}/$(GRASS)/g" \
 		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@
@@ -205,7 +228,7 @@ binary-arch: build install
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 	
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy sid quantal raring"))
 	dh_python2 --no-guessing-versions
 else
 	dh_pycentral

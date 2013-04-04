@@ -65,7 +65,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     *                otherwise we contact the host directly.
     *
     */
-    QgsGdalProvider( QString const & uri = 0 );
+    QgsGdalProvider( QString const & uri = 0, bool update = false );
+
+    /** Create invalid provider with error */
+    QgsGdalProvider( QString const & uri, QgsError error );
 
     //! Destructor
     ~QgsGdalProvider();
@@ -151,10 +154,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
       */
     int capabilities() const;
 
-    QgsRasterBlock::DataType dataType( int bandNo ) const;
-    QgsRasterBlock::DataType srcDataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType srcDataType( int bandNo ) const;
 
-    QgsRasterBlock::DataType dataTypeFormGdal( int theGdalDataType ) const;
+    QGis::DataType dataTypeFormGdal( int theGdalDataType ) const;
 
     int bandCount() const;
 
@@ -166,6 +169,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const;
     int ySize() const;
 
+    /**Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
+    QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight );
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
@@ -174,7 +179,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //bool srcHasNoDataValue( int bandNo ) const;
     //double noDataValue() const;
-    void computeMinMax( int bandNo );
+    void computeMinMax( int bandNo ) const;
     double minimumValue( int bandNo ) const;
     double maximumValue( int bandNo ) const;
 
@@ -216,9 +221,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                                   int theSampleSize = 0,
                                   bool theIncludeOutOfRange = false );
 
-    QString buildPyramids( const QList<QgsRasterPyramid> &,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           RasterPyramidsFormat theFormat = PyramidsGTiff );
+    QString buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
+                           const QString & theResamplingMethod = "NEAREST",
+                           RasterPyramidsFormat theFormat = PyramidsGTiff,
+                           const QStringList & theCreateOptions = QStringList() );
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
 
     /** \brief Close data set and release related data */
@@ -232,11 +238,13 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /** Creates a new dataset with mDataSourceURI
         @return true in case of success*/
+    /*
     bool create( const QString& format, int nBands,
-                 QgsRasterBlock::DataType type,
+                 QGis::DataType type,
                  int width, int height, double* geoTransform,
                  const QgsCoordinateReferenceSystem& crs,
                  QStringList createOptions = QStringList() );
+    */
 
     /**Writes into the provider datasource*/
     bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
@@ -250,11 +258,16 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool remove();
 
     QString validateCreationOptions( const QStringList& createOptions, QString format );
+    QString validatePyramidsCreationOptions( RasterPyramidsFormat pyramidsFormat,
+        const QStringList & theConfigOptions, const QString & fileFormat );
 
   signals:
     void statusChanged( QString );
 
   private:
+    // update mode
+    bool mUpdate;
+
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
 
@@ -281,13 +294,13 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int mXBlockSize;
     int mYBlockSize;
 
-    QList<bool> mMinMaxComputed;
+    mutable QList<bool> mMinMaxComputed;
 
     // List of estimated min values, index 0 for band 1
-    QList<double> mMinimum;
+    mutable QList<double> mMinimum;
 
     // List of estimated max values, index 0 for band 1
-    QList<double> mMaximum;
+    mutable QList<double> mMaximum;
 
     /** \brief Pointer to the gdaldataset */
     GDALDatasetH mGdalBaseDataset;
@@ -304,6 +317,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /** \brief sublayers list saved for subsequent access */
     QStringList mSubLayers;
+
 };
 
 #endif

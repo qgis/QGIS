@@ -1,7 +1,7 @@
 r.rescale
-r.rescale - Rescales the range of category values in a raster map layer.
+r.rescale - Rescales the range of category values in a raster layer.
 Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterRange|from|The input data range to be rescaled (default: full range of input map)|
-ParameterRange|to|The output data range|a,d
-OutputRaster|output|Name for output raster map
+ParameterRaster|input|Input raster layer|False
+ParameterRange|from|The input data range to be rescaled|0,1
+ParameterRange|to|The output data range|0,1
+OutputRaster|output|Output raster layer

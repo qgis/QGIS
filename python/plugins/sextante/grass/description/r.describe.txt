@@ -1,11 +1,11 @@
 r.describe
-r.describe - Prints terse list of category values found in a raster map layer.
+r.describe - Prints terse list of category values found in a raster layer.
 Raster (r.*)
-ParameterRaster|map|Name of input raster map|False
-ParameterString|nv|String representing no data cell value|*
+ParameterRaster|map|input raster layer|False
+ParameterNumber|nv|No-data cell value|None|None|0
 ParameterNumber|nsteps|Number of quantization steps|1.0|None|255
-ParameterBoolean|-1|Print the output one value per line|False
 ParameterBoolean|-r|Only print the range of the data|False
 ParameterBoolean|-n|Suppress reporting of any NULLs|False
 ParameterBoolean|-d|Use the current region|False
 ParameterBoolean|-i|Read fp map as integer|False
+OutputHTML|html|Output report

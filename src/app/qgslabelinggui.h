@@ -24,6 +24,7 @@
 
 class QgsVectorLayer;
 class QgsMapCanvas;
+class QgsCharacterSelectorDialog;
 
 #include "qgspallabeling.h"
 
@@ -36,15 +37,16 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     ~QgsLabelingGui();
 
     QgsPalLayerSettings layerSettings();
+    void writeSettingsToLayer();
 
   public slots:
-    void collapseSample( QgsCollapsibleGroupBox* grpbx );
+    void collapseSample( bool collapse );
     void apply();
-    void changeTextColor();
+    void changeTextColor( const QColor &color );
     void changeTextFont();
     void showEngineConfigDialog();
     void showExpressionDialog();
-    void changeBufferColor();
+    void changeBufferColor( const QColor &color );
 
     void updateUi();
     void updatePreview();
@@ -61,14 +63,17 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mFontWordSpacingSpinBox_valueChanged( double spacing );
     void on_mFontLetterSpacingSpinBox_valueChanged( double spacing );
     void on_mFontSizeUnitComboBox_currentIndexChanged( int index );
+    void on_mFontMinPixelSpinBox_valueChanged( int px );
+    void on_mFontMaxPixelSpinBox_valueChanged( int px );
     void on_mBufferUnitComboBox_currentIndexChanged( int index );
-    void on_mPointOffsetUnitsComboBox_currentIndexChanged( int index );
     void on_mXCoordinateComboBox_currentIndexChanged( const QString & text );
     void on_mYCoordinateComboBox_currentIndexChanged( const QString & text );
 
     void on_mPreviewTextEdit_textChanged( const QString & text );
     void on_mPreviewTextBtn_clicked();
-    void on_mPreviewBackgroundBtn_clicked();
+    void on_mPreviewBackgroundBtn_colorChanged( const QColor &color );
+    void on_mDirectSymbLeftToolBtn_clicked();
+    void on_mDirectSymbRightToolBtn_clicked();
 
   protected:
     void blockFontChangeSignals( bool blk );
@@ -89,6 +94,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QgsVectorLayer* mLayer;
     QgsMapCanvas* mMapCanvas;
     QFontDatabase mFontDB;
+    QgsCharacterSelectorDialog* mCharDlg;
 
     // background reference font
     QFont mRefFont;
@@ -96,6 +102,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
 
     int mXQuadOffset;
     int mYQuadOffset;
+    int mMinPixelLimit;
 
     void disableDataDefinedAlignment();
     void enableDataDefinedAlignment();

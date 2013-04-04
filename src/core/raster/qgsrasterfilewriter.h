@@ -32,6 +32,11 @@ class QgsRasterIterator;
 class CORE_EXPORT QgsRasterFileWriter
 {
   public:
+    enum Mode
+    {
+      Raw = 0, // Raw data
+      Image = 1 // Rendered image
+    };
     enum WriterError
     {
       NoError = 0,
@@ -83,9 +88,11 @@ class CORE_EXPORT QgsRasterFileWriter
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
     int maxTileHeight() const { return mMaxTileHeight; }
 
-    // for now not putting createOptions in all methods, use createOptions()
     void setCreateOptions( const QStringList& list ) { mCreateOptions = list; }
     QStringList createOptions() const { return mCreateOptions; }
+
+    void setPyramidsConfigOptions( const QStringList& list ) { mPyramidsConfigOptions = list; }
+    QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
 
   private:
     QgsRasterFileWriter(); //forbidden
@@ -99,7 +106,7 @@ class CORE_EXPORT QgsRasterFileWriter
                                  int nCols, int nRows,
                                  const QgsRectangle& outputExtent,
                                  const QgsCoordinateReferenceSystem& crs,
-                                 QgsRasterBlock::DataType destDataType,
+                                 QGis::DataType destDataType,
                                  QList<bool> destHasNoDataValueList,
                                  QList<double> destNoDataValueList,
                                  QgsRasterDataProvider* destProvider,
@@ -109,28 +116,34 @@ class CORE_EXPORT QgsRasterFileWriter
                                   const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
 
     //initialize vrt member variables
-    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform );
+    void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, QGis::DataType type, QList<bool> destHasNoDataValueList, QList<double> destNoDataValueList );
     //write vrt document to disk
     bool writeVRT( const QString& file );
     //add file entry to vrt
     void addToVRT( const QString& filename, int band, int xSize, int ySize, int xOffset, int yOffset );
     void buildPyramids( const QString& filename );
 
-    static int pyramidsProgress( double dfComplete, const char *pszMessage, void* pData );
+    //static int pyramidsProgress( double dfComplete, const char *pszMessage, void* pData );
 
     /**Create provider and datasource for a part image (vrt mode)*/
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
-        const QString& outputUrl, int fileIndex, int nBands, QgsRasterBlock::DataType type,
+        const QString& outputUrl, int fileIndex, int nBands, QGis::DataType type,
         const QgsCoordinateReferenceSystem& crs );
 
     /**Init VRT (for tiled mode) or create global output provider (single-file mode)*/
-    QgsRasterDataProvider* initOutput( int nCols, int nRows, const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
-                                       QgsRasterBlock::DataType type );
+    QgsRasterDataProvider* initOutput( int nCols, int nRows,
+                                       const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
+                                       QGis::DataType type,
+                                       QList<bool> destHasNoDataValueList = QList<bool>(), QList<double> destNoDataValueList = QList<double>() );
 
     /**Calculate nRows, geotransform and pixel size for output*/
     void globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows, double* geoTransform, double& pixelSize );
 
+    QString partFileName( int fileIndex );
+    QString vrtFileName();
+
+    Mode mMode;
     QString mOutputUrl;
     QString mOutputProviderKey;
     QString mOutputFormat;
@@ -146,14 +159,15 @@ class CORE_EXPORT QgsRasterFileWriter
     QString mPyramidsResampling;
     QgsRasterDataProvider::RasterBuildPyramids mBuildPyramidsFlag;
     QgsRasterDataProvider::RasterPyramidsFormat mPyramidsFormat;
+    QStringList mPyramidsConfigOptions;
 
     QDomDocument mVRTDocument;
-    QDomElement mVRTRedBand;
-    QDomElement mVRTGreenBand;
-    QDomElement mVRTBlueBand;
-    QDomElement mVRTAlphaBand;
+    QList<QDomElement> mVRTBands;
 
     QProgressDialog* mProgressDialog;
+
+    const QgsRasterPipe* mPipe;
+    const QgsRasterInterface* mInput;
 };
 
 #endif // QGSRASTERFILEWRITER_H

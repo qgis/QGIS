@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY(coordinate_capture)
+ADD_SUBDIRECTORY(gps_importer)
 
 FILE (GLOB IMAGES *.png)
 

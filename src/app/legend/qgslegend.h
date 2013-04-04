@@ -37,15 +37,36 @@ class QTreeWidgetItem;
 class QgsCoordinateReferenceSystem;
 class QgsMapCanvasLayer;
 
+#include "qgsmaplayer.h"
+
 //Information about relationship between groups and layers
 //key: group name (or null strings for single layers without groups)
 //value: containter with layer ids contained in the group
 typedef QPair< QString, QList<QString> > GroupLayerInfo;
 
+struct DrawingOrderInfo
+{
+  QString name;
+  QString id;
+  bool checked;
+  bool embeddedGroup;
+};
+
+struct LegendLayerAction
+{
+  LegendLayerAction( QAction* a, QString m, QString i, bool all )
+      : action( a ), menu( m ), id( i ), allLayers( all ) {}
+  QAction* action;
+  QString menu;
+  QString id;
+  bool allLayers;
+  QList<QgsMapLayer*> layers;
+};
+
 /**
    \class QgsLegend
    \brief A Legend treeview for QGIS
-   Map legend is a specialised QListView designed to show grooups of map layers,
+   Map legend is a specialised QListView designed to show groups of map layers,
    map layers, and the map layer members, properties and symbols for each layer.
 
    The legend supports simple operations such as displaying an ordered list of
@@ -109,9 +130,15 @@ class QgsLegend : public QTreeWidget
     Else, 0 is returned.*/
     QgsMapLayer* currentLayer();
 
-    /*!Returns the currently selected layer QgsLegendLayers.
-    Else, an empty list is returned.*/
-    QList<QgsMapLayer *> selectedLayers();
+    /** Returns the currently selected layers of QgsLegendLayers.
+      * @param inDrawOrder return layers in drawing order (added in 1.9)
+      * @returns list of layers, else an empty list */
+    QList<QgsMapLayer *> selectedLayers( bool inDrawOrder = false );
+
+    /** Returns true if layer selection has any editable vector layers
+     * @param modified return true of any of layers is also modified
+     * @note added in 1.9 */
+    bool selectedLayersEditable( bool modified = false );
 
     /*!Returns all layers loaded in QgsMapCanvas in drawing order
     Else, an empty list is returned.*/
@@ -120,7 +147,14 @@ class QgsLegend : public QTreeWidget
     //!Return all layers in drawing order
     QList<QgsLegendLayer *> legendLayers();
 
+    //!Return info about layers and embedded groups in drawing order
+    QList<DrawingOrderInfo> drawingOrder();
+
+    QStringList drawingOrderLayers();
+
     void setDrawingOrder( QList<QgsMapLayer *> );
+
+    void setDrawingOrder( const QList<DrawingOrderInfo>& order );
 
     /*!set the current layer
     returns true if the layer exists, false otherwise*/
@@ -200,14 +234,25 @@ class QgsLegend : public QTreeWidget
     /**Returns a layers check state*/
     Qt::CheckState layerCheckState( QgsMapLayer * layer );
 
+    /**Returns a layers expanded state*/
+    bool layerIsExpanded( QgsMapLayer * layer );
+
     /**Add group from other project file. Returns a pointer to the new group in case of success or 0 in case of error*/
     QgsLegendGroup* addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent = 0 );
 
     /** return canvas */
     QgsMapCanvas *canvas() { return mMapCanvas; }
 
-  public slots:
+    /**Returns the legend layer to which a map layer belongs to*/
+    QgsLegendLayer* findLegendLayer( const QString& layerKey );
 
+    /**Returns the legend layer to which a map layer belongs to*/
+    QgsLegendLayer* findLegendLayer( const QgsMapLayer *layer );
+
+    /**Returns legend group by group name and project path (empty for not-embedded groups)*/
+    QgsLegendGroup* findLegendGroup( const QString& name, const QString& projectPath = QString() );
+
+  public slots:
 
     /*!Adds a new layer group with the maplayers to the canvas*/
     void addLayers( QList<QgsMapLayer *> );
@@ -330,6 +375,24 @@ class QgsLegend : public QTreeWidget
     /** Create a new group for the selected items **/
     void groupSelectedLayers();
 
+    void addLegendLayerAction( QAction* action, QString menu, QString id,
+                               QgsMapLayer::LayerType type, bool allLayers );
+    bool removeLegendLayerAction( QAction* action );
+    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
+    void removeLegendLayerActionsForLayer( QgsMapLayer* layer );
+    QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
+
+    /** Slot to update styles for legend items, since
+     * QgsLegend::item doesn't work in app stylesheet for individual legend types
+     * @note added in QGIS 1.9
+     */
+    void updateLegendItemStyles();
+
+    /** Slot to update symbology for legend items
+     * @note added in QGIS 1.9
+     */
+    void updateLegendItemSymbologies();
+
   protected:
 
     /*!Event handler for mouse movements.
@@ -371,12 +434,6 @@ class QgsLegend : public QTreeWidget
      */
     void mouseReleaseEvent( QMouseEvent * e );
     void mouseDoubleClickEvent( QMouseEvent* e );
-
-    /**Returns the legend layer to which a map layer belongs to*/
-    QgsLegendLayer* findLegendLayer( const QString& layerKey );
-
-    /**Returns the legend layer to which a map layer belongs to*/
-    QgsLegendLayer* findLegendLayer( const QgsMapLayer *layer );
 
     /**Checks mPixmapWidthValues and mPixmapHeightValues and sets a new icon size if necessary*/
     void adjustIconSize();
@@ -442,7 +499,8 @@ class QgsLegend : public QTreeWidget
     void collapseAll();
     /** toogle update drawing order */
     void toggleDrawingOrderUpdate();
-    void handleItemChange( QTreeWidgetItem* item, int row );
+    void handleItemChange( QTreeWidgetItem* item, int column );
+    void handleCloseEditor( QWidget * editor, QAbstractItemDelegate::EndEditHint hint );
     /** delegates current layer to map canvas */
     void handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
     /**Calls openPersistentEditor for the current item*/
@@ -521,6 +579,8 @@ class QgsLegend : public QTreeWidget
 
     //! Widget that holds the indicator line //
     QWidget *mInsertionLine;
+
+    QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > > mLegendLayerActionMap;
 
 #ifdef QGISDEBUG
     void showItem( QString msg, QTreeWidgetItem *item );

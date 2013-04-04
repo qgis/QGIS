@@ -17,6 +17,11 @@
 ***************************************************************************
 """
 
+from sextante.core.Sextante import runalg, runandload, alghelp, alglist, algoptions, load, \
+                                    extent, getObjectFromName, getObjectFromUri, getobject, getfeatures
+
+from sextante.tests.TestData import loadTestData
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -30,7 +35,7 @@ def description():
     return "SEXTANTE Geoprocessing Platform for QGIS"
 
 def version():
-    return "1.0.8"
+    return "1.0.9"
 
 def icon():
     return "images/toolbox.png"
@@ -39,7 +44,7 @@ def category():
   return "Analysis"
 
 def qgisMinimumVersion():
-    return "1.0"
+    return "1.8"
 
 def classFactory(iface):
     from sextante.SextantePlugin import SextantePlugin

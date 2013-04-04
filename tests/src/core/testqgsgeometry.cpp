@@ -55,11 +55,10 @@ class TestQgsGeometry: public QObject
     void differenceCheck1();
     void differenceCheck2();
     void bufferCheck();
+
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
     bool renderCheck( QString theTestName, QString theComment = "" );
-    /** A helper method to return wkb geometry type as a string */
-    QString wkbTypeAsString( QGis::WkbType theType );
     /** A helper method to dump to qdebug the geometry of a multipolygon */
     void dumpMultiPolygon( QgsMultiPolygon &theMultiPolygon );
     /** A helper method to dump to qdebug the geometry of a polygon */
@@ -217,7 +216,7 @@ void TestQgsGeometry::simplifyCheck1()
   QVERIFY( mpPolylineGeometryD->simplify( 0.5 ) );
   // should be a single polygon as A intersect B
   QgsGeometry * mypSimplifyGeometry  =  mpPolylineGeometryD->simplify( 0.5 );
-  qDebug( "Geometry Type: %s", wkbTypeAsString( mypSimplifyGeometry->wkbType() ).toLocal8Bit().constData() );
+  qDebug( "Geometry Type: %s", QGis::featureType( mypSimplifyGeometry->wkbType() ) );
   QVERIFY( mypSimplifyGeometry->wkbType() == QGis::WKBLineString );
   QgsPolyline myLine = mypSimplifyGeometry->asPolyline();
   QVERIFY( myLine.size() > 0 ); //check that the union created a feature
@@ -230,7 +229,7 @@ void TestQgsGeometry::intersectionCheck1()
   QVERIFY( mpPolygonGeometryA->intersects( mpPolygonGeometryB ) );
   // should be a single polygon as A intersect B
   QgsGeometry * mypIntersectionGeometry  =  mpPolygonGeometryA->intersection( mpPolygonGeometryB );
-  qDebug( "Geometry Type: %s", wkbTypeAsString( mypIntersectionGeometry->wkbType() ).toLocal8Bit().constData() );
+  qDebug( "Geometry Type: %s", QGis::featureType( mypIntersectionGeometry->wkbType() ) );
   QVERIFY( mypIntersectionGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypIntersectionGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -247,7 +246,7 @@ void TestQgsGeometry::unionCheck1()
 {
   // should be a multipolygon with 2 parts as A does not intersect C
   QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryC );
-  qDebug( "Geometry Type: %s", wkbTypeAsString( mypUnionGeometry->wkbType() ).toLocal8Bit().constData() );
+  qDebug( "Geometry Type: %s", QGis::featureType( mypUnionGeometry->wkbType() ) );
   QVERIFY( mypUnionGeometry->wkbType() == QGis::WKBMultiPolygon );
   QgsMultiPolygon myMultiPolygon = mypUnionGeometry->asMultiPolygon();
   QVERIFY( myMultiPolygon.size() > 0 ); //check that the union did not fail
@@ -260,7 +259,7 @@ void TestQgsGeometry::unionCheck2()
 {
   // should be a single polygon as A intersect B
   QgsGeometry * mypUnionGeometry  =  mpPolygonGeometryA->combine( mpPolygonGeometryB );
-  qDebug( "Geometry Type: %s", wkbTypeAsString( mypUnionGeometry->wkbType() ).toLocal8Bit().constData() );
+  qDebug( "Geometry Type: %s", QGis::featureType( mypUnionGeometry->wkbType() ) );
   QVERIFY( mypUnionGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypUnionGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -273,7 +272,7 @@ void TestQgsGeometry::differenceCheck1()
 {
   // should be same as A since A does not intersect C so diff is 100% of A
   QgsGeometry * mypDifferenceGeometry  =  mpPolygonGeometryA->difference( mpPolygonGeometryC );
-  qDebug( "Geometry Type: %s", wkbTypeAsString( mypDifferenceGeometry->wkbType() ).toLocal8Bit().constData() );
+  qDebug( "Geometry Type: %s", QGis::featureType( mypDifferenceGeometry->wkbType() ) );
   QVERIFY( mypDifferenceGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
@@ -286,7 +285,7 @@ void TestQgsGeometry::differenceCheck2()
 {
   // should be a single polygon as (A - B) = subset of A
   QgsGeometry * mypDifferenceGeometry  =  mpPolygonGeometryA->difference( mpPolygonGeometryB );
-  qDebug( "Geometry Type: %s", wkbTypeAsString( mypDifferenceGeometry->wkbType() ).toLocal8Bit().constData() );
+  qDebug( "Geometry Type: %s", QGis::featureType( mypDifferenceGeometry->wkbType() ) );
   QVERIFY( mypDifferenceGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
@@ -298,7 +297,7 @@ void TestQgsGeometry::bufferCheck()
 {
   // should be a single polygon
   QgsGeometry * mypBufferGeometry  =  mpPolygonGeometryB->buffer( 10, 10 );
-  qDebug( "Geometry Type: %s", wkbTypeAsString( mypBufferGeometry->wkbType() ).toLocal8Bit().constData() );
+  qDebug( "Geometry Type: %s", QGis::featureType( mypBufferGeometry->wkbType() ) );
   QVERIFY( mypBufferGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypBufferGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
@@ -371,40 +370,6 @@ void TestQgsGeometry::dumpPolyline( QgsPolyline &thePolyline )
   mpPainter->drawPolyline( myPoints );
 }
 
-QString TestQgsGeometry::wkbTypeAsString( QGis::WkbType theType )
-{
-  switch ( theType )
-  {
-    case QGis::WKBPoint:
-      return "WKBPoint";
-    case QGis::WKBLineString:
-      return "WKBLineString";
-    case QGis::WKBPolygon:
-      return "WKBPolygon";
-    case QGis::WKBMultiPoint:
-      return "WKBMultiPoint";
-    case QGis::WKBMultiLineString:
-      return "WKBMultiLineString";
-    case QGis::WKBMultiPolygon:
-      return "WKBMultiPolygon";
-    case QGis::WKBUnknown:
-      return "WKBUnknown";
-    case QGis::WKBPoint25D:
-      return "WKBPoint25D";
-    case QGis::WKBLineString25D:
-      return "WKBLineString25D";
-    case QGis::WKBPolygon25D:
-      return "WKBPolygon25D";
-    case QGis::WKBMultiPoint25D:
-      return "WKBMultiPoint25D";
-    case QGis::WKBMultiLineString25D:
-      return "WKBMultiLineString25D";
-    case QGis::WKBMultiPolygon25D:
-      return "WKBMultiPolygon25D";
-    default:
-      return "Unknown type";
-  }
-}
 
 QTEST_MAIN( TestQgsGeometry )
 #include "moc_testqgsgeometry.cxx"
