@@ -2275,7 +2275,7 @@ QString QgsWMSServer::serviceUrl() const
 
 void QgsWMSServer::addXMLDeclaration( QDomDocument& doc ) const
 {
-  QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( "xml", "version=\"1.0\"" );
+  QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"utf-8\"" );
   doc.appendChild( xmlDeclaration );
 }
 
