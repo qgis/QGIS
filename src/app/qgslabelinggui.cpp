@@ -254,7 +254,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     mBufferTranspSpinBox->setValue( lyr.bufferTransp );
     mBufferJoinStyleComboBox->setPenJoinStyle( lyr.bufferJoinStyle );
     mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
-    comboBufferBlendMode->setBlendMode( lyr.bufferBlendMode );
+    comboBufferBlendMode->setBlendMode( QgsMapRenderer::getBlendModeEnum( lyr.bufferBlendMode ) );
   }
   else
   {
@@ -295,7 +295,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
   btnTextColor->setColor( lyr.textColor );
   mFontTranspSpinBox->setValue( lyr.textTransp );
-  comboBlendMode->setBlendMode( lyr.blendMode );
+  comboBlendMode->setBlendMode( QgsMapRenderer::getBlendModeEnum( lyr.blendMode ) );
 
   mFontWordSpacingSpinBox->setValue( lyr.textFont.wordSpacing() );
   mFontLetterSpacingSpinBox->setValue( lyr.textFont.letterSpacing() );
