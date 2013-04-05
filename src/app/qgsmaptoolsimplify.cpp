@@ -59,7 +59,6 @@ void QgsSimplifyDialog::setRange( int minValue, int maxValue )
 
   horizontalSlider->setMinimum(( minValue - 1 < 0 ? 0 : minValue - 1 ) );// -1 for count with minimum tolerance end caused by double imprecision
   horizontalSlider->setMaximum( maxValue );
-  qDebug()
   spinBox->setRange( horizontalSlider->minimum(), horizontalSlider->maximum() );
 }
 
