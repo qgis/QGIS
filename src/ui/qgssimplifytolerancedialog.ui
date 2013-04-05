@@ -27,7 +27,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="tickPosition">
-      <enum>QSlider::TicksBelow</enum>
+      <enum>QSlider::NoTicks</enum>
      </property>
     </widget>
    </item>
