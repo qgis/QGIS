@@ -256,6 +256,14 @@ QImage* QgsWMSServer::getLegendGraphics()
   {
     return 0;
   }
+  if ( !mParameterMap.contains( "LAYER" ) && !mParameterMap.contains( "LAYERS" ) )
+  {
+    throw QgsMapServiceException( "LayerNotSpecified", "LAYER is mandatory for GetLegendGraphic operation" );
+  }
+  if ( !mParameterMap.contains( "FORMAT" ) )
+  {
+    throw QgsMapServiceException( "FormatNotSpecified", "FORMAT is mandatory for GetLegendGraphic operation" );
+  }
 
   QStringList layersList, stylesList;
 
@@ -1134,9 +1142,11 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
 
 int QgsWMSServer::readLayersAndStyles( QStringList& layersList, QStringList& stylesList ) const
 {
-  //get layer and style lists from the parameters
-  layersList = mParameterMap.value( "LAYERS" ).split( "," );
-  stylesList = mParameterMap.value( "STYLES" ).split( "," );
+  //get layer and style lists from the parameters trying LAYERS and LAYER as well as STYLE and STYLES for GetLegendGraphic compatibility
+  layersList = mParameterMap.value( "LAYER" ).split( "," );
+  layersList = layersList + mParameterMap.value( "LAYERS" ).split( "," );
+  stylesList = mParameterMap.value( "STYLE" ).split( "," );
+  stylesList = stylesList + mParameterMap.value( "STYLES" ).split( "," );
 
   return 0;
 }
