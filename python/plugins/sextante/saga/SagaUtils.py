@@ -33,9 +33,6 @@ from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
 from qgis.core import *
 from PyQt4.QtCore import *
-from sextante.core.SextanteVectorWriter import SextanteVectorWriter
-from sextante.core.QGisLayers import QGisLayers
-
 
 class SagaUtils:
 
