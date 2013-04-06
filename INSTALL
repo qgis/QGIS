@@ -1,10 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Tuesday April 02, 2013
+Saturday April 06, 2013
 
 
-Last Updated: Tuesday April 02, 2013
-Last Change : Saturday December 08, 2012
+Last Updated: Saturday April 06, 2013
+Last Change : Saturday April 06, 2013
 
 
   1. Introduction
@@ -103,7 +103,7 @@ Required build deps:
 - GEOS >= 3.0
 - Sqlite3 >= 3.0.0
 - GDAL/OGR >= 1.4.x
-- Qwt >= 5.0
+- Qwt >= 5.0 & < 6.1
 - expat >= 1.95
 
 Optional dependencies:
