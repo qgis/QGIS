@@ -191,7 +191,13 @@ class QgsPalGeometry : public PalGeometry
 // -------------
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-    : palLayer( NULL ), ct( NULL ), extentGeom( NULL ), mFeaturesToLabel( 0 ), mFeatsSendingToPal( 0 ), mFeatsRegPal( 0 ), expression( NULL )
+    : palLayer( NULL )
+    , ct( NULL )
+    , extentGeom( NULL )
+    , mFeaturesToLabel( 0 )
+    , mFeatsSendingToPal( 0 )
+    , mFeatsRegPal( 0 )
+    , expression( NULL )
 {
   placement = AroundPoint;
   placementFlags = 0;
@@ -271,6 +277,21 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   shapeTransparency = 0;
   shapeBlendMode = QPainter::CompositionMode_SourceOver;
 
+  // drop shadow
+  shadowDraw = false;
+  shadowUnder = ShadowLowest;
+  shadowOffsetAngle = 135;
+  shadowOffsetDist = 0.0;
+  shadowOffsetUnits = MM;
+  shadowOffsetGlobal = true;
+  shadowRadius = 0.0;
+  shadowRadiusUnits = MM;
+  shadowRadiusAlphaOnly = false;
+  shadowTransparency = 0;
+  shadowScale = 100;
+  shadowColor = Qt::black;
+  shadowBlendMode = QPainter::CompositionMode_Multiply;
+
   // data defined string values
   mDataDefinedNames << "Size";
   mDataDefinedNames << "Bold";
@@ -294,7 +315,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   mDataDefinedNames << "BufferTransp";
   mDataDefinedNames << "AlwaysShow";
 
-  // temp stuff for drawing different label types (don't copy)
+  // temp stuff for when drawing label components (don't copy)
+  showingShadowRects = false;
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
@@ -380,6 +402,20 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   shapeTransparency = s.shapeTransparency;
   shapeBlendMode = s.shapeBlendMode;
 
+  // drop shadow
+  shadowDraw = s.shadowDraw;
+  shadowUnder = s.shadowUnder;
+  shadowOffsetAngle = s.shadowOffsetAngle;
+  shadowOffsetDist = s.shadowOffsetDist;
+  shadowOffsetUnits = s.shadowOffsetUnits;
+  shadowOffsetGlobal = s.shadowOffsetGlobal;
+  shadowRadius = s.shadowRadius;
+  shadowRadiusUnits = s.shadowRadiusUnits;
+  shadowRadiusAlphaOnly = s.shadowRadiusAlphaOnly;
+  shadowTransparency = s.shadowTransparency;
+  shadowScale = s.shadowScale;
+  shadowColor = s.shadowColor;
+  shadowBlendMode = s.shadowBlendMode;
 
   dataDefinedProperties = s.dataDefinedProperties;
   mDataDefinedNames = s.mDataDefinedNames;
@@ -556,7 +592,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
   isExpression = layer->customProperty( "labeling/isExpression" ).toBool();
-  placement = ( Placement ) layer->customProperty( "labeling/placement" ).toInt();
+  placement = ( Placement )layer->customProperty( "labeling/placement" ).toInt();
   placementFlags = layer->customProperty( "labeling/placementFlags" ).toUInt();
   xQuadOffset = layer->customProperty( "labeling/xQuadOffset", QVariant( 0 ) ).toInt();
   yQuadOffset = layer->customProperty( "labeling/yQuadOffset", QVariant( 0 ) ).toInt();
@@ -572,7 +608,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   textFont.setPointSizeF( fontSize ); //double precision needed because of map units
   textNamedStyle = layer->customProperty( "labeling/namedStyle", QVariant( "" ) ).toString();
   updateFontViaStyle( textNamedStyle ); // must come after textFont.setPointSizeF()
-  textFont.setCapitalization(( QFont::Capitalization ) layer->customProperty( "labeling/fontCapitals", QVariant( 0 ) ).toUInt() );
+  textFont.setCapitalization(( QFont::Capitalization )layer->customProperty( "labeling/fontCapitals", QVariant( 0 ) ).toUInt() );
   textFont.setUnderline( layer->customProperty( "labeling/fontUnderline" ).toBool() );
   textFont.setStrikeOut( layer->customProperty( "labeling/fontStrikeout" ).toBool() );
   textFont.setLetterSpacing( QFont::AbsoluteSpacing, layer->customProperty( "labeling/fontLetterSpacing", QVariant( 0.0 ) ).toDouble() );
@@ -593,7 +629,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   bufferTransp = layer->customProperty( "labeling/bufferTransp" ).toInt();
   bufferBlendMode = QgsMapRenderer::getCompositionMode(
                       ( QgsMapRenderer::BlendMode )layer->customProperty( "labeling/bufferBlendMode", QVariant( QgsMapRenderer::BlendNormal ) ).toUInt() );
-  bufferJoinStyle = ( Qt::PenJoinStyle ) layer->customProperty( "labeling/bufferJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt();
+  bufferJoinStyle = ( Qt::PenJoinStyle )layer->customProperty( "labeling/bufferJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt();
   bufferNoFill = layer->customProperty( "labeling/bufferNoFill", QVariant( false ) ).toBool();
   formatNumbers = layer->customProperty( "labeling/formatNumbers" ).toBool();
   decimals = layer->customProperty( "labeling/decimals" ).toInt();
@@ -605,8 +641,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   leftDirectionSymbol = layer->customProperty( "labeling/leftDirectionSymbol", QVariant( "<" ) ).toString();
   rightDirectionSymbol = layer->customProperty( "labeling/rightDirectionSymbol", QVariant( ">" ) ).toString();
   reverseDirectionSymbol = layer->customProperty( "labeling/reverseDirectionSymbol" ).toBool();
-  placeDirectionSymbol = ( DirectionSymbols ) layer->customProperty( "labeling/placeDirectionSymbol", QVariant( SymbolLeftRight ) ).toUInt();
-  upsidedownLabels = ( UpsideDownLabels ) layer->customProperty( "labeling/upsidedownLabels", QVariant( Upright ) ).toUInt();
+  placeDirectionSymbol = ( DirectionSymbols )layer->customProperty( "labeling/placeDirectionSymbol", QVariant( SymbolLeftRight ) ).toUInt();
+  upsidedownLabels = ( UpsideDownLabels )layer->customProperty( "labeling/upsidedownLabels", QVariant( Upright ) ).toUInt();
   maxCurvedCharAngleIn = layer->customProperty( "labeling/maxCurvedCharAngleIn", QVariant( 20.0 ) ).toDouble();
   maxCurvedCharAngleOut = layer->customProperty( "labeling/maxCurvedCharAngleOut", QVariant( -20.0 ) ).toDouble();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
@@ -621,18 +657,18 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   labelOffsetInMapUnits = layer->customProperty( "labeling/labelOffsetInMapUnits", QVariant( true ) ).toBool();
   wrapChar = layer->customProperty( "labeling/wrapChar" ).toString();
   multilineHeight = layer->customProperty( "labeling/multilineHeight", QVariant( 1.0 ) ).toDouble();
-  multilineAlign = ( MultiLineAlign ) layer->customProperty( "labeling/multilineAlign", QVariant( MultiLeft ) ).toUInt();
+  multilineAlign = ( MultiLineAlign )layer->customProperty( "labeling/multilineAlign", QVariant( MultiLeft ) ).toUInt();
   preserveRotation = layer->customProperty( "labeling/preserveRotation", QVariant( true ) ).toBool();
 
   // shape background
   shapeDraw = layer->customProperty( "labeling/shapeDraw", QVariant( false ) ).toBool();
-  shapeType = ( ShapeType ) layer->customProperty( "labeling/shapeType", QVariant( ShapeRectangle ) ).toUInt();
+  shapeType = ( ShapeType )layer->customProperty( "labeling/shapeType", QVariant( ShapeRectangle ) ).toUInt();
   shapeSVGFile = layer->customProperty( "labeling/shapeSVGFile", QVariant( "" ) ).toString();
-  shapeSizeType = ( SizeType ) layer->customProperty( "labeling/shapeSizeType", QVariant( SizeBuffer ) ).toUInt();
+  shapeSizeType = ( SizeType )layer->customProperty( "labeling/shapeSizeType", QVariant( SizeBuffer ) ).toUInt();
   shapeSize = QPointF( layer->customProperty( "labeling/shapeSizeX", QVariant( 0.0 ) ).toDouble(),
                        layer->customProperty( "labeling/shapeSizeY", QVariant( 0.0 ) ).toDouble() );
   shapeSizeUnits = ( SizeUnit )layer->customProperty( "labeling/shapeSizeUnits", QVariant( MM ) ).toUInt();
-  shapeRotationType = ( RotationType ) layer->customProperty( "labeling/shapeRotationType", QVariant( RotationSync ) ).toUInt();
+  shapeRotationType = ( RotationType )layer->customProperty( "labeling/shapeRotationType", QVariant( RotationSync ) ).toUInt();
   shapeRotation = layer->customProperty( "labeling/shapeRotation", QVariant( 0.0 ) ).toDouble();
   shapeOffset = QPointF( layer->customProperty( "labeling/shapeOffsetX", QVariant( 0.0 ) ).toDouble(),
                          layer->customProperty( "labeling/shapeOffsetY", QVariant( 0.0 ) ).toDouble() );
@@ -644,10 +680,26 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   shapeBorderColor = _readColor( layer, "labeling/shapeBorderColor", Qt::darkGray, true );
   shapeBorderWidth = layer->customProperty( "labeling/shapeBorderWidth", QVariant( .0 ) ).toDouble();
   shapeBorderWidthUnits = ( SizeUnit )layer->customProperty( "labeling/shapeBorderWidthUnits", QVariant( MM ) ).toUInt();
-  shapeJoinStyle = ( Qt::PenJoinStyle ) layer->customProperty( "labeling/shapeJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt();
+  shapeJoinStyle = ( Qt::PenJoinStyle )layer->customProperty( "labeling/shapeJoinStyle", QVariant( Qt::BevelJoin ) ).toUInt();
   shapeTransparency = layer->customProperty( "labeling/shapeTransparency", QVariant( 0 ) ).toInt();
   shapeBlendMode = QgsMapRenderer::getCompositionMode(
                      ( QgsMapRenderer::BlendMode )layer->customProperty( "labeling/shapeBlendMode", QVariant( QgsMapRenderer::BlendNormal ) ).toUInt() );
+
+  // drop shadow
+  shadowDraw = layer->customProperty( "labeling/shadowDraw", QVariant( false ) ).toBool();
+  shadowUnder = ( ShadowType )layer->customProperty( "labeling/shadowUnder", QVariant( ShadowLowest ) ).toUInt();//ShadowLowest;
+  shadowOffsetAngle = layer->customProperty( "labeling/shadowOffsetAngle", QVariant( 135 ) ).toInt();
+  shadowOffsetDist = layer->customProperty( "labeling/shadowOffsetDist", QVariant( 0.0 ) ).toDouble();
+  shadowOffsetUnits = ( SizeUnit )layer->customProperty( "labeling/shadowOffsetUnits", QVariant( MM ) ).toUInt();
+  shadowOffsetGlobal = layer->customProperty( "labeling/shadowOffsetGlobal", QVariant( true ) ).toBool();
+  shadowRadius = layer->customProperty( "labeling/shadowRadius", QVariant( 0.0 ) ).toDouble();
+  shadowRadiusUnits = ( SizeUnit )layer->customProperty( "labeling/shadowRadiusUnits", QVariant( MM ) ).toUInt();
+  shadowRadiusAlphaOnly = layer->customProperty( "labeling/shadowRadiusAlphaOnly", QVariant( false ) ).toBool();
+  shadowTransparency = layer->customProperty( "labeling/shadowTransparency", QVariant( 0 ) ).toInt();
+  shadowScale = layer->customProperty( "labeling/shadowScale", QVariant( 100 ) ).toInt();
+  shadowColor = _readColor( layer, "labeling/shadowColor", Qt::black, false );
+  shadowBlendMode = QgsMapRenderer::getCompositionMode(
+                      ( QgsMapRenderer::BlendMode )layer->customProperty( "labeling/shadowBlendMode", QVariant( QgsMapRenderer::BlendMultiply ) ).toUInt() );
 
   readDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
@@ -747,6 +799,21 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/shapeJoinStyle", ( unsigned int )shapeJoinStyle );
   layer->setCustomProperty( "labeling/shapeTransparency", shapeTransparency );
   layer->setCustomProperty( "labeling/shapeBlendMode", QgsMapRenderer::getBlendModeEnum( shapeBlendMode ) );
+
+  // drop shadow
+  layer->setCustomProperty( "labeling/shadowDraw", shadowDraw );
+  layer->setCustomProperty( "labeling/shadowUnder", ( unsigned int )shadowUnder );
+  layer->setCustomProperty( "labeling/shadowOffsetAngle", shadowOffsetAngle );
+  layer->setCustomProperty( "labeling/shadowOffsetDist", shadowOffsetDist );
+  layer->setCustomProperty( "labeling/shadowOffsetUnits", ( unsigned int )shadowOffsetUnits );
+  layer->setCustomProperty( "labeling/shadowOffsetGlobal", shadowOffsetGlobal );
+  layer->setCustomProperty( "labeling/shadowRadius", shadowRadius );
+  layer->setCustomProperty( "labeling/shadowRadiusUnits", ( unsigned int )shadowRadiusUnits );
+  layer->setCustomProperty( "labeling/shadowRadiusAlphaOnly", shadowRadiusAlphaOnly );
+  layer->setCustomProperty( "labeling/shadowTransparency", shadowTransparency );
+  layer->setCustomProperty( "labeling/shadowScale", shadowScale );
+  _writeColor( layer, "labeling/shadowColor", shadowColor, false );
+  layer->setCustomProperty( "labeling/shadowBlendMode", QgsMapRenderer::getBlendModeEnum( shadowBlendMode ) );
 
   writeDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
@@ -1859,15 +1926,37 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     }
     tmpLyr.bufferColor.setAlphaF(( 100.0 - ( double )( tmpLyr.bufferTransp ) ) / 100.0 );
 
+    tmpLyr.showingShadowRects = mShowingShadowRects;
+
+    tmpLyr.shadowDraw = ( tmpLyr.shadowDraw
+                          && tmpLyr.shadowTransparency < 100
+                          && !( tmpLyr.shadowOffsetDist == 0.0 && tmpLyr.shadowRadius == 0.0 ) );
+
     // Render the components of a label in reverse order
     //   (backgrounds -> text)
 
-    if ( lyr.shapeDraw )
+    if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowLowest )
+    {
+      if ( tmpLyr.shapeDraw )
+      {
+        tmpLyr.shadowUnder = QgsPalLayerSettings::ShadowShape;
+      }
+      else if ( tmpLyr.bufferSize > 0 )
+      {
+        tmpLyr.shadowUnder = QgsPalLayerSettings::ShadowBuffer;
+      }
+      else
+      {
+        tmpLyr.shadowUnder = QgsPalLayerSettings::ShadowText;
+      }
+    }
+
+    if ( tmpLyr.shapeDraw )
     {
       drawLabel( *it, context, tmpLyr, LabelShape );
     }
 
-    if ( lyr.bufferSize > 0 )
+    if ( tmpLyr.bufferSize > 0 )
     {
       drawLabel( *it, context, tmpLyr, LabelBuffer );
     }
@@ -2006,7 +2095,12 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   QPainter* painter = context.painter();
   const QgsMapToPixel* xform = &context.mapToPixel();
 
+  QgsLabelComponent component;
+
   QgsPoint outPt = xform->transform( label->getX(), label->getY() );
+  component.setOrigin( outPt );
+
+  component.setRotation( label->getAlpha() );
 
   if ( drawType == QgsPalLabeling::LabelShape )
   {
@@ -2025,12 +2119,10 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     centerPt.setX( centerPt.x() + xd );
     centerPt.setY( centerPt.y() + yd );
 
-    drawLabelBackground( context,
-                         centerPt,
-                         label->getAlpha() * 180 / M_PI, // converted to degrees
-                         label->getWidth(), // in map units
-                         label->getHeight(), // in map units
-                         tmpLyr );
+    component.setCenter( centerPt );
+    component.setSize( QgsPoint( label->getWidth(), label->getHeight() ) );
+
+    drawLabelBackground( context, component, tmpLyr );
   }
 
   if ( drawType == QgsPalLabeling::LabelBuffer
@@ -2125,9 +2217,9 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 
       // figure x offset for horizontal alignment of multiple lines
       double xMultiLineOffset = 0.0;
+      double labelWidth = labelfm->width( multiLineList.at( i ) );
       if ( lines > 1 && tmpLyr.multilineAlign != QgsPalLayerSettings::MultiLeft )
       {
-        double labelWidth = labelfm->width( multiLineList.at( i ) );
         double labelWidthDiff = labelWidest - labelWidth;
         if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiCenter )
         {
@@ -2140,25 +2232,52 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
       double yMultiLineOffset = ( lines - 1 - i ) * labelHeight * tmpLyr.multilineHeight;
       painter->translate( QPointF( xMultiLineOffset, - ascentOffset - yMultiLineOffset ) );
 
+      component.setText( multiLineList.at( i ) );
+      component.setSize( QgsPoint( labelWidth, labelHeight ) );
+      component.setOffset( QgsPoint( 0.0, -ascentOffset ) );
+      component.setRotation( -component.rotation() * 180 / M_PI );
+      component.setRotationOffset( 0.0 );
+
       if ( drawType == QgsPalLabeling::LabelBuffer )
       {
         // draw label's buffer
-        drawLabelBuffer( context, multiLineList.at( i ), tmpLyr );
+        drawLabelBuffer( context, component, tmpLyr );
       }
       else
       {
-        // draw label's text
+        // draw label's text, QPainterPath method
         QPainterPath path;
-        path.addText( 0, 0, tmpLyr.textFont, multiLineList.at( i ) );
-        painter->setPen( Qt::NoPen );
-        painter->setBrush( tmpLyr.textColor );
-        painter->setCompositionMode( tmpLyr.blendMode );
-        painter->drawPath( path );
+        path.addText( 0, 0, tmpLyr.textFont, component.text() );
 
-        // regular text draw, for testing
+        // store text's drawing in QPicture for drop shadow call
+        QPicture textPict;
+        QPainter textp;
+        textp.begin( &textPict );
+        textp.setPen( Qt::NoPen );
+        textp.setBrush( tmpLyr.textColor );
+        textp.drawPath( path );
+        textp.end();
+
+        if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowText )
+        {
+          component.setPicture( &textPict );
+          component.setPictureBuffer( 0.0 ); // no pen width to deal with
+          component.setOrigin( QgsPoint( 0.0, 0.0 ) );
+
+          drawLabelShadow( context, component, tmpLyr );
+        }
+
+        // paint the text
+        painter->setCompositionMode( tmpLyr.blendMode );
+//        painter->setPen( Qt::NoPen );
+//        painter->setBrush( tmpLyr.textColor );
+//        painter->setCompositionMode( tmpLyr.blendMode );
+//        painter->drawPath( path );
+        painter->drawPicture( 0, 0, textPict );
+
+        // regular text draw, for testing optimization
 //        painter->setFont( tmpLyr.textFont );
 //        painter->setPen( tmpLyr.textColor );
-//        painter->setCompositionMode( tmpLyr.blendMode );
 //        painter->drawText( 0, 0, multiLineList.at( i ) );
 
       }
@@ -2171,51 +2290,75 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     drawLabel( label->getNextPart(), context, tmpLyr, drawType );
 }
 
-void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context, QString text, const QgsPalLayerSettings& tmpLyr )
+void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
+                                      QgsLabelComponent component,
+                                      const QgsPalLayerSettings& tmpLyr )
 {
   QPainter* p = context.painter();
 
+  int penPixelSize = tmpLyr.sizeToPixel( tmpLyr.bufferSize, context,
+                                         ( tmpLyr.bufferSizeInMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM ) );
+
   QPainterPath path;
-  path.addText( 0, 0, tmpLyr.textFont, text );
+  path.addText( 0, 0, tmpLyr.textFont, component.text() );
   QPen pen( tmpLyr.bufferColor );
-  pen.setWidthF( tmpLyr.sizeToPixel( tmpLyr.bufferSize, context,
-                                     ( tmpLyr.bufferSizeInMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM ),
-                                     true ) );
+  pen.setWidthF( penPixelSize );
   pen.setJoinStyle( tmpLyr.bufferJoinStyle );
-  p->setPen( pen );
   QColor tmpColor( tmpLyr.bufferColor );
   // honor pref for whether to fill buffer interior
   if ( tmpLyr.bufferNoFill )
   {
     tmpColor.setAlpha( 0 );
   }
-  p->setBrush( tmpColor );
+
+  // store buffer's drawing in QPicture for drop shadow call
+  QPicture buffPict;
+  QPainter buffp;
+  buffp.begin( &buffPict );
+  buffp.setPen( pen );
+  buffp.setBrush( tmpColor );
+  buffp.drawPath( path );
+  buffp.end();
+
+  if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowBuffer )
+  {
+    component.setOrigin( QgsPoint( 0.0, 0.0 ) );
+    component.setPicture( &buffPict );
+    component.setPictureBuffer(( double )( penPixelSize ) / 2.0 );
+
+    drawLabelShadow( context, component, tmpLyr );
+  }
+
+  p->save();
   p->setCompositionMode( tmpLyr.bufferBlendMode );
-  p->drawPath( path );
+//  p->setPen( pen );
+//  p->setBrush( tmpColor );
+//  p->drawPath( path );
+  p->drawPicture( 0, 0, buffPict );
+  p->restore();
 }
 
 void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
-    const QgsPoint& centerPt, double labelRotation, double labelWidth, double labelHeight,
+    QgsLabelComponent component,
     const QgsPalLayerSettings& tmpLyr )
 {
   QPainter* p = context.painter();
+  double labelWidth = component.size().x(), labelHeight = component.size().y();
+  //QgsDebugMsg( QString( "Background label rotation: %1" ).arg( component.rotation() ) );
 
   // shared calculations between shapes and SVG
 
-  // aggregate angle
-  double angle = 0.0; // as degrees
+  // configure angles, set component rotation and rotationOffset
   if ( tmpLyr.shapeRotationType != QgsPalLayerSettings::RotationFixed )
   {
-    angle = -labelRotation; // RotationSync
-
-    if ( tmpLyr.shapeRotationType == QgsPalLayerSettings::RotationOffset )
-    {
-      angle += tmpLyr.shapeRotation;
-    }
+    component.setRotation( -( component.rotation() * 180 / M_PI ) ); // RotationSync
+    component.setRotationOffset(
+      tmpLyr.shapeRotationType == QgsPalLayerSettings::RotationOffset ? tmpLyr.shapeRotation : 0.0 );
   }
-  else
+  else // RotationFixed
   {
-    angle += tmpLyr.shapeRotation; // RotationFixed
+    component.setRotation( 0.0 ); // don't use label's rotation
+    component.setRotationOffset( tmpLyr.shapeRotation );
   }
 
   // mm to map units conversion factor
@@ -2260,6 +2403,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     }
 
     // don't bother rendering symbols smaller than 1x1 pixels in size
+    // TODO: add option to not show any svgs under/over a certian size
     if ( tmpLyr.sizeToPixel( sizeOut, context, tmpLyr.shapeSizeUnits ) < 1 )
       return;
 
@@ -2268,9 +2412,9 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     map["size"] = QString::number( sizeOut );
     map["size_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit(
                          tmpLyr.shapeSizeUnits == QgsPalLayerSettings::MapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
-    map["angle"] = QString::number( angle );
+    map["angle"] = QString::number( 0.0 ); // angle is handled by this local painter
 
-    // offset is added into QPointF passed to SVG renderer
+    // offset is handled by this local painter
     // TODO: see why the marker renderer doesn't seem to translate offset *after* applying rotation
     //map["offset"] = QgsSymbolLayerV2Utils::encodePoint( tmpLyr.shapeOffset );
     //map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit(
@@ -2280,11 +2424,66 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     map["outline"] = tmpLyr.shapeBorderColor.name();
     map["outline-width"] = QString::number( tmpLyr.shapeBorderWidth );
 
-    // TODO: fix overriding SVG symbol's border width units in QgsSvgCache
+    // TODO: fix overriding SVG symbol's border width/units in QgsSvgCache
     // currently broken, fall back to symbol's
     //map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit(
     //                              tmpLyr.shapeBorderWidthUnits == QgsPalLayerSettings::MapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
 
+    if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowShape )
+    {
+      // configure SVG shadow specs
+      QgsStringMap shdwmap( map );
+      shdwmap["fill"] = tmpLyr.shadowColor.name();
+      shdwmap["outline"] = tmpLyr.shadowColor.name();
+
+      // store SVG's drawing in QPicture for drop shadow call
+      QPicture svgPict;
+      QPainter svgp;
+      svgp.begin( &svgPict );
+
+      // draw shadow symbol
+
+      // clone current render context map unit/mm conversion factors, but not
+      // other map canvas parameters, then substitute this painter for use in symbology painting
+      // NOTE: this is because the shadow needs to be scaled correctly for output to map canvas,
+      //       but will be created relative to the SVG's computed size, not the current map canvas
+      QgsRenderContext shdwContext;
+      shdwContext.setMapToPixel( context.mapToPixel() );
+      shdwContext.setScaleFactor( context.scaleFactor() );
+      shdwContext.setPainter( &svgp );
+
+      QgsSymbolLayerV2* symShdwL = QgsSvgMarkerSymbolLayerV2::create( shdwmap );
+      QgsSvgMarkerSymbolLayerV2* svgShdwM = static_cast<QgsSvgMarkerSymbolLayerV2*>( symShdwL );
+      QgsSymbolV2RenderContext svgShdwContext( shdwContext, QgsSymbolV2::Mixed,
+          ( 100.0 - ( double )( tmpLyr.shapeTransparency ) ) / 100.0 );
+
+      double svgSize = tmpLyr.sizeToPixel( sizeOut, context, tmpLyr.shapeSizeUnits );
+      svgShdwM->renderPoint( QPointF( svgSize / 2, -svgSize / 2 ), svgShdwContext );
+      svgp.end();
+
+      component.setPicture( &svgPict );
+      // TODO: when SVG symbol's border width/units is fixed in QgsSvgCache, adjust for it here
+      component.setPictureBuffer( 0.0 );
+
+      component.setSize( QgsPoint( svgSize, svgSize ) );
+      component.setOffset( QgsPoint( 0.0, 0.0 ) );
+
+      // rotate about origin center of SVG
+      p->save();
+      p->translate( component.center().x(), component.center().y() );
+      p->rotate( component.rotation() );
+      p->translate( QPointF( xoff, yoff ) );
+      p->rotate( component.rotationOffset() );
+      p->translate( -svgSize / 2, svgSize / 2 );
+
+      drawLabelShadow( context, component, tmpLyr );
+      p->restore();
+
+      delete svgShdwM;
+      svgShdwM = 0;
+    }
+
+    // draw the actual symbol
     QgsSymbolLayerV2* symL = QgsSvgMarkerSymbolLayerV2::create( map );
     QgsSvgMarkerSymbolLayerV2* svgM = static_cast<QgsSvgMarkerSymbolLayerV2*>( symL );
     QgsSymbolV2RenderContext svgContext( context, QgsSymbolV2::Mixed,
@@ -2292,12 +2491,17 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 
     p->save();
     p->setCompositionMode( tmpLyr.shapeBlendMode );
-    svgM->renderPoint( QPointF( centerPt.x() + xoff, centerPt.y() + yoff ), svgContext );
+    p->translate( component.center().x(), component.center().y() );
+    p->rotate( component.rotation() );
+    p->translate( QPointF( xoff, yoff ) );
+    p->rotate( component.rotationOffset() );
+    svgM->renderPoint( QPointF( 0, 0 ), svgContext );
     p->setCompositionMode( QPainter::CompositionMode_SourceOver ); // just to be sure
     p->restore();
 
     delete svgM;
     svgM = 0;
+
   }
   else  // Generated Shapes
   {
@@ -2352,48 +2556,207 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       return;
 
     p->save();
-    p->translate( QPointF( centerPt.x() + xoff, centerPt.y() + yoff ) );
-    p->rotate( angle );
+    p->translate( QPointF( component.center().x(), component.center().y() ) );
+    p->rotate( component.rotation() );
+    p->translate( QPointF( xoff, yoff ) );
+    p->rotate( component.rotationOffset() );
+
+    // store painting in QPicture for shadow drawing
+    QPicture shapePict;
+    QPainter shapep;
+    shapep.begin( &shapePict );
+
+    int penPixelSize = tmpLyr.sizeToPixel( tmpLyr.shapeBorderWidth, context, tmpLyr.shapeBorderWidthUnits );
 
     if ( tmpLyr.shapeBorderWidth > 0 )
     {
       QPen pen( tmpLyr.shapeBorderColor );
-      pen.setWidthF( tmpLyr.sizeToPixel( tmpLyr.shapeBorderWidth, context, tmpLyr.shapeBorderWidthUnits ) );
+      pen.setWidthF(( double )penPixelSize );
       if ( tmpLyr.shapeType == QgsPalLayerSettings::ShapeRectangle )
         pen.setJoinStyle( tmpLyr.shapeJoinStyle );
-      p->setPen( pen );
+      shapep.setPen( pen );
     }
     else
     {
-      p->setPen( Qt::NoPen );
+      shapep.setPen( Qt::NoPen );
     }
-    p->setBrush( tmpLyr.shapeFillColor );
-
-    p->setOpacity(( 100.0 - ( double )( tmpLyr.shapeTransparency ) ) / 100.0 );
-    p->setCompositionMode( tmpLyr.shapeBlendMode );
+    shapep.setBrush( tmpLyr.shapeFillColor );
 
     if ( tmpLyr.shapeType == QgsPalLayerSettings::ShapeRectangle
          || tmpLyr.shapeType == QgsPalLayerSettings::ShapeSquare )
     {
       if ( tmpLyr.shapeRadiiUnits == QgsPalLayerSettings::Percent )
       {
-        p->drawRoundedRect( rect, tmpLyr.shapeRadii.x(), tmpLyr.shapeRadii.y(), Qt::RelativeSize );
+        shapep.drawRoundedRect( rect, tmpLyr.shapeRadii.x(), tmpLyr.shapeRadii.y(), Qt::RelativeSize );
       }
       else
       {
         double xRadius = tmpLyr.sizeToPixel( tmpLyr.shapeRadii.x(), context, tmpLyr.shapeRadiiUnits );
         double yRadius = tmpLyr.sizeToPixel( tmpLyr.shapeRadii.y(), context, tmpLyr.shapeRadiiUnits );
-        p->drawRoundedRect( rect, xRadius, yRadius );
+        shapep.drawRoundedRect( rect, xRadius, yRadius );
       }
     }
     else if ( tmpLyr.shapeType == QgsPalLayerSettings::ShapeEllipse
               || tmpLyr.shapeType == QgsPalLayerSettings::ShapeCircle )
     {
-      p->drawEllipse( rect );
+      shapep.drawEllipse( rect );
     }
+
+    shapep.end();
+
+    if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowShape )
+    {
+      component.setPicture( &shapePict );
+      component.setPictureBuffer(( double )( penPixelSize ) / 2.0 );
+
+      component.setSize( QgsPoint( rect.width(), rect.height() ) );
+      component.setOffset( QgsPoint( rect.width() / 2, -rect.height() / 2 ) );
+      drawLabelShadow( context, component, tmpLyr );
+    }
+
+
+    p->setOpacity(( 100.0 - ( double )( tmpLyr.shapeTransparency ) ) / 100.0 );
+    p->setCompositionMode( tmpLyr.shapeBlendMode );
+    p->drawPicture( 0, 0, shapePict );
     p->restore();
   }
+}
 
+void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
+                                      QgsLabelComponent component,
+                                      const QgsPalLayerSettings& tmpLyr )
+{
+  QPainter* p = context.painter();
+  double componentWidth = component.size().x(), componentHeight = component.size().y();
+  double xOffset = component.offset().x(), yOffset = component.offset().y();
+  double pictbuffer = component.pictureBuffer();
+
+  // generate pixmap representation of label component drawing
+  int radius = tmpLyr.sizeToPixel( tmpLyr.shadowRadius , context, tmpLyr.shadowRadiusUnits );
+  radius /= ( tmpLyr.shadowRadiusUnits == QgsPalLayerSettings::MapUnits ? tmpLyr.vectorScaleFactor : 1 );
+
+  // TODO: add labeling gui option to adjust blurBufferClippingScale to minimize pixels, or
+  //       to ensure shadow isn't clipped too tight. (Or, find a better method of buffering)
+  double blurBufferClippingScale = 3.75;
+  int blurbuffer = ( radius > 17 ? 16 : radius ) * blurBufferClippingScale;
+
+  QImage blurImg( componentWidth + ( pictbuffer * 2.0 ) + ( blurbuffer * 2.0 ),
+                  componentHeight + ( pictbuffer * 2.0 ) + ( blurbuffer * 2.0 ),
+                  QImage::Format_ARGB32_Premultiplied );
+
+  // TODO: add labeling gui option to not show any shadows under/over a certian size
+  // keep very small QImages from causing paint device issues, i.e. must be at least > 1
+  int minBlurImgSize = 1;
+  // max matches limitation on QgsSvgCache, which will probably be reasonable for future caching here, too
+  int maxBlurImgSize = 10000;
+  if ( blurImg.isNull()
+       || ( blurImg.width() < minBlurImgSize || blurImg.height() < minBlurImgSize )
+       || ( blurImg.width() > maxBlurImgSize || blurImg.height() > maxBlurImgSize ) )
+    return;
+
+  blurImg.fill( QColor( Qt::transparent ).rgba() );
+  QPainter pictp;
+  if ( !pictp.begin( &blurImg ) )
+    return;
+  pictp.setRenderHints( QPainter::Antialiasing );
+  QPointF imgOffset( blurbuffer + pictbuffer + xOffset,
+                     blurbuffer + pictbuffer + componentHeight + yOffset );
+
+  pictp.drawPicture( imgOffset,
+                     *component.picture() );
+
+  // overlay shadow color
+  pictp.setCompositionMode( QPainter::CompositionMode_SourceIn );
+  pictp.fillRect( blurImg.rect(), tmpLyr.shadowColor );
+  pictp.end();
+
+  // blur the QImage in-place
+  if ( tmpLyr.shadowRadius > 0.0 && radius > 0 )
+  {
+    QgsSymbolLayerV2Utils::blurImageInPlace( blurImg, blurImg.rect(), radius, tmpLyr.shadowRadiusAlphaOnly );
+  }
+
+  if ( tmpLyr.showingShadowRects ) // engine setting, not per layer
+  {
+    // debug rect for QImage shadow registration and clipping visualization
+    QPainter picti;
+    picti.begin( &blurImg );
+    picti.setBrush( Qt::Dense7Pattern );
+    QPen imgPen( QColor( 0, 0, 255, 255 ) );
+    imgPen.setWidth( 1 );
+    picti.setPen( imgPen );
+    picti.setOpacity( 0.1 );
+    picti.drawRect( 0, 0, blurImg.width(), blurImg.height() );
+    picti.end();
+  }
+
+  int offsetDist = tmpLyr.sizeToPixel( tmpLyr.shadowOffsetDist, context, tmpLyr.shadowOffsetUnits );
+  double angleRad = tmpLyr.shadowOffsetAngle * M_PI / 180; // to radians
+  if ( tmpLyr.shadowOffsetGlobal )
+  {
+    // TODO: check for differences in rotation origin and cw/ccw direction,
+    //       when this shadow function is used for something other than labels
+
+    // it's 0-->cw-->360 for labels
+    //QgsDebugMsg( QString( "Shadow aggregated label rotation (degrees): %1" ).arg( component.rotation() + component.rotationOffset() ) );
+    angleRad -= ( component.rotation() * M_PI / 180 + component.rotationOffset() * M_PI / 180 );
+  }
+
+  QPointF transPt( -offsetDist * cos( angleRad + M_PI / 2 ),
+                   -offsetDist * sin( angleRad + M_PI / 2 ) );
+
+  p->save();
+  p->setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
+  p->setCompositionMode( tmpLyr.shadowBlendMode );
+  p->setOpacity(( 100.0 - ( double )( tmpLyr.shadowTransparency ) ) / 100.0 );
+  double scale = ( double )tmpLyr.shadowScale / 100.0;
+  // TODO: scale from center/center, left/center or left/top, instead of default left/bottom?
+  p->scale( scale, scale );
+  if ( component.useOrigin() )
+  {
+    p->translate( component.origin().x(), component.origin().y() );
+  }
+  p->translate( transPt );
+  p->translate( -imgOffset.x(),
+                -imgOffset.y() );
+
+  p->drawImage( 0, 0, blurImg );
+  p->restore();
+
+  // debug rects
+  if ( tmpLyr.showingShadowRects ) // engine setting, not per layer
+  {
+    // draw debug rect for QImage painting registration
+    p->save();
+    p->setBrush( Qt::NoBrush );
+    QPen imgPen( QColor( 255, 0, 0, 10 ) );
+    imgPen.setWidth( 2 );
+    imgPen.setStyle( Qt::DashLine );
+    p->setPen( imgPen );
+    p->scale( scale, scale );
+    if ( component.useOrigin() )
+    {
+      p->translate( component.origin().x(), component.origin().y() );
+    }
+    p->translate( transPt );
+    p->translate( -imgOffset.x(),
+                  -imgOffset.y() );
+    p->drawRect( 0, 0, blurImg.width(), blurImg.height() );
+    p->restore();
+
+    // draw debug rect for passed in component dimensions
+    p->save();
+    p->setBrush( Qt::NoBrush );
+    QPen componentRectPen( QColor( 0, 255, 0, 70 ) );
+    componentRectPen.setWidth( 1 );
+    if ( component.useOrigin() )
+    {
+      p->translate( component.origin().x(), component.origin().y() );
+    }
+    p->setPen( componentRectPen );
+    p->drawRect( QRect( -xOffset, -componentHeight - yOffset, componentWidth, componentHeight ) );
+    p->restore();
+  }
 }
 
 void QgsPalLabeling::loadEngineSettings()
@@ -2411,6 +2774,8 @@ void QgsPalLabeling::loadEngineSettings()
                    "PAL", "/CandidatesPolygon", p.getPolyP(), &saved );
   mShowingCandidates = QgsProject::instance()->readBoolEntry(
                          "PAL", "/ShowingCandidates", false, &saved );
+  mShowingShadowRects = QgsProject::instance()->readBoolEntry(
+                          "PAL", "/ShowingShadowRects", false, &saved );
   mShowingAllLabels = QgsProject::instance()->readBoolEntry(
                         "PAL", "/ShowingAllLabels", false, &saved );
   mSavedWithProject = saved;
@@ -2423,6 +2788,7 @@ void QgsPalLabeling::saveEngineSettings()
   QgsProject::instance()->writeEntry( "PAL", "/CandidatesLine", mCandLine );
   QgsProject::instance()->writeEntry( "PAL", "/CandidatesPolygon", mCandPolygon );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingCandidates", mShowingCandidates );
+  QgsProject::instance()->writeEntry( "PAL", "/ShowingShadowRects", mShowingShadowRects );
   QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", mShowingAllLabels );
   mSavedWithProject = true;
 }
@@ -2434,6 +2800,7 @@ void QgsPalLabeling::clearEngineSettings()
   QgsProject::instance()->removeEntry( "PAL", "/CandidatesLine" );
   QgsProject::instance()->removeEntry( "PAL", "/CandidatesPolygon" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingCandidates" );
+  QgsProject::instance()->removeEntry( "PAL", "/ShowingShadowRects" );
   QgsProject::instance()->removeEntry( "PAL", "/ShowingAllLabels" );
   mSavedWithProject = false;
 }
@@ -2443,5 +2810,6 @@ QgsLabelingEngineInterface* QgsPalLabeling::clone()
   QgsPalLabeling* lbl = new QgsPalLabeling();
   lbl->mShowingAllLabels = mShowingAllLabels;
   lbl->mShowingCandidates = mShowingCandidates;
+  lbl->mShowingShadowRects = mShowingShadowRects;
   return lbl;
 }
