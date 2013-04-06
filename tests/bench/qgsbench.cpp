@@ -34,6 +34,9 @@
 #include <QTextStream>
 #include <QTime>
 
+#ifndef QGSVERSION
+#include "qgsversion.h"
+#endif
 #include "qgsbench.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -208,6 +211,7 @@ void QgsBench::render()
   }
 
   mLogMap.insert( "iterations", mTimes.size() );
+  mLogMap.insert( "revision", QGSVERSION );
 
   // Calc stats: user, sys, total
   double min[4], max[4];
