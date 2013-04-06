@@ -55,8 +55,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsVectorLayerProperties();
-    /**Sets the legend type to "single symbol", "graduated symbol" or "continuous color"*/
-    void setLegendType( QString type );
     /**Returns the display name entered in the dialog*/
     QString displayName();
     void setRendererDirty( bool ) {}
@@ -81,8 +79,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     void insertExpression();
 
-    void alterLayerDialog( const QString& string );
-
     /** Reset to original (vector layer) values */
     void reset();
 
@@ -93,9 +89,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
      * @note added in QGIS 1.9
      */
     void on_mLayerOrigNameLineEdit_textEdited( const QString& text );
-
-    /** Set transparency based on slider position */
-    void sliderTransparency_valueChanged( int theValue );
 
     /** Toggles on the label check box */
     void setLabelCheckBox();
@@ -119,9 +112,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_pbnUpdateExtents_clicked();
 
     void enableLabelOptions( bool theFlag );
-
-    void useNewSymbology();
-    void setUsingNewSymbology( bool useNewSymbology );
 
     void on_mButtonAddJoin_clicked();
     void on_mButtonRemoveJoin_clicked();

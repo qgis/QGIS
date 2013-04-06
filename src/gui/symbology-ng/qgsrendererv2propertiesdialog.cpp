@@ -82,7 +82,6 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   }
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( btnOldSymbology, SIGNAL( clicked() ), this, SLOT( useOldSymbology() ) );
 
   // initialize registry's widget functions
   _initRendererWidgetFunctions();
@@ -203,19 +202,4 @@ void QgsRendererV2PropertiesDialog::keyPressEvent( QKeyEvent * e )
   {
     QDialog::keyPressEvent( e );
   }
-}
-
-
-
-
-void QgsRendererV2PropertiesDialog::useOldSymbology()
-{
-  int res = QMessageBox::question( this, tr( "Symbology" ),
-                                   tr( "Do you wish to use the original symbology implementation for this layer?" ),
-                                   QMessageBox::Yes | QMessageBox::No );
-
-  if ( res != QMessageBox::Yes )
-    return;
-
-  emit useNewSymbology( false );
 }

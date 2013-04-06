@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>936</width>
-    <height>860</height>
+    <width>932</width>
+    <height>856</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,80 +83,7 @@
        <string>Style</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <widget class="QLabel" name="legendtypelabel">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>32767</width>
-           <height>22</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Legend type</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="legendtypecombobox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>26</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>32767</width>
-           <height>22</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="lblTransparencyPercent">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Transparency</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QSlider" name="sliderTransparency">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximum">
-          <number>255</number>
-         </property>
-         <property name="value">
-          <number>0</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="5">
+       <item row="0" column="0" colspan="2">
         <widget class="QStackedWidget" name="widgetStackRenderers">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -172,13 +99,6 @@
          </property>
          <property name="currentIndex">
           <number>-1</number>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QPushButton" name="btnUseNewSymbology">
-         <property name="text">
-          <string>New symbology</string>
          </property>
         </widget>
        </item>
@@ -300,8 +220,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>914</width>
-            <height>746</height>
+            <width>680</width>
+            <height>393</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -799,8 +719,8 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>728</height>
+            <width>94</width>
+            <height>211</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -911,8 +831,8 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>728</height>
+            <width>96</width>
+            <height>112</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1019,7 +939,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnQueryBuilder</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

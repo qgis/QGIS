@@ -16,7 +16,6 @@ SET(QGIS_APP_SRCS
   qgsbookmarks.cpp
   qgsbrowserdockwidget.cpp
   qgsclipboard.cpp
-  qgscontinuouscolordialog.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
@@ -36,7 +35,6 @@ SET(QGIS_APP_SRCS
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
   qgsfieldsproperties.cpp
-  qgsgraduatedsymboldialog.cpp
   qgsidentifyresultsdialog.cpp
   qgsfeatureaction.cpp
   qgslabeldialog.cpp
@@ -104,13 +102,11 @@ SET(QGIS_APP_SRCS
   qgsrasterlayerproperties.cpp
   qgstextannotationdialog.cpp
   qgsshortcutsmanager.cpp
-  qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
   qgstipgui.cpp
   qgstipfactory.cpp
-  qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
   qgshandlebadlayers.cpp
 
@@ -176,7 +172,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsbookmarks.h
   qgsbrowserdockwidget.h
   qgsconfigureshortcutsdialog.h
-  qgscontinuouscolordialog.h
   qgscustomization.h
   qgscustomprojectiondialog.h
   qgsdecorationitem.h
@@ -196,7 +191,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsfieldsproperties.h
   qgsformannotationdialog.h
   qgshtmlannotationdialog.h
-  qgsgraduatedsymboldialog.h
   qgsidentifyresultsdialog.h
   qgslabeldialog.h
   qgslabelengineconfigdialog.h
@@ -248,7 +242,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsprojectproperties.h
   qgsrastercalcdialog.h
   qgsrasterlayerproperties.h
-  qgssinglesymboldialog.h
   qgssnappingdialog.h
   qgssponsors.h
   qgssvgannotationdialog.h
@@ -256,7 +249,6 @@ SET (QGIS_APP_MOC_HDRS
   qgstipgui.h
   qgstipfactory.h
   qgsundowidget.h
-  qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
   qgshandlebadlayers.h
 

@@ -25,13 +25,11 @@
 #include "qgsattributeactiondialog.h"
 #include "qgsapplydialog.h"
 #include "qgscontexthelp.h"
-#include "qgscontinuouscolordialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfieldsproperties.h"
-#include "qgsgraduatedsymboldialog.h"
 #include "qgslabeldialog.h"
 #include "qgslabelinggui.h"
 #include "qgslabel.h"
@@ -42,8 +40,6 @@
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
-#include "qgssinglesymboldialog.h"
-#include "qgsuniquevaluedialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsconfig.h"
@@ -90,8 +86,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
   connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
-
-  connect( btnUseNewSymbology, SIGNAL( clicked() ), this, SLOT( useNewSymbology() ) );
 
   QVBoxLayout *layout;
 
@@ -172,8 +166,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   leSpatialRefSys->setText( layer->crs().authid() + " - " + layer->crs().description() );
   leSpatialRefSys->setCursorPosition( 0 );
 
-  connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
-
   //insert existing join info
   const QList< QgsVectorJoinInfo >& joins = layer->vectorJoins();
   for ( int i = 0; i < joins.size(); ++i )
@@ -239,47 +231,9 @@ void QgsVectorLayerProperties::toggleEditing()
   }
 }
 
-void QgsVectorLayerProperties::sliderTransparency_valueChanged( int theValue )
-{
-  //set the transparency percentage label to a suitable value
-  int myInt = static_cast < int >(( theValue / 255.0 ) * 100 );  //255.0 to prevent integer division
-  lblTransparencyPercent->setText( tr( "Transparency: %1%" ).arg( myInt ) );
-}//sliderTransparency_valueChanged
-
 void QgsVectorLayerProperties::setLabelCheckBox()
 {
   labelCheckBox->setCheckState( Qt::Checked );
-}
-
-void QgsVectorLayerProperties::alterLayerDialog( const QString & dialogString )
-{
-
-  widgetStackRenderers->removeWidget( mRendererDialog );
-  delete mRendererDialog;
-  mRendererDialog = 0;
-  if ( dialogString == tr( "Single Symbol" ) )
-  {
-    mRendererDialog = new QgsSingleSymbolDialog( layer );
-  }
-  else if ( dialogString == tr( "Graduated Symbol" ) )
-  {
-    mRendererDialog = new QgsGraduatedSymbolDialog( layer );
-  }
-  else if ( dialogString == tr( "Continuous Color" ) )
-  {
-    mRendererDialog = new QgsContinuousColorDialog( layer );
-  }
-  else if ( dialogString == tr( "Unique Value" ) )
-  {
-    mRendererDialog = new QgsUniqueValueDialog( layer );
-  }
-  widgetStackRenderers->addWidget( mRendererDialog );
-  widgetStackRenderers->setCurrentWidget( mRendererDialog );
-}
-
-void QgsVectorLayerProperties::setLegendType( QString type )
-{
-  legendtypecombobox->setItemText( legendtypecombobox->currentIndex(), type );
 }
 
 void QgsVectorLayerProperties::insertField()
@@ -383,18 +337,6 @@ void QgsVectorLayerProperties::reset( void )
   cbMinimumScale->setScale( 1.0 / layer->minimumScale() );
   cbMaximumScale->setScale( 1.0 / layer->maximumScale() );
 
-  // symbology initialization
-  if ( legendtypecombobox->count() == 0 )
-  {
-    legendtypecombobox->addItem( tr( "Single Symbol" ) );
-    if ( myFields.size() > 0 )
-    {
-      legendtypecombobox->addItem( tr( "Graduated Symbol" ) );
-      legendtypecombobox->addItem( tr( "Continuous Color" ) );
-      legendtypecombobox->addItem( tr( "Unique Value" ) );
-    }
-  }
-
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
 
@@ -411,11 +353,6 @@ void QgsVectorLayerProperties::reset( void )
   labelOptionsFrame->setEnabled( layer->hasLabelsEnabled() );
 
   mFieldsPropertiesDialog->init();
-
-  //set the transparency slider
-  sliderTransparency->setValue( 255 - layer->getTransparency() );
-  //update the transparency percentage label
-  sliderTransparency_valueChanged( 255 - layer->getTransparency() );
 
   QObject::connect( labelCheckBox, SIGNAL( clicked( bool ) ), this, SLOT( enableLabelOptions( bool ) ) );
 } // reset()
@@ -473,8 +410,6 @@ void QgsVectorLayerProperties::apply()
   layer->enableLabels( labelCheckBox->isChecked() );
   layer->setLayerName( mLayerOrigNameLineEdit->text() );
 
-  QSet<QString> excludeAttributesWMS, excludeAttributesWFS;
-
   // Apply fields settings
   mFieldsPropertiesDialog->apply();
 
@@ -483,36 +418,6 @@ void QgsVectorLayerProperties::apply()
     QgsRendererV2PropertiesDialog* dlg =
       static_cast<QgsRendererV2PropertiesDialog*>( widgetStackRenderers->currentWidget() );
     dlg->apply();
-  }
-  else
-  {
-    QgsSingleSymbolDialog *sdialog =
-      qobject_cast < QgsSingleSymbolDialog * >( widgetStackRenderers->currentWidget() );
-    QgsGraduatedSymbolDialog *gdialog =
-      qobject_cast < QgsGraduatedSymbolDialog * >( widgetStackRenderers->currentWidget() );
-    QgsContinuousColorDialog *cdialog =
-      qobject_cast < QgsContinuousColorDialog * >( widgetStackRenderers->currentWidget() );
-    QgsUniqueValueDialog* udialog =
-      qobject_cast< QgsUniqueValueDialog * >( widgetStackRenderers->currentWidget() );
-
-    if ( sdialog )
-    {
-      sdialog->apply();
-    }
-    else if ( gdialog )
-    {
-      gdialog->apply();
-    }
-    else if ( cdialog )
-    {
-      cdialog->apply();
-    }
-    else if ( udialog )
-    {
-      udialog->apply();
-    }
-    layer->setTransparency( static_cast < unsigned int >( 255 - sliderTransparency->value() ) );
-
   }
 
   //apply diagram settings
@@ -794,20 +699,6 @@ QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const
   return pluginList;
 }
 
-void QgsVectorLayerProperties::setUsingNewSymbology( bool useNewSymbology )
-{
-  if ( useNewSymbology )
-  {
-    QgsSymbologyV2Conversion::rendererV1toV2( layer );
-  }
-  else
-  {
-    QgsSymbologyV2Conversion::rendererV2toV1( layer );
-  }
-
-  // update GUI!
-  updateSymbologyPage();
-}
 
 void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
 {
@@ -880,18 +771,6 @@ void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
 }
 
 
-void QgsVectorLayerProperties::useNewSymbology()
-{
-  int res = QMessageBox::question( this, tr( "Symbology" ),
-                                   tr( "Do you wish to use the new symbology implementation for this layer?" ),
-                                   QMessageBox::Yes | QMessageBox::No );
-
-  if ( res != QMessageBox::Yes )
-    return;
-
-  setUsingNewSymbology( true );
-}
-
 void QgsVectorLayerProperties::updateSymbologyPage()
 {
 
@@ -899,56 +778,14 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   delete mRendererDialog;
   mRendererDialog = 0;
 
-  bool v2 = layer->isUsingRendererV2();
-
-  // hide unused widgets
-  legendtypecombobox->setVisible( !v2 );
-  legendtypelabel->setVisible( !v2 );
-  lblTransparencyPercent->setVisible( !v2 );
-  sliderTransparency->setVisible( !v2 );
-  btnUseNewSymbology->setVisible( !v2 );
-
-  if ( v2 )
+  if ( layer->isUsingRendererV2() )
   {
     mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
-
-    connect( mRendererDialog, SIGNAL( useNewSymbology( bool ) ), this, SLOT( setUsingNewSymbology( bool ) ) );
 
     // display the menu to choose the output format (fix #5136)
     pbnSaveStyleAs->setText( tr( "Save Style" ) );
     pbnSaveStyleAs->setMenu( mSaveAsMenu );
     QObject::disconnect( pbnSaveStyleAs, SIGNAL( clicked() ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
-  }
-  else if ( layer->renderer() )
-  {
-    QString rtype = layer->renderer()->name();
-    if ( rtype == "Single Symbol" )
-    {
-      mRendererDialog = new QgsSingleSymbolDialog( layer );
-      legendtypecombobox->setCurrentIndex( 0 );
-    }
-    else if ( rtype == "Graduated Symbol" )
-    {
-      mRendererDialog = new QgsGraduatedSymbolDialog( layer );
-      legendtypecombobox->setCurrentIndex( 1 );
-    }
-    else if ( rtype == "Continuous Color" )
-    {
-      mRendererDialog = new QgsContinuousColorDialog( layer );
-      legendtypecombobox->setCurrentIndex( 2 );
-    }
-    else if ( rtype == "Unique Value" )
-    {
-      mRendererDialog = new QgsUniqueValueDialog( layer );
-      legendtypecombobox->setCurrentIndex( 3 );
-    }
-
-    QObject::connect( legendtypecombobox, SIGNAL( activated( const QString & ) ), this,
-                      SLOT( alterLayerDialog( const QString & ) ) );
-
-    pbnSaveStyleAs->setText( tr( "Save Style..." ) );
-    pbnSaveStyleAs->setMenu( NULL );
-    QObject::connect( pbnSaveStyleAs, SIGNAL( clicked() ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
   }
   else
   {
