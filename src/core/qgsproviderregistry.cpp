@@ -75,7 +75,7 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
-#ifdef WIN32
+#if defined(WIN32) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
 #elif ANDROID
   mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );

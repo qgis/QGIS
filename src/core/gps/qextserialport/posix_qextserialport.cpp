@@ -6,6 +6,11 @@
 #include <QMutexLocker>
 #include <QDebug>
 
+#ifdef __CYGWIN__
+#undef FIONREAD
+#define FIONREAD TIOCINQ
+#endif
+
 void QextSerialPort::platformSpecificInit()
 {
     fd = 0;
@@ -911,12 +916,14 @@ unsigned long QextSerialPort::lineStatus()
         if (Temp&TIOCM_RTS) {
             Status|=LS_RTS;
         }
+#ifndef __CYGWIN__
         if (Temp&TIOCM_ST) {
             Status|=LS_ST;
         }
         if (Temp&TIOCM_SR) {
             Status|=LS_SR;
         }
+#endif
     }
     return Status;
 }
