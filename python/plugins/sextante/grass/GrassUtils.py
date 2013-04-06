@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.tests.TestData import points
-import traceback
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,9 +24,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from sextante.core.SextanteUtils import SextanteUtils, mkdir
+from PyQt4.QtCore import *
+import traceback
 import subprocess
+from sextante.tests.TestData import points
 from sextante.core.SextanteConfig import SextanteConfig
+from sextante.core.SextanteUtils import SextanteUtils, mkdir
 from sextante.core.SextanteLog import SextanteLog
 import stat
 import shutil
@@ -336,10 +337,10 @@ class GrassUtils:
                 return ("The specified GRASS folder does not contain a valid set of GRASS modules.\n"
                         + "Please, go to the SEXTANTE settings dialog, and check that the GRASS\n"
                         + "folder is correctly configured")
-
+                            
+        settings = QSettings()
         if not ignoreRegistrySettings:
-            GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"
-            settings = QSettings()
+            GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"            
             if settings.contains(GRASS_INSTALLED):
                 return
 
