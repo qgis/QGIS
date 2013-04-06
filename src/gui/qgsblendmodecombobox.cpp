@@ -98,15 +98,15 @@ void QgsBlendModeComboBox::updateModes()
   blockSignals( false );
 }
 
-//! Function to read the selected blend mode as int
-int QgsBlendModeComboBox::blendMode()
+//! Function to read the selected blend mode
+QPainter::CompositionMode QgsBlendModeComboBox::blendMode()
 {
-  return mListIndexToBlendMode[ currentIndex()];
+  return QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
 }
 
-//! Function to set the selected blend mode from int
-void QgsBlendModeComboBox::setBlendMode( int blendMode )
+//! Function to set the selected blend mode
+void QgsBlendModeComboBox::setBlendMode( QPainter::CompositionMode blendMode )
 {
-  setCurrentIndex( mBlendModeToListIndex[ blendMode ] );
+  setCurrentIndex( mBlendModeToListIndex[( int ) QgsMapRenderer::getBlendModeEnum( blendMode )] );
 }
 

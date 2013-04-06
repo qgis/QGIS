@@ -49,7 +49,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mLayerOrigName( lyrname ), // store the original name
     mID( "" ),
     mLayerType( type ),
-    mBlendMode( QgsMapRenderer::BlendNormal ) // Default to normal blending
+    mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
 {
   mCRS = new QgsCoordinateReferenceSystem();
 
@@ -134,13 +134,13 @@ QgsRectangle QgsMapLayer::extent()
 }
 
 /** Write blend mode for layer */
-void QgsMapLayer::setBlendMode( const QgsMapRenderer::BlendMode blendMode )
+void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
 }
 
 /** Read blend mode for layer */
-QgsMapRenderer::BlendMode QgsMapLayer::blendMode() const
+QPainter::CompositionMode QgsMapLayer::blendMode() const
 {
   return mBlendMode;
 }
