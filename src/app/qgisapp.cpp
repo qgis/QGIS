@@ -722,7 +722,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // update windows
   qApp->processEvents();
 
-  fileNewBlank(); // prepare empty project
+  // check if a project has been loaded already via drag/drop or filesystem loading
+  if ( !QgsProject::instance() )
+  {
+    fileNewBlank(); // prepare empty project
+  }
 
 } // QgisApp ctor
 
@@ -3285,8 +3289,21 @@ void QgisApp::fileOpenAfterLaunch()
 {
   // TODO: move auto-open project options to enums
 
+  // check if a project is already loaded via command line or filesystem
+  if ( !QgsProject::instance()->fileName().isNull() )
+  {
+    return;
+  }
+
+  // check if a data source is already loaded via command line or filesystem
+  // empty project with layer loaded, but may not trigger a dirty project at this point
+  if ( QgsProject::instance() && QgsMapLayerRegistry::instance()->count() > 0 )
+  {
+    return;
+  }
+
   // fileNewBlank() has already been called in QgisApp constructor
-  // loaded project is either a new blank one, or one from command line
+  // loaded project is either a new blank one, or one from command line/filesystem
   QSettings settings;
   QString autoOpenMsgTitle = tr( "Auto-open Project" );
 
@@ -3323,12 +3340,6 @@ void QgisApp::fileOpenAfterLaunch()
     messageBar()->pushMessage( autoOpenMsgTitle,
                                tr( "Failed to open: %1" ).arg( projPath ),
                                QgsMessageBar::CRITICAL );
-    return;
-  }
-
-  // check if a project is already loaded via command line
-  if ( !QgsProject::instance()->fileName().isNull() )
-  {
     return;
   }
 
