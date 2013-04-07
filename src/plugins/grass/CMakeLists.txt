@@ -136,7 +136,6 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core 
      ../../core/raster 
-     ../../core/symbology
      ../../gui
      ../../providers/grass
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui

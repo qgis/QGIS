@@ -33,7 +33,6 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgssldparser.h"
-#include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include "qgsrendererv2.h"
 #include "qgslegendmodel.h"
@@ -1535,9 +1534,6 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
     QgsComposerLegendItem::ItemType type = currentComposerItem->itemType();
     switch ( type )
     {
-      case QgsComposerLegendItem::SymbologyItem:
-        drawLegendSymbol( currentComposerItem, p, boxSpace, currentY, currentSymbolWidth, currentSymbolHeight, opacity, dpi, symbolDownShift );
-        break;
       case QgsComposerLegendItem::SymbologyV2Item:
         drawLegendSymbolV2( currentComposerItem, p, boxSpace, currentY, currentSymbolWidth, currentSymbolHeight, dpi, symbolDownShift );
         break;
@@ -1590,108 +1586,6 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
   }
 }
 
-void QgsWMSServer::drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity,
-                                     double dpi, double yDownShift ) const
-{
-  QgsComposerSymbolItem* symbolItem = dynamic_cast< QgsComposerSymbolItem* >( item );
-  if ( !symbolItem )
-  {
-    return;
-  }
-
-  QgsSymbol* symbol = symbolItem->symbol();
-  if ( !symbol )
-  {
-    return;
-  }
-
-  QGis::GeometryType symbolType = symbol->type();
-  switch ( symbolType )
-  {
-    case QGis::Point:
-      drawPointSymbol( p, symbol, boxSpace, currentY, symbolWidth, symbolHeight, layerOpacity, dpi );
-      break;
-    case QGis::Line:
-      drawLineSymbol( p, symbol, boxSpace, currentY, symbolWidth, symbolHeight, layerOpacity, yDownShift );
-      break;
-    case QGis::Polygon:
-      drawPolygonSymbol( p, symbol, boxSpace, currentY, symbolWidth, symbolHeight, layerOpacity, yDownShift );
-      break;
-    case QGis::UnknownGeometry:
-    case QGis::NoGeometry:
-      // shouldn't occur
-      break;
-  }
-}
-
-void QgsWMSServer::drawPointSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity, double dpi ) const
-{
-  if ( !s )
-  {
-    return;
-  }
-
-  QImage pointImage;
-
-  //width scale is 1.0
-  pointImage = s->getPointSymbolAsImage( dpi / 25.4, false, Qt::yellow, 1.0, 0.0, 1.0, layerOpacity / 255.0 );
-
-  if ( p )
-  {
-    QPointF imageTopLeft( boxSpace, currentY );
-    p->drawImage( imageTopLeft, pointImage );
-  }
-
-  symbolWidth = pointImage.width();
-  symbolHeight = pointImage.height();
-}
-
-void QgsWMSServer::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double layerOpacity, double yDownShift ) const
-{
-  if ( !s || !p )
-  {
-    return;
-  }
-
-  p->save();
-
-  //brush
-  QBrush symbolBrush = s->brush();
-  QColor brushColor = symbolBrush.color();
-  brushColor.setAlpha( layerOpacity );
-  symbolBrush.setColor( brushColor );
-  p->setBrush( symbolBrush );
-
-  //pen
-  QPen symbolPen = s->pen();
-  QColor penColor = symbolPen.color();
-  penColor.setAlpha( layerOpacity );
-  symbolPen.setColor( penColor );
-  p->setPen( symbolPen );
-
-  p->drawRect( QRectF( boxSpace, currentY + yDownShift, symbolWidth, symbolHeight ) );
-
-  p->restore();
-}
-
-void QgsWMSServer::drawLineSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double layerOpacity, double yDownShift ) const
-{
-  if ( !s || !p )
-  {
-    return;
-  }
-
-  p->save();
-  QPen symbolPen = s->pen();
-  QColor penColor = symbolPen.color();
-  penColor.setAlpha( layerOpacity );
-  symbolPen.setColor( penColor );
-  symbolPen.setCapStyle( Qt::FlatCap );
-  p->setPen( symbolPen );
-  double lineY = currentY + symbolHeight / 2.0 + symbolPen.widthF() / 2.0 + yDownShift;
-  p->drawLine( QPointF( boxSpace, lineY ), QPointF( boxSpace + symbolWidth, lineY ) );
-  p->restore();
-}
 
 void QgsWMSServer::drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth,
                                        double& symbolHeight, double dpi, double yDownShift ) const

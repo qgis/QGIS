@@ -35,7 +35,6 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgssldparser.h"
-#include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"

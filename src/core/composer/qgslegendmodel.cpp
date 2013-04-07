@@ -23,7 +23,6 @@
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include <QApplication>
@@ -42,7 +41,6 @@ QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( addLayer( QgsMapLayer* ) ) );
   }
-  setItemPrototype( new QgsComposerSymbolItem() );
 
   QWidgetList topLevelWidgets = QApplication::topLevelWidgets();
   mHasTopLevelWindow = ( topLevelWidgets.size() > 0 );
@@ -341,84 +339,6 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
   emit layersChanged();
 }
 
-QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s, int opacity, const QString& layerID )
-{
-  QgsComposerSymbolItem* currentSymbolItem = 0;
-
-  //label
-  QString itemText;
-  QString label;
-
-  QString lowerValue = s->lowerValue();
-  QString upperValue = s->upperValue();
-
-  label = s->label();
-
-  //Take the label as item text if it is there
-  if ( !label.isEmpty() )
-  {
-    itemText = label;
-  }
-  //take single value
-  else if ( lowerValue == upperValue || upperValue.isEmpty() )
-  {
-    itemText = lowerValue;
-  }
-  else //or value range
-  {
-    itemText = lowerValue + " - " + upperValue;
-  }
-
-  //icon item
-  QImage symbolImage;
-  switch ( s->type() )
-  {
-    case QGis::Point:
-      symbolImage =  s->getPointSymbolAsImage();
-      break;
-    case QGis::Line:
-      symbolImage = s->getLineSymbolAsImage();
-      break;
-    case QGis::Polygon:
-      symbolImage = s->getPolygonSymbolAsImage();
-      break;
-    default:
-      return 0;
-  }
-
-  if ( opacity != 255 )
-  {
-    //todo: manipulate image pixel by pixel...
-    QRgb oldColor;
-    for ( int i = 0; i < symbolImage.height(); ++i )
-    {
-      QRgb* scanLineBuffer = ( QRgb* ) symbolImage.scanLine( i );
-      for ( int j = 0; j < symbolImage.width(); ++j )
-      {
-        oldColor = symbolImage.pixel( j, i );
-        scanLineBuffer[j] = qRgba( qRed( oldColor ), qGreen( oldColor ), qBlue( oldColor ), opacity );
-      }
-    }
-  }
-
-  currentSymbolItem = new QgsComposerSymbolItem( itemText );
-  if ( mHasTopLevelWindow )//only use QIcon / QPixmap if we have a running x-server
-  {
-    currentSymbolItem->setIcon( QIcon( QPixmap::fromImage( symbolImage ) ) );
-  }
-
-  if ( !currentSymbolItem )
-  {
-    return 0;
-  }
-
-  //Pass deep copy of QgsSymbol as user data. Cast to void* necessary such that QMetaType handles it
-  QgsSymbol* symbolCopy = new QgsSymbol( *s );
-  currentSymbolItem->setSymbol( symbolCopy );
-  currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-  currentSymbolItem ->setLayerID( layerID );
-  return currentSymbolItem;
-}
 
 bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const
 {

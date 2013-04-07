@@ -24,7 +24,6 @@ class QgsLegendLayer;
 class QgsLegendPropertyGroup;
 class QgsMapLayer;
 class QgsRasterLayer;
-class QgsSymbol;
 class QgsVectorLayer;
 
 class QTreeWidget;

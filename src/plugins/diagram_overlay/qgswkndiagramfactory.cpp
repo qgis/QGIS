@@ -19,7 +19,7 @@
 
 #include "qgswkndiagramfactory.h"
 #include "qgsfeature.h"
-#include "qgssymbologyutils.h"
+#include "qgssymbologyv2conversion.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
@@ -82,7 +82,7 @@ bool QgsWKNDiagramFactory::writeXML( QDomNode& overlay_node, QDomDocument& doc )
     currentBrushElem.setAttribute( "red", QString::number( c_it->brush().color().red() ) );
     currentBrushElem.setAttribute( "green", QString::number( c_it->brush().color().green() ) );
     currentBrushElem.setAttribute( "blue", QString::number( c_it->brush().color().blue() ) );
-    currentBrushElem.setAttribute( "style", QgsSymbologyUtils::brushStyle2QString( c_it->brush().style() ) );
+    currentBrushElem.setAttribute( "style", QgsSymbologyV2Conversion::brushStyle2QString( c_it->brush().style() ) );
 
     //pen
     QDomElement currentPenElem = doc.createElement( "pen" );
@@ -90,7 +90,7 @@ bool QgsWKNDiagramFactory::writeXML( QDomNode& overlay_node, QDomDocument& doc )
     currentPenElem.setAttribute( "green", QString::number( c_it->pen().color().green() ) );
     currentPenElem.setAttribute( "blue", QString::number( c_it->pen().color().blue() ) );
     currentPenElem.setAttribute( "width", QString::number( c_it->pen().width() ) );
-    currentPenElem.setAttribute( "style", QgsSymbologyUtils::penStyle2QString( c_it->pen().style() ) );
+    currentPenElem.setAttribute( "style", QgsSymbologyV2Conversion::penStyle2QString( c_it->pen().style() ) );
 
     currentCategoryElem.appendChild( currentBrushElem );
     currentCategoryElem.appendChild( currentPenElem );
@@ -177,7 +177,7 @@ bool QgsWKNDiagramFactory::readXML( const QDomNode& factoryNode )
       green = penElem.attribute( "green" ).toInt();
       blue = penElem.attribute( "blue" ).toInt();
       currentPen.setColor( QColor( red, green, blue ) );
-      currentPen.setStyle( QgsSymbologyUtils::qString2PenStyle( penElem.attribute( "style" ) ) );
+      currentPen.setStyle( QgsSymbologyV2Conversion::qString2PenStyle( penElem.attribute( "style" ) ) );
       newCategory.setPen( currentPen );
     }
 
@@ -190,7 +190,7 @@ bool QgsWKNDiagramFactory::readXML( const QDomNode& factoryNode )
       green = brushElem.attribute( "green" ).toInt();
       blue = brushElem.attribute( "blue" ).toInt();
       currentBrush.setColor( QColor( red, green, blue ) );
-      currentBrush.setStyle( QgsSymbologyUtils::qString2BrushStyle( brushElem.attribute( "style" ) ) );
+      currentBrush.setStyle( QgsSymbologyV2Conversion::qString2BrushStyle( brushElem.attribute( "style" ) ) );
       newCategory.setBrush( currentBrush );
     }
     mCategories.push_back( newCategory );

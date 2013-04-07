@@ -19,7 +19,6 @@
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgscategorizedsymbolrendererv2.h>
-#include <qgssymbol.h>
 #include <qgslonglongvalidator.h>
 #include <qgsfieldvalidator.h>
 #include <qgsmaplayerregistry.h>

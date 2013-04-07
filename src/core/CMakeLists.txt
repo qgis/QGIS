@@ -214,10 +214,6 @@ SET(QGIS_CORE_SRCS
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgshuesaturationfilter.cpp  
 
-  symbology/qgsmarkercatalogue.cpp
-  symbology/qgssymbol.cpp
-  symbology/qgssymbologyutils.cpp
-
   qgsspatialindex.cpp
 
   qgspaintenginehack.cpp
@@ -339,7 +335,6 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposition.h
 
   composer/qgslegendmodel.h
-  symbology/qgsmarkercatalogue.h
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
 
@@ -484,10 +479,6 @@ SET(QGIS_CORE_HDRS
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
 
-  symbology/qgsmarkercatalogue.h
-  symbology/qgssymbol.h
-  symbology/qgssymbologyutils.h
-
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
   symbology-ng/qgsellipsesymbollayerv2.h
@@ -531,7 +522,6 @@ INCLUDE_DIRECTORIES(
   pal
   raster
   renderer
-  symbology
   symbology-ng
   gps/qextserialport
   ${SPATIALINDEX_INCLUDE_DIR}

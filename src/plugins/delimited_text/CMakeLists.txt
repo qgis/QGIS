@@ -19,7 +19,7 @@ ADD_LIBRARY (delimitedtextplugin MODULE ${DLTEXT_SRCS} ${DLTEXT_MOC_SRCS} ${DLTE
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/symbology
+     ../../core ../../core/raster
      ../../gui
      ..
      ../../providers/delimitedtext/delimitedtext

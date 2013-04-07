@@ -18,7 +18,6 @@
 #include "qgsmapcanvas.h"
 #include "qgspointrotationitem.h"
 #include "qgsrendererv2.h"
-#include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include <QGraphicsPixmapItem>

@@ -23,7 +23,6 @@
 #include "qgscomposerlegenditem.h"
 #include "qgslegendmodel.h"
 
-class QgsSymbol;
 class QgsSymbolV2;
 class QgsComposerGroupItem;
 class QgsComposerLayerItem;
@@ -218,11 +217,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
      it is possible that it differs from mSymbolHeight*/
-    void drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity = 255 ) const;
     void drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity = 255 ) const;
-    void drawPointSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity = 255 ) const;
-    void drawLineSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
-    void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
 
     /** Draw atom and return its actual size */
     QSizeF drawAtom( Atom atom, QPainter* painter = 0, QPointF point = QPointF() );

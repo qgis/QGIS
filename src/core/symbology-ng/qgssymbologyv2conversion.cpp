@@ -15,7 +15,6 @@
 #include "qgssymbologyv2conversion.h"
 
 #include "qgslogger.h"
-#include "qgssymbologyutils.h"
 
 #include "qgsmarkersymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"
@@ -92,14 +91,14 @@ static Qt::PenStyle readOutlineStyle( const QDomNode& synode )
 {
   QDomNode outlstnode = synode.namedItem( "outlinestyle" );
   QDomElement outlstelement = outlstnode.toElement();
-  return QgsSymbologyUtils::qString2PenStyle( outlstelement.text() );
+  return QgsSymbologyV2Conversion::qString2PenStyle( outlstelement.text() );
 }
 
 static Qt::BrushStyle readBrushStyle( const QDomNode& synode )
 {
   QDomNode fillpnode = synode.namedItem( "fillpattern" );
   QDomElement fillpelement = fillpnode.toElement();
-  return QgsSymbologyUtils::qString2BrushStyle( fillpelement.text() );
+  return QgsSymbologyV2Conversion::qString2BrushStyle( fillpelement.text() );
 }
 
 static QString readMarkerSymbolName( const QDomNode& synode )
@@ -346,3 +345,225 @@ UNSUPPORTED SYMBOL PROPERTY: texture
   QDomElement texturepathelement = texturepathnode.toElement();
   setCustomTexture( QgsProject::instance()->readPath( texturepathelement.text() ) );
 */
+
+
+
+
+
+QString QgsSymbologyV2Conversion::penStyle2QString( Qt::PenStyle penstyle )
+{
+  if ( penstyle == Qt::NoPen )
+  {
+    return "NoPen";
+  }
+  else if ( penstyle == Qt::SolidLine )
+  {
+    return "SolidLine";
+  }
+  else if ( penstyle == Qt::DashLine )
+  {
+    return "DashLine";
+  }
+  else if ( penstyle == Qt::DotLine )
+  {
+    return "DotLine";
+  }
+  else if ( penstyle == Qt::DashDotLine )
+  {
+    return "DashDotLine";
+  }
+  else if ( penstyle == Qt::DashDotDotLine )
+  {
+    return "DashDotDotLine";
+  }
+  else if ( penstyle == Qt::MPenStyle )
+  {
+    return "MPenStyle";
+  }
+  else                        //return a null string
+  {
+    return QString();
+  }
+}
+
+Qt::PenStyle QgsSymbologyV2Conversion::qString2PenStyle( QString penString )
+{
+  if ( penString == "NoPen" )
+  {
+    return Qt::NoPen;
+  }
+  else if ( penString == "SolidLine" )
+  {
+    return Qt::SolidLine;
+  }
+  else if ( penString == "DashLine" )
+  {
+    return Qt::DashLine;
+  }
+  else if ( penString == "DotLine" )
+  {
+    return Qt::DotLine;
+  }
+  else if ( penString == "DashDotLine" )
+  {
+    return Qt::DashDotLine;
+  }
+  else if ( penString == "DashDotDotLine" )
+  {
+    return Qt::DashDotDotLine;
+  }
+  else if ( penString == "MPenStyle" )
+  {
+    return Qt::MPenStyle;
+  }
+  else
+  {
+    return Qt::NoPen;
+  }
+}
+
+QString QgsSymbologyV2Conversion::brushStyle2QString( Qt::BrushStyle brushstyle )
+{
+  if ( brushstyle == Qt::NoBrush )
+  {
+    return "NoBrush";
+  }
+  else if ( brushstyle == Qt::SolidPattern )
+  {
+    return "SolidPattern";
+  }
+  else if ( brushstyle == Qt::Dense1Pattern )
+  {
+    return "Dense1Pattern";
+  }
+  else if ( brushstyle == Qt::Dense2Pattern )
+  {
+    return "Dense2Pattern";
+  }
+  else if ( brushstyle == Qt::Dense3Pattern )
+  {
+    return "Dense3Pattern";
+  }
+  else if ( brushstyle == Qt::Dense4Pattern )
+  {
+    return "Dense4Pattern";
+  }
+  else if ( brushstyle == Qt::Dense5Pattern )
+  {
+    return "Dense5Pattern";
+  }
+  else if ( brushstyle == Qt::Dense6Pattern )
+  {
+    return "Dense6Pattern";
+  }
+  else if ( brushstyle == Qt::Dense7Pattern )
+  {
+    return "Dense7Pattern";
+  }
+  else if ( brushstyle == Qt::HorPattern )
+  {
+    return "HorPattern";
+  }
+  else if ( brushstyle == Qt::VerPattern )
+  {
+    return "VerPattern";
+  }
+  else if ( brushstyle == Qt::CrossPattern )
+  {
+    return "CrossPattern";
+  }
+  else if ( brushstyle == Qt::BDiagPattern )
+  {
+    return "BDiagPattern";
+  }
+  else if ( brushstyle == Qt::FDiagPattern )
+  {
+    return "FDiagPattern";
+  }
+  else if ( brushstyle == Qt::DiagCrossPattern )
+  {
+    return "DiagCrossPattern";
+  }
+  else if ( brushstyle == Qt::TexturePattern )
+  {
+    return "TexturePattern";
+  }
+  else                        //return a null string
+  {
+    QgsDebugMsg( "no matching pattern found" );
+    return " ";
+  }
+}
+
+Qt::BrushStyle QgsSymbologyV2Conversion::qString2BrushStyle( QString brushString )
+{
+  if ( brushString == "NoBrush" )
+  {
+    return Qt::NoBrush;
+  }
+  else if ( brushString == "SolidPattern" )
+  {
+    return Qt::SolidPattern;
+  }
+  else if ( brushString == "Dense1Pattern" )
+  {
+    return Qt::Dense1Pattern;
+  }
+  else if ( brushString == "Dense2Pattern" )
+  {
+    return Qt::Dense2Pattern;
+  }
+  else if ( brushString == "Dense3Pattern" )
+  {
+    return Qt::Dense3Pattern;
+  }
+  else if ( brushString == "Dense4Pattern" )
+  {
+    return Qt::Dense4Pattern;
+  }
+  else if ( brushString == "Dense5Pattern" )
+  {
+    return Qt::Dense5Pattern;
+  }
+  else if ( brushString == "Dense6Pattern" )
+  {
+    return Qt::Dense6Pattern;
+  }
+  else if ( brushString == "Dense7Pattern" )
+  {
+    return Qt::Dense7Pattern;
+  }
+  else if ( brushString == "HorPattern" )
+  {
+    return Qt::HorPattern;
+  }
+  else if ( brushString == "VerPattern" )
+  {
+    return Qt::VerPattern;
+  }
+  else if ( brushString == "CrossPattern" )
+  {
+    return Qt::CrossPattern;
+  }
+  else if ( brushString == "BDiagPattern" )
+  {
+    return Qt::BDiagPattern;
+  }
+  else if ( brushString == "FDiagPattern" )
+  {
+    return Qt::FDiagPattern;
+  }
+  else if ( brushString == "DiagCrossPattern" )
+  {
+    return Qt::DiagCrossPattern;
+  }
+  else if ( brushString == "TexturePattern" )
+  {
+    return Qt::TexturePattern;
+  }
+  else                        //return a null string
+  {
+    QgsDebugMsg( QString( "Brush style \"%1\" not found" ).arg( brushString ) );
+    return Qt::NoBrush;
+  }
+}

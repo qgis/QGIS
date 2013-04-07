@@ -36,7 +36,6 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     {
       GroupItem = QStandardItem::UserType,
       LayerItem,
-      SymbologyItem,
       SymbologyV2Item,
       RasterSymbolItem,
       StyleItem
@@ -60,34 +59,6 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     QgsComposerLegendStyle::Style mStyle;
 };
 
-class QgsSymbol;
-
-class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
-{
-  public:
-    QgsComposerSymbolItem();
-    QgsComposerSymbolItem( const QString& text );
-    QgsComposerSymbolItem( const QIcon& icon, const QString& text );
-    virtual ~QgsComposerSymbolItem();
-
-    virtual QStandardItem* clone() const;
-
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
-
-    /**Set symbol (takes ownership)*/
-    void setSymbol( QgsSymbol* s );
-    QgsSymbol* symbol() {return mSymbol;}
-
-    void setLayerID( const QString& id ) { mLayerID = id; }
-    QString layerID() const { return mLayerID; }
-
-    ItemType itemType() const { return SymbologyItem; }
-
-  private:
-    QgsSymbol* mSymbol;
-    QString mLayerID; //this is needed to read the symbol from XML
-};
 
 class QgsSymbolV2;
 

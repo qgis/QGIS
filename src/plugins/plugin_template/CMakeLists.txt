@@ -29,7 +29,7 @@ ADD_LIBRARY ([pluginlcasename]plugin MODULE ${[pluginlcasename]_SRCS} ${[pluginl
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/symbology
+     ../../core ../../core/raster
      ../../gui
      ..
 )

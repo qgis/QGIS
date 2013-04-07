@@ -95,7 +95,6 @@ INCLUDE_DIRECTORIES(
   ${QGIS_INCLUDE_DIR}
   ../core
   ../core/raster
-  ../core/symbology
   ../core/symbology-ng
   ../core/composer
   ../analysis/interpolation

@@ -186,7 +186,3 @@
 %Include symbology-ng/qgslinesymbollayerv2.sip
 %Include symbology-ng/qgsmarkersymbollayerv2.sip
 %Include symbology-ng/qgssymbollayerv2registry.sip
-
-%Include symbology/qgsmarkercatalogue.sip
-%Include symbology/qgssymbol.sip
-%Include symbology/qgssymbologyutils.sip

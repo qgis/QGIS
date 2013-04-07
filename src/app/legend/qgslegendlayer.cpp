@@ -23,7 +23,6 @@
 #include "qgsmapcanvasmap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
-#include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 

@@ -44,7 +44,6 @@ INCLUDE_DIRECTORIES(
      ../../analysis/interpolation
      ../../core
      ../../core/raster
-     ../../core/symbology
      ../../gui
      ..
      .

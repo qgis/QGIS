@@ -32,7 +32,6 @@
 
 #include "qgslogger.h"
 #include "qgsrectangle.h"
-#include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"

@@ -25,7 +25,6 @@
 class QDomDocument;
 class QDomElement;
 class QgsMapLayer;
-class QgsSymbol;
 class QgsSymbolV2;
 class QgsVectorLayer;
 
@@ -68,8 +67,6 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     /**Updates the whole symbology of a layer*/
     void updateLayer( QStandardItem* layerItem );
     /**Tries to update a single classification item*/
-    void updateVectorClassificationItem( QStandardItem* classificationItem, QgsSymbol* symbol, QString itemText )
-    { Q_UNUSED( classificationItem ); Q_UNUSED( symbol ); Q_UNUSED( itemText ); }
     void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, QString itemText )
     { Q_UNUSED( classificationItem ); Q_UNUSED( symbol ); Q_UNUSED( itemText ); }
     void updateRasterClassificationItem( QStandardItem* classificationItem )
@@ -108,9 +105,6 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     /**Adds item of raster layer
      @return 0 in case of success*/
     int addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* rlayer );
-
-    /**Creates a model item for a vector symbol. The calling function takes ownership*/
-    QStandardItem* itemFromSymbol( QgsSymbol* s, int opacity, const QString& layerID );
 
   protected:
     QStringList mLayerIds;

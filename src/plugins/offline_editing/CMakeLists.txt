@@ -44,7 +44,7 @@ ENDIF (WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
-  ../../core ../../core/raster ../../core/symbology
+  ../../core ../../core/raster
   ../../gui
   ..
   ${GEOS_INCLUDE_DIR}

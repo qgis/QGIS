@@ -137,7 +137,6 @@ SET(QGIS_APP_SRCS
   legend/qgslegendpropertyitem.cpp
   legend/qgslegendsymbologygroup.cpp
   legend/qgslegendsymbologyitem.cpp
-  legend/qgslegendvectorsymbologyitem.cpp
   legend/qgslayerorder.cpp
 
   ogr/qgsogrhelperfunctions.cpp
@@ -409,7 +408,7 @@ INCLUDE_DIRECTORIES(
   ../analysis/raster ../analysis/openstreetmap
   ../core
   ../core/gps
-  ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
+  ../core/composer ../core/raster ../core/symbology-ng
   ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster
   ../plugins
   ../python
