@@ -451,9 +451,9 @@ QString QgsPythonUtilsImpl::pluginsPath()
 QString QgsPythonUtilsImpl::homePythonPath()
 {
   QString settingsDir = QgsApplication::qgisSettingsDirPath();
-  if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + "/.qgis" )
+  if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + QString( "/.qgis%1" ).arg( 2 /* FIXME QGis::QGIS_VERSION_INT / 10000 */ ) )
   {
-    return "os.path.expanduser(\"~/.qgis/python\")";
+    return QString( "os.path.expanduser(\"~/.qgis%1/python\")" ).arg( 2 /* FIXME: QGis::QGIS_VERSION_INT / 10000 */ );
   }
   else
   {

@@ -27,8 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os, sys
 import otbApplication
+from qgis.core import QgsApplication
 
-outputpath= os.path.join( os.environ["HOME"], ".qgis/python/plugins/sextante/otb/description" )
+outputpath = unicode( QgsApplication.qgisSettingsDirPath() + "python/plugins/sextante/otb/description" )
 endl = os.linesep
 
 def convertendl(s):
