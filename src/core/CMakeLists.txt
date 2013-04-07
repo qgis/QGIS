@@ -214,11 +214,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgshuesaturationfilter.cpp  
 
-  renderer/qgscontinuouscolorrenderer.cpp
-  renderer/qgsgraduatedsymbolrenderer.cpp
   renderer/qgsrenderer.cpp
-  renderer/qgssinglesymbolrenderer.cpp
-  renderer/qgsuniquevaluerenderer.cpp
 
   symbology/qgsmarkercatalogue.cpp
   symbology/qgssymbol.cpp
@@ -491,11 +487,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
 
-  renderer/qgscontinuouscolorrenderer.h
-  renderer/qgsgraduatedsymbolrenderer.h
   renderer/qgsrenderer.h
-  renderer/qgssinglesymbolrenderer.h
-  renderer/qgsuniquevaluerenderer.h
 
   symbology/qgsmarkercatalogue.h
   symbology/qgssymbol.h
