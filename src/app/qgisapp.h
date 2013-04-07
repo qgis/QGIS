@@ -621,10 +621,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //#endif
     //! Add a list of database layers to the map
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
-    //#ifdef HAVE_SPATIALITE
     //! Add a SpatiaLite layer to the map
     void addSpatiaLiteLayer();
-    //#endif
     //#ifdef HAVE_MSSQL
     //! Add a MSSQL layer to the map
     void addMssqlLayer();
@@ -781,10 +779,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create a new empty vector layer
     void newVectorLayer();
-#ifdef HAVE_SPATIALITE
     //! Create a new empty spatialite layer
     void newSpatialiteLayer();
-#endif
     //! Print the current map view frame
     void newPrintComposer();
     void showComposerManager();

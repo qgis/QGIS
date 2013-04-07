@@ -156,6 +156,8 @@ SET(QGIS_APP_SRCS
   openstreetmap/qgsosmdownloaddialog.cpp
   openstreetmap/qgsosmimportdialog.cpp
   openstreetmap/qgsosmexportdialog.cpp
+
+  qgsnewspatialitelayerdialog.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -289,6 +291,8 @@ SET (QGIS_APP_MOC_HDRS
   openstreetmap/qgsosmdownloaddialog.h
   openstreetmap/qgsosmimportdialog.h
   openstreetmap/qgsosmexportdialog.h
+
+  qgsnewspatialitelayerdialog.h
   )
 
 IF(WITH_INTERNAL_QWTPOLAR)
@@ -365,16 +369,6 @@ IF (POSTGRES_FOUND)
   ENDIF(HAVE_PGCONFIG)
 ENDIF (POSTGRES_FOUND)
 
-IF (HAVE_SPATIALITE)
-  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
-    qgsnewspatialitelayerdialog.cpp
-  )
-  SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
-    qgsnewspatialitelayerdialog.h
-  )
-ENDIF(HAVE_SPATIALITE)
-
-
 SET(IMAGE_RCCS ../../images/images.qrc)
 
 QT4_ADD_RESOURCES(IMAGE_RCC_SRCS ${IMAGE_RCCS})
@@ -435,16 +429,14 @@ IF (ANDROID)
   INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
 ENDIF (ANDROID)
 
-IF (HAVE_SPATIALITE)
-  IF (WITH_INTERNAL_SPATIALITE)
-    INCLUDE_DIRECTORIES(../core/spatialite/headers)
-    INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
-  ELSE (WITH_INTERNAL_SPATIALITE)
-    INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
-    INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
-    ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
-  ENDIF (WITH_INTERNAL_SPATIALITE)
-ENDIF (HAVE_SPATIALITE)
+IF (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(../core/spatialite/headers)
+  INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
+ELSE (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
+  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
+ENDIF (WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(
   ${PROJ_INCLUDE_DIR}

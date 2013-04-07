@@ -273,13 +273,11 @@
 
 #include <sqlite3.h>
 
-#ifdef HAVE_SPATIALITE
 extern "C"
 {
 #include <spatialite.h>
 }
 #include "qgsnewspatialitelayerdialog.h"
-#endif
 
 #include "qgspythonutils.h"
 
@@ -1093,13 +1091,6 @@ void QgisApp::createActions()
   connect( mActionRotateLabel, SIGNAL( triggered() ), this, SLOT( rotateLabel() ) );
   connect( mActionChangeLabelProperties, SIGNAL( triggered() ), this, SLOT( changeLabelProperties() ) );
 
-#ifndef HAVE_SPATIALITE
-  delete mActionNewSpatialiteLayer;
-  mActionNewSpatialiteLayer = 0;
-  delete mActionAddSpatiaLiteLayer;
-  mActionAddSpatiaLiteLayer = 0;
-#endif
-
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
   mActionAddPgLayer = 0;
@@ -1659,10 +1650,8 @@ void QgisApp::setTheme( QString theThemeName )
 #ifdef HAVE_POSTGRESQL
   mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddLayer.png" ) );
 #endif
-#ifdef HAVE_SPATIALITE
   mActionNewSpatialiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.png" ) );
   mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.png" ) );
-#endif
 #ifdef HAVE_MSSQL
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.png" ) );
 #endif
@@ -2415,11 +2404,7 @@ void QgisApp::about()
     versionString += "</tr><tr>";
 
     versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
-#ifdef HAVE_SPATIALITE
     versionString += spatialite_version();
-#else
-    versionString += tr( "No support." );
-#endif
     versionString += "</td>";
 
     versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
@@ -2961,7 +2946,6 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
 void QgisApp::addSpatiaLiteLayer()
 {
-#ifdef HAVE_SPATIALITE
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2978,7 +2962,6 @@ void QgisApp::addSpatiaLiteLayer()
            this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
-#endif
 } // QgisApp::addSpatiaLiteLayer()
 
 void QgisApp::addMssqlLayer()
@@ -3438,7 +3421,6 @@ void QgisApp::newVectorLayer()
   }
 }
 
-#ifdef HAVE_SPATIALITE
 void QgisApp::newSpatialiteLayer()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -3448,7 +3430,6 @@ void QgisApp::newSpatialiteLayer()
   QgsNewSpatialiteLayerDialog spatialiteDialog( this );
   spatialiteDialog.exec();
 }
-#endif
 
 void QgisApp::showRasterCalculator()
 {
