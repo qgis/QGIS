@@ -214,8 +214,6 @@ SET(QGIS_CORE_SRCS
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgshuesaturationfilter.cpp  
 
-  renderer/qgsrenderer.cpp
-
   symbology/qgsmarkercatalogue.cpp
   symbology/qgssymbol.cpp
   symbology/qgssymbologyutils.cpp
@@ -376,7 +374,6 @@ QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 SET(QGIS_CORE_HDRS
   ${CMAKE_BINARY_DIR}/qgsconfig.h
   ../plugins/qgisplugin.h
-  ../plugins/qgsrendererplugin.h
   qgis.h
   qgsapplication.h
   qgsattributeaction.h
@@ -486,8 +483,6 @@ SET(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
-
-  renderer/qgsrenderer.h
 
   symbology/qgsmarkercatalogue.h
   symbology/qgssymbol.h

@@ -34,13 +34,6 @@
 
 #include "qgsvectorlayer.h"
 
-// renderers
-#include "qgscontinuouscolorrenderer.h"
-#include "qgsgraduatedsymbolrenderer.h"
-#include "qgsrenderer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsuniquevaluerenderer.h"
-
 #include "qgsattributeaction.h"
 
 #include "qgis.h" //for globals
@@ -479,7 +472,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
   if ( !mSelectedFeatureIds.isEmpty() )
   {
     selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geometryType() ) );
-    selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
+    selRenderer->symbol()->setColor( QgsSymbolV2RenderContext::selectionColor() );
     selRenderer->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
     selRenderer->startRender( rendererContext, this );
   }

@@ -183,6 +183,8 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 
     // Color used for selections
     static QColor selectionColor();
+    //! @note added in 2.0
+    static void setSelectionColor( const QColor& color );
 
     double outputLineWidth( double width ) const;
     double outputPixelSize( double size ) const;
@@ -198,6 +200,10 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     int mRenderHints;
     const QgsFeature* mFeature; //current feature
     const QgsVectorLayer* mLayer; //current vectorlayer
+
+    /**Color to draw selected features - static so we can change it in proj props and automatically
+     all renderers are updated*/
+    static QColor mSelectionColor;
 };
 
 

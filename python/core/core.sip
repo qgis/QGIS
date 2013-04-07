@@ -163,8 +163,6 @@
 %Include raster/qgscubicrasterresampler.sip
 %Include raster/qgsmultibandcolorrenderer.sip
 
-%Include renderer/qgsrenderer.sip
-
 %Include symbology-ng/qgsstylev2.sip
 %Include symbology-ng/qgssvgcache.sip
 %Include symbology-ng/qgssymbolv2.sip

@@ -26,8 +26,6 @@
 #include <qgsrasterlayer.h>
 #include <qgsdataitem.h>
 #include "qgsconfig.h"
-#include <qgsrenderer.h>
-#include <qgsuniquevaluerenderer.h>
 
 #include <gdal.h>
 

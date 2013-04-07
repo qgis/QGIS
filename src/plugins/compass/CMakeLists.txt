@@ -31,7 +31,7 @@ ADD_LIBRARY (compassplugin MODULE ${COMPASS_SRCS} ${COMPASS_MOC_SRCS} ${COMPASS_
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ../../core ../../core/raster ../../core/symbology
      ../../gui
      ..
 )

@@ -52,7 +52,7 @@ INCLUDE_DIRECTORIES(
      ${OSGEARTH_INCLUDE_DIR}
      ${OSG_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ../../core ../../core/raster ../../core/symbology
      ../../gui
      ..
 )

@@ -37,7 +37,6 @@
 #include "qgssldparser.h"
 #include "qgssymbol.h"
 #include "qgssymbolv2.h"
-#include "qgsrenderer.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
 #include "qgsrequesthandler.h"

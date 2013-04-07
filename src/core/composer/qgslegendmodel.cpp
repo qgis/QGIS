@@ -21,7 +21,6 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbol.h"

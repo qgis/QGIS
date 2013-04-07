@@ -35,7 +35,6 @@
 #include "qgssldparser.h"
 #include "qgssymbol.h"
 #include "qgssymbolv2.h"
-#include "qgsrenderer.h"
 #include "qgsrendererv2.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
@@ -973,8 +972,8 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 #endif
   mMapRenderer->setLayerSet( layerIdList );
 
-  //set selection color prior to each render to avoid problems with caching (selection color is a global property of QgsRenderer)
-  QgsRenderer::setSelectionColor( mConfigParser->selectionColor() );
+  //set selection color prior to each render to avoid problems with caching (selection color is a global property of QgsSymbolV2RenderContext)
+  QgsSymbolV2RenderContext::setSelectionColor( mConfigParser->selectionColor() );
   return theImage;
 }
 

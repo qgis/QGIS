@@ -176,7 +176,6 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
-#include "qgsrenderer.h"
 #include "qgsscalecombobox.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
@@ -3160,7 +3159,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   prj->writeEntry( "Gui", "/SelectionColorGreenPart", myGreen );
   prj->writeEntry( "Gui", "/SelectionColorBluePart", myBlue );
   prj->writeEntry( "Gui", "/SelectionColorAlphaPart", myAlpha );
-  QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  QgsSymbolV2RenderContext::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //set the canvas to the default background color
   //the default can be set in qgisoptions
@@ -3544,7 +3543,7 @@ bool QgisApp::addProject( QString projectFile )
   int myGreen = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", defaultGreen );
   int myBlue = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", defaultBlue );
   int myAlpha = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", defaultAlpha );
-  QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  QgsSymbolV2RenderContext::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //load project scales
   bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );

@@ -318,7 +318,6 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/composer
   ../core/raster
-  ../core/renderer
   ../core/symbology
   ../core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}

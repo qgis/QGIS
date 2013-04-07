@@ -14,7 +14,6 @@ SET(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 INCLUDE_DIRECTORIES(
   ../core
   ../core/raster
-  ../core/renderer
   ../core/symbology
   ../gui
   ${PYTHON_INCLUDE_PATH}

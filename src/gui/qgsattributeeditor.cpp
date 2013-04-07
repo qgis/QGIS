@@ -18,7 +18,6 @@
 #include "qgsattributeeditor.h"
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
-#include <qgsuniquevaluerenderer.h>
 #include <qgscategorizedsymbolrendererv2.h>
 #include <qgssymbol.h>
 #include <qgslonglongvalidator.h>

@@ -32,7 +32,6 @@
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
-#include "qgsrenderer.h"
 #include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
@@ -584,7 +583,7 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorGreenPart", myColor.green() );
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorBluePart", myColor.blue() );
   QgsProject::instance()->writeEntry( "Gui", "/SelectionColorAlphaPart", myColor.alpha() );
-  QgsRenderer::setSelectionColor( myColor );
+  QgsSymbolV2RenderContext::setSelectionColor( myColor );
 
   //set the color for canvas
   myColor = pbnCanvasColor->color();

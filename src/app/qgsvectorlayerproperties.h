@@ -21,7 +21,6 @@
 
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgisgui.h"
-#include "qgsrenderer.h"
 #include "qgsaddattrdialog.h"
 #include "qgsdelattrdialog.h"
 #include "qgsattributetypedialog.h"
@@ -148,8 +147,6 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     /**Renderer dialog which is shown*/
     QDialog* mRendererDialog;
-    /**Buffer renderer, which is assigned to the vector layer when apply is pressed*/
-    //QgsRenderer* bufferRenderer;
     /**Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */
     QgsLabelingGui* labelingDialog;
     /**Label dialog. If apply is pressed, options are applied to vector's QgsLabel */

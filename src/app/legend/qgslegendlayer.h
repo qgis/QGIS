@@ -51,7 +51,7 @@ class QgsLegendLayer : public QgsLegendItem
     //void updateCheckState();
 
     /**Updates symbology of the layer and copies symbology to other layer files in the group*/
-    void refreshSymbology( const QString& key, double widthScale = 1.0 );
+    void refreshSymbology( const QString& key );
 
     /** Helper method to set font characteristics.
      *  Not to be confused with setFont() which is inherited

@@ -23,7 +23,6 @@
 #include "qgsmapcanvasmap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -126,7 +125,7 @@ QgsMapLayer* QgsLegendLayer::layer()
   return mLyr.layer();
 }
 
-void QgsLegendLayer::refreshSymbology( const QString& key, double widthScale )
+void QgsLegendLayer::refreshSymbology( const QString& key )
 {
   QgsMapLayer* theMapLayer = QgsMapLayerRegistry::instance()->mapLayer( key );
   if ( !theMapLayer )
@@ -515,13 +514,7 @@ QString QgsLegendLayer::layerName()
 
 void QgsLegendLayer::updateAfterLayerModification()
 {
-  double widthScale = 1.0;
-  QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
-  if ( canvas && canvas->map() )
-  {
-    widthScale = canvas->map()->paintDevice().logicalDpiX() / 25.4;
-  }
-  refreshSymbology( mLyr.layer()->id(), widthScale );
+  refreshSymbology( mLyr.layer()->id() );
   layerNameChanged();
 }
 

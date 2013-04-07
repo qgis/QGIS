@@ -42,7 +42,6 @@ class QgsGeometryVertexIndex;
 class QgsMapToPixel;
 class QgsLabel;
 class QgsRectangle;
-class QgsRenderer;
 class QgsVectorDataProvider;
 class QgsVectorOverlay;
 class QgsSingleSymbolRendererV2;

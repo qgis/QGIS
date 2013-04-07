@@ -17,7 +17,6 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgspointrotationitem.h"
-#include "qgsrenderer.h"
 #include "qgsrendererv2.h"
 #include "qgssymbol.h"
 #include "qgssymbolv2.h"

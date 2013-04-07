@@ -15,7 +15,6 @@
 
 #include "qgssymbollayerv2.h"
 #include "qgsclipper.h"
-#include "qgsrenderer.h"
 #include "qgsrendercontext.h"
 
 #include <QSize>

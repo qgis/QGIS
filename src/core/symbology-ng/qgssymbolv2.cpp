@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrenderer.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
 
@@ -375,6 +374,9 @@ QSet<QString> QgsSymbolV2::usedAttributes() const
 
 ////////////////////
 
+QColor QgsSymbolV2RenderContext::mSelectionColor = QColor( 0, 0, 0 );
+
+
 QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f )
     : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f ), mLayer( 0 )
 {
@@ -388,8 +390,14 @@ QgsSymbolV2RenderContext::~QgsSymbolV2RenderContext()
 
 QColor QgsSymbolV2RenderContext::selectionColor()
 {
-  return QgsRenderer::selectionColor();
+  return mSelectionColor;
 }
+
+void QgsSymbolV2RenderContext::setSelectionColor( const QColor& color )
+{
+  mSelectionColor = color;
+}
+
 
 
 double QgsSymbolV2RenderContext::outputLineWidth( double width ) const

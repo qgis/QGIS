@@ -41,7 +41,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_CURRENT_BINARY_DIR}
   ${GEOS_INCLUDE_DIR}
-  ../../core ../../core/raster ../../core/renderer ../../core/symbology
+  ../../core ../../core/raster ../../core/symbology
   ../../gui  
   ..
 )
