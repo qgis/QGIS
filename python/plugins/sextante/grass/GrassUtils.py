@@ -340,10 +340,10 @@ class GrassUtils:
                 return ("The specified GRASS folder does not contain a valid set of GRASS modules.\n"
                         + "Please, go to the SEXTANTE settings dialog, and check that the GRASS\n"
                         + "folder is correctly configured")
-                            
+
         settings = QSettings()
         if not ignoreRegistrySettings:
-            GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"            
+            GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"
             if settings.contains(GRASS_INSTALLED):
                 return
 

@@ -15,7 +15,7 @@ IF(WIN32)
   #MESSAGE("Searching for QGIS in $ENV{PROGRAMFILES}/Quantum GIS")
   IF (MINGW)
     FIND_PATH(QGIS_PLUGIN_DIR
-      NAMES libnortharrowplugin.dll
+      NAMES libdelimitedtextplugin.dll
       PATHS
         "$ENV{PROGRAMFILES}/Quantum GIS/plugins"
     )
@@ -38,7 +38,7 @@ IF(WIN32)
 
   IF (MSVC)
     FIND_PATH(QGIS_PLUGIN_DIR
-      NAMES northarrowplugin.dll
+      NAMES delimitedtextplugin.dll
       PATHS
         "$ENV{OSGEO4W_ROOT}/apps/qgis/plugins"
         "$ENV{PROGRAMFILES}/Quantum GIS/plugins"
@@ -82,7 +82,7 @@ ELSE(WIN32)
     SET (QGIS_MAC_PATH /Applications/QGIS.app/Contents)
     #MESSAGE("Searching for QGIS in /usr/bin; /usr/local/bin")
     FIND_PATH(QGIS_PLUGIN_DIR
-      NAMES libnortharrowplugin.so
+      NAMES libdelimitedtextplugin.so
       PATHS
         /usr/lib64/qgis/plugins
         /usr/lib/qgis

@@ -137,7 +137,7 @@ class SagaUtils:
 
         settings = QSettings()
         if not ignoreRegistrySettings:
-            SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"            
+            SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
             if settings.contains(SAGA_INSTALLED):
                 return
 
