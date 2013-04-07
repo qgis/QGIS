@@ -504,70 +504,31 @@ The GPS tracking feature uses Qwt.
 
 NOTE: PyQwt is not compatible with PyQt 4.9, so we will skip that.
 
-Download the latest Qwt 5.x or 6.x source from:
+Download the latest Qwt 6.0 source (6.1 does not work with the QwtPolar in QGIS) from:
 
 http://sourceforge.net/projects/qwt
 
 Double-click the tarball to unpack it. Now, cd to the qwt source folder in a
 Terminal.
 
-Type these commands to build and install 5.x.x (assumes v5.2.2, adjust commands
+Type these commands to build and install 6.0.x (assumes v6.0.2, adjust commands
 for other version as needed):
 
 ```
+cat >> qwtconfig.pri <<EOF
+QWT_CONFIG -= QwtFramework
+EOF
 qmake -spec macx-g++
 make -j [#cpus]
 sudo make install
 
-sudo install_name_tool -id /usr/local/qwt-5.2.2/lib/libqwt.5.dylib \
-  /usr/local/qwt-5.2.2/lib/libqwt.5.dylib
+sudo install_name_tool -id /usr/local/qwt-6.0.2/lib/libqwt.6.dylib \
+  /usr/local/qwt-6.0.2/lib/libqwt.6.dylib
 ```
 
-The Qwt shared library is now installed in /usr/local/qwt-5.x.x (x.x is
-the  minor.point version).  Remember this for QGIS configuration.
+The Qwt shared library is now installed in /usr/local/qwt-6.0.x (x is
+the point version).  Remember this for QGIS configuration.
 
-Qwt 6.x.x is similarly built, but defaults to being installed as a framework:
-
-```
-cd <Qwt 6.x.x source directory>
-qmake -spec macx-g++
-make -j [#cpus]
-sudo make install
-```
-
-**TODO:** Remedy for :
-
-```
-shrub:qwt-6.1-rc3 timlinux$ sudo make install
-Password:
-cd src/ && make -f Makefile install
-rm -f -r "/usr/local/qwt-6.1.0-rc3/lib/qwt.framework"
-cp -f -R "../lib/qwt.framework" "/usr/local/qwt-6.1.0-rc3/lib/qwt.framework"
-cp -f -R /Users/timlinux/dev/cpp/qwt-6.1-rc3/doc/html /usr/local/qwt-6.1.0-rc3/doc/
-cp -f -R /Users/timlinux/dev/cpp/qwt-6.1-rc3/doc/man /usr/local/qwt-6.1.0-rc3/doc/
-cd textengines/ && make -f Makefile install
-make[1]: Nothing to be done for `install'.
-cd designer/ && make -f Makefile install
-rm -f libqwt_designer_plugin.dylib
-linking plugins/designer/libqwt_designer_plugin.dylib
-ld: library not found for -lqwt
-collect2: ld returned 1 exit status
-make[1]: *** [plugins/designer/libqwt_designer_plugin.dylib] Error 1
-make: *** [sub-designer-install_subtargets-ordered] Error 2
-```
-
-
-```
-sudo install_name_tool -id /usr/local/qwt-6.0.1/lib/qwt.framework/Versions/6/qwt \
-  /usr/local/qwt-6.0.1/lib/qwt.framework/Versions/6/qwt
-```
-
-This installs to the following location
-
-/usr/local/qwt-6.x.x/lib/qwt.framework/qwt
-/usr/local/qwt-6.x.x/lib/qwt.framework/Headers
-
-(x.x is the  minor.point version).  Remember these for QGIS configuration.
 
 === Additional dependencies: Bison ===
 
