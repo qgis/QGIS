@@ -155,7 +155,18 @@ string      "'"{str_char}*"'"
 ","   { return COMMA; }
 
 {num_float}  { exp_lval.numberFloat  = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
-{num_int}  { exp_lval.numberInt  = cLocale.toInt( QString::fromAscii(yytext), 0, 10); return NUMBER_INT; }
+{num_int}  {
+	bool ok;
+	exp_lval.numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok, 10 );
+	if( ok )
+		return NUMBER_INT;
+
+	exp_lval.numberFloat  = cLocale.toDouble( QString::fromAscii(yytext), &ok );
+	if( ok )
+		return NUMBER_FLOAT;
+
+	return Unknown_CHARACTER;
+}
 
 {string}  { TEXT_FILTER(stripText); return STRING; }
 
