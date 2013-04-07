@@ -24,6 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from qgis.core import QgsApplication
 from PyQt4.QtCore import *
 import traceback
 import subprocess
@@ -87,7 +88,9 @@ class GrassUtils:
                         folder = folder + os.sep + subfolder
                         break
             else:
-                return "/Applications/GRASS-6.4.app/Contents/MacOS"
+                folder = os.path.join(str(QgsApplication.prefixPath()), "grass")
+                if not os.path.isdir(folder):
+                    folder = "/Applications/GRASS-6.4.app/Contents/MacOS"
 
         return folder
 
@@ -95,7 +98,7 @@ class GrassUtils:
     def grassHelpPath():
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_HELP_FOLDER)
         if folder == None or folder == "":
-            if SextanteUtils.isWindows():
+            if SextanteUtils.isWindows() or SextanteUtils.isMac():
                 testfolders = [os.path.join(GrassUtils.grassPath(), "docs", "html")]
             else:
                 testfolders = ['/usr/share/doc/grass-doc/html']
