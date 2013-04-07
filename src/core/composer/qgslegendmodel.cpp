@@ -190,64 +190,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
   return 0;
 }
 
-int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsVectorLayer* vlayer )
-{
-  if ( !layerItem || !vlayer )
-  {
-    return 1;
-  }
 
-  int opacity = vlayer->getTransparency();
-
-  const QgsRenderer* vectorRenderer = vlayer->renderer();
-  if ( !vectorRenderer )
-  {
-    return 3;
-  }
-
-  //text field that describes classification attribute?
-  QSettings settings;
-  if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
-  {
-    const QgsFields& layerFields = vlayer->pendingFields();
-    QgsAttributeList attributes = vectorRenderer->classificationAttributes();
-    QgsAttributeList::const_iterator att_it = attributes.constBegin();
-    for ( ; att_it != attributes.constEnd(); ++att_it )
-    {
-      int idx = *att_it;
-      if ( idx >= 0 && idx < layerFields.count() )
-      {
-        QString attributeName = vlayer->attributeDisplayName( idx );
-        QStandardItem* attributeItem = new QStandardItem( attributeName );
-        attributeItem->setData( QgsLegendModel::ClassificationItem, Qt::UserRole + 1 ); //first user data stores the item type
-        attributeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-        layerItem->setChild( layerItem->rowCount(), 0, attributeItem );
-      }
-    }
-  }
-
-  const QList<QgsSymbol*> vectorSymbols = vectorRenderer->symbols();
-  QList<QgsSymbol*>::const_iterator symbolIt = vectorSymbols.constBegin();
-
-  for ( ; symbolIt != vectorSymbols.constEnd(); ++symbolIt )
-  {
-    if ( !( *symbolIt ) )
-    {
-      continue;
-    }
-
-    QStandardItem* currentSymbolItem = itemFromSymbol( *symbolIt, opacity, vlayer->id() );
-    if ( !currentSymbolItem )
-    {
-      continue;
-    }
-
-    layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
-
-  }
-
-  return 0;
-}
 
 int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* rlayer )
 {
@@ -331,14 +274,7 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
 
       if ( vLayer )
       {
-        if ( vLayer->isUsingRendererV2() )
-        {
-          addVectorLayerItemsV2( lItem, vLayer );
-        }
-        else
-        {
-          addVectorLayerItems( lItem, vLayer );
-        }
+        addVectorLayerItemsV2( lItem, vLayer );
       }
 
       QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( mapLayer );
@@ -393,14 +329,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( theMapLayer );
       if ( vl )
       {
-        if ( vl->isUsingRendererV2() )
-        {
-          addVectorLayerItemsV2( layerItem, vl );
-        }
-        else
-        {
-          addVectorLayerItems( layerItem, vl );
-        }
+        addVectorLayerItemsV2( layerItem, vl );
       }
       break;
     }

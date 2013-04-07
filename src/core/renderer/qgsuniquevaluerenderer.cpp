@@ -236,7 +236,6 @@ int QgsUniqueValueRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl )
     symbolnode = symbolnode.nextSibling();
   }
   updateSymbolAttributes();
-  vl.setRenderer( this );
   return 0;
 }
 

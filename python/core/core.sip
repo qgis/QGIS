@@ -171,7 +171,6 @@
 
 %Include symbology-ng/qgsstylev2.sip
 %Include symbology-ng/qgssvgcache.sip
-%Include symbology-ng/qgssymbologyv2conversion.sip
 %Include symbology-ng/qgssymbolv2.sip
 %Include symbology-ng/qgscolorbrewerpalette.sip
 %Include symbology-ng/qgscptcityarchive.sip

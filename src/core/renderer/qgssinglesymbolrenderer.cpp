@@ -215,7 +215,6 @@ int QgsSingleSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& vl 
 
   //create a renderer and add it to the vector layer
   addSymbol( sy );
-  vl.setRenderer( this );
   return 0;
 }
 

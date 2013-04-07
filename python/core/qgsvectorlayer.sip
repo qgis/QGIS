@@ -242,12 +242,6 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
-    /** Returns a pointer to the renderer */
-    const QgsRenderer* renderer() const;
-
-    /** Sets the renderer. If a renderer is already present, it is deleted */
-    void setRenderer( QgsRenderer * r /Transfer/ );
-
     /** Sets diagram rendering object (takes ownership) */
     void setDiagramRenderer( QgsDiagramRendererV2* r /Transfer/ );
     const QgsDiagramRendererV2* diagramRenderer() const;
@@ -262,14 +256,6 @@ class QgsVectorLayer : QgsMapLayer
      * @note added in 1.4
      */
     void setRendererV2( QgsFeatureRendererV2* r /Transfer/ );
-    /** Return whether using renderer V2.
-     * @note added in 1.4
-     */
-    bool isUsingRendererV2();
-    /** set whether to use renderer V2 for drawing.
-     * @note added in 1.4
-     */
-    void setUsingRendererV2( bool usingRendererV2 );
 
     /** Draw layer with renderer V2.
      * @note added in 1.4

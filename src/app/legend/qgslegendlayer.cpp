@@ -137,10 +137,7 @@ void QgsLegendLayer::refreshSymbology( const QString& key, double widthScale )
   if ( theMapLayer->type() == QgsMapLayer::VectorLayer ) // VECTOR
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( theMapLayer );
-    if ( vlayer->isUsingRendererV2() )
-      vectorLayerSymbologyV2( vlayer );
-    else
-      vectorLayerSymbology( vlayer, widthScale ); // get and change symbology
+    vectorLayerSymbologyV2( vlayer );
   }
   else if ( theMapLayer->type() == QgsMapLayer::RasterLayer ) // RASTER
   {
@@ -185,106 +182,6 @@ void QgsLegendLayer::changeSymbologySettings( const QgsMapLayer* theMapLayer,
 
 }
 
-
-
-void QgsLegendLayer::vectorLayerSymbology( QgsVectorLayer* layer, double widthScale )
-{
-  if ( !layer )
-  {
-    return;
-  }
-
-  SymbologyList itemList;
-  if ( layer->hasGeometryType() )
-  {
-    //add the new items
-    QString lw, uv, label;
-    const QgsRenderer* renderer = layer->renderer();
-    const QList<QgsSymbol*> sym = renderer->symbols();
-
-    //create an item for each classification field (only one for most renderers)
-    QSettings settings;
-    if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
-    {
-      if ( renderer->needsAttributes() )
-      {
-        QgsAttributeList classfieldlist = renderer->classificationAttributes();
-        const QgsFields& fields = layer->pendingFields();
-        for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
-        {
-          int idx = *it;
-          if ( idx < 0 || idx >= fields.count() )
-            continue;
-          QString classfieldname = layer->attributeAlias( idx );
-          if ( classfieldname.isEmpty() )
-          {
-            classfieldname = fields[idx].name();
-          }
-          itemList.append( qMakePair( classfieldname, QPixmap() ) );
-        }
-      }
-    }
-
-    QMap< QgsSymbol*, int > featureCountMap;
-    if ( mShowFeatureCount )
-    {
-      updateItemListCount( layer, sym, featureCountMap );
-    }
-
-    for ( QList<QgsSymbol*>::const_iterator it = sym.begin(); it != sym.end(); ++it )
-    {
-      QImage img;
-      if (( *it )->type() == QGis::Point )
-      {
-        img = ( *it )->getPointSymbolAsImage( widthScale );
-      }
-      else if (( *it )->type() == QGis::Line )
-      {
-        img = ( *it )->getLineSymbolAsImage();
-      }
-      else  if (( *it )->type() == QGis::Polygon )
-      {
-        img = ( *it )->getPolygonSymbolAsImage();
-      }
-      else
-      {
-        // must be a layer without geometry then
-      }
-
-      QString values;
-      lw = ( *it )->lowerValue();
-      if ( !lw.isEmpty() )
-      {
-        values += lw;
-      }
-      uv = ( *it )->upperValue();
-      if ( !uv.isEmpty() && lw != uv )
-      {
-        values += " - ";
-        values += uv;
-      }
-      label = ( *it )->label();
-      if ( !label.isEmpty() )
-      {
-        values += " ";
-        values += label;
-      }
-
-      if ( mShowFeatureCount )
-      {
-        int fCount = featureCountMap[*it];
-        if ( fCount >= 0 )
-        {
-          values += ( " [" + QString::number( fCount ) + "]" );
-        }
-      }
-
-      QPixmap pix = QPixmap::fromImage( img ); // convert to pixmap
-      itemList.append( qMakePair( values, pix ) );
-    }
-  }
-  changeSymbologySettings( layer, itemList );
-}
 
 
 void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
@@ -666,60 +563,6 @@ void QgsLegendLayer::updateItemListCountV2( SymbologyList& itemList, QgsVectorLa
   }
 }
 
-void QgsLegendLayer::updateItemListCount( QgsVectorLayer* layer, const QList<QgsSymbol*>& sym, QMap< QgsSymbol*, int >& featureCountMap )
-{
-  featureCountMap.clear();
-  QList<QgsSymbol*>::const_iterator symbolIt = sym.constBegin();
-  for ( ; symbolIt != sym.constEnd(); ++symbolIt )
-  {
-    featureCountMap.insert( *symbolIt, 0 );
-  }
-
-  QgsRenderer* renderer = const_cast<QgsRenderer*>( layer->renderer() );
-  if ( !renderer )
-  {
-    return;
-  }
-
-  //go through all features and count the number of occurrences
-  int nFeatures = layer->pendingFeatureCount();
-  QProgressDialog p( tr( "Updating feature count for layer %1" ).arg( layer->name() ), tr( "Abort" ), 0, nFeatures );
-  p.setWindowModality( Qt::WindowModal );
-  int featuresCounted = 0;
-
-  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ) );
-  QgsFeature f;
-  QgsSymbol* currentSymbol = 0;
-
-  while ( fit.nextFeature( f ) )
-  {
-    currentSymbol = renderer->symbolForFeature( &f );
-    if ( currentSymbol )
-    {
-      featureCountMap[currentSymbol] += 1;
-    }
-    ++featuresCounted;
-
-    if ( featuresCounted % 50 == 0 )
-    {
-      if ( featuresCounted > nFeatures ) //sometimes the feature count is not correct
-      {
-        p.setMaximum( 0 );
-      }
-      p.setValue( featuresCounted );
-      if ( p.wasCanceled() ) //set all entries to -1 (= invalid)
-      {
-        QMap< QgsSymbol*, int >::iterator cIt = featureCountMap.begin();
-        for ( ; cIt != featureCountMap.end(); ++cIt )
-        {
-          cIt.value() = -1;
-        }
-        return;
-      }
-    }
-  }
-  p.setValue( nFeatures );
-}
 
 void QgsLegendLayer::setShowFeatureCount( bool show, bool update )
 {

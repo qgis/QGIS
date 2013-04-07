@@ -237,7 +237,6 @@ int QgsContinuousColorRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
     usy->readXML( usymbolnode, &vl );
     setMaximumSymbol( usy );
   }
-  vl.setRenderer( this );
   return 0;
 }
 

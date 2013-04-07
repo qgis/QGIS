@@ -1291,30 +1291,19 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       break;
     }
 
-    //check if feature is rendered at all
-    if ( layer->isUsingRendererV2() )
+    QgsFeatureRendererV2* r2 = layer->rendererV2();
+    if ( !r2 )
     {
-      QgsFeatureRendererV2* r2 = layer->rendererV2();
-      if ( !r2 )
-      {
-        continue;
-      }
-
-      r2->startRender( renderContext, layer );
-      bool renderV2 = r2->willRenderFeature( feature );
-      r2->stopRender( renderContext );
-      if ( !renderV2 )
-      {
-        continue;
-      }
+      continue;
     }
-    else
+
+    //check if feature is rendered at all
+    r2->startRender( renderContext, layer );
+    bool renderV2 = r2->willRenderFeature( feature );
+    r2->stopRender( renderContext );
+    if ( !renderV2 )
     {
-      QgsRenderer* r = const_cast<QgsRenderer*>( layer->renderer() ); //bad, 'willRenderFeature' should be const
-      if ( !r || !r->willRenderFeature( &feature ) )
-      {
-        continue;
-      }
+      continue;
     }
 
     QDomElement featureElement = infoDocument.createElement( "Feature" );
@@ -2114,23 +2103,16 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
     if ( ml->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
-      if ( vl && vl->isUsingRendererV2() )
+
+      QgsFeatureRendererV2* rendererV2 = vl->rendererV2();
+      //backup old renderer
+      vectorRenderers.push_back( qMakePair( vl, rendererV2->clone() ) );
+      //modify symbols of current renderer
+      QgsSymbolV2List symbolList = rendererV2->symbols();
+      QgsSymbolV2List::iterator symbolIt = symbolList.begin();
+      for ( ; symbolIt != symbolList.end(); ++symbolIt )
       {
-        QgsFeatureRendererV2* rendererV2 = vl->rendererV2();
-        //backup old renderer
-        vectorRenderers.push_back( qMakePair( vl, rendererV2->clone() ) );
-        //modify symbols of current renderer
-        QgsSymbolV2List symbolList = rendererV2->symbols();
-        QgsSymbolV2List::iterator symbolIt = symbolList.begin();
-        for ( ; symbolIt != symbolList.end(); ++symbolIt )
-        {
-          ( *symbolIt )->setAlpha(( *symbolIt )->alpha() * opacityRatio );
-        }
-      }
-      else //old symbology
-      {
-        vectorOld.push_back( qMakePair( vl, vl->getTransparency() ) );
-        vl->setTransparency( opacity );
+        ( *symbolIt )->setAlpha(( *symbolIt )->alpha() * opacityRatio );
       }
 
       //labeling

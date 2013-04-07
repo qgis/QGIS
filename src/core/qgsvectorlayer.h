@@ -315,12 +315,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
-    /** Returns a pointer to the renderer */
-    const QgsRenderer* renderer() const;
-
-    /** Sets the renderer. If a renderer is already present, it is deleted */
-    void setRenderer( QgsRenderer * r );
-
     /** Sets diagram rendering object (takes ownership) */
     void setDiagramRenderer( QgsDiagramRendererV2* r );
     const QgsDiagramRendererV2* diagramRenderer() const { return mDiagramRenderer; }
@@ -335,14 +329,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 1.4
      */
     void setRendererV2( QgsFeatureRendererV2* r );
-    /** Return whether using renderer V2.
-     * @note added in 1.4
-     */
-    bool isUsingRendererV2();
-    /** set whether to use renderer V2 for drawing.
-     * @note added in 1.4
-     */
-    void setUsingRendererV2( bool usingRendererV2 );
 
     /** Draw layer with renderer V2.
      * @note added in 1.4
@@ -931,28 +917,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     */
     bool setDataProvider( QString const & provider );
 
-    /** Draws features. May cause projections exceptions to be generated
-     *  (i.e., code that calls this function needs to catch them) */
-    void drawFeature( QgsRenderContext &renderContext,
-                      QgsFeature& fet,
-                      QImage* marker );
-
-    /** Convenience function to transform the given point */
-    void transformPoint( double& x, double& y,
-                         const QgsMapToPixel* mtp, const QgsCoordinateTransform* ct );
-
-    void transformPoints( QVector<double>& x, QVector<double>& y, QVector<double>& z, QgsRenderContext &renderContext );
-
-    /** Draw the linestring as given in the WKB format. Returns a pointer
-     * to the byte after the end of the line string binary data stream (WKB).
-     */
-    unsigned char *drawLineString( unsigned char *WKBlinestring, QgsRenderContext &renderContext );
-
-    /** Draw the polygon as given in the WKB format. Returns a pointer to
-     *  the byte after the end of the polygon binary data stream (WKB).
-     */
-    unsigned char *drawPolygon( unsigned char *WKBpolygon, QgsRenderContext &renderContext );
-
     /** Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature) */
     QgsFeatureId findFreeId();
 
@@ -1046,13 +1010,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     int mWkbType;
 
     /** Renderer object which holds the information about how to display the features */
-    QgsRenderer *mRenderer;
-
-    /** Renderer V2 */
     QgsFeatureRendererV2 *mRendererV2;
-
-    /** whether to use V1 or V2 renderer */
-    bool mUsingRendererV2;
 
     /** Label */
     QgsLabel *mLabel;

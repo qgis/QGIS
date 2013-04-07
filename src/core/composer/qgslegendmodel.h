@@ -102,10 +102,6 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     void layersChanged();
 
   private:
-    /**Adds classification items of vector layers
-     @return 0 in case of success*/
-    int addVectorLayerItems( QStandardItem* layerItem, QgsVectorLayer* vlayer );
-
     /**Adds classification items of vector layers using new symbology*/
     int addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer );
 

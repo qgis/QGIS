@@ -432,23 +432,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     {
       QMap<QString, QString> classes;
 
-      const QgsUniqueValueRenderer *uvr = dynamic_cast<const QgsUniqueValueRenderer *>( vl->renderer() );
-      if ( uvr )
-      {
-        const QList<QgsSymbol *> symbols = uvr->symbols();
-
-        for ( int i = 0; i < symbols.size(); i++ )
-        {
-          QString label = symbols[i]->label();
-          QString name = symbols[i]->lowerValue();
-
-          if ( label == "" )
-            label = name;
-
-          classes.insert( name, label );
-        }
-      }
-
       const QgsCategorizedSymbolRendererV2 *csr = dynamic_cast<const QgsCategorizedSymbolRendererV2 *>( vl->rendererV2() );
       if ( csr )
       {

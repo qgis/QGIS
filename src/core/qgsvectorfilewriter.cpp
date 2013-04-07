@@ -770,7 +770,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     //writer->createSymbolLayerTable( layer,  writer->mDS );
   }
 
-  if ( writer->symbologyExport() == SymbolLayerSymbology && layer->isUsingRendererV2() )
+  if ( writer->symbologyExport() == SymbolLayerSymbology )
   {
     QgsFeatureRendererV2* r = layer->rendererV2();
     if ( r->capabilities() & QgsFeatureRendererV2::SymbolLevels
@@ -1198,11 +1198,6 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
     return;
   }
 
-  if ( !vl->isUsingRendererV2() )
-  {
-    return;
-  }
-
   QgsFeatureRendererV2* renderer = vl->rendererV2();
   if ( !renderer )
   {
@@ -1246,7 +1241,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit,
     const QgsCoordinateTransform* ct, QString* errorMessage )
 {
-  if ( !layer || !layer->isUsingRendererV2() )
+  if ( !layer )
   {
     //return error
   }
@@ -1454,7 +1449,7 @@ QgsFeatureRendererV2* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl
   {
     return 0;
   }
-  if ( !vl || !vl->isUsingRendererV2() )
+  if ( !vl )
   {
     return 0;
   }

@@ -100,13 +100,6 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
 
   cboRenderers->setCurrentIndex( -1 ); // set no current renderer
 
-  // if the layer doesn't use renderer V2, let's start using it!
-  if ( !mLayer->isUsingRendererV2() )
-  {
-    mLayer->setRendererV2( QgsFeatureRendererV2::defaultRenderer( mLayer->geometryType() ) );
-    mLayer->setUsingRendererV2( true );
-  }
-
   // setup slot rendererChanged()
   connect( cboRenderers, SIGNAL( currentIndexChanged( int ) ), this, SLOT( rendererChanged() ) );
 

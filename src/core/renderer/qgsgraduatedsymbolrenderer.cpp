@@ -282,7 +282,6 @@ int QgsGraduatedSymbolRenderer::readXML( const QDomNode& rnode, QgsVectorLayer& 
     symbolnode = symbolnode.nextSibling();
   }
   updateSymbolAttributes();
-  vl.setRenderer( this );
   return 0;
 }
 

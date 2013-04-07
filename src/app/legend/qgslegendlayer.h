@@ -110,8 +110,6 @@ class QgsLegendLayer : public QgsLegendItem
   protected:
 
     /** Prepare and change symbology for vector layer */
-    void vectorLayerSymbology( QgsVectorLayer* mapLayer, double widthScale = 1.0 );
-
     void vectorLayerSymbologyV2( QgsVectorLayer* vlayer );
 
     /** Prepare and change symbology for raster layer */
@@ -122,8 +120,6 @@ class QgsLegendLayer : public QgsLegendItem
 
     /**Adds feature counts to the symbology items (for symbology v2)*/
     void updateItemListCountV2( SymbologyList& itemList, QgsVectorLayer* layer );
-    /**Calculates feature count for the individual symbols (old symbology)*/
-    void updateItemListCount( QgsVectorLayer* layer, const QList<QgsSymbol*>& sym, QMap< QgsSymbol*, int >& featureCountMap );
 
     QPixmap getOriginalPixmap();
 

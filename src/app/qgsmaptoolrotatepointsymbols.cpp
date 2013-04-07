@@ -238,26 +238,6 @@ int QgsMapToolRotatePointSymbols::layerRotationAttributes( QgsVectorLayer* vl, Q
     return 1;
   }
 
-  //old symbology
-  const QgsRenderer* layerRenderer = vl->renderer();
-  if ( layerRenderer )
-  {
-    //get renderer symbols
-    const QList<QgsSymbol*> rendererSymbols = layerRenderer->symbols();
-    int currentRotationAttribute;
-
-    QList<QgsSymbol*>::const_iterator symbolIt = rendererSymbols.constBegin();
-    for ( ; symbolIt != rendererSymbols.constEnd(); ++symbolIt )
-    {
-      currentRotationAttribute = ( *symbolIt )->rotationClassificationField();
-      if ( currentRotationAttribute >= 0 )
-      {
-        attList.push_back( currentRotationAttribute );
-      }
-    }
-    return 0;
-  }
-
   //new symbology
   const QgsFeatureRendererV2* symbologyNgRenderer = vl->rendererV2();
   if ( symbologyNgRenderer )
@@ -306,27 +286,10 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
 
   //get the image that is used for that symbol, but without point rotation
   QImage pointImage;
-  QgsRenderer* r = 0;
-  QgsFeatureRendererV2* rv2 = 0;
 
-  if ( mActiveLayer && mActiveLayer->renderer() ) //old symbology
+  if ( mActiveLayer && mActiveLayer->rendererV2() ) //symbology-ng
   {
-    //copy renderer
-    QgsRenderer* r = mActiveLayer->renderer()->clone();
-
-    //set all symbol fields of the cloned renderer to -1. Very ugly but necessary
-    QList<QgsSymbol*> symbolList( r->symbols() );
-    QList<QgsSymbol*>::iterator it = symbolList.begin();
-    for ( ; it != symbolList.end(); ++it )
-    {
-      ( *it )->setRotationClassificationField( -1 );
-    }
-
-    r->renderFeature( *renderContext, f, &pointImage, false );
-  }
-  else if ( mActiveLayer && mActiveLayer->rendererV2() ) //symbology-ng
-  {
-    rv2 = mActiveLayer->rendererV2()->clone();
+    QgsFeatureRendererV2* rv2 = mActiveLayer->rendererV2()->clone();
     rv2->setRotationField( "" );
     rv2->startRender( *renderContext, mActiveLayer );
 
@@ -336,12 +299,11 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
       pointImage = symbolV2->bigSymbolPreviewImage();
     }
     rv2->stopRender( *renderContext );
+    delete rv2;
   }
 
   mRotationItem = new QgsPointRotationItem( mCanvas );
   mRotationItem->setSymbol( pointImage );
-  delete r;
-  delete rv2;
 }
 
 void QgsMapToolRotatePointSymbols::setPixmapItemRotation( double rotation )

@@ -413,12 +413,8 @@ void QgsVectorLayerProperties::apply()
   // Apply fields settings
   mFieldsPropertiesDialog->apply();
 
-  if ( layer->isUsingRendererV2() )
-  {
-    QgsRendererV2PropertiesDialog* dlg =
-      static_cast<QgsRendererV2PropertiesDialog*>( widgetStackRenderers->currentWidget() );
-    dlg->apply();
-  }
+  QgsRendererV2PropertiesDialog* dlg = static_cast<QgsRendererV2PropertiesDialog*>( widgetStackRenderers->currentWidget() );
+  dlg->apply();
 
   //apply diagram settings
   diagramPropertiesDialog->apply();
@@ -778,19 +774,12 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   delete mRendererDialog;
   mRendererDialog = 0;
 
-  if ( layer->isUsingRendererV2() )
-  {
-    mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
+  mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
 
-    // display the menu to choose the output format (fix #5136)
-    pbnSaveStyleAs->setText( tr( "Save Style" ) );
-    pbnSaveStyleAs->setMenu( mSaveAsMenu );
-    QObject::disconnect( pbnSaveStyleAs, SIGNAL( clicked() ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
-  }
-  else
-  {
-    tabWidget->setTabEnabled( 0, false ); // hide symbology item
-  }
+  // display the menu to choose the output format (fix #5136)
+  pbnSaveStyleAs->setText( tr( "Save Style" ) );
+  pbnSaveStyleAs->setMenu( mSaveAsMenu );
+  QObject::disconnect( pbnSaveStyleAs, SIGNAL( clicked() ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
 
   if ( mRendererDialog )
   {

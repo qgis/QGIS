@@ -277,7 +277,6 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
         {
           QgsFeatureRendererV2* r = rendererFromUserStyle( userStyleElement, v );
           v->setRendererV2( r );
-          v->setUsingRendererV2( true );
           labelSettingsFromUserStyle( userStyleElement, v );
 #ifdef DIAGRAMSERVER
           overlaysFromUserStyle( userStyleElement, v );
@@ -394,7 +393,6 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
     return resultList;
   }
   theVectorLayer->setRendererV2( theRenderer );
-  theVectorLayer->setUsingRendererV2( true );
   QgsDebugMsg( "Returning the vectorlayer" );
   setOpacityForLayer( userLayerElement, theVectorLayer );
   resultList.push_back( theVectorLayer );
@@ -1389,7 +1387,6 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
   //create renderer
   QgsFeatureRendererV2* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
   contourLayer->setRendererV2( theRenderer );
-  contourLayer->setUsingRendererV2( true );
 
   //add labelling if requested
   labelSettingsFromUserStyle( userStyleElem, contourLayer );
