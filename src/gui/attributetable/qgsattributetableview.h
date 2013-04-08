@@ -63,6 +63,18 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      */
     void setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVectorLayerCache *layerCache );
 
+    /**
+     * This event filter is installed on the verticalHeader to intercept mouse press and release
+     * events. These are used to disable / enable live synchronisation with the map canvas selection
+     * which can be slow due to recurring canvas repaints. Updating the
+     *
+     * @param object The object which is the target of the event.
+     * @param event  The intercepted event
+     *
+     * @return Returns always false, so the event gets processed
+     */
+    virtual bool eventFilter( QObject* object, QEvent* event );
+
   protected:
     /**
      * Called for mouse press events on a table cell.
@@ -124,23 +136,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     void finished();
 
-    /**
-     * @brief
-     * Is emitted, after the selection has been changed.
-     *
-     * @param selectedFeatures  A list of currently selected features.
-     */
-    void selectionChangeFinished( const QgsFeatureIds &selectedFeatures );
-
   public slots:
-    /**
-     * Is triggered after a mouse release event on the vertical header.
-     * Emits a selectionChangeFinished() signal, so the underlying sort filter
-     * can adapt to the current selection without disturbing the users current interaction.
-     *
-     * @param logicalIndex The section's logical index
-     */
-    void onVerticalHeaderSectionClicked( int logicalIndex );
     void onFilterAboutToBeInvalidated();
     void onFilterInvalidated();
     void onSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );

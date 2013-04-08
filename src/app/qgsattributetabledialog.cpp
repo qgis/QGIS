@@ -109,6 +109,12 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
+  connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateTitle() ) );
+  connect( mLayer, SIGNAL( attributeAdded(int) ), this, SLOT( columnBoxInit() ) );
+  connect( mLayer, SIGNAL( attributeDeleted(int) ), this, SLOT( columnBoxInit() ) );
+
+  // connect table info to window
+  connect( mMainView, SIGNAL( filterChanged() ), this, SLOT( updateTitle() ) );
 
   // info from table to application
   connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
@@ -193,12 +199,11 @@ QgsAttributeTableDialog::~QgsAttributeTableDialog()
 void QgsAttributeTableDialog::updateTitle()
 {
   QWidget *w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
-  w->setWindowTitle( tr( "Attribute table - %1 :: %n / %2 feature(s) filtered",
-                         "feature count",
-                         mMainView->filteredFeatureCount()
-                       )
+  w->setWindowTitle( tr( "Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4" )
                      .arg( mLayer->name() )
                      .arg( mMainView->featureCount() )
+                     .arg( mMainView->filteredFeatureCount() )
+                     .arg( mLayer->selectedFeatureCount() )
                    );
 }
 
@@ -219,6 +224,7 @@ void QgsAttributeTableDialog::columnBoxInit()
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
+    mFilterButton->removeAction( a );
     delete a;
   }
 
@@ -345,7 +351,6 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
     if ( col >= 0 )
     {
       masterModel->reload( masterModel->index( 0, col ), masterModel->index( masterModel->rowCount() - 1, col ) );
-      columnBoxInit();
     }
   }
 }
@@ -609,15 +614,5 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   {
     QgisApp::instance()->messageBar()->pushMessage( tr( "Error filtering" ), filterExpression.evalErrorString(), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
     return;
-  }
-
-  QWidget *w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
-  if ( mMainView->filteredFeatureCount() )
-  {
-    w->setWindowTitle( tr( "Attribute table - %1 (%n matching features)", "matching features", mMainView->filteredFeatureCount() ).arg( mMainView->filteredFeatureCount() ) );
-  }
-  else
-  {
-    w->setWindowTitle( tr( "Attribute table - %1 (No matching features)" ).arg( mLayer->name() ) );
   }
 }

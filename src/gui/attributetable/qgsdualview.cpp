@@ -46,6 +46,7 @@ QgsDualView::QgsDualView( QWidget* parent )
   // Connect layer list preview signals
   connect( mActionExpressionPreview, SIGNAL( triggered() ), SLOT( previewExpressionBuilder() ) );
   connect( mPreviewActionMapper, SIGNAL( mapped( QObject* ) ), SLOT( previewColumnChanged( QObject* ) ) );
+  connect( mFeatureList, SIGNAL( displayExpressionChanged(QString) ), this, SLOT( previewExpressionChanged(QString) ) );
 }
 
 QgsDualView::~QgsDualView()
@@ -76,6 +77,54 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
 
 void QgsDualView::columnBoxInit()
 {
+  // load fields
+  QList<QgsField> fields = mLayerCache->layer()->pendingFields().toList();
+
+  // default expression: saved value
+  QString displayExpression = mLayerCache->layer()->displayExpression();
+
+  // if no display expression is saved: use display field instead
+  if ( displayExpression == "" )
+  {
+    displayExpression = mLayerCache->layer()->displayField();
+  }
+
+  // if neither diaplay expression nor display field is saved...
+  if ( displayExpression == "" )
+  {
+    QgsAttributeList pkAttrs = mLayerCache->layer()->pendingPkAttributesList();
+
+    if ( pkAttrs.size() > 0 )
+    {
+      // ... If there are primary key(s) defined
+      QStringList pkFields;
+
+      foreach ( int attr, pkAttrs )
+      {
+        pkFields.append( "\"" + fields[attr].name() + "\"" );
+      }
+
+      displayExpression = pkFields.join( "||', '||" );
+    }
+    else if ( fields.size() > 0 )
+    {
+      // ... concat all fields
+      QStringList fieldNames;
+      foreach ( QgsField field, fields )
+      {
+        fieldNames.append( "\"" + field.name() + "\"" );
+      }
+
+      displayExpression = fieldNames.join( "||', '||" );
+    }
+    else
+    {
+      // ... there isn't really much to display
+      displayExpression = "[Please define preview text]";
+    }
+  }
+
+  // now initialise the menu
   QList< QAction* > previewActions = mFeatureListPreviewButton->actions();
   foreach ( QAction* a, previewActions )
   {
@@ -88,8 +137,6 @@ void QgsDualView::columnBoxInit()
 
   mFeatureListPreviewButton->addAction( mActionExpressionPreview );
   mFeatureListPreviewButton->addAction( mActionPreviewColumnsMenu );
-
-  QList<QgsField> fields = mLayerCache->layer()->pendingFields().toList();
 
   foreach ( const QgsField field, fields )
   {
@@ -104,45 +151,18 @@ void QgsDualView::columnBoxInit()
       connect( previewAction, SIGNAL( triggered() ), mPreviewActionMapper, SLOT( map() ) );
       mPreviewColumnsMenu->addAction( previewAction );
 
-      if ( text == mLayerCache->layer()->displayField() )
+      if ( text == displayExpression )
       {
         mFeatureListPreviewButton->setDefaultAction( previewAction );
       }
     }
   }
 
-  // Most likely no displayField is defined
-  // Join primary key fields
+  // If there is no single field found as preview
   if ( !mFeatureListPreviewButton->defaultAction() )
   {
+    mFeatureList->setDisplayExpression( displayExpression );
     mFeatureListPreviewButton->setDefaultAction( mActionExpressionPreview );
-    QgsAttributeList pkAttrs = mLayerCache->layer()->pendingPkAttributesList();
-    // If there is a primary key defined
-    if ( pkAttrs.size() > 0 )
-    {
-      QStringList pkFields;
-
-      foreach ( int attr, pkAttrs )
-      {
-        pkFields.append( "\"" + fields[attr].name() + "\"" );
-      }
-
-      mFeatureList->setDisplayExpression( pkFields.join( "||', '||" ) );
-    }
-    else if ( fields.size() > 0 )
-    {
-      QStringList fieldNames;
-      foreach ( QgsField field, fields )
-      {
-        fieldNames.append( "\"" + field.name() + "\"" );
-      }
-
-      mFeatureList->setDisplayExpression( fieldNames.join( "||', '||" ) );
-    }
-    else
-    {
-      mFeatureList->setDisplayExpression( "[Please define preview text]" );
-    }
   }
   else
   {
@@ -191,6 +211,10 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
   mMasterModel->loadLayer();
 
   mFilterModel = new QgsAttributeTableFilterModel( mapCanvas, mMasterModel, mMasterModel );
+
+  connect( mFilterModel, SIGNAL( filterInvalidated() ), this, SIGNAL( filterChanged() ) );
+  connect( mFeatureList, SIGNAL( displayExpressionChanged(QString) ), this, SIGNAL( displayExpressionChanged(QString) ) );
+
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
 }
 
@@ -272,9 +296,11 @@ void QgsDualView::previewColumnChanged( QObject* action )
                             .arg( mFeatureList->parserErrorString() )
                           );
     }
-
-    mFeatureListPreviewButton->setDefaultAction( previewAction );
-    mFeatureListPreviewButton->setPopupMode( QToolButton::InstantPopup );
+    else
+    {
+      mFeatureListPreviewButton->setDefaultAction( previewAction );
+      mFeatureListPreviewButton->setPopupMode( QToolButton::InstantPopup );
+    }
   }
 
   Q_ASSERT( previewAction );
@@ -323,6 +349,11 @@ void QgsDualView::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
 
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
+}
+
+void QgsDualView::previewExpressionChanged( const QString expression )
+{
+  mLayerCache->layer()->setDisplayExpression( expression );
 }
 
 void QgsDualView::setFilteredFeatures( QgsFeatureIds filteredFeatures )
