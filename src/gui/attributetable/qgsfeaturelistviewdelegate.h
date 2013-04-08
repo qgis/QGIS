@@ -19,8 +19,8 @@ class QgsFeatureListViewDelegate : public QItemDelegate
 
     enum Element
     {
-      EditButtonElement,
-      TextElement
+      EditElement,
+      SelectionElement
     };
 
     explicit QgsFeatureListViewDelegate( QgsFeatureListModel* listModel, QObject *parent = 0 );

@@ -1511,6 +1511,18 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   updateFields();
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
+  QDomNode prevExpNode = layer_node.namedItem( "previewExpression" );
+
+  if( prevExpNode.isNull() )
+  {
+    mDisplayExpression = "";
+  }
+  else
+  {
+    QDomElement prevExpElem = prevExpNode.toElement();
+    mDisplayExpression = prevExpElem.text();
+  }
+
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )
   {
@@ -1657,6 +1669,12 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
   }
+
+  // save preview expression
+  QDomElement prevExpElem = document.createElement( "previewExpression" );
+  QDomText prevExpText = document.createTextNode( mDisplayExpression );
+  prevExpElem.appendChild( prevExpText );
+  layer_node.appendChild( prevExpElem );
 
   //save joins
   mJoinBuffer->writeXml( layer_node, document );
@@ -2788,6 +2806,16 @@ void QgsVectorLayer::setCoordinateSystem()
 const QString QgsVectorLayer::displayField() const
 {
   return mDisplayField;
+}
+
+void QgsVectorLayer::setDisplayExpression( const QString displayExpression )
+{
+  mDisplayExpression = displayExpression;
+}
+
+const QString QgsVectorLayer::displayExpression()
+{
+  return mDisplayExpression;
 }
 
 bool QgsVectorLayer::isEditable() const

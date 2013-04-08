@@ -46,7 +46,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   setSelectionMode( QAbstractItemView::ExtendedSelection );
   setSortingEnabled( true );
 
-  connect( verticalHeader(), SIGNAL( sectionClicked( int ) ), SLOT( onVerticalHeaderSectionClicked( int ) ) );
+  verticalHeader()->viewport()->installEventFilter( this );
 }
 
 QgsAttributeTableView::~QgsAttributeTableView()
@@ -73,6 +73,27 @@ void QgsAttributeTableView::setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVec
 
   delete oldModel;
   delete filterModel;
+}
+
+bool QgsAttributeTableView::eventFilter(QObject *object, QEvent *event)
+{
+  if ( object == verticalHeader()->viewport() )
+  {
+    switch ( event->type() )
+    {
+      case QEvent::MouseButtonPress:
+        mFilterModel->disableSelectionSync();
+        break;
+
+      case QEvent::MouseButtonRelease:
+        mFilterModel->enableSelectionSync();
+        break;
+
+      default:
+        break;
+    }
+  }
+  return false;
 }
 
 void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel )
@@ -156,22 +177,6 @@ void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
       QTableView::keyPressEvent( event );
       break;
   }
-}
-
-void QgsAttributeTableView::onVerticalHeaderSectionClicked( int logicalIndex )
-{
-  Q_UNUSED( logicalIndex )
-
-  QgsFeatureIds selectedFeatures;
-
-  QModelIndexList selectedRows = selectionModel()->selectedRows();
-
-  foreach ( QModelIndex row, selectedRows )
-  {
-    selectedFeatures.insert( mFilterModel->rowToId( row ) );
-  }
-
-  emit selectionChangeFinished( selectedFeatures );
 }
 
 void QgsAttributeTableView::onFilterAboutToBeInvalidated()
