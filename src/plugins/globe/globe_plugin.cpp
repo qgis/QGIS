@@ -311,9 +311,12 @@ void GlobePlugin::run()
     mOsgViewer->addEventHandler( new FlyToExtentHandler( this ) );
     mOsgViewer->addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
 
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+#else
     mOsgViewer->addEventHandler( new QueryCoordinatesHandler( this, mElevationManager,
                                  mMapNode->getMap()->getProfile()->getSRS() )
                                );
+#endif
   }
   else
   {
@@ -376,6 +379,8 @@ void GlobePlugin::setupMap()
   elevationLayersChanged();
 
   // model placement utils
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+#else
   mElevationManager = new osgEarth::Util::ElevationManager( mMapNode->getMap() );
   mElevationManager->setTechnique( osgEarth::Util::ElevationManager::TECHNIQUE_GEOMETRIC );
   mElevationManager->setMaxTilesToCache( 50 );
@@ -398,6 +403,7 @@ void GlobePlugin::setupMap()
       }
     }
   }
+#endif
 
 }
 
@@ -863,6 +869,8 @@ void GlobePlugin::help()
 
 void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt /*= 0.0*/ )
 {
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+#else
   // get elevation
   double elevation = 0.0;
   double resolution = 0.0;
@@ -875,6 +883,7 @@ void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt
   osg::MatrixTransform* mt = new osg::MatrixTransform( mat );
   mt->addChild( node );
   mRootNode->addChild( mt );
+#endif
 }
 
 void GlobePlugin::copyFolder( QString sourceFolder, QString destFolder )
@@ -1068,6 +1077,8 @@ bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIAct
   return false;
 }
 
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+#else
 bool QueryCoordinatesHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
 {
   if ( ea.getEventType() == osgGA::GUIEventAdapter::MOVE )
@@ -1144,6 +1155,7 @@ osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View
   }
   return coords;
 }
+#endif
 
 /**
  * Required extern functions needed  for every plugin
