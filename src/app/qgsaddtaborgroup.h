@@ -22,6 +22,7 @@
 #include "ui_qgsaddtaborgroupbase.h"
 #include "qgisgui.h"
 
+class QTreeWidgetItem;
 class QgsVectorLayer;
 
 class QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroupBase
@@ -29,12 +30,15 @@ class QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroupBase
     Q_OBJECT
 
   public:
-    QgsAddTabOrGroup( QgsVectorLayer *lyr = 0, QWidget *parent = 0, QList<QString> tabList = QList<QString>() );
+    typedef QPair<QString,QTreeWidgetItem*> TabPair;
+
+  public:
+    QgsAddTabOrGroup( QgsVectorLayer *lyr, QList< TabPair > tabList, QWidget *parent = 0 );
     ~QgsAddTabOrGroup();
 
     QString name();
 
-    int tabId();
+    QTreeWidgetItem* tab();
 
     bool tabButtonIsChecked();
 
@@ -43,7 +47,8 @@ class QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroupBase
     void on_mTabButton_toggled( bool checked );
 
   protected:
-    QgsVectorLayer *layer;
+    QgsVectorLayer *mLayer;
+    QList< TabPair > mTabs;
 };
 
 #endif
