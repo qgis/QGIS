@@ -44,6 +44,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
       if ( L->pendingFields().fieldOrigin( attrIndex ) == QgsFields::OriginProvider )
         providerSubset << L->pendingFields().fieldOriginIndex( attrIndex );
     }
+    mProviderRequest.setSubsetOfAttributes(providerSubset);
   }
 
   if ( request.filterType() == QgsFeatureRequest::FilterFid )
