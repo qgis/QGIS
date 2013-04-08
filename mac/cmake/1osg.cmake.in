@@ -16,6 +16,9 @@ SET (OSG_PLUGINS_PATH "@OSG_PLUGINS_PATH@")
 # list of osg frameworks to bundle
 
 SET (OSGLIST OpenThreads osg osgDB osgGA osgViewer osgEarth osgEarthAnnotation osgEarthFeatures osgEarthSymbology osgEarthUtil osgFX osgManipulator osgShadow osgSim osgTerrain osgText osgUtil osgWidget)
+IF (@HAVE_OSGEARTHQT@)
+    SET (OSGLIST ${OSGLIST} osgQt osgEarthQt)
+ENDIF (@HAVE_OSGEARTHQT@)
 #SET (PYOSGLIST future python bindings?)
 MYMESSAGE ("OSG list: ${OSGLIST}")
 
@@ -75,5 +78,9 @@ FOREACH (OFW ${OSGLIST})
     # globe plugin
     INSTALLNAMETOOL_CHANGE ("${OFW_CHG}" "${OFW_CHG_TO}" "${QPLUGDIR}/libglobeplugin.so")
 ENDFOREACH (OFW)
+IF (@HAVE_OSGEARTHQT@)
+    
+    SET (OSGLIST ${OSGLIST} osgQt osgEarthQt)
+ENDIF (@HAVE_OSGEARTHQT@)
 
 ENDIF (@OSGEARTH_FOUND@)

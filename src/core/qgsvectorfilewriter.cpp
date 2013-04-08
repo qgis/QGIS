@@ -333,6 +333,14 @@ QgsVectorFileWriter::QgsVectorFileWriter(
         ogrType = OFTReal;
         break;
 
+      case QVariant::Date:
+        ogrType = OFTDate;
+        break;
+
+      case QVariant::DateTime:
+        ogrType = OFTDateTime;
+        break;
+
       default:
         //assert(0 && "invalid variant type!");
         mErrorMessage = QObject::tr( "unsupported type for field %1" )
@@ -543,6 +551,23 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
         break;
+      case QVariant::Date:
+        OGR_F_SetFieldDateTime( poFeature, ogrField,
+                                attrValue.toDate().year(),
+                                attrValue.toDate().month(),
+                                attrValue.toDate().day(),
+                                0, 0, 0, 0 );
+        break;
+      case QVariant::DateTime:
+        OGR_F_SetFieldDateTime( poFeature, ogrField,
+                                attrValue.toDateTime().date().year(),
+                                attrValue.toDateTime().date().month(),
+                                attrValue.toDateTime().date().day(),
+                                attrValue.toDateTime().time().hour(),
+                                attrValue.toDateTime().time().minute(),
+                                attrValue.toDateTime().time().second(),
+                                0 );
+        break;
       case QVariant::Invalid:
         break;
       default:
@@ -745,7 +770,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
     //writer->createSymbolLayerTable( layer,  writer->mDS );
   }
 
-  if ( writer->symbologyExport() == SymbolLayerSymbology && layer->isUsingRendererV2() )
+  if ( writer->symbologyExport() == SymbolLayerSymbology )
   {
     QgsFeatureRendererV2* r = layer->rendererV2();
     if ( r->capabilities() & QgsFeatureRendererV2::SymbolLevels
@@ -1173,11 +1198,6 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
     return;
   }
 
-  if ( !vl->isUsingRendererV2() )
-  {
-    return;
-  }
-
   QgsFeatureRendererV2* renderer = vl->rendererV2();
   if ( !renderer )
   {
@@ -1221,7 +1241,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit,
     const QgsCoordinateTransform* ct, QString* errorMessage )
 {
-  if ( !layer || !layer->isUsingRendererV2() )
+  if ( !layer )
   {
     //return error
   }
@@ -1429,7 +1449,7 @@ QgsFeatureRendererV2* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl
   {
     return 0;
   }
-  if ( !vl || !vl->isUsingRendererV2() )
+  if ( !vl )
   {
     return 0;
   }

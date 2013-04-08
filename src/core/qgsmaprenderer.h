@@ -20,6 +20,7 @@
 #include <QSize>
 #include <QStringList>
 #include <QVector>
+#include <QPainter>
 
 #include "qgis.h"
 #include "qgsrectangle.h"
@@ -121,6 +122,26 @@ class CORE_EXPORT QgsMapRenderer : public QObject
       Millimeters,
       Pixels
       //MAP_UNITS probably supported in future versions
+    };
+
+    /** Blending modes enum defining the available composition modes that can
+     * be used when rendering a layer
+     */
+    enum BlendMode
+    {
+      BlendNormal,
+      BlendLighten,
+      BlendScreen,
+      BlendDodge,
+      BlendAddition,
+      BlendDarken,
+      BlendMultiply,
+      BlendBurn,
+      BlendOverlay,
+      BlendSoftLight,
+      BlendHardLight,
+      BlendDifference,
+      BlendSubtract
     };
 
     //! constructor
@@ -229,6 +250,13 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Takes ownership of the engine.
     //! Added in QGIS v1.4
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
+
+    //! Returns a QPainter::CompositionMode corresponding to a BlendMode
+    //! Added in 1.9
+    static QPainter::CompositionMode getCompositionMode( const QgsMapRenderer::BlendMode blendMode );
+    //! Returns a BlendMode corresponding to a QPainter::CompositionMode
+    //! Added in 1.9
+    static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
 
   signals:
 

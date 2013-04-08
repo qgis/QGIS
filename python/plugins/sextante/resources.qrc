@@ -2,19 +2,22 @@
     <qresource prefix="/sextante">
         <file>images/alg.png</file>
         <file>images/config.png</file>
+        <file>images/database.png</file>
+        <file>images/geoserver.png</file>
         <file>images/grass.png</file>
-        <file>images/help.png</file>
         <file>images/history.gif</file>
         <file>images/input.png</file>
         <file>images/iterate.png</file>
         <file>images/model.png</file>
         <file>images/otb.png</file>
+        <file>images/postgis.png</file>
+        <file>images/qgis.png</file>
         <file>images/r.png</file>
         <file>images/results.png</file>
         <file>images/saga.png</file>
         <file>images/script.png</file>
+        <file>images/taudem.png</file>
         <file>images/tool.png</file>
         <file>images/toolbox.png</file>
-        <file>images/sextante_logo.png</file>
     </qresource>
 </RCC>

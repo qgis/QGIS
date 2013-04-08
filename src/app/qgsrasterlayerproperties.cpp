@@ -45,6 +45,7 @@
 #include "qgsrastertransparency.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
+#include "qgshuesaturationfilter.h"
 
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -81,6 +82,27 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
+
+  // brightness/contrast controls
+  connect( mSliderBrightness, SIGNAL( valueChanged( int ) ), mBrightnessSpinBox, SLOT( setValue( int ) ) );
+  connect( mBrightnessSpinBox, SIGNAL( valueChanged( int ) ), mSliderBrightness, SLOT( setValue( int ) ) );
+
+  connect( mSliderContrast, SIGNAL( valueChanged( int ) ), mContrastSpinBox, SLOT( setValue( int ) ) );
+  connect( mContrastSpinBox, SIGNAL( valueChanged( int ) ), mSliderContrast, SLOT( setValue( int ) ) );
+
+  // Connect saturation slider and spin box
+  connect( sliderSaturation, SIGNAL( valueChanged( int ) ), spinBoxSaturation, SLOT( setValue( int ) ) );
+  connect( spinBoxSaturation, SIGNAL( valueChanged( int ) ), sliderSaturation, SLOT( setValue( int ) ) );
+
+  // Connect colorize strength slider and spin box
+  connect( sliderColorizeStrength, SIGNAL( valueChanged( int ) ), spinColorizeStrength, SLOT( setValue( int ) ) );
+  connect( spinColorizeStrength, SIGNAL( valueChanged( int ) ), sliderColorizeStrength, SLOT( setValue( int ) ) );
+
+  // enable or disable saturation slider and spin box depending on grayscale combo choice
+  connect( comboGrayscale, SIGNAL( currentIndexChanged( int ) ), this, SLOT( toggleSaturationControls( int ) ) );
+
+  // enable or disable colorize colorbutton with colorize checkbox
+  connect( mColorizeCheck, SIGNAL( toggled( bool ) ), this, SLOT( toggleColorizeControls( bool ) ) );
 
   // enable or disable Build Pyramids button depending on selection in pyramid list
   connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
@@ -242,6 +264,28 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     }
     mMaximumOversamplingSpinBox->setValue( resampleFilter->maxOversampling() );
   }
+
+  // Hue and saturation color control
+  mHueSaturationGroupBox->setSaveCheckedState( true );
+  const QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  //set hue and saturation controls to current values
+  if ( hueSaturationFilter )
+  {
+    sliderSaturation->setValue( hueSaturationFilter->saturation() );
+    comboGrayscale->setCurrentIndex(( int ) hueSaturationFilter->grayscaleMode() );
+
+    // Set initial state of saturation controls based on grayscale mode choice
+    toggleSaturationControls(( int )hueSaturationFilter->grayscaleMode() );
+
+    // Set initial state of colorize controls
+    mColorizeCheck->setChecked( hueSaturationFilter->colorizeOn() );
+    btnColorizeColor->setColor( hueSaturationFilter->colorizeColor() );
+    toggleColorizeControls( hueSaturationFilter->colorizeOn() );
+    sliderColorizeStrength->setValue( hueSaturationFilter->colorizeStrength() );
+  }
+
+  //blend mode
+  mBlendModeComboBox->setBlendMode( mRasterLayer->blendMode() );
 
   //transparency band
   if ( provider )
@@ -525,6 +569,19 @@ void QgsRasterLayerProperties::sync()
   QgsDebugMsg( "populate transparency tab" );
 
   /*
+   * Style tab (brightness and contrast)
+   */
+
+  QgsBrightnessContrastFilter* brightnessFilter = mRasterLayer->brightnessFilter();
+  if ( brightnessFilter )
+  {
+    mSliderBrightness->setValue( brightnessFilter->brightness() );
+    mSliderContrast->setValue( brightnessFilter->contrast() );
+  }
+
+  //set the transparency slider
+
+  /*
    * Transparent Pixel Tab
    */
 
@@ -669,6 +726,9 @@ void QgsRasterLayerProperties::apply()
   //set whether the layer histogram should be inverted
   //mRasterLayer->setInvertHistogram( cboxInvertColorMap->isChecked() );
 
+  mRasterLayer->brightnessFilter()->setBrightness( mSliderBrightness->value() );
+  mRasterLayer->brightnessFilter()->setContrast( mSliderContrast->value() );
+
   QgsDebugMsg( "processing transparency tab" );
   /*
    * Transparent Pixel Tab
@@ -798,6 +858,19 @@ void QgsRasterLayerProperties::apply()
     resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
   }
 
+  // Hue and saturation controls
+  QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  if ( hueSaturationFilter )
+  {
+    hueSaturationFilter->setSaturation( sliderSaturation->value() );
+    hueSaturationFilter->setGrayscaleMode(( QgsHueSaturationFilter::GrayscaleMode ) comboGrayscale->currentIndex() );
+    hueSaturationFilter->setColorizeOn( mColorizeCheck->checkState() );
+    hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
+    hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
+  }
+
+  //set the blend mode for the layer
+  mRasterLayer->setBlendMode(( QgsMapRenderer::BlendMode ) mBlendModeComboBox->blendMode() );
 
   //get the thumbnail for the layer
   pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
@@ -1428,6 +1501,29 @@ void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
   int myInt = static_cast < int >(( theValue / 255.0 ) * 100 );  //255.0 to prevent integer division
   lblTransparencyPercent->setText( QString::number( myInt ) + "%" );
 }//sliderTransparency_valueChanged
+
+void QgsRasterLayerProperties::toggleSaturationControls( int grayscaleMode )
+{
+  // Enable or disable saturation controls based on choice of grayscale mode
+  if ( grayscaleMode == 0 )
+  {
+    sliderSaturation->setEnabled( true );
+    spinBoxSaturation->setEnabled( true );
+  }
+  else
+  {
+    sliderSaturation->setEnabled( false );
+    spinBoxSaturation->setEnabled( false );
+  }
+}
+
+void QgsRasterLayerProperties::toggleColorizeControls( bool colorizeEnabled )
+{
+  // Enable or disable colorize controls based on checkbox
+  btnColorizeColor->setEnabled( colorizeEnabled );
+  sliderColorizeStrength->setEnabled( colorizeEnabled );
+  spinColorizeStrength->setEnabled( colorizeEnabled );
+}
 
 
 QLinearGradient QgsRasterLayerProperties::redGradient()

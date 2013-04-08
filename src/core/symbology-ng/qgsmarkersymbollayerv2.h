@@ -17,6 +17,7 @@
 #define QGSMARKERSYMBOLLAYERV2_H
 
 #include "qgssymbollayerv2.h"
+#include "qgsvectorlayer.h"
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
 #define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)
@@ -70,16 +71,32 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QColor borderColor() const { return mBorderColor; }
     void setBorderColor( QColor color ) { mBorderColor = color; }
 
+    double outlineWidth() const { return mOutlineWidth; }
+    void setOutlineWidth( double w ) { mOutlineWidth = w; }
+
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit u ) { mOutlineWidthUnit = u; }
+
+    const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    QString dataDefinedPropertyString( const QString& property ) const;
+    void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    void removeDataDefinedProperty( const QString& property );
+    void removeDataDefinedProperties();
+
+    QSet<QString> usedAttributes() const;
+
   protected:
 
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
 
-    bool prepareShape();
-    bool preparePath();
+    bool prepareShape( QString name = QString() );
+    bool preparePath( QString name = QString() );
 
     void prepareCache( QgsSymbolV2RenderContext& context );
 
     QColor mBorderColor;
+    double mOutlineWidth;
+    QgsSymbolV2::OutputUnit mOutlineWidthUnit;
     QPen mPen;
     QBrush mBrush;
     QPolygonF mPolygon;
@@ -90,6 +107,20 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QBrush mSelBrush;
     QImage mSelCache;
     bool mUsingCache;
+
+    //data defined properties
+    QgsExpression* mNameExpression;
+    QgsExpression* mColorExpression;
+    QgsExpression* mColorBorderExpression;
+    QgsExpression* mOutlineWidthExpression;
+    QgsExpression* mSizeExpression;
+    QgsExpression* mAngleExpression;
+    QgsExpression* mOffsetExpression;
+
+  private:
+    //helper functions for data defined symbology
+    void prepareExpressions( const QgsVectorLayer* vl );
+    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
 };
 
 //////////
@@ -138,6 +169,20 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     double outlineWidth() const { return mOutlineWidth; }
     void setOutlineWidth( double w ) { mOutlineWidth = w; }
 
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit ) { mOutlineWidthUnit = unit; }
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
+    const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    QString dataDefinedPropertyString( const QString& property ) const;
+    void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    void removeDataDefinedProperty( const QString& property );
+    void removeDataDefinedProperties();
+
+    QSet<QString> usedAttributes() const;
+
   protected:
     QString mPath;
 
@@ -146,7 +191,19 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QColor mFillColor;
     QColor mOutlineColor;
     double mOutlineWidth;
+    QgsSymbolV2::OutputUnit mOutlineWidthUnit;
     double mOrigSize;
+
+    QgsExpression* mSizeExpression;
+    QgsExpression* mOutlineWidthExpression;
+    QgsExpression* mAngleExpression;
+    QgsExpression* mOffsetExpression;
+    QgsExpression* mNameExpression;
+    QgsExpression* mFillExpression;
+    QgsExpression* mOutlineExpression;
+
+  private:
+    void prepareExpressions( const QgsVectorLayer* vl );
 };
 
 

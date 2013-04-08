@@ -29,7 +29,7 @@ MACRO (CHECK_GRASS G_PREFIX)
   ENDFOREACH (LIB)
 
   # LIB_PATH is only temporary variable, so hide it (is it possible to delete a variable?)
-  MARK_AS_ADVANCED(LIB_PATH)
+  UNSET(LIB_PATH CACHE)
 
   IF (GRASS_INCLUDE_DIR AND GRASS_LIBRARIES_FOUND)
     SET (GRASS_FOUND TRUE)

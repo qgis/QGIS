@@ -30,8 +30,9 @@ from sextante.core.QGisLayers import QGisLayers
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterVector import ParameterVector
 
-
 from sextante.outputs.OutputVector import OutputVector
+
+from sextante.algs.ftools import FToolsUtils as utils
 
 class SelectByLocation(GeoAlgorithm):
 
@@ -63,28 +64,25 @@ class SelectByLocation(GeoAlgorithm):
         method = self.getParameterValue(self.METHOD)
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = QGisLayers.getObjectFromUri(filename)
-        inputProvider = inputLayer.dataProvider()
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
-        index = QgsSpatialIndex()
-        feat = QgsFeature()
-        for feat in inputLayer.getFeatures():
-            index.insertFeature(feat)
+        index = spatialIndex = utils.createSpatialIndex(inputLayer)
 
-        infeat = QgsFeature()
+        feat = QgsFeature()
         geom = QgsGeometry()
         selectedSet = []
         current = 0
         features = QGisLayers.features(selectLayer)
         total = 100.0 / float(len(features))
-        for feat in features:
-            geom = QgsGeometry(feat.geometry())
+        for f in features:
+            geom = QgsGeometry(f.geometry())
             intersects = index.intersects(geom.boundingBox())
             for i in intersects:
-                inputLayer.featureAtId(i, infeat, True)
-                tmpGeom = QgsGeometry( infeat.geometry() )
+                request = QgsFeatureRequest().setFilterFid(i)
+                feat = inputLayer.getFeatures(request).next()
+                tmpGeom = QgsGeometry(feat.geometry())
                 if geom.intersects(tmpGeom):
-                    selectedSet.append(infeat.id())
+                    selectedSet.append(feat.id())
             current += 1
             progress.setPercentage(int(current * total))
 

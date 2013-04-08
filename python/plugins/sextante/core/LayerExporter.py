@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import os.path
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -48,7 +49,12 @@ class LayerExporter():
         It also export to a new file if the original one contains non-ascii characters'''
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
-        output = SextanteUtils.getTempFilename("shp")
+        filename = os.path.basename(unicode(layer.source()))
+        idx = filename.rfind(".")
+        if idx != -1:
+            filename = filename[:idx]
+        output = SextanteUtils.getTempFilenameInTempFolder(filename + ".shp")
+        #output = SextanteUtils.getTempFilename("shp")
         provider = layer.dataProvider()
         useSelection = SextanteConfig.getSetting(SextanteConfig.USE_SELECTED)
         if useSelection and layer.selectedFeatureCount() != 0:

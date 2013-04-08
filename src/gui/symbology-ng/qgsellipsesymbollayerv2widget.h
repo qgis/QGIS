@@ -38,8 +38,6 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
 
   private:
     void blockComboSignals( bool block );
-    //insert available attributes for data defined symbolisation
-    void fillDataDefinedComboBoxes();
 
   private slots:
     void on_mShapeListWidget_itemSelectionChanged();
@@ -47,16 +45,14 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     void on_mHeightSpinBox_valueChanged( double d );
     void on_mRotationSpinBox_valueChanged( double d );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
-    void on_btnChangeColorBorder_clicked();
-    void on_btnChangeColorFill_clicked();
+    void on_btnChangeColorBorder_colorChanged( const QColor& newColor );
+    void on_btnChangeColorFill_colorChanged( const QColor& newColor );
 
-    void on_mDDSymbolWidthComboBox_currentIndexChanged( int idx );
-    void on_mDDSymbolHeightComboBox_currentIndexChanged( int idx );
-    void on_mDDRotationComboBox_currentIndexChanged( int idx );
-    void on_mDDOutlineWidthComboBox_currentIndexChanged( int idx );
-    void on_mDDFillColorComboBox_currentIndexChanged( int idx );
-    void on_mDDOutlineColorComboBox_currentIndexChanged( int idx );
-    void on_mDDShapeComboBox_currentIndexChanged( int idx );
+    void on_mSymbolWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mOutlineWidthUnitComboBox_currentIndexChanged( int index );
+    void on_mSymbolHeightUnitComboBox_currentIndexChanged( int index );
+
+    void on_mDataDefinedPropertiesButton_clicked();
 };
 
 #endif // QGSELLIPSESYMBOLLAYERV2WIDGET_H

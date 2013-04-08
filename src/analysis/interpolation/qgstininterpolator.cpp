@@ -23,7 +23,6 @@
 #include "Point3D.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayer.h"
 #include <QProgressDialog>
 

@@ -23,6 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import shutil
 import os, sys
 import inspect
 from PyQt4.QtCore import *
@@ -31,14 +32,11 @@ from qgis.core import *
 from sextante.core.Sextante import Sextante
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
-
 from sextante.gui.SextanteToolbox import SextanteToolbox
 from sextante.gui.HistoryDialog import HistoryDialog
 from sextante.gui.ConfigDialog import ConfigDialog
 from sextante.gui.ResultsDialog import ResultsDialog
-
 from sextante.modeler.ModelerDialog import ModelerDialog
-
 import sextante.resources_rc
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
@@ -100,13 +98,7 @@ class SextantePlugin:
         #delete temporary output files
         folder = SextanteUtils.tempFolder()
         if QDir(folder).exists():
-            for f in os.listdir(folder):
-                path = os.path.join(folder, f)
-                try:
-                    os.unlink(path)
-                except:
-                    #leave files that could not be deleted
-                    pass
+            shutil.rmtree(folder, True)
 
     def openToolbox(self):
         if self.toolbox.isVisible():

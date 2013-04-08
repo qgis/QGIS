@@ -17,16 +17,17 @@
 #ifndef QGSCOMPOSERITEM_H
 #define QGSCOMPOSERITEM_H
 
-#include "qgscomposition.h"
+#include "qgscomposeritemcommand.h"
+#include "qgscomposereffect.h"
+#include "qgsmaprenderer.h" // for blend mode functions & enums
 #include <QGraphicsRectItem>
 #include <QObject>
 
+class QgsComposition;
 class QWidget;
 class QDomDocument;
 class QDomElement;
 class QGraphicsLineItem;
-
-class QqsComposition;
 
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
@@ -196,6 +197,17 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     void setBackgroundEnabled( bool drawBackground ) {mBackground = drawBackground;}
 
+    /** Returns the item's composition blending mode */
+    QgsMapRenderer::BlendMode blendMode() const {return mBlendMode;}
+
+    /** Sets the item's composition blending mode*/
+    void setBlendMode( QgsMapRenderer::BlendMode blendMode );
+
+    /** Returns the item's transparency */
+    int transparency() const {return mTransparency;}
+    /** Sets the item's transparency */
+    void setTransparency( int transparency );
+
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
@@ -261,15 +273,18 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }
 
-    /**Get item identification name
+    /**Get item's id (which is not necessarly unique)
       @note this method was added in version 1.7*/
     QString id() const { return mId; }
 
-    /**Set item identification name
-      @note this method was added in version 1.7
-                     This method was moved from qgscomposerlabel so that every object can have a
-                      id (NathanW)*/
-    void setId( const QString& id ) { mId = id; }
+    /**Set item's id (which is not necessarly unique)
+      @note this method was added in version 1.7*/
+    virtual void setId( const QString& id );
+
+    /**Get item identification name
+      @note this method was added in version 2.0
+      @note there is not setter since one can't manually set the id*/
+    QString uuid() const { return mUuid; }
 
   public slots:
     virtual void setRotation( double r );
@@ -295,7 +310,6 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**True if item background needs to be painted*/
     bool mBackground;
 
-
     /**True if item position  and size cannot be changed with mouse move
     @note: this member was added in version 1.2*/
     bool mItemPositionLocked;
@@ -305,6 +319,14 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Item rotation in degrees, clockwise*/
     double mRotation;
+
+    /**Composition blend mode for item*/
+    QgsMapRenderer::BlendMode mBlendMode;
+
+    QgsComposerEffect *mEffect;
+
+    /**Item transparency*/
+    int mTransparency;
 
     /**The item's position mode
     @note: this member was added in version 2.0*/
@@ -392,8 +414,10 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Emitted if the rectangle changes*/
     void sizeChanged();
   private:
-    // Label id (unique within the same composition)
+    // id (not unique)
     QString mId;
+    // name (unique)
+    QString mUuid;
 
     void init( bool manageZValue );
 };

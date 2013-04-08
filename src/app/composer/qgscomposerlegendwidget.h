@@ -20,8 +20,21 @@
 
 #include "ui_qgscomposerlegendwidgetbase.h"
 #include <QWidget>
+#include <QItemDelegate>
 
 class QgsComposerLegend;
+
+class QgsComposerLegendWidgetStyleDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerLegendWidgetStyleDelegate( QObject *parent = 0 );
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+};
 
 /** \ingroup MapComposer
  * A widget for setting properties relating to a composer legend.

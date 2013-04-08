@@ -73,25 +73,29 @@ class CORE_EXPORT QgsFeatureRequest
 
     //! construct a default request: for all features get attributes and geometries
     QgsFeatureRequest();
+    //! construct a request with feature ID filter
+    explicit QgsFeatureRequest( QgsFeatureId fid );
+    //! construct a request with rectangle filter
+    explicit QgsFeatureRequest( const QgsRectangle& rect );
 
     FilterType filterType() const { return mFilter; }
 
     //! Set rectangle from which features will be taken. Empty rectangle removes the filter.
     //!
-    QgsFeatureRequest& setFilterRect( const QgsRectangle& rect ) { mFilter = FilterRect; mFilterRect = rect; return *this; }
+    QgsFeatureRequest& setFilterRect( const QgsRectangle& rect );
     const QgsRectangle& filterRect() const { return mFilterRect; }
 
     //! Set feature ID that should be fetched.
-    QgsFeatureRequest& setFilterFid( QgsFeatureId fid ) { mFilter = FilterFid; mFilterFid = fid; return *this; }
+    QgsFeatureRequest& setFilterFid( QgsFeatureId fid );
     const QgsFeatureId& filterFid() const { return mFilterFid; }
 
     //! Set flags that affect how features will be fetched
-    QgsFeatureRequest& setFlags( Flags flags ) { mFlags = flags; return *this; }
+    QgsFeatureRequest& setFlags( Flags flags );
     const Flags& flags() const { return mFlags; }
 
     //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
     //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
-    QgsFeatureRequest& setSubsetOfAttributes( const QgsAttributeList& attrs ) { mFlags |= SubsetOfAttributes; mAttrs = attrs; return *this; }
+    QgsFeatureRequest& setSubsetOfAttributes( const QgsAttributeList& attrs );
     const QgsAttributeList& subsetOfAttributes() const { return mAttrs; }
 
     //! Set a subset of attributes by names that will be fetched

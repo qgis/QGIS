@@ -34,8 +34,8 @@ class QgsAttributesList : public QTableWidget
 
   protected:
     // virtual void dragMoveEvent( QDragMoveEvent *event );
-    //QMimeData *mimeData( const QList<QTableWidgetItem *> items ) const;
-    //Qt::DropActions supportedDropActions() const;
+    // QMimeData *mimeData( const QList<QTableWidgetItem *> items ) const;
+    // Qt::DropActions supportedDropActions() const;
 };
 
 class QgsAttributesTree : public QTreeWidget
@@ -130,6 +130,8 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     QMap<int, QPair<QString, QString> > mCheckedStates;
     QMap<int, QgsVectorLayer::EditType> mEditTypeMap;
     QMap<int, QPushButton*> mButtonMap;
+    QMap<int, QString> mDateFormat;
+    QMap<int, QSize> mWidgetSize;
 
     enum attrColumns
     {

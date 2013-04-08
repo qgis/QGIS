@@ -26,8 +26,14 @@ SET_TARGET_PROPERTIES(qgisgrass PROPERTIES
   FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
   MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
   MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-  MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgisgrass
+  MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis2_grass
   COMPILE_FLAGS "\"-DGRASS_LIB_EXPORT=${DLLEXPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\"" )
+
+IF (APPLE)
+  SET_TARGET_PROPERTIES(qgisgrass PROPERTIES
+    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
+    )
+ENDIF (APPLE)
 
 #generate unversioned libs for android
 IF (NOT ANDROID)
@@ -53,6 +59,11 @@ ENDIF (APPLE)
 #
 # Fake GRASS gis library
 #
+
+# only process functions if qgsgrassgislibfunctions.cpp/h not present
+# or gisdefs.h is newer
+
+IF("${GRASS_INCLUDE_DIR}/grass/gisdefs.h" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.cpp" OR "${GRASS_INCLUDE_DIR}/grass/gisdefs.h" IS_NEWER_THAN "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.h")
 
 # Generate function mapping for functions used in original version
 # Create list of functions to be mapped
@@ -490,6 +501,8 @@ LIST ( APPEND PROTOTYPES "}\n" )
 
 FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.cpp" ${FUNCTIONS_MAP})
 FILE(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qgsgrassgislibfunctions.h" ${PROTOTYPES})
+
+ENDIF() # process functions
 
 # Build fake library
 IF(MSVC)

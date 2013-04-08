@@ -241,16 +241,16 @@ void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentEl
   parentElem.appendChild( rasterRendererElem );
 }
 
-void QgsRasterResampleFilter::readXML( const QDomElement& rendererElem )
+void QgsRasterResampleFilter::readXML( const QDomElement& filterElem )
 {
-  if ( rendererElem.isNull() )
+  if ( filterElem.isNull() )
   {
     return;
   }
 
-  mMaxOversampling = rendererElem.attribute( "maxOversampling", "2.0" ).toDouble();
+  mMaxOversampling = filterElem.attribute( "maxOversampling", "2.0" ).toDouble();
 
-  QString zoomedInResamplerType = rendererElem.attribute( "zoomedInResampler" );
+  QString zoomedInResamplerType = filterElem.attribute( "zoomedInResampler" );
   if ( zoomedInResamplerType == "bilinear" )
   {
     mZoomedInResampler = new QgsBilinearRasterResampler();
@@ -260,7 +260,7 @@ void QgsRasterResampleFilter::readXML( const QDomElement& rendererElem )
     mZoomedInResampler = new QgsCubicRasterResampler();
   }
 
-  QString zoomedOutResamplerType = rendererElem.attribute( "zoomedOutResampler" );
+  QString zoomedOutResamplerType = filterElem.attribute( "zoomedOutResampler" );
   if ( zoomedOutResamplerType == "bilinear" )
   {
     mZoomedOutResampler = new QgsBilinearRasterResampler();

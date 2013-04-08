@@ -29,6 +29,7 @@ from utilities import (getQgisTestApp,
                        )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+
 class TestQgsMemoryProvider(TestCase):
 
     def testPointCtor(self):
@@ -56,7 +57,7 @@ class TestQgsMemoryProvider(TestCase):
         assert res, "Failed to add attributes"
 
         myMessage = ('Expected: %s\nGot: %s\n' %
-                      (3, len(provider.fields())))
+                     (3, len(provider.fields())))
 
         assert len(provider.fields()) == 3, myMessage
 
@@ -76,17 +77,17 @@ class TestQgsMemoryProvider(TestCase):
         for f in provider.getFeatures(QgsFeatureRequest()):
             attrs = f.attributes()
             myMessage = ('Expected: %s\nGot: %s\n' %
-                          ("Johny", str(attrs[0].toString())))
+                         ("Johny", str(attrs[0].toString())))
 
             assert str(attrs[0].toString()) == "Johny", myMessage
 
             myMessage = ('Expected: %s\nGot: %s\n' %
-                          (20, attrs[1].toInt()[0]))
+                         (20, attrs[1].toInt()[0]))
 
             assert attrs[1].toInt()[0] == 20, myMessage
 
             myMessage = ('Expected: %s\nGot: %s\n' %
-                          (0.3, attrs[2].toFloat()[0]))
+                         (0.3, attrs[2].toFloat()[0]))
 
             assert (attrs[0].toFloat()[0] - 0.3) < 0.0000001, myMessage
 
@@ -96,6 +97,32 @@ class TestQgsMemoryProvider(TestCase):
                         ("POINT(10.0 10.0)", str(geom.exportToWkt())))
 
             assert str(geom.exportToWkt()) == "POINT(10.0 10.0)", myMessage
+
+    def testGetFields(self):
+        layer = QgsVectorLayer("Point", "test", "memory")
+        provider = layer.dataProvider()
+
+        provider.addAttributes([QgsField("name", QVariant.String,),
+                                      QgsField("age",  QVariant.Int),
+                                      QgsField("size", QVariant.Double)])
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                     (3, len(provider.fields())))
+
+        assert len(provider.fields()) == 3, myMessage
+
+        ft = QgsFeature()
+        ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10,10)))
+        ft.setAttributes([QVariant("Johny"),
+                          QVariant(20),
+                          QVariant(0.3)])
+        provider.addFeatures([ft])
+
+        for f in provider.getFeatures(QgsFeatureRequest()):
+            myMessage = ('Expected: %s\nGot: %s\n' %
+                         ("Johny", str(f['name'].toString())))
+
+            self.assertEqual(str(f["name"].toString()), "Johny", myMessage)
+
 
     def testFromUri(self):
         """Test we can construct the mem provider from a uri"""

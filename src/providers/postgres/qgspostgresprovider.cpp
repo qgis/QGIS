@@ -168,6 +168,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   << QgsVectorDataProvider::NativeType( tr( "Text, fixed length (char)" ), "char", QVariant::String, 1, 255 )
   << QgsVectorDataProvider::NativeType( tr( "Text, limited variable length (varchar)" ), "varchar", QVariant::String, 1, 255 )
   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String )
+
+  // date type
+  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date )
   ;
 
   QString key;
@@ -708,6 +711,11 @@ bool QgsPostgresProvider::loadFields()
           fieldSize = -1;
         }
       }
+      else if ( fieldTypeName == "date" )
+      {
+        fieldType = QVariant::Date;
+        fieldSize = -1;
+      }
       else if ( fieldTypeName == "text" ||
                 fieldTypeName == "bpchar" ||
                 fieldTypeName == "bool" ||
@@ -1027,21 +1035,14 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
           if ( idx >= 0 )
           {
-            if ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong )
+            if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
             {
-              if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
-              {
-                mPrimaryKeyType = pktInt;
-                mPrimaryKeyAttrs << idx;
-              }
-              else
-              {
-                QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
-              }
+              mPrimaryKeyType = ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong ) ? pktInt : pktFidMap;
+              mPrimaryKeyAttrs << idx;
             }
             else
             {
-              QgsMessageLog::logMessage( tr( "Type '%1' of primary key field '%2' for view invalid." ).arg( mAttributeFields[idx].typeName() ).arg( primaryKey ), tr( "PostGIS" ) );
+              QgsMessageLog::logMessage( tr( "Primary key field '%1' for view not unique." ).arg( primaryKey ), tr( "PostGIS" ) );
             }
           }
           else
@@ -2775,6 +2776,11 @@ bool QgsPostgresProvider::convertField( QgsField &field )
         fieldType = "numeric";
       }
       fieldPrec = 0;
+      break;
+
+    case QVariant::Date:
+      fieldType = "numeric";
+      fieldSize = -1;
       break;
 
     case QVariant::Double:

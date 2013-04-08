@@ -135,7 +135,14 @@ class ParameterMultipleInput(ParameterDataObject):
                         return unicode(layer.source())
                 return s
 
-
+    def getFileFilter(self):
+        if self.datatype == ParameterMultipleInput.TYPE_RASTER:
+            exts = QGisLayers.getSupportedOutputRasterLayerExtensions()
+        else:
+            exts = QGisLayers.getSupportedOutputVectorLayerExtensions()
+        for i in range(len(exts)):
+            exts[i] = exts[i].upper() + " files(*." + exts[i].lower() + ")"
+        return ";;".join(exts)
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

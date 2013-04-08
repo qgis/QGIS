@@ -38,13 +38,21 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
 
   public slots:
     void on_mFrameColorButton_clicked();
+    /** Set the frame color
+     * @note added in 1.9
+     */
+    void on_mFrameColorButton_colorChanged( const QColor& newFrameColor );
     void on_mBackgroundColorButton_clicked();
-    void on_mTransparencySlider_valueChanged( int value );
-    void on_mTransparencySpinBox_valueChanged( int value );
+    /** Set the background color
+     * @note added in 1.9
+     */
+    void on_mBackgroundColorButton_colorChanged( const QColor& newBackgroundColor );
+//    void on_mTransparencySlider_valueChanged( int value );
+//    void on_mTransparencySpinBox_valueChanged( int value );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mFrameGroupBox_toggled( bool state );
     void on_mBackgroundGroupBox_toggled( bool state );
-    void on_mItemIdLineEdit_textChanged( const QString& text );
+    void on_mItemIdLineEdit_editingFinished();
 
     //adjust coordinates in line edits
     void on_mXLineEdit_editingFinished() { changeItemPosition(); }
@@ -62,12 +70,15 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mLowerMiddleCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
     void on_mLowerRightCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
 
+    void on_mBlendModeCombo_currentIndexChanged( int index );
+    void on_mTransparencySlider_valueChanged( int value );
+
     void setValuesForGuiElements();
     void setValuesForGuiPositionElements();
 
   private:
     QgsComposerItemWidget();
-    void changeItemTransparency( int value );
+//    void changeItemTransparency( int value );
     void changeItemPosition();
 
     QgsComposerItem* mItem;

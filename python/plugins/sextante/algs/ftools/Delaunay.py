@@ -23,16 +23,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
 from sets import Set
-from sextante.algs.ftools import voronoi
+
+from PyQt4.QtCore import *
+
+from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.core.GeoAlgorithmExecutionException import \
-    GeoAlgorithmExecutionException
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.QGisLayers import QGisLayers
-from sextante.outputs.OutputVector import OutputVector
+
 from sextante.parameters.ParameterVector import ParameterVector
+
+from sextante.outputs.OutputVector import OutputVector
+
+from sextante.algs.ftools import voronoi
 
 
 class Delaunay(GeoAlgorithm):
@@ -57,9 +62,9 @@ class Delaunay(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
 
-        fields = [ QgsField("POINTA", QVariant.Double, "", 24, 15),
-                   QgsField("POINTB", QVariant.Double, "", 24, 15),
-                   QgsField("POINTC", QVariant.Double, "", 24, 15)
+        fields = [QgsField("POINTA", QVariant.Double, "", 24, 15),
+                  QgsField("POINTB", QVariant.Double, "", 24, 15),
+                  QgsField("POINTC", QVariant.Double, "", 24, 15)
                  ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
@@ -100,7 +105,8 @@ class Delaunay(GeoAlgorithm):
             attrs = []
             step = 0
             for index in indicies:
-                layer.featureAtId(ptDict[ids[index]], inFeat, True)
+                request = QgsFeatureRequest().setFilterFid(ptDict[ids[index]])
+                inFeat = layer.getFeatures(request).next()
                 geom = QgsGeometry(inFeat.geometry())
                 point = QgsPoint(geom.asPoint())
                 polygon.append(point)

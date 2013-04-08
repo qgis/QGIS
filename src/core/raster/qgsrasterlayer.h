@@ -43,6 +43,8 @@
 #include "qgsrastershaderfunction.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterresamplefilter.h"
+#include "qgsbrightnesscontrastfilter.h"
+#include "qgshuesaturationfilter.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterpipe.h"
 
@@ -361,6 +363,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**Set raster resample filter. Takes ownership of the resample filter object*/
     //void setResampleFilter( QgsRasterResampleFilter* resampleFilter );
     QgsRasterResampleFilter * resampleFilter() const { return mPipe.resampleFilter(); }
+
+    QgsBrightnessContrastFilter * brightnessFilter() const { return mPipe.brightnessFilter(); }
+    QgsHueSaturationFilter * hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 
     /** Get raster pipe */
     QgsRasterPipe * pipe() { return &mPipe; }

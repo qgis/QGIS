@@ -16,12 +16,14 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import traceback
 import copy
 import os.path
 import codecs
@@ -57,6 +59,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         newone = ModelerAlgorithm()
         newone.openModel(self.descriptionFile)
         newone.provider = self.provider
+        newone.deactivated = self.deactivated
         return newone
 
     def __init__(self):
@@ -111,7 +114,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
         self.descriptionFile = filename
         lines = codecs.open(filename, "r", encoding='utf-8')
-        line = lines.readline().strip("\n")
+        line = lines.readline().strip("\n").strip("\r")
         iAlg = 0
         try:
             while line != "":
@@ -121,7 +124,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     if param:
                         self.parameters.append(param)
                     else:
-                        raise WrongModelException("Error in line: " + line)
+                        raise WrongModelException("Error in parameter line: " + line)
                     line = lines.readline().strip("\n")
                     tokens = line.split(",")
                     self.paramPos.append(QtCore.QPointF(float(tokens[0]), float(tokens[1])))
@@ -138,25 +141,28 @@ class ModelerAlgorithm(GeoAlgorithm):
                     algOutputs={}
                     algLine = line[len("ALGORITHM:"):]
                     alg = ModelerUtils.getAlgorithm(algLine)
-                    if alg:
-                        posline = lines.readline().strip("\n")
+                    if alg is not None:
+                        posline = lines.readline().strip("\n").strip("\r")
                         tokens = posline.split(",")
                         self.algPos.append(QtCore.QPointF(float(tokens[0]), float(tokens[1])))
                         self.algs.append(alg)
-                        dependenceline = lines.readline().strip("\n")
+                        dependenceline = lines.readline().strip("\n").strip("\r")
                         dependencies = [];
                         if dependenceline != str(None):
                             for index in dependenceline.split(","):
-                                dependencies.append(int(index))
+                                try:
+                                    dependencies.append(int(index))
+                                except:
+                                    pass #a quick fix fwhile I figure out how to solve problems when parsing this
                         for param in alg.parameters:
-                            line = lines.readline().strip("\n")
+                            line = lines.readline().strip("\n").strip("\r")
                             if line==str(None):
                                 algParams[param.name] = None
                             else:
                                 tokens = line.split("|")
                                 algParams[param.name] = AlgorithmAndParameter(int(tokens[0]), tokens[1])
                         for out in alg.outputs:
-                            line = lines.readline().strip("\n")
+                            line = lines.readline().strip("\n").strip("\r")
                             if str(None)!=line:
                                 algOutputs[out.name] = line
                                 #we add the output to the algorithm, with a name indicating where it comes from
@@ -172,10 +178,13 @@ class ModelerAlgorithm(GeoAlgorithm):
                         self.dependencies.append(dependencies)
                         iAlg += 1
                     else:
-                        raise WrongModelException("Error in line: " + line)
-                line = lines.readline().strip("\n")
-        except:
-            raise WrongModelException("Error in line: " + line)
+                        raise WrongModelException("Error in algorithm name: " + algLine)
+                line = lines.readline().strip("\n").strip("\r")
+        except Exception, e:
+            if isinstance (e, WrongModelException):
+                raise e
+            else:
+                raise WrongModelException("Error in model definition line:"  + line.strip() + " : " + traceback.format_exc())
 
     def addParameter(self, param):
         self.parameters.append(param)
@@ -204,6 +213,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
 
     def removeAlgorithm(self, index):
+        '''returns true if the algorithm could be removed, false if others depend on it and could not be removed'''
         if self.hasDependencies(self.algs[index], index):
             return False
         for out in self.algs[index].outputs:
@@ -233,6 +243,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         return True
 
     def removeParameter(self, index):
+        '''returns true if the parameter could be removed, false if others depend on it and could not be removed'''
         if self.hasDependencies(self.parameters[index], index):
             return False
         del self.parameters[index]
@@ -297,8 +308,8 @@ class ModelerAlgorithm(GeoAlgorithm):
             index += 1
             if aap is not None:
                 if aap.alg != AlgorithmAndParameter.PARENT_MODEL_ALGORITHM and aap.alg not in algs:
-                    algs.append(index)
-                    dep = self.getDependsOnAlgorithms(index)
+                    algs.append(aap.alg)
+                    dep = self.getDependsOnAlgorithms(aap.alg)
                     for alg in dep:
                         if alg not in algs:
                             algs.append(alg)
@@ -496,7 +507,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     canExecute = True
                     required = self.getDependsOnAlgorithms(iAlg)
                     for requiredAlg in required:
-                        if requiredAlg not in executed:
+                        if requiredAlg != iAlg and requiredAlg not in executed:
                             canExecute = False
                             break
                     if canExecute:
@@ -523,7 +534,8 @@ class ModelerAlgorithm(GeoAlgorithm):
                             progress.setDebugInfo("Failed")
                             raise GeoAlgorithmExecutionException("Error executing algorithm " + str(iAlg) + "\n" + e.msg)
                 else:
-                    progress.setDebugInfo("Algorithm %s deactivated (or already executed)" % alg.name)
+                    pass
+                    #progress.setDebugInfo("Algorithm %s deactivated (or already executed)" % alg.name)
                 iAlg += 1
         progress.setDebugInfo("Model processed ok. Executed %i algorithms total" % iAlg)
 
@@ -614,7 +626,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             return None
 
     def commandLineName(self):
-        return "modeler:" + os.path.basename(self.descriptionFile)[:-5].lower()
+        return "modeler:" + os.path.basename(self.descriptionFile)[:-6].lower()
 
     def setModelerView(self, dialog):
         self.modelerdialog = dialog

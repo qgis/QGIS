@@ -79,6 +79,16 @@ QgsVectorLayer::ValueRelationData QgsAttributeTypeDialog::valueRelationData()
   return mValueRelationData;
 }
 
+QString QgsAttributeTypeDialog::dateFormat()
+{
+  return mDateFormat;
+}
+
+QSize QgsAttributeTypeDialog::widgetSize()
+{
+  return mWidgetSize;
+}
+
 QMap<QString, QVariant> &QgsAttributeTypeDialog::valueMap()
 {
   return mValueMap;
@@ -89,7 +99,7 @@ bool QgsAttributeTypeDialog::fieldEditable()
   return isFieldEditableCheckBox->isChecked();
 }
 
-void QgsAttributeTypeDialog::setFieldEditable(bool editable)
+void QgsAttributeTypeDialog::setFieldEditable( bool editable )
 {
   isFieldEditableCheckBox->setChecked( editable );
 }
@@ -320,6 +330,18 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
     case QgsVectorLayer::UuidGenerator:
       setPage( 13 );
       break;
+
+    case QgsVectorLayer::Photo:
+      setPage( 14 );
+      break;
+
+    case QgsVectorLayer::WebView:
+      setPage( 15 );
+      break;
+
+    case QgsVectorLayer::Color:
+      setPage( 16 );
+      break;
   }
 }
 
@@ -336,6 +358,16 @@ void QgsAttributeTypeDialog::setRange( QgsVectorLayer::RangeData range )
 void QgsAttributeTypeDialog::setValueRelation( QgsVectorLayer::ValueRelationData valueRelation )
 {
   mValueRelationData = valueRelation;
+}
+
+void QgsAttributeTypeDialog::setDateFormat( QString dateFormat )
+{
+  mDateFormat = dateFormat;
+}
+
+void QgsAttributeTypeDialog::setWidgetSize( QSize widgetSize )
+{
+  mWidgetSize = widgetSize;
 }
 
 void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editType )
@@ -446,6 +478,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
         maximumDoubleSpinBox->setValue( mRangeData.mMax.toDouble() );
         stepDoubleSpinBox->setValue( mRangeData.mStep.toDouble() );
       }
+
       if ( editType == QgsVectorLayer::EditRange )
       {
         rangeWidget->setCurrentIndex( 0 );
@@ -475,6 +508,15 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
       valueRelationFilterExpression->setText( mValueRelationData.mFilterExpression );
       break;
 
+    case QgsVectorLayer::Calendar:
+      leDateFormat->setText( mDateFormat );
+      break;
+
+    case QgsVectorLayer::Photo:
+      sbWidgetWidth->setValue( mWidgetSize.width() );
+      sbWidgetHeight->setValue( mWidgetSize.height() );
+      break;
+
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::UniqueValues:
     case QgsVectorLayer::Classification:
@@ -484,12 +526,12 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::TextEdit:
-    case QgsVectorLayer::Calendar:
     case QgsVectorLayer::UuidGenerator:
+    case QgsVectorLayer::WebView:
+    case QgsVectorLayer::Color:
       break;
   }
 }
-
 
 void QgsAttributeTypeDialog::setPage( int index )
 {
@@ -541,6 +583,7 @@ void QgsAttributeTypeDialog::setStackPage( int index )
     }
 
   }
+
   stackedWidget->currentWidget()->setDisabled( okDisabled );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( okDisabled );
 }
@@ -639,6 +682,7 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 11:
       mEditType = QgsVectorLayer::Calendar;
+      mDateFormat = leDateFormat->text();
       break;
     case 12:
       mEditType = QgsVectorLayer::ValueRelation;
@@ -652,6 +696,16 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 13:
       mEditType = QgsVectorLayer::UuidGenerator;
+      break;
+    case 14:
+      mEditType = QgsVectorLayer::Photo;
+      mWidgetSize = QSize( sbWidgetWidth->value(), sbWidgetHeight->value() );
+      break;
+    case 15:
+      mEditType = QgsVectorLayer::WebView;
+      break;
+    case 16:
+      mEditType = QgsVectorLayer::Color;
       break;
   }
 

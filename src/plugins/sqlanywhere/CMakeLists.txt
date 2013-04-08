@@ -50,8 +50,6 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
      ../../core
      ../../core/raster
-     ../../core/renderer
-     ../../core/symbology
      ../../gui
      ../../app
      ..

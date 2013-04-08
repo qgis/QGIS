@@ -63,7 +63,6 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.addOutput(OutputNumber(self.POINT_COUNT, "Number of points"))
         self.addOutput(OutputNumber(self.Z_SCORE, "Z-Score"))
 
-
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
@@ -83,7 +82,8 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for feat in features:
             neighbourID = spatialIndex.nearestNeighbor(feat.geometry().asPoint(), 2)[1]
-            layer.featureAtId(neighbourID, neighbour, True)
+            request = QgsFeatureRequest().setFilterFid(neighbourID)
+            neighbour = layer.getFeatures(request).next()
             sumDist += distance.measureLine(neighbour.geometry().asPoint(), feat.geometry().asPoint())
 
             current += 1

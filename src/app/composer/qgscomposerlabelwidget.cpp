@@ -18,6 +18,7 @@
 #include "qgscomposerlabelwidget.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
 
 #include <QColorDialog>
@@ -223,16 +224,6 @@ void QgsComposerLabelWidget::on_mMiddleRadioButton_clicked()
     mComposerLabel->beginCommand( tr( "Label alignment changed" ) );
     mComposerLabel->setVAlign( Qt::AlignVCenter );
     mComposerLabel->update();
-    mComposerLabel->endCommand();
-  }
-}
-
-void QgsComposerLabelWidget::on_mLabelIdLineEdit_textChanged( const QString& text )
-{
-  if ( mComposerLabel )
-  {
-    mComposerLabel->beginCommand( tr( "Label id changed" ), QgsComposerMergeCommand::ComposerLabelSetId );
-    mComposerLabel->setId( text );
     mComposerLabel->endCommand();
   }
 }

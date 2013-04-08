@@ -183,6 +183,21 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
   return wkb;
 }
 
+void QgsFeatureRendererV2::setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod )
+{
+  if ( symbol )
+  {
+    if ( symbol->type() == QgsSymbolV2::Marker )
+    {
+      QgsMarkerSymbolV2* ms = static_cast<QgsMarkerSymbolV2*>( symbol );
+      if ( ms )
+      {
+        ms->setScaleMethod(( QgsSymbolV2::ScaleMethod )scaleMethod );
+      }
+    }
+  }
+}
+
 
 QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
     : mType( type ), mUsingSymbolLevels( false ),

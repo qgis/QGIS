@@ -137,12 +137,7 @@ class QgsWMSServer
     void drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxTextWidth, double& maxSymbolWidth, double& currentY, const QFont& layerFont,
                               const QColor& layerFontColor, const QFont& itemFont, const QColor&  itemFontColor, double boxSpace, double layerSpace,
                               double layerTitleSpace, double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor, double dpi ) const;
-    /**Draws a (old generation) symbol. Optionally, maxHeight is adapted (e.g. for large point markers) */
-    void drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight,
-                           double layerOpacity, double dpi, double yDownShift ) const;
-    void drawPointSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity, double dpi ) const;
-    void drawLineSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double layerOpacity, double yDownShift ) const;
-    void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double layerOpacity, double yDownShift ) const;
+    /**Draws a symbol. Optionally, maxHeight is adapted (e.g. for large point markers) */
     void drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double dpi, double yDownShift ) const;
     void drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double yDownShift ) const;
 
@@ -160,6 +155,8 @@ class QgsWMSServer
     /**Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
     bool testFilterStringSafety( const QString& filter ) const;
+    /**Helper function for filter safety test. Groups stringlist to merge entries starting/ending with quotes*/
+    static void groupStringList( QStringList& list, const QString& groupString );
 
     /**Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
       @return list with layer ids where selections have been created*/

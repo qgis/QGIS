@@ -38,6 +38,19 @@ bool QgsPythonRunner::run( QString command, QString messageOnError )
   }
 }
 
+bool QgsPythonRunner::eval( QString command, QString& result )
+{
+  if ( mInstance )
+  {
+    return mInstance->evalCommand( command, result );
+  }
+  else
+  {
+    QgsDebugMsg( "Unable to run Python command: runner not available!" );
+    return false;
+  }
+}
+
 void QgsPythonRunner::setInstance( QgsPythonRunner* runner )
 {
   delete mInstance;

@@ -56,10 +56,9 @@ class PolygonsToLines(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      QGis.WKBLineString, layer.crs())
 
-        inFeat = QgsFeature()
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         outGeom = QgsGeometry()
@@ -67,11 +66,11 @@ class PolygonsToLines(GeoAlgorithm):
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:
-            inGeom = inFeat.geometry()
-            atMap = inFeat.attributes()
+        for f in features:
+            inGeom = f.geometry()
+            attrs = f.attributes()
             lineList = self.extractAsLine(inGeom)
-            outFeat.setAttributes(atMap)
+            outFeat.setAttributes(attrs)
             for h in lineList:
                 outFeat.setGeometry(outGeom.fromPolyline(h))
                 writer.addFeature(outFeat)

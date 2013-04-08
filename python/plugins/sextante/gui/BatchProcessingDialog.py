@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.gui.SextantePostprocessing import SextantePostprocessing
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -27,7 +25,9 @@ __revision__ = '$Format:%H$'
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from sextante.core.QGisLayers import QGisLayers
+from sextante.gui.SextantePostprocessing import SextantePostprocessing
+from sextante.parameters.ParameterFile import ParameterFile
+from sextante.gui.FileSelectionPanel import FileSelectionPanel
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterVector import ParameterVector
@@ -95,7 +95,6 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             widgetValue = widget.currentIndex()
             for row in range(1, self.table.rowCount()):
                 self.table.cellWidget(row, col).setCurrentIndex(widgetValue)
-
         elif isinstance(widget, ExtentSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
@@ -103,17 +102,23 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     self.table.cellWidget(row, col).text.setText(widgetValue)
                 else:
                     self.table.cellWidget(row, col).text.setText("")
-
         elif isinstance(widget, CrsSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.table.rowCount()):
-                self.table.cellWidget(row, col).epsg = widgetValue
-                self.table.cellWidget(row, col).setText()
-
+                self.table.cellWidget(row, col).setAuthid(widgetValue)
+        elif isinstance(widget, FileSelectionPanel):
+            widgetValue = widget.getValue()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).setText(widgetValue)
         elif isinstance(widget, QtGui.QLineEdit):
             widgetValue = widget.text()
             for row in range(1, self.table.rowCount()):
                 self.table.cellWidget(row, col).setText(widgetValue)
+        elif isinstance(widget, BatchInputSelectionPanel):
+            widgetValue = widget.getText()
+            for row in range(1, self.table.rowCount()):
+                self.table.cellWidget(row, col).setText(widgetValue)
+
         else:
             pass
 
@@ -149,7 +154,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     continue
                 widget = self.table.cellWidget(row, col)
                 if not self.setParameterValueFromWidget(param, widget, alg):
-                    QMessageBox.critical(self.dialog, "Unable to execute batch process", "Wrong or missing parameter values")
+                    self.progressLabel.setText("<b>Missing parameter value: " + param.description + " (row " + str(row + 1) + ")</b>")
+                    #QMessageBox.critical(self, "Unable to execute batch process", "Wrong or missing parameter values")
                     self.algs = None
                     return
                 col+=1
@@ -162,7 +168,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
                     out.value = text
                     col+=1
                 else:
-                    QMessageBox.critical(self, "Unable to execute batch process", "Wrong or missing parameter values")
+                    self.progressLabel.setText("<b>Wrong or missing parameter value: " + out.description + " (row " + str(row + 1) + ")</b>")
+                    #QMessageBox.critical(self, "Unable to execute batch process", "Wrong or missing parameter values")
                     self.algs = None
                     return
             self.algs.append(alg)
@@ -201,29 +208,35 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.algs = None
         if self.algEx:
             self.algEx.terminate()
-        self.close()
+        self.table.setEnabled(True)
+        #self.close()
 
     @pyqtSlot()
     def finish(self, i):
-        if self.load[i]:
-            SextantePostprocessing.handleAlgorithmResults(self.algs[i], self, False)
-        i += 1
-        #self.progress.setValue(i)
-        if len(self.algs) == i:
-            self.finishAll()
-            self.algEx = None
-        else:
-            self.nextAlg(i)
+        if not self.stop:
+            if self.load[i]:
+                SextantePostprocessing.handleAlgorithmResults(self.algs[i], self, False)
+            i += 1
+            #self.progress.setValue(i)
+            if len(self.algs) == i:
+                self.finishAll()
+                self.algEx = None
+            else:
+                self.nextAlg(i)
 
-    @pyqtSlot()
+    @pyqtSlot(str)
     def error(self, msg):
         QApplication.restoreOverrideCursor()
         QMessageBox.critical(self, "Error", msg)
         SextanteLog.addToLog(SextanteLog.LOG_ERROR, msg)
-        self.close()
+        if self.algEx:
+            self.algEx.terminate()
+        self.table.setEnabled(True)
+        #self.close()
 
 
     def nextAlg(self, i):
+        self.stop = False
         self.setBaseText("Processing algorithm " + str(i) + "/" + str(len(self.algs)) + "...")
         self.algEx = AlgorithmExecutor(self.algs[i]);
         self.algEx.percentageChanged.connect(self.setPercentage)
@@ -260,11 +273,14 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         QApplication.restoreOverrideCursor()
         self.table.setEnabled(True)
         QMessageBox.information(self, "Batch processing", "Batch processing successfully completed!")
-        self.close()
+        #self.close()
 
     def setParameterValueFromWidget(self, param, widget, alg = None):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput)):
-            return param.setValue(widget.getText())
+            value = widget.getText()
+            if unicode(value).strip() == "":
+                value = None
+            return param.setValue(value)
         elif isinstance(param, ParameterBoolean):
             return param.setValue(widget.currentIndex() == 0)
         elif isinstance(param, ParameterSelection):
@@ -275,7 +291,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             if alg != None:
                 widget.useNewAlg(alg)
             return param.setValue(widget.getValue())
-        elif isinstance(param, ParameterCrs):
+        elif isinstance(param, (ParameterCrs, ParameterFile)):
             return param.setValue(widget.getValue())
         else:
             return param.setValue(widget.text())
@@ -300,6 +316,8 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             item = ExtentSelectionPanel(self, self.alg, param.default)
         elif isinstance(param, ParameterCrs):
             item = CrsSelectionPanel(param.default)
+        elif isinstance(param, ParameterFile):
+            item = FileSelectionPanel(param.isFolder)
         else:
             item = QtGui.QLineEdit()
             try:

@@ -1698,6 +1698,14 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
     }
   }
 
+  // brightness filter
+  QgsBrightnessContrastFilter * brightnessFilter = new QgsBrightnessContrastFilter();
+  mPipe.set( brightnessFilter );
+
+  // hue/saturation filter
+  QgsHueSaturationFilter * hueSaturationFilter = new QgsHueSaturationFilter();
+  mPipe.set( hueSaturationFilter );
+
   //resampler (must be after renderer)
   QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
@@ -1770,6 +1778,8 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
   {
     return;
   }
+
+  mContrastEnhancementAlgorithm = theAlgorithm;
 
   QList<int> myBands;
   QList<QgsContrastEnhancement*> myEnhancements;
@@ -2284,6 +2294,28 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
     }
   }
 
+  //brightness
+  QgsBrightnessContrastFilter * brightnessFilter = new QgsBrightnessContrastFilter();
+  mPipe.set( brightnessFilter );
+
+  //brightness coefficient
+  QDomElement brightnessElem = layer_node.firstChildElement( "brightnesscontrast" );
+  if ( !brightnessElem.isNull() )
+  {
+    brightnessFilter->readXML( brightnessElem );
+  }
+
+  //hue/saturation
+  QgsHueSaturationFilter * hueSaturationFilter = new QgsHueSaturationFilter();
+  mPipe.set( hueSaturationFilter );
+
+  //saturation coefficient
+  QDomElement hueSaturationElem = layer_node.firstChildElement( "huesaturation" );
+  if ( !hueSaturationElem.isNull() )
+  {
+    hueSaturationFilter->readXML( hueSaturationElem );
+  }
+
   //resampler
   QgsRasterResampleFilter * resampleFilter = new QgsRasterResampleFilter();
   mPipe.set( resampleFilter );
@@ -2293,6 +2325,14 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   if ( !resampleElem.isNull() )
   {
     resampleFilter->readXML( resampleElem );
+  }
+
+  // get and set the blend mode if it exists
+  QDomNode blendModeNode = layer_node.namedItem( "blendMode" );
+  if ( !blendModeNode.isNull() )
+  {
+    QDomElement e = blendModeNode.toElement();
+    setBlendMode(( QgsMapRenderer::BlendMode ) e.text().toInt() );
   }
 
   return true;
@@ -2468,12 +2508,32 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
     renderer->writeXML( document, layerElem );
   }
 
+  QgsBrightnessContrastFilter *brightnessFilter = mPipe.brightnessFilter();
+  if ( brightnessFilter )
+  {
+    QDomElement layerElem = layer_node.toElement();
+    brightnessFilter->writeXML( document, layerElem );
+  }
+
+  QgsHueSaturationFilter *hueSaturationFilter = mPipe.hueSaturationFilter();
+  if ( hueSaturationFilter )
+  {
+    QDomElement layerElem = layer_node.toElement();
+    hueSaturationFilter->writeXML( document, layerElem );
+  }
+
   QgsRasterResampleFilter *resampleFilter = mPipe.resampleFilter();
   if ( resampleFilter )
   {
     QDomElement layerElem = layer_node.toElement();
     resampleFilter->writeXML( document, layerElem );
   }
+
+  // add blend mode node
+  QDomElement blendModeElement  = document.createElement( "blendMode" );
+  QDomText blendModeText = document.createTextNode( QString::number( blendMode() ) );
+  blendModeElement.appendChild( blendModeText );
+  layer_node.appendChild( blendModeElement );
 
   return true;
 } // bool QgsRasterLayer::writeSymbology

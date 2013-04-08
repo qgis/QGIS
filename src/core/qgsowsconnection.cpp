@@ -85,8 +85,7 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
     // check for a password, if none prompt to get it
     if ( password.isEmpty() )
     {
-      //password = QInputDialog::getText( this, tr( "WMS Password for %1" ).arg( theConnName ), "Password", QLineEdit::Password );
-      password = QInputDialog::getText( 0, tr( "WMS Password for %1" ).arg( mConnName ), "Password", QLineEdit::Password );
+      password = QInputDialog::getText( 0, tr( "WMS Password for %1" ).arg( mConnName ), tr( "Password" ), QLineEdit::Password );
     }
     mConnectionInfo = "username=" + username + ",password=" + password + ",url=" + mConnectionInfo;
     mUri.setParam( "username", username );

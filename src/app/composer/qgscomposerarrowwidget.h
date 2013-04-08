@@ -42,7 +42,7 @@ class QgsComposerArrowWidget: public QWidget, private Ui::QgsComposerArrowWidget
   private slots:
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mArrowHeadWidthSpinBox_valueChanged( double d );
-    void on_mArrowColorButton_clicked();
+    void on_mArrowColorButton_colorChanged( const QColor& newColor );
     void on_mDefaultMarkerRadioButton_toggled( bool toggled );
     void on_mNoMarkerRadioButton_toggled( bool toggled );
     void on_mSvgMarkerRadioButton_toggled( bool toggled );

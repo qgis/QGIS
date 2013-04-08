@@ -10,8 +10,10 @@
 %Include qgisinterface.sip
 %Include qgsannotationitem.sip
 %Include qgsattributeeditor.sip
+%Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
 %Include qgscolorbutton.sip
+%Include qgscolordialog.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
 %Include qgsdetaileditemdata.sip
@@ -53,7 +55,6 @@
 %Include qgsprojectbadlayerguihandler.sip
 %Include qgsprojectionselector.sip
 %Include qgsquerybuilder.sip
-%Include qgsquickprint.sip
 %Include qgsrasterformatsaveoptionswidget.sip
 %Include qgsrasterlayersaveasdialog.sip
 %Include qgsrasterpyramidsoptionswidget.sip
@@ -63,7 +64,6 @@
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
 
-%Include attributetable/qgsattributetablemodel.sip
 %Include attributetable/qgsattributetableview.sip
 
 %Include raster/qgsmultibandcolorrendererwidget.sip

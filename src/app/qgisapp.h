@@ -621,10 +621,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //#endif
     //! Add a list of database layers to the map
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
-    //#ifdef HAVE_SPATIALITE
     //! Add a SpatiaLite layer to the map
     void addSpatiaLiteLayer();
-    //#endif
     //#ifdef HAVE_MSSQL
     //! Add a MSSQL layer to the map
     void addMssqlLayer();
@@ -670,6 +668,22 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void localCumulativeCutStretch();
     /** Perform a full extent cumulative cut stretch */
     void fullCumulativeCutStretch();
+    /**Increase raster brightness
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void increaseBrightness();
+    /**Decrease raster brightness
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void decreaseBrightness();
+    /**Increase raster contrast
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void increaseContrast();
+    /**Decrease raster contrast
+     * Valid for non wms raster layers only.
+     * @note Added in QGIS 2.0 */
+    void decreaseContrast();
     //! plugin manager
     void showPluginManager();
     //! load python support if possible
@@ -765,10 +779,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create a new empty vector layer
     void newVectorLayer();
-#ifdef HAVE_SPATIALITE
     //! Create a new empty spatialite layer
     void newSpatialiteLayer();
-#endif
     //! Print the current map view frame
     void newPrintComposer();
     void showComposerManager();
@@ -867,6 +879,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! deselect features from all layers
     void deselectAll();
+
+    //! select features by expression
+    void selectByExpression();
 
     //! refresh map canvas
     void refreshMapCanvas();
@@ -1142,6 +1157,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**Do histogram stretch for singleband gray / multiband color rasters*/
     void histogramStretch( bool visibleAreaOnly = false, QgsRasterLayer::ContrastEnhancementLimits theLimits = QgsRasterLayer::ContrastEnhancementMinMax );
+
+    /**Apply raster brightness
+     * @note Added in QGIS 2.0 */
+    void adjustBrightnessContrast( int delta, bool updateBrightness = true );
 
     QgisAppStyleSheet* mStyleSheetBuilder;
 

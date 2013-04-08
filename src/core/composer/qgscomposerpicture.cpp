@@ -17,6 +17,7 @@
 
 #include "qgscomposerpicture.h"
 #include "qgscomposermap.h"
+#include "qgscomposition.h"
 #include "qgsproject.h"
 #include <QDomDocument>
 #include <QDomElement>

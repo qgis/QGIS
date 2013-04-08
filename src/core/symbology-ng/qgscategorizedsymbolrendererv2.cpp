@@ -680,3 +680,13 @@ void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
     ++i;
   }
 }
+
+void QgsCategorizedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  mScaleMethod = scaleMethod;
+  QgsCategoryList::const_iterator catIt = mCategories.constBegin();
+  for ( ; catIt != mCategories.constEnd(); ++catIt )
+  {
+    setScaleMethodToSymbol( catIt->symbol(), scaleMethod );
+  }
+}

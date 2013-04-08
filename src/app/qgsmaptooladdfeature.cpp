@@ -113,7 +113,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     //grass provider has its own mechanism of feature addition
     if ( provider->capabilities() & QgsVectorDataProvider::AddFeatures )
     {
-      QgsFeature* f = new QgsFeature( 0 );
+      QgsFeature* f = new QgsFeature( vlayer->pendingFields(), 0 );
 
       QgsGeometry *g = 0;
       if ( layerWKBType == QGis::WKBPoint || layerWKBType == QGis::WKBPoint25D )
@@ -198,7 +198,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
 
       //create QgsFeature with wkb representation
-      QgsFeature* f = new QgsFeature( 0 );
+      QgsFeature* f = new QgsFeature( vlayer->pendingFields(),  0 );
 
       QgsGeometry *g;
 
@@ -268,7 +268,16 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
         if ( !f->geometry()->asWkb() ) //avoid intersection might have removed the whole geometry
         {
-          QMessageBox::critical( 0, tr( "Error" ), tr( "The feature cannot be added because it contains an emtpy geometry" ) );
+          QString reason;
+          if ( avoidIntersectionsReturn != 2 )
+          {
+            reason = tr( "The feature cannot be added because it's geometry is empty" );
+          }
+          else
+          {
+            reason = tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" );
+          }
+          QMessageBox::critical( 0, tr( "Error" ), reason );
           delete f;
           stopCapturing();
           return;

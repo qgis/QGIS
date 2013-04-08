@@ -31,6 +31,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproject.h"
 
+#include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdialog.h"
@@ -302,12 +303,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // set the current theme
   cmbTheme->setItemText( cmbTheme->currentIndex(), settings.value( "/Themes" ).toString() );
 
-  // set the attribute table behaviour
+  // set the attribute table default filter
   cmbAttrTableBehaviour->clear();
-  cmbAttrTableBehaviour->addItem( tr( "Show all features" ) );
-  cmbAttrTableBehaviour->addItem( tr( "Show selected features" ) );
-  cmbAttrTableBehaviour->addItem( tr( "Show features in current canvas" ) );
-  cmbAttrTableBehaviour->setCurrentIndex( settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt() );
+  cmbAttrTableBehaviour->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
+  cmbAttrTableBehaviour->addItem( tr( "Show selected features" ), QgsAttributeTableFilterModel::ShowSelected );
+  cmbAttrTableBehaviour->addItem( tr( "Show features visible on map" ), QgsAttributeTableFilterModel::ShowVisible );
+  cmbAttrTableBehaviour->setCurrentIndex( cmbAttrTableBehaviour->findData( settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() ) );
+
 
   spinBoxAttrTableRowCache->setValue( settings.value( "/qgis/attributeTableRowCache", 10000 ).toInt() );
 
@@ -490,19 +492,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
+
+  mLiveColorDialogsChkBx->setChecked( settings.value( "/qgis/live_color_dialogs", false ).toBool() );
+
   //set the state of the checkboxes
   //Changed to default to true as of QGIS 1.7
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
-
-  //Changed to default to true as of QGIS 1.7
-  //TODO: remove hack when http://hub.qgis.org/issues/5170 is fixed
-#ifdef ANDROID
-  bool use_symbology_ng_default = false;
-#else
-  bool use_symbology_ng_default = true;
-#endif
-  chkUseSymbologyNG->setChecked( settings.value( "/qgis/use_symbology_ng", use_symbology_ng_default ).toBool() );
 
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
@@ -556,6 +552,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   int myBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
   int myAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
   pbnSelectionColor->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  pbnSelectionColor->setColorDialogTitle( tr( "Selection color" ) );
+  pbnSelectionColor->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
   //set the default color for canvas background
   myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
@@ -856,48 +854,6 @@ void QgsOptions::on_pbnTemplateFolderReset_pressed( )
   leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + QString( "project_templates" ) );
 }
 
-
-void QgsOptions::on_pbnSelectionColor_clicked()
-{
-#if QT_VERSION >= 0x040500
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), 0, tr( "Selection color" ), QColorDialog::ShowAlphaChannel );
-#else
-  QColor color = QColorDialog::getColor( pbnSelectionColor->color() );
-#endif
-
-  if ( color.isValid() )
-  {
-    pbnSelectionColor->setColor( color );
-  }
-}
-
-void QgsOptions::on_pbnCanvasColor_clicked()
-{
-  QColor color = QColorDialog::getColor( pbnCanvasColor->color(), this );
-  if ( color.isValid() )
-  {
-    pbnCanvasColor->setColor( color );
-  }
-}
-
-void QgsOptions::on_pbnMeasureColor_clicked()
-{
-  QColor color = QColorDialog::getColor( pbnMeasureColor->color(), this );
-  if ( color.isValid() )
-  {
-    pbnMeasureColor->setColor( color );
-  }
-}
-
-void QgsOptions::on_mLineColorToolButton_clicked()
-{
-  QColor color = QColorDialog::getColor( mLineColorToolButton->color(), this );
-  if ( color.isValid() )
-  {
-    mLineColorToolButton->setColor( color );
-  }
-}
-
 void QgsOptions::themeChanged( const QString &newThemeName )
 {
   // Slot to change the theme as user scrolls through the choices
@@ -1047,7 +1003,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
   settings.setValue( "/qgis/showTips", cbxShowTips->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
-  settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->currentIndex() );
+  settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->itemData( cmbAttrTableBehaviour->currentIndex() ) );
   settings.setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
   settings.setValue( "/qgis/promptForRasterSublayers", cmbPromptRasterSublayers->currentIndex() );
   settings.setValue( "/qgis/scanItemsInBrowser2",
@@ -1066,7 +1022,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
-  settings.setValue( "/qgis/use_symbology_ng", chkUseSymbologyNG->isChecked() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
@@ -1124,6 +1079,8 @@ void QgsOptions::saveOptions()
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
 
   settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
+
+  settings.setValue( "/qgis/live_color_dialogs", mLiveColorDialogsChkBx->isChecked() );
 
   // rasters settings
   settings.setValue( "/Raster/defaultRedBand", spnRed->value() );

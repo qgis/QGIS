@@ -34,13 +34,6 @@
 
 #include "qgsvectorlayer.h"
 
-// renderers
-#include "qgscontinuouscolorrenderer.h"
-#include "qgsgraduatedsymbolrenderer.h"
-#include "qgsrenderer.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgsuniquevaluerenderer.h"
-
 #include "qgsattributeaction.h"
 
 #include "qgis.h" //for globals
@@ -60,7 +53,7 @@
 #include "qgsrendercontext.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayercache.h"
+#include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayereditutils.h"
 #include "qgsvectorlayerfeatureiterator.h"
@@ -77,6 +70,7 @@
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsstylev2.h"
+#include "qgssymbologyv2conversion.h"
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>
@@ -94,20 +88,19 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mDataProvider( NULL )
     , mProviderKey( providerKey )
     , mReadOnly( false )
-    , mRenderer( 0 )
     , mRendererV2( NULL )
-    , mUsingRendererV2( false )
     , mLabel( 0 )
     , mLabelOn( false )
     , mVertexMarkerOnlyForSelection( false )
-    , mEditorLayout( GeneratedLayout )
-    , mCache( new QgsVectorLayerCache( this ) )
+    , mCache( new QgsGeometryCache( this ) )
     , mEditBuffer( 0 )
     , mJoinBuffer( 0 )
     , mDiagramRenderer( 0 )
     , mDiagramLayerSettings( 0 )
     , mValidExtent( false )
     , mSymbolFeatureCounted( false )
+    , mCurrentRendererContext( 0 )
+
 {
   mActions = new QgsAttributeAction( this );
 
@@ -125,20 +118,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
 
     updateFields();
 
-    QSettings settings;
-    //Changed to default to true as of QGIS 1.7
-    //TODO: remove hack when http://hub.qgis.org/issues/5170 is fixed
-#ifdef ANDROID
-    bool use_symbology_ng_default = false;
-#else
-    bool use_symbology_ng_default = true;
-#endif
-    if ( settings.value( "/qgis/use_symbology_ng", use_symbology_ng_default ).toBool() && hasGeometryType() )
-    {
-      // using symbology-ng!
-      setUsingRendererV2( true );
-    }
-
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
     bool defaultLoadedFlag = false;
@@ -151,15 +130,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     if ( !defaultLoadedFlag && hasGeometryType() )
     {
       // add single symbol renderer
-      if ( mUsingRendererV2 )
-      {
-        setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
-      }
-      else
-      {
-        QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( geometryType() );
-        setRenderer( renderer );
-      }
+      setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
     }
 
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
@@ -181,14 +152,10 @@ QgsVectorLayer::~QgsVectorLayer()
 {
   QgsDebugMsg( "entered." );
 
-  if ( !mLayerIterator.isClosed() )
-    mLayerIterator.close();
-
   emit layerDeleted();
 
   mValid = false;
 
-  delete mRenderer;
   delete mDataProvider;
   delete mEditBuffer;
   delete mJoinBuffer;
@@ -331,26 +298,19 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 
   QgsDebugMsg( "Starting draw of labels: " + id() );
 
-  if (( mRenderer || mRendererV2 ) && mLabelOn &&
+  if ( mRendererV2 && mLabelOn &&
       ( !mLabel->scaleBasedVisibility() ||
         ( mLabel->minScale() <= rendererContext.rendererScale() &&
           rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
   {
     QgsAttributeList attributes;
-    if ( mRenderer )
+    foreach ( QString attrName, mRendererV2->usedAttributes() )
     {
-      attributes = mRenderer->classificationAttributes();
+      int attrNum = fieldNameIndex( attrName );
+      attributes.append( attrNum );
     }
-    else if ( mRendererV2 )
-    {
-      foreach ( QString attrName, mRendererV2->usedAttributes() )
-      {
-        int attrNum = fieldNameIndex( attrName );
-        attributes.append( attrNum );
-      }
-      // make sure the renderer is ready for classification ("symbolForFeature")
-      mRendererV2->startRender( rendererContext, this );
-    }
+    // make sure the renderer is ready for classification ("symbolForFeature")
+    mRendererV2->startRender( rendererContext, this );
 
     // Add fields required for labels
     mLabel->addRequiredFields( attributes );
@@ -370,8 +330,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
       QgsFeature fet;
       while ( fit.nextFeature( fet ) )
       {
-        if (( mRenderer && mRenderer->willRenderFeature( &fet ) )
-            || ( mRendererV2 && mRendererV2->willRenderFeature( fet ) ) )
+        if ( mRendererV2->willRenderFeature( fet ) )
         {
           bool sel = mSelectedFeatureIds.contains( fet.id() );
           mLabel->renderLabel( rendererContext, fet, sel, 0 );
@@ -400,327 +359,13 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
 }
 
 
-unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRenderContext &renderContext )
-{
-  QPainter *p = renderContext.painter();
-  unsigned char *ptr = feature + 5;
-  unsigned int wkbType = *(( int* )( feature + 1 ) );
-  int nPoints = *(( int* )ptr );
-  ptr = feature + 9;
-
-  bool hasZValue = ( wkbType == QGis::WKBLineString25D );
-
-  QVector<double> x( nPoints );
-  QVector<double> y( nPoints );
-  QVector<double> z( nPoints, 0.0 );
-
-  // Extract the points from the WKB format into the x and y vectors.
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    x[i] = *(( double * ) ptr );
-    ptr += sizeof( double );
-    y[i] = *(( double * ) ptr );
-    ptr += sizeof( double );
-
-    if ( hasZValue ) // ignore Z value
-      ptr += sizeof( double );
-  }
-
-  // Transform the points into map coordinates (and reproject if
-  // necessary)
-
-  transformPoints( x, y, z, renderContext );
-
-  // Work around a +/- 32768 limitation on coordinates
-  // Look through the x and y coordinates and see if there are any
-  // that need trimming. If one is found, there's no need to look at
-  // the rest of them so end the loop at that point.
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    if ( qAbs( x.at( i ) ) > QgsClipper::MAX_X ||
-         qAbs( y.at( i ) ) > QgsClipper::MAX_Y )
-    {
-      QgsClipper::trimFeature( x, y, true ); // true = polyline
-      nPoints = x.size(); // trimming may change nPoints.
-      break;
-    }
-  }
-
-  // set up QPolygonF class with transformed points
-  QPolygonF pa( nPoints );
-  for ( int i = 0; i < nPoints; ++i )
-  {
-    pa[i].setX( x.at( i ) );
-    pa[i].setY( y.at( i ) );
-  }
-
-  // The default pen gives bevelled joins between segements of the
-  // polyline, which is good enough for the moment.
-  //preserve a copy of the pen before we start fiddling with it
-  QPen pen = p->pen(); // to be kept original
-
-  //
-  // experimental alpha transparency
-  // 255 = opaque
-  //
-  QPen myTransparentPen = p->pen(); // store current pen
-  QColor myColor = myTransparentPen.color();
-  //only set transparency from layer level if renderer does not provide
-  //transparency on class level
-  if ( !mRenderer->usesTransparency() )
-  {
-    myColor.setAlpha( mTransparencyLevel );
-  }
-  myTransparentPen.setColor( myColor );
-  p->setPen( myTransparentPen );
-  p->drawPolyline( pa );
-
-  // draw vertex markers if in editing mode, but only to the main canvas
-  if ( mEditBuffer && renderContext.drawEditingInformation() )
-  {
-
-    QVector<double>::const_iterator xIt;
-    QVector<double>::const_iterator yIt;
-    for ( xIt = x.begin(), yIt = y.begin(); xIt != x.end(); ++xIt, ++yIt )
-    {
-      drawVertexMarker( *xIt, *yIt, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
-    }
-  }
-
-  //restore the pen
-  p->setPen( pen );
-
-  return ptr;
-}
-
-unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderContext &renderContext )
-{
-  QPainter *p = renderContext.painter();
-  typedef QPair<QVector<double>, QVector<double> > ringType;
-  typedef ringType* ringTypePtr;
-  typedef QVector<ringTypePtr> ringsType;
-
-  // get number of rings in the polygon
-  unsigned int numRings = *(( int* )( feature + 1 + sizeof( int ) ) );
-
-  if ( numRings == 0 )  // sanity check for zero rings in polygon
-    return feature + 9;
-
-  unsigned int wkbType = *(( int* )( feature + 1 ) );
-
-  bool hasZValue = ( wkbType == QGis::WKBPolygon25D );
-
-  int total_points = 0;
-
-  // A vector containing a pointer to a pair of double vectors.The
-  // first vector in the pair contains the x coordinates, and the
-  // second the y coordinates.
-  ringsType rings;
-
-  // Set pointer to the first ring
-  unsigned char* ptr = feature + 1 + 2 * sizeof( int );
-
-  for ( register unsigned int idx = 0; idx < numRings; idx++ )
-  {
-    int nPoints = *(( int* )ptr );
-
-    ringTypePtr ring = new ringType( QVector<double>( nPoints ), QVector<double>( nPoints ) );
-    ptr += 4;
-
-    // create a dummy vector for the z coordinate
-    QVector<double> zVector( nPoints, 0.0 );
-    // Extract the points from the WKB and store in a pair of
-    // vectors.
-    for ( int jdx = 0; jdx < nPoints; jdx++ )
-    {
-      ring->first[jdx] = *(( double * ) ptr );
-      ptr += sizeof( double );
-      ring->second[jdx] = *(( double * ) ptr );
-      ptr += sizeof( double );
-
-      if ( hasZValue )
-        ptr += sizeof( double );
-    }
-    // If ring has fewer than two points, what is it then?
-    // Anyway, this check prevents a crash
-    if ( nPoints < 1 )
-    {
-      QgsDebugMsg( "Ring has only " + QString::number( nPoints ) + " points! Skipping this ring." );
-      continue;
-    }
-
-    transformPoints( ring->first, ring->second, zVector, renderContext );
-
-    // Work around a +/- 32768 limitation on coordinates
-    // Look through the x and y coordinates and see if there are any
-    // that need trimming. If one is found, there's no need to look at
-    // the rest of them so end the loop at that point.
-    for ( int i = 0; i < nPoints; ++i )
-    {
-      if ( qAbs( ring->first[i] ) > QgsClipper::MAX_X ||
-           qAbs( ring->second[i] ) > QgsClipper::MAX_Y )
-      {
-        QgsClipper::trimFeature( ring->first, ring->second, false );
-        break;
-      }
-    }
-
-    // Don't bother keeping the ring if it has been trimmed out of
-    // existence.
-    if ( ring->first.size() == 0 )
-      delete ring;
-    else
-    {
-      rings.push_back( ring );
-      total_points += ring->first.size();
-    }
-  }
-
-  // Now we draw the polygons
-
-  // use painter paths for drawing polygons with holes
-  // when adding polygon to the path they invert the area
-  // this means that adding inner rings to the path creates
-  // holes in outer ring
-  QPainterPath path; // OddEven fill rule by default
-
-  // Only try to draw polygons if there is something to draw
-  if ( total_points > 0 )
-  {
-    //preserve a copy of the brush and pen before we start fiddling with it
-    QBrush brush = p->brush(); //to be kept as original
-    QPen pen = p->pen(); // to be kept original
-    //
-    // experimental alpha transparency
-    // 255 = opaque
-    //
-    QBrush myTransparentBrush = p->brush();
-    QColor myColor = brush.color();
-
-    //only set transparency from layer level if renderer does not provide
-    //transparency on class level
-    if ( !mRenderer->usesTransparency() )
-    {
-      myColor.setAlpha( mTransparencyLevel );
-    }
-    myTransparentBrush.setColor( myColor );
-    QPen myTransparentPen = p->pen(); // store current pen
-    myColor = myTransparentPen.color();
-
-    //only set transparency from layer level if renderer does not provide
-    //transparency on class level
-    if ( !mRenderer->usesTransparency() )
-    {
-      myColor.setAlpha( mTransparencyLevel );
-    }
-    myTransparentPen.setColor( myColor );
-
-    p->setBrush( myTransparentBrush );
-    p->setPen( myTransparentPen );
-
-    if ( numRings == 1 )
-    {
-      ringTypePtr r = rings[0];
-      unsigned ringSize = r->first.size();
-
-      QPolygonF pa( ringSize );
-      for ( register unsigned int j = 0; j != ringSize; ++j )
-      {
-        pa[j].setX( r->first[j] );
-        pa[j].setY( r->second[j] );
-      }
-      p->drawPolygon( pa );
-
-      // draw vertex markers if in editing mode, but only to the main canvas
-      if ( mEditBuffer && renderContext.drawEditingInformation() )
-      {
-        for ( register unsigned int j = 0; j != ringSize; ++j )
-        {
-          drawVertexMarker( r->first[j], r->second[j], *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
-        }
-      }
-
-      delete rings[0];
-    }
-    else
-    {
-      // Store size here and use it in the loop to avoid penalty of
-      // multiple calls to size()
-      int numRings = rings.size();
-      for ( register int i = 0; i < numRings; ++i )
-      {
-        // Store the pointer in a variable with a short name so as to make
-        // the following code easier to type and read.
-        ringTypePtr r = rings[i];
-        // only do this once to avoid penalty of additional calls
-        unsigned ringSize = r->first.size();
-
-        // Transfer points to the array of QPointF
-        QPolygonF pa( ringSize );
-        for ( register unsigned int j = 0; j != ringSize; ++j )
-        {
-          pa[j].setX( r->first[j] );
-          pa[j].setY( r->second[j] );
-        }
-
-        path.addPolygon( pa );
-
-        // Tidy up the pointed to pairs of vectors as we finish with them
-        delete rings[i];
-      }
-
-#if 0
-      // A bit of code to aid in working out what values of
-      // QgsClipper::minX, etc cause the X11 zoom bug.
-      int largestX  = -std::numeric_limits<int>::max();
-      int smallestX = std::numeric_limits<int>::max();
-      int largestY  = -std::numeric_limits<int>::max();
-      int smallestY = std::numeric_limits<int>::max();
-
-      for ( int i = 0; i < pa.size(); ++i )
-      {
-        largestX  = qMax( largestX,  pa.point( i ).x() );
-        smallestX = qMin( smallestX, pa.point( i ).x() );
-        largestY  = qMax( largestY,  pa.point( i ).y() );
-        smallestY = qMin( smallestY, pa.point( i ).y() );
-      }
-      QgsDebugMsg( QString( "Largest  X coordinate was %1" ).arg( largestX ) );
-      QgsDebugMsg( QString( "Smallest X coordinate was %1" ).arg( smallestX ) );
-      QgsDebugMsg( QString( "Largest  Y coordinate was %1" ).arg( largestY ) );
-      QgsDebugMsg( QString( "Smallest Y coordinate was %1" ).arg( smallestY ) );
-#endif
-
-      //
-      // draw the polygon
-      //
-      p->drawPath( path );
-
-      // draw vertex markers if in editing mode, but only to the main canvas
-      if ( mEditBuffer && renderContext.drawEditingInformation() )
-      {
-        for ( int i = 0; i < path.elementCount(); ++i )
-        {
-          const QPainterPath::Element & e = path.elementAt( i );
-          drawVertexMarker( e.x, e.y, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
-        }
-      }
-    }
-
-    //
-    //restore brush and pen to original
-    //
-    p->setBrush( brush );
-    p->setPen( pen );
-
-  } // totalPoints > 0
-
-  return ptr;
-}
 
 void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling )
 {
   if ( !hasGeometryType() )
     return;
+
+  mCurrentRendererContext = &rendererContext;
 
   QSettings settings;
   bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
@@ -739,10 +384,6 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
       if ( !fet.geometry() )
         continue; // skip features without geometry
 
-      if ( rendererContext.renderingStopped() )
-      {
-        break;
-      }
 #ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
 #ifdef Q_WS_X11
       if ( !mEnableBackbuffer ) // do not handle events, as we're already inside a paint event
@@ -763,6 +404,11 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
       }
 #endif // Q_WS_X11
 #endif // Q_WS_MAC
+
+      if ( rendererContext.renderingStopped() )
+      {
+        break;
+      }
 
       bool sel = mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mEditBuffer && ( !vertexMarkerOnlyForSelection || sel ) );
@@ -802,6 +448,8 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
 
   stopRendererV2( rendererContext, NULL );
 
+  mCurrentRendererContext = NULL;
+
 #ifndef Q_WS_MAC
   QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
 #endif
@@ -824,7 +472,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
   if ( !mSelectedFeatureIds.isEmpty() )
   {
     selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geometryType() ) );
-    selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
+    selRenderer->symbol()->setColor( QgsSymbolV2RenderContext::selectionColor() );
     selRenderer->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
     selRenderer->startRender( rendererContext, this );
   }
@@ -978,187 +626,44 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   mEnableBackbuffer = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
 #endif
 
-  if ( mUsingRendererV2 )
-  {
-    if ( !mRendererV2 )
-      return false;
+  if ( !mRendererV2 )
+    return false;
 
-    QgsDebugMsg( "rendering v2:\n" + mRendererV2->dump() );
-
-    if ( mEditBuffer )
-    {
-      // Destroy all cached geometries and clear the references to them
-      mCache->deleteCachedGeometries();
-      mCache->setCachedGeometriesRect( rendererContext.extent() );
-
-      // set editing vertex markers style
-      mRendererV2->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
-    }
-
-    QgsAttributeList attributes;
-    foreach ( QString attrName, mRendererV2->usedAttributes() )
-    {
-      int attrNum = fieldNameIndex( attrName );
-      attributes.append( attrNum );
-      QgsDebugMsg( "attrs: " + attrName + " - " + QString::number( attrNum ) );
-    }
-
-    bool labeling = false;
-    //register label and diagram layer to the labeling engine
-    prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
-
-    QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                          .setFilterRect( rendererContext.extent() )
-                                          .setSubsetOfAttributes( attributes ) );
-
-    if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
-        && mRendererV2->usingSymbolLevels() )
-      drawRendererV2Levels( fit, rendererContext, labeling );
-    else
-      drawRendererV2( fit, rendererContext, labeling );
-
-    return true;
-  }
-
-  //draw ( p, viewExtent, theMapToPixelTransform, ct, drawingToEditingCanvas, 1., 1.);
-
-  if ( mRenderer )
-  {
-    // painter is active (begin has been called
-    /* Steps to draw the layer
-       1. get the features in the view extent by SQL query
-       2. read WKB for a feature
-       3. transform
-       4. draw
-    */
-
-    QPen pen;
-    /*Pointer to a marker image*/
-    QImage marker;
-    //vertex marker type for selection
-    QgsVectorLayer::VertexMarkerType vertexMarker = QgsVectorLayer::NoMarker;
-    int vertexMarkerSize = 7;
-
-    if ( mEditBuffer )
-    {
-      // Destroy all cached geometries and clear the references to them
-      mCache->deleteCachedGeometries();
-      mCache->setCachedGeometriesRect( rendererContext.extent() );
-      vertexMarker = currentVertexMarkerType();
-      vertexMarkerSize = currentVertexMarkerSize();
-      mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
-    }
-
-    // int totalFeatures = pendingFeatureCount();
-    int featureCount = 0;
-    QgsFeature fet;
-    QgsAttributeList attributes = mRenderer->classificationAttributes();
-
-    bool labeling = false;
-    prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
-
-    try
-    {
-      QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                            .setFilterRect( rendererContext.extent() )
-                                            .setSubsetOfAttributes( attributes ) );
-      while ( fit.nextFeature( fet ) )
-      {
-        if ( !fet.geometry() )
-          continue; // skip features without geometry
-
-        if ( rendererContext.renderingStopped() )
-        {
-          break;
-        }
-
-#ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
-        if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
-        {
-          emit screenUpdateRequested();
-          // emit drawingProgress( featureCount, totalFeatures );
-          qApp->processEvents();
-        }
-        else if ( featureCount % 1000 == 0 )
-        {
-          // emit drawingProgress( featureCount, totalFeatures );
-          qApp->processEvents();
-        }
-// #else
-//         Q_UNUSED( totalFeatures );
-#endif //Q_WS_MAC
-
-        // check if feature is selected
-        // only show selections of the current layer
-        // TODO: create a mechanism to let layer know whether it's current layer or not [MD]
-        bool sel = mSelectedFeatureIds.contains( fet.id() );
-
-        mCurrentVertexMarkerType = QgsVectorLayer::NoMarker;
-        mCurrentVertexMarkerSize = 7;
-
-        if ( mEditBuffer )
-        {
-          // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-          mCache->cacheGeometry( fet.id(), *fet.geometry() );
-
-          if ( !mVertexMarkerOnlyForSelection || sel )
-          {
-            mCurrentVertexMarkerType = vertexMarker;
-            mCurrentVertexMarkerSize = vertexMarkerSize;
-          }
-        }
-
-        //QgsDebugMsg(QString("markerScale before renderFeature(): %1").arg(markerScaleFactor));
-        // markerScalerFactore reflects the wanted scaling of the marker
-
-        double opacity = 1.0;
-        if ( !mRenderer->usesTransparency() )
-        {
-          opacity = ( mTransparencyLevel * 1.0 ) / 255.0;
-        }
-        mRenderer->renderFeature( rendererContext, fet, &marker, sel, opacity );
-
-        // markerScalerFactore now reflects the actual scaling of the marker that the render performed.
-        //QgsDebugMsg(QString("markerScale after renderFeature(): %1").arg(markerScaleFactor));
-
-        //double scale = rendererContext.scaleFactor() /  markerScaleFactor;
-        drawFeature( rendererContext, fet, &marker );
-
-        if ( mRenderer->willRenderFeature( &fet ) && rendererContext.labelingEngine() )
-        {
-          if ( labeling )
-          {
-            rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
-          }
-          if ( mDiagramRenderer )
-          {
-            rendererContext.labelingEngine()->registerDiagramFeature( this, fet, rendererContext );
-          }
-        }
-        ++featureCount;
-      }
-    }
-    catch ( QgsCsException &cse )
-    {
-      Q_UNUSED( cse );
-      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature with ID '%1'. Rendering stopped. %2" )
-                   .arg( fet.id() ).arg( cse.what() ) );
-      return false;
-    }
-
-    QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
-  }
-  else
-  {
-    QgsDebugMsg( "QgsRenderer is null" );
-  }
+  QgsDebugMsg( "rendering v2:\n" + mRendererV2->dump() );
 
   if ( mEditBuffer )
   {
-    QgsDebugMsg( QString( "Cached %1 geometries." ).arg( mCache->cachedGeometries().count() ) );
+    // Destroy all cached geometries and clear the references to them
+    mCache->deleteCachedGeometries();
+    mCache->setCachedGeometriesRect( rendererContext.extent() );
+
+    // set editing vertex markers style
+    mRendererV2->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
   }
 
-  return true; // Assume success always
+  QgsAttributeList attributes;
+  foreach ( QString attrName, mRendererV2->usedAttributes() )
+  {
+    int attrNum = fieldNameIndex( attrName );
+    attributes.append( attrNum );
+    QgsDebugMsg( "attrs: " + attrName + " - " + QString::number( attrNum ) );
+  }
+
+  bool labeling = false;
+  //register label and diagram layer to the labeling engine
+  prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
+
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFilterRect( rendererContext.extent() )
+                                        .setSubsetOfAttributes( attributes ) );
+
+  if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
+      && mRendererV2->usingSymbolLevels() )
+    drawRendererV2Levels( fit, rendererContext, labeling );
+  else
+    drawRendererV2( fit, rendererContext, labeling );
+
+  return true;
 }
 
 void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int m )
@@ -1259,7 +764,7 @@ void QgsVectorLayer::invertSelection()
   emit selectionChanged();
 }
 
-void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle &rect )
+void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
 {
   // normalize the rectangle
   rect.normalize();
@@ -1324,26 +829,7 @@ void QgsVectorLayer::setProviderEncoding( const QString& encoding )
   if ( mDataProvider )
   {
     mDataProvider->setEncoding( encoding );
-  }
-}
-
-
-const QgsRenderer* QgsVectorLayer::renderer() const
-{
-  return mRenderer;
-}
-
-void QgsVectorLayer::setRenderer( QgsRenderer *r )
-{
-  if ( !hasGeometryType() )
-    return;
-
-  if ( r != mRenderer )
-  {
-    if ( r )
-      setUsingRendererV2( false );
-    delete mRenderer;
-    mRenderer = r;
+    updateFields();
   }
 }
 
@@ -1667,15 +1153,6 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   return res;
 }
 
-#if 0
-void QgsVectorLayer::addJoinedAttributes( QgsFeature& f, bool all )
-{
-  if ( all || ( mFetchAttributes.size() > 0 && mJoinBuffer->containsFetchJoins() ) )
-  {
-    mJoinBuffer->updateFeatureAttributes( f, f.attributes().count(), all );
-  }
-}
-#endif
 
 QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request )
 {
@@ -1685,274 +1162,6 @@ QgsFeatureIterator QgsVectorLayer::getFeatures( const QgsFeatureRequest& request
   return QgsFeatureIterator( new QgsVectorLayerFeatureIterator( this, request ) );
 }
 
-void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, bool fetchGeometries, bool useIntersect )
-{
-  QgsFeatureRequest request;
-  if ( !rect.isEmpty() )
-    request.setFilterRect( rect );
-  if ( !fetchGeometries )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
-  if ( useIntersect )
-    request.setFlags( request.flags() | QgsFeatureRequest::ExactIntersect );
-  if ( attributes != pendingAllAttributesList() )
-    request.setSubsetOfAttributes( attributes );
-
-  if ( !mLayerIterator.isClosed() )
-    mLayerIterator.close();
-
-  mLayerIterator = getFeatures( request );
-}
-
-bool QgsVectorLayer::nextFeature( QgsFeature &f )
-{
-  return mLayerIterator.nextFeature( f );
-
-#if 0
-  if ( !mFetching )
-    return false;
-
-  if ( mEditBuffer )
-  {
-    if ( !mFetchRect.isEmpty() )
-    {
-      // check if changed geometries are in rectangle
-      for ( ; mFetchChangedGeomIt != mEditBuffer->mChangedGeometries.end(); mFetchChangedGeomIt++ )
-      {
-        QgsFeatureId fid = mFetchChangedGeomIt.key();
-
-        if ( mFetchConsidered.contains( fid ) )
-          // skip deleted features
-          continue;
-
-        mFetchConsidered << fid;
-
-        if ( !mFetchChangedGeomIt->intersects( mFetchRect ) )
-          // skip changed geometries not in rectangle and don't check again
-          continue;
-
-        f.setFeatureId( fid );
-        f.setValid( true );
-
-        if ( mFetchGeometry )
-          f.setGeometry( mFetchChangedGeomIt.value() );
-
-        if ( mFetchAttributes.size() > 0 )
-        {
-          if ( fid < 0 )
-          {
-            // fid<0 => in mAddedFeatures
-            bool found = false;
-
-            for ( QgsFeatureList::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); it++ )
-            {
-              if ( fid == it->id() )
-              {
-                found = true;
-                f.setAttributes( it->attributes() );
-                // no need to update (always up-to-date) updateFeatureAttributes( f );
-                break;
-              }
-            }
-
-            if ( !found )
-            {
-              QgsDebugMsg( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
-            }
-          }
-          else
-          {
-            // retrieve attributes from provider
-            QgsFeature tmp;
-            //mDataProvider->featureAtId( fid, tmp, false, mFetchProvAttributes );
-            QgsFeatureRequest request;
-            request.setFilterFid( fid ).setSubsetOfAttributes( mFetchProvAttributes );
-            QgsFeatureIterator fi = mDataProvider->getFeatures( request );
-            if ( fi.nextFeature( tmp ) )
-            {
-              if ( mEditBuffer )
-                mEditBuffer->updateChangedAttributes( tmp );
-              f.setAttributes( tmp.attributes() );
-            }
-          }
-        }
-
-        addJoinedAttributes( f );
-
-        // return complete feature
-        mFetchChangedGeomIt++;
-        return true;
-      }
-
-      // no more changed geometries
-    }
-
-    for ( ; mFetchAddedFeaturesIt != mEditBuffer->mAddedFeatures.end(); mFetchAddedFeaturesIt++ )
-    {
-      QgsFeatureId fid = mFetchAddedFeaturesIt->id();
-
-      if ( mFetchConsidered.contains( fid ) )
-        // must have changed geometry outside rectangle
-        continue;
-
-      if ( !mFetchRect.isEmpty() &&
-           mFetchAddedFeaturesIt->geometry() &&
-           !mFetchAddedFeaturesIt->geometry()->intersects( mFetchRect ) )
-        // skip added features not in rectangle
-        continue;
-
-      f.setFeatureId( fid );
-      f.setValid( true );
-
-      if ( mFetchGeometry )
-        f.setGeometry( *mFetchAddedFeaturesIt->geometry() );
-
-      if ( mFetchAttributes.size() > 0 )
-      {
-        f.setAttributes( mFetchAddedFeaturesIt->attributes() );
-        // no need to do this (always up-to-date) updateFeatureAttributes( f );
-      }
-
-      addJoinedAttributes( f );
-
-      mFetchAddedFeaturesIt++;
-      return true;
-    }
-
-    // no more added features
-  }
-
-  while ( mProviderIterator.nextFeature( f ) )
-  {
-    if ( mFetchConsidered.contains( f.id() ) )
-    {
-      continue;
-    }
-    if ( mFetchAttributes.size() > 0 )
-    {
-      if ( mEditBuffer )
-        mEditBuffer->updateChangedAttributes( f ); //check changed attributes
-      addJoinedAttributes( f ); // check joined attributes
-    }
-    if ( mEditBuffer && mFetchGeometry )
-    {
-      mEditBuffer->updateFeatureGeometry( f );
-    }
-
-    return true;
-  }
-
-  mFetching = false;
-  return false;
-#endif
-}
-
-bool QgsVectorLayer::featureAtId( QgsFeatureId featureId, QgsFeature& f, bool fetchGeometries, bool fetchAttributes )
-{
-  QgsFeatureRequest request;
-  request.setFilterFid( featureId );
-  if ( !fetchGeometries )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
-  if ( !fetchAttributes )
-    request.setSubsetOfAttributes( QgsAttributeList() );
-
-  QgsFeatureIterator fi = getFeatures( request );
-  return fi.nextFeature( f );
-
-#if 0
-  if ( !mDataProvider )
-    return false;
-
-  if ( mEditBuffer && mEditBuffer->mDeletedFeatureIds.contains( featureId ) )
-    return false;
-
-  if ( fetchGeometries && mEditBuffer->mChangedGeometries.contains( featureId ) )
-  {
-    f.setFeatureId( featureId );
-    f.setValid( true );
-    f.setGeometry( mEditBuffer->mChangedGeometries[featureId] );
-
-    if ( fetchAttributes )
-    {
-      if ( featureId < 0 && mEditBuffer )
-      {
-        // featureId<0 => in mAddedFeatures
-        bool found = false;
-
-        for ( QgsFeatureList::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); it++ )
-        {
-          if ( featureId != it->id() )
-          {
-            found = true;
-            f.setAttributes( it->attributes() );
-            break;
-          }
-        }
-
-        if ( !found )
-        {
-          QgsDebugMsg( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
-        }
-      }
-      else
-      {
-        // retrieve attributes from provider
-        QgsFeature tmp;
-        //mDataProvider->featureAtId( featureId, tmp, false, mDataProvider->attributeIndexes() );
-        QgsFeatureRequest request;
-        request.setFilterFid( featureId ).setFlags( QgsFeatureRequest::NoGeometry );
-        QgsFeatureIterator fi = mDataProvider->getFeatures( request );
-        if ( fi.nextFeature( tmp ) )
-        {
-          f.setAttributes( tmp.attributes() );
-          if ( mEditBuffer )
-            mEditBuffer->updateChangedAttributes( f );
-        }
-      }
-      addJoinedAttributes( f, true );
-    }
-    return true;
-  }
-
-  //added features
-  if ( mEditBuffer )
-  {
-    for ( QgsFeatureList::iterator iter = mEditBuffer->mAddedFeatures.begin(); iter != mEditBuffer->mAddedFeatures.end(); ++iter )
-    {
-      if ( iter->id() == featureId )
-      {
-        f.setFeatureId( iter->id() );
-        f.setValid( true );
-        if ( fetchGeometries )
-          f.setGeometry( *iter->geometry() );
-
-        if ( fetchAttributes )
-          f.setAttributes( iter->attributes() );
-
-        return true;
-      }
-    }
-  }
-
-  // regular features
-  QgsFeatureRequest request;
-  request.setFilterFid( featureId );
-  if ( !fetchGeometries )
-    request.setFlags( QgsFeatureRequest::NoGeometry );
-  if ( !fetchAttributes )
-    request.setSubsetOfAttributes( QgsAttributeList() );
-
-  QgsFeatureIterator fi = mDataProvider->getFeatures( request );
-  if ( fi.nextFeature( f ) )
-  {
-    if ( mEditBuffer )
-      mEditBuffer->updateChangedAttributes( f );
-    addJoinedAttributes( f, true );
-    return true;
-  }
-
-  return false;
-#endif
-}
 
 bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
 {
@@ -2459,15 +1668,13 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
+  Q_UNUSED( errorMessage );
   if ( hasGeometryType() )
   {
     // try renderer v2 first
     QDomElement rendererElement = node.firstChildElement( RENDERER_TAG_NAME );
     if ( !rendererElement.isNull() )
     {
-      // using renderer v2
-      setUsingRendererV2( true );
-
       QgsFeatureRendererV2* r = QgsFeatureRendererV2::load( rendererElement );
       if ( !r )
         return false;
@@ -2476,60 +1683,11 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     }
     else
     {
-      // using renderer v1
-      setUsingRendererV2( false );
+      QgsFeatureRendererV2* r = QgsSymbologyV2Conversion::readOldRenderer( node, geometryType() );
+      if ( !r )
+        r = QgsFeatureRendererV2::defaultRenderer( geometryType() );
 
-      // create and bind a renderer to this layer
-
-      QDomNode singlenode = node.namedItem( "singlesymbol" );
-      QDomNode graduatednode = node.namedItem( "graduatedsymbol" );
-      QDomNode continuousnode = node.namedItem( "continuoussymbol" );
-      QDomNode uniquevaluenode = node.namedItem( "uniquevalue" );
-
-      QgsRenderer * renderer = 0;
-      int returnCode = 1;
-
-      if ( !singlenode.isNull() )
-      {
-        renderer = new QgsSingleSymbolRenderer( geometryType() );
-        returnCode = renderer->readXML( singlenode, *this );
-      }
-      else if ( !graduatednode.isNull() )
-      {
-        renderer = new QgsGraduatedSymbolRenderer( geometryType() );
-        returnCode = renderer->readXML( graduatednode, *this );
-      }
-      else if ( !continuousnode.isNull() )
-      {
-        renderer = new QgsContinuousColorRenderer( geometryType() );
-        returnCode = renderer->readXML( continuousnode, *this );
-      }
-      else if ( !uniquevaluenode.isNull() )
-      {
-        renderer = new QgsUniqueValueRenderer( geometryType() );
-        returnCode = renderer->readXML( uniquevaluenode, *this );
-      }
-
-      if ( !renderer )
-      {
-        errorMessage = tr( "Unknown renderer" );
-        return false;
-      }
-
-      if ( returnCode == 1 )
-      {
-        errorMessage = tr( "No renderer object" );
-        delete renderer;
-        return false;
-      }
-      else if ( returnCode == 2 )
-      {
-        errorMessage = tr( "Classification field not found" );
-        delete renderer;
-        return false;
-      }
-
-      mRenderer = renderer;
+      setRendererV2( r );
     }
 
     // get and set the display field if it exists.
@@ -2538,6 +1696,14 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     {
       QDomElement e = displayFieldNode.toElement();
       setDisplayField( e.text() );
+    }
+
+    // get and set the blend mode if it exists
+    QDomNode blendModeNode = node.namedItem( "blendMode" );
+    if ( !blendModeNode.isNull() )
+    {
+      QDomElement e = blendModeNode.toElement();
+      setBlendMode(( QgsMapRenderer::BlendMode ) e.text().toInt() );
     }
 
     // use scale dependent visibility flag
@@ -2678,17 +1844,26 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         }
         break;
 
+        case Calendar:
+          mDateFormats[ name ] = editTypeElement.attribute( "dateFormat" );
+          break;
+
+        case Photo:
+          mWidgetSize[ name ] = QSize( editTypeElement.attribute( "widgetWidth" ).toInt(), editTypeElement.attribute( "widgetHeight" ).toInt() );
+          break;
+
         case Classification:
         case FileName:
         case Immutable:
         case Hidden:
         case LineEdit:
         case TextEdit:
-        case Calendar:
         case Enumeration:
         case UniqueValues:
         case UniqueValuesEditable:
         case UuidGenerator:
+        case WebView:
+        case Color:
           break;
       }
     }
@@ -2834,53 +2009,27 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
 
 bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString& errorMessage ) const
 {
+  Q_UNUSED( errorMessage );
   QDomElement mapLayerNode = node.toElement();
 
   if ( hasGeometryType() )
   {
-    if ( mUsingRendererV2 )
-    {
-      QDomElement rendererElement = mRendererV2->save( doc );
-      node.appendChild( rendererElement );
-    }
-    else
-    {
-      // use scale dependent visibility flag
-      mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", mLabel->scaleBasedVisibility() ? 1 : 0 );
-      mapLayerNode.setAttribute( "minLabelScale", QString::number( mLabel->minScale() ) );
-      mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
+    QDomElement rendererElement = mRendererV2->save( doc );
+    node.appendChild( rendererElement );
 
-      //classification field(s)
-      QgsAttributeList attributes = mRenderer->classificationAttributes();
-      const QgsFields& providerFields = mDataProvider->fields();
-      for ( QgsAttributeList::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
-      {
-        QDomElement classificationElement = doc.createElement( "classificationattribute" );
-        QDomText classificationText = doc.createTextNode( providerFields[*it].name() );
-        classificationElement.appendChild( classificationText );
-        node.appendChild( classificationElement );
-      }
-
-      // renderer settings
-      const QgsRenderer * myRenderer = renderer();
-      if ( myRenderer )
-      {
-        if ( !myRenderer->writeXML( node, doc, *this ) )
-        {
-          errorMessage = tr( "renderer failed to save" );
-          return false;
-        }
-      }
-      else
-      {
-        QgsDebugMsg( "no renderer" );
-        errorMessage = tr( "no renderer" );
-        return false;
-      }
-    }
+    // use scale dependent visibility flag
+    mapLayerNode.setAttribute( "scaleBasedLabelVisibilityFlag", mLabel->scaleBasedVisibility() ? 1 : 0 );
+    mapLayerNode.setAttribute( "minLabelScale", QString::number( mLabel->minScale() ) );
+    mapLayerNode.setAttribute( "maxLabelScale", QString::number( mLabel->maxScale() ) );
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
+
+    // add the blend mode field
+    QDomElement blendModeElem  = doc.createElement( "blendMode" );
+    QDomText blendModeText = doc.createTextNode( QString::number( blendMode() ) );
+    blendModeElem.appendChild( blendModeText );
+    node.appendChild( blendModeElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
@@ -2988,6 +2137,15 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
           }
           break;
 
+        case Calendar:
+          editTypeElement.setAttribute( "dateFormat", mDateFormats[ it.key()] );
+          break;
+
+        case Photo:
+          editTypeElement.setAttribute( "widgetWidth", mWidgetSize[ it.key()].width() );
+          editTypeElement.setAttribute( "widgetHeight", mWidgetSize[ it.key()].height() );
+          break;
+
         case LineEdit:
         case UniqueValues:
         case UniqueValuesEditable:
@@ -2995,10 +2153,11 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         case FileName:
         case Hidden:
         case TextEdit:
-        case Calendar:
         case Enumeration:
         case Immutable:
         case UuidGenerator:
+        case WebView:
+        case Color:
           break;
       }
 
@@ -3128,8 +2287,6 @@ bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
 
   if ( hasGeometryType() )
   {
-    setUsingRendererV2( true );
-
     QgsFeatureRendererV2* r = QgsFeatureRendererV2::loadSld( node, geometryType(), errorMessage );
     if ( !r )
       return false;
@@ -3151,15 +2308,7 @@ bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& error
 
   if ( hasGeometryType() )
   {
-    if ( mUsingRendererV2 )
-    {
-      node.appendChild( mRendererV2->writeSld( doc, *this ) );
-    }
-    else
-    {
-      node.appendChild( doc.createComment( "Old Renderer not supported yet" ) );
-      return false;
-    }
+    node.appendChild( mRendererV2->writeSld( doc, *this ) );
   }
   return true;
 }
@@ -3239,6 +2388,23 @@ bool QgsVectorLayer::deleteAttribute( int index )
     return false;
 
   return mEditBuffer->deleteAttribute( index );
+}
+
+bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
+{
+  bool deleted = false;
+
+  qSort( attrs.begin(), attrs.end(), qGreater<int>() );
+
+  foreach ( int attr, attrs )
+  {
+    if ( deleteAttribute( attr ) )
+    {
+      deleted = true;
+    }
+  }
+
+  return deleted;
 }
 
 bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
@@ -3596,135 +2762,6 @@ int QgsVectorLayer::currentVertexMarkerSize()
   return settings.value( "/qgis/digitizing/marker_size", 3 ).toInt();
 }
 
-void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
-                                  QgsFeature& fet,
-                                  QImage * marker )
-{
-  QPainter *p = renderContext.painter();
-  // Only have variables, etc outside the switch() statement that are
-  // used in all cases of the statement (otherwise they may get
-  // executed, but never used, in a bit of code where performance is
-  // critical).
-  if ( ! fet.isValid() )
-  {
-    return;
-  }
-
-  QgsGeometry* geom = fet.geometry();
-  if ( !geom )
-  {
-    return;
-  }
-  unsigned char* feature = geom->asWkb();
-
-  QGis::WkbType wkbType = geom->wkbType();
-
-  switch ( wkbType )
-  {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    {
-      double x = *(( double * )( feature + 5 ) );
-      double y = *(( double * )( feature + 5 + sizeof( double ) ) );
-
-      transformPoint( x, y, &renderContext.mapToPixel(), renderContext.coordinateTransform() );
-      if ( qAbs( x ) > QgsClipper::MAX_X ||
-           qAbs( y ) > QgsClipper::MAX_Y )
-      {
-        break;
-      }
-
-      //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
-      QPointF pt( x * renderContext.rasterScaleFactor() - ( marker->width() / 2 ),
-                  y * renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
-
-      p->save();
-      //p->scale(markerScaleFactor,markerScaleFactor);
-      p->scale( 1.0 / renderContext.rasterScaleFactor(), 1.0 / renderContext.rasterScaleFactor() );
-      p->drawImage( pt, *marker );
-      p->restore();
-
-      break;
-    }
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
-    {
-      unsigned char *ptr = feature + 5;
-      unsigned int nPoints = *(( int* )ptr );
-      ptr += 4;
-
-      p->save();
-      //p->scale(markerScaleFactor, markerScaleFactor);
-      p->scale( 1.0 / renderContext.rasterScaleFactor(), 1.0 / renderContext.rasterScaleFactor() );
-
-      for ( register unsigned int i = 0; i < nPoints; ++i )
-      {
-        ptr += 5;
-        double x = *(( double * ) ptr );
-        ptr += sizeof( double );
-        double y = *(( double * ) ptr );
-        ptr += sizeof( double );
-
-        if ( wkbType == QGis::WKBMultiPoint25D ) // ignore Z value
-          ptr += sizeof( double );
-
-        transformPoint( x, y, &renderContext.mapToPixel(), renderContext.coordinateTransform() );
-        //QPointF pt(x - (marker->width()/2),  y - (marker->height()/2));
-        //QPointF pt(x/markerScaleFactor - (marker->width()/2),  y/markerScaleFactor - (marker->height()/2));
-        QPointF pt( x * renderContext.rasterScaleFactor() - ( marker->width() / 2 ),
-                    y * renderContext.rasterScaleFactor() - ( marker->height() / 2 ) );
-        //QPointF pt( x, y );
-
-        // Work around a +/- 32768 limitation on coordinates
-        if ( qAbs( x ) <= QgsClipper::MAX_X &&
-             qAbs( y ) <= QgsClipper::MAX_Y )
-          p->drawImage( pt, *marker );
-      }
-      p->restore();
-
-      break;
-    }
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    {
-      drawLineString( feature, renderContext );
-      break;
-    }
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
-    {
-      unsigned char* ptr = feature + 5;
-      unsigned int numLineStrings = *(( int* )ptr );
-      ptr = feature + 9;
-
-      for ( register unsigned int jdx = 0; jdx < numLineStrings; jdx++ )
-      {
-        ptr = drawLineString( ptr, renderContext );
-      }
-      break;
-    }
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    {
-      drawPolygon( feature, renderContext );
-      break;
-    }
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
-    {
-      unsigned char *ptr = feature + 5;
-      unsigned int numPolygons = *(( int* )ptr );
-      ptr = feature + 9;
-      for ( register unsigned int kdx = 0; kdx < numPolygons; kdx++ )
-        ptr = drawPolygon( ptr, renderContext );
-      break;
-    }
-    default:
-      QgsDebugMsg( QString( "Unknown WkbType 0x%1 ENCOUNTERED" ).arg( wkbType, 0, 16 ) );
-      break;
-  }
-}
-
 
 
 void QgsVectorLayer::setCoordinateSystem()
@@ -3745,37 +2782,6 @@ void QgsVectorLayer::setCoordinateSystem()
   {
     setCrs( QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ) );
   }
-}
-
-// Convenience function to transform the given point
-inline void QgsVectorLayer::transformPoint(
-  double& x, double& y,
-  const QgsMapToPixel* mtp,
-  const QgsCoordinateTransform* ct )
-{
-  // transform the point
-  if ( ct )
-  {
-    double z = 0;
-    ct->transformInPlace( x, y, z );
-  }
-
-  // transform from projected coordinate system to pixel
-  // position on map canvas
-  mtp->transformInPlace( x, y );
-}
-
-inline void QgsVectorLayer::transformPoints(
-  QVector<double>& x, QVector<double>& y, QVector<double>& z,
-  QgsRenderContext &renderContext )
-{
-  // transform the point
-  if ( renderContext.coordinateTransform() )
-    renderContext.coordinateTransform()->transformInPlace( x, y, z );
-
-  // transform from projected coordinate system to pixel
-  // position on map canvas
-  renderContext.mapToPixel().transformInPlace( x, y );
 }
 
 
@@ -3898,19 +2904,43 @@ QgsVectorLayer::RangeData &QgsVectorLayer::range( int idx )
   return mRanges[fieldName];
 }
 
+QString &QgsVectorLayer::dateFormat( int idx )
+{
+  const QgsFields &fields = pendingFields();
+
+  QString fieldName = fields[idx].name();
+
+  if ( !mDateFormats.contains( fieldName ) )
+    mDateFormats[fieldName] = "yyyy-MM-dd";
+
+  return mDateFormats[fieldName];
+}
+
+QSize &QgsVectorLayer::widgetSize( int idx )
+{
+  const QgsFields &fields = pendingFields();
+
+  QString fieldName = fields[idx].name();
+
+  if ( !mWidgetSize.contains( fieldName ) )
+    mWidgetSize[fieldName] = QSize( 0, 0 );
+
+  return mWidgetSize[fieldName];
+}
+
 bool QgsVectorLayer::fieldEditable( int idx )
 {
   const QgsFields &fields = pendingFields();
-  if ( idx >= 0 && idx < fields.count() && mEditTypes.contains( fields[idx].name() ) )
-    return mFieldEditables[ fields[idx].name()];
+  if ( idx >= 0 && idx < fields.count() )
+    return mFieldEditables.value( fields[idx].name(), true );
   else
-    return false;
+    return true;
 }
 
 void QgsVectorLayer::setFieldEditable( int idx, bool editable )
 {
   const QgsFields &fields = pendingFields();
-  if ( idx >= 0 && idx < fields.count() && mEditTypes.contains( fields[idx].name() ) )
+  if ( idx >= 0 && idx < fields.count() )
     mFieldEditables[ fields[idx].name()] = editable;
 }
 
@@ -3961,24 +2991,11 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
 
   if ( r != mRendererV2 )
   {
-    if ( r )
-      setUsingRendererV2( true );
     delete mRendererV2;
     mRendererV2 = r;
     mSymbolFeatureCounted = false;
     mSymbolFeatureCountMap.clear();
   }
-}
-bool QgsVectorLayer::isUsingRendererV2()
-{
-  return mUsingRendererV2;
-}
-void QgsVectorLayer::setUsingRendererV2( bool usingRendererV2 )
-{
-  if ( !hasGeometryType() )
-    return;
-
-  mUsingRendererV2 = usingRendererV2;
 }
 
 
@@ -4064,7 +3081,7 @@ void QgsVectorLayer::updateFields()
     mEditBuffer->updateFields( mUpdatedFields );
 
   // joined fields
-  if ( mJoinBuffer->containsJoins() )
+  if ( mJoinBuffer && mJoinBuffer->containsJoins() )
     mJoinBuffer->updateFields( mUpdatedFields );
 }
 
@@ -4218,7 +3235,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
     QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
     Q_ASSERT( vl );
 
-    return vl->maximumValue( index );
+    return vl->maximumValue( sourceLayerIndex );
   }
   else if ( origin == QgsFields::OriginEdit )
   {
@@ -4590,6 +3607,12 @@ QString QgsVectorLayer::metadata()
 
   myMetadata += "</body></html>";
   return myMetadata;
+}
+
+void QgsVectorLayer::onCacheImageDelete()
+{
+  if ( mCurrentRendererContext )
+    mCurrentRendererContext->setRenderingStopped( true );
 }
 
 QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )

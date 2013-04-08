@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>475</width>
-    <height>400</height>
+    <height>415</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -159,6 +159,16 @@
        <widget class="QCheckBox" name="cbxInvertAxisOrientation">
         <property name="text">
          <string>Invert axis orientation</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLineEdit" name="txtReferer"/>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="lblReferer">
+        <property name="text">
+         <string>Referer</string>
         </property>
        </widget>
       </item>

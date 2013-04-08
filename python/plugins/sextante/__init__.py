@@ -20,6 +20,8 @@
 from sextante.core.Sextante import runalg, runandload, alghelp, alglist, algoptions, load, \
                                     extent, getObjectFromName, getObjectFromUri, getobject, getfeatures
 
+from sextante.tests.TestData import loadTestData
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'

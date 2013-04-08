@@ -32,6 +32,8 @@
 //used by Mac to find system Qt plugins when bundle is run from build directory
 #define QTPLUGINSDIR "${QT_PLUGINS_DIR}"
 
+#cmakedefine USING_NMAKE
+
 #cmakedefine HAVE_POSTGRESQL
 
 #cmakedefine HAVE_SPATIALITE

@@ -24,10 +24,13 @@
 
 class QgisApp;
 class QgsComposerArrow;
+class QgsComposerFrame;
+class QgsComposerHtml;
 class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerPicture;
 class QgsComposerPictureWidget;
+class QgsComposerRuler;
 class QgsComposerScaleBar;
 class QgsComposerShape;
 class QgsComposerAttributeTable;
@@ -88,11 +91,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! @param newCompser whether to create a new composer first
     //! @note added in 1.9
     void loadTemplate( bool newCompser );
-
-    //! Modal busy indicator dialog with no buttons that deletes on close
-    //! @param message text to show above busy progress indicator
-    //! @note added in 1.9
-    QDialog* busyIndicatorDialog( const QString& message = QString( "" ), QWidget* parent = 0 );
 
   protected:
     //! Move event
@@ -331,11 +329,17 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! To make loading from project faster, the previews are generated when the composer becomes visible.
     void initialiseComposerPicturePreviews();
 
+    //! Create composer view and rulers
+    void createComposerView();
+
     /**Composer title*/
     QString mTitle;
 
     //! Pointer to composer view
     QgsComposerView *mView;
+    QGridLayout* mViewLayout;
+    QgsComposerRuler* mHorizontalRuler;
+    QgsComposerRuler* mVerticalRuler;
 
     //! Current composition
     QgsComposition *mComposition;

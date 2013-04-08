@@ -17,7 +17,9 @@
 #include "qgscomposermanager.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsbusyindicatordialog.h"
 #include "qgscomposer.h"
+#include "qgscomposition.h"
 #include "qgslogger.h"
 
 #include <QDesktopServices>
@@ -184,12 +186,17 @@ void QgsComposerManager::on_mAddButton_clicked()
     {
       // provide feedback, since composer will be hidden when loading template (much faster)
       // (not needed for empty composer)
-      QDialog* dlg = newComposer->busyIndicatorDialog( tr( "Loading template into composer..." ), this );
+      QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ) );
+      dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
       dlg->show();
+
       newComposer->hide();
       loadedOK = newComposer->composition()->loadFromTemplate( templateDoc, 0, false );
       newComposer->activate();
+
       dlg->close();
+      delete dlg;
+      dlg = 0;
     }
   }
 
@@ -383,11 +390,15 @@ void QgsComposerManager::duplicate_clicked()
   }
 
   // provide feedback, since loading of template into duplicate composer will be hidden
-  QDialog* dlg = currentComposer->busyIndicatorDialog( tr( "Duplicating composer..." ), this );
+  QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer..." ) );
+  dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
   dlg->show();
 
   QgsComposer* newComposer = QgisApp::instance()->duplicateComposer( currentComposer, newTitle );
+
   dlg->close();
+  delete dlg;
+  dlg = 0;
 
   if ( newComposer )
   {

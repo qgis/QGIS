@@ -97,6 +97,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mErrors( 0 )
     , mUserName( QString::null )
     , mPassword( QString::null )
+    , mReferer( QString::null )
     , mTiled( false )
     , mTileLayer( 0 )
     , mTileMatrixSetId( QString::null )
@@ -161,6 +162,9 @@ bool QgsWmsProvider::parseUri( QString uriString )
 
   mPassword = uri.param( "password" );
   QgsDebugMsg( "set password to " + mPassword );
+
+  mReferer = uri.param( "referer" );
+  QgsDebugMsg( "set referer to " + mReferer );
 
   addLayers( uri.params( "layers" ), uri.params( "styles" ) );
   setImageEncoding( uri.param( "format" ) );
@@ -1413,7 +1417,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
           //      GML.1, GML.2, or GML.3
           // 1.1.0, 1.3.0 - mime types, GML should use application/vnd.ogc.gml
           //      but in UMN Mapserver it may be also OUTPUTFORMAT, e.g. OGRGML
-          IdentifyFormat format;
+          IdentifyFormat format = IdentifyFormatUndefined;
           if ( f == "MIME" )
             format = IdentifyFormatText; // 1.0
           else if ( f == "text/plain" )
@@ -1453,12 +1457,15 @@ void QgsWmsProvider::capabilitiesReplyFinished()
 
       const QUrl& toUrl = redirect.toUrl();
       mCapabilitiesReply->request();
-      if ( toUrl == mCapabilitiesReply->url() ) {
+      if ( toUrl == mCapabilitiesReply->url() )
+      {
         mErrorFormat = "text/plain";
         mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
         QgsMessageLog::logMessage( mError, tr( "WMS" ) );
         mHttpCapabilitiesResponse.clear();
-      } else {
+      }
+      else
+      {
         QNetworkRequest request( toUrl );
         setAuthorization( request );
         request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
@@ -1594,7 +1601,7 @@ bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabili
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if ( !e.isNull() )
     {
-      //QgsDebugMsg(e.tagName() ); // the node really is an element.
+      QgsDebugMsg( e.tagName() ); // the node really is an element.
 
       if ( e.tagName() == "Service" || e.tagName() == "ows:ServiceProvider" || e.tagName() == "ows:ServiceIdentification" )
       {
@@ -2229,7 +2236,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      //QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
+      QgsDebugMsg( "    "  + e1.tagName() ); // the node really is an element.
 
       QString tagName = e1.tagName();
       if ( tagName.startsWith( "wms:" ) )
@@ -3003,7 +3010,7 @@ bool QgsWmsProvider::parseServiceExceptionReportDom( QByteArray const & xml )
     QDomElement e = n.toElement(); // try to convert the node to an element.
     if ( !e.isNull() )
     {
-      //QgsDebugMsg(e.tagName() ); // the node really is an element.
+      QgsDebugMsg( e.tagName() ); // the node really is an element.
 
       QString tagName = e.tagName();
       if ( tagName.startsWith( "wms:" ) )
@@ -4356,6 +4363,11 @@ void QgsWmsProvider::setAuthorization( QNetworkRequest &request ) const
   if ( !mUserName.isNull() || !mPassword.isNull() )
   {
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
+  }
+
+  if ( !mReferer.isNull() )
+  {
+    request.setRawHeader( "Referer", QString( "%1" ).arg( mReferer ).toAscii() );
   }
 }
 

@@ -86,19 +86,11 @@ class HistoryDialog(QDialog, Ui_DlgHistory):
         if isinstance(item, TreeLogEntryItem):
                 self.text.setText(item.entry.text.replace("|","\n"))
 
-
-
     def createTest(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
-                TestTools.createTest(item)
-
-
-
-
-
-
+                TestTools.createTest(item.entry.text)
 
     def showPopupMenu(self,point):
         item = self.tree.currentItem()

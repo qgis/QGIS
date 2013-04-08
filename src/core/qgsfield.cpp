@@ -110,3 +110,17 @@ void QgsField::setComment( const QString & comment )
 {
   mComment = comment;
 }
+
+QString QgsField::displayString( const QVariant& v ) const
+{
+  switch ( mType )
+  {
+    case QVariant::Double:
+      if ( mPrecision > 0 )
+      {
+        return QString::number( v.toDouble(), 'f', mPrecision );
+      }
+    default:
+      return v.toString();
+  }
+}

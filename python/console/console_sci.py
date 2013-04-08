@@ -30,9 +30,11 @@ import sys
 import os
 import code
 
+from qgis.core import QgsApplication
+
 _init_commands = ["from qgis.core import *", "import qgis.utils",
                   "from qgis.utils import iface"]
-_historyFile = os.path.join(str(QDir.homePath()),".qgis","console_history.txt")
+_historyFile = unicode( QgsApplication.qgisSettingsDirPath() + "console_history.txt" )
 
 class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
     def __init__(self, parent=None):
@@ -144,8 +146,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.setFocus()
 
     def setLexers(self):
-        from qgis.core import QgsApplication
-
         self.lexer = QsciLexerPython()
         settings = QSettings()
         loadFont = settings.value("pythonConsole/fontfamilytext", "Monospace").toString()

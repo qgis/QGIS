@@ -22,6 +22,7 @@ email                : sherman at mrcc.com
 #include <QList>
 #include <QHash>
 #include <QVector>
+#include <QSet>
 
 class QgsGeometry;
 class QgsRectangle;
@@ -115,6 +116,8 @@ class CORE_EXPORT QgsFeature
   public:
     //! Constructor
     QgsFeature( QgsFeatureId id = QgsFeatureId() );
+
+    QgsFeature( const QgsFields& fields, QgsFeatureId id = QgsFeatureId() );
 
     /** copy ctor needed due to internal pointer */
     QgsFeature( const QgsFeature & rhs );

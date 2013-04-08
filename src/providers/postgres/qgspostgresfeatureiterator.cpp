@@ -49,7 +49,10 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresProvider* p, 
 {
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "PostgreSQL" ) );
     P->mActiveIterator->close();
+  }
 
   mCursorName = QString( "qgisf%1" ).arg( P->mProviderId );
 
@@ -293,6 +296,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   bool fetchGeometry = !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
   if ( fetchGeometry && P->mGeometryColumn.isNull() )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Trying to fetch geometry on a layer without geometry." ), QObject::tr( "PostgreSQL" ) );
     return false;
   }
 

@@ -128,6 +128,9 @@ class QgsCustomization : public QObject
 
     void setSettings( QSettings* settings ) { mSettings = settings ;}
 
+    // Return the path to the splash screen
+    QString splashPath();
+
     // Load and set default customization
     void loadDefault();
 

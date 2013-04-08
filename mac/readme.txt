@@ -7,17 +7,13 @@ option QGIS_MACAPP_BUNDLE, and one that always occurs:
 
 0 = (default) fixup the library paths for all QGIS libraries if @loader_path
     is available in the system (OS X 10.5+)
-1 = bundle Qt, PyQt and PyQwt
+1 = bundle Qt, PyQt, PyQwt and OSG/osgEarth
 2 = additionally, bundle libraries, but not frameworks
 
 A third level that is not finished will additionally bundle frameworks.
 This would create the "standalone" QGIS.
 
-
-The 'extras' folder scripts are for packaging the old v1.0 build.  All the
-bundling is now handled in the cmake install, so these scripts are
-essentially deprecated.
-
-
-The Xcode project is now deprecated since the bundling now happens in the
-cmake build, including making sure library paths are all correct.
+There is also a configure option to set a user bundle script,
+QGIS_MACAPP_BUNDLE_USER.  This specifies the path to a cmake bundle script
+similar to the built-in bundle scripts for the defined levels. This script is
+always run independent of and after the QGIS_MACAPP_BUNDLE level specified.

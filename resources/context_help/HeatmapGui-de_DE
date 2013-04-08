@@ -1,10 +1,10 @@
 <h1>Heatmap-Erweiterung</h1>
-<p>Die Heatmap-Erweiterung erzeugt ein Raster für eine Punktlayer. Die Heatmap wird auf Basis der Punktanzahl an einer gegebenen Position berechnet. Je höher die Anzahl der Punkte, desto höher wird der zugehörige Pixelwert im Raster sein.</p>
+<p>Die Heatmap-Erweiterung erzeugt mit Hilfe von Kerndichteschätzung ein Dichteraster (Heatmap) für einen Punktlayer. Die Dichte wird auf Basis der Punktanzahl an einer Stelle berechnet, je größer die Anzahl der in einer Punkthäufung desto größer der Rasterwert.
 
 <h2>Parameter</h2>
 
 <h3>Eingabepunktlayer</h3>
-<p>Die Eingabe ist jeweils ein Punktlayer. In die Liste werden automatisch alle derzeit in die Karte geladenen Punktlayer übernommen.  Klicken Sie auf den Pfeil neben der Liste und wählen Sie den gewünschten Layer.</p>
+<p>Die Eingabe ist jeweils ein Punktlayer. In die Liste werden alle derzeit in die Karte geladenen Punktlayer übernommen.  Klicken Sie auf den Pfeil neben der Liste und wählen Sie den gewünschten Layer.</p>
 
 <h3>Ausgaberaster</h3>
 <p>Der Dateiname für das Ausgaberaster kann durch Klick auf <label>...</label> neben dem Eingabefeld gewählt werden.<br/>
@@ -15,12 +15,24 @@
 <b>Hinweis:</b> Die Formate GeoTiff und ERDAS Imagine .img werden empfohlen. Einige Formate können die Applikation zum Absturz bringen. Bleiben Sie bitte bei den empfohlenen Formate bis die Absturzursache beseitig ist oder wählen Sie ein anderes Format, wenn Sie wissen, dass GDAL es voll unterstützt.</p>
 
 <h3>Heatmap Punktattribute</h3>
-<h4>Pufferradius</h4>
-<p>Der Pufferradius gibt die Anzahl der <b>Pixel oder Zellen</b> um einen Punkt an, in dem die Hitze(wirkung) des Punktes point spürbar ist. Kleine Werte ergeben ein klare Trennung zwischen den Punkten und größere Werte ergeben schön gemischte Hitzebereiche. Dies ist der räumliche Parameter des Hitzeregion eines Punkts.<br/>
+<h4>Radius (Bandbreite)</h4>
+<p>Der Pufferradius gibt den Abstand um einen Punkt herum an, in dem die Wirkung des Punktes spürbar ist. Große Werte führen zu größer Glättung, aber kleinere Werte können genauere Resultate ergeben.<br/>
 <b>Hinweise:</b> Der Wert ist immer ganzzahlig.</p>
+
+<h4>Kernform</h4>
+<p>Der Kernform-Parameter bestimmt die Rate in der der Einfluß eines Punktes mit
+zunehmenden Abstand zum Punkt verfällt. Es sind mehrere Standardkernfunktionen
+verfügbar, welche im <a href="http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use">englischen
+Wikipedia</a> näher beschrieben sind.<p>
+
+<h4>Radius aus Feld nutzen</h4>
+<p>Wahlweise kann auch ein Attribut angegeben werden, das die Kernradien für die einzelnen Punkte des Eingabelayers festlegt.</p>
+
+<h4>Gewicht aus Feld nutzen</h4>
+<p>Wahlweise kann auch ein Attribut mit Punktgewichten zur stärkeren Gewichtung einiger Punkte des Eingabelayers verwendet werden.</p>
+
 <h4>Verfallrate</h4>
-<p>Die Verfallrate gibt den Betrag des Hitze(einfluß) an, der die äußersten Pixel des Pufferradius erreicht. Es ist der direkte Wert des äußeren Bereichs.<br/>
-<b>Beispiel:</b> Wenn die Verfallrate auf 0 und der Radius auf 10 gestellt ist, wird das mittige Pixel den Wert 1, die Pixel in einer Entfernung von 10 Einheiten den Wert 0, ein Pixel in der Entfernung von 5 Einheiten den Wert 0.5 und so weiter haben. Hier ist wird die Entfernung nicht in Pixeln, sondern mit sqrt( xOffset^2 + yOffset^2 ) gerechnet, damit Sie immer kreisförmige Hitzeregion erhalten.</p>
+<p>Für dreieckige Kerne gibt die Verfallrate gibt den Betrag des Einfluß der äußersten Pixel des Pufferradius an. Ein Wert von 0 definiert einen dreieckigen Standardkern, bei dem der Einfluß auf Null sinkt, wenn die Entfernung des Pixels sich dem definierten Radius nähert.  Im Gegensatz dazu definiert ein Wert von 1, dass kein Verfall bei zunehmendem Abstand stattfindet.</p>
 
 <h2>Weitere Einzelheiten</h2>
 <p>Sie können über aruntheguy at gmail dot com mit dem Autor Kontakt aufnehmen.</p>

@@ -1,0 +1,11 @@
+Gray Scale Morphological Operation
+otbcli_GrayScaleMorphologicalOperation
+Gray Scale Morphological Operation
+Image Filtering
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image
+ParameterNumber|-channel|Selected Channel|None|None|1
+ParameterSelection|-structype|Structuring Element Type|ball;cross|0
+ParameterNumber|-structype.ball.xradius|The Structuring Element X Radius|None|None|5
+ParameterNumber|-structype.ball.yradius|The Structuring Element Y Radius|None|None|5
+ParameterSelection|-filter|Morphological Operation|dilate;erode;opening;closing|0

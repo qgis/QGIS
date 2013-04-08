@@ -377,13 +377,18 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       continue;
     }
 
-    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  extent:%5" )
+    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  extent:%5  blendmode:%6" )
                  .arg( ml->name() )
                  .arg( ml->minimumScale() )
                  .arg( ml->maximumScale() )
                  .arg( ml->hasScaleBasedVisibility() )
                  .arg( ml->extent().toString() )
+                 .arg( ml->blendMode() )
                );
+
+    // Set the QPainter composition mode so that this layer is rendered using
+    // the desired blending mode
+    mypContextPainter->setCompositionMode( getCompositionMode( ml->blendMode() ) );
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {
@@ -539,7 +544,8 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
           delete mRenderContext.painter();
           mRenderContext.setPainter( mypContextPainter );
           //draw from cached image that we created further up
-          mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
+          if ( ml->cacheImage() )
+            mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
         }
       }
       disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
@@ -553,6 +559,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
   } // while (li.hasPrevious())
 
   QgsDebugMsg( "Done rendering map layers" );
+
+  // Reset the composition mode before rendering the labels
+  mRenderContext.painter()->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
   if ( !mOverview )
   {
@@ -1142,6 +1151,80 @@ const QgsCoordinateTransform* QgsMapRenderer::tr( QgsMapLayer *layer )
     return 0;
   }
   return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid() );
+}
+
+/** Returns a QPainter::CompositionMode corresponding to a QgsMapRenderer::BlendMode
+ */
+QPainter::CompositionMode QgsMapRenderer::getCompositionMode( const QgsMapRenderer::BlendMode blendMode )
+{
+  // Map QgsMapRenderer::BlendNormal to QPainter::CompositionMode
+  switch ( blendMode )
+  {
+    case QgsMapRenderer::BlendNormal:
+      return QPainter::CompositionMode_SourceOver;
+    case QgsMapRenderer::BlendLighten:
+      return QPainter::CompositionMode_Lighten;
+    case QgsMapRenderer::BlendScreen:
+      return QPainter::CompositionMode_Screen;
+    case QgsMapRenderer::BlendDodge:
+      return QPainter::CompositionMode_ColorDodge;
+    case QgsMapRenderer::BlendAddition:
+      return QPainter::CompositionMode_Plus;
+    case QgsMapRenderer::BlendDarken:
+      return QPainter::CompositionMode_Darken;
+    case QgsMapRenderer::BlendMultiply:
+      return QPainter::CompositionMode_Multiply;
+    case QgsMapRenderer::BlendBurn:
+      return QPainter::CompositionMode_ColorBurn;
+    case QgsMapRenderer::BlendOverlay:
+      return QPainter::CompositionMode_Overlay;
+    case QgsMapRenderer::BlendSoftLight:
+      return QPainter::CompositionMode_SoftLight;
+    case QgsMapRenderer::BlendHardLight:
+      return QPainter::CompositionMode_HardLight;
+    case QgsMapRenderer::BlendDifference:
+      return QPainter::CompositionMode_Difference;
+    case QgsMapRenderer::BlendSubtract:
+      return QPainter::CompositionMode_Exclusion;
+    default:
+      return QPainter::CompositionMode_SourceOver;
+  }
+}
+
+QgsMapRenderer::BlendMode QgsMapRenderer::getBlendModeEnum( const QPainter::CompositionMode blendMode )
+{
+  // Map QPainter::CompositionMode to QgsMapRenderer::BlendNormal
+  switch ( blendMode )
+  {
+    case QPainter::CompositionMode_SourceOver:
+      return QgsMapRenderer::BlendNormal;
+    case QPainter::CompositionMode_Lighten:
+      return QgsMapRenderer::BlendLighten;
+    case QPainter::CompositionMode_Screen:
+      return QgsMapRenderer::BlendScreen;
+    case QPainter::CompositionMode_ColorDodge:
+      return QgsMapRenderer::BlendDodge;
+    case QPainter::CompositionMode_Plus:
+      return QgsMapRenderer::BlendAddition;
+    case QPainter::CompositionMode_Darken:
+      return QgsMapRenderer::BlendDarken;
+    case QPainter::CompositionMode_Multiply:
+      return QgsMapRenderer::BlendMultiply;
+    case QPainter::CompositionMode_ColorBurn:
+      return QgsMapRenderer::BlendBurn;
+    case QPainter::CompositionMode_Overlay:
+      return QgsMapRenderer::BlendOverlay;
+    case QPainter::CompositionMode_SoftLight:
+      return QgsMapRenderer::BlendSoftLight;
+    case QPainter::CompositionMode_HardLight:
+      return QgsMapRenderer::BlendHardLight;
+    case QPainter::CompositionMode_Difference:
+      return QgsMapRenderer::BlendDifference;
+    case QPainter::CompositionMode_Exclusion:
+      return QgsMapRenderer::BlendSubtract;
+    default:
+      return QgsMapRenderer::BlendNormal;
+  }
 }
 
 bool QgsMapRenderer::mDrawing = false;

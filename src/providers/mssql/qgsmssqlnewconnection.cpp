@@ -49,7 +49,7 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
     {
       txtUsername->setText( settings.value( key + "/username" ).toString() );
       chkStoreUsername->setChecked( true );
-      cb_trustedConnection->setChecked (false);
+      cb_trustedConnection->setChecked( false );
     }
 
     if ( settings.value( key + "/savePassword" ).toString() == "true" )

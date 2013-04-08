@@ -44,7 +44,10 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteProvide
 {
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "SpatiaLite" ) );
     P->mActiveIterator->close();
+  }
   P->mActiveIterator = this;
 
   QString whereClause;

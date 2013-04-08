@@ -43,13 +43,16 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     bool variableRadius();
 
     /** Returns the fixed radius value */
-    float radius();
+    double radius();
 
     /** Return the radius Unit (meters/map units) */
     int radiusUnit();
 
+    /** Return the selected kernel shape */
+    int kernelShape();
+
     /** Return the decay ratio */
-    float decayRatio();
+    double decayRatio();
 
     /** Return the attribute field for variable radius */
     int radiusField();
@@ -73,10 +76,10 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     int columns() { return mColumns; }
 
     /** Returns the cell size X value */
-    float cellSizeX() { return mXcellsize; }
+    double cellSizeX() { return mXcellsize; }
 
     /** Returns the cell size Y valuue */
-    float cellSizeY() { return mYcellsize; }
+    double cellSizeY() { return mYcellsize; }
 
     /** Return the BBox */
     QgsRectangle bbox() { return mBBox; }
@@ -86,7 +89,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
 
     // bbox of layer for lineedit changes
     QgsRectangle mBBox;
-    float mXcellsize, mYcellsize;
+    double mXcellsize, mYcellsize;
     int mRows, mColumns;
 
     /** Function to check wether all constrains are satisfied and enable the OK button */
@@ -102,7 +105,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void updateSize();
 
     /** Convert Maters value to the corresponding map units based on Layer projection */
-    float mapUnitsOf( float meters, QgsCoordinateReferenceSystem layerCrs );
+    double mapUnitsOf( double meters, QgsCoordinateReferenceSystem layerCrs );
 
   private slots:
     void on_mButtonBox_accepted();
@@ -120,6 +123,13 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void on_mRadiusUnitCombo_currentIndexChanged( int index );
     void on_mInputVectorCombo_currentIndexChanged( int index );
     void on_mBufferLineEdit_editingFinished();
+    void on_kernelShapeCombo_currentIndexChanged( int index );
+
+    /** Estimate a reasonable starting value for the radius field */
+    double estimateRadius();
+
+    inline double max( double a, double b )
+    { return a > b ? a : b; }
 };
 
 #endif

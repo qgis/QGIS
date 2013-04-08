@@ -20,6 +20,7 @@
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsogcutils.h"
 
 #include <QSet>
 
@@ -538,7 +539,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::createFromSld( QDomE
     }
     else if ( childElem.localName() == "Filter" )
     {
-      QgsExpression *filter = QgsExpression::createFromOgcFilter( childElem );
+      QgsExpression *filter = QgsOgcUtils::expressionFromOgcFilter( childElem );
       if ( filter )
       {
         if ( filter->hasParserError() )

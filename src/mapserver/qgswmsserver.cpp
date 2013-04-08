@@ -33,9 +33,7 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgssldparser.h"
-#include "qgssymbol.h"
 #include "qgssymbolv2.h"
-#include "qgsrenderer.h"
 #include "qgsrendererv2.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
@@ -255,6 +253,14 @@ QImage* QgsWMSServer::getLegendGraphics()
   if ( !mConfigParser || !mMapRenderer )
   {
     return 0;
+  }
+  if ( !mParameterMap.contains( "LAYER" ) && !mParameterMap.contains( "LAYERS" ) )
+  {
+    throw QgsMapServiceException( "LayerNotSpecified", "LAYER is mandatory for GetLegendGraphic operation" );
+  }
+  if ( !mParameterMap.contains( "FORMAT" ) )
+  {
+    throw QgsMapServiceException( "FormatNotSpecified", "FORMAT is mandatory for GetLegendGraphic operation" );
   }
 
   QStringList layersList, stylesList;
@@ -965,8 +971,8 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 #endif
   mMapRenderer->setLayerSet( layerIdList );
 
-  //set selection color prior to each render to avoid problems with caching (selection color is a global property of QgsRenderer)
-  QgsRenderer::setSelectionColor( mConfigParser->selectionColor() );
+  //set selection color prior to each render to avoid problems with caching (selection color is a global property of QgsSymbolV2RenderContext)
+  QgsSymbolV2RenderContext::setSelectionColor( mConfigParser->selectionColor() );
   return theImage;
 }
 
@@ -1107,7 +1113,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
 
   // Change x- and y- of BBOX for WMS 1.3.0 if axis inverted
   QString version = mParameterMap.value( "VERSION", "1.3.0" );
-  if ( version == "1.3.0" && outputCRS.axisInverted() )
+  if ( version != "1.1.1" && outputCRS.axisInverted() )
   {
     //switch coordinates of extent
     double tmp;
@@ -1134,9 +1140,11 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
 
 int QgsWMSServer::readLayersAndStyles( QStringList& layersList, QStringList& stylesList ) const
 {
-  //get layer and style lists from the parameters
-  layersList = mParameterMap.value( "LAYERS" ).split( "," );
-  stylesList = mParameterMap.value( "STYLES" ).split( "," );
+  //get layer and style lists from the parameters trying LAYERS and LAYER as well as STYLE and STYLES for GetLegendGraphic compatibility
+  layersList = mParameterMap.value( "LAYER" ).split( "," );
+  layersList = layersList + mParameterMap.value( "LAYERS" ).split( "," );
+  stylesList = mParameterMap.value( "STYLE" ).split( "," );
+  stylesList = stylesList + mParameterMap.value( "STYLES" ).split( "," );
 
   return 0;
 }
@@ -1281,30 +1289,19 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       break;
     }
 
-    //check if feature is rendered at all
-    if ( layer->isUsingRendererV2() )
+    QgsFeatureRendererV2* r2 = layer->rendererV2();
+    if ( !r2 )
     {
-      QgsFeatureRendererV2* r2 = layer->rendererV2();
-      if ( !r2 )
-      {
-        continue;
-      }
-
-      r2->startRender( renderContext, layer );
-      bool renderV2 = r2->willRenderFeature( feature );
-      r2->stopRender( renderContext );
-      if ( !renderV2 )
-      {
-        continue;
-      }
+      continue;
     }
-    else
+
+    //check if feature is rendered at all
+    r2->startRender( renderContext, layer );
+    bool renderV2 = r2->willRenderFeature( feature );
+    r2->stopRender( renderContext );
+    if ( !renderV2 )
     {
-      QgsRenderer* r = const_cast<QgsRenderer*>( layer->renderer() ); //bad, 'willRenderFeature' should be const
-      if ( !r || !r->willRenderFeature( &feature ) )
-      {
-        continue;
-      }
+      continue;
     }
 
     QDomElement featureElement = infoDocument.createElement( "Feature" );
@@ -1537,9 +1534,6 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
     QgsComposerLegendItem::ItemType type = currentComposerItem->itemType();
     switch ( type )
     {
-      case QgsComposerLegendItem::SymbologyItem:
-        drawLegendSymbol( currentComposerItem, p, boxSpace, currentY, currentSymbolWidth, currentSymbolHeight, opacity, dpi, symbolDownShift );
-        break;
       case QgsComposerLegendItem::SymbologyV2Item:
         drawLegendSymbolV2( currentComposerItem, p, boxSpace, currentY, currentSymbolWidth, currentSymbolHeight, dpi, symbolDownShift );
         break;
@@ -1551,6 +1545,9 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
         break;
       case QgsComposerLegendItem::LayerItem:
         //QgsDebugMsg( "GroupItem not handled" );
+        break;
+      case QgsComposerLegendItem::StyleItem:
+        //QgsDebugMsg( "StyleItem not handled" );
         break;
     }
 
@@ -1589,108 +1586,6 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
   }
 }
 
-void QgsWMSServer::drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity,
-                                     double dpi, double yDownShift ) const
-{
-  QgsComposerSymbolItem* symbolItem = dynamic_cast< QgsComposerSymbolItem* >( item );
-  if ( !symbolItem )
-  {
-    return;
-  }
-
-  QgsSymbol* symbol = symbolItem->symbol();
-  if ( !symbol )
-  {
-    return;
-  }
-
-  QGis::GeometryType symbolType = symbol->type();
-  switch ( symbolType )
-  {
-    case QGis::Point:
-      drawPointSymbol( p, symbol, boxSpace, currentY, symbolWidth, symbolHeight, layerOpacity, dpi );
-      break;
-    case QGis::Line:
-      drawLineSymbol( p, symbol, boxSpace, currentY, symbolWidth, symbolHeight, layerOpacity, yDownShift );
-      break;
-    case QGis::Polygon:
-      drawPolygonSymbol( p, symbol, boxSpace, currentY, symbolWidth, symbolHeight, layerOpacity, yDownShift );
-      break;
-    case QGis::UnknownGeometry:
-    case QGis::NoGeometry:
-      // shouldn't occur
-      break;
-  }
-}
-
-void QgsWMSServer::drawPointSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight, double layerOpacity, double dpi ) const
-{
-  if ( !s )
-  {
-    return;
-  }
-
-  QImage pointImage;
-
-  //width scale is 1.0
-  pointImage = s->getPointSymbolAsImage( dpi / 25.4, false, Qt::yellow, 1.0, 0.0, 1.0, layerOpacity / 255.0 );
-
-  if ( p )
-  {
-    QPointF imageTopLeft( boxSpace, currentY );
-    p->drawImage( imageTopLeft, pointImage );
-  }
-
-  symbolWidth = pointImage.width();
-  symbolHeight = pointImage.height();
-}
-
-void QgsWMSServer::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double layerOpacity, double yDownShift ) const
-{
-  if ( !s || !p )
-  {
-    return;
-  }
-
-  p->save();
-
-  //brush
-  QBrush symbolBrush = s->brush();
-  QColor brushColor = symbolBrush.color();
-  brushColor.setAlpha( layerOpacity );
-  symbolBrush.setColor( brushColor );
-  p->setBrush( symbolBrush );
-
-  //pen
-  QPen symbolPen = s->pen();
-  QColor penColor = symbolPen.color();
-  penColor.setAlpha( layerOpacity );
-  symbolPen.setColor( penColor );
-  p->setPen( symbolPen );
-
-  p->drawRect( QRectF( boxSpace, currentY + yDownShift, symbolWidth, symbolHeight ) );
-
-  p->restore();
-}
-
-void QgsWMSServer::drawLineSymbol( QPainter* p, QgsSymbol* s, double boxSpace, double currentY, double symbolWidth, double symbolHeight, double layerOpacity, double yDownShift ) const
-{
-  if ( !s || !p )
-  {
-    return;
-  }
-
-  p->save();
-  QPen symbolPen = s->pen();
-  QColor penColor = symbolPen.color();
-  penColor.setAlpha( layerOpacity );
-  symbolPen.setColor( penColor );
-  symbolPen.setCapStyle( Qt::FlatCap );
-  p->setPen( symbolPen );
-  double lineY = currentY + symbolHeight / 2.0 + symbolPen.widthF() / 2.0 + yDownShift;
-  p->drawLine( QPointF( boxSpace, lineY ), QPointF( boxSpace + symbolWidth, lineY ) );
-  p->restore();
-}
 
 void QgsWMSServer::drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth,
                                        double& symbolHeight, double dpi, double yDownShift ) const
@@ -1862,6 +1757,9 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
   }
 
   QStringList tokens = filter.split( " ", QString::SkipEmptyParts );
+  groupStringList( tokens, "'" );
+  groupStringList( tokens, "\"" );
+
   QStringList::const_iterator tokenIt = tokens.constBegin();
   for ( ; tokenIt != tokens.constEnd(); ++tokenIt )
   {
@@ -1924,6 +1822,55 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
   }
 
   return true;
+}
+
+void QgsWMSServer::groupStringList( QStringList& list, const QString& groupString )
+{
+  //group contens within single quotes together
+  bool groupActive = false;
+  int startGroup = -1;
+  int endGroup = -1;
+  QString concatString;
+
+  for ( int i = 0; i < list.size(); ++i )
+  {
+    QString& str = list[i];
+    if ( str.startsWith( groupString ) )
+    {
+      startGroup = i;
+      groupActive = true;
+      concatString.clear();
+    }
+
+    if ( groupActive )
+    {
+      if ( i != startGroup )
+      {
+        concatString.append( " " );
+      }
+      concatString.append( str );
+    }
+
+    if ( str.endsWith( groupString ) )
+    {
+      endGroup = i;
+      groupActive = false;
+
+      if ( startGroup != -1 )
+      {
+        list[startGroup] = concatString;
+        for ( int j = startGroup + 1; j <= endGroup; ++j )
+        {
+          list.removeAt( j );
+          --i;
+        }
+      }
+
+      concatString.clear();
+      startGroup = -1;
+      endGroup = -1;
+    }
+  }
 }
 
 QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList ) const
@@ -2049,23 +1996,16 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
     if ( ml->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
-      if ( vl && vl->isUsingRendererV2() )
+
+      QgsFeatureRendererV2* rendererV2 = vl->rendererV2();
+      //backup old renderer
+      vectorRenderers.push_back( qMakePair( vl, rendererV2->clone() ) );
+      //modify symbols of current renderer
+      QgsSymbolV2List symbolList = rendererV2->symbols();
+      QgsSymbolV2List::iterator symbolIt = symbolList.begin();
+      for ( ; symbolIt != symbolList.end(); ++symbolIt )
       {
-        QgsFeatureRendererV2* rendererV2 = vl->rendererV2();
-        //backup old renderer
-        vectorRenderers.push_back( qMakePair( vl, rendererV2->clone() ) );
-        //modify symbols of current renderer
-        QgsSymbolV2List symbolList = rendererV2->symbols();
-        QgsSymbolV2List::iterator symbolIt = symbolList.begin();
-        for ( ; symbolIt != symbolList.end(); ++symbolIt )
-        {
-          ( *symbolIt )->setAlpha(( *symbolIt )->alpha() * opacityRatio );
-        }
-      }
-      else //old symbology
-      {
-        vectorOld.push_back( qMakePair( vl, vl->getTransparency() ) );
-        vl->setTransparency( opacity );
+        ( *symbolIt )->setAlpha(( *symbolIt )->alpha() * opacityRatio );
       }
 
       //labeling
@@ -2220,7 +2160,7 @@ QString QgsWMSServer::serviceUrl() const
 
 void QgsWMSServer::addXMLDeclaration( QDomDocument& doc ) const
 {
-  QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( "xml", "version=\"1.0\"" );
+  QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"utf-8\"" );
   doc.appendChild( xmlDeclaration );
 }
 

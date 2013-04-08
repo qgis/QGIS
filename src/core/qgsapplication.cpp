@@ -84,7 +84,7 @@ void QgsApplication::init( QString customConfigPath )
 {
   if ( customConfigPath.isEmpty() )
   {
-    customConfigPath = QDir::homePath() + QString( "/.qgis/" );
+    customConfigPath = QDir::homePath() + QString( "/.qgis%1/" ).arg( 2 /* FIXME QGis::QGIS_VERSION_INT / 10000 */ );
   }
 
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
@@ -118,7 +118,7 @@ void QgsApplication::init( QString customConfigPath )
   {
     // we run from source directory - not installed to destination (specified prefix)
     ABISYM( mPrefixPath ) = QString(); // set invalid path
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && ! defined(USING_NMAKE)
     setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) + "/" + ABISYM( mCfgIntDir ) );
 #else
     setPluginPath( ABISYM( mBuildOutputPath ) + "/" + QString( QGIS_PLUGIN_SUBDIR ) );

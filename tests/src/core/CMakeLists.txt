@@ -10,8 +10,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/renderer
-  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
@@ -110,3 +108,4 @@ ADD_QGIS_TEST(composerhtmltest testqgscomposerhtml.cpp )
 ADD_QGIS_TEST(rectangletest testqgsrectangle.cpp)
 ADD_QGIS_TEST(composerscalebartest testqgscomposerscalebar.cpp )
 ADD_QGIS_TEST(ogcutilstest testqgsogcutils.cpp)
+ADD_QGIS_TEST(vectorlayercachetest testqgsvectorlayercache.cpp )

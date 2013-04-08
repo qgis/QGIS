@@ -26,6 +26,7 @@
 #include "ui_qgsattributetabledialog.h"
 #include "qgscontexthelp.h"
 
+#include "qgsattributedialog.h"
 #include "qgsvectorlayer.h" //QgsFeatureIds
 
 class QDialogButtonBox;
@@ -34,7 +35,7 @@ class QLineEdit;
 class QComboBox;
 class QMenu;
 class QDockWidget;
-class QProgressDialog;
+class QSignalMapper;
 
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
@@ -54,60 +55,23 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
     QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent = 0, Qt::WindowFlags flags = Qt::Window );
     ~QgsAttributeTableDialog();
 
+    /**
+     * Sets the filter expression to filter visible features
+     * @param filterString filter query string. QgsExpression compatible.
+     */
+    void setFilterExpression( QString filterString );
+
   public slots:
     /**
      * Toggles editing mode
      */
     void editingToggled();
 
-    void viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex );
-
-    void progress( int i, bool &cancel );
-    void finished();
-
   private slots:
-    /**
-     * Launches search
-     */
-    void search();
-    /**
-     * Launches advanced search
-     */
-    void on_mAdvancedSearchButton_clicked();
-    /**
-     * Updates the selection
-     */
-    void updateSelection();
-    /**
-     * Reads the selection from the layer
-     */
-    void updateSelectionFromLayer();
-    /**
-     * Updates selection of a row
-     */
-    void updateRowSelection( int index );
-    /**
-     * Updates the index pressed
-     */
-    void updateRowPressed( int index );
-    /**
-     * Updates selection of specified rows
-     * @param first first row
-     * @param last last row
-     * @param clickType 0:Single click, 1:Shift, 2:Ctrl, 3:dragged click
-     */
-    void updateRowSelection( int first, int last, int clickType );
-
-    /**
-     * Toggle showing of selected line only
-     * @param theFlag toggle on if true
-     */
-    void on_cbxShowSelectedOnly_toggled( bool theFlag );
     /**
      * Copies selected rows to the clipboard
      */
     void on_mCopySelectedRowsButton_clicked();
-
     /**
      * Toggles editing mode
      */
@@ -116,6 +80,7 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      * Saves edits
      */
     void on_mSaveEditsButton_clicked();
+
     /**
      * Inverts selection
      */
@@ -135,15 +100,16 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
     /**
      * Moves selected lines to the top
      */
-    void on_mSelectedToTopButton_clicked();
-    /**
-     * Shows advanced actions
-     */
-    void showAdvanced();
+    void on_mSelectedToTopButton_toggled();
 
-    /**Opens dialog to add new attribute*/
+    /**
+     * Opens dialog to add new attribute
+     */
     void on_mAddAttribute_clicked();
-    /**Opens dialog to remove attribute*/
+
+    /**
+     * Opens dialog to remove attribute
+     */
     void on_mRemoveAttribute_clicked();
     /**
      * Opens field calculator dialog
@@ -158,9 +124,19 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
     /**
      * add feature
      */
-    void addFeature();
+    void on_mAddFeature_clicked();
 
     void on_mHelpButton_clicked() { QgsContextHelp::run( metaObject()->className() ); }
+
+    void on_mExpressionSelectButton_clicked();
+    void filterColumnChanged( QObject* filterAction );
+    void filterExpressionBuilder();
+    void filterShowAll();
+    void filterSelected();
+    void filterVisible();
+    void filterEdited();
+    void filterQueryChanged( const QString& query );
+    void filterQueryAccepted();
 
   signals:
     /**
@@ -187,60 +163,21 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      * Initialize column box
      */
     void columnBoxInit();
-    /**
-     * Returns id of a column
-     */
-    int columnBoxColumnId();
-    /**
-     * Performs the search
-     * @param searchString search query string
-     */
-    void doSearch( QString searchString );
 
     /**
      * update window title
      */
     void updateTitle();
 
-    QLineEdit *mQuery;
-    QComboBox *mColumnBox;
-
     QMenu* mMenuActions;
     QAction* mActionToggleEditing;
 
-    QgsAttributeTableModel *mModel;
-    QgsAttributeTableFilterModel *mFilterModel;
-    QDockWidget *mDock;
-    QgsVectorLayer *mLayer;
-    QProgressDialog *mProgress;
-    QTime mStarted;
-    bool mWorkaround;
-    QgsFeatureIds mSelectedFeatures;
-    int mIndexPressed;
+    QDockWidget* mDock;
 
-    QItemSelectionModel* mSelectionModel;
-    int mLastClickedHeaderIndex;
+    QMenu* mFilterColumnsMenu;
+    QSignalMapper* mFilterActionMapper;
+
+    QgsVectorLayer* mLayer;
 };
-
-
-class QgsAttributeTableAction : public QAction
-{
-    Q_OBJECT
-
-  public:
-    QgsAttributeTableAction( const QString &name, QgsAttributeTableView *view, QgsAttributeTableModel *model, int action, const QModelIndex &fieldIdx ) :
-        QAction( name, view ), mModel( model ), mAction( action ), mFieldIdx( fieldIdx )
-    {}
-
-  public slots:
-    void execute();
-    void featureForm();
-
-  private:
-    QgsAttributeTableModel *mModel;
-    int mAction;
-    QModelIndex mFieldIdx;
-};
-
 
 #endif

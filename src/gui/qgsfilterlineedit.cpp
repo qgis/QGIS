@@ -21,11 +21,14 @@
 #include <QToolButton>
 #include <QStyle>
 
-QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent ) : QLineEdit( parent )
+QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, QString nullValue )
+    : QLineEdit( parent )
+    , mNullValue( nullValue )
 {
   btnClear = new QToolButton( this );
   btnClear->setIcon( QgsApplication::getThemeIcon( "/mIconClear.png" ) );
   btnClear->setCursor( Qt::ArrowCursor );
+  btnClear->setFocusPolicy( Qt::NoFocus );
   btnClear->setStyleSheet( "QToolButton { border: none; padding: 0px; }" );
   btnClear->hide();
 
@@ -51,7 +54,22 @@ void QgsFilterLineEdit::resizeEvent( QResizeEvent * )
                   ( rect().bottom() + 1 - sz.height() ) / 2 );
 }
 
+void QgsFilterLineEdit::clear()
+{
+  setText( mNullValue );
+  setModified( true );
+}
+
+void QgsFilterLineEdit::changeEvent( QEvent *e )
+{
+  QLineEdit::changeEvent( e );
+  if ( !isEnabled() )
+    btnClear->setVisible( false );
+  else
+    btnClear->setVisible( text() != mNullValue );
+}
+
 void QgsFilterLineEdit::toggleClearButton( const QString &text )
 {
-  btnClear->setVisible( !text.isEmpty() );
+  btnClear->setVisible( !isReadOnly() && text != mNullValue );
 }

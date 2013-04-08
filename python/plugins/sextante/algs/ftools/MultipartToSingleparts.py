@@ -55,11 +55,9 @@ class MultipartToSingleparts(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        provider = layer.dataProvider()
+        geomType = self.multiToSingleGeom(layer.dataProvider().geometryType())
 
-        geomType = self.multiToSingleGeom(provider.geometryType())
-
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      geomType, layer.crs())
 
         outFeat = QgsFeature()
@@ -68,15 +66,15 @@ class MultipartToSingleparts(GeoAlgorithm):
         current = 0
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
-        for inFeat in features:
-            inGeom = inFeat.geometry()
-            atMap = inFeat.attributes()
+        for f in features:
+            inGeom = f.geometry()
+            attrs = f.attributes()
 
-            features = self.extractAsSingle(inGeom)
-            outFeat.setAttributes(atMap)
+            geometries = self.extractAsSingle(inGeom)
+            outFeat.setAttributes(attrs)
 
-            for f in features:
-                outFeat.setGeometry(f)
+            for g in geometries:
+                outFeat.setGeometry(g)
                 writer.addFeature(outFeat)
 
             current += 1
@@ -84,17 +82,16 @@ class MultipartToSingleparts(GeoAlgorithm):
 
         del writer
 
-
     def multiToSingleGeom(self, wkbType):
         try:
             if wkbType in (QGis.WKBPoint, QGis.WKBMultiPoint,
-                            QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
+                           QGis.WKBPoint25D, QGis.WKBMultiPoint25D):
                 return QGis.WKBPoint
             elif wkbType in (QGis.WKBLineString, QGis.WKBMultiLineString,
-                              QGis.WKBMultiLineString25D, QGis.WKBLineString25D):
+                             QGis.WKBMultiLineString25D, QGis.WKBLineString25D):
                 return QGis.WKBLineString
             elif wkbType in (QGis.WKBPolygon, QGis.WKBMultiPolygon,
-                              QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
+                             QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D):
                 return QGis.WKBPolygon
             else:
                 return QGis.WKBUnknown

@@ -22,6 +22,19 @@
 QgsLabelPreview::QgsLabelPreview( QWidget* parent )
     : QLabel( parent )
 {
+  mTmpLyr = new QgsPalLayerSettings();
+
+  // construct a device-based render context
+  QgsMapToPixel newCoordXForm;
+  newCoordXForm.setParameters( 0, 0, 0, 0 );
+  mContext = new QgsRenderContext();
+  mContext->setMapToPixel( newCoordXForm );
+}
+
+QgsLabelPreview::~QgsLabelPreview()
+{
+  delete mTmpLyr;
+  delete mContext;
 }
 
 void QgsLabelPreview::setTextColor( QColor color )
@@ -32,10 +45,13 @@ void QgsLabelPreview::setTextColor( QColor color )
 
 void QgsLabelPreview::setBuffer( double size, QColor color, Qt::PenJoinStyle joinStyle, bool noFill )
 {
-  mBufferSize = size * 88 / 25.4; //assume standard dpi for preview
-  mBufferColor = color;
-  mBufferJoinStyle = joinStyle;
-  mBufferNoFill = noFill;
+  mTmpLyr->bufferSize = size * 88 / 25.4; //assume standard dpi for preview;
+  mTmpLyr->bufferSizeInMapUnits = false;
+  mTmpLyr->bufferColor = color;
+  mTmpLyr->bufferJoinStyle = joinStyle;
+  mTmpLyr->bufferNoFill = noFill;
+
+  mTmpLyr->textFont = font();
   update();
 }
 
@@ -49,17 +65,20 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
   QFontMetrics fm( font() );
 
   // otherwise thin buffers don't look like those on canvas
-  if ( mBufferSize != 0 && mBufferSize < 1 )
-    mBufferSize = 1;
+  if ( mTmpLyr->bufferSize != 0 && mTmpLyr->bufferSize < 1 )
+    mTmpLyr->bufferSize = 1;
 
   double xtrans = 0;
-  if ( mBufferSize != 0 )
-    xtrans = mBufferSize / 4;
+  if ( mTmpLyr->bufferSize != 0 )
+    xtrans = mTmpLyr->bufferSize / 4;
 
   p.translate( xtrans, fm.ascent() + 4 );
 
-  if ( mBufferSize != 0 )
-    QgsPalLabeling::drawLabelBuffer( &p, text(), font(), mBufferSize, mBufferColor, mBufferJoinStyle, mBufferNoFill );
+  if ( mTmpLyr->bufferSize != 0 )
+  {
+    mContext->setPainter( &p );
+    QgsPalLabeling::drawLabelBuffer( *mContext, text(), *mTmpLyr );
+  }
 
   QPainterPath path;
   path.addText( 0, 0, font(), text() );

@@ -39,7 +39,6 @@ IF(WIN32)
 ELSE(WIN32)
 
  IF(UNIX)
-
     # try to use framework on mac
     # want clean framework path, not unix compatibility path
     IF (APPLE)
@@ -68,6 +67,10 @@ ELSE(WIN32)
         SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
       ENDIF ()
     ENDIF (APPLE)
+
+    IF(CYGWIN)
+      FIND_LIBRARY(GEOS_LIBRARY NAMES geos_c PATHS /usr/lib /usr/local/lib)
+    ENDIF(CYGWIN)
 
     IF (NOT GEOS_INCLUDE_DIR OR NOT GEOS_LIBRARY OR NOT GEOS_CONFIG)
       # didn't find OS X framework, and was not set by user

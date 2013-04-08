@@ -72,6 +72,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     bool sortAscending() const { return mSortAscending; }
     void setSortAscending( bool ascending ) { mSortAscending = ascending; }
 
+    bool filterFeatures() const { return mFilterFeatures; }
+    void setFilterFeatures( bool doFilter ) { mFilterFeatures = doFilter; }
+
     QString featureFilter() const { return mFeatureFilter; }
     void setFeatureFilter( const QString& expression ) { mFeatureFilter = expression; }
 
@@ -127,7 +130,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     // key (attribute index) used for ordering
     size_t mSortKeyAttributeIdx;
 
-    // feature expression filter (or empty)
+    // feature filtering
+    bool mFilterFeatures;
+    // feature expression filter
     QString mFeatureFilter;
 
     // id of each iterated feature (after filtering and sorting)

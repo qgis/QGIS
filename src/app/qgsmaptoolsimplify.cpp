@@ -33,6 +33,10 @@ QgsSimplifyDialog::QgsSimplifyDialog( QWidget* parent )
   setupUi( this );
   connect( horizontalSlider, SIGNAL( valueChanged( int ) ),
            this, SLOT( valueChanged( int ) ) );
+  connect( horizontalSlider, SIGNAL( valueChanged( int ) ),
+           spinBox, SLOT( setValue( int ) ) );
+  connect( spinBox, SIGNAL( valueChanged( int ) ),
+           horizontalSlider, SLOT( setValue( int ) ) );
   connect( okButton, SIGNAL( clicked() ),
            this, SLOT( simplify() ) );
 
@@ -55,7 +59,7 @@ void QgsSimplifyDialog::setRange( int minValue, int maxValue )
 
   horizontalSlider->setMinimum(( minValue - 1 < 0 ? 0 : minValue - 1 ) );// -1 for count with minimum tolerance end caused by double imprecision
   horizontalSlider->setMaximum( maxValue );
-
+  spinBox->setRange( horizontalSlider->minimum(), horizontalSlider->maximum() );
 }
 
 

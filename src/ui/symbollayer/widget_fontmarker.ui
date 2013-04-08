@@ -22,50 +22,64 @@
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
+     <property name="horizontalSpacing">
+      <number>6</number>
+     </property>
      <property name="leftMargin">
       <number>0</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
-     <property name="horizontalSpacing">
-      <number>6</number>
-     </property>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Size</string>
+        <string>Offset X,Y</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QgsColorButtonV2" name="btnColor">
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Change</string>
+        <string>Rotation</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
+     <item row="3" column="0">
+      <widget class="QLabel" name="mSizeUnitLabel">
        <property name="text">
-        <string>Font family</string>
+        <string>Size unit</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QDoubleSpinBox" name="spinAngle">
-       <property name="suffix">
-        <string>°</string>
-       </property>
+      <widget class="QComboBox" name="mSizeUnitComboBox">
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Map unit</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="spinSize">
        <property name="decimals">
-        <number>1</number>
+        <number>5</number>
        </property>
        <property name="maximum">
-        <double>360.000000000000000</double>
+        <double>99999999.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>12.000000000000000</double>
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetX">
@@ -95,10 +109,10 @@
        </item>
       </layout>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_5">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Offset X,Y</string>
+        <string>Size</string>
        </property>
       </widget>
      </item>
@@ -109,25 +123,56 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="spinSize">
-       <property name="decimals">
-        <number>5</number>
-       </property>
-       <property name="value">
-        <double>12.000000000000000</double>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Font family</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_4">
+     <item row="1" column="1">
+      <widget class="QgsColorButton" name="btnColor">
        <property name="text">
-        <string>Rotation</string>
+        <string>Change...</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
       <widget class="QFontComboBox" name="cboFont"/>
+     </item>
+     <item row="4" column="1">
+      <widget class="QDoubleSpinBox" name="spinAngle">
+       <property name="suffix">
+        <string>°</string>
+       </property>
+       <property name="decimals">
+        <number>1</number>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QComboBox" name="mOffsetUnitComboBox">
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Map unit</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="mOffsetUnitLabel">
+       <property name="text">
+        <string>Offset unit</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -149,7 +194,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>

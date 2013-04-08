@@ -90,6 +90,8 @@ class QgsFeature
     //! Constructor
     QgsFeature( qint64 id = 0 );
 
+    QgsFeature( const QgsFields& fields, qint64 id = 0 );
+
     /** copy ctor needed due to internal pointer */
     QgsFeature( const QgsFeature & rhs );
 

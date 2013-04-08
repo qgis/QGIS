@@ -3,8 +3,7 @@
 """
 ***************************************************************************
     DensifyGeometriesInterval.py by Anita Graser, Dec 2012
-      based on
-    DensifyGeometries.py
+    based on DensifyGeometries.py
     ---------------------
     Date                 : October 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -58,20 +57,19 @@ class DensifyGeometriesInterval(GeoAlgorithm):
 
         isPolygon = layer.geometryType() == QGis.Polygon
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields(),
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
                      layer.wkbType(), layer.crs())
-
 
         features = QGisLayers.features(layer)
         total = 100.0 / float(len(features))
         current = 0
         for f in features:
             featGeometry = QgsGeometry(f.geometry())
-            attrMap = f.attributes()
+            attrs = f.attributes()
             newGeometry = self.densifyGeometry(featGeometry, interval, isPolygon)
             feature = QgsFeature()
             feature.setGeometry(newGeometry)
-            feature.setAttributes(attrMap)
+            feature.setAttributes(attrs)
             writer.addFeature(feature)
 
             current += 1

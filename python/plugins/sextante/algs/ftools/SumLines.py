@@ -71,15 +71,11 @@ class SumLines(GeoAlgorithm):
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 
         polyProvider = polyLayer.dataProvider()
-        lineProvider = lineLayer.dataProvider()
-        if polyProvider.crs() != lineProvider.crs():
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING,
-                                 "CRS warning: Input layers have non-matching CRS. This may cause unexpected results.")
 
         idxLength, fieldList = utils.findOrCreateField(polyLayer, polyLayer.pendingFields(), lengthFieldName)
         idxCount, fieldList = utils.findOrCreateField(polyLayer, fieldList, countFieldName)
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList,
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fieldList.toList(),
                      polyProvider.geometryType(), polyProvider.crs())
 
         spatialIndex = utils.createSpatialIndex(lineLayer)
@@ -97,7 +93,7 @@ class SumLines(GeoAlgorithm):
         hasIntersections = False
         for ftPoly in features:
             inGeom = QgsGeometry(ftPoly.geometry())
-            atMap = ftPoly.attributes()
+            attrs = ftPoly.attributes()
             count = 0
             length = 0
             hasIntersections = False
@@ -107,7 +103,8 @@ class SumLines(GeoAlgorithm):
 
             if hasIntersections:
                 for i in lines:
-                    lineLayer.featureAtId(int(i), ftLine)
+                    request = QgsFeatureRequest().setFilterFid(i)
+                    ftLine = lineLayer.getFeatures(request).next()
                     tmpGeom = QgsGeometry(ftLine.geometry())
                     if inGeom.intersects(tmpGeom):
                         outGeom = inGeom.intersection(tmpGeom)
@@ -115,15 +112,15 @@ class SumLines(GeoAlgorithm):
                         count += 1
 
             outFeat.setGeometry(inGeom)
-            if idxLength == len(atMap):
-                atMap.append(QVariant(length))
+            if idxLength == len(attrs):
+                attrs.append(QVariant(length))
             else:
-                atMap[idxLength] = QVariant(length)
-            if idxCount == len(atMap):
-                atMap.append(QVariant(count))
+                attrs[idxLength] = QVariant(length)
+            if idxCount == len(attrs):
+                attrs.append(QVariant(count))
             else:
-                atMap[idxCount] = QVariant(count)
-            outFeat.setAttributes(atMap)
+                attrs[idxCount] = QVariant(count)
+            outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
             current += 1

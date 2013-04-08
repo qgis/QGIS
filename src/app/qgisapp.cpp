@@ -69,6 +69,7 @@
 
 #include <qgsnetworkaccessmanager.h>
 #include <qgsapplication.h>
+#include <qgscomposition.h>
 
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -109,6 +110,7 @@
 #include "qgsclipboard.h"
 #include "qgscomposer.h"
 #include "qgscomposermanager.h"
+#include "qgscomposerview.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscredentialdialog.h"
@@ -124,6 +126,7 @@
 #include "qgserror.h"
 #include "qgserrordialog.h"
 #include "qgsexception.h"
+#include "qgsexpressionselectiondialog.h"
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
 #include "qgshtmlannotationitem.h"
@@ -169,10 +172,10 @@
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasternuller.h"
+#include "qgsbrightnesscontrastfilter.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
-#include "qgsrenderer.h"
 #include "qgsscalecombobox.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
@@ -269,13 +272,11 @@
 
 #include <sqlite3.h>
 
-#ifdef HAVE_SPATIALITE
 extern "C"
 {
 #include <spatialite.h>
 }
 #include "qgsnewspatialitelayerdialog.h"
-#endif
 
 #include "qgspythonutils.h"
 
@@ -718,7 +719,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // update windows
   qApp->processEvents();
 
-  fileNewBlank(); // prepare empty project
+  // check if a project has been loaded already via drag/drop or filesystem loading
+  if ( !QgsProject::instance() )
+  {
+    fileNewBlank(); // prepare empty project
+  }
 
 } // QgisApp ctor
 
@@ -861,7 +866,8 @@ void QgisApp::readSettings()
 {
   QSettings settings;
   // get the users theme preference from the settings
-  setTheme( settings.value( "/Themes", "default" ).toString() );
+  // defaulting to 'gis' theme
+  setTheme( settings.value( "/Themes", "gis" ).toString() );
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
@@ -939,6 +945,7 @@ void QgisApp::createActions()
   connect( mActionSelectFreehand, SIGNAL( triggered() ), this, SLOT( selectByFreehand() ) );
   connect( mActionSelectRadius, SIGNAL( triggered() ), this, SLOT( selectByRadius() ) );
   connect( mActionDeselectAll, SIGNAL( triggered() ), this, SLOT( deselectAll() ) );
+  connect( mActionSelectByExpression, SIGNAL( triggered() ), this, SLOT( selectByExpression() ) );
   connect( mActionIdentify, SIGNAL( triggered() ), this, SLOT( identify() ) );
   connect( mActionFeatureAction, SIGNAL( triggered() ), this, SLOT( doFeatureAction() ) );
   connect( mActionMeasure, SIGNAL( triggered() ), this, SLOT( measure() ) );
@@ -1050,6 +1057,10 @@ void QgisApp::createActions()
   connect( mActionFullHistogramStretch, SIGNAL( triggered() ), this, SLOT( fullHistogramStretch() ) );
   connect( mActionLocalCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( localCumulativeCutStretch() ) );
   connect( mActionFullCumulativeCutStretch, SIGNAL( triggered() ), this, SLOT( fullCumulativeCutStretch() ) );
+  connect( mActionIncreaseBrightness, SIGNAL( triggered() ), this, SLOT( increaseBrightness() ) );
+  connect( mActionDecreaseBrightness, SIGNAL( triggered() ), this, SLOT( decreaseBrightness() ) );
+  connect( mActionIncreaseContrast, SIGNAL( triggered() ), this, SLOT( increaseContrast() ) );
+  connect( mActionDecreaseContrast, SIGNAL( triggered() ), this, SLOT( decreaseContrast() ) );
 
   // Vector Menu Items
   connect( mActionOSMDownload, SIGNAL( triggered() ), this, SLOT( osmDownloadDialog() ) );
@@ -1078,13 +1089,6 @@ void QgisApp::createActions()
   connect( mActionMoveLabel, SIGNAL( triggered() ), this, SLOT( moveLabel() ) );
   connect( mActionRotateLabel, SIGNAL( triggered() ), this, SLOT( rotateLabel() ) );
   connect( mActionChangeLabelProperties, SIGNAL( triggered() ), this, SLOT( changeLabelProperties() ) );
-
-#ifndef HAVE_SPATIALITE
-  delete mActionNewSpatialiteLayer;
-  mActionNewSpatialiteLayer = 0;
-  delete mActionAddSpatiaLiteLayer;
-  mActionAddSpatiaLiteLayer = 0;
-#endif
 
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
@@ -1645,10 +1649,8 @@ void QgisApp::setTheme( QString theThemeName )
 #ifdef HAVE_POSTGRESQL
   mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddLayer.png" ) );
 #endif
-#ifdef HAVE_SPATIALITE
   mActionNewSpatialiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.png" ) );
   mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.png" ) );
-#endif
 #ifdef HAVE_MSSQL
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.png" ) );
 #endif
@@ -1675,6 +1677,10 @@ void QgisApp::setTheme( QString theThemeName )
   mActionHelpContents->setIcon( QgsApplication::getThemeIcon( "/mActionHelpContents.png" ) );
   mActionLocalHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionFullHistogramStretch->setIcon( QgsApplication::getThemeIcon( "/mActionFullHistogramStretch.png" ) );
+  mActionIncreaseBrightness->setIcon( QgsApplication::getThemeIcon( "/mActionIncreaseBrightness.svg" ) );
+  mActionDecreaseBrightness->setIcon( QgsApplication::getThemeIcon( "/mActionDecreaseBrightness.svg" ) );
+  mActionIncreaseContrast->setIcon( QgsApplication::getThemeIcon( "/mActionIncreaseContrast.svg" ) );
+  mActionDecreaseContrast->setIcon( QgsApplication::getThemeIcon( "/mActionDecreaseContrast.svg" ) );
   mActionZoomActualSize->setIcon( QgsApplication::getThemeIcon( "/mActionZoomNative.png" ) );
   mActionQgisHomePage->setIcon( QgsApplication::getThemeIcon( "/mActionQgisHomePage.png" ) );
   mActionAbout->setIcon( QgsApplication::getThemeIcon( "/mActionHelpAbout.png" ) );
@@ -1732,6 +1738,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( "/mActionSelectFreehand.png" ) );
   mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( "/mActionSelectRadius.png" ) );
   mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.png" ) );
+  mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mActionOpenTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
   mActionMeasure->setIcon( QgsApplication::getThemeIcon( "/mActionMeasure.png" ) );
   mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( "/mActionMeasureArea.png" ) );
@@ -2396,11 +2403,7 @@ void QgisApp::about()
     versionString += "</tr><tr>";
 
     versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
-#ifdef HAVE_SPATIALITE
     versionString += spatialite_version();
-#else
-    versionString += tr( "No support." );
-#endif
     versionString += "</td>";
 
     versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
@@ -2942,7 +2945,6 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
 void QgisApp::addSpatiaLiteLayer()
 {
-#ifdef HAVE_SPATIALITE
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2959,7 +2961,6 @@ void QgisApp::addSpatiaLiteLayer()
            this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
-#endif
 } // QgisApp::addSpatiaLiteLayer()
 
 void QgisApp::addMssqlLayer()
@@ -3158,7 +3159,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   prj->writeEntry( "Gui", "/SelectionColorGreenPart", myGreen );
   prj->writeEntry( "Gui", "/SelectionColorBluePart", myBlue );
   prj->writeEntry( "Gui", "/SelectionColorAlphaPart", myAlpha );
-  QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  QgsSymbolV2RenderContext::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //set the canvas to the default background color
   //the default can be set in qgisoptions
@@ -3270,8 +3271,21 @@ void QgisApp::fileOpenAfterLaunch()
 {
   // TODO: move auto-open project options to enums
 
+  // check if a project is already loaded via command line or filesystem
+  if ( !QgsProject::instance()->fileName().isNull() )
+  {
+    return;
+  }
+
+  // check if a data source is already loaded via command line or filesystem
+  // empty project with layer loaded, but may not trigger a dirty project at this point
+  if ( QgsProject::instance() && QgsMapLayerRegistry::instance()->count() > 0 )
+  {
+    return;
+  }
+
   // fileNewBlank() has already been called in QgisApp constructor
-  // loaded project is either a new blank one, or one from command line
+  // loaded project is either a new blank one, or one from command line/filesystem
   QSettings settings;
   QString autoOpenMsgTitle = tr( "Auto-open Project" );
 
@@ -3308,12 +3322,6 @@ void QgisApp::fileOpenAfterLaunch()
     messageBar()->pushMessage( autoOpenMsgTitle,
                                tr( "Failed to open: %1" ).arg( projPath ),
                                QgsMessageBar::CRITICAL );
-    return;
-  }
-
-  // check if a project is already loaded via command line
-  if ( !QgsProject::instance()->fileName().isNull() )
-  {
     return;
   }
 
@@ -3412,7 +3420,6 @@ void QgisApp::newVectorLayer()
   }
 }
 
-#ifdef HAVE_SPATIALITE
 void QgisApp::newSpatialiteLayer()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -3422,7 +3429,6 @@ void QgisApp::newSpatialiteLayer()
   QgsNewSpatialiteLayerDialog spatialiteDialog( this );
   spatialiteDialog.exec();
 }
-#endif
 
 void QgisApp::showRasterCalculator()
 {
@@ -3537,7 +3543,7 @@ bool QgisApp::addProject( QString projectFile )
   int myGreen = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", defaultGreen );
   int myBlue = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", defaultBlue );
   int myAlpha = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", defaultAlpha );
-  QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  QgsSymbolV2RenderContext::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //load project scales
   bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
@@ -4445,7 +4451,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
       }
       messageBar()->pushMessage( tr( "Saving done" ),
                                  tr( "Export to vector file has been completed" ),
-                                 QgsMessageBar::INFO, 3 );
+                                 QgsMessageBar::INFO, messageTimeout() );
     }
     else
     {
@@ -4482,32 +4488,34 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent )
 
   if ( !layer )
   {
-    QMessageBox::information( parent,
-                              tr( "No Layer Selected" ),
-                              tr( "To delete features, you must select a vector layer in the legend" ) );
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To delete features, you must select a vector layer in the legend" ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
-    QMessageBox::information( parent,
-                              tr( "No Vector Layer Selected" ),
-                              tr( "Deleting features only works on vector layers" ) );
+    messageBar()->pushMessage( tr( "No Vector Layer Selected" ),
+                               tr( "Deleting features only works on vector layers" ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
   if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
-    QMessageBox::information( parent, tr( "Provider does not support deletion" ),
-                              tr( "Data provider does not support deleting features" ) );
+    messageBar()->pushMessage( tr( "Provider does not support deletion" ),
+                               tr( "Data provider does not support deleting features" ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( parent, tr( "Layer not editable" ),
-                              tr( "The current layer is not editable. Choose 'Start editing' in the digitizing toolbar." ) );
+    messageBar()->pushMessage( tr( "Layer not editable" ),
+                               tr( "The current layer is not editable. Choose 'Start editing' in the digitizing toolbar." ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
@@ -4521,8 +4529,9 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent )
   vlayer->beginEditCommand( tr( "Features deleted" ) );
   if ( !vlayer->deleteSelectedFeatures() )
   {
-    QMessageBox::information( parent, tr( "Problem deleting features" ),
-                              tr( "A problem occured during deletion of features" ) );
+    messageBar()->pushMessage( tr( "Problem deleting features" ),
+                               tr( "A problem occured during deletion of features" ),
+                               QgsMessageBar::WARNING );
   }
 
   vlayer->endEditCommand();
@@ -4775,6 +4784,11 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
     composer->show();
 #endif
     composer->zoomFull();
+    QgsComposerView* composerView = composer->view();
+    if ( composerView )
+    {
+      composerView->updateRulers();
+    }
     if ( composerNodes.at( i ).toElement().attribute( "visible", "1" ).toInt() < 1 )
     {
       composer->close();
@@ -4946,7 +4960,9 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
   QgsMapLayer *activeMapLayer = activeLayer();
   if ( !activeMapLayer )
   {
-    QMessageBox::information( 0, tr( "No active layer" ), tr( "No active layer found. Please select a layer in the layer list" ) );
+    messageBar()->pushMessage( tr( "No active layer" ),
+                               tr( "No active layer found. Please select a layer in the layer list" ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
@@ -5207,6 +5223,26 @@ void QgisApp::deselectAll()
     mMapCanvas->setRenderFlag( true );
 }
 
+void QgisApp::selectByExpression()
+{
+  QgsVectorLayer* vlayer = NULL;
+  if ( !mMapCanvas->currentLayer()
+       || NULL == ( vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() ) ) )
+  {
+    messageBar()->pushMessage(
+      QObject::tr( "No active vector layer" ),
+      QObject::tr( "To select features, choose a vector layer in the legend" ),
+      QgsMessageBar::INFO,
+      messageTimeout() );
+  }
+  else
+  {
+    QgsExpressionSelectionDialog* dlg = new QgsExpressionSelectionDialog( vlayer );
+    dlg->setAttribute( Qt::WA_DeleteOnClose );
+    dlg->show();
+  }
+}
+
 void QgisApp::addRing()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -5243,6 +5279,7 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
   selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
   selectionVectorLayer->deleteSelectedFeatures();
   selectionVectorLayer->endEditCommand();
+  activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
 void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
@@ -5258,6 +5295,7 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
 
   // Test for feature support in this layer
   clipboard()->replaceWithCopyOf( selectionVectorLayer );
+  activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
 
@@ -5464,7 +5502,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     {
       mActionToggleEditing->setChecked( false );
       mActionToggleEditing->setEnabled( false );
-      QMessageBox::information( 0, tr( "Start editing failed" ), tr( "Provider cannot be opened for editing" ) );
+      messageBar()->pushMessage( tr( "Start editing failed" ),
+                                 tr( "Provider cannot be opened for editing" ),
+                                 QgsMessageBar::INFO, messageTimeout() );
       return false;
     }
 
@@ -5517,7 +5557,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         mMapCanvas->freeze( true );
         if ( !vlayer->rollBack() )
         {
-          QMessageBox::information( 0, tr( "Error" ), tr( "Problems during roll back" ) );
+          messageBar()->pushMessage( tr( "Error" ),
+                                     tr( "Problems during roll back" ),
+                                     QgsMessageBar::CRITICAL );
           res = false;
         }
         mMapCanvas->freeze( false );
@@ -6182,11 +6224,21 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 {
   public:
     QgsPythonRunnerImpl( QgsPythonUtils* pythonUtils ) : mPythonUtils( pythonUtils ) {}
+
     virtual bool runCommand( QString command, QString messageOnError = QString() )
     {
       if ( mPythonUtils && mPythonUtils->isEnabled() )
       {
         return mPythonUtils->runString( command, messageOnError, false );
+      }
+      return false;
+    }
+
+    virtual bool evalCommand( QString command, QString &result )
+    {
+      if ( mPythonUtils && mPythonUtils->isEnabled() )
+      {
+        return mPythonUtils->evalString( command, result );
       }
       return false;
     }
@@ -6430,18 +6482,18 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterLayer::ContrastEn
 
   if ( !myLayer )
   {
-    QMessageBox::information( this,
-                              tr( "No Layer Selected" ),
-                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To perform a full histogram stretch, you need to have a raster layer selected." ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
   QgsRasterLayer* myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
   if ( !myRasterLayer )
   {
-    QMessageBox::information( this,
-                              tr( "No Raster Layer Selected" ),
-                              tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To perform a full histogram stretch, you need to have a raster layer selected." ),
+                               QgsMessageBar::INFO, messageTimeout() );
     return;
   }
 
@@ -6449,6 +6501,63 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterLayer::ContrastEn
   if ( visibleAreaOnly ) myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
 
   myRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
+
+  myRasterLayer->setCacheImage( NULL );
+  mMapCanvas->refresh();
+}
+
+void QgisApp::increaseBrightness()
+{
+  adjustBrightnessContrast( 1 );
+}
+
+void QgisApp::decreaseBrightness()
+{
+  adjustBrightnessContrast( -1 );
+}
+
+void QgisApp::increaseContrast()
+{
+  adjustBrightnessContrast( 1, false );
+}
+
+void QgisApp::decreaseContrast()
+{
+  adjustBrightnessContrast( -1, false );
+}
+
+
+void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
+{
+  QgsMapLayer * myLayer = mMapLegend->currentLayer();
+
+  if ( !myLayer )
+  {
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To change brightness or contrast, you need to have a raster layer selected." ),
+                               QgsMessageBar::INFO, messageTimeout() );
+    return;
+  }
+
+  QgsRasterLayer* myRasterLayer = qobject_cast<QgsRasterLayer *>( myLayer );
+  if ( !myRasterLayer )
+  {
+    messageBar()->pushMessage( tr( "No Layer Selected" ),
+                               tr( "To change brightness or contrast, you need to have a raster layer selected." ),
+                               QgsMessageBar::INFO, messageTimeout() );
+    return;
+  }
+
+  QgsBrightnessContrastFilter* brightnessFilter = myRasterLayer->brightnessFilter();
+
+  if ( updateBrightness )
+  {
+    brightnessFilter->setBrightness( brightnessFilter->brightness() + delta );
+  }
+  else
+  {
+    brightnessFilter->setContrast( brightnessFilter->contrast() + delta );
+  }
 
   myRasterLayer->setCacheImage( NULL );
   mMapCanvas->refresh();
@@ -8618,7 +8727,9 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
 
     if ( !plt->showLayerProperties( pl ) )
     {
-      QMessageBox::information( this, tr( "Warning" ), tr( "This layer doesn't have a properties dialog." ) );
+      messageBar()->pushMessage( tr( "Warning" ),
+                                 tr( "This layer doesn't have a properties dialog." ),
+                                 QgsMessageBar::INFO, messageTimeout() );
     }
   }
 }

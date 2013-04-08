@@ -103,6 +103,7 @@ void QgsAttributesTree::dragMoveEvent( QDragMoveEvent *event )
 
 bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action )
 {
+  Q_UNUSED( index )
   bool bDropSuccessful = false;
 
   if ( action == Qt::IgnoreAction )
@@ -113,29 +114,30 @@ bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const
   {
     QByteArray itemData = data->data( "application/x-qabstractitemmodeldatalist" );
     QDataStream stream( &itemData, QIODevice::ReadOnly );
-    int r, c;
-    QMap<int, QVariant> roleDataMap;
-    stream >> r >> c >> roleDataMap;
+    int row, col;
 
-    QString itemType = roleDataMap.value( Qt::UserRole ).toString();
-    QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
+    while ( !stream.atEnd() )
+    {
+      QMap<int,  QVariant> roleDataMap;
+      stream >> row >> col >> roleDataMap;
 
-    if ( itemType == "field" ) //
-    {
-      if ( parent )
+      if ( col == 1 )
       {
-        addItem( parent, itemName );
-        bDropSuccessful = true;
+        /* do something with the data */
+
+        QString itemName = roleDataMap.value( Qt::DisplayRole ).toString();
+
+        if ( parent )
+        {
+          addItem( parent, itemName );
+          bDropSuccessful = true;
+        }
+        else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent, but actually does happen. Qt?
+        {
+          // addItem( invisibleRootItem(), itemName );
+          // bDropSuccessful = true;
+        }
       }
-      else // Should never happen as we ignore drops of fields onto the root element in dragMoveEvent, but actually does happen. Qt?
-      {
-        // addItem( invisibleRootItem(), itemName );
-        // bDropSuccessful = true;
-      }
-    }
-    else
-    {
-      bDropSuccessful = QTreeWidget::dropMimeData( parent, index, data, Qt::MoveAction );
     }
   }
 
@@ -150,30 +152,9 @@ void QgsAttributesTree::dropEvent( QDropEvent *event )
   if ( event->source() == this )
   {
     event->setDropAction( Qt::MoveAction );
-    QTreeWidget::dropEvent( event );
   }
-  else
-  {
-    // Qt::DropAction dropAction;
-    QByteArray itemData = event->mimeData()->data( "application/x-qabstractitemmodeldatalist" );
-    QDataStream stream( &itemData, QIODevice::ReadOnly );
-    int r, c, rDummy, cDummy;
-    QMap<int, QVariant> roleDataMap, newRoleDataMap, roleDataMapDummy;
-    stream >> rDummy >> cDummy >> roleDataMapDummy >> r >> c >> roleDataMap; // fieldName is in second column
 
-    QString fieldName = roleDataMap.value( Qt::DisplayRole ).toString();
-    newRoleDataMap.insert( Qt::UserRole , "field" );
-    newRoleDataMap.insert( Qt::DisplayRole , fieldName );
-
-    QMimeData * mimeData = new QMimeData();
-    QByteArray mdata;
-    QDataStream newStream( &mdata, QIODevice::WriteOnly );
-    newStream << r << c << newRoleDataMap;
-    mimeData->setData( QString( "application/x-qabstractitemmodeldatalist" ), mdata );
-    QDropEvent newEvent = QDropEvent( event->pos(), Qt::CopyAction , mimeData, event->mouseButtons(), event->keyboardModifiers() );
-
-    QTreeWidget::dropEvent( &newEvent );
-  }
+  QTreeWidget::dropEvent( event );
 }
 
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
@@ -318,8 +299,7 @@ void QgsFieldsProperties::loadRows()
   mAttributesList->setHorizontalHeaderItem( attrWFSCol, new QTableWidgetItem( "WFS" ) );
   mAttributesList->setHorizontalHeaderItem( attrAliasCol, new QTableWidgetItem( tr( "Alias" ) ) );
 
-  mAttributesList->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
-  mAttributesList->horizontalHeader()->setResizeMode( 7, QHeaderView::Stretch );
+  mAttributesList->setSortingEnabled( true );
   mAttributesList->setSelectionBehavior( QAbstractItemView::SelectRows );
   mAttributesList->setSelectionMode( QAbstractItemView::ExtendedSelection );
   mAttributesList->verticalHeader()->hide();
@@ -487,9 +467,11 @@ void QgsFieldsProperties::attributeTypeDialog()
   QPair<QString, QString> checkStates = mCheckedStates.value( index, mLayer->checkedState( index ) );
   attributeTypeDialog.setCheckedState( checkStates.first, checkStates.second );
 
-  attributeTypeDialog.setIndex( index, mEditTypeMap.value( index, mLayer->editType( index ) ) );
+  attributeTypeDialog.setDateFormat( mDateFormat.value( index, mLayer->dateFormat( index ) ) );
+  attributeTypeDialog.setWidgetSize( mWidgetSize.value( index, mLayer->widgetSize( index ) ) );
+  attributeTypeDialog.setFieldEditable( mFieldEditables.value( index, mLayer->fieldEditable( index ) ) );
 
-  attributeTypeDialog.setFieldEditable( mLayer->fieldEditable( index ) );
+  attributeTypeDialog.setIndex( index, mEditTypeMap.value( index, mLayer->editType( index ) ) );
 
   if ( !attributeTypeDialog.exec() )
     return;
@@ -517,6 +499,12 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::ValueRelation:
       mValueRelationData.insert( index, attributeTypeDialog.valueRelationData() );
       break;
+    case QgsVectorLayer::Calendar:
+      mDateFormat.insert( index, attributeTypeDialog.dateFormat() );
+      break;
+    case QgsVectorLayer::Photo:
+      mWidgetSize.insert( index, attributeTypeDialog.widgetSize() );
+      break;
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::UniqueValues:
@@ -526,8 +514,9 @@ void QgsFieldsProperties::attributeTypeDialog()
     case QgsVectorLayer::Enumeration:
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
-    case QgsVectorLayer::Calendar:
     case QgsVectorLayer::UuidGenerator:
+    case QgsVectorLayer::WebView:
+    case QgsVectorLayer::Color:
       break;
   }
 
@@ -737,6 +726,9 @@ void QgsFieldsProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::Calendar, tr( "Calendar" ) );
   editTypeMap.insert( QgsVectorLayer::ValueRelation, tr( "Value relation" ) );
   editTypeMap.insert( QgsVectorLayer::UuidGenerator, tr( "UUID generator" ) );
+  editTypeMap.insert( QgsVectorLayer::Photo, tr( "Photo" ) );
+  editTypeMap.insert( QgsVectorLayer::WebView, tr( "Web view" ) );
+  editTypeMap.insert( QgsVectorLayer::Color, tr( "Color" ) );
 }
 
 QString QgsFieldsProperties::editTypeButtonText( QgsVectorLayer::EditType type )
@@ -820,7 +812,8 @@ void QgsFieldsProperties::apply()
     QgsVectorLayer::EditType editType = editTypeFromButtonText( pb->text() );
     mLayer->setEditType( idx, editType );
 
-    mLayer->setFieldEditable( idx, mFieldEditables.value( idx, true ));
+    if ( mFieldEditables.contains( idx ) )
+      mLayer->setFieldEditable( idx, mFieldEditables[idx] );
 
     switch ( editType )
     {
@@ -856,6 +849,20 @@ void QgsFieldsProperties::apply()
         }
         break;
 
+      case QgsVectorLayer::Calendar:
+        if ( mDateFormat.contains( idx ) )
+        {
+          mLayer->dateFormat( idx ) = mDateFormat[idx];
+        }
+        break;
+
+      case QgsVectorLayer::Photo:
+        if ( mWidgetSize.contains( idx ) )
+        {
+          mLayer->widgetSize( idx ) = mWidgetSize[idx];
+        }
+        break;
+
       case QgsVectorLayer::LineEdit:
       case QgsVectorLayer::UniqueValues:
       case QgsVectorLayer::UniqueValuesEditable:
@@ -865,8 +872,9 @@ void QgsFieldsProperties::apply()
       case QgsVectorLayer::Immutable:
       case QgsVectorLayer::Hidden:
       case QgsVectorLayer::TextEdit:
-      case QgsVectorLayer::Calendar:
       case QgsVectorLayer::UuidGenerator:
+      case QgsVectorLayer::WebView:
+      case QgsVectorLayer::Color:
         break;
     }
 

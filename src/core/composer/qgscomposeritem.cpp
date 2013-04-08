@@ -22,17 +22,21 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QPainter>
+#include <QUuid>
+#include <QGraphicsEffect>
+
+#include "qgsproject.h"
 
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerframe.h"
-
 
 #include <limits>
 #include "qgsapplication.h"
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
+#include "qgsmaprenderer.h" //for getCompositionMode
 
 #include <cmath>
 
@@ -50,7 +54,11 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mId( "" )
+    , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
 }
@@ -67,7 +75,11 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
+    , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
+    , mId( "" )
+    , mUuid( QUuid::createUuid().toString() )
 {
   init( manageZValue );
   QTransform t;
@@ -89,6 +101,11 @@ void QgsComposerItem::init( bool manageZValue )
   {
     mComposition->addItemToZList( this );
   }
+
+  // Setup composer effect
+  mEffect = new QgsComposerEffect();
+  setGraphicsEffect( mEffect );
+
 }
 
 QgsComposerItem::~QgsComposerItem()
@@ -99,6 +116,7 @@ QgsComposerItem::~QgsComposerItem()
   }
 
   delete mBoundingResizeRectangle;
+  delete mEffect;
   deleteAlignItems();
 }
 
@@ -153,6 +171,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "rotation",  QString::number( mRotation ) );
+  composerItemElem.setAttribute( "uuid", mUuid );
   composerItemElem.setAttribute( "id", mId );
   //position lock for mouse moves/resizes
   if ( mItemPositionLocked )
@@ -185,6 +204,12 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   bgColorElem.setAttribute( "alpha", QString::number( bgColor.alpha() ) );
   composerItemElem.appendChild( bgColorElem );
 
+  //blend mode
+  composerItemElem.setAttribute( "blendMode", QString::number( mBlendMode ) );
+
+  //transparency
+  composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
+
   itemElem.appendChild( composerItemElem );
 
   return true;
@@ -201,8 +226,12 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   //rotation
   mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
 
+  //uuid
+  mUuid = itemElem.attribute( "uuid", QUuid::createUuid().toString() );
+
   //id
-  mId = itemElem.attribute( "id", "" );
+  QString id = itemElem.attribute( "id", "" );
+  setId( id );
 
   //frame
   QString frame = itemElem.attribute( "frame" );
@@ -300,6 +329,13 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
       setBrush( QBrush( brushColor ) );
     }
   }
+
+  //blend mode
+  setBlendMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode" , "0" ).toInt() );
+
+  //transparency
+  setTransparency( itemElem.attribute( "transparency" , "0" ).toInt() );
+
   return true;
 }
 
@@ -848,6 +884,20 @@ void QgsComposerItem::drawBackground( QPainter* p )
   }
 }
 
+void QgsComposerItem::setBlendMode( QgsMapRenderer::BlendMode blendMode )
+{
+  mBlendMode = blendMode;
+  // Update the composer effect to use the new blend mode
+  mEffect->setCompositionMode( QgsMapRenderer::getCompositionMode( mBlendMode ) );
+}
+
+void QgsComposerItem::setTransparency( int transparency )
+{
+  mTransparency = transparency;
+  // Set the QGraphicItem's opacity
+  setOpacity( 1. - ( transparency / 100. ) );
+}
+
 void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
 {
   if ( isSelected() )
@@ -1254,4 +1304,10 @@ void QgsComposerItem::deleteAlignItems()
 void QgsComposerItem::repaint()
 {
   update();
+}
+
+void QgsComposerItem::setId( const QString& id )
+{
+  setToolTip( id );
+  mId = id;
 }

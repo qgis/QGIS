@@ -19,8 +19,15 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="1">
-      <widget class="QgsColorButtonV2" name="btnChangeColor">
+      <widget class="QgsColorButton" name="btnChangeColor">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -28,7 +35,14 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Change</string>
+        <string>Change...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Pen width</string>
        </property>
       </widget>
      </item>
@@ -48,17 +62,24 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Pen width</string>
-       </property>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="mWidthUnitComboBox">
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Map unit</string>
+        </property>
+       </item>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
+     <item row="2" column="0">
+      <widget class="QLabel" name="mWidthUnitLabel">
        <property name="text">
-        <string>Color</string>
+        <string>Width unit</string>
        </property>
       </widget>
      </item>
@@ -81,7 +102,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>

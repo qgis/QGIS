@@ -1,4 +1,5 @@
 SET(INSTALLER_FILES
+metadata.txt
 __init__.py
 installer_data.py
 installer_gui.py

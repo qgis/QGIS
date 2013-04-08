@@ -17,7 +17,6 @@
 #include <stdexcept>
 
 #include "qgscomposition.h"
-#include "qgscomposeritem.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerframe.h"
 #include "qgscomposerhtml.h"
@@ -47,6 +46,7 @@
 #include <QSettings>
 #include <QDir>
 
+
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
     QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
     mSnapToGrid( false ), mSnapGridResolution( 10.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ), mAlignmentSnapTolerance( 2 ),
@@ -65,6 +65,7 @@ QgsComposition::QgsComposition():
     mAlignmentSnapTolerance( 2 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ), mAtlasComposition( this )
 {
   loadSettings();
+
 }
 
 QgsComposition::~QgsComposition()
@@ -261,6 +262,61 @@ const QgsComposerItem* QgsComposition::getComposerItemById( QString theId ) cons
   }
   return 0;
 }
+/*
+const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid, bool inAllComposers ) const
+{
+  //This does not work since it seems impossible to get the QgisApp::instance() from here... Is there a workaround ?
+  QSet<QgsComposer*> composers = QSet<QgsComposer*>();
+
+  if( inAllComposers )
+  {
+    composers = QgisApp::instance()->printComposers();
+  }
+  else
+  {
+    composers.insert( this )
+  }
+
+  QSet<QgsComposer*>::const_iterator it = composers.constBegin();
+  for ( ; it != composers.constEnd(); ++it )
+  {
+    QList<QGraphicsItem *> itemList = ( *it )->items();
+    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+    for ( ; itemIt != itemList.end(); ++itemIt )
+    {
+      const QgsComposerItem* mypItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+      if ( mypItem )
+      {
+        if ( mypItem->uuid() == theUuid )
+        {
+          return mypItem;
+        }
+      }
+    }
+  }
+
+  return 0;
+}
+*/
+
+const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid ) const
+{
+  QList<QGraphicsItem *> itemList = items();
+  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    const QgsComposerItem* mypItem = dynamic_cast<const QgsComposerItem *>( *itemIt );
+    if ( mypItem )
+    {
+      if ( mypItem->uuid() == theUuid )
+      {
+        return mypItem;
+      }
+    }
+  }
+
+  return 0;
+}
 
 int QgsComposition::pixelFontSize( double pointSize ) const
 {
@@ -299,6 +355,19 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   compositionElem.setAttribute( "snapGridResolution", QString::number( mSnapGridResolution ) );
   compositionElem.setAttribute( "snapGridOffsetX", QString::number( mSnapGridOffsetX ) );
   compositionElem.setAttribute( "snapGridOffsetY", QString::number( mSnapGridOffsetY ) );
+
+  //custom snap lines
+  QList< QGraphicsLineItem* >::const_iterator snapLineIt = mSnapLines.constBegin();
+  for ( ; snapLineIt != mSnapLines.constEnd(); ++snapLineIt )
+  {
+    QDomElement snapLineElem = doc.createElement( "SnapLine" );
+    QLineF line = ( *snapLineIt )->line();
+    snapLineElem.setAttribute( "x1", QString::number( line.x1() ) );
+    snapLineElem.setAttribute( "y1", QString::number( line.y1() ) );
+    snapLineElem.setAttribute( "x2", QString::number( line.x2() ) );
+    snapLineElem.setAttribute( "y2", QString::number( line.y2() ) );
+    compositionElem.appendChild( snapLineElem );
+  }
 
   compositionElem.setAttribute( "printResolution", mPrintResolution );
   compositionElem.setAttribute( "printAsRaster", mPrintAsRaster );
@@ -369,6 +438,19 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   mSnapGridOffsetX = compositionElem.attribute( "snapGridOffsetX" ).toDouble();
   mSnapGridOffsetY = compositionElem.attribute( "snapGridOffsetY" ).toDouble();
 
+  //custom snap lines
+  QDomNodeList snapLineNodes = compositionElem.elementsByTagName( "SnapLine" );
+  for ( int i = 0; i < snapLineNodes.size(); ++i )
+  {
+    QDomElement snapLineElem = snapLineNodes.at( i ).toElement();
+    QGraphicsLineItem* snapItem = addSnapLine();
+    double x1 = snapLineElem.attribute( "x1" ).toDouble();
+    double y1 = snapLineElem.attribute( "y1" ).toDouble();
+    double x2 = snapLineElem.attribute( "x2" ).toDouble();
+    double y2 = snapLineElem.attribute( "y2" ).toDouble();
+    snapItem->setLine( x1, y1, x2, y2 );
+  }
+
   mAlignmentSnap = compositionElem.attribute( "alignmentSnap", "1" ).toInt() == 0 ? false : true;
   mAlignmentSnapTolerance = compositionElem.attribute( "alignmentSnapTolerance", "2.0" ).toDouble();
 
@@ -436,6 +518,17 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
     return false;
   }
 
+  // remove all uuid attributes since we don't want duplicates UUIDS
+  QDomNodeList composerItemsNodes = importDoc.elementsByTagName( "ComposerItem" );
+  for ( int i = 0; i < composerItemsNodes.count(); ++i )
+  {
+    QDomNode composerItemNode = composerItemsNodes.at( i );
+    if ( composerItemNode.isElement() )
+    {
+      composerItemNode.toElement().removeAttribute( "uuid" );
+    }
+  }
+
   //addItemsFromXML
   addItemsFromXML( importDoc.documentElement(), importDoc, 0, addUndoCommands, 0 );
 
@@ -448,10 +541,10 @@ bool QgsComposition::loadFromTemplate( const QDomDocument& doc, QMap<QString, QS
 void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore,
                                       bool addUndoCommands, QPointF* pos, bool pasteInPlace )
 {
-  QPointF* pasteInPlacePt;
-  if( pasteInPlace )
+  QPointF* pasteInPlacePt = 0;
+  if ( pasteInPlace )
   {
-    pasteInPlacePt = new QPointF(0, pageNumberAt( *pos ) * (mPageHeight+mSpaceBetweenPages) );
+    pasteInPlacePt = new QPointF( 0, pageNumberAt( *pos ) * ( mPageHeight + mSpaceBetweenPages ) );
   }
   QDomNodeList composerLabelList = elem.elementsByTagName( "ComposerLabel" );
   for ( int i = 0; i < composerLabelList.size(); ++i )
@@ -461,10 +554,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     newLabel->readXML( currentComposerLabelElem, doc );
     if ( pos )
     {
-      if ( pasteInPlace )
+      if ( pasteInPlacePt )
       {
-        newLabel->setItemPosition( newLabel->transform().dx(), fmod(newLabel->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newLabel->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newLabel->setItemPosition( newLabel->transform().dx(), fmod( newLabel->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLabel->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -497,8 +590,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newMap->setItemPosition( newMap->transform().dx(), fmod(newMap->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newMap->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newMap->setItemPosition( newMap->transform().dx(), fmod( newMap->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newMap->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -522,8 +615,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newArrow->setItemPosition( newArrow->transform().dx(), fmod(newArrow->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newArrow->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newArrow->setItemPosition( newArrow->transform().dx(), fmod( newArrow->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newArrow->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -547,8 +640,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newScaleBar->setItemPosition( newScaleBar->transform().dx(), fmod(newScaleBar->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newScaleBar->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newScaleBar->setItemPosition( newScaleBar->transform().dx(), fmod( newScaleBar->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newScaleBar->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -572,8 +665,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newShape->setItemPosition( newShape->transform().dx(), fmod(newShape->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newShape->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newShape->setItemPosition( newShape->transform().dx(), fmod( newShape->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newShape->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -597,8 +690,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newPicture->setItemPosition( newPicture->transform().dx(), fmod(newPicture->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newPicture->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newPicture->setItemPosition( newPicture->transform().dx(), fmod( newPicture->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newPicture->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -622,8 +715,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newLegend->setItemPosition( newLegend->transform().dx(), fmod(newLegend->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newLegend->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newLegend->setItemPosition( newLegend->transform().dx(), fmod( newLegend->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newLegend->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -647,8 +740,8 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     {
       if ( pasteInPlace )
       {
-        newTable->setItemPosition( newTable->transform().dx(), fmod(newTable->transform().dy(), (paperHeight()+spaceBetweenPages()) ) );
-        newTable->move( pasteInPlacePt->x(),pasteInPlacePt->y() );
+        newTable->setItemPosition( newTable->transform().dx(), fmod( newTable->transform().dy(), ( paperHeight() + spaceBetweenPages() ) ) );
+        newTable->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
       }
       else
       {
@@ -1131,6 +1224,126 @@ QPointF QgsComposition::alignPos( const QPointF& pos, const QgsComposerItem* exc
     alignY = -1;
   }
   return result;
+}
+
+QGraphicsLineItem* QgsComposition::addSnapLine()
+{
+  QGraphicsLineItem* item = new QGraphicsLineItem();
+  QPen linePen( Qt::SolidLine );
+  linePen.setColor( Qt::red );
+  linePen.setWidthF( 0.5 );
+  item->setPen( linePen );
+  item->setZValue( 100 );
+  addItem( item );
+  mSnapLines.push_back( item );
+  return item;
+}
+
+void QgsComposition::removeSnapLine( QGraphicsLineItem* line )
+{
+  removeItem( line );
+  mSnapLines.removeAll( line );
+  delete line;
+}
+
+void QgsComposition::setSnapLinesVisible( bool visible )
+{
+  QList< QGraphicsLineItem* >::iterator it = mSnapLines.begin();
+  for ( ; it != mSnapLines.end(); ++it )
+  {
+    if ( visible )
+    {
+      ( *it )->show();
+    }
+    else
+    {
+      ( *it )->hide();
+    }
+  }
+}
+
+QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, double y, double tolerance,
+    QList< QPair< QgsComposerItem*, QgsComposerItem::ItemPositionMode> >& snappedItems )
+{
+  double minSqrDist = DBL_MAX;
+  QGraphicsLineItem* item = 0;
+  double currentXCoord = 0;
+  double currentYCoord = 0;
+  double currentSqrDist = 0;
+  double sqrTolerance = tolerance * tolerance;
+
+  snappedItems.clear();
+
+  QList< QGraphicsLineItem* >::const_iterator it = mSnapLines.constBegin();
+  for ( ; it != mSnapLines.constEnd(); ++it )
+  {
+    bool itemHorizontal = doubleNear(( *it )->line().y2() - ( *it )->line().y1(), 0 );
+    if ( horizontal && itemHorizontal )
+    {
+      currentYCoord = ( *it )->line().y1();
+      currentSqrDist = ( y - currentYCoord ) * ( y - currentYCoord );
+    }
+    else if ( !itemHorizontal )
+    {
+      currentXCoord = ( *it )->line().x1();
+      currentSqrDist = ( x - currentXCoord ) * ( x - currentXCoord );
+    }
+
+    if ( currentSqrDist < minSqrDist && currentSqrDist < sqrTolerance )
+    {
+      item = *it;
+      minSqrDist = currentSqrDist;
+    }
+  }
+
+  double itemTolerance = 0.0000001;
+  if ( item )
+  {
+    //go through all the items to find items snapped to this snap line
+    QList<QGraphicsItem *> itemList = items();
+    QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
+    for ( ; itemIt != itemList.end(); ++itemIt )
+    {
+      QgsComposerItem* currentItem = dynamic_cast<QgsComposerItem*>( *itemIt );
+      if ( !currentItem || currentItem->type() == QgsComposerItem::ComposerPaper )
+      {
+        continue;
+      }
+
+      if ( horizontal )
+      {
+        if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().top(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::UpperMiddle ) );
+        }
+        else if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().center().y(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
+        }
+        else if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().bottom(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::LowerMiddle ) );
+        }
+      }
+      else
+      {
+        if ( doubleNear( currentXCoord, currentItem->transform().dx(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleLeft ) );
+        }
+        else if ( doubleNear( currentXCoord, currentItem->transform().dx() + currentItem->rect().center().x(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
+        }
+        else if ( doubleNear( currentXCoord,  currentItem->transform().dx() + currentItem->rect().width(), itemTolerance ) )
+        {
+          snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleRight ) );
+        }
+      }
+    }
+  }
+
+  return item;
 }
 
 int QgsComposition::boundingRectOfSelectedItems( QRectF& bRect )
@@ -1775,7 +1988,9 @@ void QgsComposition::renderPage( QPainter* p, int page )
   QgsComposition::PlotStyle savedPlotStyle = mPlotStyle;
   mPlotStyle = QgsComposition::Print;
 
+  setSnapLinesVisible( false );
   render( p, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), paperRect );
+  setSnapLinesVisible( true );
 
   mPlotStyle = savedPlotStyle;
 }
@@ -1814,6 +2029,22 @@ void QgsComposition::collectAlignCoordinates( QMap< double, const QgsComposerIte
       alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().top(), currentItem );
       alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().center().y(), currentItem );
       alignCoordsY.insert( currentItem->transform().dy() + currentItem->rect().bottom(), currentItem );
+    }
+  }
+
+  //arbitrary snap lines
+  QList< QGraphicsLineItem* >::const_iterator sIt = mSnapLines.constBegin();
+  for ( ; sIt != mSnapLines.constEnd(); ++sIt )
+  {
+    double x = ( *sIt )->line().x1();
+    double y = ( *sIt )->line().y1();
+    if ( doubleNear( y, 0.0 ) )
+    {
+      alignCoordsX.insert( x, 0 );
+    }
+    else
+    {
+      alignCoordsY.insert( y, 0 );
     }
   }
 }

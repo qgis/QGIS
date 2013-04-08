@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
-    <height>580</height>
+    <width>848</width>
+    <height>578</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -266,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>612</height>
+                <width>663</width>
+                <height>564</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -594,6 +594,17 @@
                     </item>
                    </layout>
                   </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_31">
+                    <item>
+                     <widget class="QCheckBox" name="mLiveColorDialogsChkBx">
+                      <property name="text">
+                       <string>Use live-updating color chooser dialogs</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -901,8 +912,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>808</height>
+                <width>663</width>
+                <height>757</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -997,7 +1008,7 @@
                    </widget>
                   </item>
                   <item row="2" column="0" colspan="4">
-                   <widget class="QgsCollapsibleGroupBox" name="mCurrentVariablesGrpBx"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+                   <widget class="QgsCollapsibleGroupBox" name="mCurrentVariablesGrpBx">
                     <property name="minimumSize">
                      <size>
                       <width>0</width>
@@ -1006,6 +1017,12 @@
                     </property>
                     <property name="title">
                      <string>Current environment variables (read-only - bold indicates modified at startup)</string>
+                    </property>
+                    <property name="collapsed" stdset="0">
+                     <bool>false</bool>
+                    </property>
+                    <property name="saveCollapsedState" stdset="0">
+                     <bool>true</bool>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_8">
                      <item>
@@ -1231,8 +1248,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>669</width>
-                <height>490</height>
+                <width>680</width>
+                <height>511</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1549,9 +1566,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-291</y>
-                <width>654</width>
-                <height>781</height>
+                <y>0</y>
+                <width>663</width>
+                <height>635</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1645,22 +1662,6 @@
                    <widget class="QCheckBox" name="chkUseQPixmap">
                     <property name="text">
                      <string>Fix problems with incorrectly filled polygons</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QGroupBox" name="groupBox_3">
-                 <property name="title">
-                  <string>Compatibility</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_9">
-                  <item>
-                   <widget class="QCheckBox" name="chkUseSymbologyNG">
-                    <property name="text">
-                     <string>Use new generation symbology for rendering</string>
                     </property>
                    </widget>
                   </item>
@@ -2081,8 +2082,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>669</width>
-                <height>490</height>
+                <width>452</width>
+                <height>357</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2091,7 +2092,58 @@
                  <property name="title">
                   <string>Default map appearance (overridden by project properties)</string>
                  </property>
-                 <layout class="QGridLayout" name="_2">
+                 <layout class="QGridLayout" name="gridLayout_7">
+                  <item row="0" column="4">
+                   <widget class="QgsColorButton" name="pbnCanvasColor">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>100</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="6">
+                   <spacer name="horizontalSpacer_28">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QLabel" name="label">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Background color</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="0" column="0">
                    <widget class="QLabel" name="textLabel1_9">
                     <property name="sizePolicy">
@@ -2105,57 +2157,30 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="3">
-                   <widget class="QgsColorButton" name="pbnCanvasColor">
-                    <property name="minimumSize">
-                     <size>
-                      <width>100</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="2">
-                   <widget class="QLabel" name="label">
+                  <item row="0" column="1">
+                   <widget class="QgsColorButton" name="pbnSelectionColor">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                    <property name="text">
-                     <string>Background color</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QgsColorButton" name="pbnSelectionColor">
                     <property name="minimumSize">
                      <size>
                       <width>100</width>
                       <height>0</height>
                      </size>
                     </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>100</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
                     <property name="text">
                      <string/>
                     </property>
                    </widget>
-                  </item>
-                  <item row="0" column="4">
-                   <spacer name="horizontalSpacer_28">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
                   </item>
                  </layout>
                 </widget>
@@ -2392,8 +2417,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>718</height>
+                <width>491</width>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2473,19 +2498,6 @@
                    <widget class="QLabel" name="textLabel1_10">
                     <property name="text">
                      <string>Rubberband color</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="1">
-                   <widget class="QgsColorButton" name="pbnMeasureColor">
-                    <property name="minimumSize">
-                     <size>
-                      <width>100</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
                     </property>
                    </widget>
                   </item>
@@ -2574,6 +2586,31 @@
                      </size>
                     </property>
                    </spacer>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QgsColorButton" name="pbnMeasureColor">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>100</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -2772,8 +2809,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>643</height>
+                <width>442</width>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -2881,19 +2918,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="3">
-                   <widget class="QgsColorButton" name="mLineColorToolButton">
-                    <property name="minimumSize">
-                     <size>
-                      <width>100</width>
-                      <height>0</height>
-                     </size>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="0" column="4">
                    <spacer name="horizontalSpacer_33">
                     <property name="orientation">
@@ -2906,6 +2930,31 @@
                      </size>
                     </property>
                    </spacer>
+                  </item>
+                  <item row="0" column="3">
+                   <widget class="QgsColorButton" name="mLineColorToolButton">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="minimumSize">
+                     <size>
+                      <width>100</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>100</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -3261,8 +3310,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>669</width>
-                <height>490</height>
+                <width>426</width>
+                <height>336</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3401,8 +3450,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>669</width>
-                <height>490</height>
+                <width>582</width>
+                <height>352</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3582,8 +3631,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>669</width>
-                <height>490</height>
+                <width>268</width>
+                <height>207</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3682,8 +3731,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>650</height>
+                <width>663</width>
+                <height>553</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -3790,7 +3839,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="grpProxy"><property name="collapsed" stdset="0"><bool>false</bool></property><property name="saveCollapsedState" stdset="0"><bool>true</bool></property>
+                <widget class="QgsCollapsibleGroupBox" name="grpProxy">
                  <property name="title">
                   <string>Use proxy for web access</string>
                  </property>
@@ -3798,6 +3847,12 @@
                   <bool>false</bool>
                  </property>
                  <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <property name="collapsed" stdset="0">
+                  <bool>false</bool>
+                 </property>
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_1">
@@ -3996,15 +4051,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources>

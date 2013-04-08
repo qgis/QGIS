@@ -20,6 +20,8 @@
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsbusyindicatordialog.h"
+#include "qgscomposerruler.h"
 #include "qgscomposerview.h"
 #include "qgscomposition.h"
 #include "qgscompositionwidget.h"
@@ -269,8 +271,22 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   setMouseTracking( true );
   mViewFrame->setMouseTracking( true );
 
-  //create composer view
-  mView = new QgsComposerView( mViewFrame );
+  //create composer view and layout with rulers
+  mView = 0;
+  mViewLayout = new QGridLayout();
+  mViewLayout->setSpacing( 0 );
+  mViewLayout->setMargin( 0 );
+  mHorizontalRuler = new QgsComposerRuler( QgsComposerRuler::Horizontal );
+  mVerticalRuler = new QgsComposerRuler( QgsComposerRuler::Vertical );
+  QWidget* fake = new QWidget();
+  fake->setAttribute( Qt::WA_NoMousePropagation );
+  fake->setBackgroundRole( QPalette::Window );
+  fake->setFixedSize( 20, 20 );
+  mViewLayout->addWidget( fake, 0, 0 );
+  mViewLayout->addWidget( mHorizontalRuler, 0, 1 );
+  mViewLayout->addWidget( mVerticalRuler, 1, 0 );
+  createComposerView();
+  mViewFrame->setLayout( mViewLayout );
 
   //init undo/redo buttons
   mComposition  = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
@@ -339,10 +355,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   tabifyDockWidget( mItemDock, mAtlasDock );
 
   mGeneralDock->raise();
-
-  QGridLayout *l = new QGridLayout( mViewFrame );
-  l->setMargin( 0 );
-  l->addWidget( mView, 0, 0 );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   mSizeGrip = new QSizeGrip( this );
@@ -455,6 +467,10 @@ void QgsComposer::open( void )
     mFirstTime = false;
     show();
     zoomFull(); // zoomFull() does not work properly until we have called show()
+    if ( mView )
+    {
+      mView->updateRulers();
+    }
   }
 
   else
@@ -505,24 +521,6 @@ void QgsComposer::setTitle( const QString& title )
   {
     mWindowAction->setText( title );
   }
-}
-
-QDialog* QgsComposer::busyIndicatorDialog( const QString& message, QWidget* parent )
-{
-  QDialog* dlg = new QDialog( parent );
-  dlg->setLayout( new QVBoxLayout() );
-  dlg->setWindowModality( Qt::WindowModal );
-  dlg->setAttribute( Qt::WA_DeleteOnClose );
-  dlg->setMinimumWidth( 250 );
-  if ( !message.isEmpty() )
-  {
-    dlg->layout()->addWidget( new QLabel( message ) );
-  }
-  QProgressBar* pb = new QProgressBar();
-  pb->setMaximum( 0 ); // show as busy indicator
-  dlg->layout()->addWidget( pb );
-
-  return dlg;
 }
 
 void QgsComposer::showItemOptions( QgsComposerItem* item )
@@ -578,6 +576,7 @@ void QgsComposer::zoomFull( void )
 void QgsComposer::on_mActionZoomAll_triggered()
 {
   zoomFull();
+  mView->updateRulers();
   mView->update();
   emit zoomLevelChanged();
 }
@@ -585,6 +584,7 @@ void QgsComposer::on_mActionZoomAll_triggered()
 void QgsComposer::on_mActionZoomIn_triggered()
 {
   mView->scale( 2, 2 );
+  mView->updateRulers();
   mView->update();
   emit zoomLevelChanged();
 }
@@ -592,6 +592,7 @@ void QgsComposer::on_mActionZoomIn_triggered()
 void QgsComposer::on_mActionZoomOut_triggered()
 {
   mView->scale( .5, .5 );
+  mView->updateRulers();
   mView->update();
   emit zoomLevelChanged();
 }
@@ -756,12 +757,12 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       }
       if ( !atlasOnASingleFile )
       {
-	// bugs #7263 and #6856
-	// QPrinter does not seem to be reset correctly and may cause generated PDFs (all except the first) corrupted
-	// when transparent objects are rendered. We thus use a new QPrinter object here
-	QPrinter multiFilePrinter;
+        // bugs #7263 and #6856
+        // QPrinter does not seem to be reset correctly and may cause generated PDFs (all except the first) corrupted
+        // when transparent objects are rendered. We thus use a new QPrinter object here
+        QPrinter multiFilePrinter;
         outputFileName = QDir( outputDir ).filePath( atlasMap->currentFilename() ) + ".pdf";
-	mComposition->beginPrintAsPDF( multiFilePrinter, outputFileName );
+        mComposition->beginPrintAsPDF( multiFilePrinter, outputFileName );
         // set the correct resolution
         mComposition->beginPrint( multiFilePrinter );
         painter.begin( &multiFilePrinter );
@@ -1394,11 +1395,15 @@ void QgsComposer::on_mActionDuplicateComposer_triggered()
   }
 
   // provide feedback, since loading of template into duplicate composer will be hidden
-  QDialog* dlg = busyIndicatorDialog( tr( "Duplicating composer..." ), this );
+  QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer..." ) );
+  dlg->setStyleSheet( mQgis->styleSheet() );
   dlg->show();
 
   QgsComposer* newComposer = mQgis->duplicateComposer( this, newTitle );
+
   dlg->close();
+  delete dlg;
+  dlg = 0;
 
   if ( !newComposer )
   {
@@ -1513,7 +1518,7 @@ void QgsComposer::loadTemplate( bool newCompser )
     if ( templateDoc.setContent( &templateFile ) )
     {
       // provide feedback, since composer will be hidden when loading template (much faster)
-      QDialog* dlg = busyIndicatorDialog( tr( "Loading template into composer..." ), 0 );
+      QDialog* dlg = new QgsBusyIndicatorDialog( tr( "Loading template into composer..." ) );
       dlg->setStyleSheet( mQgis->styleSheet() );
       dlg->show();
 
@@ -1522,6 +1527,8 @@ void QgsComposer::loadTemplate( bool newCompser )
       c->activate();
 
       dlg->close();
+      delete dlg;
+      dlg = 0;
     }
   }
 }
@@ -1781,21 +1788,11 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
     }
   }
 
-  //delete composer view and composition
-  delete mView;
-  mView = 0;
-  //delete every child of mViewFrame
-  QObjectList viewFrameChildren = mViewFrame->children();
-  QObjectList::iterator it = viewFrameChildren.begin();
-  for ( ; it != viewFrameChildren.end(); ++it )
-  {
-    delete( *it );
-  }
   //delete composition widget
   QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralDock->widget() );
   delete oldCompositionWidget;
 
-  mView = new QgsComposerView( mViewFrame );
+  createComposerView();
 
   //read composition settings
   mComposition = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
@@ -1807,10 +1804,6 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   }
 
   connectSlots();
-
-  QGridLayout *l = new QGridLayout( mViewFrame );
-  l->setMargin( 0 );
-  l->addWidget( mView, 0, 0 );
 
   //create compositionwidget
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
@@ -2178,4 +2171,19 @@ QMenu* QgsComposer::mirrorOtherMenu( QMenu* otherMenu )
     }
   }
   return newMenu;
+}
+
+void QgsComposer::createComposerView()
+{
+  if ( !mViewLayout )
+  {
+    return;
+  }
+
+  delete mView;
+  mView = new QgsComposerView();
+  mView->setContentsMargins( 0, 0, 0, 0 );
+  mView->setHorizontalRuler( mHorizontalRuler );
+  mView->setVerticalRuler( mVerticalRuler );
+  mViewLayout->addWidget( mView, 1, 1 );
 }

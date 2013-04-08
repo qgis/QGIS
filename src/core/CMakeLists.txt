@@ -40,15 +40,18 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgspointdisplacementrenderer.cpp
   symbology-ng/qgsvectorfieldsymbollayer.cpp
   symbology-ng/qgscolorbrewerpalette.cpp
-  
+
   diagram/qgsdiagram.cpp
   diagram/qgspiediagram.cpp
   diagram/qgstextdiagram.cpp
   diagram/qgshistogramdiagram.cpp
-  
+
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
+  qgscachedfeatureiterator.cpp
+  qgscacheindex.cpp
+  qgscacheindexfeatureid.cpp
   qgsbrowsermodel.cpp
   qgscentralpointpositionmanager.cpp
   qgsclipper.cpp
@@ -68,6 +71,7 @@ SET(QGIS_CORE_SRCS
   qgsfeaturestore.cpp
   qgsfield.cpp
   qgsgeometry.cpp
+  qgsgeometrycache.cpp
   qgsgeometryvalidator.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
@@ -113,6 +117,7 @@ SET(QGIS_CORE_SRCS
   qgscoordinatereferencesystem.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
+  qgsvectorlayercache.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp
@@ -143,9 +148,11 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposertexttable.cpp
   composer/qgscomposerscalebar.cpp
   composer/qgscomposershape.cpp
+  composer/qgscomposereffect.cpp
   composer/qgsatlascomposition.cpp
   composer/qgslegendmodel.cpp
   composer/qgscomposerlegend.cpp
+  composer/qgscomposerlegendstyle.cpp
   composer/qgspaperitem.cpp
   composer/qgsscalebarstyle.cpp
   composer/qgsdoubleboxscalebarstyle.cpp
@@ -204,16 +211,8 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandcolordatarenderer.cpp
   raster/qgssinglebandgrayrenderer.cpp
   raster/qgssinglebandpseudocolorrenderer.cpp
-
-  renderer/qgscontinuouscolorrenderer.cpp
-  renderer/qgsgraduatedsymbolrenderer.cpp
-  renderer/qgsrenderer.cpp
-  renderer/qgssinglesymbolrenderer.cpp
-  renderer/qgsuniquevaluerenderer.cpp
-
-  symbology/qgsmarkercatalogue.cpp
-  symbology/qgssymbol.cpp
-  symbology/qgssymbologyutils.cpp
+  raster/qgsbrightnesscontrastfilter.cpp
+  raster/qgshuesaturationfilter.cpp  
 
   qgsspatialindex.cpp
 
@@ -254,9 +253,9 @@ IF (QT_MOBILITY_LOCATION_FOUND)
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 IF (WITH_INTERNAL_SPATIALITE)
-  IF (WIN32 OR APPLE OR ANDROID)
+  IF (WIN32 OR APPLE OR ANDROID OR CYGWIN)
     INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
-  ENDIF (WIN32 OR APPLE OR ANDROID)
+  ENDIF (WIN32 OR APPLE OR ANDROID OR CYGWIN)
   IF (WIN32)
     ADD_DEFINITIONS(-DDLL_EXPORT)
   ENDIF (WIN32)
@@ -316,6 +315,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditbuffer.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
+  qgsvectorlayercache.h
   qgsgeometryvalidator.h
 
   composer/qgsaddremoveitemcommand.h
@@ -330,11 +330,11 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerattributetable.h
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
+  composer/qgscomposereffect.h
   composer/qgsatlascomposition.h
   composer/qgscomposition.h
 
   composer/qgslegendmodel.h
-  symbology/qgsmarkercatalogue.h
   raster/qgsrasterlayer.h
   raster/qgsrasterdataprovider.h
 
@@ -369,10 +369,12 @@ QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 SET(QGIS_CORE_HDRS
   ${CMAKE_BINARY_DIR}/qgsconfig.h
   ../plugins/qgisplugin.h
-  ../plugins/qgsrendererplugin.h
   qgis.h
   qgsapplication.h
   qgsattributeaction.h
+  qgscachedfeatureiterator.h
+  qgscacheindex.h
+  qgscacheindexfeatureid.h
   qgscentralpointpositionmanager.h
   qgsclipper.h
   qgscontexthelp.h
@@ -392,6 +394,7 @@ SET(QGIS_CORE_HDRS
   qgsgeometry.h
   qgsgml.h
   qgsgmlschema.h
+  qgsgeometrycache.h
   qgshttptransaction.h
   qgslabel.h
   qgslabelattributes.h
@@ -430,6 +433,7 @@ SET(QGIS_CORE_HDRS
   qgssnapper.h
   qgscoordinatereferencesystem.h
   qgsvectordataprovider.h
+  qgsvectorlayercache.h
   qgsvectorfilewriter.h
   qgsvectorlayer.h
   qgsvectorlayercache.h
@@ -446,7 +450,7 @@ SET(QGIS_CORE_HDRS
   diagram/qgstextdiagram.h
   diagram/qgshistogramdiagram.h
 
-  
+
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 
@@ -474,16 +478,6 @@ SET(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
-
-  renderer/qgscontinuouscolorrenderer.h
-  renderer/qgsgraduatedsymbolrenderer.h
-  renderer/qgsrenderer.h
-  renderer/qgssinglesymbolrenderer.h
-  renderer/qgsuniquevaluerenderer.h
-
-  symbology/qgsmarkercatalogue.h
-  symbology/qgssymbol.h
-  symbology/qgssymbologyutils.h
 
   symbology-ng/qgscategorizedsymbolrendererv2.h
   symbology-ng/qgscolorbrewerpalette.h
@@ -528,17 +522,18 @@ INCLUDE_DIRECTORIES(
   pal
   raster
   renderer
-  symbology
   symbology-ng
   gps/qextserialport
   ${SPATIALINDEX_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${EXPAT_INCLUDE_DIR}
 )
 
 IF (NOT WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+  INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
 ENDIF (NOT WITH_INTERNAL_SPATIALITE)
 
 IF (WIN32)
@@ -573,9 +568,10 @@ ELSE(NOT APPLE)
     FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
     MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
     MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_core
+    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis2_core
     BUILD_WITH_INSTALL_RPATH TRUE
     PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
+    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
 ENDIF(NOT APPLE)
 
@@ -625,9 +621,9 @@ TARGET_LINK_LIBRARIES(qgis_core
 )
 
 IF (WITH_INTERNAL_SPATIALITE)
-  IF (WIN32 OR APPLE)
+  IF (WIN32 OR APPLE OR CYGWIN)
     TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY})
-  ENDIF (WIN32 OR APPLE)
+  ENDIF (WIN32 OR APPLE OR CYGWIN)
   IF (ANDROID)
     TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY} ${CHARSET_LIBRARY})
   ENDIF (ANDROID)

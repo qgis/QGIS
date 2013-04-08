@@ -24,10 +24,12 @@
 #include <QVariant>
 #include <QImage>
 #include <QDomNode>
+#include <QPainter>
 
 #include "qgis.h"
 #include "qgserror.h"
 #include "qgsrectangle.h"
+#include "qgsmaprenderer.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
@@ -93,6 +95,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     void setAbstract( const QString& abstract ) { mAbstract = abstract; }
     const QString& abstract() const { return mAbstract; }
+
+    /* Set the blending mode used for rendering a layer */
+    void setBlendMode( const QgsMapRenderer::BlendMode blendMode );
+    /* Returns the current blending mode for a layer */
+    QgsMapRenderer::BlendMode blendMode() const;
 
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
@@ -324,6 +331,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @note This method was added in QGIS 1.4 **/
     void setCacheImage( QImage * thepImage );
 
+    /**
+     * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
+     * @note added in 2.0
+     */
+    virtual void onCacheImageDelete() {};
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
@@ -462,6 +475,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Type of the layer (eg. vector, raster) */
     QgsMapLayer::LayerType mLayerType;
+
+    /** Blend mode for the layer */
+    QgsMapRenderer::BlendMode mBlendMode;
 
     /** Tag for embedding additional information */
     QString mTag;

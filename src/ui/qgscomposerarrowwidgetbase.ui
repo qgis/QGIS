@@ -104,7 +104,7 @@
            </widget>
           </item>
           <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="mArrowColorButton">
+           <widget class="QgsColorButton" name="mArrowColorButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
               <horstretch>0</horstretch>
@@ -112,7 +112,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Arrow color...</string>
+             <string>Color...</string>
             </property>
            </widget>
           </item>
@@ -214,6 +214,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>

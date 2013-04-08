@@ -57,6 +57,7 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   connect( mSelector, SIGNAL( symbolModified() ), this, SLOT( changeSingleSymbol() ) );
 
   QVBoxLayout* layout = new QVBoxLayout;
+  layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mSelector );
   setLayout( layout );
 

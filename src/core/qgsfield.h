@@ -122,6 +122,9 @@ class CORE_EXPORT QgsField
       */
     void setComment( const QString & comment );
 
+    /**Formats string for display*/
+    QString displayString( const QVariant& v ) const;
+
   private:
 
     //! Name

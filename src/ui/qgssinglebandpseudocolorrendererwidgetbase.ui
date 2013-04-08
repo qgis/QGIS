@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>637</width>
-    <height>207</height>
+    <height>230</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,6 +72,9 @@
        </item>
        <item>
         <widget class="QToolButton" name="mSortButton">
+         <property name="toolTip">
+          <string>Sort colormap items</string>
+         </property>
          <property name="text">
           <string>...</string>
          </property>
@@ -146,15 +149,6 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <attribute name="headerDefaultSectionSize">
-        <number>70</number>
-       </attribute>
-       <attribute name="headerMinimumSectionSize">
-        <number>10</number>
-       </attribute>
-       <attribute name="headerStretchLastSection">
-        <bool>true</bool>
-       </attribute>
        <attribute name="headerDefaultSectionSize">
         <number>70</number>
        </attribute>

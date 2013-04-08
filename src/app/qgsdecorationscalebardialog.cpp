@@ -84,14 +84,6 @@ void QgsDecorationScaleBarDialog::on_buttonBox_accepted()
   accept();
 }
 
-void QgsDecorationScaleBarDialog::on_pbnChangeColor_clicked()
-{
-  QColor color = QColorDialog::getColor( pbnChangeColor->color(), this );
-
-  if ( color.isValid() )
-    pbnChangeColor->setColor( color );
-}
-
 void QgsDecorationScaleBarDialog::on_buttonBox_rejected()
 {
   reject();

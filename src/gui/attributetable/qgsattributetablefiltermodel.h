@@ -20,39 +20,180 @@
 #include <QSortFilterProxyModel>
 #include <QModelIndex>
 
-class QgsAttributeTableModel;
-class QgsVectorLayer;
+#include "qgsvectorlayer.h" //QgsFeatureIds
+#include "qgsattributetablemodel.h"
 
-class QgsAttributeTableFilterModel: public QSortFilterProxyModel
+class QgsVectorLayerCache;
+class QgsMapCanvas;
+class QItemSelectionModel;
+
+class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel
 {
+    Q_OBJECT
+
   public:
-    /**
-     * Constructor
-     * @param theLayer initializing layer pointer
-     */
-    QgsAttributeTableFilterModel( QgsVectorLayer* theLayer );
-    /**
-     * Sorts model by the column
-     * @param column column to sort by
-     * @param order sorting order
-     */
-    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+    enum FilterMode
+    {
+      ShowAll,
+      ShowSelected,
+      ShowVisible,
+      ShowFilteredList,
+      ShowEdited
+    };
 
-    QgsVectorLayer *layer() const { return mLayer; }
-    QgsAttributeTableModel *tableModel() const { return reinterpret_cast<QgsAttributeTableModel*>( sourceModel() ); }
+    /**
+     *
+     *
+     * Make sure, the master model is already loaded, so the selection will get synchronized.
+     *
+     * @param parent parent object (owner)
+     * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
+     * @param canvas  The mapCanvas. Used to identify the currently visible features.
+     */
+    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent = NULL );
 
-    void setHideUnselected( bool theFlag ) { mHideUnselected = theFlag; }
+    void setSourceModel( QgsAttributeTableModel* sourceModel );
+
+    /**
+     * Changes the sort order of the features. If set to true, selected features
+     * will be sorted on top, regardless of the current sort column
+     *
+     * @param selectedOnTop Specify, if selected features should be sorted on top
+     */
+    void setSelectedOnTop( bool selectedOnTop );
+
+    /**
+     * Returns if selected features are currently shown on top
+     *
+     * @return True if selected are shown on top
+     */
+    bool selectedOnTop();
+
+    /**
+     * Specify a list of features, which the filter will accept.
+     * The filter mode will automatically be adjusted to show only these features (ShowFilteredList).
+     *
+     * @param ids  The list of feature ids which will be accepted by the filter
+     */
+    virtual void setFilteredFeatures( QgsFeatureIds ids );
+
+    /**
+     * Set the filter mode the filter will use.
+     *
+     * @param filterMode Sets the current mode of the filter
+     */
+    void setFilterMode( FilterMode filterMode );
+
+    /**
+     * Returns the layer this filter acts on.
+     *
+     * @return Abovementioned layer
+     */
+    inline QgsVectorLayer *layer() const { return masterModel()->layer(); }
+
+    inline QgsVectorLayerCache *layerCache() const { return masterModel()->layerCache(); }
+
+    /**
+     * Returns the table model this filter is using
+     *
+     * @return the table model in quesion
+     */
+    inline QgsAttributeTableModel *masterModel() const { return mTableModel; }
+
+    /**
+     * Returns the feature id for a given model index.
+     *
+     * @param row A model index of the row in question
+     *
+     * @return The feature id of the feature visible in the provided row
+     */
+    QgsFeatureId rowToId( const QModelIndex& row );
+
+    /**
+     * Returns a selection model which is mapped to the sourceModel (tableModel) of this proxy.
+     * This selection also contains the features not visible because of the current filter.
+     * Views using this filter model may update this selection and subscribe to changes in
+     * this selection. This selection will synchronize itself with the selection on the map
+     * canvas.
+     *
+     * @return The master selection
+     */
+    QItemSelectionModel* masterSelection();
+
+    virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
+
+    virtual QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
+
+    virtual QItemSelection mapSelectionFromMaster( const QItemSelection& sourceSelection ) const;
 
   protected:
     /**
      * Returns true if the source row will be accepted
+     *
      * @param sourceRow row from the source model
      * @param sourceParent parent index in the source model
      */
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
+    /**
+     * Updates the list of currently visible features on the map canvas.
+     * Is called automatically when the filter mode is adjusted or the extents changed.
+     */
+    void generateListOfVisibleFeatures();
+
+    /**
+     * Used by the sorting algorithm. Compares the two model indices. Will also consider the
+     * selection state of the feature in case selected features are to be shown on top.
+     */
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+    /**
+     * Calls invalidateFilter on the underlying QSortFilterProxyModel, but emits the signals
+     * filterAboutToBeInvalidated before and the signal filterInvalidated after the changes on the
+     * filter happen.
+     */
+    void announcedInvalidateFilter();
+
+
+
+  public slots:
+    /**
+     * Is called upon every change of the selection on the map canvas.
+     * When an update is signalled, the filter is updated and invalidated if needed.
+     *
+     */
+    void selectionChanged();
+
+    void masterSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+
+    /**
+     * Is called upon every change of the visible extents on the map canvas.
+     * When a change is signalled, the filter is updated and invalidated if needed.
+     *
+     */
+    void extentsChanged();
+
+  signals:
+    /**
+     * This signal is emitted, before the filter is invalidated. With the help of this signal,
+     * selections of views attached to this can disable synchronisation with the master selection
+     * before items currently not visible with the filter get removed from the selection.
+     */
+    void filterAboutToBeInvalidated();
+
+    /**
+     * Is called after the filter has been invalidated and recomputed.
+     * See filterAboutToBeInvalidated.
+     */
+    void filterInvalidated();
+
   private:
-    QgsVectorLayer* mLayer;
-    bool mHideUnselected;
+    QgsFeatureIds mFilteredFeatures;
+    QgsMapCanvas* mCanvas;
+    FilterMode mFilterMode;
+    bool mSelectedOnTop;
+    QItemSelectionModel* mMasterSelection;
+    QgsAttributeTableModel* mTableModel;
 };
 
 #endif

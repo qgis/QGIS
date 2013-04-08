@@ -195,8 +195,8 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
   // Null values should not be categorized
   if ( attrs[mAttrNum].isNull() )
     return NULL;
-    
-  // find the right category    
+
+  // find the right category
   QgsSymbolV2* symbol = symbolForValue( attrs[mAttrNum].toDouble() );
   if ( symbol == NULL )
     return NULL;
@@ -806,7 +806,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     lst.append( attrNum );
 
     QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( lst ) );
-    
+
     // create list of non-null attribute values
     while ( fit.nextFeature( f ) )
       if ( !f.attribute( attrNum ).isNull() )
@@ -1129,6 +1129,15 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
     ++i;
   }
   this->setSourceSymbol( sym->clone() );
+}
+
+void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  mScaleMethod = scaleMethod;
+  foreach ( QgsRendererRangeV2 range, mRanges )
+  {
+    setScaleMethodToSymbol( range.symbol(), scaleMethod );
+  }
 }
 
 void QgsGraduatedSymbolRendererV2::addClass( QgsSymbolV2* symbol )

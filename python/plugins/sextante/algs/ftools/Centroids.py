@@ -55,10 +55,8 @@ class Centroids(GeoAlgorithm):
     def processAlgorithm(self, progress):
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
 
-        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(layer.pendingFields(),
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(layer.pendingFields().toList(),
                      QGis.WKBPoint, layer.crs())
-
-        #layer.select(layer.pendingAllAttributesList())
 
         outFeat = QgsFeature()
 

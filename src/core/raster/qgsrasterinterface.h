@@ -260,6 +260,11 @@ class CORE_EXPORT QgsRasterInterface
      * returned. */
     //double time( bool cumulative = false );
 
+    /** Write base class members to xml. */
+    virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
+    /** Sets base class members from xml. Usually called from create() methods of subclasses */
+    virtual void readXML( const QDomElement& filterElem ) { Q_UNUSED( filterElem ); }
+
   protected:
     // QgsRasterInterface used as input
     QgsRasterInterface* mInput;

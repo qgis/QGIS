@@ -1,26 +1,32 @@
 <h1>Heatmap Plugin Help</h1>
-<p>Heatmap Plugin creates a heatmap raster for the input point vector layer. The heatmap is generated based on the number of points in a given location. The higher the number of points, the higher the corresponding pixel(s) value will be in the raster.</p>
+<p>The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap) raster of an input point vector layer. The density is calculated based on the number of points in a location, with larger numbers of clustered points resulting in a larger raster values.</p>
 
-<h2>The Dialog Parameters</h2>
+<h2>Dialog Parameters</h2>
 
 <h3>Input Point Vector</h3>
-<p>The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are automatically populated in the input layer drop-down list. Click the dropdown button and select the desired layer.</p>
+<p>The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.</p>
 
-<h3>Output Ratser</h3>
+<h3>Output Raster</h3>
 <p>The output raster location and filename can be set by clicking the <label>...</label> button next to the output raster textbox.<br/>
-<b>Note:</b>The file format is automatically added depending upon the output format selected, if not explicitly given.</p>
+<b>Note:</b> The file format is automatically added depending upon the output format selected, if not explicitly given.</p>
 
 <h3>Output Format</h3>
 <p>All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.<br/>
 <b>Note:</b> GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use an other formats if you know GDAL supports it completely.</p>
 
 <h3>Heatmap Point Attributes</h3>
-<h4>Buffer Radius</h4>
-<p>The buffer radius specifies the number of <b>pixels or cells</b> around a point where the heat(influence) of the point will be felt. Smaller values give you clear distinction between points and bigger values gives you nicely merged heatmap regions. This is the spatial parameter of the heat region of a point.<br/>
-<b>Note:</b> The value is always a whole number.</p>
-<h4>Decay Ratio</h4>
-<p>The decay ratio defines amount of heat(influence) that should reach the outermost pixel in the Buffer Radius. It is the direct measure of the outer most value.<br/>
-<b>Example:</b> If decay Ratio is set to 0 and radius to 10, then the center pixel of a point will have value and the pixel away by a distance of 10 units will have the value 0, a pixel which is 5 units away will have a value of 0.5 and so on. Here distance is measure not by pixel count rather using sqrt( xOffset^2 + yOffset^2 ), so you always get a circular heat region.</p>
+<h4>Radius (bandwidth)</h4>
+<p>The buffer radius specifies the distance around a point at which the influence of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details.</p>
+
+<h4>Kernel shape</h4>
+<p>The kernel shape parameter controls the rate at which the influence of a point decreases as the distance from the point increases. A number of standard kernel functions are available, which are described in detail on <a href="http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use">Wikipedia</a>.
+</p>
+<h4>Use radius from field</h4>
+<p>Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.</p>
+<h4>Use weight from field</h4>
+<p>Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.</p>
+<h4>Decay ratio</h4>
+<p>For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.</p>
 
 <h2>Further Details</h2>
 <p>Contact the author through aruntheguy at gmail dot com</p>

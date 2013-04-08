@@ -32,7 +32,6 @@
 
 #include "qgslogger.h"
 #include "qgsrectangle.h"
-#include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
@@ -49,7 +48,8 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mDataSource( source ),
     mLayerOrigName( lyrname ), // store the original name
     mID( "" ),
-    mLayerType( type )
+    mLayerType( type ),
+    mBlendMode( QgsMapRenderer::BlendNormal ) // Default to normal blending
 {
   mCRS = new QgsCoordinateReferenceSystem();
 
@@ -131,6 +131,18 @@ QString const & QgsMapLayer::source() const
 QgsRectangle QgsMapLayer::extent()
 {
   return mExtent;
+}
+
+/** Write blend mode for layer */
+void QgsMapLayer::setBlendMode( const QgsMapRenderer::BlendMode blendMode )
+{
+  mBlendMode = blendMode;
+}
+
+/** Read blend mode for layer */
+QgsMapRenderer::BlendMode QgsMapLayer::blendMode() const
+{
+  return mBlendMode;
 }
 
 bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
@@ -473,6 +485,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QDomText    transparencyLevelIntText    = document.createTextNode( QString::number( getTransparency() ) );
   transparencyLevelIntElement.appendChild( transparencyLevelIntText );
   maplayer.appendChild( transparencyLevelIntElement );
+
   // now append layer node to map layer node
 
   layer_node.appendChild( maplayer );
@@ -1235,6 +1248,7 @@ void QgsMapLayer::setCacheImage( QImage * thepImage )
 
   if ( mpCacheImage )
   {
+    onCacheImageDelete();
     delete mpCacheImage;
   }
   mpCacheImage = thepImage;

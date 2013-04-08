@@ -18,6 +18,7 @@
 #ifndef QGSCOMPOSERLEGENDITEM_H
 #define QGSCOMPOSERLEGENDITEM_H
 
+#include "qgscomposerlegendstyle.h"
 #include <QStandardItem>
 class QDomDocument;
 class QDomElement;
@@ -26,18 +27,18 @@ class QDomElement;
 class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
 {
   public:
-    QgsComposerLegendItem();
-    QgsComposerLegendItem( const QString& text );
-    QgsComposerLegendItem( const QIcon& icon, const QString& text );
+    QgsComposerLegendItem( QgsComposerLegendStyle::Style s = QgsComposerLegendStyle::Undefined );
+    QgsComposerLegendItem( const QString& text, QgsComposerLegendStyle::Style s = QgsComposerLegendStyle::Undefined );
+    QgsComposerLegendItem( const QIcon& icon, const QString& text, QgsComposerLegendStyle::Style s = QgsComposerLegendStyle::Undefined );
     virtual ~QgsComposerLegendItem();
 
     enum ItemType
     {
       GroupItem = QStandardItem::UserType,
       LayerItem,
-      SymbologyItem,
       SymbologyV2Item,
-      RasterSymbolItem
+      RasterSymbolItem,
+      StyleItem
     };
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const = 0;
@@ -49,38 +50,15 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     virtual ItemType itemType() const = 0;
     virtual QStandardItem* clone() const = 0;
 
+    QgsComposerLegendStyle::Style style() const { return mStyle; }
+    void setStyle( QgsComposerLegendStyle::Style style ) { mStyle = style; }
+
   protected:
     void writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const;
+
+    QgsComposerLegendStyle::Style mStyle;
 };
 
-class QgsSymbol;
-
-class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
-{
-  public:
-    QgsComposerSymbolItem();
-    QgsComposerSymbolItem( const QString& text );
-    QgsComposerSymbolItem( const QIcon& icon, const QString& text );
-    virtual ~QgsComposerSymbolItem();
-
-    virtual QStandardItem* clone() const;
-
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
-
-    /**Set symbol (takes ownership)*/
-    void setSymbol( QgsSymbol* s );
-    QgsSymbol* symbol() {return mSymbol;}
-
-    void setLayerID( const QString& id ) { mLayerID = id; }
-    QString layerID() const { return mLayerID; }
-
-    ItemType itemType() const { return SymbologyItem; }
-
-  private:
-    QgsSymbol* mSymbol;
-    QString mLayerID; //this is needed to read the symbol from XML
-};
 
 class QgsSymbolV2;
 
@@ -151,6 +129,8 @@ class CORE_EXPORT QgsComposerLayerItem: public QgsComposerLegendItem
     void setShowFeatureCount( bool show ) { mShowFeatureCount = show; }
     bool showFeatureCount() const { return mShowFeatureCount; }
 
+    void setDefaultStyle();
+
   private:
     QString mLayerID;
     // Show vector feature counts
@@ -169,6 +149,14 @@ class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem
     virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
 
     ItemType itemType() const { return GroupItem; }
+};
+
+class CORE_EXPORT QgsComposerStyleItem: public QStandardItem
+{
+  public:
+    QgsComposerStyleItem( );
+    QgsComposerStyleItem( QgsComposerLegendItem *item );
+    ~QgsComposerStyleItem();
 };
 
 #endif // QGSCOMPOSERLEGENDITEM_H

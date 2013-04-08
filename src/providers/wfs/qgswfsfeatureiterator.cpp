@@ -15,6 +15,7 @@
 #include "qgswfsfeatureiterator.h"
 #include "qgsspatialindex.h"
 #include "qgswfsprovider.h"
+#include "qgsmessagelog.h"
 
 QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSProvider* provider, const QgsFeatureRequest& request ):
     QgsAbstractFeatureIterator( request ), mProvider( provider )
@@ -28,6 +29,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSProvider* provider, const Qg
 
   if ( mProvider->mActiveIterator )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "WFS" ) );
     mProvider->mActiveIterator->close();
   }
   mProvider->mActiveIterator = this;

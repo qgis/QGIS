@@ -1101,7 +1101,7 @@ class geoprocessingThread( QThread ):
     nElement = 0
 
     fitA = vproviderA.getFeatures()
-    while fit.nextFeature( inFeatA ):
+    while fitA.nextFeature( inFeatA ):
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       nElement += 1
       found = False
@@ -1198,7 +1198,7 @@ class geoprocessingThread( QThread ):
           except Exception, err:
             FEATURE_EXCEPT = False
 
-    length = len( vproviderA.fields().values() )
+    length = len( vproviderA.fields() )
 
     fitB = vproviderB.getFeatures()
     while fitB.nextFeature( inFeatA ):

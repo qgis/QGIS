@@ -15,7 +15,7 @@
 #include "qgsvectorlayereditutils.h"
 
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayercache.h"
+#include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 
 #include <limits>

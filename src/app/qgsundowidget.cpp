@@ -107,7 +107,9 @@ void QgsUndoWidget::indexChanged( int curIndx )
     QgsDebugMsg( QString( "offset  : %1" ).arg( offset ) );
     QgsDebugMsg( QString( "curCount: %1" ).arg( curCount ) );
     if ( lastRedo )
+    {
       QgsDebugMsg( QString( "lastRedo: true" ) );
+    }
   }
 
   // avoid canvas redraws when only new command was added to stack (i.e. no user undo/redo action)

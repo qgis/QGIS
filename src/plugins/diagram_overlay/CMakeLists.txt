@@ -31,8 +31,7 @@ INCLUDE_DIRECTORIES(
      ../../core
      ../../core/pal
      ../../core/raster
-     ../../core/renderer
-     ../../core/symbology
+     ../../core/symbology-ng
      ../../gui
      ..
 )

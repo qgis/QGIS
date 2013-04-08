@@ -5,6 +5,6 @@ Learning
 ParameterRaster|-in|Input Image|False
 ParameterRaster|-mask|Input Mask|True
 ParameterFile|-svm|SVM Model file||
-ParameterFile|-imstat|Statistics file||
+ParameterFile|-imstat|Statistics file|
 OutputRaster|-out|Output Image
 ParameterNumber|-ram|Available RAM (Mb)|None|None|128

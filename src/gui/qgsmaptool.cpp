@@ -131,6 +131,11 @@ void QgsMapTool::canvasReleaseEvent( QMouseEvent *e )
   Q_UNUSED( e );
 }
 
+void QgsMapTool::wheelEvent( QWheelEvent *e )
+{
+  Q_UNUSED( e );
+}
+
 void QgsMapTool::keyPressEvent( QKeyEvent *e )
 {
   Q_UNUSED( e );

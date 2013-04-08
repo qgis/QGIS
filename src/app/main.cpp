@@ -201,7 +201,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     {
       fprintf( stderr, "Fatal: %s\n", msg );
 #if defined(linux) && !defined(ANDROID)
-      write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
+      ( void ) write( STDERR_FILENO, "Stacktrace (run through c++filt):\n", 34 );
       void *buffer[256];
       int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
       backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
@@ -276,7 +276,7 @@ int main( int argc, char *argv[] )
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
-  configpath = QDir::homePath() + QString( "/.qgis/" );
+  configpath = QgsApplication::qgisSettingsPath();
   QgsDebugMsg( QString( "Android: configpath set to %1" ).arg( configpath ) );
 #elif defined(Q_WS_WIN)
   for ( int i = 1; i < argc; i++ )
@@ -530,7 +530,7 @@ int main( int argc, char *argv[] )
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( "QuantumGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS" );
+  QCoreApplication::setApplicationName( "QGIS2" );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
 
   QSettings* customizationsettings;
@@ -540,17 +540,18 @@ int main( int argc, char *argv[] )
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QString path = optionpath.isEmpty() ? configpath : optionpath;
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, path );
-    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, "QuantumGIS", "QGISCUSTOMIZATION" );
+    customizationsettings = new QSettings( QSettings::IniFormat, QSettings::UserScope, "QuantumGIS", "QGISCUSTOMIZATION2" );
   }
   else
   {
-    customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION" );
+    customizationsettings = new QSettings( "QuantumGIS", "QGISCUSTOMIZATION2" );
   }
 
   // Using the customizationfile option always overrides the option and config path options.
   if ( !customizationfile.isEmpty() )
   {
     customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
+    QgsCustomization::instance()->setEnabled( true );
   }
 
   // Load and set possible default customization, must be done afterQgsApplication init and QSettings ( QCoreApplication ) init
@@ -696,7 +697,7 @@ int main( int argc, char *argv[] )
   }
 
   //set up splash screen
-  QString mySplashPath( QgsApplication::splashPath() );
+  QString mySplashPath( QgsCustomization::instance()->splashPath() );
   QPixmap myPixmap( mySplashPath + QString( "splash.png" ) );
   QSplashScreen *mypSplash = new QSplashScreen( myPixmap );
   if ( mySettings.value( "/qgis/hideSplash" ).toBool() || myHideSplash )

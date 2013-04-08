@@ -11,30 +11,6 @@ Copyright (C) 2008-2010 Borys Jurgiel
  *                                                                         *
  ***************************************************************************/
 """
-def name():
-  return "Plugin Installer"
-
-def version():
-  return "Version 1.2.1"
-
-def description():
-  return "Downloads and installs QGIS python plugins"
-
-def category():
-  return "Plugins"
-
-def qgisMinimumVersion():
-  return "1.0"
-
-def icon():
-  import resources_rc
-  return ":/plugins/installer/plugin_installer.png"
-
-def authorName():
-  return "Matthew Perry, Borys Jurgiel"
-
-def homepage():
-  return "http://bwj.aster.net.pl/qgis/"
 
 def classFactory(iface):
   from installer_plugin import InstallerPlugin

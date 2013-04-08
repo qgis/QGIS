@@ -77,6 +77,7 @@
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
+%Include qgsvectorlayercache.sip
 %Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayerimport.sip
 %Include qgsvectorlayerjoinbuffer.sip
@@ -162,15 +163,8 @@
 %Include raster/qgscubicrasterresampler.sip
 %Include raster/qgsmultibandcolorrenderer.sip
 
-%Include renderer/qgscontinuouscolorrenderer.sip
-%Include renderer/qgsgraduatedsymbolrenderer.sip
-%Include renderer/qgsrenderer.sip
-%Include renderer/qgssinglesymbolrenderer.sip
-%Include renderer/qgsuniquevaluerenderer.sip
-
 %Include symbology-ng/qgsstylev2.sip
 %Include symbology-ng/qgssvgcache.sip
-%Include symbology-ng/qgssymbologyv2conversion.sip
 %Include symbology-ng/qgssymbolv2.sip
 %Include symbology-ng/qgscolorbrewerpalette.sip
 %Include symbology-ng/qgscptcityarchive.sip
@@ -192,7 +186,3 @@
 %Include symbology-ng/qgslinesymbollayerv2.sip
 %Include symbology-ng/qgsmarkersymbollayerv2.sip
 %Include symbology-ng/qgssymbollayerv2registry.sip
-
-%Include symbology/qgsmarkercatalogue.sip
-%Include symbology/qgssymbol.sip
-%Include symbology/qgssymbologyutils.sip

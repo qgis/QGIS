@@ -24,6 +24,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from qgis.core import QgsApplication
 import subprocess
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
@@ -42,8 +43,18 @@ class OTBUtils:
         if folder == None:
             folder = ""
 
-            if os.path.exists("/usr/bin/otbcli"):
-                folder = "/usr/bin"
+            if SextanteUtils.isMac():
+                testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+                if os.path.exists(os.path.join(testfolder, "otbcli")):
+                    folder = testfolder
+                else:
+                    testfolder = "/usr/local/bin"
+                    if os.path.exists(os.path.join(testfolder, "otbcli")):
+                        folder = testfolder
+            else:
+                testfolder = "/usr/bin"
+                if os.path.exists(os.path.join(testfolder, "otbcli")):
+                    folder = testfolder
         return folder
 
     @staticmethod
@@ -52,9 +63,18 @@ class OTBUtils:
         if folder == None:
             folder =""
 
-            linuxstandardpath = "/usr/lib/otb/applications"
-            if os.path.exists(linuxstandardpath):
-                folder = linuxstandardpath
+            if SextanteUtils.isMac():
+                testfolder = os.path.join(str(QgsApplication.prefixPath()), "lib/otb/applications")
+                if os.path.exists(testfolder):
+                    folder = testfolder
+                else:
+                    testfolder = "/usr/local/lib/otb/applications"
+                    if os.path.exists(testfolder):
+                        folder = testfolder
+            else:
+                testfolder = "/usr/lib/otb/applications"
+                if os.path.exists(testfolder):
+                    folder = testfolder
         return folder
 
     @staticmethod

@@ -17,8 +17,9 @@
 #include "qgsogrprovider.h"
 
 #include "qgsapplication.h"
-#include "qgslogger.h"
 #include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 #include <QTextCodec>
 
@@ -35,7 +36,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrProvider* p, const QgsFeatur
 {
   // make sure that only one iterator is active
   if ( P->mActiveIterator )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Already active iterator on this provider was closed." ), QObject::tr( "OGR" ) );
     P->mActiveIterator->close();
+  }
   P->mActiveIterator = this;
 
   mFeatureFetched = false;
@@ -183,7 +187,18 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
       case QVariant::String: value = QVariant( P->mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) ); break;
       case QVariant::Int: value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) ); break;
       case QVariant::Double: value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) ); break;
-        //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
+      case QVariant::Date:
+      case QVariant::DateTime:
+      {
+        int year, month, day, hour, minute, second, tzf;
+
+        OGR_F_GetFieldAsDateTime( ogrFet, attindex, &year, &month, &day, &hour, &minute, &second, &tzf );
+        if ( P->mAttributeFields[attindex].type() == QVariant::Date )
+          value = QDate( year, month, day );
+        else
+          value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
+      }
+      break;
       default: assert( NULL && "unsupported field type" );
     }
   }

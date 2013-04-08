@@ -81,7 +81,7 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
 
     void radioChanged( void ) ;
 
-    void changeColor( void ) ;
+    void changeColor( const QColor& color ) ;
     void changeWidth( void ) ;
 
     void restorePosition( void );

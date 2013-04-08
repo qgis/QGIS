@@ -75,6 +75,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.saveButton = QPushButton(self.tr("Save"))
         self.saveButton.setToolTip(self.tr("Save current model"))
         self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
+        self.saveAsButton = QPushButton(self.tr("Save as ..."))
+        self.saveAsButton.setToolTip(self.tr("Save current model as"))
+        self.buttonBox.addButton(self.saveAsButton, QDialogButtonBox.ActionRole)
 
         # fill trees with inputs and algorithms
         self.fillInputsTree()
@@ -94,7 +97,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
 
         self.openButton.clicked.connect(self.openModel)
-        self.saveButton.clicked.connect(self.saveModel)
+        self.saveButton.clicked.connect(self.save)
+        self.saveAsButton.clicked.connect(self.saveAs)
         self.runButton.clicked.connect(self.runModel)
         self.editHelpButton.clicked.connect(self.editHelp)
 
@@ -120,20 +124,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         if self.alg.descriptionFile is None and dlg.descriptions:
             self.help = dlg.descriptions
 
-    #===========================================================================
-    # def createScript(self):
-    #    if str(self.textGroup.text()).strip() == "":
-    #        QMessageBox.warning(self, "Warning", "Please enter group name before saving")
-    #        return
-    #    filename = QtGui.QFileDialog.getSaveFileName(self, "Save Script", ScriptUtils.scriptsFolder(), "Python scripts (*.py)")
-    #    if filename:
-    #        fout = open(filename, "w")
-    #        fout.write(str(self.textGroup.text()) + "=group")
-    #        fout.write(self.alg.getAsPythonCode())
-    #        fout.close()
-    #        self.update = True
-    #===========================================================================
-
     def runModel(self):
         ##TODO: enable alg cloning without saving to file
         if self.alg.descriptionFile is None:
@@ -155,7 +145,13 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             dlg = ParametersDialog(alg)
             dlg.exec_()
 
-    def saveModel(self):
+    def save(self):
+        self.saveModel(False)
+
+    def saveAs(self):
+        self.saveModel(True)
+
+    def saveModel(self, saveAs):
         if unicode(self.textGroup.text()).strip() == "" or unicode(self.textName.text()).strip() == "":
             QMessageBox.warning(self,
                                 self.tr("Warning"),
@@ -165,7 +161,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
         self.alg.name = unicode(self.textName.text())
         self.alg.group = unicode(self.textGroup.text())
-        if self.alg.descriptionFile != None:
+        if self.alg.descriptionFile != None and not saveAs:
             filename = self.alg.descriptionFile
         else:
             filename = unicode(QFileDialog.getSaveFileName(self, self.tr("Save Model"), ModelerUtils.modelsFolder(), self.tr("SEXTANTE models (*.model)")))
@@ -215,7 +211,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.scene.setSceneRect(QRectF(0, 0, ModelerAlgorithm.CANVAS_SIZE, ModelerAlgorithm.CANVAS_SIZE))
         self.scene.paintModel(self.alg)
         self.view.setScene(self.scene)
-        #self.pythonText.setText(self.alg.getAsPythonCode())
 
     def addInput(self):
         item = self.inputsTree.currentItem()

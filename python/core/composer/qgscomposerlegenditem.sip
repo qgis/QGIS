@@ -14,7 +14,6 @@ class QgsComposerLegendItem : QStandardItem
     {
       GroupItem = QStandardItem::UserType,
       LayerItem,
-      SymbologyItem,
       SymbologyV2Item,
       RasterSymbolItem
     };
@@ -32,32 +31,6 @@ class QgsComposerLegendItem : QStandardItem
     void writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const;
 };
 
-class QgsComposerSymbolItem : QgsComposerLegendItem
-{
-%TypeHeaderCode
-#include <qgscomposerlegenditem.h>
-%End
-  public:
-
-    QgsComposerSymbolItem();
-    QgsComposerSymbolItem( const QString& text );
-    QgsComposerSymbolItem( const QIcon& icon, const QString& text );
-    virtual ~QgsComposerSymbolItem();
-
-    virtual QStandardItem* clone() const /Factory/;
-
-    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
-    virtual void readXML( const QDomElement& itemElem, bool xServerAvailable = true );
-
-    /**Set symbol (takes ownership)*/
-    void setSymbol( QgsSymbol* s /Transfer/ );
-    QgsSymbol* symbol();
-
-    void setLayerID( const QString& id );
-    QString layerID() const;
-
-    ItemType itemType() const;
-};
 
 class QgsComposerSymbolV2Item: QgsComposerLegendItem
 {

@@ -18,7 +18,7 @@
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayercache.h"
+#include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 
 #include "qgslogger.h"
@@ -47,8 +47,10 @@ QgsVectorLayerUndoCommandAddFeature::QgsVectorLayerUndoCommandAddFeature( QgsVec
 
 void QgsVectorLayerUndoCommandAddFeature::undo()
 {
+#ifdef QGISDEBUG
   QgsFeatureMap::const_iterator it = mBuffer->mAddedFeatures.find( mFeature.id() );
   Q_ASSERT( it != mBuffer->mAddedFeatures.end() );
+#endif
   mBuffer->mAddedFeatures.remove( mFeature.id() );
 
   if ( mFeature.geometry() )

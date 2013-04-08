@@ -732,6 +732,12 @@ def mmqgisx_gridify_points(hspacing, vspacing, points):
 	return newpoints, point_count, deleted_points
 
 
+class mmqgisx_hub:
+	def __init__(self, point, newname):
+		self.point = point
+		self.name = newname
+
+
 class mmqgisx_hub_distance_algorithm(GeoAlgorithm):
 
 	SOURCENAME = "SOURCENAME"

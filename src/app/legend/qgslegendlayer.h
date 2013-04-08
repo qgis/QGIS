@@ -24,7 +24,6 @@ class QgsLegendLayer;
 class QgsLegendPropertyGroup;
 class QgsMapLayer;
 class QgsRasterLayer;
-class QgsSymbol;
 class QgsVectorLayer;
 
 class QTreeWidget;
@@ -51,7 +50,7 @@ class QgsLegendLayer : public QgsLegendItem
     //void updateCheckState();
 
     /**Updates symbology of the layer and copies symbology to other layer files in the group*/
-    void refreshSymbology( const QString& key, double widthScale = 1.0 );
+    void refreshSymbology( const QString& key );
 
     /** Helper method to set font characteristics.
      *  Not to be confused with setFont() which is inherited
@@ -110,8 +109,6 @@ class QgsLegendLayer : public QgsLegendItem
   protected:
 
     /** Prepare and change symbology for vector layer */
-    void vectorLayerSymbology( QgsVectorLayer* mapLayer, double widthScale = 1.0 );
-
     void vectorLayerSymbologyV2( QgsVectorLayer* vlayer );
 
     /** Prepare and change symbology for raster layer */
@@ -122,8 +119,6 @@ class QgsLegendLayer : public QgsLegendItem
 
     /**Adds feature counts to the symbology items (for symbology v2)*/
     void updateItemListCountV2( SymbologyList& itemList, QgsVectorLayer* layer );
-    /**Calculates feature count for the individual symbols (old symbology)*/
-    void updateItemListCount( QgsVectorLayer* layer, const QList<QgsSymbol*>& sym, QMap< QgsSymbol*, int >& featureCountMap );
 
     QPixmap getOriginalPixmap();
 

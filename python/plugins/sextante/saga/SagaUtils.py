@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.tests.TestData import points
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,9 +33,6 @@ from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
 from qgis.core import *
 from PyQt4.QtCore import *
-from sextante.core.SextanteVectorWriter import SextanteVectorWriter
-from sextante.core.QGisLayers import QGisLayers
-
 
 class SagaUtils:
 
@@ -66,6 +64,14 @@ class SagaUtils:
         if folder == None:
             folder =""
 
+        if SextanteUtils.isMac():
+            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+            if os.path.exists(os.path.join(testfolder, "saga_cmd")):
+                folder = testfolder
+            else:
+                testfolder = "/usr/local/bin"
+                if os.path.exists(os.path.join(testfolder, "saga_cmd")):
+                    folder = testfolder
         return folder
 
     @staticmethod
@@ -78,8 +84,11 @@ class SagaUtils:
         fout = open(SagaUtils.sagaBatchJobFilename(), "w")
         if SextanteUtils.isWindows():
             fout.write("set SAGA=" + SagaUtils.sagaPath() + "\n");
-            fout.write("set SAGA_MLB=" + SagaUtils.sagaPath()+ os.sep + "modules" + "\n");
+            fout.write("set SAGA_MLB=" + SagaUtils.sagaPath() + os.sep + "modules" + "\n");
             fout.write("PATH=PATH;%SAGA%;%SAGA_MLB%\n");
+        elif SextanteUtils.isMac():
+            fout.write("export SAGA_MLB=" + SagaUtils.sagaPath() + "/../lib/saga\n");
+            fout.write("export PATH=" + SagaUtils.sagaPath() + ":$PATH\n");
         else:
             pass
         for command in commands:
@@ -114,8 +123,8 @@ class SagaUtils:
             SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
 
 
-    @classmethod
-    def checkSagaIsInstalled(cls):
+    @staticmethod
+    def checkSagaIsInstalled(ignoreRegistrySettings=False):
         if SextanteUtils.isWindows():
             path = SagaUtils.sagaPath()
             if path == "":
@@ -126,36 +135,19 @@ class SagaUtils:
                         + "Please, go to the SEXTANTE settings dialog, and check that the SAGA\n"
                         + "folder is correctly configured")
 
-        SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
         settings = QSettings()
-        if settings.contains(SAGA_INSTALLED):
-            return
+        if not ignoreRegistrySettings:
+            SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
+            if settings.contains(SAGA_INSTALLED):
+                return
 
         try:
-            qgis = QGisLayers.iface
-            crs = qgis.mapCanvas().mapRenderer().destinationCrs()
-            fields = []
-            fields.append(QgsField("NUM_FIELD", QVariant.Int))
-            filename = SextanteUtils.getTempFilename("shp")
-            writer = SextanteVectorWriter(filename, None, fields, QGis.WKBPoint, crs)
-            for x in range(5):
-                for y in range(5):
-                    attrs = []
-                    attrs.append(QVariant(x))
-                    outFeat = QgsFeature()
-                    pt = QgsPoint(x, y)
-                    outFeat.setGeometry(QgsGeometry.fromPoint(pt))
-                    outFeat.setAttributes(attrs)
-                    writer.addFeature(outFeat)
-            del writer.writer
-            del writer
             from sextante.core.Sextante import runalg
-            result = runalg("saga:thiessenpolygons", filename, None)
+            result = runalg("saga:thiessenpolygons", points(), None)
             if not os.path.exists(result['POLYGONS']):
                 return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."
         except:
             s = traceback.format_exc()
             return "Error while checking SAGA installation. SAGA might not be correctly configured.\n" + s;
 
-
-        settings.setValue("/SextanteQGIS/SagaInstalled", True)
+        settings.setValue(SAGA_INSTALLED, True)

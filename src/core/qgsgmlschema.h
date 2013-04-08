@@ -154,6 +154,7 @@ class CORE_EXPORT QgsGmlSchema: public QObject
     QString stripNS( const QString & name );
 
     /** Find GML base type for complex type of given name
+     * @param element input element
      * @param name complex type name
      * @return name of GML base type without NS, e.g. AbstractFeatureType or empty string if not pased on GML type
      */
@@ -183,7 +184,7 @@ class CORE_EXPORT QgsGmlSchema: public QObject
     /**Tuple separator for coordinate strings. Usually " " */
     QString mTupleSeparator;
 
-    /* Schema informations guessed/parsed from GML in getSchema() */
+    /* Schema information guessed/parsed from GML in getSchema() */
 
     /** Depth level, root element is 0 */
     int mLevel;

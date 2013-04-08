@@ -1,4 +1,4 @@
-class QgsGml: QObject 
+class QgsGml: QObject
 {
 
 %TypeHeaderCode
@@ -6,7 +6,7 @@ class QgsGml: QObject
 %End
 
   public:
-  
+
     QgsGml(
       const QString& typeName,
       const QString& geometryAttribute,
