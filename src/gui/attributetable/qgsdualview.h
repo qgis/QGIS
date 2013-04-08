@@ -98,6 +98,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void  setCurrentEditSelection( const QgsFeatureIds& fids );
 
   signals:
+    void filterChanged();
 
   private slots:
     /**
