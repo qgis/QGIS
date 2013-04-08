@@ -115,15 +115,22 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   }
   else
   {
+    mModel->disableSelectionSync();
     QListView::mousePressEvent( event );
   }
 }
 
 void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
 {
-  mEditSelectionDrag = false;
-
-  QListView::mouseReleaseEvent( event );
+  if ( mEditSelectionDrag )
+  {
+    mEditSelectionDrag = false;
+  }
+  else
+  {
+    QListView::mouseReleaseEvent( event );
+    mModel->enableSelectionSync();
+  }
 }
 
 void QgsFeatureListView::editSelectionChanged( QItemSelection deselected, QItemSelection selected )
