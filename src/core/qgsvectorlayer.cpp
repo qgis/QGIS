@@ -299,9 +299,9 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
   QgsDebugMsg( "Starting draw of labels: " + id() );
 
   if ( mRendererV2 && mLabelOn &&
-      ( !mLabel->scaleBasedVisibility() ||
-        ( mLabel->minScale() <= rendererContext.rendererScale() &&
-          rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
+       ( !mLabel->scaleBasedVisibility() ||
+         ( mLabel->minScale() <= rendererContext.rendererScale() &&
+           rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
   {
     QgsAttributeList attributes;
     foreach ( QString attrName, mRendererV2->usedAttributes() )
@@ -1513,7 +1513,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
   QDomNode prevExpNode = layer_node.namedItem( "previewExpression" );
 
-  if( prevExpNode.isNull() )
+  if ( prevExpNode.isNull() )
   {
     mDisplayExpression = "";
   }

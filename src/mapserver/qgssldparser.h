@@ -125,8 +125,10 @@ class QgsSLDParser: public QgsConfigParser
     QgsVectorLayer* contourLayerFromRaster( const QDomElement& userStyleElem, QgsRasterLayer* rasterLayer ) const;
     /**Creates a suitable layer name from a URL. */
     QString layerNameFromUri( const QString& uri ) const;
+#if 0
     /**Sets the opacity on layer level if the <Opacity> tag is present*/
     void setOpacityForLayer( const QDomElement& layerElem, QgsMapLayer* layer ) const;
+#endif
     /**Resets the former symbology of a raster layer. This is important for single band layers (e.g. dems)
      coming from the cash*/
     void clearRasterSymbology( QgsRasterLayer* rl ) const;

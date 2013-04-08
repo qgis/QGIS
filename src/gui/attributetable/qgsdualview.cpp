@@ -46,7 +46,7 @@ QgsDualView::QgsDualView( QWidget* parent )
   // Connect layer list preview signals
   connect( mActionExpressionPreview, SIGNAL( triggered() ), SLOT( previewExpressionBuilder() ) );
   connect( mPreviewActionMapper, SIGNAL( mapped( QObject* ) ), SLOT( previewColumnChanged( QObject* ) ) );
-  connect( mFeatureList, SIGNAL( displayExpressionChanged(QString) ), this, SLOT( previewExpressionChanged(QString) ) );
+  connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SLOT( previewExpressionChanged( QString ) ) );
 }
 
 QgsDualView::~QgsDualView()
@@ -213,7 +213,7 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
   mFilterModel = new QgsAttributeTableFilterModel( mapCanvas, mMasterModel, mMasterModel );
 
   connect( mFilterModel, SIGNAL( filterInvalidated() ), this, SIGNAL( filterChanged() ) );
-  connect( mFeatureList, SIGNAL( displayExpressionChanged(QString) ), this, SIGNAL( displayExpressionChanged(QString) ) );
+  connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SIGNAL( displayExpressionChanged( QString ) ) );
 
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
 }

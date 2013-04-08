@@ -217,7 +217,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
      it is possible that it differs from mSymbolHeight*/
-    void drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity = 255 ) const;
+    void drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
 
     /** Draw atom and return its actual size */
     QSizeF drawAtom( Atom atom, QPainter* painter = 0, QPointF point = QPointF() );
