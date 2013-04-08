@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdelimitedtextfeatureiterator.h"
-
 #include "qgsdelimitedtextprovider.h"
+#include "qgsdelimitedtextfile.h"
 
 #include "qgsgeometry.h"
 #include "qgsmessagelog.h"
@@ -49,14 +49,12 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
   if ( mClosed )
     return false;
 
-  while ( !P->mStream->atEnd() )
+  QStringList tokens;
+  while ( true )
   {
-    QString line = P->readLine( P->mStream ); // Default local 8 bit encoding
-    if ( line.isEmpty() )
-      continue;
-
-    // lex the tokens from the current data line
-    QStringList tokens = P->splitLine( line );
+    QgsDelimitedTextFile::Status status = P->mFile->nextRecord( tokens );
+    if( status == QgsDelimitedTextFile::RecordEOF ) break;
+    if( status != QgsDelimitedTextFile::RecordOk ) continue;
 
     while ( tokens.size() < P->mFieldCount )
       tokens.append( QString::null );
@@ -74,7 +72,8 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
 
     if ( !geom && P->mWkbType != QGis::WKBNoGeometry )
     {
-      P->mInvalidLines << line;
+      // Already dealt with invalid lines in provider - no need to repeat
+      // P->mInvalidLines << line;
       continue;
     }
 
@@ -114,7 +113,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
 
   // End of the file. If there are any lines that couldn't be
   // loaded, display them now.
-  P->handleInvalidLines();
+  // P->handleInvalidLines();
 
   close();
   return false;
@@ -128,11 +127,7 @@ bool QgsDelimitedTextFeatureIterator::rewind()
   // Reset feature id to 0
   mFid = 0;
   // Skip to first data record
-  P->mStream->seek( 0 );
-  int n = P->mFirstDataLine - 1;
-  while ( n-- > 0 )
-    P->readLine( P->mStream );
-
+  P->resetStream();
   return true;
 }
 
@@ -143,7 +138,6 @@ bool QgsDelimitedTextFeatureIterator::close()
 
   // tell provider that this iterator is not active anymore
   P->mActiveIterator = 0;
-
   mClosed = true;
   return true;
 }

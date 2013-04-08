@@ -20,6 +20,7 @@
 #include "qgisgui.h"
 
 class QgisInterface;
+class QgsDelimitedTextFile;
 
 /**
  * \class QgsDelimitedTextSourceSelect
@@ -35,10 +36,16 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     QStringList splitLine( QString line );
 
   private:
-    bool haveValidFileAndDelimiters();
+    bool loadDelimitedFileDefinition();
     void updateFieldLists();
     void getOpenFileName();
-    QStringList selectedChars();
+    QString selectedChars();
+
+  private:
+    QgsDelimitedTextFile *mFile;
+    int mExampleRowCount;
+    QString mColumnNamePrefix;
+    QString mPluginKey;
 
   private slots:
     void on_buttonBox_accepted();
@@ -47,6 +54,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     void on_btnBrowseForFile_clicked();
 
   public slots:
+    void updateFileName();
     void updateFieldsAndEnable();
     void enableAccept();
 

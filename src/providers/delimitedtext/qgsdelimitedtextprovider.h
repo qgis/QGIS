@@ -27,6 +27,7 @@ class QFile;
 class QTextStream;
 
 class QgsDelimitedTextFeatureIterator;
+class QgsDelimitedTextFile;
 
 
 /**
@@ -149,22 +150,16 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     */
     bool boundsCheck( QgsGeometry *geom );
 
-
-    static QString readLine( QTextStream *stream );
-    static QStringList splitLine( QString line, QString delimiterType, QString delimiter );
-
   private:
-
     void handleInvalidLines();
+    void resetStream();
 
-    //! Fields
+    //! Text file
+    QgsDelimitedTextFile *mFile;
+
+    // Fields
     QList<int> attributeColumns;
     QgsFields attributeFields;
-
-    QString mFileName;
-    QString mDelimiter;
-    QRegExp mDelimiterRegexp;
-    QString mDelimiterType;
 
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
@@ -174,19 +169,17 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     // Handling of WKT types with .. Z, .. M, and .. ZM geometries (ie
     // Z values and/or measures).  mWktZMRegexp is used to test for and
     // remove the Z or M fields, and mWktCrdRegexp is used to remove the
-    // extra coordinate values.
+    // extra coordinate values. mWktPrefix regexp is used to clean up
+    // prefixes sometimes used for WKT (postgis EWKT, informix SRID)
 
     bool mWktHasZM;
+    bool mWktHasPrefix;
     QRegExp mWktZMRegexp;
     QRegExp mWktCrdRegexp;
+    QRegExp mWktPrefixRegexp;
 
     //! Layer extent
     QgsRectangle mExtent;
-
-    //! Text file
-    QFile *mFile;
-
-    QTextStream *mStream;
 
     bool mValid;
 
@@ -194,7 +187,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     long mNumberFeatures;
     int mSkipLines;
-    int mFirstDataLine; // Actual first line of data (accounting for blank lines)
     QString mDecimalPoint;
 
     //! Storage for any lines in the file that couldn't be loaded
@@ -215,8 +207,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QgsCoordinateReferenceSystem mCrs;
 
     QGis::WkbType mWkbType;
-
-    QStringList splitLine( QString line ) { return splitLine( line, mDelimiterType, mDelimiter ); }
 
     friend class QgsDelimitedTextFeatureIterator;
     QgsDelimitedTextFeatureIterator* mActiveIterator;
