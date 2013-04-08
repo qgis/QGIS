@@ -301,6 +301,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   if( useHeader )
   {
       fieldList = mFile->columnNames();
+
       if( ! columnWkt.isEmpty()) indexWkt=fieldList.indexOf(columnWkt);
       if( indexWkt < 0 ) indexWkt=fieldList.indexOf(QRegExp("wkt.*",Qt::CaseInsensitive));
       if( indexWkt < 0 ) indexWkt=fieldList.indexOf(QRegExp("geom.*",Qt::CaseInsensitive));
