@@ -106,7 +106,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();
 
-  if ( QgsFeatureListViewDelegate::EditButtonElement == mItemDelegate->positionToElement( event->pos() ) )
+  if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
   {
     mEditSelectionDrag = true;
     QModelIndex index = mModel->mapToMaster( indexAt( pos ) );
