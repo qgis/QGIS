@@ -28,6 +28,7 @@
 #include "qgswcsprovider.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
@@ -71,6 +72,7 @@
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WCS provider")
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WCS server")
+#define ERROR(message) QgsError(message,"WCS provider")
 
 static QString WCS_KEY = "wcs";
 static QString WCS_DESCRIPTION = "OGC Web Coverage Service version 1.0/1.1 data provider";
@@ -1593,14 +1595,17 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
   return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
-QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( thePoint.x(), 0, 'g', 10 ).arg( thePoint.y(), 0, 'g', 10 ) );
   QgsDebugMsg( QString( "theWidth = %1 theHeight = %2" ).arg( theWidth ).arg( theHeight ) );
   QgsDebugMsg( "theExtent = " + theExtent.toString() );
   QMap<int, QVariant> results;
 
-  if ( theFormat != IdentifyFormatValue ) return results;
+  if ( theFormat != IdentifyFormatValue )
+  {
+    return QgsRasterIdentifyResult( ERROR( tr( "Format not supported" ) ) );
+  }
 
   if ( !extent().contains( thePoint ) )
   {
@@ -1609,7 +1614,7 @@ QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, Identif
     {
       results.insert( i, noDataValue( i ) );
     }
-    return results;
+    return QgsRasterIdentifyResult( IdentifyFormatValue, results );
   }
 
   QgsRectangle myExtent = theExtent;
@@ -1659,7 +1664,7 @@ QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, Identif
   if ( !mCachedGdalDataset ||
        !mCachedViewExtent.contains( thePoint ) )
   {
-    return results; // should not happen
+    return QgsRasterIdentifyResult( ERROR( tr( "Read data error" ) ) );
   }
 
   double x = thePoint.x();
@@ -1686,8 +1691,7 @@ QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, Identif
     if ( err != CPLE_None )
     {
       QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-      results.clear();
-      return results;
+      return QgsRasterIdentifyResult( ERROR( tr( "RasterIO error: " ) + QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     }
 
     // Apply user no data
@@ -1700,7 +1704,7 @@ QMap<int, QVariant> QgsWcsProvider::identify( const QgsPoint & thePoint, Identif
     results.insert( i, value );
   }
 
-  return results;
+  return QgsRasterIdentifyResult( IdentifyFormatValue, results );
 }
 
 QgsCoordinateReferenceSystem QgsWcsProvider::crs()

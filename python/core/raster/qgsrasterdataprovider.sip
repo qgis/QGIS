@@ -11,6 +11,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 %TypeHeaderCode
 #include <qgsrasterdataprovider.h>
 #include <qgsrasterinterface.h>
+#include <qgsrasteridentifyresult.h>
 %End
 
   public:
@@ -193,7 +194,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      */
     virtual QString metadata() = 0;
 
-    virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 

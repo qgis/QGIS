@@ -21,6 +21,7 @@
 #define QGSRASTERDATAPROVIDER_H
 
 #include <QDateTime>
+#include <QVariant>
 
 #include "qgslogger.h"
 #include "qgsrectangle.h"
@@ -39,9 +40,10 @@
 #include <cmath>
 
 class QImage;
-class QgsPoint;
 class QByteArray;
-#include <QVariant>
+
+class QgsPoint;
+class QgsRasterIdentifyResult;
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 #define RASTER_HISTOGRAM_BINS 256
@@ -344,9 +346,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
-    virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    //virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
-
+    // TODO: remove in 2.0
     QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**

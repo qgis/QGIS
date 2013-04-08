@@ -17,6 +17,7 @@
 
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsrasterprojector.h"
 #include "qgslogger.h"
 
@@ -26,6 +27,9 @@
 #include <QVariant>
 
 #include <qmath.h>
+
+#define ERRMSG(message) QGS_ERROR_MESSAGE(message, "Raster provider")
+#define ERR(message) QgsError(message, "Raster provider")
 
 void QgsRasterDataProvider::setUseSrcNoDataValue( int bandNo, bool use )
 {
@@ -265,7 +269,8 @@ QString QgsRasterDataProvider::metadata()
 }
 
 // Default implementation for values
-QMap<int, QVariant> QgsRasterDataProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+//QMap<int, QVariant> QgsRasterDataProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( "Entered" );
   QMap<int, QVariant> results;
@@ -273,7 +278,7 @@ QMap<int, QVariant> QgsRasterDataProvider::identify( const QgsPoint & thePoint, 
   if ( theFormat != IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
   {
     QgsDebugMsg( "Format not supported" );
-    return results;
+    return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
   }
 
   if ( !extent().contains( thePoint ) )
@@ -283,7 +288,7 @@ QMap<int, QVariant> QgsRasterDataProvider::identify( const QgsPoint & thePoint, 
     {
       results.insert( bandNo, noDataValue( bandNo ) );
     }
-    return results;
+    return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
   }
 
   QgsRectangle myExtent = theExtent;
@@ -320,7 +325,7 @@ QMap<int, QVariant> QgsRasterDataProvider::identify( const QgsPoint & thePoint, 
 
     results.insert( i, value );
   }
-  return results;
+  return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
 }
 
 QMap<QString, QString> QgsRasterDataProvider::identify( const QgsPoint & thePoint, const QgsRectangle &theExtent, int theWidth, int theHeight )
@@ -345,7 +350,8 @@ QMap<QString, QString> QgsRasterDataProvider::identify( const QgsPoint & thePoin
     return results;
   }
 
-  QMap<int, QVariant> myResults = identify( thePoint, identifyFormat, theExtent, theWidth, theHeight );
+  QgsRasterIdentifyResult myResult = identify( thePoint, identifyFormat, theExtent, theWidth, theHeight );
+  QMap<int, QVariant> myResults = myResult.results();
 
   if ( identifyFormat == QgsRasterDataProvider::IdentifyFormatValue )
   {

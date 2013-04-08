@@ -24,6 +24,7 @@
 %Include qgsdatasourceuri.sip
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdistancearea.sip
+%Include qgserror.sip
 %Include qgsexpression.sip
 %Include qgsfeature.sip
 %Include qgsfeatureiterator.sip
@@ -141,6 +142,7 @@
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterfilewriter.sip
 %Include raster/qgsrasterhistogram.sip
+%Include raster/qgsrasteridentifyresult.sip
 %Include raster/qgsrasterinterface.sip
 %Include raster/qgsrasteriterator.sip
 %Include raster/qgsrasterlayer.sip

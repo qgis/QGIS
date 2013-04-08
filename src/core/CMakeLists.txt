@@ -190,6 +190,7 @@ SET(QGIS_CORE_SRCS
   raster/qgspseudocolorshader.cpp
   raster/qgsrasterprojector.cpp
   raster/qgsrasterchecker.cpp
+  raster/qgsrasteridentifyresult.cpp
   raster/qgsrasterinterface.cpp
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
@@ -470,6 +471,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterpyramid.h
   raster/qgsrasterbandstats.h
   raster/qgsrasterhistogram.h
+  raster/qgsrasteridentifyresult.h
   raster/qgsrasterinterface.h
   raster/qgsrasterlayer.h
   raster/qgsrastertransparency.h
