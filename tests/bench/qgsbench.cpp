@@ -299,7 +299,7 @@ QString QgsBench::serialize( QMap<QString, QVariant> theMap, int level )
         list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
         break;
       case QMetaType::QString:
-        list.append( space2 + "\"" + i.key() + "\": \"" + i.value().toString() + "\"" );
+        list.append( space2 + "\"" + i.key() + "\": \"" + i.value().toString().replace("\\","\\\\").replace("\"","\\\"") + "\"" );
         break;
         //case QMetaType::QMap: QMap is not in QMetaType
       default:
