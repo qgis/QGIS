@@ -79,9 +79,6 @@ bool QgsAttributeTableView::eventFilter(QObject *object, QEvent *event)
 {
   if ( object == verticalHeader()->viewport() )
   {
-
-    qDebug() << "Event " << event->type();
-
     switch ( event->type() )
     {
       case QEvent::MouseButtonPress:
