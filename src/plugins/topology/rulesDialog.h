@@ -40,16 +40,21 @@ class rulesDialog : public QDialog, public Ui::rulesDialog
      * @param theQgisIface pointer to a QgisInterface instance
      * @param parent parent widget
      */
-    rulesDialog( QList<QString> layerList, QMap<QString, TopologyRule> testMap, QgisInterface* theQgisIface, QWidget *parent );
+    rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface* theQgisIface, QWidget *parent );
     ~rulesDialog();
     /*
      * Returns pointer to the test table
      */
-    QTableWidget* testTable() { return mTestTable; }
+    QTableWidget* rulesTable() { return mRulesTable; }
     /*
      * Returns pointer to the test combobox
      */
-    QComboBox* testBox() { return mTestBox; }
+    QComboBox* rulesBox() { return mRuleBox; }
+
+    /*
+     * Initialize Rules UI with layers and rules
+     */
+    void initGui();
 
   private:
     QMap<QString, TopologyRule> mTestConfMap;
@@ -67,6 +72,8 @@ class rulesDialog : public QDialog, public Ui::rulesDialog
      */
     void setHorizontalHeaderItems();
 
+
+
   private slots:
     /*
      * Shows or hides controls according to test settings
@@ -76,7 +83,7 @@ class rulesDialog : public QDialog, public Ui::rulesDialog
     /*
      * Adds test to the table
      */
-    void addTest();
+    void addRule();
     /*
      * Deletes test from the table
      */
@@ -86,22 +93,17 @@ class rulesDialog : public QDialog, public Ui::rulesDialog
      */
     void projectRead();
     /*
-     * Adds layer to layer comboboxes
-     * @param layer layer pointer
-     */
-    void addLayer( QgsMapLayer* layer );
-    /*
-     * Deletes layer to layer comboboxes
-     * @param layerId layer ID
-     */
-    void removeLayer( QString layerId );
-
-
-    /*
      * Updates Rule combobox to mach first layer
      * @param layerId layer ID
      */
     void updateRuleItems( const QString& layerName );
+
+    /*
+     * Deletes all rules from rules dialog
+     */
+    void clearRules();
+
+
 
 };
 

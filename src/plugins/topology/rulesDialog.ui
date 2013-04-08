@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Test settings</string>
+   <string>Topology Rule Settings</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QTableWidget" name="mTestTable">
+      <widget class="QTableWidget" name="mRulesTable">
        <column>
         <property name="text">
          <string>Rule</string>
@@ -72,7 +72,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="mTestBox">
+        <widget class="QComboBox" name="mRuleBox">
          <property name="sizeAdjustPolicy">
           <enum>QComboBox::AdjustToContents</enum>
          </property>
