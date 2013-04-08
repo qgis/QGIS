@@ -73,7 +73,15 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
 
 bool QgsFeatureListView::setDisplayExpression( const QString expression )
 {
-  return mModel->setDisplayExpression( expression );
+  if ( mModel->setDisplayExpression( expression ) )
+  {
+    emit displayExpressionChanged( expression );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 const QString& QgsFeatureListView::displayExpression() const

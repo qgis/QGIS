@@ -98,6 +98,15 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void  setCurrentEditSelection( const QgsFeatureIds& fids );
 
   signals:
+    /**
+     * Is emitted, whenever the display expression is successfully changed
+     * @param The expression that was applied
+     */
+    void displayExpressionChanged( const QString expression );
+
+    /**
+     * Is emitted, whenever the filter changes
+     */
     void filterChanged();
 
   private slots:
@@ -113,6 +122,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void editingToggled();
 
     void viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex );
+
+    void previewExpressionChanged( const QString expression );
 
     /**
      * Will be called periodically, when loading layers from slow data providers.
