@@ -110,6 +110,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
   connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateTitle() ) );
+  connect( mLayer, SIGNAL( attributeAdded(int) ), this, SLOT( columnBoxInit() ) );
+  connect( mLayer, SIGNAL( attributeDeleted(int) ), this, SLOT( columnBoxInit() ) );
 
   // connect table info to window
   connect( mMainView, SIGNAL( filterChanged() ), this, SLOT( updateTitle() ) );
@@ -222,6 +224,7 @@ void QgsAttributeTableDialog::columnBoxInit()
   {
     mFilterColumnsMenu->removeAction( a );
     mFilterActionMapper->removeMappings( a );
+    mFilterButton->removeAction( a );
     delete a;
   }
 
@@ -348,7 +351,6 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
     if ( col >= 0 )
     {
       masterModel->reload( masterModel->index( 0, col ), masterModel->index( masterModel->rowCount() - 1, col ) );
-      columnBoxInit();
     }
   }
 }

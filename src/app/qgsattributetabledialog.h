@@ -163,12 +163,13 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void closeEvent( QCloseEvent* event );
 
-  private:
+  private slots:
     /**
      * Initialize column box
      */
     void columnBoxInit();
 
+  private:
     QMenu* mMenuActions;
     QAction* mActionToggleEditing;
 
