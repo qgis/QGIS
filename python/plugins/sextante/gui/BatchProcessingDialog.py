@@ -185,7 +185,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
             self.progress.setMaximum(len(self.algs))
             for alg in self.algs:
                 self.setBaseText("Processing algorithm " + str(i+1) + "/" + str(len(self.algs)) + "...")
-                if UnthreadedAlgorithmExecutor.runalg(alg, self):#SilentProgress()):
+                if UnthreadedAlgorithmExecutor.runalg(alg, self):
                     #self.progress.setValue(i)
                     #self.loadHTMLResults(alg, i)
                     if self.load[i]:

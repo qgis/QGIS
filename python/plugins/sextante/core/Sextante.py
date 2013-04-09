@@ -34,8 +34,8 @@ from sextante.gui.AlgorithmClassification import AlgorithmDecorator
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
-from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor,\
-    SilentProgress
+from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
+from sextante.core.SilentProgress import SilentProgress
 from sextante.modeler.Providers import Providers
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
@@ -384,13 +384,15 @@ def runalg(algOrName, *args):
         return alg.getOutputValuesAsDictionary()
 
 def runandload(name, *args):
-    Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
+    return Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
 
 def extent(layers):
     first = True
     for layer in layers:
         if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
             layer = QGisLayers.getObjectFromUri(layer)
+            if layer is None:
+                continue
         if first:
             xmin = layer.extent().xMinimum()
             xmax = layer.extent().xMaximum()
@@ -402,7 +404,10 @@ def extent(layers):
             ymin = min(ymin, layer.extent().yMinimum())
             ymax = max(ymax, layer.extent().yMaximum())
         first = False
-    return str(xmin) + "," + str(xmax) + "," + str(ymin) + "," + str(ymax)
+    if first:
+        return "0,0,0,0"
+    else:
+        return str(xmin) + "," + str(xmax) + "," + str(ymin) + "," + str(ymax)
 
 def getObjectFromName(name):
     layers = QGisLayers.getAllLayers()
@@ -411,7 +416,7 @@ def getObjectFromName(name):
             return layer
 
 def getObjectFromUri(uri):
-    return QGisLayers.getObjectFromUri(uri, False)
+    return QGisLayers.getObjectFromUri(uri, True)
 
 def getobject(uriorname):
     ret = getObjectFromName(uriorname)

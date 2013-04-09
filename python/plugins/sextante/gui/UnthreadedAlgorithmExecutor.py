@@ -30,6 +30,7 @@ from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionEx
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
+from sextante.core.SilentProgress import SilentProgress
 import traceback
 
 class UnthreadedAlgorithmExecutor:
@@ -91,23 +92,3 @@ class UnthreadedAlgorithmExecutor:
 
         return True
 
-
-class SilentProgress():
-
-    def setText(self, text):
-        pass
-
-    def setPercentage(self, i):
-        pass
-
-    def setInfo(self, _):
-        pass
-
-    def setCommand(self, _):
-        pass
-
-    def setDebugInfo(self, _):
-        pass
-
-    def setConsoleInfo(self, _):
-        pass
