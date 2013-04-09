@@ -126,7 +126,7 @@ eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui( )
   //On close, clear selected feature
   if ( 0 != mVectorLayer )
   {
-    mVectorLayer->removeSelection( false );
+    mVectorLayer->removeSelection();
   }
 }
 
@@ -532,11 +532,11 @@ void eVisGenericEventBrowserGui::displayImage( )
     }
 
     //clear any selection that may be present
-    mVectorLayer->removeSelection( false );
+    mVectorLayer->removeSelection();
     if ( mFeatureIds.size( ) > 0 )
     {
       //select the current feature in the layer
-      mVectorLayer->select( mFeatureIds.at( mCurrentFeatureIndex ), true );
+      mVectorLayer->select( mFeatureIds.at( mCurrentFeatureIndex ) );
       //get a copy of the feature
       QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 

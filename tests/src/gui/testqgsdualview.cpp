@@ -21,6 +21,7 @@
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
 #include <qgsmapcanvas.h>
+#include <qgsfeature.h>
 
 class TestQgsDualView: public QObject
 {
@@ -31,7 +32,7 @@ class TestQgsDualView: public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
 
-    void testSelection();
+    void testSelectAll();
 
   private:
     QgsMapCanvas* mCanvas;
@@ -78,54 +79,18 @@ void TestQgsDualView::cleanup()
   delete mDualView;
 }
 
-void TestQgsDualView::testSelection()
+void TestQgsDualView::testSelectAll()
 {
-  // Select some features on the map canvas
-  QgsFeatureIds selectedIds;
-  selectedIds << 1 << 2 << 3;
-
-  mPointsLayer->setSelectedFeatures( selectedIds );
-
-  // Verify the same selection applies to the table
-  QVERIFY( mDualView->mFilterModel->masterSelection()->selectedIndexes().count() == 3 );
-  QVERIFY( mDualView->mTableView->selectionModel()->selectedRows().count() == 3 );
-
-  // Set the extent, so all features are visible
-  mCanvas->setExtent( QgsRectangle( -139, 22, -64, 48 ) );
-  // The table should also only show visible items (still all)
   mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
-  QVERIFY( mDualView->mFilterModel->masterSelection()->selectedIndexes().count() == 3 );
-  QVERIFY( mDualView->mTableView->selectionModel()->selectedRows().count() == 3 );
-
-  // Set the extent, so no features are visible
-  mCanvas->setExtent( QgsRectangle( 0, 1, 0, 1 ) );
-
-  // The master selection should still hold all the features, while the currently visible should not
-  QVERIFY( mDualView->mFilterModel->masterSelection()->selectedIndexes().count() == 3 );
-  QVERIFY( mDualView->mTableView->selectionModel()->selectedRows().count() == 0 );
-
   // Only show parts of the canvas, so only one selected feature is visible
-  mCanvas->setExtent( QgsRectangle( -139, 22, -100, 48 ) );
-  QVERIFY( mDualView->mFilterModel->masterSelection()->selectedIndexes().count() == 3 );
-  QVERIFY( mDualView->mTableView->selectionModel()->selectedRows().count() == 1 );
-  QVERIFY( mDualView->mTableView->selectionModel()->selectedRows().first().row() == 1 );
-
-  // Now the other way round...
-  // TODO: Fixme
+  mCanvas->setExtent( QgsRectangle( -139, 23, -100, 48 ) );
   mDualView->mTableView->selectAll();
-  QVERIFY( mPointsLayer->selectedFeaturesIds().count() == 12 );
-
-  // Deselect a previously selected row
-  // List index 2 => fid 2
-  QVERIFY( mPointsLayer->selectedFeaturesIds().contains( 2 ) );
-  mDualView->mTableView->selectRow( 2 );
-  QVERIFY( false == mPointsLayer->selectedFeaturesIds().contains( 2 ) );
-
-  // Select a previously not selected row
-  // List index 6 => fid 13
-  QVERIFY( false == mPointsLayer->selectedFeaturesIds().contains( 13 ) );
-  mDualView->mTableView->selectRow( 6 );
-  QVERIFY( mPointsLayer->selectedFeaturesIds().contains( 13 ) );
+  QVERIFY( mPointsLayer->selectedFeatureCount() == 10 );
+  
+  mPointsLayer->setSelectedFeatures( QgsFeatureIds() );
+  mCanvas->setExtent( QgsRectangle( -110, 40, -100, 48 ) );
+  mDualView->mTableView->selectAll();
+  QVERIFY( mPointsLayer->selectedFeatureCount() == 1 );
 }
 
 QTEST_MAIN( TestQgsDualView )

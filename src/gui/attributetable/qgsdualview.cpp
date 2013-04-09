@@ -220,6 +220,9 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
 
 void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
 {
+  if ( !feat.isValid() )
+    return;
+
   // Backup old dialog and delete only after creating the new dialog, so we can "hot-swap" the contained QgsFeature
   QgsAttributeDialog* oldDialog = mAttributeDialog;
 

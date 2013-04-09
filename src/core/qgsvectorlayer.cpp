@@ -144,6 +144,8 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     //QSettings settings;
     //mUpdateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
   }
+
+  connect ( this, SIGNAL( selectionChanged(QgsFeatureIds,QgsFeatureIds,bool) ), this, SIGNAL( selectionChanged() ) );
 } // QgsVectorLayer ctor
 
 
@@ -680,41 +682,42 @@ void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter& p, QgsVecto
   }
 }
 
-void QgsVectorLayer::select( QgsFeatureId fid, bool emitSignal )
+void QgsVectorLayer::select( const QgsFeatureId& fid )
 {
   mSelectedFeatureIds.insert( fid );
 
-  if ( emitSignal )
-  {
-    // invalidate cache
-    setCacheImage( 0 );
-
-    emit selectionChanged();
-  }
+  setCacheImage( 0 );
+  emit selectionChanged( QgsFeatureIds() << fid, QgsFeatureIds(), false );
 }
 
-void QgsVectorLayer::deselect( QgsFeatureId fid, bool emitSignal )
+void QgsVectorLayer::select( const QgsFeatureIds& featureIds )
+{
+  mSelectedFeatureIds.unite( featureIds );
+
+  setCacheImage( 0 );
+  emit selectionChanged( featureIds, QgsFeatureIds(), false );
+}
+
+void QgsVectorLayer::deselect( const QgsFeatureId fid )
 {
   mSelectedFeatureIds.remove( fid );
 
-  if ( emitSignal )
-  {
-    // invalidate cache
-    setCacheImage( 0 );
-
-    emit selectionChanged();
-  }
+  setCacheImage( 0 );
+  emit selectionChanged( QgsFeatureIds(), QgsFeatureIds() << fid, false );
 }
 
-void QgsVectorLayer::select( QgsRectangle & rect, bool lock )
+void QgsVectorLayer::deselect( const QgsFeatureIds& featureIds )
+{
+  mSelectedFeatureIds.subtract( featureIds );
+
+  setCacheImage( 0 );
+  emit selectionChanged( QgsFeatureIds(), featureIds, false );
+}
+
+void QgsVectorLayer::select(QgsRectangle & rect, bool addToSelection )
 {
   // normalize the rectangle
   rect.normalize();
-
-  if ( !lock )
-  {
-    removeSelection( false ); // don't emit signal
-  }
 
   //select all the elements
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
@@ -722,16 +725,36 @@ void QgsVectorLayer::select( QgsRectangle & rect, bool lock )
                                         .setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoGeometry )
                                         .setSubsetOfAttributes( QgsAttributeList() ) );
 
+  QgsFeatureIds ids;
+
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    select( f.id(), false ); // don't emit signal (not to redraw it everytime)
+    ids << f.id();
   }
 
-  // invalidate cache
-  setCacheImage( 0 );
+  if ( !addToSelection )
+  {
+    setSelectedFeatures( mSelectedFeatureIds + ids );
+  }
+  else
+  {
+    select( ids );
+  }
+}
 
-  emit selectionChanged(); // now emit signal to redraw layer
+void QgsVectorLayer::modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds )
+{
+  QgsFeatureIds intersectingIds = selectIds & deselectIds;
+  if ( intersectingIds.count() > 0 )
+  {
+    QgsDebugMsg( "Trying to select and deselect the same item at the same time. Unsure what to do. Selecting dubious items." );
+  }
+
+  mSelectedFeatureIds -= deselectIds;
+  mSelectedFeatureIds += selectIds;
+
+  emit selectionChanged( selectIds, deselectIds - intersectingIds, false );
 }
 
 void QgsVectorLayer::invertSelection()
@@ -739,27 +762,21 @@ void QgsVectorLayer::invertSelection()
   // copy the ids of selected features to tmp
   QgsFeatureIds tmp = mSelectedFeatureIds;
 
-  removeSelection( false ); // don't emit signal
-
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFlags( QgsFeatureRequest::NoGeometry )
                                         .setSubsetOfAttributes( QgsAttributeList() ) );
 
+  QgsFeatureIds ids;
+
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    select( fet.id(), false ); // don't emit signal
+    ids << fet.id();
   }
 
-  for ( QgsFeatureIds::iterator iter = tmp.begin(); iter != tmp.end(); ++iter )
-  {
-    mSelectedFeatureIds.remove( *iter );
-  }
+  ids.subtract( mSelectedFeatureIds );
 
-  // invalidate cache
-  setCacheImage( 0 );
-
-  emit selectionChanged();
+  setSelectedFeatures( ids );
 }
 
 void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
@@ -772,39 +789,31 @@ void QgsVectorLayer::invertSelectionInRectangle( QgsRectangle & rect )
                                         .setFlags( QgsFeatureRequest::NoGeometry | QgsFeatureRequest::ExactIntersect )
                                         .setSubsetOfAttributes( QgsAttributeList() ) );
 
+  QgsFeatureIds selectIds;
+  QgsFeatureIds deselectIds;
+
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
     if ( mSelectedFeatureIds.contains( fet.id() ) )
     {
-      deselect( fet.id(), false ); // don't emit signal
+      deselectIds << fet.id();
     }
     else
     {
-      select( fet.id(), false ); // don't emit signal
+      selectIds << fet.id();
     }
   }
 
-  // invalidate cache
-  setCacheImage( 0 );
-
-  emit selectionChanged();
+  modifySelection( selectIds, deselectIds );
 }
 
-void QgsVectorLayer::removeSelection( bool emitSignal )
+void QgsVectorLayer::removeSelection()
 {
   if ( mSelectedFeatureIds.size() == 0 )
     return;
 
-  mSelectedFeatureIds.clear();
-
-  if ( emitSignal )
-  {
-    // invalidate cache
-    setCacheImage( 0 );
-
-    emit selectionChanged();
-  }
+  setSelectedFeatures( QgsFeatureIds() );
 }
 
 void QgsVectorLayer::triggerRepaint()
@@ -1267,9 +1276,6 @@ bool QgsVectorLayer::deleteSelectedFeatures()
 
   // invalidate cache
   setCacheImage( 0 );
-
-  emit selectionChanged();
-
   triggerRepaint();
   updateExtents();
 
@@ -2547,13 +2553,14 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
 
 void QgsVectorLayer::setSelectedFeatures( const QgsFeatureIds& ids )
 {
+  QgsFeatureIds deselectedFeatures = mSelectedFeatureIds - ids;
   // TODO: check whether features with these ID exist
   mSelectedFeatureIds = ids;
 
   // invalidate cache
   setCacheImage( 0 );
 
-  emit selectionChanged();
+  emit selectionChanged( ids, deselectedFeatures, true );
 }
 
 int QgsVectorLayer::selectedFeatureCount()
@@ -2593,14 +2600,12 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
 
   if ( makeSelected )
   {
-    mSelectedFeatureIds.clear();
+    QgsFeatureIds ids;
+
     for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
-      mSelectedFeatureIds.insert( iter->id() );
+      ids << iter->id();
 
-    // invalidate cache
-    setCacheImage( 0 );
-
-    emit selectionChanged();
+    setSelectedFeatures ( ids );
   }
 
   return res;
