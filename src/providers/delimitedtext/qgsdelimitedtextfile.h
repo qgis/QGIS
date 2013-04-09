@@ -35,29 +35,29 @@ class QTextStream;
 * for parsing each record.  The following options are supported:
 * - Basic whitespace parsing.  Each line in the file is treated as a record.
 *   Extracts all contiguous sequences of non-whitespace
-*   characters.  Leading and trailing whitespace are ignored.  
-* - Regular expression parsing.  Each line in the file is treated as a record. 
-*   The string is split into fields based on a regular expression. 
-* - Character delimited, based on a delimiter character set, a quote character, and 
+*   characters.  Leading and trailing whitespace are ignored.
+* - Regular expression parsing.  Each line in the file is treated as a record.
+*   The string is split into fields based on a regular expression.
+* - Character delimited, based on a delimiter character set, a quote character, and
 *   an escape character.  The escape treats the next character as a part of a field.
-*   Fields may start and end with quote characters, in which case any non-escaped 
+*   Fields may start and end with quote characters, in which case any non-escaped
 *   character within the field is treated literally, including end of line characters.
 *   The escape character within a string causes the next character to be read literally
-*   (this includes new line characters).  If the escape and quote characters are the 
-*   same, then only quote characters will be escaped (ie to include a quote in a 
+*   (this includes new line characters).  If the escape and quote characters are the
+*   same, then only quote characters will be escaped (ie to include a quote in a
 *   quoted field it is entered as two quotes.  All other characters in quoted fields
 *   are treated literally, including newlines.
 * - CSV format files - these are a special case of character delimited, in which the
 *   delimiter is a comma, and the quote and escape characters are double quotes (")
 *
-* The delimiters can be encode in and decoded from a QUrl as query items.  The 
+* The delimiters can be encode in and decoded from a QUrl as query items.  The
 * items used are:
-* - delimiterType, one of plain (delimiter is any of a set of characters), 
+* - delimiterType, one of plain (delimiter is any of a set of characters),
 *   regexp, csv, whitespace
 * - delimiter, interpreted according to the type.  For plain characters this is
 *   a sequence of characters.  The string \t in the sequence is replaced by a tab.
-*   For regexp type delimiters this specifies the reqular expression.  
-*   The field is ignored for csv and whitespace 
+*   For regexp type delimiters this specifies the reqular expression.
+*   The field is ignored for csv and whitespace
 * - quoteChar, optional, a single character used for quoting plain fields
 * - escapeChar, optional, a single characer used for escaping (may be the same as quoteChar)
 */
@@ -66,10 +66,10 @@ class QTextStream;
 // on an abstract base class in order to facilitate changing the type of the parser easily
 // eg in the provider dialog
 
-class QgsDelimitedTextFile 
+class QgsDelimitedTextFile
 {
 
-  public:
+public:
 
     enum Status
     {
@@ -91,14 +91,16 @@ class QgsDelimitedTextFile
 
     virtual ~QgsDelimitedTextFile();
 
-    /** Set the filename 
+    /** Set the filename
      * @param filename  the name of the file
      */
     void setFileName( QString filename );
-    /** Return the filename 
+    /** Return the filename
      * @return filename  the name of the file
      */
-    QString fileName(){ return mFileName; }
+    QString fileName() {
+        return mFileName;
+    }
 
     /** Decode the parser settings from a url as a string
      *  @param url  The url from which the delimiter and delimiterType items are read
@@ -125,7 +127,7 @@ class QgsDelimitedTextFile
     /** Set the parser to use a character type delimiter.
      *  @param delim  The field delimiter character set
      *  @param quote  The quote character, used to define quoted fields
-     *  @param escape The escape character used to escape quote or delim 
+     *  @param escape The escape character used to escape quote or delim
      *                characters.
      */
     void setTypeCSV( QString delim=QString(","), QString quote=QString("\""), QString escape=QString("\"") );
@@ -136,11 +138,15 @@ class QgsDelimitedTextFile
      * return an unlimited number of fields
      * @param maxFields  The maximum number of fields into which a record will be split
      */
-    void setMaxFields( int maxFields ){ mMaxFields = maxFields; }
+    void setMaxFields( int maxFields ) {
+        mMaxFields = maxFields;
+    }
     /* Return the maximum number of fields to return
-     * @return maxFields The maximum number of fields to return 
+     * @return maxFields The maximum number of fields to return
      */
-    int  maxFields(){ return mMaxFields; }
+    int  maxFields() {
+        return mMaxFields;
+    }
 
     /* Set the number of header lines to skip
      * @param skiplines The maximum lines to skip
@@ -149,7 +155,9 @@ class QgsDelimitedTextFile
     /* Return the number of header lines to skip
      * @return skiplines The maximum lines to skip
      */
-    int skipLines(){ return mSkipLines; }
+    int skipLines() {
+        return mSkipLines;
+    }
 
     /* Set reading column names from the first record
      * @param useheaders Column names will be read if true
@@ -158,7 +166,9 @@ class QgsDelimitedTextFile
     /* Return the option for reading column names from the first record
      * @return useheaders Column names will be read if true
      */
-    bool useHeader(){ return mUseHeader; }
+    bool useHeader() {
+        return mUseHeader;
+    }
 
     /** Return the column names read from the header, or default names
      *  Col## if none defined.  Will open and read the head of the file
@@ -166,7 +176,7 @@ class QgsDelimitedTextFile
      */
     QStringList &columnNames();
 
-    /** Reads the next record from the stream splits into string fields. 
+    /** Reads the next record from the stream splits into string fields.
      *  @param fields  The string list to populate with the fields
      *  @return status The result of trying to parse a record.  RecordOk
      *                 if read successfully, RecordEOF if reached the end of the
@@ -178,7 +188,9 @@ class QgsDelimitedTextFile
     /** Return the line number of the start of the last record read
      *  @return linenumber  The line number of the start of the record
      */
-    int recordLineNumber(){ return mRecordLineNumber; }
+    int recordLineNumber() {
+        return mRecordLineNumber;
+    }
 
     /** Reset the file to reread from the beginning
      */
@@ -192,15 +204,21 @@ class QgsDelimitedTextFile
      *  or a string)
      *  @return def The delimiter definition string
      */
-    QString delimiterDefinitionString(){ return mDelimDefinition; }
+    QString delimiterDefinitionString() {
+        return mDelimDefinition;
+    }
     /** Return the quote character
      *  @return quote The quoet character
      */
-    QString quoteChar(){ return mQuoteChar; }
+    QString quoteChar() {
+        return mQuoteChar;
+    }
     /** Return the escape character
      *  @return escape The escape character
      */
-    QString escapeChar(){ return mEscapeChar; }
+    QString escapeChar() {
+        return mEscapeChar;
+    }
 
     /** Check that provider is valid (filename and definition valid)
      *
@@ -209,7 +227,7 @@ class QgsDelimitedTextFile
     bool isValid();
 
 
-  private:
+private:
 
     /** Open the file
      *
@@ -243,7 +261,7 @@ class QgsDelimitedTextFile
     QString mFileName;
     QFile *mFile;
     QTextStream *mStream;
-    
+
     // Parameters common to parsers
     bool mDefinitionValid;
     DelimiterType mType;
@@ -260,6 +278,6 @@ class QgsDelimitedTextFile
 
     // Information extracted from file
     QStringList mColumnNames;
-    int mRecordLineNumber;
     int mLineNumber;
+    int mRecordLineNumber;
 };

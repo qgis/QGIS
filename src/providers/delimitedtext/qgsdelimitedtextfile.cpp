@@ -50,8 +50,14 @@ QgsDelimitedTextFile::~QgsDelimitedTextFile()
 
 void QgsDelimitedTextFile::close()
 {
-    if( mStream ) { delete mStream; mStream=0; }
-    if( mFile ) { delete mFile; mFile=0; }
+    if( mStream ) {
+        delete mStream;
+        mStream=0;
+    }
+    if( mFile ) {
+        delete mFile;
+        mFile=0;
+    }
 }
 
 bool QgsDelimitedTextFile::open()
@@ -95,7 +101,7 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
     // Extract the file name
     setFileName( url.toLocalFile());
 
-    // The default type is csv, to be consistent with the 
+    // The default type is csv, to be consistent with the
     // previous implementation (except that quoting should be handled properly)
 
     QString type("csv");
@@ -326,7 +332,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
 
 QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QStringList &fields )
 {
-    QString buffer; 
+    QString buffer;
     Status status = nextLine(buffer,true);
     if( status != RecordOk ) return status;
     mRecordLineNumber = mLineNumber;
@@ -345,7 +351,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
     fields.clear();
 
     // Find the first non-blank line to read
-    QString buffer; 
+    QString buffer;
     Status status = nextLine(buffer,true);
     if( status != RecordOk ) return status;
     mRecordLineNumber = mLineNumber;
@@ -357,8 +363,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
     bool started = false; // Non-blank chars in field or quotes started
     bool ended = false;   // Quoted field ended
     int cp = 0;          // Pointer to the next character in the buffer
-    int cpmax = buffer.size(); // End of string 
-        
+    int cpmax = buffer.size(); // End of string
+
     while( true )
     {
         QChar c = buffer[cp];
@@ -391,7 +397,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
         // Determine if this is a special character - test each class in turn
         // Note that delimiters are not valid as quotes or escape character
         //
-        // Somewhat convoluted logic around quote and escape chars is 
+        // Somewhat convoluted logic around quote and escape chars is
         // to enforce logic for escape characters that are also quote characters.
         // These escapes can only escape themselves and only in quotes using them
         // as delimiters!
@@ -413,7 +419,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
             // quote char in quoted field
             if( quoted )
             {
-                // if is also escape and next character is quote, then 
+                // if is also escape and next character is quote, then
                 // escape the quote..
                 if( isEscape && buffer[cp]==quoteChar )
                 {
@@ -436,7 +442,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
             }
             // Cannot have a quote embedded in a field
             else
-            {   
+            {
                 fields.clear();
                 return RecordInvalid;
             }
@@ -465,7 +471,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
             started = false;
             ended = false;
         }
-        // Whitespace is permitted before the start of a field, or 
+        // Whitespace is permitted before the start of a field, or
         // after the end..
         else if( c.isSpace() )
         {
@@ -475,7 +481,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
         else
         {
             if( ended )
-            { 
+            {
                 fields.clear();
                 return RecordInvalid;
             }
@@ -484,7 +490,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
         }
     }
     // If reached the end of the record, then add the last field...
-    if( started && (mMaxFields <=0 || fields.size() < mMaxFields) ) 
+    if( started && (mMaxFields <=0 || fields.size() < mMaxFields) )
     {
         if( ! ended ) field = field.trimmed();
         fields.append(field);

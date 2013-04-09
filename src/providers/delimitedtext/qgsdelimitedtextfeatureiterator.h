@@ -21,7 +21,7 @@ class QgsDelimitedTextProvider;
 
 class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
 {
-  public:
+public:
     QgsDelimitedTextFeatureIterator( QgsDelimitedTextProvider* p, const QgsFeatureRequest& request );
 
     ~QgsDelimitedTextFeatureIterator();
@@ -35,7 +35,7 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
     //! end of iterating: free the resources / lock
     virtual bool close();
 
-  protected:
+protected:
     QgsDelimitedTextProvider* P;
 
     //! Feature id

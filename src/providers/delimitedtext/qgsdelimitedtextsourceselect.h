@@ -29,36 +29,38 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
 {
     Q_OBJECT
 
-  public:
+public:
     QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
     ~QgsDelimitedTextSourceSelect();
 
     QStringList splitLine( QString line );
 
-  private:
+private:
     bool loadDelimitedFileDefinition();
     void updateFieldLists();
     void getOpenFileName();
     QString selectedChars();
 
-  private:
+private:
     QgsDelimitedTextFile *mFile;
     int mExampleRowCount;
     QString mColumnNamePrefix;
     QString mPluginKey;
 
-  private slots:
+private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested() {
+        QgsContextHelp::run( metaObject()->className() );
+    }
     void on_btnBrowseForFile_clicked();
 
-  public slots:
+public slots:
     void updateFileName();
     void updateFieldsAndEnable();
     void enableAccept();
 
-  signals:
+signals:
     void addVectorLayer( QString, QString, QString );
 };
 

@@ -47,7 +47,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
 
-  public:
+public:
 
     QgsDelimitedTextProvider( QString uri = QString() );
 
@@ -150,7 +150,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     */
     bool boundsCheck( QgsGeometry *geom );
 
-  private:
+private:
     void handleInvalidLines();
     void resetStream();
 
@@ -196,10 +196,10 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     struct wkbPoint
     {
-      unsigned char byteOrder;
-      quint32 wkbType;
-      double x;
-      double y;
+        unsigned char byteOrder;
+        quint32 wkbType;
+        double x;
+        double y;
     };
     wkbPoint mWKBpt;
 
