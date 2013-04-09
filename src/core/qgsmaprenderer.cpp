@@ -388,7 +388,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 
     // Set the QPainter composition mode so that this layer is rendered using
     // the desired blending mode
-    mypContextPainter->setCompositionMode( getCompositionMode( ml->blendMode() ) );
+    mypContextPainter->setCompositionMode( ml->blendMode() );
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {
