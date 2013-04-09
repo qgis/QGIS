@@ -104,6 +104,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
   public slots:
     virtual void setRotation( double r );
 
+  private slots:
+    void loadingHtmlFinished( bool );
+
   private:
     // Text
     QString mText;
@@ -112,6 +115,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     int mHtmlState;
     double mHtmlUnitsToMM;
     double htmlUnitsToMM(); //calculate scale factor
+    bool mHtmlLoaded;
 
     /**Helper function to calculate x/y shift for adjustSizeToText() depending on rotation, current size and alignment*/
     void itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const;
@@ -142,6 +146,8 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QgsFeature* mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
     QMap<QString, QVariant> mSubstitutions;
+
+
 };
 
 #endif
