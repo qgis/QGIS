@@ -1,5 +1,5 @@
 NAME:Model with algorithms not in running order
-GROUP:[Test algorithms]
+GROUP:[Test models]
 PARAMETER:ParameterRaster|RASTERLAYER_RASTER|raster|False
 120.0,60.0
 VALUE:HARDCODEDPARAMVALUE_MINSLOPE_1===0.01
@@ -23,7 +23,7 @@ None
 None
 None
 -1|HARDCODEDPARAMVALUE_CONVERGENCE_0
-None
+catchment area
 None
 None
 None
