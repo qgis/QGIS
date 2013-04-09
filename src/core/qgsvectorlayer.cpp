@@ -1721,7 +1721,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     if ( !blendModeNode.isNull() )
     {
       QDomElement e = blendModeNode.toElement();
-      setBlendMode(( QgsMapRenderer::BlendMode ) e.text().toInt() );
+      setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) e.text().toInt() ) );
     }
 
     // use scale dependent visibility flag
@@ -2045,7 +2045,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     // add the blend mode field
     QDomElement blendModeElem  = doc.createElement( "blendMode" );
-    QDomText blendModeText = doc.createTextNode( QString::number( blendMode() ) );
+    QDomText blendModeText = doc.createTextNode( QString::number( QgsMapRenderer::getBlendModeEnum( blendMode() ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
 

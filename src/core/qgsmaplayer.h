@@ -97,9 +97,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     const QString& abstract() const { return mAbstract; }
 
     /* Set the blending mode used for rendering a layer */
-    void setBlendMode( const QgsMapRenderer::BlendMode blendMode );
+    void setBlendMode( const QPainter::CompositionMode blendMode );
     /* Returns the current blending mode for a layer */
-    QgsMapRenderer::BlendMode blendMode() const;
+    QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
@@ -479,7 +479,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayer::LayerType mLayerType;
 
     /** Blend mode for the layer */
-    QgsMapRenderer::BlendMode mBlendMode;
+    QPainter::CompositionMode mBlendMode;
 
     /** Tag for embedding additional information */
     QString mTag;
