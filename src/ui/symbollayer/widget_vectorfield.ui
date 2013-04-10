@@ -6,161 +6,218 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>315</width>
-    <height>320</height>
+    <width>554</width>
+    <height>606</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_4">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <property name="margin">
     <number>1</number>
    </property>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mYAttributeLabel">
-     <property name="text">
-      <string>Y attribute</string>
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <property name="horizontalSpacing">
+      <number>28</number>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="mXAttributeComboBox"/>
-   </item>
-   <item row="3" column="1">
-    <widget class="QDoubleSpinBox" name="mScaleSpinBox"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="mScaleLabel">
-     <property name="text">
-      <string>Scale</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="mXAttributeLabel">
-     <property name="text">
-      <string>X attribute</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="0">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QGroupBox" name="mFieldTypeGroupBox">
-         <property name="title">
-          <string>Vector field type</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="2" column="0">
-           <widget class="QRadioButton" name="mHeightRadioButton">
-            <property name="text">
-             <string>Height only</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="mPolarRadioButton">
-            <property name="text">
-             <string>Polar</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="mCartesianRadioButton">
-            <property name="text">
-             <string>Cartesian</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="mAngleUnitsGroupBox">
-         <property name="title">
-          <string>Angle units</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="mDegreesRadioButton">
-            <property name="text">
-             <string>Degrees</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QRadioButton" name="mRadiansRadioButton">
-            <property name="text">
-             <string>Radians</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLabel" name="mXAttributeLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>X attribute</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="mXAttributeComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>3</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
      </item>
      <item row="1" column="0">
-      <widget class="QGroupBox" name="mAngleOrientationGroupBox">
-       <property name="title">
-        <string>Angle orientation</string>
+      <widget class="QLabel" name="mYAttributeLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <widget class="QRadioButton" name="mCounterclockwiseFromEastRadioButton">
-        <property name="geometry">
-         <rect>
-          <x>17</x>
-          <y>52</y>
-          <width>183</width>
-          <height>21</height>
-         </rect>
-        </property>
+       <property name="text">
+        <string>Y attribute</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="mYAttributeComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>3</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="mDistanceUnitLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Distance unit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="mDistanceUnitComboBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>3</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <item>
         <property name="text">
-         <string>Counterclockwise from east</string>
+         <string>Millimeter</string>
         </property>
-       </widget>
-       <widget class="QRadioButton" name="mClockwiseFromNorthRadioButton">
-        <property name="geometry">
-         <rect>
-          <x>17</x>
-          <y>25</y>
-          <width>146</width>
-          <height>21</height>
-         </rect>
-        </property>
+       </item>
+       <item>
         <property name="text">
-         <string>Clockwise from north</string>
+         <string>Map unit</string>
         </property>
-       </widget>
+       </item>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="mScaleLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Scale</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QDoubleSpinBox" name="mScaleSpinBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>3</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="mYAttributeComboBox"/>
-   </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="mDistanceUnitComboBox">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <property name="text">
-       <string>Millimeter</string>
-      </property>
+      <widget class="QGroupBox" name="mFieldTypeGroupBox">
+       <property name="title">
+        <string>Vector field type</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="2" column="0">
+         <widget class="QRadioButton" name="mHeightRadioButton">
+          <property name="text">
+           <string>Height only</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QRadioButton" name="mPolarRadioButton">
+          <property name="text">
+           <string>Polar</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QRadioButton" name="mCartesianRadioButton">
+          <property name="text">
+           <string>Cartesian</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
-      <property name="text">
-       <string>Map unit</string>
-      </property>
+      <widget class="QGroupBox" name="mAngleUnitsGroupBox">
+       <property name="title">
+        <string>Angle units</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QRadioButton" name="mDegreesRadioButton">
+          <property name="text">
+           <string>Degrees</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QRadioButton" name="mRadiansRadioButton">
+          <property name="text">
+           <string>Radians</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </item>
-    </widget>
+    </layout>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mDistanceUnitLabel">
-     <property name="text">
-      <string>Distance unit</string>
+   <item>
+    <widget class="QGroupBox" name="mAngleOrientationGroupBox">
+     <property name="title">
+      <string>Angle orientation</string>
      </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QRadioButton" name="mClockwiseFromNorthRadioButton">
+        <property name="text">
+         <string>Clockwise from north</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="mCounterclockwiseFromEastRadioButton">
+        <property name="text">
+         <string>Counterclockwise from east</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
