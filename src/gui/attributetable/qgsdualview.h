@@ -100,7 +100,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
   signals:
     /**
      * Is emitted, whenever the display expression is successfully changed
-     * @param The expression that was applied
+     * @param expression The expression that was applied
      */
     void displayExpressionChanged( const QString expression );
 

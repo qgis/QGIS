@@ -127,7 +127,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel
 
     /**
      * Disables selection synchronisation with the map canvas. Changes to the selection in the master
-     * model are propagated to the layer, but no redraw is requested until @link{enableSelectionSync()}
+     * model are propagated to the layer, but no redraw is requested until @link enableSelectionSync() @endlink
      * is called.
      */
     void disableSelectionSync();
@@ -135,8 +135,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel
     /**
      * Enables selection synchronisation with the map canvas. Changes to the selection in the master
      * are propagated and upon every change, a redraw will be requested. This method will update the
-     * selection to account for any cached selection change since @link{disableSelectionSync()} was
-     * called.
+     * selection to account for any cached selection change since @link disableSelectionSync() @endlink
+     * was called.
      */
     void enableSelectionSync();
 

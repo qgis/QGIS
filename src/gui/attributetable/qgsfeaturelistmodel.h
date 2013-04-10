@@ -87,7 +87,7 @@ class QgsFeatureListModel : public QAbstractProxyModel
 
     /**
      * Disables selection synchronisation with the map canvas. Changes to the selection in the master
-     * model are propagated to the layer, but no redraw is requested until @link{enableSelectionSync()}
+     * model are propagated to the layer, but no redraw is requested until @link enableSelectionSync() @endlink
      * is called.
      */
     void disableSelectionSync();
@@ -95,8 +95,8 @@ class QgsFeatureListModel : public QAbstractProxyModel
     /**
      * Enables selection synchronisation with the map canvas. Changes to the selection in the master
      * are propagated and upon every change, a redraw will be requested. This method will update the
-     * selection to account for any cached selection change since @link{disableSelectionSync()} was
-     * called.
+     * selection to account for any cached selection change since @link disableSelectionSync() @endlink
+     * was called.
      */
     void enableSelectionSync();
 

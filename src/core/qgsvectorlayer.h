@@ -258,9 +258,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     const QString displayField() const;
 
     /** Set the preview expression, used to create a human readable preview string.
-     *  Used e.g. in the attribute table feature list. Uses @link {QgsExpression}.
+     *  Used e.g. in the attribute table feature list. Uses @link QgsExpression @endlink
      *
-     *  @param previewExpression The expression which will be used to preview features
+     *  @param displayExpression The expression which will be used to preview features
      *                           for this layer
      *  @note added in 2.0
      */
@@ -268,7 +268,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
-     *  Uses @link {QgsExpression}.
+     *  Uses @link QgsExpression @endlink
      *
      *  @return The expression which will be used to preview features for this layer
      *  @note added in 2.0
