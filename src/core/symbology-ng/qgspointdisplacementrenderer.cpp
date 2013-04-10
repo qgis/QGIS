@@ -364,6 +364,9 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
   QgsFeature f;
   QList<QgsFeatureId> intersectList;
 
+  //Because the new vector api does not allow querying features by id within a nextFeature loop, default constructed QgsFeature() is
+  //inserted first and the real features are created in a second loop
+
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( viewExtent ).setSubsetOfAttributes( attList ) );
   while ( fit.nextFeature( f ) )
   {
@@ -389,7 +392,7 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
           {
             found = true;
             QgsFeature feature;
-            it->insert( f.id(), f );
+            it->insert( f.id(), QgsFeature() );
             mDisplacementIds.insert( f.id() );
             break;
           }
@@ -398,17 +401,29 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
         if ( !found )//insert the already existing feature and the new one into a map
         {
           QMap<QgsFeatureId, QgsFeature> newMap;
-          QgsFeature existingFeature;
-          vlayer->getFeatures( QgsFeatureRequest().setFilterFid( existingEntry ) ).nextFeature( existingFeature );
-          newMap.insert( existingEntry, existingFeature );
+          newMap.insert( existingEntry, QgsFeature() );
           mDisplacementIds.insert( existingEntry );
-          newMap.insert( f.id(), f );
+          newMap.insert( f.id(), QgsFeature() );
           mDisplacementIds.insert( f.id() );
           mDisplacementGroups.push_back( newMap );
         }
       }
     }
   }
+
+  //insert the real features into mDisplacementGroups
+  QList< QMap<QgsFeatureId, QgsFeature> >::iterator it = mDisplacementGroups.begin();
+  for ( ; it != mDisplacementGroups.end(); ++it )
+  {
+    QMap<QgsFeatureId, QgsFeature>::iterator mapIt = it->begin();
+    for ( ; mapIt != it->end(); ++mapIt )
+    {
+      QgsFeature fet;
+      vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mapIt.key() ) ).nextFeature( fet );
+      mapIt.value() = fet;
+    }
+  }
+
 }
 
 QgsRectangle QgsPointDisplacementRenderer::searchRect( const QgsPoint& p ) const

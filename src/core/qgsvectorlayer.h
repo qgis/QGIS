@@ -347,12 +347,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void setRendererV2( QgsFeatureRendererV2* r );
 
-    /** Draw layer with renderer V2.
+    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
     void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
-    /** Draw layer with renderer V2 using symbol levels.
+    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
     void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );

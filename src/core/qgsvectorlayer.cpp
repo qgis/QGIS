@@ -370,8 +370,6 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
   QSettings settings;
   bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
 
-  mRendererV2->startRender( rendererContext, this );
-
 #ifndef Q_WS_MAC
   int featureCount = 0;
 #endif //Q_WS_MAC
@@ -464,9 +462,6 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
 
   QSettings settings;
   bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
-
-  // startRender must be called before symbolForFeature() calls to make sure renderer is ready
-  mRendererV2->startRender( rendererContext, this );
 
   QgsSingleSymbolRendererV2* selRenderer = NULL;
   if ( !mSelectedFeatureIds.isEmpty() )
@@ -652,6 +647,9 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   bool labeling = false;
   //register label and diagram layer to the labeling engine
   prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
+
+  //do startRender before getFeatures to give renderers the possibility of querying features in the startRender method
+  mRendererV2->startRender( rendererContext, this );
 
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFilterRect( rendererContext.extent() )
