@@ -299,9 +299,9 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
   QgsDebugMsg( "Starting draw of labels: " + id() );
 
   if ( mRendererV2 && mLabelOn &&
-      ( !mLabel->scaleBasedVisibility() ||
-        ( mLabel->minScale() <= rendererContext.rendererScale() &&
-          rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
+       ( !mLabel->scaleBasedVisibility() ||
+         ( mLabel->minScale() <= rendererContext.rendererScale() &&
+           rendererContext.rendererScale() <= mLabel->maxScale() ) ) )
   {
     QgsAttributeList attributes;
     foreach ( QString attrName, mRendererV2->usedAttributes() )
@@ -369,8 +369,6 @@ void QgsVectorLayer::drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& 
 
   QSettings settings;
   bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
-
-  mRendererV2->startRender( rendererContext, this );
 
 #ifndef Q_WS_MAC
   int featureCount = 0;
@@ -464,9 +462,6 @@ void QgsVectorLayer::drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderCon
 
   QSettings settings;
   bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
-
-  // startRender must be called before symbolForFeature() calls to make sure renderer is ready
-  mRendererV2->startRender( rendererContext, this );
 
   QgsSingleSymbolRendererV2* selRenderer = NULL;
   if ( !mSelectedFeatureIds.isEmpty() )
@@ -652,6 +647,9 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   bool labeling = false;
   //register label and diagram layer to the labeling engine
   prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
+
+  //do startRender before getFeatures to give renderers the possibility of querying features in the startRender method
+  mRendererV2->startRender( rendererContext, this );
 
   QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
                                         .setFilterRect( rendererContext.extent() )
@@ -1511,6 +1509,18 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   updateFields();
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
+  QDomNode prevExpNode = layer_node.namedItem( "previewExpression" );
+
+  if ( prevExpNode.isNull() )
+  {
+    mDisplayExpression = "";
+  }
+  else
+  {
+    QDomElement prevExpElem = prevExpNode.toElement();
+    mDisplayExpression = prevExpElem.text();
+  }
+
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )
   {
@@ -1658,6 +1668,12 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
     layer_node.appendChild( provider );
   }
 
+  // save preview expression
+  QDomElement prevExpElem = document.createElement( "previewExpression" );
+  QDomText prevExpText = document.createTextNode( mDisplayExpression );
+  prevExpElem.appendChild( prevExpText );
+  layer_node.appendChild( prevExpElem );
+
   //save joins
   mJoinBuffer->writeXml( layer_node, document );
 
@@ -1703,7 +1719,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     if ( !blendModeNode.isNull() )
     {
       QDomElement e = blendModeNode.toElement();
-      setBlendMode(( QgsMapRenderer::BlendMode ) e.text().toInt() );
+      setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) e.text().toInt() ) );
     }
 
     // use scale dependent visibility flag
@@ -2027,7 +2043,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     // add the blend mode field
     QDomElement blendModeElem  = doc.createElement( "blendMode" );
-    QDomText blendModeText = doc.createTextNode( QString::number( blendMode() ) );
+    QDomText blendModeText = doc.createTextNode( QString::number( QgsMapRenderer::getBlendModeEnum( blendMode() ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
 
@@ -2788,6 +2804,16 @@ void QgsVectorLayer::setCoordinateSystem()
 const QString QgsVectorLayer::displayField() const
 {
   return mDisplayField;
+}
+
+void QgsVectorLayer::setDisplayExpression( const QString displayExpression )
+{
+  mDisplayExpression = displayExpression;
+}
+
+const QString QgsVectorLayer::displayExpression()
+{
+  return mDisplayExpression;
 }
 
 bool QgsVectorLayer::isEditable() const

@@ -124,6 +124,8 @@ void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer
   mExpressionFeature = feature;
   mExpressionLayer = layer;
   mSubstitutions = substitutions;
+  // Force label to redraw -- fixes label printing for labels with blend modes when used with atlas
+  update();
 }
 
 QString QgsComposerLabel::displayText() const

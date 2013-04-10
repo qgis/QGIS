@@ -238,3 +238,13 @@ int QgsFeatureListModel::rowCount( const QModelIndex& parent ) const
   Q_UNUSED( parent )
   return sourceModel()->rowCount();
 }
+
+void QgsFeatureListModel::disableSelectionSync()
+{
+  mFilterModel->disableSelectionSync();
+}
+
+void QgsFeatureListModel::enableSelectionSync()
+{
+  mFilterModel->enableSelectionSync();
+}

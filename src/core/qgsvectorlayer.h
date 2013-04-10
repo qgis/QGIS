@@ -257,6 +257,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns the primary display field name used in the identify results dialog */
     const QString displayField() const;
 
+    /** Set the preview expression, used to create a human readable preview string.
+     *  Used e.g. in the attribute table feature list. Uses @link {QgsExpression}.
+     *
+     *  @param previewExpression The expression which will be used to preview features
+     *                           for this layer
+     *  @note added in 2.0
+     */
+    void setDisplayExpression( const QString displayExpression );
+
+    /**
+     *  Get the preview expression, used to create a human readable preview string.
+     *  Uses @link {QgsExpression}.
+     *
+     *  @return The expression which will be used to preview features for this layer
+     *  @note added in 2.0
+     */
+    const QString displayExpression();
+
     /** Returns the data provider */
     QgsVectorDataProvider* dataProvider();
 
@@ -329,12 +347,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void setRendererV2( QgsFeatureRendererV2* r );
 
-    /** Draw layer with renderer V2.
+    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
     void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
-    /** Draw layer with renderer V2 using symbol levels.
+    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
     void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
@@ -972,6 +990,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** index of the primary label field */
     QString mDisplayField;
+
+    /** the preview expression used to generate a human readable preview string for features */
+    QString mDisplayExpression;
 
     /** Data provider key */
     QString mProviderKey;

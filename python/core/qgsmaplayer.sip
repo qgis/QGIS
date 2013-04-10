@@ -182,10 +182,10 @@ class QgsMapLayer : QObject
     void removeCustomProperty( const QString& key );
 
     /** Accessor for transparency level. */
-    unsigned int getTransparency();
+    // unsigned int getTransparency();
 
     /** Mutator for transparency level. Should be between 0 and 255 */
-    virtual void setTransparency( unsigned int );
+    // virtual void setTransparency( unsigned int );
 
     /**
      * If an operation returns 0 (e.g. draw()), this function

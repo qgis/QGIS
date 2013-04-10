@@ -94,6 +94,7 @@ void QgsFieldCalculator::accept()
 
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
+  exp.setGeomCalculator( myDa );
 
   if ( !mVectorLayer || !mVectorLayer->isEditable() )
     return;
@@ -173,8 +174,6 @@ void QgsFieldCalculator::accept()
     }
 
     exp.setCurrentRowNumber( rownum );
-    exp.setGeomCalculator( myDa );
-
     QVariant value = exp.evaluate( &feature );
     if ( exp.hasEvalError() )
     {

@@ -1,21 +1,18 @@
-from sextante.core.Sextante import Sextante
-from sextante.modeler.ModelerAlgorithm import ModelerAlgorithm
+import sextante
+import unittest
+from sextante.tests.TestData import points, points2, polygons, polygons2, lines, union,\
+    table, polygonsGeoJson, raster
+from sextante.core.QGisLayers import QGisLayers
 
-def testAlg(algname, *args):
+class GeoAlgorithmTest(unittest.TestCase):
+    pass
 
-    #test simple execution
-    alg = Sextante.runAlgorithm(algname, None, *args)
-    assert alg is not None
+def suite():
+    suite = unittest.makeSuite(GeoAlgorithmTest, 'test')
+    return suite
 
-    out = alg.getOutputValuesAsDictionary()
-
-    return out
-
-    #test execution in a model
-
-    #===========================================================================
-    # model = ModelerAlgorithm()
-    # model.addAlgorithm(alg, parametersMap, valuesMap, outputsMap, dependencies)
-    #===========================================================================
-
-    #test
+def runtests():
+    result = unittest.TestResult()
+    testsuite = suite()
+    testsuite.run(result)
+    return result

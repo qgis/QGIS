@@ -894,21 +894,18 @@ class QgisAlgsTest(unittest.TestCase):
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
 
     def test_qgisstatisticsbycategories(self):
-        outputs=sextante.runalg("qgis:statisticsbycategories",points2(),"POLY_NUM_A","POLY_ST_B",None)
+        outputs=sextante.runalg("qgis:statisticsbycategories",points2(),"POLY_NUM_A","POLY_ST_B", None)
         output=outputs['OUTPUT']
         layer=QGisLayers.getObjectFromUri(output, True)
         fields=layer.pendingFields()
-        expectednames=['Category','min','max','mean','stddev']
-        expectedtypes=['String','Real','Real','Real','Real']
+        expectednames=['category','min','max','mean','stddev']        
         names=[str(f.name()) for f in fields]
-        types=[str(f.typeName()) for f in fields]
-        self.assertEqual(expectednames, names)
-        self.assertEqual(expectedtypes, types)
+        self.assertEqual(expectednames, names)        
         features=sextante.getfeatures(layer)
         self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()
-        expectedvalues=["NULL","1.1","2.2","1.925","0.55"]
+        expectedvalues=["","1.1","2.2","1.925","0.55"]
         values=[str(attr.toString()) for attr in attrs]
         self.assertEqual(expectedvalues, values)
 

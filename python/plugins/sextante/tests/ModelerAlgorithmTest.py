@@ -8,10 +8,17 @@ from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 from sextante.modeler import ModelerAlgorithmProvider
 from sextante.modeler.ModelerAlgorithm import ModelerAlgorithm
+from sextante.modeler.Providers import Providers
 
 class ModelerAlgorithmTest(unittest.TestCase):
 
     def testCreateModel(self):
+        pass
+    
+    def testEditModelParameter(self):
+        pass
+    
+    def testEditModelAlgorithm(self):
         pass
 
     def testRemoveAlgorithm(self):
@@ -19,14 +26,22 @@ class ModelerAlgorithmTest(unittest.TestCase):
         modelfile = os.path.join(folder, "noinputs.model")
         model = ModelerAlgorithm()
         model.openModel(modelfile)
+        model.provider = Providers.providers['model']
         self.assertTrue(2, len(model.algs))
         self.assertFalse(model.removeAlgorithm(0))
         self.assertTrue(model.removeAlgorithm(len(model.algs) - 1));
-        outputs = model.execute(None)
-        self.assertEquals(2, len(outputs))
-        output=outputs['SAVENAME_ALG0']
-        layer=QGisLayers.getObjectFromUri(output, True)
-        self.assertIsNone(layer)
+        from threading import settrace
+
+        import sys
+        sys.path.append("D:\eclipse\plugins\org.python.pydev_2.6.0.2012062818\pysrc")
+        from pydevd import *
+        settrace()
+
+        model.execute(None)
+        outputs = model.outputs
+        self.assertEquals(1, len(outputs))
+        output=outputs[0].value
+        self.assertTrue(os.path.exists(output))        
 
     def testRemoveParameter(self):
         folder = os.path.join(os.path.dirname(ModelerAlgorithmProvider.__file__), "models")
@@ -65,8 +80,6 @@ class ModelerAlgorithmTest(unittest.TestCase):
         self.assertEquals([2,1,0], depends)
         depends = model.getDependsOnAlgorithms(4)
         self.assertEquals([3,2,1,0], depends)
-
-
 
 
     '''The following tests correspond to example models'''

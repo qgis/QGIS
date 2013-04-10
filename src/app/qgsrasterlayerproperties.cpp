@@ -37,6 +37,7 @@
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterhistogramwidget.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasterpyramid.h"
@@ -870,7 +871,7 @@ void QgsRasterLayerProperties::apply()
   }
 
   //set the blend mode for the layer
-  mRasterLayer->setBlendMode(( QgsMapRenderer::BlendMode ) mBlendModeComboBox->blendMode() );
+  mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 
   //get the thumbnail for the layer
   pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
@@ -1456,7 +1457,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
     int myWidth = mMapCanvas->extent().width() / mapUnitsPerPixel;
     int myHeight = mMapCanvas->extent().height() / mapUnitsPerPixel;
 
-    QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint,  QgsRasterDataProvider::IdentifyFormatValue, myExtent, myWidth, myHeight );
+    QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint,  QgsRasterDataProvider::IdentifyFormatValue, myExtent, myWidth, myHeight ).results();
 
     QList<int> bands = renderer->usesBands();
 
