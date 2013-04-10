@@ -36,8 +36,8 @@ class NumberInputPanel(QtGui.QWidget):
         self.isInteger = isInteger
         if isInteger:
             self.spin = QtGui.QSpinBox()
-            self.spin.setMaximum(100000)
-            self.spin.setMinimum(-100000)
+            self.spin.setMaximum(1000000000)
+            self.spin.setMinimum(-1000000000)
             self.spin.setValue(number)
             self.horizontalLayout.addWidget(self.spin)
             self.setLayout(self.horizontalLayout)
