@@ -2529,6 +2529,9 @@ bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
     QgsDebugMsg( "Cannot set no data value" );
     return false;
   }
+  mSrcNoDataValue[bandNo-1] = noDataValue;
+  mSrcHasNoDataValue[bandNo-1] = true;
+  mUseSrcNoDataValue[bandNo-1] = true;
   return true;
 }
 
