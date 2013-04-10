@@ -3,7 +3,8 @@ import unittest
 from sextante.tests.TestData import points, points2, polygons, polygons2, lines, union,\
     table, polygonsGeoJson, raster
 from sextante.core import Sextante
-from sextante.tools.vector import getAttributeValues
+from sextante.tools.vector import values
+from sextante.tools.general import getfromname
 
 class SextanteToolsTest(unittest.TestCase):
     '''tests the method imported when doing an "import sextante", and also in sextante.tools. 
@@ -17,7 +18,7 @@ class SextanteToolsTest(unittest.TestCase):
         
     def test_runandload(self):
         sextante.runandload("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS", None)        
-        layer = Sextante.getObjectFromName("Result")
+        layer = getfromname("Result")
         self.assertIsNotNone(layer)  
         
     def test_featuresWithoutSelection(self):
@@ -36,9 +37,9 @@ class SextanteToolsTest(unittest.TestCase):
     
     def test_attributeValues(self):
         layer = sextante.getobject(points()) 
-        values = getAttributeValues(layer, "ID")
+        attributeValues = values(layer, "ID")
         i = 1
-        for value in values['ID']:
+        for value in attributeValues['ID']:
             self.assertEqual(int(i), int(value))
             i+=1            
         self.assertEquals(13,i)

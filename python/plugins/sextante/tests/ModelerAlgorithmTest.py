@@ -29,14 +29,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
         model.provider = Providers.providers['model']
         self.assertTrue(2, len(model.algs))
         self.assertFalse(model.removeAlgorithm(0))
-        self.assertTrue(model.removeAlgorithm(len(model.algs) - 1));
-        from threading import settrace
-
-        import sys
-        sys.path.append("D:\eclipse\plugins\org.python.pydev_2.6.0.2012062818\pysrc")
-        from pydevd import *
-        settrace()
-
+        self.assertTrue(model.removeAlgorithm(len(model.algs) - 1));        
         model.execute(None)
         outputs = model.outputs
         self.assertEquals(1, len(outputs))

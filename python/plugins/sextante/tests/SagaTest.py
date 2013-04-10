@@ -85,12 +85,12 @@ class SagaTest(unittest.TestCase):
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
         
     def test_SagaRasterAlgorithmWithUnsupportedOutputFormat(self):
-        outputs=sextante.runalg("saga:convergenceindex",raster(),0,0,None)
+        outputs=sextante.runalg("saga:convergenceindex",raster(),0,0,SextanteUtils.getTempFilename("img"))
         output=outputs['RESULT']
         self.assertTrue(os.path.isfile(output))
         dataset=gdal.Open(output, GA_ReadOnly)
         strhash=hash(str(dataset.ReadAsArray(0).tolist()))
-        self.assertEqual(strhash,-807227462)
+        self.assertEqual(strhash, 485390137)
 
 
 def suite():

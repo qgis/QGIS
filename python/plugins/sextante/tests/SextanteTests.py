@@ -7,12 +7,14 @@ from sextante.tests import SextanteToolsTest
 from sextante.tests import ScriptTest
 from sextante.tests import SagaTest
 from sextante.tests import GeoAlgorithmTest
+from sextante.tests import GdalTest
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTests(QgisAlgsTest.suite())
     suite.addTests(ModelerAlgorithmTest.suite())
     suite.addTests(SagaTest.suite())
+    suite.addTests(GdalTest.suite())
     suite.addTests(ScriptTest.suite())
     suite.addTests(SextanteToolsTest.suite())    
     #suite.addTests(ParametersTest.suite())
