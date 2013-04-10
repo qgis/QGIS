@@ -107,6 +107,9 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
     /** Get GRASS raster type for QGIS raster type */
     RASTER_MAP_TYPE grassRasterType( QGis::DataType qgisType );
 
+    /** Get no data value for GRASS data type */
+    double noDataValueForGrassType( RASTER_MAP_TYPE grassType );
+
     /** Grass does not seem to have any function to init Cell_head,
      * initialisation is done in G__read_Cell_head_array */
     void initCellHead( struct Cell_head *cellhd );
