@@ -56,7 +56,7 @@ class gdaladdo(GeoAlgorithm):
         arguments = []
         inFile = self.getParameterValue(gdaladdo.INPUT)
         arguments.append(inFile)
-        arguments.append(self.getParameterValue(gdaladdo.LEVELS))
+        arguments.extend(self.getParameterValue(gdaladdo.LEVELS).split(" "))
         self.setOutputValue(gdaladdo.OUTPUT, inFile)
 
         GdalUtils.runGdal(["gdaladdo", GdalUtils.escapeAndJoin(arguments)], progress)
