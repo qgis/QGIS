@@ -374,7 +374,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   if ( painter ) painter->setPen( mFontColor );
 
   //double labelX = point.x() + labelXOffset; // + mIconLabelSpace;
-  double labelX = point.x() + qMax( symbolSize.width(), labelXOffset );
+  double labelX = point.x() + qMax( (double) symbolSize.width(), labelXOffset );
 
   // Vertical alignment of label with symbol:
   // a) label height < symbol heigh: label centerd with symbol
@@ -407,7 +407,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   nucleon.symbolSize = symbolSize;
   nucleon.labelSize = labelSize;
   //QgsDebugMsg( QString( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
-  double width = qMax( symbolSize.width(), labelXOffset ) + labelSize.width();
+  double width = qMax( (double) symbolSize.width(), labelXOffset ) + labelSize.width();
   double height = qMax( symbolSize.height(), labelSize.height() );
   nucleon.size = QSizeF( width, height );
   return nucleon;
