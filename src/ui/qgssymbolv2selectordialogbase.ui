@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>619</width>
+    <width>509</width>
     <height>416</height>
    </rect>
   </property>
@@ -53,6 +53,12 @@
      </item>
      <item>
       <widget class="QTreeView" name="layersTree">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="editTriggers">
         <set>QAbstractItemView::NoEditTriggers</set>
        </property>
@@ -132,18 +138,7 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="1">
-    <widget class="QStackedWidget" name="stackedWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>2</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <widget class="QWidget" name="page_2"/>
-    </widget>
-   </item>
-   <item row="1" column="1">
+   <item row="1" column="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -151,6 +146,37 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QFrame" name="frame">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>4</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QStackedWidget" name="stackedWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>2</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <widget class="QWidget" name="page_2"/>
+       </widget>
+      </item>
+     </layout>
+     <zorder>stackedWidget</zorder>
+     <zorder>stackedWidget</zorder>
     </widget>
    </item>
   </layout>
