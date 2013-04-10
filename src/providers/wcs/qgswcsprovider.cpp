@@ -1695,8 +1695,8 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Ide
     }
 
     // Apply user no data
-    QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( i );
-    if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
+    QgsRasterRangeList myNoDataRangeList = userNoDataValue( i );
+    if ( QgsRasterRange::contains( value, myNoDataRangeList ) )
     {
       value = noDataValue( i );
     }

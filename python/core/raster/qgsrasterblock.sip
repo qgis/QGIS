@@ -6,13 +6,6 @@ class QgsRasterBlock
 %End
 
   public:
-    struct Range
-    {
-      double min;
-      double max;
-      bool operator==( const QgsRasterBlock::Range &o ) const;
-    };
-
     QgsRasterBlock();
 
     QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
@@ -65,8 +58,5 @@ class QgsRasterBlock
     bool convert( QGis::DataType destDataType );
     QImage image() const;
     bool setImage( const QImage * image );
-
-    static bool valueInRange( double value, const QList<QgsRasterBlock::Range> &rangeList );
-
 };
 

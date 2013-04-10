@@ -51,9 +51,9 @@ class CORE_EXPORT QgsRasterIdentifyResult
     /** \brief Get results. Results are different for each format:
      * IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
      * IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
-     * IdentifyFormatHtml: map of HTML strings for each sublayer (WMS). 
+     * IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      */
-    QMap<int, QVariant> results() const { return mResults; } 
+    QMap<int, QVariant> results() const { return mResults; }
 
     /** Set map of optional parameters */
     void setParams( const QMap<QString, QVariant> & theParams ) { mParams = theParams; }
@@ -66,9 +66,6 @@ class CORE_EXPORT QgsRasterIdentifyResult
 
     /** \brief Set error */
     void setError( const QgsError & theError ) { mError = theError;}
-
-    /** \brief Add error message */
-    void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
 
   private:
     /** \brief Is valid */

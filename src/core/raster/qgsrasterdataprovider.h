@@ -35,6 +35,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterhistogram.h"
+#include "qgsrasterrange.h"
 
 #include "cpl_conv.h"
 #include <cmath>
@@ -276,10 +277,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Value representing no data value. */
     virtual double srcNoDataValue( int bandNo ) const { return mSrcNoDataValue.value( bandNo -1 ); }
 
-    virtual void setUserNoDataValue( int bandNo, QList<QgsRasterBlock::Range> noData );
+    virtual void setUserNoDataValue( int bandNo, QgsRasterRangeList noData );
 
     /** Get list of user no data value ranges */
-    virtual  QList<QgsRasterBlock::Range> userNoDataValue( int bandNo ) const { return mUserNoDataValue.value( bandNo -1 ); }
+    virtual  QgsRasterRangeList userNoDataValue( int bandNo ) const { return mUserNoDataValue.value( bandNo -1 ); }
 
     virtual double minimumValue( int bandNo ) const { Q_UNUSED( bandNo ); return 0; }
     virtual double maximumValue( int bandNo ) const { Q_UNUSED( bandNo ); return 0; }
@@ -514,7 +515,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** \brief List of lists of user defined additional no data values
      *  for each band, indexed from 0 */
-    QList< QList<QgsRasterBlock::Range> > mUserNoDataValue;
+    QList< QgsRasterRangeList > mUserNoDataValue;
 
     QgsRectangle mExtent;
 

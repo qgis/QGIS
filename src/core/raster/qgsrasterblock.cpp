@@ -27,8 +27,8 @@
 #include "cpl_conv.h"
 
 QgsRasterBlock::QgsRasterBlock()
-//mValid (false)
-    : mDataType( QGis::UnknownDataType )
+    : mValid( true )
+    , mDataType( QGis::UnknownDataType )
     , mTypeSize( 0 )
     , mWidth( 0 )
     , mHeight( 0 )
@@ -39,8 +39,8 @@ QgsRasterBlock::QgsRasterBlock()
 }
 
 QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
-//mValid(true)
-    : mDataType( theDataType )
+    : mValid( true )
+    , mDataType( theDataType )
     , mTypeSize( 0 )
     , mWidth( theWidth )
     , mHeight( theHeight )
@@ -70,7 +70,7 @@ bool QgsRasterBlock::reset( QGis::DataType theDataType, int theWidth, int theHei
   mWidth = 0;
   mHeight = 0;
   mNoDataValue = std::numeric_limits<double>::quiet_NaN();
-  //mValid = false;
+  mValid = false;
 
   if ( typeIsNumeric( theDataType ) )
   {
@@ -96,7 +96,7 @@ bool QgsRasterBlock::reset( QGis::DataType theDataType, int theWidth, int theHei
     return false;
   }
 
-  //mValid = true;
+  mValid = true;
   mDataType = theDataType;
   mTypeSize = QgsRasterBlock::typeSize( mDataType );
   mWidth = theWidth;
@@ -410,7 +410,7 @@ bool QgsRasterBlock::convert( QGis::DataType destDataType )
   return true;
 }
 
-void QgsRasterBlock::applyNodataValues( const QList<Range>& rangeList )
+void QgsRasterBlock::applyNodataValues( const QgsRasterRangeList & rangeList )
 {
   if ( rangeList.isEmpty() )
   {
@@ -421,7 +421,7 @@ void QgsRasterBlock::applyNodataValues( const QList<Range>& rangeList )
   for ( size_t i = 0; i < size; ++i )
   {
     double val = value( i );
-    if ( valueInRange( val, rangeList ) )
+    if ( QgsRasterRange::contains( val, rangeList ) )
     {
       setValue( i, mNoDataValue );
     }

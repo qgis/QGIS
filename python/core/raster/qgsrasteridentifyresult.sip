@@ -25,8 +25,5 @@ class QgsRasterIdentifyResult
     QgsError error() const;
 
     void setError( const QgsError & theError );
-
-    void appendError( const QgsErrorMessage & theMessage );
-
 };
 

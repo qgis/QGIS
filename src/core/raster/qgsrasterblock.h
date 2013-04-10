@@ -21,26 +21,17 @@
 #include <limits>
 #include <QImage>
 #include "qgis.h"
+#include "qgserror.h"
 #include "qgslogger.h"
+#include "qgsrasterrange.h"
 #include "qgsrectangle.h"
 
 /** \ingroup core
  * Raster data container.
  */
-// TODO: inherit from QObject?
 class CORE_EXPORT QgsRasterBlock
 {
   public:
-    struct Range
-    {
-      double min;
-      double max;
-      inline bool operator==( const Range &o ) const
-      {
-        return min == o.min && max == o.max;
-      }
-    };
-
     QgsRasterBlock();
 
     /** \brief Constructor which allocates data block in memory
@@ -64,7 +55,19 @@ class CORE_EXPORT QgsRasterBlock
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
-    //bool isValid() const { return mValid; }
+    /** \brief Returns true if the block is valid (correctly filled with data).
+     *  An empty block may still be valid (if zero size block was requested).
+     *  If the block is not valid, error may be retrieved by error() method.
+     */
+    bool isValid() const { return mValid; }
+
+    /** \brief Mark block as valid or invalid */
+    void setValid( bool valid ) { mValid = valid; }
+
+    /** Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
+     *  This method does not return true if size is not zero and all values are
+     *  'no data' (null).
+     */
     bool isEmpty() const;
 
     // Return data type size in bytes
@@ -247,14 +250,6 @@ class CORE_EXPORT QgsRasterBlock
     QImage image() const;
     bool setImage( const QImage * image );
 
-    /** \brief Test if value is within the list of ranges
-     *  @param value value
-     *  @param rangeList list of ranges
-     *  @return true if value is in at least one of ranges
-     *  @note not available in python bindings
-     */
-    inline static bool valueInRange( double value, const QList<QgsRasterBlock::Range> &rangeList );
-
     /** Create a new image with extraneous data, such data may be used
      *  after the image is destroyed. The memory is not initialized.
      */
@@ -279,7 +274,13 @@ class CORE_EXPORT QgsRasterBlock
 
     inline static void writeValue( void *data, QGis::DataType type, size_t index, double value );
 
-    void applyNodataValues( const QList<Range>& rangeList );
+    void applyNodataValues( const QgsRasterRangeList & rangeList );
+
+    /** \brief Get error */
+    QgsError error() const { return mError; }
+
+    /** \brief Set error */
+    void setError( const QgsError & theError ) { mError = theError;}
 
   private:
 
@@ -287,7 +288,7 @@ class CORE_EXPORT QgsRasterBlock
     static QGis::DataType dataType( QImage::Format theFormat );
 
     // Valid
-    //bool isValid;
+    bool mValid;
 
     // Data type
     QGis::DataType mDataType;
@@ -310,6 +311,9 @@ class CORE_EXPORT QgsRasterBlock
 
     // Image for image data types, not used with numerical data types
     QImage *mImage;
+
+    // Error
+    QgsError mError;
 };
 
 inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, size_t index )
@@ -391,20 +395,6 @@ inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, size_t 
       //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
       break;
   }
-}
-
-inline bool QgsRasterBlock::valueInRange( double value, const QList<QgsRasterBlock::Range> &rangeList )
-{
-  foreach ( QgsRasterBlock::Range range, rangeList )
-  {
-    if (( value >= range.min && value <= range.max ) ||
-        doubleNear( value, range.min ) ||
-        doubleNear( value, range.max ) )
-    {
-      return true;
-    }
-  }
-  return false;
 }
 
 inline double QgsRasterBlock::value( size_t index ) const

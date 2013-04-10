@@ -507,14 +507,14 @@ double QgsRasterDataProvider::readValue( void *data, int type, int index )
 }
 #endif
 
-void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QList<QgsRasterBlock::Range> noData )
+void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QgsRasterRangeList noData )
 {
   //if ( bandNo > bandCount() ) return;
   if ( bandNo >= mUserNoDataValue.size() )
   {
     for ( int i = mUserNoDataValue.size(); i < bandNo; i++ )
     {
-      mUserNoDataValue.append( QList<QgsRasterBlock::Range>() );
+      mUserNoDataValue.append( QgsRasterRangeList() );
     }
   }
   QgsDebugMsg( QString( "set %1 band %1 no data ranges" ).arg( noData.size() ) );

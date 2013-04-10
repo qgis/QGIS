@@ -468,8 +468,8 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   if ( qIsNaN( value ) ) value = noDataValue( 1 );
 
   // Apply user no data
-  QList<QgsRasterBlock::Range> myNoDataRangeList = userNoDataValue( 1 );
-  if ( QgsRasterBlock::valueInRange( value, myNoDataRangeList ) )
+  QgsRasterRangeList myNoDataRangeList = userNoDataValue( 1 );
+  if ( QgsRasterRange::contains( value, myNoDataRangeList ) )
   {
     value = noDataValue( 1 );
   }

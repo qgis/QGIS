@@ -24,6 +24,7 @@ email                : tim at linfiniti.com
 #include "qgsprojectfiletransform.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterrange.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
@@ -2471,17 +2472,16 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
     if ( ok && ( bandNo > 0 ) && ( bandNo <= mDataProvider->bandCount() ) )
     {
       mDataProvider->setUseSrcNoDataValue( bandNo, bandElement.attribute( "useSrcNoData" ).toInt() );
-      QList<QgsRasterBlock::Range> myNoDataRangeList;
+      QgsRasterRangeList myNoDataRangeList;
 
       QDomNodeList rangeList = bandElement.elementsByTagName( "noDataRange" );
 
       for ( int j = 0; j < rangeList.size(); ++j )
       {
         QDomElement rangeElement = rangeList.at( j ).toElement();
-        QgsRasterBlock::Range myNoDataRange;
-        myNoDataRange.min = rangeElement.attribute( "min" ).toDouble();
-        myNoDataRange.max = rangeElement.attribute( "max" ).toDouble();
-        QgsDebugMsg( QString( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min ) );
+        QgsRasterRange myNoDataRange( rangeElement.attribute( "min" ).toDouble(),
+                                      rangeElement.attribute( "max" ).toDouble() );
+        QgsDebugMsg( QString( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min() ) );
         myNoDataRangeList << myNoDataRange;
       }
       mDataProvider->setUserNoDataValue( bandNo, myNoDataRangeList );
@@ -2575,12 +2575,12 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
 
-    foreach ( QgsRasterBlock::Range range, mDataProvider->userNoDataValue( bandNo ) )
+    foreach ( QgsRasterRange range, mDataProvider->userNoDataValue( bandNo ) )
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 
-      noDataRange.setAttribute( "min", range.min );
-      noDataRange.setAttribute( "max", range.max );
+      noDataRange.setAttribute( "min", range.min() );
+      noDataRange.setAttribute( "max", range.max() );
       noDataRangeList.appendChild( noDataRange );
     }
 
