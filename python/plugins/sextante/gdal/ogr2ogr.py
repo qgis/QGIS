@@ -23,22 +23,28 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-
-from sextante.outputs.OutputVector import OutputVector
-from sextante.parameters.ParameterVector import ParameterVector
-from sextante.parameters.ParameterString import ParameterString
-from sextante.core.SextanteLog import SextanteLog
-from sextante.core.QGisLayers import QGisLayers
-from sextante.gdal.OgrAlgorithm import OgrAlgorithm
-from sextante.gdal.pyogr.ogr2ogr import *
-from qgis.core import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
+import re
 import string
 from string import Template
-import re
-import os
 import tempfile
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+from qgis.core import *
+
+from sextante.core.SextanteLog import SextanteLog
+from sextante.core.QGisLayers import QGisLayers
+
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterString import ParameterString
+from sextante.outputs.OutputVector import OutputVector
+
+from sextante.gdal.OgrAlgorithm import OgrAlgorithm
+from sextante.gdal.pyogr.ogr2ogr import *
+
+from sextante.gdal.GdalUtils import GdalUtils
 
 try:
   from osgeo import gdal, ogr, osr
