@@ -198,10 +198,10 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void setBackgroundEnabled( bool drawBackground ) {mBackground = drawBackground;}
 
     /** Returns the item's composition blending mode */
-    QgsMapRenderer::BlendMode blendMode() const {return mBlendMode;}
+    QPainter::CompositionMode blendMode() const {return mBlendMode;}
 
     /** Sets the item's composition blending mode*/
-    void setBlendMode( QgsMapRenderer::BlendMode blendMode );
+    void setBlendMode( QPainter::CompositionMode blendMode );
 
     /** Returns the item's transparency */
     int transparency() const {return mTransparency;}
@@ -321,7 +321,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     double mRotation;
 
     /**Composition blend mode for item*/
-    QgsMapRenderer::BlendMode mBlendMode;
+    QPainter::CompositionMode mBlendMode;
 
     QgsComposerEffect *mEffect;
 

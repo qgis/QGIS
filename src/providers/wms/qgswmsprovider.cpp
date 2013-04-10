@@ -30,6 +30,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeaturestore.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
@@ -72,6 +73,7 @@
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WMS provider")
 #define SRVERR(message) QGS_ERROR_MESSAGE(message,"WMS server")
+#define ERROR(message) QgsError(message,"WMS provider")
 
 static QString WMS_KEY = "wms";
 static QString WMS_DESCRIPTION = "OGC Web Map Service version 1.3 data provider";
@@ -3871,7 +3873,7 @@ QString QgsWmsProvider::metadata()
   return metadata;
 }
 
-QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( QString( "theFormat = %1" ).arg( theFormat ) );
   QStringList resultStrings;
@@ -3879,14 +3881,17 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
 
   QString format;
   format = mIdentifyFormats.value( theFormat );
-  if ( format.isEmpty() ) return results;
+  if ( format.isEmpty() )
+  {
+    return QgsRasterIdentifyResult( ERROR( tr( "Format not supported" ) ) );
+  }
 
   QgsDebugMsg( QString( "theFormat = %1 format = %2" ).arg( theFormat ).arg( format ) );
 
   if ( !extent().contains( thePoint ) )
   {
     results.insert( 1, "" );
-    return results;
+    return QgsRasterIdentifyResult( theFormat, results );
   }
 
   QgsRectangle myExtent = theExtent;
@@ -4252,7 +4257,7 @@ QMap<int, QVariant> QgsWmsProvider::identify( const QgsPoint & thePoint, Identif
   }
 #endif
 
-  return results;
+  return QgsRasterIdentifyResult( theFormat, results );
 }
 
 void QgsWmsProvider::identifyReplyFinished()

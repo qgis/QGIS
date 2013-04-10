@@ -166,7 +166,6 @@ class QgsWMSServer
 
     /**Applies opacity on layer/group level*/
     void applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
-                         QList< QPair< QgsVectorLayer*, unsigned int> >& vectorOld,
                          QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                          QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
                          QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies
@@ -174,7 +173,6 @@ class QgsWMSServer
 
     /**Restore original opacities*/
     void restoreOpacities( QList< QPair <QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
-                           QList< QPair <QgsVectorLayer*, unsigned int> >& vectorOld,
                            QList< QPair < QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                            QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
                            QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies );

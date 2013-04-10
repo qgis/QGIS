@@ -51,8 +51,8 @@ class TestZipLayer: public QObject
     // test item(s) in zip item (supply name or test all)
     bool testZipItem( QString myFileName, QString myChildName = "", QString myDriverName = "" );
     // get layer transparency to test for .qml loading
-    int getLayerTransparency( QString myFileName, QString myProviderKey, QString myScanZipSetting = "basic" );
-    bool testZipItemTransparency( QString myFileName, QString myProviderKey, int myTarget );
+    // int getLayerTransparency( QString myFileName, QString myProviderKey, QString myScanZipSetting = "basic" );
+    // bool testZipItemTransparency( QString myFileName, QString myProviderKey, int myTarget );
 
   private slots:
 
@@ -77,6 +77,7 @@ class TestZipLayer: public QObject
     void testTarItemVector();
     void testZipItemAll();
     void testTarItemAll();
+#if 0
     // test that styles are loaded from .qml files outside zip files
     void testZipItemVectorTransparency();
     void testTarItemVectorTransparency();
@@ -84,6 +85,7 @@ class TestZipLayer: public QObject
     void testZipItemRasterTransparency();
     void testTarItemRasterTransparency();
     void testGzipItemRasterTransparency();
+#endif
     //make sure items inside subfolders can be read
     void testZipItemSubfolder();
     void testTarItemSubfolder();
@@ -211,6 +213,7 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   return ok;
 }
 
+#if 0
 int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKey, QString myScanZipSetting )
 {
   int myTransparency = -1;
@@ -247,6 +250,7 @@ bool TestZipLayer::testZipItemTransparency( QString myFileName, QString myProvid
   }
   return true;
 }
+#endif
 
 
 // slots
@@ -438,6 +442,7 @@ void TestZipLayer::testTarItemAll()
   QVERIFY( testZipItem( mDataDir + "testtar.tgz", "" ) );
 }
 
+#if 0
 void TestZipLayer::testZipItemVectorTransparency()
 {
 #if GDAL_VERSION_NUM < 1800
@@ -479,6 +484,7 @@ void TestZipLayer::testGzipItemRasterTransparency()
 {
   QVERIFY( testZipItemTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", 250 ) );
 }
+#endif
 
 void TestZipLayer::testZipItemSubfolder()
 {

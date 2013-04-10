@@ -254,7 +254,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     mBufferTranspSpinBox->setValue( lyr.bufferTransp );
     mBufferJoinStyleComboBox->setPenJoinStyle( lyr.bufferJoinStyle );
     mBufferTranspFillChbx->setChecked( !lyr.bufferNoFill );
-    comboBufferBlendMode->setBlendMode( QgsMapRenderer::getBlendModeEnum( lyr.bufferBlendMode ) );
+    comboBufferBlendMode->setBlendMode( lyr.bufferBlendMode );
   }
   else
   {
@@ -295,7 +295,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mFontSizeSpinBox->setValue( lyr.textFont.pointSizeF() );
   btnTextColor->setColor( lyr.textColor );
   mFontTranspSpinBox->setValue( lyr.textTransp );
-  comboBlendMode->setBlendMode( QgsMapRenderer::getBlendModeEnum( lyr.blendMode ) );
+  comboBlendMode->setBlendMode( lyr.blendMode );
 
   mFontWordSpacingSpinBox->setValue( lyr.textFont.wordSpacing() );
   mFontLetterSpacingSpinBox->setValue( lyr.textFont.letterSpacing() );
@@ -336,7 +336,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   connect( mShapeTranspSlider, SIGNAL( valueChanged( int ) ), mShapeTranspSpinBox, SLOT( setValue( int ) ) );
   connect( mShapeTranspSpinBox, SIGNAL( valueChanged( int ) ), mShapeTranspSlider, SLOT( setValue( int ) ) );
   mShapeTranspSpinBox->setValue( lyr.shapeTransparency );
-  mShapeBlendCmbBx->setBlendMode( QgsMapRenderer::getBlendModeEnum( lyr.shapeBlendMode ) );
+  mShapeBlendCmbBx->setBlendMode( lyr.shapeBlendMode );
 
   mLoadSvgParams = false;
   on_mShapeTypeCmbBx_currentIndexChanged( lyr.shapeType ); // force update of shape background gui
@@ -498,7 +498,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.textFont = mRefFont;
   lyr.textNamedStyle = mFontStyleComboBox->currentText();
   lyr.textTransp = mFontTranspSpinBox->value();
-  lyr.blendMode = QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode )comboBlendMode->blendMode() );
+  lyr.blendMode = comboBlendMode->blendMode();
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
@@ -523,7 +523,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.bufferSizeInMapUnits = ( mBufferUnitComboBox->currentIndex() == 1 );
     lyr.bufferJoinStyle = mBufferJoinStyleComboBox->penJoinStyle();
     lyr.bufferNoFill = !mBufferTranspFillChbx->isChecked();
-    lyr.bufferBlendMode = QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode )comboBufferBlendMode->blendMode() );
+    lyr.bufferBlendMode = comboBufferBlendMode->blendMode();
   }
   else
   {
@@ -551,7 +551,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.shapeBorderWidthUnits = ( QgsPalLayerSettings::SizeUnit )( mShapeBorderWidthUnitsCmbBx->currentIndex() + 1 );
   lyr.shapeJoinStyle = mShapePenStyleCmbBx->penJoinStyle();
   lyr.shapeTransparency = mShapeTranspSpinBox->value();
-  lyr.shapeBlendMode = QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode )mShapeBlendCmbBx->blendMode() );
+  lyr.shapeBlendMode = mShapeBlendCmbBx->blendMode();
 
 
   if ( chkFormattedNumbers->isChecked() )

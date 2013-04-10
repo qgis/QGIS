@@ -29,6 +29,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
 
@@ -52,7 +53,8 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
-#define ERR(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
+#define ERRMSG(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
+#define ERR(message) QgsError(message,"GDAL provider")
 
 static QString PROVIDER_KEY = "gdal";
 static QString PROVIDER_DESCRIPTION = "GDAL provider";
@@ -142,7 +144,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri, bool update )
   if ( !mGdalBaseDataset )
   {
     QString msg = QString( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri() ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    appendError( ERR( msg ) );
+    appendError( ERRMSG( msg ) );
     return;
   }
 
@@ -867,13 +869,16 @@ int QgsGdalProvider::yBlockSize() const
 int QgsGdalProvider::xSize() const { return mWidth; }
 int QgsGdalProvider::ySize() const { return mHeight; }
 
-QMap<int, QVariant> QgsGdalProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( thePoint.x(), 0, 'g', 10 ).arg( thePoint.y(), 0, 'g', 10 ) );
 
   QMap<int, QVariant> results;
 
-  if ( theFormat != IdentifyFormatValue ) return results;
+  if ( theFormat != IdentifyFormatValue )
+  {
+    return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
+  }
 
   if ( !extent().contains( thePoint ) )
   {
@@ -882,7 +887,7 @@ QMap<int, QVariant> QgsGdalProvider::identify( const QgsPoint & thePoint, Identi
     {
       results.insert( bandNo, noDataValue( bandNo ) );
     }
-    return results;
+    return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
   }
 
   QgsRectangle myExtent = theExtent;
@@ -945,15 +950,14 @@ QMap<int, QVariant> QgsGdalProvider::identify( const QgsPoint & thePoint, Identi
 
     if ( !myBlock )
     {
-      results.clear();
-      return results;
+      return QgsRasterIdentifyResult( ERR( tr( "Cannot read data" ) ) );
     }
 
     double value = myBlock->value( r, c );
 
     results.insert( i, value );
   }
-  return results;
+  return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
 }
 
 int QgsGdalProvider::capabilities() const
@@ -2313,7 +2317,7 @@ void QgsGdalProvider::initBaseDataset()
     // if there are no subdatasets, then close the dataset
     if ( mSubLayers.size() == 0 )
     {
-      appendError( ERR( tr( "Cannot get GDAL raster band: %1" ).arg( msg ) ) );
+      appendError( ERRMSG( tr( "Cannot get GDAL raster band: %1" ).arg( msg ) ) );
 
       GDALDereferenceDataset( mGdalBaseDataset );
       mGdalBaseDataset = NULL;

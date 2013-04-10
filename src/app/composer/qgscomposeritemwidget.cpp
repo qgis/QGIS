@@ -392,7 +392,7 @@ void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
   Q_UNUSED( index );
   if ( mItem )
   {
-    mItem->setBlendMode(( QgsMapRenderer::BlendMode ) mBlendModeCombo->blendMode() );
+    mItem->setBlendMode( mBlendModeCombo->blendMode() );
   }
 }
 

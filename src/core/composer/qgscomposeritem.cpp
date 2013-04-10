@@ -54,7 +54,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
-    , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
     , mId( "" )
@@ -75,7 +75,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
-    , mBlendMode( QgsMapRenderer::BlendNormal )
+    , mBlendMode( QPainter::CompositionMode_SourceOver )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
     , mId( "" )
@@ -205,7 +205,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.appendChild( bgColorElem );
 
   //blend mode
-  composerItemElem.setAttribute( "blendMode", QString::number( mBlendMode ) );
+  composerItemElem.setAttribute( "blendMode", QgsMapRenderer::getBlendModeEnum( mBlendMode ) );
 
   //transparency
   composerItemElem.setAttribute( "transparency", QString::number( mTransparency ) );
@@ -331,7 +331,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
   }
 
   //blend mode
-  setBlendMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode" , "0" ).toInt() );
+  setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "blendMode", "0" ).toUInt() ) );
 
   //transparency
   setTransparency( itemElem.attribute( "transparency" , "0" ).toInt() );
@@ -884,11 +884,11 @@ void QgsComposerItem::drawBackground( QPainter* p )
   }
 }
 
-void QgsComposerItem::setBlendMode( QgsMapRenderer::BlendMode blendMode )
+void QgsComposerItem::setBlendMode( QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
   // Update the composer effect to use the new blend mode
-  mEffect->setCompositionMode( QgsMapRenderer::getCompositionMode( mBlendMode ) );
+  mEffect->setCompositionMode( mBlendMode );
 }
 
 void QgsComposerItem::setTransparency( int transparency )

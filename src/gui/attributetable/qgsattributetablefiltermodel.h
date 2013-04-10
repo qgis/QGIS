@@ -91,6 +91,11 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel
      */
     inline QgsVectorLayer *layer() const { return masterModel()->layer(); }
 
+    /**
+     * Returns the layerCache this filter acts on.
+     *
+     * @return The layer cache
+     */
     inline QgsVectorLayerCache *layerCache() const { return masterModel()->layerCache(); }
 
     /**
@@ -119,6 +124,21 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel
      * @return The master selection
      */
     QItemSelectionModel* masterSelection();
+
+    /**
+     * Disables selection synchronisation with the map canvas. Changes to the selection in the master
+     * model are propagated to the layer, but no redraw is requested until @link{enableSelectionSync()}
+     * is called.
+     */
+    void disableSelectionSync();
+
+    /**
+     * Enables selection synchronisation with the map canvas. Changes to the selection in the master
+     * are propagated and upon every change, a redraw will be requested. This method will update the
+     * selection to account for any cached selection change since @link{disableSelectionSync()} was
+     * called.
+     */
+    void enableSelectionSync();
 
     virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
 
@@ -194,6 +214,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel
     bool mSelectedOnTop;
     QItemSelectionModel* mMasterSelection;
     QgsAttributeTableModel* mTableModel;
+    bool mSyncSelection;
 };
 
 #endif

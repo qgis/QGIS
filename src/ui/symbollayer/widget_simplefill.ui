@@ -6,21 +6,88 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>335</width>
-    <height>249</height>
+    <width>489</width>
+    <height>339</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QFormLayout" name="formLayout_2">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+   </property>
+   <property name="horizontalSpacing">
+    <number>28</number>
+   </property>
    <property name="margin">
     <number>1</number>
    </property>
-   <item>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="4" column="1">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Color</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsColorButton" name="btnChangeColor">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Fill style</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Border color</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsColorButton" name="btnChangeBorderColor">
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Border style</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QgsPenStyleComboBox" name="cboBorderStyle"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Border width</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
       <widget class="QDoubleSpinBox" name="spinBorderWidth">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="decimals">
         <number>5</number>
        </property>
@@ -29,99 +96,7 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
-      <widget class="QComboBox" name="mOffsetUnitComboBox">
-       <item>
-        <property name="text">
-         <string>Millimeter</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Map unit</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Border width</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QgsPenStyleComboBox" name="cboBorderStyle"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Fill style</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QDoubleSpinBox" name="spinOffsetX">
-         <property name="decimals">
-          <number>5</number>
-         </property>
-         <property name="minimum">
-          <double>-999.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>999.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QDoubleSpinBox" name="spinOffsetY">
-         <property name="decimals">
-          <number>5</number>
-         </property>
-         <property name="minimum">
-          <double>-999.000000000000000</double>
-         </property>
-         <property name="maximum">
-          <double>999.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="mOffsetUnitLabel">
-       <property name="text">
-        <string>Offset unit</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Border color</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="mBorderWidthUnitLabel">
-       <property name="text">
-        <string>Border width unit</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Color</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
-     </item>
-     <item row="5" column="1">
+     <item>
       <widget class="QComboBox" name="mBorderWidthUnitComboBox">
        <item>
         <property name="text">
@@ -135,72 +110,83 @@
        </item>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Border style</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QgsColorButton" name="btnChangeBorderColor">
-       <property name="text">
-        <string>Change</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QgsColorButton" name="btnChangeColor">
-       <property name="text">
-        <string>Change</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>Offset X,Y</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Offset X,Y</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="mDataDefinedPropertiesLabel">
-       <property name="text">
-        <string>Data defined properties</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mDataDefinedPropertiesButton">
+      <widget class="QDoubleSpinBox" name="spinOffsetX">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
+         <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="text">
-        <string>...</string>
+       <property name="decimals">
+        <number>5</number>
        </property>
+       <property name="minimum">
+        <double>-999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="spinOffsetY">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>5</number>
+       </property>
+       <property name="minimum">
+        <double>-999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mOffsetUnitComboBox">
+       <item>
+        <property name="text">
+         <string>Millimeter</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Map unit</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>
    </item>
-   <item>
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+   <item row="6" column="0" colspan="2">
+    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>244</width>
-       <height>21</height>
-      </size>
+     <property name="text">
+      <string>Data defined properties...</string>
      </property>
-    </spacer>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -221,13 +207,6 @@
    <header>qgsbrushstylecombobox.h</header>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>btnChangeColor</tabstop>
-  <tabstop>cboFillStyle</tabstop>
-  <tabstop>btnChangeBorderColor</tabstop>
-  <tabstop>cboBorderStyle</tabstop>
-  <tabstop>spinBorderWidth</tabstop>
- </tabstops>
  <resources/>
  <connections/>
 </ui>

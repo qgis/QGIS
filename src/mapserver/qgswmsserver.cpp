@@ -518,11 +518,10 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
 
   QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> > bkVectorRenderers;
   QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > > bkRasterRenderers;
-  QList< QPair< QgsVectorLayer*, unsigned int> > bkVectorOld;
   QList< QPair< QgsVectorLayer*, double > > labelTransparencies;
   QList< QPair< QgsVectorLayer*, double > > labelBufferTransparencies;
 
-  applyOpacities( layersList, bkVectorRenderers, bkVectorOld, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
+  applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
 
 
   QgsComposition* c = mConfigParser->createPrintComposition( mParameterMap[ "TEMPLATE" ], mMapRenderer, QMap<QString, QString>( mParameterMap ) );
@@ -591,7 +590,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     throw QgsMapServiceException( "InvalidFormat", "Output format '" + formatString + "' is not supported in the GetPrint request" );
   }
 
-  restoreOpacities( bkVectorRenderers, bkVectorOld, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
+  restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
@@ -632,11 +631,10 @@ QImage* QgsWMSServer::getMap()
 
   QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> > bkVectorRenderers;
   QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > > bkRasterRenderers;
-  QList< QPair< QgsVectorLayer*, unsigned int> > bkVectorOld;
   QList< QPair< QgsVectorLayer*, double > > labelTransparencies;
   QList< QPair< QgsVectorLayer*, double > > labelBufferTransparencies;
 
-  applyOpacities( layersList, bkVectorRenderers, bkVectorOld, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
+  applyOpacities( layersList, bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
 
   mMapRenderer->render( &thePainter );
   if ( mConfigParser )
@@ -645,7 +643,7 @@ QImage* QgsWMSServer::getMap()
     mConfigParser->drawOverlays( &thePainter, theImage->dotsPerMeterX() / 1000.0 * 25.4, theImage->width(), theImage->height() );
   }
 
-  restoreOpacities( bkVectorRenderers, bkVectorOld, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
+  restoreOpacities( bkVectorRenderers, bkRasterRenderers, labelTransparencies, labelBufferTransparencies );
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
@@ -1499,13 +1497,6 @@ void QgsWMSServer::drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p,
 
   currentY += layerTitleSpace;
 
-  int opacity = 0;
-  QgsMapLayer* layerInstance = QgsMapLayerRegistry::instance()->mapLayer( item->layerID() );
-  if ( layerInstance )
-  {
-    opacity = layerInstance->getTransparency(); //maplayer says transparency but means opacity
-  }
-
   //then draw all the children
   QFontMetricsF itemFontMetrics( itemFont );
 
@@ -1947,7 +1938,6 @@ void QgsWMSServer::clearFeatureSelections( const QStringList& layerIds ) const
 }
 
 void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
-                                   QList< QPair< QgsVectorLayer*, unsigned int> >& vectorOld,
                                    QList< QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                                    QList< QPair< QgsVectorLayer*, double > >& labelTransparencies,
                                    QList< QPair< QgsVectorLayer*, double > >& labelBufferTransparencies )
@@ -2036,12 +2026,11 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
 }
 
 void QgsWMSServer::restoreOpacities( QList< QPair< QgsVectorLayer*, QgsFeatureRendererV2*> >& vectorRenderers,
-                                     QList< QPair< QgsVectorLayer*, unsigned int> >& vectorOld,
                                      QList < QPair< QgsRasterLayer*, QgsRasterRenderer* > >& rasterRenderers,
                                      QList< QPair< QgsVectorLayer*, double > >& labelOpacities,
                                      QList< QPair< QgsVectorLayer*, double > >& labelBufferOpacities )
 {
-  if ( vectorRenderers.isEmpty() && vectorOld.isEmpty() && rasterRenderers.isEmpty() )
+  if ( vectorRenderers.isEmpty() && rasterRenderers.isEmpty() )
   {
     return;
   }
@@ -2056,12 +2045,6 @@ void QgsWMSServer::restoreOpacities( QList< QPair< QgsVectorLayer*, QgsFeatureRe
   for ( ; rIt != rasterRenderers.end(); ++rIt )
   {
     ( *rIt ).first->setRenderer(( *rIt ).second );
-  }
-
-  QList< QPair< QgsVectorLayer*, unsigned int> >::iterator oIt = vectorOld.begin();
-  for ( ; oIt != vectorOld.end(); ++oIt )
-  {
-    ( *oIt ).first->setTransparency(( *oIt ).second );
   }
 
   QList< QPair< QgsVectorLayer*, double > >::iterator loIt = labelOpacities.begin();

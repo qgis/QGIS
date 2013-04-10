@@ -26,6 +26,7 @@
 #include "qgsmessageviewer.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -392,7 +393,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   if ( mCanvas->hasCrsTransformEnabled() && dprovider->crs() != mCanvas->mapRenderer()->destinationCrs() )
   {
     viewExtent = toLayerCoordinates( layer, viewExtent );
-    values = dprovider->identify( point, format );
+    values = dprovider->identify( point, format ).results();
   }
   else
   {
@@ -415,7 +416,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
     QgsDebugMsg( QString( "xRes = %1 yRes = %2 mapUnitsPerPixel = %3" ).arg( viewExtent.width() / width ).arg( viewExtent.height() / height ).arg( mapUnitsPerPixel ) );
 
-    values = dprovider->identify( point, format, viewExtent, width, height );
+    values = dprovider->identify( point, format, viewExtent, width, height ).results();
   }
 
   derivedAttributes.insert( tr( "(clicked coordinate)" ), point.toString() );

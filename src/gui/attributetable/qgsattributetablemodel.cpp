@@ -188,6 +188,10 @@ void QgsAttributeTableModel::layerDeleted()
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
+  if ( fid == mFeat.id() )
+  {
+    mFeat.setValid( false );
+  }
   setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
 }
 
@@ -469,7 +473,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   }
 
   // if we don't have the row in current cache, load it from layer first
-  if ( mFeat.id() != rowId )
+  if ( mFeat.id() != rowId || !mFeat.isValid() )
   {
     if ( !loadFeatureAtId( rowId ) )
       return QVariant( "ERROR" );

@@ -189,7 +189,8 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   {
     mParseModeStack.push( QgsGml::geometry );
   }
-  else if ( mParseModeStack.size() == 0 && elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" )
+  //else if ( mParseModeStack.size() == 0 && elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" )
+  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" )
   {
     mParseModeStack.push( QgsGml::boundingBox );
   }
@@ -240,7 +241,7 @@ void QgsGml::startElement( const XML_Char* el, const XML_Char** attr )
   {
     mParseModeStack.push( QgsGml::multiPolygon );
   }
-  else if ( mParseModeStack.size() == 1 && mParseModeStack.top() == QgsGml::feature && mThematicAttributes.find( localName ) != mThematicAttributes.end() )
+  else if (( mParseModeStack.size() > 0 ) && ( mParseModeStack.top() == QgsGml::feature ) && ( mThematicAttributes.find( localName ) != mThematicAttributes.end() ) )
   {
     mParseModeStack.push( QgsGml::attribute );
     mAttributeName = localName;
@@ -298,7 +299,7 @@ void QgsGml::endElement( const XML_Char* el )
       mParseModeStack.pop();
     }
   }
-  else if ( elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" )
+  else if ( !mParseModeStack.empty() && mParseModeStack.top() == QgsGml::boundingBox && elementName == GML_NAMESPACE + NS_SEPARATOR + "boundedBy" )
   {
     //create bounding box from mStringCash
     if ( createBBoxFromCoordinateString( mCurrentExtent, mStringCash ) != 0 )

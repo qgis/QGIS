@@ -314,8 +314,10 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   //real symbol height. Can be different from standard height in case of point symbols
   double realSymbolHeight;
 
-  int opacity = 255;
   QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( symbolItem->parent() );
+
+#if 0
+  int opacity = 255;
   if ( layerItem )
   {
     QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( layerItem->layerID() );
@@ -324,6 +326,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
       opacity = currentLayer->getTransparency();
     }
   }
+#endif
 
   QString text = symbolItem->text();
   if ( text.isEmpty() )
@@ -346,7 +349,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   if ( symbolNg ) //item with symbol NG?
   {
     // must be called also with painter=0 to get real size
-    drawSymbolV2( painter, symbolNg, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight, opacity );
+    drawSymbolV2( painter, symbolNg, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight );
     symbolSize.rwidth() = qMax( x - point.x(), mSymbolWidth );
     symbolSize.rheight() = qMax( realSymbolHeight, mSymbolHeight );
   }
@@ -374,7 +377,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   if ( painter ) painter->setPen( mFontColor );
 
   //double labelX = point.x() + labelXOffset; // + mIconLabelSpace;
-  double labelX = point.x() + qMax( symbolSize.width(), labelXOffset );
+  double labelX = point.x() + qMax( (double) symbolSize.width(), labelXOffset );
 
   // Vertical alignment of label with symbol:
   // a) label height < symbol heigh: label centerd with symbol
@@ -407,16 +410,15 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   nucleon.symbolSize = symbolSize;
   nucleon.labelSize = labelSize;
   //QgsDebugMsg( QString( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
-  double width = qMax( symbolSize.width(), labelXOffset ) + labelSize.width();
+  double width = qMax( (double) symbolSize.width(), labelXOffset ) + labelSize.width();
   double height = qMax( symbolSize.height(), labelSize.height() );
   nucleon.size = QSizeF( width, height );
   return nucleon;
 }
 
 
-void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity ) const
+void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const
 {
-  Q_UNUSED( layerOpacity );
   if ( !s )
   {
     return;

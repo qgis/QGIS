@@ -19,6 +19,7 @@
 
 #include "qgslogger.h"
 #include "qgsgrass.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsgrassrasterprovider.h"
 #include "qgsconfig.h"
 
@@ -39,6 +40,7 @@
 #include <QHash>
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"GRASS provider")
+#define ERROR(message) QgsError(message,"GRASS provider")
 
 static QString PROVIDER_KEY = "grassraster";
 static QString PROVIDER_DESCRIPTION = "GRASS raster provider";
@@ -432,7 +434,7 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QMap<int, QVariant> QgsGrassRasterProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   Q_UNUSED( theExtent );
   Q_UNUSED( theWidth );
@@ -440,12 +442,15 @@ QMap<int, QVariant> QgsGrassRasterProvider::identify( const QgsPoint & thePoint,
   QgsDebugMsg( "Entered" );
   QMap<int, QVariant> results;
 
-  if ( theFormat != IdentifyFormatValue ) return results;
+  if ( theFormat != IdentifyFormatValue )
+  {
+    return QgsRasterIdentifyResult( ERROR( tr( "Format not supported" ) ) );
+  }
 
   if ( !extent().contains( thePoint ) )
   {
     results.insert( 1, noDataValue( 1 ) );
-    return results;
+    return QgsRasterIdentifyResult( IdentifyFormatValue, results );
   }
 
   // TODO: use doubles instead of strings
@@ -455,7 +460,10 @@ QMap<int, QVariant> QgsGrassRasterProvider::identify( const QgsPoint & thePoint,
   bool ok;
   double value = mRasterValue.value( thePoint.x(), thePoint.y(), &ok );
 
-  if ( !ok ) return results;
+  if ( !ok )
+  {
+    return QgsRasterIdentifyResult( ERROR( tr( "Cannot read data" ) ) );
+  }
 
   if ( qIsNaN( value ) ) value = noDataValue( 1 );
 
@@ -468,7 +476,7 @@ QMap<int, QVariant> QgsGrassRasterProvider::identify( const QgsPoint & thePoint,
 
   results.insert( 1, value );
 
-  return results;
+  return QgsRasterIdentifyResult( IdentifyFormatValue, results );
 }
 
 int QgsGrassRasterProvider::capabilities() const

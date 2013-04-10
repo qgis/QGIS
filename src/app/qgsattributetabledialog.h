@@ -138,6 +138,11 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
     void filterQueryChanged( const QString& query );
     void filterQueryAccepted();
 
+    /**
+     * update window title
+     */
+    void updateTitle();
+
   signals:
     /**
      * Informs that editing mode has been toggled
@@ -158,17 +163,13 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void closeEvent( QCloseEvent* event );
 
-  private:
+  private slots:
     /**
      * Initialize column box
      */
     void columnBoxInit();
 
-    /**
-     * update window title
-     */
-    void updateTitle();
-
+  private:
     QMenu* mMenuActions;
     QAction* mActionToggleEditing;
 
