@@ -261,13 +261,6 @@ void QgsFieldsProperties::loadAttributeEditorTree()
   mAttributesTree->setDragDropMode( QAbstractItemView::InternalMove );
   mAttributesTree->setAcceptDrops( true );
   mAttributesTree->setDragDropMode( QAbstractItemView::DragDrop );
-  // tabs and groups info
-  mAttributesTree->clear();
-  mAttributesTree->setSortingEnabled( false );
-  mAttributesTree->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mAttributesTree->setDragDropMode( QAbstractItemView::InternalMove );
-  mAttributesTree->setAcceptDrops( true );
-  mAttributesTree->setDragDropMode( QAbstractItemView::DragDrop );
 
   QList<QgsAttributeEditorElement*> widgets = mLayer->attributeEditorElements();
 
