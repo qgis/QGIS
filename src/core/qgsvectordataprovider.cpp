@@ -30,7 +30,6 @@
 QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     : QgsDataProvider( uri )
     , mCacheMinMaxDirty( true )
-    , mFetchFeaturesWithoutGeom( true )
     , mAttrPalIndexName( QgsAttrPalIndexNameHash() )
 {
   QSettings settings;
@@ -236,11 +235,6 @@ QgsAttributeList QgsVectorDataProvider::attributeIndexes()
     list.append( i );
 
   return list;
-}
-
-void QgsVectorDataProvider::enableGeometrylessFeatures( bool fetch )
-{
-  mFetchFeaturesWithoutGeom = fetch;
 }
 
 const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeTypes() const
