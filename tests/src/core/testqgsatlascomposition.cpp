@@ -261,6 +261,7 @@ void TestQgsAtlasComposition::filtering_render()
 
   mAtlas->setSortFeatures( false );
 
+  mAtlas->setFilterFeatures( true );
   mAtlas->setFeatureFilter( "substr(NAME_1,1,1)='P'" ); // select only 'Pays de la Loire'
 
   mAtlas->beginRender();
