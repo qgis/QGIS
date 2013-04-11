@@ -78,13 +78,7 @@ class GrassAlgorithm(GeoAlgorithm):
         return  QIcon(os.path.dirname(__file__) + "/../images/grass.png")
 
     def helpFile(self):
-        folder = GrassUtils.grassHelpPath()
-        helpfile = str(folder) + os.sep + self.grassName + ".html"
-        if os.path.exists(helpfile):
-            return helpfile
-        else:
-            raise WrongHelpFileException("Grass help folder is not correctly configured.\nPlease configure it")
-        #return None
+        return 'http://grass.osgeo.org/grass64/manuals/' + self.grassName + ".html"         
 
     def getParameterDescriptions(self):
         descs = {}

@@ -43,8 +43,7 @@ class GrassUtils:
     GRASS_REGION_XMAX = "GRASS_REGION_XMAX"
     GRASS_REGION_YMAX = "GRASS_REGION_YMAX"
     GRASS_REGION_CELLSIZE = "GRASS_REGION_CELLSIZE"
-    GRASS_FOLDER = "GRASS_FOLDER"
-    GRASS_HELP_FOLDER = "GRASS_HELP_FOLDER"
+    GRASS_FOLDER = "GRASS_FOLDER"    
     GRASS_WIN_SHELL = "GRASS_WIN_SHELL"
     GRASS_LOG_COMMANDS = "GRASS_LOG_COMMANDS"
     GRASS_LOG_CONSOLE = "GRASS_LOG_CONSOLE"
@@ -91,21 +90,6 @@ class GrassUtils:
                 folder = os.path.join(str(QgsApplication.prefixPath()), "grass")
                 if not os.path.isdir(folder):
                     folder = "/Applications/GRASS-6.4.app/Contents/MacOS"
-
-        return folder
-
-    @staticmethod
-    def grassHelpPath():
-        folder = SextanteConfig.getSetting(GrassUtils.GRASS_HELP_FOLDER)
-        if folder == None or folder == "":
-            if SextanteUtils.isWindows() or SextanteUtils.isMac():
-                testfolders = [os.path.join(GrassUtils.grassPath(), "docs", "html")]
-            else:
-                testfolders = ['/usr/share/doc/grass-doc/html']
-            for f in testfolders:
-                if os.path.exists(f):
-                    folder = f
-                    break
 
         return folder
 
