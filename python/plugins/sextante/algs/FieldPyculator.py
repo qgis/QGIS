@@ -23,27 +23,39 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.outputs.OutputVector import OutputVector
-from sextante.parameters.ParameterVector import ParameterVector
-from qgis.core import *
+import sys
+
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from sextante.parameters.ParameterString import ParameterString
+
+from qgis.core import *
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-import sys
+
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterString import ParameterString
+from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.parameters.ParameterSelection import ParameterSelection
+
+from sextante.outputs.OutputVector import OutputVector
 
 
 class FieldsPyculator(GeoAlgorithm):
 
     INPUT_LAYER = "INPUT_LAYER"
-    USE_SELECTED = "USE_SELECTED"
     FIELD_NAME = "FIELD_NAME"
+    FIELD_TYPE = "FIELD_TYPE"
+    FIELD_LENGTH = "FIELD_LENGTH"
+    FIELD_PRECISION = "FIELD_PRECISION"
     GLOBAL = "GLOBAL"
     FORMULA = "FORMULA"
     OUTPUT_LAYER ="OUTPUT_LAYER"
     RESULT_VAR_NAME = "value"
+
+    TYPE_NAMES = ["Integer", "Float", "String"]
+    TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
+
 
     #===========================================================================
     # def getIcon(self):
@@ -55,21 +67,27 @@ class FieldsPyculator(GeoAlgorithm):
         self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name", "NewField"))
+        self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))
+        self.addParameter(ParameterNumber(self.FIELD_LENGTH, "Field lenght", 1, 255, 10))
+        self.addParameter(ParameterNumber(self.FIELD_PRECISION, "Field precision", 0, 10, 0))
         self.addParameter(ParameterString(self.GLOBAL, "Global expression", multiline = True))
         self.addParameter(ParameterString(self.FORMULA, "Formula", "value = ", multiline = True))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
-
     def processAlgorithm(self, progress):
-        fieldname = self.getParameterValue(self.FIELD_NAME)
+        fieldName = self.getParameterValue(self.FIELD_NAME)
+        fieldType = self.getParameterValue(self.FIELD_TYPE)
+        fieldLength = self.getParameterValue(self.FIELD_LENGTH)
+        fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
         code = self.getParameterValue(self.FORMULA)
         globalExpression = self.getParameterValue(self.GLOBAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
+
         layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
-        vprovider = layer.dataProvider()
-        fields = vprovider.fields()
-        fields.append(QgsField(fieldname, QVariant.Double))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), layer.crs() )
+        provider = layer.dataProvider()
+        fields = provider.fields()
+        fields.append(QgsField(fieldName, self.TYPES[fieldType], "", fieldLength, fieldPrecision))
+        writer = output.getVectorWriter(fields, provider.geometryType(), layer.crs())
         outFeat = QgsFeature()
         new_ns = {}
 
@@ -84,21 +102,20 @@ class FieldsPyculator(GeoAlgorithm):
                             (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
 
         #replace all fields tags
-        fields = vprovider.fields()
+        fields = provider.fields()
         num = 0
         for field in fields:
             field_name = unicode(field.name())
             replval = '__attr[' + str(num) + ']'
-            code = code.replace("<"+field_name+">",replval)
+            code = code.replace("<" + field_name + ">", replval)
             num += 1
 
         #replace all special vars
-        code = code.replace('$id','__id')
-        code = code.replace('$geom','__geom')
+        code = code.replace('$id', '__id')
+        code = code.replace('$geom', '__geom')
         need_id = code.find("__id") != -1
         need_geom = code.find("__geom") != -1
         need_attrs = code.find("__attr") != -1
-
 
         #compile
         try:
@@ -114,7 +131,7 @@ class FieldsPyculator(GeoAlgorithm):
         nElement = 1
         for feat in features:
             progress.setPercentage(int((100 * nElement)/nFeatures))
-            attrMap = feat.attributes()
+            attrs = feat.attributes()
             feat_id = feat.id()
 
             #add needed vars
@@ -126,13 +143,12 @@ class FieldsPyculator(GeoAlgorithm):
                 new_ns['__geom'] = geom
 
             if need_attrs:
-                pyattrs = [self.Qvar2py(a) for a in attrMap]
+                pyattrs = [self.Qvar2py(a) for a in attrs]
                 new_ns['__attr'] = pyattrs
 
             #clear old result
             if new_ns.has_key(self.RESULT_VAR_NAME):
                 del new_ns[self.RESULT_VAR_NAME]
-
 
             #exec
             #try:
@@ -153,16 +169,14 @@ class FieldsPyculator(GeoAlgorithm):
                         "Field code block does not return '%s1' variable! Please declare this variable in your code!" %
                         self.RESULT_VAR_NAME)
 
-
             #write feature
             nElement += 1
             outFeat.setGeometry( feat.geometry() )
-            attrMap.append(QVariant(new_ns[self.RESULT_VAR_NAME]))
-            outFeat.setAttributeMap( attrMap )
+            attrs.append(QVariant(new_ns[self.RESULT_VAR_NAME]))
+            outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 
         del writer
-
 
     def Qvar2py(self,qv):
         if qv.type() == 2:
@@ -173,9 +187,6 @@ class FieldsPyculator(GeoAlgorithm):
             return qv.toDouble()[0]
         return None
 
-
     def checkParameterValuesBeforeExecuting(self):
         ##TODO check that formula is correct and fields exist
         pass
-
-
