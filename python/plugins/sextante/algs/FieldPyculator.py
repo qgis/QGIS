@@ -122,8 +122,8 @@ class FieldsPyculator(GeoAlgorithm):
             bytecode = compile(code, '<string>', 'exec')
         except:
             raise GeoAlgorithmExecutionException("FieldPyculator code execute error\n"+
-                                 "Field code block can't be executed! %s \n %s"
-                                 (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1])))
+                                 "Field code block can't be executed! %s \n %s",
+                                 unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1]))
 
         #run
         features = QGisLayers.features(layer)
@@ -151,17 +151,7 @@ class FieldsPyculator(GeoAlgorithm):
                 del new_ns[self.RESULT_VAR_NAME]
 
             #exec
-            #try:
             exec bytecode in new_ns
-            #except:
-            #    raise e
-            #===============================================================
-            # GeoAlgorithmExecutionException("FieldPyculator code execute error\n"+
-            #            "Field code block can't be executed for feature %s\n%s\n%s" %
-            #            (unicode(sys.exc_info()[0].__name__),
-            #            unicode(sys.exc_info()[1]),
-            #            unicode(feat_id)))
-            #===============================================================
 
             #check result
             if not new_ns.has_key(self.RESULT_VAR_NAME):
