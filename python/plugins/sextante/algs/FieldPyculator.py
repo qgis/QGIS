@@ -56,7 +56,6 @@ class FieldsPyculator(GeoAlgorithm):
     TYPE_NAMES = ["Integer", "Float", "String"]
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
-
     #===========================================================================
     # def getIcon(self):
     #    return QtGui.QIcon(os.path.dirname(__file__) + "/../images/qgis.png")
