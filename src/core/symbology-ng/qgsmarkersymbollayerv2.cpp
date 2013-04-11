@@ -151,7 +151,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   mPen = QPen( penColor );
   mPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
 
-  QColor selBrushColor = context.selectionColor();
+  QColor selBrushColor = context.renderContext().selectionColor();
   QColor selPenColor = selBrushColor == mColor ? selBrushColor : mBorderColor;
   if ( context.alpha() < 1 )
   {
@@ -251,7 +251,7 @@ void QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
 
   // Construct the selected version of the Cache
 
-  QColor selColor = context.selectionColor();
+  QColor selColor = context.renderContext().selectionColor();
 
   mSelCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32_Premultiplied );
   mSelCache.fill( 0 );
@@ -1195,7 +1195,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
 
   if ( context.selected() )
   {
-    QPen pen( context.selectionColor() );
+    QPen pen( context.renderContext().selectionColor() );
     double penWidth = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), QgsSymbolV2::MM );
     if ( penWidth > size / 20 )
     {
@@ -1620,7 +1620,7 @@ void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
-  QColor penColor = context.selected() ? context.selectionColor() : mColor;
+  QColor penColor = context.selected() ? context.renderContext().selectionColor() : mColor;
   penColor.setAlphaF( mColor.alphaF() * context.alpha() );
   p->setPen( penColor );
   p->setFont( mFont );

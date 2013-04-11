@@ -969,8 +969,6 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 #endif
   mMapRenderer->setLayerSet( layerIdList );
 
-  //set selection color prior to each render to avoid problems with caching (selection color is a global property of QgsSymbolV2RenderContext)
-  QgsSymbolV2RenderContext::setSelectionColor( mConfigParser->selectionColor() );
   return theImage;
 }
 

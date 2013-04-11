@@ -18,6 +18,8 @@
 #ifndef QGSRENDERCONTEXT_H
 #define QGSRENDERCONTEXT_H
 
+#include <QColor>
+
 #include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
@@ -64,6 +66,9 @@ class CORE_EXPORT QgsRenderContext
     //! Added in QGIS v1.4
     QgsLabelingEngineInterface* labelingEngine() const { return mLabelingEngine; }
 
+    //! Added in QGIS v2.0
+    QColor selectionColor() const { return mSelectionColor; }
+
     //setters
 
     /**Sets coordinate transformation. QgsRenderContext does not take ownership*/
@@ -80,6 +85,8 @@ class CORE_EXPORT QgsRenderContext
     void setForceVectorOutput( bool force ) {mForceVectorOutput = force;}
     //! Added in QGIS v1.4
     void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
+    //! Added in QGIS v2.0
+    void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
   private:
 
@@ -113,6 +120,9 @@ class CORE_EXPORT QgsRenderContext
 
     /**Labeling engine (can be NULL)*/
     QgsLabelingEngineInterface* mLabelingEngine;
+
+    /** Color used for features that are marked as selected */
+    QColor mSelectionColor;
 };
 
 #endif

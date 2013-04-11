@@ -233,7 +233,7 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
     mBrush.setMatrix( QMatrix().scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor ) );
   }
 
-  QColor selColor = context.selectionColor();
+  QColor selColor = context.renderContext().selectionColor();
   QColor selPenColor = selColor == mColor ? selColor : mBorderColor;
   if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
@@ -426,7 +426,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
   p->setPen( QPen( Qt::NoPen ) );
   if ( context.selected() )
   {
-    QColor selColor = context.selectionColor();
+    QColor selColor = context.renderContext().selectionColor();
     // Alister - this doesn't seem to work here
     //if ( ! selectionIsOpaque )
     //  selColor.setAlphaF( context.alpha() );
