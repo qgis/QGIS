@@ -290,7 +290,7 @@ void QgsAttributeTableModel::loadAttributes()
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
-  mValueMaps.clear();
+  
 
   if ( ins )
   {
