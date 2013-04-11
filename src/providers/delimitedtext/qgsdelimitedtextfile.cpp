@@ -22,12 +22,14 @@
 #include <QFile>
 #include <QDataStream>
 #include <QTextStream>
+#include <QTextCodec>
 #include <QStringList>
 #include <QRegExp>
 #include <QUrl>
 
 QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mFileName(QString()),
+    mEncoding("UTF-8"),
     mFile(0),
     mStream(0),
     mDefinitionValid(false),
@@ -74,6 +76,11 @@ bool QgsDelimitedTextFile::open()
             return false;
         }
         mStream = new QTextStream( mFile );
+        if( mEncoding.isEmpty() && mEncoding != "System")
+        {
+            QTextCodec *codec =  QTextCodec::codecForName(mEncoding.toAscii());
+            mStream->setCodec(codec);
+        }
     }
     return true;
 }
@@ -100,6 +107,12 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
 
     // Extract the file name
     setFileName( url.toLocalFile());
+
+    // Extract the encoding
+    if( url.hasQueryItem("encoding"))
+    {
+        mEncoding =url.queryItemValue("encoding");
+    }
 
     // The default type is csv, to be consistent with the
     // previous implementation (except that quoting should be handled properly)
@@ -150,19 +163,16 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
     }
 
     QgsDebugMsg( "Delimited text file is: " + mFileName );
+    QgsDebugMsg( "Encoding is: " + mEncoding);
     QgsDebugMsg( "Delimited file type is: " + type );
-    QgsDebugMsg( "Delimiter is: " + delimiter );
-    QgsDebugMsg( "Quote character is: " + quote);
-    QgsDebugMsg( "Escape character is: " + escape);
+    QgsDebugMsg( "Delimiter is: [" + delimiter + "]" );
+    QgsDebugMsg( "Quote character is: [" + quote +"]");
+    QgsDebugMsg( "Escape character is: [" + escape + "]");
     QgsDebugMsg( "Skip lines: " + QString::number(mSkipLines) );
     QgsDebugMsg( "Skip lines: " + QString(mUseHeader ? "Yes" : "No") );
 
-    if( type == "csv" )
-    {
-        setTypeCSV(delimiter,quote,escape);
-    }
     // Support for previous version of plain characters
-    else if( type == "plain" )
+    if( type == "csv" || type == "plain" )
     {
         setTypeCSV(delimiter,quote,escape);
     }
@@ -184,6 +194,10 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
 QUrl QgsDelimitedTextFile::url()
 {
     QUrl url = QUrl::fromLocalFile( mFileName );
+    if( mEncoding != "UTF-8" )
+    {
+        url.addQueryItem("encoding",mEncoding);
+    }
     url.addQueryItem("type",type());
     if( mType == DelimTypeRegexp )
     {
@@ -210,6 +224,12 @@ void QgsDelimitedTextFile::setFileName( QString filename )
 {
     resetDefinition();
     mFileName = filename;
+}
+
+void QgsDelimitedTextFile::setEncoding( QString encoding )
+{
+    resetDefinition();
+    mEncoding = encoding;
 }
 
 QString QgsDelimitedTextFile::type()

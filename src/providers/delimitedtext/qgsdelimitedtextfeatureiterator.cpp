@@ -73,7 +73,10 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
         if ( !geom && P->mWkbType != QGis::WKBNoGeometry )
         {
             // Already dealt with invalid lines in provider - no need to repeat
-            // P->mInvalidLines << line;
+            // removed code (CC 2013-04-13) ...
+            //    P->mInvalidLines << line;
+            // In any case it may be a valid line that is excluded because of
+            // bounds check...
             continue;
         }
 
@@ -153,7 +156,7 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList
         // support these.
         if ( P->mWktHasZM )
         {
-            sWkt.remove( P->mWktZMRegexp ).replace( P->mWktCrdRegexp, "\\1" );
+            sWkt.remove( P->WktZMRegexp ).replace( P->WktCrdRegexp, "\\1" );
         }
 
         geom = QgsGeometry::fromWkt( sWkt );
@@ -163,7 +166,7 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList
         geom = 0;
     }
 
-    if ( geom && geom->wkbType() != P->mWkbType )
+    if ( geom && geom->type() != P->mGeometryType )
     {
         delete geom;
         geom = 0;

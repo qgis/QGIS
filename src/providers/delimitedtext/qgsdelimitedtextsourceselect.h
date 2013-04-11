@@ -40,6 +40,12 @@ private:
     void updateFieldLists();
     void getOpenFileName();
     QString selectedChars();
+    void setSelectedChars( QString delimiters );
+    void loadSettings( QString subkey=QString(), bool loadGeomSettings=true );
+    void saveSettings( QString subkey=QString(), bool saveGeomSettings=true );
+    void loadSettingsForFile( QString filename );
+    void saveSettingsForFile( QString filename );
+    bool trySetXYField(QStringList &fields, QList<bool> &isValidNumber, QString xname, QString yname );
 
 private:
     QgsDelimitedTextFile *mFile;

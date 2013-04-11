@@ -27,6 +27,7 @@
 #include <QRegExp>
 #include <QSettings>
 #include <QTextStream>
+#include <QTextCodec>
 #include <QUrl>
 
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl, bool embedded ):
@@ -48,54 +49,18 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
         buttonBox->button( QDialogButtonBox::Ok )->hide();
     }
 
+    cbxEncoding->clear();
+    foreach( QByteArray codec, QTextCodec::availableCodecs())
+    {
+        cbxEncoding->addItem(codec);
+    }
+    cbxEncoding->setCurrentIndex(cbxEncoding->findText("UTF-8"));
+    loadSettings();
+
     updateFieldsAndEnable();
 
-    // at startup, fetch the last used delimiter and directory from
-    // settings
-    QString key = mPluginKey;
-
-    // and how to use the delimiter
-    QString delimiterType = settings.value( key + "/delimiterType", "chars" ).toString();
-    if ( delimiterType == "whitespace" )
-    {
-        delimiterWhitespace->setChecked( true );
-    }
-    else if ( delimiterType == "chars" )
-    {
-        delimiterChars->setChecked( true );
-    }
-    else if ( delimiterType == "regexp" )
-    {
-        delimiterRegexp->setChecked( true );
-    }
-    else
-    {
-        delimiterCSV->setChecked( true );
-    }
-
-    QString delimiters = settings.value( key + "/delimiters", " " ).toString();
-    cbxDelimComma->setChecked( delimiters.contains( "," ) );
-    cbxDelimSpace->setChecked( delimiters.contains( " " ) );
-    cbxDelimTab->setChecked( delimiters.contains( "\\t" ) );
-    cbxDelimColon->setChecked( delimiters.contains( ":" ) );
-    cbxDelimSemicolon->setChecked( delimiters.contains( ";" ) );
-    txtDelimiterOther->setText(delimiters.remove(QRegExp("([ ,:;]|\\t")));
-    txtQuoteChars->setText(settings.value(key+"/quoteChars","\"").toString());
-    txtEscapeChars->setText(settings.value(key+"/escapeChars","\"").toString());
-
-    txtDelimiterRegexp->setText( settings.value( key + "/delimiterRegexp" ).toString() );
-
-    rowCounter->setValue( settings.value( key + "/startFrom", 0 ).toInt() );
-
-    cbxUseHeader->setChecked( settings.value(key + "/useHeader","true")=="false" );
-    decimalPoint->setText( settings.value(key + "/decimalPoint",".").toString() );
-
-    cmbXField->setDisabled( true );
-    cmbYField->setDisabled( true );
-    cmbWktField->setDisabled( true );
-
     connect( txtFilePath, SIGNAL( textChanged( QString ) ), this, SLOT( updateFileName() ) );
-    connect( decimalPoint, SIGNAL( textChanged( QString ) ), this, SLOT( updateFieldsAndEnable() ) );
+    connect( txtLayerName, SIGNAL( textChanged( QString ) ), this, SLOT( enableAccept() ) );
 
     connect( delimiterCSV, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
     connect( delimiterWhitespace, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
@@ -108,12 +73,15 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
     connect( cbxDelimSemicolon, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
     connect( cbxDelimColon, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
 
-    connect( txtDelimiterOther, SIGNAL( editingFinished() ), this, SLOT( updateFieldsAndEnable() ) );
-    connect( txtQuoteChars, SIGNAL( editingFinished() ), this, SLOT( updateFieldsAndEnable() ) );
-    connect( txtEscapeChars, SIGNAL( editingFinished() ), this, SLOT( updateFieldsAndEnable() ) );
+    connect( txtDelimiterOther, SIGNAL( textChanged(QString) ), this, SLOT( updateFieldsAndEnable() ) );
+    connect( txtQuoteChars, SIGNAL( textChanged(QString) ), this, SLOT( updateFieldsAndEnable() ) );
+    connect( txtEscapeChars, SIGNAL( textChanged(QString) ), this, SLOT( updateFieldsAndEnable() ) );
+    connect( txtDelimiterRegexp, SIGNAL( textChanged(QString) ), this, SLOT( updateFieldsAndEnable() ) );
 
     connect( rowCounter, SIGNAL( valueChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
     connect( cbxUseHeader, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
+
+    connect( cbxPointIsComma, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
 }
 
 QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
@@ -130,9 +98,11 @@ void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
 
 void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 {
+    // The following conditions should not be hit! OK will not be enabled...
     if ( txtLayerName->text().isEmpty() )
     {
         QMessageBox::warning( this, tr( "No layer name" ), tr( "Please enter a layer name before adding the layer to the map" ) );
+        txtLayerName->setFocus();
         return;
     }
     if( delimiterChars->isChecked() )
@@ -140,6 +110,7 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
         if( selectedChars().size() == 0 )
         {
             QMessageBox::warning( this, tr( "No delimiters set" ), tr( "Please one or more characters to use as the delimiter, or choose a different delimiter type" ) );
+            txtDelimiterOther->setFocus();
             return;
         }
     }
@@ -149,6 +120,7 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
         if( ! re.isValid() )
         {
             QMessageBox::warning( this, tr( "Invalid regular expression" ), tr( "Please enter a valid regular expression as the delimiter, or choose a different delimiter type" ) );
+            txtDelimiterRegexp->setFocus();
             return;
         }
     }
@@ -162,52 +134,50 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
 
     QUrl url = mFile->url();
 
-    if ( !decimalPoint->text().isEmpty() )
+    bool useHeader = mFile->useHeader();
+
+    if ( cbxPointIsComma->isChecked() )
     {
-        url.addQueryItem( "decimalPoint", decimalPoint->text() );
+        url.addQueryItem( "decimalPoint", "," );
     }
 
     if ( geomTypeXY->isChecked() )
     {
         if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
         {
-            url.addQueryItem( "xField", cmbXField->currentText() );
-            url.addQueryItem( "yField", cmbYField->currentText() );
+            QString field = cmbXField->currentText();
+            if( ! useHeader ) field.remove(mColumnNamePrefix);
+            url.addQueryItem( "xField", field );
+            field = cmbYField->currentText();
+            if( ! useHeader ) field.remove(mColumnNamePrefix);
+            url.addQueryItem( "yField", field );
+        }
+    }
+    else if( geomTypeWKT->isChecked())
+    {
+        if ( ! cmbWktField->currentText().isEmpty() )
+        {
+            QString field = cmbWktField->currentText();
+            if( ! useHeader ) field.remove(mColumnNamePrefix);
+            url.addQueryItem( "wktField", field );
+        }
+        if( cmbGeometryType->currentIndex() > 0 )
+        {
+            url.addQueryItem("geomType",cmbGeometryType->currentText());
         }
     }
     else
     {
-        if ( ! cmbWktField->currentText().isEmpty() )
-        {
-            url.addQueryItem( "wktField", cmbWktField->currentText() );
-        }
+        url.addQueryItem("geomType","none");
     }
+
+    // store the settings
+    saveSettings();
+    saveSettingsForFile(txtFilePath->text());
+
 
     // add the layer to the map
     emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), "delimitedtext" );
-
-    // store the settings
-    QSettings settings;
-    QString key = mPluginKey;
-    settings.setValue( key + "/geometry", saveGeometry() );
-    QFileInfo fi( txtFilePath->text() );
-    settings.setValue( key + "/text_path", fi.path() );
-
-    if ( delimiterCSV->isChecked() )
-        settings.setValue( key + "/delimiterType", "csv" );
-    else if ( delimiterWhitespace->isChecked() )
-        settings.setValue( key + "/delimiterType", "whitespace" );
-    else if ( delimiterChars->isChecked() )
-        settings.setValue( key + "/delimiterChars", "chars" );
-    else
-        settings.setValue( key + "/delimiterType", "regexp" );
-    settings.setValue( key + "/delimiterChars", selectedChars() );
-    settings.setValue( key + "/quoteChars", txtQuoteChars->text() );
-    settings.setValue( key + "/escapeChars", txtEscapeChars->text() );
-    settings.setValue( key + "/delimiterRegexp", txtDelimiterRegexp->text() );
-    settings.setValue( key + "/decimalPoint", decimalPoint->text() );
-    settings.setValue( key + "/startFrom", rowCounter->value() );
-    settings.setValue( key + "/useHeader", cbxUseHeader->isChecked() ? "true" : "false" );
 
     accept();
 }
@@ -232,10 +202,121 @@ QString QgsDelimitedTextSourceSelect::selectedChars()
         chars.append(":");
     return chars;
 }
+void QgsDelimitedTextSourceSelect::setSelectedChars( QString delimiters )
+{
+    cbxDelimComma->setChecked( delimiters.contains( "," ) );
+    cbxDelimSpace->setChecked( delimiters.contains( " " ) );
+    cbxDelimTab->setChecked( delimiters.contains( "\\t" ) );
+    cbxDelimColon->setChecked( delimiters.contains( ":" ) );
+    cbxDelimSemicolon->setChecked( delimiters.contains( ";" ) );
+    txtDelimiterOther->setText(delimiters.remove(QRegExp("([ ,:;]|\\\\t)")));
+}
+
+void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSettings )
+{
+    QSettings settings;
+
+    // at startup, fetch the last used delimiter and directory from
+    // settings
+    QString key = mPluginKey;
+    if( ! subkey.isEmpty() ) key.append("/").append(subkey);
+
+    // and how to use the delimiter
+    QString delimiterType = settings.value( key + "/delimiterType", "" ).toString();
+    if ( delimiterType == "whitespace" )
+    {
+        delimiterWhitespace->setChecked( true );
+    }
+    else if ( delimiterType == "chars" )
+    {
+        delimiterChars->setChecked( true );
+    }
+    else if ( delimiterType == "regexp" )
+    {
+        delimiterRegexp->setChecked( true );
+    }
+    else if ( delimiterType == "csv")
+    {
+        delimiterCSV->setChecked( true );
+    }
+
+    QString encoding = settings.value( key + "/encoding","").toString();
+    if( ! encoding.isEmpty()) cbxEncoding->setCurrentIndex(cbxEncoding->findText(encoding));
+    QString delimiters = settings.value( key + "/delimiters", "" ).toString();
+    if( delimiters.isEmpty() ) setSelectedChars(delimiters);
+
+    txtQuoteChars->setText(settings.value(key+"/quoteChars","\"").toString());
+    txtEscapeChars->setText(settings.value(key+"/escapeChars","\"").toString());
+
+    QString regexp = settings.value(key+"/delimiterRegexp","").toString();
+    if( ! regexp.isEmpty()) txtDelimiterRegexp->setText(regexp );
+
+    rowCounter->setValue( settings.value( key + "/startFrom", 0 ).toInt() );
+    cbxUseHeader->setChecked( settings.value(key + "/useHeader","true")!="false" );
+
+    if( loadGeomSettings )
+    {
+        QString geomColumnType=settings.value(key+"/geomColumnType","xy").toString();
+        if( geomColumnType == "xy" ) geomTypeXY->setChecked(true);
+        else if( geomColumnType == "wkt" ) geomTypeWKT->setChecked(true);
+        else geomTypeNone->setChecked(true);
+        cbxPointIsComma->setChecked( settings.value(key + "/decimalPoint",".").toString().contains(",") );
+    }
+
+}
+
+void QgsDelimitedTextSourceSelect::saveSettings( QString subkey, bool saveGeomSettings )
+{
+    QSettings settings;
+    QString key = mPluginKey;
+    if( ! subkey.isEmpty() ) key.append("/").append(subkey);
+    settings.setValue( key + "/encoding", cbxEncoding->currentText());
+    settings.setValue( key + "/geometry", saveGeometry() );
+
+    if ( delimiterCSV->isChecked() )
+        settings.setValue( key + "/delimiterType", "csv" );
+    else if ( delimiterWhitespace->isChecked() )
+        settings.setValue( key + "/delimiterType", "whitespace" );
+    else if ( delimiterChars->isChecked() )
+        settings.setValue( key + "/delimiterType", "chars" );
+    else
+        settings.setValue( key + "/delimiterType", "regexp" );
+    settings.setValue( key + "/delimiters", selectedChars() );
+    settings.setValue( key + "/quoteChars", txtQuoteChars->text() );
+    settings.setValue( key + "/escapeChars", txtEscapeChars->text() );
+    settings.setValue( key + "/delimiterRegexp", txtDelimiterRegexp->text() );
+    settings.setValue( key + "/startFrom", rowCounter->value() );
+    settings.setValue( key + "/useHeader", cbxUseHeader->isChecked() ? "true" : "false" );
+    if( saveGeomSettings )
+    {
+        QString geomColumnType = "none";
+        if( geomTypeXY->isChecked()) geomColumnType="xy";
+        if( geomTypeWKT->isChecked()) geomColumnType="wkt";
+        settings.setValue( key + "/geomColumnType", geomColumnType );
+        settings.setValue( key + "/decimalPoint", cbxPointIsComma->isChecked() ? "," : "." );
+    }
+
+}
+
+void QgsDelimitedTextSourceSelect::loadSettingsForFile( QString filename )
+{
+    if( filename.isEmpty()) return;
+    QFileInfo fi(filename);
+    loadSettings(fi.suffix(),false);
+}
+
+void QgsDelimitedTextSourceSelect::saveSettingsForFile( QString filename )
+{
+    if( filename.isEmpty()) return;
+    QFileInfo fi(filename);
+    saveSettings(fi.suffix(),false);
+}
+
 
 bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
 {
     mFile->setFileName(txtFilePath->text());
+    mFile->setEncoding(cbxEncoding->currentText());
     if( delimiterWhitespace->isChecked())
     {
         mFile->setTypeWhitespace();
@@ -246,7 +327,7 @@ bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
     }
     else if( delimiterRegexp->isChecked())
     {
-        mFile->setTypeRegexp( delimiterRegexp->text());
+        mFile->setTypeRegexp( txtDelimiterRegexp->text());
     }
     else
     {
@@ -279,60 +360,41 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     cmbYField->clear();
     cmbWktField->clear();
 
-    geomTypeXY->setEnabled( false );
-    geomTypeWKT->setEnabled( false );
-    cmbXField->setEnabled( false );
-    cmbYField->setEnabled( false );
-    cmbWktField->setEnabled( false );
+    frmGeometry->setEnabled( false );
 
     // clear the sample text box
     tblSample->clear();
+    tblSample->setColumnCount(0);
+    tblSample->setRowCount(0);
 
     if ( ! loadDelimitedFileDefinition() )
         return;
 
     bool useHeader = mFile->useHeader();
     QStringList fieldList;
-
-    int indexWkt = -1;
-    int indexX = -1;
-    int indexY = -1;
+    QList<bool> isValidNumber;
+    QList<bool> isValidWkt;
+    QList<bool> isEmpty;
 
     if( useHeader )
     {
         fieldList = mFile->columnNames();
-
-        if( ! columnWkt.isEmpty()) indexWkt=fieldList.indexOf(columnWkt);
-        if( indexWkt < 0 ) indexWkt=fieldList.indexOf(QRegExp("wkt.*",Qt::CaseInsensitive));
-        if( indexWkt < 0 ) indexWkt=fieldList.indexOf(QRegExp("geom.*",Qt::CaseInsensitive));
-        if( indexWkt < 0 ) indexWkt=fieldList.indexOf(QRegExp("shape.*",Qt::CaseInsensitive));
-        if( indexWkt < 0 ) indexWkt=fieldList.indexOf(QRegExp(".*wkt.*",Qt::CaseInsensitive));
-        if( indexWkt < 0 ) indexWkt=fieldList.indexOf(QRegExp(".*geom.*",Qt::CaseInsensitive));
-        if( indexWkt < 0 ) indexWkt=fieldList.indexOf(QRegExp(".*shape.*",Qt::CaseInsensitive));
-
-        if( ! columnX.isEmpty()) indexX=fieldList.indexOf(columnX);
-        if( indexX < 0 ) indexX=fieldList.indexOf(QRegExp("lon.*",Qt::CaseInsensitive));
-        if( indexX < 0 ) indexX=fieldList.indexOf(QRegExp("east.*",Qt::CaseInsensitive));
-        if( indexX < 0 ) indexX=fieldList.indexOf(QRegExp("x.*",Qt::CaseInsensitive));
-        if( indexX < 0 ) indexX=fieldList.indexOf(QRegExp(".*lon.*",Qt::CaseInsensitive));
-        if( indexX < 0 ) indexX=fieldList.indexOf(QRegExp(".*east.*",Qt::CaseInsensitive));
-        if( indexX < 0 ) indexX=fieldList.indexOf(QRegExp(".*x.*",Qt::CaseInsensitive));
-
-        if( ! columnY.isEmpty()) indexY=fieldList.indexOf(columnY);
-        if( indexY < 0 ) indexY=fieldList.indexOf(QRegExp("lat.*",Qt::CaseInsensitive));
-        if( indexY < 0 ) indexY=fieldList.indexOf(QRegExp("north.*",Qt::CaseInsensitive));
-        if( indexY < 0 ) indexY=fieldList.indexOf(QRegExp("y.*",Qt::CaseInsensitive));
-        if( indexY < 0 ) indexY=fieldList.indexOf(QRegExp(".*lat.*",Qt::CaseInsensitive));
-        if( indexY < 0 ) indexY=fieldList.indexOf(QRegExp(".*north.*",Qt::CaseInsensitive));
-        if( indexY < 0 ) indexY=fieldList.indexOf(QRegExp(".*y.*",Qt::CaseInsensitive));
-
         tblSample->setColumnCount( fieldList.size() );
+        tblSample->resizeColumnsToContents();
+        for( int i = 0; i < fieldList.size(); i++ )
+        {
+            isValidNumber.append(false);
+            isValidWkt.append(false);
+            isEmpty.append(true);
+        }
     }
 
     // put a lines into the sample box
 
     int counter = 0;
     QStringList values;
+    QRegExp wktre("^\\s*(?:MULTI)?(?:POINT|LINE|POLYGON)\\s*Z?\\s*M?\\(",Qt::CaseInsensitive);
+
     while ( counter < mExampleRowCount )
     {
         QgsDelimitedTextFile::Status status = mFile->nextRecord( values );
@@ -352,10 +414,10 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
             {
                 int nc = fieldList.size();
                 QString column = mColumnNamePrefix+QString::number(nc+1);
-                if( column == columnWkt ) indexWkt=nc;
-                if( column == columnX ) indexX=nc;
-                if( column == columnY ) indexY=nc;
                 fieldList.append(column);
+                isEmpty.append(true);
+                isValidNumber.append(false);
+                isValidWkt.append(false);
             }
             tblSample->setColumnCount(fieldList.size());
         }
@@ -364,25 +426,38 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
         for ( int i = 0; i < tblSample->columnCount(); i++ )
         {
-            QString value = i < values.size() ? values[i] : "";
-            bool ok = true;
-            if ( i == indexX || i == indexY )
-            {
-                if ( !decimalPoint->text().isEmpty() )
-                {
-                    value.replace( decimalPoint->text(), "." );
-                }
-
-                value.toDouble( &ok );
-            }
+            QString value = i < nv ? values[i] : "";
             QTableWidgetItem *item = new QTableWidgetItem( value );
-            if ( !ok )
-                item->setTextColor( Qt::red );
-            tblSample->setItem( counter, i, item );
+            tblSample->setItem( counter-1, i, item );
+            if( ! value.isEmpty())
+            {
+                if( isEmpty[i] )
+                {
+                    isEmpty[i] = false;
+                    isValidNumber[i] = true;
+                    isValidWkt[i] = true;
+                }
+                if( isValidNumber[i])
+                {
+                    bool ok = true;
+                    if ( cbxPointIsComma->isChecked() )
+                    {
+                        value.replace( ",", "." );
+                    }
+                    value.toDouble( &ok );
+                    isValidNumber[i]=ok;
+                }
+                if( isValidWkt[i])
+                {
+                    value.remove(QgsDelimitedTextProvider::WktPrefixRegexp);
+                    isValidWkt[i] = value.contains(wktre);
+                }
+            }
         }
     }
 
     tblSample->setHorizontalHeaderLabels( fieldList );
+    tblSample->resizeColumnsToContents();
 
     // We don't know anything about a text based field other
     // than its name. All fields are assumed to be text
@@ -390,10 +465,6 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     // of selected fields to index in combo box.
 
     int fieldNo = 0;
-    int cmbIndexWkt=-1;
-    int cmbIndexX=-1;
-    int cmbIndexY=-1;
-
     for( int i = 0; i < fieldList.size(); i++ )
     {
         QString field = fieldList[i];
@@ -402,29 +473,50 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
         cmbXField->addItem( field );
         cmbYField->addItem( field );
         cmbWktField->addItem( field );
-        if( i == indexWkt ) cmbIndexWkt = fieldNo;
-        if( i == indexX ) cmbIndexX = fieldNo;
-        if( i == indexY ) cmbIndexY = fieldNo;
         fieldNo++;
+    }
+
+    // Try resetting current values for column names
+
+    cmbWktField->setCurrentIndex(cmbWktField->findText(columnWkt));
+    cmbXField->setCurrentIndex(cmbXField->findText(columnX));
+    cmbYField->setCurrentIndex(cmbYField->findText(columnY));
+
+    // Now try setting optional X,Y fields - will only reset the fields if
+    // not already set.
+
+    trySetXYField(fieldList,isValidNumber,"longitude","latitude");
+    trySetXYField(fieldList,isValidNumber,"lon","lat");
+    trySetXYField(fieldList,isValidNumber,"east","north");
+    trySetXYField(fieldList,isValidNumber,"x","y");
+
+    // And also a WKT field if there is one
+
+    if( cmbWktField->currentIndex() < 0 )
+    {
+        for( int i = 0; i < fieldList.size(); i++ )
+        {
+            if( ! isValidWkt[i] ) continue;
+            int index = cmbWktField->findText(fieldList[i]);
+            if( index >= 0 )
+            {
+                cmbWktField->setCurrentIndex(index);
+                break;
+            }
+        }
     }
 
     bool haveFields = fieldNo > 0;
 
-    cmbWktField->setCurrentIndex( cmbIndexWkt );
-    cmbXField->setCurrentIndex( cmbIndexX );
-    cmbYField->setCurrentIndex( cmbIndexY );
-
-    bool isXY = ( geomTypeXY->isChecked() && indexX >= 0 && indexY >= 0 ) || indexWkt < 0;
+    bool isXY = cmbWktField->currentIndex() < 0 ||
+            (geomTypeXY->isChecked() &&
+             ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ));
     geomTypeXY->setChecked( isXY );
     geomTypeWKT->setChecked( ! isXY );
 
     if ( haveFields )
     {
-        geomTypeXY->setEnabled( true );
-        geomTypeWKT->setEnabled( true );
-        cmbXField->setEnabled( isXY );
-        cmbYField->setEnabled( isXY );
-        cmbWktField->setEnabled( ! isXY );
+        frmGeometry->setEnabled(true);
 
         connect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
         connect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
@@ -436,28 +528,89 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
 }
 
+bool QgsDelimitedTextSourceSelect::trySetXYField(QStringList &fields, QList<bool> &isValidNumber, QString xname, QString yname )
+{
+    // If fields already set, then nothing to do
+    if( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >=0 ) return true;
+
+    // Try and find a valid field name matching the x field
+    int indexX = -1;
+    int indexY = -1;
+
+    for( int i=0; i < fields.size(); i++ )
+    {
+        // Only interested in number fields containing the xname string
+        // that are in the X combo box
+        if( ! isValidNumber[i] ) continue;
+        if( ! fields[i].contains(xname,Qt::CaseInsensitive)) continue;
+        indexX = cmbXField->findText(fields[i]);
+        if( indexX < 0 ) continue;
+
+        // Now look for potential y fields, like xname with x replaced with y
+        QString xfield(fields[i]);
+        int from = 0;
+        while( true )
+        {
+            int pos = xfield.indexOf(xname,from,Qt::CaseInsensitive);
+            if( pos < 0 ) break;
+            from = pos+1;
+            QString yfield = xfield.mid(0,pos) + yname + xfield.mid(pos+xname.size());
+            if( ! fields.contains(yfield,Qt::CaseInsensitive )) continue;
+            for( int iy = 0; iy < fields.size(); iy++ )
+            {
+                if( ! isValidNumber[i] ) continue;
+                if( iy == i ) continue;
+                if( fields[iy].compare(yfield,Qt::CaseInsensitive) == 0 )
+                {
+                    indexY = cmbYField->findText(fields[iy]);
+                    break;
+                }
+            }
+            if( indexY >= 0 ) break;
+        }
+        if( indexY >= 0 ) break;
+    }
+    if( indexY >= 0 )
+    {
+        cmbXField->setCurrentIndex(indexX);
+        cmbYField->setCurrentIndex(indexY);
+    }
+    return indexY >= 0;
+}
+
 void QgsDelimitedTextSourceSelect::getOpenFileName()
 {
     // Get a file to process, starting at the current directory
     // Set inital dir to last used
     QSettings settings;
+    QString selectedFilter=settings.value(mPluginKey+"/file_filter","").toString();
 
     QString s = QFileDialog::getOpenFileName(
                     this,
                     tr( "Choose a delimited text file to open" ),
                     settings.value( mPluginKey+"/text_path", "./" ).toString(),
-                    tr( "Text files" ) + " (*.txt *.csv);;"
-                    + tr( "Well Known Text files" ) + " (*.wkt);;"
-                    + tr( "All files" ) + " (* *.*)" );
+                    tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;"
+                    + tr( "All files" ) + " (* *.*)",
+                    &selectedFilter
+                );
     // set path
+    if( s.isNull()) return;
+    settings.setValue(mPluginKey + "/file_filter",selectedFilter);
     txtFilePath->setText( s );
 }
 
 void QgsDelimitedTextSourceSelect::updateFileName()
 {
     // put a default layer name in the text entry
-    QFileInfo finfo( txtFilePath->text() );
+    QString filename = txtFilePath->text();
+    QFileInfo finfo( filename );
+    if( finfo.exists())
+    {
+        QSettings settings;
+        settings.setValue( mPluginKey + "/text_path", finfo.path() );
+    }
     txtLayerName->setText( finfo.completeBaseName() );
+    loadSettingsForFile(filename);
     updateFieldsAndEnable();
 }
 
@@ -477,23 +630,59 @@ void QgsDelimitedTextSourceSelect::updateFieldsAndEnable()
 
 void QgsDelimitedTextSourceSelect::enableAccept()
 {
-    // If the geometry type field is enabled then there must be
-    // a valid file, and it must be
+    // Check that input data is valid - provide a status message if not..
 
+    QString message("");
+    bool enabled = false;
 
-    bool enabled = mFile->isValid();
-
-    if ( enabled )
+    if( txtFilePath->text().trimmed().isEmpty())
     {
-        if ( geomTypeXY->isChecked() )
-        {
-            enabled = !( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() || cmbXField->currentText() == cmbYField->currentText() );
-        }
-        else
-        {
-            enabled = !cmbWktField->currentText().isEmpty();
-        }
+        message = tr("Please select an input file");
     }
+    else if ( ! QFileInfo(txtFilePath->text()).exists())
+    {
+        message = tr("File %1 does not exist").arg(txtFilePath->text());
+    }
+    else if ( txtLayerName->text().isEmpty() )
+    {
+        message = tr("Please enter a layer name");
+    }
+    else if( delimiterChars->isChecked() && selectedChars().size() == 0 )
+    {
+        message = tr("At least one delimiter character must be specified");
+    }
+    else if( delimiterRegexp->isChecked() && ! QRegExp(txtDelimiterRegexp->text()).isValid())
+    {
+        message = tr("Regular expression is not valid");
+    }
+    // Hopefully won't hit this none-specific message, but just in case ...
+    else if( ! mFile->isValid())
+    {
+        message = tr("Definition of filename and delimiters is not valid");
+    }
+    // Assume that the sample table will have been populated if data was found
+    else if( tblSample->rowCount() == 0 )
+    {
+        message = tr("No data found in file");
+    }
+    else if( geomTypeXY->isChecked() && ( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty()))
+    {
+        message = tr("X and Y field names must be selected");
+    }
+    else if( geomTypeXY->isChecked() && ( cmbXField->currentText()== cmbYField->currentText()))
+    {
+        message = tr("X and Y field names cannot be the same");
+    }
+    else if( geomTypeWKT->isChecked() && cmbWktField->currentText().isEmpty())
+    {
+        message = tr("The WKT field name must be selected");
+    }
+    else
+    {
+        enabled = true;
+    }
+
+    lblStatus->setText(message);
 
     buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

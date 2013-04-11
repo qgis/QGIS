@@ -1,0 +1,10 @@
+id|name|x
+1|john|23.5|
+2|piper\|two
+3|multiline \
+name|433
+4|"quotes | test"|42.0
+5|"quotes | 
+test2"|43.0
+6|with~another~delimiter|
+

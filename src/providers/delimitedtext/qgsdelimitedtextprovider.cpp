@@ -33,6 +33,7 @@
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmessageoutput.h"
 #include "qgsrectangle.h"
 #include "qgis.h"
@@ -44,7 +45,9 @@
 static const QString TEXT_PROVIDER_KEY = "delimitedtext";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 
-
+QRegExp QgsDelimitedTextProvider::WktPrefixRegexp("^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)" );
+QRegExp QgsDelimitedTextProvider::WktZMRegexp("\\s+(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive );
+QRegExp QgsDelimitedTextProvider::WktCrdRegexp("(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" );
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     : QgsVectorDataProvider( uri )
@@ -55,12 +58,11 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mWktFieldIndex( -1 )
     , mWktHasZM( false )
     , mWktHasPrefix( false )
-    , mWktZMRegexp( "\\s+(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive )
-    , mWktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" )
-    , mWktPrefixRegexp( "^(?:\\d+\\s+|SRID\\=\\d+\\;)" )
-    , mShowInvalidLines( false )
+    , mMaxInvalidLines( 50 )
+    , mShowInvalidLines( true )
     , mCrs()
-    , mWkbType( QGis::WKBUnknown )
+    , mWkbType( QGis::WKBNoGeometry )
+    , mGeometryType( QGis::UnknownGeometry )
     , mActiveIterator( 0 )
 {
 
@@ -74,23 +76,46 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     QString xField;
     QString yField;
 
-    if ( url.hasQueryItem( "wktField" ) )
-        wktField = url.queryItemValue( "wktField" );
-    if ( url.hasQueryItem( "xField" ) )
-        xField = url.queryItemValue( "xField" );
-    if ( url.hasQueryItem( "yField" ) )
-        yField = url.queryItemValue( "yField" );
+    if( url.hasQueryItem("geomType"))
+    {
+        QString gtype = url.queryItemValue("geomType").toLower();
+        if( gtype == "point") mGeometryType = QGis::Point;
+        else if( gtype == "line") mGeometryType = QGis::Line;
+        else if( gtype == "polygon") mGeometryType = QGis::Polygon;
+        else if( gtype == "none ") mGeometryType = QGis::NoGeometry;
+    }
+
+    if( mGeometryType != QGis::NoGeometry )
+    {
+        if ( url.hasQueryItem( "wktField" ) )
+        {
+            wktField = url.queryItemValue( "wktField" );
+        }
+        else if ( url.hasQueryItem( "xField" ) && url.hasQueryItem( "yField" ) )
+        {
+            mGeometryType = QGis::Point;
+            xField = url.queryItemValue( "xField" );
+            yField = url.queryItemValue( "yField" );
+            if ( url.hasQueryItem( "decimalPoint" ) )
+                mDecimalPoint = url.queryItemValue( "decimalPoint" );
+        }
+        else
+        {
+            mGeometryType = QGis::NoGeometry;
+        }
+    }
     if ( url.hasQueryItem( "crs" ) )
         mCrs.createFromString( url.queryItemValue( "crs" ) );
-    if ( url.hasQueryItem( "decimalPoint" ) )
-        mDecimalPoint = url.queryItemValue( "decimalPoint" );
 
-    QgsDebugMsg( "wktField is: " + wktField );
+
     QgsDebugMsg( "wktField is: " + wktField );
     QgsDebugMsg( "xField is: " + xField );
     QgsDebugMsg( "yField is: " + yField );
 
+    if( url.hasQueryItem("quiet")) mShowInvalidLines = false;
+
     // assume the layer is invalid until proven otherwise
+    clearInvalidLines();
     mValid = false;
     if ( ! mFile->isValid() )
     {
@@ -210,7 +235,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
         if( status == QgsDelimitedTextFile::RecordEOF ) break;
         if( status != QgsDelimitedTextFile::RecordOk )
         {
-            mInvalidLines << ("Invalid record format at line "+QString::number(mFile->recordLineNumber()));
+            recordInvalidLine(tr("Invalid record format at line %1"));
             continue;
         }
 
@@ -224,6 +249,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
                 if( ! parts[i].isEmpty() )
                 {
                     mFieldCount = i+1;
+                    break;
                 }
             }
         }
@@ -243,24 +269,24 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
             QgsGeometry *geom = 0;
             try
             {
-                if ( !mWktHasPrefix && sWkt.indexOf( mWktPrefixRegexp ) >= 0 )
+                if ( !mWktHasPrefix && sWkt.indexOf( WktPrefixRegexp ) >= 0 )
                     mWktHasPrefix = true;
                 if ( mWktHasPrefix )
                 {
-                    sWkt.remove( mWktPrefixRegexp );
+                    sWkt.remove( WktPrefixRegexp );
                 }
-                if ( !mWktHasZM && sWkt.indexOf( mWktZMRegexp ) >= 0 )
+                if ( !mWktHasZM && sWkt.indexOf( WktZMRegexp ) >= 0 )
                     mWktHasZM = true;
                 if ( mWktHasZM )
                 {
-                    sWkt.remove( mWktZMRegexp ).replace( mWktCrdRegexp, "\\1" );
+                    sWkt.remove( WktZMRegexp ).replace( WktCrdRegexp, "\\1" );
                 }
                 geom = QgsGeometry::fromWkt( sWkt );
             }
             catch ( ... )
             {
-                mInvalidLines << ("Invalid WKT at line "+QString::number(mFile->recordLineNumber()));
-                geom = 0;
+                // If something went wrong, just note invalid geometry
+                // as geom will be null
             }
 
             if ( geom )
@@ -268,23 +294,32 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
                 QGis::WkbType type = geom->wkbType();
                 if ( type != QGis::WKBNoGeometry )
                 {
-                    if ( mNumberFeatures == 0 )
+                    if( mGeometryType==QGis::UnknownGeometry || geom->type()==mGeometryType)
                     {
-                        mNumberFeatures++;
-                        mWkbType = type;
-                        mExtent = geom->boundingBox();
-                    }
-                    else if ( type == mWkbType )
-                    {
-                        mNumberFeatures++;
-                        QgsRectangle bbox( geom->boundingBox() );
-                        mExtent.combineExtentWith( &bbox );
+                        mGeometryType = geom->type();
+                        if ( mNumberFeatures == 0 )
+                        {
+                            mNumberFeatures++;
+                            mWkbType = type;
+                            mExtent = geom->boundingBox();
+                        }
+                        else
+                        {
+                            mNumberFeatures++;
+                            if( geom->isMultipart()) mWkbType=type;
+                            QgsRectangle bbox( geom->boundingBox() );
+                            mExtent.combineExtentWith( &bbox );
+                        }
                     }
                 }
                 delete geom;
             }
+            else
+            {
+                recordInvalidLine(tr("Invalid WKT at line %1"));
+            }
         }
-        else if ( mWktFieldIndex == -1 && mXFieldIndex >= 0 && mYFieldIndex >= 0 )
+        else if ( mXFieldIndex >= 0 && mYFieldIndex >= 0 )
         {
             // Get the x and y values, first checking to make sure they
             // aren't null.
@@ -315,12 +350,13 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
                     // Extent for the first point is just the first point
                     mExtent.set( x, y, x, y );
                     mWkbType = QGis::WKBPoint;
+                    mGeometryType = QGis::Point;
                 }
                 mNumberFeatures++;
             }
             else
             {
-                mInvalidLines << ("Invalid X or Y fields at line "+QString::number(mFile->recordLineNumber()));
+                recordInvalidLine(tr("Invalid X or Y fields at line %1"));
             }
         }
         else
@@ -333,7 +369,6 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
         for ( int i = 0; i < mFieldCount; i++ )
         {
             if( i == mWktFieldIndex ) continue;
-            fieldPos++;
             if( fieldPos >= attributeColumns.count() )
             {
                 QString field = "Col"+QString("%1").arg(i+1,2,10,QChar('0'));
@@ -357,6 +392,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
             {
                 value.toDouble( &couldBeDouble[fieldPos] );
             }
+            fieldPos++;
         }
     }
 
@@ -381,7 +417,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
         }
     }
 
-    mValid = mWkbType != QGis::WKBUnknown;
+    handleInvalidLines();
+    mValid = mGeometryType != QGis::UnknownGeometry;
 }
 
 QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
@@ -411,27 +448,53 @@ QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureReques
     return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( this, request ) );
 }
 
+void QgsDelimitedTextProvider::clearInvalidLines()
+{
+    mInvalidLines.clear();
+    mNExtraInvalidLines = 0;
+}
+
+void QgsDelimitedTextProvider::recordInvalidLine( QString message )
+{
+    if( mInvalidLines.size() < mMaxInvalidLines )
+    {
+        mInvalidLines.append( message.arg(mFile->recordLineNumber()) );
+    }
+    else
+    {
+        mNExtraInvalidLines++;
+    }
+}
 
 void QgsDelimitedTextProvider::handleInvalidLines()
 {
-    if ( mShowInvalidLines && !mInvalidLines.isEmpty() )
+    if ( !mInvalidLines.isEmpty() )
     {
-        mShowInvalidLines = false;
-        QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
-        output->setTitle( tr( "Error" ) );
-        output->setMessage( tr( "Note: the following lines were not loaded because QGIS was "
-                                "unable to determine values for the x and y coordinates:\n" ),
-                            QgsMessageOutput::MessageText );
-
-        output->appendMessage( "Start of invalid lines." );
+        QString tag("DelimitedText");
+        QgsMessageLog::logMessage( tr( "Errors in %1").arg( mFile->fileName() ), tag );
+        QgsMessageLog::logMessage( tr( "The following lines were not loaded from %1 into QGIS due to errors:\n" ).arg(mFile->fileName()),
+                                   tag );
         for ( int i = 0; i < mInvalidLines.size(); ++i )
-            output->appendMessage( mInvalidLines.at( i ) );
-        output->appendMessage( "End of invalid lines." );
+            QgsMessageLog::logMessage( mInvalidLines.at( i ), tag );
+        if( mNExtraInvalidLines > 0 )
+            QgsMessageLog::logMessage(tr("There are %1 additional errors in the file").arg(mNExtraInvalidLines), tag);
 
-        output->showMessage();
+        // Display errors in a dialog...
+        if( mShowInvalidLines )
+        {
+            QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
+            output->setTitle( tr( "Delimited text file errors" ) );
+            output->setMessage( tr( "The following lines were not loaded from %1 into QGIS due to errors:\n" ).arg(mFile->fileName()),
+                                QgsMessageOutput::MessageText );
+            for ( int i = 0; i < mInvalidLines.size(); ++i )
+                output->appendMessage( mInvalidLines.at( i ) );
+            if( mNExtraInvalidLines > 0 )
+                output->appendMessage(tr("There are %1 additional errors in the file").arg(mNExtraInvalidLines));
+            output->showMessage();
+        }
 
         // We no longer need these lines.
-        mInvalidLines.clear();
+        clearInvalidLines();
     }
 }
 

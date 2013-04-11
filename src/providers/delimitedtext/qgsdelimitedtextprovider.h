@@ -49,6 +49,12 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
 public:
 
+    /**
+     * Regular expression defining possible prefixes to WKT string,
+     * (EWKT srid, Informix SRID)
+      */
+    static QRegExp WktPrefixRegexp;
+
     QgsDelimitedTextProvider( QString uri = QString() );
 
     virtual ~QgsDelimitedTextProvider();
@@ -151,6 +157,12 @@ public:
     bool boundsCheck( QgsGeometry *geom );
 
 private:
+
+    static QRegExp WktZMRegexp;
+    static QRegExp WktCrdRegexp;
+
+    void clearInvalidLines();
+    void recordInvalidLine( QString message );
     void handleInvalidLines();
     void resetStream();
 
@@ -174,9 +186,6 @@ private:
 
     bool mWktHasZM;
     bool mWktHasPrefix;
-    QRegExp mWktZMRegexp;
-    QRegExp mWktCrdRegexp;
-    QRegExp mWktPrefixRegexp;
 
     //! Layer extent
     QgsRectangle mExtent;
@@ -190,6 +199,8 @@ private:
     QString mDecimalPoint;
 
     //! Storage for any lines in the file that couldn't be loaded
+    int mMaxInvalidLines;
+    int mNExtraInvalidLines;
     QStringList mInvalidLines;
     //! Only want to show the invalid lines once to the user
     bool mShowInvalidLines;
@@ -207,6 +218,7 @@ private:
     QgsCoordinateReferenceSystem mCrs;
 
     QGis::WkbType mWkbType;
+    QGis::GeometryType mGeometryType;
 
     friend class QgsDelimitedTextFeatureIterator;
     QgsDelimitedTextFeatureIterator* mActiveIterator;

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>563</width>
+    <width>620</width>
     <height>611</height>
    </rect>
   </property>
@@ -19,107 +19,27 @@
    </iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <item row="0" column="0">
-    <widget class="QWidget" name="widget_3" native="true">
-     <property name="acceptDrops">
+   <item row="2" column="0">
+    <widget class="QFrame" name="frmGeometry">
+     <property name="enabled">
       <bool>true</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="0">
-       <widget class="QLabel" name="textLabelFileName">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>File Name</string>
-        </property>
-        <property name="indent">
-         <number>0</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="txtFilePath">
-        <property name="toolTip">
-         <string>Full path to the delimited text file</string>
-        </property>
-        <property name="whatsThis">
-         <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="textLabelLayerName">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Layer name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="txtLayerName">
-        <property name="toolTip">
-         <string>Name to display in the map legend</string>
-        </property>
-        <property name="whatsThis">
-         <string>Name displayed in the map legend</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="btnBrowseForFile">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>Browse to find the delimited text file to be processed</string>
-        </property>
-        <property name="whatsThis">
-         <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
-        </property>
-        <property name="text">
-         <string>Browse...</string>
-        </property>
-        <property name="flat">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QFrame" name="gridFrame_2">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="spacing">
-       <number>3</number>
+       <number>4</number>
       </property>
-      <property name="topMargin">
-       <number>0</number>
+      <property name="margin">
+       <number>2</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QRadioButton" name="geomTypeXY">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="whatsThis">
            <string>The file contains X and Y coordinate columns</string>
@@ -134,6 +54,9 @@
         </item>
         <item>
          <widget class="QLabel" name="textLabelx">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="text">
            <string>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</string>
           </property>
@@ -142,7 +65,7 @@
         <item>
          <widget class="QComboBox" name="cmbXField">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -169,6 +92,9 @@
         </item>
         <item>
          <widget class="QLabel" name="textLabely">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="text">
            <string>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</string>
           </property>
@@ -177,7 +103,7 @@
         <item>
          <widget class="QComboBox" name="cmbYField">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -203,7 +129,7 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_6">
+         <spacer name="hspacer4">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -215,6 +141,16 @@
           </property>
          </spacer>
         </item>
+        <item>
+         <widget class="QCheckBox" name="cbxPointIsComma">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Comma for decimal point</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
@@ -225,7 +161,7 @@
         <item>
          <widget class="QRadioButton" name="geomTypeWKT">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="whatsThis">
            <string>The file contains a well known text geometry field</string>
@@ -264,7 +200,47 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer">
+         <widget class="QLabel" name="label">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Geometry type</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="cmbGeometryType">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string>Detect</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Point</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Line</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Polygon</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="hspacer5">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -279,53 +255,148 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <property name="topMargin">
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QLabel" name="label_2">
+         <widget class="QRadioButton" name="geomTypeNone">
+          <property name="whatsThis">
+           <string>The file contains only attribute information - it will not be displayed on the map</string>
+          </property>
           <property name="text">
-           <string>Decimal point</string>
+           <string>No geometry</string>
           </property>
          </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="decimalPoint">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maxLength">
-           <number>1</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
        </layout>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Sample text</string>
+   <item row="0" column="0">
+    <widget class="QWidget" name="widget_3" native="true">
+     <property name="acceptDrops">
+      <bool>true</bool>
      </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabelFileName">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>File Name</string>
+          </property>
+          <property name="indent">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="txtFilePath">
+          <property name="toolTip">
+           <string>Full path to the delimited text file</string>
+          </property>
+          <property name="whatsThis">
+           <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
+          </property>
+          <property name="readOnly">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnBrowseForFile">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Browse to find the delimited text file to be processed</string>
+          </property>
+          <property name="whatsThis">
+           <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
+          </property>
+          <property name="text">
+           <string>Browse...</string>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabelLayerName">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Layer name</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="txtLayerName">
+          <property name="toolTip">
+           <string>Name to display in the map legend</string>
+          </property>
+          <property name="whatsThis">
+           <string>Name displayed in the map legend</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblEncoding">
+          <property name="text">
+           <string>Encoding</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="cbxEncoding"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QFrame" name="gridFrame_2">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+     </layout>
     </widget>
    </item>
    <item row="7" column="0">
@@ -338,7 +409,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QTableWidget" name="tblSample"/>
    </item>
    <item row="1" column="0">
@@ -347,7 +418,7 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0,0">
-      <property name="topMargin">
+      <property name="margin">
        <number>0</number>
       </property>
       <item row="3" column="0">
@@ -412,44 +483,6 @@
         <property name="topMargin">
          <number>0</number>
         </property>
-        <item>
-         <widget class="QSpinBox" name="rowCounter">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="wrapping">
-           <bool>false</bool>
-          </property>
-          <property name="maximum">
-           <number>9999</number>
-          </property>
-          <property name="value">
-           <number>0</number>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
        </layout>
       </item>
       <item row="5" column="0">
@@ -475,43 +508,23 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Start import at row</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="2">
-       <widget class="QCheckBox" name="cbxUseHeader">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="2">
        <widget class="QFrame" name="frameDelimiterCharacters">
         <property name="frameShape">
          <enum>QFrame::Box</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Sunken</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <property name="spacing">
           <number>0</number>
          </property>
          <property name="margin">
-          <number>0</number>
+          <number>2</number>
          </property>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <layout class="QHBoxLayout" name="layoutDelimChars">
            <property name="topMargin">
             <number>0</number>
            </property>
@@ -565,7 +578,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <layout class="QHBoxLayout" name="layoutDelimOther">
            <property name="topMargin">
             <number>0</number>
            </property>
@@ -579,7 +592,7 @@
            <item>
             <widget class="QLineEdit" name="txtDelimiterOther">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -605,7 +618,7 @@
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer_4">
+            <spacer name="hspacer1">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -620,7 +633,7 @@
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
+          <layout class="QHBoxLayout" name="layoutQuoteEsc">
            <property name="topMargin">
             <number>0</number>
            </property>
@@ -653,7 +666,7 @@
             </widget>
            </item>
            <item>
-            <spacer name="horizontalSpacer_5">
+            <spacer name="hspacer2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
@@ -712,7 +725,91 @@
         </item>
        </layout>
       </item>
+      <item row="5" column="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <property name="rightMargin">
+         <number>9</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="cbxUseHeader">
+          <property name="text">
+           <string/>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="hspacer3_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Number of lines to skip over</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="rowCounter">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>The number of lines at the beginning of the file to ignore</string>
+          </property>
+          <property name="statusTip">
+           <string>The number of lines at the beginning of the file to ignore</string>
+          </property>
+          <property name="whatsThis">
+           <string>The number of lines at the beginning of the file to ignore</string>
+          </property>
+          <property name="wrapping">
+           <bool>false</bool>
+          </property>
+          <property name="maximum">
+           <number>9999</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="lblStatus">
+     <property name="text">
+      <string>Sample data</string>
+     </property>
     </widget>
    </item>
   </layout>
@@ -722,10 +819,28 @@
   <tabstop>txtFilePath</tabstop>
   <tabstop>btnBrowseForFile</tabstop>
   <tabstop>txtLayerName</tabstop>
+  <tabstop>cbxEncoding</tabstop>
+  <tabstop>delimiterCSV</tabstop>
+  <tabstop>delimiterWhitespace</tabstop>
+  <tabstop>delimiterChars</tabstop>
+  <tabstop>cbxDelimComma</tabstop>
+  <tabstop>cbxDelimTab</tabstop>
+  <tabstop>cbxDelimSpace</tabstop>
+  <tabstop>cbxDelimColon</tabstop>
+  <tabstop>cbxDelimSemicolon</tabstop>
+  <tabstop>txtDelimiterOther</tabstop>
+  <tabstop>txtQuoteChars</tabstop>
+  <tabstop>txtEscapeChars</tabstop>
   <tabstop>delimiterRegexp</tabstop>
+  <tabstop>txtDelimiterRegexp</tabstop>
   <tabstop>geomTypeXY</tabstop>
   <tabstop>cmbXField</tabstop>
   <tabstop>cmbYField</tabstop>
+  <tabstop>cbxPointIsComma</tabstop>
+  <tabstop>geomTypeWKT</tabstop>
+  <tabstop>cmbWktField</tabstop>
+  <tabstop>cmbGeometryType</tabstop>
+  <tabstop>tblSample</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
@@ -737,12 +852,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>110</x>
-     <y>250</y>
+     <x>119</x>
+     <y>246</y>
     </hint>
     <hint type="destinationlabel">
-     <x>270</x>
-     <y>261</y>
+     <x>388</x>
+     <y>245</y>
     </hint>
    </hints>
   </connection>
@@ -753,12 +868,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>80</x>
-     <y>369</y>
+     <x>101</x>
+     <y>327</y>
     </hint>
     <hint type="destinationlabel">
-     <x>208</x>
-     <y>369</y>
+     <x>270</x>
+     <y>329</y>
     </hint>
    </hints>
   </connection>
@@ -769,12 +884,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>50</x>
-     <y>359</y>
+     <x>89</x>
+     <y>327</y>
     </hint>
     <hint type="destinationlabel">
-     <x>442</x>
-     <y>367</y>
+     <x>438</x>
+     <y>329</y>
     </hint>
    </hints>
   </connection>
@@ -785,12 +900,108 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>62</x>
-     <y>399</y>
+     <x>101</x>
+     <y>360</y>
     </hint>
     <hint type="destinationlabel">
-     <x>180</x>
-     <y>399</y>
+     <x>250</x>
+     <y>362</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>delimiterChars</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>frameDelimiterCharacters</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>80</x>
+     <y>182</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>181</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>geomTypeWKT</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cmbGeometryType</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>359</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>349</x>
+     <y>358</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>geomTypeXY</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cbxPointIsComma</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>49</x>
+     <y>321</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>512</x>
+     <y>327</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>geomTypeXY</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>textLabelx</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>40</x>
+     <y>320</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>116</x>
+     <y>326</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>geomTypeXY</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>textLabely</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>57</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>282</x>
+     <y>326</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>geomTypeWKT</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>46</x>
+     <y>356</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>290</x>
+     <y>357</y>
     </hint>
    </hints>
   </connection>

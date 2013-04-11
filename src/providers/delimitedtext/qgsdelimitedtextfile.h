@@ -102,6 +102,15 @@ public:
         return mFileName;
     }
 
+    /** Set the file encoding (defuault is UTF-8)
+     *  @param encoding the encoding to use for the fileName()
+     */
+    void setEncoding( QString encoding );
+    /** Return the file encoding
+     *  @return encoding The file encoding
+     */
+    QString encoding(){ return mEncoding; }
+
     /** Decode the parser settings from a url as a string
      *  @param url  The url from which the delimiter and delimiterType items are read
      */
@@ -259,6 +268,7 @@ private:
     Status (QgsDelimitedTextFile::*mParser)( QStringList &fields );
 
     QString mFileName;
+    QString mEncoding;
     QFile *mFile;
     QTextStream *mStream;
 
