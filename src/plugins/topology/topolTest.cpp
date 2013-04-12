@@ -366,9 +366,9 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
   QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
 
-  QList<FeatureLayer>::Iterator it;
-  QList<FeatureLayer>::ConstIterator FeatureListEnd = mFeatureList1.end();
-  for ( it = mFeatureList1.begin(); it != FeatureListEnd; ++it )
+  QMap<int, FeatureLayer>::Iterator it;
+  QMap<int, FeatureLayer>::ConstIterator FeatureListEnd = mFeatureMap2.end();
+  for ( it = mFeatureMap2.begin(); it != FeatureListEnd; ++it )
   {
     if ( !( ++i % 100 ) )
       emit progress( i );

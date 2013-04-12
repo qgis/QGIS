@@ -46,15 +46,13 @@ class GrassAlgorithmProvider(AlgorithmProvider):
             SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_FOLDER, "GRASS folder", GrassUtils.grassPath()))
             SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_WIN_SHELL, "Msys folder", GrassUtils.grassWinShell()))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_COMMANDS, "Log execution commands", False))
-        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_CONSOLE, "Log console output", False))
-        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_HELP_FOLDER, "GRASS help folder", GrassUtils.grassHelpPath()))
+        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_CONSOLE, "Log console output", False))        
 
     def unload(self):
         AlgorithmProvider.unload(self)
         if SextanteUtils.isWindows() or SextanteUtils.isMac():
             SextanteConfig.removeSetting(GrassUtils.GRASS_FOLDER)
-            SextanteConfig.removeSetting(GrassUtils.GRASS_WIN_SHELL)
-        SextanteConfig.removeSetting(GrassUtils.GRASS_HELP_FOLDER)
+            SextanteConfig.removeSetting(GrassUtils.GRASS_WIN_SHELL)        
         SextanteConfig.removeSetting(GrassUtils.GRASS_LOG_COMMANDS)
         SextanteConfig.removeSetting(GrassUtils.GRASS_LOG_CONSOLE)
 

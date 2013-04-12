@@ -21,10 +21,8 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include <QApplication>
@@ -43,7 +41,6 @@ QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( addLayer( QgsMapLayer* ) ) );
   }
-  setItemPrototype( new QgsComposerSymbolItem() );
 
   QWidgetList topLevelWidgets = QApplication::topLevelWidgets();
   mHasTopLevelWindow = ( topLevelWidgets.size() > 0 );
@@ -190,64 +187,7 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
   return 0;
 }
 
-int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsVectorLayer* vlayer )
-{
-  if ( !layerItem || !vlayer )
-  {
-    return 1;
-  }
 
-  int opacity = vlayer->getTransparency();
-
-  const QgsRenderer* vectorRenderer = vlayer->renderer();
-  if ( !vectorRenderer )
-  {
-    return 3;
-  }
-
-  //text field that describes classification attribute?
-  QSettings settings;
-  if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
-  {
-    const QgsFields& layerFields = vlayer->pendingFields();
-    QgsAttributeList attributes = vectorRenderer->classificationAttributes();
-    QgsAttributeList::const_iterator att_it = attributes.constBegin();
-    for ( ; att_it != attributes.constEnd(); ++att_it )
-    {
-      int idx = *att_it;
-      if ( idx >= 0 && idx < layerFields.count() )
-      {
-        QString attributeName = vlayer->attributeDisplayName( idx );
-        QStandardItem* attributeItem = new QStandardItem( attributeName );
-        attributeItem->setData( QgsLegendModel::ClassificationItem, Qt::UserRole + 1 ); //first user data stores the item type
-        attributeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-        layerItem->setChild( layerItem->rowCount(), 0, attributeItem );
-      }
-    }
-  }
-
-  const QList<QgsSymbol*> vectorSymbols = vectorRenderer->symbols();
-  QList<QgsSymbol*>::const_iterator symbolIt = vectorSymbols.constBegin();
-
-  for ( ; symbolIt != vectorSymbols.constEnd(); ++symbolIt )
-  {
-    if ( !( *symbolIt ) )
-    {
-      continue;
-    }
-
-    QStandardItem* currentSymbolItem = itemFromSymbol( *symbolIt, opacity, vlayer->id() );
-    if ( !currentSymbolItem )
-    {
-      continue;
-    }
-
-    layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
-
-  }
-
-  return 0;
-}
 
 int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* rlayer )
 {
@@ -331,14 +271,7 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
 
       if ( vLayer )
       {
-        if ( vLayer->isUsingRendererV2() )
-        {
-          addVectorLayerItemsV2( lItem, vLayer );
-        }
-        else
-        {
-          addVectorLayerItems( lItem, vLayer );
-        }
+        addVectorLayerItemsV2( lItem, vLayer );
       }
 
       QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( mapLayer );
@@ -393,14 +326,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( theMapLayer );
       if ( vl )
       {
-        if ( vl->isUsingRendererV2() )
-        {
-          addVectorLayerItemsV2( layerItem, vl );
-        }
-        else
-        {
-          addVectorLayerItems( layerItem, vl );
-        }
+        addVectorLayerItemsV2( layerItem, vl );
       }
       break;
     }
@@ -413,84 +339,6 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
   emit layersChanged();
 }
 
-QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s, int opacity, const QString& layerID )
-{
-  QgsComposerSymbolItem* currentSymbolItem = 0;
-
-  //label
-  QString itemText;
-  QString label;
-
-  QString lowerValue = s->lowerValue();
-  QString upperValue = s->upperValue();
-
-  label = s->label();
-
-  //Take the label as item text if it is there
-  if ( !label.isEmpty() )
-  {
-    itemText = label;
-  }
-  //take single value
-  else if ( lowerValue == upperValue || upperValue.isEmpty() )
-  {
-    itemText = lowerValue;
-  }
-  else //or value range
-  {
-    itemText = lowerValue + " - " + upperValue;
-  }
-
-  //icon item
-  QImage symbolImage;
-  switch ( s->type() )
-  {
-    case QGis::Point:
-      symbolImage =  s->getPointSymbolAsImage();
-      break;
-    case QGis::Line:
-      symbolImage = s->getLineSymbolAsImage();
-      break;
-    case QGis::Polygon:
-      symbolImage = s->getPolygonSymbolAsImage();
-      break;
-    default:
-      return 0;
-  }
-
-  if ( opacity != 255 )
-  {
-    //todo: manipulate image pixel by pixel...
-    QRgb oldColor;
-    for ( int i = 0; i < symbolImage.height(); ++i )
-    {
-      QRgb* scanLineBuffer = ( QRgb* ) symbolImage.scanLine( i );
-      for ( int j = 0; j < symbolImage.width(); ++j )
-      {
-        oldColor = symbolImage.pixel( j, i );
-        scanLineBuffer[j] = qRgba( qRed( oldColor ), qGreen( oldColor ), qBlue( oldColor ), opacity );
-      }
-    }
-  }
-
-  currentSymbolItem = new QgsComposerSymbolItem( itemText );
-  if ( mHasTopLevelWindow )//only use QIcon / QPixmap if we have a running x-server
-  {
-    currentSymbolItem->setIcon( QIcon( QPixmap::fromImage( symbolImage ) ) );
-  }
-
-  if ( !currentSymbolItem )
-  {
-    return 0;
-  }
-
-  //Pass deep copy of QgsSymbol as user data. Cast to void* necessary such that QMetaType handles it
-  QgsSymbol* symbolCopy = new QgsSymbol( *s );
-  currentSymbolItem->setSymbol( symbolCopy );
-  currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-  currentSymbolItem ->setLayerID( layerID );
-  return currentSymbolItem;
-}
 
 bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const
 {

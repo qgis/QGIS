@@ -25,6 +25,7 @@
 class QgsVectorLayer;
 class QgsMapCanvas;
 class QgsCharacterSelectorDialog;
+class QgsSvgSelectorWidget;
 
 #include "qgspallabeling.h"
 
@@ -53,6 +54,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void scrollPreview();
     void updateOptions();
     void updateQuadrant();
+    void updateSvgWidgets( const QString& svgPath );
 
     void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
@@ -68,6 +70,10 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mBufferUnitComboBox_currentIndexChanged( int index );
     void on_mXCoordinateComboBox_currentIndexChanged( const QString & text );
     void on_mYCoordinateComboBox_currentIndexChanged( const QString & text );
+
+    void on_mShapeTypeCmbBx_currentIndexChanged( int index );
+    void on_mShapeRotationCmbBx_currentIndexChanged( int index );
+    void on_mShapeSVGParamsBtn_clicked();
 
     void on_mPreviewTextEdit_textChanged( const QString & text );
     void on_mPreviewTextBtn_clicked();
@@ -95,6 +101,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QgsMapCanvas* mMapCanvas;
     QFontDatabase mFontDB;
     QgsCharacterSelectorDialog* mCharDlg;
+    QgsSvgSelectorWidget* mSvgSelector;
 
     // background reference font
     QFont mRefFont;
@@ -103,6 +110,8 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     int mXQuadOffset;
     int mYQuadOffset;
     int mMinPixelLimit;
+
+    bool mLoadSvgParams;
 
     void disableDataDefinedAlignment();
     void enableDataDefinedAlignment();

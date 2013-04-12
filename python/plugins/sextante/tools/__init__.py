@@ -23,5 +23,3 @@ __copyright__ = '(C) 2013, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from sextante.tools.vector import getAttributeValues
-from sextante.tools.raster import scanraster

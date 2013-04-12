@@ -39,8 +39,6 @@ INCLUDE_DIRECTORIES(
   ../src/core/diagram
   ../src/core/gps
   ../src/core/raster
-  ../src/core/renderer
-  ../src/core/symbology
   ../src/core/symbology-ng
 
   ../src/gui/raster

@@ -55,7 +55,7 @@ ADD_LIBRARY (spitplugin MODULE ${SPIT_PLUGIN_SRCS} ${SPIT_PLUGIN_MOC_SRCS} ${SPI
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ../../core ../../core/raster
      ../../gui
      ../../ui
      ../../app

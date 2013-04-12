@@ -2427,13 +2427,7 @@ void QgsLegend::refreshLayerSymbology( QString key, bool expandItem )
   if ( current && current->parent() == theLegendLayer )
     current = current->parent();
 
-  double widthScale = 1.0;
-  if ( mMapCanvas && mMapCanvas->map() )
-  {
-    widthScale = mMapCanvas->map()->paintDevice().logicalDpiX() / 25.4;
-  }
-
-  theLegendLayer->refreshSymbology( key, widthScale );
+  theLegendLayer->refreshSymbology( key );
 
   //restore the current item again
   setCurrentItem( current );

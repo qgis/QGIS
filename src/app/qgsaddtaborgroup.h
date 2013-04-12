@@ -21,8 +21,8 @@
 
 #include "ui_qgsaddtaborgroupbase.h"
 #include "qgisgui.h"
-#include "qgsrenderer.h"
 
+class QgsVectorLayer;
 
 class QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroupBase
 {

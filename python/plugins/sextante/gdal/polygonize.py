@@ -23,14 +23,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui, QtCore
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.parameters.ParameterRaster import ParameterRaster
 import os
-from sextante.gdal.GdalUtils import GdalUtils
+from PyQt4 import QtGui, QtCore
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.core.SextanteUtils import SextanteUtils
+
+from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterString import ParameterString
 from sextante.outputs.OutputVector import OutputVector
-from sextante.core.SextanteUtils import SextanteUtils
+
+from sextante.gdal.GdalUtils import GdalUtils
 
 class polygonize(GeoAlgorithm):
 
@@ -50,16 +53,19 @@ class polygonize(GeoAlgorithm):
         self.addOutput(OutputVector(polygonize.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        if SextanteUtils.isWindows():
-            commands = ["cmd.exe", "/C ", "gdal_polygonize.bat"]
-        else:
-            commands = ["gdal_polygonize.py"]
-        commands.append(self.getParameterValue(polygonize.INPUT))
-        commands.append('-f')
-        commands.append('"ESRI Shapefile"')
+        arguments = []
+        arguments.append(self.getParameterValue(polygonize.INPUT))
+        arguments.append('-f')
+        arguments.append('"ESRI Shapefile"')
         output = self.getOutputValue(polygonize.OUTPUT)
-        commands.append(output)
-        commands.append(QtCore.QFileInfo(output).baseName())
-        commands.append(self.getParameterValue(polygonize.FIELD))
+        arguments.append(output)
+        arguments.append(QtCore.QFileInfo(output).baseName())
+        arguments.append(self.getParameterValue(polygonize.FIELD))
+
+        commands = []
+        if SextanteUtils.isWindows():
+            commands = ["cmd.exe", "/C ", "gdal_polygonize.bat", GdalUtils.escapeAndJoin(arguments)]
+        else:
+            commands = ["gdal_polygonize.py", GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)

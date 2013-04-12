@@ -23,14 +23,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.parameters.ParameterRaster import ParameterRaster
-from sextante.outputs.OutputRaster import OutputRaster
 import os
-from sextante.gdal.GdalUtils import GdalUtils
-from sextante.parameters.ParameterNumber import ParameterNumber
+from PyQt4 import QtGui
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.SextanteUtils import SextanteUtils
+
+from sextante.parameters.ParameterRaster import ParameterRaster
+from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.outputs.OutputRaster import OutputRaster
+
+from sextante.gdal.GdalUtils import GdalUtils
 
 class rgb2pct(GeoAlgorithm):
 
@@ -50,16 +53,18 @@ class rgb2pct(GeoAlgorithm):
         self.addOutput(OutputRaster(rgb2pct.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        if SextanteUtils.isWindows():
-            commands = ["cmd.exe", "/C ", "rgb2pct.bat"]
-        else:
-            commands = ["rgb2pct.py"]
-        commands.append("-n")
-        commands.append(str(self.getParameterValue(rgb2pct.NCOLORS)))
-        commands.append("-of")
+        arguments = []
+        arguments.append("-n")
+        arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))
+        arguments.append("-of")
         out = self.getOutputValue(rgb2pct.OUTPUT)
-        commands.append(GdalUtils.getFormatShortNameFromFilename(out))
-        commands.append(self.getParameterValue(rgb2pct.INPUT))
-        commands.append(out)
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append(self.getParameterValue(rgb2pct.INPUT))
+        arguments.append(out)
+
+        if SextanteUtils.isWindows():
+            commands = ["cmd.exe", "/C ", "rgb2pct.bat", GdalUtils.escapeAndJoin(arguments)]
+        else:
+            commands = ["rgb2pct.py", GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)

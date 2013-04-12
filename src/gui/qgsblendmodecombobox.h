@@ -19,6 +19,8 @@
 #define QGSBLENDMODECOMBOBOX_H
 
 #include <QComboBox>
+#include <QPainter> // For QPainter::CompositionMode enum
+#include "qgsmaprenderer.h" //for getCompositionMode
 
 /** \ingroup gui
  * A combobox which lets the user select blend modes from a predefined list
@@ -30,10 +32,10 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
     QgsBlendModeComboBox( QWidget* parent = 0 );
     virtual ~QgsBlendModeComboBox();
 
-    //! Function to read the selected blend mode as integer
-    int blendMode();
-    //! Function to set the selected blend mode from integer
-    void setBlendMode( int blendMode );
+    //! Function to read the selected blend mode as QPainter::CompositionMode
+    QPainter::CompositionMode blendMode();
+    //! Function to set the selected blend mode from QPainter::CompositionMode
+    void setBlendMode( QPainter::CompositionMode blendMode );
   private:
     //! Returns a list of grouped blend modes (with seperators)
     QStringList blendModesList() const;

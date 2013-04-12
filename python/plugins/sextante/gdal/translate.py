@@ -24,8 +24,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+
 from PyQt4 import QtGui
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
+
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterBoolean import ParameterBoolean
@@ -33,7 +37,7 @@ from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterExtent import ParameterExtent
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.outputs.OutputRaster import OutputRaster
-import os
+
 from sextante.gdal.GdalUtils import GdalUtils
 
 class translate(GeoAlgorithm):
@@ -64,11 +68,10 @@ class translate(GeoAlgorithm):
         self.addParameter(ParameterCrs(translate.SRS, "Override the projection for the output file", None))
         self.addParameter(ParameterExtent(translate.PROJWIN, "Subset based on georeferenced coordinates"))
         self.addParameter(ParameterBoolean(translate.SDS, "Copy all subdatasets of this file to individual output files", False))
-        self.addParameter(ParameterString(translate.EXTRA, "Additional creation parameters", " "))
+        self.addParameter(ParameterString(translate.EXTRA, "Additional creation parameters", ""))
         self.addOutput(OutputRaster(translate.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-
         out = self.getOutputValue(translate.OUTPUT)
         outsize = str(self.getParameterValue(translate.OUTSIZE))
         outsizePerc = str(self.getParameterValue(translate.OUTSIZE_PERC))
@@ -79,26 +82,36 @@ class translate(GeoAlgorithm):
         sds = self.getParameterValue(translate.SDS)
         extra = str(self.getParameterValue(translate.EXTRA))
 
-        commands = ["gdal_translate"]
-        commands.append("-of")
-        commands.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments = []
+        arguments.append("-of")
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         if outsizePerc == "True":
-            outsizeStr = "-outsize "+outsize+"% "+outsize+"%"
+            arguments.append("-outsize")
+            arguments.append(outsize + "%")
+            arguments.append(outsize + "%")
         else:
-            outsizeStr = "-outsize "+outsize+" "+outsize
-        commands.append(outsizeStr)
-        commands.append("-a_nodata "+noData)
+            arguments.append("-outsize")
+            arguments.append(outsize)
+            arguments.append(outsize)
+        arguments.append("-a_nodata")
+        arguments.append(noData)
         if expand != "none":
-            commands.append("-expand "+expand)
+            arguments.append("-expand")
+            arguments.append(expand)
         regionCoords = projwin.split(",")
-        commands.append("-projwin "+regionCoords[0]+" "+regionCoords[3]+" "+regionCoords[1]+" "+regionCoords[2])
+        arguments.append("-projwin")
+        arguments.append(regionCoords[0])
+        arguments.append(regionCoords[3])
+        arguments.append(regionCoords[1])
+        arguments.append(regionCoords[2])
         if srs is not None:
-            commands.append("-a_srs "+str(srs))
+            arguments.append("-a_srs")
+            arguments.append(str(srs))
         if sds:
-            commands.append("-sds")
-        commands.append(extra)
-        commands.append(self.getParameterValue(translate.INPUT))
-        commands.append(out)
+            arguments.append("-sds")
+        if len(extra) > 0:
+            arguments.append(extra)
+        arguments.append(self.getParameterValue(translate.INPUT))
+        arguments.append(out)
 
-
-        GdalUtils.runGdal(commands, progress)
+        GdalUtils.runGdal(["gdal_translate", GdalUtils.escapeAndJoin(arguments)], progress)

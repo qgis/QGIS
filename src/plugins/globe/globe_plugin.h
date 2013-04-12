@@ -38,8 +38,13 @@ using namespace osgEarth::Util::Controls21;
 #include <osgEarthUtil/Controls>
 using namespace osgEarth::Util::Controls;
 #endif
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+#include <osgEarth/ElevationQuery>
+#include <osgEarthUtil/ObjectLocator>
+#else
 #include <osgEarthUtil/ElevationManager>
 #include <osgEarthUtil/ObjectPlacer>
+#endif
 
 class QAction;
 class QToolBar;
@@ -136,10 +141,17 @@ class GlobePlugin : public QObject, public QgisPlugin
     osgEarth::Drivers::QgsOsgEarthTileSource* mTileSource;
     //! Control Canvas
     ControlCanvas* mControlCanvas;
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+    //! Elevation manager
+    osgEarth::ElevationQuery* mElevationManager;
+    //! Object placer
+    osgEarth::Util::ObjectLocator* mObjectPlacer;
+#else
     //! Elevation manager
     osgEarth::Util::ElevationManager* mElevationManager;
     //! Object placer
     osgEarth::Util::ObjectPlacer* mObjectPlacer;
+#endif
     //! tracks if the globe is open
     bool mIsGlobeRunning;
     //! coordinates of the right-clicked point on the globe
@@ -164,6 +176,8 @@ class FlyToExtentHandler : public osgGA::GUIEventHandler
 };
 
 // An event handler that will print out the coordinates at the clicked point
+#ifdef HAVE_OSGEARTH_ELEVATION_QUERY
+#else
 class QueryCoordinatesHandler : public osgGA::GUIEventHandler
 {
   public:
@@ -181,6 +195,7 @@ class QueryCoordinatesHandler : public osgGA::GUIEventHandler
     osg::ref_ptr<osgEarth::Util::ElevationManager> _elevMan;
     bool _mouseDown;
 };
+#endif
 
 
 class KeyboardControlHandler : public osgGA::GUIEventHandler

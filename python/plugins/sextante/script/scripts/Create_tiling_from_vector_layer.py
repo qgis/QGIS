@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 ##numpolygons=number 10
 ##polygons=output vector
 
-input = sextante.getObjectFromUri(input)
+input = sextante.getobject(input)
 centerx = (input.extent().xMinimum() + input.extent().xMaximum()) / 2
 centery = (input.extent().yMinimum() + input.extent().yMaximum()) / 2
 width = (input.extent().xMaximum() - input.extent().xMinimum())

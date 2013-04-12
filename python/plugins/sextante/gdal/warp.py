@@ -24,16 +24,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.core import *
 from PyQt4 import QtGui
+
+from qgis.core import *
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
+
 from sextante.parameters.ParameterRaster import ParameterRaster
-from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterCrs import ParameterCrs
-from sextante.gdal.GdalUtils import GdalUtils
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterString import ParameterString
+from sextante.outputs.OutputRaster import OutputRaster
+
+from sextante.gdal.GdalUtils import GdalUtils
 
 class warp(GeoAlgorithm):
 
@@ -58,27 +62,28 @@ class warp(GeoAlgorithm):
         self.addParameter(ParameterCrs(warp.DEST_SRS, "Destination SRS (EPSG Code)", "EPSG:4326"))
         self.addParameter(ParameterNumber(warp.TR, "Output file resolution in target georeferenced units (leave 0 for no change)", 0.0, None, 0.0))
         self.addParameter(ParameterSelection(warp.METHOD, "Resampling method", warp.METHOD_OPTIONS))
-        self.addParameter(ParameterString(warp.EXTRA, "Additional creation parameters", " "))
+        self.addParameter(ParameterString(warp.EXTRA, "Additional creation parameters", ""))
         self.addOutput(OutputRaster(warp.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        srs = self.getParameterValue(warp.DEST_SRS)
-        self.crs = QgsCoordinateReferenceSystem(srs)
-        commands = ["gdalwarp"]
-        commands.append("-s_srs")
-        commands.append(str(self.getParameterValue(warp.SOURCE_SRS)))
-        commands.append("-t_srs")
-        commands.append(str(srs))
-        commands.append("-r")
-        commands.append(warp.METHOD_OPTIONS[self.getParameterValue(warp.METHOD)])
-        commands.append("-of")
+        arguments = []
+        arguments.append("-s_srs")
+        arguments.append(str(self.getParameterValue(warp.SOURCE_SRS)))
+        arguments.append("-t_srs")
+        arguments.append(str(self.getParameterValue(warp.DEST_SRS)))
+        arguments.append("-r")
+        arguments.append(warp.METHOD_OPTIONS[self.getParameterValue(warp.METHOD)])
+        arguments.append("-of")
         out = self.getOutputValue(warp.OUTPUT)
-        commands.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
         if self.getParameterValue(warp.TR) != 0:
-            trStr = "-tr "+str(self.getParameterValue(warp.TR))+" "+str(self.getParameterValue(warp.TR))
-            commands.append(trStr)
-        commands.append(str(self.getParameterValue(warp.EXTRA)))
-        commands.append(self.getParameterValue(warp.INPUT))
-        commands.append(out)
+            arguments.append("-tr")
+            arguments.append(str(self.getParameterValue(warp.TR)))
+            arguments.append(str(self.getParameterValue(warp.TR)))
+        extra = str(self.getParameterValue(warp.EXTRA))
+        if len(extra) > 0:
+            arguments.append(extra)
+        arguments.append(self.getParameterValue(warp.INPUT))
+        arguments.append(out)
 
-        GdalUtils.runGdal(commands, progress)
+        GdalUtils.runGdal(["gdalwarp", GdalUtils.escapeAndJoin(arguments)], progress)

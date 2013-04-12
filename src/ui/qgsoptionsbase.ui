@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
-    <height>580</height>
+    <width>848</width>
+    <height>578</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -266,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>654</width>
-                <height>642</height>
+                <width>663</width>
+                <height>564</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -912,8 +912,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>808</height>
+                <width>663</width>
+                <height>757</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1248,8 +1248,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>559</width>
-                <height>417</height>
+                <width>680</width>
+                <height>511</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1567,8 +1567,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>615</width>
-                <height>781</height>
+                <width>663</width>
+                <height>635</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -1662,22 +1662,6 @@
                    <widget class="QCheckBox" name="chkUseQPixmap">
                     <property name="text">
                      <string>Fix problems with incorrectly filled polygons</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QGroupBox" name="groupBox_3">
-                 <property name="title">
-                  <string>Compatibility</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_9">
-                  <item>
-                   <widget class="QCheckBox" name="chkUseSymbologyNG">
-                    <property name="text">
-                     <string>Use new generation symbology for rendering</string>
                     </property>
                    </widget>
                   </item>
@@ -2098,8 +2082,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>474</width>
-                <height>390</height>
+                <width>452</width>
+                <height>357</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2433,8 +2417,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>556</width>
-                <height>712</height>
+                <width>491</width>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -2825,8 +2809,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>517</width>
-                <height>642</height>
+                <width>442</width>
+                <height>574</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3326,8 +3310,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>537</width>
-                <height>361</height>
+                <width>426</width>
+                <height>336</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -3466,8 +3450,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>614</width>
-                <height>393</height>
+                <width>582</width>
+                <height>352</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -3647,8 +3631,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>300</width>
-                <height>248</height>
+                <width>268</width>
+                <height>207</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -3747,8 +3731,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>521</width>
-                <height>650</height>
+                <width>663</width>
+                <height>553</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">

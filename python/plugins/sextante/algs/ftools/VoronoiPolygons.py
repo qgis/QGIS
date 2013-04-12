@@ -31,6 +31,7 @@ from qgis.core import *
 
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from sextante.parameters.ParameterVector import ParameterVector
 

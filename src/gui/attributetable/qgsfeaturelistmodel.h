@@ -85,6 +85,21 @@ class QgsFeatureListModel : public QAbstractProxyModel
     virtual int columnCount( const QModelIndex&parent = QModelIndex() ) const;
     virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const;
 
+    /**
+     * Disables selection synchronisation with the map canvas. Changes to the selection in the master
+     * model are propagated to the layer, but no redraw is requested until @link enableSelectionSync() @endlink
+     * is called.
+     */
+    void disableSelectionSync();
+
+    /**
+     * Enables selection synchronisation with the map canvas. Changes to the selection in the master
+     * are propagated and upon every change, a redraw will be requested. This method will update the
+     * selection to account for any cached selection change since @link disableSelectionSync() @endlink
+     * was called.
+     */
+    void enableSelectionSync();
+
   public slots:
     void onBeginRemoveRows( const QModelIndex& parent, int first, int last );
     void onEndRemoveRows( const QModelIndex& parent, int first, int last );

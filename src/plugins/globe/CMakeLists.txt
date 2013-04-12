@@ -9,6 +9,10 @@ IF(HAVE_OSGEARTH_CHILD_SPACING)
   ADD_DEFINITIONS(-DHAVE_OSGEARTH_CHILD_SPACING)
 ENDIF(HAVE_OSGEARTH_CHILD_SPACING)
 
+IF(OSGEARTH_ELEVATION_QUERY)
+  ADD_DEFINITIONS(-DHAVE_OSGEARTH_ELEVATION_QUERY)
+ENDIF(OSGEARTH_ELEVATION_QUERY)
+
 ########################################################
 # Files
 
@@ -52,7 +56,7 @@ INCLUDE_DIRECTORIES(
      ${OSGEARTH_INCLUDE_DIR}
      ${OSG_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ../../core ../../core/raster
      ../../gui
      ..
 )

@@ -38,7 +38,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlProvider* provider, co
     QgsDebugMsg( "Creating a separate database connection" );
     QString id;
     // QString::sprintf adds 0x prefix
-    id.sprintf( "%08p", this );
+    id.sprintf( "%p", this );
     mDatabase = mProvider->mDatabase.cloneDatabase( mProvider->mDatabase, id );
     if ( !mDatabase.open() )
     {

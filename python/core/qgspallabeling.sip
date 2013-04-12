@@ -48,6 +48,38 @@ class QgsPalLayerSettings
       MultiRight
     };
 
+    enum ShapeType
+    {
+      ShapeRectangle = 0,
+      ShapeSquare,
+      ShapeEllipse,
+      ShapeCircle,
+      ShapeSVG
+    };
+
+    enum SizeType
+    {
+      SizeBuffer = 0,
+      SizeFixed,
+      SizePercent
+    };
+
+    enum RotationType
+    {
+      RotationSync = 0,
+      RotationOffset,
+      RotationFixed
+    };
+
+    /** Units used for option sizes, before being converted to rendered sizes */
+    enum SizeUnit
+    {
+      Points = 0,
+      MM,
+      MapUnits,
+      Percent
+    };
+
     // update mDataDefinedNames QList in constructor when adding/deleting enum value
     enum DataDefinedProperties
     {
@@ -100,6 +132,7 @@ class QgsPalLayerSettings
     QString textNamedStyle;
     QColor textColor;
     int textTransp;
+    QPainter::CompositionMode blendMode;
     QColor previewBkgrdColor;
     bool enabled;
     int priority; // 0 = low, 10 = high
@@ -111,11 +144,34 @@ class QgsPalLayerSettings
     // disabled if both are zero
     int scaleMin;
     int scaleMax;
-    double bufferSize; //buffer size (in mm)
+    double bufferSize; //buffer size
     QColor bufferColor;
     int bufferTransp;
+    QPainter::CompositionMode bufferBlendMode;
     Qt::PenJoinStyle bufferJoinStyle;
     bool bufferNoFill; //set interior of buffer to 100% transparent
+
+    // shape background
+    bool shapeDraw;
+    ShapeType shapeType;
+    QString shapeSVGFile;
+    SizeType shapeSizeType;
+    QPointF shapeSize;
+    SizeUnit shapeSizeUnits;
+    RotationType shapeRotationType;
+    double shapeRotation;
+    QPointF shapeOffset;
+    SizeUnit shapeOffsetUnits;
+    QPointF shapeRadii;
+    SizeUnit shapeRadiiUnits;
+    QColor shapeFillColor;
+    QColor shapeBorderColor;
+    double shapeBorderWidth;
+    SizeUnit shapeBorderWidthUnits;
+    Qt::PenJoinStyle shapeJoinStyle;
+    int shapeTransparency;
+    QPainter::CompositionMode shapeBlendMode;
+
     bool formatNumbers;
     int decimals;
     bool plusSign;
@@ -161,16 +217,18 @@ class QgsPalLayerSettings
     void removeDataDefinedProperty( DataDefinedProperties p );
 
     /**Stores field names for data defined layer properties*/
-    // QMap< DataDefinedProperties, int > dataDefinedProperties;
+    // QMap< DataDefinedProperties, QString > dataDefinedProperties;
 
     bool preserveRotation; // preserve predefined rotation data during label pin/unpin operations
 
-    /**Calculates pixel size (considering output size should be in pixel or map units, scale factors and oversampling)
-     @param size size to convert
-     @param c rendercontext
-     @param buffer whether it buffer size being calculated
-     @return font pixel size*/
-    int sizeToPixel( double size, const QgsRenderContext& c , bool buffer = false ) const;
+    /** Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit SizeUnit enum value of size
+     * @param rasterfactor whether to consider oversampling
+     * @return font pixel size
+     */
+    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor ) const;
 
     /** List of data defined enum names
      * @note adding in 1.9
@@ -198,6 +256,15 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 %End
 
   public:
+    enum DrawLabelType
+    {
+      LabelText = 0,
+      LabelBuffer,
+      LabelShape,
+      LabelSVG,
+      LabelShadow
+    };
+
     QgsPalLabeling();
     ~QgsPalLabeling();
 
@@ -246,9 +313,19 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 /*
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
-    void drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize = -1,
-                    const QColor& bufferColor = QColor( 255, 255, 255 ), bool drawBuffer = false );
+    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmplyr, DrawLabelType drawType );
 */
-    static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color , Qt::PenJoinStyle joinstyle = Qt::BevelJoin, bool noFill = false );
+    static void drawLabelBuffer( QgsRenderContext& context, QString text, const QgsPalLayerSettings& tmpLyr );
 
+    static void drawLabelBackground( QgsRenderContext& context,
+                                     const QgsPoint& centerPt, double labelRotation, double labelWidth, double labelHeight,
+                                     const QgsPalLayerSettings& tmpLyr );
+
+    //! load/save engine settings to project file
+    //! @note added in QGIS 1.9
+    void loadEngineSettings();
+    void saveEngineSettings();
+    void clearEngineSettings();
+    bool isStoredWithProject() const;
+    void setStoredWithProject( bool store );
 };

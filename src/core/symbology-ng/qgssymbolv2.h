@@ -181,9 +181,6 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
     const QgsVectorLayer* layer() const { return mLayer; }
 
-    // Color used for selections
-    static QColor selectionColor();
-
     double outputLineWidth( double width ) const;
     double outputPixelSize( double size ) const;
 

@@ -24,10 +24,11 @@
 #include <QPainter>
 #include <QWebFrame>
 #include <QWebPage>
+#include <QEventLoop>
 
 QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ):
     QgsComposerItem( composition ), mHtmlState( 0 ), mHtmlUnitsToMM( 1.0 ),
-    mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
+    mHtmlLoaded( false ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
     mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop ),
     mExpressionFeature( 0 ), mExpressionLayer( 0 )
 {
@@ -64,6 +65,11 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
     QWebPage* webPage = new QWebPage();
 
+    //Setup event loop and timeout for rendering html
+    QEventLoop loop;
+    QTimer timeoutTimer;
+    timeoutTimer.setSingleShot( true );
+
     //This makes the background transparent. Found on http://blog.qt.digia.com/blog/2009/06/30/transparent-qwebview-or-qwebpage/
     QPalette palette = webPage->palette();
     palette.setBrush( QPalette::Base, Qt::transparent );
@@ -74,7 +80,30 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     webPage->mainFrame()->setZoomFactor( 10.0 );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
+
+    //Connect timeout and webpage loadFinished signals to loop
+    connect( &timeoutTimer, SIGNAL( timeout() ), &loop, SLOT( quit() ) );
+    connect( webPage, SIGNAL( loadFinished( bool ) ), &loop, SLOT( quit() ) );
+
+    //mHtmlLoaded tracks whether the QWebPage has completed loading
+    //its html contents, set it initially to false. The loadingHtmlFinished slot will
+    //set this to true after html is loaded.
+    mHtmlLoaded = false;
+    connect( webPage, SIGNAL( loadFinished( bool ) ), SLOT( loadingHtmlFinished( bool ) ) );
+
     webPage->mainFrame()->setHtml( displayText() );
+
+    //For very basic html labels with no external assets, the html load will already be
+    //complete before we even get a chance to start the QEventLoop. Make sure we check
+    //this before starting the loop
+    if ( !mHtmlLoaded )
+    {
+      // Start a 20 second timeout in case html loading will never complete
+      timeoutTimer.start( 20000 );
+      // Pause until html is loaded
+      loop.exec();
+    }
+
     webPage->mainFrame()->render( painter );//DELETE WEBPAGE ?
   }
   else
@@ -90,9 +119,6 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     drawText( painter, painterRect, displayText(), mFont, mHAlignment, mVAlignment );
   }
 
-
-
-
   painter->restore();
 
   drawFrame( painter );
@@ -100,6 +126,13 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   {
     drawSelectionBoxes( painter );
   }
+}
+
+/*Track when QWebPage has finished loading its html contents*/
+void QgsComposerLabel::loadingHtmlFinished( bool result )
+{
+  Q_UNUSED (result);
+  mHtmlLoaded = true;
 }
 
 double QgsComposerLabel::htmlUnitsToMM()
@@ -124,6 +157,8 @@ void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer
   mExpressionFeature = feature;
   mExpressionLayer = layer;
   mSubstitutions = substitutions;
+  // Force label to redraw -- fixes label printing for labels with blend modes when used with atlas
+  update();
 }
 
 QString QgsComposerLabel::displayText() const

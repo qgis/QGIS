@@ -29,7 +29,6 @@
 #include "qgsoverlayobject.h"
 #include "qgsproject.h"
 #include "qgsrendercontext.h"
-#include "qgssymbologyutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
 

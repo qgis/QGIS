@@ -36,6 +36,9 @@ class QgsRenderContext
     //! Added in QGIS v1.4
     QgsLabelingEngineInterface* labelingEngine();
 
+    //! Added in QGIS v2.0
+    QColor selectionColor() const;
+
     //setters
 
     /**Sets coordinate transformation. QgsRenderContext does not take ownership*/
@@ -52,4 +55,6 @@ class QgsRenderContext
     void setForceVectorOutput( bool force );
     //! Added in QGIS v1.4
     void setLabelingEngine(QgsLabelingEngineInterface* iface);
+    //! Added in QGIS v2.0
+    void setSelectionColor( const QColor& color );
 };

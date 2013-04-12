@@ -1,7 +1,6 @@
 import sextante
 import unittest
 from sextante.tests.TestData import points, points2, polygons, polygons2, lines, union,\
-    table, polygonsGeoJson
     table, polygonsGeoJson, raster
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
@@ -38,6 +37,7 @@ class SagaTest(unittest.TestCase):
         selected = [feature.id()]
         layer.setSelectedFeatures(selected)
         outputs=sextante.runalg("saga:polygoncentroids",polygons2(),True,None)
+        layer.setSelectedFeatures([])
         output=outputs['CENTROIDS']
         layer=QGisLayers.getObjectFromUri(output, True)
         fields=layer.pendingFields()
@@ -54,7 +54,7 @@ class SagaTest(unittest.TestCase):
         expectedvalues=["2","1","string a"]
         values=[str(attr.toString()) for attr in attrs]
         self.assertEqual(expectedvalues, values)
-        wkt='POINT(270820.58189697 4458968.73298999)'
+        wkt='POINT(270806.69221918 4458924.97720492)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
 
     def test_SagaVectorAlgorithWithUnsupportedInputAndOutputFormat(self):
@@ -64,6 +64,7 @@ class SagaTest(unittest.TestCase):
         selected = [feature.id()]
         layer.setSelectedFeatures(selected)
         outputs=sextante.runalg("saga:polygoncentroids",polygonsGeoJson(),True, SextanteUtils.getTempFilename("geojson"))
+        layer.setSelectedFeatures([])
         output=outputs['CENTROIDS']
         layer=QGisLayers.getObjectFromUri(output, True)
         fields=layer.pendingFields()
@@ -82,17 +83,14 @@ class SagaTest(unittest.TestCase):
         self.assertEqual(expectedvalues, values)
         wkt='POINT(270787.49991451 4458955.46775295)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+        
     def test_SagaRasterAlgorithmWithUnsupportedOutputFormat(self):
-        outputs=sextante.runalg("saga:convergenceindex",raster(),0,0,None)
+        outputs=sextante.runalg("saga:convergenceindex",raster(),0,0,SextanteUtils.getTempFilename("img"))
         output=outputs['RESULT']
         self.assertTrue(os.path.isfile(output))
         dataset=gdal.Open(output, GA_ReadOnly)
         strhash=hash(str(dataset.ReadAsArray(0).tolist()))
-        self.assertEqual(strhash,485390137)
-
-
-
-
+        self.assertEqual(strhash, 485390137)
 
 
 def suite():

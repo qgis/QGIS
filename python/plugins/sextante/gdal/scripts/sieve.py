@@ -65,9 +65,3 @@ result = gdal.SieveFilter( srcband, maskband, dstband,
 src_ds = None
 dst_ds = None
 mask_ds = None
-
-
-
-
-
-

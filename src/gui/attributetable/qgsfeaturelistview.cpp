@@ -73,7 +73,15 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
 
 bool QgsFeatureListView::setDisplayExpression( const QString expression )
 {
-  return mModel->setDisplayExpression( expression );
+  if ( mModel->setDisplayExpression( expression ) )
+  {
+    emit displayExpressionChanged( expression );
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 const QString& QgsFeatureListView::displayExpression() const
@@ -106,7 +114,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();
 
-  if ( QgsFeatureListViewDelegate::EditButtonElement == mItemDelegate->positionToElement( event->pos() ) )
+  if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
   {
     mEditSelectionDrag = true;
     QModelIndex index = mModel->mapToMaster( indexAt( pos ) );
@@ -115,15 +123,22 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   }
   else
   {
+    mModel->disableSelectionSync();
     QListView::mousePressEvent( event );
   }
 }
 
 void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
 {
-  mEditSelectionDrag = false;
-
-  QListView::mouseReleaseEvent( event );
+  if ( mEditSelectionDrag )
+  {
+    mEditSelectionDrag = false;
+  }
+  else
+  {
+    QListView::mouseReleaseEvent( event );
+    mModel->enableSelectionSync();
+  }
 }
 
 void QgsFeatureListView::editSelectionChanged( QItemSelection deselected, QItemSelection selected )

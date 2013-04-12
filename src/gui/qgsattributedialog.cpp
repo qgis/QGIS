@@ -21,8 +21,6 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsuniquevaluerenderer.h"
-#include "qgssymbol.h"
 #include "qgsattributeeditor.h"
 #include "qgshighlight.h"
 #include "qgsexpression.h"

@@ -52,7 +52,9 @@ class ScriptTest(unittest.TestCase):
     def test_scriptascriptthatreturnsanumber(self):
         outputs=sextante.runalg("script:ascriptthatreturnsanumber")
         output=outputs['number']
-        self.assertTrue(10, output.value)
+        self.assertTrue(10, output)
+        
+        
 
 def suite():
     suite = unittest.makeSuite(ScriptTest, 'test')

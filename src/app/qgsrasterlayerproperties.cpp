@@ -37,9 +37,11 @@
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasterhistogramwidget.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsrasterpyramid.h"
+#include "qgsrasterrange.h"
 #include "qgsrasterrenderer.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrastertransparency.h"
@@ -623,11 +625,11 @@ void QgsRasterLayerProperties::sync()
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
 
-  QList<QgsRasterBlock::Range> noDataRangeList = mRasterLayer->dataProvider()->userNoDataValue( 1 );
+  QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValue( 1 );
   QgsDebugMsg( QString( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
   if ( noDataRangeList.size() > 0 )
   {
-    leNoDataValue->insert( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min ) );
+    leNoDataValue->insert( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
   }
   else
   {
@@ -735,18 +737,14 @@ void QgsRasterLayerProperties::apply()
    */
 
   //set NoDataValue
-  QList<QgsRasterBlock::Range> myNoDataRangeList;
+  QgsRasterRangeList myNoDataRangeList;
   if ( "" != leNoDataValue->text() )
   {
     bool myDoubleOk = false;
     double myNoDataValue = leNoDataValue->text().toDouble( &myDoubleOk );
     if ( myDoubleOk )
     {
-      //mRasterLayer->setNoDataValue( myNoDataValue );
-      QgsRasterBlock::Range myNoDataRange;
-      myNoDataRange.min = myNoDataValue;
-      myNoDataRange.max = myNoDataValue;
-
+      QgsRasterRange myNoDataRange( myNoDataValue, myNoDataValue );
       myNoDataRangeList << myNoDataRange;
     }
   }
@@ -870,7 +868,7 @@ void QgsRasterLayerProperties::apply()
   }
 
   //set the blend mode for the layer
-  mRasterLayer->setBlendMode(( QgsMapRenderer::BlendMode ) mBlendModeComboBox->blendMode() );
+  mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 
   //get the thumbnail for the layer
   pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
@@ -1456,7 +1454,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
     int myWidth = mMapCanvas->extent().width() / mapUnitsPerPixel;
     int myHeight = mMapCanvas->extent().height() / mapUnitsPerPixel;
 
-    QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint,  QgsRasterDataProvider::IdentifyFormatValue, myExtent, myWidth, myHeight );
+    QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint,  QgsRasterDataProvider::IdentifyFormatValue, myExtent, myWidth, myHeight ).results();
 
     QList<int> bands = renderer->usesBands();
 

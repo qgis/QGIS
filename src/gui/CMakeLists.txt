@@ -34,6 +34,7 @@ symbology-ng/qgsellipsesymbollayerv2widget.cpp
 symbology-ng/qgspointdisplacementrendererwidget.cpp
 symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
 symbology-ng/qgssymbolslistwidget.cpp
+symbology-ng/qgssvgselectorwidget.cpp
 symbology-ng/qgslayerpropertieswidget.cpp
 symbology-ng/qgssmartgroupeditordialog.cpp
 
@@ -95,7 +96,6 @@ qgscredentialdialog.cpp
 qgsowssourceselect.cpp
 qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
-qgsquickprint.cpp
 qgsrasterlayersaveasdialog.cpp
 qgsrasterformatsaveoptionswidget.cpp
 qgsrasterpyramidsoptionswidget.cpp
@@ -158,6 +158,7 @@ symbology-ng/qgsellipsesymbollayerv2widget.h
 symbology-ng/qgspointdisplacementrendererwidget.h
 symbology-ng/qgsvectorfieldsymbollayerwidget.h
 symbology-ng/qgssymbolslistwidget.h
+symbology-ng/qgssvgselectorwidget.h
 symbology-ng/qgslayerpropertieswidget.h
 symbology-ng/qgssmartgroupeditordialog.h
 
@@ -202,7 +203,6 @@ qgsoptionsdialogbase.h
 qgscredentialdialog.h
 qgsowssourceselect.h
 qgsprojectionselector.h
-qgsquickprint.h
 qgsrasterlayersaveasdialog.h
 qgsrasterformatsaveoptionswidget.h
 qgsrasterpyramidsoptionswidget.h
@@ -318,8 +318,6 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/composer
   ../core/raster
-  ../core/renderer
-  ../core/symbology
   ../core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui

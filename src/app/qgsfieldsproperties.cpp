@@ -103,6 +103,7 @@ void QgsAttributesTree::dragMoveEvent( QDragMoveEvent *event )
 
 bool QgsAttributesTree::dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action )
 {
+  Q_UNUSED( index )
   bool bDropSuccessful = false;
 
   if ( action == Qt::IgnoreAction )
@@ -253,13 +254,6 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
 
 void QgsFieldsProperties::loadAttributeEditorTree()
 {
-  // tabs and groups info
-  mAttributesTree->clear();
-  mAttributesTree->setSortingEnabled( false );
-  mAttributesTree->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mAttributesTree->setDragDropMode( QAbstractItemView::InternalMove );
-  mAttributesTree->setAcceptDrops( true );
-  mAttributesTree->setDragDropMode( QAbstractItemView::DragDrop );
   // tabs and groups info
   mAttributesTree->clear();
   mAttributesTree->setSortingEnabled( false );

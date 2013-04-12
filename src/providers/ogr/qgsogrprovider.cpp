@@ -107,6 +107,14 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrType = OFTReal;
       break;
 
+    case QVariant::Date:
+      ogrType = OFTDate;
+      break;
+
+    case QVariant::DateTime:
+      ogrType = OFTDateTime;
+      break;
+
     default:
       return false;
   }
@@ -336,11 +344,12 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     QgsMessageLog::logMessage( tr( "Data source is invalid (%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), tr( "OGR" ) );
   }
 
-  // FIXME: sync with app/qgsnewvectorlayerdialog.cpp
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 15 )
   << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date )
+  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime )
   ;
 }
 
@@ -557,10 +566,10 @@ void QgsOgrProvider::loadFields()
       {
         case OFTInteger: varType = QVariant::Int; break;
         case OFTReal: varType = QVariant::Double; break;
-          // unsupported in OGR 1.3
-          //case OFTDateTime: varType = QVariant::DateTime; break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1400
-        case OFTString: varType = QVariant::String; break;
+        case OFTDate: varType = QVariant::Date; break;
+        case OFTDateTime: varType = QVariant::DateTime; break;
+        case OFTString:
 #endif
         default: varType = QVariant::String; // other unsupported, leave it as a string
       }
@@ -800,6 +809,25 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
           OGR_F_SetFieldDouble( feature, targetAttributeId, attrVal.toDouble() );
           break;
 
+        case OFTDate:
+          OGR_F_SetFieldDateTime( feature, targetAttributeId,
+                                  attrVal.toDate().year(),
+                                  attrVal.toDate().month(),
+                                  attrVal.toDate().day(),
+                                  0, 0, 0,
+                                  0 );
+          break;
+        case OFTDateTime:
+          OGR_F_SetFieldDateTime( feature, targetAttributeId,
+                                  attrVal.toDateTime().date().year(),
+                                  attrVal.toDateTime().date().month(),
+                                  attrVal.toDateTime().date().day(),
+                                  attrVal.toDateTime().time().hour(),
+                                  attrVal.toDateTime().time().minute(),
+                                  attrVal.toDateTime().time().second(),
+                                  0 );
+          break;
+
         case OFTString:
           QgsDebugMsg( QString( "Writing string attribute %1 with %2, encoding %3" )
                        .arg( targetAttributeId )
@@ -869,6 +897,12 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         break;
       case QVariant::Double:
         type = OFTReal;
+        break;
+      case QVariant::Date:
+        type = OFTDate;
+        break;
+      case QVariant::DateTime:
+        type = OFTDateTime;
         break;
       case QVariant::String:
         type = OFTString;
@@ -975,6 +1009,24 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
             break;
           case OFTReal:
             OGR_F_SetFieldDouble( of, f, it2->toDouble() );
+            break;
+          case OFTDate:
+            OGR_F_SetFieldDateTime( of, f,
+                                    it2->toDate().year(),
+                                    it2->toDate().month(),
+                                    it2->toDate().day(),
+                                    0, 0, 0,
+                                    0 );
+            break;
+          case OFTDateTime:
+            OGR_F_SetFieldDateTime( of, f,
+                                    it2->toDateTime().date().year(),
+                                    it2->toDateTime().date().month(),
+                                    it2->toDateTime().date().day(),
+                                    it2->toDateTime().time().hour(),
+                                    it2->toDateTime().time().minute(),
+                                    it2->toDateTime().time().second(),
+                                    0 );
             break;
           case OFTString:
             OGR_F_SetFieldString( of, f, mEncoding->fromUnicode( it2->toString() ).constData() );
@@ -1842,6 +1894,14 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
       field = OGR_Fld_Create( TO8( it->first ), OFTString );
       OGR_Fld_SetWidth( field, width );
+    }
+    else if ( fields[0] == "Date" )
+    {
+      field = OGR_Fld_Create( TO8( it->first ), OFTDate );
+    }
+    else if ( fields[0] == "DateTime" )
+    {
+      field = OGR_Fld_Create( TO8( it->first ), OFTDateTime );
     }
     else
     {

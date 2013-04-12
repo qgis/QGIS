@@ -260,10 +260,10 @@ class ShapeMergeThread( QThread ):
         for mergedField in mergedFields:
           if mergedField.name() == layerField.name() and mergedField.type() == layerField.type():
             fieldFound = True
-	    break
+            break
 
         if not fieldFound:
-	  if not fieldMap.has_key(shapeIndex):
+          if not fieldMap.has_key(shapeIndex):
             fieldMap[shapeIndex]={}
 
           fieldMap[shapeIndex][fieldIndex] = len(mergedFields)
@@ -283,8 +283,12 @@ class ShapeMergeThread( QThread ):
     self.geom = newLayer.wkbType()
     vprovider = newLayer.dataProvider()
 
+    fields = QgsFields()
+    for f in mergedFields:
+      fields.append(f)
+
     writer = QgsVectorFileWriter( self.outputFileName, self.outputEncoding,
-             mergedFields, self.geom, self.crs )
+                 fields, self.geom, self.crs )
 
     shapeIndex = 0
     for fileName in self.shapes:
@@ -306,10 +310,10 @@ class ShapeMergeThread( QThread ):
         mergedAttrs = [QVariant()] * len(mergedFields)
 
         # fill available attributes with values
-	fieldIndex = 0
+        fieldIndex = 0
         for v in inFeat.attributes():
-	  if fieldMap.has_key(shapeIndex) and fieldMap[shapeIndex].has_key(layerIndex):
-	    mergedAttrs[ fieldMap[shapeIndex][layerIndex] ] = v
+          if fieldMap.has_key(shapeIndex) and fieldMap[shapeIndex].has_key(fieldIndex):
+            mergedAttrs[ fieldMap[shapeIndex][fieldIndex] ] = v
           fieldIndex += 1
 
         inGeom = QgsGeometry( inFeat.geometry() )

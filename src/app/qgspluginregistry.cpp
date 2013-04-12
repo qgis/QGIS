@@ -385,7 +385,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
 {
   QSettings mySettings;
 
-#ifdef WIN32
+#if defined(WIN32) || defined(__CYGWIN__)
   QString pluginExt = "*.dll";
 #elif ANDROID
   QString pluginExt = "*plugin.so";

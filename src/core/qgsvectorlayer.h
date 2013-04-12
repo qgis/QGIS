@@ -42,7 +42,6 @@ class QgsGeometryVertexIndex;
 class QgsMapToPixel;
 class QgsLabel;
 class QgsRectangle;
-class QgsRenderer;
 class QgsVectorDataProvider;
 class QgsVectorOverlay;
 class QgsSingleSymbolRendererV2;
@@ -492,6 +491,24 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns the primary display field name used in the identify results dialog */
     const QString displayField() const;
 
+    /** Set the preview expression, used to create a human readable preview string.
+     *  Used e.g. in the attribute table feature list. Uses @link QgsExpression @endlink
+     *
+     *  @param displayExpression The expression which will be used to preview features
+     *                           for this layer
+     *  @note added in 2.0
+     */
+    void setDisplayExpression( const QString displayExpression );
+
+    /**
+     *  Get the preview expression, used to create a human readable preview string.
+     *  Uses @link QgsExpression @endlink
+     *
+     *  @return The expression which will be used to preview features for this layer
+     *  @note added in 2.0
+     */
+    const QString displayExpression();
+
     /** Returns the data provider */
     QgsVectorDataProvider* dataProvider();
 
@@ -549,12 +566,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
-    /** Returns a pointer to the renderer */
-    const QgsRenderer* renderer() const;
-
-    /** Sets the renderer. If a renderer is already present, it is deleted */
-    void setRenderer( QgsRenderer * r );
-
     /** Sets diagram rendering object (takes ownership) */
     void setDiagramRenderer( QgsDiagramRendererV2* r );
     const QgsDiagramRendererV2* diagramRenderer() const { return mDiagramRenderer; }
@@ -569,21 +580,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 1.4
      */
     void setRendererV2( QgsFeatureRendererV2* r );
-    /** Return whether using renderer V2.
-     * @note added in 1.4
-     */
-    bool isUsingRendererV2();
-    /** set whether to use renderer V2 for drawing.
-     * @note added in 1.4
-     */
-    void setUsingRendererV2( bool usingRendererV2 );
 
-    /** Draw layer with renderer V2.
+    /** Draw layer with renderer V2. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
     void drawRendererV2( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
 
-    /** Draw layer with renderer V2 using symbol levels.
+    /** Draw layer with renderer V2 using symbol levels. QgsFeatureRenderer::startRender() needs to be called before using this method
      * @note added in 1.4
      */
     void drawRendererV2Levels( QgsFeatureIterator &fit, QgsRenderContext& rendererContext, bool labeling );
@@ -1113,6 +1116,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     inline QgsGeometryCache* cache() { return mCache; }
 
+    /**
+     * @brief Is called when the cache image is being deleted. Overwrite and use to clean up.
+     * @note added in 2.0
+     */
+    virtual void onCacheImageDelete();
+
   signals:
 
     /** This signal is emited when selection was changed */
@@ -1158,28 +1167,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        @todo XXX should this return bool?  Throw exceptions?
     */
     bool setDataProvider( QString const & provider );
-
-    /** Draws features. May cause projections exceptions to be generated
-     *  (i.e., code that calls this function needs to catch them) */
-    void drawFeature( QgsRenderContext &renderContext,
-                      QgsFeature& fet,
-                      QImage* marker );
-
-    /** Convenience function to transform the given point */
-    void transformPoint( double& x, double& y,
-                         const QgsMapToPixel* mtp, const QgsCoordinateTransform* ct );
-
-    void transformPoints( QVector<double>& x, QVector<double>& y, QVector<double>& z, QgsRenderContext &renderContext );
-
-    /** Draw the linestring as given in the WKB format. Returns a pointer
-     * to the byte after the end of the line string binary data stream (WKB).
-     */
-    unsigned char *drawLineString( unsigned char *WKBlinestring, QgsRenderContext &renderContext );
-
-    /** Draw the polygon as given in the WKB format. Returns a pointer to
-     *  the byte after the end of the polygon binary data stream (WKB).
-     */
-    unsigned char *drawPolygon( unsigned char *WKBpolygon, QgsRenderContext &renderContext );
 
     /** Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature) */
     QgsFeatureId findFreeId();
@@ -1238,6 +1225,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** index of the primary label field */
     QString mDisplayField;
 
+    /** the preview expression used to generate a human readable preview string for features */
+    QString mDisplayExpression;
+
     /** Data provider key */
     QString mProviderKey;
 
@@ -1274,13 +1264,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     int mWkbType;
 
     /** Renderer object which holds the information about how to display the features */
-    QgsRenderer *mRenderer;
-
-    /** Renderer V2 */
     QgsFeatureRendererV2 *mRendererV2;
-
-    /** whether to use V1 or V2 renderer */
-    bool mUsingRendererV2;
 
     /** Label */
     QgsLabel *mLabel;
@@ -1341,6 +1325,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     // Feature counts for each renderer symbol
     QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
+
+    QgsRenderContext* mCurrentRendererContext;
 
     friend class QgsVectorLayerFeatureIterator;
 };

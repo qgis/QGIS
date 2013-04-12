@@ -29,7 +29,7 @@ from utilities import (unitTestDataPath,
                        TestCase,
                        unittest,
                        #expectedFailure
-                       # )
+                      )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 def createEmptyLayer():
@@ -641,7 +641,7 @@ class TestQgsVectorLayer(TestCase):
             assert attrs[0].toInt()[0] == 123
             assert attrs[1].toDouble()[0] == 5.5
 
-            checkAfterOneDelete()
+        checkAfterOneDelete()
 
         # delete last attribute
         assert layer.deleteAttribute(0)

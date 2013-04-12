@@ -20,9 +20,7 @@
 #include "qgscomposerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
 #include "qgsrendererv2.h"
-#include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
@@ -63,100 +61,6 @@ void QgsComposerLegendItem::writeXMLChildren( QDomElement& elem, QDomDocument& d
   }
 }
 
-//////////////////////////////QgsComposerSymbolItem
-
-QgsComposerSymbolItem::QgsComposerSymbolItem(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbol( 0 )
-{
-}
-
-QgsComposerSymbolItem::QgsComposerSymbolItem( const QString& text ): QgsComposerLegendItem( text, QgsComposerLegendStyle::Symbol ), mSymbol( 0 )
-{
-}
-
-QgsComposerSymbolItem::QgsComposerSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text, QgsComposerLegendStyle::Symbol ), mSymbol( 0 )
-{
-}
-
-QgsComposerSymbolItem::~QgsComposerSymbolItem()
-{
-  delete mSymbol;
-}
-
-void QgsComposerSymbolItem::setSymbol( QgsSymbol* s )
-{
-  delete mSymbol;
-  mSymbol = s;
-}
-
-QStandardItem* QgsComposerSymbolItem::clone() const
-{
-  QgsComposerSymbolItem* cloneItem = new QgsComposerSymbolItem();
-  *cloneItem = *this;
-  if ( mSymbol )
-  {
-    cloneItem->setSymbol( new QgsSymbol( *mSymbol ) );
-  }
-  return cloneItem;
-}
-
-void QgsComposerSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc ) const
-{
-  QDomElement vectorClassElem = doc.createElement( "VectorClassificationItem" );
-  if ( mSymbol )
-  {
-    mSymbol->writeXML( vectorClassElem, doc, 0 );
-  }
-  vectorClassElem.setAttribute( "text", text() );
-  vectorClassElem.setAttribute( "layerId", mLayerID );
-
-  elem.appendChild( vectorClassElem );
-}
-
-void QgsComposerSymbolItem::readXML( const QDomElement& itemElem, bool xServerAvailable )
-{
-  if ( itemElem.isNull() )
-  {
-    return;
-  }
-  setText( itemElem.attribute( "text", "" ) );
-  setLayerID( itemElem.attribute( "layerId", "" ) );
-
-  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mLayerID ) );
-  if ( vLayer )
-  {
-    QDomElement symbolElem = itemElem.firstChildElement( "symbol" );
-    if ( !symbolElem.isNull() )
-    {
-      QgsSymbol* symbol = new QgsSymbol( vLayer->geometryType() );
-      symbol->readXML( symbolElem, vLayer );
-      setSymbol( symbol );
-      if ( !xServerAvailable ) //don't read icon without GUI
-      {
-        return;
-      }
-
-      //add icon
-      switch ( symbol->type() )
-      {
-        case QGis::Point:
-          setIcon( QIcon( QPixmap::fromImage( symbol->getPointSymbolAsImage() ) ) );
-          break;
-        case QGis::Line:
-          setIcon( QIcon( QPixmap::fromImage( symbol->getLineSymbolAsImage() ) ) );
-          break;
-        case QGis::Polygon:
-          setIcon( QIcon( QPixmap::fromImage( symbol->getPolygonSymbolAsImage() ) ) );
-          break;
-        case QGis::NoGeometry:
-          setIcon( QIcon( QgsApplication::activeThemePath() + "/mIconTableLayer.png" ) );
-          break;
-        case QGis::UnknownGeometry:
-          // should not occur
-          break;
-      }
-    }
-  }
-}
 
 ////////////////QgsComposerSymbolV2Item
 
@@ -357,7 +261,7 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
     QString elemTag = currentElem.tagName();
     if ( elemTag == "VectorClassificationItem" )
     {
-      currentChildItem = new QgsComposerSymbolItem();
+      continue; // legacy - unsupported
     }
     else if ( elemTag == "VectorClassificationItemNg" )
     {

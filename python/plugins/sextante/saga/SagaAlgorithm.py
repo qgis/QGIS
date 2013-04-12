@@ -233,7 +233,7 @@ class SagaAlgorithm(GeoAlgorithm):
                             raise GeoAlgorithmExecutionException("Unsupported file format")
 
         #2: set parameters and outputs
-        if SextanteUtils.isWindows():
+        if SextanteUtils.isWindows() or SextanteUtils.isMac():
             command = self.undecoratedGroup  + " \"" + self.cmdname + "\""
         else:
             command = "lib" + self.undecoratedGroup  + " \"" + self.cmdname + "\""
@@ -300,7 +300,7 @@ class SagaAlgorithm(GeoAlgorithm):
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = SextanteUtils.tempFolder() + os.sep + os.path.basename(filename) + ".sgrd"
-                if SextanteUtils.isWindows():
+                if SextanteUtils.isWindows() or SextanteUtils.isMac():
                     commands.append("io_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
                 else:
                     commands.append("libio_gdal 1 -GRIDS \"" + filename2 + "\" -FORMAT 1 -TYPE 0 -FILE \"" + filename + "\"");
@@ -335,7 +335,7 @@ class SagaAlgorithm(GeoAlgorithm):
             inputFilename = layer
         destFilename = SextanteUtils.getTempFilename("sgrd")
         self.exportedLayers[layer]= destFilename
-        if SextanteUtils.isWindows():
+        if SextanteUtils.isWindows() or SextanteUtils.isMac():
             s = "grid_tools \"Resampling\" -INPUT \"" + inputFilename + "\" -TARGET 0 -SCALE_UP_METHOD 4 -SCALE_DOWN_METHOD 4 -USER_XMIN " +\
                 str(self.xmin) + " -USER_XMAX " + str(self.xmax) + " -USER_YMIN " + str(self.ymin) + " -USER_YMAX "  + str(self.ymax) +\
                 " -USER_SIZE " + str(self.cellsize) + " -USER_GRID \"" + destFilename + "\""
@@ -349,7 +349,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def exportRasterLayer(self, layer):
         destFilename = SextanteUtils.getTempFilenameInTempFolder(os.path.basename(layer)[0:5] + ".sgrd")
         self.exportedLayers[layer]= destFilename
-        if SextanteUtils.isWindows():
+        if SextanteUtils.isWindows() or SextanteUtils.isMac():
             return "io_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer+"\""
         else:
             return "libio_gdal 0 -GRIDS \"" + destFilename + "\" -FILES \"" + layer + "\""

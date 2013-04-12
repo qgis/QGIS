@@ -34,8 +34,8 @@ from sextante.gui.AlgorithmClassification import AlgorithmDecorator
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
 from sextante.gui.RenderingStyles import RenderingStyles
 from sextante.gui.SextantePostprocessing import SextantePostprocessing
-from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor,\
-    SilentProgress
+from sextante.gui.UnthreadedAlgorithmExecutor import UnthreadedAlgorithmExecutor
+from sextante.core.SilentProgress import SilentProgress
 from sextante.modeler.Providers import Providers
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
@@ -346,89 +346,3 @@ class Sextante:
 ##==========================================================
 
 
-def alglist(text=None):
-    s=""
-    for provider in Sextante.algs.values():
-        sortedlist = sorted(provider.values(), key= lambda alg: alg.name)
-        for alg in sortedlist:
-            if text == None or text.lower() in alg.name.lower():
-                s+=(alg.name.ljust(50, "-") + "--->" + alg.commandLineName() + "\n")
-    print s
-
-def algoptions(name):
-    alg = Sextante.getAlgorithm(name)
-    if alg != None:
-        s =""
-        for param in alg.parameters:
-            if isinstance(param, ParameterSelection):
-                s+=param.name + "(" + param.description + ")\n"
-                i=0
-                for option in param.options:
-                    s+= "\t" + str(i) + " - " + str(option) + "\n"
-                    i+=1
-        print(s)
-    else:
-        print "Algorithm not found"
-
-def alghelp(name):
-    alg = Sextante.getAlgorithm(name)
-    if alg != None:
-        print(str(alg))
-        algoptions(name)
-    else:
-        print "Algorithm not found"
-
-def runalg(algOrName, *args):
-    alg = Sextante.runAlgorithm(algOrName, None, *args)
-    if alg is not None:
-        return alg.getOutputValuesAsDictionary()
-
-def runandload(name, *args):
-    Sextante.runAlgorithm(name, SextantePostprocessing.handleAlgorithmResults, *args)
-
-def extent(layers):
-    first = True
-    for layer in layers:
-        if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
-            layer = QGisLayers.getObjectFromUri(layer)
-        if first:
-            xmin = layer.extent().xMinimum()
-            xmax = layer.extent().xMaximum()
-            ymin = layer.extent().yMinimum()
-            ymax = layer.extent().yMaximum()
-        else:
-            xmin = min(xmin, layer.extent().xMinimum())
-            xmax = max(xmax, layer.extent().xMaximum())
-            ymin = min(ymin, layer.extent().yMinimum())
-            ymax = max(ymax, layer.extent().yMaximum())
-        first = False
-    return str(xmin) + "," + str(xmax) + "," + str(ymin) + "," + str(ymax)
-
-def getObjectFromName(name):
-    layers = QGisLayers.getAllLayers()
-    for layer in layers:
-        if layer.name() == name:
-            return layer
-
-def getObjectFromUri(uri):
-    return QGisLayers.getObjectFromUri(uri, False)
-
-def getobject(uriorname):
-    ret = getObjectFromName(uriorname)
-    if ret is None:
-        ret = getObjectFromUri(uriorname)
-    return ret
-
-def load(path):
-    '''Loads a layer into QGIS'''
-    return QGisLayers.load(path)
-
-def getfeatures(layer):
-    return QGisLayers.features(layer)
-
-#===============================================================================
-# def loadFromAlg(layersdict):
-#    '''Load all layer resulting from a given algorithm.
-#    Layers are passed as a dictionary, obtained from alg.getOutputValuesAsDictionary()'''
-#    QGisLayers.loadFromDict(layersdict)
-#===============================================================================

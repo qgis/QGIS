@@ -500,15 +500,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
   chkUseRenderCaching->setChecked( settings.value( "/qgis/enable_render_caching", false ).toBool() );
 
-  //Changed to default to true as of QGIS 1.7
-  //TODO: remove hack when http://hub.qgis.org/issues/5170 is fixed
-#ifdef ANDROID
-  bool use_symbology_ng_default = false;
-#else
-  bool use_symbology_ng_default = true;
-#endif
-  chkUseSymbologyNG->setChecked( settings.value( "/qgis/use_symbology_ng", use_symbology_ng_default ).toBool() );
-
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
   chkUseQPixmap->setChecked( !( settings.value( "/qgis/use_qimage_to_render", true ).toBool() ) );
@@ -1031,7 +1022,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/enable_anti_aliasing", chkAntiAliasing->isChecked() );
   settings.setValue( "/qgis/enable_render_caching", chkUseRenderCaching->isChecked() );
   settings.setValue( "/qgis/use_qimage_to_render", !( chkUseQPixmap->isChecked() ) );
-  settings.setValue( "/qgis/use_symbology_ng", chkUseSymbologyNG->isChecked() );
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );

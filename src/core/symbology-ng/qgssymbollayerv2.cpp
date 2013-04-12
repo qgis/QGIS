@@ -15,15 +15,12 @@
 
 #include "qgssymbollayerv2.h"
 #include "qgsclipper.h"
-#include "qgsrenderer.h"
 #include "qgsrendercontext.h"
 
 #include <QSize>
 #include <QPainter>
 #include <QPointF>
 #include <QPolygonF>
-
-
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM )

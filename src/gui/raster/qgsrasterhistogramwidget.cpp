@@ -841,9 +841,9 @@ void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
 
 // local function used by histoPickerSelected(), to get a rounded picked value
 // this is sensitive and may not always be correct, needs more testing
-QString findClosestTickVal( double target, QwtScaleDiv * scale, int div = 100 )
+QString findClosestTickVal( double target, const QwtScaleDiv * scale, int div = 100 )
 {
-  if ( scale == NULL ) return "";
+  if ( !scale ) return "";
 
   QList< double > minorTicks = scale->ticks( QwtScaleDiv::MinorTick );
   QList< double > majorTicks = scale->ticks( QwtScaleDiv::MajorTick );
@@ -875,17 +875,26 @@ QString findClosestTickVal( double target, QwtScaleDiv * scale, int div = 100 )
 
 void QgsRasterHistogramWidget::histoPickerSelected( const QPointF & pos )
 {
-  if ( btnHistoMin->isChecked() )
+  if ( btnHistoMin->isChecked() || btnHistoMax->isChecked() )
   {
-    leHistoMin->setText( findClosestTickVal( pos.x(), mpPlot->axisScaleDiv( QwtPlot::xBottom ) ) );
-    applyHistoMin();
-    btnHistoMin->setChecked( false );
-  }
-  else if ( btnHistoMax->isChecked() )
-  {
-    leHistoMax->setText( findClosestTickVal( pos.x(), mpPlot->axisScaleDiv( QwtPlot::xBottom ) ) );
-    applyHistoMax();
-    btnHistoMax->setChecked( false );
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060100
+    const QwtScaleDiv * scale = &mpPlot->axisScaleDiv( QwtPlot::xBottom );
+#else
+    const QwtScaleDiv * scale = mpPlot->axisScaleDiv( QwtPlot::xBottom );
+#endif
+
+    if ( btnHistoMin->isChecked() )
+    {
+      leHistoMin->setText( findClosestTickVal( pos.x(), scale ) );
+      applyHistoMin();
+      btnHistoMin->setChecked( false );
+    }
+    else if ( btnHistoMax->isChecked() )
+    {
+      leHistoMax->setText( findClosestTickVal( pos.x(), scale ) );
+      applyHistoMax();
+      btnHistoMax->setChecked( false );
+    }
   }
   if ( QApplication::overrideCursor() )
     QApplication::restoreOverrideCursor();

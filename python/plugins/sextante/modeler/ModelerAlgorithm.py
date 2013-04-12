@@ -519,14 +519,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                                              + str(len(self.algs) - len(self.deactivated)) +"]")
                             outputs = {}
                             progress.setDebugInfo("Parameters: " +
-                                ', '.join([str(p).strip() + "=" + str(p.value) for p in alg.parameters]))
+                                ', '.join([unicode(p).strip() + "=" + unicode(p.value) for p in alg.parameters]))
                             t0 = time.time()
                             alg.execute(progress)
                             dt = time.time() - t0
                             for out in alg.outputs:
                                 outputs[out.name] = out.value
                             progress.setDebugInfo("Outputs: " +
-                                ', '.join([str(out).strip() + "=" + str(outputs[out.name]) for out in alg.outputs]))
+                                ', '.join([unicode(out).strip() + "=" + unicode(outputs[out.name]) for out in alg.outputs]))
                             self.producedOutputs[iAlg] = outputs
                             executed.append(iAlg)
                             progress.setDebugInfo("OK. Execution took %0.3f ms (%i outputs)." % (dt, len(outputs)))

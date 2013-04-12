@@ -39,7 +39,7 @@ except ImportError, e:
   # if the plugin is shipped with QGis catch the exception and
   # display an error message
   import os.path
-  qgisUserPluginPath = os.path.abspath( os.path.join( str( QgsApplication.qgisSettingsDirPath() ), "python") )
+  qgisUserPluginPath = os.path.abspath( os.path.join( unicode( QgsApplication.qgisSettingsDirPath() ), "python") )
   if not os.path.dirname(__file__).startswith( qgisUserPluginPath ):
     title = QCoreApplication.translate( "GdalTools", "Plugin error" )
     message = QCoreApplication.translate( "GdalTools", u'Unable to load %1 plugin. \nThe required "%2" module is missing. \nInstall it and try again.' )

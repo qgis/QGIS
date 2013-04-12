@@ -18,9 +18,7 @@
 #include "qgsattributeeditor.h"
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
-#include <qgsuniquevaluerenderer.h>
 #include <qgscategorizedsymbolrendererv2.h>
-#include <qgssymbol.h>
 #include <qgslonglongvalidator.h>
 #include <qgsfieldvalidator.h>
 #include <qgsmaplayerregistry.h>
@@ -431,23 +429,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     case QgsVectorLayer::Classification:
     {
       QMap<QString, QString> classes;
-
-      const QgsUniqueValueRenderer *uvr = dynamic_cast<const QgsUniqueValueRenderer *>( vl->renderer() );
-      if ( uvr )
-      {
-        const QList<QgsSymbol *> symbols = uvr->symbols();
-
-        for ( int i = 0; i < symbols.size(); i++ )
-        {
-          QString label = symbols[i]->label();
-          QString name = symbols[i]->lowerValue();
-
-          if ( label == "" )
-            label = name;
-
-          classes.insert( name, label );
-        }
-      }
 
       const QgsCategorizedSymbolRendererV2 *csr = dynamic_cast<const QgsCategorizedSymbolRendererV2 *>( vl->rendererV2() );
       if ( csr )

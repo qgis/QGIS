@@ -24,6 +24,7 @@
 %Include qgsdatasourceuri.sip
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdistancearea.sip
+%Include qgserror.sip
 %Include qgsexpression.sip
 %Include qgsfeature.sip
 %Include qgsfeatureiterator.sip
@@ -141,6 +142,7 @@
 %Include raster/qgsrasterdataprovider.sip
 %Include raster/qgsrasterfilewriter.sip
 %Include raster/qgsrasterhistogram.sip
+%Include raster/qgsrasteridentifyresult.sip
 %Include raster/qgsrasterinterface.sip
 %Include raster/qgsrasteriterator.sip
 %Include raster/qgsrasterlayer.sip
@@ -148,6 +150,7 @@
 %Include raster/qgsrasterpipe.sip
 %Include raster/qgsrasterprojector.sip
 %Include raster/qgsrasterpyramid.sip
+%Include raster/qgsrasterrange.sip
 %Include raster/qgsrasterrenderer.sip
 %Include raster/qgsrasterresamplefilter.sip
 %Include raster/qgsrasterresampler.sip
@@ -163,15 +166,8 @@
 %Include raster/qgscubicrasterresampler.sip
 %Include raster/qgsmultibandcolorrenderer.sip
 
-%Include renderer/qgscontinuouscolorrenderer.sip
-%Include renderer/qgsgraduatedsymbolrenderer.sip
-%Include renderer/qgsrenderer.sip
-%Include renderer/qgssinglesymbolrenderer.sip
-%Include renderer/qgsuniquevaluerenderer.sip
-
 %Include symbology-ng/qgsstylev2.sip
 %Include symbology-ng/qgssvgcache.sip
-%Include symbology-ng/qgssymbologyv2conversion.sip
 %Include symbology-ng/qgssymbolv2.sip
 %Include symbology-ng/qgscolorbrewerpalette.sip
 %Include symbology-ng/qgscptcityarchive.sip
@@ -193,7 +189,3 @@
 %Include symbology-ng/qgslinesymbollayerv2.sip
 %Include symbology-ng/qgsmarkersymbollayerv2.sip
 %Include symbology-ng/qgssymbollayerv2registry.sip
-
-%Include symbology/qgsmarkercatalogue.sip
-%Include symbology/qgssymbol.sip
-%Include symbology/qgssymbologyutils.sip

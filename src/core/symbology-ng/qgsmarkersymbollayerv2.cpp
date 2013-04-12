@@ -48,7 +48,8 @@ static QPointF _rotatedOffset( const QPointF& offset, double angle )
 //////
 
 QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
-    : mNameExpression( 0 ), mColorExpression( 0 ), mColorBorderExpression( 0 ), mSizeExpression( 0 ), mAngleExpression( 0 ), mOffsetExpression( 0 )
+    : mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM ), mNameExpression( 0 ), mColorExpression( 0 ), mColorBorderExpression( 0 ), mOutlineWidthExpression( 0 ),
+    mSizeExpression( 0 ), mAngleExpression( 0 ), mOffsetExpression( 0 )
 {
   mName = name;
   mColor = color;
@@ -91,6 +92,15 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "size_unit" ) )
     m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
 
+  if ( props.contains( "outline_width" ) )
+  {
+    m->setOutlineWidth( props["outline_width"].toDouble() );
+  }
+  if ( props.contains( "outline_width_unit" ) )
+  {
+    m->setOutlineWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["outline_width_unit"] ) );
+  }
+
   //data defined properties
   if ( props.contains( "name_expression" ) )
   {
@@ -103,6 +113,10 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "color_border_expression" ) )
   {
     m->setDataDefinedProperty( "color_border", props["color_border_expression"] );
+  }
+  if ( props.contains( "outline_width_expression" ) )
+  {
+    m->setDataDefinedProperty( "outline_width", props["outline_width_expression"] );
   }
   if ( props.contains( "size_expression" ) )
   {
@@ -135,9 +149,9 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 
   mBrush = QBrush( brushColor );
   mPen = QPen( penColor );
-  mPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );
+  mPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
 
-  QColor selBrushColor = context.selectionColor();
+  QColor selBrushColor = context.renderContext().selectionColor();
   QColor selPenColor = selBrushColor == mColor ? selBrushColor : mBorderColor;
   if ( context.alpha() < 1 )
   {
@@ -146,7 +160,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   }
   mSelBrush = QBrush( selBrushColor );
   mSelPen = QPen( selPenColor );
-  mSelPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );
+  mSelPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
 
   bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation;
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || mSizeExpression;
@@ -155,7 +169,8 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   // - size, rotation, shape, color, border color is not data-defined
   // - drawing to screen (not printer)
   mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput()
-                && !mNameExpression && !mColorExpression && !mColorBorderExpression && !mSizeExpression && !mAngleExpression;
+                && !mNameExpression && !mColorExpression && !mColorBorderExpression && !mOutlineWidthExpression &&
+                !mSizeExpression && !mAngleExpression;
 
   // use either QPolygonF or QPainterPath for drawing
   // TODO: find out whether drawing directly doesn't bring overhead - if not, use it for all shapes
@@ -236,7 +251,7 @@ void QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
 
   // Construct the selected version of the Cache
 
-  QColor selColor = context.selectionColor();
+  QColor selColor = context.renderContext().selectionColor();
 
   mSelCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32_Premultiplied );
   mSelCache.fill( 0 );
@@ -517,6 +532,13 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     if ( mColorBorderExpression )
     {
       mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( mColorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+      mSelPen.setColor( QgsSymbolLayerV2Utils::decodeColor( mColorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+    }
+    if ( mOutlineWidthExpression )
+    {
+      double outlineWidth = mOutlineWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+      mPen.setWidthF( outlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
+      mSelPen.setWidthF( outlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit ) );
     }
 
     p->setBrush( context.selected() ? mSelBrush : mBrush );
@@ -542,6 +564,8 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
+  map["outline_width"] = QString::number( mOutlineWidth );
+  map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
 
   //data define properties
   if ( mNameExpression )
@@ -555,6 +579,10 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   if ( mColorBorderExpression )
   {
     map["color_border_expression"] = mColorBorderExpression->dump();
+  }
+  if ( mOutlineWidthExpression )
+  {
+    map["outline_width_expression"] = mOutlineWidthExpression->dump();
   }
   if ( mSizeExpression )
   {
@@ -577,6 +605,8 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
   m->setOffset( mOffset );
   m->setSizeUnit( mSizeUnit );
   m->setOffsetUnit( mOffsetUnit );
+  m->setOutlineWidth( mOutlineWidth );
+  m->setOutlineWidthUnit( mOutlineWidthUnit );
 
   //data defined properties
   if ( mNameExpression )
@@ -590,6 +620,10 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
   if ( mColorBorderExpression )
   {
     m->setDataDefinedProperty( "color_border", mColorBorderExpression->dump() );
+  }
+  if ( mOutlineWidthExpression )
+  {
+    m->setDataDefinedProperty( "outline_width", mOutlineWidthExpression->dump() );
   }
   if ( mSizeExpression )
   {
@@ -708,6 +742,10 @@ const QgsExpression* QgsSimpleMarkerSymbolLayerV2::dataDefinedProperty( const QS
   {
     return mColorBorderExpression;
   }
+  else if ( property == "outline_width" )
+  {
+    return mOutlineWidthExpression;
+  }
   else if ( property == "size" )
   {
     return mSizeExpression;
@@ -743,6 +781,10 @@ void QgsSimpleMarkerSymbolLayerV2::setDataDefinedProperty( const QString& proper
   {
     delete mColorBorderExpression; mColorBorderExpression = new QgsExpression( expressionString );
   }
+  else if ( property == "outline_width" )
+  {
+    delete mOutlineWidthExpression; mOutlineWidthExpression = new QgsExpression( expressionString );
+  }
   else if ( property == "size" )
   {
     delete mSizeExpression; mSizeExpression = new QgsExpression( expressionString );
@@ -771,6 +813,10 @@ void QgsSimpleMarkerSymbolLayerV2::removeDataDefinedProperty( const QString& pro
   {
     delete mColorBorderExpression; mColorBorderExpression = 0;
   }
+  else if ( property == "outline_width" )
+  {
+    delete mOutlineWidthExpression; mOutlineWidthExpression = 0;
+  }
   else if ( property == "size" )
   {
     delete mSizeExpression; mSizeExpression = 0;
@@ -790,6 +836,7 @@ void QgsSimpleMarkerSymbolLayerV2::removeDataDefinedProperties()
   delete mNameExpression; mNameExpression = 0;
   delete mColorExpression; mColorExpression = 0;
   delete mColorBorderExpression; mColorBorderExpression = 0;
+  delete mOutlineWidthExpression; mOutlineWidthExpression = 0;
   delete mSizeExpression; mSizeExpression = 0;
   delete mAngleExpression; mAngleExpression = 0;
   delete mOffsetExpression; mOffsetExpression = 0;
@@ -807,6 +854,8 @@ QSet<QString> QgsSimpleMarkerSymbolLayerV2::usedAttributes() const
     columns.append( mColorExpression->referencedColumns() );
   if ( mColorBorderExpression )
     columns.append( mColorBorderExpression->referencedColumns() );
+  if ( mOutlineWidthExpression )
+    columns.append( mOutlineWidthExpression->referencedColumns() );
   if ( mSizeExpression )
     columns.append( mSizeExpression->referencedColumns() );
   if ( mAngleExpression )
@@ -884,6 +933,8 @@ void QgsSimpleMarkerSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl 
     mColorExpression->prepare( fields );
   if ( mColorBorderExpression )
     mColorBorderExpression->prepare( fields );
+  if ( mOutlineWidthExpression )
+    mOutlineWidthExpression->prepare( fields );
   if ( mSizeExpression )
     mSizeExpression->prepare( fields );
   if ( mAngleExpression )
@@ -947,7 +998,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   }
 
   if ( props.contains( "size_unit" ) )
-    m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( "size_unit" ) );
+    m->setSizeUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["size_unit"] ) );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
   if ( props.contains( "offset_unit" ) )
@@ -1144,7 +1195,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
 
   if ( context.selected() )
   {
-    QPen pen( context.selectionColor() );
+    QPen pen( context.renderContext().selectionColor() );
     double penWidth = QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), QgsSymbolV2::MM );
     if ( penWidth > size / 20 )
     {
@@ -1569,7 +1620,7 @@ void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
-  QColor penColor = context.selected() ? context.selectionColor() : mColor;
+  QColor penColor = context.selected() ? context.renderContext().selectionColor() : mColor;
   penColor.setAlphaF( mColor.alphaF() * context.alpha() );
   p->setPen( penColor );
   p->setFont( mFont );

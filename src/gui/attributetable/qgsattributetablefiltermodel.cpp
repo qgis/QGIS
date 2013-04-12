@@ -179,7 +179,10 @@ void QgsAttributeTableFilterModel::masterSelectionChanged( const QItemSelection 
   }
 
   // Now emit the signal
-  layer()->setSelectedFeatures( layer()->selectedFeaturesIds() );
+  if ( mSyncSelection )
+  {
+    layer()->setSelectedFeatures( layer()->selectedFeaturesIds() );
+  }
 
   connect( layer(), SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
 }
@@ -319,6 +322,17 @@ QgsFeatureId QgsAttributeTableFilterModel::rowToId( const QModelIndex& row )
 QItemSelectionModel* QgsAttributeTableFilterModel::masterSelection()
 {
   return mMasterSelection;
+}
+
+void QgsAttributeTableFilterModel::disableSelectionSync()
+{
+  mSyncSelection = false;
+}
+
+void QgsAttributeTableFilterModel::enableSelectionSync()
+{
+  mSyncSelection = true;
+  layer()->setSelectedFeatures( layer()->selectedFeaturesIds() );
 }
 
 QModelIndex QgsAttributeTableFilterModel::mapToMaster( const QModelIndex &proxyIndex ) const

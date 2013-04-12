@@ -101,14 +101,6 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
       return false;
     }
 
-    // skip features without geometry
-    if ( !OGR_F_GetGeometryRef( fet ) && !P->mFetchFeaturesWithoutGeom )
-    {
-      OGR_F_Destroy( fet );
-      close();
-      return false;
-    }
-
     readFeature( fet, feature );
 
     feature.setValid( true );
@@ -120,13 +112,6 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
 
   while (( fet = OGR_L_GetNextFeature( P->ogrLayer ) ) )
   {
-    // skip features without geometry
-    if ( !P->mFetchFeaturesWithoutGeom && !OGR_F_GetGeometryRef( fet ) )
-    {
-      OGR_F_Destroy( fet );
-      continue;
-    }
-
     if ( !readFeature( fet, feature ) )
       continue;
 
@@ -187,7 +172,18 @@ void QgsOgrFeatureIterator::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature 
       case QVariant::String: value = QVariant( P->mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) ); break;
       case QVariant::Int: value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) ); break;
       case QVariant::Double: value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) ); break;
-        //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
+      case QVariant::Date:
+      case QVariant::DateTime:
+      {
+        int year, month, day, hour, minute, second, tzf;
+
+        OGR_F_GetFieldAsDateTime( ogrFet, attindex, &year, &month, &day, &hour, &minute, &second, &tzf );
+        if ( P->mAttributeFields[attindex].type() == QVariant::Date )
+          value = QDate( year, month, day );
+        else
+          value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
+      }
+      break;
       default: assert( NULL && "unsupported field type" );
     }
   }

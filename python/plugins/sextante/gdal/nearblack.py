@@ -23,13 +23,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 from PyQt4 import QtGui
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.outputs.OutputRaster import OutputRaster
-import os
+
 from sextante.gdal.GdalUtils import GdalUtils
 
 class nearblack(GeoAlgorithm):
@@ -52,12 +54,12 @@ class nearblack(GeoAlgorithm):
         self.addOutput(OutputRaster(nearblack.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        commands = ["nearblack"]
-        commands.append("-o")
-        commands.append(self.getOutputValue(nearblack.OUTPUT))
-        commands.append("-near")
-        commands.append(str(self.getParameterValue(nearblack.NEAR)))
+        arguments = []
+        arguments.append("-o")
+        arguments.append(self.getOutputValue(nearblack.OUTPUT))
+        arguments.append("-near")
+        arguments.append(str(self.getParameterValue(nearblack.NEAR)))
         if self.getParameterValue(nearblack.WHITE):
-            commands.append("-white")
-        commands.append(self.getParameterValue(nearblack.INPUT))
-        GdalUtils.runGdal(commands, progress)
+            arguments.append("-white")
+        arguments.append(self.getParameterValue(nearblack.INPUT))
+        GdalUtils.runGdal(["nearblack", GdalUtils.escapeAndJoin(arguments)], progress)

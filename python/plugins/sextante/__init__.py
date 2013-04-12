@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-from sextante.core.Sextante import runalg, runandload, alghelp, alglist, algoptions, load, \
-                                    extent, getObjectFromName, getObjectFromUri, getobject, getfeatures
-
+from sextante.tools.general import runalg, runandload, alghelp, alglist, algoptions, load, extent, getobject
+from sextante.tools.vector import getfeatures, spatialindex, values, uniquevalues
+from sextante.tools.raster import scanraster
 from sextante.tests.TestData import loadTestData
 
 __author__ = 'Victor Olaya'

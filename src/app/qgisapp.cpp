@@ -176,7 +176,6 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
 #include "qgsrectangle.h"
-#include "qgsrenderer.h"
 #include "qgsscalecombobox.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
@@ -273,13 +272,11 @@
 
 #include <sqlite3.h>
 
-#ifdef HAVE_SPATIALITE
 extern "C"
 {
 #include <spatialite.h>
 }
 #include "qgsnewspatialitelayerdialog.h"
-#endif
 
 #include "qgspythonutils.h"
 
@@ -722,7 +719,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // update windows
   qApp->processEvents();
 
-  fileNewBlank(); // prepare empty project
+  // check if a project has been loaded already via drag/drop or filesystem loading
+  if ( !QgsProject::instance() )
+  {
+    fileNewBlank(); // prepare empty project
+  }
 
 } // QgisApp ctor
 
@@ -1088,13 +1089,6 @@ void QgisApp::createActions()
   connect( mActionMoveLabel, SIGNAL( triggered() ), this, SLOT( moveLabel() ) );
   connect( mActionRotateLabel, SIGNAL( triggered() ), this, SLOT( rotateLabel() ) );
   connect( mActionChangeLabelProperties, SIGNAL( triggered() ), this, SLOT( changeLabelProperties() ) );
-
-#ifndef HAVE_SPATIALITE
-  delete mActionNewSpatialiteLayer;
-  mActionNewSpatialiteLayer = 0;
-  delete mActionAddSpatiaLiteLayer;
-  mActionAddSpatiaLiteLayer = 0;
-#endif
 
 #ifndef HAVE_POSTGRESQL
   delete mActionAddPgLayer;
@@ -1655,10 +1649,8 @@ void QgisApp::setTheme( QString theThemeName )
 #ifdef HAVE_POSTGRESQL
   mActionAddPgLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddLayer.png" ) );
 #endif
-#ifdef HAVE_SPATIALITE
   mActionNewSpatialiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionNewVectorLayer.png" ) );
   mActionAddSpatiaLiteLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddSpatiaLiteLayer.png" ) );
-#endif
 #ifdef HAVE_MSSQL
   mActionAddMssqlLayer->setIcon( QgsApplication::getThemeIcon( "/mActionAddMssqlLayer.png" ) );
 #endif
@@ -2411,11 +2403,7 @@ void QgisApp::about()
     versionString += "</tr><tr>";
 
     versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
-#ifdef HAVE_SPATIALITE
     versionString += spatialite_version();
-#else
-    versionString += tr( "No support." );
-#endif
     versionString += "</td>";
 
     versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
@@ -2957,7 +2945,6 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
 void QgisApp::addSpatiaLiteLayer()
 {
-#ifdef HAVE_SPATIALITE
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
@@ -2974,7 +2961,6 @@ void QgisApp::addSpatiaLiteLayer()
            this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
-#endif
 } // QgisApp::addSpatiaLiteLayer()
 
 void QgisApp::addMssqlLayer()
@@ -3173,7 +3159,6 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   prj->writeEntry( "Gui", "/SelectionColorGreenPart", myGreen );
   prj->writeEntry( "Gui", "/SelectionColorBluePart", myBlue );
   prj->writeEntry( "Gui", "/SelectionColorAlphaPart", myAlpha );
-  QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //set the canvas to the default background color
   //the default can be set in qgisoptions
@@ -3285,8 +3270,21 @@ void QgisApp::fileOpenAfterLaunch()
 {
   // TODO: move auto-open project options to enums
 
+  // check if a project is already loaded via command line or filesystem
+  if ( !QgsProject::instance()->fileName().isNull() )
+  {
+    return;
+  }
+
+  // check if a data source is already loaded via command line or filesystem
+  // empty project with layer loaded, but may not trigger a dirty project at this point
+  if ( QgsProject::instance() && QgsMapLayerRegistry::instance()->count() > 0 )
+  {
+    return;
+  }
+
   // fileNewBlank() has already been called in QgisApp constructor
-  // loaded project is either a new blank one, or one from command line
+  // loaded project is either a new blank one, or one from command line/filesystem
   QSettings settings;
   QString autoOpenMsgTitle = tr( "Auto-open Project" );
 
@@ -3323,12 +3321,6 @@ void QgisApp::fileOpenAfterLaunch()
     messageBar()->pushMessage( autoOpenMsgTitle,
                                tr( "Failed to open: %1" ).arg( projPath ),
                                QgsMessageBar::CRITICAL );
-    return;
-  }
-
-  // check if a project is already loaded via command line
-  if ( !QgsProject::instance()->fileName().isNull() )
-  {
     return;
   }
 
@@ -3427,7 +3419,6 @@ void QgisApp::newVectorLayer()
   }
 }
 
-#ifdef HAVE_SPATIALITE
 void QgisApp::newSpatialiteLayer()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -3437,7 +3428,6 @@ void QgisApp::newSpatialiteLayer()
   QgsNewSpatialiteLayerDialog spatialiteDialog( this );
   spatialiteDialog.exec();
 }
-#endif
 
 void QgisApp::showRasterCalculator()
 {
@@ -3552,7 +3542,6 @@ bool QgisApp::addProject( QString projectFile )
   int myGreen = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", defaultGreen );
   int myBlue = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", defaultBlue );
   int myAlpha = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", defaultAlpha );
-  QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
 
   //load project scales
   bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );

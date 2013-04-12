@@ -277,12 +277,13 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
         {
           QgsFeatureRendererV2* r = rendererFromUserStyle( userStyleElement, v );
           v->setRendererV2( r );
-          v->setUsingRendererV2( true );
           labelSettingsFromUserStyle( userStyleElement, v );
 #ifdef DIAGRAMSERVER
           overlaysFromUserStyle( userStyleElement, v );
 #endif //DIAGRAMSERVER
+#if 0
           setOpacityForLayer( namedLayerElemList[i], v );
+#endif
 
           resultList.push_back( v );
           return resultList;
@@ -294,7 +295,9 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
           {
             rasterSymbologyFromUserStyle( userStyleElement, r );
 
+#if 0
             setOpacityForLayer( namedLayerElemList[i], r );
+#endif
 
             //Using a contour symbolizer, there may be a raster and a vector layer
             QgsVectorLayer* v = contourLayerFromRaster( userStyleElement, r );
@@ -321,11 +324,13 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
       resultList = mFallbackParser->mapLayerFromStyle( layerName, styleName, useCache );
     }
 
+#if 0
     QList<QgsMapLayer*>::iterator it = resultList.begin();
     for ( ; it != resultList.end(); ++it )
     {
       setOpacityForLayer( userLayerElement, *it );
     }
+#endif
 
     return resultList;
   }
@@ -362,7 +367,9 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
           mLayersToRemove.push_back( v );
         }
       }
+#if 0
       setOpacityForLayer( userLayerElement, theMapLayer );
+#endif
       resultList.push_back( theMapLayer );
 
       return resultList;
@@ -394,9 +401,10 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
     return resultList;
   }
   theVectorLayer->setRendererV2( theRenderer );
-  theVectorLayer->setUsingRendererV2( true );
   QgsDebugMsg( "Returning the vectorlayer" );
+#if 0
   setOpacityForLayer( userLayerElement, theVectorLayer );
+#endif
   resultList.push_back( theVectorLayer );
   return resultList;
 }
@@ -1389,7 +1397,6 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
   //create renderer
   QgsFeatureRendererV2* theRenderer = rendererFromUserStyle( userStyleElem, contourLayer );
   contourLayer->setRendererV2( theRenderer );
-  contourLayer->setUsingRendererV2( true );
 
   //add labelling if requested
   labelSettingsFromUserStyle( userStyleElem, contourLayer );
@@ -1452,6 +1459,7 @@ QString QgsSLDParser::layerNameFromUri( const QString& uri ) const
   return "";
 }
 
+#if 0
 void QgsSLDParser::setOpacityForLayer( const QDomElement& layerElem, QgsMapLayer* layer ) const
 {
   QDomNode opacityNode = layerElem.namedItem( "Opacity" );
@@ -1480,6 +1488,7 @@ void QgsSLDParser::setOpacityForLayer( const QDomElement& layerElem, QgsMapLayer
   QgsDebugMsg( "Setting opacity value: " + QString::number( opacityValue ) );
   layer->setTransparency( opacityValue );
 }
+#endif
 
 void QgsSLDParser::clearRasterSymbology( QgsRasterLayer* rl ) const
 {

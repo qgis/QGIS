@@ -25,8 +25,6 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
-#include "qgsrenderer.h" //for brush scaling
-#include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -316,8 +314,10 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   //real symbol height. Can be different from standard height in case of point symbols
   double realSymbolHeight;
 
-  int opacity = 255;
   QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( symbolItem->parent() );
+
+#if 0
+  int opacity = 255;
   if ( layerItem )
   {
     QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( layerItem->layerID() );
@@ -326,6 +326,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
       opacity = currentLayer->getTransparency();
     }
   }
+#endif
 
   QString text = symbolItem->text();
   if ( text.isEmpty() )
@@ -336,13 +337,6 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
 
   QStringList lines = splitStringForWrapping( text );
 
-  QgsSymbol* symbol = 0;
-  QgsComposerSymbolItem* symItem = dynamic_cast<QgsComposerSymbolItem*>( symbolItem );
-  if ( symItem )
-  {
-    symbol = symItem->symbol();
-  }
-
   QgsSymbolV2* symbolNg = 0;
   QgsComposerSymbolV2Item* symbolV2Item = dynamic_cast<QgsComposerSymbolV2Item*>( symbolItem );
   if ( symbolV2Item )
@@ -352,17 +346,10 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   QgsComposerRasterSymbolItem* rasterItem = dynamic_cast<QgsComposerRasterSymbolItem*>( symbolItem );
 
   double x = point.x();
-  if ( symbol )  //item with symbol?
-  {
-    //draw symbol
-    drawSymbol( painter, symbol, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight, opacity );
-    symbolSize.rwidth() =  qMax( x - point.x(), mSymbolWidth );
-    symbolSize.rheight() = qMax( realSymbolHeight, mSymbolHeight );
-  }
-  else if ( symbolNg ) //item with symbol NG?
+  if ( symbolNg ) //item with symbol NG?
   {
     // must be called also with painter=0 to get real size
-    drawSymbolV2( painter, symbolNg, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight, opacity );
+    drawSymbolV2( painter, symbolNg, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight );
     symbolSize.rwidth() = qMax( x - point.x(), mSymbolWidth );
     symbolSize.rheight() = qMax( realSymbolHeight, mSymbolHeight );
   }
@@ -429,37 +416,9 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   return nucleon;
 }
 
-void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity ) const
-{
-  if ( !s )
-  {
-    return;
-  }
 
-  QGis::GeometryType symbolType = s->type();
-  switch ( symbolType )
-  {
-    case QGis::Point:
-      drawPointSymbol( p, s, currentYCoord, currentXPosition, symbolHeight, layerOpacity );
-      break;
-    case QGis::Line:
-      drawLineSymbol( p, s, currentYCoord, currentXPosition, layerOpacity );
-      symbolHeight = mSymbolHeight;
-      break;
-    case QGis::Polygon:
-      drawPolygonSymbol( p, s, currentYCoord, currentXPosition, layerOpacity );
-      symbolHeight = mSymbolHeight;
-      break;
-    case QGis::UnknownGeometry:
-    case QGis::NoGeometry:
-      // shouldn't occur
-      break;
-  }
-}
-
-void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity ) const
+void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const
 {
-  Q_UNUSED( layerOpacity );
   if ( !s )
   {
     return;
@@ -539,101 +498,6 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
   symbolHeight = height + 2 * heightOffset;
 }
 
-void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity ) const
-{
-  if ( !s )
-  {
-    return;
-  }
-
-  QImage pointImage;
-  double rasterScaleFactor = 1.0;
-  if ( p )
-  {
-    QPaintDevice* paintDevice = p->device();
-    if ( !paintDevice )
-    {
-      return;
-    }
-
-    rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
-  }
-
-  //width scale is 1.0
-  pointImage = s->getPointSymbolAsImage( 1.0, false, Qt::yellow, 1.0, 0.0, rasterScaleFactor, opacity / 255.0 );
-
-  if ( p )
-  {
-    p->save();
-    p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-
-    QPointF imageTopLeft( currentXPosition * rasterScaleFactor, currentYCoord * rasterScaleFactor );
-    p->drawImage( imageTopLeft, pointImage );
-    p->restore();
-  }
-
-  currentXPosition += s->pointSize(); //pointImage.width() / rasterScaleFactor;
-  symbolHeight = s->pointSize(); //pointImage.height() / rasterScaleFactor;
-}
-
-void QgsComposerLegend::drawLineSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity ) const
-{
-  if ( !s )
-  {
-    return;
-  }
-
-  double yCoord = currentYCoord + mSymbolHeight / 2;
-
-  if ( p )
-  {
-    p->save();
-    QPen symbolPen = s->pen();
-    QColor penColor = symbolPen.color();
-    penColor.setAlpha( opacity );
-    symbolPen.setColor( penColor );
-    symbolPen.setCapStyle( Qt::FlatCap );
-    p->setPen( symbolPen );
-    p->drawLine( QPointF( currentXPosition, yCoord ), QPointF( currentXPosition + mSymbolWidth, yCoord ) );
-    p->restore();
-  }
-
-  currentXPosition += mSymbolWidth;
-}
-
-void QgsComposerLegend::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity ) const
-{
-  if ( !s )
-  {
-    return;
-  }
-
-  if ( p )
-  {
-    //scale brush and set transparencies
-    QBrush symbolBrush = s->brush();
-    QColor brushColor = symbolBrush.color();
-    brushColor.setAlpha( opacity );
-    symbolBrush.setColor( brushColor );
-    QPaintDevice* paintDevice = p->device();
-    if ( paintDevice )
-    {
-      double rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
-      QgsRenderer::scaleBrush( symbolBrush, rasterScaleFactor );
-    }
-    p->setBrush( symbolBrush );
-
-    QPen symbolPen = s->pen();
-    QColor penColor = symbolPen.color();
-    penColor.setAlpha( opacity );
-    symbolPen.setColor( penColor );
-    p->setPen( symbolPen );
-
-    p->drawRect( QRectF( currentXPosition, currentYCoord, mSymbolWidth, mSymbolHeight ) );
-  }
-
-  currentXPosition += mSymbolWidth;
-}
 
 QStringList QgsComposerLegend::layerIdList() const
 {
@@ -1000,8 +864,7 @@ QSizeF QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point 
         drawLayerItemTitle( layerItem, painter, point );
       }
     }
-    else if ( type == QgsComposerLegendItem::SymbologyItem ||
-              type == QgsComposerLegendItem::SymbologyV2Item ||
+    else if ( type == QgsComposerLegendItem::SymbologyV2Item ||
               type == QgsComposerLegendItem::RasterSymbolItem )
     {
       //if ( !first )
@@ -1123,8 +986,7 @@ void QgsComposerLegend::setColumns( QList<Atom>& atomList )
       QgsComposerLegendItem* item = atomList[i].nucleons[j].item;
       if ( !item ) continue;
       QgsComposerLegendItem::ItemType type = item->itemType();
-      if ( type == QgsComposerLegendItem::SymbologyItem ||
-           type == QgsComposerLegendItem::SymbologyV2Item ||
+      if ( type == QgsComposerLegendItem::SymbologyV2Item ||
            type == QgsComposerLegendItem::RasterSymbolItem )
       {
         QString key = QString( "%1-%2" ).arg(( qulonglong )item->parent() ).arg( atomList[i].column );
@@ -1139,8 +1001,7 @@ void QgsComposerLegend::setColumns( QList<Atom>& atomList )
       QgsComposerLegendItem* item = atomList[i].nucleons[j].item;
       if ( !item ) continue;
       QgsComposerLegendItem::ItemType type = item->itemType();
-      if ( type == QgsComposerLegendItem::SymbologyItem ||
-           type == QgsComposerLegendItem::SymbologyV2Item ||
+      if ( type == QgsComposerLegendItem::SymbologyV2Item ||
            type == QgsComposerLegendItem::RasterSymbolItem )
       {
         QString key = QString( "%1-%2" ).arg(( qulonglong )item->parent() ).arg( atomList[i].column );

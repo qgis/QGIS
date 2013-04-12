@@ -11,6 +11,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 %TypeHeaderCode
 #include <qgsrasterdataprovider.h>
 #include <qgsrasterinterface.h>
+#include <qgsrasteridentifyresult.h>
 %End
 
   public:
@@ -155,10 +156,10 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Value representing no data value. */
     virtual double srcNoDataValue( int bandNo ) const;
 
-    virtual void setUserNoDataValue( int bandNo, QList<QgsRasterBlock::Range> noData );
+    virtual void setUserNoDataValue( int bandNo, QgsRasterRangeList noData );
 
     /** Get list of user no data value ranges */
-    virtual  QList<QgsRasterBlock::Range> userNoDataValue( int bandNo ) const;
+    virtual  QgsRasterRangeList userNoDataValue( int bandNo ) const;
 
     virtual double minimumValue( int bandNo ) const;
     virtual double maximumValue( int bandNo ) const;
@@ -193,7 +194,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      */
     virtual QString metadata() = 0;
 
-    virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 

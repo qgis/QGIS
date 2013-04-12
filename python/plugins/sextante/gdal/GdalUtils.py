@@ -23,11 +23,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-import subprocess
-from sextante.core.SextanteLog import SextanteLog
 import os
+import subprocess
+
+from PyQt4.QtCore import *
+
+from sextante.core.SextanteLog import SextanteLog
 
 try:
     from osgeo import gdal
@@ -35,7 +36,7 @@ try:
 except:
     gdalAvailable = False
 
-class GdalUtils():
+class GdalUtils:
 
     supportedRasters = None
 
@@ -108,3 +109,14 @@ class GdalUtils():
             if ext in exts:
                 return name
         return "GTiff"
+
+    @staticmethod
+    def escapeAndJoin(strList):
+        joined = QString()
+        for s in strList:
+          if " " in s:
+            escaped = '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
+          else:
+            escaped = s
+          joined += escaped + " "
+        return joined.trimmed()

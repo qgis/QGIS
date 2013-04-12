@@ -257,7 +257,7 @@ void QgsPluginManager::getPythonPluginDescriptions()
 void QgsPluginManager::getPluginDescriptions()
 {
   QString sharedLibExtension;
-#ifdef WIN32
+#if defined(WIN32) || defined(__CYGWIN__)
   sharedLibExtension = "*.dll";
 #else
   sharedLibExtension = "*.so*";

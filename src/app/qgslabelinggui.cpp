@@ -26,10 +26,14 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
 #include "qgisapp.h"
+#include "qgsmaprenderer.h"
 #include "qgsproject.h"
+#include "qgssvgcache.h"
 #include "qgscharacterselectdialog.h"
+#include "qgssvgselectorwidget.h"
 
 #include <QColorDialog>
+#include <QFileDialog>
 #include <QFontDialog>
 #include <QTextEdit>
 #include <QApplication>
@@ -299,6 +303,52 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   updateFontViaStyle( lyr.textNamedStyle );
   updateFont( mRefFont );
 
+  // shape background
+  mShapeBackgroundGrpBx->setChecked( lyr.shapeDraw );
+  mShapeTypeCmbBx->blockSignals( true );
+  mShapeTypeCmbBx->setCurrentIndex( lyr.shapeType );
+  mShapeTypeCmbBx->blockSignals( false );
+  // set up SVG preview
+  mSvgSelector = new QgsSvgSelectorWidget( this );
+  mSVGSelectGrpBx->layout()->addWidget( mSvgSelector );
+  mSvgSelector->setSvgPath( lyr.shapeSVGFile );
+
+  mShapeSizeCmbBx->setCurrentIndex( lyr.shapeSizeType );
+  mShapeSizeXSpnBx->setValue( lyr.shapeSize.x() );
+  mShapeSizeYSpnBx->setValue( lyr.shapeSize.y() );
+  mShapeSizeUnitsCmbBx->setCurrentIndex( lyr.shapeSizeUnits - 1 );
+  mShapeRotationCmbBx->setCurrentIndex( lyr.shapeRotationType );
+  mShapeRotationDblSpnBx->setEnabled( lyr.shapeRotationType != QgsPalLayerSettings::RotationSync );
+  mShapeRotationDblSpnBx->setValue( lyr.shapeRotation );
+  mShapeOffsetXSpnBx->setValue( lyr.shapeOffset.x() );
+  mShapeOffsetYSpnBx->setValue( lyr.shapeOffset.y() );
+  mShapeOffsetUnitsCmbBx->setCurrentIndex( lyr.shapeOffsetUnits - 1 );
+  mShapeRadiusXDbSpnBx->setValue( lyr.shapeRadii.x() );
+  mShapeRadiusYDbSpnBx->setValue( lyr.shapeRadii.y() );
+  mShapeRadiusUnitsCmbBx->setCurrentIndex( lyr.shapeRadiiUnits - 1 );
+
+  mShapeFillColorBtn->setColor( lyr.shapeFillColor );
+  mShapeBorderColorBtn->setColor( lyr.shapeBorderColor );
+  mShapeBorderWidthSpnBx->setValue( lyr.shapeBorderWidth );
+  mShapeBorderWidthUnitsCmbBx->setCurrentIndex( lyr.shapeBorderWidthUnits - 1 );
+  mShapePenStyleCmbBx->setPenJoinStyle( lyr.shapeJoinStyle );
+
+  connect( mShapeTranspSlider, SIGNAL( valueChanged( int ) ), mShapeTranspSpinBox, SLOT( setValue( int ) ) );
+  connect( mShapeTranspSpinBox, SIGNAL( valueChanged( int ) ), mShapeTranspSlider, SLOT( setValue( int ) ) );
+  mShapeTranspSpinBox->setValue( lyr.shapeTransparency );
+  mShapeBlendCmbBx->setBlendMode( lyr.shapeBlendMode );
+
+  mLoadSvgParams = false;
+  on_mShapeTypeCmbBx_currentIndexChanged( lyr.shapeType ); // force update of shape background gui
+
+  connect( mSvgSelector, SIGNAL( svgSelected( const QString& ) ), this, SLOT( updateSvgWidgets( const QString& ) ) );
+
+  mShapeCollisionsChkBx->setVisible( false ); // until implemented
+
+  // drop shadow
+  mShadowGrpBx->setVisible( false ); // until implemented
+
+
   updateUi();
 
   updateOptions();
@@ -448,7 +498,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.textFont = mRefFont;
   lyr.textNamedStyle = mFontStyleComboBox->currentText();
   lyr.textTransp = mFontTranspSpinBox->value();
-  lyr.blendMode = ( QgsMapRenderer::BlendMode ) comboBlendMode->blendMode();
+  lyr.blendMode = comboBlendMode->blendMode();
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
   lyr.enabled = chkEnableLabeling->isChecked();
   lyr.priority = sliderPriority->value();
@@ -473,12 +523,37 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     lyr.bufferSizeInMapUnits = ( mBufferUnitComboBox->currentIndex() == 1 );
     lyr.bufferJoinStyle = mBufferJoinStyleComboBox->penJoinStyle();
     lyr.bufferNoFill = !mBufferTranspFillChbx->isChecked();
-    lyr.bufferBlendMode = ( QgsMapRenderer::BlendMode ) comboBufferBlendMode->blendMode();
+    lyr.bufferBlendMode = comboBufferBlendMode->blendMode();
   }
   else
   {
     lyr.bufferSize = 0;
   }
+
+  // shape background
+  lyr.shapeDraw = mShapeBackgroundGrpBx->isChecked();
+  lyr.shapeType = ( QgsPalLayerSettings::ShapeType )mShapeTypeCmbBx->currentIndex();
+  lyr.shapeSVGFile = mSvgSelector->currentSvgPath();
+
+  lyr.shapeSizeType = ( QgsPalLayerSettings::SizeType )mShapeSizeCmbBx->currentIndex();
+  lyr.shapeSize = QPointF( mShapeSizeXSpnBx->value(), mShapeSizeYSpnBx->value() );
+  lyr.shapeSizeUnits = ( QgsPalLayerSettings::SizeUnit )( mShapeSizeUnitsCmbBx->currentIndex() + 1 );
+  lyr.shapeRotationType = ( QgsPalLayerSettings::RotationType )( mShapeRotationCmbBx->currentIndex() );
+  lyr.shapeRotation = mShapeRotationDblSpnBx->value();
+  lyr.shapeOffset = QPointF( mShapeOffsetXSpnBx->value(), mShapeOffsetYSpnBx->value() );
+  lyr.shapeOffsetUnits = ( QgsPalLayerSettings::SizeUnit )( mShapeOffsetUnitsCmbBx->currentIndex() + 1 );
+  lyr.shapeRadii = QPointF( mShapeRadiusXDbSpnBx->value(), mShapeRadiusYDbSpnBx->value() );
+  lyr.shapeRadiiUnits = ( QgsPalLayerSettings::SizeUnit )( mShapeRadiusUnitsCmbBx->currentIndex() + 1 );
+
+  lyr.shapeFillColor = mShapeFillColorBtn->color();
+  lyr.shapeBorderColor = mShapeBorderColorBtn->color();
+  lyr.shapeBorderWidth = mShapeBorderWidthSpnBx->value();
+  lyr.shapeBorderWidthUnits = ( QgsPalLayerSettings::SizeUnit )( mShapeBorderWidthUnitsCmbBx->currentIndex() + 1 );
+  lyr.shapeJoinStyle = mShapePenStyleCmbBx->penJoinStyle();
+  lyr.shapeTransparency = mShapeTranspSpinBox->value();
+  lyr.shapeBlendMode = mShapeBlendCmbBx->blendMode();
+
+
   if ( chkFormattedNumbers->isChecked() )
   {
     lyr.formatNumbers = true;
@@ -821,13 +896,14 @@ void QgsLabelingGui::updatePreview()
   double previewRatio = mPreviewSize / fontSize;
   double bufferSize = 0.0;
   QString grpboxtitle;
+  QString sampleTxt = tr( "Text/Buffer sample" );
 
   if ( mFontSizeUnitComboBox->currentIndex() == 1 ) // map units
   {
     // TODO: maybe match current map zoom level instead?
     previewFont.setPointSize( mPreviewSize );
     mPreviewSizeSlider->setEnabled( true );
-    grpboxtitle = tr( "Sample @ %1 pts (using map units)" ).arg( mPreviewSize );
+    grpboxtitle = sampleTxt + tr( " @ %1 pts (using map units)" ).arg( mPreviewSize );
 
     previewFont.setWordSpacing( previewRatio * mFontWordSpacingSpinBox->value() );
     previewFont.setLetterSpacing( QFont::AbsoluteSpacing, previewRatio * mFontLetterSpacingSpinBox->value() );
@@ -840,7 +916,7 @@ void QgsLabelingGui::updatePreview()
       }
       else // millimeters
       {
-        grpboxtitle = tr( "Sample @ %1 pts (using map units, BUFFER IN MILLIMETERS)" ).arg( mPreviewSize );
+        grpboxtitle = sampleTxt + tr( " @ %1 pts (using map units, BUFFER IN MILLIMETERS)" ).arg( mPreviewSize );
         bufferSize = spinBufferSize->value();
       }
     }
@@ -849,7 +925,7 @@ void QgsLabelingGui::updatePreview()
   {
     previewFont.setPointSize( fontSize );
     mPreviewSizeSlider->setEnabled( false );
-    grpboxtitle = tr( "Sample" );
+    grpboxtitle = sampleTxt;
 
     if ( chkBuffer->isChecked() )
     {
@@ -859,7 +935,7 @@ void QgsLabelingGui::updatePreview()
       }
       else // map units
       {
-        grpboxtitle = tr( "Sample (BUFFER NOT SHOWN, in map units)" );
+        grpboxtitle = sampleTxt + tr( " (BUFFER NOT SHOWN, in map units)" );
       }
     }
   }
@@ -1132,6 +1208,110 @@ void QgsLabelingGui::on_mYCoordinateComboBox_currentIndexChanged( const QString 
   {
     enableDataDefinedAlignment();
   }
+}
+
+void QgsLabelingGui::on_mShapeTypeCmbBx_currentIndexChanged( int index )
+{
+  // shape background
+  bool isRect = (( QgsPalLayerSettings::ShapeType )index == QgsPalLayerSettings::ShapeRectangle
+                 || ( QgsPalLayerSettings::ShapeType )index == QgsPalLayerSettings::ShapeSquare );
+  bool isSVG = (( QgsPalLayerSettings::ShapeType )index == QgsPalLayerSettings::ShapeSVG );
+
+  mShapePenStyleLine->setVisible( isRect );
+  mShapePenStyleLabel->setVisible( isRect );
+  mShapePenStyleCmbBx->setVisible( isRect );
+  mShapeRadiusLabel->setVisible( isRect );
+  mShapeRadiusFrame->setVisible( isRect );
+
+  mSvgSelector->setMinimumHeight( isSVG ? 240 : 0 );
+  mSVGSelectGrpBx->setVisible( isSVG );
+//  mSVGSelectGrpBx->setCollapsed( !isSVG );
+  // symbology SVG renderer only supports size^2 scaling, so we only use the x size spinbox
+  mShapeSizeYSpnBx->setVisible( !isSVG );
+
+  // SVG parameter setting doesn't support color's alpha component yet
+  mShapeFillColorBtn->setColorDialogOptions( isSVG ? QColorDialog::ColorDialogOptions( 0 ) : QColorDialog::ShowAlphaChannel );
+  mShapeFillColorBtn->setButtonBackground();
+  mShapeBorderColorBtn->setColorDialogOptions( isSVG ? QColorDialog::ColorDialogOptions( 0 ) : QColorDialog::ShowAlphaChannel );
+  mShapeBorderColorBtn->setButtonBackground();
+
+  // configure SVG parameter widgets
+  mShapeSVGParamsBtn->setVisible( isSVG );
+  QString svgPath = mSvgSelector->currentSvgPath();
+  if ( isSVG )
+  {
+    mShapePenStyleLine->setVisible( true );
+    updateSvgWidgets( svgPath );
+  }
+  else
+  {
+    mShapeFillColorLabel->setEnabled( true );
+    mShapeFillColorBtn->setEnabled( true );
+    mShapeBorderColorLabel->setEnabled( true );
+    mShapeBorderColorBtn->setEnabled( true );
+    mShapeBorderWidthLabel->setEnabled( true );
+    mShapeBorderWidthSpnBx->setEnabled( true );
+  }
+  // TODO: fix overriding SVG symbol's border width units in QgsSvgCache
+  // currently broken, fall back to symbol's
+  mShapeBorderWidthUnitsCmbBx->setVisible( !isSVG );
+  mShapeSVGUnitsLabel->setVisible( isSVG );
+}
+
+void QgsLabelingGui::updateSvgWidgets( const QString& svgPath )
+{
+  bool validSVG = false;
+  QFileInfo finfo( svgPath );
+  validSVG = finfo.exists();
+
+  if ( !validSVG )
+    validSVG = ( QUrl( svgPath ).isValid() );
+
+  QString grpbxTitle = tr( "Select SVG symbol" );
+  mSVGSelectGrpBx->setTitle( validSVG ? grpbxTitle + ": " + finfo.fileName() : grpbxTitle );
+
+  QColor fill, outline;
+  double outlineWidth = 0.0;
+  bool fillParam = false, outlineParam = false, outlineWidthParam = false;
+  if ( validSVG )
+  {
+    QgsSvgCache::instance()->containsParams( svgPath, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
+  }
+
+  mShapeSVGParamsBtn->setEnabled( validSVG && ( fillParam || outlineParam || outlineWidthParam ) );
+
+  mShapeFillColorLabel->setEnabled( validSVG && fillParam );
+  mShapeFillColorBtn->setEnabled( validSVG && fillParam );
+  if ( mLoadSvgParams && validSVG && fillParam )
+    mShapeFillColorBtn->setColor( fill );
+
+  mShapeBorderColorLabel->setEnabled( validSVG && outlineParam );
+  mShapeBorderColorBtn->setEnabled( validSVG && outlineParam );
+  if ( mLoadSvgParams && validSVG && outlineParam )
+    mShapeBorderColorBtn->setColor( outline );
+
+  mShapeBorderWidthLabel->setEnabled( validSVG && outlineWidthParam );
+  mShapeBorderWidthSpnBx->setEnabled( validSVG && outlineWidthParam );
+  if ( mLoadSvgParams && validSVG && outlineWidthParam )
+    mShapeBorderWidthSpnBx->setValue( outlineWidth );
+
+  // TODO: fix overriding SVG symbol's border width units in QgsSvgCache
+  // currently broken, fall back to symbol's
+  //mShapeBorderWidthUnitsCmbBx->setEnabled( validSVG && outlineWidthParam );
+  mShapeSVGUnitsLabel->setEnabled( validSVG && outlineWidthParam );
+}
+
+void QgsLabelingGui::on_mShapeSVGParamsBtn_clicked()
+{
+  QString svgPath = mSvgSelector->currentSvgPath();
+  mLoadSvgParams = true;
+  updateSvgWidgets( svgPath );
+  mLoadSvgParams = false;
+}
+
+void QgsLabelingGui::on_mShapeRotationCmbBx_currentIndexChanged( int index )
+{
+  mShapeRotationDblSpnBx->setEnabled(( QgsPalLayerSettings::RotationType )index != QgsPalLayerSettings::RotationSync );
 }
 
 void QgsLabelingGui::on_mPreviewTextEdit_textChanged( const QString & text )

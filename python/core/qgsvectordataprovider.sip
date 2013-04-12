@@ -221,12 +221,6 @@ class QgsVectorDataProvider : QgsDataProvider
     virtual QHash<int, QString> palAttributeIndexNames() const;
 
     /**
-     * Set whether provider should also return features that don't have
-     * associated geometry. false by default
-     */
-    void enableGeometrylessFeatures( bool fetch );
-
-    /**
      * check if provider supports type of field
      * @note added in 1.2
      */

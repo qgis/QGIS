@@ -111,6 +111,12 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     void currentEditSelectionChanged( QgsFeature &feat );
 
+    /**
+     * Is emitted, whenever the display expression is successfully changed
+     * @param expression The expression that was applied
+     */
+    void displayExpressionChanged( const QString expression );
+
   public slots:
     /**
      * Set the feature(s) to be edited

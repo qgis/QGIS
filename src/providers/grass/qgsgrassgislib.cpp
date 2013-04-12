@@ -605,21 +605,7 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
   }
 
   raster.band = 1;
-  double noDataValue = std::numeric_limits<double>::quiet_NaN();
-  switch ( wr_type )
-  {
-    case CELL_TYPE:
-      noDataValue = -1 * std::numeric_limits<int>::max();
-      break;
-    case FCELL_TYPE:
-      noDataValue = std::numeric_limits<float>::quiet_NaN();
-      break;
-    case DCELL_TYPE:
-      noDataValue = std::numeric_limits<double>::quiet_NaN();
-      break;
-    default:
-      break;
-  }
+  double noDataValue = noDataValueForGrassType( wr_type );
   QgsDebugMsg( QString( "noDataValue = %1" ).arg(( int )noDataValue ) );
   raster.provider->setNoDataValue( raster.band, noDataValue );
 
@@ -1284,6 +1270,26 @@ RASTER_MAP_TYPE QgsGrassGisLib::grassRasterType( QGis::DataType qgisType )
     default:
       return -1;
   }
+}
+
+double QgsGrassGisLib::noDataValueForGrassType( RASTER_MAP_TYPE grassType )
+{
+  double noDataValue = std::numeric_limits<double>::quiet_NaN();
+  switch ( grassType )
+  {
+    case CELL_TYPE:
+      noDataValue = -1 * std::numeric_limits<int>::max();
+      break;
+    case FCELL_TYPE:
+      noDataValue = std::numeric_limits<float>::quiet_NaN();
+      break;
+    case DCELL_TYPE:
+      noDataValue = std::numeric_limits<double>::quiet_NaN();
+      break;
+    default:
+      break;
+  }
+  return noDataValue;
 }
 
 typedef int G_vasprintf_type( char **, const char *, va_list );

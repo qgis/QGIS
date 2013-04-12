@@ -53,7 +53,7 @@ class TestQgsRasterLayer(TestCase):
         #print 'Extents: %s' % myRasterLayer.extent().toString()
         #myResult, myRasterValues = myRasterLayer.identify(myPoint)
         #assert myResult
-        myRasterValues =  myRasterLayer.dataProvider().identify(myPoint, QgsRasterDataProvider.IdentifyFormatValue )
+        myRasterValues =  myRasterLayer.dataProvider().identify(myPoint, QgsRasterDataProvider.IdentifyFormatValue ).results()
 
         assert len( myRasterValues ) > 0
 

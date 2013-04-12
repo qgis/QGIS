@@ -23,14 +23,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.outputs.OutputRaster import OutputRaster
 import os
-from sextante.gdal.GdalUtils import GdalUtils
+
+from PyQt4 import QtGui
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.SextanteUtils import SextanteUtils
+
+from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
+
+from sextante.gdal.GdalUtils import GdalUtils
 
 class merge(GeoAlgorithm):
 
@@ -52,20 +56,22 @@ class merge(GeoAlgorithm):
         self.addOutput(OutputRaster(merge.OUTPUT, "Output layer"))
 
     def processAlgorithm(self, progress):
-        if SextanteUtils.isWindows():
-            commands = ["cmd.exe", "/C ", "gdal_merge.bat"]
-        else:
-            commands = ["gdal_merge.py"]
+        arguments = []
         if self.getParameterValue(merge.SEPARATE):
-            commands.append("-separate")
+            arguments.append("-separate")
         if self.getParameterValue(merge.PCT):
-            commands.append("-pct")
-        commands.append("-o")
+            arguments.append("-pct")
+        arguments.append("-o")
         out = self.getOutputValue(merge.OUTPUT)
-        commands.append(out)
-        commands.append("-of")
-        commands.append(GdalUtils.getFormatShortNameFromFilename(out))
-        commands.append(self.getParameterValue(merge.INPUT).replace(";", " "))
+        arguments.append(out)
+        arguments.append("-of")
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+        arguments.append(self.getParameterValue(merge.INPUT).replace(";", " "))
 
+        commands = []
+        if SextanteUtils.isWindows():
+            commands = ["cmd.exe", "/C ", "gdal_merge.bat", GdalUtils.escapeAndJoin(arguments)]
+        else:
+            commands = ["gdal_merge.py", GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)
