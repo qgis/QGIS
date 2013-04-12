@@ -168,7 +168,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int theBandNo,
   int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
   int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
 
-// void *myData = QgsMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) ) );
+// void *myData = qgsMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) ) );
 
   double myXRes = myExtent.width() / myWidth;
   double myYRes = myExtent.height() / myHeight;
@@ -258,7 +258,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int theBandNo,
   QgsDebugMsg( QString( "MEAN %1" ).arg( myRasterBandStats.mean ) );
   QgsDebugMsg( QString( "STDDEV %1" ).arg( myRasterBandStats.stdDev ) );
 
-  //QgsFree( myData );
+  //qgsFree( myData );
 
   myRasterBandStats.statsGathered = QgsRasterBandStats::All;
   mStatistics.append( myRasterBandStats );
@@ -447,7 +447,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
   int myNXBlocks = ( myWidth + myXBlockSize - 1 ) / myXBlockSize;
   int myNYBlocks = ( myHeight + myYBlockSize - 1 ) / myYBlockSize;
 
-  //void *myData = QgsMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) ) );
+  //void *myData = qgsMalloc( myXBlockSize * myYBlockSize * ( QgsRasterBlock::typeSize( dataType( theBandNo ) ) ) );
 
   double myXRes = myExtent.width() / myWidth;
   double myYRes = myExtent.height() / myHeight;
@@ -510,7 +510,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
     }
   }
 
-  //QgsFree( myData );
+  //qgsFree( myData );
 
   myHistogram.valid = true;
   mHistograms.append( myHistogram );

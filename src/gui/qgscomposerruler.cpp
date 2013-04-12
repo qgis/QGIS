@@ -51,7 +51,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
 
   if ( mDirection == Horizontal )
   {
-    if ( doubleNear( width(), 0 ) )
+    if ( qgsDoubleNear( width(), 0 ) )
     {
       return;
     }
@@ -77,7 +77,7 @@ void QgsComposerRuler::paintEvent( QPaintEvent* event )
   }
   else //vertical
   {
-    if ( doubleNear( height(), 0 ) )
+    if ( qgsDoubleNear( height(), 0 ) )
     {
       return;
     }

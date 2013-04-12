@@ -75,8 +75,8 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
       foreach ( NoData noData, mNoData )
       {
         if (( value >= noData.min && value <= noData.max ) ||
-            doubleNear( value, noData.min ) ||
-            doubleNear( value, noData.max ) )
+            qgsDoubleNear( value, noData.min ) ||
+            qgsDoubleNear( value, noData.max ) )
         {
           inputBlock->setValue( i, j, noDataValue );
         }

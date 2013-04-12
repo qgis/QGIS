@@ -72,9 +72,9 @@ QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int th
 
 QgsRasterBlock::~QgsRasterBlock()
 {
-  QgsFree( mData );
+  qgsFree( mData );
   delete mImage;
-  QgsFree( mNoDataBitmap );
+  qgsFree( mNoDataBitmap );
 }
 
 bool QgsRasterBlock::reset( QGis::DataType theDataType, int theWidth, int theHeight )
@@ -93,11 +93,11 @@ bool QgsRasterBlock::reset( QGis::DataType theDataType, int theWidth, int theHei
 {
   QgsDebugMsg( QString( "theWidth= %1 theHeight = %2 theDataType = %3 theNoDataValue = %4" ).arg( theWidth ).arg( theHeight ).arg( theDataType ).arg( theNoDataValue ) );
 
-  QgsFree( mData );
+  qgsFree( mData );
   mData = 0;
   delete mImage;
   mImage = 0;
-  QgsFree( mNoDataBitmap );
+  qgsFree( mNoDataBitmap );
   mNoDataBitmap = 0;
   mDataType = QGis::UnknownDataType;
   mTypeSize = 0;
@@ -112,7 +112,7 @@ bool QgsRasterBlock::reset( QGis::DataType theDataType, int theWidth, int theHei
     QgsDebugMsg( "Numeric type" );
     size_t tSize = typeSize( theDataType );
     QgsDebugMsg( QString( "allocate %1 bytes" ).arg( tSize * theWidth * theHeight ) );
-    mData = QgsMalloc( tSize * theWidth * theHeight );
+    mData = qgsMalloc( tSize * theWidth * theHeight );
     if ( mData == 0 )
     {
       QgsDebugMsg( QString( "Couldn't allocate data memory of %1 bytes" ).arg( tSize * theWidth * theHeight ) );
@@ -268,7 +268,7 @@ bool QgsRasterBlock::isNoDataValue( double value, double noDataValue )
   // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
   // not important and slower
   if ( qIsNaN( value ) ||
-       doubleNear( value, noDataValue ) )
+       qgsDoubleNear( value, noDataValue ) )
   {
     return true;
   }
@@ -467,7 +467,7 @@ bool QgsRasterBlock::convert( QGis::DataType destDataType )
       QgsDebugMsg( "Cannot convert raster block" );
       return false;
     }
-    QgsFree( mData );
+    qgsFree( mData );
     mData = data;
     mDataType = destDataType;
     mTypeSize = typeSize( mDataType );
@@ -518,7 +518,7 @@ QImage QgsRasterBlock::image() const
 
 bool QgsRasterBlock::setImage( const QImage * image )
 {
-  QgsFree( mData );
+  qgsFree( mData );
   mData = 0;
   delete mImage;
   mImage = 0;
@@ -589,7 +589,7 @@ QString QgsRasterBlock::printValue( double value )
 void * QgsRasterBlock::convert( void *srcData, QGis::DataType srcDataType, QGis::DataType destDataType, size_t size )
 {
   int destDataTypeSize = typeSize( destDataType );
-  void *destData = QgsMalloc( destDataTypeSize * size );
+  void *destData = qgsMalloc( destDataTypeSize * size );
   for ( size_t i = 0; i < size; i++ )
   {
     double value = readValue( srcData, srcDataType, i );
@@ -653,7 +653,7 @@ bool QgsRasterBlock::createNoDataBitmap()
 {
   size_t size = mWidth * mHeight / 8 + 1;
   QgsDebugMsg( QString( "allocate %1 bytes" ).arg( size ) );
-  mNoDataBitmap = ( char* )QgsMalloc( size );
+  mNoDataBitmap = ( char* )qgsMalloc( size );
   if ( mNoDataBitmap == 0 )
   {
     QgsDebugMsg( QString( "Couldn't allocate no data memory of %1 bytes" ).arg( size ) );

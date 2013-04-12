@@ -292,7 +292,7 @@ double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, Q
 
   double dist = sqrDist( minDistPoint );
   //prevent rounding errors if the point is directly on the segment
-  if ( doubleNear( dist, 0.0, epsilon ) )
+  if ( qgsDoubleNear( dist, 0.0, epsilon ) )
   {
     minDistPoint.setX( m_x );
     minDistPoint.setY( m_y );

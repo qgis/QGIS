@@ -112,8 +112,8 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
     providerYRes = extent().height() / ySize();
     tmpXRes = qMax( providerXRes, xRes );
     tmpYRes = qMax( providerYRes, yRes );
-    if ( doubleNear( tmpXRes, xRes ) ) tmpXRes = xRes;
-    if ( doubleNear( tmpYRes, yRes ) ) tmpYRes = yRes;
+    if ( qgsDoubleNear( tmpXRes, xRes ) ) tmpXRes = xRes;
+    if ( qgsDoubleNear( tmpYRes, yRes ) ) tmpYRes = yRes;
   }
   else
   {

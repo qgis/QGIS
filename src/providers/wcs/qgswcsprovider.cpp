@@ -570,12 +570,12 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     // TODO: check also rotated
     if ( cacheCrs.isValid() && !mFixRotate )
     {
-      // using doubleNear is too precise, example accetable difference:
+      // using qgsDoubleNear is too precise, example accetable difference:
       // 179.9999999306699863 x 179.9999999306700431
-      if ( !doubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 ) ||
-           !doubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 ) ||
-           !doubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 ) ||
-           !doubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
+      if ( !qgsDoubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 ) ||
+           !qgsDoubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 ) ||
+           !qgsDoubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 ) ||
+           !qgsDoubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
       {
         QgsDebugMsg( "cacheExtent and viewExtent differ" );
         QgsMessageLog::logMessage( tr( "Received coverage has wrong extent %1 (expected %2)" ).arg( cacheExtent.toString() ).arg( viewExtent.toString() ), tr( "WCS" ) );
@@ -1398,10 +1398,10 @@ bool QgsWcsProvider::calculateExtent()
     // extent check for rotated, TODO: verify
     if ( cacheCrs.isValid() && !mFixRotate )
     {
-      if ( !doubleNearSig( cacheExtent.xMinimum(), mCoverageExtent.xMinimum(), 10 ) ||
-           !doubleNearSig( cacheExtent.yMinimum(), mCoverageExtent.yMinimum(), 10 ) ||
-           !doubleNearSig( cacheExtent.xMaximum(), mCoverageExtent.xMaximum(), 10 ) ||
-           !doubleNearSig( cacheExtent.yMaximum(), mCoverageExtent.yMaximum(), 10 ) )
+      if ( !qgsDoubleNearSig( cacheExtent.xMinimum(), mCoverageExtent.xMinimum(), 10 ) ||
+           !qgsDoubleNearSig( cacheExtent.yMinimum(), mCoverageExtent.yMinimum(), 10 ) ||
+           !qgsDoubleNearSig( cacheExtent.xMaximum(), mCoverageExtent.xMaximum(), 10 ) ||
+           !qgsDoubleNearSig( cacheExtent.yMaximum(), mCoverageExtent.yMaximum(), 10 ) )
       {
         QgsDebugMsg( "cacheExtent and mCoverageExtent differ, mCoverageExtent cut to cacheExtent" );
         mCoverageExtent = cacheExtent;
@@ -1700,7 +1700,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Ide
 
     // Apply no data and user no data
     if (( srcHasNoDataValue( i ) && useSrcNoDataValue( i ) &&
-          ( qIsNaN( value ) || doubleNear( value, srcNoDataValue( i ) ) ) ) ||
+          ( qIsNaN( value ) || qgsDoubleNear( value, srcNoDataValue( i ) ) ) ) ||
         ( QgsRasterRange::contains( value, userNoDataValue( i ) ) ) )
     {
       results.insert( i, QVariant() );

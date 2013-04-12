@@ -434,7 +434,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
     _renderPolygon( p, points, rings );
   }
 
-  if ( doubleNear( mAngle, 0.0 ) )
+  if ( qgsDoubleNear( mAngle, 0.0 ) )
   {
     p->setBrush( mBrush );
   }
@@ -684,7 +684,7 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush& brush, const QString& svgFileP
 
     QTransform brushTransform;
     brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
-    if ( !doubleNear( context.alpha(), 1.0 ) )
+    if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
     {
       QImage transparentImage = fitsInCache ? patternImage.copy() : mSvgPattern->copy();
       QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
@@ -745,7 +745,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 
     QTransform brushTransform;
     brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
-    if ( !doubleNear( context.alpha(), 1.0 ) )
+    if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
     {
       QImage transparentImage = fitsInCache ? patternImage.copy() : mSvgPattern->copy();
       QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
@@ -1350,7 +1350,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
 
   //create image
   int height, width;
-  if ( doubleNear( lineAngle, 0 ) || doubleNear( lineAngle, 360 ) || doubleNear( lineAngle, 90 ) || doubleNear( lineAngle, 180 ) || doubleNear( lineAngle, 270 ) )
+  if ( qgsDoubleNear( lineAngle, 0 ) || qgsDoubleNear( lineAngle, 360 ) || qgsDoubleNear( lineAngle, 90 ) || qgsDoubleNear( lineAngle, 180 ) || qgsDoubleNear( lineAngle, 270 ) )
   {
     height = outputPixelDist;
     width = height; //width can be set to arbitrary value
@@ -1383,7 +1383,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   p.setPen( pen );
 
   QPoint p1, p2, p3, p4, p5, p6;
-  if ( doubleNear( lineAngle, 0.0 ) || doubleNear( lineAngle, 360.0 ) || doubleNear( lineAngle, 180.0 ) )
+  if ( qgsDoubleNear( lineAngle, 0.0 ) || qgsDoubleNear( lineAngle, 360.0 ) || qgsDoubleNear( lineAngle, 180.0 ) )
   {
     p1 = QPoint( 0, height );
     p2 = QPoint( width, height );
@@ -1392,7 +1392,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     p5 = QPoint( 0, 2 * height );
     p6 = QPoint( width, 2 * height );
   }
-  else if ( doubleNear( lineAngle, 90.0 ) || doubleNear( lineAngle, 270.0 ) )
+  else if ( qgsDoubleNear( lineAngle, 90.0 ) || qgsDoubleNear( lineAngle, 270.0 ) )
   {
     p1 = QPoint( 0, height );
     p2 = QPoint( 0, 0 );
@@ -1424,7 +1424,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
     p4 = QPoint( p3.x() - width, p3.y() - height ); //p4 = QPoint( -dx, dy );
   }
 
-  if ( !doubleNear( mOffset, 0.0 ) ) //shift everything
+  if ( !qgsDoubleNear( mOffset, 0.0 ) ) //shift everything
   {
     QPointF tempPt;
     tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelDist + outputPixelOffset );
@@ -1449,7 +1449,7 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
   p.end();
 
   //set image to mBrush
-  if ( !doubleNear( context.alpha(), 1.0 ) )
+  if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
   {
     QImage transparentImage = patternImage.copy();
     QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
@@ -1970,7 +1970,7 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContex
     mMarkerSymbol->stopRender( pointRenderContext );
   }
 
-  if ( !doubleNear( context.alpha(), 1.0 ) )
+  if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
   {
     QImage transparentImage = patternImage.copy();
     QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );

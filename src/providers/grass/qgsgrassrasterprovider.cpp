@@ -468,7 +468,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   }
 
   // no data?
-  if ( qIsNaN( value ) || doubleNear( value, mInternalNoDataValue[0] ) )
+  if ( qIsNaN( value ) || qgsDoubleNear( value, mInternalNoDataValue[0] ) )
   {
     return noDataResult;
   }

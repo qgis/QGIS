@@ -116,8 +116,8 @@ int QgsRasterTransparency::alphaValue( double theValue, int theGlobalTransparenc
   {
     myTransparentPixel = mTransparentSingleValuePixelList[myListRunner];
     if (( theValue >= myTransparentPixel.min && theValue <= myTransparentPixel.max ) ||
-        doubleNear( theValue, myTransparentPixel.min ) ||
-        doubleNear( theValue, myTransparentPixel.max ) )
+        qgsDoubleNear( theValue, myTransparentPixel.min ) ||
+        qgsDoubleNear( theValue, myTransparentPixel.max ) )
     {
       myTransparentPixelFound = true;
       break;
@@ -186,16 +186,16 @@ bool QgsRasterTransparency::isEmpty( double nodataValue ) const
   return (
            ( mTransparentSingleValuePixelList.isEmpty() ||
              ( mTransparentSingleValuePixelList.size() == 1 &&
-               ( doubleNear( mTransparentSingleValuePixelList.at( 0 ).min, nodataValue ) ||
-                 doubleNear( mTransparentSingleValuePixelList.at( 0 ).max, nodataValue ) ||
+               ( qgsDoubleNear( mTransparentSingleValuePixelList.at( 0 ).min, nodataValue ) ||
+                 qgsDoubleNear( mTransparentSingleValuePixelList.at( 0 ).max, nodataValue ) ||
                  ( nodataValue >= mTransparentSingleValuePixelList.at( 0 ).min &&
                    nodataValue <= mTransparentSingleValuePixelList.at( 0 ).max ) ) ) )
            &&
            ( mTransparentThreeValuePixelList.isEmpty() ||
              ( mTransparentThreeValuePixelList.size() == 1 &&
-               doubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
-               doubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) &&
-               doubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
+               qgsDoubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
+               qgsDoubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) &&
+               qgsDoubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
 }
 #endif
 

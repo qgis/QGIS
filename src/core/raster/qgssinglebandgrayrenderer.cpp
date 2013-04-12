@@ -158,7 +158,7 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
       grayVal = 255 - grayVal;
     }
 
-    if ( doubleNear( currentAlpha, 1.0 ) )
+    if ( qgsDoubleNear( currentAlpha, 1.0 ) )
     {
       outputBlock->setColor( i, qRgba( grayVal, grayVal, grayVal, 255 ) );
     }

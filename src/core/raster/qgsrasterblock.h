@@ -438,7 +438,7 @@ inline bool QgsRasterBlock::isNoDataValue( double value ) const
   // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
   // not important and slower
   if ( qIsNaN( value ) ||
-       doubleNear( value, mNoDataValue ) )
+       qgsDoubleNear( value, mNoDataValue ) )
   {
     return true;
   }

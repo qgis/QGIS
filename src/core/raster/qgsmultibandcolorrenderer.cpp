@@ -299,7 +299,7 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
       currentOpacity *= alphaBlock->value( i ) / 255.0;
     }
 
-    if ( doubleNear( currentOpacity, 1.0 ) )
+    if ( qgsDoubleNear( currentOpacity, 1.0 ) )
     {
       outputBlock->setColor( i, qRgba( redVal, greenVal, blueVal, 255 ) );
     }

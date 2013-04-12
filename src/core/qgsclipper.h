@@ -419,7 +419,7 @@ inline QPointF QgsClipper::intersectRect( const QPointF& pt1,
   }
 
   double r = 0;
-  if ( !doubleNear( r_d, 0.0 ) )
+  if ( !qgsDoubleNear( r_d, 0.0 ) )
   {
     r = r_n / r_d;
   }

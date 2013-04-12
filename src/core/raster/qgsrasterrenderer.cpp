@@ -98,8 +98,8 @@ bool QgsRasterRenderer::usesTransparency( ) const
     return true;
   }
   // TODO: nodata per band
-  //return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty( mInput->noDataValue( 1 ) ) ) || !doubleNear( mOpacity, 1.0 ) );
-  return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !doubleNear( mOpacity, 1.0 ) );
+  //return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty( mInput->noDataValue( 1 ) ) ) || !qgsDoubleNear( mOpacity, 1.0 ) );
+  return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !qgsDoubleNear( mOpacity, 1.0 ) );
 }
 
 void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency* t )

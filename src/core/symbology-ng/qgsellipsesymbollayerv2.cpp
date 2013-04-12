@@ -190,14 +190,14 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   {
     rotation = mRotationExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
-  else if ( !doubleNear( mAngle, 0.0 ) )
+  else if ( !qgsDoubleNear( mAngle, 0.0 ) )
   {
     rotation = mAngle;
   }
 
   QMatrix transform;
   transform.translate( point.x(), point.y() );
-  if ( !doubleNear( rotation, 0.0 ) )
+  if ( !qgsDoubleNear( rotation, 0.0 ) )
   {
     transform.rotate( rotation );
   }
@@ -265,7 +265,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
   {
     if ( mRotationExpression )
       angleFunc = mRotationExpression->dump();
-    else if ( !doubleNear( mAngle, 0.0 ) )
+    else if ( !qgsDoubleNear( mAngle, 0.0 ) )
       angleFunc = QString::number( mAngle );
   }
   else if ( mRotationExpression )
@@ -274,7 +274,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
     // property set
     angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( mRotationExpression->dump() );
   }
-  else if ( !doubleNear( mAngle, 0.0 ) )
+  else if ( !qgsDoubleNear( mAngle, 0.0 ) )
   {
     // both the symbol and the symbol layer have angle value set
     bool ok;
@@ -284,7 +284,7 @@ void QgsEllipseSymbolLayerV2::writeSldMarker( QDomDocument &doc, QDomElement &el
       // its a string (probably a property name or a function)
       angleFunc = QString( "%1 + %2" ).arg( angleFunc ).arg( mAngle );
     }
-    else if ( !doubleNear( angle + mAngle, 0.0 ) )
+    else if ( !qgsDoubleNear( angle + mAngle, 0.0 ) )
     {
       // it's a double value
       angleFunc = QString::number( angle + mAngle );
@@ -313,7 +313,7 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::createFromSld( QDomElement &element )
     {
       bool ok;
       double v = it.value().toDouble( &ok );
-      if ( ok && !doubleNear( v, 0.0 ) && v > 0 )
+      if ( ok && !qgsDoubleNear( v, 0.0 ) && v > 0 )
         widthHeightFactor = v;
     }
   }
