@@ -503,7 +503,8 @@ QStringList QgsOgrProvider::subLayers() const
 void QgsOgrProvider::setEncoding( const QString& e )
 {
 #if defined(OLCStringsAsUTF8)
-  if ( !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
+  QSettings settings;
+  if ( settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() && !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
   {
     QgsVectorDataProvider::setEncoding( e );
   }
