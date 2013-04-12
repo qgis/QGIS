@@ -45,6 +45,14 @@ void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QS
   mActions << QgsAction( type, name, action, capture );
 }
 
+void QgsAttributeAction::removeAction( int index )
+{
+  if ( index >= 0 && index < mActions.size() )
+  {
+    mActions.removeAt( index );
+  }
+}
+
 void QgsAttributeAction::doAction( int index, QgsFeature &feat, int defaultValueIndex )
 {
   QMap<QString, QVariant> substitutionMap;
