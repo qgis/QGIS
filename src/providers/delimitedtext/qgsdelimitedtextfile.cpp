@@ -126,9 +126,13 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
 
     // Prefer simple "type" for delimiter type, but include delimiterType
     // as optional name  for backwards compatibility
-    if( url.hasQueryItem("type") )
+    if( url.hasQueryItem("type") || url.hasQueryItem("delimiterType") )
     {
-        type = url.queryItemValue("type");
+        if( url.hasQueryItem("type"))
+            type = url.queryItemValue("type");
+        else if( url.hasQueryItem("delimiterType") )
+            type = url.queryItemValue("delimiterType");
+
         // Support for previous version of Qgs - plain chars had
         // quote characters ' or "
         if( type == "plain" )
@@ -136,10 +140,6 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
             quote="'\"";
             escape="";
         }
-    }
-    else if( url.hasQueryItem("delimiterType") )
-    {
-        type = url.queryItemValue("delimiterType");
     }
     if( url.hasQueryItem("delimiter") )
     {
@@ -254,7 +254,7 @@ void QgsDelimitedTextFile::setTypeRegexp( QString regexp )
     mDelimRegexp.setPattern(regexp);
     mDelimDefinition=regexp;
     mParser=&QgsDelimitedTextFile::parseRegexp;
-    mDefinitionValid = mDelimRegexp.isValid();
+    mDefinitionValid = regexp.size() > 0 && mDelimRegexp.isValid();
     if( ! mDefinitionValid )
     {
         QgsDebugMsg("Invalid regular expression in delimited text file delimiter: "+regexp);

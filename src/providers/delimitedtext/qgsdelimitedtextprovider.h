@@ -35,13 +35,19 @@ class QgsDelimitedTextFile;
 \brief Data provider for delimited text files.
 *
 * The provider needs to know both the path to the text file and
-* the delimiter to use. Since the means to add a layer is farily
+* the delimiter to use. Since the means to add a layer is fairly
 * rigid, we must provide this information encoded in a form that
 * the provider can decipher and use.
-* The uri must contain the path and delimiter in this format:
-* /full/path/too/delimited.txt?delimiter=<delimiter>
 *
-* Example uri = "/home/foo/delim.txt?delimiter=|"
+* The uri must defines the file path and the parameters used to
+* interpret the contents of the file.
+*
+* Example uri = "/home/foo/delim.txt?delimiter=|"*
+*
+* For detailed information on the uri format see the QGSVectorLayer
+* documentation.
+*
+
 */
 class QgsDelimitedTextProvider : public QgsVectorDataProvider
 {
