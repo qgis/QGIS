@@ -625,25 +625,27 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   if( styleType == DB )
   {
          QString infoWindowTitle = QObject::tr( "Save style to Postgres" );
-         QString msgError, pluto;
+         QString msgError;
 
          QgsSaveStyleToDbDialog askToUser;
-         //TODO retrieve user username
-         askToUser.setOwner( QObject::tr( "Pippo!" ) );
 
          if( askToUser.exec() == QDialog::Accepted )
          {
-              layer->saveStyleToDatabase( askToUser.getName(), askToUser.getOwner(),
-                                          askToUser.getDescription(), askToUser.isDefault(),
-                                          msgError );
-              if( !msgError.isNull() )
-              {
-                  QMessageBox::warning( this, infoWindowTitle, msgError );
-              }
-              else
-              {
-                  QMessageBox::information(this, infoWindowTitle, tr( "Successful!" ));
-              }
+             QString styleName = askToUser.getName();
+             QString styleDesc = askToUser.getDescription();
+             bool isDefault = askToUser.isDefault();
+
+             apply();
+
+             layer->saveStyleToDatabase( styleName, styleDesc, isDefault, msgError );
+             if( !msgError.isNull() )
+             {
+                 QMessageBox::warning( this, infoWindowTitle, msgError );
+             }
+             else
+             {
+                 QMessageBox::information( this, infoWindowTitle, tr( "Style saved" ) );
+             }
          }
          else
          {

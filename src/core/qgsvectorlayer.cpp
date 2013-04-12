@@ -82,7 +82,6 @@ typedef bool saveStyle_t(
         const QString& sldStyle,
         const QString& styleName,
         const QString& styleDescription,
-        const QString& owner,
         bool useAsDefault,
         QString& errCause
 );
@@ -3718,7 +3717,7 @@ QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
   return elem;
 }
 
-void QgsVectorLayer::saveStyleToDatabase(QString name, QString owner, QString description, bool useAsDefault, QString &msgError){
+void QgsVectorLayer::saveStyleToDatabase(QString name, QString description, bool useAsDefault, QString &msgError){
 
         QString sldStyle, qmlStyle;
         QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
@@ -3752,56 +3751,57 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString owner, QString de
         }
         sldStyle = sldDocument.toString();
 
-        saveStyleExternalMethod(mDataSource, qmlStyle, sldStyle, name, description,
-                                owner, useAsDefault, msgError);
+        saveStyleExternalMethod(mDataSource, qmlStyle, sldStyle, name, description, useAsDefault, msgError);
 }
 
 QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
 {
-    QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-    QLibrary *myLib = pReg->providerLibrary( mProviderKey );
-    bool styleFound = false;
-    if ( myLib )
+    //TODO find a better way to check if uri is pointing to db
+    if ( theURI.contains( tr( "dbname=" ) ) )
     {
-        loadStyle_t* loadStyleExternalMethod = ( loadStyle_t * ) cast_to_fptr( myLib->resolve( "loadStyle" ) );
-        if ( loadStyleExternalMethod )
+        QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+        QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+        if ( myLib )
         {
-           QString qml, errorMsg;
-           qml = loadStyleExternalMethod( mDataSource, errorMsg );
-           if( qml.compare( tr( "" ) ) )
-           {
-               QDomDocument myDocument( "qgis" );
-               myDocument.setContent( qml );
-
-               QDomElement myRoot = myDocument.firstChildElement( "qgis" );
-
-               if( myRoot.isNull() )
+            loadStyle_t* loadStyleExternalMethod = ( loadStyle_t * ) cast_to_fptr( myLib->resolve( "loadStyle" ) );
+            if ( loadStyleExternalMethod )
+            {
+               QString qml, errorMsg;
+               qml = loadStyleExternalMethod( mDataSource, errorMsg );
+               if( qml.compare( tr( "" ) ) )
                {
-                   theResultFlag = false;
-                   return tr( "Error: qgis element could not be found in %1" ).arg( theURI );;
+                   QDomDocument myDocument( "qgis" );
+                   myDocument.setContent( qml );
+
+                   QDomElement myRoot = myDocument.firstChildElement( "qgis" );
+
+                   if( myRoot.isNull() )
+                   {
+                       theResultFlag = false;
+                       return tr( "Error: qgis element could not be found in %1" ).arg( theURI );;
+                   }
+                   toggleScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+                   setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
+                   setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
+
+                   #if 0
+                     //read transparency level
+                     QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
+                     if ( ! transparencyNode.isNull() )
+                     {
+                       // set transparency level only if it's in project
+                       // (otherwise it sets the layer transparent)
+                       QDomElement myElement = transparencyNode.toElement();
+                       setTransparency( myElement.text().toInt() );
+                     }
+                   #endif
+
+                   theResultFlag = readSymbology( myRoot, errorMsg );
                }
-               toggleScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
-               setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
-               setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
-
-               #if 0
-                 //read transparency level
-                 QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
-                 if ( ! transparencyNode.isNull() )
-                 {
-                   // set transparency level only if it's in project
-                   // (otherwise it sets the layer transparent)
-                   QDomElement myElement = transparencyNode.toElement();
-                   setTransparency( myElement.text().toInt() );
-                 }
-               #endif
-
-               styleFound = readSymbology( myRoot, errorMsg );
-               return errorMsg;
-           }
+            }
         }
     }
-    if( !styleFound )
+    if( !theResultFlag )
     {
         return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
     }

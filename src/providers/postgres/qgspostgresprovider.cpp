@@ -3226,7 +3226,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
 
 QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QString& sldStyle,
                            const QString& styleName, const QString& styleDescription,
-                           const QString& owner, bool useAsDefault, QString& errCause )
+                           bool useAsDefault, QString& errCause )
 {
   QgsDataSourceURI dsUri( uri );
   QString f_table_catalog, f_table_schema, f_table_name, f_geometry_column;
@@ -3261,6 +3261,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   f_table_schema = dsUri.schema();
   f_table_name = dsUri.table();
   f_geometry_column = dsUri.geometryColumn();
+  QString owner = dsUri.username();
 
   QString sql = QObject::tr( "INSERT INTO %10( f_table_catalog, "
                              "f_table_schema, f_table_name, f_geometry_column, "
@@ -3281,13 +3282,14 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 
   if( useAsDefault )
   {
-      QString removeDefaultSql = QObject::tr( "UPDATE %1 SET useAsDefault=false WHERE f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5; COMMIT;")
+      QString removeDefaultSql = QObject::tr( "UPDATE %1 SET useAsDefault=false WHERE f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5;")
               .arg( styleTableName )
               .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
               .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
               .arg( QgsPostgresConn::quotedValue(f_table_name ) )
               .arg( QgsPostgresConn::quotedValue(f_geometry_column ) );
-      sql = QObject::tr("BEGIN; %2 %1").arg( sql ).arg( removeDefaultSql );
+      sql = QObject::tr("BEGIN; %2 %1 COMMIT;")
+              .arg( sql ).arg( removeDefaultSql );
   }
 
   res = conn->PQexec( sql );
@@ -3310,8 +3312,8 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
     QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
     if ( !conn )
     {
-      errCause = QObject::tr( "Connection to database failed" );
-      return false;
+        errCause = QObject::tr( "Connection to database failed" );
+        return QObject::tr( "" );
     }
 
     f_table_catalog = dsUri.database();
@@ -3333,5 +3335,5 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
         return QObject::tr( c );;
     }
 
-    return tr( "" );
+    return QObject::tr( "" );
 }
