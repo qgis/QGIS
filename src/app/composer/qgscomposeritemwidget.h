@@ -60,15 +60,15 @@ class QgsComposerItemWidget: public QWidget, private Ui::QgsComposerItemWidgetBa
     void on_mWidthLineEdit_editingFinished() { changeItemPosition(); }
     void on_mHeightLineEdit_editingFinished() { changeItemPosition(); }
 
-    void on_mUpperLeftCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
-    void on_mUpperMiddleCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
-    void on_mUpperRightCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
-    void on_mMiddleLeftCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
-    void on_mMiddleCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
-    void on_mMiddleRightCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
-    void on_mLowerLeftCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
-    void on_mLowerMiddleCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
-    void on_mLowerRightCheckBox_stateChanged( int state ) { Q_UNUSED( state ); changeItemPosition(); }
+    void on_mUpperLeftCheckBox_stateChanged( int state );
+    void on_mUpperMiddleCheckBox_stateChanged( int state );
+    void on_mUpperRightCheckBox_stateChanged( int state );
+    void on_mMiddleLeftCheckBox_stateChanged( int state );
+    void on_mMiddleCheckBox_stateChanged( int state );
+    void on_mMiddleRightCheckBox_stateChanged( int state );
+    void on_mLowerLeftCheckBox_stateChanged( int state );
+    void on_mLowerMiddleCheckBox_stateChanged( int state );
+    void on_mLowerRightCheckBox_stateChanged( int state );
 
     void on_mBlendModeCombo_currentIndexChanged( int index );
     void on_mTransparencySlider_valueChanged( int value );
