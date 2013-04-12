@@ -141,6 +141,27 @@ class QgisAlgsTest(unittest.TestCase):
         wkt='LINESTRING(-180.0 -90.0, -180.0 -80.0, -180.0 -70.0, -180.0 -60.0, -180.0 -50.0, -180.0 -40.0, -180.0 -30.0, -180.0 -20.0, -180.0 -10.0, -180.0 0.0, -180.0 10.0, -180.0 20.0, -180.0 30.0, -180.0 40.0, -180.0 50.0, -180.0 60.0, -180.0 70.0, -180.0 80.0, -180.0 90.0)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
 
+    def test_qgiscreategridnointeger(self):
+        outputs=sextante.runalg("qgis:creategrid",0.1,0.1,1,1,0,0,None)
+        output=outputs['SAVENAME']
+        layer=QGisLayers.getObjectFromUri(output, True)
+        fields=layer.pendingFields()
+        expectednames=['longitude','latitude']
+        expectedtypes=['Real','Real']
+        names=[str(f.name()) for f in fields]
+        types=[str(f.typeName()) for f in fields]
+        self.assertEqual(expectednames, names)
+        self.assertEqual(expectedtypes, types)
+        features=sextante.getfeatures(layer)
+        self.assertEqual(22, len(features))
+        feature=features.next()
+        attrs=feature.attributes()
+        expectedvalues=["-0.5","0"]
+        values=[str(attr.toString()) for attr in attrs]
+        self.assertEqual(expectedvalues, values)
+        wkt='LINESTRING(-0.5 -0.5, -0.5 -0.4, -0.5 -0.3, -0.5 -0.2, -0.5 -0.1, -0.5 -0.0, -0.5 0.1, -0.5 0.2, -0.5 0.3, -0.5 0.4, -0.5 0.5)'
+        self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
+    
     def test_qgiscreategridhex(self):
         outputs=sextante.runalg("qgis:creategrid",10,10,360,180,0,0,3,None)
         output=outputs['SAVENAME']
