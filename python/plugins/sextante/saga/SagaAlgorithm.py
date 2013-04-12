@@ -96,6 +96,7 @@ class SagaAlgorithm(GeoAlgorithm):
             self.cmdname = tokens[1]
         else:
             self.cmdname = self.name
+            self.name = self.name[0].upper() + self.name[1:].lower()
         line = lines.readline().strip("\n").strip()
         self.undecoratedGroup = line
         self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
@@ -356,7 +357,12 @@ class SagaAlgorithm(GeoAlgorithm):
 
 
     def checkBeforeOpeningParametersDialog(self):
-        return SagaUtils.checkSagaIsInstalled()
+        msg = SagaUtils.checkSagaIsInstalled()
+        if msg is not None:                        
+            html = ("<p>This algorithm requires SAGA to be run." 
+            "Unfortunately, it seems that SAGA is not installed in your system, or it is not correctly configured to be used from QGIS</p>")            
+            html += '<p><a href= "http://docs.qgis.org/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure SAGA to be used with SEXTANTE</p>'
+            return html
 
 
     def checkParameterValuesBeforeExecuting(self):

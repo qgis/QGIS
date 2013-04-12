@@ -427,6 +427,15 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def commandLineName(self):
         return "grass:" + self.name[:self.name.find(" ")]
+    
+    def checkBeforeOpeningParametersDialog(self):
+        msg = GrassUtils.checkGrassIsInstalled()
+        if msg is not None:                        
+            html = ("<p>This algorithm requires GRASS to be run." 
+            "Unfortunately, it seems that GRASS is not installed in your system, or it is not correctly configured to be used from QGIS</p>")            
+            html += '<p><a href= "http://docs.qgis.org/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure GRASS to be used with SEXTANTE</p>'
+            return html
+
 
     def checkParameterValuesBeforeExecuting(self):
         name = self.commandLineName().replace('.','_')[len('grass:'):]

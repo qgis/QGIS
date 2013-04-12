@@ -319,7 +319,7 @@ class GrassUtils:
             path = GrassUtils.grassPath()
             if path == "":
                 return "GRASS folder is not configured.\nPlease configure it before running SAGA algorithms."
-            cmdpath = os.path.join(path, "bin\r.out.exe")
+            cmdpath = os.path.join(path, "bin","r.out.gdal.exe")
             if not os.path.exists(cmdpath):
                 return ("The specified GRASS folder does not contain a valid set of GRASS modules.\n"
                         + "Please, go to the SEXTANTE settings dialog, and check that the GRASS\n"
@@ -332,7 +332,7 @@ class GrassUtils:
                 return
 
         try:
-            from sextante.core.Sextante import runalg
+            from sextante import runalg
             result = runalg("grass:v.voronoi", points(),False,False,"270778.60198,270855.745301,4458921.97814,4458983.8488",-1,0.0001,None)
             if not os.path.exists(result['output']):
                 return "It seems that GRASS is not correctly installed and configured in your system.\nPlease install it before running GRASS algorithms."
