@@ -107,6 +107,7 @@ class translate(GeoAlgorithm):
         if srs is not None:
             arguments.append("-a_srs")
             arguments.append(str(srs))
+            self.crs = srs
         if sds:
             arguments.append("-sds")
         if len(extra) > 0:
