@@ -23,37 +23,30 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-import re
-import string
-from string import Template
 import tempfile
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-
 from qgis.core import *
-
-from sextante.core.SextanteLog import SextanteLog
-from sextante.core.QGisLayers import QGisLayers
-
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterString import ParameterString
 from sextante.outputs.OutputVector import OutputVector
-
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.gdal.OgrAlgorithm import OgrAlgorithm
 from sextante.gdal.pyogr.ogr2ogr import *
 
-from sextante.gdal.GdalUtils import GdalUtils
-
 try:
-  from osgeo import gdal, ogr, osr
-  gdalAvailable = True
+    from osgeo import gdal, ogr, osr
+    gdalAvailable = True
 except:
-  gdalAvailable = False
+    gdalAvailable = False
 
 GeomOperation = Enum(["NONE", "SEGMENTIZE", "SIMPLIFY_PRESERVE_TOPOLOGY"])
 
+FORMATS = ['ESRI Shapefile','GeoJSON',' GeoRSS','SQLite','Generic Mapping Tools','Mapinfo TAB','ESRI Shapefile','INTERLIS 1',
+           'Geography Markup Language','Geoconcept','AutoCAD DXF','INTERLIS 2','','Microstation DGN',
+           'Comma Separated Value','Atlas BNAGPS eXchange Format','S-57 Base file','Keyhole Markup Language']
+EXTS = ["shp",'geojson','.xml','.sqlite','.gmt','.tab','.shp','.ili','.gml','.txt','.dxf','.ili','.dgn','.csv','.bna','.gpx','.000','.kml']
 
 class Ogr2Ogr(OgrAlgorithm):
 
@@ -69,10 +62,9 @@ class Ogr2Ogr(OgrAlgorithm):
 
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
-        #self.addParameter(ParameterString(self.DEST_DS, "Output DS", "/tmp/out.sqlite"))
-        self.addParameter(ParameterString(self.DEST_FORMAT, "Destination Format", "ESRI Shapefile")) #SQLite
-        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "")) #SPATIALITE=YES
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))        
+        self.addParameter(ParameterSelection(self.DEST_FORMAT, "Destination Format", FORMATS)) 
+        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "")) 
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
@@ -80,52 +72,38 @@ class Ogr2Ogr(OgrAlgorithm):
         '''Here is where the processing itself takes place'''
 
         if not gdalAvailable:
-            SextanteLog.addToLog(SextanteLog.LOG_ERROR, "GDAL bindings not installed." )
-            return
+            raise GeoAlgorithmExecutionException("GDAL bindings not installed.")            
 
         input = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(input)
-        output = self.getOutputValue(self.OUTPUT_LAYER)
-
-        #dst_ds = self.getParameterValue(self.DEST_DS)
-        dst_ds = self.ogrConnectionString(output)
-        dst_format = self.getParameterValue(self.DEST_FORMAT)
-        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)] #TODO: split
-        #dst_ds = "PG:dbname='glarus_np' options='-c client_encoding=LATIN9'"
-        #dst_format ="PostgreSQL"
-
-        qDebug("Opening data source '%s'" % ogrLayer)
+        
+        output = self.getOutputFromName(self.OUTPUT_LAYER)
+        outfile = output.value
+        
+        formatIdx = self.getParameterValue(self.DEST_FORMAT)
+        
+        ext = EXTS[formatIdx]
+        if not outfile.endswith(ext):
+            outfile = outfile + ext;
+            output.value = outfile
+        
+        dst_ds = self.ogrConnectionString(outfile)
+        dst_format = FORMATS[formatIdx]
+        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)] 
+        
         poDS = ogr.Open( ogrLayer, False )
         if poDS is None:
-            SextanteLog.addToLog(SextanteLog.LOG_ERROR, self.failure(ogrLayer))
-            return
-
-        srs = osr.SpatialReference()
-        srs.ImportFromEPSG( 21781 ) #FIXME
-        qDebug("Creating output '%s'" % dst_ds)
+            raise GeoAlgorithmExecutionException(self.failure(ogrLayer))        
+   
         if dst_format == "SQLite" and os.path.isfile(dst_ds):
-            os.remove(dst_ds)
-        qDebug("Using driver '%s'" % dst_format)
-        driver = ogr.GetDriverByName(dst_format)
+            os.remove(dst_ds)        
+        driver = ogr.GetDriverByName(str(dst_format))
         poDstDS = driver.CreateDataSource(dst_ds, options = ogr_dsco)
         if poDstDS is None:
-            SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Error creating %s" % dst_ds)
+            raise GeoAlgorithmExecutionException("Error creating %s" % dst_ds)
             return
-        self.ogrtransform(poDS, poDstDS, bOverwrite = True)
-        #ogr2ogr(pszFormat = dst_format, pszDataSource = poDS, pszDestDataSource = poDstDS, bOverwrite = True)
+        self.ogrtransform(poDS, poDstDS, bOverwrite = True)        
 
-    def transformed_template(self, template, substitutions):
-        vrt_templ = Template(open(template).read())
-        vrt_xml = vrt_templ.substitute(substitutions)
-        vrt = tempfile.mktemp( '.vrt', 'ogr_', '/vsimem')
-        # Create in-memory file
-        gdal.FileFromMemBuffer(vrt, vrt_xml)
-        return vrt
-
-    def transformed_datasource(self, template, substitutions):
-        vrt = transformed_template(template, substitutions)
-        ds = ogr.Open(vrt)
-        return ds
 
     def ogrtransform(self,
                      poSrcDS,
@@ -163,8 +141,7 @@ class Ogr2Ogr(OgrAlgorithm):
                 poLayer = poSrcDS.GetLayer(iLayer)
 
                 if poLayer is None:
-                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "FAILURE: Couldn't fetch advertised layer %d!" % iLayer)
-                    return False
+                    raise GeoAlgorithmExecutionException( "FAILURE: Couldn't fetch advertised layer %d!" % iLayer)                    
 
                 papoLayers[iLayer] = poLayer
                 iLayer = iLayer + 1
@@ -179,16 +156,12 @@ class Ogr2Ogr(OgrAlgorithm):
                 poLayer = poSrcDS.GetLayerByName(layername)
 
                 if poLayer is None:
-                    SextanteLog.addToLog(SextanteLog.LOG_ERROR, "FAILURE: Couldn't fetch advertised layer %s!" % layername)
-                    return False
+                    raise GeoAlgorithmExecutionException("FAILURE: Couldn't fetch advertised layer %s!" % layername)                    
 
                 papoLayers[iLayer] = poLayer
                 iLayer = iLayer + 1
 
-        for poSrcLayer in papoLayers:
-          qDebug(poSrcLayer.GetLayerDefn().GetName())
-          #TODO: poDstDS.GetLayerByName for VRT layer fails if name is not lower case
-
+        for poSrcLayer in papoLayers:                
           ok = TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
                         bTransform, poOutputSRS, poSourceSRS, papszSelFields, \
                         bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \

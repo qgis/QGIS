@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.parameters.ParameterString import ParameterString
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,11 +24,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-
 from PyQt4 import QtGui
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-
+from sextante.parameters.ParameterString import ParameterString
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterBoolean import ParameterBoolean
@@ -107,7 +104,7 @@ class translate(GeoAlgorithm):
         if srs is not None:
             arguments.append("-a_srs")
             arguments.append(str(srs))
-            self.crs = srs
+            self.crs = QgsCoordinateReferenceSystem(crsId)
         if sds:
             arguments.append("-sds")
         if len(extra) > 0:

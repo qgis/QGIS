@@ -767,24 +767,24 @@ class QgisAlgsTest(unittest.TestCase):
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
 
     def test_qgisaddfieldtoattributestable(self):
-        outputs=sextante.runalg("qgis:addfieldtoattributestable",points(),"newfield",1,None)
+        outputs=sextante.runalg("qgis:addfieldtoattributestable",lines(),"field",0,10,0,None)
         output=outputs['OUTPUT_LAYER']
         layer=QGisLayers.getObjectFromUri(output, True)
         fields=layer.pendingFields()
-        expectednames=['ID','PT_NUM_A','PT_ST_A','newfield']
-        expectedtypes=['Integer','Real','String','Real']
+        expectednames=['ID','LINE_NUM_A','LINE_ST_A','field']
+        expectedtypes=['Integer','Real','String','Integer']
         names=[str(f.name()) for f in fields]
         types=[str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
         self.assertEqual(expectedtypes, types)
         features=sextante.getfeatures(layer)
-        self.assertEqual(12, len(features))
+        self.assertEqual(3, len(features))
         feature=features.next()
         attrs=feature.attributes()
-        expectedvalues=["1","1.1","a",""]
+        expectedvalues=["1","11.1","string a",""]
         values=[str(attr.toString()) for attr in attrs]
         self.assertEqual(expectedvalues, values)
-        wkt='POINT(270839.65586926 4458983.16267036)'
+        wkt='LINESTRING(270818.44773413 4458997.23886624, 270833.27466046 4458983.16267036, 270830.83478651 4458975.28000067, 270822.38906898 4458967.20964836, 270823.32748204 4458959.70234389, 270822.7644342 4458958.01320039)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
 
     def test_qgiscreateequivalentnumericalfield(self):
