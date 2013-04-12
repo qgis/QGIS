@@ -272,7 +272,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** Value representing currentno data.
      *  WARNING: this value returned by this method is not constant. It may change
      *  for example if user disable use of source no data value. */
-    virtual double noDataValue( int bandNo ) const;
+    //virtual double noDataValue( int bandNo ) const;
 
     /** Value representing no data value. */
     virtual double srcNoDataValue( int bandNo ) const { return mSrcNoDataValue.value( bandNo -1 ); }
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     // TODO: remove in 2.0
-    QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    //QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -490,16 +490,27 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     @note: this member has been added in version 1.2*/
     int mDpi;
 
+    /** Source no data value is available and is set to be used or internal no data
+     *  is available. Used internally only  */
+    //bool hasNoDataValue ( int theBandNo );
+
     /** \brief Cell value representing original source no data. e.g. -9999, indexed from 0  */
     QList<double> mSrcNoDataValue;
 
-    /** \brief Source nodata value exist */
+    /** \brief Source no data value exists. */
     QList<bool> mSrcHasNoDataValue;
+
+    /** \brief No data value exists. May exist even if source no data value does not
+     * exist, for example, if data type is wide enough a large number is used as no data. */
+    //QList<bool> mHasNoDataValue;
 
     /** \brief Use source nodata value. User can disable usage of source nodata
      *  value as nodata. It may happen that a value is wrongly given by GDAL
      *  as nodata (e.g. 0) and it has to be treated as regular value. */
     QList<bool> mUseSrcNoDataValue;
+
+    /** \brief Internal no data value was set and is used. */
+    //QList<bool> mHasInternalNoDataValue;
 
     /** \brief Internal value representing nodata. Indexed from 0.
      *  This values is used to represent nodata if no source nodata is available
@@ -508,6 +519,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *  in following interfaces, but that could make difficult to subclass
      *  QgsRasterInterface.
      */
+    // TODO: probably remove (move to providers if used)
     QList<double> mInternalNoDataValue;
 
     /** \brief Flag indicating if the nodatavalue is valid*/

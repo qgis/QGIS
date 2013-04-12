@@ -364,13 +364,26 @@ QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth,
 
 QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
-  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
+  //QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
+  QgsRasterBlock *block;
+  if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )
+  {
+    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, srcNoDataValue( theBandNo ) );
+  }
+  else
+  {
+    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
+  }
 
   if ( block->isEmpty() )
   {
     return block;
   }
 
+  if ( !mExtent.contains( theExtent ) )
+  {
+    block->setIsNoData();
+  }
   readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
   block->applyNodataValues( userNoDataValue( theBandNo ) );
   return block;
@@ -407,6 +420,8 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   int dataSize = dataTypeSize( theBandNo );
 
+  // moved to block()
+#if 0
   if ( !mExtent.contains( theExtent ) )
   {
     // fill with null values
@@ -419,6 +434,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
       block += dataSize;
     }
   }
+#endif
 
   QgsRectangle myRasterExtent = theExtent.intersect( &mExtent );
   if ( myRasterExtent.isEmpty() )
@@ -885,7 +901,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Id
     // Outside the raster
     for ( int bandNo = 1; bandNo <= bandCount(); bandNo++ )
     {
-      results.insert( bandNo, noDataValue( bandNo ) );
+      results.insert( bandNo, QVariant() ); // null QVariant represents no data
     }
     return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
   }
@@ -955,6 +971,12 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Id
 
     double value = myBlock->value( r, c );
 
+    if (( srcHasNoDataValue( i ) && useSrcNoDataValue( i ) &&
+          ( qIsNaN( value ) || doubleNear( value, srcNoDataValue( i ) ) ) ) ||
+        ( QgsRasterRange::contains( value, userNoDataValue( i ) ) ) )
+    {
+      results.insert( i, QVariant() ); // null QVariant represents no data
+    }
     results.insert( i, value );
   }
   return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
@@ -2408,6 +2430,8 @@ void QgsGdalProvider::initBaseDataset()
     // disabled by user, in that case we need another value to be used for nodata
     // (for reprojection for example) -> always internaly represent as wider type
     // with mInternalNoDataValue in reserve.
+    // Not used
+#if 0
     int myInternalGdalDataType = myGdalDataType;
     double myInternalNoDataValue = 123;
     switch ( srcDataType( i ) )
@@ -2437,9 +2461,12 @@ void QgsGdalProvider::initBaseDataset()
         // NaN should work well
         myInternalNoDataValue = std::numeric_limits<double>::quiet_NaN();
     }
-    mGdalDataType.append( myInternalGdalDataType );
-    mInternalNoDataValue.append( myInternalNoDataValue );
-    QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
+#endif
+    //mGdalDataType.append( myInternalGdalDataType );
+
+    mGdalDataType.append( myGdalDataType );
+    //mInternalNoDataValue.append( myInternalNoDataValue );
+    //QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
   }
 
   mValid = true;

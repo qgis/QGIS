@@ -42,10 +42,10 @@ QgsRasterInterface::~QgsRasterInterface()
 {
 }
 
-bool QgsRasterInterface::isNoDataValue( int bandNo, double value ) const
-{
-  return QgsRasterBlock::isNoDataValue( value, noDataValue( bandNo ) );
-}
+//bool QgsRasterInterface::isNoDataValue( int bandNo, double value ) const
+//{
+//  return QgsRasterBlock::isNoDataValue( value, noDataValue( bandNo ) );
+//}
 
 void QgsRasterInterface::initStatistics( QgsRasterBandStats &theStatistics,
     int theBandNo,
@@ -200,15 +200,14 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int theBandNo,
       // Collect the histogram counts.
       for ( size_t i = 0; i < (( size_t ) myBlockHeight ) * myBlockWidth; i++ )
       {
-        //double myValue = readValue( myData, myDataType, myX + ( myY * myBlockWidth ) );
-        double myValue = blk->value( i );
-        //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (myX).arg(myY).arg( myValue ) );
-
-        // TODO: user nodata
-        if ( isNoDataValue( theBandNo, myValue ) )
+        if ( blk->isNoData( i ) )
         {
           continue; // NULL
         }
+
+        //double myValue = readValue( myData, myDataType, myX + ( myY * myBlockWidth ) );
+        double myValue = blk->value( i );
+        //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (myX).arg(myY).arg( myValue ) );
 
         myRasterBandStats.sum += myValue;
         myRasterBandStats.elementCount++;
@@ -487,16 +486,13 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
       // Collect the histogram counts.
       for ( size_t i = 0; i < (( size_t ) myBlockHeight ) * myBlockWidth; i++ )
       {
-        //double myValue = readValue( myData, myDataType, myX + ( myY * myBlockWidth ) );
-        double myValue = blk->value( i );
-
-        //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (myX).arg(myY).arg( myValue ) );
-
-        // TODO: user defined nodata values
-        if ( isNoDataValue( theBandNo, myValue ) )
+        if ( blk->isNoData( i ) )
         {
           continue; // NULL
         }
+        double myValue = blk->value( i );
+
+        //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (myX).arg(myY).arg( myValue ) );
 
         int myBinIndex = static_cast <int>( qFloor(( myValue - myMinimum ) /  myBinSize ) ) ;
         //QgsDebugMsg( QString( "myValue = %1 myBinIndex = %2" ).arg( myValue ).arg( myBinIndex ) );

@@ -224,17 +224,17 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   {
     if ( fastDraw ) //fast rendering if no transparency, stretching, color inversion, etc.
     {
-      int redVal = ( int )redBlock->value( i );
-      int greenVal = ( int )greenBlock->value( i );
-      int blueVal = ( int )blueBlock->value( i );
-      if ( redBlock->isNoDataValue( redVal ) ||
-           greenBlock->isNoDataValue( greenVal ) ||
-           blueBlock->isNoDataValue( blueVal ) )
+      if ( redBlock->isNoData( i ) ||
+           greenBlock->isNoData( i ) ||
+           blueBlock->isNoData( i ) )
       {
         outputBlock->setColor( i, myDefaultColor );
       }
       else
       {
+        int redVal = ( int )redBlock->value( i );
+        int greenVal = ( int )greenBlock->value( i );
+        int blueVal = ( int )blueBlock->value( i );
         outputBlock->setColor( i, qRgba( redVal, greenVal, blueVal, 255 ) );
       }
       continue;
@@ -247,17 +247,17 @@ QgsRasterBlock* QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     if ( mRedBand > 0 )
     {
       redVal = redBlock->value( i );
-      if ( redBlock->isNoDataValue( redVal ) ) isNoData = true;
+      if ( redBlock->isNoData( i ) ) isNoData = true;
     }
     if ( !isNoData && mGreenBand > 0 )
     {
       greenVal = greenBlock->value( i );
-      if ( greenBlock->isNoDataValue( greenVal ) ) isNoData = true;
+      if ( greenBlock->isNoData( i ) ) isNoData = true;
     }
     if ( !isNoData && mBlueBand > 0 )
     {
       blueVal = ( int )blueBlock->value( i );
-      if ( blueBlock->isNoDataValue( blueVal ) ) isNoData = true;
+      if ( blueBlock->isNoData( i ) ) isNoData = true;
     }
     if ( isNoData )
     {

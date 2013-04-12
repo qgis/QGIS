@@ -605,9 +605,9 @@ int QgsGrassGisLib::G_open_raster_new( const char *name, RASTER_MAP_TYPE wr_type
   }
 
   raster.band = 1;
-  double noDataValue = noDataValueForGrassType( wr_type );
-  QgsDebugMsg( QString( "noDataValue = %1" ).arg(( int )noDataValue ) );
-  raster.provider->setNoDataValue( raster.band, noDataValue );
+  raster.noDataValue = noDataValueForGrassType( wr_type );
+  QgsDebugMsg( QString( "noDataValue = %1" ).arg(( int )raster.noDataValue ) );
+  raster.provider->setNoDataValue( raster.band, raster.noDataValue );
 
   raster.fd = mRasters.size();
   mRasters.insert( raster.fd, raster );
@@ -934,8 +934,8 @@ int QgsGrassGisLib::putRasterRow( int fd, const void *buf, RASTER_MAP_TYPE data_
   //QgsDebugMsg( QString("inputType = %1").arg(inputType) );
   //QgsDebugMsg( QString("provider->dataType = %1").arg( rast.provider->dataType( rast.band ) ) );
 
-  double noDataValue = rast.provider->noDataValue( rast.band );
-  QgsRasterBlock block( inputType, mColumns, 1, noDataValue );
+  //double noDataValue = rast.provider->noDataValue( rast.band );
+  QgsRasterBlock block( inputType, mColumns, 1, rast.noDataValue );
 
   memcpy( block.bits( 0 ), buf, QgsRasterBlock::typeSize( inputType )*mColumns );
   block.convert( rast.provider->dataType( rast.band ) );

@@ -698,17 +698,15 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
 {
   QgsDebugMsg( QString( "extent:\n%1" ).arg( extent.toString() ) );
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
     QgsDebugMsg( "Input not set" );
-    return outputBlock;
+    return new QgsRasterBlock();
   }
 
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsg( "No projection necessary" );
-    delete outputBlock;
     return mInput->block( bandNo, extent, width, height );
   }
 
@@ -724,7 +722,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   if ( srcRows() <= 0 || srcCols() <= 0 )
   {
     QgsDebugMsg( "Zero srcRows or srcCols" );
-    return outputBlock;
+    return new QgsRasterBlock();
   }
 
   //void * inputData = mInput->block( bandNo, srcExtent(), srcCols(), srcRows() );
@@ -733,18 +731,26 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   {
     QgsDebugMsg( "No raster data!" );
     delete inputBlock;
-    return outputBlock;
+    return new QgsRasterBlock();
   }
 
   size_t pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
 
-  if ( !outputBlock->reset( mInput->dataType( bandNo ), width, height ) )
+  QgsRasterBlock *outputBlock;
+  if ( inputBlock->hasNoDataValue() )
   {
-    QgsDebugMsg( "Cannot reset block" );
+    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height, inputBlock->noDataValue() );
+  }
+  else
+  {
+    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
+  }
+  if ( !outputBlock->isValid() )
+  {
+    QgsDebugMsg( "Cannot create block" );
     delete inputBlock;
     return outputBlock;
   }
-  outputBlock->setNoDataValue( mInput->noDataValue( bandNo ) );
 
   // TODO: fill by no data or transparent
 

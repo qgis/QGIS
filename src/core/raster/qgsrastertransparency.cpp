@@ -178,8 +178,11 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
 }
 
 // TODO: nodata per band
+#if 0
 bool QgsRasterTransparency::isEmpty( double nodataValue ) const
 {
+  // This was probably used when no data value was added by default to transparency list
+  // that is not true anamore
   return (
            ( mTransparentSingleValuePixelList.isEmpty() ||
              ( mTransparentSingleValuePixelList.size() == 1 &&
@@ -193,6 +196,12 @@ bool QgsRasterTransparency::isEmpty( double nodataValue ) const
                doubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
                doubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) &&
                doubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
+}
+#endif
+
+bool QgsRasterTransparency::isEmpty( ) const
+{
+  return mTransparentSingleValuePixelList.isEmpty();
 }
 
 void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem ) const

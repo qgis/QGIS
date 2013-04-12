@@ -676,7 +676,7 @@ void QgsRasterLayerProperties::sync()
     // TODO: all bands
     if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
     {
-      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->noDataValue( 1 ) ) );
+      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
     }
     else
     {
@@ -1080,31 +1080,6 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
 
   setupTransparencyTable( nBands );
 
-// I don't think that noDataValue should be added to transparency list
-#if 0
-  if ( nBands == 3 )
-  {
-    if ( mRasterLayer->isNoDataValueValid() )
-    {
-      tableTransparency->insertRow( tableTransparency->rowCount() );
-      setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 1, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 2, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 1, 100 );
-    }
-  }
-  else //1 band
-  {
-    if ( mRasterLayer->isNoDataValueValid() )
-    {
-      tableTransparency->insertRow( tableTransparency->rowCount() );
-      setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 1, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 1, 100 );
-    }
-  }
-#endif
-
   tableTransparency->resizeColumnsToContents(); // works only with values
   tableTransparency->resizeRowsToContents();
 }
@@ -1458,20 +1433,18 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
 
     QList<int> bands = renderer->usesBands();
 
-    QgsRasterDataProvider * provider = mRasterLayer->dataProvider();
     QList<double> values;
     for ( int i = 0; i < bands.size(); ++i )
     {
       int bandNo = bands.value( i );
       if ( myPixelMap.count( bandNo ) == 1 )
       {
-        double value = myPixelMap.value( bandNo ).toDouble();
-        QgsDebugMsg( QString( "value = %1" ).arg( value, 0, 'g', 17 ) );
-
-        if ( provider->isNoDataValue( bandNo, value ) )
+        if ( myPixelMap.value( bandNo ).isNull() )
         {
           return; // Don't add nodata, transparent anyway
         }
+        double value = myPixelMap.value( bandNo ).toDouble();
+        QgsDebugMsg( QString( "value = %1" ).arg( value, 0, 'g', 17 ) );
         values.append( value );
       }
     }
@@ -1690,22 +1663,6 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
 
   settings.setValue( "style/lastStyleDir", QFileInfo( outputFileName ).absolutePath() );
 }
-
-#if 0
-void QgsRasterLayerProperties::on_btnResetNull_clicked( )
-{
-  //If reset NoDataValue is checked do this first, will ignore what ever is in the LineEdit
-  mRasterLayer->resetNoDataValue();
-  if ( mRasterLayer->isNoDataValueValid() )
-  {
-    leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'g' ) );
-  }
-  else
-  {
-    leNoDataValue->clear();
-  }
-}
-#endif
 
 void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 {

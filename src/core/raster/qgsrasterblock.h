@@ -38,11 +38,26 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
+     */
+    QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight );
+
+    /** \brief Constructor which allocates data block in memory
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
      *  @param theNoDataValue the value representing no data (NULL)
      */
-    QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
+    QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     virtual ~QgsRasterBlock();
+
+    /** \brief Reset block
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
+     *  @return true on success
+     */
+    bool reset( QGis::DataType theDataType, int theWidth, int theHeight );
 
     /** \brief Reset block
      *  @param theDataType raster data type
@@ -51,7 +66,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theNoDataValue the value representing no data (NULL)
      *  @return true on success
      */
-    bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
+    bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
@@ -125,6 +140,10 @@ class CORE_EXPORT QgsRasterBlock
     /** For given data type returns wider type and sets no data value */
     static QGis::DataType typeWithNoDataValue( QGis::DataType dataType, double *noDataValue );
 
+    /** True if the block has no data value.
+     * @return true if the block has no data value */
+    bool hasNoDataValue() const { return mHasNoDataValue; }
+
     /** Return no data value.
      * @return No data value */
     double noDataValue() const { return mNoDataValue; }
@@ -132,18 +151,13 @@ class CORE_EXPORT QgsRasterBlock
     /** Set no data value.
      * @param noDataValue the value to be considered no data
      */
-    void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
+    //void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
 
     /** Test if value is nodata comparing to noDataValue
      * @param value tested value
      * @param noDataValue no data value
      * @return true if value is nodata */
     static bool isNoDataValue( double value, double noDataValue );
-
-    /** Test if value is nodata for specific band
-     * @param value tested value
-     * @return true if value is nodata */
-    bool isNoDataValue( double value ) const;
 
     // get byte array representing no data value
     static QByteArray valueBytes( QGis::DataType theDataType, double theValue );
@@ -283,9 +297,15 @@ class CORE_EXPORT QgsRasterBlock
     void setError( const QgsError & theError ) { mError = theError;}
 
   private:
-
     static QImage::Format imageFormat( QGis::DataType theDataType );
     static QGis::DataType dataType( QImage::Format theFormat );
+
+    /** Test if value is nodata for specific band
+     * @param value tested value
+     * @return true if value is nodata */
+    bool isNoDataValue( double value ) const;
+
+    bool createNoDataBitmap();
 
     // Valid
     bool mValid;
@@ -302,6 +322,9 @@ class CORE_EXPORT QgsRasterBlock
     // Height
     int mHeight;
 
+    // Has no data value
+    bool mHasNoDataValue;
+
     // No data value
     double mNoDataValue;
 
@@ -311,6 +334,9 @@ class CORE_EXPORT QgsRasterBlock
 
     // Image for image data types, not used with numerical data types
     QImage *mImage;
+
+    // Bitmap of no data. One bit for each pixel. Bit is 1 if a pixels is no data.
+    char *mNoDataBitmap;
 
     // Error
     QgsError mError;

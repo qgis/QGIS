@@ -126,13 +126,12 @@ QgsRasterBlock* QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  cons
   QRgb myDefaultColor = NODATA_COLOR;
   for ( size_t i = 0; i < ( size_t )width*height; i++ )
   {
-    double grayVal = inputBlock->value( i );
-
-    if ( inputBlock->isNoDataValue( grayVal ) )
+    if ( inputBlock->isNoData( i ) )
     {
       outputBlock->setColor( i, myDefaultColor );
       continue;
     }
+    double grayVal = inputBlock->value( i );
 
     double currentAlpha = mOpacity;
     if ( mRasterTransparency )

@@ -318,6 +318,8 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     // disabled by user, in that case we need another value to be used for nodata
     // (for reprojection for example) -> always internaly represent as wider type
     // with mInternalNoDataValue in reserve.
+    // No retyping, no internal values for now
+#if 0
     int myInternalGdalDataType = myGdalDataType;
     double myInternalNoDataValue;
     switch ( srcDataType( i ) )
@@ -350,12 +352,14 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     mGdalDataType.append( myInternalGdalDataType );
     mInternalNoDataValue.append( myInternalNoDataValue );
     QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
+#endif
+    mGdalDataType.append( myGdalDataType );
 
     // TODO: what to do if null values from DescribeCoverage differ?
-    if ( !mCoverageSummary.nullValues.contains( myNoDataValue ) )
-    {
-      QgsDebugMsg( QString( "noDataValue %1 is missing in nullValues from CoverageDescription" ).arg( myNoDataValue ) );
-    }
+    //if ( !mCoverageSummary.nullValues.contains( myNoDataValue ) )
+    //{
+    //  QgsDebugMsg( QString( "noDataValue %1 is missing in nullValues from CoverageDescription" ).arg( myNoDataValue ) );
+    //}
 
     QgsDebugMsg( QString( "mSrcGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mSrcGdalDataType[i-1] ) );
     QgsDebugMsg( QString( "mGdalDataType[%1] = %2" ).arg( i - 1 ).arg( mGdalDataType[i-1] ) );
@@ -1612,7 +1616,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Ide
     // Outside the raster
     for ( int i = 1; i <= bandCount(); i++ )
     {
-      results.insert( i, noDataValue( i ) );
+      results.insert( i, QVariant() );
     }
     return QgsRasterIdentifyResult( IdentifyFormatValue, results );
   }
@@ -1694,14 +1698,17 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Ide
       return QgsRasterIdentifyResult( ERROR( tr( "RasterIO error: " ) + QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
     }
 
-    // Apply user no data
-    QgsRasterRangeList myNoDataRangeList = userNoDataValue( i );
-    if ( QgsRasterRange::contains( value, myNoDataRangeList ) )
+    // Apply no data and user no data
+    if (( srcHasNoDataValue( i ) && useSrcNoDataValue( i ) &&
+          ( qIsNaN( value ) || doubleNear( value, srcNoDataValue( i ) ) ) ) ||
+        ( QgsRasterRange::contains( value, userNoDataValue( i ) ) ) )
     {
-      value = noDataValue( i );
+      results.insert( i, QVariant() );
     }
-
-    results.insert( i, value );
+    else
+    {
+      results.insert( i, value );
+    }
   }
 
   return QgsRasterIdentifyResult( IdentifyFormatValue, results );

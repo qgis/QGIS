@@ -123,18 +123,24 @@ class CORE_EXPORT QgsRasterInterface
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
     }
 
+    /** True if the interface has a no data value.
+     * It does not change during the life of the interface.
+     * @param bandNo band number
+     * @return true if the interface has a no data value */
+    //virtual bool hasNoDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return false; }
+
     /** Return no data value for specific band. Each band/provider must have
      * no data value, if there is no one set in original data, provider decides one
      * possibly using wider data type.
      * @param bandNo band number
      * @return No data value */
-    virtual double noDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return std::numeric_limits<double>::quiet_NaN(); }
+    //virtual double noDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return std::numeric_limits<double>::quiet_NaN(); }
 
     /** Test if value is nodata for specific band
      * @param bandNo band number
      * @param value tested value
      * @return true if value is nodata */
-    virtual bool isNoDataValue( int bandNo, double value ) const;
+    //virtual bool isNoDataValue( int bandNo, double value ) const;
 
     /** Read block of data using given extent and size.
      *  Returns pointer to data.
