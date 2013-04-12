@@ -432,11 +432,13 @@ class PythonConsoleWidget(QWidget):
     def callWidgetMessageBarEditor(self, text):
         self.tabEditorWidget.widgetMessageBar(iface, text)
         
-    def updateTabListScript(self, script): 
+    def updateTabListScript(self, script, action=None): 
         if script == 'empty':
             self.tabListScript = []
-        if script is not None and script != 'empty':
+        if script is not None and not action and script != 'empty':
             self.tabListScript.remove(script)
+        if action:
+            self.tabListScript.append(script)
         self.settings.setValue("pythonConsole/tabScripts",
                                QVariant(self.tabListScript))
             

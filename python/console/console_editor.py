@@ -433,6 +433,7 @@ class EditorTab(QWidget):
                 return
             msgText = QCoreApplication.translate('PythonConsole', 
                                                  'Script was correctly saved.')
+            self.pc.updateTabListScript(self.path, action='append')
             self.pc.callWidgetMessageBarEditor(msgText)
         # Rename the original file, if it exists
         overwrite = os.path.exists(self.path)
@@ -601,26 +602,36 @@ class EditorTabWidget(QTabWidget):
         else:
             self.removeTab(self.indexOf(tab))
         self.currentWidget().setFocus(Qt.TabFocusReason)
-        
+
     def setTabTitle(self, tab, title):
         self.setTabText(self.indexOf(tab), title)
-        
+
     def _removeTab(self, tab):
-        if self.widget(tab).path in self.restoreTabList:
-        #print currWidget.path
-            self.parent.updateTabListScript(self.widget(tab).path)
-        if self.count() <= 2:
-            self.setTabsClosable(False)
-            self.removeTab(tab)
+        if self.widget(tab).newEditor.isModified():
+            res = QMessageBox.question( self, 'Save Script',
+                             'The script "%s" has been modified, save changes ?' 
+                             % self.tabText(tab),
+                             QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel )
+            if res == QMessageBox.Save:
+                self.widget(tab).save()
+            elif res == QMessageBox.Cancel:
+                return
+            else:
+                self.parent.updateTabListScript(self.widget(tab).path)
+                self.removeTab(tab)
         else:
-            self.removeTab(tab)
-        
-        self.currentWidget().setFocus(Qt.TabFocusReason)
-        
+            if self.widget(tab).path in self.restoreTabList:
+                self.parent.updateTabListScript(self.widget(tab).path)
+            if self.count() <= 2:
+                self.setTabsClosable(False)
+                self.removeTab(tab)
+            else:
+                self.removeTab(tab)
+            self.currentWidget().setFocus(Qt.TabFocusReason)
 
     def buttonClosePressed(self):
         self.closeCurrentWidget()
-        
+
     def closeCurrentWidget(self):
         currWidget = self.currentWidget()
         if currWidget and currWidget.close():
@@ -631,24 +642,24 @@ class EditorTabWidget(QTabWidget):
         if currWidget.path in self.restoreTabList:
             #print currWidget.path
             self.parent.updateTabListScript(currWidget.path)
-            
+
     def restoreTabs(self):
         for script in self.restoreTabList:
                     pathFile = str(script.toString())
                     tabName = pathFile.split('/')[-1]
                     self.newTabEditor(tabName, pathFile)
         self.topFrame.close()
-        
+
     def closeRestore(self):
         self.parent.updateTabListScript('empty')
         self.topFrame.close()
-        
+
     def showFileTabMenu(self):
         self.fileTabMenu.clear()
         for index in range(self.count()):
             action = self.fileTabMenu.addAction(self.tabIcon(index), self.tabText(index))
             action.setData(QVariant(index))
-            
+
     def showFileTabMenuTriggered(self, action):
         index, ok = action.data().toInt()
         if ok:
