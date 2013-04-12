@@ -56,7 +56,7 @@ class ParameterTableField(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")        
-        return ParameterTableField(tokens[0], tokens[1], tokens[2], int(tokens[3]), tokens[4] == str(True))        
+        return ParameterTableField(tokens[1], tokens[2], tokens[3], int(tokens[4]), tokens[5] == str(True))        
 
     def __str__(self):
         return self.name + " <" + self.__module__.split(".")[-1] +" from " + self.parent     + ">"

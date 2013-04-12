@@ -49,10 +49,10 @@ class ParameterSelection(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        if len(tokens) == 4:
-            return ParameterSelection(tokens[0], tokens[1], tokens[2].split(";"), int(tokens[3]))
+        if len(tokens) == 5:
+            return ParameterSelection(tokens[1], tokens[2], tokens[3].split(";"), int(tokens[4]))
         else:
-            return ParameterSelection(tokens[0], tokens[1], tokens[2].split(";"))
+            return ParameterSelection(tokens[1], tokens[2], tokens[3].split(";"))
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\

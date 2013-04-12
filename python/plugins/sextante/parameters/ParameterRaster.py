@@ -88,7 +88,7 @@ class ParameterRaster(ParameterDataObject):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterRaster(tokens[0], tokens[1], str(True) == tokens[2])
+        return ParameterRaster(tokens[1], tokens[2], str(True) == tokens[3])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=raster"
