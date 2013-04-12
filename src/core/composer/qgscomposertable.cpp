@@ -84,7 +84,6 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
       currentY += mLineTextDistance;
 
       QgsAttributes currentAttributeMap = *attIt;
-      int debug = columnIt.key();
       QString str = currentAttributeMap.at( columnIt.key() ).toString();
       drawText( painter, currentX, currentY, str, mContentFont );
       currentY += mLineTextDistance;
