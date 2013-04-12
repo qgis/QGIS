@@ -280,7 +280,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   mWMSExtMaxX->setValidator( new QDoubleValidator( mWMSExtMaxX ) );
   mWMSExtMaxY->setValidator( new QDoubleValidator( mWMSExtMaxY ) );
 
-  values = QgsProject::instance()->readListEntry( "WMSExtent", "/", &ok );
+  values = QgsProject::instance()->readListEntry( "WMSExtent", "/", QStringList(), &ok );
   grpWMSExt->setChecked( ok && values.size() == 4 );
   if ( grpWMSExt->isChecked() )
   {
@@ -290,7 +290,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     mWMSExtMaxY->setText( values[3] );
   }
 
-  values = QgsProject::instance()->readListEntry( "WMSCrsList", "/", &ok );
+  values = QgsProject::instance()->readListEntry( "WMSCrsList", "/", QStringList(), &ok );
   grpWMSList->setChecked( ok && values.size() > 0 );
   if ( grpWMSList->isChecked() )
   {
@@ -298,7 +298,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   }
   else
   {
-    values = QgsProject::instance()->readListEntry( "WMSEpsgList", "/", &ok );
+    values = QgsProject::instance()->readListEntry( "WMSEpsgList", "/", QStringList(), &ok );
     grpWMSList->setChecked( ok && values.size() > 0 );
     if ( grpWMSList->isChecked() )
     {
@@ -315,7 +315,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   grpWMSList->setChecked( mWMSList->count() > 0 );
 
   //composer restriction for WMS
-  values = QgsProject::instance()->readListEntry( "WMSComposerList", "/", &ok );
+  values = QgsProject::instance()->readListEntry( "WMSComposerList", "/", QStringList(), &ok );
   mWMSComposerGroupBox->setChecked( ok );
   if ( ok )
   {
@@ -323,7 +323,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   }
 
   //layer restriction for WMS
-  values = QgsProject::instance()->readListEntry( "WMSRestrictedLayers", "/", &ok );
+  values = QgsProject::instance()->readListEntry( "WMSRestrictedLayers", "/", QStringList(), &ok );
   mLayerRestrictionsGroupBox->setChecked( ok );
   if ( ok )
   {
