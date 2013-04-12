@@ -66,7 +66,7 @@
 #include <QVector>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl ),
+    : QgsOptionsDialogBase( "RasterLayerProperties", parent, fl ),
     // Constant that signals property not used.
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
     mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) ), mRendererWidget( 0 )
@@ -75,13 +75,18 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mRGBMinimumMaximumEstimated = true;
 
   setupUi( this );
+  // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
+  // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
+  // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
+  initOptionsBase( false );
 
   mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.png" ) );
   mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.png" ) );
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+
+  connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
 
@@ -187,13 +192,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   else
   {
     // disable Pyramids tab completely
-    tabPagePyramids->setEnabled( false );
+    mOptsPage_Pyramids->setEnabled( false );
   }
 
   if ( !( provider->capabilities() & QgsRasterDataProvider::Histogram ) )
   {
     // disable Histogram tab completely
-    tabPageHistogram->setEnabled( false );
+    mOptsPage_Histogram->setEnabled( false );
   }
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt() );
@@ -268,7 +273,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   }
 
   // Hue and saturation color control
-  mHueSaturationGroupBox->setSaveCheckedState( true );
   const QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
   //set hue and saturation controls to current values
   if ( hueSaturationFilter )
@@ -322,9 +326,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   // create histogram widget
   mHistogramWidget = NULL;
-  if ( tabPageHistogram->isEnabled() )
+  if ( mOptsPage_Histogram->isEnabled() )
   {
-    mHistogramWidget = new QgsRasterHistogramWidget( mRasterLayer, tabPageHistogram );
+    mHistogramWidget = new QgsRasterHistogramWidget( mRasterLayer, mOptsPage_Histogram );
     mHistogramStackedWidget->addWidget( mHistogramWidget );
   }
 
@@ -377,17 +381,12 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   // update based on lyr's current state
   sync();
 
-  // set current tab after everything has been initialized
-  tabBar->setCurrentIndex( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
-
+  restoreOptionsBaseUi();
 } // QgsRasterLayerProperties ctor
 
 
 QgsRasterLayerProperties::~QgsRasterLayerProperties()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/RasterLayerProperties/geometry", saveGeometry() );
-  settings.setValue( "/Windows/RasterLayerProperties/row", tabBar->currentIndex() );
   if ( mPixelSelectorTool )
   {
     delete mPixelSelectorTool;
@@ -531,7 +530,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
   @note moved from ctor
 
   Previously this dialog was created anew with each right-click pop-up menu
-  invokation.  Changed so that the dialog always exists after first
+  invocation.  Changed so that the dialog always exists after first
   invocation, and is just re-synchronized with its layer's state when
   re-shown.
 
@@ -545,24 +544,26 @@ void QgsRasterLayerProperties::sync()
   {
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
-    tabBar->setCurrentWidget( tabPageMetadata );
+    mOptionsStackedWidget->setCurrentWidget( mOptsPage_Metadata );
   }
 
+  // TODO: the next two blocks of code don't make sense, especially now that the dialogs are no
+  //       longer reused. Wouldn't it be better to just disable the tabs than delete them anyway? [LS]
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
-    if ( tabPagePyramids != NULL )
+    if ( mOptsPage_Pyramids != NULL )
     {
-      delete tabPagePyramids;
-      tabPagePyramids = NULL;
+      delete mOptsPage_Pyramids;
+      mOptsPage_Pyramids = NULL;
     }
   }
 
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
   {
-    if ( tabPageHistogram != NULL )
+    if ( mOptsPage_Histogram != NULL )
     {
-      delete tabPageHistogram;
-      tabPageHistogram = NULL;
+      delete mOptsPage_Histogram;
+      mOptsPage_Histogram = NULL;
       delete mHistogramWidget;
       mHistogramWidget = NULL;
     }
@@ -1286,11 +1287,11 @@ void QgsRasterLayerProperties::setTransparencyToEdited( int row )
   mTransparencyToEdited[row] = true;
 }
 
-void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
+void QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
 {
   if ( mHistogramWidget == 0 ) return;
 
-  if ( theTab == 5 )
+  if ( indx == 5 )
   {
     mHistogramWidget->setActive( true );
   }
@@ -1681,7 +1682,8 @@ void QgsRasterLayerProperties::updatePipeList()
   QgsDebugMsg( "Entered" );
 
 #ifndef QGISDEBUG
-  tabBar->removeTab( tabBar->indexOf( tabPagePipe ) );
+  mOptionsStackedWidget->removeWidget( mOptsPage_Pipe );
+  mOptListWidget->removeItemWidget( mOptListWidget->item( mOptStackedWidget->indexOf( mOptsPage_Pipe ) ) );
 #else
   mPipeTreeWidget->clear();
 
@@ -1787,3 +1789,13 @@ void QgsRasterLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
   cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
 }
 
+void QgsRasterLayerProperties::on_mResetColorRenderingBtn_clicked()
+{
+  mBlendModeComboBox->setBlendMode( QPainter::CompositionMode_SourceOver );
+  mSliderBrightness->setValue( 0 );
+  mSliderContrast->setValue( 0 );
+  sliderSaturation->setValue( 0 );
+  comboGrayscale->setCurrentIndex(( int ) QgsHueSaturationFilter::GrayscaleOff );
+  mColorizeCheck->setChecked( false );
+  sliderColorizeStrength->setValue( 100 );
+}

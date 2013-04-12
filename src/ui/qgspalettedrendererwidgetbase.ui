@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>211</width>
-    <height>256</height>
+    <width>263</width>
+    <height>340</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,6 +36,12 @@
    </item>
    <item row="1" column="0">
     <widget class="QTreeWidget" name="mTreeWidget">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>280</height>
+      </size>
+     </property>
      <column>
       <property name="text">
        <string>Value</string>
