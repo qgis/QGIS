@@ -153,6 +153,12 @@ struct CORE_EXPORT QgsVectorJoinInfo
  * The QgsVectorLayer provides a common interface to the different data types.  It also
  * manages editing transactions.
  *
+ *  Sample usage of the QgsVectorLayer class:
+ *
+ * \code
+ *     QString uri = "point?crs=epsg:4326&field=id:integer";
+ *     QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
+ * \endcode
  *
  * The main data providers supported by QGis are listed below.
  *
