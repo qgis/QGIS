@@ -4,7 +4,7 @@ Vector (v.*)
 ParameterVector|from|"from" input layer|0|False
 ParameterVector|to|"to" input layer|-1|False
 ParameterSelection|upload|Values describing the relation between two nearest features|to_attr
-ParameterTableField|column|Column where values specified by 'upload' option will be uploaded|to
-ParameterTableField|to_column|Column name of nearest feature|to
+ParameterTableField|column|Column where values specified by 'upload' option will be uploaded|to|-1|False
+ParameterTableField|to_column|Column name of nearest feature|to|-1|False
 ParameterBoolean|-a|Calculate distances to all features within the threshold|False
 OutputVector|output|Output layer

@@ -1,7 +1,7 @@
 Multilevel B-Spline Interpolation
 grid_spline
 ParameterVector|SHAPES|Points|0|False
-ParameterTableField|FIELD|Attribute|SHAPES
+ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 ParameterSelection|TARGET|Target Grid|[0] user defined
 ParameterSelection|METHOD|Method|[0] without B-spline refinement;[1] with B-spline refinement
 ParameterNumber|EPSILON|Threshold Error|None|None|0.0001

@@ -1,7 +1,7 @@
 Cubic Spline Approximation
 grid_spline
 ParameterVector|SHAPES|Points|0|False
-ParameterTableField|FIELD|Attribute|SHAPES
+ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 ParameterSelection|TARGET|Target Grid|[0] user defined
 ParameterNumber|NPMIN|Minimal Number of Points|None|None|3
 ParameterNumber|NPMAX|Maximal Number of Points|None|None|20

@@ -30,7 +30,7 @@ class ParameterString(Parameter):
     NEWLINE = "\n"
     ESCAPED_NEWLINE = "\\n"
 
-    def __init__(self, name="", description="", default="", multiline = False):
+    def __init__(self, name="", description="", default="", multiline = False, optional = False):
         Parameter.__init__(self, name, description)
         self.default = default
         self.value = None

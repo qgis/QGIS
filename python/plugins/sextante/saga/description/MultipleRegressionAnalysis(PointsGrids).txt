@@ -2,7 +2,7 @@ Multiple Regression Analysis (Points/Grids)
 geostatistics_regression
 ParameterMultipleInput|GRIDS|Grids|3|False
 ParameterVector|SHAPES|Shapes|-1|False
-ParameterTableField|ATTRIBUTE|Attribute|SHAPES
+ParameterTableField|ATTRIBUTE|Attribute|SHAPES|-1|False
 ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
 ParameterBoolean|COORD_X         |Include X Coordinate|True
 ParameterBoolean|COORD_Y         |Include Y Coordinate|True

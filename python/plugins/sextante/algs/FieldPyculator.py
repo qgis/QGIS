@@ -67,9 +67,9 @@ class FieldsPyculator(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name", "NewField"))
         self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))
-        self.addParameter(ParameterNumber(self.FIELD_LENGTH, "Field lenght", 1, 255, 10))
+        self.addParameter(ParameterNumber(self.FIELD_LENGTH, "Field length", 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION, "Field precision", 0, 10, 0))
-        self.addParameter(ParameterString(self.GLOBAL, "Global expression", multiline = True))
+        self.addParameter(ParameterString(self.GLOBAL, "Global expression", multiline = True, optional = True))
         self.addParameter(ParameterString(self.FORMULA, "Formula", "value = ", multiline = True))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 

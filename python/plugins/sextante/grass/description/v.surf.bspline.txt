@@ -7,7 +7,7 @@ ParameterNumber|sie|Length of each spline step in the east-west direction|None|N
 ParameterNumber|sin|Length of each spline step in the north-south direction|None|None|4
 ParameterSelection|method|Spline interpolation algorithm|bilinear;bicubic
 ParameterNumber|lambda_i|Tykhonov regularization parameter (affects smoothing)|None|None|1
-ParameterTableField|column|Attribute table column with values to interpolate|input
+ParameterTableField|column|Attribute table column with values to interpolate|input|-1|False
 ParameterBoolean|-c|Find the best Tykhonov regularizing parameter using a "leave-one-out" cross validation method|False
 ParameterBoolean|-e|Estimate point density and distance|False
 OutputVector|output|Output vector layer

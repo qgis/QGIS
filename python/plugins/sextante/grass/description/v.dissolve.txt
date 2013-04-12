@@ -2,6 +2,6 @@ v.dissolve
 v.dissolve - Dissolves boundaries between adjacent areas sharing a common category number or attribute.
 Vector (v.*)
 ParameterVector|input|Input vector layer|-1|False
-ParameterTableField|column|Name of column used to dissolve common boundaries|input
+ParameterTableField|column|Name of column used to dissolve common boundaries|input|-1|False
 OutputVector|output|Dissolved layer
 

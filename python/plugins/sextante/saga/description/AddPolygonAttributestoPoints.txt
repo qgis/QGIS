@@ -2,5 +2,5 @@ Add Polygon Attributes to Points
 shapes_points
 ParameterVector|INPUT|Points|0|False
 ParameterVector|POLYGONS|Polygons|2|False
-ParameterTableField|FIELD|Attribute|POLYGONS
+ParameterTableField|FIELD|Attribute|POLYGONS|-1|False
 OutputVector|OUTPUT|Result

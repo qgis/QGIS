@@ -121,7 +121,7 @@ class Dissolve(GeoAlgorithm):
         self.group = "Vector geometry tools"
         self.addParameter(ParameterVector(Dissolve.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_POLYGON))
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL, "Dissolve all (do not use field)", True))
-        self.addParameter(ParameterTableField(Dissolve.FIELD, "Unique ID field",Dissolve.INPUT ))
+        self.addParameter(ParameterTableField(Dissolve.FIELD, "Unique ID field",Dissolve.INPUT, optional=True ))
         self.addOutput(OutputVector(Dissolve.OUTPUT, "Dissolved"))
 
     #=========================================================

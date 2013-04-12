@@ -1,7 +1,7 @@
 Points Filter
 shapes_points
 ParameterVector|POINTS|Points|0|False
-ParameterTableField|FIELD|Attribute|POINTS
+ParameterTableField|FIELD|Attribute|POINTS|-1|False
 ParameterNumber|RADIUS|Radius|None|None|1
 ParameterNumber|MINNUM|Minimum Number of Points|None|None|0
 ParameterNumber|MAXNUM|Maximum Number of Points|None|None|0
