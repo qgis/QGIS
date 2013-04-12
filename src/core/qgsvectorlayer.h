@@ -269,7 +269,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *   defined by new lines, except for csv format files for which quoted fields
  *   may span multiple records.  The default type is csv.
  *
- *   -- "csv" splits the file based on three sets of characters:
+ *   -  "csv" splits the file based on three sets of characters:
  *      delimiter characters, quote characters,
  *      and escape characters.  Delimiter characters mark the end
  *      of a field. Quote characters enclose a field which can contain
@@ -281,11 +281,11 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *      escape themselves within quotes.  Elsewhere they are treated as
  *      quote characters.  The defaults for delimiter, quote, and escape
  *      are ',', '"', '"'.
- *   -- "regexp" splits each record using a regular expression (see QRegExp
+ *   -  "regexp" splits each record using a regular expression (see QRegExp
  *      documentation for details).
- *   -- "whitespace" splits each record based on whitespace (on or more whitespace
+ *   -  "whitespace" splits each record based on whitespace (on or more whitespace
  *      characters.  Leading whitespace in the record is ignored.
- *   -- "plain" is provided for backwards compatibility.  It is equivalent to
+ *   -  "plain" is provided for backwards compatibility.  It is equivalent to
  *      CSV except that the default quote characters are single and double quotes,
  *      and there is no escape characters.
  *
