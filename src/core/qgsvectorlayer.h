@@ -381,6 +381,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
+    virtual void saveStyleToDatabase( QString name, QString owner, QString description,
+                                      bool useAsDefault, QString &msgError );
+
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
      * @param parent the QObject which will own this object

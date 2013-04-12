@@ -76,6 +76,16 @@
 #include <dlfcn.h>
 #endif
 
+typedef bool saveStyle_t(
+        const QString& uri,
+        const QString& qmlStyle,
+        const QString& sldStyle,
+        const QString& styleName,
+        const QString& styleDescription,
+        const QString& owner,
+        bool useAsDefault,
+        QString& errCause
+);
 
 
 
@@ -1682,6 +1692,9 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   return writeSymbology( layer_node, document, errorMsg );
 } // bool QgsVectorLayer::writeXml
 
+
+
+
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
   Q_UNUSED( errorMessage );
@@ -1993,6 +2006,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
   return true;
 }
+
+
 
 QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent )
 {
@@ -3695,4 +3710,42 @@ QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
   elem.setAttribute( "name", mName );
   elem.setAttribute( "index", mIdx );
   return elem;
+}
+
+void QgsVectorLayer::saveStyleToDatabase(QString name, QString owner, QString description, bool useAsDefault, QString &msgError){
+
+        QString sldStyle, qmlStyle;
+        QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+        QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+        if ( !myLib )
+        {
+            msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
+            return;
+        }
+        saveStyle_t* saveStyleExternalMethod = ( saveStyle_t * ) cast_to_fptr(myLib->resolve("saveStyle"));
+
+        if ( !saveStyleExternalMethod )
+        {
+          delete myLib;
+          msgError = QObject::tr( "Provider %1 has no createEmptyLayer method" ).arg( mProviderKey );
+          return;
+        }
+
+        QDomDocument qmlDocument, sldDocument;
+        this->exportNamedStyle(qmlDocument, msgError);
+        if( !msgError.isNull() )
+        {
+            return;
+        }
+        qmlStyle = qmlDocument.toString();
+
+        this->exportSldStyle(sldDocument, msgError);
+        if( !msgError.isNull() )
+        {
+            return;
+        }
+        sldStyle = sldDocument.toString();
+
+        saveStyleExternalMethod(mDataSource, qmlStyle, sldStyle, name, description,
+                                owner, useAsDefault, msgError);
 }

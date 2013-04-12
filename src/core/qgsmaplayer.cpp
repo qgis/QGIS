@@ -847,6 +847,36 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   return "";
 }
 
+void QgsMapLayer::exportNamedStyle(QDomDocument &doc, QString &errorMsg)
+{
+    QDomImplementation DomImplementation;
+    QDomDocumentType documentType = DomImplementation.createDocumentType( "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+    QDomDocument myDocument( documentType );
+
+    QDomElement myRootNode = myDocument.createElement( "qgis" );
+    myRootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
+    myDocument.appendChild( myRootNode );
+
+    myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
+    myRootNode.setAttribute( "minimumScale", QString::number( minimumScale() ) );
+    myRootNode.setAttribute( "maximumScale", QString::number( maximumScale() ) );
+
+    #if 0
+      // <transparencyLevelInt>
+      QDomElement transparencyLevelIntElement = myDocument.createElement( "transparencyLevelInt" );
+      QDomText    transparencyLevelIntText    = myDocument.createTextNode( QString::number( getTransparency() ) );
+      transparencyLevelIntElement.appendChild( transparencyLevelIntText );
+      myRootNode.appendChild( transparencyLevelIntElement );
+    #endif
+
+    if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
+    {
+      errorMsg = QObject::tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+      return;
+    }
+    doc = myDocument;
+}
+
 QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
 {
   return saveNamedStyle( styleURI(), theResultFlag );
@@ -854,37 +884,10 @@ QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
 
 QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag )
 {
+
   QString myErrorMessage;
-
-  QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
-  QDomDocument myDocument( documentType );
-  QDomElement myRootNode = myDocument.createElement( "qgis" );
-  myRootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
-  myDocument.appendChild( myRootNode );
-
-  // use scale dependent visibility flag
-  myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
-  myRootNode.setAttribute( "minimumScale", QString::number( minimumScale() ) );
-  myRootNode.setAttribute( "maximumScale", QString::number( maximumScale() ) );
-
-#if 0
-  // <transparencyLevelInt>
-  QDomElement transparencyLevelIntElement = myDocument.createElement( "transparencyLevelInt" );
-  QDomText    transparencyLevelIntText    = myDocument.createTextNode( QString::number( getTransparency() ) );
-  transparencyLevelIntElement.appendChild( transparencyLevelIntText );
-  myRootNode.appendChild( transparencyLevelIntElement );
-#endif
-
-  // now append layer node to map layer node
-
-  QString errorMsg;
-  if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
-  {
-    return tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
-  }
+  QDomDocument myDocument;
+  exportNamedStyle( myDocument, myErrorMessage );
 
   // check if the uri is a file or ends with .qml,
   // which indicates that it should become one
@@ -1017,40 +1020,54 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   return myErrorMessage;
 }
 
+void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg ){
+    QDomDocument myDocument = QDomDocument();
+
+    QDomNode header = myDocument.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" );
+    myDocument.appendChild( header );
+
+    // Create the root element
+    QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "StyledLayerDescriptor" );
+    root.setAttribute( "version", "1.1.0" );
+    root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" );
+    root.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
+    root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
+    root.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+    root.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+    myDocument.appendChild( root );
+
+    // Create the NamedLayer element
+    QDomElement namedLayerNode = myDocument.createElement( "NamedLayer" );
+    root.appendChild( namedLayerNode );
+
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
+    if ( !vlayer )
+    {
+      errorMsg = tr( "Could not save symbology because:\n%1" )
+                    .arg( "Non-vector layers not supported yet" );
+      return;
+    }
+
+    if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg ) )
+    {
+      errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+      return;
+    }
+
+    doc = myDocument;
+}
+
 QString QgsMapLayer::saveSldStyle( const QString theURI, bool & theResultFlag )
 {
-  QDomDocument myDocument = QDomDocument();
-
-  QDomNode header = myDocument.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" );
-  myDocument.appendChild( header );
-
-  // Create the root element
-  QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "StyledLayerDescriptor" );
-  root.setAttribute( "version", "1.1.0" );
-  root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" );
-  root.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
-  root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
-  root.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-  root.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  myDocument.appendChild( root );
-
-  // Create the NamedLayer element
-  QDomElement namedLayerNode = myDocument.createElement( "NamedLayer" );
-  root.appendChild( namedLayerNode );
-
   QString errorMsg;
+  QDomDocument myDocument;
+  exportSldStyle( myDocument, errorMsg );
+  if( !errorMsg.isNull() )
+  {
+    theResultFlag = false;
+    return errorMsg;
+  }
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
-  if ( !vlayer )
-  {
-    theResultFlag = false;
-    return tr( "Could not save symbology because:\n%1" ).arg( "Non-vector layers not supported yet" );
-  }
-
-  if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg ) )
-  {
-    theResultFlag = false;
-    return tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
-  }
 
   // check if the uri is a file or ends with .sld,
   // which indicates that it should become one
