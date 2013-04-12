@@ -39,6 +39,7 @@
 #include "qgsprojectfiletransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgsproviderregistry.h"
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
@@ -742,6 +743,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, 
   sqlite3_close( myDatabase );
 
   return theResultFlag;
+
 }
 
 QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
@@ -751,8 +753,8 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   theResultFlag = false;
 
   QDomDocument myDocument( "qgis" );
-
   // location of problem associated with errorMsg
+
   int line, column;
   QString myErrorMessage;
 
@@ -773,7 +775,7 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
     QString qml;
     if ( loadNamedStyleFromDb( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( "qgis.qmldb" ), theURI, qml ) ||
          ( project.exists() && loadNamedStyleFromDb( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), theURI, qml ) ) ||
-         loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( "resources/qgis.qmldb" ), theURI, qml ) )
+         loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( "resources/qgis.qmldb" ), theURI, qml )/* || (loadStyleExternalMethod && loadStyleExternalMethod(theURI, qml, myErrorMessage))*/)
     {
       theResultFlag = myDocument.setContent( qml, &myErrorMessage, &line, &column );
       if ( !theResultFlag )

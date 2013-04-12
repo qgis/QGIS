@@ -87,6 +87,11 @@ typedef bool saveStyle_t(
         QString& errCause
 );
 
+typedef QString loadStyle_t(
+    const QString& uri,
+    QString& errCause
+);
+
 
 
 QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
@@ -131,6 +136,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
     bool defaultLoadedFlag = false;
+
     if ( loadDefaultStyleFlag )
     {
       loadDefaultStyle( defaultLoadedFlag );
@@ -3727,7 +3733,7 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString owner, QString de
         if ( !saveStyleExternalMethod )
         {
           delete myLib;
-          msgError = QObject::tr( "Provider %1 has no createEmptyLayer method" ).arg( mProviderKey );
+          msgError = QObject::tr( "Provider %1 has no saveStyle method" ).arg( mProviderKey );
           return;
         }
 
@@ -3748,4 +3754,56 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString owner, QString de
 
         saveStyleExternalMethod(mDataSource, qmlStyle, sldStyle, name, description,
                                 owner, useAsDefault, msgError);
+}
+
+QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
+{
+    QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+    QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+    bool styleFound = false;
+    if ( myLib )
+    {
+        loadStyle_t* loadStyleExternalMethod = ( loadStyle_t * ) cast_to_fptr( myLib->resolve( "loadStyle" ) );
+        if ( loadStyleExternalMethod )
+        {
+           QString qml, errorMsg;
+           qml = loadStyleExternalMethod( mDataSource, errorMsg );
+           if( qml.compare( tr( "" ) ) )
+           {
+               QDomDocument myDocument( "qgis" );
+               myDocument.setContent( qml );
+
+               QDomElement myRoot = myDocument.firstChildElement( "qgis" );
+
+               if( myRoot.isNull() )
+               {
+                   theResultFlag = false;
+                   return tr( "Error: qgis element could not be found in %1" ).arg( theURI );;
+               }
+               toggleScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+               setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
+               setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
+
+               #if 0
+                 //read transparency level
+                 QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
+                 if ( ! transparencyNode.isNull() )
+                 {
+                   // set transparency level only if it's in project
+                   // (otherwise it sets the layer transparent)
+                   QDomElement myElement = transparencyNode.toElement();
+                   setTransparency( myElement.text().toInt() );
+                 }
+               #endif
+
+               styleFound = readSymbology( myRoot, errorMsg );
+               return errorMsg;
+           }
+        }
+    }
+    if( !styleFound )
+    {
+        return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
+    }
+    return tr( "" );
 }

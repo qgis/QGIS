@@ -3249,7 +3249,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
         QString createTabeQuery = QObject::tr( "CREATE TABLE public.%1 (  f_table_catalog varchar(256),  f_table_schema varchar(256),  f_table_name varchar(256),  f_geometry_column varchar(256),  styleName varchar(30),  styleQML xml,  styleSLD xml,  useAsDefault boolean,  description text,  owner varchar(30),  ui xml,  update_time timestamp DEFAULT CURRENT_TIMESTAMP );" ).arg( styleTableName );
 
        res = conn->PQexec( createTabeQuery );
-       if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
        {
          errCause = QObject::tr( "Unable to save layer style. Unable to create style table" );
          conn->disconnect();
@@ -3262,8 +3262,8 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   f_table_name = dsUri.table();
   f_geometry_column = dsUri.geometryColumn();
 
-  QString sql = QObject::tr( "INSERT INTO temporaly_name_for_style_table("
-                             "f_table_catalog, f_table_schema, f_table_name, f_geometry_column, "
+  QString sql = QObject::tr( "INSERT INTO %10( f_table_catalog, "
+                             "f_table_schema, f_table_name, f_geometry_column, "
                              "styleName, styleQML, styleSLD, useAsDefault, "
                              "description, owner) "
                              "VALUES(%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %6),"
@@ -3276,7 +3276,8 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                          .arg( QgsPostgresConn::quotedValue( qmlStyle ) )
                          .arg( QgsPostgresConn::quotedValue( sldStyle ) )
                          .arg( QgsPostgresConn::quotedValue( styleDescription ) )
-                         .arg( QgsPostgresConn::quotedValue( owner ) );
+                         .arg( QgsPostgresConn::quotedValue( owner ) )
+                         .arg( styleTableName );
 
   if( useAsDefault )
   {
@@ -3297,4 +3298,40 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     return false;
   }
   return true;
+}
+
+
+QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
+{
+    QgsDataSourceURI dsUri( uri );
+    QString styleTableName = QObject::tr( "layer_styles" );
+    QString f_table_catalog, f_table_schema, f_table_name, f_geometry_column;
+
+    QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+    if ( !conn )
+    {
+      errCause = QObject::tr( "Connection to database failed" );
+      return false;
+    }
+
+    f_table_catalog = dsUri.database();
+    f_table_schema = dsUri.schema();
+    f_table_name = dsUri.table();
+    f_geometry_column = dsUri.geometryColumn();
+
+    QString selectQmlQuery = QObject::tr( "SELECT styleQML FROM %1 WHERE f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5 ORDER BY (CASE WHEN useAsDefault THEN 1 ELSE 2 END), update_time DESC LIMIT 1;")
+            .arg( styleTableName )
+            .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
+            .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
+            .arg( QgsPostgresConn::quotedValue(f_table_name ) )
+            .arg( QgsPostgresConn::quotedValue(f_geometry_column ) );
+
+    PGresult* result = conn->PQexec( selectQmlQuery );
+    if( PQntuples(result) == 1 )
+    {
+        char* c = PQgetvalue( result, 0, 0 );
+        return QObject::tr( c );;
+    }
+
+    return tr( "" );
 }
