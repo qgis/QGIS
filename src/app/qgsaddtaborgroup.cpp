@@ -21,24 +21,26 @@
 #include "qgsvectorlayer.h"
 #include "qgsaddtaborgroup.h"
 
+#include <QTreeWidgetItem>
 #include <QComboBox>
 
-QgsAddTabOrGroup::QgsAddTabOrGroup(
-  QgsVectorLayer *lyr,
-  QWidget * parent,
-  QList<QString> tabList
-)
-    : QDialog( parent )
-    , layer( lyr )
+QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, QList < TabPair > tabList, QWidget * parent )
+  : QDialog( parent )
+  , mLayer( lyr )
+  , mTabs( tabList )
 {
   setupUi( this );
 
   mTabButton->setChecked( true );
   mTabList->setEnabled( false );
-  if ( tabList.size() > 0 )
+  if ( mTabs.size() > 0 )
   {
-    for ( QList<QString>::iterator tab = tabList.begin(); tab != tabList.end(); tab++ )
-      mTabList->addItem( *tab );
+    int i = 0;
+    foreach ( TabPair tab, mTabs )
+    {
+      mTabList->addItem( tab.first, i );
+      ++i;
+    }
   }
   else
   {
@@ -48,7 +50,7 @@ QgsAddTabOrGroup::QgsAddTabOrGroup(
   connect( mTabButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mTabButton_toggled( bool ) ) );
   connect( mGroupButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mGroupButton_toggled( bool ) ) );
 
-  setWindowTitle( tr( "Add tab or group for %1" ).arg( layer->name() ) );
+  setWindowTitle( tr( "Add tab or group for %1" ).arg( mLayer->name() ) );
 } // QgsVectorLayerProperties ctor
 
 QgsAddTabOrGroup::~QgsAddTabOrGroup()
@@ -60,9 +62,10 @@ QString QgsAddTabOrGroup::name()
   return mName->text();
 }
 
-int QgsAddTabOrGroup::tabId()
+QTreeWidgetItem* QgsAddTabOrGroup::tab()
 {
-  return mTabList->currentIndex();
+  TabPair tab = mTabs.at( mTabList->itemData( mTabList->currentIndex() ).toInt() );
+  return tab.second;
 }
 
 bool QgsAddTabOrGroup::tabButtonIsChecked()
