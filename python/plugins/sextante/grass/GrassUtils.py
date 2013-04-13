@@ -326,8 +326,8 @@ class GrassUtils:
                         + "folder is correctly configured")
 
         settings = QSettings()
-        if not ignoreRegistrySettings:
-            GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"
+        GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"
+        if not ignoreRegistrySettings:            
             if settings.contains(GRASS_INSTALLED):
                 return
 
