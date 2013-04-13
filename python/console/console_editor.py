@@ -325,6 +325,7 @@ class Editor(QsciScintilla):
         self.parent.pc.openFileButton.setEnabled(False)
         self.parent.pc.saveFileButton.setEnabled(False)
         self.parent.pc.saveAsFileButton.setEnabled(False)
+        self.parent.pc.showEditorButton.setChecked(False)
     
     def runScriptCode(self):
         tabWidget = self.parent.mw.currentWidget()
@@ -646,8 +647,9 @@ class EditorTabWidget(QTabWidget):
     def restoreTabs(self):
         for script in self.restoreTabList:
                     pathFile = str(script.toString())
-                    tabName = pathFile.split('/')[-1]
-                    self.newTabEditor(tabName, pathFile)
+                    if os.path.exists(pathFile):
+                        tabName = pathFile.split('/')[-1]
+                        self.newTabEditor(tabName, pathFile)
         self.topFrame.close()
 
     def closeRestore(self):

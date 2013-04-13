@@ -123,6 +123,17 @@ class PythonConsoleWidget(QWidget):
         sizes = self.splitter.sizes()
         self.splitter.setSizes(sizes)
 
+        ## Action Show Editor
+        showEditor = QCoreApplication.translate("PythonConsole", "Show editor")
+        self.showEditorButton = QAction(parent)
+        self.showEditorButton.setCheckable(False)
+        self.showEditorButton.setEnabled(True)
+        self.showEditorButton.setCheckable(True)
+        self.showEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconShowEditorConsole.png"))
+        self.showEditorButton.setMenuRole(QAction.PreferencesRole)
+        self.showEditorButton.setIconVisibleInMenu(True)
+        self.showEditorButton.setToolTip(showEditor)
+        self.showEditorButton.setText(showEditor)
         ## Action for Clear button
         clearBt = QCoreApplication.translate("PythonConsole", "Clear console")
         self.clearButton = QAction(parent)
@@ -255,10 +266,13 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.setFloatable(True)
         self.toolBar.addAction(self.clearButton)
         self.toolBar.addAction(self.actionClass)
+        self.toolBar.addAction(self.runButton)
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(self.showEditorButton)
         self.toolBar.addAction(self.actionScript)
+        self.toolBar.addSeparator()
         self.toolBar.addAction(self.optionsButton)
         self.toolBar.addAction(self.helpButton)
-        self.toolBar.addAction(self.runButton)
         
         ## Menu Import Class
         self.classMenu = QMenu(self)
@@ -309,6 +323,7 @@ class PythonConsoleWidget(QWidget):
         
         ##------------ Signal -------------------------------
 
+        self.showEditorButton.toggled.connect(self.toggleEditor)
         self.clearButton.triggered.connect(self.shellOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
         self.loadSextanteButton.triggered.connect(self.sextante)
@@ -330,7 +345,13 @@ class PythonConsoleWidget(QWidget):
 
     def qtGui(self):
        self.shell.commandConsole('qtGui')
-
+       
+    def toggleEditor(self, checked):
+        self.tabEditorWidget.show() if checked else self.tabEditorWidget.hide()
+        self.openFileButton.setEnabled(checked)
+        self.saveFileButton.setEnabled(checked)
+        self.saveAsFileButton.setEnabled(checked)
+            
 #    def openScriptFile(self):
 #       settings = QSettings()
 #       lastDirPath = settings.value("pythonConsole/lastDirPath").toString()

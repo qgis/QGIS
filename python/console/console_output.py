@@ -227,6 +227,7 @@ class ShellOutputScintilla(QsciScintilla):
             self.parent.openFileButton.setEnabled(True)
             self.parent.saveFileButton.setEnabled(True)
             self.parent.saveAsFileButton.setEnabled(True)
+            self.parent.showEditorButton.setChecked(True)
         self.shell.setFocus()
 
     def copy(self):
