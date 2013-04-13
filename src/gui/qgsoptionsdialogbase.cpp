@@ -18,6 +18,7 @@
 
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QLayout>
 #include <QListWidget>
 #include <QMessageBox>
 #include <QScrollBar>
@@ -45,6 +46,11 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
 
 void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
 {
+  // don't add to dialog margins
+  // redefine now, or those in inherited .ui file will be added
+  if ( layout() )
+    layout()->setContentsMargins( 12, 12, 12, 12 ); // Qt default spacing
+
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
   mOptListWidget = findChild<QListWidget*>( "mOptionsListWidget" );
   mOptStackedWidget = findChild<QStackedWidget*>( "mOptionsStackedWidget" );
