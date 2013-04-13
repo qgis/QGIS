@@ -3114,6 +3114,8 @@ void QgsVectorLayer::updateFields()
   // joined fields
   if ( mJoinBuffer && mJoinBuffer->containsJoins() )
     mJoinBuffer->updateFields( mUpdatedFields );
+
+  emit updatedFields();
 }
 
 

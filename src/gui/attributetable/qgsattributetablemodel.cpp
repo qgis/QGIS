@@ -51,8 +51,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( layer(), SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
   connect( layer(), SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( featureAdded( QgsFeatureId ) ) );
   connect( layer(), SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
-  connect( layer(), SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
-  connect( layer(), SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+  connect( layer(), SIGNAL( updatedFields() ), this, SLOT( updatedFields() ) );
   connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
 }
 
@@ -151,18 +150,8 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool newOperation )
   reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
 }
 
-void QgsAttributeTableModel::attributeAdded( int idx )
+void QgsAttributeTableModel::updatedFields()
 {
-  Q_UNUSED( idx );
-  QgsDebugMsg( "entered." );
-  loadAttributes();
-  loadLayer();
-  emit modelChanged();
-}
-
-void QgsAttributeTableModel::attributeDeleted( int idx )
-{
-  Q_UNUSED( idx );
   QgsDebugMsg( "entered." );
   loadAttributes();
   emit modelChanged();

@@ -993,6 +993,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void attributeDeleted( int idx );
     void featureAdded( QgsFeatureId fid );  // added in 1.7
     void featureDeleted( QgsFeatureId fid );
+    /**
+     * Is emitted, whenever the fields available from this layer have been changed.
+     * This can be due to manually adding attributes or a layer join.
+     */
+    void updatedFields();
     void layerDeleted();
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
