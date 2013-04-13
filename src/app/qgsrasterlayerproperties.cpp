@@ -219,9 +219,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
                                  .arg( pyramidSentence2 ).arg( pyramidSentence3 )
                                  .arg( pyramidSentence4 ).arg( pyramidSentence5 ) );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/RasterLayerProperties/geometry" ).toByteArray() );
-
   setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
 
   tableTransparency->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
@@ -380,6 +377,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   // update based on lyr's current state
   sync();
+
+  QSettings settings;
+  // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
+  // this will be read by restoreOptionsBaseUi()
+  if ( !settings.contains( QString( "/Windows/RasterLayerProperties/tab" ) ) )
+  {
+    settings.setValue( QString( "/Windows/RasterLayerProperties/tab" ),
+                       mOptStackedWidget->indexOf( mOptsPage_Style ) );
+  }
 
   restoreOptionsBaseUi();
 } // QgsRasterLayerProperties ctor
