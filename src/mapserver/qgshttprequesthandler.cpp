@@ -425,11 +425,11 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       QgsDebugMsg( QString( "formatString is: %1" ).arg( formatString ) );
 
       //remove the image/ in front of the format
-      if ( formatString.contains( "image/png", Qt::CaseInsensitive ) == 0 || formatString.compare( "png", Qt::CaseInsensitive ) == 0 )
+      if ( formatString.contains( "image/png", Qt::CaseInsensitive ) || formatString.compare( "png", Qt::CaseInsensitive ) == 0 )
       {
         formatString = "PNG";
       }
-      else if ( formatString.contains( "image/jpeg", Qt::CaseInsensitive ) == 0 || formatString.contains( "image/jpg", Qt::CaseInsensitive ) == 0
+      else if ( formatString.contains( "image/jpeg", Qt::CaseInsensitive ) || formatString.contains( "image/jpg", Qt::CaseInsensitive )
                 || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
       {
         formatString = "JPG";
@@ -438,7 +438,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       {
         formatString = "SVG";
       }
-      else if ( formatString.contains( "pdf", Qt::CaseInsensitive ) == 0 )
+      else if ( formatString.contains( "pdf", Qt::CaseInsensitive ) )
       {
         formatString = "PDF";
       }
