@@ -23,6 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import sextante
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -252,7 +253,7 @@ class Sextante:
             return
         if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
             print ("Error: Wrong number of parameters")
-            alghelp(algOrName)
+            sextante.alghelp(algOrName)
             return
 
         alg = alg.getCopy()
@@ -339,10 +340,5 @@ class Sextante:
             QApplication.restoreOverrideCursor()
         return alg
 
-
-##==========================================================
-##These methods are here to be used from the python console,
-##making it easy to use SEXTANTE from there
-##==========================================================
 
 

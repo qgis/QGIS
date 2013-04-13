@@ -108,7 +108,7 @@ QString QGis::tr( QGis::UnitType unit )
   return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
 }
 
-void *QgsMalloc( size_t size )
+void *qgsMalloc( size_t size )
 {
   if ( size == 0 || long( size ) < 0 )
   {
@@ -123,14 +123,14 @@ void *QgsMalloc( size_t size )
   return p;
 }
 
-void *QgsCalloc( size_t nmemb, size_t size )
+void *qgsCalloc( size_t nmemb, size_t size )
 {
   if ( nmemb == 0 || long( nmemb ) < 0 || size == 0 || long( size ) < 0 )
   {
     QgsDebugMsg( QString( "Negative or zero nmemb %1 or size %2." ).arg( nmemb ).arg( size ) );
     return NULL;
   }
-  void *p = QgsMalloc( nmemb * size );
+  void *p = qgsMalloc( nmemb * size );
   if ( p != NULL )
   {
     memset( p, 0, nmemb * size );
@@ -138,7 +138,7 @@ void *QgsCalloc( size_t nmemb, size_t size )
   return p;
 }
 
-void QgsFree( void *ptr )
+void qgsFree( void *ptr )
 {
   free( ptr );
 }

@@ -102,19 +102,4 @@ class GrassAlgorithmProvider(AlgorithmProvider):
     def getSupportedOutputRasterLayerExtensions(self):
         return ["tif"]
 
-    def createDescriptionFiles(self):
-        folder = "C:\\descs\\grass"
-        i = 0
-        for alg in self.preloadedAlgs:
-            f = open (os.path.join(folder, alg.name +".txt"), "w")
-            f.write(alg.name + "\n")
-            f.write(alg.name + "\n")
-            f.write(alg.group + "\n")
-            for param in alg.parameters:
-                f.write(param.serialize() + "\n")
-            for out in alg.outputs:
-                f.write(out.serialize() + "\n")
-            f.close()
-            i+=1
-
 

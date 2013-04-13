@@ -30,11 +30,12 @@ class ParameterString(Parameter):
     NEWLINE = "\n"
     ESCAPED_NEWLINE = "\\n"
 
-    def __init__(self, name="", description="", default="", multiline = False):
+    def __init__(self, name="", description="", default="", multiline = False, optional = False):
         Parameter.__init__(self, name, description)
         self.default = default
         self.value = None
         self.multiline = multiline
+        self.optional = optional
 
     def setValue(self, obj):
         if obj is None:
@@ -52,7 +53,7 @@ class ParameterString(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterString(tokens[0], tokens[1], tokens[2])
+        return ParameterString(tokens[1], tokens[2], tokens[3])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=string " + self.default

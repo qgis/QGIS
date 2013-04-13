@@ -1,7 +1,7 @@
 QuadTree Structure to Shapes
 shapes_tools
 ParameterVector|SHAPES|Shapes|-1|False
-ParameterTableField|ATTRIBUTE|Attribute|SHAPES
+ParameterTableField|ATTRIBUTE|Attribute|SHAPES|-1|False
 OutputVector|POLYGONS|Polygons
 OutputVector|LINES|Lines
 OutputVector|POINTS|Duplicated Points

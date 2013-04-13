@@ -179,7 +179,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
     return outputBlock;
   }
 
-  if ( doubleNear( oversamplingX, 1.0 ) || doubleNear( oversamplingY, 1.0 ) )
+  if ( qgsDoubleNear( oversamplingX, 1.0 ) || qgsDoubleNear( oversamplingY, 1.0 ) )
   {
     QgsDebugMsg( "No oversampling." );
     delete outputBlock;

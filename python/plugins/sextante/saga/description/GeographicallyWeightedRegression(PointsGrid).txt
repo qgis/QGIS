@@ -2,7 +2,7 @@ Geographically Weighted Regression (Points/Grid)
 geostatistics_regression
 ParameterRaster|PREDICTOR|Predictor|False
 ParameterVector|POINTS|Points|0|False
-ParameterTableField|DEPENDENT|Dependent Variable|POINTS
+ParameterTableField|DEPENDENT|Dependent Variable|POINTS|-1|False
 ParameterSelection|DISTANCE_WEIGHTING_WEIGHTING|Distance Weighting|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
 ParameterNumber|DISTANCE_WEIGHTING_IDW_POWER|Inverse Distance Weighting Power|None|None|1
 ParameterBoolean|DISTANCE_WEIGHTING_IDW_OFFSET     |Inverse Distance Offset|True

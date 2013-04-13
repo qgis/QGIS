@@ -31,29 +31,35 @@ class ParameterTableField(Parameter):
     DATA_TYPE_STRING = 1
     DATA_TYPE_ANY = -1
 
-    def __init__(self, name="", description="", parent=None, datatype=-1):
+    def __init__(self, name="", description="", parent=None, datatype=-1, optional=False):
         Parameter.__init__(self, name, description)
         self.parent = parent
         self.value = None
         self.datatype = datatype
+        self.optional= optional
 
     def getValueAsCommandLineParameter(self):
         return "\"" + str(self.value) + "\""
 
     def getAsScriptCode(self):
         return "##" + self.name + "=field " + str(self.parent)
+    
+    def setValue(self, field):
+        if field is None:
+            return self.optional
+        elif len(field) > 0:                
+            self.value = str(field)
+        else:
+            return self.optional                   
+        return True
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
                 "|" + str(self.parent) + "|" + str(self.datatype)
 
-
     def deserialize(self, s):
-        tokens = s.split("|")
-        if len(tokens) == 4:
-            return ParameterTableField(tokens[0], tokens[1], tokens[2], int(tokens[3]))
-        else:
-            return ParameterTableField(tokens[0], tokens[1], tokens[2])
+        tokens = s.split("|")        
+        return ParameterTableField(tokens[1], tokens[2], tokens[3], int(tokens[4]), tokens[5] == str(True))        
 
     def __str__(self):
         return self.name + " <" + self.__module__.split(".")[-1] +" from " + self.parent     + ">"

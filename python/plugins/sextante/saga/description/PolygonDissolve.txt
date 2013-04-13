@@ -1,8 +1,8 @@
 Polygon Dissolve
 shapes_polygons
 ParameterVector|POLYGONS|Polygons|2|False
-ParameterTableField|FIELD_1|1. Attribute|POLYGONS
-ParameterTableField|FIELD_2|2. Attribute|POLYGONS
-ParameterTableField|FIELD_3|3. Attribute|POLYGONS
+ParameterTableField|FIELD_1|1. Attribute|POLYGONS|-1|True
+ParameterTableField|FIELD_2|2. Attribute|POLYGONS|-1|True
+ParameterTableField|FIELD_3|3. Attribute|POLYGONS|-1|True
 ParameterSelection|DISSOLVE|Dissolve...|[0] polygons with same attribute value;[1] all polygons;[2] polygons with same attribute value (keep inner boundaries);[3] all polygons (keep inner boundaries)
 OutputVector|DISSOLVED|Dissolved Polygons

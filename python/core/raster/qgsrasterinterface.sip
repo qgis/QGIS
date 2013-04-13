@@ -95,13 +95,13 @@ class QgsRasterInterface
      * possibly using wider data type.
      * @param bandNo band number
      * @return No data value */
-    virtual double noDataValue( int bandNo ) const;
+    //virtual double noDataValue( int bandNo ) const;
 
     /** Test if value is nodata for specific band
      * @param bandNo band number
      * @param value tested value
      * @return true if value is nodata */
-    virtual bool isNoDataValue( int bandNo, double value ) const;
+    //virtual bool isNoDataValue( int bandNo, double value ) const;
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
 

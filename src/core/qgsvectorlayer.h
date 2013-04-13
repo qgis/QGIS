@@ -498,7 +498,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     const QString displayField() const;
 
     /** Set the preview expression, used to create a human readable preview string.
-     *  Used e.g. in the attribute table feature list. Uses @link QgsExpression @endlink
+     *  Used e.g. in the attribute table feature list. Uses { @link QgsExpression }.
      *
      *  @param displayExpression The expression which will be used to preview features
      *                           for this layer
@@ -508,9 +508,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
-     *  Uses @link QgsExpression @endlink
+     *  Uses { @link QgsExpression }
      *
      *  @return The expression which will be used to preview features for this layer
+     *
      *  @note added in 2.0
      */
     const QString displayExpression();
@@ -548,25 +549,72 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QgsAttributeAction *actions() { return mActions; }
 
-    /** The number of features that are selected in this layer */
+    /**
+     * The number of features that are selected in this layer
+     *
+     * @return See description
+     */
     int selectedFeatureCount();
 
-    /** Select features found within the search rectangle (in layer's coordinates) */
-    void select( QgsRectangle & rect, bool lock );
+    /**
+     * Select features found within the search rectangle (in layer's coordinates)
+     *
+     * @param rect            The search rectangle
+     * @param addToSelection  If set to true will not clear before selecting
+     *
+     * @see   invertSelectionInRectangle(QgsRectangle & rect)
+     */
+    void select( QgsRectangle & rect, bool addToSelection );
+
+    /**
+     * Modifies the current selection on this layer
+     *
+     * @param selectIds    Select these ids
+     * @param deselectIds  Deselect these ids
+     *
+     * @see   select(QgsFeatureIds)
+     * @see   select(QgsFeatureId)
+     * @see   deselect(QgsFeatureIds)
+     * @see   deselect(QgsFeatureId)
+     */
+    void modifySelection(QgsFeatureIds selectIds, QgsFeatureIds deselectIds );
 
     /** Select not selected features and deselect selected ones */
     void invertSelection();
 
-    /** Invert selection of features found within the search rectangle (in layer's coordinates) */
+    /**
+     * Invert selection of features found within the search rectangle (in layer's coordinates)
+     *
+     * @param rect  The rectangle in which the selection of features will be inverted
+     *
+     * @see   invertSelection()
+     */
     void invertSelectionInRectangle( QgsRectangle & rect );
 
-    /** Get a copy of the user-selected features */
+    /**
+     * Get a copy of the user-selected features
+     *
+     * @return A list of { @link QgsFeature } 's
+     *
+     * @see    selectedFeaturesIds()
+     */
     QgsFeatureList selectedFeatures();
 
-    /** Return reference to identifiers of selected features */
+    /**
+     * Return reference to identifiers of selected features
+     *
+     * @return A list of { @link QgsFeatureId } 's
+     * @see selectedFeatures()
+     */
     const QgsFeatureIds &selectedFeaturesIds() const;
 
-    /** Change selection to the new set of features */
+    /**
+     * Change selection to the new set of features. Dismisses the current selection.
+     * Will emit the { @link selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) } signal with the
+     * clearAndSelect flag set.
+     *
+     * @param ids   The ids which will be the new selection
+     */
     void setSelectedFeatures( const QgsFeatureIds &ids );
 
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
@@ -1098,14 +1146,48 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QVariant maximumValue( int index );
 
   public slots:
-    /** Select feature by its ID, optionally emit signal selectionChanged() */
-    void select( QgsFeatureId featureId, bool emitSignal = true );
+    /**
+     * Select feature by its ID
+     *
+     * @param featureId  The id of the feature to select
+     *
+     * @see select(QgsFeatureIds)
+     */
+    void select( const QgsFeatureId &featureId );
 
-    /** Deselect feature by its ID, optionally emit signal selectionChanged() */
-    void deselect( QgsFeatureId featureId, bool emitSignal = true );
+    /**
+     * Select features by their ID
+     *
+     * @param featureIds The ids of the features to select
+     *
+     * @see select(QgsFeatureId)
+     */
+    void select( const QgsFeatureIds& featureIds );
 
-    /** Clear selection */
-    void removeSelection( bool emitSignal = true );
+    /**
+     * Deselect feature by its ID
+     *
+     * @param featureId  The id of the feature to deselect
+     *
+     * @see deselect(QgsFeatureIds)
+     */
+    void deselect( const QgsFeatureId featureId );
+
+    /**
+     * Deselect features by their ID
+     *
+     * @param featureIds The ids of the features to deselect
+     *
+     * @see deselect(QgsFeatureId)
+     */
+    void deselect(const QgsFeatureIds& featureIds );
+
+    /**
+     * Clear selection
+     *
+     * @see setSelectedFeatures(const QgsFeatureIds&)
+     */
+    void removeSelection();
 
     void triggerRepaint();
 
@@ -1129,6 +1211,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual void onCacheImageDelete();
 
   signals:
+
+    /**
+     * This signal is emited when selection was changed
+     *
+     * @param selected        Newly selected feature ids
+     * @param deselected      Ids of all features which have previously been selected but are not any more
+     * @param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+     */
+    void selectionChanged( const QgsFeatureIds selected, const QgsFeatureIds deselected, const bool clearAndSelect );
 
     /** This signal is emited when selection was changed */
     void selectionChanged();

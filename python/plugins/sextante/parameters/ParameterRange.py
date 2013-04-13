@@ -52,7 +52,7 @@ class ParameterRange(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        if len(tokens) == 3:
-            return ParameterRange(tokens[0], tokens[1], tokens[2])
+        if len(tokens) == 4:
+            return ParameterRange(tokens[1], tokens[2], tokens[3])
         else:
             return ParameterRange(tokens[0], tokens[1])

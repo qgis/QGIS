@@ -136,13 +136,13 @@ class SagaUtils:
                         + "folder is correctly configured")
 
         settings = QSettings()
-        if not ignoreRegistrySettings:
-            SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
+        SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
+        if not ignoreRegistrySettings:            
             if settings.contains(SAGA_INSTALLED):
                 return
 
         try:
-            from sextante.core.Sextante import runalg
+            from sextante import runalg
             result = runalg("saga:thiessenpolygons", points(), None)
             if not os.path.exists(result['POLYGONS']):
                 return "It seems that SAGA is not correctly installed in your system.\nPlease install it before running SAGA algorithms."

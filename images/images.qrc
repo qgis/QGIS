@@ -193,7 +193,7 @@
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
         <file>themes/default/mIconConnect.png</file>
-        <file>themes/default/mIconClear.png</file>
+        <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconCritical.png</file>
         <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>

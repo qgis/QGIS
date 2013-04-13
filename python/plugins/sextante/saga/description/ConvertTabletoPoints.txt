@@ -1,6 +1,6 @@
 Convert Table to Points
 shapes_points
 ParameterTable|TABLE|Table|False
-ParameterTableField|X|X|TABLE
-ParameterTableField|Y|Y|TABLE
+ParameterTableField|X|X|TABLE|-1|False
+ParameterTableField|Y|Y|TABLE|-1|False
 OutputVector|POINTS|Points

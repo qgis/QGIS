@@ -357,10 +357,10 @@ class GrassAlgorithm(GeoAlgorithm):
             func(self)
 
     def exportVectorLayer(self, orgFilename):
-        #only export to an intermediate shp if the layer is not file-based.
-        #We assume that almost all file formats will be supported by ogr
+        #TODO: improve this. We are now exporting if it is not a shapefile,
+        #but the functionality of v.in.ogr could be used for this.        
         #We also export if there is a selection
-        if not os.path.exists(orgFilename):
+        if not os.path.exists(orgFilename) or not orgFilename.endswith("shp"):
             layer = QGisLayers.getObjectFromUri(orgFilename, False)
             if layer:
                 filename = LayerExporter.exportVectorLayer(layer)
@@ -427,6 +427,15 @@ class GrassAlgorithm(GeoAlgorithm):
 
     def commandLineName(self):
         return "grass:" + self.name[:self.name.find(" ")]
+    
+    def checkBeforeOpeningParametersDialog(self):
+        msg = GrassUtils.checkGrassIsInstalled()
+        if msg is not None:                        
+            html = ("<p>This algorithm requires GRASS to be run." 
+            "Unfortunately, it seems that GRASS is not installed in your system, or it is not correctly configured to be used from QGIS</p>")            
+            html += '<p><a href= "http://docs.qgis.org/html/en/docs/user_manual/sextante/3rdParty.html">Click here</a> to know more about how to install and configure GRASS to be used with SEXTANTE</p>'
+            return html
+
 
     def checkParameterValuesBeforeExecuting(self):
         name = self.commandLineName().replace('.','_')[len('grass:'):]

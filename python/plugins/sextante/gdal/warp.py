@@ -25,18 +25,14 @@ __revision__ = '$Format:%H$'
 
 import os
 from PyQt4 import QtGui
-
 from qgis.core import *
-
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterString import ParameterString
 from sextante.outputs.OutputRaster import OutputRaster
-
 from sextante.gdal.GdalUtils import GdalUtils
 
 class warp(GeoAlgorithm):
@@ -70,7 +66,9 @@ class warp(GeoAlgorithm):
         arguments.append("-s_srs")
         arguments.append(str(self.getParameterValue(warp.SOURCE_SRS)))
         arguments.append("-t_srs")
-        arguments.append(str(self.getParameterValue(warp.DEST_SRS)))
+        crsId = self.getParameterValue(warp.DEST_SRS)
+        self.crs = QgsCoordinateReferenceSystem(crsId)
+        arguments.append(str(crsId))
         arguments.append("-r")
         arguments.append(warp.METHOD_OPTIONS[self.getParameterValue(warp.METHOD)])
         arguments.append("-of")

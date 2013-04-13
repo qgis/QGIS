@@ -105,8 +105,6 @@ void eVisEventIdTool::select( QgsPoint thePoint )
   //Transform rectange to map coordinates
   myRectangle = toLayerCoordinates( myLayer, myRectangle );
 
-  //Rather than add to the current selection, clear all selected features
-  myLayer->removeSelection( false );
   //select features
   QgsFeatureIterator fit = myLayer->getFeatures( QgsFeatureRequest().setFilterRect( myRectangle ).setFlags( QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
 

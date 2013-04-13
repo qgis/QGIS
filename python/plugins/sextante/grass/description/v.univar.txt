@@ -3,7 +3,7 @@ v.univar - Calculates univariate statistics for attribute. Variance and standard
 Vector (v.*)
 ParameterVector|map|Name of input vector map|-1|False
 ParameterString|type|Feature type|point,line,area
-ParameterTableField|column|Column name|map
+ParameterTableField|column|Column name|map|-1|False
 ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
 ParameterString|percentile|Percentile to calculate|90
 ParameterBoolean|-g|Print the stats in shell script style|True

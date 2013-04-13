@@ -361,8 +361,8 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
     QgsCompositionPaper currentPaper = paper_it.value();
 
     //consider width and height values may be exchanged
-    if (( doubleNear( currentPaper.mWidth, paperWidth ) && doubleNear( currentPaper.mHeight, paperHeight ) )
-        || ( doubleNear( currentPaper.mWidth, paperHeight ) && doubleNear( currentPaper.mHeight, paperWidth ) ) )
+    if (( qgsDoubleNear( currentPaper.mWidth, paperWidth ) && qgsDoubleNear( currentPaper.mHeight, paperHeight ) )
+        || ( qgsDoubleNear( currentPaper.mWidth, paperHeight ) && qgsDoubleNear( currentPaper.mHeight, paperWidth ) ) )
     {
       mPaperSizeComboBox->setCurrentIndex( mPaperSizeComboBox->findText( paper_it.key() ) );
       found = true;

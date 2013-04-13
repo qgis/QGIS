@@ -1,7 +1,7 @@
 Kernel Density Estimation
 grid_gridding
 ParameterVector|POINTS|Points|0|False
-ParameterTableField|POPULATION|Weight|POINTS
+ParameterTableField|POPULATION|Weight|POINTS|-1|False
 ParameterNumber|RADIUS|Radius|None|None|10
 ParameterSelection|KERNEL|Kernel|[0] quartic kernel;[1] gaussian kernel
 ParameterSelection|TARGET|Target Grid|[0] user defined

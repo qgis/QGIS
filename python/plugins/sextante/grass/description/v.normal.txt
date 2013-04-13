@@ -3,7 +3,7 @@ v.normal - Tests for normality for points.
 Vector (v.*)
 ParameterVector|map|point vector defining sample points|-1|False
 ParameterString|tests|Lists of tests (1-15): e.g. 1,3-8,13|1-3
-ParameterTableField|column|Attribute column|map
+ParameterTableField|column|Attribute column|map|-1|False
 ParameterBoolean|-r|Use only points in current region|True
 ParameterBoolean|-l|lognormal|False
 OutputHTML|html|Output

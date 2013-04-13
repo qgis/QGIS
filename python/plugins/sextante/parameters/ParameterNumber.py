@@ -69,7 +69,7 @@ class ParameterNumber(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        for i in range (2,4):
+        for i in range (3,5):
             if tokens[i] == str(None):
                 tokens[i] = None
             else:
@@ -77,10 +77,10 @@ class ParameterNumber(Parameter):
         '''we force the default to int if possible, since that indicates if it is restricted
         to ints or not'''
         try:
-            val = int(tokens[4])
+            val = int(tokens[5])
         except:
-            val = float(tokens[4])
-        return ParameterNumber(tokens[0], tokens[1], tokens[2], tokens[3], val)
+            val = float(tokens[5])
+        return ParameterNumber(tokens[1], tokens[2], tokens[3], tokens[4], val)
 
     def getAsScriptCode(self):
         return "##" + self.name + "=number " + str(self.default)

@@ -409,11 +409,11 @@ class ModelerAlgorithm(GeoAlgorithm):
             aap = self.algParameters[iAlg][param.name]
             if aap == None:
                 if isinstance(param, ParameterExtent):
-                    value = self.getValueFromAlgorithmAndParameter(aap)
-                    if value is None:
-                        value = self.getMinCoveringExtent()
+                    value = self.getMinCoveringExtent()
                     if not param.setValue(value):
                         raise GeoAlgorithmExecutionException("Wrong value: " + str(value))
+                else:
+                    param.setValue(None)
                 continue
             if isinstance(param, ParameterMultipleInput):
                 value = self.getValueFromAlgorithmAndParameter(aap)

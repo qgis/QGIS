@@ -25,7 +25,7 @@
             &lt;p&gt;For more information, please visit our website at
             &lt;a href=&quot;http://sextantegis.com&quot;&gt;http://sextantegis.com&lt;/a&gt;&lt;/p&gt;
             </source>
-        <translation>
+        <translation type="obsolete">
             &lt;img src=&quot;qrc:/sextante/images/sextante_logo.png&quot; /&gt;
             &lt;h2&gt;SEXTANTE para QGIS&lt;/h2&gt;
             &lt;p&gt;SEXTANTE, una plataforma de geoprocesamiento para QGIS&lt;/p&gt;
@@ -52,7 +52,27 @@
     <name>CharacterWidget</name>
     <message>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</source>
-        <translation>&lt;p&gt;Carácter: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Carácter: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ConfigDialog</name>
+    <message>
+        <source>Search...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong parameter value:
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -104,6 +124,428 @@
     <message>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
         <translation>Coordenada en el sistema de referencia de la vista del mapa </translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgAddGeometryColumn</name>
+    <message>
+        <source>Add geometry column</source>
+        <translation type="unfinished">Añadir columna de geometría</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nombre</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
+    </message>
+    <message>
+        <source>Dimensions</source>
+        <translation type="unfinished">Dimensiones</translation>
+    </message>
+    <message>
+        <source>SRID</source>
+        <translation type="unfinished">SRID</translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgCreateConstraint</name>
+    <message>
+        <source>Add constraint</source>
+        <translation type="unfinished">Añadir restricción</translation>
+    </message>
+    <message>
+        <source>Column</source>
+        <translation type="unfinished">Columna</translation>
+    </message>
+    <message>
+        <source>Primary key</source>
+        <translation type="unfinished">Clave primaria</translation>
+    </message>
+    <message>
+        <source>Unique</source>
+        <translation type="unfinished">Único</translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgCreateIndex</name>
+    <message>
+        <source>Create index</source>
+        <translation type="unfinished">Crear índice</translation>
+    </message>
+    <message>
+        <source>Column</source>
+        <translation type="unfinished">Columna</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nombre</translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgCreateTable</name>
+    <message>
+        <source>Create Table</source>
+        <translation type="unfinished">Crear tabla</translation>
+    </message>
+    <message>
+        <source>Schema</source>
+        <translation type="unfinished">Esquema</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nombre</translation>
+    </message>
+    <message>
+        <source>Add field</source>
+        <translation type="unfinished">Añadir campo</translation>
+    </message>
+    <message>
+        <source>Delete field</source>
+        <translation type="unfinished">Borrar campo</translation>
+    </message>
+    <message>
+        <source>Up</source>
+        <translation type="unfinished">Arriba</translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation type="unfinished">Abajo</translation>
+    </message>
+    <message>
+        <source>Primary key</source>
+        <translation type="unfinished">Clave primaria</translation>
+    </message>
+    <message>
+        <source>Create geometry column</source>
+        <translation type="unfinished">Crear columna de geometría</translation>
+    </message>
+    <message>
+        <source>Dimensions</source>
+        <translation type="unfinished">Dimensiones</translation>
+    </message>
+    <message>
+        <source>SRID</source>
+        <translation type="unfinished">SRID</translation>
+    </message>
+    <message>
+        <source>Create spatial index</source>
+        <translation type="unfinished">Crear índice espacial</translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgDbError</name>
+    <message>
+        <source>Database Error</source>
+        <translation type="unfinished">Error de la base de datos</translation>
+    </message>
+    <message>
+        <source>An error occured:</source>
+        <translation type="unfinished">Ocurrió un error:</translation>
+    </message>
+    <message>
+        <source>An error occured when executing a query:</source>
+        <translation type="unfinished">Ocurrió un error al ejecutar la consulta:</translation>
+    </message>
+    <message>
+        <source>Query:</source>
+        <translation type="unfinished">Consulta:</translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgExportVector</name>
+    <message>
+        <source>Export to vector file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output file</source>
+        <translation type="unfinished">Archivo de salida</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation type="unfinished">Acción</translation>
+    </message>
+    <message>
+        <source>Create new file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drop existing one</source>
+        <translation type="unfinished">Quitar una existente</translation>
+    </message>
+    <message>
+        <source>Append data to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">Opciones</translation>
+    </message>
+    <message>
+        <source>Source SRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Target SRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Encoding</source>
+        <translation type="unfinished">Codificación</translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgFieldProperties</name>
+    <message>
+        <source>Field properties</source>
+        <translation type="unfinished">Propiedades del campo</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nombre</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
+    </message>
+    <message>
+        <source>Can be NULL</source>
+        <translation type="unfinished">Puede ser NULO</translation>
+    </message>
+    <message>
+        <source>Default value</source>
+        <translation type="unfinished">Valor predeterminado</translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgImportVector</name>
+    <message>
+        <source>Import vector layer</source>
+        <translation type="unfinished">Importar capa vectorial</translation>
+    </message>
+    <message>
+        <source>Input</source>
+        <translation type="unfinished">Entrada</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Update options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output table</source>
+        <translation type="unfinished">Tabla de salida</translation>
+    </message>
+    <message>
+        <source>Schema</source>
+        <translation type="unfinished">Esquema</translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished">Tabla</translation>
+    </message>
+    <message>
+        <source>Action</source>
+        <translation type="unfinished">Acción</translation>
+    </message>
+    <message>
+        <source>Create new table</source>
+        <translation type="unfinished">Crear nueva tabla</translation>
+    </message>
+    <message>
+        <source>Drop existing one</source>
+        <translation type="unfinished">Quitar una existente</translation>
+    </message>
+    <message>
+        <source>Append data to table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">Opciones</translation>
+    </message>
+    <message>
+        <source>Primary key</source>
+        <translation type="unfinished">Clave primaria</translation>
+    </message>
+    <message>
+        <source>Geometry column</source>
+        <translation type="unfinished">Columna de geometría</translation>
+    </message>
+    <message>
+        <source>Source SRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Target SRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Encoding</source>
+        <translation type="unfinished">Codificación</translation>
+    </message>
+    <message>
+        <source>Create single-part geometries instead of multi-part</source>
+        <translation type="unfinished">Crear geometrías de partes sencillas en vez de multiparte</translation>
+    </message>
+    <message>
+        <source>Create spatial index</source>
+        <translation type="unfinished">Crear índice espacial</translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgSqlWindow</name>
+    <message>
+        <source>SQL window</source>
+        <translation type="unfinished">Ventana SQL</translation>
+    </message>
+    <message>
+        <source>SQL query:</source>
+        <translation type="unfinished">Consulta SQL:</translation>
+    </message>
+    <message>
+        <source>&amp;Execute (F5)</source>
+        <translation type="unfinished">&amp;Ejecutar (F5)</translation>
+    </message>
+    <message>
+        <source>F5</source>
+        <translation type="unfinished">F5</translation>
+    </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation type="unfinished">&amp;Limpiar</translation>
+    </message>
+    <message>
+        <source>Result:</source>
+        <translation type="unfinished">Resultado:</translation>
+    </message>
+    <message>
+        <source>Load as new layer</source>
+        <translation type="unfinished">Cargar como capa nueva</translation>
+    </message>
+    <message>
+        <source>Column with unique 
+integer values</source>
+        <translation type="unfinished">Columna con valores 
+enteros únicos</translation>
+    </message>
+    <message>
+        <source>Geometry column</source>
+        <translation type="unfinished">Columna de geometría</translation>
+    </message>
+    <message>
+        <source>Retrieve 
+columns</source>
+        <translation type="unfinished">Obtener 
+columnas</translation>
+    </message>
+    <message>
+        <source>Layer name (prefix)</source>
+        <translation type="unfinished">Nombre de la capa (prefijo)</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
+    </message>
+    <message>
+        <source>Vector</source>
+        <translation type="unfinished">Vectorial</translation>
+    </message>
+    <message>
+        <source>Raster</source>
+        <translation type="unfinished">Ráster</translation>
+    </message>
+    <message>
+        <source>Load now!</source>
+        <translation type="unfinished">¡Cargar ahora!</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Evite seleccionar objetos por id. - Algunas veces - especialmente en búsquedas/vistas costosas - acceder a los datos en secuencia en lugar de acceder a objetos por id puede ser mucho más rápido.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Avoid selecting by feature id</source>
+        <translation type="unfinished">Evite seleccionar objetos espaciales por id</translation>
+    </message>
+</context>
+<context>
+    <name>DbManagerDlgTableProperties</name>
+    <message>
+        <source>Table properties</source>
+        <translation type="unfinished">Propiedades de la tabla</translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation type="unfinished">Columnas</translation>
+    </message>
+    <message>
+        <source>Table columns:</source>
+        <translation type="unfinished">Columnas de la tabla:</translation>
+    </message>
+    <message>
+        <source>Add column</source>
+        <translation type="unfinished">Añadir columna</translation>
+    </message>
+    <message>
+        <source>Add geometry column</source>
+        <translation type="unfinished">Añadir columna de geometría</translation>
+    </message>
+    <message>
+        <source>Edit column</source>
+        <translation type="unfinished">Editar columna</translation>
+    </message>
+    <message>
+        <source>Delete column</source>
+        <translation type="unfinished">Borrar columna</translation>
+    </message>
+    <message>
+        <source>Constraints</source>
+        <translation type="unfinished">Restricciones</translation>
+    </message>
+    <message>
+        <source>Primary, foreign keys, unique and check constraints:</source>
+        <translation type="unfinished">Llaves primaria, foránea y única y chequear restricciones:</translation>
+    </message>
+    <message>
+        <source>Add primary key / unique</source>
+        <translation type="unfinished">Añadir clave primaria / única</translation>
+    </message>
+    <message>
+        <source>Delete constraint</source>
+        <translation type="unfinished">Borrar restricción</translation>
+    </message>
+    <message>
+        <source>Indexes</source>
+        <translation type="unfinished">Índices</translation>
+    </message>
+    <message>
+        <source>Indexes defined for this table:</source>
+        <translation type="unfinished">Índices definidos para esta tabla:</translation>
+    </message>
+    <message>
+        <source>Add index</source>
+        <translation type="unfinished">Añadir índice</translation>
+    </message>
+    <message>
+        <source>Add spatial index</source>
+        <translation type="unfinished">Añadir índice espacial</translation>
+    </message>
+    <message>
+        <source>Delete index</source>
+        <translation type="unfinished">Borrar índice</translation>
     </message>
 </context>
 <context>
@@ -1379,6 +1821,78 @@ Are you sure you want to proceed?</source>
                                 distintos hilos a la misma fuente de datos. Asegúrese de que las 
                                 tablas de atributos de su capa están cerradas. ¿Continuar?</translation>
     </message>
+    <message>
+        <source>Eliminate sliver polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>common boundary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge selection with the neighbouring polygon with the largest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected features:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>area</source>
+        <translation type="unfinished">área</translation>
+    </message>
+    <message>
+        <source>Save errors location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selected features: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Eliminate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No selection in input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Commit error:
+ %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error creating output file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not delete features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not replace geometry of feature with id %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not eliminate features with these ids:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not add features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1</source>
+        <translation type="unfinished">Se ha creado el archivo shape de salida:
+%1</translation>
+    </message>
 </context>
 <context>
     <name>DlgAbout</name>
@@ -1388,367 +1902,450 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>About SEXTANTE</source>
-        <translation>Acerca de SEXTANTE</translation>
+        <translation type="obsolete">Acerca de SEXTANTE</translation>
     </message>
     <message>
         <source>about:blank</source>
-        <translation>about:blank</translation>
+        <translation type="obsolete">about:blank</translation>
     </message>
 </context>
 <context>
     <name>DlgAddGeometryColumn</name>
     <message>
         <source>Dialog</source>
-        <translation>Diálogo</translation>
+        <translation type="obsolete">Diálogo</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
     <message>
         <source>geom</source>
-        <translation>geometría</translation>
+        <translation type="obsolete">geometría</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>POINT</source>
-        <translation>PUNTO</translation>
+        <translation type="obsolete">PUNTO</translation>
     </message>
     <message>
         <source>LINESTRING</source>
-        <translation>CADENADELINEAS</translation>
+        <translation type="obsolete">CADENADELINEAS</translation>
     </message>
     <message>
         <source>POLYGON</source>
-        <translation>POLÍGONO</translation>
+        <translation type="obsolete">POLÍGONO</translation>
     </message>
     <message>
         <source>MULTIPOINT</source>
-        <translation>MULTIPUNTO</translation>
+        <translation type="obsolete">MULTIPUNTO</translation>
     </message>
     <message>
         <source>MULTILINESTRING</source>
-        <translation>MULTICADENADELINEAS</translation>
+        <translation type="obsolete">MULTICADENADELINEAS</translation>
     </message>
     <message>
         <source>MULTIPOLYGON</source>
-        <translation>MULTIPOLIGONO</translation>
+        <translation type="obsolete">MULTIPOLIGONO</translation>
     </message>
     <message>
         <source>GEOMETRYCOLLECTION</source>
-        <translation>COLECCIONDEGEOMETRIAS</translation>
+        <translation type="obsolete">COLECCIONDEGEOMETRIAS</translation>
     </message>
     <message>
         <source>Dimensions</source>
-        <translation>Dimensiones</translation>
+        <translation type="obsolete">Dimensiones</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation>SRID</translation>
+        <translation type="obsolete">SRID</translation>
     </message>
     <message>
         <source>-1</source>
-        <translation>-1</translation>
+        <translation type="obsolete">-1</translation>
+    </message>
+</context>
+<context>
+    <name>DlgConfig</name>
+    <message>
+        <source>SEXTANTE options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter setting name to filter list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateConstraint</name>
     <message>
         <source>Add constraint</source>
-        <translation>Añadir restricción</translation>
+        <translation type="obsolete">Añadir restricción</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation>Columna</translation>
+        <translation type="obsolete">Columna</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation>Clave primaria</translation>
+        <translation type="obsolete">Clave primaria</translation>
     </message>
     <message>
         <source>Unique</source>
-        <translation>Único</translation>
+        <translation type="obsolete">Único</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateIndex</name>
     <message>
         <source>Create index</source>
-        <translation>Crear índice</translation>
+        <translation type="obsolete">Crear índice</translation>
     </message>
     <message>
         <source>Column</source>
-        <translation>Columna</translation>
+        <translation type="obsolete">Columna</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
 </context>
 <context>
     <name>DlgCreateTable</name>
     <message>
         <source>Create Table</source>
-        <translation>Crear tabla</translation>
+        <translation type="obsolete">Crear tabla</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation>Esquema</translation>
+        <translation type="obsolete">Esquema</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
     <message>
         <source>Add field</source>
-        <translation>Añadir campo</translation>
+        <translation type="obsolete">Añadir campo</translation>
     </message>
     <message>
         <source>Delete field</source>
-        <translation>Borrar campo</translation>
+        <translation type="obsolete">Borrar campo</translation>
     </message>
     <message>
         <source>Up</source>
-        <translation>Arriba</translation>
+        <translation type="obsolete">Arriba</translation>
     </message>
     <message>
         <source>Down</source>
-        <translation>Abajo</translation>
+        <translation type="obsolete">Abajo</translation>
     </message>
     <message>
         <source>Primary key</source>
-        <translation>Clave primaria</translation>
+        <translation type="obsolete">Clave primaria</translation>
     </message>
     <message>
         <source>Create geometry column</source>
-        <translation>Crear columna de geometría</translation>
+        <translation type="obsolete">Crear columna de geometría</translation>
     </message>
     <message>
         <source>POINT</source>
-        <translation>PUNTO</translation>
+        <translation type="obsolete">PUNTO</translation>
     </message>
     <message>
         <source>LINESTRING</source>
-        <translation>CADENADELINEAS</translation>
+        <translation type="obsolete">CADENADELINEAS</translation>
     </message>
     <message>
         <source>POLYGON</source>
-        <translation>POLÍGONO</translation>
+        <translation type="obsolete">POLÍGONO</translation>
     </message>
     <message>
         <source>MULTIPOINT</source>
-        <translation>MULTIPUNTO</translation>
+        <translation type="obsolete">MULTIPUNTO</translation>
     </message>
     <message>
         <source>MULTILINESTRING</source>
-        <translation>MULTICADENADELINEAS</translation>
+        <translation type="obsolete">MULTICADENADELINEAS</translation>
     </message>
     <message>
         <source>MULTIPOLYGON</source>
-        <translation>MULTIPOLIGONO</translation>
+        <translation type="obsolete">MULTIPOLIGONO</translation>
     </message>
     <message>
         <source>GEOMETRYCOLLECTION</source>
-        <translation>COLECCIONDEGEOMETRIAS</translation>
+        <translation type="obsolete">COLECCIONDEGEOMETRIAS</translation>
     </message>
     <message>
         <source>geom</source>
-        <translation>geometría</translation>
+        <translation type="obsolete">geometría</translation>
     </message>
     <message>
         <source>Dimensions</source>
-        <translation>Dimensiones</translation>
+        <translation type="obsolete">Dimensiones</translation>
     </message>
     <message>
         <source>SRID</source>
-        <translation>SRID</translation>
+        <translation type="obsolete">SRID</translation>
     </message>
     <message>
         <source>-1</source>
-        <translation>-1</translation>
+        <translation type="obsolete">-1</translation>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation>Crear índice espacial</translation>
+        <translation type="obsolete">Crear índice espacial</translation>
     </message>
 </context>
 <context>
     <name>DlgDbError</name>
     <message>
         <source>Database Error</source>
-        <translation>Error de la base de datos</translation>
+        <translation type="obsolete">Error de la base de datos</translation>
     </message>
     <message>
         <source>An error occured:</source>
-        <translation>Ocurrió un error:</translation>
+        <translation type="obsolete">Ocurrió un error:</translation>
     </message>
     <message>
         <source>An error occured when executing a query:</source>
-        <translation>Ocurrió un error al ejecutar la consulta:</translation>
+        <translation type="obsolete">Ocurrió un error al ejecutar la consulta:</translation>
     </message>
     <message>
         <source>Query:</source>
-        <translation>Consulta:</translation>
+        <translation type="obsolete">Consulta:</translation>
     </message>
 </context>
 <context>
     <name>DlgFieldProperties</name>
     <message>
         <source>Field properties</source>
-        <translation>Propiedades del campo</translation>
+        <translation type="obsolete">Propiedades del campo</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>Can be NULL</source>
-        <translation>Puede ser NULO</translation>
+        <translation type="obsolete">Puede ser NULO</translation>
     </message>
     <message>
         <source>Default value</source>
-        <translation>Valor predeterminado</translation>
+        <translation type="obsolete">Valor predeterminado</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation>Longitud</translation>
+        <translation type="obsolete">Longitud</translation>
+    </message>
+</context>
+<context>
+    <name>DlgHelpEdition</name>
+    <message>
+        <source>Help editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select element to edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Element description</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DlgHistory</name>
+    <message>
+        <source>History and log</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DlgImportVector</name>
     <message>
         <source>Import vector layer</source>
-        <translation>Importar capa vectorial</translation>
+        <translation type="obsolete">Importar capa vectorial</translation>
     </message>
     <message>
         <source>Schema:</source>
-        <translation>Esquema:</translation>
+        <translation type="obsolete">Esquema:</translation>
     </message>
     <message>
         <source>Table:</source>
-        <translation>Tabla:</translation>
+        <translation type="obsolete">Tabla:</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation>Acción</translation>
+        <translation type="obsolete">Acción</translation>
     </message>
     <message>
         <source>Create new table</source>
-        <translation>Crear nueva tabla</translation>
+        <translation type="obsolete">Crear nueva tabla</translation>
     </message>
     <message>
         <source>Drop existing one</source>
-        <translation>Quitar una existente</translation>
+        <translation type="obsolete">Quitar una existente</translation>
     </message>
     <message>
         <source>Append data into table</source>
-        <translation>Añadir datos a la tabla</translation>
+        <translation type="obsolete">Añadir datos a la tabla</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation>Opciones</translation>
+        <translation type="obsolete">Opciones</translation>
     </message>
     <message>
         <source>Primary key:</source>
-        <translation>Clave primaria:</translation>
+        <translation type="obsolete">Clave primaria:</translation>
     </message>
     <message>
         <source>Geometry column:</source>
-        <translation>Columna de geometría:</translation>
+        <translation type="obsolete">Columna de geometría:</translation>
     </message>
     <message>
         <source>Source SRID:</source>
-        <translation>SRID de origen:</translation>
+        <translation type="obsolete">SRID de origen:</translation>
     </message>
     <message>
         <source>Target SRID:</source>
-        <translation>SRID de destino:</translation>
+        <translation type="obsolete">SRID de destino:</translation>
     </message>
     <message>
         <source>Encoding:</source>
-        <translation>Codificación:</translation>
+        <translation type="obsolete">Codificación:</translation>
     </message>
     <message>
         <source>Create single-part geometries instead of multi-part</source>
-        <translation>Crear geometrías de partes sencillas en vez de multiparte</translation>
+        <translation type="obsolete">Crear geometrías de partes sencillas en vez de multiparte</translation>
     </message>
     <message>
         <source>Create spatial index</source>
-        <translation>Crear índice espacial</translation>
+        <translation type="obsolete">Crear índice espacial</translation>
+    </message>
+</context>
+<context>
+    <name>DlgModeler</name>
+    <message>
+        <source>SEXTANTE modeler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Algorithms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter algorithm name to filter list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter model name here</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter group name here</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DlgResults</name>
+    <message>
+        <source>Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>DlgSqlWindow</name>
     <message>
         <source>SQL window</source>
-        <translation>Ventana SQL</translation>
+        <translation type="obsolete">Ventana SQL</translation>
     </message>
     <message>
         <source>SQL query:</source>
-        <translation>Consulta SQL:</translation>
+        <translation type="obsolete">Consulta SQL:</translation>
     </message>
     <message>
         <source>&amp;Execute (F5)</source>
-        <translation>&amp;Ejecutar (F5)</translation>
+        <translation type="obsolete">&amp;Ejecutar (F5)</translation>
     </message>
     <message>
         <source>F5</source>
-        <translation>F5</translation>
+        <translation type="obsolete">F5</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
-        <translation>&amp;Limpiar</translation>
+        <translation type="obsolete">&amp;Limpiar</translation>
     </message>
     <message>
         <source>Result:</source>
-        <translation>Resultado:</translation>
+        <translation type="obsolete">Resultado:</translation>
     </message>
     <message>
         <source>Load as new layer</source>
-        <translation>Cargar como capa nueva</translation>
+        <translation type="obsolete">Cargar como capa nueva</translation>
     </message>
     <message>
         <source>Column with unique 
 integer values</source>
-        <translation>Columna con valores 
+        <translation type="obsolete">Columna con valores 
 enteros únicos</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Columna de geometría</translation>
+        <translation type="obsolete">Columna de geometría</translation>
     </message>
     <message>
         <source>Retrieve 
 columns</source>
-        <translation>Obtener 
+        <translation type="obsolete">Obtener 
 columnas</translation>
     </message>
     <message>
         <source>Layer name (prefix)</source>
-        <translation>Nombre de la capa (prefijo)</translation>
+        <translation type="obsolete">Nombre de la capa (prefijo)</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>Vector</source>
-        <translation>Vectorial</translation>
+        <translation type="obsolete">Vectorial</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation>Ráster</translation>
+        <translation type="obsolete">Ráster</translation>
     </message>
     <message>
         <source>Load now!</source>
-        <translation>¡Cargar ahora!</translation>
+        <translation type="obsolete">¡Cargar ahora!</translation>
     </message>
     <message>
         <source>Sorry</source>
@@ -1762,11 +2359,11 @@ columna de geometría - columna con valores enteros únicos</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Evite seleccionar objetos por id. - Algunas veces - especialmente en búsquedas/vistas costosas - acceder a los datos en secuencia en lugar de acceder a objetos por id puede ser mucho más rápido.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Evite seleccionar objetos por id. - Algunas veces - especialmente en búsquedas/vistas costosas - acceder a los datos en secuencia en lugar de acceder a objetos por id puede ser mucho más rápido.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Avoid selecting by feature id</source>
-        <translation>Evite seleccionar objetos espaciales por id</translation>
+        <translation type="obsolete">Evite seleccionar objetos espaciales por id</translation>
     </message>
 </context>
 <context>
@@ -1820,67 +2417,67 @@ columna de geometría - columna con valores enteros únicos</translation>
     <name>DlgTableProperties</name>
     <message>
         <source>Table properties</source>
-        <translation>Propiedades de la tabla</translation>
+        <translation type="obsolete">Propiedades de la tabla</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation>Columnas</translation>
+        <translation type="obsolete">Columnas</translation>
     </message>
     <message>
         <source>Table columns:</source>
-        <translation>Columnas de la tabla:</translation>
+        <translation type="obsolete">Columnas de la tabla:</translation>
     </message>
     <message>
         <source>Add column</source>
-        <translation>Añadir columna</translation>
+        <translation type="obsolete">Añadir columna</translation>
     </message>
     <message>
         <source>Add geometry column</source>
-        <translation>Añadir columna de geometría</translation>
+        <translation type="obsolete">Añadir columna de geometría</translation>
     </message>
     <message>
         <source>Edit column</source>
-        <translation>Editar columna</translation>
+        <translation type="obsolete">Editar columna</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation>Borrar columna</translation>
+        <translation type="obsolete">Borrar columna</translation>
     </message>
     <message>
         <source>Constraints</source>
-        <translation>Restricciones</translation>
+        <translation type="obsolete">Restricciones</translation>
     </message>
     <message>
         <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation>Llaves primaria, foránea y única y chequear restricciones:</translation>
+        <translation type="obsolete">Llaves primaria, foránea y única y chequear restricciones:</translation>
     </message>
     <message>
         <source>Add primary key / unique</source>
-        <translation>Añadir clave primaria / única</translation>
+        <translation type="obsolete">Añadir clave primaria / única</translation>
     </message>
     <message>
         <source>Delete constraint</source>
-        <translation>Borrar restricción</translation>
+        <translation type="obsolete">Borrar restricción</translation>
     </message>
     <message>
         <source>Indexes</source>
-        <translation>Índices</translation>
+        <translation type="obsolete">Índices</translation>
     </message>
     <message>
         <source>Indexes defined for this table:</source>
-        <translation>Índices definidos para esta tabla:</translation>
+        <translation type="obsolete">Índices definidos para esta tabla:</translation>
     </message>
     <message>
         <source>Add index</source>
-        <translation>Añadir índice</translation>
+        <translation type="obsolete">Añadir índice</translation>
     </message>
     <message>
         <source>Add spatial index</source>
-        <translation>Añadir índice espacial</translation>
+        <translation type="obsolete">Añadir índice espacial</translation>
     </message>
     <message>
         <source>Delete index</source>
-        <translation>Borrar índice</translation>
+        <translation type="obsolete">Borrar índice</translation>
     </message>
 </context>
 <context>
@@ -1936,6 +2533,30 @@ columna de geometría - columna con valores enteros únicos</translation>
     <message>
         <source>SQL to be executed:</source>
         <translation>SQL a ejecutar:</translation>
+    </message>
+</context>
+<context>
+    <name>EditRScriptDialog</name>
+    <message>
+        <source>I/O error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save edits. Reason:
+ %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EditScriptDialog</name>
+    <message>
+        <source>I/O error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save edits. Reason:
+ %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2756,7 +3377,7 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation>Una lista de rutas separadas por dos puntos 
+        <translation type="obsolete">Una lista de rutas separadas por dos puntos 
 (Linux y MacOS) o punto y coma (Windows) tanto a los 
 binarios y como a los ejecutables de python.
 
@@ -2767,19 +3388,38 @@ establecer esto a algo como
     <message>
         <source>A list of colon-separated (Linux and MacOS) or 
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation>Una lista de rutas separadas por dos puntos 
+        <translation type="obsolete">Una lista de rutas separadas por dos puntos 
 (Linux y MacOS) o punto y coma (Windows) a los 
 módulos de python.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help 
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation>Útil para abrir documentación local de GDAL en vez de la ayuda 
+        <translation type="obsolete">Útil para abrir documentación local de GDAL en vez de la ayuda 
 en línea cuando se pulsa el botón Ayuda del diálogo de la herramienta.</translation>
     </message>
     <message>
         <source>Select directory with GDAL python modules</source>
         <translation>Seleccionar el directorio con los módulos python de GDAL</translation>
+    </message>
+    <message>
+        <source>A list of colon-separated (Linux and MacOS) or
+semicolon-separated (Windows) paths to both binaries
+and python executables.
+
+MacOS users usually need to set it to something like
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A list of colon-separated (Linux and MacOS) or
+semicolon-separated (Windows) paths to python modules.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Useful to open local GDAL documentation instead of online help
+when pressing on the tool dialog&apos;s Help button.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3787,6 +4427,18 @@ El valor «gris» (de GDAL 1.7.0) habilita expandir un conjunto de datos con una
         <source>cubic</source>
         <translation>Cúbico</translation>
     </message>
+    <message>
+        <source>Mode Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>old</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>new</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GeometryDialog</name>
@@ -4181,6 +4833,14 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
         <source>&amp;Globe</source>
         <translation>&amp;Globo</translation>
     </message>
+    <message>
+        <source>Unload Globe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unload globe</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Heatmap</name>
@@ -4214,11 +4874,11 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Point layer error</source>
-        <translation>Error de capa de puntos</translation>
+        <translation type="obsolete">Error de capa de puntos</translation>
     </message>
     <message>
         <source>Could not identify the vector data provider.</source>
-        <translation>No se pudo identificar el proveedor de los datos vectoriales.</translation>
+        <translation type="obsolete">No se pudo identificar el proveedor de los datos vectoriales.</translation>
     </message>
     <message>
         <source>Heatmap generation aborted</source>
@@ -4276,11 +4936,11 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Input Point Vector</source>
-        <translation>Vectorial de puntos de entrada</translation>
+        <translation type="obsolete">Vectorial de puntos de entrada</translation>
     </message>
     <message>
         <source>Output Raster</source>
-        <translation>Ráster de salida</translation>
+        <translation type="obsolete">Ráster de salida</translation>
     </message>
     <message>
         <source>...</source>
@@ -4292,7 +4952,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Decay Ratio</source>
-        <translation>Relación de decadencia</translation>
+        <translation type="obsolete">Relación de decadencia</translation>
     </message>
     <message>
         <source>10</source>
@@ -4304,7 +4964,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Output Format</source>
-        <translation>Formato de salida</translation>
+        <translation type="obsolete">Formato de salida</translation>
     </message>
     <message>
         <source>Radius</source>
@@ -4320,7 +4980,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>0.1</source>
-        <translation>0.1</translation>
+        <translation type="obsolete">0.1</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -4332,7 +4992,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Cell Size X</source>
-        <translation>Tamaño X de celda</translation>
+        <translation type="obsolete">Tamaño X de celda</translation>
     </message>
     <message>
         <source>Column</source>
@@ -4340,15 +5000,108 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Cell Size Y</source>
-        <translation>Tamaño Y de celda</translation>
+        <translation type="obsolete">Tamaño Y de celda</translation>
     </message>
     <message>
         <source>Use Radius from field</source>
-        <translation>Usar radio a partir de campo</translation>
+        <translation type="obsolete">Usar radio a partir de campo</translation>
     </message>
     <message>
         <source>Use Weight from field</source>
-        <translation>Usar peso a partir de campo</translation>
+        <translation type="obsolete">Usar peso a partir de campo</translation>
+    </message>
+    <message>
+        <source>Input point layer</source>
+        <translation type="unfinished">Capa de puntos de entrada</translation>
+    </message>
+    <message>
+        <source>Output raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output format</source>
+        <translation type="unfinished">Formato de salida</translation>
+    </message>
+    <message>
+        <source>Cell size X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cell size Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use radius from field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use weight from field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>0.0</source>
+        <translation type="unfinished">0.0</translation>
+    </message>
+    <message>
+        <source>Decay ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quartic (biweight)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Triangular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uniform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Triweight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Epanechnikov</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Kernel shape</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Help</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Diálogo</translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HelpEditionDialog</name>
+    <message>
+        <source>Outputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>HistoryDialog</name>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">Limpiar</translation>
+    </message>
+    <message>
+        <source>Clear history and log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create test</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5206,7 +5959,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Save Edits</source>
-        <translation>Guardar edición</translation>
+        <translation type="obsolete">Guardar edición</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -5338,6 +6091,190 @@ Actúa sobre la capa actual en edición</translation>
         <source>Html Annotation</source>
         <translation>Anotación HTML</translation>
     </message>
+    <message>
+        <source>Vect&amp;or</source>
+        <translation type="unfinished">Vect&amp;orial</translation>
+    </message>
+    <message>
+        <source>&amp;OpenStreetMap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Oracle Spatial Layer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save for Selected Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicate Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save for All Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rollback for All Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel for All Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rollback for Selected Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current Edits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel for Selected Layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Layer Edits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate Feature(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Download data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Import topology from XML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Export topology to SpatiaLite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Increase brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decrease brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Increase contrast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decrease contrast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select By Expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features using an expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ModelerDialog</name>
+    <message>
+        <source>Edit model help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run</source>
+        <translation type="unfinished">Ejecutar</translation>
+    </message>
+    <message>
+        <source>Execute current model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open</source>
+        <translation type="unfinished">Abrir</translation>
+    </message>
+    <message>
+        <source>Open existing model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished">Guardar</translation>
+    </message>
+    <message>
+        <source>Save current model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save as ...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save current model as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter group and model names before saving</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SEXTANTE models (*.model)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Model was correctly saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected model could not be loaded.
+Wrong line: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parameters</source>
+        <translation type="unfinished">Parámetros</translation>
+    </message>
 </context>
 <context>
     <name>OgrConverterGuiBase</name>
@@ -5432,801 +6369,801 @@ Actúa sobre la capa actual en edición</translation>
     <name>OsmAddRelationDlg</name>
     <message>
         <source>Create OSM relation</source>
-        <translation>Crear relación de OSM</translation>
+        <translation type="obsolete">Crear relación de OSM</translation>
     </message>
     <message>
         <source>Relation type:</source>
-        <translation>Tipo de relación:</translation>
+        <translation type="obsolete">Tipo de relación:</translation>
     </message>
     <message>
         <source>Show type description</source>
-        <translation>Mostrar descripción del tipo</translation>
+        <translation type="obsolete">Mostrar descripción del tipo</translation>
     </message>
     <message>
         <source>Shows brief description of selected relation type.</source>
-        <translation>Mostrar una descripción breve del tipo de relación seleccionada.</translation>
+        <translation type="obsolete">Mostrar una descripción breve del tipo de relación seleccionada.</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation>Propiedades</translation>
+        <translation type="obsolete">Propiedades</translation>
     </message>
     <message>
         <source>Generate tags</source>
-        <translation>Generar etiquetas</translation>
+        <translation type="obsolete">Generar etiquetas</translation>
     </message>
     <message>
         <source>Fills tag table with tags that are typical for relation of specified type.</source>
-        <translation>Rellena la table de etiquetas con las etiquetas típicas del tipo de relación especificado.</translation>
+        <translation type="obsolete">Rellena la table de etiquetas con las etiquetas típicas del tipo de relación especificado.</translation>
     </message>
     <message>
         <source>Remove all selected tags</source>
-        <translation>Eliminar todas las etiquetas seleccionadas</translation>
+        <translation type="obsolete">Eliminar todas las etiquetas seleccionadas</translation>
     </message>
     <message>
         <source>Removes all selected tags.</source>
-        <translation>Elimina todas las etiquetas seleccionadas.</translation>
+        <translation type="obsolete">Elimina todas las etiquetas seleccionadas.</translation>
     </message>
     <message>
         <source>Members</source>
-        <translation>Miembros</translation>
+        <translation type="obsolete">Miembros</translation>
     </message>
     <message>
         <source>Select member on map</source>
-        <translation>Seleccionar miembro en el mapa</translation>
+        <translation type="obsolete">Seleccionar miembro en el mapa</translation>
     </message>
     <message>
         <source>Starts process of selecting next relation member on map.</source>
-        <translation>Inicia el proceso de seleccionar el siguiente miembro de la relación en el mapa.</translation>
+        <translation type="obsolete">Inicia el proceso de seleccionar el siguiente miembro de la relación en el mapa.</translation>
     </message>
     <message>
         <source>Remove all selected members</source>
-        <translation>Eliminar todos los miembros seleccionados</translation>
+        <translation type="obsolete">Eliminar todos los miembros seleccionados</translation>
     </message>
     <message>
         <source>Removes all selected members.</source>
-        <translation>Elimina todos los miembros seleccionados.</translation>
+        <translation type="obsolete">Elimina todos los miembros seleccionados.</translation>
     </message>
     <message>
         <source>Create</source>
-        <translation>Crear</translation>
+        <translation type="obsolete">Crear</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Cancelar</translation>
+        <translation type="obsolete">Cancelar</translation>
     </message>
     <message>
         <source>OSM Information</source>
-        <translation>Información de OSM</translation>
+        <translation type="obsolete">Información de OSM</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Guardar</translation>
+        <translation type="obsolete">Guardar</translation>
     </message>
     <message>
         <source>Edit OSM relation</source>
-        <translation>Editar relación de OSM</translation>
+        <translation type="obsolete">Editar relación de OSM</translation>
     </message>
     <message>
         <source>for grouping boundaries and marking enclaves / exclaves</source>
-        <translation>para agrupar contornos y hacer enclaves / exclaves</translation>
+        <translation type="obsolete">para agrupar contornos y hacer enclaves / exclaves</translation>
     </message>
     <message>
         <source>to put holes into areas (might have to be renamed, see article)</source>
-        <translation>para hacer agujeros dentro de áreas (puede ser necesario cambiar el nombre, ver artículo)</translation>
+        <translation type="obsolete">para hacer agujeros dentro de áreas (puede ser necesario cambiar el nombre, ver artículo)</translation>
     </message>
     <message>
         <source>any kind of turn restriction</source>
-        <translation>cualquier tipo de restricción de giro</translation>
+        <translation type="obsolete">cualquier tipo de restricción de giro</translation>
     </message>
     <message>
         <source>like bus routes, cycle routes and numbered highways</source>
-        <translation>como rutas de autobús o bicicleta y carreteras numeradas</translation>
+        <translation type="obsolete">como rutas de autobús o bicicleta y carreteras numeradas</translation>
     </message>
     <message>
         <source>traffic enforcement devices; speed cameras, redlight cameras, weight checks, ...</source>
-        <translation>dispositivos de control de tráfico; radares, cámaras de semáforos, controles de peso, ...</translation>
+        <translation type="obsolete">dispositivos de control de tráfico; radares, cámaras de semáforos, controles de peso, ...</translation>
     </message>
 </context>
 <context>
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation>Descarga de OSM</translation>
+        <translation type="obsolete">Descarga de OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation>No se puede guardar el archivo %1: %2.</translation>
+        <translation type="obsolete">No se puede guardar el archivo %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation>Esperando al servidor de OpenStreetMap...</translation>
+        <translation type="obsolete">Esperando al servidor de OpenStreetMap...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation>Falló la descarga. Respuesta del servidor de OpenStreetMap: %1 - %2</translation>
+        <translation type="obsolete">Falló la descarga. Respuesta del servidor de OpenStreetMap: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation>Error de descarga de OSM</translation>
+        <translation type="obsolete">Error de descarga de OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation>Falló la descarga: %1.</translation>
+        <translation type="obsolete">Falló la descarga: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation>Obteniendo datos</translation>
+        <translation type="obsolete">Obteniendo datos</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation>El servidor de OpenStreetMap del que está descargando datos (~ api.openstreetmap.org) ha establecido límites a la cantidad de datos que se pueden obtener. Tal como se indica en &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; ni la extensión de la latitud ni la de la longitud pueden exceder de 0,25 grados. Tenga en cuenta que Quantum GIS le permite especificar cualquier extensión, pero el servidor de OpenStreetMap rechazará cualquier petición que no cumpla los límites de descarga.</translation>
+        <translation type="obsolete">El servidor de OpenStreetMap del que está descargando datos (~ api.openstreetmap.org) ha establecido límites a la cantidad de datos que se pueden obtener. Tal como se indica en &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; ni la extensión de la latitud ni la de la longitud pueden exceder de 0,25 grados. Tenga en cuenta que Quantum GIS le permite especificar cualquier extensión, pero el servidor de OpenStreetMap rechazará cualquier petición que no cumpla los límites de descarga.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation>¡Ambas extensiones son demasiado amplias!</translation>
+        <translation type="obsolete">¡Ambas extensiones son demasiado amplias!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation>¡La extensión de la latitud es demasiado amplia!</translation>
+        <translation type="obsolete">¡La extensión de la latitud es demasiado amplia!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation>¡La extensión de la longitud es demasiado amplia!</translation>
+        <translation type="obsolete">¡La extensión de la longitud es demasiado amplia!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation>Correcto. El área probablemente será aceptada por el servidor.</translation>
+        <translation type="obsolete">Correcto. El área probablemente será aceptada por el servidor.</translation>
     </message>
     <message>
         <source>Download OSM data</source>
-        <translation>Descargar datos de OSM</translation>
+        <translation type="obsolete">Descargar datos de OSM</translation>
     </message>
     <message>
         <source>Extent</source>
-        <translation>Extensión</translation>
+        <translation type="obsolete">Extensión</translation>
     </message>
     <message>
         <source>Latitude:</source>
-        <translation>Latitud:</translation>
+        <translation type="obsolete">Latitud:</translation>
     </message>
     <message>
         <source>   From</source>
-        <translation>...Desde</translation>
+        <translation type="obsolete">...Desde</translation>
     </message>
     <message>
         <source>To</source>
-        <translation>Hasta</translation>
+        <translation type="obsolete">Hasta</translation>
     </message>
     <message>
         <source>Longitude:</source>
-        <translation>Longitud:</translation>
+        <translation type="obsolete">Longitud:</translation>
     </message>
     <message>
         <source>&lt;nothing&gt;</source>
-        <translation>&lt;nada&gt;</translation>
+        <translation type="obsolete">&lt;nada&gt;</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Download to:</source>
-        <translation>Descargar a:</translation>
+        <translation type="obsolete">Descargar a:</translation>
     </message>
     <message>
         <source>Open data automatically after download</source>
-        <translation>Abrir datos automáticamente después de descargar</translation>
+        <translation type="obsolete">Abrir datos automáticamente después de descargar</translation>
     </message>
     <message>
         <source>Replace current data (current layer will be removed)</source>
-        <translation>Reemplazar los datos actuales (se eliminará la capa actual)</translation>
+        <translation type="obsolete">Reemplazar los datos actuales (se eliminará la capa actual)</translation>
     </message>
     <message>
         <source>Use custom renderer</source>
-        <translation>Utilizar renderizador personalizado</translation>
+        <translation type="obsolete">Utilizar renderizador personalizado</translation>
     </message>
     <message>
         <source>Download</source>
-        <translation>Descargar</translation>
+        <translation type="obsolete">Descargar</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Cancelar</translation>
+        <translation type="obsolete">Cancelar</translation>
     </message>
     <message>
         <source>Check your internet connection</source>
-        <translation>Compruebe su conexión a internet</translation>
+        <translation type="obsolete">Compruebe su conexión a internet</translation>
     </message>
     <message>
         <source>Choose file to save</source>
-        <translation>Seleccione el archivo a guardar</translation>
+        <translation type="obsolete">Seleccione el archivo a guardar</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation>Archivos OSM (*.osm)</translation>
+        <translation type="obsolete">Archivos OSM (*.osm)</translation>
     </message>
 </context>
 <context>
     <name>OsmFeatureDW</name>
     <message>
         <source>OSM Feature</source>
-        <translation>Objeto espacial de OSM</translation>
+        <translation type="obsolete">Objeto espacial de OSM</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Create point</source>
-        <translation>Crear punto</translation>
+        <translation type="obsolete">Crear punto</translation>
     </message>
     <message>
         <source>Create line</source>
-        <translation>Crear línea</translation>
+        <translation type="obsolete">Crear línea</translation>
     </message>
     <message>
         <source>Create polygon</source>
-        <translation>Crear polígono</translation>
+        <translation type="obsolete">Crear polígono</translation>
     </message>
     <message>
         <source>Create relation</source>
-        <translation>Crear relación</translation>
+        <translation type="obsolete">Crear relación</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation>Deshacer</translation>
+        <translation type="obsolete">Deshacer</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation>Rehacer</translation>
+        <translation type="obsolete">Rehacer</translation>
     </message>
     <message>
         <source>Show/Hide OSM Edit History</source>
-        <translation>Mostrar/Ocultar historial de edición de OSM</translation>
+        <translation type="obsolete">Mostrar/Ocultar historial de edición de OSM</translation>
     </message>
     <message>
         <source>Feature:</source>
-        <translation>Objeto espacial:</translation>
+        <translation type="obsolete">Objeto espacial:</translation>
     </message>
     <message>
         <source>TYPE, ID:</source>
-        <translation>TIPO, ID:</translation>
+        <translation type="obsolete">TIPO, ID:</translation>
     </message>
     <message>
         <source>CREATED:</source>
-        <translation>CREADO:</translation>
+        <translation type="obsolete">CREADO:</translation>
     </message>
     <message>
         <source>USER:</source>
-        <translation>USUARIO:</translation>
+        <translation type="obsolete">USUARIO:</translation>
     </message>
     <message>
         <source>unknown</source>
-        <translation>desconocido</translation>
+        <translation type="obsolete">desconocido</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation>Propiedades</translation>
+        <translation type="obsolete">Propiedades</translation>
     </message>
     <message>
         <source>Remove selected tags</source>
-        <translation>Eliminar etiquetas seleccionadas</translation>
+        <translation type="obsolete">Eliminar etiquetas seleccionadas</translation>
     </message>
     <message>
         <source>Relations</source>
-        <translation>Relaciones</translation>
+        <translation type="obsolete">Relaciones</translation>
     </message>
     <message>
         <source>Add relation</source>
-        <translation>Añadir relación</translation>
+        <translation type="obsolete">Añadir relación</translation>
     </message>
     <message>
         <source>Edit relation</source>
-        <translation>Editar relación</translation>
+        <translation type="obsolete">Editar relación</translation>
     </message>
     <message>
         <source>Remove relation</source>
-        <translation>Eliminar relación</translation>
+        <translation type="obsolete">Eliminar relación</translation>
     </message>
     <message>
         <source>Relation tags:</source>
-        <translation>Etiquetas de la relación:</translation>
+        <translation type="obsolete">Etiquetas de la relación:</translation>
     </message>
     <message>
         <source>1</source>
-        <translation>1</translation>
+        <translation type="obsolete">1</translation>
     </message>
     <message>
         <source>Relation members:</source>
-        <translation>Miembros de la relación:</translation>
+        <translation type="obsolete">Miembros de la relación:</translation>
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation>Complemento de OSM</translation>
+        <translation type="obsolete">Complemento de OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation>El diálogo &apos;Crear relación de OSM&apos; se cerró automáticamente porque la base de datos actual de OSM ha cambiado.</translation>
+        <translation type="obsolete">El diálogo &apos;Crear relación de OSM&apos; se cerró automáticamente porque la base de datos actual de OSM ha cambiado.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation>Control adosable de elementos de OSM</translation>
+        <translation type="obsolete">Control adosable de elementos de OSM</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation>Seleccione objeto espacial de OSM primero.</translation>
+        <translation type="obsolete">Seleccione objeto espacial de OSM primero.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation>Seleccione la relación a editar primero.</translation>
+        <translation type="obsolete">Seleccione la relación a editar primero.</translation>
     </message>
     <message>
         <source>Identify feature</source>
-        <translation>Identificar objeto espacial</translation>
+        <translation type="obsolete">Identificar objeto espacial</translation>
     </message>
     <message>
         <source>Move feature</source>
-        <translation>Mover objeto espacial</translation>
+        <translation type="obsolete">Mover objeto espacial</translation>
     </message>
     <message>
         <source>Remove this feature</source>
-        <translation>Eliminar este objeto espacial</translation>
+        <translation type="obsolete">Eliminar este objeto espacial</translation>
     </message>
     <message>
         <source>Snapping ON. Hold Ctrl to disable it.</source>
-        <translation>Autoensamblado ACTIVO. Mantenga pulsado Ctrl para desactivarlo.</translation>
+        <translation type="obsolete">Autoensamblado ACTIVO. Mantenga pulsado Ctrl para desactivarlo.</translation>
     </message>
     <message>
         <source>Hide OSM Edit History</source>
-        <translation>Ocultar historial de edición de OSM</translation>
+        <translation type="obsolete">Ocultar historial de edición de OSM</translation>
     </message>
     <message>
         <source>Show OSM Edit History</source>
-        <translation>Mostrar historial de edición de OSM</translation>
+        <translation type="obsolete">Mostrar historial de edición de OSM</translation>
     </message>
 </context>
 <context>
     <name>OsmImportDlg</name>
     <message>
         <source>Import data to OSM</source>
-        <translation>Importar datos a OSM</translation>
+        <translation type="obsolete">Importar datos a OSM</translation>
     </message>
     <message>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation>En este diálogo puede importar una capa cargada en QGIS en datos activos de OSM.</translation>
+        <translation type="obsolete">En este diálogo puede importar una capa cargada en QGIS en datos activos de OSM.</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation>Capa</translation>
+        <translation type="obsolete">Capa</translation>
     </message>
     <message>
         <source>Import only current selection</source>
-        <translation>Importar sólo la selección actual</translation>
+        <translation type="obsolete">Importar sólo la selección actual</translation>
     </message>
     <message>
         <source>Layer doesn&apos;t exist</source>
-        <translation>La capa no existe</translation>
+        <translation type="obsolete">La capa no existe</translation>
     </message>
     <message>
         <source>The selected layer doesn&apos;t exist anymore!</source>
-        <translation>¡La capa seleccionada ya no existe!</translation>
+        <translation type="obsolete">¡La capa seleccionada ya no existe!</translation>
     </message>
     <message>
         <source>Importing features...</source>
-        <translation>Importar objetos espaciales...</translation>
+        <translation type="obsolete">Importar objetos espaciales...</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Cancelar</translation>
+        <translation type="obsolete">Cancelar</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>Importar</translation>
+        <translation type="obsolete">Importar</translation>
     </message>
     <message>
         <source>Import has been completed.</source>
-        <translation>Se ha completado la importación.</translation>
+        <translation type="obsolete">Se ha completado la importación.</translation>
     </message>
 </context>
 <context>
     <name>OsmLoadDlg</name>
     <message>
         <source>Load OSM</source>
-        <translation>Cargar OSM</translation>
+        <translation type="obsolete">Cargar OSM</translation>
     </message>
     <message>
         <source>OpenStreetMap file to load:</source>
-        <translation>Archivo de OpenStreetMap a cargar:</translation>
+        <translation type="obsolete">Archivo de OpenStreetMap a cargar:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Add columns for tags:</source>
-        <translation>Añadir columnas para etiquetas:</translation>
+        <translation type="obsolete">Añadir columnas para etiquetas:</translation>
     </message>
     <message>
         <source>Use custom renderer</source>
-        <translation>Utilizar renderizador personalizado</translation>
+        <translation type="obsolete">Utilizar renderizador personalizado</translation>
     </message>
     <message>
         <source>Replace current data (current layers will be removed)</source>
-        <translation>Reemplazar los datos actuales (se eliminarán la capas actuales)</translation>
+        <translation type="obsolete">Reemplazar los datos actuales (se eliminarán la capas actuales)</translation>
     </message>
     <message>
         <source>Choose an Open Street Map file</source>
-        <translation>Seleccione un archivo de OpenStreetMap</translation>
+        <translation type="obsolete">Seleccione un archivo de OpenStreetMap</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation>Archivos OSM (*.osm)</translation>
+        <translation type="obsolete">Archivos OSM (*.osm)</translation>
     </message>
     <message>
         <source>OSM Load</source>
-        <translation>Cargar OSM</translation>
+        <translation type="obsolete">Cargar OSM</translation>
     </message>
     <message>
         <source>Please enter path to OSM data file.</source>
-        <translation>Por favor, introduzca la ruta al archivo de datos de OSM.</translation>
+        <translation type="obsolete">Por favor, introduzca la ruta al archivo de datos de OSM.</translation>
     </message>
     <message>
         <source>Path to OSM file is invalid: %1.</source>
-        <translation>La ruta al archivo OSM no es válida: %1.</translation>
+        <translation type="obsolete">La ruta al archivo OSM no es válida: %1.</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Error</translation>
+        <translation type="obsolete">Error</translation>
     </message>
     <message>
         <source>Layers of OSM file &quot;%1&quot; are loaded already.</source>
-        <translation>Las capas del archivo OSM &quot;%1&quot; ya están cargadas.</translation>
+        <translation type="obsolete">Las capas del archivo OSM &quot;%1&quot; ya están cargadas.</translation>
     </message>
     <message>
         <source>Failed to load polygon layer.</source>
-        <translation>No se pudo cargar la capa de polígonos.</translation>
+        <translation type="obsolete">No se pudo cargar la capa de polígonos.</translation>
     </message>
     <message>
         <source>Failed to load line layer.</source>
-        <translation>No se pudo cargar la capa de líneas.</translation>
+        <translation type="obsolete">No se pudo cargar la capa de líneas.</translation>
     </message>
     <message>
         <source>Failed to load point layer.</source>
-        <translation>No se pudo cargar la capa de puntos.</translation>
+        <translation type="obsolete">No se pudo cargar la capa de puntos.</translation>
     </message>
     <message>
         <source>Could not connect to setRenderer signal.</source>
-        <translation>No se pudo conectar con la señal setRenderer.</translation>
+        <translation type="obsolete">No se pudo conectar con la señal setRenderer.</translation>
     </message>
     <message>
         <source>Failed to load layers: %1</source>
-        <translation>No se pudieron cargar las capas: %1</translation>
+        <translation type="obsolete">No se pudieron cargar las capas: %1</translation>
     </message>
 </context>
 <context>
     <name>OsmPlugin</name>
     <message>
         <source>Load OSM from file</source>
-        <translation>Cargar OSM de archivo</translation>
+        <translation type="obsolete">Cargar OSM de archivo</translation>
     </message>
     <message>
         <source>Load OpenStreetMap from file</source>
-        <translation>Cargar OpenStreetMap de archivo</translation>
+        <translation type="obsolete">Cargar OpenStreetMap de archivo</translation>
     </message>
     <message>
         <source>Import data from a layer</source>
-        <translation>Importar datos de una capa</translation>
+        <translation type="obsolete">Importar datos de una capa</translation>
     </message>
     <message>
         <source>Import data from a layer to OpenStreetMap</source>
-        <translation>Importar datos de una capa a OpenStreetMap</translation>
+        <translation type="obsolete">Importar datos de una capa a OpenStreetMap</translation>
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation>Guardar OSM a archivo</translation>
+        <translation type="obsolete">Guardar OSM a archivo</translation>
     </message>
     <message>
         <source>Save OpenStreetMap to file</source>
-        <translation>Guardar OpenStreetMap a archivo</translation>
+        <translation type="obsolete">Guardar OpenStreetMap a archivo</translation>
     </message>
     <message>
         <source>Download OSM data</source>
-        <translation>Descargar datos de OSM</translation>
+        <translation type="obsolete">Descargar datos de OSM</translation>
     </message>
     <message>
         <source>Download OpenStreetMap data</source>
-        <translation>Descargar datos de OpenStreetMap</translation>
+        <translation type="obsolete">Descargar datos de OpenStreetMap</translation>
     </message>
     <message>
         <source>Upload OSM data</source>
-        <translation>Subir datos de OSM</translation>
+        <translation type="obsolete">Subir datos de OSM</translation>
     </message>
     <message>
         <source>Upload OpenStreetMap data</source>
-        <translation>Subir datos de OpenStreetMap</translation>
+        <translation type="obsolete">Subir datos de OpenStreetMap</translation>
     </message>
     <message>
         <source>Show/Hide OSM Feature Manager</source>
-        <translation>Mostrar/Ocultar Administrador de objetos de OSM</translation>
+        <translation type="obsolete">Mostrar/Ocultar Administrador de objetos de OSM</translation>
     </message>
     <message>
         <source>Show/Hide OpenStreetMap Feature Manager</source>
-        <translation>Mostrar/Ocultar Administrador de objetos de OpenStreetMap</translation>
+        <translation type="obsolete">Mostrar/Ocultar Administrador de objetos de OpenStreetMap</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation>Lo siento</translation>
+        <translation type="obsolete">Lo siento</translation>
     </message>
     <message>
         <source>You don&apos;t have OSM provider installed!</source>
-        <translation>¡No tiene proveedor de OSM instalado!</translation>
+        <translation type="obsolete">¡No tiene proveedor de OSM instalado!</translation>
     </message>
     <message>
         <source>OSM Save to file</source>
-        <translation>Guardar OSM a archivo</translation>
+        <translation type="obsolete">Guardar OSM a archivo</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to save.</source>
-        <translation>Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
+        <translation type="obsolete">Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
 Por favor, cambie esta situación primero, porque el complemento de OSM no sabe qué guardar.</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation>Subir a OSM</translation>
+        <translation type="obsolete">Subir a OSM</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to upload.</source>
-        <translation>Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
+        <translation type="obsolete">Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
 Por favor, cambie esta situación primero, porque el complemento de OSM no sabe qué subir.</translation>
     </message>
     <message>
         <source>OSM Import</source>
-        <translation>Importacioń de OSM</translation>
+        <translation type="obsolete">Importacioń de OSM</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what layer will be destination of the import.</source>
-        <translation>Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
+        <translation type="obsolete">Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
 Por favor, cambie esta situación primero, porque el complemento de OSM no sabe qué capa será el destino de la importación.</translation>
     </message>
     <message>
         <source>There are currently no available vector layers.</source>
-        <translation>Actualmente no hay capas vectoriales disponibles.</translation>
+        <translation type="obsolete">Actualmente no hay capas vectoriales disponibles.</translation>
     </message>
 </context>
 <context>
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation>Guardar OSM a archivo</translation>
+        <translation type="obsolete">Guardar OSM a archivo</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation>No se puede guardar el archivo %1: %2.</translation>
+        <translation type="obsolete">No se puede guardar el archivo %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation>Inicializando...</translation>
+        <translation type="obsolete">Inicializando...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation>Guardando nodos...</translation>
+        <translation type="obsolete">Guardando nodos...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation>Guardando líneas...</translation>
+        <translation type="obsolete">Guardando líneas...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation>Guardando polígonos...</translation>
+        <translation type="obsolete">Guardando polígonos...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation>Guardando relaciones...</translation>
+        <translation type="obsolete">Guardando relaciones...</translation>
     </message>
     <message>
         <source>Save OSM</source>
-        <translation>Guardar OSM</translation>
+        <translation type="obsolete">Guardar OSM</translation>
     </message>
     <message>
         <source>Where to save:</source>
-        <translation>Dónde guardar:</translation>
+        <translation type="obsolete">Dónde guardar:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Features to save:</source>
-        <translation>Objetos espaciales a guardar:</translation>
+        <translation type="obsolete">Objetos espaciales a guardar:</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation>Puntos</translation>
+        <translation type="obsolete">Puntos</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation>Líneas</translation>
+        <translation type="obsolete">Líneas</translation>
     </message>
     <message>
         <source>Polygons</source>
-        <translation>Polígonos</translation>
+        <translation type="obsolete">Polígonos</translation>
     </message>
     <message>
         <source>Relations</source>
-        <translation>Relaciones</translation>
+        <translation type="obsolete">Relaciones</translation>
     </message>
     <message>
         <source>Tags</source>
-        <translation>Etiquetas</translation>
+        <translation type="obsolete">Etiquetas</translation>
     </message>
     <message>
         <source>Choose an Open Street Map file</source>
-        <translation>Seleccione un archivo de OpenStreetMap</translation>
+        <translation type="obsolete">Seleccione un archivo de OpenStreetMap</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation>Archivos OSM (*.osm)</translation>
+        <translation type="obsolete">Archivos OSM (*.osm)</translation>
     </message>
 </context>
 <context>
     <name>OsmUndoRedoDW</name>
     <message>
         <source>OSM Edit History</source>
-        <translation>Historial de edición de OSM</translation>
+        <translation type="obsolete">Historial de edición de OSM</translation>
     </message>
     <message>
         <source>Clear all</source>
-        <translation>Limpiar todo</translation>
+        <translation type="obsolete">Limpiar todo</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation>Deshacer</translation>
+        <translation type="obsolete">Deshacer</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation>Rehacer</translation>
+        <translation type="obsolete">Rehacer</translation>
     </message>
 </context>
 <context>
     <name>OsmUploadDlg</name>
     <message>
         <source>OSM Upload</source>
-        <translation>Subir a OSM</translation>
+        <translation type="obsolete">Subir a OSM</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation>Subiendo datos...</translation>
+        <translation type="obsolete">Subiendo datos...</translation>
     </message>
     <message>
         <source>Upload OSM data</source>
-        <translation>Subir datos de OSM</translation>
+        <translation type="obsolete">Subir datos de OSM</translation>
     </message>
     <message>
         <source>Ready for upload</source>
-        <translation>Listo para subir</translation>
+        <translation type="obsolete">Listo para subir</translation>
     </message>
     <message>
         <source>1</source>
-        <translation>1</translation>
+        <translation type="obsolete">1</translation>
     </message>
     <message>
         <source>2</source>
-        <translation>2</translation>
+        <translation type="obsolete">2</translation>
     </message>
     <message>
         <source>3</source>
-        <translation>3</translation>
+        <translation type="obsolete">3</translation>
     </message>
     <message>
         <source>4</source>
-        <translation>4</translation>
+        <translation type="obsolete">4</translation>
     </message>
     <message>
         <source>5</source>
-        <translation>5</translation>
+        <translation type="obsolete">5</translation>
     </message>
     <message>
         <source>Comment on your changes:</source>
-        <translation>Comentario sobre sus cambios:</translation>
+        <translation type="obsolete">Comentario sobre sus cambios:</translation>
     </message>
     <message>
         <source>OSM account</source>
-        <translation>Cuenta de OSM</translation>
+        <translation type="obsolete">Cuenta de OSM</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>Nombre de usuario:</translation>
+        <translation type="obsolete">Nombre de usuario:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation>Contraseña:</translation>
+        <translation type="obsolete">Contraseña:</translation>
     </message>
     <message>
         <source>Show password</source>
-        <translation>Mostrar contraseña</translation>
+        <translation type="obsolete">Mostrar contraseña</translation>
     </message>
     <message>
         <source>Save password</source>
-        <translation>Guardar contraseña</translation>
+        <translation type="obsolete">Guardar contraseña</translation>
     </message>
     <message>
         <source>Upload</source>
-        <translation>Subir</translation>
+        <translation type="obsolete">Subir</translation>
     </message>
     <message>
         <source>Node addition failed.</source>
-        <translation>Fallo al añadir nodo.</translation>
+        <translation type="obsolete">Fallo al añadir nodo.</translation>
     </message>
     <message>
         <source>Node update failed.</source>
-        <translation>Fallo al actualizar nodo.</translation>
+        <translation type="obsolete">Fallo al actualizar nodo.</translation>
     </message>
     <message>
         <source>Node deletion failed.</source>
-        <translation>Fallo al borrar nodo.</translation>
+        <translation type="obsolete">Fallo al borrar nodo.</translation>
     </message>
     <message>
         <source>Way addition failed.</source>
-        <translation>Fallo al añadir vía.</translation>
+        <translation type="obsolete">Fallo al añadir vía.</translation>
     </message>
     <message>
         <source>Way update failed.</source>
-        <translation>Fallo al actualizar vía.</translation>
+        <translation type="obsolete">Fallo al actualizar vía.</translation>
     </message>
     <message>
         <source>Way deletion failed.</source>
-        <translation>Fallo al borrar vía.</translation>
+        <translation type="obsolete">Fallo al borrar vía.</translation>
     </message>
     <message>
         <source>Relation addition failed.</source>
-        <translation>Fallo al añadir relación.</translation>
+        <translation type="obsolete">Fallo al añadir relación.</translation>
     </message>
     <message>
         <source>Relation update failed.</source>
-        <translation>Fallo al actualizar relación.</translation>
+        <translation type="obsolete">Fallo al actualizar relación.</translation>
     </message>
     <message>
         <source>Relation deletion failed.</source>
-        <translation>Fallo al borrar relación.</translation>
+        <translation type="obsolete">Fallo al borrar relación.</translation>
     </message>
     <message>
         <source>Connection to OpenStreetMap server cannot be established. Please check your proxy settings, firewall settings and try again.</source>
-        <translation>No se puede establecer conexión con el servidor de OpenStreetMap. Por favor, compruebe la configuración de su proxy y, cortafuegos y pruebe de nuevo.</translation>
+        <translation type="obsolete">No se puede establecer conexión con el servidor de OpenStreetMap. Por favor, compruebe la configuración de su proxy y, cortafuegos y pruebe de nuevo.</translation>
     </message>
     <message>
         <source>Changeset closing failed.</source>
-        <translation>Fallo al cerrar el conjunto de cambios.</translation>
+        <translation type="obsolete">Fallo al cerrar el conjunto de cambios.</translation>
     </message>
     <message>
         <source>Upload process failed. OpenStreetMap server response: %1 - %2.</source>
-        <translation>Falló el proceso de subida. El servidor de OpenStreetMap respondió: %1 - %2.</translation>
+        <translation type="obsolete">Falló el proceso de subida. El servidor de OpenStreetMap respondió: %1 - %2.</translation>
     </message>
     <message>
         <source>Authentication failed. Please try again with correct login and password.</source>
-        <translation>Falló la autenticación. Por favor, pruebe de nuevo con el usuario y contraseña correctos.</translation>
+        <translation type="obsolete">Falló la autenticación. Por favor, pruebe de nuevo con el usuario y contraseña correctos.</translation>
     </message>
     <message>
         <source>Setting host failed.</source>
-        <translation>Fallo al establecer el servidor.</translation>
+        <translation type="obsolete">Fallo al establecer el servidor.</translation>
     </message>
     <message>
         <source>Setting user and password failed.</source>
-        <translation>Fallo al establecer usuario y contraseña.</translation>
+        <translation type="obsolete">Fallo al establecer usuario y contraseña.</translation>
     </message>
     <message>
         <source>Setting proxy failed.</source>
-        <translation>Fallo al establecer el proxy.</translation>
+        <translation type="obsolete">Fallo al establecer el proxy.</translation>
     </message>
 </context>
 <context>
@@ -6277,6 +7214,10 @@ Por favor, cambie esta situación primero, porque el complemento de OSM no sabe 
     <message>
         <source>Error while unloading plugin %1</source>
         <translation>Error al descargar el complemento %1</translation>
+    </message>
+    <message>
+        <source>Python</source>
+        <translation type="unfinished">Python</translation>
     </message>
 </context>
 <context>
@@ -6336,16 +7277,16 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Import QgisInterface class</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Import PyQt.QtCore class</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Import PyQt.QtGui class</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished">Configuración</translation>
     </message>
 </context>
 <context>
@@ -6380,6 +7321,65 @@ use el objeto qgis.utils.iface (instancia de la clase QgisInterface).
     <message>
         <source>&lt;unknown&gt;</source>
         <translation>&lt;desconocido&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>QOCISpatialDriver</name>
+    <message>
+        <source>Unable to initialize</source>
+        <comment>QOCISpatialDriver</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to logon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to begin transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to commit transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to rollback transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QOCISpatialResult</name>
+    <message>
+        <source>Unable to bind column for batch execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to execute batch statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to goto next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to alloc statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to prepare statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to get statement type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to bind value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to execute statement</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7366,7 +8366,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Failed to transform a point while drawing a feature of type &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
-        <translation>No se pudo transformar un punto al dibujar un objeto espacial de tipo &apos;%1&apos;. Se detuvo la escritura. (Excepción: %2)</translation>
+        <translation type="obsolete">No se pudo transformar un punto al dibujar un objeto espacial de tipo &apos;%1&apos;. Se detuvo la escritura. (Excepción: %2)</translation>
     </message>
     <message>
         <source>Feature write errors:</source>
@@ -7384,7 +8384,7 @@ Sólo se han escrito %1 de %2 objetos espaciales.</translation>
     </message>
     <message>
         <source>Groups not yet supported</source>
-        <translation>Aún no se admiten grupos</translation>
+        <translation type="obsolete">Aún no se admiten grupos</translation>
     </message>
     <message>
         <source>Cannot draw raster</source>
@@ -7528,7 +8528,7 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation>Para seleccionar objetos espaciales debe elegir una capa vectorial haciendo clic en su nombre en la leyenda</translation>
+        <translation type="obsolete">Para seleccionar objetos espaciales debe elegir una capa vectorial haciendo clic en su nombre en la leyenda</translation>
     </message>
     <message>
         <source>CRS Exception</source>
@@ -8290,6 +9290,304 @@ Error(%2): %3</translation>
         <source>Version 0.0.1 (Legacy)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>To select features, choose a vector layer in the legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin &quot;%1&quot; is not compatible with this version of Quantum GIS.
+It will be disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undefined</source>
+        <translation type="unfinished">Indefinido</translation>
+    </message>
+    <message>
+        <source>Hidden</source>
+        <translation type="unfinished">Oculta</translation>
+    </message>
+    <message>
+        <source>Title</source>
+        <translation type="unfinished">Título</translation>
+    </message>
+    <message>
+        <source>Group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subgroup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol</source>
+        <translation type="unfinished">Símbolo</translation>
+    </message>
+    <message>
+        <source>Symbol label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute index %1 out of bounds [0;%2[</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to transform a point while drawing a feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapinfo TAB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapinfo MIF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SpatiaLite</source>
+        <translation type="unfinished">SpatiaLite</translation>
+    </message>
+    <message>
+        <source>Failed to transform, writing stopped. (Exception: %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import was canceled at %1 of %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Building Pyramids...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All Ramps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Topology Checker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A Plugin for finding topological errors in vector layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Using fix %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Topology plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>intersecting geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>features too close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>point not covered by segment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>segment too short</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>invalid geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dangling end</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>duplicate geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pseudo node</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>overlaps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>gaps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>point not covered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>line ends not covered by point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>point not in polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>polygon does not contain point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>multipart feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Already active iterator on this provider was closed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delimited text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPX</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Memory provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetching features failed.
+SQL:%1
+Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No owner name found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field name clash found (%1 not remappable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 not owner of the table %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable determine number of geometry columns of layer %1.%2: 
+%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete layer %1.%2: 
+%3</source>
+        <translation type="unfinished">No se puede borrar la capa %1:
+%3 {1.%2:?}</translation>
+    </message>
+    <message>
+        <source>Unable to clean metadata %1.%2: 
+%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetching from cursor %1 failed
+Database error: %2</source>
+        <translation type="unfinished">Fallo al obtener del cursor %1
+Error de la base de datos: %2</translation>
+    </message>
+    <message>
+        <source>PostGIS</source>
+        <translation type="unfinished">PostGIS</translation>
+    </message>
+    <message>
+        <source>Trying to fetch geometry on a layer without geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQLite error: %2
+SQL: %1</source>
+        <translation type="unfinished">Error de SQLite: %2
+SQL: %1</translation>
+    </message>
+    <message>
+        <source>SQLite error getting feature: %1</source>
+        <translation type="unfinished">Error de SQLite al obtener objeto espacial: %1</translation>
+    </message>
+    <message>
+        <source>Unable to delete table %1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error describing bind parameters</source>
+        <translation type="unfinished">Error al describir parámetros de enlace</translation>
+    </message>
+    <message>
+        <source>Error binding parameters</source>
+        <translation type="unfinished">Error enlazando parámetros</translation>
+    </message>
+    <message>
+        <source>WFS</source>
+        <translation type="unfinished">WFS</translation>
+    </message>
+</context>
+<context>
+    <name>QSpatiaLiteDriver</name>
+    <message>
+        <source>Error opening database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error closing database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to begin transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to commit transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to rollback transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QSpatiaLiteResult</name>
+    <message>
+        <source>Unable to fetch row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No query</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to execute statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to execute multiple statements at a time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to reset statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to bind parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parameter count mismatch</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QextSerialPort</name>
@@ -8963,7 +10261,7 @@ Error(%2): %3</translation>
     </message>
     <message>
         <source>Labeling</source>
-        <translation>Etiquetado</translation>
+        <translation type="obsolete">Etiquetado</translation>
     </message>
     <message>
         <source>Ctrl+Shift+A</source>
@@ -9436,7 +10734,7 @@ Error: %1</translation>
     </message>
     <message>
         <source>No Raster Layer Selected</source>
-        <translation>Ninguna capa ráster seleccionada</translation>
+        <translation type="obsolete">Ninguna capa ráster seleccionada</translation>
     </message>
     <message utf8="true">
         <source>What&apos;s new in Version 1.7.0 &apos;Wrocław&apos;?</source>
@@ -9744,7 +11042,7 @@ Error: %1</translation>
     </message>
     <message>
         <source>Do you want to save the current project?</source>
-        <translation>¿Quiere guardar el proyecto actual?</translation>
+        <translation type="obsolete">¿Quiere guardar el proyecto actual?</translation>
     </message>
     <message>
         <source>Current CRS: %1 (OTFR enabled)</source>
@@ -10537,7 +11835,7 @@ Esta copia de QGIS se ha compilado con soporte para SpatialLite (%1).</translati
     </message>
     <message>
         <source>Please select a vector layer first.</source>
-        <translation>Por favor, seleccione una capa vectorial primero.</translation>
+        <translation type="obsolete">Por favor, seleccione una capa vectorial primero.</translation>
     </message>
     <message>
         <source>Not enough features selected</source>
@@ -10752,7 +12050,7 @@ Errores: %2</translation>
     </message>
     <message>
         <source>%1 is not a valid or recognized raster data source</source>
-        <translation>%1 no es un origen de datos ráster válido o reconocido</translation>
+        <translation type="obsolete">%1 no es un origen de datos ráster válido o reconocido</translation>
     </message>
     <message>
         <source>%1 is not a supported raster data source</source>
@@ -10867,7 +12165,7 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>Vect&amp;or</source>
-        <translation>Vect&amp;orial</translation>
+        <translation type="obsolete">Vect&amp;orial</translation>
     </message>
     <message>
         <source>&amp;Web</source>
@@ -11043,15 +12341,15 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     </message>
     <message>
         <source>Security warning:</source>
-        <translation>Advertencia de seguridad</translation>
+        <translation type="obsolete">Advertencia de seguridad</translation>
     </message>
     <message>
         <source>macros have been disabled.</source>
-        <translation>El uso de macros ha sido deshabilitado</translation>
+        <translation type="obsolete">El uso de macros ha sido deshabilitado</translation>
     </message>
     <message>
         <source>Enable</source>
-        <translation>Activar</translation>
+        <translation type="obsolete">Activar</translation>
     </message>
     <message>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
@@ -11093,6 +12391,205 @@ Esta copia de QGIS se ha creado sin capacidad para SpatialLite.</translation>
     <message>
         <source>Layer labeling settings</source>
         <translation>Configuracioń del etiquetado de la capa</translation>
+    </message>
+    <message>
+        <source>Browser</source>
+        <translation type="unfinished">Explorador</translation>
+    </message>
+    <message>
+        <source>Browser (2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current Edits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QScintilla2 Version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get Oracle select dialog from provider.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default failed to open: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default not found: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Template Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto-open Project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to open: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not valid project file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project failed to open: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default template has been reopened: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File not found: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading project: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Security warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>project macros have been disabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable macros</source>
+        <translation type="unfinished">Activar macros</translation>
+    </message>
+    <message>
+        <source>Project loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labeling Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select a vector layer first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write raster error code: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create unique print composer title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(title generated if left empty)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Title can not be empty!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Title already exists!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not %1 changes to layer %2
+
+Errors: %3
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>rollback</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished">Guardar</translation>
+    </message>
+    <message>
+        <source>all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rollback</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancelar</translation>
+    </message>
+    <message>
+        <source>Current edits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 current changes for %2 layer(s)?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Memory layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicate layer: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (duplication resulted in invalid layer)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 (%2type unsupported)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>To change brightness or contrast, you need to have a raster layer selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to save the current project?%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error adding valid layer to map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11233,6 +12730,10 @@ p, li { white-space: pre-wrap; }
         <source>about:blank</source>
         <translation>acerca de:vacío</translation>
     </message>
+    <message>
+        <source>Essen (Germany), Developer meeting 2012</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAddAttrDialog</name>
@@ -11304,10 +12805,44 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsAddTabOrGroup</name>
+    <message>
+        <source>Add tab or group for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsAddTabOrGroupBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Diálogo</translation>
+    </message>
+    <message>
+        <source>Create category</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a tab</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>a group in container</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsAnnotationWidget</name>
     <message>
         <source>Select frame color</source>
         <translation>Seleccionar color del marco</translation>
+    </message>
+    <message>
+        <source>Select background color</source>
+        <translation type="unfinished">Seleccionar color de fondo</translation>
     </message>
 </context>
 <context>
@@ -11335,6 +12870,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Frame color</source>
         <translation>Color de marco</translation>
+    </message>
+    <message>
+        <source>Background color</source>
+        <translation type="unfinished">Color de fondo</translation>
     </message>
 </context>
 <context>
@@ -11402,6 +12941,25 @@ Ruta de usuario de DB:	%9
     </message>
 </context>
 <context>
+    <name>QgsAtlasComposition</name>
+    <message>
+        <source>Filename parsing error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature filter parser error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature filter eval error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filename eval error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsAtlasCompositionWidget</name>
     <message>
         <source>Map %1</source>
@@ -11411,27 +12969,15 @@ Ruta de usuario de DB:	%9
         <source>Expression based filename</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Expression based filter</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAtlasCompositionWidgetBase</name>
     <message>
-        <source>Atlas generation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Atlas options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hide the coverage layer when generating the output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Hidden coverage layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Margin around coverage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11440,7 +12986,7 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source> %</source>
-        <translation type="unfinished"> %</translation>
+        <translation type="obsolete"> %</translation>
     </message>
     <message>
         <source>...</source>
@@ -11459,12 +13005,60 @@ Ruta de usuario de DB:	%9
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Composer map to use</source>
+        <source>Generate an atlas</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Generate an atlas</source>
+        <source>Atlas Generation</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configuration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer map</source>
+        <translation type="unfinished">Mapa de diseñador</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation type="unfinished">Visibilidad</translation>
+    </message>
+    <message>
+        <source>Feature sorting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sort by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sort direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature filtering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter with</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scaling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Margin around feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Output</source>
+        <translation type="unfinished">Salida</translation>
     </message>
 </context>
 <context>
@@ -11755,6 +13349,10 @@ Ruta de usuario de DB:	%9
         <source>(no selection)</source>
         <translation>(ninguna selección)</translation>
     </message>
+    <message>
+        <source>&lt;</source>
+        <translation type="unfinished">&lt;</translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeLoadValues</name>
@@ -11849,7 +13447,7 @@ Ruta de usuario de DB:	%9
     <name>QgsAttributeTableAction</name>
     <message>
         <source>Attributes changed</source>
-        <translation>Atributos cambiados</translation>
+        <translation type="obsolete">Atributos cambiados</translation>
     </message>
 </context>
 <context>
@@ -11872,7 +13470,7 @@ Ruta de usuario de DB:	%9
     <message numerus="yes">
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Tabla de atributos - %1 :: 1 / %2 objeto espacial seleccionado</numerusform>
             <numerusform>Tabla de atributos - %1 :: %n / %2 objetos espaciales seleccionados</numerusform>
         </translation>
@@ -11891,19 +13489,19 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Error during search</source>
-        <translation>Error durante la búsqueda</translation>
+        <translation type="obsolete">Error durante la búsqueda</translation>
     </message>
     <message numerus="yes">
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Tabla de atributos - %1 (1 objeto espacial coincidente)</numerusform>
             <numerusform>Tabla de atributos - %1 (%n objetos espaciales coincidentes)</numerusform>
         </translation>
     </message>
     <message>
         <source>Attribute table - %1 (No matching features)</source>
-        <translation>Tabla de atributos - %1 (Ningún objeto espacial coincidente)</translation>
+        <translation type="obsolete">Tabla de atributos - %1 (Ningún objeto espacial coincidente)</translation>
     </message>
     <message>
         <source>Deleted attribute</source>
@@ -11919,11 +13517,11 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Show selected only</source>
-        <translation>Mostrar sólo seleccionados</translation>
+        <translation type="obsolete">Mostrar sólo seleccionados</translation>
     </message>
     <message>
         <source>Search selected only</source>
-        <translation>Buscar sólo en seleccionados</translation>
+        <translation type="obsolete">Buscar sólo en seleccionados</translation>
     </message>
     <message>
         <source>Case sensitive</source>
@@ -12055,19 +13653,19 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Look for</source>
-        <translation>Buscar</translation>
+        <translation type="obsolete">Buscar</translation>
     </message>
     <message>
         <source>in</source>
-        <translation>en</translation>
+        <translation type="obsolete">en</translation>
     </message>
     <message>
         <source>Looks for the given value in the given attribute column</source>
-        <translation>Buscar el valor dado en la columna de atributos dada</translation>
+        <translation type="obsolete">Buscar el valor dado en la columna de atributos dada</translation>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation>Bu&amp;scar</translation>
+        <translation type="obsolete">Bu&amp;scar</translation>
     </message>
     <message>
         <source>Show selected records only</source>
@@ -12075,11 +13673,11 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Opens the search query builder</source>
-        <translation>Abre el constructor de consultas de búsqueda</translation>
+        <translation type="obsolete">Abre el constructor de consultas de búsqueda</translation>
     </message>
     <message>
         <source>Advanced search</source>
-        <translation>Búsqueda avanzada</translation>
+        <translation type="obsolete">Búsqueda avanzada</translation>
     </message>
     <message>
         <source>Help</source>
@@ -12131,27 +13729,27 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Run action</source>
-        <translation>Ejecutar acción</translation>
+        <translation type="obsolete">Ejecutar acción</translation>
     </message>
     <message>
         <source>Open form</source>
-        <translation>Abrir formulario</translation>
+        <translation type="obsolete">Abrir formulario</translation>
     </message>
     <message>
         <source>Loading feature attributes...</source>
-        <translation>Cargando atributos de los objetos espaciales...</translation>
+        <translation type="obsolete">Cargando atributos de los objetos espaciales...</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation>Abortar</translation>
+        <translation type="obsolete">Abortar</translation>
     </message>
     <message>
         <source>Attribute table</source>
-        <translation>Tabla de atributos</translation>
+        <translation type="obsolete">Tabla de atributos</translation>
     </message>
     <message>
         <source>%1 features loaded.</source>
-        <translation>%1 objetos espaciales cargados.</translation>
+        <translation type="obsolete">%1 objetos espaciales cargados.</translation>
     </message>
     <message>
         <source>Pan map to the selected rows (Ctrl+P)</source>
@@ -12163,7 +13761,87 @@ Ruta de usuario de DB:	%9
     </message>
     <message>
         <source>Close</source>
-        <translation>Cerrar</translation>
+        <translation type="obsolete">Cerrar</translation>
+    </message>
+    <message>
+        <source>Select features using an expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The filter defines, which features are currently shown in the list or on the table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filters the visible features according to the current filter selection and filter string.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced Filter (Expression)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the Expression Builder to define the filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+F</source>
+        <translation type="unfinished">Ctrl+F</translation>
+    </message>
+    <message>
+        <source>Show All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Features Visible On Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Column Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter Edited</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter all the features which have been edited but not yet saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expression based filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error filtering</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12190,6 +13868,10 @@ Ruta de usuario de DB:	%9
     <message>
         <source>Open form</source>
         <translation type="obsolete">Abrir formulario</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation type="unfinished">Seleccionar todo</translation>
     </message>
 </context>
 <context>
@@ -12414,15 +14096,63 @@ El error fue: %2</translation>
     </message>
     <message>
         <source>Filter column</source>
-        <translation>Filtrar columna</translation>
+        <translation type="obsolete">Filtrar columna</translation>
     </message>
     <message>
         <source>Filter value</source>
-        <translation>Filtrar valor</translation>
+        <translation type="obsolete">Filtrar valor</translation>
     </message>
     <message>
         <source>No filter</source>
-        <translation>Sin filtro</translation>
+        <translation type="obsolete">Sin filtro</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Webview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Date format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Altura</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Anchura</translation>
+    </message>
+    <message>
+        <source>Field contains a filename for a picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fields contains an URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field contains a color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit filter expression</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12430,6 +14160,61 @@ El error fue: %2</translation>
     <message>
         <source>Remove intersections of new polygons with layers</source>
         <translation type="obsolete">Eliminar intersecciones de nuevos polígonos con capas</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBlendModeComboBox</name>
+    <message>
+        <source>Normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lighten</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dodge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Addition</source>
+        <translation type="unfinished">Suma</translation>
+    </message>
+    <message>
+        <source>Darken</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multiply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Burn</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overlay</source>
+        <translation type="unfinished">Superponer</translation>
+    </message>
+    <message>
+        <source>Soft light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hard light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation type="unfinished">Diferencia</translation>
+    </message>
+    <message>
+        <source>Subtract</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12663,14 +14448,25 @@ Base de datos: %2</translation>
     </message>
 </context>
 <context>
+    <name>QgsBrowserDirectoryPropertiesBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Diálogo</translation>
+    </message>
+    <message>
+        <source>Path</source>
+        <translation type="unfinished">Ruta</translation>
+    </message>
+</context>
+<context>
     <name>QgsBrowserDockWidget</name>
     <message>
         <source>Browser</source>
-        <translation>Explorador</translation>
+        <translation type="obsolete">Explorador</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation>Actualizar</translation>
+        <translation type="obsolete">Actualizar</translation>
     </message>
     <message>
         <source>Add as a favourite</source>
@@ -12682,7 +14478,7 @@ Base de datos: %2</translation>
     </message>
     <message>
         <source>Add Selection</source>
-        <translation>Añadir selección</translation>
+        <translation type="obsolete">Añadir selección</translation>
     </message>
     <message>
         <source>Add Selected Layers</source>
@@ -12690,7 +14486,7 @@ Base de datos: %2</translation>
     </message>
     <message>
         <source>Collapse All</source>
-        <translation>Comprimir todo</translation>
+        <translation type="obsolete">Comprimir todo</translation>
     </message>
     <message>
         <source>Add Layer</source>
@@ -12715,6 +14511,65 @@ Base de datos: %2</translation>
     <message>
         <source>Add directory to favourites</source>
         <translation>Añadir directorio como favorito</translation>
+    </message>
+    <message>
+        <source>Filter Pattern Syntax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wildcard(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regular Expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fast scan this dir.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Directory Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserDockWidgetBase</name>
+    <message>
+        <source>Browser</source>
+        <translation type="unfinished">Explorador</translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation type="unfinished">Actualizar</translation>
+    </message>
+    <message>
+        <source>Add Selected Layers</source>
+        <translation type="unfinished">Añadir capas seleccionadas</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished">Añadir</translation>
+    </message>
+    <message>
+        <source>Filter Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Collapse All</source>
+        <translation type="unfinished">Comprimir todo</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation type="unfinished">Opciones</translation>
+    </message>
+    <message>
+        <source>Filter files</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12749,6 +14604,10 @@ Base de datos: %2</translation>
     <message>
         <source>Favourites</source>
         <translation>Favoritos</translation>
+    </message>
+    <message>
+        <source>Project home</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12815,10 +14674,32 @@ Base de datos: %2</translation>
     </message>
 </context>
 <context>
+    <name>QgsBusyIndicatorDialog</name>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
+    </message>
+</context>
+<context>
+    <name>QgsCategorizedSymbolRendererV2Model</name>
+    <message>
+        <source>Symbol</source>
+        <translation type="unfinished">Símbolo</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">Etiqueta</translation>
+    </message>
+</context>
+<context>
     <name>QgsCategorizedSymbolRendererV2Widget</name>
     <message>
         <source>change</source>
-        <translation>cambiar</translation>
+        <translation type="obsolete">cambiar</translation>
     </message>
     <message>
         <source>Column</source>
@@ -12858,11 +14739,11 @@ Base de datos: %2</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation>Valor</translation>
+        <translation type="obsolete">Valor</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>Etiqueta</translation>
+        <translation type="obsolete">Etiqueta</translation>
     </message>
     <message>
         <source>Error</source>
@@ -12889,6 +14770,58 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Symbol levels...</source>
         <translation>Niveles de símbolos...</translation>
+    </message>
+    <message>
+        <source>Change...</source>
+        <translation type="unfinished">Cambiar...</translation>
+    </message>
+    <message>
+        <source>High number of classes!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Classification would yield %1 entries which might not be expected. Continue?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsCharacterSelectorBase</name>
+    <message>
+        <source>Character Selector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current font family and style</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsCollapsibleGroupBoxBasic</name>
+    <message>
+        <source>Ctrl(or Alt)-click to toggle all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shift-click to expand, then collapse others</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorButton</name>
+    <message>
+        <source>Select Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorDialog</name>
+    <message>
+        <source>Select Color</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12963,7 +14896,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>File</source>
-        <translation>Archivo</translation>
+        <translation type="obsolete">Archivo</translation>
     </message>
     <message>
         <source>View</source>
@@ -13137,12 +15070,56 @@ Should the existing classes be deleted before classification?</source>
         <source>Directory where to save SVG files</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Cerrar</translation>
+    </message>
+    <message>
+        <source>Print Composers</source>
+        <translation type="unfinished">Diseñadores de impresión</translation>
+    </message>
+    <message>
+        <source>Window</source>
+        <translation type="unfinished">Ventana</translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Ayuda</translation>
+    </message>
+    <message>
+        <source> copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicating composer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicate Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer duplication failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, could not create new composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading template into composer...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
     <message>
         <source>General options</source>
-        <translation>Opciones generales</translation>
+        <translation type="obsolete">Opciones generales</translation>
     </message>
     <message>
         <source>Arrow outline width</source>
@@ -13154,7 +15131,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Arrow color</source>
-        <translation>Color de flecha</translation>
+        <translation type="obsolete">Color de flecha</translation>
     </message>
     <message>
         <source>Arrow color changed</source>
@@ -13180,6 +15157,10 @@ Should the existing classes be deleted before classification?</source>
         <source>Arrow end marker</source>
         <translation>Marcador de final de flecha</translation>
     </message>
+    <message>
+        <source>Select arrow color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidgetBase</name>
@@ -13193,15 +15174,15 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Arrow color...</source>
-        <translation>Color de flecha...</translation>
+        <translation type="obsolete">Color de flecha...</translation>
     </message>
     <message>
         <source>Line width </source>
-        <translation>Ancho de línea </translation>
+        <translation type="obsolete">Ancho de línea </translation>
     </message>
     <message>
         <source>Arrow head width </source>
-        <translation>Anchura de cabeza de la flecha </translation>
+        <translation type="obsolete">Anchura de cabeza de la flecha </translation>
     </message>
     <message>
         <source>Arrow markers</source>
@@ -13209,15 +15190,15 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Default marker</source>
-        <translation>Marcador predeterminado</translation>
+        <translation type="obsolete">Marcador predeterminado</translation>
     </message>
     <message>
         <source>No marker</source>
-        <translation>Sin marcador</translation>
+        <translation type="obsolete">Sin marcador</translation>
     </message>
     <message>
         <source>SVG markers</source>
-        <translation>Marcadores SVG</translation>
+        <translation type="obsolete">Marcadores SVG</translation>
     </message>
     <message>
         <source>Start marker</source>
@@ -13230,6 +15211,38 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>End marker</source>
         <translation>Marcador de final</translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished">Ancho de línea</translation>
+    </message>
+    <message>
+        <source> mm</source>
+        <translation type="unfinished"> mm</translation>
+    </message>
+    <message>
+        <source>Arrow head width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color...</source>
+        <translation type="unfinished">Color...</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished">Predeterminado</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13388,7 +15401,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Load From template</source>
-        <translation>Cargar de plantilla</translation>
+        <translation type="obsolete">Cargar de plantilla</translation>
     </message>
     <message>
         <source>Save as template</source>
@@ -13396,7 +15409,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Align left</source>
-        <translation>Alinear a la izquierda</translation>
+        <translation type="obsolete">Alinear a la izquierda</translation>
     </message>
     <message>
         <source>Align selected items left</source>
@@ -13404,7 +15417,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Align center</source>
-        <translation>Alinear al centro</translation>
+        <translation type="obsolete">Alinear al centro</translation>
     </message>
     <message>
         <source>Align center horizontal</source>
@@ -13412,7 +15425,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Align right</source>
-        <translation>Alinear a la derecha</translation>
+        <translation type="obsolete">Alinear a la derecha</translation>
     </message>
     <message>
         <source>Align selected items right</source>
@@ -13420,7 +15433,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Align top</source>
-        <translation>Alinear arriba</translation>
+        <translation type="obsolete">Alinear arriba</translation>
     </message>
     <message>
         <source>Align selected items to top</source>
@@ -13432,7 +15445,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Align bottom</source>
-        <translation>Alinear abajo</translation>
+        <translation type="obsolete">Alinear abajo</translation>
     </message>
     <message>
         <source>Align selected items bottom</source>
@@ -13460,11 +15473,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Add table</source>
-        <translation>Añadir tabla</translation>
+        <translation type="obsolete">Añadir tabla</translation>
     </message>
     <message>
         <source>Adds attribute table</source>
-        <translation>Añade tabla de atributos</translation>
+        <translation type="obsolete">Añade tabla de atributos</translation>
     </message>
     <message>
         <source>Page Setup</source>
@@ -13496,7 +15509,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation>Barra de herramientas</translation>
+        <translation type="obsolete">Barra de herramientas</translation>
     </message>
     <message>
         <source>Add Rectangle</source>
@@ -13520,11 +15533,171 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Add html</source>
-        <translation>Añadir html</translation>
+        <translation type="obsolete">Añadir html</translation>
     </message>
     <message>
         <source>Add html frame</source>
         <translation>Añadir marco HTML</translation>
+    </message>
+    <message>
+        <source>Composer</source>
+        <translation type="unfinished">Diseñador</translation>
+    </message>
+    <message>
+        <source>Paper Navigation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer Item Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer Items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+P</source>
+        <translation type="unfinished">Ctrl+P</translation>
+    </message>
+    <message>
+        <source>Zoom full</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom in</source>
+        <translation type="unfinished">Acercar zum</translation>
+    </message>
+    <message>
+        <source>Zoom out</source>
+        <translation type="unfinished">Alejar zum</translation>
+    </message>
+    <message>
+        <source>Export as image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load from Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load from template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save as Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align Center</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align Center Vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Align Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Arrow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <translation type="unfinished">Ctrl+Mayúsculas+P</translation>
+    </message>
+    <message>
+        <source>Add rectangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add triangle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add ellipse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer manager</source>
+        <translation type="unfinished">Administrador de diseñadores</translation>
+    </message>
+    <message>
+        <source>&amp;New Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation type="unfinished">Ctrl+N</translation>
+    </message>
+    <message>
+        <source>&amp;Save Project</source>
+        <translation type="unfinished">&amp;Guardar proyecto</translation>
+    </message>
+    <message>
+        <source>Save project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Duplicate Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicate composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New from Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New from template</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13547,7 +15720,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>General options</source>
-        <translation>Opciones generales</translation>
+        <translation type="obsolete">Opciones generales</translation>
     </message>
     <message>
         <source>Change html url</source>
@@ -13566,11 +15739,11 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsComposerHtmlWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation>Formulario</translation>
+        <translation type="obsolete">Formulario</translation>
     </message>
     <message>
         <source>HTML</source>
-        <translation>HTML</translation>
+        <translation type="obsolete">HTML</translation>
     </message>
     <message>
         <source>...</source>
@@ -13583,6 +15756,18 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Resize mode</source>
         <translation>Modo redimensionar</translation>
+    </message>
+    <message>
+        <source>HTML Frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HTML frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13604,7 +15789,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Item opacity changed</source>
-        <translation>Cambia la opacidad del elemento</translation>
+        <translation type="obsolete">Cambia la opacidad del elemento</translation>
     </message>
     <message>
         <source>Item outline width</source>
@@ -13622,36 +15807,48 @@ Should the existing classes be deleted before classification?</source>
         <source>Item id changed</source>
         <translation>Cambiada la id del elemento</translation>
     </message>
+    <message>
+        <source>Item background toggled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select background color</source>
+        <translation type="unfinished">Seleccionar color de fondo</translation>
+    </message>
+    <message>
+        <source>Select frame color</source>
+        <translation type="unfinished">Seleccionar color del marco</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerItemWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation>Formulario</translation>
+        <translation type="obsolete">Formulario</translation>
     </message>
     <message>
         <source>Frame color...</source>
-        <translation>Color de marco...</translation>
+        <translation type="obsolete">Color de marco...</translation>
     </message>
     <message>
         <source>Background color...</source>
-        <translation>Color de fondo...</translation>
+        <translation type="obsolete">Color de fondo...</translation>
     </message>
     <message>
         <source>Opacity</source>
-        <translation>Opacidad</translation>
+        <translation type="obsolete">Opacidad</translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation>Anchura de línea exterior</translation>
+        <translation type="obsolete">Anchura de línea exterior</translation>
     </message>
     <message>
         <source>Position and size...</source>
-        <translation>Posición y tamaño...</translation>
+        <translation type="obsolete">Posición y tamaño...</translation>
     </message>
     <message>
         <source>Show frame</source>
-        <translation>Mostrar marco</translation>
+        <translation type="obsolete">Mostrar marco</translation>
     </message>
     <message>
         <source>Position...</source>
@@ -13661,12 +15858,76 @@ Should the existing classes be deleted before classification?</source>
         <source>Item ID</source>
         <translation>ID del elemento</translation>
     </message>
+    <message>
+        <source>Global Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Position and size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reference point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished">X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation type="unfinished">Y</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Anchura</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Altura</translation>
+    </message>
+    <message>
+        <source>Frame</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Thickness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color...</source>
+        <translation type="unfinished">Color...</translation>
+    </message>
+    <message>
+        <source>Background</source>
+        <translation type="unfinished">Fondo</translation>
+    </message>
+    <message>
+        <source>Uuid (read-only)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blending mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparencia</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLabelWidget</name>
     <message>
         <source>General options</source>
-        <translation>Opciones generales</translation>
+        <translation type="obsolete">Opciones generales</translation>
     </message>
     <message>
         <source>Label text changed</source>
@@ -13686,7 +15947,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Label id changed</source>
-        <translation>Cambiada la ID de la etiqueta</translation>
+        <translation type="obsolete">Cambiada la ID de la etiqueta</translation>
     </message>
     <message>
         <source>Label rotation changed</source>
@@ -13695,6 +15956,10 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Insert expression</source>
         <translation type="unfinished">Insertar expresión</translation>
+    </message>
+    <message>
+        <source>Label text HTML state changed</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13717,7 +15982,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Horizontal Alignment:</source>
-        <translation>Alineación horizontal:</translation>
+        <translation type="obsolete">Alineación horizontal:</translation>
     </message>
     <message>
         <source>Left</source>
@@ -13733,7 +15998,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Vertical Alignment:</source>
-        <translation>Alineación vertical:</translation>
+        <translation type="obsolete">Alineación vertical:</translation>
     </message>
     <message>
         <source>Top</source>
@@ -13757,11 +16022,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Margin </source>
-        <translation>Margen </translation>
+        <translation type="obsolete">Margen </translation>
     </message>
     <message>
         <source>mm</source>
-        <translation>mm</translation>
+        <translation type="obsolete">mm</translation>
     </message>
     <message>
         <source>Rotation</source>
@@ -13769,6 +16034,42 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Insert an expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render as HTML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alignment</source>
+        <translation type="unfinished">Alineación</translation>
+    </message>
+    <message>
+        <source>Vertical</source>
+        <translation type="unfinished">Vertical</translation>
+    </message>
+    <message>
+        <source>Horizontal</source>
+        <translation type="unfinished">Horizontal</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished">Visualizar</translation>
+    </message>
+    <message>
+        <source>Margin</source>
+        <translation type="unfinished">Margen</translation>
+    </message>
+    <message>
+        <source> mm</source>
+        <translation type="unfinished"> mm</translation>
+    </message>
+    <message utf8="true">
+        <source> °</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13861,7 +16162,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>General Options</source>
-        <translation>Opciones generales</translation>
+        <translation type="obsolete">Opciones generales</translation>
     </message>
     <message>
         <source>Legend map changed</source>
@@ -13883,16 +16184,40 @@ Should the existing classes be deleted before classification?</source>
         <source>Item wrapping changed</source>
         <translation>Cambiada la envoltura del elemento</translation>
     </message>
+    <message>
+        <source>Item</source>
+        <translation type="unfinished">Elemento</translation>
+    </message>
+    <message>
+        <source>Title style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend column count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend split layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend equal column width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend font color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLegendWidgetBase</name>
     <message>
         <source>Barscale Options</source>
-        <translation>Opciones de la barra de escala</translation>
+        <translation type="obsolete">Opciones de la barra de escala</translation>
     </message>
     <message>
         <source>General</source>
-        <translation>General</translation>
+        <translation type="obsolete">General</translation>
     </message>
     <message>
         <source>&amp;Title</source>
@@ -13908,7 +16233,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Layer Font...</source>
-        <translation>Tipo de letra de capa...</translation>
+        <translation type="obsolete">Tipo de letra de capa...</translation>
     </message>
     <message>
         <source>Item Font...</source>
@@ -13916,7 +16241,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Symbol width </source>
-        <translation>Anchura de símbolo </translation>
+        <translation type="obsolete">Anchura de símbolo </translation>
     </message>
     <message>
         <source> mm</source>
@@ -13924,23 +16249,23 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Symbol height </source>
-        <translation>Altura de símbolo </translation>
+        <translation type="obsolete">Altura de símbolo </translation>
     </message>
     <message>
         <source>Layer space </source>
-        <translation>Espacio de capas </translation>
+        <translation type="obsolete">Espacio de capas </translation>
     </message>
     <message>
         <source>Symbol space </source>
-        <translation>Espacio de símbolos </translation>
+        <translation type="obsolete">Espacio de símbolos </translation>
     </message>
     <message>
         <source>Icon label space </source>
-        <translation>Espacio de etiqueta de icono </translation>
+        <translation type="obsolete">Espacio de etiqueta de icono </translation>
     </message>
     <message>
         <source>Box space </source>
-        <translation>Espacio de caja </translation>
+        <translation type="obsolete">Espacio de caja </translation>
     </message>
     <message>
         <source>Auto Update</source>
@@ -13984,11 +16309,115 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Group Space </source>
-        <translation>Espacio del grupo </translation>
+        <translation type="obsolete">Espacio del grupo </translation>
     </message>
     <message>
         <source>Wrap text on</source>
         <translation>Envolver texto</translation>
+    </message>
+    <message>
+        <source>Legend Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation type="unfinished">Leyenda</translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show feature count for each class of vector layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fonts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subgroup Font...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font color...</source>
+        <translation type="unfinished">Color de letras...</translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation type="unfinished">Columnas</translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Equal column widths</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Allow to split layer items into multiple columns.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Split layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol</source>
+        <translation type="unfinished">Símbolo</translation>
+    </message>
+    <message>
+        <source>Symbol width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol height</source>
+        <translation type="unfinished">Altura de símbolo</translation>
+    </message>
+    <message>
+        <source>Spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Space above text using group style.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group Space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Space above text using subgroup style.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Subgroup space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Space above symbol and symbol label.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Space between symbol icon and symbol label (symbol label left margin).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Icon label space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Box space</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Column space</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14019,11 +16448,79 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Change title</source>
-        <translation>Cambiar título</translation>
+        <translation type="obsolete">Cambiar título</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation>Título</translation>
+        <translation type="obsolete">Título</translation>
+    </message>
+    <message>
+        <source>&amp;Duplicate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specific</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Template error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, template file not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, could not read file</source>
+        <translation type="unfinished">Error, no se pudo leer el archivo</translation>
+    </message>
+    <message>
+        <source>Composer error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, could not create composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading template into composer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, could not load template file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer templates</source>
+        <translation type="unfinished">Plantillas del diseñador</translation>
+    </message>
+    <message>
+        <source>File system error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, could not open or create local directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicating composer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicate Composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer duplication failed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14035,6 +16532,26 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Add</source>
         <translation>Añadir</translation>
+    </message>
+    <message>
+        <source>New from template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Open template directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>user</source>
+        <translation type="unfinished">usuario</translation>
+    </message>
+    <message>
+        <source>default</source>
+        <translation type="unfinished">predeterminado</translation>
     </message>
 </context>
 <context>
@@ -14052,7 +16569,7 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsComposerMapWidget</name>
     <message>
         <source>General options</source>
-        <translation>Opciones generales</translation>
+        <translation type="obsolete">Opciones generales</translation>
     </message>
     <message>
         <source>Cache</source>
@@ -14096,11 +16613,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Change item width</source>
-        <translation>Cambiar anchura del elemento</translation>
+        <translation type="obsolete">Cambiar anchura del elemento</translation>
     </message>
     <message>
         <source>Change item height</source>
-        <translation>Cambiar altura del elemento</translation>
+        <translation type="obsolete">Cambiar altura del elemento</translation>
     </message>
     <message>
         <source>Map scale changed</source>
@@ -14219,7 +16736,7 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsComposerMapWidgetBase</name>
     <message>
         <source>Map options</source>
-        <translation>Opciones de mapa</translation>
+        <translation type="obsolete">Opciones de mapa</translation>
     </message>
     <message>
         <source>Map</source>
@@ -14227,11 +16744,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Width</source>
-        <translation>Anchura</translation>
+        <translation type="obsolete">Anchura</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation>Altura</translation>
+        <translation type="obsolete">Altura</translation>
     </message>
     <message>
         <source>Scale</source>
@@ -14259,11 +16776,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Grid</source>
-        <translation>Rejilla</translation>
+        <translation type="obsolete">Rejilla</translation>
     </message>
     <message>
         <source>Show grid?</source>
-        <translation>¿Mostrar rejilla?</translation>
+        <translation type="obsolete">¿Mostrar rejilla?</translation>
     </message>
     <message>
         <source>Grid &amp;type</source>
@@ -14271,7 +16788,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Interval X</source>
-        <translation>Intervalo X</translation>
+        <translation type="obsolete">Intervalo X</translation>
     </message>
     <message>
         <source>Offset X</source>
@@ -14279,7 +16796,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Line width</source>
-        <translation>Ancho de línea</translation>
+        <translation type="obsolete">Ancho de línea</translation>
     </message>
     <message>
         <source>Annotation position</source>
@@ -14291,15 +16808,15 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Line color</source>
-        <translation>Color de línea</translation>
+        <translation type="obsolete">Color de línea</translation>
     </message>
     <message>
         <source>Interval Y</source>
-        <translation>Intervalo Y</translation>
+        <translation type="obsolete">Intervalo Y</translation>
     </message>
     <message>
         <source>Offset Y</source>
-        <translation>Desplazamiento Y</translation>
+        <translation type="obsolete">Desplazamiento Y</translation>
     </message>
     <message>
         <source>Cross width</source>
@@ -14323,7 +16840,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Draw annotation</source>
-        <translation>Dibujar anotación</translation>
+        <translation type="obsolete">Dibujar anotación</translation>
     </message>
     <message>
         <source>Font...</source>
@@ -14375,46 +16892,110 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Annotation position left side</source>
-        <translation>Ubicación de la etiqueta en el lado izquierdo</translation>
+        <translation type="obsolete">Ubicación de la etiqueta en el lado izquierdo</translation>
     </message>
     <message>
         <source>Annotation position right side</source>
-        <translation>Ubicación de la etiqueta en el lado derecho</translation>
+        <translation type="obsolete">Ubicación de la etiqueta en el lado derecho</translation>
     </message>
     <message>
         <source>Annotation position top side</source>
-        <translation>Ubicación de la etiqueta arriba</translation>
+        <translation type="obsolete">Ubicación de la etiqueta arriba</translation>
     </message>
     <message>
         <source>Annotation position bottom side</source>
-        <translation>Ubicación de la etiqueta abajo</translation>
+        <translation type="obsolete">Ubicación de la etiqueta abajo</translation>
     </message>
     <message>
         <source>Annotation direction left side</source>
-        <translation>Ubicación de la etiqueta en dirección izquierda</translation>
+        <translation type="obsolete">Ubicación de la etiqueta en dirección izquierda</translation>
     </message>
     <message>
         <source>Annotation direction right side</source>
-        <translation>Ubicación de la etiqueta en dirección derecha</translation>
+        <translation type="obsolete">Ubicación de la etiqueta en dirección derecha</translation>
     </message>
     <message>
         <source>Annotation direction top side</source>
-        <translation>Ubicación de la etiqueta en dirección hacia arriba</translation>
+        <translation type="obsolete">Ubicación de la etiqueta en dirección hacia arriba</translation>
     </message>
     <message>
         <source>Annotation direction bottom side</source>
-        <translation>Ubicación de la etiqueta en dirección hacia abajo</translation>
+        <translation type="obsolete">Ubicación de la etiqueta en dirección hacia abajo</translation>
     </message>
     <message>
         <source>Annotation format</source>
-        <translation>Formato de la anotación</translation>
+        <translation type="obsolete">Formato de la anotación</translation>
+    </message>
+    <message>
+        <source>Map Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show grid</source>
+        <translation type="unfinished">Mostrar cuadrícula</translation>
+    </message>
+    <message>
+        <source>Interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X </source>
+        <translation type="unfinished">X</translation>
+    </message>
+    <message>
+        <source>Y </source>
+        <translation type="unfinished">Y</translation>
+    </message>
+    <message>
+        <source>Line style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>change...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format</source>
+        <translation type="unfinished">Formato</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Izquierda</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Derecha</translation>
+    </message>
+    <message>
+        <source>Top</source>
+        <translation type="unfinished">Arriba</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation type="unfinished">Abajo</translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overview</source>
+        <translation type="unfinished">Vista general</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerPictureWidget</name>
     <message>
         <source>General options</source>
-        <translation>Opciones generales</translation>
+        <translation type="obsolete">Opciones generales</translation>
     </message>
     <message>
         <source>Select svg or image file</source>
@@ -14426,11 +17007,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Picture width changed</source>
-        <translation>Cambiada la anchura de la imagen</translation>
+        <translation type="obsolete">Cambiada la anchura de la imagen</translation>
     </message>
     <message>
         <source>Picture height changed</source>
-        <translation>Cambiada la altura de la imagen</translation>
+        <translation type="obsolete">Cambiada la altura de la imagen</translation>
     </message>
     <message>
         <source>Picture rotation changed</source>
@@ -14465,7 +17046,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Picture options</source>
-        <translation>Opciones de dibujo</translation>
+        <translation type="obsolete">Opciones de dibujo</translation>
     </message>
     <message>
         <source>Search directories</source>
@@ -14485,7 +17066,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Options</source>
-        <translation>Opciones</translation>
+        <translation type="obsolete">Opciones</translation>
     </message>
     <message>
         <source>Load</source>
@@ -14497,11 +17078,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Width</source>
-        <translation>Anchura</translation>
+        <translation type="obsolete">Anchura</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation>Altura</translation>
+        <translation type="obsolete">Altura</translation>
     </message>
     <message>
         <source>Rotation</source>
@@ -14517,11 +17098,31 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Preloaded images</source>
-        <translation>Imágenes precargadas</translation>
+        <translation type="obsolete">Imágenes precargadas</translation>
     </message>
     <message>
         <source>Load another</source>
-        <translation>Cargar otra</translation>
+        <translation type="obsolete">Cargar otra</translation>
+    </message>
+    <message>
+        <source>Picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path</source>
+        <translation type="unfinished">Ruta</translation>
+    </message>
+    <message>
+        <source>Loading SVG previews...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source> °</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14539,7 +17140,7 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsComposerScaleBarWidget</name>
     <message>
         <source>General options</source>
-        <translation>Opciones generales</translation>
+        <translation type="obsolete">Opciones generales</translation>
     </message>
     <message>
         <source>Single Box</source>
@@ -14653,6 +17254,14 @@ Should the existing classes be deleted before classification?</source>
         <source>Scalebar unit changed</source>
         <translation>Cambiada la unidad de la barra de escala</translation>
     </message>
+    <message>
+        <source>Scalebar font color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar stroke color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -14662,7 +17271,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Scale bar</source>
-        <translation>Barra de escala</translation>
+        <translation type="obsolete">Barra de escala</translation>
     </message>
     <message>
         <source>Segment size (map units)</source>
@@ -14682,7 +17291,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Unit label</source>
-        <translation>Etiqueta de unidades</translation>
+        <translation type="obsolete">Etiqueta de unidades</translation>
     </message>
     <message>
         <source>Font...</source>
@@ -14690,15 +17299,15 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Color...</source>
-        <translation>Color...</translation>
+        <translation type="obsolete">Color...</translation>
     </message>
     <message>
         <source> Right segments</source>
-        <translation> Segmentos a la derecha</translation>
+        <translation type="obsolete"> Segmentos a la derecha</translation>
     </message>
     <message>
         <source> Left segments</source>
-        <translation> Segmentos a la izquierda</translation>
+        <translation type="obsolete"> Segmentos a la izquierda</translation>
     </message>
     <message>
         <source> mm</source>
@@ -14706,19 +17315,19 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Height </source>
-        <translation>Altura </translation>
+        <translation type="obsolete">Altura </translation>
     </message>
     <message>
         <source>Line width </source>
-        <translation>Ancho de línea </translation>
+        <translation type="obsolete">Ancho de línea </translation>
     </message>
     <message>
         <source>Label space </source>
-        <translation>Espacio de etiqueta </translation>
+        <translation type="obsolete">Espacio de etiqueta </translation>
     </message>
     <message>
         <source>Box space </source>
-        <translation>Espacio de recuadro </translation>
+        <translation type="obsolete">Espacio de recuadro </translation>
     </message>
     <message>
         <source>Alignment</source>
@@ -14726,18 +17335,86 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Segment size</source>
-        <translation>Tamaño del segmento</translation>
+        <translation type="obsolete">Tamaño del segmento</translation>
     </message>
     <message>
         <source>Units</source>
         <translation>Unidades</translation>
+    </message>
+    <message>
+        <source>Scalebar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">Etiqueta</translation>
+    </message>
+    <message>
+        <source>Segments</source>
+        <translation type="unfinished">Segmentos</translation>
+    </message>
+    <message>
+        <source>left </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>right </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Tamaño</translation>
+    </message>
+    <message>
+        <source> units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Altura</translation>
+    </message>
+    <message>
+        <source>Display</source>
+        <translation type="unfinished">Visualizar</translation>
+    </message>
+    <message>
+        <source>Box margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labels margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished">Ancho de línea</translation>
+    </message>
+    <message>
+        <source>Fonts and colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font color...</source>
+        <translation type="unfinished">Color de letras...</translation>
+    </message>
+    <message>
+        <source>Fill color...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stroke color...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsComposerShapeWidget</name>
     <message>
         <source>General options</source>
-        <translation>Opciones generales</translation>
+        <translation type="obsolete">Opciones generales</translation>
     </message>
     <message>
         <source>Ellipse</source>
@@ -14761,27 +17438,27 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Select outline color</source>
-        <translation>Seleccionar color de línea exterior</translation>
+        <translation type="obsolete">Seleccionar color de línea exterior</translation>
     </message>
     <message>
         <source>Shape outline color</source>
-        <translation>Color de línea exterior de la forma</translation>
+        <translation type="obsolete">Color de línea exterior de la forma</translation>
     </message>
     <message>
         <source>Shape outline width</source>
-        <translation>Anchura de línea exterior de la forma</translation>
+        <translation type="obsolete">Anchura de línea exterior de la forma</translation>
     </message>
     <message>
         <source>Shape transparency toggled</source>
-        <translation>Conmutada la transparencia de la forma</translation>
+        <translation type="obsolete">Conmutada la transparencia de la forma</translation>
     </message>
     <message>
         <source>Select fill color</source>
-        <translation>Seleccionar color de relleno</translation>
+        <translation type="obsolete">Seleccionar color de relleno</translation>
     </message>
     <message>
         <source>Shape fill color</source>
-        <translation>Color de relleno de la forma</translation>
+        <translation type="obsolete">Color de relleno de la forma</translation>
     </message>
 </context>
 <context>
@@ -14796,32 +17473,44 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Shape outline color...</source>
-        <translation>Color de línea exterior de la forma...</translation>
+        <translation type="obsolete">Color de línea exterior de la forma...</translation>
     </message>
     <message>
         <source>Outline width </source>
-        <translation>Anchura de línea exterior </translation>
+        <translation type="obsolete">Anchura de línea exterior </translation>
     </message>
     <message>
         <source>Transparent fill</source>
-        <translation>Relleno transparente</translation>
+        <translation type="obsolete">Relleno transparente</translation>
     </message>
     <message>
         <source>Shape fill Color...</source>
-        <translation>Color de relleno de la forma...</translation>
+        <translation type="obsolete">Color de relleno de la forma...</translation>
     </message>
     <message>
         <source>Rotation </source>
         <comment>Rotation</comment>
         <extracomment>Rotation</extracomment>
-        <translation>Rotación </translation>
+        <translation type="obsolete">Rotación </translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">Rotación</translation>
+    </message>
+    <message utf8="true">
+        <source> °</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsComposerTableWidget</name>
     <message>
         <source>General options</source>
-        <translation>Opciones generales</translation>
+        <translation type="obsolete">Opciones generales</translation>
     </message>
     <message>
         <source>Map %1</source>
@@ -14880,11 +17569,11 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsComposerTableWidgetBase</name>
     <message>
         <source>Form</source>
-        <translation>Formulario</translation>
+        <translation type="obsolete">Formulario</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>Tabla</translation>
+        <translation type="obsolete">Tabla</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -14916,11 +17605,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Grid stroke width</source>
-        <translation>Anchura de líneas de la cuadrícula</translation>
+        <translation type="obsolete">Anchura de líneas de la cuadrícula</translation>
     </message>
     <message>
         <source>Grid color</source>
-        <translation>Color de cuadrícula</translation>
+        <translation type="obsolete">Color de cuadrícula</translation>
     </message>
     <message>
         <source>Header Font...</source>
@@ -14929,6 +17618,30 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Content Font...</source>
         <translation>Tipo de letra del contenido...</translation>
+    </message>
+    <message>
+        <source>Attribute Table</source>
+        <translation type="unfinished">Tabla de atributos</translation>
+    </message>
+    <message>
+        <source>Attribute table</source>
+        <translation type="unfinished">Tabla de atributos</translation>
+    </message>
+    <message>
+        <source>Main properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stroke width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color...</source>
+        <translation type="unfinished">Color...</translation>
+    </message>
+    <message>
+        <source>Fonts</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15159,47 +17872,47 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>ANSI A (Letter; 8.5x11 inches)</source>
-        <translation>ANSI A (Letter; 8.5x11 pulgadas)</translation>
+        <translation type="obsolete">ANSI A (Letter; 8.5x11 pulgadas)</translation>
     </message>
     <message>
         <source>ANSI B (Tabloid; 11x17 inches)</source>
-        <translation>ANSI B (Tabloide; 11x17 pulgadas)</translation>
+        <translation type="obsolete">ANSI B (Tabloide; 11x17 pulgadas)</translation>
     </message>
     <message>
         <source>ANSI C (17x22 inches)</source>
-        <translation>ANSI C (17x22 pulgadas)</translation>
+        <translation type="obsolete">ANSI C (17x22 pulgadas)</translation>
     </message>
     <message>
         <source>ANSI D (22x34 inches)</source>
-        <translation>ANSI D (22x34 pulgadas)</translation>
+        <translation type="obsolete">ANSI D (22x34 pulgadas)</translation>
     </message>
     <message>
         <source>ANSI E (34x44 inches)</source>
-        <translation>ANSI E (34x44 pulgadas)</translation>
+        <translation type="obsolete">ANSI E (34x44 pulgadas)</translation>
     </message>
     <message>
         <source>Arch A (9x12 inches)</source>
-        <translation>Arch A (9x12 pulgadas)</translation>
+        <translation type="obsolete">Arch A (9x12 pulgadas)</translation>
     </message>
     <message>
         <source>Arch B (12x18 inches)</source>
-        <translation>Arch B (12x18 pulgadas)</translation>
+        <translation type="obsolete">Arch B (12x18 pulgadas)</translation>
     </message>
     <message>
         <source>Arch C (18x24 inches)</source>
-        <translation>Arch C (18x24 pulgadas)</translation>
+        <translation type="obsolete">Arch C (18x24 pulgadas)</translation>
     </message>
     <message>
         <source>Arch D (24x36 inches)</source>
-        <translation>Arch D (24x36 pulgadas)</translation>
+        <translation type="obsolete">Arch D (24x36 pulgadas)</translation>
     </message>
     <message>
         <source>Arch E (36x48 inches)</source>
-        <translation>Arch E (36x48 pulgadas)</translation>
+        <translation type="obsolete">Arch E (36x48 pulgadas)</translation>
     </message>
     <message>
         <source>Arch E1 (30x42 inches)</source>
-        <translation>Arch E1 (30x42 pulgadas)</translation>
+        <translation type="obsolete">Arch E1 (30x42 pulgadas)</translation>
     </message>
     <message>
         <source>Custom</source>
@@ -15263,7 +17976,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Legal (8.5x14 inches)</source>
-        <translation>Legal (8.5x14 pulgadas)</translation>
+        <translation type="obsolete">Legal (8.5x14 pulgadas)</translation>
     </message>
     <message>
         <source>Solid</source>
@@ -15276,6 +17989,58 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Crosses</source>
         <translation>Cruces</translation>
+    </message>
+    <message>
+        <source>Select grid color</source>
+        <translation type="unfinished">Seleccionar color de cuadrícula</translation>
+    </message>
+    <message>
+        <source>Legal (8.5x14 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI A (Letter; 8.5x11 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI B (Tabloid; 11x17 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI C (17x22 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI D (22x34 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ANSI E (34x44 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch A (9x12 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch B (12x18 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch C (18x24 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch D (24x36 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch E (36x48 in)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arch E1 (30x42 in)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15290,7 +18055,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Units</source>
-        <translation type="obsolete">Unidades</translation>
+        <translation type="unfinished">Unidades</translation>
     </message>
     <message>
         <source>Paper and quality</source>
@@ -15298,11 +18063,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Size</source>
-        <translation>Tamaño</translation>
+        <translation type="obsolete">Tamaño</translation>
     </message>
     <message>
         <source>Grid color</source>
-        <translation>Color de cuadrícula</translation>
+        <translation type="obsolete">Color de cuadrícula</translation>
     </message>
     <message>
         <source>Grid style</source>
@@ -15310,7 +18075,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Snapping</source>
-        <translation>Ajuste</translation>
+        <translation type="obsolete">Ajuste</translation>
     </message>
     <message>
         <source>Snap to grid</source>
@@ -15326,39 +18091,95 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Quality </source>
-        <translation>Calidad </translation>
+        <translation type="obsolete">Calidad </translation>
     </message>
     <message>
         <source>Width </source>
-        <translation>Anchura </translation>
+        <translation type="obsolete">Anchura </translation>
     </message>
     <message>
         <source>Height </source>
-        <translation>Altura </translation>
+        <translation type="obsolete">Altura </translation>
     </message>
     <message>
         <source>Spacing </source>
-        <translation>Separación </translation>
+        <translation type="obsolete">Separación </translation>
     </message>
     <message>
         <source>X offset </source>
-        <translation>Desplazamiento X </translation>
+        <translation type="obsolete">Desplazamiento X </translation>
     </message>
     <message>
         <source>Y offset </source>
-        <translation>Desplazamiento Y </translation>
+        <translation type="obsolete">Desplazamiento Y </translation>
     </message>
     <message>
         <source>Pen width </source>
-        <translation>Anchura de plumilla </translation>
+        <translation type="obsolete">Anchura de plumilla </translation>
     </message>
     <message>
         <source>Selection tolerance (mm) </source>
-        <translation>Tolerancia de selección (mm) </translation>
+        <translation type="obsolete">Tolerancia de selección (mm) </translation>
     </message>
     <message>
         <source>Number of pages</source>
         <translation>Número de páginas</translation>
+    </message>
+    <message>
+        <source>Presets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Anchura</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Altura</translation>
+    </message>
+    <message>
+        <source>Resolution</source>
+        <translation type="unfinished">Resolución</translation>
+    </message>
+    <message>
+        <source>Spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> mm</source>
+        <translation type="unfinished"> mm</translation>
+    </message>
+    <message>
+        <source>Grid offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>x: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>y: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pen width</source>
+        <translation type="unfinished">Anchura de plumilla</translation>
+    </message>
+    <message>
+        <source>Selection tolerance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color...</source>
+        <translation type="unfinished">Color...</translation>
+    </message>
+    <message>
+        <source>Snap to alignments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tolerance</source>
+        <translation type="unfinished">Tolerancia</translation>
     </message>
 </context>
 <context>
@@ -15474,27 +18295,27 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsContinuousColorDialogBase</name>
     <message>
         <source>Continuous color</source>
-        <translation>Color graduado</translation>
+        <translation type="obsolete">Color graduado</translation>
     </message>
     <message>
         <source>Maximum value</source>
-        <translation>Valor máximo</translation>
+        <translation type="obsolete">Valor máximo</translation>
     </message>
     <message>
         <source>Outline width</source>
-        <translation>Anchura de línea exterior</translation>
+        <translation type="obsolete">Anchura de línea exterior</translation>
     </message>
     <message>
         <source>Minimum value</source>
-        <translation>Valor mínimo</translation>
+        <translation type="obsolete">Valor mínimo</translation>
     </message>
     <message>
         <source>Classification field</source>
-        <translation>Campo de clasificación</translation>
+        <translation type="obsolete">Campo de clasificación</translation>
     </message>
     <message>
         <source>Draw polygon outline</source>
-        <translation>Dibujar contorno del polígono</translation>
+        <translation type="obsolete">Dibujar contorno del polígono</translation>
     </message>
 </context>
 <context>
@@ -15726,6 +18547,10 @@ y el archivo actual es [%3]</translation>
         <source>%1 gradient details</source>
         <translation>%1 Detalles del gradiente</translation>
     </message>
+    <message>
+        <source>All Ramps (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsCptCityColorRampV2DialogBase</name>
@@ -15764,6 +18589,10 @@ y el archivo actual es [%3]</translation>
     <message>
         <source>Details</source>
         <translation>Detalles</translation>
+    </message>
+    <message>
+        <source>Save as standard gradient</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16013,6 +18842,10 @@ y el archivo actual es [%3]</translation>
         <source>Select All</source>
         <translation>Seleccionar todo</translation>
     </message>
+    <message>
+        <source>Enable customization</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDashSpaceDialogBase</name>
@@ -16027,6 +18860,29 @@ y el archivo actual es [%3]</translation>
     <message>
         <source>Space</source>
         <translation>Espacio</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedSymbolDialog</name>
+    <message>
+        <source>Data defined properties</source>
+        <translation type="unfinished">Propiedades definidas por datos</translation>
+    </message>
+    <message>
+        <source>New Row</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Property</source>
+        <translation type="unfinished">Propiedad</translation>
+    </message>
+    <message>
+        <source>Field</source>
+        <translation type="unfinished">Campo</translation>
+    </message>
+    <message>
+        <source>Expression</source>
+        <translation type="unfinished">Expresión</translation>
     </message>
 </context>
 <context>
@@ -16191,7 +19047,7 @@ y el archivo actual es [%3]</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -16231,7 +19087,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Color</source>
-        <translation>&amp;Color</translation>
+        <translation type="obsolete">&amp;Color</translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt;&quot;&gt;© QGIS 2013&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Color</translation>
     </message>
 </context>
 <context>
@@ -16569,7 +19437,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Click to select the color</source>
-        <translation>Pulse para seleccionar el color</translation>
+        <translation type="obsolete">Pulse para seleccionar el color</translation>
     </message>
     <message>
         <source>Size of bar</source>
@@ -17205,6 +20073,22 @@ p, li { white-space: pre-wrap; }
         <source>You did not specify a maximum value for the diagram size. Please specify the attribute and a reference value as a base for scaling in the Tab Diagram / Size.</source>
         <translation>No se ha especificado un valor máximo para el tamaño de diagrama. Por favor especifique el atributo y un valor de referencia como base de escala en la pestaña Diagrama / Tamaño.</translation>
     </message>
+    <message>
+        <source>Top</source>
+        <translation type="unfinished">Arriba</translation>
+    </message>
+    <message>
+        <source>Right</source>
+        <translation type="unfinished">Derecha</translation>
+    </message>
+    <message>
+        <source>Bottom</source>
+        <translation type="unfinished">Abajo</translation>
+    </message>
+    <message>
+        <source>Left</source>
+        <translation type="unfinished">Izquierda</translation>
+    </message>
 </context>
 <context>
     <name>QgsDiagramPropertiesBase</name>
@@ -17396,6 +20280,10 @@ p, li { white-space: pre-wrap; }
         <source>Color</source>
         <translation>Color</translation>
     </message>
+    <message>
+        <source>Start Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDirectoryParamWidget</name>
@@ -17518,10 +20406,101 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsDualView</name>
+    <message>
+        <source>Attributes changed</source>
+        <translation type="unfinished">Atributos cambiados</translation>
+    </message>
+    <message>
+        <source>Expression based preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not set preview column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not set column &apos;%1&apos; as preview column.
+Parser error:
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run action</source>
+        <translation type="unfinished">Ejecutar acción</translation>
+    </message>
+    <message>
+        <source>Open form</source>
+        <translation type="unfinished">Abrir formulario</translation>
+    </message>
+    <message>
+        <source>Loading features...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">Abortar</translation>
+    </message>
+    <message>
+        <source>Attribute table</source>
+        <translation type="unfinished">Tabla de atributos</translation>
+    </message>
+    <message>
+        <source>%1 features loaded.</source>
+        <translation type="unfinished">%1 objetos espaciales cargados.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDualViewBase</name>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Expression</source>
+        <translation type="unfinished">Expresión</translation>
+    </message>
+    <message>
+        <source>Column Preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEllipseSymbolLayerV2Widget</name>
+    <message>
+        <source>Symbol width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol height</source>
+        <translation type="unfinished">Altura de símbolo</translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">Rotación</translation>
+    </message>
+    <message>
+        <source>Outline width</source>
+        <translation type="unfinished">Anchura de línea exterior</translation>
+    </message>
+    <message>
+        <source>Fill color</source>
+        <translation type="unfinished">Color de relleno</translation>
+    </message>
+    <message>
+        <source>Border color</source>
+        <translation type="unfinished">Color de borde</translation>
+    </message>
+    <message>
+        <source>Symbol name</source>
+        <translation type="unfinished">Nombre de símbolo</translation>
+    </message>
+</context>
+<context>
     <name>QgsEmbedLayerDialog</name>
     <message>
         <source>Select project file</source>
-        <translation>Seleccione archivo de proyecto</translation>
+        <translation type="obsolete">Seleccione archivo de proyecto</translation>
     </message>
     <message>
         <source>QGIS project files (*.qgs)</source>
@@ -17529,11 +20508,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Recursive embeding not possible</source>
-        <translation>El empotrado recursivo no es posible</translation>
+        <translation type="obsolete">El empotrado recursivo no es posible</translation>
     </message>
     <message>
         <source>It is not possible to embed layers / groups from the current project</source>
-        <translation>No es posible empotrar capas /grupos del proyecto actual</translation>
+        <translation type="obsolete">No es posible empotrar capas /grupos del proyecto actual</translation>
     </message>
     <message>
         <source>QGIS project files (*.qgs *.QGS)</source>
@@ -17541,22 +20520,22 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>QGis files</source>
-        <translation>Archivos de QGIS</translation>
+        <translation type="obsolete">Archivos de QGIS</translation>
     </message>
 </context>
 <context>
     <name>QgsEmbedLayerDialogBase</name>
     <message>
         <source>Select layers and groups to embed</source>
-        <translation>Seleccionar capas y grupos a empotrar</translation>
+        <translation type="obsolete">Seleccionar capas y grupos a empotrar</translation>
     </message>
     <message>
         <source>Project file</source>
-        <translation>Archivos de proyecto</translation>
+        <translation type="obsolete">Archivos de proyecto</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
 </context>
 <context>
@@ -17635,6 +20614,48 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>(i.e. including colliding objects)</source>
         <translation>(i.e. Incluir objetos que se sobreponen)</translation>
+    </message>
+    <message>
+        <source>Save settings with project</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsErrorDialog</name>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Error</translation>
+    </message>
+</context>
+<context>
+    <name>QgsErrorDialogBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Diálogo</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Summary&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Detailed report.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always show details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Details &gt;&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17820,6 +20841,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Load 10 sample values</source>
         <translation>Cargar 10 valores de muestra</translation>
+    </message>
+</context>
+<context>
+    <name>QgsExpressionSelectionDialogBase</name>
+    <message>
+        <source>Select By Expression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Cerrar</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished">Seleccionar</translation>
+    </message>
+    <message>
+        <source>Add to selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove from selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select within selection</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18036,6 +21088,243 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsFieldsProperties</name>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">Etiqueta</translation>
+    </message>
+    <message>
+        <source>Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nombre</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
+    </message>
+    <message>
+        <source>Length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Precision</source>
+        <translation type="unfinished">Precisión</translation>
+    </message>
+    <message>
+        <source>Comment</source>
+        <translation type="unfinished">Comentario</translation>
+    </message>
+    <message>
+        <source>Edit widget</source>
+        <translation type="unfinished">Control de edición</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished">Alias</translation>
+    </message>
+    <message>
+        <source>Name conflict</source>
+        <translation type="unfinished">Conflicto de nombres</translation>
+    </message>
+    <message>
+        <source>The attribute could not be inserted. The name already exists in the table.</source>
+        <translation type="unfinished">No se pudo insertar el atributo. El nombre ya existe en la tabla.</translation>
+    </message>
+    <message>
+        <source>Added attribute</source>
+        <translation type="unfinished">Atributo añadido</translation>
+    </message>
+    <message>
+        <source>Deleted attribute</source>
+        <translation type="unfinished">Atributo borrado</translation>
+    </message>
+    <message>
+        <source>Line edit</source>
+        <translation type="unfinished">Edición de líneas</translation>
+    </message>
+    <message>
+        <source>Unique values</source>
+        <translation type="unfinished">Valores únicos</translation>
+    </message>
+    <message>
+        <source>Unique values editable</source>
+        <translation type="unfinished">Valores únicos editable</translation>
+    </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Clasificación</translation>
+    </message>
+    <message>
+        <source>Value map</source>
+        <translation type="unfinished">Mapa de valor</translation>
+    </message>
+    <message>
+        <source>Edit range</source>
+        <translation type="unfinished">Intervalo de edición</translation>
+    </message>
+    <message>
+        <source>Slider range</source>
+        <translation type="unfinished">Intervalo del deslizador</translation>
+    </message>
+    <message>
+        <source>Dial range</source>
+        <translation type="unfinished">Intervalo del dial</translation>
+    </message>
+    <message>
+        <source>File name</source>
+        <translation type="unfinished">Nombre de archivo</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Enumeración</translation>
+    </message>
+    <message>
+        <source>Immutable</source>
+        <translation type="unfinished">Inmutable</translation>
+    </message>
+    <message>
+        <source>Hidden</source>
+        <translation type="unfinished">Oculta</translation>
+    </message>
+    <message>
+        <source>Checkbox</source>
+        <translation type="unfinished">Casilla de verificación</translation>
+    </message>
+    <message>
+        <source>Text edit</source>
+        <translation type="unfinished">Edición de texto</translation>
+    </message>
+    <message>
+        <source>Calendar</source>
+        <translation type="unfinished">Calendario</translation>
+    </message>
+    <message>
+        <source>Value relation</source>
+        <translation type="unfinished">Relación de valores</translation>
+    </message>
+    <message>
+        <source>UUID generator</source>
+        <translation type="unfinished">Generador de UUID</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Select edit form</source>
+        <translation type="unfinished">Seleccionar formulario de edición</translation>
+    </message>
+    <message>
+        <source>UI file</source>
+        <translation type="unfinished">Archivo UI</translation>
+    </message>
+</context>
+<context>
+    <name>QgsFieldsPropertiesBase</name>
+    <message>
+        <source>Field calculator</source>
+        <translation type="unfinished">Calculadora de campos</translation>
+    </message>
+    <message>
+        <source>Click to toggle table editing</source>
+        <translation type="unfinished">Pulsar para conmutar la edición de la tabla</translation>
+    </message>
+    <message>
+        <source>Toggle editing mode</source>
+        <translation type="unfinished">Conmutar el modo edición</translation>
+    </message>
+    <message>
+        <source>New column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+N</source>
+        <translation type="unfinished">Ctrl+N</translation>
+    </message>
+    <message>
+        <source>Delete column</source>
+        <translation type="unfinished">Borrar columna</translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="unfinished">Ctrl+X</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Edit UI</source>
+        <translation type="unfinished">Editar IU</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished">+</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished">-</translation>
+    </message>
+    <message>
+        <source>&gt;</source>
+        <translation type="unfinished">&gt;</translation>
+    </message>
+    <message>
+        <source>^</source>
+        <translation type="unfinished">^</translation>
+    </message>
+    <message>
+        <source>v</source>
+        <translation type="unfinished">v</translation>
+    </message>
+    <message>
+        <source>Autogenerate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drag and drop designer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provide ui-file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute editor layout:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS forms can have a Python function that is called when the form is opened.  
+Use this function to add extra logic to your forms.
+
+An example is (in module MyForms.py):
+
+          def open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Reference in Python Init Function like so: MyForms.open
+
+MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Python Init function</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsFormAnnotationDialog</name>
     <message>
         <source>Delete</source>
@@ -18050,11 +21339,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsFormAnnotationDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation>Diálogo</translation>
+        <translation type="obsolete">Diálogo</translation>
     </message>
     <message>
         <source>...</source>
         <translation>...</translation>
+    </message>
+    <message>
+        <source>Form annotation</source>
+        <translation type="unfinished">Anotación de formulario</translation>
     </message>
 </context>
 <context>
@@ -19159,23 +22452,35 @@ Por favor vuelva a seleccionar un archivo válido.</translation>
     </message>
     <message>
         <source>Average</source>
-        <translation>Media</translation>
+        <translation type="obsolete">Media</translation>
     </message>
     <message>
         <source>Gauss</source>
-        <translation>Gauss</translation>
+        <translation type="obsolete">Gauss</translation>
     </message>
     <message>
         <source>Cubic</source>
-        <translation>Cúbico</translation>
+        <translation type="obsolete">Cúbico</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation>Modo</translation>
+        <translation type="obsolete">Modo</translation>
     </message>
     <message>
         <source>None</source>
-        <translation>Ninguno</translation>
+        <translation type="obsolete">Ninguno</translation>
+    </message>
+    <message>
+        <source>Format not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read data</source>
+        <translation type="unfinished">No se pueden leer los datos</translation>
+    </message>
+    <message>
+        <source>Cannot get GDAL raster band: %1</source>
+        <translation type="unfinished">No se puede obtener la banda ráster de GDAL: %1</translation>
     </message>
 </context>
 <context>
@@ -19965,52 +23270,79 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGml</name>
+    <message>
+        <source>Loading GML data
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">Abortar</translation>
+    </message>
+</context>
+<context>
     <name>QgsGraduatedSymbolDialog</name>
     <message>
         <source>Equal Interval</source>
-        <translation>Intervalo igual</translation>
+        <translation type="obsolete">Intervalo igual</translation>
     </message>
     <message>
         <source>Quantiles</source>
-        <translation>Cuantiles</translation>
+        <translation type="obsolete">Cuantiles</translation>
     </message>
     <message>
         <source>Empty</source>
-        <translation>Vacío</translation>
+        <translation type="obsolete">Vacío</translation>
     </message>
 </context>
 <context>
     <name>QgsGraduatedSymbolDialogBase</name>
     <message>
         <source>graduated Symbol</source>
-        <translation>Símbolo graduado</translation>
+        <translation type="obsolete">Símbolo graduado</translation>
     </message>
     <message>
         <source>Delete class</source>
-        <translation>Borrar clase</translation>
+        <translation type="obsolete">Borrar clase</translation>
     </message>
     <message>
         <source>Classify</source>
-        <translation>Clasificar</translation>
+        <translation type="obsolete">Clasificar</translation>
     </message>
     <message>
         <source>Classification field</source>
-        <translation>Campo de clasificación</translation>
+        <translation type="obsolete">Campo de clasificación</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation>Modo</translation>
+        <translation type="obsolete">Modo</translation>
     </message>
     <message>
         <source>Number of classes</source>
-        <translation>Número de clases</translation>
+        <translation type="obsolete">Número de clases</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGraduatedSymbolRendererV2Model</name>
+    <message>
+        <source>Symbol</source>
+        <translation type="unfinished">Símbolo</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">Etiqueta</translation>
     </message>
 </context>
 <context>
     <name>QgsGraduatedSymbolRendererV2Widget</name>
     <message>
         <source>change</source>
-        <translation>cambiar</translation>
+        <translation type="obsolete">cambiar</translation>
     </message>
     <message>
         <source>Column</source>
@@ -20038,7 +23370,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Quantile</source>
-        <translation>Cuantiles</translation>
+        <translation type="obsolete">Cuantiles</translation>
     </message>
     <message>
         <source>Natural Breaks (Jenks)</source>
@@ -20058,7 +23390,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Delete class</source>
-        <translation>Borrar clase</translation>
+        <translation type="obsolete">Borrar clase</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -20066,11 +23398,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Range</source>
-        <translation>Intervalo</translation>
+        <translation type="obsolete">Intervalo</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>Etiqueta</translation>
+        <translation type="obsolete">Etiqueta</translation>
     </message>
     <message>
         <source>Error</source>
@@ -20095,6 +23427,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Symbol levels...</source>
         <translation>Niveles de símbolos...</translation>
+    </message>
+    <message>
+        <source>Change...</source>
+        <translation type="unfinished">Cambiar...</translation>
+    </message>
+    <message>
+        <source>Quantile (Equal Count)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Borrar</translation>
+    </message>
+    <message>
+        <source>Delete all</source>
+        <translation type="unfinished">Borrar todo</translation>
     </message>
 </context>
 <context>
@@ -21224,6 +24572,14 @@ en la línea %2 columna %3</translation>
         <source>Input</source>
         <translation>Entrada</translation>
     </message>
+    <message>
+        <source>%1 (band %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get provider</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassModuleOption</name>
@@ -21242,6 +24598,18 @@ en la línea %2 columna %3</translation>
     <message>
         <source>Cannot parse version_max %1</source>
         <translation>No se puede procesar version_max %1</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished">Explorar</translation>
+    </message>
+    <message>
+        <source>Output file</source>
+        <translation type="unfinished">Archivo de salida</translation>
+    </message>
+    <message>
+        <source>GeoTIFF</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21312,6 +24680,38 @@ en la línea %2 columna %3</translation>
     <message>
         <source>Cannot set region of map %1</source>
         <translation>No se puede establecer la región del mapa %1</translation>
+    </message>
+    <message>
+        <source>Region</source>
+        <translation type="unfinished">Región</translation>
+    </message>
+    <message>
+        <source>Input layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot set region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get selected layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The layer CRS (defined in QGIS) and data source CRS differ. We are not yet able to pass the layer CRS to GRASS module. Please set correct data source CRS or change layer CRS to data source CRS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get raster provider</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21826,6 +25226,22 @@ p, li { white-space: pre-wrap; }
         <source>null (no data)</source>
         <translation type="obsolete">nulo (sin datos)</translation>
     </message>
+    <message>
+        <source>cellhd file %1 does not exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Groups not yet supported</source>
+        <translation type="unfinished">Aún no se admiten grupos</translation>
+    </message>
+    <message>
+        <source>Format not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read data</source>
+        <translation type="unfinished">No se pueden leer los datos</translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassRegion</name>
@@ -22118,6 +25534,26 @@ en la línea %2 columna %3</translation>
         <source>Cannot start command shell (%1)</source>
         <translation>No se puede iniciar la terminal de órdenes (%1)</translation>
     </message>
+    <message>
+        <source>GRASS Direct Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modules Tree</source>
+        <translation type="unfinished">Árbol de módulos</translation>
+    </message>
+    <message>
+        <source>Modules List</source>
+        <translation type="unfinished">Lista de módulos</translation>
+    </message>
+    <message>
+        <source>Direct Modules Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direct Modules List</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassToolsBase</name>
@@ -22140,6 +25576,14 @@ en la línea %2 columna %3</translation>
     <message>
         <source>Filter</source>
         <translation>Filtro</translation>
+    </message>
+    <message>
+        <source>Direct Modules Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Direct Modules List</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22408,43 +25852,43 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <name>QgsIdentifyResults</name>
     <message>
         <source>Identify Results</source>
-        <translation>Resultados de la identificación</translation>
+        <translation type="obsolete">Resultados de la identificación</translation>
     </message>
     <message>
         <source>Feature</source>
-        <translation>Objeto espacial</translation>
+        <translation type="obsolete">Objeto espacial</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation>Valor</translation>
+        <translation type="obsolete">Valor</translation>
     </message>
     <message>
         <source>(Actions)</source>
-        <translation>(Acciones)</translation>
+        <translation type="obsolete">(Acciones)</translation>
     </message>
     <message>
         <source>Zoom to feature</source>
-        <translation>Zum al objeto espacial</translation>
+        <translation type="obsolete">Zum al objeto espacial</translation>
     </message>
     <message>
         <source>Copy attribute value</source>
-        <translation>Copiar valor del campo</translation>
+        <translation type="obsolete">Copiar valor del campo</translation>
     </message>
     <message>
         <source>Copy feature attributes</source>
-        <translation>Copiaar atributos del objeto espacial</translation>
+        <translation type="obsolete">Copiaar atributos del objeto espacial</translation>
     </message>
     <message>
         <source>Expand all</source>
-        <translation>Expandir todo</translation>
+        <translation type="obsolete">Expandir todo</translation>
     </message>
     <message>
         <source>Collapse all</source>
-        <translation>Comprimir todo</translation>
+        <translation type="obsolete">Comprimir todo</translation>
     </message>
     <message>
         <source>Attribute changes</source>
-        <translation>Cambios de atributo</translation>
+        <translation type="obsolete">Cambios de atributo</translation>
     </message>
     <message>
         <source>Attribute changed</source>
@@ -22452,15 +25896,15 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>(Derived)</source>
-        <translation>(Derivado)</translation>
+        <translation type="obsolete">(Derivado)</translation>
     </message>
     <message>
         <source>Edit feature form</source>
-        <translation>Formulario de edición de objetos espaciales</translation>
+        <translation type="obsolete">Formulario de edición de objetos espaciales</translation>
     </message>
     <message>
         <source>View feature form</source>
-        <translation>Formulario de vista de objetos espaciales</translation>
+        <translation type="obsolete">Formulario de vista de objetos espaciales</translation>
     </message>
     <message>
         <source>Run actions</source>
@@ -22468,31 +25912,27 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Clear results</source>
-        <translation>Limpiar resultados</translation>
+        <translation type="obsolete">Limpiar resultados</translation>
     </message>
     <message>
         <source>Clear highlights</source>
-        <translation>Limpiar selección</translation>
+        <translation type="obsolete">Limpiar selección</translation>
     </message>
     <message>
         <source>Highlight all</source>
-        <translation>Seleccionar todo</translation>
+        <translation type="obsolete">Seleccionar todo</translation>
     </message>
     <message>
         <source>Highlight layer</source>
-        <translation>Seleccionar capa</translation>
+        <translation type="obsolete">Seleccionar capa</translation>
     </message>
     <message>
         <source>Could not open url</source>
-        <translation>No se pudo abrir url</translation>
+        <translation type="obsolete">No se pudo abrir url</translation>
     </message>
     <message>
         <source>Could not open URL &apos;%1&apos;</source>
-        <translation>No se pudo abrir URL &apos;%1&apos; </translation>
-    </message>
-    <message>
-        <source>Layer properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">No se pudo abrir URL &apos;%1&apos; </translation>
     </message>
 </context>
 <context>
@@ -22500,6 +25940,140 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <source>Identify Results</source>
         <translation>Resultados de la identificación</translation>
+    </message>
+    <message>
+        <source>Expand tree.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Collapse tree.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New results will be expanded by default.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy selected feature to clipboard.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print selected HTML response.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsIdentifyResultsDialog</name>
+    <message>
+        <source>Identify Results</source>
+        <translation type="unfinished">Resultados de la identificación</translation>
+    </message>
+    <message>
+        <source>Feature</source>
+        <translation type="unfinished">Objeto espacial</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
+    </message>
+    <message>
+        <source>(Derived)</source>
+        <translation type="unfinished">(Derivado)</translation>
+    </message>
+    <message>
+        <source>(Actions)</source>
+        <translation type="unfinished">(Acciones)</translation>
+    </message>
+    <message>
+        <source>Edit feature form</source>
+        <translation type="unfinished">Formulario de edición de objetos espaciales</translation>
+    </message>
+    <message>
+        <source>View feature form</source>
+        <translation type="unfinished">Formulario de vista de objetos espaciales</translation>
+    </message>
+    <message>
+        <source>Format</source>
+        <translation type="unfinished">Formato</translation>
+    </message>
+    <message>
+        <source>Zoom to feature</source>
+        <translation type="unfinished">Zum al objeto espacial</translation>
+    </message>
+    <message>
+        <source>Copy feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy attribute value</source>
+        <translation type="unfinished">Copiar valor del campo</translation>
+    </message>
+    <message>
+        <source>Copy feature attributes</source>
+        <translation type="unfinished">Copiaar atributos del objeto espacial</translation>
+    </message>
+    <message>
+        <source>Copy GetFeatureInfo request URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear results</source>
+        <translation type="unfinished">Limpiar resultados</translation>
+    </message>
+    <message>
+        <source>Clear highlights</source>
+        <translation type="unfinished">Limpiar selección</translation>
+    </message>
+    <message>
+        <source>Highlight all</source>
+        <translation type="unfinished">Seleccionar todo</translation>
+    </message>
+    <message>
+        <source>Highlight layer</source>
+        <translation type="unfinished">Seleccionar capa</translation>
+    </message>
+    <message>
+        <source>Layer properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand all</source>
+        <translation type="unfinished">Expandir todo</translation>
+    </message>
+    <message>
+        <source>Collapse all</source>
+        <translation type="unfinished">Comprimir todo</translation>
+    </message>
+    <message>
+        <source>Attribute changes</source>
+        <translation type="unfinished">Cambios de atributo</translation>
+    </message>
+    <message>
+        <source>Could not open url</source>
+        <translation type="unfinished">No se pudo abrir url</translation>
+    </message>
+    <message>
+        <source>Could not open URL &apos;%1&apos;</source>
+        <translation type="unfinished">No se pudo abrir URL &apos;%1&apos; </translation>
+    </message>
+    <message>
+        <source>Cannot not print</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot print this item</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsIdentifyResultsWebViewItem</name>
+    <message>
+        <source>Loading...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22646,6 +26220,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>Output file </source>
         <translation>Archivo de salida </translation>
     </message>
+    <message>
+        <source>Add result to project</source>
+        <translation type="unfinished">Añadir resultados al proyecto</translation>
+    </message>
 </context>
 <context>
     <name>QgsInterpolationPlugin</name>
@@ -22658,39 +26236,39 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <name>QgsItemPositionDialogBase</name>
     <message>
         <source>Set item position</source>
-        <translation>Establecer la posición del elemento</translation>
+        <translation type="obsolete">Establecer la posición del elemento</translation>
     </message>
     <message>
         <source>Item reference point</source>
-        <translation>Punto de referencia del elemento</translation>
+        <translation type="obsolete">Punto de referencia del elemento</translation>
     </message>
     <message>
         <source>Coordinates</source>
-        <translation>Coordenadas</translation>
+        <translation type="obsolete">Coordenadas</translation>
     </message>
     <message>
         <source>x</source>
-        <translation>X</translation>
+        <translation type="obsolete">X</translation>
     </message>
     <message>
         <source>y</source>
-        <translation>Y</translation>
+        <translation type="obsolete">Y</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Anchura</translation>
+        <translation type="obsolete">Anchura</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation>Altura</translation>
+        <translation type="obsolete">Altura</translation>
     </message>
     <message>
         <source>Set Position</source>
-        <translation>Establecer posición</translation>
+        <translation type="obsolete">Establecer posición</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Cerrar</translation>
+        <translation type="obsolete">Cerrar</translation>
     </message>
 </context>
 <context>
@@ -22952,6 +26530,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>Buffer color</source>
         <translation>Color de buffer</translation>
     </message>
+    <message>
+        <source>Expression result</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLabelPropertyDialogBase</name>
@@ -23023,6 +26605,14 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>Scale-based</source>
         <translation>Basado en escala</translation>
     </message>
+    <message>
+        <source>Ignores priority and permits collisions/overlaps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always show (exceptions above)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLabelingGui</name>
@@ -23044,19 +26634,19 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Sample @ %1 pts (using map units)</source>
-        <translation>Muestra @ %1 pts (usando unidades del mapa)</translation>
+        <translation type="obsolete">Muestra @ %1 pts (usando unidades del mapa)</translation>
     </message>
     <message>
         <source>Sample @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
-        <translation>Muestra @ %1 pts (usando unidades del mapa, BUFFER EN MILÍMETROS)</translation>
+        <translation type="obsolete">Muestra @ %1 pts (usando unidades del mapa, BUFFER EN MILÍMETROS)</translation>
     </message>
     <message>
         <source>Sample</source>
-        <translation>Muestra</translation>
+        <translation type="obsolete">Muestra</translation>
     </message>
     <message>
         <source>Sample (BUFFER NOT SHOWN, in map units)</source>
-        <translation>Muestra(BUFFER NO MOSTRADO, en unidades de mapa)</translation>
+        <translation type="obsolete">Muestra(BUFFER NO MOSTRADO, en unidades de mapa)</translation>
     </message>
     <message>
         <source>Mixed Case</source>
@@ -23073,6 +26663,26 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <source>Title Case</source>
         <translation>Mayúscula inicial</translation>
+    </message>
+    <message>
+        <source>Text/Buffer sample</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> @ %1 pts (using map units)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> (BUFFER NOT SHOWN, in map units)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select SVG symbol</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23123,7 +26733,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Add direction symbol</source>
-        <translation>Añadir símbolo de dirección</translation>
+        <translation type="obsolete">Añadir símbolo de dirección</translation>
     </message>
     <message>
         <source>Features don&apos;t act as obstacles for labels</source>
@@ -23251,7 +26861,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Sample</source>
-        <translation>Muestra</translation>
+        <translation type="obsolete">Muestra</translation>
     </message>
     <message>
         <source>Lorem Ipsum</source>
@@ -23530,10 +27140,6 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Pen Join style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Color area inside of pen stroke</source>
         <translation type="unfinished">Color del área dentro de la plumilla</translation>
     </message>
@@ -23543,7 +27149,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Show all labels for this layer (i.e. including colliding labels)</source>
-        <translation>Mostrar todos las etiquetas para esta capa (i.e. incluir las sobrepuestas)</translation>
+        <translation type="obsolete">Mostrar todos las etiquetas para esta capa (i.e. incluir las sobrepuestas)</translation>
     </message>
     <message>
         <source>Around point</source>
@@ -23689,6 +27295,222 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>About data defined values</source>
         <translation>Acerca de los valores de datos definidos</translation>
     </message>
+    <message>
+        <source>Text/Buffer sample</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pen join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blending mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line direction symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;</source>
+        <translation type="unfinished">&lt;</translation>
+    </message>
+    <message>
+        <source> Label </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&gt;</source>
+        <translation type="unfinished">&gt;</translation>
+    </message>
+    <message>
+        <source>left/right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>above</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>below</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reverse direction</source>
+        <translation type="unfinished">Sentido inverso</translation>
+    </message>
+    <message>
+        <source>Pixel size-based visibility</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labels will not show if larger than this on screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> px</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Labels will not show if smaller than this on screen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> Label in Map Units </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drop shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation type="unfinished">Desplazamiento</translation>
+    </message>
+    <message>
+        <source>Radius blur (rasterizes shadow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation type="unfinished">Escala</translation>
+    </message>
+    <message>
+        <source>Background</source>
+        <translation type="unfinished">Fondo</translation>
+    </message>
+    <message>
+        <source>Select SVG symbol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation type="unfinished">Relleno</translation>
+    </message>
+    <message>
+        <source>Size X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load symbol parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>% of length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fixed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset X,Y</source>
+        <translation type="unfinished">Desplazamiento X, Y</translation>
+    </message>
+    <message>
+        <source>Rectangle</source>
+        <translation type="unfinished">Rectángulo</translation>
+    </message>
+    <message>
+        <source>Square</source>
+        <translation type="unfinished">Cuadrado</translation>
+    </message>
+    <message>
+        <source>Ellipse</source>
+        <translation type="unfinished">Elipse</translation>
+    </message>
+    <message>
+        <source>Circle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shape</source>
+        <translation type="unfinished">Forma</translation>
+    </message>
+    <message>
+        <source>Sync with label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offset of label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radius X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Border width</source>
+        <translation type="unfinished">Ancho de borde</translation>
+    </message>
+    <message>
+        <source>symbol units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Border</source>
+        <translation type="unfinished">Contorno</translation>
+    </message>
+    <message>
+        <source>outside</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>inside</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum angle between curved characters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show all labels for this layer (including colliding labels)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show upside-down labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>never</source>
+        <translation type="unfinished">nunca</translation>
+    </message>
+    <message>
+        <source>when rotation defined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>always</source>
+        <translation type="unfinished">siempre</translation>
+    </message>
+    <message>
+        <source>Limit number of features to be labeled to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of features sent to labeling engine, though not all may be labeled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use label background size in collision calculations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always show</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLayerPropertiesWidget</name>
@@ -23787,6 +27609,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>Paste Style</source>
         <translation>Pegar estilo</translation>
     </message>
+    <message>
+        <source>&amp;Properties</source>
+        <translation type="unfinished">&amp;Propiedades</translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
@@ -23832,7 +27658,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>&amp;Query...</source>
-        <translation>&amp;Consulta...</translation>
+        <translation type="obsolete">&amp;Consulta...</translation>
     </message>
     <message>
         <source>Show feature count</source>
@@ -23840,7 +27666,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation>&amp;Propiedades</translation>
+        <translation type="obsolete">&amp;Propiedades</translation>
     </message>
     <message>
         <source>Updating feature count for layer </source>
@@ -23848,11 +27674,11 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Abort</source>
-        <translation>Abortar</translation>
+        <translation type="obsolete">Abortar</translation>
     </message>
     <message>
         <source>Updating feature count for layer %1</source>
-        <translation>Actualizando la cuenta de objetos espaciales de la capa %1</translation>
+        <translation type="obsolete">Actualizando la cuenta de objetos espaciales de la capa %1</translation>
     </message>
     <message>
         <source>&amp;Zoom to Layer Extent</source>
@@ -23894,12 +27720,39 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>Show Feature Count</source>
         <translation>Mostrar número de objetos espaciales</translation>
     </message>
+    <message>
+        <source>&amp;Duplicate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Filter...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendModel</name>
     <message>
         <source>Group</source>
         <translation>Agrupar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsLinePatternFillSymbolLayerWidget</name>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished">Ángulo</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished">Distancia</translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished">Ancho de línea</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Color</translation>
     </message>
 </context>
 <context>
@@ -24052,6 +27905,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>The file is not an %1 connections exchange file.</source>
         <translation>El archivo no es  de intercambio de conexiones %1</translation>
     </message>
+    <message>
+        <source>The file is not an Oracle connections exchange file.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsManageConnectionsDialogBase</name>
@@ -24086,6 +27943,18 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
 %2</source>
         <translation>No se pudo dibujar %1 porque:
 %2</translation>
+    </message>
+    <message>
+        <source>Canvas refresh: %1 ms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>, sender &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rendering</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24220,11 +28089,11 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation>No es una capa vectorial</translation>
+        <translation type="obsolete">No es una capa vectorial</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation>La capa actual no es vectorial</translation>
+        <translation type="obsolete">La capa actual no es vectorial</translation>
     </message>
     <message>
         <source>Layer cannot be added to</source>
@@ -24236,11 +28105,11 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation>Capa no editable</translation>
+        <translation type="obsolete">Capa no editable</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
+        <translation type="obsolete">No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <source>Wrong editing tool</source>
@@ -24285,6 +28154,14 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <source>An error was reported during intersection removal</source>
         <translation>Se informó de un error durante la eliminación de la intersección</translation>
+    </message>
+    <message>
+        <source>The feature cannot be added because it&apos;s geometry is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The feature cannot be added because it&apos;s geometry collapsed due to intersection avoidance</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24350,19 +28227,19 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <name>QgsMapToolAddPart</name>
     <message>
         <source>Not a vector layer</source>
-        <translation>No es una capa vectorial</translation>
+        <translation type="obsolete">No es una capa vectorial</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation>La capa actual no es vectorial</translation>
+        <translation type="obsolete">La capa actual no es vectorial</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation>Capa no editable</translation>
+        <translation type="obsolete">Capa no editable</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
+        <translation type="obsolete">No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
@@ -24417,19 +28294,19 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <name>QgsMapToolAddRing</name>
     <message>
         <source>Not a vector layer</source>
-        <translation>No es una capa vectorial</translation>
+        <translation type="obsolete">No es una capa vectorial</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation>La capa actual no es vectorial</translation>
+        <translation type="obsolete">La capa actual no es vectorial</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation>Capa no editable</translation>
+        <translation type="obsolete">Capa no editable</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
+        <translation type="obsolete">No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
@@ -24494,7 +28371,11 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <name>QgsMapToolChangeLabelProperties</name>
     <message>
         <source>Label properties changed</source>
-        <translation>Las propiedades de la etiqueta cambiaron</translation>
+        <translation type="obsolete">Las propiedades de la etiqueta cambiaron</translation>
+    </message>
+    <message>
+        <source>Changed properties for label</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24531,6 +28412,25 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
 </context>
 <context>
+    <name>QgsMapToolEdit</name>
+    <message>
+        <source>No active vector layer</source>
+        <translation type="unfinished">Ninguna capa vectorial activa</translation>
+    </message>
+    <message>
+        <source>Choose a vector layer in the legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer not editable</source>
+        <translation type="unfinished">Capa no editable</translation>
+    </message>
+    <message>
+        <source>Use &apos;Toggle Editing&apos; to make it editable</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsMapToolFeatureAction</name>
     <message>
         <source>No active vector layer</source>
@@ -24561,11 +28461,11 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>No active layer</source>
-        <translation>No hay capa activa</translation>
+        <translation type="obsolete">No hay capa activa</translation>
     </message>
     <message>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation>Para identificar objetos espaciales, debe activar una capa haciendo clic en su nombre en el panel Capas</translation>
+        <translation type="obsolete">Para identificar objetos espaciales, debe activar una capa haciendo clic en su nombre en el panel Capas</translation>
     </message>
     <message>
         <source>Identifying on %1...</source>
@@ -24577,7 +28477,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>No features at this position found.</source>
-        <translation>No se han encontrado objetos espaciales en esta posición.</translation>
+        <translation type="obsolete">No se han encontrado objetos espaciales en esta posición.</translation>
     </message>
     <message>
         <source>Length</source>
@@ -24615,26 +28515,49 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>WMS layer</source>
-        <translation>Capa WMS</translation>
+        <translation type="obsolete">Capa WMS</translation>
     </message>
     <message>
         <source>Feature info</source>
-        <translation>Información de objeto espacial</translation>
+        <translation type="obsolete">Información de objeto espacial</translation>
     </message>
     <message>
         <source>Raster</source>
-        <translation>Ráster</translation>
+        <translation type="obsolete">Ráster</translation>
+    </message>
+    <message>
+        <source>No active layer. To identify features, you must choose an active layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Perimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Error</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapToolIdentifyAction</name>
+    <message>
+        <source>No features at this position found.</source>
+        <translation type="unfinished">No se han encontrado objetos espaciales en esta posición.</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolMoveFeature</name>
     <message>
         <source>Layer not editable</source>
-        <translation>Capa no editable</translation>
+        <translation type="obsolete">Capa no editable</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
+        <translation type="obsolete">No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <source>Feature moved</source>
@@ -24645,7 +28568,11 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <name>QgsMapToolMoveLabel</name>
     <message>
         <source>Label moved</source>
-        <translation>Etiqueta movida</translation>
+        <translation type="obsolete">Etiqueta movida</translation>
+    </message>
+    <message>
+        <source>Moved label</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24699,30 +28626,38 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <name>QgsMapToolPinLabels</name>
     <message>
         <source>Label pinned</source>
-        <translation>Etiqueta anclada</translation>
+        <translation type="obsolete">Etiqueta anclada</translation>
     </message>
     <message>
         <source>Label unpinned</source>
-        <translation>Etiqueta desanclada</translation>
+        <translation type="obsolete">Etiqueta desanclada</translation>
+    </message>
+    <message>
+        <source>Pinned label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unpinned label</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolReshape</name>
     <message>
         <source>Not a vector layer</source>
-        <translation>No es una capa vectorial</translation>
+        <translation type="obsolete">No es una capa vectorial</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation>La capa actual no es vectorial</translation>
+        <translation type="obsolete">La capa actual no es vectorial</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation>Capa no editable</translation>
+        <translation type="obsolete">Capa no editable</translation>
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
+        <translation type="obsolete">No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
@@ -24738,10 +28673,21 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
 </context>
 <context>
+    <name>QgsMapToolRotateFeature</name>
+    <message>
+        <source>Features Rotated</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsMapToolRotateLabel</name>
     <message>
         <source>Label rotated</source>
-        <translation>Etiqueta rotada</translation>
+        <translation type="obsolete">Etiqueta rotada</translation>
+    </message>
+    <message>
+        <source>Rotated label</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24790,11 +28736,19 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <name>QgsMapToolShowHideLabels</name>
     <message>
         <source>Label hidden</source>
-        <translation>Etiqueta oculta</translation>
+        <translation type="obsolete">Etiqueta oculta</translation>
     </message>
     <message>
         <source>Label shown</source>
-        <translation>Etiqueta mostrada</translation>
+        <translation type="obsolete">Etiqueta mostrada</translation>
+    </message>
+    <message>
+        <source>Hid labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Showed labels</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24832,7 +28786,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation>No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
+        <translation type="obsolete">No se puede editar la capa vectorial. Use «Conmutar edición» para hacerla editable.</translation>
     </message>
     <message>
         <source>Features split</source>
@@ -24844,15 +28798,15 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     </message>
     <message>
         <source>Not a vector layer</source>
-        <translation>No es una capa vectorial</translation>
+        <translation type="obsolete">No es una capa vectorial</translation>
     </message>
     <message>
         <source>The current layer is not a vector layer</source>
-        <translation>La capa actual no es vectorial</translation>
+        <translation type="obsolete">La capa actual no es vectorial</translation>
     </message>
     <message>
         <source>Layer not editable</source>
-        <translation>Capa no editable</translation>
+        <translation type="obsolete">Capa no editable</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
@@ -25080,6 +29034,21 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
 </context>
 <context>
+    <name>QgsMarkerLineSymbolLayerV2Widget</name>
+    <message>
+        <source>Interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line offset</source>
+        <translation type="unfinished">Desplazamiento de línea</translation>
+    </message>
+    <message>
+        <source>Placement</source>
+        <translation type="unfinished">Ubicación</translation>
+    </message>
+</context>
+<context>
     <name>QgsMeasureBase</name>
     <message>
         <source>Measure</source>
@@ -25154,11 +29123,15 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Finally, the value is converted from %2 to %3.</source>
-        <translation>Finalmente, el valor está convertido de %2 a %3.</translation>
+        <translation type="obsolete">Finalmente, el valor está convertido de %2 a %3.</translation>
     </message>
     <message>
         <source>Segments [%1]</source>
         <translation>Segmentos [%1] </translation>
+    </message>
+    <message>
+        <source>Finally, the value is converted from %1 to %2.</source>
+        <translation type="unfinished">Finalmente, el valor está convertido de %2 a %3. {1 ?} {2.?}</translation>
     </message>
 </context>
 <context>
@@ -25233,6 +29206,10 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <source>Skipped</source>
         <translation>Omitido</translation>
     </message>
+    <message>
+        <source>Feature %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMergeAttributesDialogBase</name>
@@ -25254,6 +29231,18 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <source>Close</source>
         <translation>Cerrar</translation>
+    </message>
+    <message>
+        <source>Remaining messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>more</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25538,11 +29527,11 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>&amp;Build query</source>
-        <translation>&amp;Construir consulta</translation>
+        <translation type="obsolete">&amp;Construir consulta</translation>
     </message>
     <message>
         <source>Build query</source>
-        <translation>Construir consulta</translation>
+        <translation type="obsolete">Construir consulta</translation>
     </message>
     <message>
         <source>Wildcard</source>
@@ -25623,6 +29612,14 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <source>Add MSSQL Table(s)</source>
         <translation>Añadir tabla(s) MSSQL</translation>
+    </message>
+    <message>
+        <source>&amp;Set Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Filter</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25770,15 +29767,24 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>Min</source>
-        <translation>Mín</translation>
+        <translation type="obsolete">Mín</translation>
     </message>
     <message>
         <source>Max</source>
-        <translation>Máx</translation>
+        <translation type="obsolete">Máx</translation>
     </message>
     <message>
         <source>Contrast enhancement</source>
-        <translation>Mejora de contraste</translation>
+        <translation type="obsolete">Mejora de contraste</translation>
+    </message>
+    <message>
+        <source>Contrast
+enhancement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min/max</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -25790,6 +29796,13 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <source>Network</source>
         <translation>Red</translation>
+    </message>
+</context>
+<context>
+    <name>QgsNetworkReplyParser</name>
+    <message>
+        <source>Cannot find boundary in multipart content type</source>
+        <translation type="unfinished">No se puede encontrar límite en el tipo de contenido multiparte</translation>
     </message>
 </context>
 <context>
@@ -25882,6 +29895,10 @@ Nota: Proveer la contraseña es opcional. Será solicitada interactivamente cuan
     <message>
         <source>Invert axis orientation</source>
         <translation>Invertir orientación de los ejes</translation>
+    </message>
+    <message>
+        <source>Referer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26467,7 +30484,211 @@ p, li { white-space: pre-wrap; }
     <name>QgsOSMDataProvider</name>
     <message>
         <source>Open Street Map format</source>
-        <translation>Formato Open Street Map</translation>
+        <translation type="obsolete">Formato Open Street Map</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOSMDownload</name>
+    <message>
+        <source>No query has been specified.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is already a pending request for data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open output file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOSMDownloadDialog</name>
+    <message>
+        <source>Download OpenStreetMap data</source>
+        <translation type="unfinished">Descargar datos de OpenStreetMap</translation>
+    </message>
+    <message>
+        <source>Extent</source>
+        <translation type="unfinished">Extensión</translation>
+    </message>
+    <message>
+        <source>From map canvas</source>
+        <translation type="unfinished">A partir del lienzo del mapa</translation>
+    </message>
+    <message>
+        <source>From layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manual</source>
+        <translation type="unfinished">Manual</translation>
+    </message>
+    <message>
+        <source>Output file</source>
+        <translation type="unfinished">Archivo de salida</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>OpenStreetMap files (*.osm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenStreetMap download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Would you like to abort download?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download failed.
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download has been successful.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOSMExportDialog</name>
+    <message>
+        <source>Export OpenStreetMap topology to SpatiaLite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input DB file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Export type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points (nodes)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polylines (open ways)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygons (closed ways)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output layer name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exported tags</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load from DB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Load into canvas when finished</source>
+        <translation type="unfinished">&amp;Cargar en la vista del mapa cuando se termine</translation>
+    </message>
+    <message>
+        <source>Tag</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQLite databases (*.db)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to open database:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenStreetMap export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export has been successful.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenStreetMap import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to export OSM data:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOSMImportDialog</name>
+    <message>
+        <source>OpenStreetMap Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input XML file (.osm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>Output SpatiaLite DB file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create connection (SpatiaLite) after import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenStreetMap files (*.osm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQLite databases (*.db)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OpenStreetMap import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output database file exists already. Overwrite?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import OSM data:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import has been successful.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26475,6 +30696,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>WMS Password for %1</source>
         <translation>Contraseña WMS para %1</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished">Contraseña</translation>
     </message>
 </context>
 <context>
@@ -26821,31 +31046,31 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>%v / %m features copied</source>
-        <translation>%v / %m objetos espaciales copiados</translation>
+        <translation type="obsolete">%v / %m objetos espaciales copiados</translation>
     </message>
     <message>
         <source>%v / %m features processed</source>
-        <translation>%v / %m objetos espaciales procesados</translation>
+        <translation type="obsolete">%v / %m objetos espaciales procesados</translation>
     </message>
     <message>
         <source>%v / %m fields added</source>
-        <translation>%v / %m campos añadidos</translation>
+        <translation type="obsolete">%v / %m campos añadidos</translation>
     </message>
     <message>
         <source>%v / %m features added</source>
-        <translation>%v / %m objetos espaciales añadidos</translation>
+        <translation type="obsolete">%v / %m objetos espaciales añadidos</translation>
     </message>
     <message>
         <source>%v / %m features removed</source>
-        <translation>%v / %m objetos espaciales eliminados</translation>
+        <translation type="obsolete">%v / %m objetos espaciales eliminados</translation>
     </message>
     <message>
         <source>%v / %m feature updates</source>
-        <translation>%v / %m actualizaciones de objetos espaciales</translation>
+        <translation type="obsolete">%v / %m actualizaciones de objetos espaciales</translation>
     </message>
     <message>
         <source>%v / %m feature geometry updates</source>
-        <translation>%v / %m actualizaciones de geometría de objetos espaciales</translation>
+        <translation type="obsolete">%v / %m actualizaciones de geometría de objetos espaciales</translation>
     </message>
     <message>
         <source>Offline Editing Plugin</source>
@@ -26877,6 +31102,42 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     <message>
         <source>Synchronize offline project with remote layers</source>
         <translation>Sincronizar proyecto fuera de línea con capas remotas</translation>
+    </message>
+    <message>
+        <source>Converting to offline project</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Synchronizing to remote layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%v / %m features copied</source>
+        <translation type="unfinished">%v / %m objetos espaciales copiados</translation>
+    </message>
+    <message>
+        <source>%v / %m features processed</source>
+        <translation type="unfinished">%v / %m objetos espaciales procesados</translation>
+    </message>
+    <message>
+        <source>%v / %m fields added</source>
+        <translation type="unfinished">%v / %m campos añadidos</translation>
+    </message>
+    <message>
+        <source>%v / %m features added</source>
+        <translation type="unfinished">%v / %m objetos espaciales añadidos</translation>
+    </message>
+    <message>
+        <source>%v / %m features removed</source>
+        <translation type="unfinished">%v / %m objetos espaciales eliminados</translation>
+    </message>
+    <message>
+        <source>%v / %m feature updates</source>
+        <translation type="unfinished">%v / %m actualizaciones de objetos espaciales</translation>
+    </message>
+    <message>
+        <source>%v / %m feature geometry updates</source>
+        <translation type="unfinished">%v / %m actualizaciones de geometría de objetos espaciales</translation>
     </message>
 </context>
 <context>
@@ -26990,7 +31251,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Read attempt on an invalid OGR data source</source>
-        <translation>Intento de lectura de una fuente de datos OGR no válida</translation>
+        <translation type="obsolete">Intento de lectura de una fuente de datos OGR no válida</translation>
     </message>
     <message>
         <source>type %1 for attribute %2 not found</source>
@@ -27075,6 +31336,14 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     <message>
         <source>Unknown</source>
         <translation>Desconocido</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation type="unfinished">Fecha</translation>
+    </message>
+    <message>
+        <source>Date &amp; Time</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27232,6 +31501,21 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
 </context>
 <context>
+    <name>QgsOpstionDialogTemplate</name>
+    <message>
+        <source>Options Dialog Template</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Section</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GroupBox</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsOptions</name>
     <message>
         <source>Semi transparent circle</source>
@@ -27267,7 +31551,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Show features in current canvas</source>
-        <translation>Mostrar objetos espaciales de la vista del mapa actual</translation>
+        <translation type="obsolete">Mostrar objetos espaciales de la vista del mapa actual</translation>
     </message>
     <message>
         <source>To vertex</source>
@@ -27443,7 +31727,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Parameters :</source>
-        <translation>Parámetros:</translation>
+        <translation type="obsolete">Parámetros:</translation>
     </message>
     <message>
         <source>Enter scale</source>
@@ -27467,11 +31751,51 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Parameters:</source>
-        <translation>Parámetros:</translation>
+        <translation type="obsolete">Parámetros:</translation>
     </message>
     <message>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
-        <translation>Puede usar solo cálculos elipsoidales cuando está activada la transformación de SRC </translation>
+        <translation type="obsolete">Puede usar solo cálculos elipsoidales cuando está activada la transformación de SRC </translation>
+    </message>
+    <message>
+        <source>not present</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>System value: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show features visible on map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose project file to open at launch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGis files</source>
+        <translation type="unfinished">Archivos de QGIS</translation>
+    </message>
+    <message>
+        <source>Overwrite</source>
+        <translation type="unfinished">Sobrescribir</translation>
+    </message>
+    <message>
+        <source>If Undefined</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prepend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Append</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27590,7 +31914,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Prompt to save project changes when required</source>
-        <translation>Preguntar si guardar cambios en el proyecto cuando sea necesario</translation>
+        <translation type="obsolete">Preguntar si guardar cambios en el proyecto cuando sea necesario</translation>
     </message>
     <message>
         <source>Warn when opening a project file saved with an older version of QGIS</source>
@@ -27598,7 +31922,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Default Map Appearance (overridden by project properties)</source>
-        <translation>Apariencia predeterminada del mapa (anulada por las propiedades del proyecto)</translation>
+        <translation type="obsolete">Apariencia predeterminada del mapa (anulada por las propiedades del proyecto)</translation>
     </message>
     <message>
         <source>Selection color</source>
@@ -27634,15 +31958,15 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Capitalise layer names in legend</source>
-        <translation>Comenzar el nombre de las capas con mayúsculas en la leyenda</translation>
+        <translation type="obsolete">Comenzar el nombre de las capas con mayúsculas en la leyenda</translation>
     </message>
     <message>
         <source>Display classification attribute names in legend</source>
-        <translation>Mostrar nombre de atributos de clasificación en la leyenda</translation>
+        <translation type="obsolete">Mostrar nombre de atributos de clasificación en la leyenda</translation>
     </message>
     <message>
         <source>Create raster icons in legend</source>
-        <translation>Crear iconos de ráster en el panel capas</translation>
+        <translation type="obsolete">Crear iconos de ráster en el panel capas</translation>
     </message>
     <message>
         <source>Show tips at start up</source>
@@ -27654,7 +31978,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Open snapping options  in a dock window (QGIS restart required)</source>
-        <translation>Abrir opciones de autoensamblado en una ventada adosada (requiere reiniciar QGIS)</translation>
+        <translation type="obsolete">Abrir opciones de autoensamblado en una ventada adosada (requiere reiniciar QGIS)</translation>
     </message>
     <message>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
@@ -27750,7 +32074,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Overlays</source>
-        <translation>Superposiciones</translation>
+        <translation type="obsolete">Superposiciones</translation>
     </message>
     <message>
         <source>Placement algorithm</source>
@@ -27762,7 +32086,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Default Coordinate Reference System for new projects</source>
-        <translation>Sistema de referencia de coordenadas predeterminado para nuevos proyectos</translation>
+        <translation type="obsolete">Sistema de referencia de coordenadas predeterminado para nuevos proyectos</translation>
     </message>
     <message>
         <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
@@ -27778,11 +32102,11 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Coordinate Reference System for new layers</source>
-        <translation>Sistema de referencia de coordenadas para nuevas capas</translation>
+        <translation type="obsolete">Sistema de referencia de coordenadas para nuevas capas</translation>
     </message>
     <message>
         <source>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</source>
-        <translation>Cuando se crea una capa o cuando se carga una capa que no tiene sistema de referencia de coordenadas (SRC)</translation>
+        <translation type="obsolete">Cuando se crea una capa o cuando se carga una capa que no tiene sistema de referencia de coordenadas (SRC)</translation>
     </message>
     <message>
         <source>Prompt for &amp;CRS</source>
@@ -27838,7 +32162,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Ellipsoid for distance calculations</source>
-        <translation>Elipsoide para el cálculo de distancias</translation>
+        <translation type="obsolete">Elipsoide para el cálculo de distancias</translation>
     </message>
     <message>
         <source>Preferred measurements units</source>
@@ -27974,7 +32298,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Position</source>
-        <translation>Posición</translation>
+        <translation type="obsolete">Posición</translation>
     </message>
     <message>
         <source>map units</source>
@@ -27986,11 +32310,11 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Compatibility</source>
-        <translation>Compatibilidad</translation>
+        <translation type="obsolete">Compatibilidad</translation>
     </message>
     <message>
         <source>Use new generation symbology for rendering</source>
-        <translation>Usar simbología de nueva generación para representar</translation>
+        <translation type="obsolete">Usar simbología de nueva generación para representar</translation>
     </message>
     <message>
         <source>Open feature form, if a single feature is identified</source>
@@ -28034,7 +32358,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>GDAL Drivers</source>
-        <translation>Controladores de GDAL</translation>
+        <translation type="obsolete">Controladores de GDAL</translation>
     </message>
     <message>
         <source>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</source>
@@ -28042,11 +32366,11 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Complementos</translation>
+        <translation type="obsolete">Complementos</translation>
     </message>
     <message>
         <source>Other settings</source>
-        <translation>Otras configuraciones</translation>
+        <translation type="obsolete">Otras configuraciones</translation>
     </message>
     <message>
         <source>Validate geometries</source>
@@ -28074,19 +32398,19 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Prompt for raster sublayers</source>
-        <translation>Preguntar subcapas ráster</translation>
+        <translation type="obsolete">Preguntar subcapas ráster</translation>
     </message>
     <message>
         <source>Join style for curve offset</source>
-        <translation>Estilo de unión para desplazamiento de curvas</translation>
+        <translation type="obsolete">Estilo de unión para desplazamiento de curvas</translation>
     </message>
     <message>
         <source>Quadrantsegments for curve offset</source>
-        <translation>Segmentos cuadráticos para desplazamiento de curvas</translation>
+        <translation type="obsolete">Segmentos cuadráticos para desplazamiento de curvas</translation>
     </message>
     <message>
         <source>Miter limit for curve offset</source>
-        <translation>Límite de inglete para desplazamiento de curvas</translation>
+        <translation type="obsolete">Límite de inglete para desplazamiento de curvas</translation>
     </message>
     <message>
         <source>Rasters</source>
@@ -28198,7 +32522,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>GDAL Driver Options</source>
-        <translation>Opciones de controlador de GDAL</translation>
+        <translation type="obsolete">Opciones de controlador de GDAL</translation>
     </message>
     <message>
         <source>Edit Pyramids Options</source>
@@ -28210,7 +32534,7 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Enable back buffer (Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing)</source>
-        <translation>Activar buffer de fondo (Mejor desempeño gráfico perdiendo la posibilidad de cancelar el procesamiento y el incremento gradual del dibujo del objeto)</translation>
+        <translation type="obsolete">Activar buffer de fondo (Mejor desempeño gráfico perdiendo la posibilidad de cancelar el procesamiento y el incremento gradual del dibujo del objeto)</translation>
     </message>
     <message>
         <source>Single band gray</source>
@@ -28246,11 +32570,11 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Semi-minor</source>
-        <translation>Semi-menor</translation>
+        <translation type="obsolete">Semi-menor</translation>
     </message>
     <message>
         <source>Semi-major</source>
-        <translation>Semi-mayor</translation>
+        <translation type="obsolete">Semi-mayor</translation>
     </message>
     <message>
         <source>Automatically enable &apos;on the fly&apos; reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</source>
@@ -28258,11 +32582,518 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     </message>
     <message>
         <source>Automatically enable &apos;on the fly&apos; reprojection  if layers have different CRS</source>
-        <translation>Activar automáticamente la reproyección &apos;en directo&apos; si las capas tienen diferentes SRC</translation>
+        <translation type="obsolete">Activar automáticamente la reproyección &apos;en directo&apos; si las capas tienen diferentes SRC</translation>
     </message>
     <message>
         <source>Default expiration period for WMS-C/WMTS tiles (hours)</source>
         <translation>Periodo de expiración predeterminada para teselas WMS-C/WMTS (en horas)</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data Sources</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data sources</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canvas &amp; Legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canvas and legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Timeout for timed messages or dialogs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bold group box titles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS-styled group boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use live-updating color chooser dialogs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Most recent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Specific</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open project on launch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prompt to save project and data source changes when required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Environment</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Variable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
+    </message>
+    <message>
+        <source>Current environment variables (read-only - bold indicates modified at startup)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show only QGIS-specific variables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use custom variables (restart required - include separators)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature attributes and table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data source handling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prompt for raster sublayers when opening</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable back buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Debugging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show these events in the Log Message panel (under Rendering tab)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map canvas refresh</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map canvas &amp; legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default map appearance (overridden by project properties)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Capitalise layer names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bold layer names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Display classification attribute names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bold group names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create raster icons (may be slow)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend item styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overlay position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature creation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open snapping options in a dock window (QGIS restart required)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curve offset tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Miter limit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished">Estilo de unión</translation>
+    </message>
+    <message>
+        <source>Quadrant segments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL driver options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL drivers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System (CRS)</source>
+        <translation type="unfinished">Sistema de referencia de coordenadas (SRC)</translation>
+    </message>
+    <message>
+        <source>CRS for new layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When a new layer is created, or when a layer is loaded that has no CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default CRS for new projects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically enable &apos;on the fly&apos; reprojection if layers have different CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOptionsDialogBase</name>
+    <message>
+        <source>Missing objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Base options dialog could not be initialized.
+
+Missing some of the .ui template objects:
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleConn</name>
+    <message>
+        <source>Connection to database failed</source>
+        <translation type="unfinished">Falló la conexión con la base de datos</translation>
+    </message>
+    <message>
+        <source>Oracle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQL:%1
+error:%2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Querying available tables failed.
+SQL:%1
+error:%2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database connection was successful, but the accessible tables could not be determined.</source>
+        <translation type="unfinished">La conexión a la base de datos tuvo éxito, pero no se pudieron determinar las tablas accesibles.</translation>
+    </message>
+    <message>
+        <source>Unable to get list of spatially enabled tables from the database</source>
+        <translation type="unfinished">No se puede obtener de la base de datos la lista de tablas habilitadas espacialmente</translation>
+    </message>
+    <message>
+        <source>Unsupported geometry type %1 in %2.%3.%4 ignored</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View %1.%2 doesn&apos;t have integer columns for use as keys.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="unfinished">Punto</translation>
+    </message>
+    <message>
+        <source>Multipoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished">Línea</translation>
+    </message>
+    <message>
+        <source>Multiline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation type="unfinished">Polígono</translation>
+    </message>
+    <message>
+        <source>Multipolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Geometry</source>
+        <translation type="unfinished">Ninguna geometría</translation>
+    </message>
+    <message>
+        <source>Unknown Geometry</source>
+        <translation type="unfinished">Geometría desconocida</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleConnectionItem</name>
+    <message>
+        <source>Edit...</source>
+        <translation type="unfinished">Editar...</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Borrar</translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation type="unfinished">Actualizar</translation>
+    </message>
+    <message>
+        <source>Copying features...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">Abortar</translation>
+    </message>
+    <message>
+        <source>Import layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1: Not a vector layer!</source>
+        <translation type="unfinished">%1: ¡No es una capa vectorial!</translation>
+    </message>
+    <message>
+        <source>%1: OK!</source>
+        <translation type="unfinished">%1: ¡Correcto!</translation>
+    </message>
+    <message>
+        <source>Import to Oracle database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import some layers!
+
+</source>
+        <translation type="unfinished">¡No se pudieron importar algunas capas!
+
+</translation>
+    </message>
+    <message>
+        <source>Import was successful.</source>
+        <translation type="unfinished">La importación tuvo éxito.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleLayerItem</name>
+    <message>
+        <source>Delete layer</source>
+        <translation type="unfinished">Borrar capa</translation>
+    </message>
+    <message>
+        <source>Layer deleted successfully.</source>
+        <translation type="unfinished">Capa borrada con éxito</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleNewConnection</name>
+    <message>
+        <source>Saving passwords</source>
+        <translation type="unfinished">Guardar contraseñas</translation>
+    </message>
+    <message>
+        <source>WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
+</source>
+        <translation type="unfinished">AVISO: ha elegido guardar su contraseña. Se guardará en texto plano en sus archivos de proyecto y en su directorio personal en sistemas tipo UNIX o en su perfil de usuario en Windows. Si no quiere que eso pase, por favor pulse el botón Cancelar.
+</translation>
+    </message>
+    <message>
+        <source>Save connection</source>
+        <translation type="unfinished">Guardar conexión</translation>
+    </message>
+    <message>
+        <source>Should the existing connection %1 be overwritten?</source>
+        <translation type="unfinished">¿Se debe sobrescribir la conexión %1 existente?</translation>
+    </message>
+    <message>
+        <source>Test connection</source>
+        <translation type="unfinished">Probar conexión</translation>
+    </message>
+    <message>
+        <source>Connection to %1 was successful</source>
+        <translation type="unfinished">La conexión a %1 tuvo éxito</translation>
+    </message>
+    <message>
+        <source>Connection failed - Check settings and try again.
+
+</source>
+        <translation type="unfinished">La conexión ha fallado - Comprobar la configuración y probar de nuevo.
+
+</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleNewConnectionBase</name>
+    <message>
+        <source>Create a New Oracle connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection Information</source>
+        <translation type="unfinished">Información sobre la conexión</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation type="unfinished">Contraseña</translation>
+    </message>
+    <message>
+        <source>Save Username</source>
+        <translation type="unfinished">Guardar nombre de usuario</translation>
+    </message>
+    <message>
+        <source>Username</source>
+        <translation type="unfinished">Nombre de usuario</translation>
+    </message>
+    <message>
+        <source>Name of the new connection</source>
+        <translation type="unfinished">Nombre de la nueva conexión</translation>
+    </message>
+    <message>
+        <source>Database</source>
+        <translation type="unfinished">Base de datos</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nombre</translation>
+    </message>
+    <message>
+        <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
+        <translation type="unfinished">Restringir las tablas mostradas a aquellas que están en la tabla de columnas de la geometría</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only look in meta data table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
+        <translation type="unfinished">Restringir la búsqueda al esquema público de las tablas espaciales que no están en la tabla de columnas de la geometría</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owner by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only look for user&apos;s tables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Also list tables with no geometry</source>
+        <translation type="unfinished">Listar también tablas sin geometría</translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation type="unfinished">Puerto</translation>
+    </message>
+    <message>
+        <source>1521</source>
+        <translation type="unfinished">1521</translation>
+    </message>
+    <message>
+        <source>&amp;Test Connect</source>
+        <translation type="unfinished">&amp;Probar conexión</translation>
+    </message>
+    <message>
+        <source>Save Password</source>
+        <translation type="unfinished">Guardar contraseña</translation>
+    </message>
+    <message>
+        <source>Host</source>
+        <translation type="unfinished">Servidor</translation>
+    </message>
+    <message>
+        <source>Use estimated table statistics for the layer metadata.</source>
+        <translation type="unfinished">Utilizar estadísticas de tabla estimadas para los metadatos de la capa.</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use estimated table metadata</source>
+        <translation type="unfinished">Utilizar metadatos de tabla estimados</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleOwnerItem</name>
+    <message>
+        <source>%1 as %2 in %3</source>
+        <translation type="unfinished">%1 como %2 en %3</translation>
+    </message>
+    <message>
+        <source>as geometryless table</source>
+        <translation type="unfinished">como tabla sin geometría</translation>
     </message>
 </context>
 <context>
@@ -28282,6 +33113,353 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     <message>
         <source>Add a Oracle Spatial GeoRaster...</source>
         <translation>Abrir un GeoRaster espacial de Oracle...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleProvider</name>
+    <message>
+        <source>Whole number</source>
+        <translation type="unfinished">Número entero</translation>
+    </message>
+    <message>
+        <source>Whole big number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal number (numeric)</source>
+        <translation type="unfinished">Número decimal (numérico)</translation>
+    </message>
+    <message>
+        <source>Decimal number (decimal)</source>
+        <translation type="unfinished">Número decimal (decimal)</translation>
+    </message>
+    <message>
+        <source>Decimal number (real)</source>
+        <translation type="unfinished">Número decimal (real)</translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation type="unfinished">Número decimal (doble)</translation>
+    </message>
+    <message>
+        <source>Text, fixed length (char)</source>
+        <translation type="unfinished">Texto, longitud fija (char)</translation>
+    </message>
+    <message>
+        <source>Text, limited variable length (varchar2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (long)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FAILURE: Field %1 not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read attempt on an invalid oracle data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading comment for table %1.%2 failed [%3]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading comment for columns of table %1.%2 failed [%3]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Other spatial field %1.%2.%3 ignored</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading field types for table %1.%2 failed [%3]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid spatial index %1 on column %2.%3.%4 found - expect poor performance.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No spatial index on column %1.%2.%3 found - expect poor performance.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Probing for spatial index on column %1.%2.%3 failed [%4]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieving fields from &apos;%1&apos; failed [%2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to determine geometry column access privileges for column %1.%2.
+The error message from the database was:
+%3.
+SQL: %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to determine table access privileges for the table %1.
+The error message from the database was:
+%2.
+SQL: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The custom query is not a select query.</source>
+        <translation type="unfinished">La consulta personalizada no es una consulta de selección.</translation>
+    </message>
+    <message>
+        <source>Unable to execute the query.
+The error message from the database was:
+%1.
+SQL: %2</source>
+        <translation type="unfinished">No se puede ejecutar la consulta.
+El mensanje de error de la base de datos fue:
+%1,
+SQL: %2</translation>
+    </message>
+    <message>
+        <source>Primary key field %1 not found in %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Primary key field &apos;%1&apos; for view not unique.</source>
+        <translation type="unfinished">El campo de clave primaria &apos;%1&apos; para la vista no es único.</translation>
+    </message>
+    <message>
+        <source>Key field &apos;%1&apos; for view not found.</source>
+        <translation type="unfinished">No se ha encontrado el campo de clave &apos;%1&apos; para la vista.</translation>
+    </message>
+    <message>
+        <source>No key field for view given.</source>
+        <translation type="unfinished">No se ha dado ningún campo clave para la vista.</translation>
+    </message>
+    <message>
+        <source>No key field for query given.</source>
+        <translation type="unfinished">No se ha dado ningún campo clave para la consulta.</translation>
+    </message>
+    <message>
+        <source>Evaluation of default value failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not start transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not prepare insert statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not insert feature %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not commit transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle error while adding features: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not rollback transaction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deletion of feature %1 failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle error while deleting features: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Adding attribute %1 failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setting comment on %1 failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle error while adding attributes: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dropping column %1 failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle error while deleting attributes: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update of feature %1 failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle error while changing attributes: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not prepare update statement.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle error while changing geometry values: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not retrieve extents: %1
+SQL: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not execute query.
+The error message from the database was:
+%1.
+SQL: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not retrieve SRID of %1.
+The error message from the database was:
+%2.
+SQL: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not determine SRID of %1.
+The error message from the database was:
+%2.
+SQL: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has no valid geometry types.
+SQL: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not determine geometry type of %1.
+The error message from the database was:
+%2.
+SQL: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
+        <translation type="unfinished">Tipo de geometría y SRIS para la columna vacía %1 de %2 indefinido.</translation>
+    </message>
+    <message>
+        <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
+        <translation type="unfinished">El tipo de objeto espacial o el SRID para %1 de %2 no de pudo determinar o no se solicitó.</translation>
+    </message>
+    <message>
+        <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
+        <translation type="unfinished">Edición y adición desabilitados para la capa 2D+ (%1; %2)</translation>
+    </message>
+    <message>
+        <source>Could not update metadata for %1.%2.
+SQL:%1
+Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not insert metadata for %1.%2.
+SQL:%3
+Error: %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creation spatial index failed.
+SQL:%1
+Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rebuild of spatial index failed.
+SQL:%1
+Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not determine table existence.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table %1 could not be dropped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table %1 already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table creation failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not lookup authid %1:%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not lookup WKT.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not determine new srid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS not found and could not be created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not insert metadata.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drop created table %1 failed.
+SQL:%2
+Error: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle SRID %1 not found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lookup of Oracle SRID %1 failed.
+SQL:%2
+Error:%3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle error: %1
+SQL: %2
+Error: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Oracle error: %1
+Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleRootItem</name>
+    <message>
+        <source>New Connection...</source>
+        <translation type="unfinished">Conexión nueva...</translation>
     </message>
 </context>
 <context>
@@ -28309,6 +33487,151 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     <message>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
         <translation>Falló la conexión a %1. Por favor, verifique sus parámetros de conexión. Asegúrese de que tiene instalado el complemento GeoRaster de GDAL.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleSourceSelect</name>
+    <message>
+        <source>Add Oracle Table(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished">&amp;Añadir</translation>
+    </message>
+    <message>
+        <source>&amp;Build query</source>
+        <translation type="unfinished">&amp;Construir consulta</translation>
+    </message>
+    <message>
+        <source>Build query</source>
+        <translation type="unfinished">Construir consulta</translation>
+    </message>
+    <message>
+        <source>Wildcard</source>
+        <translation type="unfinished">Comodín</translation>
+    </message>
+    <message>
+        <source>RegExp</source>
+        <translation type="unfinished">Expresión regular</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished">Todos</translation>
+    </message>
+    <message>
+        <source>Owner</source>
+        <translation type="unfinished">Propietario</translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished">Tabla</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
+    </message>
+    <message>
+        <source>Geometry column</source>
+        <translation type="unfinished">Columna de geometría</translation>
+    </message>
+    <message>
+        <source>Primary key column</source>
+        <translation type="unfinished">Columna de clave primaria</translation>
+    </message>
+    <message>
+        <source>SRID</source>
+        <translation type="unfinished">SRID</translation>
+    </message>
+    <message>
+        <source>Sql</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confirm Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load connections</source>
+        <translation type="unfinished">Cargar conexiones</translation>
+    </message>
+    <message>
+        <source>XML files (*.xml *XML)</source>
+        <translation type="unfinished">Archivos XML (*.xml *.XML)</translation>
+    </message>
+    <message>
+        <source>Select Table</source>
+        <translation type="unfinished">Seleccionar tabla</translation>
+    </message>
+    <message>
+        <source>You must select a table in order to add a layer.</source>
+        <translation type="unfinished">Debe seleccionar una tabla para añadir una capa.</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished">Conectar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleSourceSelectDelegate</name>
+    <message>
+        <source>Select...</source>
+        <translation type="unfinished">Seleccionar...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsOracleTableModel</name>
+    <message>
+        <source>Owner</source>
+        <translation type="unfinished">Propietario</translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished">Tabla</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
+    </message>
+    <message>
+        <source>Geometry column</source>
+        <translation type="unfinished">Columna de geometría</translation>
+    </message>
+    <message>
+        <source>SRID</source>
+        <translation type="unfinished">SRID</translation>
+    </message>
+    <message>
+        <source>Primary key column</source>
+        <translation type="unfinished">Columna de clave primaria</translation>
+    </message>
+    <message>
+        <source>Select at id</source>
+        <translation type="unfinished">Seleccionar en el ID</translation>
+    </message>
+    <message>
+        <source>Sql</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select...</source>
+        <translation type="unfinished">Seleccionar...</translation>
+    </message>
+    <message>
+        <source>Enter...</source>
+        <translation type="unfinished">Introducir...</translation>
+    </message>
+    <message>
+        <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
+        <translation type="unfinished">Deshabilitar la capacidad «Acceso rápido a objetos espaciales en el ID» para forzar a mantener la tabla de atributos en memoria (por ejemplo en caso de vistas costosas).</translation>
     </message>
 </context>
 <context>
@@ -28352,6 +33675,18 @@ Siempre red: siempre cargar desde la red y no chequear si el caché tiene una en
     <message>
         <source>Import was successful.</source>
         <translation>La importación tuvo éxito.</translation>
+    </message>
+    <message>
+        <source>Copying features...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">Abortar</translation>
+    </message>
+    <message>
+        <source>Import layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28717,15 +34052,15 @@ Información de error ampliada:
     </message>
     <message>
         <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
-        <translation>Restringir las tablas mostradas a aquellas que están en la tabla de columnas de la geometría</translation>
+        <translation type="obsolete">Restringir las tablas mostradas a aquellas que están en la tabla de columnas de la geometría</translation>
     </message>
     <message>
         <source>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.</source>
-        <translation>Restringe las tablas mostradas a aquellas que están en la tabla de columnas de la geometría. Esto puede acelerar la visualización inicial de las tablas espaciales.</translation>
+        <translation type="obsolete">Restringe las tablas mostradas a aquellas que están en la tabla de columnas de la geometría. Esto puede acelerar la visualización inicial de las tablas espaciales.</translation>
     </message>
     <message>
         <source>Only look in the geometry_columns table</source>
-        <translation>Buscar sólo en la tabla de columnas de la geometría</translation>
+        <translation type="obsolete">Buscar sólo en la tabla de columnas de la geometría</translation>
     </message>
     <message>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
@@ -28743,6 +34078,22 @@ Información de error ampliada:
         <source>Also list tables with no geometry</source>
         <translation>Listar también tablas sin geometría</translation>
     </message>
+    <message>
+        <source>Restrict the displayed tables to those that are in the layer registries.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only look in the layer registries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t resolve type of unrestricted columns (GEOMETRY)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsPgSourceSelect</name>
@@ -28752,11 +34103,11 @@ Información de error ampliada:
     </message>
     <message>
         <source>&amp;Build query</source>
-        <translation>&amp;Construir consulta</translation>
+        <translation type="obsolete">&amp;Construir consulta</translation>
     </message>
     <message>
         <source>Build query</source>
-        <translation>Construir consulta</translation>
+        <translation type="obsolete">Construir consulta</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -28896,7 +34247,7 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>Could not open the Postgres/PostGIS Provider</source>
-        <translation>No se pudo abrir el proveedor Postgres/PostGIS</translation>
+        <translation type="obsolete">No se pudo abrir el proveedor Postgres/PostGIS</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -28909,6 +34260,24 @@ lleve la geometría PostGIS.</translation>
     <message>
         <source>Stop</source>
         <translation>Detener</translation>
+    </message>
+    <message>
+        <source>&amp;Set Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open the Postgres/PostGIS Provider.
+Check message log for possible errors.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No accessible tables or views found.
+Check the message log for possible errors.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28977,11 +34346,11 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Columna de geometría</translation>
+        <translation type="obsolete">Columna de geometría</translation>
     </message>
     <message>
         <source>SRID</source>
@@ -28989,7 +34358,7 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>Primary key column</source>
-        <translation>Columna de clave primaria</translation>
+        <translation type="obsolete">Columna de clave primaria</translation>
     </message>
     <message>
         <source>Select at id</source>
@@ -29030,6 +34399,22 @@ lleve la geometría PostGIS.</translation>
     <message>
         <source>Enter...</source>
         <translation>Introducir...</translation>
+    </message>
+    <message>
+        <source>Column</source>
+        <translation type="unfinished">Columna</translation>
+    </message>
+    <message>
+        <source>Data Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Primary Key</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29883,11 +35268,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Circle color</source>
-        <translation>Color de círculo</translation>
+        <translation type="obsolete">Color de círculo</translation>
     </message>
     <message>
         <source>Label color</source>
-        <translation>Color de etiqueta</translation>
+        <translation type="obsolete">Color de etiqueta</translation>
     </message>
     <message>
         <source>The point displacement renderer only applies to (single) point layers. 
@@ -29957,6 +35342,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>max scale denominator:</source>
         <translation>denominador de escala máximo:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPointPatternFillSymbolLayerWidget</name>
+    <message>
+        <source>Horizontal distance</source>
+        <translation type="unfinished">Distancia horizontal</translation>
+    </message>
+    <message>
+        <source>Vertical distance</source>
+        <translation type="unfinished">Distancia vertical</translation>
+    </message>
+    <message>
+        <source>Horizontal displacement</source>
+        <translation type="unfinished">Desplazamiento horizontal</translation>
+    </message>
+    <message>
+        <source>Vertical displacement</source>
+        <translation type="unfinished">Desplazamiento vertical</translation>
     </message>
 </context>
 <context>
@@ -30122,6 +35526,37 @@ Error: sin buffer de resultado</translation>
     <message>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel falló</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry</source>
+        <translation type="unfinished">Geometría</translation>
+    </message>
+    <message>
+        <source>Geography</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TopoGeometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPostgresFeatureIterator</name>
+    <message>
+        <source>feature %1 not found</source>
+        <translation type="unfinished">no se ha encontrado el objeto espacial %1</translation>
+    </message>
+    <message>
+        <source>PostGIS</source>
+        <translation type="unfinished">PostGIS</translation>
+    </message>
+    <message>
+        <source>found %1 features instead of just one.</source>
+        <translation type="unfinished">se han encontrado %1 objetos espaciales en vez de sólo uno.</translation>
     </message>
 </context>
 <context>
@@ -30429,7 +35864,7 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>Couldn&apos;t get the feature geometry in binary form</source>
-        <translation>No se pudo obtener la geometría del objeto espacial en forma binaria</translation>
+        <translation type="obsolete">No se pudo obtener la geometría del objeto espacial en forma binaria</translation>
     </message>
     <message>
         <source>Read attempt on an invalid postgresql data source</source>
@@ -30437,15 +35872,15 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>nextFeature() without select()</source>
-        <translation>nextFeature() sin select()</translation>
+        <translation type="obsolete">nextFeature() sin select()</translation>
     </message>
     <message>
         <source>feature %1 not found</source>
-        <translation>no se ha encontrado el objeto espacial %1</translation>
+        <translation type="obsolete">no se ha encontrado el objeto espacial %1</translation>
     </message>
     <message>
         <source>found %1 features instead of just one.</source>
-        <translation>se han encontrado %1 objetos espaciales en vez de sólo uno.</translation>
+        <translation type="obsolete">se han encontrado %1 objetos espaciales en vez de sólo uno.</translation>
     </message>
     <message>
         <source>unexpected formatted field type &apos;%1&apos; for field %2</source>
@@ -30466,7 +35901,7 @@ lleve la geometría PostGIS.</translation>
     <message>
         <source>Fetching from cursor %1 failed
 Database error: %2</source>
-        <translation>Fallo al obtener del cursor %1
+        <translation type="obsolete">Fallo al obtener del cursor %1
 Error de la base de datos: %2</translation>
     </message>
     <message>
@@ -30475,7 +35910,7 @@ Error de la base de datos: %2</translation>
     </message>
     <message>
         <source>Field %1 ignored, because of unsupported type type %2</source>
-        <translation type="obsolete">Campo %1 ignorado porque es del tipo %2 no soportado</translation>
+        <translation type="unfinished">Campo %1 ignorado porque es del tipo %2 no soportado</translation>
     </message>
     <message>
         <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
@@ -30539,7 +35974,7 @@ Error de la base de datos: %2</translation>
     </message>
     <message>
         <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
-        <translation>El tipo &apos;%1 de campo de clave primara &apos;%2&apos; para la vista no es válido.</translation>
+        <translation type="obsolete">El tipo &apos;%1 de campo de clave primara &apos;%2&apos; para la vista no es válido.</translation>
     </message>
     <message>
         <source>Key field &apos;%1&apos; for view not found.</source>
@@ -30548,6 +35983,18 @@ Error de la base de datos: %2</translation>
     <message>
         <source>FAILURE: Field %1 not found.</source>
         <translation>FALLO:  Field %1 no encontrado.</translation>
+    </message>
+    <message>
+        <source>invalid PostgreSQL topology layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation type="unfinished">Fecha</translation>
+    </message>
+    <message>
+        <source>Could not find topology of layer %1.%2.%3</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30606,6 +36053,40 @@ Elija ignorar para continuar cargando sin las capas que faltan. Elija cancelar p
 Try to find missing layers?</source>
         <translation type="obsolete">No se pueden abrir una o más capas del proyecto
 ¿Intentar encontar las capas que faltan?</translation>
+    </message>
+</context>
+<context>
+    <name>QgsProjectLayerGroupDialog</name>
+    <message>
+        <source>Select project file</source>
+        <translation type="unfinished">Seleccione archivo de proyecto</translation>
+    </message>
+    <message>
+        <source>QGis files</source>
+        <translation type="unfinished">Archivos de QGIS</translation>
+    </message>
+    <message>
+        <source>Recursive embedding not possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>It is not possible to embed layers / groups from the current project.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsProjectLayerGroupDialogBase</name>
+    <message>
+        <source>Select layers and groups to embed</source>
+        <translation type="unfinished">Seleccionar capas y grupos a empotrar</translation>
+    </message>
+    <message>
+        <source>Project file</source>
+        <translation type="unfinished">Archivos de proyecto</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -30682,7 +36163,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Transparency %1%</source>
-        <translation>Transparencia: %1%</translation>
+        <translation type="obsolete">Transparencia: %1%</translation>
     </message>
     <message>
         <source>Select a valid symbol</source>
@@ -30691,6 +36172,46 @@ Proceed?</source>
     <message>
         <source>Invalid symbol : </source>
         <translation>Símbolo no válido</translation>
+    </message>
+    <message>
+        <source>Measure tool (CRS transformation: %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canvas units (CRS transformation: %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ON</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select print composer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Composer Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select restricted layers and groups</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parameters :</source>
+        <translation type="unfinished">Parámetros:</translation>
+    </message>
+    <message>
+        <source>Parameters:</source>
+        <translation type="unfinished">Parámetros:</translation>
+    </message>
+    <message>
+        <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
+        <translation type="unfinished">Puede usar solo cálculos elipsoidales cuando está activada la transformación de SRC </translation>
     </message>
 </context>
 <context>
@@ -30793,7 +36314,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Service Capabilitities</source>
-        <translation>Capacidades del servicio</translation>
+        <translation type="obsolete">Capacidades del servicio</translation>
     </message>
     <message>
         <source>Title</source>
@@ -30821,7 +36342,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Advertised Extent</source>
-        <translation>Extensión anunciada</translation>
+        <translation type="obsolete">Extensión anunciada</translation>
     </message>
     <message>
         <source>Min. X</source>
@@ -30845,15 +36366,15 @@ Proceed?</source>
     </message>
     <message>
         <source>Coordinate Systems Restrictions</source>
-        <translation>Restricciones del sistema de coordenadas</translation>
+        <translation type="obsolete">Restricciones del sistema de coordenadas</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation>Añadir</translation>
+        <translation type="obsolete">Añadir</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation>Eliminar</translation>
+        <translation type="obsolete">Eliminar</translation>
     </message>
     <message>
         <source>Used</source>
@@ -30917,15 +36438,15 @@ Proceed?</source>
     </message>
     <message>
         <source>OWS Server</source>
-        <translation>Servidor OMS</translation>
+        <translation type="obsolete">Servidor OMS</translation>
     </message>
     <message>
         <source>WMS Capabilitities</source>
-        <translation>Capacidades WMS</translation>
+        <translation type="obsolete">Capacidades WMS</translation>
     </message>
     <message>
         <source>WFS Capabilitities</source>
-        <translation>Capacidades WFS</translation>
+        <translation type="obsolete">Capacidades WFS</translation>
     </message>
     <message>
         <source>Published</source>
@@ -30933,11 +36454,11 @@ Proceed?</source>
     </message>
     <message>
         <source>Maximum width</source>
-        <translation>Anchura máxima</translation>
+        <translation type="obsolete">Anchura máxima</translation>
     </message>
     <message>
         <source>Maximum height</source>
-        <translation>Altura máxima</translation>
+        <translation type="obsolete">Altura máxima</translation>
     </message>
     <message>
         <source>Used when CRS transformation is turned off</source>
@@ -30969,11 +36490,11 @@ Proceed?</source>
     </message>
     <message>
         <source>Default Styles</source>
-        <translation>Estilos predeterminados</translation>
+        <translation type="obsolete">Estilos predeterminados</translation>
     </message>
     <message>
         <source>Default Symbols</source>
-        <translation>Símbolos predeterminados</translation>
+        <translation type="obsolete">Símbolos predeterminados</translation>
     </message>
     <message>
         <source>Marker</source>
@@ -31005,11 +36526,11 @@ Proceed?</source>
     </message>
     <message>
         <source>Opacity</source>
-        <translation>Opacidad</translation>
+        <translation type="obsolete">Opacidad</translation>
     </message>
     <message>
         <source>Advertised WMS url</source>
-        <translation>url de WMS anunciada</translation>
+        <translation type="obsolete">url de WMS anunciada</translation>
     </message>
     <message>
         <source>Macros</source>
@@ -31026,6 +36547,131 @@ Proceed?</source>
     <message>
         <source>Select all</source>
         <translation type="unfinished">Seleccionar todo</translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished">SRC</translation>
+    </message>
+    <message>
+        <source>Coordinate Reference System</source>
+        <translation type="unfinished">Sistema de referencia de coordenadas</translation>
+    </message>
+    <message>
+        <source>Identify layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OWS server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Measure tool</source>
+        <translation type="unfinished">Herramienta de medida</translation>
+    </message>
+    <message>
+        <source>Ellipsoid
+(for distance calculations)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Semi-major</source>
+        <translation type="unfinished">Semi-mayor</translation>
+    </message>
+    <message>
+        <source>Semi-minor</source>
+        <translation type="unfinished">Semi-menor</translation>
+    </message>
+    <message>
+        <source>Project layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Defaut styles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Default symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparencia</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Service capabilitities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fees</source>
+        <translation type="unfinished">Cuotas</translation>
+    </message>
+    <message>
+        <source>Access constraints</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keyword list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WMS capabilitities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exclude layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advertised URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Anchura</translation>
+    </message>
+    <message>
+        <source>Height</source>
+        <translation type="unfinished">Altura</translation>
+    </message>
+    <message>
+        <source>Maximums for GetMap request</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advertised extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS restrictions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exclude composers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WFS capabilitities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation type="unfinished">Actualizar</translation>
+    </message>
+    <message>
+        <source>Insert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Borrar</translation>
     </message>
 </context>
 <context>
@@ -31332,56 +36978,56 @@ p, li { white-space: pre-wrap; }
     <name>QgsQuickPrint</name>
     <message>
         <source> km</source>
-        <translation> km</translation>
+        <translation type="obsolete"> km</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation> mm</translation>
+        <translation type="obsolete"> mm</translation>
     </message>
     <message>
         <source> cm</source>
-        <translation> cm</translation>
+        <translation type="obsolete"> cm</translation>
     </message>
     <message>
         <source> m</source>
-        <translation> m</translation>
+        <translation type="obsolete"> m</translation>
     </message>
     <message>
         <source> miles</source>
-        <translation> millas</translation>
+        <translation type="obsolete"> millas</translation>
     </message>
     <message>
         <source> mile</source>
-        <translation> milla</translation>
+        <translation type="obsolete"> milla</translation>
     </message>
     <message>
         <source> inches</source>
-        <translation> pulgadas</translation>
+        <translation type="obsolete"> pulgadas</translation>
     </message>
     <message>
         <source> foot</source>
-        <translation> pie</translation>
+        <translation type="obsolete"> pie</translation>
     </message>
     <message>
         <source> feet</source>
-        <translation> pies</translation>
+        <translation type="obsolete"> pies</translation>
     </message>
     <message>
         <source> degree</source>
-        <translation> grado</translation>
+        <translation type="obsolete"> grado</translation>
     </message>
     <message>
         <source> degrees</source>
-        <translation> grados</translation>
+        <translation type="obsolete"> grados</translation>
     </message>
     <message>
         <source> unknown</source>
-        <translation> desconocido</translation>
+        <translation type="obsolete"> desconocido</translation>
     </message>
     <message>
         <source>Please wait while your report is generated</source>
         <comment>COMMENTED OUT</comment>
-        <translation>Por favor, espere mientras se genera su informe</translation>
+        <translation type="obsolete">Por favor, espere mientras se genera su informe</translation>
     </message>
 </context>
 <context>
@@ -31554,23 +37200,23 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterDataProvider</name>
     <message>
         <source>Identify</source>
-        <translation>Identificar</translation>
+        <translation type="obsolete">Identificar</translation>
     </message>
     <message>
         <source>Build Pyramids</source>
-        <translation>Construir pirámides</translation>
+        <translation type="obsolete">Construir pirámides</translation>
     </message>
     <message>
         <source>Band</source>
-        <translation>Banda</translation>
+        <translation type="obsolete">Banda</translation>
     </message>
     <message>
         <source>Create Datasources</source>
-        <translation>Crear fuentes de datos</translation>
+        <translation type="obsolete">Crear fuentes de datos</translation>
     </message>
     <message>
         <source>Remove Datasources</source>
-        <translation>Remover fuentes de datos</translation>
+        <translation type="obsolete">Remover fuentes de datos</translation>
     </message>
     <message>
         <source>Average</source>
@@ -31597,6 +37243,30 @@ p, li { white-space: pre-wrap; }
         <source>None</source>
         <translation>Ninguno</translation>
     </message>
+    <message>
+        <source>Format not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature info</source>
+        <translation type="unfinished">Información de objeto espacial</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
+    </message>
+    <message>
+        <source>Html</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature</source>
+        <translation type="unfinished">Objeto espacial</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterFormatSaveOptionsWidget</name>
@@ -31618,7 +37288,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Lossy compression</source>
-        <translation>Compresión máxima</translation>
+        <translation type="obsolete">Compresión máxima</translation>
     </message>
     <message>
         <source>Cannot get create options for driver %1</source>
@@ -31632,7 +37302,7 @@ p, li { white-space: pre-wrap; }
         <source>Create Options:
 
 %1</source>
-        <translation>Opciones de Creación:
+        <translation type="obsolete">Opciones de Creación:
 %1</translation>
     </message>
     <message>
@@ -31645,7 +37315,7 @@ p, li { white-space: pre-wrap; }
 %1
 
 Click on help button to get valid creation options for this format</source>
-        <translation>Opción de creación inválida :
+        <translation type="obsolete">Opción de creación inválida :
 
 %1
 
@@ -31653,7 +37323,7 @@ Pulse sobre el botón de ayuda para obtener opciones de creación válidas para 
     </message>
     <message>
         <source>Cannot validate</source>
-        <translation>No se puede validar</translation>
+        <translation type="obsolete">No se puede validar</translation>
     </message>
     <message>
         <source>Profile name:</source>
@@ -31666,6 +37336,38 @@ Pulse sobre el botón de ayuda para obtener opciones de creación válidas para 
     <message>
         <source>Use table interface</source>
         <translation>Usar interfaz de tabla</translation>
+    </message>
+    <message>
+        <source>JPEG compression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>For details on pyramids options please see the following pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>cannot validate pyramid options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot validate creation options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid %1:
+
+%2
+
+Click on help button to get valid creation options for this format.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>pyramid creation option</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>creation option</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31831,6 +37533,29 @@ Pulse sobre el botón de ayuda para obtener opciones de creación válidas para 
     <message>
         <source>Compute Histogram</source>
         <translation>Calcular Histograma</translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterInterface</name>
+    <message>
+        <source>Identify</source>
+        <translation type="unfinished">Identificar</translation>
+    </message>
+    <message>
+        <source>Build Pyramids</source>
+        <translation type="unfinished">Construir pirámides</translation>
+    </message>
+    <message>
+        <source>Create Datasources</source>
+        <translation type="unfinished">Crear fuentes de datos</translation>
+    </message>
+    <message>
+        <source>Remove Datasources</source>
+        <translation type="unfinished">Remover fuentes de datos</translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation type="unfinished">Banda</translation>
     </message>
 </context>
 <context>
@@ -32033,7 +37758,7 @@ Pulse sobre el botón de ayuda para obtener opciones de creación válidas para 
     </message>
     <message>
         <source>Failed to load provider %1 (Reason: %2)</source>
-        <translation>No se pudo cargar el proveedor %1 (motivo: %2)</translation>
+        <translation type="obsolete">No se pudo cargar el proveedor %1 (motivo: %2)</translation>
     </message>
     <message>
         <source>Raster</source>
@@ -32041,7 +37766,7 @@ Pulse sobre el botón de ayuda para obtener opciones de creación válidas para 
     </message>
     <message>
         <source>Cannot resolve the classFactory function</source>
-        <translation>No se puede resolver la fución classFactory</translation>
+        <translation type="obsolete">No se puede resolver la fución classFactory</translation>
     </message>
     <message>
         <source>&lt;maplayer&gt; not found.</source>
@@ -32061,7 +37786,7 @@ Pulse sobre el botón de ayuda para obtener opciones de creación válidas para 
     </message>
     <message>
         <source>Cannot instantiate the data provider</source>
-        <translation>No se puede establecer la instancia del proveedor de datos</translation>
+        <translation type="obsolete">No se puede establecer la instancia del proveedor de datos</translation>
     </message>
     <message>
         <source>Data provider is invalid (layers: %1, styles: %2, formats: %3)</source>
@@ -32070,6 +37795,14 @@ Pulse sobre el botón de ayuda para obtener opciones de creación válidas para 
     <message>
         <source>Cannot read data</source>
         <translation>No se pueden leer los datos</translation>
+    </message>
+    <message>
+        <source>Cannot instantiate the &apos;%1&apos; data provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider is not valid (provider: %1, URI: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32452,7 +38185,7 @@ Pulse sobre el botón de ayuda para obtener opciones de creación válidas para 
     </message>
     <message>
         <source>Time</source>
-        <translation>Tiempo</translation>
+        <translation type="obsolete">Tiempo</translation>
     </message>
 </context>
 <context>
@@ -32607,7 +38340,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Current</source>
-        <translation type="obsolete">Actual</translation>
+        <translation type="unfinished">Actual</translation>
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
@@ -32635,7 +38368,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Style</source>
-        <translation type="obsolete">Estilo</translation>
+        <translation type="unfinished">Estilo</translation>
     </message>
     <message>
         <source>Single band gray</source>
@@ -32703,7 +38436,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Invert color map</source>
-        <translation>Invertir mapa de color</translation>
+        <translation type="obsolete">Invertir mapa de color</translation>
     </message>
     <message>
         <source>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</source>
@@ -32815,7 +38548,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Display name</source>
-        <translation>Nombre a visualizar</translation>
+        <translation type="obsolete">Nombre a visualizar</translation>
     </message>
     <message>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
@@ -32827,7 +38560,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Pyramid resolutions</source>
-        <translation>Resoluciones de pirámides</translation>
+        <translation type="obsolete">Resoluciones de pirámides</translation>
     </message>
     <message>
         <source>Resampling method</source>
@@ -32927,7 +38660,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Notes</source>
-        <translation>Notas</translation>
+        <translation type="obsolete">Notas</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -32962,7 +38695,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Style</source>
         <comment>mRendererTab</comment>
-        <translation>Estilo</translation>
+        <translation type="obsolete">Estilo</translation>
     </message>
     <message>
         <source>Render type</source>
@@ -32974,11 +38707,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Zoomed in</source>
-        <translation>Acercado</translation>
+        <translation type="obsolete">Acercado</translation>
     </message>
     <message>
         <source>Zoomed out</source>
-        <translation>Alejado</translation>
+        <translation type="obsolete">Alejado</translation>
     </message>
     <message>
         <source>Maximum oversampling</source>
@@ -33010,11 +38743,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Less than:</source>
-        <translation>Menor que</translation>
+        <translation type="obsolete">Menor que</translation>
     </message>
     <message>
         <source>More than or equal to:</source>
-        <translation>Mayor o igual que</translation>
+        <translation type="obsolete">Mayor o igual que</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -33058,11 +38791,135 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt; {3C?} {4.0/?} {3.?} {40/?} {1&quot;?} {9p?} {400;?} {0p?} {0p?} {0p?} {0p?} {0;?} {0p?} {11p?}</translation>
+    </message>
+    <message>
+        <source>Layer info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>displayed as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="unfinished">Nombre de la capa</translation>
+    </message>
+    <message>
+        <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Minimum&lt;br&gt;(exclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:0.75em;&quot;&gt;Maximum&lt;br&gt;(inclusive)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description</source>
+        <translation type="unfinished">Descripción</translation>
+    </message>
+    <message>
+        <source>Properties</source>
+        <translation type="unfinished">Propiedades</translation>
+    </message>
+    <message>
+        <source>Band rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saturation</source>
+        <translation type="unfinished">Saturación</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">Desconectado</translation>
+    </message>
+    <message>
+        <source>By lightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>By luminosity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>By average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hue</source>
+        <translation type="unfinished">Matiz</translation>
+    </message>
+    <message>
+        <source>Blending mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Brightness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contrast</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <translation type="unfinished">Escala de grises</translation>
+    </message>
+    <message>
+        <source>Colorize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Reset all color rendering options to default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished">Restablecer</translation>
+    </message>
+    <message>
+        <source>Zoomed: in</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resolutions</source>
+        <translation type="unfinished">Resoluciones</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33114,6 +38971,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Selected (%1, %2)</source>
         <translation>Seleccionado (%1, %2)</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The directory %1 contains files which will be overwritten: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GeoTIFF</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33224,7 +39093,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Tiles</source>
-        <translation>Teselas</translation>
+        <translation type="obsolete">Teselas</translation>
     </message>
     <message>
         <source>Maximum number of columns in one tile.</source>
@@ -33290,6 +39159,15 @@ p, li { white-space: pre-wrap; }
         <source>Use existing</source>
         <translation>Usar existente</translation>
     </message>
+    <message>
+        <source>Create GDAL Virtual Format composed of multiple 
+datasets with maximum width and height specified below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VRT Tiles</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterMinMaxWidgetBase</name>
@@ -33319,7 +39197,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message utf8="true">
         <source>Mean +/- standard deviation ×</source>
-        <translation>Mean +/- desviación estándar ×</translation>
+        <translation type="obsolete">Mean +/- desviación estándar ×</translation>
     </message>
     <message>
         <source>Extent</source>
@@ -33350,7 +39228,13 @@ p, li { white-space: pre-wrap; }
         <translation>Cargar</translation>
     </message>
     <message>
-        <source>Cumulative count cut</source>
+        <source>Cumulative
+count cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>Mean +/-
+standard deviation ×</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -33366,7 +39250,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>External</source>
-        <translation>Externo</translation>
+        <translation type="obsolete">Externo</translation>
     </message>
     <message>
         <source>Internal (if possible)</source>
@@ -33374,7 +39258,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>External (Erdas Imagine)</source>
-        <translation>Externo (Erdas Imagine)</translation>
+        <translation type="obsolete">Externo (Erdas Imagine)</translation>
     </message>
     <message>
         <source>Insert positive integer values separated by spaces</source>
@@ -33403,6 +39287,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Resampling method</source>
         <translation>Método de remuestreo</translation>
+    </message>
+    <message>
+        <source>External (GTiff .ovr)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>External (Erdas Imagine .aux)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33792,11 +39684,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsRendererV2PropertiesDialog</name>
     <message>
         <source>Symbology</source>
-        <translation>Simbología</translation>
+        <translation type="obsolete">Simbología</translation>
     </message>
     <message>
         <source>Do you wish to use the original symbology implementation for this layer?</source>
-        <translation>¿Quiere usar la implementación original de la simbología para esta capa?</translation>
+        <translation type="obsolete">¿Quiere usar la implementación original de la simbología para esta capa?</translation>
     </message>
 </context>
 <context>
@@ -33819,7 +39711,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Old symbology</source>
-        <translation>Simbología antigua</translation>
+        <translation type="obsolete">Simbología antigua</translation>
+    </message>
+    <message>
+        <source>Blending mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33906,6 +39802,26 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Max.scale</source>
         <translation>Escala máxima</translation>
+    </message>
+    <message>
+        <source>&lt;li&gt;&lt;nobr&gt;%1 features also in rule %2&lt;/nobr&gt;&lt;/li&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Duplicate count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of features in this rule.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of features in this rule which are also present in other rule(s).</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34046,6 +39962,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Parent rule %1 must have a symbol for this operation.</source>
         <translation>La regla padre %1 debe tener un símbolo para esta operación.</translation>
+    </message>
+    <message>
+        <source>Count features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculating feature count.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">Abortar</translation>
     </message>
 </context>
 <context>
@@ -34223,6 +40151,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Select svg texture file</source>
         <translation>Seleccionar archivo de textura svg</translation>
+    </message>
+    <message>
+        <source>Texture width</source>
+        <translation type="unfinished">Anchura de textura</translation>
+    </message>
+    <message>
+        <source>SVG file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">Rotación</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Border color</source>
+        <translation type="unfinished">Color de borde</translation>
+    </message>
+    <message>
+        <source>Border width</source>
+        <translation type="unfinished">Ancho de borde</translation>
     </message>
 </context>
 <context>
@@ -34585,6 +40537,79 @@ El error fue:
     </message>
 </context>
 <context>
+    <name>QgsSimpleFillSymbolLayerV2Widget</name>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Border color</source>
+        <translation type="unfinished">Color de borde</translation>
+    </message>
+    <message>
+        <source>Border width</source>
+        <translation type="unfinished">Ancho de borde</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSimpleLineSymbolLayerV2Widget</name>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Pen width</source>
+        <translation type="unfinished">Anchura de plumilla</translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation type="unfinished">Desplazamiento</translation>
+    </message>
+    <message>
+        <source>Dash pattern</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join style</source>
+        <translation type="unfinished">Estilo de unión</translation>
+    </message>
+    <message>
+        <source>Cap style</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsSimpleMarkerSymbolLayerV2Widget</name>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nombre</translation>
+    </message>
+    <message>
+        <source>Fill color</source>
+        <translation type="unfinished">Color de relleno</translation>
+    </message>
+    <message>
+        <source>Border color</source>
+        <translation type="unfinished">Color de borde</translation>
+    </message>
+    <message>
+        <source>Outline width</source>
+        <translation type="unfinished">Anchura de línea exterior</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Tamaño</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished">Ángulo</translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation type="unfinished">Desplazamiento</translation>
+    </message>
+</context>
+<context>
     <name>QgsSingleBandGrayRendererWidget</name>
     <message>
         <source>No enhancement</source>
@@ -34602,6 +40627,14 @@ El error fue:
         <source>Clip to MinMax</source>
         <translation>Cortar a MinMax</translation>
     </message>
+    <message>
+        <source>Black to white</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>White to black</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSingleBandGrayRendererWidgetBase</name>
@@ -34611,7 +40644,7 @@ El error fue:
     </message>
     <message>
         <source>Contrast enhancement</source>
-        <translation>Mejora de contraste</translation>
+        <translation type="obsolete">Mejora de contraste</translation>
     </message>
     <message>
         <source>Gray band</source>
@@ -34624,6 +40657,15 @@ El error fue:
     <message>
         <source>Max</source>
         <translation>Máx</translation>
+    </message>
+    <message>
+        <source>Contrast
+enhancement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color gradient</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34703,6 +40745,10 @@ El error fue:
         <translation>Acceso de escritura denegado. Ajuste los permisos del archivo e inténtelo de nuevo.
 
 </translation>
+    </message>
+    <message>
+        <source>Continuous</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34789,7 +40835,7 @@ El error fue:
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished">Colores</translation>
+        <translation type="obsolete">Colores</translation>
     </message>
     <message>
         <source>Min</source>
@@ -34807,24 +40853,36 @@ El error fue:
         <source>Min / Max origin</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Sort colormap items</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clip</source>
+        <translation type="unfinished">Cortar</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSingleSymbolDialog</name>
     <message>
         <source>Refresh markers</source>
-        <translation>Actualizar marcadores</translation>
+        <translation type="obsolete">Actualizar marcadores</translation>
     </message>
     <message>
         <source>None</source>
-        <translation>Nada</translation>
+        <translation type="obsolete">Nada</translation>
     </message>
     <message>
         <source>Texture</source>
-        <translation>Textura</translation>
+        <translation type="obsolete">Textura</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation>Abrir archivo</translation>
+        <translation type="obsolete">Abrir archivo</translation>
     </message>
     <message>
         <source>Images (*.png *.xpm *.jpg)</source>
@@ -34832,62 +40890,62 @@ El error fue:
     </message>
     <message>
         <source>Images</source>
-        <translation>Imágenes</translation>
+        <translation type="obsolete">Imágenes</translation>
     </message>
 </context>
 <context>
     <name>QgsSingleSymbolDialogBase</name>
     <message>
         <source>Single Symbol</source>
-        <translation>Símbolo único</translation>
+        <translation type="obsolete">Símbolo único</translation>
     </message>
     <message>
         <source>In map units</source>
-        <translation>En unidades del mapa</translation>
+        <translation type="obsolete">En unidades del mapa</translation>
     </message>
     <message>
         <source>Drawing by field</source>
-        <translation>Dibujar por campo</translation>
+        <translation type="obsolete">Dibujar por campo</translation>
     </message>
     <message>
         <source>Rotation</source>
-        <translation>Rotación</translation>
+        <translation type="obsolete">Rotación</translation>
     </message>
     <message>
         <source>Area scale</source>
-        <translation>Escala de área</translation>
+        <translation type="obsolete">Escala de área</translation>
     </message>
     <message>
         <source>Symbol</source>
-        <translation>Símbolo</translation>
+        <translation type="obsolete">Símbolo</translation>
     </message>
     <message>
         <source>Fill options</source>
-        <translation>Opciones de relleno</translation>
+        <translation type="obsolete">Opciones de relleno</translation>
     </message>
     <message>
         <source>Outline options</source>
-        <translation>Opciones de línea exterior</translation>
+        <translation type="obsolete">Opciones de línea exterior</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Anchura</translation>
+        <translation type="obsolete">Anchura</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Tamaño</translation>
+        <translation type="obsolete">Tamaño</translation>
     </message>
     <message>
         <source>Point Symbol</source>
-        <translation>Símbolo de punto</translation>
+        <translation type="obsolete">Símbolo de punto</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>Etiqueta</translation>
+        <translation type="obsolete">Etiqueta</translation>
     </message>
 </context>
 <context>
@@ -35026,6 +41084,50 @@ El error fue:
         <source>unknown error cause</source>
         <translation>causa de error desconocida</translation>
     </message>
+    <message>
+        <source>obsolete libspatialite: connecting to this DB requires using v.4.0 (or any subsequent)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>obsolete libspatialite: AbstractInterface is unsupported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UNKNOWN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GEOMETRY</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>POINT</source>
+        <translation type="unfinished">PUNTO</translation>
+    </message>
+    <message>
+        <source>LINESTRING</source>
+        <translation type="unfinished">CADENADELINEAS</translation>
+    </message>
+    <message>
+        <source>POLYGON</source>
+        <translation type="unfinished">POLÍGONO</translation>
+    </message>
+    <message>
+        <source>MULTIPOINT</source>
+        <translation type="unfinished">MULTIPUNTO</translation>
+    </message>
+    <message>
+        <source>MULTILINESTRING</source>
+        <translation type="unfinished">MULTICADENADELINEAS</translation>
+    </message>
+    <message>
+        <source>MULTIPOLYGON</source>
+        <translation type="unfinished">MULTIPOLIGONO</translation>
+    </message>
+    <message>
+        <source>GEOMETRYCOLLECTION</source>
+        <translation type="unfinished">COLECCIONDEGEOMETRIAS</translation>
+    </message>
 </context>
 <context>
     <name>QgsSpatiaLiteProvider</name>
@@ -35061,18 +41163,26 @@ SQL: %1</translation>
     </message>
     <message>
         <source>SQLite error getting feature: %1</source>
-        <translation>Error de SQLite al obtener objeto espacial: %1</translation>
+        <translation type="obsolete">Error de SQLite al obtener objeto espacial: %1</translation>
     </message>
     <message>
         <source>FAILURE: Field %1 not found.</source>
         <translation>FALLO: Campo%1 no encontrado.</translation>
+    </message>
+    <message>
+        <source>Retrieval of spatialite version failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not parse spatialite version string &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QgsSpatiaLiteSourceSelect</name>
     <message>
         <source>&amp;Build Query</source>
-        <translation>&amp;Construir consulta</translation>
+        <translation type="obsolete">&amp;Construir consulta</translation>
     </message>
     <message>
         <source>Wildcard</source>
@@ -35193,6 +41303,37 @@ SQL: %1</translation>
     <message>
         <source>All files</source>
         <translation>Todos los archivos</translation>
+    </message>
+    <message>
+        <source>&amp;Update statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Set Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to update the internal statistics for DB: %1?
+
+This could take a long time (depending on the DB size),
+but implies better performance thereafter.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Confirm Update Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Internal statistics successfully updated for: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while updating internal statistics for: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -36121,7 +42262,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -36145,6 +42286,14 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship/sponsors.html&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -36189,11 +42338,11 @@ Quantum GIS necesita que la relación tenga una columna entera no mayor de 32 bi
     </message>
     <message>
         <source>Error describing bind parameters</source>
-        <translation>Error al describir parámetros de enlace</translation>
+        <translation type="obsolete">Error al describir parámetros de enlace</translation>
     </message>
     <message>
         <source>Error binding parameters</source>
-        <translation>Error enlazando parámetros</translation>
+        <translation type="obsolete">Error enlazando parámetros</translation>
     </message>
     <message>
         <source>Error inserting features</source>
@@ -36270,6 +42419,14 @@ Updates to geometry values will be disabled, and query performance may be poor b
         <translation>La columna %1 (%2) contiene geometrías que pertenecen a un sistema de referencia espacial esférico (SRID=%3). %4
 
 Se desactivarán las actualizaciones de los valores de la geometría y el rendimiento de las consultas puede ser pobre porque no se usarán índices espaciales. Para mejorar el rendimiento piense en crear un índice espacial en una columna nueva (posiblemente procesada) que contenga una proyección plana de esas geometrías. Para ayuda, consulte las descripciones los métodos ST_SRID(INT) y ST_Transform(INT) en la documentación de SQL Anywhere.</translation>
+    </message>
+    <message>
+        <source>Read attempt on an invalid SqlAnywhere data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQLAnywhere</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -36697,6 +42854,44 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
 </context>
 <context>
+    <name>QgsSvgAnnotationDialog</name>
+    <message>
+        <source>SVG annotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Borrar</translation>
+    </message>
+    <message>
+        <source>Select SVG file</source>
+        <translation type="unfinished">Seleccionar archivo SVG</translation>
+    </message>
+    <message>
+        <source>SVG files</source>
+        <translation type="unfinished">Archivos SVG</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSvgCache</name>
+    <message>
+        <source>SVG request failed [error: %1 - url: %2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG request error [status: %1 - reason phrase: %2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 bytes of svg image downloaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Select SVG file</source>
@@ -36705,6 +42900,72 @@ Hubo un problema con su base de datos de símbolos.</translation>
     <message>
         <source>SVG files</source>
         <translation>Archivos SVG</translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Tamaño</translation>
+    </message>
+    <message>
+        <source>Border width</source>
+        <translation type="unfinished">Ancho de borde</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="unfinished">Ángulo</translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation type="unfinished">Desplazamiento</translation>
+    </message>
+    <message>
+        <source>SVG file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Color</translation>
+    </message>
+    <message>
+        <source>Border color</source>
+        <translation type="unfinished">Color de borde</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSvgSelectorGroupsModel</name>
+    <message>
+        <source>App Symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsSvgSelectorWidget</name>
+    <message>
+        <source>Select SVG file</source>
+        <translation type="unfinished">Seleccionar archivo SVG</translation>
+    </message>
+    <message>
+        <source>SVG files</source>
+        <translation type="unfinished">Archivos SVG</translation>
+    </message>
+    <message>
+        <source>Invalid file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, file does not exist or is not readable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid file url</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error, file URL is invalid</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -36959,7 +43220,7 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Select background color</source>
-        <translation>Seleccionar color de fondo</translation>
+        <translation type="obsolete">Seleccionar color de fondo</translation>
     </message>
 </context>
 <context>
@@ -36978,7 +43239,7 @@ Hubo un problema con su base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation>Color de fondo</translation>
+        <translation type="obsolete">Color de fondo</translation>
     </message>
 </context>
 <context>
@@ -37365,16 +43626,16 @@ p, li { white-space: pre-wrap; }
     <name>QgsUniqueValueDialog</name>
     <message>
         <source>default</source>
-        <translation>predeterminado</translation>
+        <translation type="obsolete">predeterminado</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
-        <translation>Confirmar borrado</translation>
+        <translation type="obsolete">Confirmar borrado</translation>
     </message>
     <message>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
-        <translation>El campo de clasificación se cambió de &apos;%1&apos; a &apos;%2&apos;.
+        <translation type="obsolete">El campo de clasificación se cambió de &apos;%1&apos; a &apos;%2&apos;.
 ¿Deben borrarse las clases existentes antes de la clasificación?</translation>
     </message>
 </context>
@@ -37382,35 +43643,35 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsUniqueValueDialogBase</name>
     <message>
         <source>Form1</source>
-        <translation>Form1</translation>
+        <translation type="obsolete">Form1</translation>
     </message>
     <message>
         <source>Classify</source>
-        <translation>Clasificar</translation>
+        <translation type="obsolete">Clasificar</translation>
     </message>
     <message>
         <source>Classification field</source>
-        <translation>Campo de clasificación</translation>
+        <translation type="obsolete">Campo de clasificación</translation>
     </message>
     <message>
         <source>Add class</source>
-        <translation>Añadir clase</translation>
+        <translation type="obsolete">Añadir clase</translation>
     </message>
     <message>
         <source>Delete classes</source>
-        <translation>Borrar clases</translation>
+        <translation type="obsolete">Borrar clases</translation>
     </message>
     <message>
         <source>Randomize Colors</source>
-        <translation>Colores aleatorios</translation>
+        <translation type="obsolete">Colores aleatorios</translation>
     </message>
     <message>
         <source>Reset Colors</source>
-        <translation>Restablecer colores</translation>
+        <translation type="obsolete">Restablecer colores</translation>
     </message>
     <message>
         <source>Restrict changes to common properties</source>
-        <translation>Restringir cambios a las propiedades comunes</translation>
+        <translation type="obsolete">Restringir cambios a las propiedades comunes</translation>
     </message>
 </context>
 <context>
@@ -37504,6 +43765,22 @@ Should the existing classes be deleted before classification?</source>
         <source>Please enter offset in percents (%) of the new stop</source>
         <translation>Por favor, introduzca el desplazamiento en porcentaje (%) del nuevo paso</translation>
     </message>
+    <message>
+        <source>Discrete</source>
+        <translation type="unfinished">Discreto</translation>
+    </message>
+    <message>
+        <source>Continous</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gradient file : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>License file : %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorGradientColorRampV2DialogBase</name>
@@ -37513,7 +43790,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
     </message>
     <message>
         <source>Color 1</source>
@@ -37541,11 +43818,27 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Offset</source>
-        <translation>Desplazamiento</translation>
+        <translation type="obsolete">Desplazamiento</translation>
     </message>
     <message>
         <source>Preview</source>
         <translation>Previsualizar</translation>
+    </message>
+    <message>
+        <source>Change...</source>
+        <translation type="unfinished">Cambiar...</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
+    </message>
+    <message>
+        <source>Offset (%)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation type="unfinished">Información</translation>
     </message>
 </context>
 <context>
@@ -37560,32 +43853,32 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>SUCCESS: attribute %1 was added.</source>
-        <translation>ÉXITO: se añadió el atributo %1.</translation>
+        <translation type="obsolete">ÉXITO: se añadió el atributo %1.</translation>
     </message>
     <message>
         <source>ERROR: attribute %1 not added</source>
-        <translation>ERROR: no se añadió el atributo %1</translation>
+        <translation type="obsolete">ERROR: no se añadió el atributo %1</translation>
     </message>
     <message>
         <source>No renderer object</source>
-        <translation>Ningún objeto renderizador</translation>
+        <translation type="obsolete">Ningún objeto renderizador</translation>
     </message>
     <message>
         <source>Classification field not found</source>
-        <translation>No se ha encontrado el campo de clasificación</translation>
+        <translation type="obsolete">No se ha encontrado el campo de clasificación</translation>
     </message>
     <message>
         <source>renderer failed to save</source>
-        <translation>el renderizador no pudo guardar</translation>
+        <translation type="obsolete">el renderizador no pudo guardar</translation>
     </message>
     <message>
         <source>no renderer</source>
-        <translation>ningún renderizador</translation>
+        <translation type="obsolete">ningún renderizador</translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ÉXITO: se ha borrado 1 atributo.</numerusform>
             <numerusform>ÉXITO: se han borrado %n atributos.</numerusform>
         </translation>
@@ -37593,7 +43886,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ERROR: no se ha borrado 1 atributo.</numerusform>
             <numerusform>ERROR: no se han borrado %n atributos.</numerusform>
         </translation>
@@ -37601,7 +43894,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ÉXITO: se ha añadido 1 atributo.</numerusform>
             <numerusform>ÉXITO: se han añadido %n atributos.</numerusform>
         </translation>
@@ -37609,7 +43902,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ERROR: no se ha añadido 1 atributo nuevo</numerusform>
             <numerusform>ERROR: no se han añadido %n atributos nuevos</numerusform>
         </translation>
@@ -37617,7 +43910,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ÉXITO: se ha cambiado el valor de 1 atributo.</numerusform>
             <numerusform>ÉXITO: se ha cambiado el valor de %n atributos.</numerusform>
         </translation>
@@ -37625,7 +43918,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ERROR: no se ha aplicado el cambio de valor de 1 atributo.</numerusform>
             <numerusform>ERROR: no se ha aplicado el cambio de valor de %n atributos.</numerusform>
         </translation>
@@ -37633,7 +43926,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ÉXITO: se ha añadido 1 objeto espacial.</numerusform>
             <numerusform>ÉXITO: se han añadido %n objetos espaciales.</numerusform>
         </translation>
@@ -37641,7 +43934,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ERROR: no se ha añadido 1 objeto espacial.</numerusform>
             <numerusform>ERROR: no se han añadido %n objetos espaciales.</numerusform>
         </translation>
@@ -37649,7 +43942,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ÉXITO: se cambió 1 geometría.</numerusform>
             <numerusform>ÉXITO: se cambiaron %n geometrías.</numerusform>
         </translation>
@@ -37657,7 +43950,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ERROR: no se cambió 1 geometría.</numerusform>
             <numerusform>ERROR: no se cambiaron %n geometrías.</numerusform>
         </translation>
@@ -37665,7 +43958,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ÉXITO: 1 objeto espacial borrado.</numerusform>
             <numerusform>ÉXITO: %n objetos espaciales borrados.</numerusform>
         </translation>
@@ -37673,7 +43966,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ERROR:no se ha borrado 1 objeto espacial.</numerusform>
             <numerusform>ERROR:no se han borrado %n objetos espaciales.</numerusform>
         </translation>
@@ -37684,7 +43977,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Unknown renderer</source>
-        <translation>Renderizador desconocido</translation>
+        <translation type="obsolete">Renderizador desconocido</translation>
     </message>
     <message>
         <source>General:</source>
@@ -37773,7 +44066,7 @@ Should the existing classes be deleted before classification?</source>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>ERROR: no se ha añadido 1 objeto espacial - el proveedor no admite añadir objetos espaciales.</numerusform>
             <numerusform>ERROR: no se han añadido %n objeto espacial - el proveedor no admite añadir objetos espaciales.</numerusform>
         </translation>
@@ -37781,7 +44074,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>
   Provider errors:</source>
-        <translation>
+        <translation type="obsolete">
   Errores del proveedor:</translation>
     </message>
     <message>
@@ -37790,76 +44083,209 @@ Should the existing classes be deleted before classification?</source>
         <translation>Errores al acometer:
   %1</translation>
     </message>
+    <message>
+        <source>Updating feature count for layer %1</source>
+        <translation type="unfinished">Actualizando la cuenta de objetos espaciales de la capa %1</translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">Abortar</translation>
+    </message>
+    <message>
+        <source>Primary key attributes: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsVectorLayerEditBuffer</name>
+    <message numerus="yes">
+        <source>SUCCESS: %n attribute(s) deleted.</source>
+        <comment>deleted attributes count</comment>
+        <translation type="unfinished">
+            <numerusform>ÉXITO: se ha borrado 1 atributo.</numerusform>
+            <numerusform>ÉXITO: se han borrado %n atributos.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>ERROR: %n attribute(s) not deleted.</source>
+        <comment>not deleted attributes count</comment>
+        <translation type="unfinished">
+            <numerusform>ERROR: no se ha borrado 1 atributo.</numerusform>
+            <numerusform>ERROR: no se han borrado %n atributos.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>SUCCESS: %n attribute(s) added.</source>
+        <comment>added attributes count</comment>
+        <translation type="unfinished">
+            <numerusform>ÉXITO: se ha añadido 1 atributo.</numerusform>
+            <numerusform>ÉXITO: se han añadido %n atributos.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>ERROR: %n new attribute(s) not added</source>
+        <comment>not added attributes count</comment>
+        <translation type="unfinished">
+            <numerusform>ERROR: no se ha añadido 1 atributo nuevo</numerusform>
+            <numerusform>ERROR: no se han añadido %n atributos nuevos</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>ERROR: the count of fields is incorrect after addition/removal of fields!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: field with index %1 is not the same!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>SUCCESS: %n attribute value(s) changed.</source>
+        <comment>changed attribute values count</comment>
+        <translation type="unfinished">
+            <numerusform>ÉXITO: se ha cambiado el valor de 1 atributo.</numerusform>
+            <numerusform>ÉXITO: se ha cambiado el valor de %n atributos.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>ERROR: %n attribute value change(s) not applied.</source>
+        <comment>not changed attribute values count</comment>
+        <translation type="unfinished">
+            <numerusform>ERROR: no se ha aplicado el cambio de valor de 1 atributo.</numerusform>
+            <numerusform>ERROR: no se ha aplicado el cambio de valor de %n atributos.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>SUCCESS: %n feature(s) deleted.</source>
+        <comment>deleted features count</comment>
+        <translation type="unfinished">
+            <numerusform>ÉXITO: 1 objeto espacial borrado.</numerusform>
+            <numerusform>ÉXITO: %n objetos espaciales borrados.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>ERROR: %n feature(s) not deleted.</source>
+        <comment>not deleted features count</comment>
+        <translation type="unfinished">
+            <numerusform>ERROR:no se ha borrado 1 objeto espacial.</numerusform>
+            <numerusform>ERROR:no se han borrado %n objetos espaciales.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>SUCCESS: %n feature(s) added.</source>
+        <comment>added features count</comment>
+        <translation type="unfinished">
+            <numerusform>ÉXITO: se ha añadido 1 objeto espacial.</numerusform>
+            <numerusform>ÉXITO: se han añadido %n objetos espaciales.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>ERROR: %n feature(s) not added.</source>
+        <comment>not added features count</comment>
+        <translation type="unfinished">
+            <numerusform>ERROR: no se ha añadido 1 objeto espacial.</numerusform>
+            <numerusform>ERROR: no se han añadido %n objetos espaciales.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
+        <comment>not added features count</comment>
+        <translation type="unfinished">
+            <numerusform>ERROR: no se ha añadido 1 objeto espacial - el proveedor no admite añadir objetos espaciales.</numerusform>
+            <numerusform>ERROR: no se han añadido %n objeto espacial - el proveedor no admite añadir objetos espaciales.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>SUCCESS: %n geometries were changed.</source>
+        <comment>changed geometries count</comment>
+        <translation type="unfinished">
+            <numerusform>ÉXITO: se cambió 1 geometría.</numerusform>
+            <numerusform>ÉXITO: se cambiaron %n geometrías.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>ERROR: %n geometries not changed.</source>
+        <comment>not changed geometries count</comment>
+        <translation type="unfinished">
+            <numerusform>ERROR: no se cambió 1 geometría.</numerusform>
+            <numerusform>ERROR: no se cambiaron %n geometrías.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>
+  Provider errors:</source>
+        <translation type="unfinished">
+  Errores del proveedor:</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerProperties</name>
     <message>
         <source>Single Symbol</source>
-        <translation>Símbolo único</translation>
+        <translation type="obsolete">Símbolo único</translation>
     </message>
     <message>
         <source>Graduated Symbol</source>
-        <translation>Símbolo graduado</translation>
+        <translation type="obsolete">Símbolo graduado</translation>
     </message>
     <message>
         <source>Continuous Color</source>
-        <translation>Color graduado</translation>
+        <translation type="obsolete">Color graduado</translation>
     </message>
     <message>
         <source>Unique Value</source>
-        <translation>Valor único</translation>
+        <translation type="obsolete">Valor único</translation>
     </message>
     <message>
         <source>Line edit</source>
-        <translation>Edición de líneas</translation>
+        <translation type="obsolete">Edición de líneas</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation>Valores únicos</translation>
+        <translation type="obsolete">Valores únicos</translation>
     </message>
     <message>
         <source>Unique values editable</source>
-        <translation>Valores únicos editable</translation>
+        <translation type="obsolete">Valores únicos editable</translation>
     </message>
     <message>
         <source>Classification</source>
-        <translation>Clasificación</translation>
+        <translation type="obsolete">Clasificación</translation>
     </message>
     <message>
         <source>Value map</source>
-        <translation>Mapa de valor</translation>
+        <translation type="obsolete">Mapa de valor</translation>
     </message>
     <message>
         <source>Edit range</source>
-        <translation>Intervalo de edición</translation>
+        <translation type="obsolete">Intervalo de edición</translation>
     </message>
     <message>
         <source>Slider range</source>
-        <translation>Intervalo del deslizador</translation>
+        <translation type="obsolete">Intervalo del deslizador</translation>
     </message>
     <message>
         <source>Dial range</source>
-        <translation>Intervalo del dial</translation>
+        <translation type="obsolete">Intervalo del dial</translation>
     </message>
     <message>
         <source>File name</source>
-        <translation>Nombre de archivo</translation>
+        <translation type="obsolete">Nombre de archivo</translation>
     </message>
     <message>
         <source>Enumeration</source>
-        <translation>Enumeración</translation>
+        <translation type="obsolete">Enumeración</translation>
     </message>
     <message>
         <source>Immutable</source>
-        <translation>Inmutable</translation>
+        <translation type="obsolete">Inmutable</translation>
     </message>
     <message>
         <source>Hidden</source>
-        <translation>Oculta</translation>
+        <translation type="obsolete">Oculta</translation>
     </message>
     <message>
         <source>Calendar</source>
-        <translation>Calendario</translation>
+        <translation type="obsolete">Calendario</translation>
     </message>
     <message>
         <source>Text diagram</source>
@@ -37967,19 +44393,19 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>Length</source>
-        <translation>Tamaño</translation>
+        <translation type="obsolete">Tamaño</translation>
     </message>
     <message>
         <source>Precision</source>
-        <translation>Precisión</translation>
+        <translation type="obsolete">Precisión</translation>
     </message>
     <message>
         <source>Comment</source>
-        <translation>Comentario</translation>
+        <translation type="obsolete">Comentario</translation>
     </message>
     <message>
         <source>Default Style</source>
@@ -38031,19 +44457,19 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Name conflict</source>
-        <translation>Conflicto de nombres</translation>
+        <translation type="obsolete">Conflicto de nombres</translation>
     </message>
     <message>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
-        <translation>No se pudo insertar el atributo. El nombre ya existe en la tabla.</translation>
+        <translation type="obsolete">No se pudo insertar el atributo. El nombre ya existe en la tabla.</translation>
     </message>
     <message>
         <source>Added attribute</source>
-        <translation>Atributo añadido</translation>
+        <translation type="obsolete">Atributo añadido</translation>
     </message>
     <message>
         <source>Deleted attribute</source>
-        <translation>Atributo borrado</translation>
+        <translation type="obsolete">Atributo borrado</translation>
     </message>
     <message>
         <source>Creation of spatial index successful</source>
@@ -38055,27 +44481,27 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation>Transparencia: %1%</translation>
+        <translation type="obsolete">Transparencia: %1%</translation>
     </message>
     <message>
         <source>Overlay</source>
-        <translation>Superponer</translation>
+        <translation type="obsolete">Superponer</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation>ID</translation>
+        <translation type="obsolete">ID</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
     <message>
         <source>Edit widget</source>
-        <translation>Control de edición</translation>
+        <translation type="obsolete">Control de edición</translation>
     </message>
     <message>
         <source>Alias</source>
-        <translation>Alias</translation>
+        <translation type="obsolete">Alias</translation>
     </message>
     <message>
         <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
@@ -38131,11 +44557,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Checkbox</source>
-        <translation>Casilla de verificación</translation>
+        <translation type="obsolete">Casilla de verificación</translation>
     </message>
     <message>
         <source>Select edit form</source>
-        <translation>Seleccionar formulario de edición</translation>
+        <translation type="obsolete">Seleccionar formulario de edición</translation>
     </message>
     <message>
         <source>UI file (*.ui)</source>
@@ -38143,27 +44569,27 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Text edit</source>
-        <translation>Edición de texto</translation>
+        <translation type="obsolete">Edición de texto</translation>
     </message>
     <message>
         <source>Symbology</source>
-        <translation>Simbología</translation>
+        <translation type="obsolete">Simbología</translation>
     </message>
     <message>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
-        <translation>¿Quiere usar la nueva implementación de la simbología para esta capa?</translation>
+        <translation type="obsolete">¿Quiere usar la nueva implementación de la simbología para esta capa?</translation>
     </message>
     <message>
         <source>Value relation</source>
-        <translation>Relación de valores</translation>
+        <translation type="obsolete">Relación de valores</translation>
     </message>
     <message>
         <source>UUID generator</source>
-        <translation>Generador de UUID</translation>
+        <translation type="obsolete">Generador de UUID</translation>
     </message>
     <message>
         <source>UI file</source>
-        <translation>Archivo UI</translation>
+        <translation type="obsolete">Archivo UI</translation>
     </message>
     <message>
         <source>Load layer properties from style file</source>
@@ -38199,7 +44625,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Save Style...</source>
-        <translation>Guardar estilo...</translation>
+        <translation type="obsolete">Guardar estilo...</translation>
     </message>
 </context>
 <context>
@@ -38250,7 +44676,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Field calculator</source>
-        <translation>Calculadora de campos</translation>
+        <translation type="obsolete">Calculadora de campos</translation>
     </message>
     <message>
         <source>Create Spatial Index</source>
@@ -38302,11 +44728,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Legend type</source>
-        <translation>Tipo de leyenda</translation>
+        <translation type="obsolete">Tipo de leyenda</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation>Transparencia</translation>
+        <translation type="obsolete">Transparencia</translation>
     </message>
     <message>
         <source>Fields</source>
@@ -38454,43 +44880,43 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>New column</source>
-        <translation>Nueva columna</translation>
+        <translation type="obsolete">Nueva columna</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation>Ctrl+N</translation>
+        <translation type="obsolete">Ctrl+N</translation>
     </message>
     <message>
         <source>Delete column</source>
-        <translation>Borrar columna</translation>
+        <translation type="obsolete">Borrar columna</translation>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation>Ctrl+X</translation>
+        <translation type="obsolete">Ctrl+X</translation>
     </message>
     <message>
         <source>Toggle editing mode</source>
-        <translation>Conmutar el modo edición</translation>
+        <translation type="obsolete">Conmutar el modo edición</translation>
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation>Pulsar para conmutar la edición de la tabla</translation>
+        <translation type="obsolete">Pulsar para conmutar la edición de la tabla</translation>
     </message>
     <message>
         <source>Edit UI</source>
-        <translation>Editar IU</translation>
+        <translation type="obsolete">Editar IU</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>New symbology</source>
-        <translation>Nueva simbología</translation>
+        <translation type="obsolete">Nueva simbología</translation>
     </message>
     <message>
         <source>Init function</source>
-        <translation>Función Init</translation>
+        <translation type="obsolete">Función Init</translation>
     </message>
     <message>
         <source>Provider-specific options</source>
@@ -38522,11 +44948,11 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Less than:</source>
-        <translation>Menor que:</translation>
+        <translation type="obsolete">Menor que:</translation>
     </message>
     <message>
         <source>More than or equal to:</source>
-        <translation>Mayor o igual que:</translation>
+        <translation type="obsolete">Mayor o igual que:</translation>
     </message>
     <message>
         <source>Display</source>
@@ -38534,7 +44960,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Legend display text</source>
-        <translation>Visualizar texto de leyenda</translation>
+        <translation type="obsolete">Visualizar texto de leyenda</translation>
     </message>
     <message>
         <source>Map Tip display text</source>
@@ -38568,6 +44994,44 @@ Should the existing classes be deleted before classification?</source>
         <source>Field</source>
         <translation>Campo</translation>
     </message>
+    <message>
+        <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Minimum scale&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(exclusive)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Maximum scale&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;(inclusive)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current</source>
+        <translation type="unfinished">Actual</translation>
+    </message>
+    <message>
+        <source>Layer name</source>
+        <translation type="unfinished">Nombre de la capa</translation>
+    </message>
+    <message>
+        <source>displayed as</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerSaveAsDialog</name>
@@ -38585,7 +45049,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>SpatiaLite</source>
-        <translation>SpatiaLite</translation>
+        <translation type="obsolete">SpatiaLite</translation>
     </message>
     <message>
         <source>Layer CRS</source>
@@ -38598,6 +45062,18 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Selected CRS</source>
         <translation>SRC seleccionado</translation>
+    </message>
+    <message>
+        <source>No symbology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature symbology</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol layer symbology</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -38649,6 +45125,18 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Add saved file to map</source>
         <translation>Añadir archivo guardado al mapa</translation>
+    </message>
+    <message>
+        <source>Symbology export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>1:</source>
+        <translation type="unfinished">1:</translation>
+    </message>
+    <message>
+        <source>Scale</source>
+        <translation type="unfinished">Escala</translation>
     </message>
 </context>
 <context>
@@ -38716,6 +45204,13 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
+    <name>QgsWFSCapabilities</name>
+    <message>
+        <source>Either the WFS server does not support WFS version 1.0.0 or the WFS url is wrong</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsWFSConnectionItem</name>
     <message>
         <source>Failed to retrieve layers</source>
@@ -38742,12 +45237,12 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Abort</source>
-        <translation>Abortar</translation>
+        <translation type="obsolete">Abortar</translation>
     </message>
     <message>
         <source>Loading WFS data
 %1</source>
-        <translation>Cargando datos WFS
+        <translation type="obsolete">Cargando datos WFS
 %1</translation>
     </message>
 </context>
@@ -38854,20 +45349,32 @@ Should the existing classes be deleted before classification?</source>
         <source>Fields</source>
         <translation type="obsolete">Campos</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished">&amp;Añadir</translation>
+    </message>
+    <message>
+        <source>&amp;Build query</source>
+        <translation type="unfinished">&amp;Construir consulta</translation>
+    </message>
+    <message>
+        <source>Build query</source>
+        <translation type="unfinished">Construir consulta</translation>
+    </message>
 </context>
 <context>
     <name>QgsWFSSourceSelectBase</name>
     <message>
         <source>Title</source>
-        <translation>Título</translation>
+        <translation type="obsolete">Título</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nombre</translation>
+        <translation type="obsolete">Nombre</translation>
     </message>
     <message>
         <source>Abstract</source>
-        <translation>Resumen</translation>
+        <translation type="obsolete">Resumen</translation>
     </message>
     <message>
         <source>Change ...</source>
@@ -38924,12 +45431,24 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Cache
 Features</source>
-        <translation>Caché
+        <translation type="obsolete">Caché
 Objetos espaciales</translation>
     </message>
     <message>
         <source>Filter</source>
-        <translation>Filtro</translation>
+        <translation type="obsolete">Filtro</translation>
+    </message>
+    <message>
+        <source>Filter:</source>
+        <translation type="unfinished">Filtrar:</translation>
+    </message>
+    <message>
+        <source>Display WFS FeatureTypes containing this word in the title, name or abstract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use title for layer name</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39500,7 +46019,7 @@ La respuesta fue:
     </message>
     <message>
         <source>Cannot find boundary in multipart content type</source>
-        <translation>No se puede encontrar límite en el tipo de contenido multiparte</translation>
+        <translation type="obsolete">No se puede encontrar límite en el tipo de contenido multiparte</translation>
     </message>
     <message>
         <source>Expected 2 parts, %1 received</source>
@@ -39713,6 +46232,37 @@ La respuesta fue:
     <message>
         <source>And %1 more coverages</source>
         <translation>Y %1 coberturas más</translation>
+    </message>
+    <message>
+        <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot parse multipart response: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot verify coverage full extent: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read data error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RasterIO error: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsWebView</name>
+    <message>
+        <source>Print</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -40037,11 +46587,11 @@ La respuesta fue:
     </message>
     <message>
         <source>Layer cannot be queried in plain text.</source>
-        <translation>La capa no se puede consultar en texto plano.</translation>
+        <translation type="obsolete">La capa no se puede consultar en texto plano.</translation>
     </message>
     <message>
         <source>Layer cannot be queried.</source>
-        <translation>La capa no se puede consultar.</translation>
+        <translation type="obsolete">La capa no se puede consultar.</translation>
     </message>
     <message>
         <source>identify request redirected.</source>
@@ -40179,11 +46729,11 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Returned image is flawed [%1]</source>
-        <translation>La imagen devuelta es defectuosa [%1]</translation>
+        <translation type="obsolete">La imagen devuelta es defectuosa [%1]</translation>
     </message>
     <message>
         <source>composed error message &apos;%1&apos;.</source>
-        <translation>mensaje &apos;%1&apos; de error compuesto.</translation>
+        <translation type="obsolete">mensaje &apos;%1&apos; de error compuesto.</translation>
     </message>
     <message>
         <source>mismatch layers=%1, styles=%2 and crs=%3.</source>
@@ -40199,7 +46749,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>ERROR: GetFeatureInfo failed</source>
-        <translation>ERROR: falló GetFeatureInfo</translation>
+        <translation type="obsolete">ERROR: falló GetFeatureInfo</translation>
     </message>
     <message>
         <source>Map getfeatureinfo error: %1 [%2]</source>
@@ -40239,7 +46789,7 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
-        <translation>Error en la solicitud de mapa (Estado: %1; Respuesta: %2; URL:%3)</translation>
+        <translation type="obsolete">Error en la solicitud de mapa (Estado: %1; Respuesta: %2; URL:%3)</translation>
     </message>
     <message>
         <source>Map request failed [error:%1 url:%2]</source>
@@ -40280,6 +46830,74 @@ URL probada: %1</translation>
     <message>
         <source>Available Tilesets</source>
         <translation>Conjuntos de teselas disponibles</translation>
+    </message>
+    <message>
+        <source>Cannot parse URI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot calculate extent</source>
+        <translation type="unfinished">No se ha podido calcular la extensión</translation>
+    </message>
+    <message>
+        <source>Cannot set CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of tile layers must be one</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile layer not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile layer or tile matrix set not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Redirect loop detected: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Service Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extent for layer %1 not found in capabilities</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Format not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Get feature info request error (Title:%1; Error:%2; URL: %3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GML schema is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GML is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot parse getfeatureinfo: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -40683,15 +47301,15 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE Toolbox</source>
-        <translation>&amp;SEXTANTE Barra de herramientas</translation>
+        <translation type="obsolete">&amp;SEXTANTE Barra de herramientas</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE Modeler</source>
-        <translation>&amp;SEXTANTE Modelador</translation>
+        <translation type="obsolete">&amp;SEXTANTE Modelador</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE History and log</source>
-        <translation>&amp;SEXTANTE Historia y registro</translation>
+        <translation type="obsolete">&amp;SEXTANTE Historia y registro</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE options and configuration</source>
@@ -40703,11 +47321,23 @@ URL probada: %1</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE help</source>
-        <translation>Ayuda de &amp;SEXTANTE</translation>
+        <translation type="obsolete">Ayuda de &amp;SEXTANTE</translation>
     </message>
     <message>
         <source>&amp;About SEXTANTE</source>
-        <translation>&amp;Acerca de SEXTANTE</translation>
+        <translation type="obsolete">&amp;Acerca de SEXTANTE</translation>
+    </message>
+    <message>
+        <source>&amp;SEXTANTE toolbox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;SEXTANTE modeler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;SEXTANTE history and log</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -40956,7 +47586,7 @@ Descripción: %2</translation>
     </message>
     <message>
         <source>&amp;Build Query</source>
-        <translation>&amp;Construir consulta</translation>
+        <translation type="obsolete">&amp;Construir consulta</translation>
     </message>
     <message>
         <source>Wildcard</source>
@@ -41048,6 +47678,10 @@ Descripción: %3</translation>
         <source>found in your schema</source>
         <translation>encontró en su esquema</translation>
     </message>
+    <message>
+        <source>&amp;Set Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SaSourceSelectBase</name>
@@ -41094,6 +47728,18 @@ Descripción: %3</translation>
     <message>
         <source>Search in columns</source>
         <translation>Buscar en columnas</translation>
+    </message>
+</context>
+<context>
+    <name>SaveAsPythonScriptAction</name>
+    <message>
+        <source>I/O error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to save edits. Reason:
+ %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41216,6 +47862,29 @@ Descripción: %3</translation>
     </message>
 </context>
 <context>
+    <name>SettingsDialogPythonConsole</name>
+    <message>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Tamaño</translation>
+    </message>
+    <message>
+        <source>API file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished">Explorar</translation>
+    </message>
+    <message>
+        <source>Using preloaded API file</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SextanteToolbox</name>
     <message>
         <source>SEXTANTE Toolbox</source>
@@ -41240,11 +47909,19 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Warning</source>
-        <translation>Advertencia</translation>
+        <translation type="obsolete">Advertencia</translation>
     </message>
     <message>
         <source>Recently used algorithms</source>
         <translation>Algorimos usados recientemente</translation>
+    </message>
+    <message>
+        <source>Enter algorithm name to filter list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Search...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41309,7 +47986,7 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
     </message>
     <message>
         <source>Size</source>
@@ -41337,11 +48014,30 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Style</source>
-        <translation>Estilo</translation>
+        <translation type="obsolete">Estilo</translation>
     </message>
     <message>
         <source>Advanced</source>
         <translation>Avanzado</translation>
+    </message>
+    <message>
+        <source>Symbol</source>
+        <translation type="unfinished">Símbolo</translation>
+    </message>
+</context>
+<context>
+    <name>Topol</name>
+    <message>
+        <source>TopologyChecker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Topology Checker for vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Topology Checker</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41396,6 +48092,32 @@ additional algorithm providers</source>
     <message>
         <source>Error(s)</source>
         <translation>Error(es)</translation>
+    </message>
+    <message>
+        <source>Please specify output shapefile</source>
+        <translation type="unfinished">Por favor, especifique el archivo shape de salida</translation>
+    </message>
+    <message>
+        <source>Geometry</source>
+        <translation type="unfinished">Geometría</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+%2
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished">Archivo shape de salida creado:
+%1
+%2
+
+¿Quiere añadir la nueva capa al panel Capas?</translation>
+    </message>
+    <message>
+        <source>Error loading output shapefile:
+%1</source>
+        <translation type="unfinished">Error al cargar el archivo shape de salida:
+%1</translation>
     </message>
 </context>
 <context>
@@ -41488,19 +48210,19 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Settings</source>
-        <translation>Configuración</translation>
+        <translation type="obsolete">Configuración</translation>
     </message>
     <message>
         <source>Border color</source>
-        <translation>Color de borde</translation>
+        <translation type="obsolete">Color de borde</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation>Color de relleno</translation>
+        <translation type="obsolete">Color de relleno</translation>
     </message>
     <message>
         <source>Symbol width</source>
@@ -41520,15 +48242,39 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Data defined settings</source>
-        <translation>Configuración definida por datos</translation>
+        <translation type="obsolete">Configuración definida por datos</translation>
     </message>
     <message>
         <source>Outline color</source>
-        <translation>Color de línea exterior</translation>
+        <translation type="obsolete">Color de línea exterior</translation>
     </message>
     <message>
         <source>Shape</source>
-        <translation>Forma</translation>
+        <translation type="obsolete">Forma</translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished">Colores</translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation type="unfinished">Relleno</translation>
+    </message>
+    <message>
+        <source>Border</source>
+        <translation type="unfinished">Contorno</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41547,7 +48293,7 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
     </message>
     <message>
         <source>Size</source>
@@ -41565,6 +48311,14 @@ additional algorithm providers</source>
         <source>Offset X,Y</source>
         <translation>Desplazamiento X, Y</translation>
     </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
 </context>
 <context>
     <name>WidgetLineDecoration</name>
@@ -41578,11 +48332,19 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
     </message>
     <message>
         <source>Pen width</source>
         <translation>Anchura de plumilla</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
     </message>
 </context>
 <context>
@@ -41609,15 +48371,27 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
     </message>
     <message>
         <source>Outline</source>
-        <translation>Línea exterior</translation>
+        <translation type="obsolete">Línea exterior</translation>
     </message>
     <message>
         <source>Offset</source>
         <translation>Desplazamiento</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41670,6 +48444,18 @@ additional algorithm providers</source>
         <source>on central point</source>
         <translation>en el punto central</translation>
     </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Data defined properties</source>
+        <translation type="unfinished">Propiedades definidas por datos</translation>
+    </message>
 </context>
 <context>
     <name>WidgetPointPatternFill</name>
@@ -41701,6 +48487,18 @@ additional algorithm providers</source>
         <source>Vertical displacement</source>
         <translation>Desplazamiento vertical</translation>
     </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>WidgetSVGFill</name>
@@ -41718,11 +48516,11 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Outline</source>
-        <translation>Línea exterior</translation>
+        <translation type="obsolete">Línea exterior</translation>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
     </message>
     <message>
         <source>...</source>
@@ -41730,11 +48528,11 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Color</source>
-        <translation>Color</translation>
+        <translation type="obsolete">Color</translation>
     </message>
     <message>
         <source>Border color</source>
-        <translation>Color de borde</translation>
+        <translation type="obsolete">Color de borde</translation>
     </message>
     <message>
         <source>Border width</source>
@@ -41748,6 +48546,30 @@ additional algorithm providers</source>
         <source>SVG Symbols</source>
         <translation>Símbolos SVG</translation>
     </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished">Colores</translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation type="unfinished">Relleno</translation>
+    </message>
+    <message>
+        <source>Border</source>
+        <translation type="unfinished">Contorno</translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>WidgetSimpleFill</name>
@@ -41757,7 +48579,7 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Color</source>
-        <translation>Color</translation>
+        <translation type="obsolete">Color</translation>
     </message>
     <message>
         <source>Fill style</source>
@@ -41765,7 +48587,7 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Border color</source>
-        <translation>Color de borde</translation>
+        <translation type="obsolete">Color de borde</translation>
     </message>
     <message>
         <source>Border style</source>
@@ -41781,7 +48603,31 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished">Colores</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation type="unfinished">Relleno</translation>
+    </message>
+    <message>
+        <source>Border</source>
+        <translation type="unfinished">Contorno</translation>
     </message>
 </context>
 <context>
@@ -41822,6 +48668,22 @@ additional algorithm providers</source>
         <source>Use custom dash pattern</source>
         <translation>Usar patrón de guiones personalizado</translation>
     </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Dash pattern unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>WidgetSimpleMarker</name>
@@ -41831,11 +48693,11 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Border color</source>
-        <translation>Color de borde</translation>
+        <translation type="obsolete">Color de borde</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation>Color de relleno</translation>
+        <translation type="obsolete">Color de relleno</translation>
     </message>
     <message>
         <source>Size</source>
@@ -41851,7 +48713,39 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation type="unfinished">Relleno</translation>
+    </message>
+    <message>
+        <source>Border</source>
+        <translation type="unfinished">Contorno</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Outline width</source>
+        <translation type="unfinished">Anchura de línea exterior</translation>
+    </message>
+    <message utf8="true">
+        <source> °</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished">Colores</translation>
     </message>
 </context>
 <context>
@@ -41878,11 +48772,11 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Change</source>
-        <translation>Cambiar</translation>
+        <translation type="obsolete">Cambiar</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation>Color</translation>
+        <translation type="obsolete">Color</translation>
     </message>
     <message>
         <source>Border width</source>
@@ -41890,7 +48784,7 @@ additional algorithm providers</source>
     </message>
     <message>
         <source>Border color</source>
-        <translation>Color de borde</translation>
+        <translation type="obsolete">Color de borde</translation>
     </message>
     <message>
         <source>...</source>
@@ -41899,6 +48793,49 @@ additional algorithm providers</source>
     <message>
         <source>SVG Groups</source>
         <translation>Grupos SVG</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished">Colores</translation>
+    </message>
+    <message>
+        <source>Fill</source>
+        <translation type="unfinished">Relleno</translation>
+    </message>
+    <message>
+        <source>Border</source>
+        <translation type="unfinished">Contorno</translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>WidgetSvgSelector</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Formulario</translation>
+    </message>
+    <message>
+        <source>SVG Images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SVG Groups</source>
+        <translation type="unfinished">Grupos SVG</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
@@ -41967,6 +48904,18 @@ additional algorithm providers</source>
         <source>change</source>
         <translation type="obsolete">cambiar</translation>
     </message>
+    <message>
+        <source>Distance unit</source>
+        <translation type="unfinished">Unidad de distancia</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Milímetro</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Unidad de mapa</translation>
+    </message>
 </context>
 <context>
     <name>[pluginname]GuiBase</name>
@@ -41977,6 +48926,99 @@ additional algorithm providers</source>
     <message>
         <source>Plugin Template</source>
         <translation>Plantilla de complementos</translation>
+    </message>
+</context>
+<context>
+    <name>checkDock</name>
+    <message>
+        <source>Topology Checker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Validate All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Validate Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle Error Markers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Topology not checked yet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select automatic fix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fix!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No errors were found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid first layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Topology plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid first geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Topology test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature not found in the layer.
+The layer has probably changed.
+Run topology check again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid second layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid second geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid conflict</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 errors were found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Topology fix error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fixing failed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer %1 not found in registry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">Abortar</translation>
     </message>
 </context>
 <context>
@@ -42875,6 +49917,10 @@ El complemento no se activará.</translation>
         <source>Create spatial index</source>
         <translation>Crear índice espacial</translation>
     </message>
+    <message>
+        <source>Eliminate sliver polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>geometryThread</name>
@@ -42896,11 +49942,19 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>Point x coordinate</source>
-        <translation>Coordenada X de punto</translation>
+        <translation type="obsolete">Coordenada X de punto</translation>
     </message>
     <message>
         <source>Point y coordinate</source>
-        <translation>Coordenada Y de punto</translation>
+        <translation type="obsolete">Coordenada Y de punto</translation>
+    </message>
+    <message>
+        <source>Point x ordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point y ordinate</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -44760,6 +51814,128 @@ El complemento no se activará.</translation>
     <message>
         <source>Loaded layer</source>
         <translation>Capa cargada</translation>
+    </message>
+    <message>
+        <source>Create random raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>rulesDialog</name>
+    <message>
+        <source>Topology Rule Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current Rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rule</source>
+        <translation type="unfinished">Regla</translation>
+    </message>
+    <message>
+        <source>Layer #1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer #2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tolerance</source>
+        <translation type="unfinished">Tolerancia</translation>
+    </message>
+    <message>
+        <source>Layer1ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer2ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No layer</source>
+        <translation type="unfinished">Ninguna capa</translation>
+    </message>
+    <message>
+        <source>Add New Rule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Rule</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>topolTest</name>
+    <message>
+        <source>Invalid second geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Topology plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid first geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First geometry invalid in line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import first geometry into GEOS in line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid second geometry in dangling line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import second geometry into GEOS in dangling line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skipping invalid second geometry of feature %1 in dangling line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skipping invalid first geometry in pseudo line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import first geometry into GEOS in pseudo line test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid geometry in validity test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid geometry in covering test.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second geometry missing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No second geometry missing or GEOS import failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Missing geometry in multipart check.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>First layer not found in registry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Second layer not found in registry.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

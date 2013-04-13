@@ -725,7 +725,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowe
   for ( QgsRangeList::const_iterator it = ranges.begin(); it != ranges.end(); ++it )
   {
     //range string has been created with option 'f',4
-    if ( doubleNear( lowerBound, it->lowerValue(), 0.0001 ) && doubleNear( upperBound, it->upperValue(), 0.0001 ) )
+    if ( qgsDoubleNear( lowerBound, it->lowerValue(), 0.0001 ) && qgsDoubleNear( upperBound, it->upperValue(), 0.0001 ) )
     {
       return it->symbol();
     }

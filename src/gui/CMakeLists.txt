@@ -45,6 +45,7 @@ attributetable/qgsattributetabledelegate.cpp
 attributetable/qgsfeaturelistview.cpp
 attributetable/qgsfeaturelistmodel.cpp
 attributetable/qgsfeaturelistviewdelegate.cpp
+attributetable/qgsfeatureselectionmodel.cpp
 attributetable/qgsdualview.cpp
 
 qgisgui.cpp
@@ -168,6 +169,7 @@ attributetable/qgsattributetablefiltermodel.h
 attributetable/qgsattributetabledelegate.h
 attributetable/qgsfeaturelistview.h
 attributetable/qgsfeaturelistmodel.h
+attributetable/qgsfeatureselectionmodel.h
 attributetable/qgsfeaturelistviewdelegate.h
 attributetable/qgsdualview.h
 
@@ -271,8 +273,10 @@ attributetable/qgsattributetableview.h
 attributetable/qgsattributetablefiltermodel.h
 attributetable/qgsattributetabledelegate.h
 attributetable/qgsfeaturelistview.h
+attributetable/qgsfeaturemodel.h
 attributetable/qgsfeaturelistmodel.h
 attributetable/qgsfeaturelistviewdelegate.h
+attributetable/qgsfeatureselectionmodel.h
 attributetable/qgsdualview.h
 )
 

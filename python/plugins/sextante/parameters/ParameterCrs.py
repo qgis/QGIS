@@ -50,9 +50,9 @@ class ParameterCrs(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        if tokens[2]==str(None):
-            tokens[2] = None
-        return ParameterCrs(tokens[0], tokens[1], tokens[2])
+        if tokens[3]==str(None):
+            tokens[3] = None
+        return ParameterCrs(tokens[1], tokens[2], tokens[3])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=crs " + str(self.default)

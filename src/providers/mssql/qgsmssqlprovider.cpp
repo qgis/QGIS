@@ -1362,6 +1362,9 @@ bool QgsMssqlProvider::convertField( QgsField &field )
       fieldPrec = 0;
       break;
 
+    case QVariant::DateTime:
+    case QVariant::Date:
+    case QVariant::Time:
     case QVariant::String:
       fieldType = "nvarchar(max)";
       fieldPrec = -1;

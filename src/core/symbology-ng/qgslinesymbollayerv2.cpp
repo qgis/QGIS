@@ -1228,7 +1228,7 @@ void QgsMarkerLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
       graphicStrokeElem.appendChild( gapElem );
     }
 
-    if ( !doubleNear( mOffset, 0.0 ) )
+    if ( !qgsDoubleNear( mOffset, 0.0 ) )
     {
       QDomElement perpOffsetElem = doc.createElement( "se:PerpendicularOffset" );
       perpOffsetElem.appendChild( doc.createTextNode( QString::number( mOffset ) ) );

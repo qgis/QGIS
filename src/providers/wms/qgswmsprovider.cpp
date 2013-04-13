@@ -1182,6 +1182,7 @@ void QgsWmsProvider::tileReplyFinished()
       if ( !myLocalImage.isNull() )
       {
         QPainter p( mCachedImage );
+        p.setRenderHint( QPainter::SmoothPixmapTransform, true );
         p.drawImage( dst, myLocalImage );
 #if 0
         myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
@@ -2753,21 +2754,52 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
     l.abstract   = e0.firstChildElement( "ows:Abstract" ).text();
     parseKeywords( e0, l.keywords );
 
-    QDomElement bbox = e0.firstChildElement( "ows:WGS84BoundingBox" );
-    QStringList ll   = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
-    QStringList ur   = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+    l.boundingBox.crs = "";
 
-    if ( ll.size() == 2 && ur.size() == 2 )
+    QDomElement bbox = e0.firstChildElement( "ows:WGS84BoundingBox" );
+    if ( !bbox.isNull() )
     {
-      l.boundingBox.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                                        QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+      QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
+      QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+
+      if ( ll.size() == 2 && ur.size() == 2 )
+      {
+        l.boundingBox.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
+                                          QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        l.boundingBox.crs = DEFAULT_LATLON_CRS;
+      }
     }
-    else
+
+    if ( l.boundingBox.crs.isEmpty() )
+    {
+      bbox = e0.firstChildElement( "ows:BoundingBox" );
+      if ( !bbox.isNull() )
+      {
+        QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
+        QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+
+        if ( ll.size() == 2 && ur.size() == 2 )
+        {
+          l.boundingBox.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
+                                            QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+
+          if ( bbox.hasAttribute( "SRS" ) )
+            l.boundingBox.crs = bbox.attribute( "SRS" );
+          else if ( bbox.hasAttribute( "srs" ) )
+            l.boundingBox.crs = bbox.attribute( "srs" );
+          else if ( bbox.hasAttribute( "CRS" ) )
+            l.boundingBox.crs = bbox.attribute( "CRS" );
+          else if ( bbox.hasAttribute( "crs" ) )
+            l.boundingBox.crs = bbox.attribute( "crs" );
+        }
+      }
+    }
+
+    if ( l.boundingBox.crs.isEmpty() )
     {
       l.boundingBox.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
+      l.boundingBox.crs = DEFAULT_LATLON_CRS;
     }
-
-    l.boundingBox.crs = DEFAULT_LATLON_CRS;
 
     for ( QDomElement e1 = e0.firstChildElement( "Style" );
           !e1.isNull();
@@ -2818,6 +2850,9 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
       QgsWmtsDimension d;
 
       d.identifier   = e1.firstChildElement( "ows:Identifier" ).text();
+      if ( d.identifier.isEmpty() )
+        continue;
+
       d.title        = e1.firstChildElement( "ows:Title" ).text();
       d.abstract     = e1.firstChildElement( "ows:Abstract" ).text();
       parseKeywords( e1, d.keywords );

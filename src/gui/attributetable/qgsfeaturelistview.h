@@ -17,11 +17,13 @@
 #define QGSATTRIBUTELISTVIEW_H
 
 #include <QListView>
+#include <qdebug.h>
 
 #include "qgsfeature.h" // For QgsFeatureIds
 
 class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;
+class QgsFeatureSelectionModel;
 class QgsAttributeTableModel;
 class QgsVectorLayer;
 class QgsVectorLayerCache;
@@ -102,6 +104,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
+    virtual void keyPressEvent( QKeyEvent *event );
 
   signals:
     /**
@@ -130,23 +133,22 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      */
     virtual void selectAll();
 
+    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested();
+
   private slots:
     void editSelectionChanged( QItemSelection deselected, QItemSelection selected );
 
-    void onFilterAboutToBeInvalidated();
-
-    void onFilterInvalidated();
-
-    void onSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
-
-    void onMasterSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
-
   private:
+    void selectRow(const QModelIndex &index, bool anchor );
+
     QgsFeatureListModel *mModel;
     QItemSelectionModel* mCurrentEditSelectionModel;
-    QItemSelectionModel* mMasterSelection;
+    QgsFeatureSelectionModel* mFeatureSelectionModel;
     QgsFeatureListViewDelegate* mItemDelegate;
     bool mEditSelectionDrag; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing /**< TODO */
+    int mRowAnchor;
+    QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 };
 
 #endif

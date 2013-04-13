@@ -1461,36 +1461,6 @@ double QgsRasterLayer::rasterUnitsPerPixel()
   return 1;
 }
 
-#if 0
-void QgsRasterLayer::resetNoDataValue()
-{
-  mNoDataValue = std::numeric_limits<int>::max();
-  mValidNoDataValue = false;
-  if ( mDataProvider != NULL && mDataProvider->bandCount() > 0 )
-  {
-    // TODO: add 'has null value' to capabilities
-#if 0
-    int myRequestValid;
-    myRequestValid = 1;
-    double myValue = mDataProvider->noDataValue();
-
-    if ( 0 != myRequestValid )
-    {
-      setNoDataValue( myValue );
-    }
-    else
-    {
-      setNoDataValue( -9999.0 );
-      mValidNoDataValue = false;
-
-    }
-#endif
-    setNoDataValue( mDataProvider->noDataValue() );
-    mValidNoDataValue = mDataProvider->isNoDataValueValid();
-  }
-}
-#endif
-
 void QgsRasterLayer::init()
 {
   // keep this until mGeoTransform occurences are removed!
@@ -2662,7 +2632,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
                ", dest size: " + QString::number( viewPort->drawableAreaXDim ) +
                ", " + QString::number( viewPort->drawableAreaYDim ) );
 #endif
-  void *data = QgsMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
+  void *data = qgsMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
 
   /* Abort if out of memory */
   if ( data == NULL )

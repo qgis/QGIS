@@ -381,6 +381,19 @@ QModelIndex QgsAttributeTableModel::idToIndex( QgsFeatureId id ) const
   return index( idToRow( id ), 0 );
 }
 
+QModelIndexList QgsAttributeTableModel::idToIndexList(QgsFeatureId id) const
+{
+  QModelIndexList indexes;
+
+  int row = idToRow( id );
+  for ( int column = 0; column < columnCount(); ++column )
+  {
+    indexes.append( index( row, column ) );
+  }
+
+  return indexes;
+}
+
 QgsFeatureId QgsAttributeTableModel::rowToId( const int row ) const
 {
   if ( !mRowIdMap.contains( row ) )
@@ -449,15 +462,30 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole && role != SortRole ) )
+  if ( !index.isValid() ||
+       ( role != Qt::TextAlignmentRole
+         && role != Qt::DisplayRole
+         && role != Qt::EditRole
+         && role != SortRole
+         && role != FeatureIdRole
+         && role != FieldIndexRole
+       )
+     )
     return QVariant();
 
   QgsFeatureId rowId = rowToId( index.row() );
+
+  if ( role == FeatureIdRole )
+    return rowId;
 
   if ( index.column() >= mFieldCount )
     return role == Qt::DisplayRole ? rowId : QVariant();
 
   int fieldId = mAttributes[ index.column()];
+
+  if ( role == FieldIndexRole )
+    return fieldId;
+
   const QgsField& field = layer()->pendingFields()[ fieldId ];
 
   QVariant::Type fldType = field.type();

@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -26,6 +27,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os.path
 from sextante.core.SextanteConfig import SextanteConfig, Setting
+from sextante.modeler.SaveAsPythonScriptAction import SaveAsPythonScriptAction
 from sextante.core.SextanteLog import SextanteLog
 from sextante.modeler.ModelerUtils import ModelerUtils
 from sextante.modeler.ModelerAlgorithm import ModelerAlgorithm
@@ -41,7 +43,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.actions = [CreateNewModelAction()]
-        self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
+        self.contextMenuActions = [EditModelAction(), DeleteModelAction(), SaveAsPythonScriptAction()]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)

@@ -98,6 +98,7 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
   {
     bool png8Bit = ( mFormat.compare( "image/png; mode=8bit", Qt::CaseInsensitive ) == 0 );
     bool png1Bit = ( mFormat.compare( "image/png; mode=1bit", Qt::CaseInsensitive ) == 0 );
+    bool isBase64 = mFormatString.endsWith( ";base64", Qt::CaseInsensitive );
     if ( mFormat != "PNG" && mFormat != "JPG" && !png8Bit && !png1Bit )
     {
       QgsDebugMsg( "service exception - incorrect image format requested..." );
@@ -127,6 +128,11 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
     else
     {
       img->save( &buffer, mFormat.toLocal8Bit().data(), -1 );
+    }
+
+    if ( isBase64 )
+    {
+      ba = ba.toBase64();
     }
 
     sendHttpResponse( &ba, formatToMimeType( mFormat ) );
@@ -293,6 +299,10 @@ void QgsHttpRequestHandler::sendServiceException( const QgsMapServiceException& 
 
 void QgsHttpRequestHandler::sendGetPrintResponse( QByteArray* ba ) const
 {
+  if ( mFormatString.endsWith( ";base64", Qt::CaseInsensitive ) )
+  {
+    *ba = ba->toBase64();
+  }
   sendHttpResponse( ba, formatToMimeType( mFormat ) );
 }
 
@@ -364,6 +374,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
     QString value = element.mid( sepidx + 1 );
     value.replace( "+", " " );
     value = QUrl::fromPercentEncoding( value.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
+    key = QUrl::fromPercentEncoding( key.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
 
     if ( key.compare( "SLD_BODY", Qt::CaseInsensitive ) == 0 )
     {
@@ -408,17 +419,18 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
   }
   else //capabilities format or GetMap format
   {
-    QString formatString = parameters.value( "FORMAT" );
+    mFormatString = parameters.value( "FORMAT" );
+    QString formatString = mFormatString;
     if ( !formatString.isEmpty() )
     {
       QgsDebugMsg( QString( "formatString is: %1" ).arg( formatString ) );
 
       //remove the image/ in front of the format
-      if ( formatString.compare( "image/png", Qt::CaseInsensitive ) == 0 || formatString.compare( "png", Qt::CaseInsensitive ) == 0 )
+      if ( formatString.contains( "image/png", Qt::CaseInsensitive ) || formatString.compare( "png", Qt::CaseInsensitive ) == 0 )
       {
         formatString = "PNG";
       }
-      else if ( formatString.compare( "image/jpeg", Qt::CaseInsensitive ) == 0 || formatString.compare( "image/jpg", Qt::CaseInsensitive ) == 0
+      else if ( formatString.contains( "image/jpeg", Qt::CaseInsensitive ) || formatString.contains( "image/jpg", Qt::CaseInsensitive )
                 || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
       {
         formatString = "JPG";
@@ -427,7 +439,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       {
         formatString = "SVG";
       }
-      else if ( formatString.compare( "pdf", Qt::CaseInsensitive ) == 0 )
+      else if ( formatString.contains( "pdf", Qt::CaseInsensitive ) )
       {
         formatString = "PDF";
       }

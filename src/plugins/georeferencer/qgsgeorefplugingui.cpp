@@ -1368,7 +1368,7 @@ bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, dou
   double rotationX = 0;
   double rotationY = 0;
 
-  if ( !doubleNear( rotation, 0.0 ) )
+  if ( !qgsDoubleNear( rotation, 0.0 ) )
   {
     rotationX = pixelXSize * sin( rotation );
     rotationY = pixelYSize * sin( rotation );

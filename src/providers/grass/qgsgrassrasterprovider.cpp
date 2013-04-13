@@ -441,6 +441,9 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   Q_UNUSED( theHeight );
   QgsDebugMsg( "Entered" );
   QMap<int, QVariant> results;
+  QMap<int, QVariant> noDataResults;
+  noDataResults.insert( 1, QVariant() );
+  QgsRasterIdentifyResult noDataResult( IdentifyFormatValue, results );
 
   if ( theFormat != IdentifyFormatValue )
   {
@@ -449,8 +452,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
 
   if ( !extent().contains( thePoint ) )
   {
-    results.insert( 1, noDataValue( 1 ) );
-    return QgsRasterIdentifyResult( IdentifyFormatValue, results );
+    return noDataResult;
   }
 
   // TODO: use doubles instead of strings
@@ -465,13 +467,17 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
     return QgsRasterIdentifyResult( ERROR( tr( "Cannot read data" ) ) );
   }
 
-  if ( qIsNaN( value ) ) value = noDataValue( 1 );
+  // no data?
+  if ( qIsNaN( value ) || qgsDoubleNear( value, mInternalNoDataValue[0] ) )
+  {
+    return noDataResult;
+  }
 
   // Apply user no data
   QgsRasterRangeList myNoDataRangeList = userNoDataValue( 1 );
   if ( QgsRasterRange::contains( value, myNoDataRangeList ) )
   {
-    value = noDataValue( 1 );
+    return noDataResult;
   }
 
   results.insert( 1, value );

@@ -151,7 +151,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Value representing currentno data.
      *  WARNING: this value returned by this method is not constant. It may change
      *  for example if user disable use of source no data value. */
-    virtual double noDataValue( int bandNo ) const;
+    //virtual double noDataValue( int bandNo ) const;
 
     /** Value representing no data value. */
     virtual double srcNoDataValue( int bandNo ) const;
@@ -196,7 +196,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
-    QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    //QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider

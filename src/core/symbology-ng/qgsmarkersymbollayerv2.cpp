@@ -1124,8 +1124,8 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     outputOffset = _rotatedOffset( outputOffset, angle );
   p->translate( point + outputOffset );
 
-  bool rotated = !doubleNear( angle, 0 );
-  bool drawOnScreen = doubleNear( context.renderContext().rasterScaleFactor(), 1.0, 0.1 );
+  bool rotated = !qgsDoubleNear( angle, 0 );
+  bool drawOnScreen = qgsDoubleNear( context.renderContext().rasterScaleFactor(), 1.0, 0.1 );
   if ( rotated )
     p->rotate( angle );
 
@@ -1165,7 +1165,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     if ( fitsInCache && img.width() > 1 )
     {
       //consider transparency
-      if ( !doubleNear( context.alpha(), 1.0 ) )
+      if ( !qgsDoubleNear( context.alpha(), 1.0 ) )
       {
         QImage transparentImage = img.copy();
         QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );

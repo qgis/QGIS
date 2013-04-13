@@ -45,7 +45,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
   public:
     enum Role
     {
-      SortRole = Qt::UserRole + 1
+      SortRole = Qt::UserRole + 1,
+      FeatureIdRole = Qt::UserRole + 2,
+      FieldIndexRole = Qt::UserRole + 3
     };
 
   public:
@@ -129,6 +131,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     int idToRow( QgsFeatureId id ) const;
 
     QModelIndex idToIndex( QgsFeatureId id ) const;
+
+    QModelIndexList idToIndexList( QgsFeatureId id ) const;
 
     /**
      * get field index from column

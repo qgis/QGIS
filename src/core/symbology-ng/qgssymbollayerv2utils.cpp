@@ -1434,9 +1434,9 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
         map["fill"] = fillColor.name();
         map["outline"] = borderColor.name();
         map["outline-width"] = QString::number( borderWidth );
-        if ( !doubleNear( size, 0.0 ) )
+        if ( !qgsDoubleNear( size, 0.0 ) )
           map["size"] = QString::number( size );
-        if ( !doubleNear( angle, 0.0 ) )
+        if ( !qgsDoubleNear( angle, 0.0 ) )
           map["angle"] = QString::number( angle );
         if ( !offset.isNull() )
           map["offset"] = QgsSymbolLayerV2Utils::encodePoint( offset );
@@ -1450,7 +1450,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
         map["color"] = QgsSymbolLayerV2Utils::encodeColor( validFill ? fillColor : Qt::transparent );
         if ( size > 0 )
           map["size"] = QString::number( size );
-        if ( !doubleNear( angle, 0.0 ) )
+        if ( !qgsDoubleNear( angle, 0.0 ) )
           map["angle"] = QString::number( angle );
         if ( !offset.isNull() )
           map["offset"] = QgsSymbolLayerV2Utils::encodePoint( offset );
@@ -1642,7 +1642,7 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
   if ( pattern->size() > 0 )
   {
     element.appendChild( createSvgParameterElement( doc, "stroke-dasharray", encodeSldRealVector( *pattern ) ) );
-    if ( !doubleNear( dashOffset, 0.0 ) )
+    if ( !qgsDoubleNear( dashOffset, 0.0 ) )
       element.appendChild( createSvgParameterElement( doc, "stroke-dashoffset", QString::number( dashOffset ) ) );
   }
 }
@@ -1846,7 +1846,7 @@ void QgsSymbolLayerV2Utils::externalMarkerToSld( QDomDocument &doc, QDomElement 
   markElem.appendChild( fillElem );
 
   // <Size>
-  if ( !doubleNear( size, 0.0 ) && size > 0 )
+  if ( !qgsDoubleNear( size, 0.0 ) && size > 0 )
   {
     QDomElement sizeElem = doc.createElement( "se:Size" );
     sizeElem.appendChild( doc.createTextNode( QString::number( size ) ) );
@@ -1926,7 +1926,7 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
   }
 
   // <Size>
-  if ( !doubleNear( size, 0.0 ) && size > 0 )
+  if ( !qgsDoubleNear( size, 0.0 ) && size > 0 )
   {
     QDomElement sizeElem = doc.createElement( "se:Size" );
     sizeElem.appendChild( doc.createTextNode( QString::number( size ) ) );
@@ -2160,7 +2160,7 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleF
   }
 
   //offset
-  if ( !doubleNear( offset, 0.0 ) )
+  if ( !qgsDoubleNear( offset, 0.0 ) )
   {
     penStyle.append( ",dp:" );
     penStyle.append( QString::number( offset * mapUnitScaleFactor ) );
