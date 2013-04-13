@@ -152,6 +152,11 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList
     try
     {
         QString sWkt = tokens[P->mWktFieldIndex];
+        // Remove prefix chars
+        if( P->mWktHasPrefix)
+        {
+            sWkt.remove(QgsDelimitedTextProvider::WktPrefixRegexp);
+        }
         // Remove Z and M coordinates if present, as currently fromWkt doesn't
         // support these.
         if ( P->mWktHasZM )

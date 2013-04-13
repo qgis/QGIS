@@ -45,8 +45,8 @@
 static const QString TEXT_PROVIDER_KEY = "delimitedtext";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 
-QRegExp QgsDelimitedTextProvider::WktPrefixRegexp("^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)" );
-QRegExp QgsDelimitedTextProvider::WktZMRegexp("\\s+(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive );
+QRegExp QgsDelimitedTextProvider::WktPrefixRegexp("^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
+QRegExp QgsDelimitedTextProvider::WktZMRegexp("\\s*(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive );
 QRegExp QgsDelimitedTextProvider::WktCrdRegexp("(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" );
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
@@ -152,7 +152,6 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
         QStringList &fieldList = mFile->columnNames();
 
         mFieldCount = fieldList.count();
-        mFile->setMaxFields(mFieldCount);
         fieldsCounted = true;
 
         // We don't know anything about a text based field other

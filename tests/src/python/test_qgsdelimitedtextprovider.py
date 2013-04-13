@@ -25,7 +25,6 @@ __revision__ = '$Format:%H$'
 
 printTests = True
 
-
 import os.path;
 import re
 
@@ -69,16 +68,15 @@ class MessageLogger( QObject ):
         self.tag = tag
 
     def __enter__( self ):
-        # QgsMessageLog.instance().messageReceived.connect( self.logMessage )
-        pass
+        QgsMessageLog.instance().messageReceived.connect( self.logMessage )
+        return self
 
-    def __exit__( self ):
-        # QgsMessageLog.instance().emitMessage.disconnect( self.logMessage )
-        pass
+    def __exit__( self, type, value, traceback ):
+        QgsMessageLog.instance().messageReceived.disconnect( self.logMessage )
         
     def logMessage( self, msg, tag, level ):
         if tag == self.tag  or not self.tag:
-            self.log.append(msg)
+            self.log.append(unicode(msg))
 
     def messages( self ):
         return self.log
@@ -102,6 +100,11 @@ def layerData( layer ):
             fielddata[geomkey] = "None";
 
         id = fielddata[fields[0]]
+        description = fielddata[fields[1]]
+        fielddata['id']=id
+        fielddata['description']=description
+        if 'id' not in fields: fields.insert(0,'id')
+        if 'description' not in fields: fields.insert(1,'description')
         data[id]=fielddata
     fields.append(geomkey)
     return fields, data
@@ -117,14 +120,15 @@ def delimitedTextData( filename, **params ):
     for k in params.keys():
         url.addQueryItem(k,params[k])
     urlstr = url.toString()
-    # with MessageLogger('DelimitedText') as logger:
-    if True:
+    with MessageLogger('DelimitedText') as logger:
         layer = QgsVectorLayer(urlstr,'test','delimitedtext')
         fields = []
         data = {}
-        log=[]
         if layer.isValid():
             fields,data = layerData(layer)
+        log=[]
+        for msg in logger.messages():
+            log.append(msg.replace(filepath,'file'))
         return dict( fields=fields, data=data, log=log)
 
 def sortKey( id ):
@@ -139,7 +143,9 @@ def createTest(  name, description, filename, **params ):
     print "        description={0}".format(repr(description))
     print "        filename={0}".format(repr(filename))
     print "        params={0}".format(repr(params))
-    print "        if printTests: createTest({0},description,filename,**params)".format(repr(name))
+    print "        if printTests:"
+    print "            createTest({0},description,filename,**params)".format(repr(name))
+    print "            return"
     
     data=result['data']
     log=result['log']
@@ -228,8 +234,11 @@ def runTest( name, wanted, log_wanted, file, **params ):
             failures.append(msg)
             break
     assert len(failures) == 0,"\n".join(failures)
+    common=[]
     for l in log:
         if l in log_wanted:
+            common.append(l)
+    for l in common:
             log_wanted.remove(l)
             log.remove(l)
     for l in log_wanted:
@@ -246,11 +255,16 @@ class TestQgsDelimitedTextProvider(TestCase):
         metadata = registry.providerMetadata('delimitedtext')
         assert metadata != None, "Delimited text provider is not installed"
 
+#START
+
+
     def test_002_LoadCSVFile(self):
         description='CSV file parsing'
         filename='test.csv'
         params={'geomType': 'none', 'type': 'csv'}
-        if printTests: createTest('002_LoadCSVFile',description,filename,**params)
+        if printTests:
+            createTest('002_LoadCSVFile',description,filename,**params)
+            return
         wanted={
             u'1': {
                 'id': u'1',
@@ -299,11 +313,14 @@ class TestQgsDelimitedTextProvider(TestCase):
             ]
         runTest(description,wanted,log_wanted,filename,**params)
 
+
     def test_003_LoadWhitespace(self):
         description='Whitespace file parsing'
         filename='test.space'
         params={'geomType': 'none', 'type': 'whitespace'}
-        if printTests: createTest('003_LoadWhitespace',description,filename,**params)
+        if printTests:
+            createTest('003_LoadWhitespace',description,filename,**params)
+            return
         wanted={
             u'1': {
                 'id': u'1',
@@ -357,7 +374,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         description='Quote and escape file parsing'
         filename='test.pipe'
         params={'geomType': 'none', 'quote': '"', 'delimiter': '|', 'escape': '\\'}
-        if printTests: createTest('004_quote_escape',description,filename,**params)
+        if printTests:
+            createTest('004_quote_escape',description,filename,**params)
+            return
         wanted={
             u'1': {
                 'id': u'1',
@@ -425,7 +444,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         description='Multiple quote and escape characters'
         filename='test.quote'
         params={'geomType': 'none', 'quote': '\'"', 'type': 'csv', 'escape': '"\''}
-        if printTests: createTest('005_multiple_quote',description,filename,**params)
+        if printTests:
+            createTest('005_multiple_quote',description,filename,**params)
+            return
         wanted={
             u'1': {
                 'id': u'1',
@@ -471,9 +492,228 @@ class TestQgsDelimitedTextProvider(TestCase):
                 },
             }
         log_wanted=[
+            u'Errors in file',
+            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'Invalid record format at line 7',
+            u'Invalid record format at line 8',
+            u'Invalid record format at line 9',
             ]
         runTest(description,wanted,log_wanted,filename,**params)
 
+
+    def test_007_skip_lines(self):
+        description='Skip lines'
+        filename='test2.csv'
+        params={'geomType': 'none', 'useHeader': 'no', 'type': 'csv', 'skipLines': '2'}
+        if printTests:
+            createTest('007_skip_lines',description,filename,**params)
+            return
+        wanted={
+            u'3': {
+                'id': u'3',
+                'description': u'Less data',
+                'Col01': u'3',
+                'Col02': u'Less data',
+                'Col03': u'data3',
+                '#geometry': 'None',
+                },
+            }
+        log_wanted=[
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+
+    def test_008_read_coordinates(self):
+        description='Skip lines'
+        filename='testpt.csv'
+        params={'yField': 'geom_y', 'xField': 'geom_x', 'type': 'csv'}
+        if printTests:
+            createTest('008_read_coordinates',description,filename,**params)
+            return
+        wanted={
+            u'1': {
+                'id': u'1',
+                'description': u'Basic point',
+                'geom_x': u'10.0',
+                'geom_y': u'20',
+                '#geometry': 'POINT(10.0 20.0)',
+                },
+            u'2': {
+                'id': u'2',
+                'description': u'Integer point',
+                'geom_x': u'11',
+                'geom_y': u'22',
+                '#geometry': 'POINT(11.0 22.0)',
+                },
+            u'4': {
+                'id': u'4',
+                'description': u'Final point',
+                'geom_x': u'13.0',
+                'geom_y': u'23',
+                '#geometry': 'POINT(13.0 23.0)',
+                },
+            }
+        log_wanted=[
+            u'Errors in file',
+            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'Invalid X or Y fields at line 4',
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+
+    def test_009_read_wkt(self):
+        description='Skip lines'
+        filename='testwkt.csv'
+        params={'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
+        if printTests:
+            createTest('009_read_wkt',description,filename,**params)
+            return
+        wanted={
+            u'1': {
+                'id': u'1',
+                'description': u'Point wkt',
+                '#geometry': 'POINT(10.0 20.0)',
+                },
+            u'2': {
+                'id': u'2',
+                'description': u'Multipoint wkt',
+                '#geometry': 'MULTIPOINT(10.0 20.0, 11.0 21.0)',
+                },
+            u'8': {
+                'id': u'8',
+                'description': u'EWKT prefix',
+                '#geometry': 'POINT(10.0 10.0)',
+                },
+            u'9': {
+                'id': u'9',
+                'description': u'Informix prefix',
+                '#geometry': 'POINT(10.0 10.0)',
+                },
+            u'10': {
+                'id': u'10',
+                'description': u'Measure in point',
+                '#geometry': 'POINT(10.0 20.0)',
+                },
+            }
+        log_wanted=[
+            u'Errors in file',
+            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'Invalid WKT at line 8',
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+
+    def test_010_read_wkt_point(self):
+        description='Skip lines'
+        filename='testwkt.csv'
+        params={'geomType': 'point', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
+        if printTests:
+            createTest('010_read_wkt_point',description,filename,**params)
+            return
+        wanted={
+            u'1': {
+                'id': u'1',
+                'description': u'Point wkt',
+                '#geometry': 'POINT(10.0 20.0)',
+                },
+            u'2': {
+                'id': u'2',
+                'description': u'Multipoint wkt',
+                '#geometry': 'MULTIPOINT(10.0 20.0, 11.0 21.0)',
+                },
+            u'8': {
+                'id': u'8',
+                'description': u'EWKT prefix',
+                '#geometry': 'POINT(10.0 10.0)',
+                },
+            u'9': {
+                'id': u'9',
+                'description': u'Informix prefix',
+                '#geometry': 'POINT(10.0 10.0)',
+                },
+            u'10': {
+                'id': u'10',
+                'description': u'Measure in point',
+                '#geometry': 'POINT(10.0 20.0)',
+                },
+            }
+        log_wanted=[
+            u'Errors in file',
+            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'Invalid WKT at line 8',
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+
+    def test_011_read_wkt_line(self):
+        description='Skip lines'
+        filename='testwkt.csv'
+        params={'geomType': 'line', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
+        if printTests:
+            createTest('011_read_wkt_line',description,filename,**params)
+            return
+        wanted={
+            u'3': {
+                'id': u'3',
+                'description': u'Linestring wkt',
+                '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
+                },
+            u'4': {
+                'id': u'4',
+                'description': u'Multiline string wkt',
+                '#geometry': 'MULTILINESTRING((10.0 20.0, 11.0 21.0), (20.0 30.0, 21.0 31.0))',
+                },
+            u'11': {
+                'id': u'11',
+                'description': u'Measure in line',
+                '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
+                },
+            u'12': {
+                'id': u'12',
+                'description': u'Z in line',
+                '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
+                },
+            u'13': {
+                'id': u'13',
+                'description': u'Measure and Z in line',
+                '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
+                },
+            }
+        log_wanted=[
+            u'Errors in file',
+            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'Invalid WKT at line 8',
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+
+    def test_012_read_wkt_polygon(self):
+        description='Skip lines'
+        filename='testwkt.csv'
+        params={'geomType': 'polygon', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
+        if printTests:
+            createTest('012_read_wkt_polygon',description,filename,**params)
+            return
+        wanted={
+            u'5': {
+                'id': u'5',
+                'description': u'Polygon wkt',
+                '#geometry': 'POLYGON((10.0 10.0,10.0 20.0,20.0 20.0,20.0 10.0,10.0 10.0),(14.0 14.0,14.0 16.0,16.0 16.0,14.0 14.0))',
+                },
+            u'6': {
+                'id': u'6',
+                'description': u'MultiPolygon wkt',
+                '#geometry': 'MULTIPOLYGON(((10.0 10.0,10.0 20.0,20.0 20.0,20.0 10.0,10.0 10.0),(14.0 14.0,14.0 16.0,16.0 16.0,14.0 14.0)),((30.0 30.0,30.0 35.0,35.0 35.0,30.0 30.0)))',
+                },
+            }
+        log_wanted=[
+            u'Errors in file',
+            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'Invalid WKT at line 8',
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+#END
 
 if __name__ == '__main__':
     unittest.main()

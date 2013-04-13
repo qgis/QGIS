@@ -310,6 +310,15 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *
  *   Defines the characters used to escape delimiter, quote, and newline characters.
  *
+ * - skipEmptyFields=(yes|no)
+ *
+ *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
+ *   delimiters)
+ *
+ * - trimFields=(yes|no)
+ *
+ *   If yes then leading and trailing whitespace will be removed from fields
+ *
  * - skipLines=n
  *
  *   Defines the number of lines to ignore at the beginning of the file (default 0)

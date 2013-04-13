@@ -141,22 +141,6 @@ public:
      */
     void setTypeCSV( QString delim=QString(","), QString quote=QString("\""), QString escape=QString("\"") );
 
-    /* Specify the maximum number of fields that will be read into a record.
-     *
-     * Any fields after this a record will be silently ignored.  Use 0 to
-     * return an unlimited number of fields
-     * @param maxFields  The maximum number of fields into which a record will be split
-     */
-    void setMaxFields( int maxFields ) {
-        mMaxFields = maxFields;
-    }
-    /* Return the maximum number of fields to return
-     * @return maxFields The maximum number of fields to return
-     */
-    int  maxFields() {
-        return mMaxFields;
-    }
-
     /* Set the number of header lines to skip
      * @param skiplines The maximum lines to skip
      */
@@ -177,6 +161,28 @@ public:
      */
     bool useHeader() {
         return mUseHeader;
+    }
+
+    /* Set the option for dicarding empty fields
+     * @param useheaders Empty fields will be discarded if true
+     */
+    void setDiscardEmptyFields( bool discardEmptyFields=true );
+    /* Return the option for discarding empty fields
+     * @return useheaders Empty fields will be discarded if true
+     */
+    bool discardEmptyFields() {
+        return mDiscardEmptyFields;
+    }
+
+    /* Set the option for trimming whitespace from fields
+     * @param trimFields Fields will be trimmed if true
+     */
+    void setTrimFields( bool trimFields=true );
+    /* Return the option for trimming empty fields
+     * @return useheaders Empty fields will be trimmed if true
+     */
+    bool trimFields() {
+        return mTrimFields;
     }
 
     /** Return the column names read from the header, or default names
@@ -209,31 +215,28 @@ public:
      *  @return type The delimiter type as a string
      */
     QString type();
-    /** Return the string defining the delimiter (either a regexp pattern
-     *  or a string)
-     *  @return def The delimiter definition string
-     */
-    QString delimiterDefinitionString() {
-        return mDelimDefinition;
-    }
-    /** Return the quote character
-     *  @return quote The quoet character
-     */
-    QString quoteChar() {
-        return mQuoteChar;
-    }
-    /** Return the escape character
-     *  @return escape The escape character
-     */
-    QString escapeChar() {
-        return mEscapeChar;
-    }
 
     /** Check that provider is valid (filename and definition valid)
      *
      * @return valid True if the provider is valid
      */
     bool isValid();
+
+    /** Encode characters - used to convert delimiter/quote/escape characters to
+     *  encoded form (eg replace tab with \t)
+     *  @param string  The unencoded string
+     *  @return encstring  The encoded string
+     */
+    static QString encodeChars( QString string );
+
+    /** Encode characters - used to encoded character strings to
+     *  decoded form (eg replace \t with tab)
+     *  @param string  The unencoded string
+     *  @return decstring  The decoded string
+     */
+    static QString decodeChars( QString string );
+
+
 
 
 private:
@@ -275,8 +278,9 @@ private:
     // Parameters common to parsers
     bool mDefinitionValid;
     DelimiterType mType;
-    QString mDelimDefinition;
     bool mUseHeader;
+    bool mDiscardEmptyFields;
+    bool mTrimFields;
     int mSkipLines;
     int mMaxFields;
 

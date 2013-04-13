@@ -63,7 +63,6 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
     connect( txtLayerName, SIGNAL( textChanged( QString ) ), this, SLOT( enableAccept() ) );
 
     connect( delimiterCSV, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
-    connect( delimiterWhitespace, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
     connect( delimiterChars, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
     connect( delimiterRegexp, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
 
@@ -80,6 +79,8 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
 
     connect( rowCounter, SIGNAL( valueChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
     connect( cbxUseHeader, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
+    connect( cbxSkipEmptyFields, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
+    connect( cbxTrimFields, SIGNAL( stateChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
 
     connect( cbxPointIsComma, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
 }
@@ -189,27 +190,32 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_rejected()
 
 QString QgsDelimitedTextSourceSelect::selectedChars()
 {
-    QString chars = txtDelimiterOther->text();
+    QString chars = "";
     if ( cbxDelimComma->isChecked() )
         chars.append(",");
     if ( cbxDelimSpace->isChecked() )
         chars.append(" ");
     if ( cbxDelimTab->isChecked() )
-        chars.append("\\t");
+        chars.append("\t");
     if ( cbxDelimSemicolon->isChecked() )
         chars.append(";");
     if ( cbxDelimColon->isChecked() )
         chars.append(":");
+    chars=QgsDelimitedTextFile::encodeChars(chars);
+    chars.append(txtDelimiterOther->text());
     return chars;
 }
 void QgsDelimitedTextSourceSelect::setSelectedChars( QString delimiters )
 {
-    cbxDelimComma->setChecked( delimiters.contains( "," ) );
-    cbxDelimSpace->setChecked( delimiters.contains( " " ) );
-    cbxDelimTab->setChecked( delimiters.contains( "\\t" ) );
-    cbxDelimColon->setChecked( delimiters.contains( ":" ) );
-    cbxDelimSemicolon->setChecked( delimiters.contains( ";" ) );
-    txtDelimiterOther->setText(delimiters.remove(QRegExp("([ ,:;]|\\\\t)")));
+    QString chars = QgsDelimitedTextFile::decodeChars(delimiters);
+    cbxDelimComma->setChecked( chars.contains( "," ) );
+    cbxDelimSpace->setChecked( chars.contains( " " ) );
+    cbxDelimTab->setChecked( chars.contains( "\t" ) );
+    cbxDelimColon->setChecked( chars.contains( ":" ) );
+    cbxDelimSemicolon->setChecked( chars.contains( ";" ) );
+    chars = chars.remove(QRegExp("[ ,:;\t]"));
+    chars = QgsDelimitedTextFile::encodeChars(chars);
+    txtDelimiterOther->setText(chars);
 }
 
 void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSettings )
@@ -223,11 +229,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSe
 
     // and how to use the delimiter
     QString delimiterType = settings.value( key + "/delimiterType", "" ).toString();
-    if ( delimiterType == "whitespace" )
-    {
-        delimiterWhitespace->setChecked( true );
-    }
-    else if ( delimiterType == "chars" )
+    if ( delimiterType == "chars" )
     {
         delimiterChars->setChecked( true );
     }
@@ -253,6 +255,8 @@ void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSe
 
     rowCounter->setValue( settings.value( key + "/startFrom", 0 ).toInt() );
     cbxUseHeader->setChecked( settings.value(key + "/useHeader","true")!="false" );
+    cbxTrimFields->setChecked( settings.value(key + "/trimFields","false")=="true" );
+    cbxSkipEmptyFields->setChecked( settings.value(key + "/skipEmptyFields","false")=="true" );
 
     if( loadGeomSettings )
     {
@@ -275,8 +279,6 @@ void QgsDelimitedTextSourceSelect::saveSettings( QString subkey, bool saveGeomSe
 
     if ( delimiterCSV->isChecked() )
         settings.setValue( key + "/delimiterType", "csv" );
-    else if ( delimiterWhitespace->isChecked() )
-        settings.setValue( key + "/delimiterType", "whitespace" );
     else if ( delimiterChars->isChecked() )
         settings.setValue( key + "/delimiterType", "chars" );
     else
@@ -287,6 +289,8 @@ void QgsDelimitedTextSourceSelect::saveSettings( QString subkey, bool saveGeomSe
     settings.setValue( key + "/delimiterRegexp", txtDelimiterRegexp->text() );
     settings.setValue( key + "/startFrom", rowCounter->value() );
     settings.setValue( key + "/useHeader", cbxUseHeader->isChecked() ? "true" : "false" );
+    settings.setValue( key + "/trimFields", cbxTrimFields->isChecked() ? "true" : "false" );
+    settings.setValue( key + "/skipEmptyFields", cbxSkipEmptyFields->isChecked() ? "true" : "false" );
     if( saveGeomSettings )
     {
         QString geomColumnType = "none";
@@ -317,11 +321,7 @@ bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
 {
     mFile->setFileName(txtFilePath->text());
     mFile->setEncoding(cbxEncoding->currentText());
-    if( delimiterWhitespace->isChecked())
-    {
-        mFile->setTypeWhitespace();
-    }
-    else if( delimiterChars->isChecked())
+    if( delimiterChars->isChecked())
     {
         mFile->setTypeCSV(selectedChars(),txtQuoteChars->text(),txtEscapeChars->text());
     }
@@ -335,6 +335,8 @@ bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
     }
     mFile->setSkipLines( rowCounter->value() );
     mFile->setUseHeader( cbxUseHeader->isChecked());
+    mFile->setDiscardEmptyFields( cbxSkipEmptyFields->isChecked());
+    mFile->setTrimFields( cbxTrimFields->isChecked());
     return mFile->isValid();
 }
 
