@@ -230,6 +230,10 @@ class CORE_EXPORT QgsRasterBlock
      *  @return true on success */
     bool setIsNoData( );
 
+    /** \brief Set the whole block to no data except specified rectangle
+     *  @return true on success */
+    bool setIsNoDataExcept( const QRect & theExceptRect );
+
     /** \brief Set color on index (indexed line by line)
      *  @param index data matrix index
      *  @param color the color to be set, QRgb value
@@ -296,6 +300,17 @@ class CORE_EXPORT QgsRasterBlock
     /** \brief Set error */
     void setError( const QgsError & theError ) { mError = theError;}
 
+    /** \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
+     * The output rect has x oriented from left to right and y from top to bottom
+     * (upper-left to lower-right orientation).
+     * @param theExtent extent, usually the larger
+     * @param theWidth numbers of columns in theExtent
+     * @param theHeight numbers of rows in theExtent
+     * @param theSubExtent extent, usually smaller than theExtent
+     * @return the rectangle covered by sub extent
+     */
+    static QRect subRect( const QgsRectangle & theExtent, int theWidth, int theHeight, const QgsRectangle &  theSubExtent );
+
   private:
     static QImage::Format imageFormat( QGis::DataType theDataType );
     static QGis::DataType dataType( QImage::Format theFormat );
@@ -336,7 +351,14 @@ class CORE_EXPORT QgsRasterBlock
     QImage *mImage;
 
     // Bitmap of no data. One bit for each pixel. Bit is 1 if a pixels is no data.
+    // Each row is represented by whole number of bytes (last bits may be unused)
+    // to make processing rows easy.
     char *mNoDataBitmap;
+
+    // number of bytes in mNoDataBitmap row
+    int mNoDataBitmapWidth;
+    // total size in bytes of mNoDataBitmap
+    size_t mNoDataBitmapSize;
 
     // Error
     QgsError mError;

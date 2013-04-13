@@ -752,7 +752,9 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     return outputBlock;
   }
 
-  // TODO: fill by no data or transparent
+  // we are using memcpy on bits, so we have to use setIsNoData if necessary
+  // so that bitmaps is set if necessary
+  //outputBlock->setIsNoData();
 
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
@@ -760,10 +762,16 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     for ( int j = 0; j < width; ++j )
     {
       srcRowCol( i, j, &srcRow, &srcCol );
-      QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
       size_t srcIndex = srcRow * mSrcCols + srcCol;
-      size_t destIndex = i * width + j;
+      QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
 
+      if ( inputBlock->isNoData( srcRow, srcCol ) )
+      {
+        outputBlock->setIsNoData( srcRow, srcCol );
+        continue ;
+      }
+
+      size_t destIndex = i * width + j;
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )

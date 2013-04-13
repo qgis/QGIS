@@ -37,6 +37,8 @@ QgsRasterBlock::QgsRasterBlock()
     , mData( 0 )
     , mImage( 0 )
     , mNoDataBitmap( 0 )
+    , mNoDataBitmapWidth( 0 )
+    , mNoDataBitmapSize( 0 )
 {
 }
 
@@ -51,6 +53,8 @@ QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int th
     , mData( 0 )
     , mImage( 0 )
     , mNoDataBitmap( 0 )
+    , mNoDataBitmapWidth( 0 )
+    , mNoDataBitmapSize( 0 )
 {
   reset( mDataType, mWidth, mHeight );
 }
@@ -66,6 +70,8 @@ QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int th
     , mData( 0 )
     , mImage( 0 )
     , mNoDataBitmap( 0 )
+    , mNoDataBitmapWidth( 0 )
+    , mNoDataBitmapSize( 0 )
 {
   reset( mDataType, mWidth, mHeight, mNoDataValue );
 }
@@ -312,8 +318,11 @@ bool QgsRasterBlock::isNoData( size_t index )
     // no data are not defined
     return false;
   }
-  size_t byte = index / 8;
-  int bit = index % 8;
+  // TODO: optimize
+  int row = index / mWidth;
+  int column = index % mWidth;
+  size_t byte = ( size_t )row * mNoDataBitmapWidth + column / 8 ;
+  int bit = column % 8;
   int mask = 0b10000000 >> bit;
   //int x = mNoDataBitmap[byte] & mask;
   //QgsDebugMsg ( QString("byte = %1 bit = %2 mask = %3 nodata = %4 is nodata = %5").arg(byte).arg(bit).arg(mask, 0, 2 ).arg( x, 0, 2 ).arg( (bool)(x) ) );
@@ -382,50 +391,215 @@ bool QgsRasterBlock::setIsNoData( size_t index )
   {
     return setValue( index, mNoDataValue );
   }
-  if ( mNoDataBitmap == 0 )
+  else
   {
-    if ( !createNoDataBitmap() )
+    if ( mNoDataBitmap == 0 )
     {
-      return false;
+      if ( !createNoDataBitmap() )
+      {
+        return false;
+      }
     }
+    // TODO: optimize
+    int row = index / mWidth;
+    int column = index % mWidth;
+    size_t byte = ( size_t )row * mNoDataBitmapWidth + column / 8;
+    int bit = column % 8;
+    int nodata = 0b10000000 >> bit;
+    //QgsDebugMsg ( QString("set byte = %1 bit = %2 no data by %3").arg(byte).arg(bit).arg(nodata, 0,2 ) );
+    mNoDataBitmap[byte] = mNoDataBitmap[byte] | nodata;
+    return true;
   }
-  size_t byte = index / 8;
-  int bit = index % 8;
-  int nodata = 0b10000000 >> bit;
-  //QgsDebugMsg ( QString("set byte = %1 bit = %2 no data by %3").arg(byte).arg(bit).arg(nodata, 0,2 ) );
-  mNoDataBitmap[byte] = mNoDataBitmap[byte] | nodata;
-  return true;
 }
 
 bool QgsRasterBlock::setIsNoData()
 {
-  if ( mHasNoDataValue )
+  QgsDebugMsg( "Entered" );
+  if ( typeIsNumeric( mDataType ) )
   {
-    if ( !mData )
+    if ( mHasNoDataValue )
     {
-      QgsDebugMsg( "Data block not allocated" );
+      if ( !mData )
+      {
+        QgsDebugMsg( "Data block not allocated" );
+        return false;
+      }
+
+      QgsDebugMsg( "set mData to mNoDataValue" );
+      int dataTypeSize = typeSize( mDataType );
+      QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
+
+      char *nodata = noDataByteArray.data();
+      for ( size_t i = 0; i < ( size_t )mWidth*mHeight; i++ )
+      {
+        memcpy(( char* )mData + i*dataTypeSize, nodata, dataTypeSize );
+      }
+    }
+    else
+    {
+      // use bitmap
+      if ( mNoDataBitmap == 0 )
+      {
+        if ( !createNoDataBitmap() )
+        {
+          return false;
+        }
+      }
+      QgsDebugMsg( "set mNoDataBitmap to 1" );
+      memset( mNoDataBitmap, 0b11111111, mNoDataBitmapSize );
+    }
+    return true;
+  }
+  else
+  {
+    // image
+    if ( !mImage )
+    {
+      QgsDebugMsg( "Image not allocated" );
       return false;
     }
-
-    int dataTypeSize = typeSize( mDataType );
-    QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
-
-    char *nodata = noDataByteArray.data();
-    for ( size_t i = 0; i < ( size_t )mWidth*mHeight; i++ )
-    {
-      memcpy(( char* )mData + i*dataTypeSize, nodata, dataTypeSize );
-    }
+    QgsDebugMsg( "Fill image" );
+    mImage->fill( qRgba( 0, 0, 0, 0 ) );
+    return true;
   }
-  // use bitmap
-  if ( mNoDataBitmap == 0 )
+}
+
+bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
+{
+  int top = theExceptRect.top();
+  int bottom = theExceptRect.bottom();
+  int left = theExceptRect.left();
+  int right = theExceptRect.right();
+  if ( top < 0 ) top = 0;
+  if ( left < 0 ) left = 0;
+  if ( bottom >= mHeight ) bottom = mHeight - 1;
+  if ( right >= mWidth ) right = mWidth - 1;
+
+  QgsDebugMsg( "Entered" );
+  if ( typeIsNumeric( mDataType ) )
   {
-    if ( !createNoDataBitmap() )
+    if ( mHasNoDataValue )
     {
+      if ( !mData )
+      {
+        QgsDebugMsg( "Data block not allocated" );
+        return false;
+      }
+
+      QgsDebugMsg( "set mData to mNoDataValue" );
+      int dataTypeSize = typeSize( mDataType );
+      QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
+
+      char *nodata = noDataByteArray.data();
+      char nodataRow[mWidth]; // full row of no data
+      for ( int c = 0; c < mWidth; c ++ )
+      {
+        memcpy( nodataRow + c*dataTypeSize, nodata, dataTypeSize );
+      }
+
+      // top and bottom
+      for ( int r = 0; r < mHeight; r++ )
+      {
+        if ( r >= top && r <= bottom ) continue; // middle
+        size_t i = ( size_t )r * mWidth;
+        memcpy(( char* )mData + i*dataTypeSize, nodataRow, dataTypeSize*mWidth );
+      }
+      // middle
+      for ( int r = top; r <= bottom; r++ )
+      {
+        size_t i = r * mWidth;
+        // middle left
+        memcpy(( char* )mData + i*dataTypeSize, nodataRow, dataTypeSize*left );
+        // middle right
+        i += right + 1;
+        int w = mWidth - right;
+        memcpy(( char* )mData + i*dataTypeSize, nodataRow, dataTypeSize*w );
+      }
+    }
+    else
+    {
+      // use bitmap
+      if ( mNoDataBitmap == 0 )
+      {
+        if ( !createNoDataBitmap() )
+        {
+          return false;
+        }
+      }
+      QgsDebugMsg( "set mNoDataBitmap to 1" );
+
+      char nodataRow[mNoDataBitmapWidth]; // full row of no data
+      memset( nodataRow, 0, mNoDataBitmapWidth );
+      for ( int c = 0; c < mWidth; c ++ )
+      {
+        int byte = c / 8;
+        int bit = c % 8;
+        int nodata = 0b10000000 >> bit;
+        memset( nodataRow + byte, nodataRow[byte] | nodata, 1 );
+      }
+
+      // top and bottom
+      for ( int r = 0; r < mHeight; r++ )
+      {
+        if ( r >= top && r <= bottom ) continue; // middle
+        size_t i = ( size_t )r * mNoDataBitmapWidth;
+        memcpy( mNoDataBitmap + i, nodataRow, mNoDataBitmapWidth );
+      }
+      // middle
+      memset( nodataRow, 0, mNoDataBitmapWidth );
+      for ( int c = 0; c < mWidth; c ++ )
+      {
+        if ( c >= left && c <= right ) continue; // middle
+        int byte = c / 8;
+        int bit = c % 8;
+        int nodata = 0b10000000 >> bit;
+        memset( nodataRow + byte, nodataRow[byte] | nodata, 1 );
+      }
+      for ( int r = top; r <= bottom; r++ )
+      {
+        size_t i = ( size_t )r * mNoDataBitmapWidth;
+        memcpy( mNoDataBitmap + i, nodataRow, mNoDataBitmapWidth );
+      }
+    }
+    return true;
+  }
+  else
+  {
+    // image
+    if ( !mImage )
+    {
+      QgsDebugMsg( "Image not allocated" );
       return false;
     }
+    QgsDebugMsg( "Fill image" );
+    QRgb nodataRgba = qRgba( 0, 0, 0, 0 );
+    QRgb nodataRow[mWidth]; // full row of no data
+    int rgbSize = sizeof( QRgb );
+    for ( int c = 0; c < mWidth; c ++ )
+    {
+      nodataRow[c] = nodataRgba;
+    }
+
+    // top and bottom
+    for ( int r = 0; r < mHeight; r++ )
+    {
+      if ( r >= top && r <= bottom ) continue; // middle
+      size_t i = ( size_t )r * mWidth;
+      memcpy(( void * )( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*mWidth );
+    }
+    // middle
+    for ( int r = top; r <= bottom; r++ )
+    {
+      size_t i = r * mWidth;
+      // middle left
+      memcpy(( void * )( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*left );
+      // middle right
+      i += right + 1;
+      int w = mWidth - right;
+      memcpy(( void * )( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*w );
+    }
+    return true;
   }
-  memset( mNoDataBitmap, 0b11111111, sizeof( mNoDataBitmap ) );
-  return true;
 }
 
 char * QgsRasterBlock::bits( size_t index )
@@ -651,14 +825,45 @@ QByteArray QgsRasterBlock::valueBytes( QGis::DataType theDataType, double theVal
 
 bool QgsRasterBlock::createNoDataBitmap()
 {
-  size_t size = mWidth * mHeight / 8 + 1;
-  QgsDebugMsg( QString( "allocate %1 bytes" ).arg( size ) );
-  mNoDataBitmap = ( char* )qgsMalloc( size );
+  mNoDataBitmapWidth = mWidth / 8 + 1;
+  mNoDataBitmapSize = ( size_t )mNoDataBitmapWidth * mHeight;
+  QgsDebugMsg( QString( "allocate %1 bytes" ).arg( mNoDataBitmapSize ) );
+  mNoDataBitmap = ( char* )qgsMalloc( mNoDataBitmapSize );
   if ( mNoDataBitmap == 0 )
   {
-    QgsDebugMsg( QString( "Couldn't allocate no data memory of %1 bytes" ).arg( size ) );
+    QgsDebugMsg( QString( "Couldn't allocate no data memory of %1 bytes" ).arg( mNoDataBitmapSize ) );
     return false;
   }
-  memset( mNoDataBitmap, 0, size );
+  memset( mNoDataBitmap, 0, mNoDataBitmapSize );
   return true;
+}
+
+QRect QgsRasterBlock::subRect( const QgsRectangle & theExtent, int theWidth, int theHeight, const QgsRectangle &  theSubExtent )
+{
+  double xRes = theExtent.width() / theWidth;
+  double yRes = theExtent.height() / theHeight;
+
+  int top = 0;
+  int bottom = theHeight - 1;
+  int left = 0;
+  int right = theWidth - 1;
+
+  if ( theSubExtent.yMaximum() < theExtent.yMaximum() )
+  {
+    top = qRound(( theExtent.yMaximum() - theSubExtent.yMaximum() ) / yRes );
+  }
+  if ( theSubExtent.yMinimum() > theExtent.yMinimum() )
+  {
+    bottom = qRound(( theExtent.yMaximum() - theSubExtent.yMinimum() ) / yRes ) - 1;
+  }
+
+  if ( theSubExtent.xMinimum() > theExtent.xMinimum() )
+  {
+    left = qRound(( theSubExtent.xMinimum() - theExtent.xMinimum() ) / xRes );
+  }
+  if ( theSubExtent.xMaximum() < theExtent.xMaximum() )
+  {
+    right = qRound(( theSubExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1;
+  }
+  return QRect( left, top, right - left + 1, bottom - top + 1 );
 }

@@ -382,7 +382,8 @@ QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theEx
 
   if ( !mExtent.contains( theExtent ) )
   {
-    block->setIsNoData();
+    QRect subRect = QgsRasterBlock::subRect( theExtent, theWidth, theHeight, mExtent );
+    block->setIsNoDataExcept( subRect );
   }
   readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
   block->applyNodataValues( userNoDataValue( theBandNo ) );
@@ -450,6 +451,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   // Find top, bottom rows and left, right column the raster extent covers
   // These are limits in target grid space
+#if 0
   int top = 0;
   int bottom = thePixelHeight - 1;
   int left = 0;
@@ -472,7 +474,14 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   {
     right = qRound(( myRasterExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1;
   }
+#endif
+  QRect subRect = QgsRasterBlock::subRect( theExtent, thePixelWidth, thePixelHeight, myRasterExtent );
+  int top = subRect.top();
+  int bottom = subRect.bottom();
+  int left = subRect.left();
+  int right = subRect.right();
   QgsDebugMsg( QString( "top = %1 bottom = %2 left = %3 right = %4" ).arg( top ).arg( bottom ).arg( left ).arg( right ) );
+
 
   // We want to avoid another resampling, so we read data approximately with
   // the same resolution as requested and exactly the width/height we need.
