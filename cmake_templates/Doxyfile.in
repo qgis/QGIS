@@ -596,8 +596,6 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/core \
                          @CMAKE_SOURCE_DIR@/src/core/composer \
                          @CMAKE_SOURCE_DIR@/src/core/raster \
-                         @CMAKE_SOURCE_DIR@/src/core/renderer \
-                         @CMAKE_SOURCE_DIR@/src/core/symbology \
                          @CMAKE_SOURCE_DIR@/src/core/symbology-ng \
                          @CMAKE_SOURCE_DIR@/src/core/gps \
                          @CMAKE_SOURCE_DIR@/src/gui \

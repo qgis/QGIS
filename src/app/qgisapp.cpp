@@ -3532,17 +3532,6 @@ bool QgisApp::addProject( QString projectFile )
   mMapCanvas->setCanvasColor( myColor ); //this is fill color before rendering starts
   QgsDebugMsg( "Canvas background color restored..." );
 
-  //set the color for selections
-  QSettings settings;
-  int defaultRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
-  int defaultGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
-  int defaultBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
-  int defaultAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
-  int myRed = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", defaultRed );
-  int myGreen = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", defaultGreen );
-  int myBlue = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", defaultBlue );
-  int myAlpha = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", defaultAlpha );
-
   //load project scales
   bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
   if ( projectScales )
@@ -3552,6 +3541,8 @@ bool QgisApp::addProject( QString projectFile )
 
   mMapCanvas->updateScale();
   QgsDebugMsg( "Scale restored..." );
+
+  QSettings settings;
 
   // does the project have any macros?
   if ( mPythonUtils && mPythonUtils->isEnabled() )

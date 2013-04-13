@@ -136,31 +136,39 @@ class CORE_EXPORT QgsRasterInterface
      * @return No data value */
     //virtual double noDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return std::numeric_limits<double>::quiet_NaN(); }
 
+#if 0
     /** Test if value is nodata for specific band
      * @param bandNo band number
      * @param value tested value
      * @return true if value is nodata */
-    //virtual bool isNoDataValue( int bandNo, double value ) const;
+    virtual bool isNoDataValue( int bandNo, double value ) const;
+#endif
 
     /** Read block of data using given extent and size.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
+     * @param bandNo band number
+     * @param extent extent of block
+     * @param width pixel width of block
+     * @param height pixel height of block
      */
-    //void *block( int bandNo, const QgsRectangle &extent, int width, int height );
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
+    //void *block( int bandNo, const QgsRectangle &extent, int width, int height );
 
+#if 0
     /** Read block of data using given extent and size.
      *  Method to be implemented by subclasses.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
      */
-    //virtual void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
-    //virtual QgsRasterBlock *readBlock( int bandNo, const QgsRectangle &extent, int width, int height ) const = 0;
+    virtual void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
+    virtual QgsRasterBlock *readBlock( int bandNo, const QgsRectangle &extent, int width, int height ) const = 0;
 
-    //{
-    //  Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
-    //  return new QgsRasterBlock();
-    //}
+    {
+      Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
+      return new QgsRasterBlock();
+    }
+#endif
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
