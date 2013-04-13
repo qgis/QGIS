@@ -233,7 +233,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
 
   // apply user no data values
   // TODO: there are other readBlock methods where no data are not applied
-  block->applyNodataValues( userNoDataValue( theBandNo ) );
+  block->applyNoDataValues( userNoDataValue( theBandNo ) );
   return block;
 }
 

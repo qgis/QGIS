@@ -144,6 +144,12 @@ class CORE_EXPORT QgsRasterBlock
      * @return true if the block has no data value */
     bool hasNoDataValue() const { return mHasNoDataValue; }
 
+    /** Returns true if thee block may contain no data. It does not guarantee
+     * that it really contains any no data. It can be used to speed up processing.
+     * Not the difference between this method and hasNoDataValue().
+     * @return true if the block may contain no data */
+    bool hasNoData() const;
+
     /** Return no data value.
      * @return No data value */
     double noDataValue() const { return mNoDataValue; }
@@ -292,7 +298,7 @@ class CORE_EXPORT QgsRasterBlock
 
     inline static void writeValue( void *data, QGis::DataType type, size_t index, double value );
 
-    void applyNodataValues( const QgsRasterRangeList & rangeList );
+    void applyNoDataValues( const QgsRasterRangeList & rangeList );
 
     /** \brief Get error */
     QgsError error() const { return mError; }

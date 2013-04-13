@@ -386,7 +386,7 @@ QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theEx
     block->setIsNoDataExcept( subRect );
   }
   readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
-  block->applyNodataValues( userNoDataValue( theBandNo ) );
+  block->applyNoDataValues( userNoDataValue( theBandNo ) );
   return block;
 }
 

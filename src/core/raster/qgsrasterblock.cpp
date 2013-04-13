@@ -269,6 +269,11 @@ QGis::DataType QgsRasterBlock::typeWithNoDataValue( QGis::DataType dataType, dou
   return newDataType;
 }
 
+bool QgsRasterBlock::hasNoData() const
+{
+  return mHasNoDataValue || mNoDataBitmap != 0;
+}
+
 bool QgsRasterBlock::isNoDataValue( double value, double noDataValue )
 {
   // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
@@ -302,6 +307,7 @@ QRgb QgsRasterBlock::color( int row, int column ) const
 
 bool QgsRasterBlock::isNoData( size_t index )
 {
+  if ( !mHasNoDataValue && !mNoDataBitmap ) return false;
   if ( index >= ( size_t )mWidth*mHeight )
   {
     QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
@@ -662,7 +668,7 @@ bool QgsRasterBlock::convert( QGis::DataType destDataType )
   return true;
 }
 
-void QgsRasterBlock::applyNodataValues( const QgsRasterRangeList & rangeList )
+void QgsRasterBlock::applyNoDataValues( const QgsRasterRangeList & rangeList )
 {
   if ( rangeList.isEmpty() )
   {
