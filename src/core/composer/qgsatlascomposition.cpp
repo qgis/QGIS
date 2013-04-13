@@ -32,7 +32,8 @@ QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
     mComposerMap( 0 ),
     mHideCoverage( false ), mFixedScale( false ), mMargin( 0.10 ), mFilenamePattern( "'output_'||$feature" ),
     mCoverageLayer( 0 ), mSingleFile( false ),
-    mSortFeatures( false ), mSortAscending( true ), mFeatureFilter( "" )
+    mSortFeatures( false ), mSortAscending( true ),
+    mFilterFeatures( false ), mFeatureFilter( "" )
 {
 
   // declare special columns with a default value
