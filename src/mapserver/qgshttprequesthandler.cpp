@@ -99,7 +99,7 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
     bool png8Bit = ( mFormat.compare( "image/png; mode=8bit", Qt::CaseInsensitive ) == 0 );
     bool png1Bit = ( mFormat.compare( "image/png; mode=1bit", Qt::CaseInsensitive ) == 0 );
     bool isBase64 = mFormatString.endsWith( ";base64", Qt::CaseInsensitive );
-    if ( mFormat != "PNG" && mFormat != "JPG" && !png8Bit && !png1Bit && !isBase64 )
+    if ( mFormat != "PNG" && mFormat != "JPG" && !png8Bit && !png1Bit )
     {
       QgsDebugMsg( "service exception - incorrect image format requested..." );
       sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormat + "' is not supported in the GetMap request" ) );
