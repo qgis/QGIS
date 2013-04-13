@@ -41,7 +41,6 @@ from sextante.modeler.Providers import Providers
 from sextante.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
 from sextante.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
 from sextante.algs.QGISAlgorithmProvider import QGISAlgorithmProvider
-from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from sextante.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
 from sextante.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
@@ -108,6 +107,14 @@ class Sextante:
     @staticmethod
     def setInterface(iface):
         Sextante.iface = iface
+        
+    @staticmethod
+    def setPlugin(iface):
+        Sextante.plugin = iface      
+        
+    @staticmethod
+    def getPlugin():
+        return Sextante.plugin 
 
     @staticmethod
     def initialize():
@@ -231,6 +238,14 @@ class Sextante:
         for provider in Sextante.algs.values():
             if name in provider:
                 return provider[name]
+        return None
+            
+    @staticmethod
+    def getAlgorithmFromFullName(name):
+        for provider in Sextante.algs.values():
+            for alg in provider.values():
+                if alg.name == name:
+                    return alg
         return None
 
     @staticmethod
