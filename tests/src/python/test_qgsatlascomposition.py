@@ -195,6 +195,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
 
         self.mAtlas.setSortFeatures( False )
 
+        self.mAtlas.setFilterFeatures( True )
         self.mAtlas.setFeatureFilter( "substr(NAME_1,1,1)='P'" ) # select only 'Pays de la loire'
 
         self.mAtlas.beginRender()
