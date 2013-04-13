@@ -645,11 +645,12 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
          {
              QString styleName = askToUser.getName();
              QString styleDesc = askToUser.getDescription();
+             QString uiFileContent = askToUser.getUIFileContent();
              bool isDefault = askToUser.isDefault();
 
              apply();
 
-             layer->saveStyleToDatabase( styleName, styleDesc, isDefault, msgError );
+             layer->saveStyleToDatabase( styleName, styleDesc, isDefault, uiFileContent, msgError );
              if( !msgError.isNull() )
              {
                  QMessageBox::warning( this, infoWindowTitle, msgError );
@@ -733,12 +734,20 @@ void QgsVectorLayerProperties::loadStyleMenuTriggered( QAction *action )
 
   int index = mLoadStyleMenu->actions().indexOf( action );
 
-  //Load from filesystem
-  if ( index == 0 )
+  if ( index == 0 ) //Load from filesystem
   {
-        this->on_pbnLoadStyle_clicked();
+     this->on_pbnLoadStyle_clicked();
+  }
+  else if( index == 1 ) //Load from database
+  {
+     this->showListOfStylesFromDatabase();
   }
 
+}
+
+void QgsVectorLayerProperties::showListOfStylesFromDatabase()
+{
+    //TODO el1073 ui&logic
 }
 
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const

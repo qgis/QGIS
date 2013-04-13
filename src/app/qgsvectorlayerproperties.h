@@ -136,6 +136,8 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     /** called when is possible to choice if load the style from filesystem or from db */
     void loadStyleMenuTriggered( QAction * );
+    /** when provider supports, it will list all the styles relative the layer */
+    void showListOfStylesFromDatabase();
 
   protected:
 

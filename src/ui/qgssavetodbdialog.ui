@@ -17,13 +17,30 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
-    <widget class="QPlainTextEdit" name="mDescriptionEdit"/>
+   <item row="5" column="1">
+    <widget class="QCheckBox" name="mUseAsDefault">
+     <property name="text">
+      <string>Use as default style for this layer</string>
+     </property>
+    </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="descriptionLabel">
      <property name="text">
       <string>Description</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPlainTextEdit" name="mDescriptionEdit"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mUILabel">
+     <property name="text">
+      <string>UI</string>
+     </property>
+     <property name="buddy">
+      <cstring>mNameEdit</cstring>
      </property>
     </widget>
    </item>
@@ -37,7 +54,10 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="mNameEdit"/>
+   </item>
+   <item row="6" column="1">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
@@ -47,15 +67,29 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QCheckBox" name="mUseAsDefault">
-     <property name="text">
-      <string>Use as default style for this layer</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="mNameEdit"/>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="mFileNameLabel">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mFilePickButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Open...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

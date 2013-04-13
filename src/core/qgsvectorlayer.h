@@ -382,7 +382,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
     virtual void saveStyleToDatabase( QString name, QString description,
-                                      bool useAsDefault, QString &msgError );
+                                      bool useAsDefault, QString uiFileContent,
+                                      QString &msgError );
 
     virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag );
 

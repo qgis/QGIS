@@ -82,6 +82,7 @@ typedef bool saveStyle_t(
         const QString& sldStyle,
         const QString& styleName,
         const QString& styleDescription,
+        const QString& uiFileContent,
         bool useAsDefault,
         QString& errCause
 );
@@ -3717,7 +3718,8 @@ QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
   return elem;
 }
 
-void QgsVectorLayer::saveStyleToDatabase(QString name, QString description, bool useAsDefault, QString &msgError){
+void QgsVectorLayer::saveStyleToDatabase(QString name, QString description,
+                                         bool useAsDefault, QString uiFileContent,  QString &msgError){
 
         QString sldStyle, qmlStyle;
         QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
@@ -3751,7 +3753,8 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString description, bool
         }
         sldStyle = sldDocument.toString();
 
-        saveStyleExternalMethod(mDataSource, qmlStyle, sldStyle, name, description, useAsDefault, msgError);
+        saveStyleExternalMethod(mDataSource, qmlStyle, sldStyle, name,
+                                description, uiFileContent, useAsDefault, msgError);
 }
 
 QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )

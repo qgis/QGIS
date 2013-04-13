@@ -16,15 +16,19 @@
 
 class QgsSaveStyleToDbDialog : public QDialog, private Ui::QgsSaveToDBDialog
 {
+    QString mUIFileContent;
     Q_OBJECT
 public:
     explicit QgsSaveStyleToDbDialog(QWidget *parent = 0);
     
 signals:
+
 public slots:
+    QString getUIFileContent();
     QString getName();
     QString getDescription();
     bool isDefault();
+    void on_mFilePickButton_clicked();
 };
 
 #endif // QGSSAVESTYLETODBDIALOG_H
