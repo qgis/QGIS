@@ -752,9 +752,16 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     return outputBlock;
   }
 
-  // we are using memcpy on bits, so we have to use setIsNoData if necessary
-  // so that bitmaps is set if necessary
-  //outputBlock->setIsNoData();
+  // No data:
+  // 1) no data value exists (numerical) -> memcpy, not necessary isNoData()/setIsNoData()
+  // 2) no data value does not exist but it may contain no data (numerical no data bitmap)
+  //    -> must use isNoData()/setIsNoData()
+  // 3) no data are not used (no no data value, no no data bitmap) -> simple memcpy
+  // 4) image - simple memcpy
+
+  // To copy no data values stored in bitmaps we have to use isNoData()/setIsNoData(),
+  // we cannot fill output block with no data because we use memcpy for data, not setValue().
+  bool doNoData = inputBlock->hasNoData() && !inputBlock->hasNoDataValue();
 
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
@@ -765,7 +772,8 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
       size_t srcIndex = srcRow * mSrcCols + srcCol;
       QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
 
-      if ( inputBlock->isNoData( srcRow, srcCol ) )
+      // isNoData() may be slow so we check doNoData first
+      if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
       {
         outputBlock->setIsNoData( srcRow, srcCol );
         continue ;
