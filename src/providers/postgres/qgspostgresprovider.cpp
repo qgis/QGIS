@@ -2761,6 +2761,8 @@ bool QgsPostgresProvider::convertField( QgsField &field )
       fieldPrec = 0;
       break;
 
+    case QVariant::DateTime:
+    case QVariant::Time:
     case QVariant::String:
       fieldType = "varchar";
       fieldPrec = -1;
@@ -2779,8 +2781,8 @@ bool QgsPostgresProvider::convertField( QgsField &field )
       break;
 
     case QVariant::Date:
-      fieldType = "numeric";
-      fieldSize = -1;
+      fieldType = "date";
+      fieldPrec = 0;
       break;
 
     case QVariant::Double:
