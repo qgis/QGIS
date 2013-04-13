@@ -60,53 +60,53 @@
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="96"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="160"/>
         <source>Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Užfiksuoti koordinatę</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="98"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="144"/>
         <source>Click on the map to view coordinates and capture to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Spauskite ant žemėlapio, kad pažiūrėtumėte koordinates ir užfiksuotumėte jas į iškarpinę.</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="101"/>
         <source>&amp;Coordinate Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Užfiksuoti koordinatę</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="116"/>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation type="unfinished"></translation>
+        <translation>Spauskite koordinačių rodymo CRS parinkimui</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinatė jūsų parinktoje CRS (platuma, ilguma arba rytai, šiaurė)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinatė žemėlapio koordinačių sistemoje (platuma, ilguma arba rytai, šiaurė)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="131"/>
         <source>Copy to clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopijuoti į iškarpinę</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Spauskite, norėdami įjungti pelės sekimą. Spauskite ant žemėlapio, kad sustabdytumėte</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
         <source>Start capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradėti fiksavimą</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="142"/>
         <source>Click to enable coordinate capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Spauskite, norėdami įjungti koordinatės fiksavimą</translation>
     </message>
 </context>
 <context>
@@ -129,58 +129,58 @@
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="331"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Naršyti</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Uždaryti</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="17"/>
         <source>Extract Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ištraukti taškus</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="28"/>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradinis linijų ar poligonų vektorinis sluoksnis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="68"/>
         <source>Save to new shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašyti į naują shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="140"/>
         <source>Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancija</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="183"/>
         <source>Calculate using</source>
-        <translation type="unfinished"></translation>
+        <translation>Skaičiuoti naudojant</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="195"/>
         <source>Calculate extent for each feature separately</source>
-        <translation type="unfinished"></translation>
+        <translation>Skaičiuoti naudojant ribas kiekvienam objektui atskirai</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="44"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="44"/>
         <source>Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Unikalaus ID laukas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="75"/>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Galutinių taškų shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation>Geoapdorojama</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="28"/>
@@ -188,22 +188,22 @@
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="64"/>
         <source>Input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradinis vektorinis sluoksnis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="60"/>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Susikertantis sluoksnis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="94"/>
         <source>Buffer distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Buferio atstumas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="134"/>
         <source>Buffer distance field</source>
-        <translation type="unfinished"></translation>
+        <translation>Buferio atstumo laukas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="141"/>
@@ -221,7 +221,7 @@
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="78"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="315"/>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Galutinis shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="262"/>
@@ -231,28 +231,28 @@
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="16"/>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasti linijų susikirtimus</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="27"/>
         <source>Input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradinis linijų sluoksnis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="41"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="41"/>
         <source>Input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Įvesties unikalaus ID laukas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="55"/>
         <source>Intersect line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Susikirtimo linijų sluoksnis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="69"/>
         <source>Intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Susikirtimo unikalaus ID laukas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="96"/>
@@ -263,37 +263,37 @@
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="161"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Galutinis shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="28"/>
         <source>Target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Galutinis vektorinis sluoksnis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="42"/>
         <source>Join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Prijungti vektorinį sluoksnį</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="188"/>
         <source>Output table</source>
-        <translation type="unfinished"></translation>
+        <translation>Galutinė lentelė</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="194"/>
         <source>Only keep matching records</source>
-        <translation type="unfinished"></translation>
+        <translation>Palikti tik atitinkančius įrašus</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="204"/>
         <source>Keep all records (including non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation>Palikti visus įrašus (įskaitant neatitinaknčius galutinių įrašų)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="16"/>
         <source>Generate Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Sukurti centroidus</translation>
     </message>
     <message>
         <source>creating new selection</source>
@@ -309,15 +309,15 @@
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Pažymėti pagal vietą</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pažymėti objektus, esančius:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>kurie kertasu su objektais, esančiais:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
@@ -325,42 +325,45 @@
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudoti tik pažymėtus objektus</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Prašome nurodyti pradinį sluoksnį</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Baigta</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Apdorojimas baigtas.</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Prašome nurodyti pažymėjimo sluoksnį</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation type="unfinished"></translation>
+        <translation>Neteisingi laukų pavadinimai</translation>
     </message>
     <message>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Rezultatas nebus kuriamas.
+Šie laukų pavadinimai ilgesni nei 10 simbolių:
+%1</translation>
     </message>
     <message>
         <source>Error deleting shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida trinant shapefile</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyksta ištrinti esamą shapefile
+%1</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
@@ -376,47 +379,47 @@ Following field names are longer than 10 characters:
     </message>
     <message>
         <source>No shapefiles found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nerasta shapefile&apos;ų</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šiame aplanke nėra shapefile&apos;ų. Parinkite kitą aplanką.</translation>
     </message>
     <message>
         <source>Delete error</source>
-        <translation type="unfinished"></translation>
+        <translation>Trynimo klaida</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyksta ištrinti failo %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Nutraukti</translation>
     </message>
     <message>
         <source>Merging</source>
-        <translation type="unfinished"></translation>
+        <translation>Suliejama</translation>
     </message>
     <message>
         <source>Missing or invalid CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Nenurodyta arba neteisinga CRS</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Prašome nurodyti pradinį poligonų vektorinį sluoksnį</translation>
     </message>
     <message>
         <source>Please specify input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Prašome nurodyti pradinį linijų vektorinį sluoksnį</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
-        <translation type="unfinished"></translation>
+        <translation>Prašome nurodyti galutinį ilgio lauką</translation>
     </message>
     <message>
         <source>length field</source>
-        <translation type="unfinished"></translation>
+        <translation>Ilgio laukas</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
@@ -1274,7 +1277,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/sextante/about/aboutdialogbase.ui" line="27"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation>about:blank</translation>
     </message>
 </context>
 <context>
@@ -1355,22 +1358,22 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="14"/>
         <source>Add constraint</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridėti apribojimą</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Stulpelis</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="37"/>
         <source>Primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Pirminis raktas</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="47"/>
         <source>Unique</source>
-        <translation type="unfinished"></translation>
+        <translation>Unikalus</translation>
     </message>
 </context>
 <context>
@@ -1718,12 +1721,12 @@ stulpelius</translation>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="302"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Avoid selecting feature by id.  Sometimes - especially when running expensive queries/views - fetching the data sequentially instead of fetching features by id can be much quicker.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Venkite objektų žymėjimo pagal id.  Kartais, ypač vykdant brangias užklausas, nuoseklus objektų ištraukimas gali būti daug greitesnis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="305"/>
         <source>Avoid selecting by feature id</source>
-        <translation type="unfinished"></translation>
+        <translation>Venkite žymėjimo pagal objekto id</translation>
     </message>
     <message>
         <source>Sorry</source>
@@ -1824,67 +1827,67 @@ geometrijos stulpelis - laukas su unikaliomis sveikomis reikšmėmis</translatio
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="14"/>
         <source>Add versioning support to a table</source>
-        <translation type="unfinished"></translation>
+        <translation>Prie lentelės pridėti versijavimo palaikymą</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="22"/>
         <source>Table is expected to be empty, with a primary key.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tikimasi, kad lentelė bus tuščia, su pirminiu raktu.</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="31"/>
         <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Schema</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="44"/>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Lentelė</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="75"/>
         <source>create a view with current content (&lt;TABLE&gt;_current)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sukurti rodinį su dabartiniu turiniu (&lt;TABLE&gt;_current)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="85"/>
         <source>New columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Nauji stulpeliai</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="91"/>
         <source>Prim. key</source>
-        <translation type="unfinished"></translation>
+        <translation>Pirm. raktas</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="101"/>
         <source>id_hist</source>
-        <translation type="unfinished"></translation>
+        <translation>id_ist</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="108"/>
         <source>Start time</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradžios laikas</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="118"/>
         <source>time_start</source>
-        <translation type="unfinished"></translation>
+        <translation>prad_laik</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="125"/>
         <source>End time</source>
-        <translation type="unfinished"></translation>
+        <translation>Pabaigos laikas</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="135"/>
         <source>time_end</source>
-        <translation type="unfinished"></translation>
+        <translation>pab_laik</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/db_plugins/postgis/plugins/versioning/DlgVersioning.ui" line="160"/>
         <source>SQL to be executed:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vykdoma SQL:</translation>
     </message>
 </context>
 <context>
@@ -5278,7 +5281,7 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="42"/>
         <source>Database instance</source>
-        <translation type="unfinished"></translation>
+        <translation>Duomenų bazė</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="55"/>
@@ -5347,18 +5350,18 @@ Ctl (Cmd) increments by 15 deg.</source>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="138"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="141"/>
         <source>Fills tag table with tags that are typical for relation of specified type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Užpildo žymų lentele žymomis, kurios yra tipinės nurodyto ryšio tipui.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="151"/>
         <source>Remove all selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Išimti visas pažymėtas žymas</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="154"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="157"/>
         <source>Removes all selected tags.</source>
-        <translation type="unfinished"></translation>
+        <translation>Išima visas pažymėtas žymas.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="185"/>
@@ -5374,18 +5377,18 @@ Ctl (Cmd) increments by 15 deg.</source>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="208"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="211"/>
         <source>Starts process of selecting next relation member on map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradeda kito ryšio elemento žymėjimo žemėlapyje procesą.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="224"/>
         <source>Remove all selected members</source>
-        <translation type="unfinished"></translation>
+        <translation>Panaikinti visus pažymėtus narius</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="227"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="230"/>
         <source>Removes all selected members.</source>
-        <translation type="unfinished"></translation>
+        <translation>Panaikina visus pažymėtus narius.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="305"/>
@@ -5407,23 +5410,23 @@ Ctl (Cmd) increments by 15 deg.</source>
     </message>
     <message>
         <source>for grouping boundaries and marking enclaves / exclaves</source>
-        <translation type="unfinished"></translation>
+        <translation>ribų grupavimui ir enklavų/ekslavų žymėjimui</translation>
     </message>
     <message>
         <source>to put holes into areas (might have to be renamed, see article)</source>
-        <translation type="unfinished"></translation>
+        <translation>skylių plotuose įdėjimui (gali reikėti pervadinti, žiūrėkite straipsnį)</translation>
     </message>
     <message>
         <source>any kind of turn restriction</source>
-        <translation type="unfinished"></translation>
+        <translation>bet kokiam posūkio apribojimo tipui</translation>
     </message>
     <message>
         <source>like bus routes, cycle routes and numbered highways</source>
-        <translation type="unfinished"></translation>
+        <translation>autobusų ar dviračių maršrutams bei numeruotiems greitkeliams</translation>
     </message>
     <message>
         <source>traffic enforcement devices; speed cameras, redlight cameras, weight checks, ...</source>
-        <translation type="unfinished"></translation>
+        <translation>eismo reguliavimo įrenginiams; greičio kameroms, svorio tikrinimams...</translation>
     </message>
     <message>
         <source>OSM Information</source>
@@ -5440,7 +5443,7 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="40"/>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Apimtis</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="48"/>
@@ -5493,7 +5496,7 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudoti savo pateiktį</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
@@ -5511,7 +5514,7 @@ Ctl (Cmd) increments by 15 deg.</source>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyksta įrašyti failo %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
@@ -5519,11 +5522,11 @@ Ctl (Cmd) increments by 15 deg.</source>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Atsiuntimas nepavyko. OpenStreetMap stoties atsakymas: %1 - %2</translation>
     </message>
     <message>
         <source>Check your internet connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Patikrinkite savo interneto jungtį</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
@@ -5531,15 +5534,15 @@ Ctl (Cmd) increments by 15 deg.</source>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Atsiuntimas nepavyko: %1.</translation>
     </message>
     <message>
         <source>Choose file to save</source>
-        <translation type="unfinished"></translation>
+        <translation>Parinkite įrašymo failą</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM failai (*.osm)</translation>
     </message>
     <message>
         <source>Getting data</source>
@@ -5547,23 +5550,23 @@ Ctl (Cmd) increments by 15 deg.</source>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap stotis, iš kurios siunčiate OSM duomenis (~ api.openstreetmap.org), turi apribojimus, kiek duomenų galite atsisiųsti vienu metu. Kaip parašyta &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, atsiunčiamo ploto nei platumos, nei ilgumos dydis negali viršyti 0,25 laipsnių. Pastebėtina, kad Quantum GIS leidžia nurodyti kokį tik norite plotą, bet OpenStreetMap stotis netenkins užklausų, neatitinkančių atsisiuntimo apribojimų.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Abu dydžiai per dideli!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Platumos apimtis per didelė!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ilgumos apimtis per didelė!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tvarka! Plotas tikriausiai tinkamas stočiai.</translation>
     </message>
 </context>
 <context>
@@ -5571,7 +5574,7 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
         <source>OSM Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM objektas</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="75"/>
@@ -5590,53 +5593,53 @@ Ctl (Cmd) increments by 15 deg.</source>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="609"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="625"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="100"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="103"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="106"/>
         <source>Identify feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifikuoti objektą</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="134"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="137"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="140"/>
         <source>Move feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Perkelti objektą</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="419"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="422"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="425"/>
         <source>Remove this feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Panaikinti šį objektą</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="168"/>
         <source>Create point</source>
-        <translation type="unfinished"></translation>
+        <translation>Sukurti tašką</translation>
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM priedas</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialogas „Kurti OSM ryšį“ buvo automatiškai uždarytas, nes pasikeitė dabartinė OSM duomenų bazė.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM objektų valdiklis</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Iš pradžių parinkite OSM objektą.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Prieš redaguodami parinkite ryšį.</translation>
     </message>
     <message>
         <source>Snapping ON. Hold Ctrl to disable it.</source>
@@ -5644,127 +5647,127 @@ Ctl (Cmd) increments by 15 deg.</source>
     </message>
     <message>
         <source>Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Slėpti OSM keitimų istoriją</translation>
     </message>
     <message>
         <source>Show OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti OSM keitimų istoriją</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="190"/>
         <source>Create line</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurti liniją</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="218"/>
         <source>Create polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurti poligoną</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="246"/>
         <source>Create relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurti ryšį</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="265"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="268"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="271"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Atšaukti</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="287"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="290"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="293"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Pakartoti</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="309"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="312"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="315"/>
         <source>Show/Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti/slėpti OSM keitimų istoriją</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="345"/>
         <source>Feature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Objektas:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="371"/>
         <source>TYPE, ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>TIPAS, ID:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="378"/>
         <source>CREATED:</source>
-        <translation type="unfinished"></translation>
+        <translation>SUKURTA:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="385"/>
         <source>USER:</source>
-        <translation type="unfinished"></translation>
+        <translation>NAUDOTOJAS:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="392"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="399"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="406"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>nežinoma</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="479"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Savybės</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="525"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="528"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="531"/>
         <source>Remove selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Išimti pažymėtas žymas</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="552"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Ryšiai</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="584"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="587"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="590"/>
         <source>Add relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridėti ryšį</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="600"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="603"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="606"/>
         <source>Edit relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Keisti ryšį</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="616"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="619"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="622"/>
         <source>Remove relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Trinti ryšį</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="652"/>
         <source>Relation tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ryšio žymos:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="699"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="707"/>
         <source>Relation members:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ryšio nariai:</translation>
     </message>
 </context>
 <context>
@@ -5819,254 +5822,254 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="16"/>
         <source>Load OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Įkelti OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="33"/>
         <source>OpenStreetMap file to load:</source>
-        <translation type="unfinished"></translation>
+        <translation>Įkeliamas OpenStreetMap failas:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="46"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="55"/>
         <source>Add columns for tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pridėti stulpelius žymoms:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Naudoti savo pateiktį</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
         <source>Replace current data (current layers will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Keisti dabartinius duomenis (dabartiniai sluoksniai bus pašalinti)</translation>
     </message>
     <message>
         <source>Choose an Open Street Map file</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasirinkite OpenStreetMap failą</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM failai (*.osm)</translation>
     </message>
     <message>
         <source>OSM Load</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM įkėlimas</translation>
     </message>
     <message>
         <source>Please enter path to OSM data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Prašome nurodyti kelią iki OSM duomenų failo.</translation>
     </message>
     <message>
         <source>Path to OSM file is invalid: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Neteisingas kelias iki OSM failo: %1.</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida</translation>
     </message>
     <message>
         <source>Layers of OSM file &quot;%1&quot; are loaded already.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sluoksniai iš OSM failo „%1“ jau įkelti.</translation>
     </message>
     <message>
         <source>Failed to load polygon layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko įkelti poligonų sluoksnio.</translation>
     </message>
     <message>
         <source>Failed to load line layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko įkelti linijų sluoksnio.</translation>
     </message>
     <message>
         <source>Failed to load point layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko įkelti taškų sluoksnio.</translation>
     </message>
     <message>
         <source>Could not connect to setRenderer signal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko prisijungti prie setRenderer signalo.</translation>
     </message>
     <message>
         <source>Failed to load layers: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko įkelti sluoksnių: %1</translation>
     </message>
 </context>
 <context>
     <name>OsmPlugin</name>
     <message>
         <source>Load OSM from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Įkelti OSM iš failo</translation>
     </message>
     <message>
         <source>Load OpenStreetMap from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Įkelti OpenStreetMap iš failo</translation>
     </message>
     <message>
         <source>Import data from a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuoti duomenis iš sluoksnio</translation>
     </message>
     <message>
         <source>Import data from a layer to OpenStreetMap</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuoti duomenis iš sluoksnio į OpenStreetMap</translation>
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašyti OSM į failą</translation>
     </message>
     <message>
         <source>Save OpenStreetMap to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašyti OpenStreetMap į failą</translation>
     </message>
     <message>
         <source>Download OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>Atsisiųsti OSM duomenis</translation>
     </message>
     <message>
         <source>Download OpenStreetMap data</source>
-        <translation type="unfinished"></translation>
+        <translation>Atsisiųsti OpenStreetMap duomenis</translation>
     </message>
     <message>
         <source>Upload OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>Nusiųsti OSM duomenis</translation>
     </message>
     <message>
         <source>Upload OpenStreetMap data</source>
-        <translation type="unfinished"></translation>
+        <translation>Nusiųsti OpenStreetMap duomenis</translation>
     </message>
     <message>
         <source>Show/Hide OSM Feature Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti/slėpti OSM objektų valdyklę</translation>
     </message>
     <message>
         <source>Show/Hide OpenStreetMap Feature Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Rodyti/slėpti OpenStreetMap objektų valdyklę</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Atsiprašau</translation>
     </message>
     <message>
         <source>You don&apos;t have OSM provider installed!</source>
-        <translation type="unfinished"></translation>
+        <translation>Neturite įdiegto OSM tiekėjo!</translation>
     </message>
     <message>
         <source>OSM Save to file</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM įrašyti į failą</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM duomenys neįkelti/neatsiųsti arba sluoksnių panelėje nepažymėtas OSM sluoksnis. Iš pradžių tai sutvarkykite,  nes OSM priedas nežino, ką reikia įrašyti.</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM nusiuntimas</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to upload.</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM duomenys neįkelti/neatsiųsti arba sluoksnių panelėje nepažymėtas OSM sluoksnis. Iš pradžių tai sutvarkykite,  nes OSM priedas nežino, ką reikia nusiųsti.</translation>
     </message>
     <message>
         <source>OSM Import</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM importas</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what layer will be destination of the import.</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM duomenys neįkelti/neatsiųsti arba sluoksnių panelėje nepažymėtas OSM sluoksnis. Iš pradžių tai sutvarkykite,  nes OSM priedas nežino, į kurį sluoksnį bus importuojama.</translation>
     </message>
     <message>
         <source>There are currently no available vector layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Šiuo metu nėra tinkamų vektorinių sluoksnių.</translation>
     </message>
 </context>
 <context>
     <name>OsmSaveDlg</name>
     <message>
         <source>Choose an Open Street Map file</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasirinkite Open Street Map failą</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM failai (*.osm)</translation>
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašyti OSM į failą</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyksta įrašyti failo %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruošiamės...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašomi taškai...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašomos linijos...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašomi poligonai...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašomi ryšiai...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
         <source>Save OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašyti OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="33"/>
         <source>Where to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kur įrašyti:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="52"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="61"/>
         <source>Features to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašyti objektus:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="81"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Taškus</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="91"/>
         <source>Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Linijas</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="101"/>
         <source>Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligonus</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="115"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Ryšius</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="125"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Žymas</translation>
     </message>
 </context>
 <context>
@@ -6074,35 +6077,35 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="16"/>
         <source>OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>OSM keitimų istorija</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="25"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="28"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="31"/>
         <source>Clear all</source>
-        <translation type="unfinished"></translation>
+        <translation>Valyti viską</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="34"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="66"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="85"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="57"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="60"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="63"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Atšaukti</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="76"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="79"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="82"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Pakartoti</translation>
     </message>
 </context>
 <context>
@@ -6260,86 +6263,86 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vykdant Python&apos;o kodą įvyko klaida:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python&apos;o versija:</translation>
     </message>
     <message>
         <source>QGIS version:</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS versija:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Python&apos;o kelias:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished"></translation>
+        <translation>Python&apos;o klaida</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko įkelti priedo „%1“ iš [„%2“]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko įkelti priedo %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 dėl klaidos kviečiant classFactory() metodą</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 dėl klaidos kviečiant initGui() metodą</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Klaida iškraunant priedą %1</translation>
     </message>
 </context>
 <context>
     <name>PythonConsole</name>
     <message>
         <source>Clear console</source>
-        <translation type="unfinished"></translation>
+        <translation>Valyti konsolę</translation>
     </message>
     <message>
         <source>Import Class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuoti klasę</translation>
     </message>
     <message>
         <source>Manage Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Valdyti scenarijų</translation>
     </message>
     <message>
         <source>Import sextante class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuoti sekstanto klasę</translation>
     </message>
     <message>
         <source>Import iface class</source>
-        <translation type="unfinished"></translation>
+        <translation>Importuoti iface klasę</translation>
     </message>
     <message>
         <source>Open script file</source>
-        <translation type="unfinished"></translation>
+        <translation>Atverti scenarijaus failą</translation>
     </message>
     <message>
         <source>Save to script file</source>
-        <translation type="unfinished"></translation>
+        <translation>Įrašyti į scenarijaus failą</translation>
     </message>
     <message>
         <source>Run command</source>
-        <translation type="unfinished"></translation>
+        <translation>Paleisti komandą</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagalba</translation>
     </message>
     <message>
         <source>Python Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Python&apos;o konsolė</translation>
     </message>
 </context>
 <context>
@@ -6347,12 +6350,12 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <message>
         <location filename="../src/core/qgis.cpp" line="77"/>
         <source>meters</source>
-        <translation type="unfinished"></translation>
+        <translation>metrai</translation>
     </message>
     <message>
         <location filename="../src/core/qgis.cpp" line="78"/>
         <source>feet</source>
-        <translation type="unfinished"></translation>
+        <translation>pėdos</translation>
     </message>
     <message>
         <location filename="../src/core/qgis.cpp" line="79"/>
@@ -6360,12 +6363,12 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
         <location filename="../src/core/qgis.cpp" line="82"/>
         <location filename="../src/core/qgis.cpp" line="83"/>
         <source>degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>laipsniai</translation>
     </message>
     <message>
         <location filename="../src/core/qgis.cpp" line="80"/>
         <source>&lt;unknown&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;nežinoma&gt;</translation>
     </message>
 </context>
 <context>
@@ -41196,95 +41199,95 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="57"/>
         <source>Shortest path</source>
-        <translation type="unfinished"></translation>
+        <translation>Trumpiausias kelias</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="68"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradžia</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="80"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Pabaiga</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="93"/>
         <source>Criterion</source>
-        <translation type="unfinished"></translation>
+        <translation>Kriterijus</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="95"/>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="102"/>
         <source>Length</source>
-        <translation type="unfinished"></translation>
+        <translation>Ilgis</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="96"/>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="110"/>
         <source>Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Laikas</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="118"/>
         <source>Calculate</source>
-        <translation type="unfinished"></translation>
+        <translation>Skaičiuoti</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="120"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportuoti</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="125"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Valyti</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="130"/>
         <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Pagalba</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="237"/>
         <source>Point not selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepažymėtas taškas</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="237"/>
         <source>First, select start and stop points.</source>
-        <translation type="unfinished"></translation>
+        <translation>Iš pradžių parinkite pradžios ir pabaigos taškus.</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="249"/>
         <source>Plugin isn&apos;t configured</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas nesukonfigūruotas</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="249"/>
         <source>Plugin isn&apos;t configured!</source>
-        <translation type="unfinished"></translation>
+        <translation>Priedas nesukonfigūruotas!</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="270"/>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="275"/>
         <source>Tie point failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepavyko prijungti taško</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="270"/>
         <source>Start point doesn&apos;t tie to the road!</source>
-        <translation type="unfinished"></translation>
+        <translation>Pradžios taškas neprisiriša prie kelio!</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="275"/>
         <source>Stop point doesn&apos;t tie to the road!</source>
-        <translation type="unfinished"></translation>
+        <translation>Pabaigos taškas neprisiriša prie kelio!</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="296"/>
         <source>Path not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelias nerastas</translation>
     </message>
 </context>
 <context>
