@@ -127,10 +127,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mSaveAsMenu->addAction( tr( "QGIS Layer Style File" ) );
   mSaveAsMenu->addAction( tr( "SLD File" ) );
 
-  //Only if the provider is PostgresProvider add action to save the style in the DB
-  if( layer->providerType().compare( tr( "postgres" ) ) == 0 )
+  //Only if the provider support saving style to db add new choice
+  if( layer->dataProvider()->isSavingStyleToDBSupported() )
   {
-    mSaveAsMenu->addAction( tr( "Save in Postgres") );
+      mSaveAsMenu->addAction( tr( "Save on database (%1)" ).arg( layer->providerType() ) );
   }
 
   QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ), this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
@@ -624,7 +624,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
 
   if( styleType == DB )
   {
-         QString infoWindowTitle = QObject::tr( "Save style to Postgres" );
+         QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( layer->providerType() );
          QString msgError;
 
          QgsSaveStyleToDbDialog askToUser;
