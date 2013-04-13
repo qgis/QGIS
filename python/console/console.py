@@ -421,9 +421,6 @@ class PythonConsoleWidget(QWidget):
             QMessageBox.warning(self, "Save Error",
                     "Failed to save %s: %s" % (tabWidget.path, e))
         
-        self.tabListScript.append(tabWidget.path)
-        self.updateTabListScript(script=None)
-        
     def saveAsScriptFile(self):
         tabWidget = self.tabEditorWidget.currentWidget()
         if tabWidget is None:
@@ -432,6 +429,7 @@ class PythonConsoleWidget(QWidget):
                         "Save File As",
                         tabWidget.path, "Script file (*.py)")
         if not filename.isEmpty():
+            self.tabListScript.remove(tabWidget.path)
             tabWidget.path = filename
             self.saveScriptFile()
 

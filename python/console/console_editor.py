@@ -349,14 +349,17 @@ class Editor(QsciScintilla):
         else:
             try:
                 p = subprocess.Popen(['python', filename], shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-                output = p.stderr.read()
-                
-                if output:
+                traceback = p.stderr.read()
+                out = p.stdout.read()
+                if traceback:
                     print "## %s" % datetime.datetime.now()
                     print "## Script error: %s" % name
-                    sys.stderr.write(output)
+                    sys.stderr.write(traceback)
+                else:
+                    print "## %s" % datetime.datetime.now()
+                    print "## Script executed successfully: %s" % name
+                    sys.stdout.write(out)
                 del p
-                
                 #execfile(unicode(filename))
             except IOError, error:
                 print 'Cannot execute file %s. Error: %s' % (filename, error.strerror)
@@ -434,7 +437,6 @@ class EditorTab(QWidget):
                 return
             msgText = QCoreApplication.translate('PythonConsole', 
                                                  'Script was correctly saved.')
-            self.pc.updateTabListScript(self.path, action='append')
             self.pc.callWidgetMessageBarEditor(msgText)
         # Rename the original file, if it exists
         overwrite = os.path.exists(self.path)
@@ -451,7 +453,8 @@ class EditorTab(QWidget):
         fN = self.path.split('/')[-1]
         self.mw.setTabTitle(self, fN)
         self.newEditor.setModified(False)
-            
+        self.pc.updateTabListScript(self.path, action='append')
+        
     def changeFont(self):
         self.newEditor.refreshLexerProperties()
             
