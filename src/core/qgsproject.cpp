@@ -953,6 +953,7 @@ bool QgsProject::write()
   }
 
   QDomImplementation DomImplementation;
+  DomImplementation.setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
 
   QDomDocumentType documentType =
     DomImplementation.createDocumentType( "qgis", "http://mrcc.com/qgis.dtd",
