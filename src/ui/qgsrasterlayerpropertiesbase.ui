@@ -240,6 +240,9 @@
                  <property name="title">
                   <string>Layer info</string>
                  </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastergeneral</string>
+                 </property>
                  <layout class="QGridLayout" name="gridLayout_4">
                   <item row="0" column="2">
                    <widget class="QLabel" name="label_8">
@@ -343,6 +346,9 @@
                  <property name="title">
                   <string>Coordinate reference system</string>
                  </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastergeneral</string>
+                 </property>
                  <layout class="QGridLayout" name="_6">
                   <property name="margin">
                    <number>11</number>
@@ -380,6 +386,9 @@
                  </property>
                  <property name="checked">
                   <bool>false</bool>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastergeneral</string>
                  </property>
                  <layout class="QGridLayout" name="_5">
                   <property name="margin">
@@ -699,6 +708,9 @@
                  <property name="title">
                   <string>Description</string>
                  </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastermeta</string>
+                 </property>
                  <layout class="QGridLayout" name="gridLayout_5">
                   <item row="3" column="1">
                    <widget class="QTextEdit" name="mLayerAbstractTextEdit">
@@ -746,6 +758,9 @@
                  </property>
                  <property name="title">
                   <string>Properties</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastermeta</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_11">
                   <item>
@@ -822,6 +837,9 @@
                  </property>
                  <property name="title">
                   <string>Band rendering</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rasterstyle</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_21">
                   <property name="leftMargin">
@@ -913,6 +931,9 @@
                  </property>
                  <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rasterstyle</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
                   <item row="2" column="0">
@@ -1213,6 +1234,9 @@
                  <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rasterstyle</string>
+                 </property>
                  <layout class="QHBoxLayout" name="horizontalLayout">
                   <item>
                    <widget class="QLabel" name="mZoomedInResamplingLabel">
@@ -1325,6 +1349,9 @@
                    <property name="title">
                     <string>Global transparency</string>
                    </property>
+                   <property name="syncGroup" stdset="0">
+                    <string notr="true">rastertransp</string>
+                   </property>
                    <layout class="QGridLayout" name="_3">
                     <item row="0" column="0" colspan="5">
                      <widget class="QSlider" name="sliderTransparency">
@@ -1406,6 +1433,9 @@
                    <property name="title">
                     <string>No data value</string>
                    </property>
+                   <property name="syncGroup" stdset="0">
+                    <string notr="true">rastertransp</string>
+                   </property>
                    <layout class="QGridLayout" name="gridLayout_7">
                     <item row="0" column="0">
                      <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -1476,6 +1506,9 @@
                  </property>
                  <property name="title">
                   <string>Custom transparency options</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastertransp</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
                   <item row="2" column="0">
