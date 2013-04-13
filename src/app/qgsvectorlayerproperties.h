@@ -134,6 +134,9 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     /** save the style based on selected format from the menu */
     void saveStyleAsMenuTriggered( QAction * );
 
+    /** called when is possible to choice if load the style from filesystem or from db */
+    void loadStyleMenuTriggered( QAction * );
+
   protected:
 
     void saveStyleAs( StyleType styleType );
@@ -145,6 +148,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     bool mMetadataFilled;
 
     QMenu *mSaveAsMenu;
+    QMenu *mLoadStyleMenu;
 
     /**Renderer dialog which is shown*/
     QDialog* mRendererDialog;

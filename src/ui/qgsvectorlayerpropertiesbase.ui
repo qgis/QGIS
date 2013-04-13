@@ -46,6 +46,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pbnSaveStyleAs">
+       <property name="contextMenuPolicy">
+        <enum>Qt::PreventContextMenu</enum>
+       </property>
        <property name="text">
         <string>Save Style ...</string>
        </property>
@@ -177,7 +180,16 @@
        <string>Fields</string>
       </attribute>
       <layout class="QGridLayout" name="mFieldsGridLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item row="0" column="0">
@@ -201,7 +213,16 @@
        <string>General</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item row="0" column="0">
@@ -220,8 +241,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>680</width>
-            <height>393</height>
+            <width>910</width>
+            <height>732</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -297,7 +318,16 @@
               <bool>true</bool>
              </property>
              <layout class="QGridLayout">
-              <property name="margin">
+              <property name="leftMargin">
+               <number>11</number>
+              </property>
+              <property name="topMargin">
+               <number>11</number>
+              </property>
+              <property name="rightMargin">
+               <number>11</number>
+              </property>
+              <property name="bottomMargin">
                <number>11</number>
               </property>
               <item row="0" column="4">
@@ -459,7 +489,16 @@ p, li { white-space: pre-wrap; }
               <string>Subset</string>
              </property>
              <layout class="QGridLayout">
-              <property name="margin">
+              <property name="leftMargin">
+               <number>11</number>
+              </property>
+              <property name="topMargin">
+               <number>11</number>
+              </property>
+              <property name="rightMargin">
+               <number>11</number>
+              </property>
+              <property name="bottomMargin">
                <number>11</number>
               </property>
               <item row="0" column="0" colspan="2">
@@ -719,8 +758,8 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>94</width>
-            <height>211</height>
+            <width>892</width>
+            <height>714</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout">
@@ -831,8 +870,8 @@ p, li { white-space: pre-wrap; }
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>96</width>
-            <height>112</height>
+            <width>892</width>
+            <height>714</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">

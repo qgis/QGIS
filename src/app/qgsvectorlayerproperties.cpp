@@ -127,13 +127,25 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mSaveAsMenu->addAction( tr( "QGIS Layer Style File" ) );
   mSaveAsMenu->addAction( tr( "SLD File" ) );
 
-  //Only if the provider support saving style to db add new choice
+  //Only if the provider support loading & saving style to db add new choices
   if( layer->dataProvider()->isSavingStyleToDBSupported() )
   {
+      //for loading
+      mLoadStyleMenu =  new QMenu();
+      mLoadStyleMenu->addAction( tr( "Load from file" ) );
+      mLoadStyleMenu->addAction( tr( "Load from database" ) );
+      pbnLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
+      pbnLoadStyle->setMenu( mLoadStyleMenu );
+
+      QObject::connect( mLoadStyleMenu, SIGNAL( triggered( QAction * ) ),
+                        this, SLOT( loadStyleMenuTriggered( QAction * ) ) ) ;
+
+      //for saving
       mSaveAsMenu->addAction( tr( "Save on database (%1)" ).arg( layer->providerType() ) );
   }
 
-  QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ), this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
+  QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ),
+                    this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
 
   mFieldsPropertiesDialog = new QgsFieldsProperties( layer, mFieldsFrame );
   mFieldsFrame->setLayout( new QVBoxLayout( mFieldsFrame ) );
@@ -711,6 +723,22 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
       // Persist last used dir
       myQSettings.setValue( "style/lastStyleDir", myPath );
   }
+}
+
+void QgsVectorLayerProperties::loadStyleMenuTriggered( QAction *action )
+{
+  QMenu *menu = qobject_cast<QMenu *>( sender() );
+  if ( !menu )
+    return;
+
+  int index = mLoadStyleMenu->actions().indexOf( action );
+
+  //Load from filesystem
+  if ( index == 0 )
+  {
+        this->on_pbnLoadStyle_clicked();
+  }
+
 }
 
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const

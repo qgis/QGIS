@@ -3251,7 +3251,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
        res = conn->PQexec( createTabeQuery );
        if ( res.PQresultStatus() != PGRES_COMMAND_OK )
        {
-         errCause = QObject::tr( "Unable to save layer style. Unable to create style table" );
+         errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe you need to contact " );
          conn->disconnect();
          return false;
        }
@@ -3262,13 +3262,15 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   f_table_name = dsUri.table();
   f_geometry_column = dsUri.geometryColumn();
   QString owner = dsUri.username();
+  QString isdef = (useAsDefault) ? QObject::tr( "true" ) : QObject::tr( "false" );
 
-  QString sql = QObject::tr( "INSERT INTO %10( f_table_catalog, "
+  QString sql = QObject::tr( "INSERT INTO %1 ( f_table_catalog, "
                              "f_table_schema, f_table_name, f_geometry_column, "
                              "styleName, styleQML, styleSLD, useAsDefault, "
                              "description, owner) "
-                             "VALUES(%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %6),"
-                             "XMLPARSE(DOCUMENT %7),true,%8,%9);" )
+                             "VALUES(%2,%3,%4,%5,%6,XMLPARSE(DOCUMENT %7),"
+                             "XMLPARSE(DOCUMENT %8),%9,%10,%11);" )
+                         .arg( styleTableName )
                          .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
                          .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
                          .arg( QgsPostgresConn::quotedValue( f_table_name ) )
@@ -3276,9 +3278,9 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                          .arg( QgsPostgresConn::quotedValue( styleName ) )
                          .arg( QgsPostgresConn::quotedValue( qmlStyle ) )
                          .arg( QgsPostgresConn::quotedValue( sldStyle ) )
+                         .arg( isdef )
                          .arg( QgsPostgresConn::quotedValue( styleDescription ) )
-                         .arg( QgsPostgresConn::quotedValue( owner ) )
-                         .arg( styleTableName );
+                         .arg( QgsPostgresConn::quotedValue( owner ) );
 
   if( useAsDefault )
   {
@@ -3288,15 +3290,15 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
               .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
               .arg( QgsPostgresConn::quotedValue(f_table_name ) )
               .arg( QgsPostgresConn::quotedValue(f_geometry_column ) );
-      sql = QObject::tr("BEGIN; %2 %1 COMMIT;")
-              .arg( sql ).arg( removeDefaultSql );
+      sql = QObject::tr("BEGIN; %1 %2 COMMIT;")
+              .arg( removeDefaultSql ).arg( sql );
   }
 
   res = conn->PQexec( sql );
   conn->disconnect();
   if ( res.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    errCause = QObject::tr( "Unable to save layer style" );
+    errCause = QObject::tr( "Unable to save layer style. It's not possible to insert a new record in style table. " );
     return false;
   }
   return true;
