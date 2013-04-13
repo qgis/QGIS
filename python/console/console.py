@@ -110,18 +110,95 @@ class PythonConsoleWidget(QWidget):
         self.splitter.setChildrenCollapsible(False)
         self.splitter.addWidget(self.shellOut)
         self.splitter.addWidget(self.shell)
-        self.splitterEditor.addWidget(self.tabEditorWidget)
-        
+        #self.splitterEditor.addWidget(self.tabEditorWidget)
+
+        self.widgetEditor = QWidget(self.splitterEditor)
+
         # Hide side editor on start up
-        self.tabEditorWidget.hide()
-        
+        self.widgetEditor.hide()
+
         # List for tab script
         self.settings = QSettings()
         storedTabScripts = self.settings.value("pythonConsole/tabScripts")
         self.tabListScript = storedTabScripts.toList()
-        
+
         sizes = self.splitter.sizes()
         self.splitter.setSizes(sizes)
+
+        ##------------------Toolbar Editor-------------------------------------
+
+        ## Action for Open File
+        openFileBt = QCoreApplication.translate("PythonConsole", "Open file")
+        self.openFileButton = QAction(parent)
+        self.openFileButton.setCheckable(False)
+        self.openFileButton.setEnabled(False)
+        self.openFileButton.setIcon(QgsApplication.getThemeIcon("console/iconOpenConsole.png"))
+        self.openFileButton.setMenuRole(QAction.PreferencesRole)
+        self.openFileButton.setIconVisibleInMenu(True)
+        self.openFileButton.setToolTip(openFileBt)
+        self.openFileButton.setText(openFileBt)
+        ## Action for Save File
+        saveFileBt = QCoreApplication.translate("PythonConsole", "Save")
+        self.saveFileButton = QAction(parent)
+        self.saveFileButton.setCheckable(False)
+        self.saveFileButton.setEnabled(False)
+        self.saveFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveConsole.png"))
+        self.saveFileButton.setMenuRole(QAction.PreferencesRole)
+        self.saveFileButton.setIconVisibleInMenu(True)
+        self.saveFileButton.setToolTip(saveFileBt)
+        self.saveFileButton.setText(saveFileBt)
+        ## Action for Save File As
+        saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As..")
+        self.saveAsFileButton = QAction(parent)
+        self.saveAsFileButton.setCheckable(False)
+        self.saveAsFileButton.setEnabled(False)
+        self.saveAsFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveAsConsole.png"))
+        self.saveAsFileButton.setMenuRole(QAction.PreferencesRole)
+        self.saveAsFileButton.setIconVisibleInMenu(True)
+        self.saveAsFileButton.setToolTip(saveAsFileBt)
+        self.saveAsFileButton.setText(saveAsFileBt)
+        ## Action Cut
+        cutEditorBt = QCoreApplication.translate("PythonConsole", "Cut")
+        self.cutEditorButton = QAction(parent)
+        self.cutEditorButton.setCheckable(False)
+        self.cutEditorButton.setEnabled(True)
+        self.cutEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconCutEditorConsole.png"))
+        self.cutEditorButton.setMenuRole(QAction.PreferencesRole)
+        self.cutEditorButton.setIconVisibleInMenu(True)
+        self.cutEditorButton.setToolTip(cutEditorBt)
+        self.cutEditorButton.setText(cutEditorBt)
+        ## Action Copy
+        copyEditorBt = QCoreApplication.translate("PythonConsole", "Copy")
+        self.copyEditorButton = QAction(parent)
+        self.copyEditorButton.setCheckable(False)
+        self.copyEditorButton.setEnabled(True)
+        self.copyEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconCopyEditorConsole.png"))
+        self.copyEditorButton.setMenuRole(QAction.PreferencesRole)
+        self.copyEditorButton.setIconVisibleInMenu(True)
+        self.copyEditorButton.setToolTip(copyEditorBt)
+        self.copyEditorButton.setText(copyEditorBt)
+        ## Action Paste
+        pasteEditorBt = QCoreApplication.translate("PythonConsole", "Paste")
+        self.pasteEditorButton = QAction(parent)
+        self.pasteEditorButton.setCheckable(False)
+        self.pasteEditorButton.setEnabled(True)
+        self.pasteEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconPasteEditorConsole.png"))
+        self.pasteEditorButton.setMenuRole(QAction.PreferencesRole)
+        self.pasteEditorButton.setIconVisibleInMenu(True)
+        self.pasteEditorButton.setToolTip(pasteEditorBt)
+        self.pasteEditorButton.setText(pasteEditorBt)
+        ## Action Run Script (subprocess)
+        runScriptEditorBt = QCoreApplication.translate("PythonConsole", "Run script")
+        self.runScriptEditorButton = QAction(parent)
+        self.runScriptEditorButton.setCheckable(False)
+        self.runScriptEditorButton.setEnabled(True)
+        self.runScriptEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconRunScriptConsole.png"))
+        self.runScriptEditorButton.setMenuRole(QAction.PreferencesRole)
+        self.runScriptEditorButton.setIconVisibleInMenu(True)
+        self.runScriptEditorButton.setToolTip(runScriptEditorBt)
+        self.runScriptEditorButton.setText(runScriptEditorBt)
+        
+        ##----------------Toolbar Console-------------------------------------
 
         ## Action Show Editor
         showEditor = QCoreApplication.translate("PythonConsole", "Show editor")
@@ -165,15 +242,15 @@ class PythonConsoleWidget(QWidget):
         self.actionClass.setToolTip(actionClassBt)
         self.actionClass.setText(actionClassBt)
         ## Action menu Open/Save script
-        actionScriptBt = QCoreApplication.translate("PythonConsole", "Manage Script")
-        self.actionScript = QAction(parent)
-        self.actionScript.setCheckable(False)
-        self.actionScript.setEnabled(True)
-        self.actionScript.setIcon(QgsApplication.getThemeIcon("console/iconScriptConsole.png"))
-        self.actionScript.setMenuRole(QAction.PreferencesRole)
-        self.actionScript.setIconVisibleInMenu(True)
-        self.actionScript.setToolTip(actionScriptBt)
-        self.actionScript.setText(actionScriptBt)
+#        actionScriptBt = QCoreApplication.translate("PythonConsole", "Manage Script")
+#        self.actionScript = QAction(parent)
+#        self.actionScript.setCheckable(False)
+#        self.actionScript.setEnabled(True)
+#        self.actionScript.setIcon(QgsApplication.getThemeIcon("console/iconScriptConsole.png"))
+#        self.actionScript.setMenuRole(QAction.PreferencesRole)
+#        self.actionScript.setIconVisibleInMenu(True)
+#        self.actionScript.setToolTip(actionScriptBt)
+#        self.actionScript.setText(actionScriptBt)
         ## Import Sextante class
         loadSextanteBt = QCoreApplication.translate("PythonConsole", "Import Sextante class")
         self.loadSextanteButton = QAction(parent)
@@ -204,36 +281,6 @@ class PythonConsoleWidget(QWidget):
         self.loadQtGuiButton.setIconVisibleInMenu(True)
         self.loadQtGuiButton.setToolTip(loadQtGuiBt)
         self.loadQtGuiButton.setText(loadQtGuiBt)
-        ## Action for Open File
-        openFileBt = QCoreApplication.translate("PythonConsole", "Open file")
-        self.openFileButton = QAction(parent)
-        self.openFileButton.setCheckable(False)
-        self.openFileButton.setEnabled(False)
-        self.openFileButton.setIcon(QgsApplication.getThemeIcon("console/iconOpenConsole.png"))
-        self.openFileButton.setMenuRole(QAction.PreferencesRole)
-        self.openFileButton.setIconVisibleInMenu(True)
-        self.openFileButton.setToolTip(openFileBt)
-        self.openFileButton.setText(openFileBt)
-        ## Action for Save File
-        saveFileBt = QCoreApplication.translate("PythonConsole", "Save")
-        self.saveFileButton = QAction(parent)
-        self.saveFileButton.setCheckable(False)
-        self.saveFileButton.setEnabled(False)
-        self.saveFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveConsole.png"))
-        self.saveFileButton.setMenuRole(QAction.PreferencesRole)
-        self.saveFileButton.setIconVisibleInMenu(True)
-        self.saveFileButton.setToolTip(saveFileBt)
-        self.saveFileButton.setText(saveFileBt)
-        ## Action for Save File As
-        saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As..")
-        self.saveAsFileButton = QAction(parent)
-        self.saveAsFileButton.setCheckable(False)
-        self.saveAsFileButton.setEnabled(False)
-        #self.saveAsFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveConsole.png"))
-        self.saveAsFileButton.setMenuRole(QAction.PreferencesRole)
-        self.saveAsFileButton.setIconVisibleInMenu(True)
-        self.saveAsFileButton.setToolTip(saveAsFileBt)
-        self.saveAsFileButton.setText(saveAsFileBt)
         ## Action for Run script
         runBt = QCoreApplication.translate("PythonConsole", "Run command")
         self.runButton = QAction(parent)
@@ -269,27 +316,49 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.addAction(self.runButton)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.showEditorButton)
-        self.toolBar.addAction(self.actionScript)
+#        self.toolBar.addAction(self.actionScript)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.optionsButton)
         self.toolBar.addAction(self.helpButton)
         
+        self.toolBarEditor = QToolBar()
+        self.toolBarEditor.setStyleSheet('background-color: rgb(200, 200, 200);\
+                                          border-right: 1px solid rgb(155, 155, 155);')
+        self.toolBarEditor.setEnabled(True)
+        self.toolBarEditor.setFocusPolicy(Qt.NoFocus)
+        self.toolBarEditor.setContextMenuPolicy(Qt.DefaultContextMenu)
+        self.toolBarEditor.setLayoutDirection(Qt.LeftToRight)
+        self.toolBarEditor.setIconSize(QSize(18, 18))
+        self.toolBarEditor.setOrientation(Qt.Vertical)
+        self.toolBarEditor.setMovable(True)
+        self.toolBarEditor.setFloatable(True)
+        self.toolBarEditor.addAction(self.openFileButton)
+        self.toolBarEditor.addSeparator()
+        self.toolBarEditor.addAction(self.saveFileButton)
+        self.toolBarEditor.addAction(self.saveAsFileButton)
+        self.toolBarEditor.addSeparator()
+        self.toolBarEditor.addAction(self.cutEditorButton)
+        self.toolBarEditor.addAction(self.copyEditorButton)
+        self.toolBarEditor.addAction(self.pasteEditorButton)
+        self.toolBarEditor.addSeparator()
+        self.toolBarEditor.addAction(self.runScriptEditorButton)
+        
         ## Menu Import Class
-        self.classMenu = QMenu(self)
-        self.classMenu.addAction(self.loadSextanteButton)
-        self.classMenu.addAction(self.loadQtCoreButton)
-        self.classMenu.addAction(self.loadQtGuiButton)
-        cM = self.toolBar.widgetForAction(self.actionClass)
-        cM.setMenu(self.classMenu)
-        cM.setPopupMode(QToolButton.InstantPopup)
-        ## Menu Manage Script
-        self.scriptMenu = QMenu(self)
-        self.scriptMenu.addAction(self.openFileButton)
-        self.scriptMenu.addAction(self.saveFileButton)
-        self.scriptMenu.addAction(self.saveAsFileButton)
-        sM = self.toolBar.widgetForAction(self.actionScript)
-        sM.setMenu(self.scriptMenu)
-        sM.setPopupMode(QToolButton.InstantPopup)
+#        self.classMenu = QMenu(self)
+#        self.classMenu.addAction(self.loadSextanteButton)
+#        self.classMenu.addAction(self.loadQtCoreButton)
+#        self.classMenu.addAction(self.loadQtGuiButton)
+#        cM = self.toolBar.widgetForAction(self.actionClass)
+#        cM.setMenu(self.classMenu)
+#        cM.setPopupMode(QToolButton.InstantPopup)
+#        ## Menu Manage Script
+#        self.scriptMenu = QMenu(self)
+#        self.scriptMenu.addAction(self.openFileButton)
+#        self.scriptMenu.addAction(self.saveFileButton)
+#        self.scriptMenu.addAction(self.saveAsFileButton)
+#        sM = self.toolBar.widgetForAction(self.actionScript)
+#        sM.setMenu(self.scriptMenu)
+#        sM.setPopupMode(QToolButton.InstantPopup)
 
         self.widgetButton = QWidget()
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
@@ -297,11 +366,20 @@ class PythonConsoleWidget(QWidget):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.widgetButton.sizePolicy().hasHeightForWidth())
         self.widgetButton.setSizePolicy(sizePolicy)
+        
+        self.widgetButtonEditor = QWidget(self.splitterEditor)
+        sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.widgetButtonEditor.sizePolicy().hasHeightForWidth())
+        self.widgetButtonEditor.setSizePolicy(sizePolicy)
+        
         sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.shellOut.sizePolicy().hasHeightForWidth())
         self.shellOut.setSizePolicy(sizePolicy)
+        
         self.shellOut.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.shell.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
@@ -311,11 +389,23 @@ class PythonConsoleWidget(QWidget):
         self.mainLayout.setMargin(0)
         self.mainLayout.setSpacing(0)
         self.mainLayout.addWidget(self.widgetButton, 0, 0, 1, 1)
-        self.mainLayout.addWidget(self.splitterEditor, 0, 1, 1, 1)
+        self.mainLayout.addWidget(self.widgetButtonEditor, 0, 1, 1, 1)
+        self.mainLayout.addWidget(self.splitterEditor, 0, 2, 1, 1)
+        
+        self.layoutEditor = QGridLayout(self.widgetEditor)
+        self.layoutEditor.setMargin(0)
+        self.layoutEditor.setSpacing(0)
+        self.layoutEditor.addWidget(self.widgetButtonEditor, 0, 0, 1, 1)
+        self.layoutEditor.addWidget(self.tabEditorWidget, 0, 1, 1, 1)
+        
         self.toolBarLayout = QGridLayout(self.widgetButton)
         self.toolBarLayout.setMargin(0)
         self.toolBarLayout.setSpacing(0)
         self.toolBarLayout.addWidget(self.toolBar)
+        self.toolBarEditorLayout = QGridLayout(self.widgetButtonEditor)
+        self.toolBarEditorLayout.setMargin(0)
+        self.toolBarEditorLayout.setSpacing(0)
+        self.toolBarEditorLayout.addWidget(self.toolBarEditor)
         
         ##------------ Add first Tab in Editor -------------------------------
         
@@ -323,6 +413,10 @@ class PythonConsoleWidget(QWidget):
         
         ##------------ Signal -------------------------------
 
+        self.runScriptEditorButton.triggered.connect(self.runScriptEditor)
+        self.cutEditorButton.triggered.connect(self.cutEditor)
+        self.copyEditorButton.triggered.connect(self.copyEditor)
+        self.pasteEditorButton.triggered.connect(self.pasteEditor)
         self.showEditorButton.toggled.connect(self.toggleEditor)
         self.clearButton.triggered.connect(self.shellOut.clearConsole)
         self.optionsButton.triggered.connect(self.openSettings)
@@ -347,10 +441,22 @@ class PythonConsoleWidget(QWidget):
        self.shell.commandConsole('qtGui')
        
     def toggleEditor(self, checked):
-        self.tabEditorWidget.show() if checked else self.tabEditorWidget.hide()
+        self.widgetEditor.show() if checked else self.widgetEditor.hide()
         self.openFileButton.setEnabled(checked)
         self.saveFileButton.setEnabled(checked)
         self.saveAsFileButton.setEnabled(checked)
+        
+    def pasteEditor(self):
+        self.tabEditorWidget.currentWidget().newEditor.paste()
+        
+    def cutEditor(self):
+        self.tabEditorWidget.currentWidget().newEditor.cut()
+        
+    def copyEditor(self):
+        self.tabEditorWidget.currentWidget().newEditor.copy()
+        
+    def runScriptEditor(self):
+        self.tabEditorWidget.currentWidget().newEditor.runScriptCode()
             
 #    def openScriptFile(self):
 #       settings = QSettings()
@@ -427,7 +533,7 @@ class PythonConsoleWidget(QWidget):
             return
         filename = QFileDialog.getSaveFileName(self,
                         "Save File As",
-                        tabWidget.path, "Script file (*.py)")
+                        "*.py", "Script file (*.py)")
         if not filename.isEmpty():
             self.tabListScript.remove(tabWidget.path)
             tabWidget.path = filename
