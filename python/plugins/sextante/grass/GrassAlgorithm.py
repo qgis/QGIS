@@ -357,10 +357,10 @@ class GrassAlgorithm(GeoAlgorithm):
             func(self)
 
     def exportVectorLayer(self, orgFilename):
-        #only export to an intermediate shp if the layer is not file-based.
-        #We assume that almost all file formats will be supported by ogr
+        #TODO: improve this. We are now exporting if it is not a shapefile,
+        #but the functionality of v.in.ogr could be used for this.        
         #We also export if there is a selection
-        if not os.path.exists(orgFilename):
+        if not os.path.exists(orgFilename) or not orgFilename.endswith("shp"):
             layer = QGisLayers.getObjectFromUri(orgFilename, False)
             if layer:
                 filename = LayerExporter.exportVectorLayer(layer)
