@@ -26,7 +26,7 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, QString nullValue )
     , mNullValue( nullValue )
 {
   btnClear = new QToolButton( this );
-  btnClear->setIcon( QgsApplication::getThemeIcon( "/mIconClear.png" ) );
+  btnClear->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
   btnClear->setCursor( Qt::ArrowCursor );
   btnClear->setFocusPolicy( Qt::NoFocus );
   btnClear->setStyleSheet( "QToolButton { border: none; padding: 0px; }" );
