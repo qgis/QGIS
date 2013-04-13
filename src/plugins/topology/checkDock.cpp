@@ -103,7 +103,6 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
 checkDock::~checkDock()
 {
   delete mConfigureDialog;
-  delete mErrorListModel;
 
   QList<QgsRubberBand*>::const_iterator it;
   for ( it = mRbErrorMarkers.begin(); it != mRbErrorMarkers.end(); ++it )
@@ -117,6 +116,7 @@ checkDock::~checkDock()
 
   // delete errors in list
   deleteErrors();
+  delete mErrorListModel;
 }
 
 void checkDock::clearVertexMarkers()
