@@ -504,7 +504,7 @@ void QgsOgrProvider::setEncoding( const QString& e )
 {
 #if defined(OLCStringsAsUTF8)
   QSettings settings;
-  if ( ( ogrDriverName != "ESRI Shapefile" || settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ) && !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
+  if ( ( ogrDriverName == "ESRI Shapefile" && settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ) || !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
   {
     QgsVectorDataProvider::setEncoding( e );
   }
