@@ -82,6 +82,7 @@ SET(QGIS_APP_SRCS
   qgsmaptooltextannotation.cpp
   qgsmaptoolvertexedit.cpp  
   qgssavestyletodbdialog.cpp
+  qgsloadstylefromdbdialog.cpp
 
   nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
@@ -229,6 +230,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolsplitfeatures.h
   qgsmaptoolvertexedit.h
   qgssavestyletodbdialog.h
+  qgsloadstylefromdbdialog.h
 
   nodetool/qgsmaptoolnodetool.h
   nodetool/qgsselectedfeature.h

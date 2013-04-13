@@ -34,6 +34,7 @@
 #include "qgslabelinggui.h"
 #include "qgslabel.h"
 #include "qgslegenditem.h"
+//#include "qgsloadstylefromdbdialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -747,7 +748,7 @@ void QgsVectorLayerProperties::loadStyleMenuTriggered( QAction *action )
 
 void QgsVectorLayerProperties::showListOfStylesFromDatabase()
 {
-    //TODO el1073 ui&logic
+//    QgsLoadStyleFromDBDialog dialog;
 }
 
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const

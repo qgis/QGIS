@@ -18,7 +18,7 @@ QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent ) :
     QDialog( parent )
 {
     setupUi( this );
-    setWindowTitle( "Save style in Postgres" );
+    setWindowTitle( "Save style in database" );
     mDescriptionEdit->setTabChangesFocus( true );
     setTabOrder( mNameEdit, mDescriptionEdit );
     setTabOrder( mDescriptionEdit, mUseAsDefault );

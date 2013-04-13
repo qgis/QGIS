@@ -3246,7 +3246,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     char* c = PQgetvalue( result, 0, 0 );
     if( *c == '0' )
     {
-        QString createTabeQuery = QObject::tr( "CREATE TABLE public.%1 (  f_table_catalog varchar(256),  f_table_schema varchar(256),  f_table_name varchar(256),  f_geometry_column varchar(256),  styleName varchar(30),  styleQML xml,  styleSLD xml,  useAsDefault boolean,  description text,  owner varchar(30),  ui xml,  update_time timestamp DEFAULT CURRENT_TIMESTAMP );" ).arg( styleTableName );
+        QString createTabeQuery = QObject::tr( "CREATE TABLE public.%1 (id SERIAL PRIMARY KEY,  f_table_catalog varchar(256),  f_table_schema varchar(256),  f_table_name varchar(256),  f_geometry_column varchar(256),  styleName varchar(30),  styleQML xml,  styleSLD xml,  useAsDefault boolean,  description text,  owner varchar(30),  ui xml,  update_time timestamp DEFAULT CURRENT_TIMESTAMP );" ).arg( styleTableName );
 
        res = conn->PQexec( createTabeQuery );
        if ( res.PQresultStatus() != PGRES_COMMAND_OK )
