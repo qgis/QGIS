@@ -836,9 +836,34 @@ class QgsVectorLayer : QgsMapLayer
 
     void editingStarted();
     void editingStopped();
+
+    /**
+     * Will be emitted, when a new attribute has been added to this vector layer.
+     * Applies only to types {@link QgsFields::OriginEdit} and {@link QgsFields::OriginProvider}
+     *
+     * @param The index of the new attribute
+     *
+     * @see updatedFields()
+     */
     void attributeAdded( int idx );
+
+    /**
+     * Will be emitted, when an attribute has been deleted from this vector layer.
+     * Applies only to types {@link QgsFields::OriginEdit} and {@link QgsFields::OriginProvider}
+     *
+     * @param The index of the deleted attribute
+     *
+     * @see updatedFields()
+     */
     void attributeDeleted( int idx );
     void featureAdded( QgsFeatureId fid );  // added in 1.7
+
+    /**
+     * Is emitted, whenever the fields available from this layer have been changed.
+     * This can be due to manually adding attributes or due to a join.
+     */
+    void updatedFields();
+
     void featureDeleted( QgsFeatureId fid );
     void layerDeleted();
 
