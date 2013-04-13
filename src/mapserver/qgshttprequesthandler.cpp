@@ -374,6 +374,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
     QString value = element.mid( sepidx + 1 );
     value.replace( "+", " " );
     value = QUrl::fromPercentEncoding( value.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
+    key = QUrl::fromPercentEncoding( key.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
 
     if ( key.compare( "SLD_BODY", Qt::CaseInsensitive ) == 0 )
     {
