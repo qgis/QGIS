@@ -39,13 +39,13 @@ class ParameterExtent(Parameter):
             self.value = self.default
             return True
         tokens = text.split(",")
-        if len(tokens)!= 5:
+        if len(tokens)!= 4:
             return False
         try:
-            n1 = float(tokens[1])
-            n2 = float(tokens[2])
-            n3 = float(tokens[3])
-            n4 = float(tokens[4])
+            n1 = float(tokens[0])
+            n2 = float(tokens[1])
+            n3 = float(tokens[2])
+            n4 = float(tokens[3])
             self.value=text
             return True
         except:
@@ -60,5 +60,5 @@ class ParameterExtent(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterExtent(tokens[0], tokens[1], tokens[2])
+        return ParameterExtent(tokens[1], tokens[2], tokens[3])
 

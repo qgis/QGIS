@@ -36,6 +36,7 @@ class ParameterTableField(Parameter):
         self.parent = parent
         self.value = None
         self.datatype = datatype
+        self.optional= optional
 
     def getValueAsCommandLineParameter(self):
         return "\"" + str(self.value) + "\""
@@ -44,7 +45,9 @@ class ParameterTableField(Parameter):
         return "##" + self.name + "=field " + str(self.parent)
     
     def setValue(self, field):
-        if len(field) > 0:                
+        if field is None:
+            return self.optional
+        elif len(field) > 0:                
             self.value = str(field)
         else:
             return self.optional                   

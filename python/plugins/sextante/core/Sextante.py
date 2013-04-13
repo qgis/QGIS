@@ -268,8 +268,6 @@ class Sextante:
                 return
         else:
             i = 0
-
-            settrace()
             for param in alg.parameters:
                 if not param.hidden:
                     if not param.setValue(args[i]):

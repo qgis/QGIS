@@ -142,7 +142,7 @@ class QgisAlgsTest(unittest.TestCase):
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
 
     def test_qgiscreategridnointeger(self):
-        outputs=sextante.runalg("qgis:creategrid",0.1,0.1,1,1,0,0,None)
+        outputs=sextante.runalg("qgis:creategrid",0.1,0.1,1,1,0,0,0,None)
         output=outputs['SAVENAME']
         layer=QGisLayers.getObjectFromUri(output, True)
         fields=layer.pendingFields()
