@@ -553,12 +553,12 @@ void QgsRasterLayerProperties::sync()
     mOptionsStackedWidget->setCurrentWidget( mOptsPage_Metadata );
   }
 
-  // TODO: the next two blocks of code don't make sense, especially now that the dialogs are no
-  //       longer reused. Wouldn't it be better to just disable the tabs than delete them anyway? [LS]
+  // TODO: Wouldn't it be better to just disable the tabs than delete them? [LS]
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
     if ( mOptsPage_Pyramids != NULL )
     {
+      delete mOptListWidget->item( mOptStackedWidget->indexOf( mOptsPage_Pyramids ) );
       delete mOptsPage_Pyramids;
       mOptsPage_Pyramids = NULL;
     }
@@ -568,6 +568,7 @@ void QgsRasterLayerProperties::sync()
   {
     if ( mOptsPage_Histogram != NULL )
     {
+      delete mOptListWidget->item( mOptStackedWidget->indexOf( mOptsPage_Histogram ) );
       delete mOptsPage_Histogram;
       mOptsPage_Histogram = NULL;
       delete mHistogramWidget;
@@ -1688,8 +1689,8 @@ void QgsRasterLayerProperties::updatePipeList()
   QgsDebugMsg( "Entered" );
 
 #ifndef QGISDEBUG
-  mOptionsStackedWidget->removeWidget( mOptsPage_Pipe );
-  mOptListWidget->removeItemWidget( mOptListWidget->item( mOptStackedWidget->indexOf( mOptsPage_Pipe ) ) );
+  delete mOptListWidget->item( mOptStackedWidget->indexOf( mOptsPage_Pipe ) );
+  mOptionsStackedWidget->removeWidget( mOptsPage_Pipe ); // just delete instead?
 #else
   mPipeTreeWidget->clear();
 
