@@ -553,12 +553,13 @@ void QgsRasterLayerProperties::sync()
     mOptionsStackedWidget->setCurrentWidget( mOptsPage_Metadata );
   }
 
-  // TODO: Wouldn't it be better to just disable the tabs than delete them? [LS]
+  bool fixBandStretch = false;
+  // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
+    fixBandStretch = true;
     if ( mOptsPage_Pyramids != NULL )
     {
-      delete mOptListWidget->item( mOptStackedWidget->indexOf( mOptsPage_Pyramids ) );
       delete mOptsPage_Pyramids;
       mOptsPage_Pyramids = NULL;
     }
@@ -566,14 +567,24 @@ void QgsRasterLayerProperties::sync()
 
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
   {
+    fixBandStretch = ( fixBandStretch && true );
     if ( mOptsPage_Histogram != NULL )
     {
-      delete mOptListWidget->item( mOptStackedWidget->indexOf( mOptsPage_Histogram ) );
       delete mOptsPage_Histogram;
       mOptsPage_Histogram = NULL;
       delete mHistogramWidget;
       mHistogramWidget = NULL;
     }
+  }
+
+  if ( fixBandStretch )
+  {
+    // probably no band rendering choices, so minimize group box
+    QSizePolicy sizep = mBandRenderingGrpBx->sizePolicy();
+    sizep.setVerticalStretch( 0 );
+    sizep.setVerticalPolicy( QSizePolicy::Maximum );
+    mBandRenderingGrpBx->setSizePolicy( sizep );
+    mBandRenderingGrpBx->updateGeometry();
   }
 
   QgsDebugMsg( "populate transparency tab" );
@@ -1689,7 +1700,6 @@ void QgsRasterLayerProperties::updatePipeList()
   QgsDebugMsg( "Entered" );
 
 #ifndef QGISDEBUG
-  delete mOptListWidget->item( mOptStackedWidget->indexOf( mOptsPage_Pipe ) );
   mOptionsStackedWidget->removeWidget( mOptsPage_Pipe ); // just delete instead?
 #else
   mPipeTreeWidget->clear();

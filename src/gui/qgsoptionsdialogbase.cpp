@@ -72,6 +72,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
   }
   connect( mOptSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateOptionsListVerticalTabs() ) );
   connect( mOptStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
+  connect( mOptStackedWidget, SIGNAL( widgetRemoved( int ) ), this, SLOT( optionsStackedWidget_WidgetRemoved( int ) ) );
 
   if ( restoreUi )
     restoreOptionsBaseUi();
@@ -162,6 +163,12 @@ void QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( int indx )
   mOptListWidget->blockSignals( true );
   mOptListWidget->setCurrentRow( indx );
   mOptListWidget->blockSignals( false );
+}
+
+void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int indx )
+{
+  // will need to take item first, if widgets are set for item in future
+  delete mOptListWidget->item( indx );
 }
 
 void QgsOptionsDialogBase::warnAboutMissingObjects()
