@@ -35,6 +35,7 @@ class QgsCollapsibleGroupBoxBasic : QGroupBox
 
   public slots:
     void checkToggled( bool ckd );
+    void checkClicked( bool ckd );
     void toggleCollapsed();
 
   protected:
