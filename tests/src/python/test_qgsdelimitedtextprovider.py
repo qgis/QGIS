@@ -23,7 +23,7 @@ __revision__ = '$Format:%H$'
 #
 # To recreate all tests, set printTests to true
 
-printTests = True
+printTests = False
 
 import os.path;
 import re
@@ -145,7 +145,7 @@ def createTest(  name, description, filename, **params ):
     print "        params={0}".format(repr(params))
     print "        if printTests:"
     print "            createTest({0},description,filename,**params)".format(repr(name))
-    print "            return"
+    print "            assert False,\"Set printTests to False to run delimited text tests\""
     
     data=result['data']
     log=result['log']
@@ -264,7 +264,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'geomType': 'none', 'type': 'csv'}
         if printTests:
             createTest('002_LoadCSVFile',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'1': {
                 'id': u'1',
@@ -320,7 +320,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'geomType': 'none', 'type': 'whitespace'}
         if printTests:
             createTest('003_LoadWhitespace',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'1': {
                 'id': u'1',
@@ -376,7 +376,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'geomType': 'none', 'quote': '"', 'delimiter': '|', 'escape': '\\'}
         if printTests:
             createTest('004_quote_escape',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'1': {
                 'id': u'1',
@@ -446,7 +446,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'geomType': 'none', 'quote': '\'"', 'type': 'csv', 'escape': '"\''}
         if printTests:
             createTest('005_multiple_quote',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'1': {
                 'id': u'1',
@@ -507,7 +507,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'geomType': 'none', 'useHeader': 'no', 'type': 'csv', 'skipLines': '2'}
         if printTests:
             createTest('007_skip_lines',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'3': {
                 'id': u'3',
@@ -529,7 +529,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'yField': 'geom_y', 'xField': 'geom_x', 'type': 'csv'}
         if printTests:
             createTest('008_read_coordinates',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'1': {
                 'id': u'1',
@@ -567,7 +567,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         if printTests:
             createTest('009_read_wkt',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'1': {
                 'id': u'1',
@@ -609,7 +609,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'geomType': 'point', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         if printTests:
             createTest('010_read_wkt_point',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'1': {
                 'id': u'1',
@@ -651,7 +651,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'geomType': 'line', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         if printTests:
             createTest('011_read_wkt_line',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'3': {
                 'id': u'3',
@@ -693,7 +693,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'geomType': 'polygon', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         if printTests:
             createTest('012_read_wkt_polygon',description,filename,**params)
-            return
+            assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'5': {
                 'id': u'5',
