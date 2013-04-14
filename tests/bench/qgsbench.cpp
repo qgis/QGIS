@@ -41,6 +41,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
+#include "qgspallabeling.h"
 
 #ifdef Q_OS_WIN
 // slightly adapted from http://anoncvs.postgresql.org/cvsweb.cgi/pgsql/src/port/getrusage.c?rev=1.18;content-type=text%2Fplain
@@ -191,8 +192,8 @@ void QgsBench::render()
   // TODO: this should be probably set according to project
   mMapRenderer->setProjectionsEnabled( true );
 
-  // Necessary?
-  //mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
+  // Enable labeling
+  mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
   mImage = new QImage( mWidth, mHeight, QImage::Format_ARGB32_Premultiplied );
   mImage->fill( 0 );
