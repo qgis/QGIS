@@ -31,6 +31,7 @@
 #include <QSettings>
 #include <QString>
 #include <QDomNode>
+#include <QVector>
 
 #include "qgsvectorlayer.h"
 
@@ -92,6 +93,19 @@ typedef QString loadStyle_t(
     QString& errCause
 );
 
+typedef int listStyles_t(
+        const QString& uri,
+        QVector<QString> &ids,
+        QVector<QString> &names,
+        QVector<QString> &descriptions,
+        QString& errCause
+);
+
+typedef QString getStyleById_t(
+        const QString& uri,
+        QString styleID,
+        QString& errCause
+);
 
 
 QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
@@ -3718,6 +3732,48 @@ QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
   return elem;
 }
 
+int QgsVectorLayer::listStylesInDatabase( QVector<QString> &ids, QVector<QString> &names, QVector<QString> &descriptions, QString &msgError )
+{
+   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+   QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+   if ( !myLib )
+   {
+       msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
+       return -1;
+   }
+   listStyles_t* listStylesExternalMethod = ( listStyles_t * ) cast_to_fptr(myLib->resolve("listStyles"));
+
+   if ( !listStylesExternalMethod )
+   {
+     delete myLib;
+     msgError = QObject::tr( "Provider %1 has no listStyles method" ).arg( mProviderKey );
+     return -1;
+   }
+
+   return listStylesExternalMethod(mDataSource, ids, names, descriptions, msgError);
+}
+
+QString QgsVectorLayer::getStyleFromDatabase(QString styleId, QString &msgError)
+{
+    QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+    QLibrary *myLib = pReg->providerLibrary( mProviderKey );
+    if ( !myLib )
+    {
+        msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
+        return QObject::tr( "" );
+    }
+    getStyleById_t* getStyleByIdMethod = ( getStyleById_t * ) cast_to_fptr(myLib->resolve("getStyleById"));
+
+    if ( !getStyleByIdMethod )
+    {
+      delete myLib;
+      msgError = QObject::tr( "Provider %1 has no getStyleById method" ).arg( mProviderKey );
+      return QObject::tr( "" );
+    }
+
+    return getStyleByIdMethod( mDataSource, styleId, msgError );
+}
+
 void QgsVectorLayer::saveStyleToDatabase(QString name, QString description,
                                          bool useAsDefault, QString uiFileContent,  QString &msgError){
 
@@ -3757,6 +3813,9 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString description,
                                 description, uiFileContent, useAsDefault, msgError);
 }
 
+
+
+
 QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
 {
     //TODO find a better way to check if uri is pointing to db
@@ -3773,33 +3832,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFla
                qml = loadStyleExternalMethod( mDataSource, errorMsg );
                if( qml.compare( tr( "" ) ) )
                {
-                   QDomDocument myDocument( "qgis" );
-                   myDocument.setContent( qml );
-
-                   QDomElement myRoot = myDocument.firstChildElement( "qgis" );
-
-                   if( myRoot.isNull() )
-                   {
-                       theResultFlag = false;
-                       return tr( "Error: qgis element could not be found in %1" ).arg( theURI );;
-                   }
-                   toggleScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
-                   setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
-                   setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
-
-                   #if 0
-                     //read transparency level
-                     QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
-                     if ( ! transparencyNode.isNull() )
-                     {
-                       // set transparency level only if it's in project
-                       // (otherwise it sets the layer transparent)
-                       QDomElement myElement = transparencyNode.toElement();
-                       setTransparency( myElement.text().toInt() );
-                     }
-                   #endif
-
-                   theResultFlag = readSymbology( myRoot, errorMsg );
+                    theResultFlag = this->applyNamedStyle( qml, errorMsg);
                }
             }
         }
@@ -3809,4 +3842,35 @@ QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFla
         return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
     }
     return tr( "" );
+}
+
+bool QgsVectorLayer::applyNamedStyle(QString namedStyle, QString errorMsg )
+{
+    QDomDocument myDocument( "qgis" );
+    myDocument.setContent( namedStyle );
+
+    QDomElement myRoot = myDocument.firstChildElement( "qgis" );
+
+    if( myRoot.isNull() )
+    {
+        errorMsg = tr( "Error: qgis element could not be found" );
+        return false;
+    }
+    toggleScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+    setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
+    setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
+
+    #if 0
+      //read transparency level
+      QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
+      if ( ! transparencyNode.isNull() )
+      {
+        // set transparency level only if it's in project
+        // (otherwise it sets the layer transparent)
+        QDomElement myElement = transparencyNode.toElement();
+        setTransparency( myElement.text().toInt() );
+      }
+    #endif
+
+    return readSymbology( myRoot, errorMsg );
 }

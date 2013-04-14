@@ -7,8 +7,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSADDATTRDIALOG_H
-#define QGSADDATTRDIALOG_H
+#ifndef QGSSAVESTYLETODBDIALOG_H
+#define QGSSAVESTYLETODBDIALOG_H
 
 #include "ui_qgssavetodbdialog.h"
 #include "qgisgui.h"

@@ -34,7 +34,7 @@
 #include "qgslabelinggui.h"
 #include "qgslabel.h"
 #include "qgslegenditem.h"
-//#include "qgsloadstylefromdbdialog.h"
+
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -42,6 +42,7 @@
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
 #include "qgssavestyletodbdialog.h"
+#include "qgsloadstylefromdbdialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsconfig.h"
@@ -748,7 +749,33 @@ void QgsVectorLayerProperties::loadStyleMenuTriggered( QAction *action )
 
 void QgsVectorLayerProperties::showListOfStylesFromDatabase()
 {
-//    QgsLoadStyleFromDBDialog dialog;
+    QString errorMsg;
+    QVector<QString> ids, names, descriptions;
+
+
+
+    int sectionLimit = layer->listStylesInDatabase(ids, names, descriptions, errorMsg);
+
+    if( !errorMsg.isNull() )
+    {
+        QMessageBox::warning(this, tr( "Error!" ), tr( "Retrieving" ) );
+        return;
+    }
+    QgsLoadStyleFromDBDialog dialog;
+    dialog.initializeLists(ids, names, descriptions, sectionLimit);
+    dialog.exec();
+
+    QString selectedStyleId = dialog.getSelectedStyleId();
+    if( selectedStyleId.compare( tr( "" ) ) )
+    {
+        QString qmlStyle = layer->getStyleFromDatabase( selectedStyleId, errorMsg );
+        if( !qmlStyle.isNull() ){
+            layer->applyNamedStyle( qmlStyle, errorMsg);
+            reset();
+        }
+
+    }
+
 }
 
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const

@@ -7,36 +7,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSADDATTRDIALOG_H
-#define QGSADDATTRDIALOG_H
+#ifndef QGSLOADFILEFROMDBDIALOG_H
+#define QGSLOADFILEFROMDBDIALOG_H
+
+#include <QVector>
 
 #include "ui_qgsloadstylefromdbdialog.h"
 #include "qgisgui.h"
 #include "qgsfield.h"
 
-//class QgsVectorLayer;
-
 class QgsLoadStyleFromDBDialog: public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout
 {
+    QString mSelectedStyleId;
+    int mSectionLimit;
+    QVector<QString> mIds, mNames, mDescriptions;
+    QString qmlStyle;
     Q_OBJECT
   public:
     explicit QgsLoadStyleFromDBDialog( QWidget *parent = 0 );
-//    QgsAddAttrDialog( QgsVectorLayer *vlayer,
-//                      QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
-//    QgsAddAttrDialog( const std::list<QString>& typelist,
-//                      QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
 
-//    QgsField field() const;
+    void initializeLists( QVector<QString> ids, QVector<QString> names, QVector<QString> descriptions, int sectionLimit);
+    QString getSelectedStyleId();
 
-  public slots:
-//    void on_mTypeBox_currentIndexChanged( int idx );
-//    void on_mLength_editingFinished();
-//    void accept();
+  public slots:    
+    void cellSelectedRelatedTable( int r );
+    void cellSelectedOthersTable( int r );
+    void cancelButtonClicked();
+    void loadButtonClicked();
 
-  private:
-//    QString mLayerType;
+private:
 
-//    void setPrecisionMinMax();
 };
 
-#endif
+#endif //QGSLOADFILEFROMDBDIALOG_H

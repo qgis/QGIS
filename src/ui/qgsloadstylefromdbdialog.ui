@@ -33,7 +33,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QTableView" name="mRelatedTable"/>
+      <widget class="QTableWidget" name="mRelatedTable">
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_2">
@@ -43,7 +47,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QTableView" name="mOthersTable"/>
+      <widget class="QTableWidget" name="mOthersTable"/>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">

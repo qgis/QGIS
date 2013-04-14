@@ -3337,8 +3337,8 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
             .arg( styleTableName )
             .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
             .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
-            .arg( QgsPostgresConn::quotedValue(f_table_name ) )
-            .arg( QgsPostgresConn::quotedValue(f_geometry_column ) );
+            .arg( QgsPostgresConn::quotedValue( f_table_name ) )
+            .arg( QgsPostgresConn::quotedValue( f_geometry_column ) );
 
     PGresult* result = conn->PQexec( selectQmlQuery );
     if( PQntuples(result) == 1 )
@@ -3348,4 +3348,80 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
     }
 
     return QObject::tr( "" );
+}
+
+QGISEXTERN int listStyles( const QString& uri,  QVector<QString> &ids, QVector<QString> &names,
+                            QVector<QString> &descriptions, QString& errCause )
+{
+    QgsDataSourceURI dsUri( uri );
+    QString styleTableName = QObject::tr( "layer_styles" );
+    QString f_table_catalog, f_table_schema, f_table_name, f_geometry_column;
+
+    QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+    if ( !conn )
+    {
+        errCause = QObject::tr( "Connection to database failed" );
+        return -1;
+    }
+
+    f_table_catalog = dsUri.database();
+    f_table_schema = dsUri.schema();
+    f_table_name = dsUri.table();
+    f_geometry_column = dsUri.geometryColumn();
+
+    QString selectRelatedQuery = QObject::tr( "SELECT id, styleName, description FROM %1 WHERE f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5 ORDER BY (CASE WHEN useAsDefault THEN 1 ELSE 2 END), update_time DESC;")
+            .arg( styleTableName )
+            .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
+            .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
+            .arg( QgsPostgresConn::quotedValue( f_table_name ) )
+            .arg( QgsPostgresConn::quotedValue( f_geometry_column ) );
+
+    PGresult* result = conn->PQexec( selectRelatedQuery );
+    int numberOfRelatedStyles = PQntuples( result );
+    for( int i=0; i<numberOfRelatedStyles; i++ )
+    {
+        ids.push_front( QObject::tr( PQgetvalue( result, i, 0 ) ) );
+        names.push_front( QObject::tr( PQgetvalue( result, i, 1 ) ) );
+        descriptions.push_front( QObject::tr( PQgetvalue( result, i, 2 ) ) );
+    }
+
+    QString selectOthersQuery = QObject::tr( "SELECT id, styleName, description FROM %1 WHERE NOT(f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5) ORDER BY update_time DESC;")
+            .arg( styleTableName )
+            .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
+            .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
+            .arg( QgsPostgresConn::quotedValue( f_table_name ) )
+            .arg( QgsPostgresConn::quotedValue( f_geometry_column ) );
+
+    result = conn->PQexec( selectOthersQuery );
+    for( int i=0; i<PQntuples( result ); i++ )
+    {
+        ids.push_front( QObject::tr( PQgetvalue( result, i, 0 ) ) );
+        names.push_front( QObject::tr( PQgetvalue( result, i, 1 ) ) );
+        descriptions.push_front( QObject::tr( PQgetvalue( result, i, 2 ) ) );
+    }
+
+    return numberOfRelatedStyles;
+}
+
+QGISEXTERN QString getStyleById(const QString& uri, QString styleId, QString& errCause )
+{
+    QgsDataSourceURI dsUri( uri );
+    QString styleTableName = QObject::tr( "layer_styles" );
+
+    QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
+    if ( !conn )
+    {
+        errCause = QObject::tr( "Connection to database failed" );
+        return "";
+    }
+
+    QString selectQmlQuery = QObject::tr( "SELECT styleQml FROM %1 WHERE id=%2")
+                                         .arg( styleTableName )
+                                         .arg( styleId );
+    PGresult* result = conn->PQexec( selectQmlQuery );
+    if( PQntuples( result ) == 1)
+    {
+        return PQgetvalue( result, 0, 0 );
+    }
+    return "";
 }

@@ -22,6 +22,7 @@
 #include <QSet>
 #include <QList>
 #include <QStringList>
+#include <QVector>
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
@@ -385,7 +386,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                                       bool useAsDefault, QString uiFileContent,
                                       QString &msgError );
 
+    virtual int listStylesInDatabase( QVector<QString> &ids, QVector<QString> &names,
+                                       QVector<QString> &descriptions, QString &msgError );
+
+    virtual QString getStyleFromDatabase( QString styleId, QString &msgError );
+
     virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag );
+    virtual bool applyNamedStyle(QString namedStyle , QString errorMsg);
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
