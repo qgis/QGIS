@@ -370,6 +370,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       mRenderTypeComboBox->removeItem( mRenderTypeComboBox->findData( "singlebandcolordata" ) );
     }
 #endif
+    if ( rendererType == "singlebandcolordata" && mRenderTypeComboBox->count() == 1 )
+    {
+      // no band rendering options for singlebandcolordata, so minimize group box
+      QSizePolicy sizep = mBandRenderingGrpBx->sizePolicy();
+      sizep.setVerticalStretch( 0 );
+      sizep.setVerticalPolicy( QSizePolicy::Maximum );
+      mBandRenderingGrpBx->setSizePolicy( sizep );
+      mBandRenderingGrpBx->updateGeometry();
+    }
   }
   on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
 
@@ -553,11 +562,9 @@ void QgsRasterLayerProperties::sync()
     mOptionsStackedWidget->setCurrentWidget( mOptsPage_Metadata );
   }
 
-  bool fixBandStretch = false;
   // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
-    fixBandStretch = true;
     if ( mOptsPage_Pyramids != NULL )
     {
       delete mOptsPage_Pyramids;
@@ -567,7 +574,6 @@ void QgsRasterLayerProperties::sync()
 
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
   {
-    fixBandStretch = ( fixBandStretch && true );
     if ( mOptsPage_Histogram != NULL )
     {
       delete mOptsPage_Histogram;
@@ -575,16 +581,6 @@ void QgsRasterLayerProperties::sync()
       delete mHistogramWidget;
       mHistogramWidget = NULL;
     }
-  }
-
-  if ( fixBandStretch )
-  {
-    // probably no band rendering choices, so minimize group box
-    QSizePolicy sizep = mBandRenderingGrpBx->sizePolicy();
-    sizep.setVerticalStretch( 0 );
-    sizep.setVerticalPolicy( QSizePolicy::Maximum );
-    mBandRenderingGrpBx->setSizePolicy( sizep );
-    mBandRenderingGrpBx->updateGeometry();
   }
 
   QgsDebugMsg( "populate transparency tab" );
