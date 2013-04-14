@@ -207,6 +207,18 @@ class Editor(QsciScintilla):
 
         self.setLexer(self.lexer)
         
+    def move_cursor_to_end(self):
+        """Move cursor to end of text"""
+        line, index = self.get_end_pos()
+        self.setCursorPosition(line, index)
+        self.ensureCursorVisible()
+        self.ensureLineVisible(line)
+        
+    def get_end_pos(self):
+        """Return (line, index) position of the last character"""
+        line = self.lines() - 1
+        return (line, self.text(line).length())
+        
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
@@ -320,12 +332,44 @@ class Editor(QsciScintilla):
             self.parent.pc.callWidgetMessageBarEditor(msgText + str(e.args))
         
     def hideEditor(self):
-        Ed = self.parent.pc.tabEditorWidget
+        Ed = self.parent.pc.widgetEditor
         Ed.hide()
-        self.parent.pc.openFileButton.setEnabled(False)
-        self.parent.pc.saveFileButton.setEnabled(False)
-        self.parent.pc.saveAsFileButton.setEnabled(False)
-        self.parent.pc.showEditorButton.setChecked(False)
+        
+    def commentEditorCode(self, commentCheck):
+        if self.hasSelectedText():
+            startLine, _, endLine, _ = self.getSelection()
+            for line in range(startLine, endLine + 1):
+                selCmd = self.text(line)
+                self.setSelection(line, 0, line, selCmd.length())
+                self.removeSelectedText()
+                if commentCheck:
+                    self.insert('#' + selCmd)
+                    self.setCursorPosition(endLine, selCmd.length())
+                else:
+                    if selCmd.startsWith('#'):
+                       self.insert(selCmd[1:])
+                    else:
+                        self.insert(selCmd)
+                    self.setCursorPosition(endLine, selCmd.length() - 2)
+                
+        else:
+            line, pos = self.getCursorPosition()
+            selCmd = self.text(line)
+            self.setSelection(line, 0, line, selCmd.length())
+            self.removeSelectedText()
+            if commentCheck:
+                self.insert('#' + selCmd)
+                self.setCursorPosition(line, selCmd.length())
+            else:
+                if selCmd.startsWith('#'):
+                   self.insert(selCmd[1:])
+                else:
+                    self.insert(selCmd)
+                self.setCursorPosition(line, selCmd.length() - 2)
+                    
+
+    def uncommentEditorCode(self):
+        pass
     
     def runScriptCode(self):
         tabWidget = self.parent.mw.currentWidget()

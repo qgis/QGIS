@@ -221,13 +221,9 @@ class ShellOutputScintilla(QsciScintilla):
         self.shell.setFocus()
         
     def showEditor(self):
-        Ed = self.parent.tabEditorWidget
+        Ed = self.parent.widgetEditor
         if not Ed.isVisible(): 
             Ed.show()
-            self.parent.openFileButton.setEnabled(True)
-            self.parent.saveFileButton.setEnabled(True)
-            self.parent.saveAsFileButton.setEnabled(True)
-            self.parent.showEditorButton.setChecked(True)
         self.shell.setFocus()
 
     def copy(self):
