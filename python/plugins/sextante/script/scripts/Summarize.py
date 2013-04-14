@@ -23,11 +23,14 @@ __copyright__ = '(C) 2013, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+##[Example scripts]=group
 ##input=vector
 ##output=output vector
-from sextante.core.SextanteVectorWriter import SextanteVectorWriter
-from qgis.core import *
+
 from PyQt4.QtCore import *
+from qgis.core import *
+
+from sextante.core.SextanteVectorWriter import SextanteVectorWriter
 
 inputLayer = sextante.getobject(input)
 features = sextante.getfeatures(inputLayer)
