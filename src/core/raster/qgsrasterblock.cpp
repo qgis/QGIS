@@ -329,7 +329,7 @@ bool QgsRasterBlock::isNoData( size_t index )
   int column = index % mWidth;
   size_t byte = ( size_t )row * mNoDataBitmapWidth + column / 8 ;
   int bit = column % 8;
-  int mask = 0b10000000 >> bit;
+  int mask = 0x80 >> bit;
   //int x = mNoDataBitmap[byte] & mask;
   //QgsDebugMsg ( QString("byte = %1 bit = %2 mask = %3 nodata = %4 is nodata = %5").arg(byte).arg(bit).arg(mask, 0, 2 ).arg( x, 0, 2 ).arg( (bool)(x) ) );
   return mNoDataBitmap[byte] & mask;
@@ -411,7 +411,7 @@ bool QgsRasterBlock::setIsNoData( size_t index )
     int column = index % mWidth;
     size_t byte = ( size_t )row * mNoDataBitmapWidth + column / 8;
     int bit = column % 8;
-    int nodata = 0b10000000 >> bit;
+    int nodata = 0x80 >> bit;
     //QgsDebugMsg ( QString("set byte = %1 bit = %2 no data by %3").arg(byte).arg(bit).arg(nodata, 0,2 ) );
     mNoDataBitmap[byte] = mNoDataBitmap[byte] | nodata;
     return true;
@@ -452,7 +452,7 @@ bool QgsRasterBlock::setIsNoData()
         }
       }
       QgsDebugMsg( "set mNoDataBitmap to 1" );
-      memset( mNoDataBitmap, 0b11111111, mNoDataBitmapSize );
+      memset( mNoDataBitmap, 0xff, mNoDataBitmapSize );
     }
     return true;
   }
@@ -497,7 +497,7 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
       QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
 
       char *nodata = noDataByteArray.data();
-      char nodataRow[mWidth]; // full row of no data
+      char *nodataRow = new char[mWidth]; // full row of no data
       for ( int c = 0; c < mWidth; c ++ )
       {
         memcpy( nodataRow + c*dataTypeSize, nodata, dataTypeSize );
@@ -521,6 +521,7 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
         int w = mWidth - right;
         memcpy(( char* )mData + i*dataTypeSize, nodataRow, dataTypeSize*w );
       }
+      delete [] nodataRow;
     }
     else
     {
@@ -534,13 +535,13 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
       }
       QgsDebugMsg( "set mNoDataBitmap to 1" );
 
-      char nodataRow[mNoDataBitmapWidth]; // full row of no data
+      char *nodataRow = new char[mNoDataBitmapWidth]; // full row of no data
       memset( nodataRow, 0, mNoDataBitmapWidth );
       for ( int c = 0; c < mWidth; c ++ )
       {
         int byte = c / 8;
         int bit = c % 8;
-        int nodata = 0b10000000 >> bit;
+        int nodata = 0x80 >> bit;
         memset( nodataRow + byte, nodataRow[byte] | nodata, 1 );
       }
 
@@ -558,7 +559,7 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
         if ( c >= left && c <= right ) continue; // middle
         int byte = c / 8;
         int bit = c % 8;
-        int nodata = 0b10000000 >> bit;
+        int nodata = 0x80 >> bit;
         memset( nodataRow + byte, nodataRow[byte] | nodata, 1 );
       }
       for ( int r = top; r <= bottom; r++ )
@@ -566,6 +567,7 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
         size_t i = ( size_t )r * mNoDataBitmapWidth;
         memcpy( mNoDataBitmap + i, nodataRow, mNoDataBitmapWidth );
       }
+      delete [] nodataRow;
     }
     return true;
   }
@@ -579,7 +581,7 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
     }
     QgsDebugMsg( "Fill image" );
     QRgb nodataRgba = qRgba( 0, 0, 0, 0 );
-    QRgb nodataRow[mWidth]; // full row of no data
+    QRgb *nodataRow = new QRgb[mWidth]; // full row of no data
     int rgbSize = sizeof( QRgb );
     for ( int c = 0; c < mWidth; c ++ )
     {
@@ -604,6 +606,7 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
       int w = mWidth - right;
       memcpy(( void * )( mImage->bits() + rgbSize*i ), nodataRow, rgbSize*w );
     }
+    delete [] nodataRow;
     return true;
   }
 }
