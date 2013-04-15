@@ -110,8 +110,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
   connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateTitle() ) );
-  connect( mLayer, SIGNAL( attributeAdded(int) ), this, SLOT( columnBoxInit() ) );
-  connect( mLayer, SIGNAL( attributeDeleted(int) ), this, SLOT( columnBoxInit() ) );
+  connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( columnBoxInit() ) );
+  connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( columnBoxInit() ) );
 
   // connect table info to window
   connect( mMainView, SIGNAL( filterChanged() ), this, SLOT( updateTitle() ) );

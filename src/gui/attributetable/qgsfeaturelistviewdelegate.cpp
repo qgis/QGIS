@@ -32,7 +32,7 @@ QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElemen
   }
 }
 
-void QgsFeatureListViewDelegate::setFeatureSelectionModel(QgsFeatureSelectionModel *featureSelectionModel)
+void QgsFeatureListViewDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )
 {
   mFeatureSelectionModel = featureSelectionModel;
 }
@@ -61,7 +61,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   QPixmap icon;
 
-  if ( mFeatureSelectionModel->isSelected ( index ) )
+  if ( mFeatureSelectionModel->isSelected( index ) )
   {
     // Item is selected
     icon = QgsApplication::getThemePixmap( "/mIconSelected.svg" );

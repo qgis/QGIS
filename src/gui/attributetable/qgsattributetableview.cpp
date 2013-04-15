@@ -51,8 +51,8 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
 
   verticalHeader()->viewport()->installEventFilter( this );
 
-  connect( verticalHeader(), SIGNAL( sectionPressed(int) ), this, SLOT(selectRow(int) ) );
-  connect( verticalHeader(), SIGNAL( sectionEntered(int) ), this, SLOT(_q_selectRow(int) ) );
+  connect( verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( selectRow( int ) ) );
+  connect( verticalHeader(), SIGNAL( sectionEntered( int ) ), this, SLOT( _q_selectRow( int ) ) );
 }
 
 QgsAttributeTableView::~QgsAttributeTableView()
@@ -77,16 +77,16 @@ void QgsAttributeTableView::setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVec
   mFilterModel = new QgsAttributeTableFilterModel( canvas, mMasterModel, mMasterModel );
   setModel( mFilterModel );
   delete mFeatureSelectionModel;
-  mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, layerCache->layer (), mFilterModel );
-  connect( mFeatureSelectionModel, SIGNAL(requestRepaint(QModelIndexList)), this, SLOT( repaintRequested(QModelIndexList) ) );
+  mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, layerCache->layer(), mFilterModel );
+  connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
   connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
-  setSelectionModel ( mFeatureSelectionModel );
+  setSelectionModel( mFeatureSelectionModel );
 
   delete oldModel;
   delete filterModel;
 }
 
-bool QgsAttributeTableView::eventFilter(QObject *object, QEvent *event)
+bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
 {
   if ( object == verticalHeader()->viewport() )
   {
@@ -121,10 +121,10 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
 
   delete mFeatureSelectionModel;
   mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, mFilterModel->layer(), mFilterModel );
-  setSelectionModel ( mFeatureSelectionModel );
+  setSelectionModel( mFeatureSelectionModel );
   mTableDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
-  connect( mFeatureSelectionModel, SIGNAL(requestRepaint(QModelIndexList)), this, SLOT( repaintRequested(QModelIndexList) ) );
-  connect( mFeatureSelectionModel, SIGNAL(requestRepaint()), this, SLOT( repaintRequested() ) );
+  connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
+  connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
 
   if ( filterModel )
   {
@@ -186,7 +186,7 @@ void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
 
 void QgsAttributeTableView::repaintRequested( QModelIndexList indexes )
 {
-  foreach( const QModelIndex index, indexes )
+  foreach ( const QModelIndex index, indexes )
   {
     update( index );
   }
@@ -248,37 +248,37 @@ void QgsAttributeTableView::_q_selectRow( int row )
 void QgsAttributeTableView::selectRow( int row, bool anchor )
 {
   if ( selectionBehavior() == QTableView::SelectColumns
-      || ( selectionMode() == QTableView::SingleSelection
-          && selectionBehavior() == QTableView::SelectItems))
-      return;
+       || ( selectionMode() == QTableView::SingleSelection
+            && selectionBehavior() == QTableView::SelectItems ) )
+    return;
 
   if ( row >= 0 && row < model()->rowCount() )
   {
-      int column = horizontalHeader()->logicalIndexAt( isRightToLeft() ? viewport()->width() : 0 );
-      QModelIndex index = model()->index( row, column );
-      QItemSelectionModel::SelectionFlags command =  selectionCommand( index );
-      selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
-      if ( ( anchor && !( command & QItemSelectionModel::Current ) )
-          || ( selectionMode() == QTableView::SingleSelection ) )
-          mRowSectionAnchor = row;
+    int column = horizontalHeader()->logicalIndexAt( isRightToLeft() ? viewport()->width() : 0 );
+    QModelIndex index = model()->index( row, column );
+    QItemSelectionModel::SelectionFlags command =  selectionCommand( index );
+    selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
+    if (( anchor && !( command & QItemSelectionModel::Current ) )
+        || ( selectionMode() == QTableView::SingleSelection ) )
+      mRowSectionAnchor = row;
 
-      if ( selectionMode() != QTableView::SingleSelection
-          && command.testFlag( QItemSelectionModel::Toggle ) )
-      {
-          if ( anchor )
-              mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index )
-                                  ? QItemSelectionModel::Deselect : QItemSelectionModel::Select;
-          command &= ~QItemSelectionModel::Toggle;
-          command |= mCtrlDragSelectionFlag;
-          if ( !anchor )
-              command |= QItemSelectionModel::Current;
-      }
+    if ( selectionMode() != QTableView::SingleSelection
+         && command.testFlag( QItemSelectionModel::Toggle ) )
+    {
+      if ( anchor )
+        mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index )
+                                 ? QItemSelectionModel::Deselect : QItemSelectionModel::Select;
+      command &= ~QItemSelectionModel::Toggle;
+      command |= mCtrlDragSelectionFlag;
+      if ( !anchor )
+        command |= QItemSelectionModel::Current;
+    }
 
-      QModelIndex tl = model()->index( qMin( mRowSectionAnchor, row ), 0 );
-      QModelIndex br = model()->index( qMax( mRowSectionAnchor, row ), model()->columnCount() - 1 );
-      if ( verticalHeader()->sectionsMoved() && tl.row() != br.row() )
-          setSelection( visualRect( tl ) | visualRect( br ), command );
-      else
-          mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
+    QModelIndex tl = model()->index( qMin( mRowSectionAnchor, row ), 0 );
+    QModelIndex br = model()->index( qMax( mRowSectionAnchor, row ), model()->columnCount() - 1 );
+    if ( verticalHeader()->sectionsMoved() && tl.row() != br.row() )
+      setSelection( visualRect( tl ) | visualRect( br ), command );
+    else
+      mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
   }
 }

@@ -20,14 +20,14 @@
 #include "qgsrasterrange.h"
 
 QgsRasterRange::QgsRasterRange()
-  : mMin ( std::numeric_limits<double>::quiet_NaN() )
-  , mMax ( std::numeric_limits<double>::quiet_NaN() )
+    : mMin( std::numeric_limits<double>::quiet_NaN() )
+    , mMax( std::numeric_limits<double>::quiet_NaN() )
 {
 }
 
-QgsRasterRange::QgsRasterRange( double theMin, double theMax  )
-  : mMin ( theMin )
-  , mMax ( theMax )
+QgsRasterRange::QgsRasterRange( double theMin, double theMax )
+    : mMin( theMin )
+    , mMax( theMax )
 {
 }
 

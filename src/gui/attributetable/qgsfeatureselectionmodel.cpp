@@ -5,13 +5,13 @@
 #include <qdebug.h>
 
 QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsVectorLayer* layer, QObject* parent )
-  : QItemSelectionModel( model, parent )
-  , mFeatureModel( featureModel )
-  , mLayer( layer )
-  , mSyncEnabled( true )
-  , mClearAndSelectBuffer( false )
+    : QItemSelectionModel( model, parent )
+    , mFeatureModel( featureModel )
+    , mLayer( layer )
+    , mSyncEnabled( true )
+    , mClearAndSelectBuffer( false )
 {
-  connect( mLayer, SIGNAL( selectionChanged(QgsFeatureIds,QgsFeatureIds,bool) ), this, SLOT( layerSelectionChanged(QgsFeatureIds,QgsFeatureIds,bool)) );
+  connect( mLayer, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 }
 
 void QgsFeatureSelectionModel::enableSync( bool enable )
@@ -59,16 +59,16 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
 {
   QgsFeatureIds ids;
 
-  foreach( const QModelIndex index, selection.indexes() )
+  foreach ( const QModelIndex index, selection.indexes() )
   {
     QgsFeatureId id = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toInt();
 
     ids << id;
   }
 
-  disconnect( mLayer, SIGNAL( selectionChanged(QgsFeatureIds,QgsFeatureIds,bool) ), this, SLOT( layerSelectionChanged(QgsFeatureIds,QgsFeatureIds,bool)) );
+  disconnect( mLayer, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 
-  if ( command.testFlag ( QItemSelectionModel::ClearAndSelect ) )
+  if ( command.testFlag( QItemSelectionModel::ClearAndSelect ) )
   {
     if ( !mSyncEnabled )
     {
@@ -86,7 +86,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
       mLayer->setSelectedFeatures( ids );
     }
   }
-  else if ( command.testFlag ( QItemSelectionModel::Select ) )
+  else if ( command.testFlag( QItemSelectionModel::Select ) )
   {
     if ( !mSyncEnabled )
     {
@@ -103,7 +103,7 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
       mLayer->select( ids );
     }
   }
-  else if ( command.testFlag ( QItemSelectionModel::Deselect ) )
+  else if ( command.testFlag( QItemSelectionModel::Deselect ) )
   {
     if ( !mSyncEnabled )
     {
@@ -121,12 +121,12 @@ void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, 
     }
   }
 
-  connect( mLayer, SIGNAL( selectionChanged(QgsFeatureIds,QgsFeatureIds,bool) ), this, SLOT( layerSelectionChanged(QgsFeatureIds,QgsFeatureIds,bool)) );
+  connect( mLayer, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( layerSelectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
 
   QModelIndexList updatedIndexes;
   foreach ( QModelIndex idx, selection.indexes() )
   {
-    updatedIndexes.append( expandIndexToRow ( idx ) );
+    updatedIndexes.append( expandIndexToRow( idx ) );
   }
 
   emit requestRepaint( updatedIndexes );
@@ -164,7 +164,7 @@ QModelIndexList QgsFeatureSelectionModel::expandIndexToRow( const QModelIndex& i
   if ( !model )
     return indexes;
 
-  for( int column = 0; column < model->columnCount(); ++column )
+  for ( int column = 0; column < model->columnCount(); ++column )
   {
     indexes.append( model->index( row, column ) );
   }

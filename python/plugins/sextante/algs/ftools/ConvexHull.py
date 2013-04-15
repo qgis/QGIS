@@ -71,7 +71,7 @@ class ConvexHull(GeoAlgorithm):
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
 
-        
+
         f = QgsField("value")
         f.setType(QVariant.String)
         f.setLength(255)

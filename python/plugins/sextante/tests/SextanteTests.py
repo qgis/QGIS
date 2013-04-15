@@ -23,7 +23,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-'''Convenience module to create a test suite will all SEXTANTE tests''' 
+'''Convenience module to create a test suite will all SEXTANTE tests'''
 import unittest
 from sextante.tests import QgisAlgsTest
 from sextante.tests import ParametersTest
@@ -41,7 +41,7 @@ def suite():
     suite.addTests(SagaTest.suite())
     suite.addTests(GdalTest.suite())
     suite.addTests(ScriptTest.suite())
-    suite.addTests(SextanteToolsTest.suite())    
+    suite.addTests(SextanteToolsTest.suite())
     #suite.addTests(ParametersTest.suite())
     suite.addTests(GeoAlgorithmTest.suite())
     return suite

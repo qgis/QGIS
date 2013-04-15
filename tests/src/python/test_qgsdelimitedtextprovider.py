@@ -13,11 +13,11 @@ __copyright__ = 'Copyright 2012, The Quantum GIS Project'
 __revision__ = '$Format:%H$'
 
 # This module provides unit test for the delimtied text provider.  It uses data files in
-# the testdata/delimitedtext directory. 
+# the testdata/delimitedtext directory.
 #
 # New tests can be created (or existing ones updated), but incorporating a createTest
-# call into the test.  This will load the file and generate a test that the features 
-# loaded from it are correct.  It assumes that the data is correct at the time the 
+# call into the test.  This will load the file and generate a test that the features
+# loaded from it are correct.  It assumes that the data is correct at the time the
 # test is created.  The new test is written to the test output file, and can be edited into
 # this module to implement the test.
 #
@@ -28,7 +28,7 @@ printTests = False
 import os.path;
 import re
 
-from PyQt4.QtCore import (QVariant, 
+from PyQt4.QtCore import (QVariant,
                         QUrl,
                         QObject,
                         QString,
@@ -73,7 +73,7 @@ class MessageLogger( QObject ):
 
     def __exit__( self, type, value, traceback ):
         QgsMessageLog.instance().messageReceived.disconnect( self.logMessage )
-        
+
     def logMessage( self, msg, tag, level ):
         if tag == self.tag  or not self.tag:
             self.log.append(unicode(msg))
@@ -146,7 +146,7 @@ def createTest(  name, description, filename, **params ):
     print "        if printTests:"
     print "            createTest({0},description,filename,**params)".format(repr(name))
     print "            assert False,\"Set printTests to False to run delimited text tests\""
-    
+
     data=result['data']
     log=result['log']
     fields=result['fields']
@@ -167,7 +167,7 @@ def createTest(  name, description, filename, **params ):
         print prefix+'    '+repr(msg)+','
     print prefix+'    ]'
     print '        runTest(description,wanted,log_wanted,filename,**params)'
-    print 
+    print
 
 
 def checkWktEqual( wkt1, wkt2 ):
@@ -186,7 +186,7 @@ def checkWktEqual( wkt1, wkt2 ):
             diff=abs(float(p1[i])-float(p2[i]))
             if diff > tolerance: return False
         else:
-            # Could be more fancy here in terms of text comparison if 
+            # Could be more fancy here in terms of text comparison if
             # turn out to be necessary.
             if p1 != p2: return False
     return True
@@ -194,7 +194,7 @@ def checkWktEqual( wkt1, wkt2 ):
 def recordDifference( record1, record2 ):
     # Compare a record defined as a dictionary
     for k in record1.keys():
-        if k not in record2: 
+        if k not in record2:
             return "Field {0} is missing".format(k)
         r1k = record1[k]
         r2k = record2[k]
@@ -202,17 +202,17 @@ def recordDifference( record1, record2 ):
             if not checkWktEqual(r1k,r2k):
                 return "Geometry differs: {0:.50} versus {1:.50}".format(r1k,r2k)
         else:
-            if record1[k] != record2[k]: 
+            if record1[k] != record2[k]:
                 return "Field {0} differs: {1:.50} versus {2:.50}".format(k,repr(r1k),repr(r2k));
     for k in record2.keys():
-        if k not in record1: 
+        if k not in record1:
             return "Output contains extra field {0} is missing".format(k)
     return ''
 
 def runTest( name, wanted, log_wanted, file, **params ):
     print "Running test:",name
-    
-    result = delimitedTextData( file, **params ) 
+
+    result = delimitedTextData( file, **params )
     data = result['data']
     log = result['log']
 

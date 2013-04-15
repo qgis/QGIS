@@ -186,7 +186,7 @@ class QgisAlgsTest(unittest.TestCase):
         self.assertEqual(expectedvalues, values)
         wkt='LINESTRING(-0.5 -0.5, -0.5 -0.4, -0.5 -0.3, -0.5 -0.2, -0.5 -0.1, -0.5 -0.0, -0.5 0.1, -0.5 0.2, -0.5 0.3, -0.5 0.4, -0.5 0.5)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
-    
+
     def test_qgiscreategridhex(self):
         outputs=sextante.runalg("qgis:creategrid",10,10,360,180,0,0,3,None)
         output=outputs['SAVENAME']
@@ -944,9 +944,9 @@ class QgisAlgsTest(unittest.TestCase):
         output=outputs['OUTPUT']
         layer=QGisLayers.getObjectFromUri(output, True)
         fields=layer.pendingFields()
-        expectednames=['category','min','max','mean','stddev']        
+        expectednames=['category','min','max','mean','stddev']
         names=[str(f.name()) for f in fields]
-        self.assertEqual(expectednames, names)        
+        self.assertEqual(expectednames, names)
         features=sextante.getfeatures(layer)
         self.assertEqual(3, len(features))
         feature=features.next()

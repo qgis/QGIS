@@ -234,12 +234,12 @@ int QgsFeatureListModel::rowCount( const QModelIndex& parent ) const
   return sourceModel()->rowCount();
 }
 
-QModelIndex QgsFeatureListModel::fidToIndex(QgsFeatureId fid)
+QModelIndex QgsFeatureListModel::fidToIndex( QgsFeatureId fid )
 {
   return mapFromMaster( masterModel()->idToIndex( fid ) );
 }
 
-QModelIndexList QgsFeatureListModel::fidToIndexList(QgsFeatureId fid)
+QModelIndexList QgsFeatureListModel::fidToIndexList( QgsFeatureId fid )
 {
   return QModelIndexList() << fidToIndex( fid );
 }

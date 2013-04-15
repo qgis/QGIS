@@ -78,8 +78,8 @@ class ScriptTest(unittest.TestCase):
         outputs=sextante.runalg("script:ascriptthatreturnsanumber")
         output=outputs['number']
         self.assertTrue(10, output)
-        
-        
+
+
 
 def suite():
     suite = unittest.makeSuite(ScriptTest, 'test')

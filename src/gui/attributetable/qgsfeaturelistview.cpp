@@ -52,8 +52,8 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
   mModel = featureListModel;
 
   delete mFeatureSelectionModel;
-  mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, featureListModel->layerCache ()->layer(), this );
-  setSelectionModel ( mFeatureSelectionModel );
+  mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, featureListModel->layerCache()->layer(), this );
+  setSelectionModel( mFeatureSelectionModel );
 
   mCurrentEditSelectionModel = new QItemSelectionModel( mModel->masterModel(), this );
 
@@ -67,8 +67,8 @@ void QgsFeatureListView::setModel( QgsFeatureListModel* featureListModel )
   setItemDelegate( mItemDelegate );
 
   mItemDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
-  connect( mFeatureSelectionModel, SIGNAL(requestRepaint(QModelIndexList)), this, SLOT( repaintRequested(QModelIndexList) ) );
-  connect( mFeatureSelectionModel, SIGNAL(requestRepaint()), this, SLOT( repaintRequested() ) );
+  connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
+  connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
 
   connect( mCurrentEditSelectionModel, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( editSelectionChanged( QItemSelection, QItemSelection ) ) );
 }
@@ -155,7 +155,7 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
 
 void QgsFeatureListView::repaintRequested( QModelIndexList indexes )
 {
-  foreach( const QModelIndex index, indexes )
+  foreach ( const QModelIndex index, indexes )
   {
     update( index );
   }
@@ -172,7 +172,7 @@ void QgsFeatureListView::repaintRequested()
     over the selection is extended; if a drag is in progress it is continued.
 */
 
-void QgsFeatureListView::mouseMoveEvent(QMouseEvent *event)
+void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();
 
@@ -211,7 +211,7 @@ void QgsFeatureListView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsFeatureListView::keyPressEvent( QKeyEvent *event )
 {
-  if ( Qt::Key_Up == event->key () || Qt::Key_Down == event->key() )
+  if ( Qt::Key_Up == event->key() || Qt::Key_Down == event->key() )
   {
     int currentRow = 0;
     if ( 0 != mCurrentEditSelectionModel->selectedIndexes().count() )
@@ -264,15 +264,15 @@ void QgsFeatureListView::selectRow( const QModelIndex& index, bool anchor )
     mRowAnchor = row;
 
   if ( selectionMode() != QListView::SingleSelection
-      && command.testFlag( QItemSelectionModel::Toggle ) )
+       && command.testFlag( QItemSelectionModel::Toggle ) )
   {
-      if ( anchor )
-          mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index )
-                              ? QItemSelectionModel::Deselect : QItemSelectionModel::Select;
-      command &= ~QItemSelectionModel::Toggle;
-      command |= mCtrlDragSelectionFlag;
-      if ( !anchor )
-          command |= QItemSelectionModel::Current;
+    if ( anchor )
+      mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index )
+                               ? QItemSelectionModel::Deselect : QItemSelectionModel::Select;
+    command &= ~QItemSelectionModel::Toggle;
+    command |= mCtrlDragSelectionFlag;
+    if ( !anchor )
+      command |= QItemSelectionModel::Current;
   }
 
   QModelIndex tl = model()->index( qMin( mRowAnchor, row ), 0 );

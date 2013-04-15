@@ -30,12 +30,12 @@ from sextante.tests.TestData import points, points2, polygons, polygons2, lines,
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
 
-class GeoAlgorithmTest(unittest.TestCase):    
-    
-    def testWrongformat(self):        
+class GeoAlgorithmTest(unittest.TestCase):
+
+    def testWrongformat(self):
         outputs=sextante.runalg("qgis:countpointsinpolygon",polygons(),points(),"NUMPOINTS",SextanteUtils.getTempFilename("wrongext"))
         output=outputs['OUTPUT']
-        self.assertTrue(output.endswith('shp'))        
+        self.assertTrue(output.endswith('shp'))
         layer=QGisLayers.getObjectFromUri(output, True)
         fields=layer.pendingFields()
         expectednames=['ID','POLY_NUM_A','POLY_ST_A','NUMPOINTS']
@@ -51,7 +51,7 @@ class GeoAlgorithmTest(unittest.TestCase):
         expectedvalues=["1","1.1","string a","6"]
         values=[str(attr.toString()) for attr in attrs]
         self.assertEqual(expectedvalues, values)
-        
+
 
 def suite():
     suite = unittest.makeSuite(GeoAlgorithmTest, 'test')

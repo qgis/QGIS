@@ -43,14 +43,14 @@ class ParameterTableField(Parameter):
 
     def getAsScriptCode(self):
         return "##" + self.name + "=field " + str(self.parent)
-    
+
     def setValue(self, field):
         if field is None:
             return self.optional
-        elif len(field) > 0:                
+        elif len(field) > 0:
             self.value = str(field)
         else:
-            return self.optional                   
+            return self.optional
         return True
 
     def serialize(self):
@@ -58,8 +58,8 @@ class ParameterTableField(Parameter):
                 "|" + str(self.parent) + "|" + str(self.datatype)
 
     def deserialize(self, s):
-        tokens = s.split("|")        
-        return ParameterTableField(tokens[1], tokens[2], tokens[3], int(tokens[4]), tokens[5] == str(True))        
+        tokens = s.split("|")
+        return ParameterTableField(tokens[1], tokens[2], tokens[3], int(tokens[4]), tokens[5] == str(True))
 
     def __str__(self):
         return self.name + " <" + self.__module__.split(".")[-1] +" from " + self.parent     + ">"

@@ -30,7 +30,7 @@ class QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroupBase
     Q_OBJECT
 
   public:
-    typedef QPair<QString,QTreeWidgetItem*> TabPair;
+    typedef QPair<QString, QTreeWidgetItem*> TabPair;
 
   public:
     QgsAddTabOrGroup( QgsVectorLayer *lyr, QList< TabPair > tabList, QWidget *parent = 0 );

@@ -294,7 +294,7 @@ void QgsAttributeTableModel::loadAttributes()
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
-  
+
   if ( ins )
   {
     endInsertColumns();
@@ -381,7 +381,7 @@ QModelIndex QgsAttributeTableModel::idToIndex( QgsFeatureId id ) const
   return index( idToRow( id ), 0 );
 }
 
-QModelIndexList QgsAttributeTableModel::idToIndexList(QgsFeatureId id) const
+QModelIndexList QgsAttributeTableModel::idToIndexList( QgsFeatureId id ) const
 {
   QModelIndexList indexes;
 

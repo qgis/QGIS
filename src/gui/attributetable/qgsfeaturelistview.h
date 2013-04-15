@@ -140,7 +140,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void editSelectionChanged( QItemSelection deselected, QItemSelection selected );
 
   private:
-    void selectRow(const QModelIndex &index, bool anchor );
+    void selectRow( const QModelIndex &index, bool anchor );
 
     QgsFeatureListModel *mModel;
     QItemSelectionModel* mCurrentEditSelectionModel;

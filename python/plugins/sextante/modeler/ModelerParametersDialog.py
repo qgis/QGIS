@@ -651,7 +651,7 @@ class ModelerParametersDialog(QtGui.QDialog):
         idx = widget.findText(widget.currentText())
         if idx < 0:
             name =  self.getSafeNameForHarcodedParameter(param)
-            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)            
+            value = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             s = str(widget.currentText()).strip()
             if s == "":
                 if param.optional:
@@ -669,21 +669,21 @@ class ModelerParametersDialog(QtGui.QDialog):
         return True
 
     def setParamStringValue(self, param, widget):
-        if param.multiline:            
+        if param.multiline:
             name =  self.getSafeNameForHarcodedParameter(param)
             paramValue = AlgorithmAndParameter(AlgorithmAndParameter.PARENT_MODEL_ALGORITHM, name)
             value = widget.getValue()
             option = widget.getOption()
-            if option == MultilineTextPanel.USE_TEXT:                
+            if option == MultilineTextPanel.USE_TEXT:
                 if value == "":
                     if param.optional:
                         self.params[param.name] = None
-                        return True                    
+                        return True
                     else:
                         return False
-                else:                
+                else:
                     self.values[name] = value
-                    
+
                     self.params[param.name] = paramValue
             else:
                 self.params[param.name] = value

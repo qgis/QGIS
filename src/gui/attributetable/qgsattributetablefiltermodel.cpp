@@ -177,7 +177,7 @@ void QgsAttributeTableFilterModel::selectionChanged()
   }
   else if ( mSelectedOnTop )
   {
-    sort ( sortColumn(), sortOrder() );
+    sort( sortColumn(), sortOrder() );
     invalidate();
   }
 }
@@ -267,7 +267,7 @@ QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
   QModelIndexList indexes;
-  foreach( QModelIndex idx, masterModel()->idToIndexList( fid ) )
+  foreach ( QModelIndex idx, masterModel()->idToIndexList( fid ) )
   {
     indexes.append( mapFromMaster( idx ) );
   }
