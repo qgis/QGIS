@@ -979,28 +979,20 @@ static QVariant fcnFormatDate( const QVariantList& values, QgsFeature*, QgsExpre
   return dt.toString( format );
 }
 
-
-static QVariant fncColorFromName( const QVariantList &values, QgsFeature *, QgsExpression *parent )
-{
-  QString name = getStringValue( values.at( 0 ), parent );
-  QColor color = QColor( name );
-  if ( ! color.isValid() )
-  {
-    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( name ) );
-    color = QColor( 0, 0, 0 );
-  }
-  return QgsSymbolLayerV2Utils::encodeColor( color );
-}
-
 static QVariant fncColorRgb( const QVariantList &values, QgsFeature *, QgsExpression *parent )
 {
   int red = getIntValue( values.at( 0 ), parent );
   int green = getIntValue( values.at( 1 ), parent );
   int blue = getIntValue( values.at( 2 ), parent );
   QColor color = QColor( red, green, blue );
-  return QgsSymbolLayerV2Utils::encodeColor( color );
-}
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3' to color" ).arg( red ).arg( green ).arg( blue ) );
+    color = QColor( 0, 0, 0 );
+  }
 
+  return color.name();
+}
 
 static QVariant fncColorRgba( const QVariantList &values, QgsFeature *, QgsExpression *parent )
 {
@@ -1009,20 +1001,26 @@ static QVariant fncColorRgba( const QVariantList &values, QgsFeature *, QgsExpre
   int blue = getIntValue( values.at( 2 ), parent );
   int alpha = getIntValue( values.at( 3 ), parent );
   QColor color = QColor( red, green, blue, alpha );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( red ).arg( green ).arg( blue ).arg( alpha ) );
+    color = QColor( 0, 0, 0 );
+  }
   return QgsSymbolLayerV2Utils::encodeColor( color );
 }
 
-QVariant fncColorFromRamp( const QVariantList &values, QgsFeature *, QgsExpression *parent )
+QVariant fncRampColor( const QVariantList &values, QgsFeature *, QgsExpression *parent )
 {
   QString rampName = getStringValue( values.at( 0 ), parent );
   const QgsVectorColorRampV2 *mRamp = QgsStyleV2::defaultStyle()->colorRampRef( rampName );
   if ( ! mRamp )
   {
     parent->setEvalErrorString( QObject::tr( "\"%1\" is not a valid color ramp" ).arg( rampName ) );
-    return QgsSymbolLayerV2Utils::encodeColor( QColor( 0, 0, 0 ) );
+    return QColor( 0, 0, 0 ).name();
   }
   double value = getDoubleValue( values.at( 1 ), parent );
-  return QgsSymbolLayerV2Utils::encodeColor( mRamp->color( value ) );
+  QColor color = mRamp->color( value );
+  return color.name();
 }
 
 static QVariant fcnSpecialColumn( const QVariantList& values, QgsFeature* /*f*/, QgsExpression* parent )
@@ -1079,7 +1077,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "substr" << "concat" << "strpos" << "left"
     << "right" << "rpad" << "lpad"
     << "format_number" << "format_date"
-    << "color_rgb" << "color_rgba" << "color_from_name" << "color_from_ramp"
+    << "color_rgb" << "color_rgba" << "ramp_colour"
     << "xat" << "yat" << "$area"
     << "$length" << "$perimeter" << "$x" << "$y"
     << "$rownum" << "$id" << "$scale" << "_specialcol_";
@@ -1141,10 +1139,9 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "format", -1, fcnFormatString, QObject::tr( "String" ) )
     << new StaticFunction( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
     << new StaticFunction( "format_date", 2, fcnFormatDate, QObject::tr( "String" ) )
-    << new StaticFunction( "color_rgb", 3, fncColorRgb, QObject::tr( "Color" ), QObject::tr( "Usage: color_rgb(red,green,blue) - rgb values from 0 to 255" ) )
-    << new StaticFunction( "color_rgba", 4, fncColorRgba, QObject::tr( "Color" ), QObject::tr( "Usage: color_rgba(red,green,blue,alpha) - rgba values from 0 to 255\"" ) )
-    << new StaticFunction( "color_from_name", 1, fncColorFromName, QObject::tr( "Color" ), QObject::tr( "Usage: color_from_name(name) - examples \"#FF0000\", \"red\"" ) )
-    << new StaticFunction( "color_from_ramp", 1, fncColorFromRamp, QObject::tr( "Color" ), QObject::tr( "Usage: color_from_ramp(name) - type=ramp name, value=0..1" ) )
+    << new StaticFunction( "color_rgb", 3, fncColorRgb, QObject::tr( "Color" ) )
+    << new StaticFunction( "color_rgba", 4, fncColorRgba, QObject::tr( "Color" ) )
+    << new StaticFunction( "ramp_color", 2, fncRampColor, QObject::tr( "Color" ) )
     << new StaticFunction( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "$area", 0, fcnGeomArea, QObject::tr( "Geometry" ), "", true )
