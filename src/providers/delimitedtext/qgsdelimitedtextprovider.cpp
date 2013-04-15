@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgsdelimitedtextprovider.cpp -  Data provider for delimted text
   -------------------
           begin                : 2004-02-27
@@ -45,19 +45,21 @@
 static const QString TEXT_PROVIDER_KEY = "delimitedtext";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 
-QRegExp QgsDelimitedTextProvider::WktPrefixRegexp("^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
-QRegExp QgsDelimitedTextProvider::WktZMRegexp("\\s*(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive );
-QRegExp QgsDelimitedTextProvider::WktCrdRegexp("(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" );
+QRegExp QgsDelimitedTextProvider::WktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
+QRegExp QgsDelimitedTextProvider::WktZMRegexp( "\\s*(?:z|m|zm)(?=\\s*\\()", Qt::CaseInsensitive );
+QRegExp QgsDelimitedTextProvider::WktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" );
+QRegExp QgsDelimitedTextProvider::CrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9]+([0-5]?\\d))?[^0-9]+([0-5]?\\d(?:\\.\\d+)?)[^0-9]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     : QgsVectorDataProvider( uri )
-    , mFile(0)
+    , mFile( 0 )
     , mFieldCount( 0 )
     , mXFieldIndex( -1 )
     , mYFieldIndex( -1 )
     , mWktFieldIndex( -1 )
     , mWktHasZM( false )
     , mWktHasPrefix( false )
+    , mXyDms( false )
     , mMaxInvalidLines( 50 )
     , mShowInvalidLines( true )
     , mCrs()
@@ -66,435 +68,510 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mActiveIterator( 0 )
 {
 
-    QgsDebugMsg( "Delimited text file uri is " + uri );
+  QgsDebugMsg( "Delimited text file uri is " + uri );
 
-    QUrl url = QUrl::fromEncoded( uri.toAscii() );
-    mFile = new QgsDelimitedTextFile();
-    mFile->setFromUrl(url);
+  QUrl url = QUrl::fromEncoded( uri.toAscii() );
+  mFile = new QgsDelimitedTextFile();
+  mFile->setFromUrl( url );
 
-    QString wktField;
-    QString xField;
-    QString yField;
+  QString wktField;
+  QString xField;
+  QString yField;
 
-    if( url.hasQueryItem("geomType"))
+  if ( url.hasQueryItem( "geomType" ) )
+  {
+    QString gtype = url.queryItemValue( "geomType" ).toLower();
+    if ( gtype == "point" ) mGeometryType = QGis::Point;
+    else if ( gtype == "line" ) mGeometryType = QGis::Line;
+    else if ( gtype == "polygon" ) mGeometryType = QGis::Polygon;
+    else if ( gtype == "none " ) mGeometryType = QGis::NoGeometry;
+  }
+
+  if ( mGeometryType != QGis::NoGeometry )
+  {
+    if ( url.hasQueryItem( "wktField" ) )
     {
-        QString gtype = url.queryItemValue("geomType").toLower();
-        if( gtype == "point") mGeometryType = QGis::Point;
-        else if( gtype == "line") mGeometryType = QGis::Line;
-        else if( gtype == "polygon") mGeometryType = QGis::Polygon;
-        else if( gtype == "none ") mGeometryType = QGis::NoGeometry;
+      wktField = url.queryItemValue( "wktField" );
     }
-
-    if( mGeometryType != QGis::NoGeometry )
+    else if ( url.hasQueryItem( "xField" ) && url.hasQueryItem( "yField" ) )
     {
-        if ( url.hasQueryItem( "wktField" ) )
-        {
-            wktField = url.queryItemValue( "wktField" );
-        }
-        else if ( url.hasQueryItem( "xField" ) && url.hasQueryItem( "yField" ) )
-        {
-            mGeometryType = QGis::Point;
-            xField = url.queryItemValue( "xField" );
-            yField = url.queryItemValue( "yField" );
-            if ( url.hasQueryItem( "decimalPoint" ) )
-                mDecimalPoint = url.queryItemValue( "decimalPoint" );
-        }
-        else
-        {
-            mGeometryType = QGis::NoGeometry;
-        }
+      mGeometryType = QGis::Point;
+      xField = url.queryItemValue( "xField" );
+      yField = url.queryItemValue( "yField" );
+      if ( url.hasQueryItem( "decimalPoint" ) )
+        mDecimalPoint = url.queryItemValue( "decimalPoint" );
+      if ( url.hasQueryItem( "xyDms" ) )
+      {
+        mXyDms = ! url.queryItemValue( "xyDms" ).toLower().startsWith( "n" );
+      }
     }
-    if ( url.hasQueryItem( "crs" ) )
-        mCrs.createFromString( url.queryItemValue( "crs" ) );
-
-
-    QgsDebugMsg( "wktField is: " + wktField );
-    QgsDebugMsg( "xField is: " + xField );
-    QgsDebugMsg( "yField is: " + yField );
-
-    if( url.hasQueryItem("quiet")) mShowInvalidLines = false;
-
-    // assume the layer is invalid until proven otherwise
-    clearInvalidLines();
-    mValid = false;
-    if ( ! mFile->isValid() )
-    {
-        // uri is invalid so the layer must be too...
-        QgsDebugMsg( "Delimited text source invalid - filename or delimiter parameters" );
-        return;
-    }
-
-    // Open the file and get number of rows, etc. We assume that the
-    // file has a header row and process accordingly. Caller should make
-    // sure that the delimited file is properly formed.
-
-    mFile->reset();
-
-    // set the initial extent
-    //
-    mExtent = QgsRectangle();
-
-    QMap<int, bool> couldBeInt;
-    QMap<int, bool> couldBeDouble;
-
-    mNumberFeatures = 0;
-
-    // If using column headers then read field names from the header
-
-    mFieldCount = 0;
-    bool fieldsCounted = false;
-
-    if( mFile->useHeader())
-
-    {
-        // Get the fields from the header row and store them in the
-        // fields vector
-        QStringList &fieldList = mFile->columnNames();
-
-        mFieldCount = fieldList.count();
-        fieldsCounted = true;
-
-        // We don't know anything about a text based field other
-        // than its name. All fields are assumed to be text
-        int fieldPos = 0;
-        for ( int column = 0; column < mFieldCount; column++ )
-        {
-            QString field = fieldList[column];
-
-            // check to see if this field matches either the x or y field
-            if ( !wktField.isEmpty() && wktField == field )
-            {
-                mWktFieldIndex = column;
-            }
-            else if ( !xField.isEmpty() && xField == field )
-            {
-                mXFieldIndex = column;
-            }
-            else if ( !yField.isEmpty() && yField == field )
-            {
-                mYFieldIndex = column;
-            }
-            // WKT geometry field won't be displayed in attribute tables
-            if ( column != mWktFieldIndex )
-            {
-                QgsDebugMsg( "Adding field: " + ( field ) );
-                // assume that the field could be integer or double
-                // for now, let's set field type as text
-                attributeColumns.append( column );
-                attributeFields.append( QgsField( field, QVariant::String, "Text" ) );
-                couldBeInt.insert( fieldPos, true );
-                couldBeDouble.insert( fieldPos, true );
-                fieldPos++;
-            }
-        }
-    }
-    // Otherwise expect column names to be just numbers - make the
-    // column count at least as great as the largest column referenced.
     else
     {
-        bool ok;
-        int column;
-
-        column = wktField.toInt(&ok);
-        if( ok )
-        {
-            if( column > mFieldCount ) mFieldCount = column;
-            mWktFieldIndex=column-1;
-        }
-
-        column = xField.toInt(&ok);
-        if( ok )
-        {
-            if( column > mFieldCount ) mFieldCount = column;
-            mXFieldIndex=column-1;
-        }
-
-        column = yField.toInt(&ok);
-        if( ok )
-        {
-            if( column > mFieldCount ) mFieldCount = column;
-            mYFieldIndex=column-1;
-        }
+      mGeometryType = QGis::NoGeometry;
     }
-    if( mWktFieldIndex >= 0 )  {
-        QgsDebugMsg( "Found wkt field: " + QString::number(mWktFieldIndex+1) );
-    }
-    if( mXFieldIndex >= 0 )  {
-        QgsDebugMsg( "Found X field: " + QString::number(mXFieldIndex+1) );
-    }
-    if( mYFieldIndex >= 0 )  {
-        QgsDebugMsg( "Found Y field: " + QString::number(mYFieldIndex+1) );
-    }
+  }
+  if ( url.hasQueryItem( "crs" ) )
+    mCrs.createFromString( url.queryItemValue( "crs" ) );
 
-    QStringList parts;
 
-    while ( true )
+  QgsDebugMsg( "wktField is: " + wktField );
+  QgsDebugMsg( "xField is: " + xField );
+  QgsDebugMsg( "yField is: " + yField );
+
+  if ( url.hasQueryItem( "quiet" ) ) mShowInvalidLines = false;
+
+  // assume the layer is invalid until proven otherwise
+  clearInvalidLines();
+  mValid = false;
+  if ( ! mFile->isValid() )
+  {
+    // uri is invalid so the layer must be too...
+    QgsDebugMsg( "Delimited text source invalid - filename or delimiter parameters" );
+    return;
+  }
+
+  // Open the file and get number of rows, etc. We assume that the
+  // file has a header row and process accordingly. Caller should make
+  // sure that the delimited file is properly formed.
+
+  mFile->reset();
+
+  // set the initial extent
+  //
+  mExtent = QgsRectangle();
+
+  QMap<int, bool> couldBeInt;
+  QMap<int, bool> couldBeDouble;
+
+  mNumberFeatures = 0;
+
+  // If using column headers then read field names from the header
+
+  mFieldCount = 0;
+  bool fieldsCounted = false;
+
+  if ( mFile->useHeader() )
+
+  {
+    // Get the fields from the header row and store them in the
+    // fields vector
+    QStringList &fieldList = mFile->columnNames();
+
+    mFieldCount = fieldList.count();
+    fieldsCounted = true;
+
+    // We don't know anything about a text based field other
+    // than its name. All fields are assumed to be text
+    int fieldPos = 0;
+    for ( int column = 0; column < mFieldCount; column++ )
     {
-        QgsDelimitedTextFile::Status status = mFile->nextRecord( parts );
-        if( status == QgsDelimitedTextFile::RecordEOF ) break;
-        if( status != QgsDelimitedTextFile::RecordOk )
+      QString field = fieldList[column];
+
+      // check to see if this field matches either the x or y field
+      if ( !wktField.isEmpty() && wktField == field )
+      {
+        mWktFieldIndex = column;
+      }
+      else if ( !xField.isEmpty() && xField == field )
+      {
+        mXFieldIndex = column;
+      }
+      else if ( !yField.isEmpty() && yField == field )
+      {
+        mYFieldIndex = column;
+      }
+      // WKT geometry field won't be displayed in attribute tables
+      if ( column != mWktFieldIndex )
+      {
+        QgsDebugMsg( "Adding field: " + ( field ) );
+        // assume that the field could be integer or double
+        // for now, let's set field type as text
+        attributeColumns.append( column );
+        attributeFields.append( QgsField( field, QVariant::String, "Text" ) );
+        couldBeInt.insert( fieldPos, true );
+        couldBeDouble.insert( fieldPos, true );
+        fieldPos++;
+      }
+    }
+  }
+  // Otherwise expect column names to be just numbers - make the
+  // column count at least as great as the largest column referenced.
+  else
+  {
+    bool ok;
+    int column;
+
+    column = wktField.toInt( &ok );
+    if ( ok )
+    {
+      if ( column > mFieldCount ) mFieldCount = column;
+      mWktFieldIndex = column - 1;
+    }
+
+    column = xField.toInt( &ok );
+    if ( ok )
+    {
+      if ( column > mFieldCount ) mFieldCount = column;
+      mXFieldIndex = column - 1;
+    }
+
+    column = yField.toInt( &ok );
+    if ( ok )
+    {
+      if ( column > mFieldCount ) mFieldCount = column;
+      mYFieldIndex = column - 1;
+    }
+  }
+  if ( mWktFieldIndex >= 0 )
+  {
+    QgsDebugMsg( "Found wkt field: " + QString::number( mWktFieldIndex + 1 ) );
+  }
+  if ( mXFieldIndex >= 0 )
+  {
+    QgsDebugMsg( "Found X field: " + QString::number( mXFieldIndex + 1 ) );
+  }
+  if ( mYFieldIndex >= 0 )
+  {
+    QgsDebugMsg( "Found Y field: " + QString::number( mYFieldIndex + 1 ) );
+  }
+
+  QStringList parts;
+
+  while ( true )
+  {
+    QgsDelimitedTextFile::Status status = mFile->nextRecord( parts );
+    if ( status == QgsDelimitedTextFile::RecordEOF ) break;
+    if ( status != QgsDelimitedTextFile::RecordOk )
+    {
+      recordInvalidLine( tr( "Invalid record format at line %1" ) );
+      continue;
+    }
+
+    // If not using column headers, then expand column count to include
+    // last non-null (blank) column
+
+    if ( ! fieldsCounted && parts.size() > mFieldCount )
+    {
+      for ( int i = parts.size(); i-- > mFieldCount; )
+      {
+        if ( ! parts[i].isEmpty() )
         {
-            recordInvalidLine(tr("Invalid record format at line %1"));
-            continue;
+          mFieldCount = i + 1;
+          break;
         }
+      }
+    }
 
-        // If not using column headers, then expand column count to include
-        // last non-null (blank) column
+    // Ensure that the input has at least the required number of fields (mainly to tolerate
+    // missed blank strings at end of row)
 
-        if( ! fieldsCounted && parts.size() > mFieldCount )
+    while ( parts.size() < mFieldCount )
+      parts.append( QString::null );
+
+    if ( mWktFieldIndex >= 0 )
+    {
+      // Get the wkt - confirm it is valid, get the type, and
+      // if compatible with the rest of file, add to the extents
+
+      QString sWkt = parts[mWktFieldIndex];
+      QgsGeometry *geom = 0;
+      if ( !mWktHasPrefix && sWkt.indexOf( WktPrefixRegexp ) >= 0 )
+        mWktHasPrefix = true;
+      if ( !mWktHasZM && sWkt.indexOf( WktZMRegexp ) >= 0 )
+        mWktHasZM = true;
+      geom = geomFromWkt( sWkt );
+
+      if ( geom )
+      {
+        QGis::WkbType type = geom->wkbType();
+        if ( type != QGis::WKBNoGeometry )
         {
-            for( int i = parts.size(); i-- > mFieldCount; )
+          if ( mGeometryType == QGis::UnknownGeometry || geom->type() == mGeometryType )
+          {
+            mGeometryType = geom->type();
+            if ( mNumberFeatures == 0 )
             {
-                if( ! parts[i].isEmpty() )
-                {
-                    mFieldCount = i+1;
-                    break;
-                }
-            }
-        }
-
-        // Ensure that the input has at least the required number of fields (mainly to tolerate
-        // missed blank strings at end of row)
-
-        while ( parts.size() < mFieldCount )
-            parts.append( QString::null );
-
-        if ( mWktFieldIndex >= 0 )
-        {
-            // Get the wkt - confirm it is valid, get the type, and
-            // if compatible with the rest of file, add to the extents
-
-            QString sWkt = parts[mWktFieldIndex];
-            QgsGeometry *geom = 0;
-            try
-            {
-                if ( !mWktHasPrefix && sWkt.indexOf( WktPrefixRegexp ) >= 0 )
-                    mWktHasPrefix = true;
-                if ( mWktHasPrefix )
-                {
-                    sWkt.remove( WktPrefixRegexp );
-                }
-                if ( !mWktHasZM && sWkt.indexOf( WktZMRegexp ) >= 0 )
-                    mWktHasZM = true;
-                if ( mWktHasZM )
-                {
-                    sWkt.remove( WktZMRegexp ).replace( WktCrdRegexp, "\\1" );
-                }
-                geom = QgsGeometry::fromWkt( sWkt );
-            }
-            catch ( ... )
-            {
-                // If something went wrong, just note invalid geometry
-                // as geom will be null
-            }
-
-            if ( geom )
-            {
-                QGis::WkbType type = geom->wkbType();
-                if ( type != QGis::WKBNoGeometry )
-                {
-                    if( mGeometryType==QGis::UnknownGeometry || geom->type()==mGeometryType)
-                    {
-                        mGeometryType = geom->type();
-                        if ( mNumberFeatures == 0 )
-                        {
-                            mNumberFeatures++;
-                            mWkbType = type;
-                            mExtent = geom->boundingBox();
-                        }
-                        else
-                        {
-                            mNumberFeatures++;
-                            if( geom->isMultipart()) mWkbType=type;
-                            QgsRectangle bbox( geom->boundingBox() );
-                            mExtent.combineExtentWith( &bbox );
-                        }
-                    }
-                }
-                delete geom;
+              mNumberFeatures++;
+              mWkbType = type;
+              mExtent = geom->boundingBox();
             }
             else
             {
-                recordInvalidLine(tr("Invalid WKT at line %1"));
+              mNumberFeatures++;
+              if ( geom->isMultipart() ) mWkbType = type;
+              QgsRectangle bbox( geom->boundingBox() );
+              mExtent.combineExtentWith( &bbox );
             }
+          }
         }
-        else if ( mXFieldIndex >= 0 && mYFieldIndex >= 0 )
+        delete geom;
+      }
+      else
+      {
+        recordInvalidLine( tr( "Invalid WKT at line %1" ) );
+      }
+    }
+    else if ( mXFieldIndex >= 0 && mYFieldIndex >= 0 )
+    {
+      // Get the x and y values, first checking to make sure they
+      // aren't null.
+
+      QString sX = parts[mXFieldIndex];
+      QString sY = parts[mYFieldIndex];
+      QgsPoint pt;
+      bool ok = pointFromXY( sX, sY, pt );
+
+      if ( ok )
+      {
+        if ( mNumberFeatures > 0 )
         {
-            // Get the x and y values, first checking to make sure they
-            // aren't null.
-
-            QString sX = parts[mXFieldIndex];
-            QString sY = parts[mYFieldIndex];
-
-
-            if ( !mDecimalPoint.isEmpty() )
-            {
-                sX.replace( mDecimalPoint, "." );
-                sY.replace( mDecimalPoint, "." );
-            }
-
-            bool xOk = false;
-            bool yOk = false;
-            double x = sX.toDouble( &xOk );
-            double y = sY.toDouble( &yOk );
-
-            if ( xOk && yOk )
-            {
-                if ( mNumberFeatures > 0 )
-                {
-                    mExtent.combineExtentWith( x, y );
-                }
-                else
-                {
-                    // Extent for the first point is just the first point
-                    mExtent.set( x, y, x, y );
-                    mWkbType = QGis::WKBPoint;
-                    mGeometryType = QGis::Point;
-                }
-                mNumberFeatures++;
-            }
-            else
-            {
-                recordInvalidLine(tr("Invalid X or Y fields at line %1"));
-            }
+          mExtent.combineExtentWith( pt.x(), pt.y() );
         }
         else
         {
-            mWkbType = QGis::WKBNoGeometry;
-            mNumberFeatures++;
+          // Extent for the first point is just the first point
+          mExtent.set( pt.x(), pt.y(), pt.x(), pt.y() );
+          mWkbType = QGis::WKBPoint;
+          mGeometryType = QGis::Point;
         }
-
-        int fieldPos = 0;
-        for ( int i = 0; i < mFieldCount; i++ )
-        {
-            if( i == mWktFieldIndex ) continue;
-            if( fieldPos >= attributeColumns.count() )
-            {
-                QString field = "Col"+QString("%1").arg(i+1,2,10,QChar('0'));
-                QgsDebugMsg( "Adding field: " + field );
-                // assume that the field could be integer or double
-                // for now, let's set field type as text
-                attributeColumns.append( i );
-                attributeFields.append( QgsField( field, QVariant::String, "Text" ) );
-                couldBeInt.insert( fieldPos, true );
-                couldBeDouble.insert( fieldPos, true );
-            }
-            QString &value = parts[i];
-            if ( value.isEmpty() )
-                continue;
-            // try to convert attribute values to integer and double
-            if ( couldBeInt[fieldPos] )
-            {
-                value.toInt( &couldBeInt[fieldPos] );
-            }
-            if ( couldBeDouble[fieldPos] )
-            {
-                value.toDouble( &couldBeDouble[fieldPos] );
-            }
-            fieldPos++;
-        }
+        mNumberFeatures++;
+      }
+      else
+      {
+        recordInvalidLine( tr( "Invalid X or Y fields at line %1" ) );
+      }
     }
-
-    QgsDebugMsg( "Field count for the delimited text file is " + QString::number( attributeFields.size() ) );
-    QgsDebugMsg( "geometry type is: " + QString::number( mWkbType ) );
-    QgsDebugMsg( "feature count is: " + QString::number( mNumberFeatures ) );
-
-    // now it's time to decide the types for the fields
-
-    for ( int i = 0; i < attributeFields.count(); ++i )
+    else
     {
-        QgsField& fld = attributeFields[i];
-        if ( couldBeInt[i] )
-        {
-            fld.setType( QVariant::Int );
-            fld.setTypeName( "integer" );
-        }
-        else if ( couldBeDouble[i] )
-        {
-            fld.setType( QVariant::Double );
-            fld.setTypeName( "double" );
-        }
+      mWkbType = QGis::WKBNoGeometry;
+      mNumberFeatures++;
     }
 
-    handleInvalidLines();
-    mValid = mGeometryType != QGis::UnknownGeometry;
+    int fieldPos = 0;
+    for ( int i = 0; i < mFieldCount; i++ )
+    {
+      if ( i == mWktFieldIndex ) continue;
+      if ( fieldPos >= attributeColumns.count() )
+      {
+        QString field = "Col" + QString( "%1" ).arg( i + 1, 2, 10, QChar( '0' ) );
+        QgsDebugMsg( "Adding field: " + field );
+        // assume that the field could be integer or double
+        // for now, let's set field type as text
+        attributeColumns.append( i );
+        attributeFields.append( QgsField( field, QVariant::String, "Text" ) );
+        couldBeInt.insert( fieldPos, true );
+        couldBeDouble.insert( fieldPos, true );
+      }
+      QString &value = parts[i];
+      if ( value.isEmpty() )
+        continue;
+      // try to convert attribute values to integer and double
+      if ( couldBeInt[fieldPos] )
+      {
+        value.toInt( &couldBeInt[fieldPos] );
+      }
+      if ( couldBeDouble[fieldPos] )
+      {
+        value.toDouble( &couldBeDouble[fieldPos] );
+      }
+      fieldPos++;
+    }
+  }
+
+  QgsDebugMsg( "Field count for the delimited text file is " + QString::number( attributeFields.size() ) );
+  QgsDebugMsg( "geometry type is: " + QString::number( mWkbType ) );
+  QgsDebugMsg( "feature count is: " + QString::number( mNumberFeatures ) );
+
+  // now it's time to decide the types for the fields
+
+  for ( int i = 0; i < attributeFields.count(); ++i )
+  {
+    QgsField& fld = attributeFields[i];
+    if ( couldBeInt[i] )
+    {
+      fld.setType( QVariant::Int );
+      fld.setTypeName( "integer" );
+    }
+    else if ( couldBeDouble[i] )
+    {
+      fld.setType( QVariant::Double );
+      fld.setTypeName( "double" );
+    }
+  }
+
+  handleInvalidLines();
+  mValid = mGeometryType != QGis::UnknownGeometry;
 }
+
+
+QgsGeometry *QgsDelimitedTextProvider::geomFromWkt( QString &sWkt )
+{
+  QgsGeometry *geom = 0;
+  try
+  {
+    if ( mWktHasPrefix )
+    {
+      sWkt.remove( WktPrefixRegexp );
+    }
+
+    if ( mWktHasZM )
+    {
+      sWkt.remove( WktZMRegexp ).replace( WktCrdRegexp, "\\1" );
+    }
+    geom = QgsGeometry::fromWkt( sWkt );
+  }
+  catch ( ... )
+  {
+    geom = 0;
+  }
+  return geom;
+}
+
+
+double QgsDelimitedTextProvider::dmsStringToDouble( const QString &sX, bool *xOk )
+{
+  static QString negative( "swSW-" );
+  QRegExp re( CrdDmsRegexp );
+  double x = 0.0;
+
+  *xOk = re.indexIn( sX ) == 0;
+  if ( ! *xOk ) return 0.0;
+  QString dms1 = re.capturedTexts()[2];
+  QString dms2 = re.capturedTexts()[3];
+  QString dms3 = re.capturedTexts()[4];
+  x = dms3.toDouble( xOk );
+  // Allow for Degrees/minutes format as well as DMS
+  if ( ! dms2.isEmpty() )
+  {
+    x = dms2.toInt( xOk ) + x / 60.0;
+  }
+  x = dms1.toInt( xOk ) + x / 60.0;
+  QString sign1 = re.capturedTexts()[1];
+  QString sign2 = re.capturedTexts()[5];
+
+  if ( sign1.isEmpty() )
+  {
+    if ( ! sign2.isEmpty() && negative.contains( sign2 ) ) x = -x;
+  }
+  else if ( sign2.isEmpty() )
+  {
+    if ( ! sign1.isEmpty() && negative.contains( sign1 ) ) x = -x;
+  }
+  else
+  {
+    *xOk = false;
+  }
+  return x;
+}
+
+
+bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &pt )
+{
+  if ( ! mDecimalPoint.isEmpty() )
+  {
+    sX.replace( mDecimalPoint, "." );
+    sY.replace( mDecimalPoint, "." );
+  }
+
+  bool xOk, yOk;
+  double x, y;
+  if ( mXyDms )
+  {
+    x = dmsStringToDouble( sX, &xOk );
+    y = dmsStringToDouble( sY, &yOk );
+  }
+  else
+  {
+    x = sX.toDouble( &xOk );
+    y = sY.toDouble( &yOk );
+  }
+
+  if ( xOk && yOk )
+  {
+    pt.setX( x );
+    pt.setY( y );
+    return true;
+  }
+  return false;
+}
+
 
 QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
 {
-    if ( mActiveIterator )
-        mActiveIterator->close();
+  if ( mActiveIterator )
+    mActiveIterator->close();
 
-    if ( mFile ) {
-        delete mFile;
-        mFile=0;
-    }
+  if ( mFile )
+  {
+    delete mFile;
+    mFile = 0;
+  }
 }
 
 
 QString QgsDelimitedTextProvider::storageType() const
 {
-    return "Delimited text file";
+  return "Delimited text file";
 }
 
 void QgsDelimitedTextProvider::resetStream()
 {
-    mFile->reset();
+  mFile->reset();
 }
 
 QgsFeatureIterator QgsDelimitedTextProvider::getFeatures( const QgsFeatureRequest& request )
 {
-    return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( this, request ) );
+  return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( this, request ) );
 }
 
 void QgsDelimitedTextProvider::clearInvalidLines()
 {
-    mInvalidLines.clear();
-    mNExtraInvalidLines = 0;
+  mInvalidLines.clear();
+  mNExtraInvalidLines = 0;
 }
 
 void QgsDelimitedTextProvider::recordInvalidLine( QString message )
 {
-    if( mInvalidLines.size() < mMaxInvalidLines )
-    {
-        mInvalidLines.append( message.arg(mFile->recordLineNumber()) );
-    }
-    else
-    {
-        mNExtraInvalidLines++;
-    }
+  if ( mInvalidLines.size() < mMaxInvalidLines )
+  {
+    mInvalidLines.append( message.arg( mFile->recordLineNumber() ) );
+  }
+  else
+  {
+    mNExtraInvalidLines++;
+  }
 }
 
 void QgsDelimitedTextProvider::handleInvalidLines()
 {
-    if ( !mInvalidLines.isEmpty() )
+  if ( !mInvalidLines.isEmpty() )
+  {
+    QString tag( "DelimitedText" );
+    QgsMessageLog::logMessage( tr( "Errors in %1" ).arg( mFile->fileName() ), tag );
+    QgsMessageLog::logMessage( tr( "The following lines were not loaded from %1 into QGIS due to errors:\n" ).arg( mFile->fileName() ),
+                               tag );
+    for ( int i = 0; i < mInvalidLines.size(); ++i )
+      QgsMessageLog::logMessage( mInvalidLines.at( i ), tag );
+    if ( mNExtraInvalidLines > 0 )
+      QgsMessageLog::logMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ), tag );
+
+    // Display errors in a dialog...
+    if ( mShowInvalidLines )
     {
-        QString tag("DelimitedText");
-        QgsMessageLog::logMessage( tr( "Errors in %1").arg( mFile->fileName() ), tag );
-        QgsMessageLog::logMessage( tr( "The following lines were not loaded from %1 into QGIS due to errors:\n" ).arg(mFile->fileName()),
-                                   tag );
-        for ( int i = 0; i < mInvalidLines.size(); ++i )
-            QgsMessageLog::logMessage( mInvalidLines.at( i ), tag );
-        if( mNExtraInvalidLines > 0 )
-            QgsMessageLog::logMessage(tr("There are %1 additional errors in the file").arg(mNExtraInvalidLines), tag);
-
-        // Display errors in a dialog...
-        if( mShowInvalidLines )
-        {
-            QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
-            output->setTitle( tr( "Delimited text file errors" ) );
-            output->setMessage( tr( "The following lines were not loaded from %1 into QGIS due to errors:\n" ).arg(mFile->fileName()),
-                                QgsMessageOutput::MessageText );
-            for ( int i = 0; i < mInvalidLines.size(); ++i )
-                output->appendMessage( mInvalidLines.at( i ) );
-            if( mNExtraInvalidLines > 0 )
-                output->appendMessage(tr("There are %1 additional errors in the file").arg(mNExtraInvalidLines));
-            output->showMessage();
-        }
-
-        // We no longer need these lines.
-        clearInvalidLines();
+      QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
+      output->setTitle( tr( "Delimited text file errors" ) );
+      output->setMessage( tr( "The following lines were not loaded from %1 into QGIS due to errors:\n" ).arg( mFile->fileName() ),
+                          QgsMessageOutput::MessageText );
+      for ( int i = 0; i < mInvalidLines.size(); ++i )
+        output->appendMessage( mInvalidLines.at( i ) );
+      if ( mNExtraInvalidLines > 0 )
+        output->appendMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ) );
+      output->showMessage();
     }
+
+    // We no longer need these lines.
+    clearInvalidLines();
+  }
 }
 
 
@@ -502,7 +579,7 @@ void QgsDelimitedTextProvider::handleInvalidLines()
 // Return the extent of the layer
 QgsRectangle QgsDelimitedTextProvider::extent()
 {
-    return mExtent;
+  return mExtent;
 }
 
 /**
@@ -510,7 +587,7 @@ QgsRectangle QgsDelimitedTextProvider::extent()
  */
 QGis::WkbType QgsDelimitedTextProvider::geometryType() const
 {
-    return mWkbType;
+  return mWkbType;
 }
 
 /**
@@ -518,43 +595,43 @@ QGis::WkbType QgsDelimitedTextProvider::geometryType() const
  */
 long QgsDelimitedTextProvider::featureCount() const
 {
-    return mNumberFeatures;
+  return mNumberFeatures;
 }
 
 
 const QgsFields & QgsDelimitedTextProvider::fields() const
 {
-    return attributeFields;
+  return attributeFields;
 }
 
 bool QgsDelimitedTextProvider::isValid()
 {
-    return mValid;
+  return mValid;
 }
 
 
 int QgsDelimitedTextProvider::capabilities() const
 {
-    return NoCapabilities;
+  return NoCapabilities;
 }
 
 
 QgsCoordinateReferenceSystem QgsDelimitedTextProvider::crs()
 {
-    return mCrs;
+  return mCrs;
 }
 
 
 QString  QgsDelimitedTextProvider::name() const
 {
-    return TEXT_PROVIDER_KEY;
+  return TEXT_PROVIDER_KEY;
 } // ::name()
 
 
 
 QString  QgsDelimitedTextProvider::description() const
 {
-    return TEXT_PROVIDER_DESCRIPTION;
+  return TEXT_PROVIDER_DESCRIPTION;
 } //  QgsDelimitedTextProvider::name()
 
 
@@ -564,14 +641,14 @@ QString  QgsDelimitedTextProvider::description() const
  */
 QGISEXTERN QgsDelimitedTextProvider *classFactory( const QString *uri )
 {
-    return new QgsDelimitedTextProvider( *uri );
+  return new QgsDelimitedTextProvider( *uri );
 }
 
 /** Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
-    return TEXT_PROVIDER_KEY;
+  return TEXT_PROVIDER_KEY;
 }
 
 /**
@@ -579,7 +656,7 @@ QGISEXTERN QString providerKey()
  */
 QGISEXTERN QString description()
 {
-    return TEXT_PROVIDER_DESCRIPTION;
+  return TEXT_PROVIDER_DESCRIPTION;
 }
 
 /**
@@ -588,10 +665,10 @@ QGISEXTERN QString description()
  */
 QGISEXTERN bool isProvider()
 {
-    return true;
+  return true;
 }
 
 QGISEXTERN QgsDelimitedTextSourceSelect *selectWidget( QWidget *parent, Qt::WFlags fl )
 {
-    return new QgsDelimitedTextSourceSelect( parent, fl );
+  return new QgsDelimitedTextSourceSelect( parent, fl );
 }

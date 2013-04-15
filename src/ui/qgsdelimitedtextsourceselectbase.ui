@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>624</width>
-    <height>611</height>
+    <width>658</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -146,8 +146,33 @@
           <property name="enabled">
            <bool>true</bool>
           </property>
+          <property name="toolTip">
+           <string>X and Y coordinates have comma for decimal point</string>
+          </property>
+          <property name="statusTip">
+           <string>X and Y coordinates have comma for decimal point</string>
+          </property>
+          <property name="whatsThis">
+           <string>X and Y coordinates have comma for decimal point</string>
+          </property>
           <property name="text">
-           <string>Comma for decimal point</string>
+           <string>Point  is comma</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbxXyDms">
+          <property name="toolTip">
+           <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
+          </property>
+          <property name="statusTip">
+           <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
+          </property>
+          <property name="whatsThis">
+           <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
+          </property>
+          <property name="text">
+           <string>DMS coords</string>
           </property>
          </widget>
         </item>
@@ -396,6 +421,9 @@
       <property name="margin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QTableWidget" name="tblSample"/>
+      </item>
      </layout>
     </widget>
    </item>
@@ -408,9 +436,6 @@
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QTableWidget" name="tblSample"/>
    </item>
    <item row="1" column="0">
     <widget class="QFrame" name="frame_select_delimiters">
@@ -854,7 +879,6 @@
   <tabstop>geomTypeWKT</tabstop>
   <tabstop>cmbWktField</tabstop>
   <tabstop>cmbGeometryType</tabstop>
-  <tabstop>tblSample</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

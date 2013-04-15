@@ -337,7 +337,13 @@ struct CORE_EXPORT QgsVectorJoinInfo
  * - decimalPoint=c
  *
  *   Defines a character that is used as a decimal point in the X and Y columns.
- *   The defualt is '.'.
+ *   The default is '.'.
+ *
+ * - xyDms=(yes|no)
+ *
+ *   If yes then the X and Y coordinates are interpreted as
+ *   degrees/minutes/seconds format (fairly permissively),
+ *   or degree/minutes format.
  *
  * - wktField=column
  *
@@ -586,7 +592,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @see   deselect(QgsFeatureIds)
      * @see   deselect(QgsFeatureId)
      */
-    void modifySelection(QgsFeatureIds selectIds, QgsFeatureIds deselectIds );
+    void modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds );
 
     /** Select not selected features and deselect selected ones */
     void invertSelection();
@@ -1189,7 +1195,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @see deselect(QgsFeatureId)
      */
-    void deselect(const QgsFeatureIds& featureIds );
+    void deselect( const QgsFeatureIds& featureIds );
 
     /**
      * Clear selection

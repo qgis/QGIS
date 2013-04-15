@@ -23,6 +23,8 @@
 
 class QgsFeature;
 class QgsField;
+class QgsGeometry;
+class QgsPoint;
 class QFile;
 class QTextStream;
 
@@ -53,13 +55,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
 
-public:
+  public:
 
     /**
      * Regular expression defining possible prefixes to WKT string,
      * (EWKT srid, Informix SRID)
       */
     static QRegExp WktPrefixRegexp;
+    static QRegExp CrdDmsRegexp;
 
     QgsDelimitedTextProvider( QString uri = QString() );
 
@@ -162,7 +165,7 @@ public:
     */
     bool boundsCheck( QgsGeometry *geom );
 
-private:
+  private:
 
     static QRegExp WktZMRegexp;
     static QRegExp WktCrdRegexp;
@@ -172,6 +175,9 @@ private:
     void handleInvalidLines();
     void resetStream();
 
+    QgsGeometry *geomFromWkt( QString &sWkt );
+    bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );
+    double dmsStringToDouble( const QString &sX, bool *xOk );
     //! Text file
     QgsDelimitedTextFile *mFile;
 
@@ -203,6 +209,7 @@ private:
     long mNumberFeatures;
     int mSkipLines;
     QString mDecimalPoint;
+    bool mXyDms;
 
     //! Storage for any lines in the file that couldn't be loaded
     int mMaxInvalidLines;
@@ -213,10 +220,10 @@ private:
 
     struct wkbPoint
     {
-        unsigned char byteOrder;
-        quint32 wkbType;
-        double x;
-        double y;
+      unsigned char byteOrder;
+      quint32 wkbType;
+      double x;
+      double y;
     };
     wkbPoint mWKBpt;
 

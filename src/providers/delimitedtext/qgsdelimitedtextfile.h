@@ -69,25 +69,25 @@ class QTextStream;
 class QgsDelimitedTextFile
 {
 
-public:
+  public:
 
     enum Status
     {
-        RecordOk,
-        InvalidDefinition,
-        RecordEmpty,
-        RecordInvalid,
-        RecordEOF
+      RecordOk,
+      InvalidDefinition,
+      RecordEmpty,
+      RecordInvalid,
+      RecordEOF
     };
 
     enum DelimiterType
     {
-        DelimTypeWhitespace,
-        DelimTypeCSV,
-        DelimTypeRegexp,
+      DelimTypeWhitespace,
+      DelimTypeCSV,
+      DelimTypeRegexp,
     };
 
-    QgsDelimitedTextFile(QString url = QString());
+    QgsDelimitedTextFile( QString url = QString() );
 
     virtual ~QgsDelimitedTextFile();
 
@@ -98,8 +98,9 @@ public:
     /** Return the filename
      * @return filename  the name of the file
      */
-    QString fileName() {
-        return mFileName;
+    QString fileName()
+    {
+      return mFileName;
     }
 
     /** Set the file encoding (defuault is UTF-8)
@@ -109,7 +110,7 @@ public:
     /** Return the file encoding
      *  @return encoding The file encoding
      */
-    QString encoding(){ return mEncoding; }
+    QString encoding() { return mEncoding; }
 
     /** Decode the parser settings from a url as a string
      *  @param url  The url from which the delimiter and delimiterType items are read
@@ -139,7 +140,7 @@ public:
      *  @param escape The escape character used to escape quote or delim
      *                characters.
      */
-    void setTypeCSV( QString delim=QString(","), QString quote=QString("\""), QString escape=QString("\"") );
+    void setTypeCSV( QString delim = QString( "," ), QString quote = QString( "\"" ), QString escape = QString( "\"" ) );
 
     /* Set the number of header lines to skip
      * @param skiplines The maximum lines to skip
@@ -148,41 +149,45 @@ public:
     /* Return the number of header lines to skip
      * @return skiplines The maximum lines to skip
      */
-    int skipLines() {
-        return mSkipLines;
+    int skipLines()
+    {
+      return mSkipLines;
     }
 
     /* Set reading column names from the first record
      * @param useheaders Column names will be read if true
      */
-    void setUseHeader( bool useheader=true );
+    void setUseHeader( bool useheader = true );
     /* Return the option for reading column names from the first record
      * @return useheaders Column names will be read if true
      */
-    bool useHeader() {
-        return mUseHeader;
+    bool useHeader()
+    {
+      return mUseHeader;
     }
 
     /* Set the option for dicarding empty fields
      * @param useheaders Empty fields will be discarded if true
      */
-    void setDiscardEmptyFields( bool discardEmptyFields=true );
+    void setDiscardEmptyFields( bool discardEmptyFields = true );
     /* Return the option for discarding empty fields
      * @return useheaders Empty fields will be discarded if true
      */
-    bool discardEmptyFields() {
-        return mDiscardEmptyFields;
+    bool discardEmptyFields()
+    {
+      return mDiscardEmptyFields;
     }
 
     /* Set the option for trimming whitespace from fields
      * @param trimFields Fields will be trimmed if true
      */
-    void setTrimFields( bool trimFields=true );
+    void setTrimFields( bool trimFields = true );
     /* Return the option for trimming empty fields
      * @return useheaders Empty fields will be trimmed if true
      */
-    bool trimFields() {
-        return mTrimFields;
+    bool trimFields()
+    {
+      return mTrimFields;
     }
 
     /** Return the column names read from the header, or default names
@@ -203,8 +208,9 @@ public:
     /** Return the line number of the start of the last record read
      *  @return linenumber  The line number of the start of the record
      */
-    int recordLineNumber() {
-        return mRecordLineNumber;
+    int recordLineNumber()
+    {
+      return mRecordLineNumber;
     }
 
     /** Reset the file to reread from the beginning
@@ -239,7 +245,7 @@ public:
 
 
 
-private:
+  private:
 
     /** Open the file
      *
@@ -265,10 +271,10 @@ private:
      * blank lines will be skipped - this is for compatibility with previous
      * delimited text parser implementation.
      */
-    Status nextLine( QString &buffer, bool skipBlank=false );
+    Status nextLine( QString &buffer, bool skipBlank = false );
 
     // Pointer to the currently selected parser
-    Status (QgsDelimitedTextFile::*mParser)( QStringList &fields );
+    Status( QgsDelimitedTextFile::*mParser )( QStringList &fields );
 
     QString mFileName;
     QString mEncoding;

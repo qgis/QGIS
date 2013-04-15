@@ -250,7 +250,7 @@ def runTest( name, wanted, log_wanted, file, **params ):
 
 class TestQgsDelimitedTextProvider(TestCase):
 
-    def test_001_ProviderDefined( self ):
+    def test_001_provider_defined( self ):
         registry=QgsProviderRegistry.instance()
         metadata = registry.providerMetadata('delimitedtext')
         assert metadata != None, "Delimited text provider is not installed"
@@ -258,12 +258,12 @@ class TestQgsDelimitedTextProvider(TestCase):
 #START
 
 
-    def test_002_LoadCSVFile(self):
+    def test_002_load_csv_file(self):
         description='CSV file parsing'
         filename='test.csv'
         params={'geomType': 'none', 'type': 'csv'}
         if printTests:
-            createTest('002_LoadCSVFile',description,filename,**params)
+            createTest('002_load_csv_file',description,filename,**params)
             assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'1': {
@@ -314,12 +314,12 @@ class TestQgsDelimitedTextProvider(TestCase):
         runTest(description,wanted,log_wanted,filename,**params)
 
 
-    def test_003_LoadWhitespace(self):
+    def test_003_load_whitespace(self):
         description='Whitespace file parsing'
         filename='test.space'
         params={'geomType': 'none', 'type': 'whitespace'}
         if printTests:
-            createTest('003_LoadWhitespace',description,filename,**params)
+            createTest('003_load_whitespace',description,filename,**params)
             assert False,"Set printTests to False to run delimited text tests"
         wanted={
             u'1': {
@@ -562,7 +562,7 @@ class TestQgsDelimitedTextProvider(TestCase):
 
 
     def test_009_read_wkt(self):
-        description='Skip lines'
+        description='Reading WKT geometry field'
         filename='testwkt.csv'
         params={'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         if printTests:
@@ -604,7 +604,7 @@ class TestQgsDelimitedTextProvider(TestCase):
 
 
     def test_010_read_wkt_point(self):
-        description='Skip lines'
+        description='Read WKT points'
         filename='testwkt.csv'
         params={'geomType': 'point', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         if printTests:
@@ -646,7 +646,7 @@ class TestQgsDelimitedTextProvider(TestCase):
 
 
     def test_011_read_wkt_line(self):
-        description='Skip lines'
+        description='Read WKT linestrings'
         filename='testwkt.csv'
         params={'geomType': 'line', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         if printTests:
@@ -688,7 +688,7 @@ class TestQgsDelimitedTextProvider(TestCase):
 
 
     def test_012_read_wkt_polygon(self):
-        description='Skip lines'
+        description='Read WKT polygons'
         filename='testwkt.csv'
         params={'geomType': 'polygon', 'delimiter': '|', 'type': 'csv', 'wktField': 'geom_wkt'}
         if printTests:
@@ -710,6 +710,159 @@ class TestQgsDelimitedTextProvider(TestCase):
             u'Errors in file',
             u'The following lines were not loaded from file into QGIS due to errors:\n',
             u'Invalid WKT at line 8',
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+    def test_013_read_dms_xy(self):
+        description='Reading degrees/minutes/seconds angles'
+        filename='testdms.csv'
+        params={'yField': 'lat', 'xField': 'lon', 'type': 'csv', 'xyDms': 'yes'}
+        if printTests:
+            createTest('013_read_dms_xy',description,filename,**params)
+            assert False,"Set printTests to False to run delimited text tests"
+        wanted={
+            u'1': {
+                'id': u'1',
+                'description': u'Basic DMS string',
+                'lon': u'1 5 30.6',
+                'lat': u'35 51 20',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'2': {
+                'id': u'2',
+                'description': u'Basic DMS string 2',
+                'lon': u'1 05 30.6005',
+                'lat': u'035 51 20',
+                '#geometry': 'POINT(1.09183347 35.85555556)',
+                },
+            u'3': {
+                'id': u'3',
+                'description': u'Basic DMS string 3',
+                'lon': u'1 05 30.6',
+                'lat': u'35 59 9.99',
+                '#geometry': 'POINT(1.09183333 35.98610833)',
+                },
+            u'4': {
+                'id': u'4',
+                'description': u'Prefix sign 1',
+                'lon': u'n1 05 30.6',
+                'lat': u'e035 51 20',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'5': {
+                'id': u'5',
+                'description': u'Prefix sign 2',
+                'lon': u'N1 05 30.6',
+                'lat': u'E035 51 20',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'6': {
+                'id': u'6',
+                'description': u'Prefix sign 3',
+                'lon': u'N 1 05 30.6',
+                'lat': u'E 035 51 20',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'7': {
+                'id': u'7',
+                'description': u'Prefix sign 4',
+                'lon': u'S1 05 30.6',
+                'lat': u'W035 51 20',
+                '#geometry': 'POINT(-1.09183333 -35.85555556)',
+                },
+            u'8': {
+                'id': u'8',
+                'description': u'Prefix sign 5',
+                'lon': u'+1 05 30.6',
+                'lat': u'+035 51 20',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'9': {
+                'id': u'9',
+                'description': u'Prefix sign 6',
+                'lon': u'-1 05 30.6',
+                'lat': u'-035 51 20',
+                '#geometry': 'POINT(-1.09183333 -35.85555556)',
+                },
+            u'10': {
+                'id': u'10',
+                'description': u'Postfix sign 1',
+                'lon': u'1 05 30.6n',
+                'lat': u'035 51 20e',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'11': {
+                'id': u'11',
+                'description': u'Postfix sign 2',
+                'lon': u'1 05 30.6N',
+                'lat': u'035 51 20E',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'12': {
+                'id': u'12',
+                'description': u'Postfix sign 3',
+                'lon': u'1 05 30.6 N',
+                'lat': u'035 51 20 E',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'13': {
+                'id': u'13',
+                'description': u'Postfix sign 4',
+                'lon': u'1 05 30.6S',
+                'lat': u'035 51 20W',
+                '#geometry': 'POINT(-1.09183333 -35.85555556)',
+                },
+            u'14': {
+                'id': u'14',
+                'description': u'Postfix sign 5',
+                'lon': u'1 05 30.6+',
+                'lat': u'035 51 20+',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'15': {
+                'id': u'15',
+                'description': u'Postfix sign 6',
+                'lon': u'1 05 30.6-',
+                'lat': u'035 51 20-',
+                '#geometry': 'POINT(-1.09183333 -35.85555556)',
+                },
+            u'16': {
+                'id': u'16',
+                'description': u'Leading and trailing blanks 1',
+                'lon': u'   1 05 30.6',
+                'lat': u'035 51 20   ',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'17': {
+                'id': u'17',
+                'description': u'Leading and trailing blanks 2',
+                'lon': u' N  1 05 30.6',
+                'lat': u'035 51 20 E  ',
+                '#geometry': 'POINT(1.09183333 35.85555556)',
+                },
+            u'18': {
+                'id': u'18',
+                'description': u'Alternative characters for D,M,S',
+                'lon': u'1d05m30.6s S',
+                'lat': u"35d51'20",
+                '#geometry': 'POINT(-1.09183333 35.85555556)',
+                },
+            u'19': {
+                'id': u'19',
+                'description': u'Degrees/minutes format',
+                'lon': u'1 05.23',
+                'lat': u'4 55.03',
+                '#geometry': 'POINT(1.08972222 4.9175)',
+                },
+            }
+        log_wanted=[
+            u'Errors in file',
+            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'Invalid X or Y fields at line 27',
+            u'Invalid X or Y fields at line 28',
+            u'Invalid X or Y fields at line 29',
+            u'Invalid X or Y fields at line 30',
+            u'Invalid X or Y fields at line 31',
             ]
         runTest(description,wanted,log_wanted,filename,**params)
 
