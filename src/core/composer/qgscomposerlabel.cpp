@@ -131,7 +131,7 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 /*Track when QWebPage has finished loading its html contents*/
 void QgsComposerLabel::loadingHtmlFinished( bool result )
 {
-  Q_UNUSED (result);
+  Q_UNUSED( result );
   mHtmlLoaded = true;
 }
 

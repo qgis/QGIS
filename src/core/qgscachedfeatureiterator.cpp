@@ -15,7 +15,6 @@
 
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
-#include "qgsvectordataprovider.h"
 
 QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, QgsFeatureRequest featureRequest, QgsFeatureIds featureIds )
     : QgsAbstractFeatureIterator( featureRequest )
@@ -56,7 +55,7 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
     : QgsAbstractFeatureIterator( featureRequest )
     , mVectorLayerCache( vlCache )
 {
-  mFeatIt = vlCache->layer()->dataProvider()->getFeatures( featureRequest );
+  mFeatIt = vlCache->layer()->getFeatures( featureRequest );
 }
 
 bool QgsCachedFeatureWriterIterator::nextFeature( QgsFeature& f )

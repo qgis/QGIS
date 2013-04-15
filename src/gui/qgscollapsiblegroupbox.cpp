@@ -82,6 +82,7 @@ void QgsCollapsibleGroupBoxBasic::init()
 
   connect( mCollapseButton, SIGNAL( clicked() ), this, SLOT( toggleCollapsed() ) );
   connect( this, SIGNAL( toggled( bool ) ), this, SLOT( checkToggled( bool ) ) );
+  connect( this, SIGNAL( clicked( bool ) ), this, SLOT( checkClicked( bool ) ) );
 }
 
 void QgsCollapsibleGroupBoxBasic::showEvent( QShowEvent * event )
@@ -213,8 +214,16 @@ void QgsCollapsibleGroupBoxBasic::clearModifiers()
 
 void QgsCollapsibleGroupBoxBasic::checkToggled( bool chkd )
 {
+  Q_UNUSED( chkd );
   mCollapseButton->setEnabled( true ); // always keep enabled
-  // expand/collapse when toggled
+}
+
+void QgsCollapsibleGroupBoxBasic::checkClicked( bool chkd )
+{
+  // expand/collapse when checkbox toggled by user click.
+  // don't do this on toggle signal, otherwise group boxes will default to collapsed
+  // in option dialog constructors, reducing discovery of options by new users and
+  // overriding user's auto-saved collapsed/expanded state for the group box
   if ( chkd && isCollapsed() )
     setCollapsed( false );
   else if ( ! chkd && ! isCollapsed() )

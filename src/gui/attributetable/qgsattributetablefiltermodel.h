@@ -150,7 +150,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void extentsChanged();
 
-private slots:
+  private slots:
     void selectionChanged();
 
   private:

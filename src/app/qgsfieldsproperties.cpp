@@ -359,11 +359,11 @@ void QgsFieldsProperties::on_mAddTabOrGroupButton_clicked()
   QList<QgsAddTabOrGroup::TabPair> tabList;
 
 
-  for( QTreeWidgetItemIterator it( mAttributesTree ); *it; ++it )
+  for ( QTreeWidgetItemIterator it( mAttributesTree ); *it; ++it )
   {
-    if ( ( *it )->data( 0 , Qt::UserRole ) == "container" )
+    if (( *it )->data( 0 , Qt::UserRole ) == "container" )
     {
-      tabList.append( QgsAddTabOrGroup::TabPair( (*it)->text( 0 ), *it ) );
+      tabList.append( QgsAddTabOrGroup::TabPair(( *it )->text( 0 ), *it ) );
     }
   }
   QgsAddTabOrGroup addTabOrGroup( mLayer, tabList, this );

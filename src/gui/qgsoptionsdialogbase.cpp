@@ -18,6 +18,7 @@
 
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QLayout>
 #include <QListWidget>
 #include <QMessageBox>
 #include <QScrollBar>
@@ -45,6 +46,11 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
 
 void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
 {
+  // don't add to dialog margins
+  // redefine now, or those in inherited .ui file will be added
+  if ( layout() )
+    layout()->setContentsMargins( 12, 12, 12, 12 ); // Qt default spacing
+
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
   mOptListWidget = findChild<QListWidget*>( "mOptionsListWidget" );
   mOptStackedWidget = findChild<QStackedWidget*>( "mOptionsStackedWidget" );
@@ -66,6 +72,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi )
   }
   connect( mOptSplitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( updateOptionsListVerticalTabs() ) );
   connect( mOptStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( optionsStackedWidget_CurrentChanged( int ) ) );
+  connect( mOptStackedWidget, SIGNAL( widgetRemoved( int ) ), this, SLOT( optionsStackedWidget_WidgetRemoved( int ) ) );
 
   if ( restoreUi )
     restoreOptionsBaseUi();
@@ -156,6 +163,12 @@ void QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( int indx )
   mOptListWidget->blockSignals( true );
   mOptListWidget->setCurrentRow( indx );
   mOptListWidget->blockSignals( false );
+}
+
+void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int indx )
+{
+  // will need to take item first, if widgets are set for item in future
+  delete mOptListWidget->item( indx );
 }
 
 void QgsOptionsDialogBase::warnAboutMissingObjects()

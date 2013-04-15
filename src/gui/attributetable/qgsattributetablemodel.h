@@ -188,15 +188,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
   private slots:
     /**
-     * Launched when attribute has been added
-     * @param idx attribute index
+     * Launched whenever the number of fields has changed
      */
-    virtual void attributeAdded( int idx );
-    /**
-     * Launched when attribute has been deleted
-     * @param idx attribute index
-     */
-    virtual void attributeDeleted( int idx );
+    virtual void updatedFields();
 
   protected slots:
     /**

@@ -32,7 +32,7 @@ def uniquevalues(layer, attribute):
     It considers the existing selection'''
     values = []
     fieldIndex = resolveFieldIndex(layer, attribute)
-    features = QGisLayers.features(layer)    
+    features = QGisLayers.features(layer)
     for feat in features:
         if feat.attributes()[fieldIndex] not in values:
             values.append(feat.attributes()[fieldIndex])
@@ -41,7 +41,7 @@ def uniquevalues(layer, attribute):
 def resolveFieldIndex(layer, attr):
     '''This method takes an object and returns the index field it refers to in a layer.
     If the passed object is an integer, it returns the same integer value.
-    If the passed value is not an integer, it returns the field whose name is the string 
+    If the passed value is not an integer, it returns the field whose name is the string
     representation of the passed object.
     Ir raises an exception if the int value is larger than the number of fields, or if
     the passed object does not correspond to any field'''
@@ -51,7 +51,7 @@ def resolveFieldIndex(layer, attr):
         index = layer.fieldNameIndex(unicode(attr))
         if index == -1:
             raise ValueError('Wrong field name')
-        return index     
+        return index
 
 
 def values(layer, *attributes):
@@ -63,7 +63,7 @@ def values(layer, *attributes):
     for attr in attributes:
         index = resolveFieldIndex(layer, attr)
         values = []
-        features = QGisLayers.features(layer)        
+        features = QGisLayers.features(layer)
         for feature in features:
             try:
                 v = float(feature.attributes()[index].toString())

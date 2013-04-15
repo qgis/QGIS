@@ -2117,12 +2117,18 @@ void QgsWmsProvider::parseRequest( QDomElement const & e, QgsWmsRequestProperty&
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      if ( e1.tagName() == "GetMap" )
+      QString operation = e1.tagName();
+      if ( operation == "Operation" )
+      {
+        operation = e1.attribute( "name" );
+      }
+
+      if ( operation == "GetMap" )
       {
         QgsDebugMsg( "      GetMap." );
         parseOperationType( e1, requestProperty.getMap );
       }
-      else if ( e1.tagName() == "GetFeatureInfo" )
+      else if ( operation == "GetFeatureInfo" )
       {
         QgsDebugMsg( "      GetFeatureInfo." );
         parseOperationType( e1, requestProperty.getFeatureInfo );
@@ -3257,13 +3263,13 @@ bool QgsWmsProvider::calculateExtent()
           it != mActiveSubLayers.end();
           ++it )
     {
-      QgsDebugMsg( "Sublayer Iterator: " + *it );
+      QgsDebugMsg( "Sublayer iterator: " + *it );
       // This is the extent for the layer name in *it
       if ( !mExtentForLayer.contains( *it ) )
       {
         mLayerExtent = QgsRectangle();
         appendError( ERR( tr( "Extent for layer %1 not found in capabilities" ).arg( *it ) ) );
-        return false;
+        continue;
       }
 
       QgsRectangle extent = mExtentForLayer.find( *it ).value();
@@ -4434,6 +4440,12 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
     QgsWmsSupportedFormat j1 = { "image/jpeg", "JPEG" };
     QgsWmsSupportedFormat j2 = { "jpeg", "JPEG" }; // used by french IGN geoportail
     formats << j1 << j2;
+  }
+
+  if ( supportedFormats.contains( "png" ) && supportedFormats.contains( "jpg" ) )
+  {
+    QgsWmsSupportedFormat g1 = { "image/x-jpegorpng", "JPEG/PNG" }; // used by cubewerx
+    formats << g1;
   }
 
   if ( supportedFormats.contains( "gif" ) )

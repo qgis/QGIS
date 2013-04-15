@@ -115,9 +115,6 @@ class QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRas
     /**Enable or disable colorize controls depending on checkbox */
     void toggleColorizeControls( bool colorizeEnabled );
 
-    /** Update items in pipe list */
-    void pipeItemClicked( QTreeWidgetItem * item, int column );
-
     /** Transparency cell changed */
     void transparencyCellTextEdited( const QString & text );
 
@@ -180,12 +177,6 @@ class QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRas
     QLinearGradient highlightGradient();
     qreal mGradientHeight;
     qreal mGradientWidth;
-
-    /** Update pipe tab - interfaces list */
-    void updatePipeList();
-
-    /** Update items in pipe list */
-    void updatePipeItems();
 
     QgsMapCanvas* mMapCanvas;
     QgsMapToolEmitPoint* mPixelSelectorTool;

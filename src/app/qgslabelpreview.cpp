@@ -60,6 +60,10 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
   Q_UNUSED( e );
   QPainter p( this );
 
+  // TODO: draw all label components when this preview is an actual map canvas
+  // for now, only preview label's text and buffer
+  mTmpLyr->shadowDraw = false;
+
   p.setRenderHint( QPainter::Antialiasing );
   p.setFont( font() );
   QFontMetrics fm( font() );
@@ -77,7 +81,9 @@ void QgsLabelPreview::paintEvent( QPaintEvent *e )
   if ( mTmpLyr->bufferSize != 0 )
   {
     mContext->setPainter( &p );
-    QgsPalLabeling::drawLabelBuffer( *mContext, text(), *mTmpLyr );
+    QgsLabelComponent component;
+    component.setText( text() );
+    QgsPalLabeling::drawLabelBuffer( *mContext, component, *mTmpLyr );
   }
 
   QPainterPath path;

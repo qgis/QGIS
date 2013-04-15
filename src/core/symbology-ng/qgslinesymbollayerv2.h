@@ -37,8 +37,6 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
                                 double width = DEFAULT_SIMPLELINE_WIDTH,
                                 Qt::PenStyle penStyle = DEFAULT_SIMPLELINE_PENSTYLE );
 
-    ~QgsSimpleLineSymbolLayerV2();
-
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
@@ -91,14 +89,6 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QVector<qreal> customDashVector() const { return mCustomDashVector; }
     void setCustomDashVector( const QVector<qreal>& vector ) { mCustomDashVector = vector; }
 
-    const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    QString dataDefinedPropertyString( const QString& property ) const;
-    void setDataDefinedProperty( const QString& property, const QString& expressionString );
-    void removeDataDefinedProperty( const QString& property );
-    void removeDataDefinedProperties();
-
-    QSet<QString> usedAttributes() const;
-
   protected:
     Qt::PenStyle mPenStyle;
     Qt::PenJoinStyle mPenJoinStyle;
@@ -115,17 +105,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     /**Vector with an even number of entries for the */
     QVector<qreal> mCustomDashVector;
 
-    //data defined properties
-    QgsExpression* mStrokeColorExpression;
-    QgsExpression* mStrokeWidthExpression;
-    QgsExpression* mLineOffsetExpression;
-    QgsExpression* mDashPatternExpression;
-    QgsExpression* mJoinStyleExpression;
-    QgsExpression* mCapStyleExpression;
-
   private:
     //helper functions for data defined symbology
-    void prepareExpressions( const QgsVectorLayer* vl );
     void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset );
 };
 
@@ -203,14 +184,6 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    QString dataDefinedPropertyString( const QString& property ) const;
-    void setDataDefinedProperty( const QString& property, const QString& expressionString );
-    void removeDataDefinedProperty( const QString& property );
-    void removeDataDefinedProperties();
-
-    QSet<QString> usedAttributes() const;
-
   protected:
 
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
@@ -224,15 +197,6 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     double mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
     Placement mPlacement;
-
-    //data defined properties
-    QgsExpression* mIntervalExpression;
-    QgsExpression* mOffsetExpression;
-    QgsExpression* mPlacementExpression;
-
-  private:
-    //helper functions for data defined symbology
-    void prepareExpressions( const QgsVectorLayer* vl );
 };
 
 /////////

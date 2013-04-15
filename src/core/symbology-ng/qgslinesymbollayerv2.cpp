@@ -28,149 +28,11 @@
 
 QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( QColor color, double width, Qt::PenStyle penStyle )
     : mPenStyle( penStyle ), mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE ), mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE ), mOffset( 0 ), mOffsetUnit( QgsSymbolV2::MM ),
-    mUseCustomDashPattern( false ), mCustomDashPatternUnit( QgsSymbolV2::MM ), mStrokeColorExpression( 0 ), mStrokeWidthExpression( 0 ), mLineOffsetExpression( 0 ),
-    mDashPatternExpression( 0 ), mJoinStyleExpression( 0 ), mCapStyleExpression( 0 )
+    mUseCustomDashPattern( false ), mCustomDashPatternUnit( QgsSymbolV2::MM )
 {
   mColor = color;
   mWidth = width;
   mCustomDashVector << 5 << 2;
-}
-
-QgsSimpleLineSymbolLayerV2::~QgsSimpleLineSymbolLayerV2()
-{
-  delete mStrokeColorExpression; delete mStrokeWidthExpression; delete mLineOffsetExpression;
-  delete mDashPatternExpression; delete mJoinStyleExpression; delete mCapStyleExpression;
-}
-
-QSet<QString> QgsSimpleLineSymbolLayerV2::usedAttributes() const
-{
-  QSet<QString> attributes;
-
-  //add data defined attributes
-  QStringList columns;
-  if ( mStrokeColorExpression )
-    columns.append( mStrokeColorExpression->referencedColumns() );
-  if ( mStrokeWidthExpression )
-    columns.append( mStrokeWidthExpression->referencedColumns() );
-  if ( mLineOffsetExpression )
-    columns.append( mLineOffsetExpression->referencedColumns() );
-  if ( mDashPatternExpression )
-    columns.append( mDashPatternExpression->referencedColumns() );
-  if ( mJoinStyleExpression )
-    columns.append( mJoinStyleExpression->referencedColumns() );
-  if ( mCapStyleExpression )
-    columns.append( mCapStyleExpression->referencedColumns() );
-
-  QStringList::const_iterator it = columns.constBegin();
-  for ( ; it != columns.constEnd(); ++it )
-  {
-    attributes.insert( *it );
-  }
-  return attributes;
-}
-
-const QgsExpression* QgsSimpleLineSymbolLayerV2::dataDefinedProperty( const QString& property ) const
-{
-  if ( property == "color" )
-  {
-    return mStrokeColorExpression;
-  }
-  else if ( property == "width" )
-  {
-    return mStrokeWidthExpression;
-  }
-  else if ( property == "offset" )
-  {
-    return mLineOffsetExpression;
-  }
-  else if ( property == "customdash" )
-  {
-    return mDashPatternExpression;
-  }
-  else if ( property == "joinstyle" )
-  {
-    return mJoinStyleExpression;
-  }
-  else if ( property == "capstyle" )
-  {
-    return mCapStyleExpression;
-  }
-  else
-  {
-    return 0;
-  }
-}
-
-QString QgsSimpleLineSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
-{
-  const QgsExpression* expression = dataDefinedProperty( property );
-  return expression ? expression->dump() : QString( "" );
-}
-
-void QgsSimpleLineSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
-{
-  if ( property == "color" )
-  {
-    delete mStrokeColorExpression; mStrokeColorExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "width" )
-  {
-    delete mStrokeWidthExpression; mStrokeWidthExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "offset" )
-  {
-    delete mLineOffsetExpression; mLineOffsetExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "customdash" )
-  {
-    delete mDashPatternExpression; mDashPatternExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "joinstyle" )
-  {
-    delete mJoinStyleExpression; mJoinStyleExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "capstyle" )
-  {
-    delete mCapStyleExpression; mCapStyleExpression = new QgsExpression( expressionString );
-  }
-}
-
-void QgsSimpleLineSymbolLayerV2::removeDataDefinedProperty( const QString& property )
-{
-  if ( property == "color" )
-  {
-    delete mStrokeColorExpression; mStrokeColorExpression = 0;
-  }
-  else if ( property == "width" )
-  {
-    delete mStrokeWidthExpression; mStrokeWidthExpression = 0;
-  }
-  else if ( property == "offset" )
-  {
-    delete mLineOffsetExpression; mLineOffsetExpression = 0;
-  }
-  else if ( property == "customdash" )
-  {
-    delete mDashPatternExpression; mDashPatternExpression = 0;
-  }
-  else if ( property == "joinstyle" )
-  {
-    delete mJoinStyleExpression; mJoinStyleExpression = 0;
-  }
-  else if ( property == "capstyle" )
-  {
-    delete mCapStyleExpression; mCapStyleExpression = 0;
-  }
-}
-
-void QgsSimpleLineSymbolLayerV2::removeDataDefinedProperties()
-{
-  delete mStrokeColorExpression; mStrokeColorExpression = 0;
-  delete mStrokeWidthExpression; mStrokeWidthExpression = 0;
-  delete mLineOffsetExpression; mLineOffsetExpression = 0;
-  delete mDashPatternExpression; mDashPatternExpression = 0;
-  delete mJoinStyleExpression; mJoinStyleExpression = 0;
-  delete mCapStyleExpression; mCapStyleExpression = 0;
 }
 
 void QgsSimpleLineSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
@@ -334,21 +196,7 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
   map["use_custom_dash"] = ( mUseCustomDashPattern ? "1" : "0" );
   map["customdash"] = QgsSymbolLayerV2Utils::encodeRealVector( mCustomDashVector );
   map["customdash_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mCustomDashPatternUnit );
-
-  //data defined properties
-  if ( mStrokeColorExpression )
-    map["color_expression"] = mStrokeColorExpression->dump();
-  if ( mStrokeWidthExpression )
-    map["width_expression"] = mStrokeWidthExpression->dump();
-  if ( mLineOffsetExpression )
-    map["offset_expression"] = mLineOffsetExpression->dump();
-  if ( mDashPatternExpression )
-    map["customdash_expression"] = mDashPatternExpression->dump();
-  if ( mJoinStyleExpression )
-    map["joinstyle_expression"] = mJoinStyleExpression->dump();
-  if ( mCapStyleExpression )
-    map["capstyle_expression"] = mCapStyleExpression->dump();
-
+  saveDataDefinedProperties( map );
   return map;
 }
 
@@ -363,21 +211,7 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
   l->setPenCapStyle( mPenCapStyle );
   l->setUseCustomDashPattern( mUseCustomDashPattern );
   l->setCustomDashVector( mCustomDashVector );
-
-  //data defined properties
-  if ( mStrokeColorExpression )
-    l->setDataDefinedProperty( "color", mStrokeColorExpression->dump() );
-  if ( mStrokeWidthExpression )
-    l->setDataDefinedProperty( "width", mStrokeWidthExpression->dump() );
-  if ( mLineOffsetExpression )
-    l->setDataDefinedProperty( "offset", mLineOffsetExpression->dump() );
-  if ( mDashPatternExpression )
-    l->setDataDefinedProperty( "customdash", mDashPatternExpression->dump() );
-  if ( mJoinStyleExpression )
-    l->setDataDefinedProperty( "joinstyle", mJoinStyleExpression->dump() );
-  if ( mCapStyleExpression )
-    l->setDataDefinedProperty( "capstyle", mCapStyleExpression->dump() );
-
+  copyDataDefinedProperties( l );
   return l;
 }
 
@@ -466,35 +300,14 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &elemen
   return l;
 }
 
-void QgsSimpleLineSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
-{
-  if ( !vl )
-  {
-    return;
-  }
-
-  const QgsFields& fields = vl->pendingFields();
-  if ( mStrokeColorExpression )
-    mStrokeColorExpression->prepare( fields );
-  if ( mStrokeWidthExpression )
-    mStrokeWidthExpression->prepare( fields );
-  if ( mLineOffsetExpression )
-    mLineOffsetExpression->prepare( fields );
-  if ( mDashPatternExpression )
-    mDashPatternExpression->prepare( fields );
-  if ( mJoinStyleExpression )
-    mJoinStyleExpression->prepare( fields );
-  if ( mCapStyleExpression )
-    mCapStyleExpression->prepare( fields );
-}
-
 void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset )
 {
   //data defined properties
   double scaledWidth = 0;
-  if ( mStrokeWidthExpression )
+  QgsExpression* strokeWidthExpression = expression( "width" );
+  if ( strokeWidthExpression )
   {
-    scaledWidth = mStrokeWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble()
+    scaledWidth = strokeWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble()
                   * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit );
     pen.setWidthF( scaledWidth );
     selPen.setWidthF( scaledWidth );
@@ -507,23 +320,26 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   }
 
   //color
-  if ( mStrokeColorExpression )
+  QgsExpression* strokeColorExpression = expression( "color" );
+  if ( strokeColorExpression )
   {
-    pen.setColor( QgsSymbolLayerV2Utils::decodeColor( mStrokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+    pen.setColor( QgsSymbolLayerV2Utils::decodeColor( strokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
   }
 
   //offset
   offset = mOffset;
-  if ( mLineOffsetExpression )
+  QgsExpression* lineOffsetExpression = expression( "offset" );
+  if ( lineOffsetExpression )
   {
-    offset = mLineOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    offset = lineOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
 
   //dash dot vector
-  if ( mDashPatternExpression )
+  QgsExpression* dashPatternExpression = expression( "customdash" );
+  if ( dashPatternExpression )
   {
     QVector<qreal> dashVector;
-    QStringList dashList = mDashPatternExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString().split( ";" );
+    QStringList dashList = dashPatternExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString().split( ";" );
     QStringList::const_iterator dashIt = dashList.constBegin();
     for ( ; dashIt != dashList.constEnd(); ++dashIt )
     {
@@ -533,16 +349,18 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   }
 
   //join style
-  if ( mJoinStyleExpression )
+  QgsExpression* joinStyleExpression = expression( "joinstyle" );
+  if ( joinStyleExpression )
   {
-    QString joinStyleString = mJoinStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    QString joinStyleString = joinStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     pen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( joinStyleString ) );
   }
 
   //cap style
-  if ( mCapStyleExpression )
+  QgsExpression* capStyleExpression = expression( "capstyle" );
+  if ( capStyleExpression )
   {
-    QString capStyleString = mCapStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    QString capStyleString = capStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     pen.setCapStyle( QgsSymbolLayerV2Utils::decodePenCapStyle( capStyleString ) );
   }
 }
@@ -612,7 +430,7 @@ class MyLine
 };
 
 
-QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, double interval ): mIntervalExpression( 0 ), mOffsetExpression( 0 ), mPlacementExpression( 0 )
+QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, double interval )
 {
   mRotateMarker = rotateMarker;
   mInterval = interval;
@@ -628,93 +446,6 @@ QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, doubl
 QgsMarkerLineSymbolLayerV2::~QgsMarkerLineSymbolLayerV2()
 {
   delete mMarker;
-}
-
-const QgsExpression* QgsMarkerLineSymbolLayerV2::dataDefinedProperty( const QString& property ) const
-{
-  if ( property == "interval" )
-  {
-    return mIntervalExpression;
-  }
-  else if ( property == "offset" )
-  {
-    return mOffsetExpression;
-  }
-  else if ( property == "placement" )
-  {
-    return mPlacementExpression;
-  }
-  return 0;
-}
-
-QString QgsMarkerLineSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
-{
-  const QgsExpression* ex = dataDefinedProperty( property );
-  return ex ? ex->dump() : QString();
-}
-
-void QgsMarkerLineSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
-{
-  if ( property == "interval" )
-  {
-    delete mIntervalExpression; mIntervalExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "offset" )
-  {
-    delete mOffsetExpression; mOffsetExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "placement" )
-  {
-    delete mPlacementExpression; mPlacementExpression = new QgsExpression( expressionString );
-  }
-}
-
-void QgsMarkerLineSymbolLayerV2::removeDataDefinedProperty( const QString& property )
-{
-  if ( property == "interval" )
-  {
-    delete mIntervalExpression; mIntervalExpression = 0;
-  }
-  else if ( property == "offset" )
-  {
-    delete mOffsetExpression; mOffsetExpression = 0;
-  }
-  else if ( property == "placement" )
-  {
-    delete mPlacementExpression; mPlacementExpression = 0;
-  }
-}
-
-void QgsMarkerLineSymbolLayerV2::removeDataDefinedProperties()
-{
-  delete mIntervalExpression; mIntervalExpression = 0;
-  delete mOffsetExpression; mOffsetExpression = 0;
-  delete mPlacementExpression; mPlacementExpression = 0;
-}
-
-QSet<QString> QgsMarkerLineSymbolLayerV2::usedAttributes() const
-{
-  QSet<QString> attributes;
-
-  //add data defined attributes
-  QStringList columns;
-  if ( mIntervalExpression )
-    columns.append( mIntervalExpression->referencedColumns() );
-  if ( mOffsetExpression )
-    columns.append( mOffsetExpression->referencedColumns() );
-  if ( mPlacementExpression )
-    columns.append( mPlacementExpression->referencedColumns() );
-
-  QStringList::const_iterator it = columns.constBegin();
-  for ( ; it != columns.constEnd(); ++it )
-  {
-    attributes.insert( *it );
-  }
-  if ( mMarker )
-  {
-    attributes.unite( mMarker->usedAttributes() );
-  }
-  return attributes;
 }
 
 QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::create( const QgsStringMap& props )
@@ -809,15 +540,17 @@ void QgsMarkerLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
   double offset = mOffset;
-  if ( mOffsetExpression )
+  QgsExpression* offsetExpression = expression( "offset" );
+  if ( offsetExpression )
   {
-    offset = mOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    offset = offsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
 
   Placement placement = mPlacement;
-  if ( mPlacementExpression )
+  QgsExpression* placementExpression = expression( "placement" );
+  if ( placementExpression )
   {
-    QString placementString = mPlacementExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    QString placementString = placementExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     if ( placementString.compare( "vertex", Qt::CaseInsensitive ) == 0 )
     {
       placement = Vertex;
@@ -873,9 +606,11 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
 
   QgsRenderContext& rc = context.renderContext();
   double interval = mInterval;
-  if ( mIntervalExpression )
+
+  QgsExpression* intervalExpression = expression( "interval" );
+  if ( intervalExpression )
   {
-    interval = mIntervalExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    interval = intervalExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
   if ( interval <= 0 )
   {
@@ -1101,19 +836,7 @@ QgsStringMap QgsMarkerLineSymbolLayerV2::properties() const
   else
     map["placement"] = "interval";
 
-  if ( mIntervalExpression )
-  {
-    map["interval_expression"] = mIntervalExpression->dump();
-  }
-  if ( mOffsetExpression )
-  {
-    map["offset_expression"] = mOffsetExpression->dump();
-  }
-  if ( mPlacementExpression )
-  {
-    map["placement_expression"] = mPlacementExpression->dump();
-  }
-
+  saveDataDefinedProperties( map );
   return map;
 }
 
@@ -1144,21 +867,7 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
   x->setPlacement( mPlacement );
   x->setOffsetUnit( mOffsetUnit );
   x->setIntervalUnit( mIntervalUnit );
-
-  //data defined properties
-  if ( mIntervalExpression )
-  {
-    x->setDataDefinedProperty( "interval", mIntervalExpression->dump() );
-  }
-  if ( mOffsetExpression )
-  {
-    x->setDataDefinedProperty( "offset", mOffsetExpression->dump() );
-  }
-  if ( mPlacementExpression )
-  {
-    x->setDataDefinedProperty( "placement", mPlacementExpression->dump() );
-  }
-
+  copyDataDefinedProperties( x );
   return x;
 }
 
@@ -1334,22 +1043,6 @@ QgsSymbolV2::OutputUnit QgsMarkerLineSymbolLayerV2::outputUnit() const
     return QgsSymbolV2::Mixed;
   }
   return unit;
-}
-
-void QgsMarkerLineSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
-{
-  if ( !vl )
-  {
-    return;
-  }
-
-  const QgsFields& fields = vl->pendingFields();
-  if ( mIntervalExpression )
-    mIntervalExpression->prepare( fields );
-  if ( mOffsetExpression )
-    mOffsetExpression->prepare( fields );
-  if ( mPlacementExpression )
-    mPlacementExpression->prepare( fields );
 }
 
 /////////////

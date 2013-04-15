@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
           // That's the reason we need this wrapper:
           // Inform the cache that this feature has been removed
           mCache->featureRemoved( mFeature->id() );
-          delete( mFeature );
+          delete mFeature;
         }
 
         inline const QgsFeature* feature() { return mFeature; }
@@ -86,7 +86,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * @param cacheSize indicates the maximum number of features to keep in the cache
      */
-
     void setCacheSize( int cacheSize );
 
     /**
@@ -216,7 +215,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     void cachedLayerDeleted();
 
-  public slots:
+  private slots:
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant& value );
     void featureDeleted( QgsFeatureId fid );
     void featureAdded( QgsFeatureId fid );
@@ -224,6 +223,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void attributeDeleted( int field );
     void geometryChanged( QgsFeatureId fid, QgsGeometry& geom );
     void layerDeleted();
+    void updatedFields();
 
   private:
 

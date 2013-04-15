@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>336</width>
-    <height>352</height>
+    <height>367</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -231,6 +231,39 @@
        </property>
       </spacer>
      </item>
+     <item row="0" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowAllLabels">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Show all labels and features for all layers</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="3">
+      <widget class="QCheckBox" name="mSaveWithProjectChkBox">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>Save settings with project</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" colspan="3">
+      <widget class="QCheckBox" name="chkShowCandidates">
+       <property name="text">
+        <string>Show candidates (for debugging)</string>
+       </property>
+      </widget>
+     </item>
      <item row="1" column="1">
       <widget class="QLabel" name="label_6">
        <property name="sizePolicy">
@@ -251,42 +284,16 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>40</width>
+         <width>0</width>
          <height>20</height>
         </size>
        </property>
       </spacer>
      </item>
-     <item row="0" column="0" colspan="3">
-      <widget class="QCheckBox" name="chkShowAllLabels">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Show all labels and features for all layers</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0" colspan="3">
-      <widget class="QCheckBox" name="chkShowCandidates">
-       <property name="text">
-        <string>Show candidates (for debugging)</string>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="0" colspan="3">
-      <widget class="QCheckBox" name="mSaveWithProjectChkBox">
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
+      <widget class="QCheckBox" name="mShadowDebugRectChkBox">
        <property name="text">
-        <string>Save settings with project</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
+        <string>Show shadow rectangles (for debugging)</string>
        </property>
       </widget>
      </item>
@@ -300,7 +307,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>

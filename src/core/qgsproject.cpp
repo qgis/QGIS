@@ -1132,7 +1132,7 @@ QStringList
 QgsProject::readListEntry( QString const & scope,
                            const QString & key,
                            QStringList def,
-                           bool * ok) const
+                           bool * ok ) const
 {
   QgsProperty * property = findKey_( scope, key, imp_->properties_ );
 

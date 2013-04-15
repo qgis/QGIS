@@ -43,7 +43,7 @@ class GrassUtils:
     GRASS_REGION_XMAX = "GRASS_REGION_XMAX"
     GRASS_REGION_YMAX = "GRASS_REGION_YMAX"
     GRASS_REGION_CELLSIZE = "GRASS_REGION_CELLSIZE"
-    GRASS_FOLDER = "GRASS_FOLDER"    
+    GRASS_FOLDER = "GRASS_FOLDER"
     GRASS_WIN_SHELL = "GRASS_WIN_SHELL"
     GRASS_LOG_COMMANDS = "GRASS_LOG_COMMANDS"
     GRASS_LOG_CONSOLE = "GRASS_LOG_CONSOLE"
@@ -327,7 +327,7 @@ class GrassUtils:
 
         settings = QSettings()
         GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"
-        if not ignoreRegistrySettings:            
+        if not ignoreRegistrySettings:
             if settings.contains(GRASS_INSTALLED):
                 return
 

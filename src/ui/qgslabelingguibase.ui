@@ -217,7 +217,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>710</width>
+                <width>704</width>
                 <height>300</height>
                </rect>
               </property>
@@ -428,9 +428,9 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-528</y>
+             <y>-636</y>
              <width>712</width>
-             <height>1452</height>
+             <height>1492</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_17">
@@ -1868,60 +1868,134 @@
               <property name="syncGroup" stdset="0">
                <string notr="true">labelsettings</string>
               </property>
-              <layout class="QGridLayout" name="gridLayout_23">
+              <layout class="QGridLayout" name="gridLayout_5">
                <item row="0" column="0">
+                <widget class="QLabel" name="label_14">
+                 <property name="text">
+                  <string>Draw under</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <layout class="QHBoxLayout" name="horizontalLayout_27">
+                 <item>
+                  <widget class="QComboBox" name="mShadowUnderCmbBx">
+                   <property name="minimumSize">
+                    <size>
+                     <width>150</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>Lowest label component</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Text</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Buffer</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>Background</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_24">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="0">
                 <widget class="QLabel" name="label_4">
                  <property name="text">
                   <string>Offset</string>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
+               <item row="1" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_24">
                  <item>
-                  <widget class="QDoubleSpinBox" name="mShadowOffsetXSpnBx">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
+                  <widget class="QDial" name="mShadowOffsetAngleDial">
+                   <property name="minimumSize">
+                    <size>
+                     <width>32</width>
+                     <height>32</height>
+                    </size>
                    </property>
-                   <property name="prefix">
-                    <string>X </string>
-                   </property>
-                   <property name="suffix">
-                    <string/>
-                   </property>
-                   <property name="decimals">
-                    <number>4</number>
+                   <property name="maximumSize">
+                    <size>
+                     <width>32</width>
+                     <height>32</height>
+                    </size>
                    </property>
                    <property name="minimum">
-                    <double>-9999999.000000000000000</double>
+                    <number>-180</number>
                    </property>
                    <property name="maximum">
-                    <double>9999999.000000000000000</double>
+                    <number>180</number>
+                   </property>
+                   <property name="value">
+                    <number>0</number>
+                   </property>
+                   <property name="invertedControls">
+                    <bool>true</bool>
+                   </property>
+                   <property name="wrapping">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="mShadowOffsetYSpnBx">
+                  <widget class="QSpinBox" name="mShadowOffsetAngleSpnBx">
+                   <property name="suffix">
+                    <string>˚</string>
+                   </property>
+                   <property name="minimum">
+                    <number>-180</number>
+                   </property>
+                   <property name="maximum">
+                    <number>180</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_11">
+                   <property name="text">
+                    <string>@</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="mShadowOffsetSpnBx">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
                      <verstretch>0</verstretch>
                     </sizepolicy>
                    </property>
-                   <property name="prefix">
-                    <string>Y </string>
-                   </property>
-                   <property name="suffix">
-                    <string/>
-                   </property>
                    <property name="decimals">
                     <number>4</number>
                    </property>
                    <property name="minimum">
-                    <double>-9999999.000000000000000</double>
+                    <double>0.000000000000000</double>
                    </property>
                    <property name="maximum">
                     <double>9999999.000000000000000</double>
@@ -1952,50 +2026,174 @@
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_15">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                  <widget class="QCheckBox" name="mShadowOffsetGlobalChkBx">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
                    </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
+                   <property name="text">
+                    <string>Global</string>
                    </property>
-                  </spacer>
+                  </widget>
                  </item>
                 </layout>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>Blur radius</string>
+                 </property>
+                </widget>
                </item>
                <item row="2" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_26">
                  <item>
-                  <widget class="QCheckBox" name="mShadowRadiusChkBx">
-                   <property name="text">
-                    <string>Radius blur (rasterizes shadow)</string>
+                  <widget class="QDoubleSpinBox" name="mShadowRadiusDblSpnBx">
+                   <property name="decimals">
+                    <number>6</number>
+                   </property>
+                   <property name="maximum">
+                    <double>999999999.990000009536743</double>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QSpinBox" name="mShadowRadiusSpnBx">
-                   <property name="suffix">
-                    <string notr="true"> px</string>
+                  <widget class="QComboBox" name="mShadowRadiusUnitsCmbBx">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="currentIndex">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <property name="text">
+                     <string>mm</string>
+                    </property>
+                   </item>
+                   <item>
+                    <property name="text">
+                     <string>map units</string>
+                    </property>
+                   </item>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QCheckBox" name="mShadowRadiusAlphaChkBx">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Blur only alpha pixels</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_15">
+                 <property name="text">
+                  <string>Transparency</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <layout class="QHBoxLayout" name="horizontalLayout_28">
+                 <item>
+                  <widget class="QSlider" name="mShadowTranspSlider">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>50</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>300</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                    <property name="maximum">
                     <number>100</number>
                    </property>
-                   <property name="value">
-                    <number>1</number>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <spacer name="horizontalSpacer_22">
+                  <widget class="QSpinBox" name="mShadowTranspSpnBx">
+                   <property name="enabled">
+                    <bool>true</bool>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                   <property name="suffix">
+                    <string> %</string>
+                   </property>
+                   <property name="maximum">
+                    <number>100</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="Line" name="line_5">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_13">
+                   <property name="text">
+                    <string>Scale</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="mShadowScaleSpnBx">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="suffix">
+                    <string> %</string>
+                   </property>
+                   <property name="maximum">
+                    <number>2000</number>
+                   </property>
+                   <property name="value">
+                    <number>100</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_27">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
                    <property name="sizeHint" stdset="0">
                     <size>
-                     <width>0</width>
+                     <width>40</width>
                      <height>20</height>
                     </size>
                    </property>
@@ -2003,7 +2201,23 @@
                  </item>
                 </layout>
                </item>
-               <item row="3" column="1">
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_33">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Color</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
                 <layout class="QHBoxLayout" name="horizontalLayout_23">
                  <item>
                   <widget class="QgsColorButton" name="mShadowColorBtn">
@@ -2058,124 +2272,6 @@
                   </spacer>
                  </item>
                 </layout>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_33">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>Color</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <layout class="QHBoxLayout" name="horizontalLayout_38">
-                 <item>
-                  <widget class="QDoubleSpinBox" name="mShadowScaleXSpnBx">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="prefix">
-                    <string notr="true">X </string>
-                   </property>
-                   <property name="suffix">
-                    <string/>
-                   </property>
-                   <property name="decimals">
-                    <number>4</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-9999999.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>9999999.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QDoubleSpinBox" name="mShadowScaleYSpnBx">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="prefix">
-                    <string notr="true">Y </string>
-                   </property>
-                   <property name="suffix">
-                    <string/>
-                   </property>
-                   <property name="decimals">
-                    <number>4</number>
-                   </property>
-                   <property name="minimum">
-                    <double>-9999999.000000000000000</double>
-                   </property>
-                   <property name="maximum">
-                    <double>9999999.000000000000000</double>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="mShadowScaleUnitsCmbBx">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="currentIndex">
-                    <number>0</number>
-                   </property>
-                   <item>
-                    <property name="text">
-                     <string>mm</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>map units</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>%</string>
-                    </property>
-                   </item>
-                  </widget>
-                 </item>
-                 <item>
-                  <spacer name="horizontalSpacer_21">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>0</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_13">
-                 <property name="text">
-                  <string>Scale</string>
-                 </property>
-                </widget>
                </item>
               </layout>
              </widget>
@@ -4614,11 +4710,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>328</x>
-     <y>421</y>
+     <y>-236</y>
     </hint>
     <hint type="destinationlabel">
      <x>402</x>
-     <y>423</y>
+     <y>-237</y>
     </hint>
    </hints>
   </connection>
@@ -4630,11 +4726,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>328</x>
-     <y>557</y>
+     <y>-100</y>
     </hint>
     <hint type="destinationlabel">
      <x>400</x>
-     <y>559</y>
+     <y>-101</y>
     </hint>
    </hints>
   </connection>
@@ -4646,11 +4742,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>400</x>
-     <y>559</y>
+     <y>-101</y>
     </hint>
     <hint type="destinationlabel">
      <x>328</x>
-     <y>557</y>
+     <y>-100</y>
     </hint>
    </hints>
   </connection>
@@ -4662,11 +4758,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>402</x>
-     <y>423</y>
+     <y>-237</y>
     </hint>
     <hint type="destinationlabel">
      <x>328</x>
-     <y>421</y>
+     <y>-236</y>
     </hint>
    </hints>
   </connection>
@@ -4709,8 +4805,8 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>80</x>
-     <y>588</y>
+     <x>103</x>
+     <y>609</y>
     </hint>
     <hint type="destinationlabel">
      <x>527</x>

@@ -217,12 +217,18 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-19</y>
                 <width>631</width>
-                <height>698</height>
+                <height>686</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="titleBox">
                  <property name="title">
@@ -462,7 +468,7 @@
                       <property name="sizeHint" stdset="0">
                        <size>
                         <width>20</width>
-                        <height>40</height>
+                        <height>0</height>
                        </size>
                       </property>
                      </spacer>
@@ -634,7 +640,7 @@
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
                    <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
+                   <verstretch>3</verstretch>
                   </sizepolicy>
                  </property>
                  <property name="title">
@@ -725,7 +731,7 @@
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>40</height>
+                   <height>0</height>
                   </size>
                  </property>
                 </spacer>
@@ -770,11 +776,17 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>303</width>
-                <height>75</height>
+                <width>646</width>
+                <height>667</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QGroupBox" name="cbxProjectionEnabled">
                  <property name="title">
@@ -824,13 +836,16 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>132</width>
-                <height>111</height>
+                <width>646</width>
+                <height>669</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
                <property name="topMargin">
-                <number>12</number>
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
                </property>
                <item>
                 <widget class="QGroupBox" name="groupBox_3">
@@ -903,11 +918,17 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>378</width>
-                <height>351</height>
+                <width>646</width>
+                <height>669</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox">
                  <property name="title">
@@ -1275,11 +1296,17 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>525</width>
-                <height>1270</height>
+                <width>631</width>
+                <height>1254</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpOWSServiceCapabilities">
                  <property name="title">
@@ -1485,7 +1512,7 @@
                        </property>
                        <property name="sizeHint" stdset="0">
                         <size>
-                         <width>244</width>
+                         <width>0</width>
                          <height>20</height>
                         </size>
                        </property>
@@ -1761,7 +1788,7 @@
                        </property>
                        <property name="sizeHint" stdset="0">
                         <size>
-                         <width>81</width>
+                         <width>0</width>
                          <height>20</height>
                         </size>
                        </property>
@@ -1775,6 +1802,12 @@
                </item>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="grpWFSCapabilities">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>3</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="title">
                   <string>WFS capabilitities</string>
                  </property>
@@ -1842,7 +1875,7 @@
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>40</height>
+                   <height>0</height>
                   </size>
                  </property>
                 </spacer>
@@ -1881,11 +1914,17 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>158</width>
-                <height>143</height>
+                <width>646</width>
+                <height>669</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QGroupBox" name="grpPythonMacros">
                  <property name="title">

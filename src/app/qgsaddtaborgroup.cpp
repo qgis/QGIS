@@ -25,9 +25,9 @@
 #include <QComboBox>
 
 QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, QList < TabPair > tabList, QWidget * parent )
-  : QDialog( parent )
-  , mLayer( lyr )
-  , mTabs( tabList )
+    : QDialog( parent )
+    , mLayer( lyr )
+    , mTabs( tabList )
 {
   setupUi( this );
 

@@ -108,7 +108,7 @@ class SagaTest(unittest.TestCase):
         self.assertEqual(expectedvalues, values)
         wkt='POINT(270787.49991451 4458955.46775295)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
-        
+
     def test_SagaRasterAlgorithmWithUnsupportedOutputFormat(self):
         outputs=sextante.runalg("saga:convergenceindex",raster(),0,0,SextanteUtils.getTempFilename("img"))
         output=outputs['RESULT']

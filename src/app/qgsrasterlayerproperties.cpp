@@ -219,9 +219,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
                                  .arg( pyramidSentence2 ).arg( pyramidSentence3 )
                                  .arg( pyramidSentence4 ).arg( pyramidSentence5 ) );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/RasterLayerProperties/geometry" ).toByteArray() );
-
   setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
 
   tableTransparency->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
@@ -373,13 +370,29 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       mRenderTypeComboBox->removeItem( mRenderTypeComboBox->findData( "singlebandcolordata" ) );
     }
 #endif
+    if ( rendererType == "singlebandcolordata" && mRenderTypeComboBox->count() == 1 )
+    {
+      // no band rendering options for singlebandcolordata, so minimize group box
+      QSizePolicy sizep = mBandRenderingGrpBx->sizePolicy();
+      sizep.setVerticalStretch( 0 );
+      sizep.setVerticalPolicy( QSizePolicy::Maximum );
+      mBandRenderingGrpBx->setSizePolicy( sizep );
+      mBandRenderingGrpBx->updateGeometry();
+    }
   }
   on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
 
-  updatePipeList();
-
   // update based on lyr's current state
   sync();
+
+  QSettings settings;
+  // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
+  // this will be read by restoreOptionsBaseUi()
+  if ( !settings.contains( QString( "/Windows/RasterLayerProperties/tab" ) ) )
+  {
+    settings.setValue( QString( "/Windows/RasterLayerProperties/tab" ),
+                       mOptStackedWidget->indexOf( mOptsPage_Style ) );
+  }
 
   restoreOptionsBaseUi();
 } // QgsRasterLayerProperties ctor
@@ -547,8 +560,7 @@ void QgsRasterLayerProperties::sync()
     mOptionsStackedWidget->setCurrentWidget( mOptsPage_Metadata );
   }
 
-  // TODO: the next two blocks of code don't make sense, especially now that the dialogs are no
-  //       longer reused. Wouldn't it be better to just disable the tabs than delete them anyway? [LS]
+  // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
     if ( mOptsPage_Pyramids != NULL )
@@ -888,8 +900,6 @@ void QgsRasterLayerProperties::apply()
 
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
-
-  updatePipeList();
 }//apply
 
 void QgsRasterLayerProperties::on_mLayerOrigNameLineEd_textEdited( const QString& text )
@@ -1674,108 +1684,6 @@ void QgsRasterLayerProperties::toggleBuildPyramidsButton()
   else
   {
     buttonBuildPyramids->setEnabled( true );
-  }
-}
-
-void QgsRasterLayerProperties::updatePipeList()
-{
-  QgsDebugMsg( "Entered" );
-
-#ifndef QGISDEBUG
-  mOptionsStackedWidget->removeWidget( mOptsPage_Pipe );
-  mOptListWidget->removeItemWidget( mOptListWidget->item( mOptStackedWidget->indexOf( mOptsPage_Pipe ) ) );
-#else
-  mPipeTreeWidget->clear();
-
-  mPipeTreeWidget->header()->setResizeMode( QHeaderView::ResizeToContents );
-
-  if ( mPipeTreeWidget->columnCount() <= 1 )
-  {
-    QStringList labels;
-    labels << tr( "Filter" ) << tr( "Bands" );
-    mPipeTreeWidget->setHeaderLabels( labels );
-    connect( mPipeTreeWidget, SIGNAL( itemClicked( QTreeWidgetItem *, int ) ), this, SLOT( pipeItemClicked( QTreeWidgetItem *, int ) ) );
-  }
-
-  QgsRasterPipe *pipe = mRasterLayer->pipe();
-  for ( int i = 0; i < pipe->size(); i++ )
-  {
-    QgsRasterInterface * interface = pipe->at( i );
-    QStringList texts;
-    QString name;
-    // Unfortunately at this moment not all interfaces inherits from QObject
-    QObject *o = dynamic_cast<QObject*>( interface );
-    if ( o )
-    {
-      //name = o->objectName(); // gives empty with provider
-      name = o->metaObject()->className();
-    }
-    else
-    {
-      name = QString( typeid( *interface ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" );
-    }
-
-    texts <<  name << QString( "%1" ).arg( interface->bandCount() );
-    //texts << QString( "%1 ms" ).arg( interface->time() );
-    QTreeWidgetItem *item = new QTreeWidgetItem( texts );
-
-#if 0
-    // Switching on/off would be possible but problematic - drawer is not pipe
-    // memer so we don't know required output format
-    // Checkboxes are very useful however for QgsRasterPipe debugging.
-    bool on = interface->on();
-    item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
-
-    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
-#endif
-    Qt::ItemFlags flags = Qt::ItemIsEnabled;
-    item->setFlags( flags );
-
-    mPipeTreeWidget->addTopLevelItem( item );
-  }
-  updatePipeItems();
-#endif
-}
-
-void QgsRasterLayerProperties::pipeItemClicked( QTreeWidgetItem * item, int column )
-{
-  Q_UNUSED( column );
-  QgsDebugMsg( "Entered" );
-  int idx = mPipeTreeWidget->indexOfTopLevelItem( item );
-
-  // This should not fail because we have enabled only checkboxes of items
-  // which may be changed
-  mRasterLayer->pipe()->setOn( idx, item->checkState( 0 ) );
-
-  updatePipeItems();
-}
-
-void QgsRasterLayerProperties::updatePipeItems()
-{
-  QgsDebugMsg( "Entered" );
-
-  QgsRasterPipe *pipe = mRasterLayer->pipe();
-
-  for ( int i = 0; i < pipe->size(); i++ )
-  {
-    if ( i >= mPipeTreeWidget->topLevelItemCount() ) break;
-    QTreeWidgetItem *item = mPipeTreeWidget->topLevelItem( i );
-    if ( !item ) continue;
-    // Checkboxes disabled for now, see above
-#if 0
-    QgsRasterInterface * iface = pipe->at( i );
-    bool on = iface->on();
-    Qt::ItemFlags flags = item->flags();
-    if ( pipe->canSetOn( i, !on ) )
-    {
-      flags |= Qt::ItemIsUserCheckable;
-    }
-    else
-    {
-      flags |= ( Qt::ItemFlags )~Qt::ItemIsUserCheckable;
-    }
-    item->setFlags( flags );
-#endif
   }
 }
 

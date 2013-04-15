@@ -711,19 +711,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsShortcutsManager::instance()->registerAllChildrenActions( this );
 
-  // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
-  QgsApplication::setFileOpenEventReceiver( this );
-
   QgsProviderRegistry::instance()->registerGuis( this );
 
   // update windows
   qApp->processEvents();
 
-  // check if a project has been loaded already via drag/drop or filesystem loading
-  if ( !QgsProject::instance() )
-  {
-    fileNewBlank(); // prepare empty project
-  }
+  fileNewBlank(); // prepare empty project, also skips any default templates from loading
+
+  // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
+  // should come after fileNewBlank to ensure project is properly set up to receive any data source files
+  QgsApplication::setFileOpenEventReceiver( this );
 
 } // QgisApp ctor
 

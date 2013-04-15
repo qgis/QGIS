@@ -346,8 +346,27 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   mShapeCollisionsChkBx->setVisible( false ); // until implemented
 
   // drop shadow
-  mShadowGrpBx->setVisible( false ); // until implemented
+  mShadowGrpBx->setChecked( lyr.shadowDraw );
+  mShadowUnderCmbBx->setCurrentIndex( lyr.shadowUnder );
 
+  connect( mShadowOffsetAngleDial, SIGNAL( valueChanged( int ) ), mShadowOffsetAngleSpnBx, SLOT( setValue( int ) ) );
+  connect( mShadowOffsetAngleSpnBx, SIGNAL( valueChanged( int ) ), mShadowOffsetAngleDial, SLOT( setValue( int ) ) );
+  mShadowOffsetAngleSpnBx->setValue( lyr.shadowOffsetAngle );
+  mShadowOffsetSpnBx->setValue( lyr.shadowOffsetDist );
+  mShadowOffsetUnitsCmbBx->setCurrentIndex( lyr.shadowOffsetUnits - 1 );
+  mShadowOffsetGlobalChkBx->setChecked( lyr.shadowOffsetGlobal );
+
+  mShadowRadiusDblSpnBx->setValue( lyr.shadowRadius );
+  mShadowRadiusUnitsCmbBx->setCurrentIndex( lyr.shadowRadiusUnits - 1 );
+  mShadowRadiusAlphaChkBx->setChecked( lyr.shadowRadiusAlphaOnly );
+
+  connect( mShadowTranspSlider, SIGNAL( valueChanged( int ) ), mShadowTranspSpnBx, SLOT( setValue( int ) ) );
+  connect( mShadowTranspSpnBx, SIGNAL( valueChanged( int ) ), mShadowTranspSlider, SLOT( setValue( int ) ) );
+  mShadowTranspSpnBx->setValue( lyr.shadowTransparency );
+  mShadowScaleSpnBx->setValue( lyr.shadowScale );
+
+  mShadowColorBtn->setColor( lyr.shadowColor );
+  mShadowBlendCmbBx->setBlendMode( lyr.shadowBlendMode );
 
   updateUi();
 
@@ -553,6 +572,20 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.shapeTransparency = mShapeTranspSpinBox->value();
   lyr.shapeBlendMode = mShapeBlendCmbBx->blendMode();
 
+  // drop shadow
+  lyr.shadowDraw = mShadowGrpBx->isChecked();
+  lyr.shadowUnder = ( QgsPalLayerSettings::ShadowType )mShadowUnderCmbBx->currentIndex();
+  lyr.shadowOffsetAngle = mShadowOffsetAngleSpnBx->value();
+  lyr.shadowOffsetDist = mShadowOffsetSpnBx->value();
+  lyr.shadowOffsetUnits = ( QgsPalLayerSettings::SizeUnit )( mShadowOffsetUnitsCmbBx->currentIndex() + 1 );
+  lyr.shadowOffsetGlobal = mShadowOffsetGlobalChkBx->isChecked();
+  lyr.shadowRadius = mShadowRadiusDblSpnBx->value();
+  lyr.shadowRadiusUnits = ( QgsPalLayerSettings::SizeUnit )( mShadowRadiusUnitsCmbBx->currentIndex() + 1 );
+  lyr.shadowRadiusAlphaOnly = mShadowRadiusAlphaChkBx->isChecked();
+  lyr.shadowTransparency = mShadowTranspSpnBx->value();
+  lyr.shadowScale = mShadowScaleSpnBx->value();
+  lyr.shadowColor = mShadowColorBtn->color();
+  lyr.shadowBlendMode = mShadowBlendCmbBx->blendMode();
 
   if ( chkFormattedNumbers->isChecked() )
   {

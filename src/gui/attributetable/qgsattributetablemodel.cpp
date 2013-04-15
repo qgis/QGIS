@@ -51,24 +51,19 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( layer(), SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
   connect( layer(), SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( featureAdded( QgsFeatureId ) ) );
   connect( layer(), SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
-  connect( layer(), SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
-  connect( layer(), SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+  connect( layer(), SIGNAL( updatedFields() ), this, SLOT( updatedFields() ) );
   connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
 }
 
 QgsAttributeTableModel::~QgsAttributeTableModel()
 {
-  if ( layer() )
+  const QMap<QString, QVariant> *item;
+  foreach ( item, mValueMaps )
   {
-    const QgsFields& fields = layer()->pendingFields();
-    for ( int idx = 0; idx < fields.count(); ++idx )
-    {
-      if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
-        continue;
-
-      delete mValueMaps.take( idx );
-    }
+    delete item;
   }
+
+  mValueMaps.clear();
 }
 
 bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
@@ -151,18 +146,8 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool newOperation )
   reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
 }
 
-void QgsAttributeTableModel::attributeAdded( int idx )
+void QgsAttributeTableModel::updatedFields()
 {
-  Q_UNUSED( idx );
-  QgsDebugMsg( "entered." );
-  loadAttributes();
-  loadLayer();
-  emit modelChanged();
-}
-
-void QgsAttributeTableModel::attributeDeleted( int idx )
-{
-  Q_UNUSED( idx );
   QgsDebugMsg( "entered." );
   loadAttributes();
   emit modelChanged();
@@ -176,14 +161,13 @@ void QgsAttributeTableModel::layerDeleted()
   removeRows( 0, rowCount() );
   endRemoveRows();
 
-  const QgsFields& fields = layer()->pendingFields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  const QMap<QString, QVariant> *item;
+  foreach ( item, mValueMaps )
   {
-    if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
-      continue;
-
-    delete mValueMaps.take( idx );
+    delete item;
   }
+
+  mValueMaps.clear();
 }
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
@@ -294,7 +278,7 @@ void QgsAttributeTableModel::loadAttributes()
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
-  
+
   if ( ins )
   {
     endInsertColumns();
@@ -381,7 +365,7 @@ QModelIndex QgsAttributeTableModel::idToIndex( QgsFeatureId id ) const
   return index( idToRow( id ), 0 );
 }
 
-QModelIndexList QgsAttributeTableModel::idToIndexList(QgsFeatureId id) const
+QModelIndexList QgsAttributeTableModel::idToIndexList( QgsFeatureId id ) const
 {
   QModelIndexList indexes;
 
@@ -511,6 +495,12 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   const QVariant &val = mFeat.attribute( fieldId );
 
+  // For sorting return unprocessed value
+  if ( SortRole == role )
+  {
+    return val;
+  }
+
   if ( val.isNull() )
   {
     // if the value is NULL, show that in table, but don't show "NULL" text in editor
@@ -538,10 +528,6 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  if ( role == SortRole )
-  {
-    return val;
-  }
 
   return field.displayString( val );
 }

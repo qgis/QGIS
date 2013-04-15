@@ -57,7 +57,33 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     }
   }
 
-  return QSortFilterProxyModel::lessThan( left, right );
+
+  QVariant leftData = left.data( QgsAttributeTableModel::SortRole );
+  QVariant rightData = right.data( QgsAttributeTableModel::SortRole );
+
+  if ( leftData.isNull() )
+    return true;
+
+  if ( rightData.isNull() )
+    return false;
+
+  switch ( leftData.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+      return leftData.toLongLong() < rightData.toLongLong();
+
+    case QVariant::Double:
+      return leftData.toDouble() < rightData.toDouble();
+
+    default:
+      return leftData.toString().localeAwareCompare( rightData.toString() ) < 0;
+  }
+
+  // Avoid warning. Will never reach this
+  return false;
 }
 
 void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
@@ -177,7 +203,7 @@ void QgsAttributeTableFilterModel::selectionChanged()
   }
   else if ( mSelectedOnTop )
   {
-    sort ( sortColumn(), sortOrder() );
+    sort( sortColumn(), sortOrder() );
     invalidate();
   }
 }
@@ -267,7 +293,7 @@ QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
   QModelIndexList indexes;
-  foreach( QModelIndex idx, masterModel()->idToIndexList( fid ) )
+  foreach ( QModelIndex idx, masterModel()->idToIndexList( fid ) )
   {
     indexes.append( mapFromMaster( idx ) );
   }

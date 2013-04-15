@@ -71,7 +71,7 @@ class QgsAttributeTableDelegate : public QItemDelegate
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 
-private:
+  private:
     QgsFeatureSelectionModel* mFeatureSelectionModel;
 };
 

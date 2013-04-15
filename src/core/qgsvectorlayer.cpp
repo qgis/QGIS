@@ -145,7 +145,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     //mUpdateThreshold = settings.readNumEntry("Map/updateThreshold", 1000);
   }
 
-  connect ( this, SIGNAL( selectionChanged(QgsFeatureIds,QgsFeatureIds,bool) ), this, SIGNAL( selectionChanged() ) );
+  connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
 } // QgsVectorLayer ctor
 
 
@@ -714,7 +714,7 @@ void QgsVectorLayer::deselect( const QgsFeatureIds& featureIds )
   emit selectionChanged( QgsFeatureIds(), featureIds, false );
 }
 
-void QgsVectorLayer::select(QgsRectangle & rect, bool addToSelection )
+void QgsVectorLayer::select( QgsRectangle & rect, bool addToSelection )
 {
   // normalize the rectangle
   rect.normalize();
@@ -2491,6 +2491,8 @@ bool QgsVectorLayer::commitChanges()
     return false;
   }
 
+  emit beforeCommitChanges();
+
   bool success = mEditBuffer->commitChanges( mCommitErrors );
 
   if ( success )
@@ -2605,7 +2607,7 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList features, bool makeSelected )
     for ( QgsFeatureList::iterator iter = features.begin(); iter != features.end(); ++iter )
       ids << iter->id();
 
-    setSelectedFeatures ( ids );
+    setSelectedFeatures( ids );
   }
 
   return res;
@@ -3114,6 +3116,8 @@ void QgsVectorLayer::updateFields()
   // joined fields
   if ( mJoinBuffer && mJoinBuffer->containsJoins() )
     mJoinBuffer->updateFields( mUpdatedFields );
+
+  emit updatedFields();
 }
 
 

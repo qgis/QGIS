@@ -143,6 +143,7 @@ class TestQgsDiagram: public QObject
       ds.scaleByArea = true;
       ds.sizeType = QgsDiagramSettings::MM;
       ds.size = QSizeF( 15, 15 );
+      ds.angleOffset = 0;
 
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();

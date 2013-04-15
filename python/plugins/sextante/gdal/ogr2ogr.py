@@ -62,9 +62,9 @@ class Ogr2Ogr(OgrAlgorithm):
 
         #we add the input vector layer. It can have any kind of geometry
         #It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))        
-        self.addParameter(ParameterSelection(self.DEST_FORMAT, "Destination Format", FORMATS)) 
-        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", "")) 
+        self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
+        self.addParameter(ParameterSelection(self.DEST_FORMAT, "Destination Format", FORMATS))
+        self.addParameter(ParameterString(self.DEST_DSCO, "Creation Options", ""))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
@@ -72,37 +72,37 @@ class Ogr2Ogr(OgrAlgorithm):
         '''Here is where the processing itself takes place'''
 
         if not gdalAvailable:
-            raise GeoAlgorithmExecutionException("GDAL bindings not installed.")            
+            raise GeoAlgorithmExecutionException("GDAL bindings not installed.")
 
         input = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(input)
-        
+
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outfile = output.value
-        
+
         formatIdx = self.getParameterValue(self.DEST_FORMAT)
-        
+
         ext = EXTS[formatIdx]
         if not outfile.endswith(ext):
             outfile = outfile + ext;
             output.value = outfile
-        
+
         dst_ds = self.ogrConnectionString(outfile)
         dst_format = FORMATS[formatIdx]
-        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)] 
-        
+        ogr_dsco = [self.getParameterValue(self.DEST_DSCO)]
+
         poDS = ogr.Open( ogrLayer, False )
         if poDS is None:
-            raise GeoAlgorithmExecutionException(self.failure(ogrLayer))        
-   
+            raise GeoAlgorithmExecutionException(self.failure(ogrLayer))
+
         if dst_format == "SQLite" and os.path.isfile(dst_ds):
-            os.remove(dst_ds)        
+            os.remove(dst_ds)
         driver = ogr.GetDriverByName(str(dst_format))
         poDstDS = driver.CreateDataSource(dst_ds, options = ogr_dsco)
         if poDstDS is None:
             raise GeoAlgorithmExecutionException("Error creating %s" % dst_ds)
             return
-        self.ogrtransform(poDS, poDstDS, bOverwrite = True)        
+        self.ogrtransform(poDS, poDstDS, bOverwrite = True)
 
 
     def ogrtransform(self,
@@ -141,7 +141,7 @@ class Ogr2Ogr(OgrAlgorithm):
                 poLayer = poSrcDS.GetLayer(iLayer)
 
                 if poLayer is None:
-                    raise GeoAlgorithmExecutionException( "FAILURE: Couldn't fetch advertised layer %d!" % iLayer)                    
+                    raise GeoAlgorithmExecutionException( "FAILURE: Couldn't fetch advertised layer %d!" % iLayer)
 
                 papoLayers[iLayer] = poLayer
                 iLayer = iLayer + 1
@@ -156,12 +156,12 @@ class Ogr2Ogr(OgrAlgorithm):
                 poLayer = poSrcDS.GetLayerByName(layername)
 
                 if poLayer is None:
-                    raise GeoAlgorithmExecutionException("FAILURE: Couldn't fetch advertised layer %s!" % layername)                    
+                    raise GeoAlgorithmExecutionException("FAILURE: Couldn't fetch advertised layer %s!" % layername)
 
                 papoLayers[iLayer] = poLayer
                 iLayer = iLayer + 1
 
-        for poSrcLayer in papoLayers:                
+        for poSrcLayer in papoLayers:
           ok = TranslateLayer( poSrcDS, poSrcLayer, poDstDS, papszLCO, pszNewLayerName, \
                         bTransform, poOutputSRS, poSourceSRS, papszSelFields, \
                         bAppend, eGType, bOverwrite, eGeomOp, dfGeomOpParam, \

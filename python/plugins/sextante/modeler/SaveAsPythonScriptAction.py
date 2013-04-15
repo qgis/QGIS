@@ -46,7 +46,7 @@ class SaveAsPythonScriptAction(ContextAction):
         if filename:
             if not filename.endswith(".py"):
                 filename += ".py"
-            text = self.translateToPythonCode(self.alg)            
+            text = self.translateToPythonCode(self.alg)
             try:
                 fout = open(filename, "w")
                 fout.write(text)
@@ -57,8 +57,8 @@ class SaveAsPythonScriptAction(ContextAction):
                 QMessageBox.warning(self,
                                     self.tr("I/O error"),
                                     self.tr("Unable to save edits. Reason:\n %1").arg(unicode(sys.exc_info()[1]))
-                                   )         
-                
+                                   )
+
     def translateToPythonCode(self, model):
         s = ["##" + model.name + "=name"]
         for param in model.parameters:
@@ -113,4 +113,4 @@ class SaveAsPythonScriptAction(ContextAction):
             i += 1
             s += multiple
             s.append(str(runline + ")"))
-        return "\n".join(s)                 
+        return "\n".join(s)
