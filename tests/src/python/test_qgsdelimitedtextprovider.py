@@ -55,7 +55,7 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
 geomkey = "#geometry"
-tolerance = 0.00001 # Tolerance for coordinate comparisons in checkWktEqual
+tolerance = 0.000001 # Tolerance for coordinate comparisons in checkWktEqual
 
 # Thought we could connect to messageReceived signal but doesn't seem to be available
 # in python :-(  Not sure why?
@@ -177,8 +177,8 @@ def checkWktEqual( wkt1, wkt2 ):
     if wkt1 == wkt2: return True
     # Use regex split with capture gropu to split into text and numbers
     numberre=re.compile(r'(\-?\d+(?:\.\d+)?)')
-    p1=re.split(wkt1)
-    p2=re.split(wkt2)
+    p1=numberre.split(wkt1)
+    p2=numberre.split(wkt2)
     if len(p1) != len(p2): return False
     for i in range(len(p1)):
         if i%2 == 1:
@@ -854,7 +854,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Degrees/minutes format',
                 'lon': u'1 05.23',
                 'lat': u'4 55.03',
-                '#geometry': 'POINT(1.08972222 4.9175)',
+                '#geometry': 'POINT(1.08716667 4.91716667)',
                 },
             }
         log_wanted=[
