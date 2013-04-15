@@ -395,16 +395,30 @@ class Editor(QsciScintilla):
         else:
             try:
                 p = subprocess.Popen(['python', filename], shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-                traceback = p.stderr.read()
-                out = p.stdout.read()
+                out, traceback = p.communicate()
+
+                ## Fix interrupted system call on OSX
+                if sys.platform == 'darwin':
+                    status = None
+                    while status is None:
+                        try:
+                            status = p.wait()
+                        except OSError, e:
+                            if e.errno == 4:
+                                pass
+                            else:
+                                raise e
+
                 if traceback:
                     print "## %s" % datetime.datetime.now()
                     print "## Script error: %s" % name
                     sys.stderr.write(traceback)
+                    p.stderr.close()
                 else:
                     print "## %s" % datetime.datetime.now()
                     print "## Script executed successfully: %s" % name
                     sys.stdout.write(out)
+                    p.stdout.close()
                 del p
                 #execfile(unicode(filename))
             except IOError, error:
