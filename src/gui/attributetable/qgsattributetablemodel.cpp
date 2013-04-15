@@ -495,6 +495,12 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
   const QVariant &val = mFeat.attribute( fieldId );
 
+  // For sorting return unprocessed value
+  if ( SortRole == role )
+  {
+    return val;
+  }
+
   if ( val.isNull() )
   {
     // if the value is NULL, show that in table, but don't show "NULL" text in editor
@@ -522,10 +528,6 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  if ( role == SortRole )
-  {
-    return val;
-  }
 
   return field.displayString( val );
 }
