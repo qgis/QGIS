@@ -125,13 +125,6 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
   mTableDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
   connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
   connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
-
-  if ( filterModel )
-  {
-    // Connect new model stuff
-    connect( mFilterModel, SIGNAL( filterAboutToBeInvalidated() ), SLOT( onFilterAboutToBeInvalidated() ) );
-    connect( mFilterModel, SIGNAL( filterInvalidated() ), SLOT( onFilterInvalidated() ) );
-  }
 }
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )

@@ -225,7 +225,6 @@ void QgsDualView::initModels( QgsMapCanvas* mapCanvas )
 
   mFilterModel = new QgsAttributeTableFilterModel( mapCanvas, mMasterModel, mMasterModel );
 
-  connect( mFilterModel, SIGNAL( filterInvalidated() ), this, SIGNAL( filterChanged() ) );
   connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SIGNAL( displayExpressionChanged( QString ) ) );
 
   mFeatureListModel = new QgsFeatureListModel( mFilterModel, mFilterModel );
