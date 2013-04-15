@@ -223,14 +223,14 @@ def runTest( name, wanted, log_wanted, file, **params ):
         description = wrec['description']
         difference = recordDifference(wrec,trec)
         if not difference:
-            print '    ',description,": Passed"
+            print '    {0}: Passed'.format(description)
         else:
-            print '    ',description,":",difference
+            print '    {0}: {1}'.format(description,difference)
             failures.append(description+': '+difference)
     for id in data.keys():
         if id not in wanted:
             msg= "Layer contains unexpected extra data with id: \"{0}\"".format(id)
-            print '    ',msg
+            print '    '+msg
             failures.append(msg)
             break
     assert len(failures) == 0,"\n".join(failures)
@@ -242,9 +242,11 @@ def runTest( name, wanted, log_wanted, file, **params ):
             log_wanted.remove(l)
             log.remove(l)
     for l in log_wanted:
-        print '    ','Missing log message:',l
+        print '    Missing log message:',l
     for l in log:
-        print '    ','Extra log message:',l
+        print '    Extra log message:',l
+    if len(log)==0 and len(log_wanted)==0:
+        print '    Message log correct: Passed'
     assert len(log_wanted) == 0, "Missing log messages:\n"+"\n".join(log_wanted)
     assert len(log) == 0, "Extra log messages:\n"+"\n".join(log)
 
