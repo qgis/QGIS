@@ -210,7 +210,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
 
   //use direct data access instead of QgsRasterBlock::setValue
   //because of performance
-  unsigned int* outputData = ( unsigned int* )( outputBlock->data() );
+  unsigned int* outputData = ( unsigned int* )( outputBlock->bits() );
 
   size_t rasterSize = ( size_t )width * height;
   for ( size_t i = 0; i < rasterSize; ++i )

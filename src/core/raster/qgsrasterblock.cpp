@@ -636,6 +636,20 @@ char * QgsRasterBlock::bits( int row, int column )
   return bits(( size_t )row*mWidth + column );
 }
 
+char * QgsRasterBlock::bits()
+{
+  if ( mData )
+  {
+    return ( char* )mData;
+  }
+  if ( mImage && mImage->bits() )
+  {
+    return ( char* )( mImage->bits() );
+  }
+
+  return 0;
+}
+
 bool QgsRasterBlock::convert( QGis::DataType destDataType )
 {
   if ( isEmpty() ) return false;
@@ -713,22 +727,6 @@ bool QgsRasterBlock::setImage( const QImage * image )
   mNoDataValue = std::numeric_limits<double>::quiet_NaN();
   return true;
 }
-
-// To give to an image preallocated memory is the only way to avoid memcpy
-// when we want to keep data but delete QImage
-QImage * QgsRasterBlock::createImage( int width, int height, QImage::Format format )
-{
-  // Qt has its own internal function depthForFormat(), unfortunately it is not public
-
-  QImage img( 1, 1, format );
-
-  // We ignore QImage::Format_Mono and QImage::Format_MonoLSB ( depth 1)
-  int size = width * height * img.bytesPerLine();
-  uchar * data = ( uchar * ) malloc( size );
-  return new QImage( data, width, height, format );
-}
-
-
 
 QString QgsRasterBlock::printValue( double value )
 {

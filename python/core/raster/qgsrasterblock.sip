@@ -18,7 +18,7 @@ class QgsRasterBlock
 
     int typeSize( int dataType ) const;
 
-    int dataTypeSize( int bandNo ) const;
+    int dataTypeSize() const;
 
     /** Returns true if data type is numeric */
     bool typeIsNumeric( QGis::DataType type ) const;

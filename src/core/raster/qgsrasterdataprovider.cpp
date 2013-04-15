@@ -178,7 +178,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
       tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight );
     }
 
-    readBlock( theBandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->data() );
+    readBlock( theBandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits() );
 
     int pixelSize = dataTypeSize( theBandNo );
 
@@ -228,7 +228,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   }
   else
   {
-    readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
+    readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits() );
   }
 
   // apply user no data values
