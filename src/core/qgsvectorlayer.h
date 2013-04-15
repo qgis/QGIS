@@ -1248,7 +1248,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * Will be emitted, when a new attribute has been added to this vector layer.
      * Applies only to types {@link QgsFields::OriginEdit} and {@link QgsFields::OriginProvider}
      *
-     * @param The index of the new attribute
+     * @param idx The index of the new attribute
      *
      * @see updatedFields()
      */
@@ -1257,7 +1257,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * Will be emitted, when an attribute has been deleted from this vector layer.
      * Applies only to types {@link QgsFields::OriginEdit} and {@link QgsFields::OriginProvider}
      *
-     * @param The index of the deleted attribute
+     * @param idx The index of the deleted attribute
      *
      * @see updatedFields()
      */
