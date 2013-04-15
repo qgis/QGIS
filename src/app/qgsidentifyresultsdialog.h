@@ -41,17 +41,16 @@ class QgsRasterLayer;
 class QgsHighlight;
 class QgsMapCanvas;
 class QDockWidget;
-class QgsWebView;
 
 /**
  *@author Gary E.Sherman
  */
 
-class QgsWebView : public QWebView
+class QgsIdentifyResultsWebView : public QWebView
 {
     Q_OBJECT;
   public:
-    QgsWebView( QWidget *parent = 0 );
+    QgsIdentifyResultsWebView( QWidget *parent = 0 );
     QSize sizeHint() const;
   public slots:
     void print( void );
@@ -79,14 +78,14 @@ class QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidgetItem
 
   public:
     QgsIdentifyResultsWebViewItem( QTreeWidget *treeWidget = 0 );
-    QgsWebView *webView() { return mWebView; }
+    QgsIdentifyResultsWebView *webView() { return mWebView; }
     void setHtml( const QString &html );
 
   public slots:
     void loadFinished( bool ok );
 
   private:
-    QgsWebView *mWebView;
+    QgsIdentifyResultsWebView *mWebView;
 };
 
 class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase
