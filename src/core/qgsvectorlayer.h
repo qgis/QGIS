@@ -1242,8 +1242,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** This signal is emitted when modifications has been done on layer */
     void layerModified();
 
+    /** Is emitted, when editing on this layer has started*/
     void editingStarted();
+
+    /** Is emitted, when edited changes succesfully have been written to the data provider */
     void editingStopped();
+
+    /** Is emitted, before changes are commited to the data provider */
+    void beforeCommitChanges();
+
     /**
      * Will be emitted, when a new attribute has been added to this vector layer.
      * Applies only to types {@link QgsFields::OriginEdit} and {@link QgsFields::OriginProvider}
@@ -1267,6 +1274,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**
      * Is emitted, whenever the fields available from this layer have been changed.
      * This can be due to manually adding attributes or due to a join.
+     *
+     * @note Added in 2.0
      */
     void updatedFields();
     void layerDeleted();

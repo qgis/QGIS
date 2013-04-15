@@ -2491,6 +2491,8 @@ bool QgsVectorLayer::commitChanges()
     return false;
   }
 
+  emit beforeCommitChanges();
+
   bool success = mEditBuffer->commitChanges( mCommitErrors );
 
   if ( success )

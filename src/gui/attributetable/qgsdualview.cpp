@@ -47,6 +47,7 @@ QgsDualView::QgsDualView( QWidget* parent )
   connect( mActionExpressionPreview, SIGNAL( triggered() ), SLOT( previewExpressionBuilder() ) );
   connect( mPreviewActionMapper, SIGNAL( mapped( QObject* ) ), SLOT( previewColumnChanged( QObject* ) ) );
   connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SLOT( previewExpressionChanged( QString ) ) );
+  connect( this, SIGNAL( currentChanged(int) ), this, SLOT( saveEditChanges() ) );
 }
 
 QgsDualView::~QgsDualView()
@@ -61,7 +62,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
   connect( layer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+  connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( editingToggled() )  );
 
   initLayerCache( layer );
   initModels( mapCanvas );
@@ -170,6 +171,18 @@ void QgsDualView::columnBoxInit()
   }
 }
 
+void QgsDualView::hideEvent( QHideEvent* event )
+{
+  saveEditChanges();
+  QStackedWidget::hideEvent( event );
+}
+
+void QgsDualView::focusOutEvent( QFocusEvent* event )
+{
+  saveEditChanges();
+  QStackedWidget::focusOutEvent( event );
+}
+
 void QgsDualView::setView( QgsDualView::ViewMode view )
 {
   setCurrentIndex( view );
@@ -228,6 +241,26 @@ void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature 
 
   if ( mAttributeDialog->dialog() )
   {
+    saveEditChanges();
+    mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
+  }
+
+  mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( feat ), true, mDistanceArea, this, false );
+  mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
+  mAttributeDialog->dialog()->setVisible( true );
+
+  delete oldDialog;
+}
+
+void QgsDualView::setCurrentEditSelection( const QgsFeatureIds& fids )
+{
+  mFeatureList->setEditSelection( fids );
+}
+
+void QgsDualView::saveEditChanges()
+{
+  if ( mAttributeDialog->dialog() )
+  {
     if ( mLayerCache->layer()->isEditable() )
     {
       // Get the current (unedited) feature
@@ -253,20 +286,7 @@ void QgsDualView::on_mFeatureList_currentEditSelectionChanged( const QgsFeature 
 
       mLayerCache->layer()->endEditCommand();
     }
-
-    mAttributeEditorLayout->removeWidget( mAttributeDialog->dialog() );
   }
-
-  mAttributeDialog = new QgsAttributeDialog( mLayerCache->layer(), new QgsFeature( feat ), true, mDistanceArea, this, false );
-  mAttributeEditorLayout->addWidget( mAttributeDialog->dialog() );
-  mAttributeDialog->dialog()->setVisible( true );
-
-  delete oldDialog;
-}
-
-void QgsDualView::setCurrentEditSelection( const QgsFeatureIds& fids )
-{
-  mFeatureList->setEditSelection( fids );
 }
 
 void QgsDualView::previewExpressionBuilder()
@@ -387,7 +407,6 @@ void QgsDualView::finished()
   delete mProgressDlg;
   mProgressDlg = 0;
 }
-
 
 /*
  * QgsAttributeTableAction
