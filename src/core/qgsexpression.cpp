@@ -979,7 +979,7 @@ static QVariant fcnFormatDate( const QVariantList& values, QgsFeature*, QgsExpre
   return dt.toString( format );
 }
 
-static QVariant fncColorRgb( const QVariantList &values, QgsFeature *, QgsExpression *parent )
+static QVariant fcnColorRgb( const QVariantList &values, QgsFeature *, QgsExpression *parent )
 {
   int red = getIntValue( values.at( 0 ), parent );
   int green = getIntValue( values.at( 1 ), parent );
@@ -1009,7 +1009,7 @@ static QVariant fncColorRgba( const QVariantList &values, QgsFeature *, QgsExpre
   return QgsSymbolLayerV2Utils::encodeColor( color );
 }
 
-QVariant fncRampColor( const QVariantList &values, QgsFeature *, QgsExpression *parent )
+QVariant fcnRampColor( const QVariantList &values, QgsFeature *, QgsExpression *parent )
 {
   QString rampName = getStringValue( values.at( 0 ), parent );
   const QgsVectorColorRampV2 *mRamp = QgsStyleV2::defaultStyle()->colorRampRef( rampName );
@@ -1077,7 +1077,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "substr" << "concat" << "strpos" << "left"
     << "right" << "rpad" << "lpad"
     << "format_number" << "format_date"
-    << "color_rgb" << "color_rgba" << "ramp_colour"
+    << "color_rgb" << "color_rgba" << "ramp_color"
     << "xat" << "yat" << "$area"
     << "$length" << "$perimeter" << "$x" << "$y"
     << "$rownum" << "$id" << "$scale" << "_specialcol_";
@@ -1139,9 +1139,9 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "format", -1, fcnFormatString, QObject::tr( "String" ) )
     << new StaticFunction( "format_number", 2, fcnFormatNumber, QObject::tr( "String" ) )
     << new StaticFunction( "format_date", 2, fcnFormatDate, QObject::tr( "String" ) )
-    << new StaticFunction( "color_rgb", 3, fncColorRgb, QObject::tr( "Color" ) )
+    << new StaticFunction( "color_rgb", 3, fcnColorRgb, QObject::tr( "Color" ) )
     << new StaticFunction( "color_rgba", 4, fncColorRgba, QObject::tr( "Color" ) )
-    << new StaticFunction( "ramp_color", 2, fncRampColor, QObject::tr( "Color" ) )
+    << new StaticFunction( "ramp_color", 2, fcnRampColor, QObject::tr( "Color" ) )
     << new StaticFunction( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "$area", 0, fcnGeomArea, QObject::tr( "Geometry" ), "", true )
