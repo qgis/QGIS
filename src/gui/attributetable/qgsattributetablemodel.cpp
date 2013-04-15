@@ -57,17 +57,13 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
 QgsAttributeTableModel::~QgsAttributeTableModel()
 {
-  if ( layer() )
+  const QMap<QString, QVariant> *item;
+  foreach ( item, mValueMaps )
   {
-    const QgsFields& fields = layer()->pendingFields();
-    for ( int idx = 0; idx < fields.count(); ++idx )
-    {
-      if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
-        continue;
-
-      delete mValueMaps.take( idx );
-    }
+    delete item;
   }
+
+  mValueMaps.clear();
 }
 
 bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
@@ -165,14 +161,13 @@ void QgsAttributeTableModel::layerDeleted()
   removeRows( 0, rowCount() );
   endRemoveRows();
 
-  const QgsFields& fields = layer()->pendingFields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  const QMap<QString, QVariant> *item;
+  foreach ( item, mValueMaps )
   {
-    if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
-      continue;
-
-    delete mValueMaps.take( idx );
+    delete item;
   }
+
+  mValueMaps.clear();
 }
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )

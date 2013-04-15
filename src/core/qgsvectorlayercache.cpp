@@ -232,8 +232,7 @@ void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 
 void QgsVectorLayerCache::layerDeleted()
 {
-  emit( cachedLayerDeleted() );
-
+  emit cachedLayerDeleted();
   mLayer = NULL;
 }
 
