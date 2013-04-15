@@ -356,9 +356,9 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   disconnect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
   disconnect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
   disconnect( cmbWktField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
-  disconnect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbXField, SLOT( setEnabled( bool ) ) );
-  disconnect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbYField, SLOT( setEnabled( bool ) ) );
-  disconnect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbWktField, SLOT( setDisabled( bool ) ) );
+  disconnect( geomTypeXY, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
+  disconnect( geomTypeWKT, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
+  disconnect( geomTypeNone, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
 
   QString columnX = cmbXField->currentText();
   QString columnY = cmbYField->currentText();
@@ -536,13 +536,13 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   if ( haveFields )
   {
     frmGeometry->setEnabled( true );
-
     connect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
     connect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
     connect( cmbWktField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
-    connect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbXField, SLOT( setEnabled( bool ) ) );
-    connect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbYField, SLOT( setEnabled( bool ) ) );
-    connect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbWktField, SLOT( setDisabled( bool ) ) );
+    connect( geomTypeXY, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
+    connect( geomTypeWKT, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
+    connect( geomTypeNone, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
+
   }
 
 }
