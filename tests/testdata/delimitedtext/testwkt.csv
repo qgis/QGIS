@@ -1,0 +1,15 @@
+id|description|geom_wkt
+1|Point wkt|POINT(10 20)
+2|Multipoint wkt|MULTIPOINT(10 20,11 21)
+3|Linestring wkt|LINESTRING(10 20,11 21)
+4|Multiline string wkt|MULTILINESTRING((10 20,11 21),(20 30,21 31))
+5|Polygon wkt|POLYGON((10 10,10 20,20 20,20 10,10 10),(14 14,14 16,16 16,14 14))
+6|MultiPolygon wkt|MULTIPOLYGON(((10 10,10 20,20 20,20 10,10 10),(14 14,14 16,16 16,14 14)),((30 30,30 35,35 35,30 30)))
+7|Invalid wkt|POINT(10)
+8|EWKT prefix|SRID=1234;POINT(10 10)
+9|Informix prefix|1 POINT(10 10)
+10|Measure in point|POINTM(10 20 30)
+11|Measure in line|LINESTRING(10.0 20.0 30.0, 11.0 21.0 31.0)
+12|Z in line|LINESTRING Z(10.0 20.0 30.0, 11.0 21.0 31.0)
+13|Measure and Z in line|LINESTRING ZM(10.0 20.0 30.0 40.0, 11.0 21.0 31.0 41.0)
+
