@@ -1198,7 +1198,7 @@
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionDraw.png</normaloff>:/images/themes/default/mActionDraw.png</iconset>
+                      <normaloff>:/images/themes/default/mActionUndo.png</normaloff>:/images/themes/default/mActionUndo.png</iconset>
                     </property>
                     <property name="toolButtonStyle">
                      <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -1525,9 +1525,6 @@
                     <attribute name="horizontalHeaderStretchLastSection">
                      <bool>true</bool>
                     </attribute>
-                    <attribute name="horizontalHeaderStretchLastSection">
-                     <bool>true</bool>
-                    </attribute>
                    </widget>
                   </item>
                   <item row="0" column="0">
@@ -1589,8 +1586,8 @@
                        <string>...</string>
                       </property>
                       <property name="icon">
-                       <iconset>
-                        <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -1600,7 +1597,7 @@
                        <bool>true</bool>
                       </property>
                       <property name="toolTip">
-                       <string>Add Values from display</string>
+                       <string>Add values from display</string>
                       </property>
                       <property name="text">
                        <string>...</string>
@@ -1620,8 +1617,8 @@
                        <string>...</string>
                       </property>
                       <property name="icon">
-                       <iconset>
-                        <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionSignMinus.png</normaloff>:/images/themes/default/mActionSignMinus.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -1634,8 +1631,8 @@
                        <string>...</string>
                       </property>
                       <property name="icon">
-                       <iconset>
-                        <normaloff>../../images/themes/default/mActionRemove.png</normaloff>../../images/themes/default/mActionRemove.png</iconset>
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -1648,8 +1645,8 @@
                        <string>...</string>
                       </property>
                       <property name="icon">
-                       <iconset>
-                        <normaloff>../../images/themes/default/mActionFolder.png</normaloff>../../images/themes/default/mActionFolder.png</iconset>
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionFileOpen.png</normaloff>:/images/themes/default/mActionFileOpen.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -2011,9 +2008,9 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -2022,14 +2019,14 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsscalecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources>

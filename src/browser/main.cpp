@@ -33,7 +33,15 @@ int main( int argc, char ** argv )
   QSettings settings;
 
   QgsApplication a( argc, argv, true );
-  a.setThemeName( settings.value( "/Themes", "default" ).toString() );
+  // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
+  QString theme = settings.value( "/Themes", "default" ).toString();
+  if ( theme == QString( "gis" )
+       || theme == QString( "classic" )
+       || theme == QString( "nkids" ) )
+  {
+    theme = QString( "default" );
+  }
+  a.setThemeName( theme );
   a.initQgis();
 
   // Set up the QSettings environment must be done after qapp is created

@@ -863,8 +863,8 @@ void QgisApp::readSettings()
 {
   QSettings settings;
   // get the users theme preference from the settings
-  // defaulting to 'gis' theme
-  setTheme( settings.value( "/Themes", "gis" ).toString() );
+  // 'gis' theme is new /themes/default directory (2013-04-15)
+  setTheme( settings.value( "/Themes", "default" ).toString() );
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
