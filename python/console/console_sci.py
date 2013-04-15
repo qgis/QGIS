@@ -492,7 +492,7 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         return cmd
 
     def runCommand(self, cmd):
-        self.write_stdout(cmd)
+        self.writeCMD(cmd)
         import webbrowser
         self.updateHistory(cmd)
         line, pos = self.getCursorPosition()
@@ -524,14 +524,20 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             more = self.runsource(src, "<input>")
             if not more:
                 self.buffer = []
-            self.move_cursor_to_end()
+                
+            output = sys.stdout.get_and_clean_data()
+            if output:
+                self.parent.textEditOut.append(output)
+
             self.displayPrompt(more)
+            sys.stdout.move_cursor_to_end()
 
     def write(self, txt):
         sys.stderr.write(txt)
 
-    def write_stdout(self, txt):
-        if len(txt) > 0:
+    def writeCMD(self, cmd):
+        if len(cmd) > 0:
             getCmdString = self.text()
             prompt = getCmdString[0:4]
-            sys.stdout.write(prompt+txt+'\n')
+            self.parent.textEditOut.append(prompt+cmd+'\n')
+            sys.stdout.move_cursor_to_end()

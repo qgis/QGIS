@@ -36,7 +36,8 @@ class writeOut:
         self.outputArea = edit
         self.out = None
         self.style = style
-
+        self.data = ''
+                
     def write(self, m):
         if self.style == "traceback":
             # Show errors in red
@@ -45,11 +46,8 @@ class writeOut:
             self.outputArea.append(m)
             self.outputArea.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), 1)
         else:
-            self.outputArea.append(m)
+            self.data += m
         self.move_cursor_to_end()
-
-        if self.out:
-            self.out.write(m)
 
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
@@ -62,6 +60,11 @@ class writeOut:
         """Return (line, index) position of the last character"""
         line = self.outputArea.lines() - 1
         return (line, self.outputArea.text(line).length())
+    
+    def get_and_clean_data(self):
+        tmp = self.data
+        self.data = ''
+        return tmp
 
     def flush(self):
         pass
@@ -87,8 +90,8 @@ class EditorOutput(QsciScintilla):
         # Enable non-ascii chars for editor
         self.setUtf8(True)
 
-        sys.stdout = writeOut(self, sys.stdout)
-        sys.stderr = writeOut(self, sys.stderr, "traceback")
+        sys.stdout = writeOut(self)
+        sys.stderr = writeOut(self, style='traceback')
 
         self.insertInitText()
         self.setLexers()
