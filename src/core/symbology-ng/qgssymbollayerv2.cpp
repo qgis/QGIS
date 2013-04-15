@@ -116,6 +116,18 @@ QSet<QString> QgsSymbolLayerV2::usedAttributes() const
   return attributes;
 }
 
+void QgsSymbolLayerV2::saveDataDefinedProperties( QgsStringMap& stringMap ) const
+{
+  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
+  for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
+  {
+    if ( ddIt.value() )
+    {
+      stringMap.insert( ddIt.key() + "_expression", ddIt.value()->dump() );
+    }
+  }
+}
+
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM )

@@ -104,6 +104,8 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual void prepareExpressions( const QgsVectorLayer* vl );
     virtual QgsExpression* expression( const QString& property );
+    /**Saves data defined properties to string map*/
+    void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
 };
 
 //////////////////////
