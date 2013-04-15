@@ -352,6 +352,15 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.uncommentEditorButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.runScriptEditorButton)
+        
+        ## Menu Import Class
+        self.classMenu = QMenu(self)
+        self.classMenu.addAction(self.loadSextanteButton)
+        self.classMenu.addAction(self.loadQtCoreButton)
+        self.classMenu.addAction(self.loadQtGuiButton)
+        cM = self.toolBar.widgetForAction(self.actionClass)
+        cM.setMenu(self.classMenu)
+        cM.setPopupMode(QToolButton.InstantPopup)
 
         self.widgetButton = QWidget()
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)

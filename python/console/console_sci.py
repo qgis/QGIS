@@ -101,6 +101,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCSS = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Space), self)
         self.newShortcutCAS = QShortcut(QKeySequence(Qt.CTRL + Qt.ALT + Qt.Key_Space), self)
+        self.newShortcutCSS.setContext(Qt.WidgetShortcut)
+        self.newShortcutCAS.setContext(Qt.WidgetShortcut)
         self.newShortcutCAS.activated.connect(self.autoComplete)
         self.newShortcutCSS.activated.connect(self.showHistory)
         self.connect(self, SIGNAL('userListActivated(int, const QString)'),

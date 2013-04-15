@@ -115,7 +115,7 @@ class Editor(QsciScintilla):
 
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
-        self.setFoldMarginColors(QColor("#cccccc"),QColor("#cccccc"))
+        self.setFoldMarginColors(QColor("#f4f4f4"),QColor("#f4f4f4"))
         #self.setWrapMode(QsciScintilla.WrapCharacter)
 
         ## Edge Mode
@@ -150,10 +150,21 @@ class Editor(QsciScintilla):
 
         ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCS = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
-        #self.newShortcutCAS = QShortcut(QKeySequence(Qt.CTRL + Qt.ALT + Qt.Key_Space), self)
+        self.newShortcutCS.setContext(Qt.WidgetShortcut)
         self.newShortcutCS.activated.connect(self.autoComplete)
         self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
-        self.runScut.activated.connect(self.runScriptCode)
+        self.runScut.setContext(Qt.WidgetShortcut)
+        self.runScut.activated.connect(self.runSelectedCode)
+        self.runScriptScut = QShortcut(QKeySequence(Qt.SHIFT + Qt.CTRL + Qt.Key_E), self)
+        self.runScriptScut.setContext(Qt.WidgetShortcut)
+        self.runScriptScut.activated.connect(self.runScriptCode)
+        
+        self.commentScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_3), self)
+        self.commentScut.setContext(Qt.WidgetShortcut)
+        self.commentScut.activated.connect(self.parent.pc.commentCode)
+        self.uncommentScut = QShortcut(QKeySequence(Qt.SHIFT + Qt.CTRL + Qt.Key_3), self)
+        self.uncommentScut.setContext(Qt.WidgetShortcut)
+        self.uncommentScut.activated.connect(self.parent.pc.uncommentCode)
 
     def autoComplete(self):
         self.autoCompleteFromAll()
@@ -222,36 +233,25 @@ class Editor(QsciScintilla):
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
-#        iconOpen = QgsApplication.getThemeIcon("console/iconOpenConsole.png")
-#        iconSave = QgsApplication.getThemeIcon("console/iconSaveConsole.png")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
         iconNewEditor = QgsApplication.getThemeIcon("console/iconTabEditorConsole.png")
+        iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
+        iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.png")
         hideEditorAction = menu.addAction("Hide Editor",
                                      self.hideEditor)
         menu.addSeparator()
         newTabAction = menu.addAction(iconNewEditor,
                                     "New Tab",
-                                    self.parent.newTab,
-                                    QKeySequence(Qt.CTRL + Qt.Key_T))
+                                    self.parent.newTab, 'Ctrl+T')
         closeTabAction = menu.addAction("Close Tab",
-                                    self.parent.close,
-                                    QKeySequence(Qt.CTRL + Qt.Key_W))
+                                    self.parent.close, 'Ctrl+W')
         menu.addSeparator()
-#        openAction = menu.addAction(iconOpen,
-#                                   "Open",
-#                                   self.parent.openFile)
-#        saveAction = menu.addAction(iconSave,
-#                                    "Save",
-#                                    self.parent.save,
-#                                    QKeySequence(Qt.CTRL + Qt.Key_M))
-#        menu.addSeparator()
         runSelected = menu.addAction(iconRun,
                                    "Enter selected",
-                                   self.runSelectedCode,
-                                   QKeySequence(Qt.CTRL + Qt.Key_E))
+                                   self.runSelectedCode, 'Ctrl+E')
         runScript = menu.addAction(iconRun,
                                    "Run Script",
-                                   self.runScriptCode)
+                                   self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
         undoAction = menu.addAction("Undo", self.undo, QKeySequence.Undo)
         redoAction = menu.addAction("Redo", self.redo, QKeySequence.Redo)
@@ -263,6 +263,12 @@ class Editor(QsciScintilla):
                                     self.copy,
                                     QKeySequence.Copy)
         pasteAction = menu.addAction("Paste", self.paste, QKeySequence.Paste)
+        menu.addSeparator()
+        commentCodeAction = menu.addAction(iconCommentEditor, "Comment",
+                                           self.parent.pc.commentCode, 'Ctrl+3')
+        uncommentCodeAction = menu.addAction(iconUncommentEditor, "Uncomment", 
+                                             self.parent.pc.uncommentCode, 
+                                             'Shift+Ctrl+3')
         menu.addSeparator()
         codePadAction = menu.addAction(iconCodePad,
                                         "Share on codepad",
@@ -366,11 +372,7 @@ class Editor(QsciScintilla):
                 else:
                     self.insert(selCmd)
                 self.setCursorPosition(line, selCmd.length() - 2)
-                    
 
-    def uncommentEditorCode(self):
-        pass
-    
     def runScriptCode(self):
         tabWidget = self.parent.mw.currentWidget()
         filename = tabWidget.path
@@ -506,20 +508,7 @@ class EditorTab(QWidget):
         self.mw.tabModified(self, modified)
         
     def close(self):
-        if self.newEditor.isModified():
-            res = QMessageBox.question( self, 'Save Script',
-                             'The script "%s" has been modified, save changes ?' 
-                             % self.mw.tabText(self.mw.indexOf(self)),
-                             QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel )
-            if res == QMessageBox.Save:
-                self.save()
-            elif res == QMessageBox.Cancel:
-                return
-            #else:
-            #isModified = True if self.newEditor.isModified() else False
-                #self.mw.closeTab(self)
-        #else:
-            #self.mw.closeTab(self)
+        self.mw._removeTab(self, tab2index=True)
         
     def setEventFilter(self, filter):
         self.newEditor.installEventFilter(filter)
@@ -654,7 +643,9 @@ class EditorTabWidget(QTabWidget):
     def setTabTitle(self, tab, title):
         self.setTabText(self.indexOf(tab), title)
 
-    def _removeTab(self, tab):
+    def _removeTab(self, tab, tab2index=False):
+        if tab2index:
+            tab = self.indexOf(tab)
         if self.widget(tab).newEditor.isModified():
             res = QMessageBox.question( self, 'Save Script',
                              'The script "%s" has been modified, save changes ?' 
