@@ -402,7 +402,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   int counter = 0;
   QStringList values;
-  QRegExp wktre( "^\\s*(?:MULTI)?(?:POINT|LINE|POLYGON)\\s*Z?\\s*M?\\(", Qt::CaseInsensitive );
+  QRegExp wktre( "^\\s*(?:MULTI)?(?:POINT|LINESTRING|POLYGON)\\s*Z?\\s*M?\\(", Qt::CaseInsensitive );
 
   while ( counter < mExampleRowCount )
   {
@@ -542,7 +542,6 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     connect( geomTypeXY, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
     connect( geomTypeWKT, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
     connect( geomTypeNone, SIGNAL( toggled( bool ) ), this, SLOT( enableAccept() ) );
-
   }
 
 }
