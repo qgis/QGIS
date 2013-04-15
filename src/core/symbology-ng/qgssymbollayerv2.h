@@ -78,13 +78,13 @@ class CORE_EXPORT QgsSymbolLayerV2
     int renderingPass() const { return mRenderingPass; }
 
     // symbol layers normally only use additional attributes to provide data defined settings
-    virtual QSet<QString> usedAttributes() const { return QSet<QString>(); }
+    virtual QSet<QString> usedAttributes() const;
 
-    virtual const QgsExpression* dataDefinedProperty( const QString& property ) const { Q_UNUSED( property ); return 0; } //= 0;
-    virtual QString dataDefinedPropertyString( const QString& property ) const { Q_UNUSED( property ); return QString(); } //= 0;
-    virtual void setDataDefinedProperty( const QString& property, const QString& expressionString ) { Q_UNUSED( property ); Q_UNUSED( expressionString ); } //=0;
-    virtual void removeDataDefinedProperty( const QString& property ) { Q_UNUSED( property ); } //=0;
-    virtual void removeDataDefinedProperties() {} //=0;
+    virtual const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    virtual QString dataDefinedPropertyString( const QString& property ) const;
+    virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    virtual void removeDataDefinedProperty( const QString& property );
+    virtual void removeDataDefinedProperties();
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
@@ -95,11 +95,15 @@ class CORE_EXPORT QgsSymbolLayerV2
     QColor mColor;
     int mRenderingPass;
 
+    QMap< QString, QgsExpression* > mDataDefinedProperties;
+
     // Configuration of selected symbology implementation
     static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
     static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
 
+    virtual void prepareExpressions( const QgsVectorLayer* vl );
+    virtual QgsExpression* expression( const QString& property );
 };
 
 //////////////////////

@@ -77,14 +77,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsSymbolV2::OutputUnit outlineWidthUnit() const { return mOutlineWidthUnit; }
     void setOutlineWidthUnit( QgsSymbolV2::OutputUnit u ) { mOutlineWidthUnit = u; }
 
-    const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    QString dataDefinedPropertyString( const QString& property ) const;
-    void setDataDefinedProperty( const QString& property, const QString& expressionString );
-    void removeDataDefinedProperty( const QString& property );
-    void removeDataDefinedProperties();
-
-    QSet<QString> usedAttributes() const;
-
   protected:
 
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
@@ -108,18 +100,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QImage mSelCache;
     bool mUsingCache;
 
-    //data defined properties
-    QgsExpression* mNameExpression;
-    QgsExpression* mColorExpression;
-    QgsExpression* mColorBorderExpression;
-    QgsExpression* mOutlineWidthExpression;
-    QgsExpression* mSizeExpression;
-    QgsExpression* mAngleExpression;
-    QgsExpression* mOffsetExpression;
-
   private:
-    //helper functions for data defined symbology
-    void prepareExpressions( const QgsVectorLayer* vl );
     void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
 };
 
