@@ -216,7 +216,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     void cachedLayerDeleted();
 
-  public slots:
+  private slots:
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant& value );
     void featureDeleted( QgsFeatureId fid );
     void featureAdded( QgsFeatureId fid );
@@ -224,6 +224,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void attributeDeleted( int field );
     void geometryChanged( QgsFeatureId fid, QgsGeometry& geom );
     void layerDeleted();
+    void updatedFields();
 
   private:
 
