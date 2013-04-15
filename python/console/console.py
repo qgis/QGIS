@@ -352,7 +352,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.uncommentEditorButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.runScriptEditorButton)
-        
+
         ## Menu Import Class
         self.classMenu = QMenu(self)
         self.classMenu.addAction(self.loadSextanteButton)
@@ -523,7 +523,7 @@ class PythonConsoleWidget(QWidget):
             else:
                 tabName = filename.split('/')[-1]
                 self.tabEditorWidget.newTabEditor(tabName, filename)
-        
+
         lastDirPath = QFileInfo(filename).path()
         settings.setValue("pythonConsole/lastDirPath", QVariant(filename))
         self.tabListScript.append(filename)

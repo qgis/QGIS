@@ -168,8 +168,6 @@ class Editor(QsciScintilla):
 
     def autoComplete(self):
         self.autoCompleteFromAll()
-        
-        #self.modificationChanged.connect(self.textEdited)
 
     def on_margin_clicked(self, nmargin, nline, modifiers):
         # Toggle marker for the line the margin was clicked on
@@ -177,7 +175,7 @@ class Editor(QsciScintilla):
             self.markerDelete(nline, self.ARROW_MARKER_NUM)
         else:
             self.markerAdd(nline, self.ARROW_MARKER_NUM)
-            
+
     def refreshLexerProperties(self):
         self.setLexers()
 
@@ -217,19 +215,19 @@ class Editor(QsciScintilla):
             self.lexer.setAPIs(self.api)
 
         self.setLexer(self.lexer)
-        
+
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
         line, index = self.get_end_pos()
         self.setCursorPosition(line, index)
         self.ensureCursorVisible()
         self.ensureLineVisible(line)
-        
+
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
         line = self.lines() - 1
         return (line, self.text(line).length())
-        
+
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
@@ -302,7 +300,7 @@ class Editor(QsciScintilla):
         if QApplication.clipboard().text() != "":
             pasteAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
-        
+
     def codepad(self):
         import urllib2, urllib
         listText = self.selectedText().split('\n')
@@ -336,11 +334,12 @@ class Editor(QsciScintilla):
         except urllib2.URLError, e:
             msgText = QCoreApplication.translate('PythonConsole', 'Connection error: ')
             self.parent.pc.callWidgetMessageBarEditor(msgText + str(e.args))
-        
+
     def hideEditor(self):
         Ed = self.parent.pc.widgetEditor
         Ed.hide()
-        
+        self.parent.pc.showEditorButton.setChecked(False)
+
     def commentEditorCode(self, commentCheck):
         if self.hasSelectedText():
             startLine, _, endLine, _ = self.getSelection()
@@ -357,7 +356,6 @@ class Editor(QsciScintilla):
                     else:
                         self.insert(selCmd)
                     self.setCursorPosition(endLine, selCmd.length() - 2)
-                
         else:
             line, pos = self.getCursorPosition()
             selCmd = self.text(line)
@@ -423,28 +421,28 @@ class Editor(QsciScintilla):
                 #execfile(unicode(filename))
             except IOError, error:
                 print 'Cannot execute file %s. Error: %s' % (filename, error.strerror)
-            
+
     def runSelectedCode(self):
         cmd = self.selectedText()
         self.parent.pc.shell.insertFromDropPaste(cmd)
         self.parent.pc.shell.entered()
         self.setFocus()
-        
+
     def getTextFromEditor(self):
         text = self.text()
         textList = text.split("\n")
         return textList
-        
+
 class EditorTab(QWidget):
     def __init__(self, parent, parentConsole, filename, *args):
         QWidget.__init__(self, parent=None, *args)
         self.mw = parent
         self.pc = parentConsole
         self.path = None
-                
+
         self.fileExcuteList = {}
         self.fileExcuteList = dict()
-                
+
         self.newEditor = Editor(self)
         self.newEditor.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.newEditor.modificationChanged.connect(self.modified)
@@ -452,7 +450,7 @@ class EditorTab(QWidget):
             self.newEditor.setText(open(filename, "r").read())
             self.newEditor.setModified(False)
             self.path = filename
-        
+
         # Creates layout for message bar
         self.layout = QGridLayout(self.newEditor)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -463,28 +461,14 @@ class EditorTab(QWidget):
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.infoBar.setSizePolicy(sizePolicy)
         self.layout.addWidget(self.infoBar, 0, 0, 1, 1)
-                
+
         self.tabLayout = QGridLayout(self)
         self.tabLayout.setContentsMargins(0, 0, 0, 0)
         self.tabLayout.addWidget(self.newEditor)
-            
+
         self.keyFilter = KeyFilter(parent, self)
         self.setEventFilter(self.keyFilter)
-    
-#    def openFile(self):
-#        scriptFile = QFileDialog.getOpenFileName(
-#                        self, "Open File", "", "Script file (*.py)")
-#        if os.path.exists(scriptFile):
-#            self.newEditor.setText(open(scriptFile, "r").read())
-#            self.newEditor.setModified(False)
-#        fN = scriptFile.split('/')[-1]
-#        if fN:
-#            self.mw.setTabTitle(self, fN)
-#            self.path = scriptFile
-#        index = self.mw.currentIndex()
-#        idx = unicode(index)
-#        self.fileExcuteList[idx] = unicode(scriptFile)
-        
+
     def save(self):
         if self.path is None:
             self.path = str(QFileDialog().getSaveFileName(self, 
@@ -514,27 +498,27 @@ class EditorTab(QWidget):
         self.mw.setTabTitle(self, fN)
         self.newEditor.setModified(False)
         self.pc.updateTabListScript(self.path, action='append')
-        
+
     def changeFont(self):
         self.newEditor.refreshLexerProperties()
-            
+
     def modified(self, modified):
         self.mw.tabModified(self, modified)
-        
+
     def close(self):
         self.mw._removeTab(self, tab2index=True)
-        
+
     def setEventFilter(self, filter):
         self.newEditor.installEventFilter(filter)
-        
+
     def newTab(self):
         self.mw.newTabEditor()
-        
+
 class EditorTabWidget(QTabWidget):
     def __init__(self, parent):
         QTabWidget.__init__(self, parent=None)
         self.parent = parent
-        
+
         # Layout for top frame (restore tabs)
         self.layoutTopFrame = QGridLayout(self)
         self.layoutTopFrame.setContentsMargins(0, 0, 0, 0)
@@ -549,7 +533,7 @@ class EditorTabWidget(QTabWidget):
         label = QCoreApplication.translate("PythonConsole",
                                            "Click on button to restore all tabs from last session.")
         self.label = QLabel(label)
-        
+
         self.restoreTabsButton = QToolButton()
         toolTipRestore = QCoreApplication.translate("PythonConsole",
                                                     "Restore tabs")
@@ -559,7 +543,7 @@ class EditorTabWidget(QTabWidget):
         self.restoreTabsButton.setCursor(Qt.PointingHandCursor)
         self.restoreTabsButton.setStyleSheet('QToolButton:hover{border: none } \
                                               QToolButton:pressed{border: none}')
-        
+
         self.clButton = QToolButton()
         toolTipClose = QCoreApplication.translate("PythonConsole",
                                                   "Close")
@@ -570,14 +554,14 @@ class EditorTabWidget(QTabWidget):
         self.clButton.setStyleSheet('QToolButton:hover{border: none } \
                                      QToolButton:pressed{border: none}')
         self.clButton.setAutoRaise(True)
-        
+
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.topFrame.setSizePolicy(sizePolicy)
         self.layoutTopFrame.addWidget(self.topFrame, 0, 0, 1, 1)
         self.layoutTopFrame2.addWidget(self.label, 0, 1, 1, 1)
         self.layoutTopFrame2.addWidget(self.restoreTabsButton, 0, 0, 1, 1)
         self.layoutTopFrame2.addWidget(self.clButton, 0, 2, 1, 1)
-        
+
         self.topFrame.hide()
         self.connect(self.restoreTabsButton, SIGNAL('clicked()'), self.restoreTabs)
         self.connect(self.clButton, SIGNAL('clicked()'), self.closeRestore)
@@ -589,12 +573,12 @@ class EditorTabWidget(QTabWidget):
         self.newTabEditor(filename=None)
         if self.restoreTabList:
             self.topFrame.show()
-        
+
         self.setDocumentMode(True)
         self.setMovable(True)
         #self.setTabsClosable(True)
         self.setTabPosition(QTabWidget.South)
-        
+
         # Menu button list tabs
         self.fileTabMenu = QMenu(self)
         self.connect(self.fileTabMenu, SIGNAL("aboutToShow()"), 
@@ -608,10 +592,8 @@ class EditorTabWidget(QTabWidget):
         self.fileTabButton.setPopupMode(QToolButton.InstantPopup)
         self.fileTabButton.setMenu(self.fileTabMenu)
         self.setCornerWidget(self.fileTabButton, Qt.TopRightCorner)
-        #self.connect(self.closeTabButton, SIGNAL('clicked()'), self.buttonClosePressed)
-        
         self.connect(self, SIGNAL("tabCloseRequested(int)"), self._removeTab)
-        
+
         # Open button
         self.newTabButton = QToolButton(self)
         self.newTabButton.setToolTip('New Tab')
@@ -619,7 +601,7 @@ class EditorTabWidget(QTabWidget):
         self.newTabButton.setIcon(QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.png"))
         self.setCornerWidget(self.newTabButton, Qt.TopLeftCorner)
         self.connect(self.newTabButton, SIGNAL('clicked()'), self.newTabEditor)
-        
+
     def newTabEditor(self, tabName=None, filename=None):
         nr = self.count()
         if not tabName:
@@ -633,12 +615,12 @@ class EditorTabWidget(QTabWidget):
         self.iconTab = QgsApplication.getThemeIcon('console/iconTabEditorConsole.png')
         self.addTab(self.tab, self.iconTab, tabName)
         self.setCurrentWidget(self.tab)
-        
+
     def tabModified(self, tab, modified):
         index = self.indexOf(tab)
         color = Qt.darkGray if modified else Qt.black
         self.tabBar().setTabTextColor(index, color)
-        
+
     def closeTab(self, tab):
         # Check if file has been saved
         #if isModified:

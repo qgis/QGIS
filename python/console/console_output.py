@@ -119,8 +119,6 @@ class ShellOutputScintilla(QsciScintilla):
         self.setWrapMode(QsciScintilla.WrapCharacter)
         self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
 
-        #self.runShortcut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
-        #self.runShortcut.activated.connect(self.enteredSelected)
         # Reimplemeted copy action to prevent paste prompt (>>>,...) in command view
         self.copyShortcut = QShortcut(QKeySequence.Copy, self)
         self.copyShortcut.activated.connect(self.copy)
@@ -128,11 +126,6 @@ class ShellOutputScintilla(QsciScintilla):
         self.selectAllShortcut.activated.connect(self.selectAll)
 
     def insertInitText(self):
-#        txtInit = QCoreApplication.translate("PythonConsole",
-#                                             "## To access Quantum GIS environment from this console\n"
-#                                             "## use iface object (instance of QgisInterface class).\n"
-#                                             "## Type help(iface) for more info and list of methods.\n\n")
-#        initText = self.setText(txtInit)
         txtInit = QCoreApplication.translate("PythonConsole", 
                                              "Python %1 on %2\n"
                                              "## Type help(iface) for more info and list of methods.\n").arg(sys.version,  socket.gethostname())
@@ -162,13 +155,7 @@ class ShellOutputScintilla(QsciScintilla):
 
         self.setLexer(self.lexer)
 
-#    def getTextFromEditor(self):
-#        text = self.text()
-#        textList = text.split("\n")
-#        return textList
-
     def clearConsole(self):
-        #self.SendScintilla(QsciScintilla.SCI_CLEARALL)
         self.setText('')
         self.insertInitText()
         self.shell.setFocus()
@@ -219,11 +206,12 @@ class ShellOutputScintilla(QsciScintilla):
         tB = self.parent.toolBar
         tB.hide() if tB.isVisible() else tB.show()
         self.shell.setFocus()
-        
+
     def showEditor(self):
         Ed = self.parent.widgetEditor
         if not Ed.isVisible(): 
             Ed.show()
+            self.parent.showEditorButton.setChecked(True)
         self.shell.setFocus()
 
     def copy(self):
@@ -255,4 +243,3 @@ class ShellOutputScintilla(QsciScintilla):
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
         self.infoBar.pushMessage('Console', text, QgsMessageBar.INFO, timeout)
-        

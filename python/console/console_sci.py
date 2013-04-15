@@ -245,20 +245,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def refreshLexerProperties(self):
         self.setLexers()
 
-    #def check_selection(self):
-       #"""
-        #Check if selected text is r/w,
-        #otherwise remove read-only parts of selection
-        #"""
-        ##if self.current_prompt_pos is None:
-            ##self.move_cursor_to_end()
-            ##return
-        #line_from, index_from, line_to, index_to = self.getSelection()
-        #pline, pindex = self.getCursorPosition()
-        #if line_from < pline or \
-           #(line_from == pline and index_from < pindex):
-            #self.setSelection(pline, pindex, line_to, index_to)
-
     def displayPrompt(self, more=False):
         self.append("... ") if more else self.append(">>> ")
         self.move_cursor_to_end()
@@ -338,7 +324,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 if e.key() in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Home, Qt.Key_End):
                     QsciScintilla.keyPressEvent(self, e)
                 return
-
             # all other keystrokes get sent to the input line
             self.move_cursor_to_end()
 
