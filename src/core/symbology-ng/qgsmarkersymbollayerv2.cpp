@@ -587,16 +587,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
   m->setOffsetUnit( mOffsetUnit );
   m->setOutlineWidth( mOutlineWidth );
   m->setOutlineWidthUnit( mOutlineWidthUnit );
-
-  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
-  for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
-  {
-    if ( ddIt.value() )
-    {
-      m->setDataDefinedProperty( ddIt.key(), ddIt.value()->dump() );
-    }
-  }
-
+  copyDataDefinedProperties( m );
   return m;
 }
 
@@ -1040,17 +1031,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
   m->setOffset( mOffset );
   m->setOffsetUnit( mOffsetUnit );
   m->setSizeUnit( mSizeUnit );
-
-  //data defined properties
-  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
-  for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
-  {
-    if ( ddIt.value() )
-    {
-      m->setDataDefinedProperty( ddIt.key(), ddIt.value()->dump() );
-    }
-  }
-
+  copyDataDefinedProperties( m );
   return m;
 }
 

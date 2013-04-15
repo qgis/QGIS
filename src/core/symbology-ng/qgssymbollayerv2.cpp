@@ -128,6 +128,24 @@ void QgsSymbolLayerV2::saveDataDefinedProperties( QgsStringMap& stringMap ) cons
   }
 }
 
+void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const
+{
+  if ( !destLayer )
+  {
+    return;
+  }
+  destLayer->removeDataDefinedProperties();
+
+  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
+  for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
+  {
+    if ( ddIt.value() )
+    {
+      destLayer->setDataDefinedProperty( ddIt.key(), ddIt.value()->dump() );
+    }
+  }
+}
+
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM )

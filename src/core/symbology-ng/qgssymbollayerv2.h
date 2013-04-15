@@ -43,7 +43,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void setColor( const QColor& color ) { mColor = color; }
     virtual QColor color() const { return mColor; }
 
-    virtual ~QgsSymbolLayerV2() {}
+    virtual ~QgsSymbolLayerV2() { removeDataDefinedProperties(); }
 
     virtual QString layerType() const = 0;
 
@@ -106,6 +106,8 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual QgsExpression* expression( const QString& property );
     /**Saves data defined properties to string map*/
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
+    /**Copies data defined properties of this layer to another symbol layer*/
+    void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
 };
 
 //////////////////////
