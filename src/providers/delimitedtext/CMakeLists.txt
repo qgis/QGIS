@@ -5,6 +5,7 @@
 SET (DTEXT_SRCS
   qgsdelimitedtextfeatureiterator.cpp
   qgsdelimitedtextprovider.cpp
+  qgsdelimitedtextfile.cpp
   qgsdelimitedtextsourceselect.cpp
 )
 
