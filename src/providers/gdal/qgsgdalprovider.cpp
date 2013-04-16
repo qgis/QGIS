@@ -986,7 +986,10 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Id
     {
       results.insert( i, QVariant() ); // null QVariant represents no data
     }
-    results.insert( i, value );
+    else
+    {
+      results.insert( i, value );
+    }
   }
   return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
 }
