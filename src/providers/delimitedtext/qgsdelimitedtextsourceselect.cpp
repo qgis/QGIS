@@ -35,7 +35,8 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
     mFile( new QgsDelimitedTextFile() ),
     mExampleRowCount( 20 ),
     mColumnNamePrefix( "Column_" ),
-    mPluginKey( "/Plugin-DelimitedText" )
+    mPluginKey( "/Plugin-DelimitedText" ),
+    mLastFileType("")
 {
 
   setupUi( this );
@@ -250,7 +251,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSe
   QString encoding = settings.value( key + "/encoding", "" ).toString();
   if ( ! encoding.isEmpty() ) cbxEncoding->setCurrentIndex( cbxEncoding->findText( encoding ) );
   QString delimiters = settings.value( key + "/delimiters", "" ).toString();
-  if ( delimiters.isEmpty() ) setSelectedChars( delimiters );
+  if ( ! delimiters.isEmpty() ) setSelectedChars( delimiters );
 
   txtQuoteChars->setText( settings.value( key + "/quoteChars", "\"" ).toString() );
   txtEscapeChars->setText( settings.value( key + "/escapeChars", "\"" ).toString() );
@@ -313,7 +314,10 @@ void QgsDelimitedTextSourceSelect::loadSettingsForFile( QString filename )
 {
   if ( filename.isEmpty() ) return;
   QFileInfo fi( filename );
-  loadSettings( fi.suffix(), true );
+  QString filetype=fi.suffix();
+  // Don't expect to change settings if not changing file type
+  if( filetype != mLastFileType ) loadSettings( fi.suffix(), true );
+  mLastFileType = filetype;
 }
 
 void QgsDelimitedTextSourceSelect::saveSettingsForFile( QString filename )
@@ -476,6 +480,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   tblSample->setHorizontalHeaderLabels( fieldList );
   tblSample->resizeColumnsToContents();
+  tblSample->resizeRowsToContents();
 
   // We don't know anything about a text based field other
   // than its name. All fields are assumed to be text
