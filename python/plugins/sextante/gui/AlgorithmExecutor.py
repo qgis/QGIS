@@ -29,6 +29,9 @@ from qgis.core import *
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.tools.vector import getfeatures
+from sextante.gui.SextantePostprocessing import SextantePostprocessing
+import sextante
 import sys
 
 class AlgorithmExecutor(QThread):
@@ -74,11 +77,9 @@ class AlgorithmExecutor(QThread):
             layerfile = alg.getParameterValue(self.parameterToIterate)
             layer = QGisLayers.getObjectFromUri(layerfile, False)
             provider = layer.dataProvider()
-            allAttrs = provider.attributeIndexes()
-            provider.select( allAttrs )
-            feat = QgsFeature()
+            features = getfeatures(layer)
             self.filelist = []
-            while provider.nextFeature(feat):
+            for feat in features:
                 output = SextanteUtils.getTempFilename("shp")
                 self.filelist.append(output)
                 writer = QgsVectorFileWriter(output, systemEncoding,provider.fields(), provider.geometryType(), layer.crs() )
@@ -94,7 +95,8 @@ class AlgorithmExecutor(QThread):
     def runalg(self):
         try:
             self.algorithm.execute(self.progress)
-            self.algExecuted.emit()
+            if not self.parameterToIterate:
+                self.algExecuted.emit()
         except GeoAlgorithmExecutionException, e :
             self.error.emit(e.msg)
         except BaseException, e:
@@ -123,8 +125,10 @@ class AlgorithmExecutor(QThread):
                 self.progress.setText("Executing iteration " + str(i) + "/" + str(len(self.filelist)) + "...")
                 self.progress.setPercentage((i * 100) / len(self.filelist))
                 self.runalg()
+                SextantePostprocessing.handleAlgorithmResults(self.algorithm, self.progress, False)
                 self.iterated.emit(i)
                 i += 1
+            self.algExecuted.emit()                
         except BaseException, e:
             self.error.emit(str(e))
             print "Error iterating " + str(e)

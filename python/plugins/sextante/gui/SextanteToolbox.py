@@ -279,7 +279,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
         if (text != ""):
             self.algorithmTree.expandAll()
 
-    def fillTreeUsingProviders(self):
+    def fillTreeUsingProviders(self):             
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
         for providerName in Sextante.algs.keys():
