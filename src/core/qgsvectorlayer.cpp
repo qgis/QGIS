@@ -40,6 +40,7 @@
 #include "qgis.h" //for globals
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdatasourceuri.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfield.h"
@@ -3077,7 +3078,6 @@ void QgsVectorLayer::destroyEditCommand()
   undoStack()->undo();
 }
 
-
 void QgsVectorLayer::setCheckedState( int idx, QString checked, QString unchecked )
 {
   const QgsFields &fields = pendingFields();
@@ -3818,8 +3818,9 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString description,
 
 QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
 {
-    //TODO find a better way to check if uri is pointing to db
-    if ( theURI.contains( tr( "dbname=" ) ) )
+    QgsDataSourceURI dsUri( theURI );
+
+    if ( !dsUri.database().isEmpty() )
     {
         QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
         QLibrary *myLib = pReg->providerLibrary( mProviderKey );
@@ -3832,7 +3833,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFla
                qml = loadStyleExternalMethod( mDataSource, errorMsg );
                if( qml.compare( tr( "" ) ) )
                {
-                    theResultFlag = this->applyNamedStyle( qml, errorMsg);
+                    theResultFlag = this->applyNamedStyle( qml, errorMsg );
                }
             }
         }

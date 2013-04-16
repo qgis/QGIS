@@ -142,7 +142,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
 
     void saveStyleAs( StyleType styleType );
 
-    /** when provider supports, it will list all the styles relative the layer */
+    /** when provider supports, it will list all the styles relative the layer in a dialog */
     void showListOfStylesFromDatabase();
 
     void updateSymbologyPage();

@@ -130,7 +130,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mSaveAsMenu->addAction( tr( "SLD File" ) );
 
   //Only if the provider support loading & saving style to db add new choices
-  if( layer->dataProvider()->isSavingStyleToDBSupported() )
+  if( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
   {
       //for loading
       mLoadStyleMenu =  new QMenu();
@@ -642,7 +642,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
          QString msgError;
 
          QgsSaveStyleToDbDialog askToUser;
-
+         //Ask the user for a name and a description about the style
          if( askToUser.exec() == QDialog::Accepted )
          {
              QString styleName = askToUser.getName();
@@ -752,6 +752,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     QString errorMsg;
     QVector<QString> ids, names, descriptions;
 
+    //get the list of styles in the db
     int sectionLimit = layer->listStylesInDatabase(ids, names, descriptions, errorMsg);
     if( !errorMsg.isNull() )
     {

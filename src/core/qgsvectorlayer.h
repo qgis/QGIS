@@ -382,13 +382,32 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
+    /**
+     * Save named and sld style of the layer to the style table in the db.
+     * @param name
+     * @param description
+     * @param useAsDefault
+     * @param uiFileContent
+     * @param msgError
+     */
     virtual void saveStyleToDatabase( QString name, QString description,
                                       bool useAsDefault, QString uiFileContent,
                                       QString &msgError );
 
+    /**
+     * Lists all the style in db split into related to the layer and not related to
+     * @param ids the QVector in which will be stored the style db ids
+     * @param names the QVector in which will be stored the style names
+     * @param descriptions the QVector in which will be stored the style descriptions
+     * @param msgError
+     * @return the number of styles related to current layer
+     */
     virtual int listStylesInDatabase( QVector<QString> &ids, QVector<QString> &names,
                                        QVector<QString> &descriptions, QString &msgError );
 
+    /**
+     * Will return the named style corresponding to style id provided
+     */
     virtual QString getStyleFromDatabase( QString styleId, QString &msgError );
 
     virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag );
