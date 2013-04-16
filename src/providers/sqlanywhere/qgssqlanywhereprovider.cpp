@@ -1886,6 +1886,17 @@ QgsSqlAnywhereProvider::checkSrs()
     SaDebugMsg( "Failed to create CRS from Proj4 description. Trying WKT." );
     mCrs.createFromWkt( srsWkt );
   }
+  //TODO: createFromProj4 used to save to the user database any new CRS 
+  // this behavior was changed in order to separate creation and saving.
+  // Not sure if it necessary to save it here, should be checked by someone 
+  // familiar with the code (should also give a more descriptive name to the generated CRS)
+  if( mCrs.srsid() == 0 )
+  {
+    QString myName = QString( " * %1 (%2)" )
+        .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+        .arg( mCrs.toProj4() );
+    mCrs.saveAsUserCRS(myName);
+  }
 
   return true;
 } // QgsSqlAnywhereProvider::checkSrs()
