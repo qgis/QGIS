@@ -330,14 +330,6 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    QString dataDefinedPropertyString( const QString& property ) const;
-    void setDataDefinedProperty( const QString& property, const QString& expressionString );
-    void removeDataDefinedProperty( const QString& property );
-    void removeDataDefinedProperties();
-
-    QSet<QString> usedAttributes() const;
-
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;
     double mDistanceX;
@@ -349,17 +341,11 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double mDisplacementY;
     QgsSymbolV2::OutputUnit mDisplacementYUnit;
 
-    QgsExpression* mDistanceXExpression;
-    QgsExpression* mDistanceYExpression;
-    QgsExpression* mDisplacementXExpression;
-    QgsExpression* mDisplacementYExpression;
-
     void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
 
   private:
     void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double distanceX, double distanceY,
                        double displacementX, double displacementY );
-    void prepareExpressions( const QgsVectorLayer* vl );
 };
 
 class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
