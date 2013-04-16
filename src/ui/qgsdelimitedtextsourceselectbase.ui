@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>658</width>
-    <height>600</height>
+    <width>625</width>
+    <height>524</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -129,38 +129,6 @@
          </widget>
         </item>
         <item>
-         <spacer name="hspacer4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbxPointIsComma">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="toolTip">
-           <string>X and Y coordinates have comma for decimal point</string>
-          </property>
-          <property name="statusTip">
-           <string>X and Y coordinates have comma for decimal point</string>
-          </property>
-          <property name="whatsThis">
-           <string>X and Y coordinates have comma for decimal point</string>
-          </property>
-          <property name="text">
-           <string>Point  is comma</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QCheckBox" name="cbxXyDms">
           <property name="toolTip">
            <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
@@ -172,9 +140,22 @@
            <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
           </property>
           <property name="text">
-           <string>DMS coords</string>
+           <string>DMS coordinates</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="hspacer4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -821,6 +802,25 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="cbxPointIsComma">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="toolTip">
+           <string>X and Y coordinates have comma for decimal point</string>
+          </property>
+          <property name="statusTip">
+           <string>X and Y coordinates have comma for decimal point</string>
+          </property>
+          <property name="whatsThis">
+           <string>X and Y coordinates have comma for decimal point</string>
+          </property>
+          <property name="text">
+           <string>Point  is comma</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -872,13 +872,20 @@
   <tabstop>txtEscapeChars</tabstop>
   <tabstop>delimiterRegexp</tabstop>
   <tabstop>txtDelimiterRegexp</tabstop>
+  <tabstop>cbxTrimFields</tabstop>
+  <tabstop>cbxSkipEmptyFields</tabstop>
+  <tabstop>cbxPointIsComma</tabstop>
+  <tabstop>rowCounter</tabstop>
+  <tabstop>cbxUseHeader</tabstop>
   <tabstop>geomTypeXY</tabstop>
   <tabstop>cmbXField</tabstop>
   <tabstop>cmbYField</tabstop>
-  <tabstop>cbxPointIsComma</tabstop>
+  <tabstop>cbxXyDms</tabstop>
   <tabstop>geomTypeWKT</tabstop>
   <tabstop>cmbWktField</tabstop>
   <tabstop>cmbGeometryType</tabstop>
+  <tabstop>geomTypeNone</tabstop>
+  <tabstop>tblSample</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
@@ -890,12 +897,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>119</x>
-     <y>246</y>
+     <x>128</x>
+     <y>219</y>
     </hint>
     <hint type="destinationlabel">
-     <x>388</x>
-     <y>245</y>
+     <x>380</x>
+     <y>218</y>
     </hint>
    </hints>
   </connection>
@@ -906,12 +913,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>101</x>
-     <y>327</y>
+     <x>93</x>
+     <y>313</y>
     </hint>
     <hint type="destinationlabel">
-     <x>270</x>
-     <y>329</y>
+     <x>262</x>
+     <y>315</y>
     </hint>
    </hints>
   </connection>
@@ -922,12 +929,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>89</x>
-     <y>327</y>
+     <x>93</x>
+     <y>313</y>
     </hint>
     <hint type="destinationlabel">
-     <x>438</x>
-     <y>329</y>
+     <x>430</x>
+     <y>315</y>
     </hint>
    </hints>
   </connection>
@@ -938,12 +945,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>101</x>
-     <y>360</y>
+     <x>95</x>
+     <y>344</y>
     </hint>
     <hint type="destinationlabel">
-     <x>250</x>
-     <y>362</y>
+     <x>261</x>
+     <y>346</y>
     </hint>
    </hints>
   </connection>
@@ -954,8 +961,8 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>80</x>
-     <y>182</y>
+     <x>89</x>
+     <y>155</y>
     </hint>
     <hint type="destinationlabel">
      <x>181</x>
@@ -970,28 +977,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>359</y>
+     <x>59</x>
+     <y>344</y>
     </hint>
     <hint type="destinationlabel">
-     <x>349</x>
-     <y>358</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>geomTypeXY</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>cbxPointIsComma</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>49</x>
-     <y>321</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>512</x>
-     <y>327</y>
+     <x>429</x>
+     <y>346</y>
     </hint>
    </hints>
   </connection>
@@ -1002,12 +993,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>40</x>
-     <y>320</y>
+     <x>52</x>
+     <y>313</y>
     </hint>
     <hint type="destinationlabel">
-     <x>116</x>
-     <y>326</y>
+     <x>136</x>
+     <y>315</y>
     </hint>
    </hints>
   </connection>
@@ -1018,12 +1009,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>57</x>
-     <y>327</y>
+     <x>69</x>
+     <y>313</y>
     </hint>
     <hint type="destinationlabel">
-     <x>282</x>
-     <y>326</y>
+     <x>304</x>
+     <y>315</y>
     </hint>
    </hints>
   </connection>
@@ -1034,12 +1025,28 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>46</x>
-     <y>356</y>
+     <x>58</x>
+     <y>344</y>
     </hint>
     <hint type="destinationlabel">
-     <x>290</x>
-     <y>357</y>
+     <x>350</x>
+     <y>346</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>geomTypeXY</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cbxXyDms</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>40</x>
+     <y>300</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>488</x>
+     <y>305</y>
     </hint>
    </hints>
   </connection>

@@ -262,6 +262,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSe
   cbxUseHeader->setChecked( settings.value( key + "/useHeader", "true" ) != "false" );
   cbxTrimFields->setChecked( settings.value( key + "/trimFields", "false" ) == "true" );
   cbxSkipEmptyFields->setChecked( settings.value( key + "/skipEmptyFields", "false" ) == "true" );
+  cbxPointIsComma->setChecked( settings.value( key + "/decimalPoint", "." ).toString().contains( "," ) );
 
   if ( loadGeomSettings )
   {
@@ -269,7 +270,6 @@ void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSe
     if ( geomColumnType == "xy" ) geomTypeXY->setChecked( true );
     else if ( geomColumnType == "wkt" ) geomTypeWKT->setChecked( true );
     else geomTypeNone->setChecked( true );
-    cbxPointIsComma->setChecked( settings.value( key + "/decimalPoint", "." ).toString().contains( "," ) );
     cbxXyDms->setChecked( settings.value( key + "/xyDms", "false" ) == "true" );
   }
 
@@ -297,13 +297,13 @@ void QgsDelimitedTextSourceSelect::saveSettings( QString subkey, bool saveGeomSe
   settings.setValue( key + "/useHeader", cbxUseHeader->isChecked() ? "true" : "false" );
   settings.setValue( key + "/trimFields", cbxTrimFields->isChecked() ? "true" : "false" );
   settings.setValue( key + "/skipEmptyFields", cbxSkipEmptyFields->isChecked() ? "true" : "false" );
+  settings.setValue( key + "/decimalPoint", cbxPointIsComma->isChecked() ? "," : "." );
   if ( saveGeomSettings )
   {
     QString geomColumnType = "none";
     if ( geomTypeXY->isChecked() ) geomColumnType = "xy";
     if ( geomTypeWKT->isChecked() ) geomColumnType = "wkt";
     settings.setValue( key + "/geomColumnType", geomColumnType );
-    settings.setValue( key + "/decimalPoint", cbxPointIsComma->isChecked() ? "," : "." );
     settings.setValue( key + "/xyDms", cbxXyDms->isChecked() ? "true" : "false" );
   }
 
