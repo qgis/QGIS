@@ -9,4 +9,3 @@ menu_icons.svg
 PLUGIN_INSTALL(fTools icons ${VECTOR_GRAPHICS_FILES} logo_small.png)
 
 ADD_SUBDIRECTORY(default)
-ADD_SUBDIRECTORY(gis)

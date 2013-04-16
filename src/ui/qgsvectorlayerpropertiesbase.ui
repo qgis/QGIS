@@ -532,7 +532,7 @@ p, li { white-space: pre-wrap; }
      <widget class="QWidget" name="mDisplayPage">
       <attribute name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/gis/mActionMapTips.png</normaloff>:/images/themes/gis/mActionMapTips.png</iconset>
+        <normaloff>:/images/themes/default/mActionMapTips.png</normaloff>:/images/themes/default/mActionMapTips.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Display</string>
@@ -928,7 +928,7 @@ p, li { white-space: pre-wrap; }
  <customwidgets>
   <customwidget>
    <class>QgsScaleComboBox</class>
-   <extends>QWidget</extends>
+   <extends>QComboBox</extends>
    <header>qgsscalecombobox.h</header>
   </customwidget>
  </customwidgets>

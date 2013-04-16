@@ -36,10 +36,9 @@ _init_commands = ["from qgis.core import *", "import qgis.utils",
                   "from qgis.utils import iface"]
 _historyFile = unicode( QgsApplication.qgisSettingsDirPath() + "console_history.txt" )
 
-class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
+class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def __init__(self, parent=None):
-        #QsciScintilla.__init__(self, parent)
-        super(PythonEdit,self).__init__(parent)
+        super(ShellScintilla,self).__init__(parent)
         code.InteractiveInterpreter.__init__(self, locals=None)
 
         self.parent = parent
@@ -68,24 +67,12 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         # Brace matching: enable for a brace immediately before or after
         # the current position
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        #self.moveToMatchingBrace()
-        #self.selectToMatchingBrace()
 
         # Current line visible with special background color
-        #self.setCaretLineVisible(True)
-        #self.setCaretLineBackgroundColor(QColor("#ffe4e4"))
         self.setCaretWidth(2)
 
         # Set Python lexer
         self.setLexers()
-
-        # Indentation
-        #self.setAutoIndent(True)
-        #self.setIndentationsUseTabs(False)
-        #self.setIndentationWidth(4)
-        #self.setTabIndents(True)
-        #self.setBackspaceUnindents(True)
-        #self.setTabWidth(4)
 
         self.setAutoCompletionThreshold(2)
         self.setAutoCompletionSource(self.AcsAPIs)
@@ -112,10 +99,12 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl+shift)
 
         ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
-        self.newShortcutCS = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
+        self.newShortcutCSS = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Space), self)
         self.newShortcutCAS = QShortcut(QKeySequence(Qt.CTRL + Qt.ALT + Qt.Key_Space), self)
-        self.newShortcutCS.activated.connect(self.autoComplete)
-        self.newShortcutCAS.activated.connect(self.showHistory)
+        self.newShortcutCSS.setContext(Qt.WidgetShortcut)
+        self.newShortcutCAS.setContext(Qt.WidgetShortcut)
+        self.newShortcutCAS.activated.connect(self.autoComplete)
+        self.newShortcutCSS.activated.connect(self.showHistory)
         self.connect(self, SIGNAL('userListActivated(int, const QString)'),
                      self.completion_list_selected)
 
@@ -228,10 +217,10 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
         self.ensureCursorVisible()
         self.ensureLineVisible(line)
 
-#    def on_new_line(self):
-#        """On new input line"""
-#        self.move_cursor_to_end()
-#        self.new_input_line = False
+    #def on_new_line(self):
+        #"""On new input line"""
+        #self.move_cursor_to_end()
+        #self.new_input_line = False
 
     def is_cursor_on_last_line(self):
         """Return True if cursor is on the last line"""
@@ -255,20 +244,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
 
     def refreshLexerProperties(self):
         self.setLexers()
-
-#    def check_selection(self):
-#        """
-#        Check if selected text is r/w,
-#        otherwise remove read-only parts of selection
-#        """
-#        #if self.current_prompt_pos is None:
-#            #self.move_cursor_to_end()
-#            #return
-#        line_from, index_from, line_to, index_to = self.getSelection()
-#        pline, pindex = self.getCursorPosition()
-#        if line_from < pline or \
-#           (line_from == pline and index_from < pindex):
-#            self.setSelection(pline, pindex, line_to, index_to)
 
     def displayPrompt(self, more=False):
         self.append("... ") if more else self.append(">>> ")
@@ -349,7 +324,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
                 if e.key() in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Home, Qt.Key_End):
                     QsciScintilla.keyPressEvent(self, e)
                 return
-
             # all other keystrokes get sent to the input line
             self.move_cursor_to_end()
 
@@ -459,11 +433,6 @@ class PythonEdit(QsciScintilla, code.InteractiveInterpreter):
             line.replace(">>> ", "").replace("... ", "")
             self.insert(unicode(line))
             self.move_cursor_to_end()
-
-#    def getTextFromEditor(self):
-#        text = self.text()
-#        textList = text.split("\n")
-#        return textList
 
     def insertTextFromFile(self, listOpenFile):
         for line in listOpenFile[:-1]:

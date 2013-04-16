@@ -4129,7 +4129,7 @@
      <widget class="QWidget" name="tab_4">
       <attribute name="icon">
        <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/gis/mActionOpenTable.png</normaloff>:/images/themes/gis/mActionOpenTable.png</iconset>
+        <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
       </attribute>
       <attribute name="title">
        <string>Data defined settings</string>

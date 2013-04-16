@@ -627,8 +627,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>:/images/themes/default/mActionAddFeature.png</normaloff>:/images/themes/default/mActionAddFeature.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCapturePolygon.png</normaloff>:/images/themes/default/mActionCapturePolygon.png</iconset>
    </property>
    <property name="text">
     <string>Add Feature</string>
@@ -1699,7 +1699,7 @@ Ctl (Cmd) increments by 15 deg.</string>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/gis/mActionTouch.png</normaloff>:/images/themes/gis/mActionTouch.png</iconset>
+     <normaloff>:/images/themes/default/mActionTouch.png</normaloff>:/images/themes/default/mActionTouch.png</iconset>
    </property>
    <property name="text">
     <string>Touch zoom and pan</string>
@@ -2023,7 +2023,7 @@ Acts on currently active editable layer</string>
   <action name="mActionIncreaseBrightness">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/gis/mActionIncreaseBrightness.svg</normaloff>:/images/themes/gis/mActionIncreaseBrightness.svg</iconset>
+     <normaloff>:/images/themes/default/mActionIncreaseBrightness.svg</normaloff>:/images/themes/default/mActionIncreaseBrightness.svg</iconset>
    </property>
    <property name="text">
     <string>Increase brightness</string>
@@ -2032,7 +2032,7 @@ Acts on currently active editable layer</string>
   <action name="mActionDecreaseBrightness">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/gis/mActionDecreaseBrightness.svg</normaloff>:/images/themes/gis/mActionDecreaseBrightness.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDecreaseBrightness.svg</normaloff>:/images/themes/default/mActionDecreaseBrightness.svg</iconset>
    </property>
    <property name="text">
     <string>Decrease brightness</string>
@@ -2041,7 +2041,7 @@ Acts on currently active editable layer</string>
   <action name="mActionIncreaseContrast">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/gis/mActionIncreaseContrast.svg</normaloff>:/images/themes/gis/mActionIncreaseContrast.svg</iconset>
+     <normaloff>:/images/themes/default/mActionIncreaseContrast.svg</normaloff>:/images/themes/default/mActionIncreaseContrast.svg</iconset>
    </property>
    <property name="text">
     <string>Increase contrast</string>
@@ -2050,7 +2050,7 @@ Acts on currently active editable layer</string>
   <action name="mActionDecreaseContrast">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/gis/mActionDecreaseContrast.svg</normaloff>:/images/themes/gis/mActionDecreaseContrast.svg</iconset>
+     <normaloff>:/images/themes/default/mActionDecreaseContrast.svg</normaloff>:/images/themes/default/mActionDecreaseContrast.svg</iconset>
    </property>
    <property name="text">
     <string>Decrease contrast</string>
@@ -2059,7 +2059,7 @@ Acts on currently active editable layer</string>
   <action name="mActionSelectByExpression">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/gis/mIconExpressionSelect.svg</normaloff>:/images/themes/gis/mIconExpressionSelect.svg</iconset>
+     <normaloff>:/images/themes/default/mIconExpressionSelect.svg</normaloff>:/images/themes/default/mIconExpressionSelect.svg</iconset>
    </property>
    <property name="text">
     <string>Select By Expression</string>
