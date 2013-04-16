@@ -102,7 +102,8 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor
 //  QColor newColor( newBackgroundColor );
   mItem->beginCommand( tr( "Background color changed" ) );
 //  newColor.setAlpha( 255 - ( mTransparencySpinBox->value() * 2.55 ) );
-  mItem->setBrush( QBrush( QColor( newBackgroundColor ), Qt::SolidPattern ) );
+  mItem->setBackgroundColor( newBackgroundColor );
+
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
   QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
@@ -248,6 +249,15 @@ void QgsComposerItemWidget::on_mBackgroundGroupBox_toggled( bool state )
 
   mItem->beginCommand( tr( "Item background toggled" ) );
   mItem->setBackgroundEnabled( state );
+
+  //if the item is a composer map, we need to regenerate the map image
+  //because it usually is cached
+  QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
+  if ( cm )
+  {
+    cm->cache();
+  }
+
   mItem->update();
   mItem->endCommand();
 }
