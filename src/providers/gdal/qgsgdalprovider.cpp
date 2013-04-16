@@ -815,6 +815,7 @@ double  QgsGdalProvider::noDataValue() const
 }
 #endif
 
+#if 0
 void QgsGdalProvider::computeMinMax( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1 mMinMaxComputed = %2" ).arg( theBandNo ).arg( mMinMaxComputed[theBandNo-1] ) );
@@ -834,27 +835,7 @@ void QgsGdalProvider::computeMinMax( int theBandNo ) const
   mMinimum[theBandNo-1] = adfMinMax[0];
   mMaximum[theBandNo-1] = adfMinMax[1];
 }
-
-double  QgsGdalProvider::minimumValue( int theBandNo ) const
-{
-  QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
-  if ( !mMinMaxComputed[theBandNo-1] )
-  {
-    computeMinMax( theBandNo );
-    mMinMaxComputed[theBandNo-1] = true;
-  }
-  return  mMinimum[theBandNo-1];
-}
-double  QgsGdalProvider::maximumValue( int theBandNo ) const
-{
-  QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
-  if ( !mMinMaxComputed[theBandNo-1] )
-  {
-    computeMinMax( theBandNo );
-    mMinMaxComputed[theBandNo-1] = true;
-  }
-  return  mMaximum[theBandNo-1];
-}
+#endif
 
 /**
  * @param theBandNumber the number of the band for which you want a color table
@@ -2286,13 +2267,14 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
 
 void QgsGdalProvider::initBaseDataset()
 {
+#if 0
   for ( int i = 0; i < GDALGetRasterCount( mGdalBaseDataset ); i++ )
   {
     mMinMaxComputed.append( false );
     mMinimum.append( 0 );
     mMaximum.append( 0 );
   }
-
+#endif
   // Check if we need a warped VRT for this file.
   bool hasGeoTransform = GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None;
   if (( hasGeoTransform
@@ -2755,3 +2737,32 @@ QString QgsGdalProvider::validatePyramidsCreationOptions( RasterPyramidsFormat p
 
   return QString();
 }
+
+// pyramids resampling
+
+// see http://www.gdal.org/gdaladdo.html
+//     http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
+//     http://www.gdal.org/classGDALRasterBand.html#afaea945b13ec9c86c2d783b883c68432
+
+// from http://www.gdal.org/gdaladdo.html
+//   average_mp is unsuitable for use thus not included
+
+// from qgsgdalprovider.cpp (removed)
+//   NOTE magphase is disabled in the gui since it tends
+//   to create corrupted images. The images can be repaired
+//   by running one of the other resampling strategies below.
+//   see ticket #284
+
+QGISEXTERN QList<QPair<QString, QString> > pyramidResamplingMethods()
+{
+  QList<QPair<QString, QString> > methods;
+  methods.append( QPair<QString, QString>( "NEAREST", QObject::tr( "Nearest Neighbour" ) ) );
+  methods.append( QPair<QString, QString>( "AVERAGE", QObject::tr( "Average" ) ) );
+  methods.append( QPair<QString, QString>( "GAUSS", QObject::tr( "Gauss" ) ) );
+  methods.append( QPair<QString, QString>( "CUBIC", QObject::tr( "Cubic" ) ) );
+  methods.append( QPair<QString, QString>( "MODE", QObject::tr( "Mode" ) ) );
+  methods.append( QPair<QString, QString>( "NONE", QObject::tr( "None" ) ) );
+
+  return methods;
+}
+
