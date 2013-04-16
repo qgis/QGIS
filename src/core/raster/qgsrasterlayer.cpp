@@ -1454,7 +1454,7 @@ double QgsRasterLayer::rasterUnitsPerPixel()
 // horisontal one.
 
   //return qAbs( mGeoTransform[1] );
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution && mDataProvider->xSize() > 0 )
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && mDataProvider->xSize() > 0 )
   {
     return mDataProvider->extent().width() / mDataProvider->xSize();
   }

@@ -489,8 +489,6 @@ int QgsGrassRasterProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
                    | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::ExactResolution
-                   | QgsRasterDataProvider::ExactMinimumMaximum
                    | QgsRasterDataProvider::Size;
   return capability;
 }

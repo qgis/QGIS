@@ -998,10 +998,8 @@ int QgsGdalProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
                    | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::ExactResolution
-                   | QgsRasterDataProvider::EstimatedMinimumMaximum
+                   | QgsRasterDataProvider::Size
                    | QgsRasterDataProvider::BuildPyramids
-                   | QgsRasterDataProvider::Histogram
                    | QgsRasterDataProvider::Create
                    | QgsRasterDataProvider::Remove;
   GDALDriverH myDriver = GDALGetDatasetDriver( mGdalDataset );

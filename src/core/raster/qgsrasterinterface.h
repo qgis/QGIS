@@ -24,52 +24,33 @@
 #include <QImage>
 
 #include "qgslogger.h"
-#include "qgsrasterblock.h"
-#include "qgsrectangle.h"
 #include "qgsrasterbandstats.h"
+#include "qgsrasterblock.h"
 #include "qgsrasterhistogram.h"
+#include "qgsrectangle.h"
 
 /** \ingroup core
- * Base class for processing modules.
+ * Base class for processing filters like renderers, reprojector, resampler etc.
  */
-// TODO: inherit from QObject? It would be probably better but QgsDataProvider inherits already from QObject and multiple inheritance from QObject is not allowed
 class CORE_EXPORT QgsRasterInterface
 {
     Q_DECLARE_TR_FUNCTIONS( QgsRasterInterface );
 
   public:
-
     //! If you add to this, please also add to capabilitiesString()
     enum Capability
     {
       NoCapabilities =          0,
-      Identify =                1,
-      ExactMinimumMaximum =     1 << 1,
-      ExactResolution =         1 << 2,
-      EstimatedMinimumMaximum = 1 << 3,
-      BuildPyramids =           1 << 4,
-      Histogram =               1 << 5,
-      Size =                    1 << 6,  // has fixed source type
-      Create =                  1 << 7, //create new datasets
-      Remove =                  1 << 8, //delete datasets
-      IdentifyValue =           1 << 9,
-      IdentifyText =            1 << 10,
-      IdentifyHtml =            1 << 11,
-      IdentifyFeature =         1 << 12  // WMS GML -> feature
+      Size =                    1 << 1, // original data source size (and thus resolution) is known, it is not always available, for example for WMS
+      Create =                  1 << 2, // create new datasets
+      Remove =                  1 << 3, // delete datasets
+      BuildPyramids =           1 << 4, // supports building of pyramids (overviews)
+      Identify =                1 << 5, // at least one identify format supported
+      IdentifyValue =           1 << 6, // numerical values
+      IdentifyText =            1 << 7, // WMS text
+      IdentifyHtml =            1 << 8, // WMS HTML
+      IdentifyFeature =         1 << 9  // WMS GML -> feature
     };
-
-
-#if 0
-    struct Range
-    {
-      double min;
-      double max;
-      inline bool operator==( const Range &o ) const
-      {
-        return min == o.min && max == o.max;
-      }
-    };
-#endif
 
     QgsRasterInterface( QgsRasterInterface * input = 0 );
 
@@ -78,8 +59,7 @@ class CORE_EXPORT QgsRasterInterface
     /** Clone itself, create deep copy */
     virtual QgsRasterInterface *clone() const = 0;
 
-    /** Returns a bitmask containing the supported capabilities
-      */
+    /** Returns a bitmask containing the supported capabilities */
     virtual int capabilities() const
     {
       return QgsRasterInterface::NoCapabilities;
@@ -94,8 +74,7 @@ class CORE_EXPORT QgsRasterInterface
     virtual QGis::DataType dataType( int bandNo ) const = 0;
 
     /** Returns source data type for the band specified by number,
-     *  source data type may be shorter than dataType
-     */
+     *  source data type may be shorter than dataType */
     virtual QGis::DataType srcDataType( int bandNo ) const { if ( mInput ) return mInput->srcDataType( bandNo ); else return QGis::UnknownDataType; };
 
     /**
@@ -123,27 +102,6 @@ class CORE_EXPORT QgsRasterInterface
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
     }
 
-    /** True if the interface has a no data value.
-     * It does not change during the life of the interface.
-     * @param bandNo band number
-     * @return true if the interface has a no data value */
-    //virtual bool hasNoDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return false; }
-
-    /** Return no data value for specific band. Each band/provider must have
-     * no data value, if there is no one set in original data, provider decides one
-     * possibly using wider data type.
-     * @param bandNo band number
-     * @return No data value */
-    //virtual double noDataValue( int bandNo ) const { Q_UNUSED( bandNo ); return std::numeric_limits<double>::quiet_NaN(); }
-
-#if 0
-    /** Test if value is nodata for specific band
-     * @param bandNo band number
-     * @param value tested value
-     * @return true if value is nodata */
-    virtual bool isNoDataValue( int bandNo, double value ) const;
-#endif
-
     /** Read block of data using given extent and size.
      *  Returns pointer to data.
      *  Caller is responsible to free the memory returned.
@@ -153,22 +111,6 @@ class CORE_EXPORT QgsRasterInterface
      * @param height pixel height of block
      */
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
-    //void *block( int bandNo, const QgsRectangle &extent, int width, int height );
-
-#if 0
-    /** Read block of data using given extent and size.
-     *  Method to be implemented by subclasses.
-     *  Returns pointer to data.
-     *  Caller is responsible to free the memory returned.
-     */
-    virtual void *readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
-    virtual QgsRasterBlock *readBlock( int bandNo, const QgsRectangle &extent, int width, int height ) const = 0;
-
-    {
-      Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
-      return new QgsRasterBlock();
-    }
-#endif
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */
@@ -265,15 +207,6 @@ class CORE_EXPORT QgsRasterInterface
                                 const QgsRectangle & theExtent = QgsRectangle(),
                                 int theSampleSize = 0 );
 
-    /** Switch on (and clear old statistics) or off collection of statistics */
-    //void setStatsOn( bool on );
-
-    /** Last total time (for allbands) consumed by this interface for call to block()
-     * If cumulative is true, the result includes also time spent in all preceding
-     * interfaces. If cumulative is false, only time consumed by this interface is
-     * returned. */
-    //double time( bool cumulative = false );
-
     /** Write base class members to xml. */
     virtual void writeXML( QDomDocument& doc, QDomElement& parentElem ) const { Q_UNUSED( doc ); Q_UNUSED( parentElem ); }
     /** Sets base class members from xml. Usually called from create() methods of subclasses */
@@ -308,13 +241,6 @@ class CORE_EXPORT QgsRasterInterface
                          int theStats = QgsRasterBandStats::All,
                          const QgsRectangle & theExtent = QgsRectangle(),
                          int theBinCount = 0 );
-
-  private:
-    // Last rendering cumulative (this and all preceding interfaces) times, from index 1
-    //QVector<double> mTime;
-
-    // Collect statistics
-    //int mStatsOn;
 };
 
 #endif

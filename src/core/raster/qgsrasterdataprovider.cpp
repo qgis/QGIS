@@ -106,7 +106,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   double tmpXRes, tmpYRes;
   double providerXRes = 0;
   double providerYRes = 0;
-  if ( capabilities() & ExactResolution )
+  if ( capabilities() & Size )
   {
     providerXRes = extent().width() / xSize();
     providerYRes = extent().height() / ySize();

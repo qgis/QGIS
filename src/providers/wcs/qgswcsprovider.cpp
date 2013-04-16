@@ -1433,11 +1433,9 @@ int QgsWcsProvider::capabilities() const
   int capability = NoCapabilities;
   capability |= QgsRasterDataProvider::Identify;
   capability |= QgsRasterDataProvider::IdentifyValue;
-  capability |= QgsRasterDataProvider::Histogram;
 
   if ( mHasSize )
   {
-    capability |= QgsRasterDataProvider::ExactResolution;
     capability |= QgsRasterDataProvider::Size;
   }
 

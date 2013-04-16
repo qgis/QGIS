@@ -70,7 +70,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     //extent
     setOutputExtent( mDataProvider->extent(), mLayerCrs, OriginalExtent );
 
-    if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
+    if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size )
     {
       setOriginalResolution();
       int xSize = mDataProvider->xSize();
@@ -335,7 +335,7 @@ void QgsRasterLayerSaveAsDialog::hideOutput()
 
 void QgsRasterLayerSaveAsDialog::toggleResolutionSize()
 {
-  bool hasResolution = mDataProvider && mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution;
+  bool hasResolution = mDataProvider && mDataProvider->capabilities() & QgsRasterDataProvider::Size;
 
   bool on = mResolutionRadioButton->isChecked();
   mXResolutionLineEdit->setEnabled( on );
@@ -350,7 +350,7 @@ void QgsRasterLayerSaveAsDialog::setOriginalResolution()
 {
   double xRes, yRes;
 
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size )
   {
     xRes = mDataProvider->extent().width() / mDataProvider->xSize();
     yRes = mDataProvider->extent().height() / mDataProvider->ySize();

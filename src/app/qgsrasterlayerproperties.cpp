@@ -195,7 +195,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     mOptsPage_Pyramids->setEnabled( false );
   }
 
-  if ( !( provider->capabilities() & QgsRasterDataProvider::Histogram ) )
+  // We can calculate histogram for all data sources but estimated only if
+  // size is unknown - could also be enabled if well supported (estimated histogram
+  // and and let user know that it is estimated)
+  if ( !( provider->capabilities() & QgsRasterDataProvider::Size ) )
   {
     // disable Histogram tab completely
     mOptsPage_Histogram->setEnabled( false );
@@ -572,7 +575,7 @@ void QgsRasterLayerProperties::sync()
     }
   }
 
-  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
+  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size ) )
   {
     if ( mOptsPage_Histogram != NULL )
     {

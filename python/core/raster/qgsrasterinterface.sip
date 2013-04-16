@@ -44,15 +44,11 @@ class QgsRasterInterface
     enum Capability
     {
       NoCapabilities,
-      Identify,
-      ExactMinimumMaximum,
-      ExactResolution,
-      EstimatedMinimumMaximum,
-      BuildPyramids,
-      Histogram,
       Size,
       Create,
       Remove,
+      BuildPyramids,
+      Identify,
       IdentifyValue,
       IdentifyText,
       IdentifyHtml,

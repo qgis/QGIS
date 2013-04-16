@@ -230,14 +230,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       return colorName( colorInterpretation( theBandNo ) );
     }
 
-    /** Get block size */
-    //virtual int xBlockSize() const { return 0; }
-    //virtual int yBlockSize() const { return 0; }
-
-    /** Get raster size */
-    //virtual int xSize() const { return 0; }
-    //virtual int ySize() const { return 0; }
-
     // TODO: remove or make protected all readBlock working with void*
 
     /** read block of data  */
