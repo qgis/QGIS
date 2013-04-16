@@ -142,10 +142,10 @@ In both cases the SRID is ignored.
 </p>
 <h4><a name="example">Example of a text file with X,Y point coordinates</a></h4> 
 <pre>
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
+X;Y;ELEV<br />
+-300120;7689960;13<br />
+-654360;7562040;52<br />
+1640;7512840;3<br />
 </pre>
 <p>This file:</p>
 <ul>
@@ -157,12 +157,12 @@ X;Y;ELEV
 </ul>
 <h4><a name="wkt_example">Example of a text file with WKT geometries</a></h4>
 <pre>
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
+id|wkt<br />
+1|POINT(172.0702250 -43.6031036)<br />
+2|POINT(172.0702250 -43.6031036)<br />
+3|POINT(172.1543206 -43.5731302)<br />
+4|POINT(171.9282585 -43.5493308)<br />
+5|POINT(171.8827359 -43.5875983)<br />
 </pre>
 <p>This file:</p>
 <ul>
