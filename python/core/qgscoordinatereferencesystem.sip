@@ -304,4 +304,9 @@ class QgsCoordinateReferenceSystem
      * @note added in 1.8
      */
     static int syncDb();
+
+    /*! Save the proj4-string as a custom CRS
+     * @returns bool true if success else false
+     */
+    bool saveAsUserCRS( QString name );
 };
