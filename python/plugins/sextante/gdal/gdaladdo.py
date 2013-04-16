@@ -24,11 +24,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+
 from PyQt4 import QtGui
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.outputs.OutputRaster import OutputRaster
-import os
+
 from sextante.gdal.GdalUtils import GdalUtils
 
 class gdaladdo(GeoAlgorithm):
@@ -50,10 +53,10 @@ class gdaladdo(GeoAlgorithm):
         self.addOutput(OutputRaster(gdaladdo.OUTPUT, "Output layer", True))
 
     def processAlgorithm(self, progress):
-        commands = ["gdaladdo"]
-        input = self.getParameterValue(gdaladdo.INPUT)
-        self.setOutputValue(gdaladdo.OUTPUT, input)
-        commands.append(input)
-        commands.append(self.getParameterValue(gdaladdo.LEVELS))
+        arguments = []
+        inFile = self.getParameterValue(gdaladdo.INPUT)
+        arguments.append(inFile)
+        arguments.extend(self.getParameterValue(gdaladdo.LEVELS).split(" "))
+        self.setOutputValue(gdaladdo.OUTPUT, inFile)
 
-        GdalUtils.runGdal(commands, progress)
+        GdalUtils.runGdal(["gdaladdo", GdalUtils.escapeAndJoin(arguments)], progress)

@@ -47,14 +47,12 @@ class GrassAlgorithmProvider(AlgorithmProvider):
             SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_WIN_SHELL, "Msys folder", GrassUtils.grassWinShell()))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_COMMANDS, "Log execution commands", False))
         SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_LOG_CONSOLE, "Log console output", False))
-        SextanteConfig.addSetting(Setting(self.getDescription(), GrassUtils.GRASS_HELP_FOLDER, "GRASS help folder", GrassUtils.grassHelpPath()))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         if SextanteUtils.isWindows() or SextanteUtils.isMac():
             SextanteConfig.removeSetting(GrassUtils.GRASS_FOLDER)
             SextanteConfig.removeSetting(GrassUtils.GRASS_WIN_SHELL)
-        SextanteConfig.removeSetting(GrassUtils.GRASS_HELP_FOLDER)
         SextanteConfig.removeSetting(GrassUtils.GRASS_LOG_COMMANDS)
         SextanteConfig.removeSetting(GrassUtils.GRASS_LOG_CONSOLE)
 
@@ -103,20 +101,5 @@ class GrassAlgorithmProvider(AlgorithmProvider):
 
     def getSupportedOutputRasterLayerExtensions(self):
         return ["tif"]
-
-    def createDescriptionFiles(self):
-        folder = "C:\\descs\\grass"
-        i = 0
-        for alg in self.preloadedAlgs:
-            f = open (os.path.join(folder, alg.name +".txt"), "w")
-            f.write(alg.name + "\n")
-            f.write(alg.name + "\n")
-            f.write(alg.group + "\n")
-            for param in alg.parameters:
-                f.write(param.serialize() + "\n")
-            for out in alg.outputs:
-                f.write(out.serialize() + "\n")
-            f.close()
-            i+=1
 
 

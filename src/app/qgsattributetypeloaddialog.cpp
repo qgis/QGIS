@@ -127,9 +127,6 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
     return;
   }
 
-  QgsVectorDataProvider* dataProvider = vLayer->dataProvider();
-  dataProvider->enableGeometrylessFeatures( true );
-
   QgsAttributeList attributeList = QgsAttributeList();
   attributeList.append( idx );
   attributeList.append( idx2 );
@@ -158,7 +155,6 @@ void QgsAttributeTypeLoadDialog::createPreview( int fieldIndex, bool full )
     previewTableWidget->setItem( row, 1, new QTableWidgetItem( mit.key() ) );
   }
 
-  dataProvider->enableGeometrylessFeatures( false );
 }
 
 QMap<QString, QVariant> &QgsAttributeTypeLoadDialog::valueMap()
@@ -178,9 +174,6 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
     return;
   }
 
-  QgsVectorDataProvider* dataProvider = vLayer->dataProvider();
-  dataProvider->enableGeometrylessFeatures( true );
-
   QgsAttributeList attributeList = QgsAttributeList();
   attributeList.append( idx );
   attributeList.append( idx2 );
@@ -196,7 +189,6 @@ void QgsAttributeTypeLoadDialog::loadDataToValueMap()
       mValueMap.insert( f.attribute( idx2 ).toString(), val );
     }
   }
-  dataProvider->enableGeometrylessFeatures( false );
 }
 
 

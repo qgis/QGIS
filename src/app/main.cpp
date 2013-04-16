@@ -570,6 +570,19 @@ int main( int argc, char *argv[] )
 
   QSettings mySettings;
 
+  // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
+  if ( mySettings.contains( "/Themes" ) )
+  {
+    QString theme = mySettings.value( "/Themes", "default" ).toString();
+    if ( theme == QString( "gis" )
+         || theme == QString( "classic" )
+         || theme == QString( "nkids" ) )
+    {
+      mySettings.setValue( "/Themes", QString( "default" ) );
+    }
+  }
+
+
   // custom environment variables
   QMap<QString, QString> systemEnvVars = QgsApplication::systemEnvVars();
   bool useCustomVars = mySettings.value( "qgis/customEnvVarsUse", QVariant( false ) ).toBool();

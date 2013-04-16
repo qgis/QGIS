@@ -222,6 +222,11 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     /**Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 
+    /** Blurs an image in place, e.g. creating Qt-independent drop shadows
+     * @note added in 1.9
+     */
+    static void blurImageInPlace( QImage& image, const QRect& rect, int radius, bool alphaOnly );
+
     /**Sorts the passed list in requested order*/
     static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/

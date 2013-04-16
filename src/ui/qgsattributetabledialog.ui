@@ -22,8 +22,14 @@
      <property name="leftMargin">
       <number>3</number>
      </property>
+     <property name="topMargin">
+      <number>3</number>
+     </property>
      <property name="rightMargin">
       <number>3</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
      </property>
      <item>
       <widget class="QToolButton" name="mToggleEditingButton">
@@ -143,7 +149,7 @@
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/gis/mIconExpressionSelect.svg</normaloff>:/images/themes/gis/mIconExpressionSelect.svg</iconset>
+         <normaloff>:/images/themes/default/mIconExpressionSelect.svg</normaloff>:/images/themes/default/mIconExpressionSelect.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -425,7 +431,13 @@
      <property name="leftMargin">
       <number>3</number>
      </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
      <property name="rightMargin">
+      <number>3</number>
+     </property>
+     <property name="bottomMargin">
       <number>3</number>
      </property>
      <item>

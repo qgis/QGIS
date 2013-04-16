@@ -43,21 +43,47 @@ void QgsRasterDataProvider::setUseSrcNoDataValue( int bandNo, bool use )
   mUseSrcNoDataValue[bandNo-1] = use;
 }
 
+//bool QgsRasterDataProvider::hasNoDataValue ( int theBandNo )
+//{
+//return ( srcHasNoDataValue(theBandNo) && useSrcNoDataValue(theBandNo) ) ||
+//       mHasInternalNoDataValue[bandNo-1];
+//return srcHasNoDataValue(theBandNo) && useSrcNoDataValue(theBandNo);
+//}
+
+//bool QgsRasterDataProvider::noDataValue( int bandNo ) const
+//{
+//  return mHasNoDataValue.value( bandNo - 1 );
+//}
+
+#if 0
 double QgsRasterDataProvider::noDataValue( int bandNo ) const
 {
   if ( mSrcHasNoDataValue.value( bandNo - 1 ) && mUseSrcNoDataValue.value( bandNo - 1 ) )
   {
     return mSrcNoDataValue.value( bandNo -1 );
   }
-  return mInternalNoDataValue.value( bandNo -1 );
+  //if ( mHasInternalNoDataValue[bandNo-1] )
+  //{
+  //  return mInternalNoDataValue.value( bandNo -1 );
+  //}
+  return std::numeric_limits<double>::quiet_NaN();
 }
+#endif
 
 QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  const & theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( QString( "theBandNo = %1 theWidth = %2 theHeight = %3" ).arg( theBandNo ).arg( theWidth ).arg( theHeight ) );
   QgsDebugMsg( QString( "theExtent = %1" ).arg( theExtent.toString() ) );
 
-  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
+  QgsRasterBlock *block;
+  if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )
+  {
+    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, srcNoDataValue( theBandNo ) );
+  }
+  else
+  {
+    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
+  }
 
   if ( block->isEmpty() )
   {
@@ -80,14 +106,14 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   double tmpXRes, tmpYRes;
   double providerXRes = 0;
   double providerYRes = 0;
-  if ( capabilities() & ExactResolution )
+  if ( capabilities() & Size )
   {
     providerXRes = extent().width() / xSize();
     providerYRes = extent().height() / ySize();
     tmpXRes = qMax( providerXRes, xRes );
     tmpYRes = qMax( providerYRes, yRes );
-    if ( doubleNear( tmpXRes, xRes ) ) tmpXRes = xRes;
-    if ( doubleNear( tmpYRes, yRes ) ) tmpYRes = yRes;
+    if ( qgsDoubleNear( tmpXRes, xRes ) ) tmpXRes = xRes;
+    if ( qgsDoubleNear( tmpYRes, yRes ) ) tmpYRes = yRes;
   }
   else
   {
@@ -142,9 +168,17 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
 
     block->setIsNoData();
 
-    QgsRasterBlock *tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight, noDataValue( theBandNo ) );
+    QgsRasterBlock *tmpBlock;
+    if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )
+    {
+      tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight, srcNoDataValue( theBandNo ) );
+    }
+    else
+    {
+      tmpBlock = new QgsRasterBlock( dataType( theBandNo ), tmpWidth, tmpHeight );
+    }
 
-    readBlock( theBandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->data() );
+    readBlock( theBandNo, tmpExtent, tmpWidth, tmpHeight, tmpBlock->bits() );
 
     int pixelSize = dataTypeSize( theBandNo );
 
@@ -194,12 +228,12 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   }
   else
   {
-    readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
+    readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits() );
   }
 
   // apply user no data values
   // TODO: there are other readBlock methods where no data are not applied
-  block->applyNodataValues( userNoDataValue( theBandNo ) );
+  block->applyNoDataValues( userNoDataValue( theBandNo ) );
   return block;
 }
 
@@ -286,7 +320,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
     // Outside the raster
     for ( int bandNo = 1; bandNo <= bandCount(); bandNo++ )
     {
-      results.insert( bandNo, noDataValue( bandNo ) );
+      results.insert( bandNo, QVariant() );
     }
     return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
   }
@@ -320,14 +354,22 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
   {
     QgsRasterBlock * myBlock = block( i, pixelExtent, 1, 1 );
 
-    double value = noDataValue( i );
-    if ( myBlock ) value = myBlock->value( 0 );
+    if ( myBlock )
+    {
+      double value = myBlock->value( 0 );
 
-    results.insert( i, value );
+      results.insert( i, value );
+      delete myBlock;
+    }
+    else
+    {
+      results.insert( i, QVariant() );
+    }
   }
   return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
 }
 
+#if 0
 QMap<QString, QString> QgsRasterDataProvider::identify( const QgsPoint & thePoint, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QMap<QString, QString> results;
@@ -387,6 +429,7 @@ QMap<QString, QString> QgsRasterDataProvider::identify( const QgsPoint & thePoin
 
   return results;
 }
+#endif
 
 QString QgsRasterDataProvider::lastErrorFormat()
 {
@@ -507,14 +550,14 @@ double QgsRasterDataProvider::readValue( void *data, int type, int index )
 }
 #endif
 
-void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QList<QgsRasterBlock::Range> noData )
+void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QgsRasterRangeList noData )
 {
   //if ( bandNo > bandCount() ) return;
   if ( bandNo >= mUserNoDataValue.size() )
   {
     for ( int i = mUserNoDataValue.size(); i < bandNo; i++ )
     {
-      mUserNoDataValue.append( QList<QgsRasterBlock::Range>() );
+      mUserNoDataValue.append( QgsRasterRangeList() );
     }
   }
   QgsDebugMsg( QString( "set %1 band %1 no data ranges" ).arg( noData.size() ) );

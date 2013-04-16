@@ -23,22 +23,22 @@
 #include "qgsrasterdataprovider.h"
 
 QgsRasterIdentifyResult::QgsRasterIdentifyResult()
-  : mValid(false)
-  , mFormat(QgsRasterDataProvider::IdentifyFormatUndefined)
+    : mValid( false )
+    , mFormat( QgsRasterDataProvider::IdentifyFormatUndefined )
 {
 }
 
 QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormat theFormat, QMap<int, QVariant> theResults )
-    : mValid(true)
-    , mFormat(theFormat)
-    , mResults(theResults)
+    : mValid( true )
+    , mFormat( theFormat )
+    , mResults( theResults )
 {
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult(  QgsError theError )
-    : mValid(false)
-    , mFormat(QgsRasterDataProvider::IdentifyFormatUndefined)
-    , mError(theError)
+QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsError theError )
+    : mValid( false )
+    , mFormat( QgsRasterDataProvider::IdentifyFormatUndefined )
+    , mError( theError )
 {
 }
 

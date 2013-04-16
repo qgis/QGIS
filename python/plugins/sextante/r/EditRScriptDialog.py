@@ -26,6 +26,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import sys
+
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -79,7 +81,6 @@ class EditRScriptDialog(QtGui.QDialog):
         self.setLayout(layout)
         QtCore.QMetaObject.connectSlotsByName(self)
 
-
     def editHelp(self):
         if self.alg is None:
             alg = RAlgorithm(None, unicode(self.text.toPlainText()))
@@ -91,7 +92,6 @@ class EditRScriptDialog(QtGui.QDialog):
         #filename defined yet
         if self.alg is None and dlg.descriptions:
             self.help = dlg.descriptions
-
 
     def runAlgorithm(self):
         alg = RAlgorithm(None, unicode(self.text.toPlainText()))
@@ -110,7 +110,6 @@ class EditRScriptDialog(QtGui.QDialog):
                 pass
             canvas.setMapTool(prevMapTool)
 
-
     def saveAlgorithm(self):
         if self.filename is None:
             self.filename = str(QtGui.QFileDialog.getSaveFileName(self, "Save Script", RUtils.RScriptsFolder(), "SEXTANTE R script (*.rsx)"))
@@ -121,9 +120,16 @@ class EditRScriptDialog(QtGui.QDialog):
             text = str(self.text.toPlainText())
             if self.alg is not None:
                 self.alg.script = text
-            fout = open(self.filename, "w")
-            fout.write(text)
-            fout.close()
+            try:
+                fout = open(self.filename, "w")
+                fout.write(text)
+                fout.close()
+            except IOError:
+                QMessageBox.warning(self,
+                                    self.tr("I/O error"),
+                                    self.tr("Unable to save edits. Reason:\n %1").arg(unicode(sys.exc_info()[1]))
+                                   )
+                return
             self.update = True
             #if help strings were defined before saving the model for the first time, we do it here
             if self.help:

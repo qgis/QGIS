@@ -91,7 +91,7 @@ class ParameterTable(ParameterDataObject):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterTable(tokens[0], tokens[1], str(True) == tokens[2])
+        return ParameterTable(tokens[1], tokens[2], str(True) == tokens[3])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=table"

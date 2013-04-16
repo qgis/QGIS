@@ -135,7 +135,7 @@
           </sizepolicy>
          </property>
          <property name="selectionMode">
-          <enum>QAbstractItemView::MultiSelection</enum>
+          <enum>QAbstractItemView::ExtendedSelection</enum>
          </property>
          <property name="allColumnsShowFocus">
           <bool>true</bool>
@@ -461,9 +461,14 @@
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
+  <tabstop>btnLoad</tabstop>
+  <tabstop>btnSave</tabstop>
   <tabstop>btnAddDefault</tabstop>
   <tabstop>lstLayers</tabstop>
   <tabstop>leLayerName</tabstop>
+  <tabstop>mTileWidth</tabstop>
+  <tabstop>mTileHeight</tabstop>
+  <tabstop>mFeatureCount</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
   <tabstop>mLayerUpButton</tabstop>
   <tabstop>mLayerDownButton</tabstop>

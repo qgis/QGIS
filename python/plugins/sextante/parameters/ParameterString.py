@@ -30,29 +30,30 @@ class ParameterString(Parameter):
     NEWLINE = "\n"
     ESCAPED_NEWLINE = "\\n"
 
-    def __init__(self, name="", description="", default="", multiline = False):
+    def __init__(self, name="", description="", default="", multiline = False, optional = False):
         Parameter.__init__(self, name, description)
         self.default = default
         self.value = None
         self.multiline = multiline
+        self.optional = optional
 
     def setValue(self, obj):
         if obj is None:
             self.value = self.default
             return True
-        self.value = str(obj).replace(ParameterString.ESCAPED_NEWLINE,ParameterString.NEWLINE)
+        self.value = unicode(obj).replace(ParameterString.ESCAPED_NEWLINE,ParameterString.NEWLINE)
         return True
 
     def getValueAsCommandLineParameter(self):
-        return "\"" + str(self.value.replace(ParameterString.NEWLINE,ParameterString.ESCAPED_NEWLINE)) + "\""
+        return "\"" + unicode(self.value.replace(ParameterString.NEWLINE,ParameterString.ESCAPED_NEWLINE)) + "\""
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
-                        "|" + str(self.default)
+                        "|" + unicode(self.default)
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterString(tokens[0], tokens[1], tokens[2])
+        return ParameterString(tokens[1], tokens[2], tokens[3])
 
     def getAsScriptCode(self):
         return "##" + self.name + "=string " + self.default

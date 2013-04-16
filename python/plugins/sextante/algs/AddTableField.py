@@ -23,16 +23,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.outputs.OutputVector import OutputVector
-from sextante.parameters.ParameterVector import ParameterVector
-from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
-from sextante.parameters.ParameterString import ParameterString
-from sextante.parameters.ParameterSelection import ParameterSelection
+
+from qgis.core import *
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterString import ParameterString
+from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.parameters.ParameterSelection import ParameterSelection
+from sextante.outputs.OutputVector import OutputVector
 
 class AddTableField(GeoAlgorithm):
 
@@ -40,6 +43,9 @@ class AddTableField(GeoAlgorithm):
     INPUT_LAYER = "INPUT_LAYER"
     FIELD_NAME = "FIELD_NAME"
     FIELD_TYPE = "FIELD_TYPE"
+    FIELD_LENGTH = "FIELD_LENGTH"
+    FIELD_PRECISION = "FIELD_PRECISION"
+
     TYPE_NAMES = ["Integer", "Float", "String"]
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
@@ -51,24 +57,31 @@ class AddTableField(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = "Add field to attributes table"
         self.group = "Vector table tools"
+
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Field name"))
         self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))
+        self.addParameter(ParameterNumber(self.FIELD_LENGTH, "Field lenght", 1, 255, 10))
+        self.addParameter(ParameterNumber(self.FIELD_PRECISION, "Field precision", 0, 10, 0))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
     def processAlgorithm(self, progress):
-        fieldtype = self.getParameterValue(self.FIELD_TYPE)
-        fieldname = self.getParameterValue(self.FIELD_NAME)
+        fieldType = self.getParameterValue(self.FIELD_TYPE)
+        fieldName = self.getParameterValue(self.FIELD_NAME)
+        fieldLength = self.getParameterValue(self.FIELD_LENGTH)
+        fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
-        vprovider = vlayer.dataProvider()
-        fields = vprovider.fields()
-        fields.append(QgsField(fieldname, self.TYPES[fieldtype]))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vlayer.crs() )
+
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+
+        provider = layer.dataProvider()
+        fields = provider.fields()
+        fields.append(QgsField(fieldName, self.TYPES[fieldType], "", fieldLength, fieldPrecision))
+        writer = output.getVectorWriter(fields, provider.geometryType(), layer.crs())
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
         nElement = 0
-        features = QGisLayers.features(vlayer)
+        features = QGisLayers.features(layer)
         nFeat = len(features)
         for inFeat in features:
             progress.setPercentage(int((100 * nElement)/nFeat))
@@ -80,4 +93,3 @@ class AddTableField(GeoAlgorithm):
             outFeat.setAttributes(atMap)
             writer.addFeature( outFeat )
         del writer
-

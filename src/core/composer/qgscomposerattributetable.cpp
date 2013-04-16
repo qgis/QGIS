@@ -146,9 +146,12 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributes>& attr
   }
 
   QgsFeatureRequest req;
-  req.setFilterRect( selectionRect );
+  if ( !selectionRect.isEmpty() )
+  {
+    req.setFilterRect( selectionRect );
+  }
   req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoGeometry );
-  if ( mDisplayAttributes.size() >= 0 )
+  if ( mDisplayAttributes.size() > 0 )
     req.setSubsetOfAttributes( mDisplayAttributes.toList() );
 
   QgsFeature f;

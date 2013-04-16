@@ -427,14 +427,14 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   {
     foreach ( int bandNo, values.keys() )
     {
-      double value = values.value( bandNo ).toDouble();
       QString valueString;
-      if ( dprovider->isNoDataValue( bandNo, value ) )
+      if ( values.value( bandNo ).isNull() )
       {
         valueString = tr( "no data" );
       }
       else
       {
+        double value = values.value( bandNo ).toDouble();
         valueString = QgsRasterBlock::printValue( value );
       }
       attributes.insert( dprovider->generateBandName( bandNo ), valueString );

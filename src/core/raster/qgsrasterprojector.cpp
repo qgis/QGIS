@@ -144,7 +144,7 @@ void QgsRasterProjector::calc()
   if ( mInput )
   {
     QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
-    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::ExactResolution ) )
+    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
     {
       mMaxSrcXRes = provider->extent().width() / provider->xSize();
       mMaxSrcYRes = provider->extent().height() / provider->ySize();
@@ -698,17 +698,15 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
 {
   QgsDebugMsg( QString( "extent:\n%1" ).arg( extent.toString() ) );
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( width ).arg( height ) );
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
     QgsDebugMsg( "Input not set" );
-    return outputBlock;
+    return new QgsRasterBlock();
   }
 
   if ( ! mSrcCRS.isValid() || ! mDestCRS.isValid() || mSrcCRS == mDestCRS )
   {
     QgsDebugMsg( "No projection necessary" );
-    delete outputBlock;
     return mInput->block( bandNo, extent, width, height );
   }
 
@@ -724,7 +722,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   if ( srcRows() <= 0 || srcCols() <= 0 )
   {
     QgsDebugMsg( "Zero srcRows or srcCols" );
-    return outputBlock;
+    return new QgsRasterBlock();
   }
 
   //void * inputData = mInput->block( bandNo, srcExtent(), srcCols(), srcRows() );
@@ -733,20 +731,37 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   {
     QgsDebugMsg( "No raster data!" );
     delete inputBlock;
-    return outputBlock;
+    return new QgsRasterBlock();
   }
 
   size_t pixelSize = QgsRasterBlock::typeSize( mInput->dataType( bandNo ) );
 
-  if ( !outputBlock->reset( mInput->dataType( bandNo ), width, height ) )
+  QgsRasterBlock *outputBlock;
+  if ( inputBlock->hasNoDataValue() )
   {
-    QgsDebugMsg( "Cannot reset block" );
+    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height, inputBlock->noDataValue() );
+  }
+  else
+  {
+    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
+  }
+  if ( !outputBlock->isValid() )
+  {
+    QgsDebugMsg( "Cannot create block" );
     delete inputBlock;
     return outputBlock;
   }
-  outputBlock->setNoDataValue( mInput->noDataValue( bandNo ) );
 
-  // TODO: fill by no data or transparent
+  // No data:
+  // 1) no data value exists (numerical) -> memcpy, not necessary isNoData()/setIsNoData()
+  // 2) no data value does not exist but it may contain no data (numerical no data bitmap)
+  //    -> must use isNoData()/setIsNoData()
+  // 3) no data are not used (no no data value, no no data bitmap) -> simple memcpy
+  // 4) image - simple memcpy
+
+  // To copy no data values stored in bitmaps we have to use isNoData()/setIsNoData(),
+  // we cannot fill output block with no data because we use memcpy for data, not setValue().
+  bool doNoData = inputBlock->hasNoData() && !inputBlock->hasNoDataValue();
 
   int srcRow, srcCol;
   for ( int i = 0; i < height; ++i )
@@ -754,10 +769,17 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     for ( int j = 0; j < width; ++j )
     {
       srcRowCol( i, j, &srcRow, &srcCol );
-      QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
       size_t srcIndex = srcRow * mSrcCols + srcCol;
-      size_t destIndex = i * width + j;
+      QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
 
+      // isNoData() may be slow so we check doNoData first
+      if ( doNoData && inputBlock->isNoData( srcRow, srcCol ) )
+      {
+        outputBlock->setIsNoData( srcRow, srcCol );
+        continue ;
+      }
+
+      size_t destIndex = i * width + j;
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )

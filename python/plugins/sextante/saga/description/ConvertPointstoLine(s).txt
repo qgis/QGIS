@@ -1,6 +1,6 @@
 Convert Points to Line(s)
 shapes_lines
 ParameterVector|POINTS|Points|0|False
-ParameterTableField|ORDER|Order by...|POINTS
-ParameterTableField|SEPARATE|Separate by...|POINTS
+ParameterTableField|ORDER|Order by...|POINTS|-1|False
+ParameterTableField|SEPARATE|Separate by...|POINTS|-1|False
 OutputVector|LINES|Lines

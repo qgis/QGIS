@@ -57,7 +57,7 @@ QImage* QgsPieDiagramFactory::createDiagram( int size, const QgsFeature& f, cons
     }
   }
 
-  if ( doubleNear( sum, 0.0 ) )
+  if ( qgsDoubleNear( sum, 0.0 ) )
   {
     p.end();
     delete diagramImage;

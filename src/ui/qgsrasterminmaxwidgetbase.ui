@@ -6,29 +6,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
-    <height>264</height>
+    <width>308</width>
+    <height>334</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="mLoadMinMaxValuesGroupBox">
      <property name="title">
       <string>Load min/max values</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="margin">
-       <number>0</number>
+       <number>6</number>
       </property>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QRadioButton" name="mCumulativeCutRadioButton">
           <property name="text">
-           <string>Cumulative count cut</string>
+           <string>Cumulative
+count cut</string>
           </property>
           <property name="checked">
            <bool>true</bool>
@@ -94,7 +98,7 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>268</width>
+            <width>0</width>
             <height>20</height>
            </size>
           </property>
@@ -107,7 +111,8 @@
         <item>
          <widget class="QRadioButton" name="mStdDevRadioButton">
           <property name="text">
-           <string>Mean +/- standard deviation ×</string>
+           <string>Mean +/-
+standard deviation ×</string>
           </property>
          </widget>
         </item>
@@ -131,8 +136,8 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>318</width>
-            <height>17</height>
+            <width>0</width>
+            <height>20</height>
            </size>
           </property>
          </spacer>
@@ -141,19 +146,16 @@
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="spacing">
+         <number>3</number>
+        </property>
         <item>
          <widget class="QGroupBox" name="mExtentGroupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="title">
            <string>Extent</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
             <widget class="QRadioButton" name="mFullExtentRadioButton">
              <property name="text">
               <string>Full</string>
@@ -163,94 +165,36 @@
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <spacer name="horizontalSpacer_9">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>60</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="0">
+           <item>
             <widget class="QRadioButton" name="mCurrentExtentRadioButton">
              <property name="text">
               <string>Current</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <spacer name="horizontalSpacer_10">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>60</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
           </layout>
          </widget>
         </item>
         <item>
          <widget class="QGroupBox" name="mAccuracyGroupBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="title">
            <string>Accuracy</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="1">
-            <spacer name="horizontalSpacer_7">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>65</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="0">
-            <widget class="QRadioButton" name="mActualRadioButton">
-             <property name="text">
-              <string>Actual (slower)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <spacer name="horizontalSpacer_8">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>65</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
             <widget class="QRadioButton" name="mEstimateRadioButton">
              <property name="text">
               <string>Estimate (faster)</string>
              </property>
              <property name="checked">
               <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QRadioButton" name="mActualRadioButton">
+             <property name="text">
+              <string>Actual (slower)</string>
              </property>
             </widget>
            </item>
@@ -268,8 +212,8 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>313</width>
-            <height>21</height>
+            <width>0</width>
+            <height>20</height>
            </size>
           </property>
          </spacer>
@@ -285,6 +229,19 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

@@ -670,8 +670,6 @@ INPUT                  = doc \
                          src/core/diagram \
                          src/core/composer \
                          src/core/raster \
-                         src/core/renderer \
-                         src/core/symbology \
                          src/core/symbology-ng \
                          src/core/gps \
                          src/gui \

@@ -261,13 +261,6 @@ void QgsFieldsProperties::loadAttributeEditorTree()
   mAttributesTree->setDragDropMode( QAbstractItemView::InternalMove );
   mAttributesTree->setAcceptDrops( true );
   mAttributesTree->setDragDropMode( QAbstractItemView::DragDrop );
-  // tabs and groups info
-  mAttributesTree->clear();
-  mAttributesTree->setSortingEnabled( false );
-  mAttributesTree->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mAttributesTree->setDragDropMode( QAbstractItemView::InternalMove );
-  mAttributesTree->setAcceptDrops( true );
-  mAttributesTree->setDragDropMode( QAbstractItemView::DragDrop );
 
   QList<QgsAttributeEditorElement*> widgets = mLayer->attributeEditorElements();
 
@@ -363,17 +356,17 @@ void QgsFieldsProperties::on_mAddItemButton_clicked()
 
 void QgsFieldsProperties::on_mAddTabOrGroupButton_clicked()
 {
-  QList<QString> tabList;
-  QList<QTreeWidgetItem*> tabWidgetList;
-  QTreeWidgetItemIterator it( mAttributesTree );
-  while ( *it )
+  QList<QgsAddTabOrGroup::TabPair> tabList;
+
+
+  for ( QTreeWidgetItemIterator it( mAttributesTree ); *it; ++it )
   {
     if (( *it )->data( 0 , Qt::UserRole ) == "container" )
-      tabList.append(( *it )->text( 0 ) );
-    tabWidgetList.append( *it );
-    ++it;
+    {
+      tabList.append( QgsAddTabOrGroup::TabPair(( *it )->text( 0 ), *it ) );
+    }
   }
-  QgsAddTabOrGroup addTabOrGroup( mLayer , this, tabList );
+  QgsAddTabOrGroup addTabOrGroup( mLayer, tabList, this );
 
   if ( !addTabOrGroup.exec() )
     return;
@@ -385,8 +378,7 @@ void QgsFieldsProperties::on_mAddTabOrGroupButton_clicked()
   }
   else
   {
-    int tabId = addTabOrGroup.tabId();
-    QTreeWidgetItem* tabItem = tabWidgetList[tabId];
+    QTreeWidgetItem* tabItem = addTabOrGroup.tab();
     mAttributesTree->addContainer( tabItem , name );
   }
 }

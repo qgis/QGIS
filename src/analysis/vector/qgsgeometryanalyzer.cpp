@@ -1471,7 +1471,7 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
   }
 
   //match with vertex1
-  if ( doubleNear( m1, measure, tolerance ) )
+  if ( qgsDoubleNear( m1, measure, tolerance ) )
   {
     if ( reversed )
     {
@@ -1486,7 +1486,7 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
   }
 
   //match with vertex2
-  if ( doubleNear( m2, measure, tolerance ) )
+  if ( qgsDoubleNear( m2, measure, tolerance ) )
   {
     if ( reversed )
     {
@@ -1507,7 +1507,7 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
   }
 
   //match between the vertices
-  if ( doubleNear( m1, m2 ) )
+  if ( qgsDoubleNear( m1, m2 ) )
   {
     pt1.setX( x1 );
     pt1.setY( y1 );

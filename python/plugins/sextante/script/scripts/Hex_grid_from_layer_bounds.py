@@ -29,7 +29,7 @@ __revision__ = '$Format:%H$'
 ##grid=output vector
 from sextante.core.QGisLayers import QGisLayers
 
-input = QGisLayers.getObjectFromUri(input)
+input = sextante.getobject(input)
 centerx = (input.extent().xMinimum() + input.extent().xMaximum()) / 2
 centery = (input.extent().yMinimum() + input.extent().yMaximum()) / 2
 width = (input.extent().xMaximum() - input.extent().xMinimum())

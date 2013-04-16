@@ -48,4 +48,4 @@ class ParameterFactory():
                    ParameterExtent, ParameterFile, ParameterCrs]
         for clazz in classes:
             if s.startswith(clazz().parameterName()):
-                return clazz().deserialize(s[len(clazz().parameterName())+1:])
+                return clazz().deserialize(s)

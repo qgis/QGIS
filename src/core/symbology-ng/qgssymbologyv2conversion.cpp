@@ -109,7 +109,7 @@ static QString readMarkerSymbolName( const QDomNode& synode )
     QDomElement psymbelement = psymbnode.toElement();
     return psymbelement.text();
   }
-  return QString("hard:circle");
+  return QString( "hard:circle" );
 }
 
 static float readMarkerSymbolSize( const QDomNode& synode )

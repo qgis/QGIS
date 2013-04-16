@@ -45,7 +45,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
   public:
     enum Role
     {
-      SortRole = Qt::UserRole + 1
+      SortRole = Qt::UserRole + 1,
+      FeatureIdRole = Qt::UserRole + 2,
+      FieldIndexRole = Qt::UserRole + 3
     };
 
   public:
@@ -130,6 +132,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QModelIndex idToIndex( QgsFeatureId id ) const;
 
+    QModelIndexList idToIndexList( QgsFeatureId id ) const;
+
     /**
      * get field index from column
      */
@@ -184,15 +188,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
   private slots:
     /**
-     * Launched when attribute has been added
-     * @param idx attribute index
+     * Launched whenever the number of fields has changed
      */
-    virtual void attributeAdded( int idx );
-    /**
-     * Launched when attribute has been deleted
-     * @param idx attribute index
-     */
-    virtual void attributeDeleted( int idx );
+    virtual void updatedFields();
 
   protected slots:
     /**

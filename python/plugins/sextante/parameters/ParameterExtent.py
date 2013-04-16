@@ -60,5 +60,5 @@ class ParameterExtent(Parameter):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterExtent(tokens[0], tokens[1], tokens[2])
+        return ParameterExtent(tokens[1], tokens[2], tokens[3])
 

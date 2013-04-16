@@ -1110,7 +1110,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
     return true;
   }
 
-  if ( doubleNear( qAbs( mRotation ), 90 ) || doubleNear( qAbs( mRotation ), 270 ) )
+  if ( qgsDoubleNear( qAbs( mRotation ), 90 ) || qgsDoubleNear( qAbs( mRotation ), 270 ) )
   {
     double tmp = width;
     width = height;

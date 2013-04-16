@@ -386,12 +386,12 @@ class mmqgisx_grid_algorithm(GeoAlgorithm):
 		self.name = "Create grid"
 		self.group = "Vector creation tools"
 
-		self.addParameter(ParameterNumber(self.HSPACING, "Horizontal spacing", default = 10))
-		self.addParameter(ParameterNumber(self.VSPACING, "Vertical spacing", default = 10))
-		self.addParameter(ParameterNumber(self.WIDTH, "Width", default = 360))
-		self.addParameter(ParameterNumber(self.HEIGHT, "Height", default = 180))
-		self.addParameter(ParameterNumber(self.CENTERX, "Center X", default = 0))
-		self.addParameter(ParameterNumber(self.CENTERY, "Center Y", default = 0))
+		self.addParameter(ParameterNumber(self.HSPACING, "Horizontal spacing", default = 10.0))
+		self.addParameter(ParameterNumber(self.VSPACING, "Vertical spacing", default = 10.0))
+		self.addParameter(ParameterNumber(self.WIDTH, "Width", default = 360.0))
+		self.addParameter(ParameterNumber(self.HEIGHT, "Height", default = 180.0))
+		self.addParameter(ParameterNumber(self.CENTERX, "Center X", default = 0.0))
+		self.addParameter(ParameterNumber(self.CENTERY, "Center Y", default = 0.0))
 		self.gridtype_options = ["Rectangle (line)","Rectangle (polygon)","Diamond (polygon)","Hexagon (polygon)"]
 		self.addParameter(ParameterSelection(self.GRIDTYPE, "Grid type",
 			self.gridtype_options, default = 0))

@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdelimitedtextfeatureiterator.h"
-
 #include "qgsdelimitedtextprovider.h"
+#include "qgsdelimitedtextfile.h"
 
 #include "qgsgeometry.h"
 #include "qgsmessagelog.h"
@@ -49,14 +49,12 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
   if ( mClosed )
     return false;
 
-  while ( !P->mStream->atEnd() )
+  QStringList tokens;
+  while ( true )
   {
-    QString line = P->readLine( P->mStream ); // Default local 8 bit encoding
-    if ( line.isEmpty() )
-      continue;
-
-    // lex the tokens from the current data line
-    QStringList tokens = P->splitLine( line );
+    QgsDelimitedTextFile::Status status = P->mFile->nextRecord( tokens );
+    if ( status == QgsDelimitedTextFile::RecordEOF ) break;
+    if ( status != QgsDelimitedTextFile::RecordOk ) continue;
 
     while ( tokens.size() < P->mFieldCount )
       tokens.append( QString::null );
@@ -74,7 +72,11 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
 
     if ( !geom && P->mWkbType != QGis::WKBNoGeometry )
     {
-      P->mInvalidLines << line;
+      // Already dealt with invalid lines in provider - no need to repeat
+      // removed code (CC 2013-04-13) ...
+      //    P->mInvalidLines << line;
+      // In any case it may be a valid line that is excluded because of
+      // bounds check...
       continue;
     }
 
@@ -114,7 +116,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
 
   // End of the file. If there are any lines that couldn't be
   // loaded, display them now.
-  P->handleInvalidLines();
+  // P->handleInvalidLines();
 
   close();
   return false;
@@ -128,11 +130,7 @@ bool QgsDelimitedTextFeatureIterator::rewind()
   // Reset feature id to 0
   mFid = 0;
   // Skip to first data record
-  P->mStream->seek( 0 );
-  int n = P->mFirstDataLine - 1;
-  while ( n-- > 0 )
-    P->readLine( P->mStream );
-
+  P->resetStream();
   return true;
 }
 
@@ -143,7 +141,6 @@ bool QgsDelimitedTextFeatureIterator::close()
 
   // tell provider that this iterator is not active anymore
   P->mActiveIterator = 0;
-
   mClosed = true;
   return true;
 }
@@ -152,24 +149,11 @@ bool QgsDelimitedTextFeatureIterator::close()
 QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens )
 {
   QgsGeometry* geom = 0;
-  try
-  {
-    QString sWkt = tokens[P->mWktFieldIndex];
-    // Remove Z and M coordinates if present, as currently fromWkt doesn't
-    // support these.
-    if ( P->mWktHasZM )
-    {
-      sWkt.remove( P->mWktZMRegexp ).replace( P->mWktCrdRegexp, "\\1" );
-    }
+  QString sWkt = tokens[P->mWktFieldIndex];
 
-    geom = QgsGeometry::fromWkt( sWkt );
-  }
-  catch ( ... )
-  {
-    geom = 0;
-  }
+  geom = P->geomFromWkt( sWkt );
 
-  if ( geom && geom->wkbType() != P->mWkbType )
+  if ( geom && geom->type() != P->mGeometryType )
   {
     delete geom;
     geom = 0;
@@ -187,38 +171,26 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList&
 {
   QString sX = tokens[P->mXFieldIndex];
   QString sY = tokens[P->mYFieldIndex];
+  QgsPoint pt;
+  bool ok = P->pointFromXY( sX, sY, pt );
 
-  if ( !P->mDecimalPoint.isEmpty() )
+  if ( ok && boundsCheck( pt ) )
   {
-    sX.replace( P->mDecimalPoint, "." );
-    sY.replace( P->mDecimalPoint, "." );
-  }
-
-  bool xOk, yOk;
-  double x = sX.toDouble( &xOk );
-  double y = sY.toDouble( &yOk );
-  if ( xOk && yOk )
-  {
-    if ( boundsCheck( x, y ) )
-    {
-      return QgsGeometry::fromPoint( QgsPoint( x, y ) );
-    }
+    return QgsGeometry::fromPoint( pt );
   }
   return 0;
 }
 
-
-
 /**
  * Check to see if the point is within the selection rectangle
  */
-bool QgsDelimitedTextFeatureIterator::boundsCheck( double x, double y )
+bool QgsDelimitedTextFeatureIterator::boundsCheck( const QgsPoint &pt )
 {
   // no selection rectangle or geometry => always in the bounds
   if ( mRequest.filterType() != QgsFeatureRequest::FilterRect || ( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
     return true;
 
-  return mRequest.filterRect().contains( QgsPoint( x, y ) );
+  return mRequest.filterRect().contains( pt );
 }
 
 /**

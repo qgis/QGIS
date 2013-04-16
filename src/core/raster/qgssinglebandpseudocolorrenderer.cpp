@@ -151,12 +151,12 @@ QgsRasterBlock* QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
 
   for ( size_t i = 0; i < ( size_t )width*height; i++ )
   {
-    double val = inputBlock->value( i );
-    if ( mInput->isNoDataValue( mBand, val ) )
+    if ( inputBlock->isNoData( i ) )
     {
       outputBlock->setColor( i, myDefaultColor );
       continue;
     }
+    double val = inputBlock->value( i );
     int red, green, blue;
     if ( !mShader->shade( val, &red, &green, &blue ) )
     {

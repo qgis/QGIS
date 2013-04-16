@@ -34,6 +34,7 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
   setCacheAddedAttributes( true );
 
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), SLOT( attributeDeleted( int ) ) );
+  connect( mLayer, SIGNAL( updatedFields() ), SLOT( updatedFields() ) );
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
 }
 
@@ -231,9 +232,13 @@ void QgsVectorLayerCache::geometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 
 void QgsVectorLayerCache::layerDeleted()
 {
-  emit( cachedLayerDeleted() );
-
+  emit cachedLayerDeleted();
   mLayer = NULL;
+}
+
+void QgsVectorLayerCache::updatedFields()
+{
+  mCache.clear();
 }
 
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )

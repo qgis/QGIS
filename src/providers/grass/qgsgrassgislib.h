@@ -66,7 +66,7 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
         int band;
         int row; // next row to be written
         Raster(): provider( 0 ), projector( 0 ), input( 0 ), band( 1 ), row( 0 ) {}
-
+        double noDataValue; // output no data value
     };
 
     static QgsGrassGisLib* instance();
@@ -106,6 +106,9 @@ class GRASS_LIB_EXPORT QgsGrassGisLib
 
     /** Get GRASS raster type for QGIS raster type */
     RASTER_MAP_TYPE grassRasterType( QGis::DataType qgisType );
+
+    /** Get no data value for GRASS data type */
+    double noDataValueForGrassType( RASTER_MAP_TYPE grassType );
 
     /** Grass does not seem to have any function to init Cell_head,
      * initialisation is done in G__read_Cell_head_array */

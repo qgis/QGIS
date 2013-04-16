@@ -18,6 +18,7 @@
 #include <QComboBox>
 #include <QPainter>
 
+#include "qgsfeatureselectionmodel.h"
 #include "qgsattributetableview.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
@@ -25,6 +26,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsattributeeditor.h"
 #include "qgslogger.h"
+
 
 
 // TODO: Remove this casting orgy
@@ -42,33 +44,6 @@ QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *mode
   return NULL;
 }
 
-int QgsAttributeTableDelegate::fieldIdx( const QModelIndex &index ) const
-{
-  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( index.model() );
-  if ( tm )
-    return tm->fieldIdx( index.column() );
-
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( index.model() );
-  if ( fm )
-    return fm->masterModel()->fieldIdx( index.column() );
-
-  return -1;
-}
-
-QgsFeatureId QgsAttributeTableDelegate::featureId( const QModelIndex &index ) const
-{
-  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( index.model() );
-  if ( tm )
-    return tm->rowToId( index.row() );
-
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( index.model() );
-  if ( fm )
-    return fm->masterModel()->rowToId( fm->mapToSource( index ).row() );
-
-  return -1;
-}
-
-
 QWidget *QgsAttributeTableDelegate::createEditor(
   QWidget *parent,
   const QStyleOptionViewItem &option,
@@ -79,15 +54,17 @@ QWidget *QgsAttributeTableDelegate::createEditor(
   if ( !vl )
     return NULL;
 
-  QWidget *w = QgsAttributeEditor::createAttributeEditor( parent, 0, vl, fieldIdx( index ), index.model()->data( index, Qt::EditRole ) );
+  int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
+
+  QWidget *w = QgsAttributeEditor::createAttributeEditor( parent, 0, vl, fieldIdx, index.model()->data( index, Qt::EditRole ) );
 
   if ( parent )
   {
     QgsAttributeTableView *tv = dynamic_cast<QgsAttributeTableView *>( parent->parentWidget() );
     w->setMinimumWidth( tv->columnWidth( index.column() ) );
 
-    if ( vl->editType( fieldIdx( index ) ) == QgsVectorLayer::FileName ||
-         vl->editType( fieldIdx( index ) ) == QgsVectorLayer::Calendar )
+    if ( vl->editType( fieldIdx ) == QgsVectorLayer::FileName ||
+         vl->editType( fieldIdx ) == QgsVectorLayer::Calendar )
     {
       QLineEdit *le = w->findChild<QLineEdit*>();
       le->adjustSize();
@@ -104,15 +81,15 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   if ( vl == NULL )
     return;
 
-  int idx = fieldIdx( index );
-  QgsFeatureId fid = featureId( index );
+  int fieldIdx = model->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
+  QgsFeatureId fid = model->data( index, QgsAttributeTableModel::FeatureIdRole ).toInt();
 
   QVariant value;
-  if ( !QgsAttributeEditor::retrieveValue( editor, vl, idx, value ) )
+  if ( !QgsAttributeEditor::retrieveValue( editor, vl, fieldIdx, value ) )
     return;
 
   vl->beginEditCommand( tr( "Attribute changed" ) );
-  vl->changeAttributeValue( fid, idx, value, true );
+  vl->changeAttributeValue( fid, fieldIdx, value, true );
   vl->endEditCommand();
 }
 
@@ -122,14 +99,27 @@ void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelInde
   if ( vl == NULL )
     return;
 
-  QgsAttributeEditor::setValue( editor, vl, fieldIdx( index ), index.model()->data( index, Qt::EditRole ) );
+  int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
+  QgsAttributeEditor::setValue( editor, vl, fieldIdx, index.model()->data( index, Qt::EditRole ) );
+}
+
+void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )
+{
+  mFeatureSelectionModel = featureSelectionModel;
 }
 
 void QgsAttributeTableDelegate::paint( QPainter * painter,
                                        const QStyleOptionViewItem & option,
                                        const QModelIndex & index ) const
 {
-  QItemDelegate::paint( painter, option, index );
+  QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toInt();
+
+  QStyleOptionViewItem myOpt = option;
+
+  if ( mFeatureSelectionModel->isSelected( fid ) )
+    myOpt.state |= QStyle::State_Selected;
+
+  QItemDelegate::paint( painter, myOpt, index );
 
   if ( option.state & QStyle::State_HasFocus )
   {

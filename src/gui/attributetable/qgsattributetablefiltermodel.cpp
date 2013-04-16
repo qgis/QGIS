@@ -44,7 +44,6 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
 {
   if ( mSelectedOnTop )
   {
-    // TODO: does the model index (left/right) need to be converted to first?
     bool leftSelected = layer()->selectedFeaturesIds().contains( masterModel()->rowToId( left.row() ) );
     bool rightSelected = layer()->selectedFeaturesIds().contains( masterModel()->rowToId( right.row() ) );
 
@@ -58,19 +57,48 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     }
   }
 
-  return QSortFilterProxyModel::lessThan( left, right );
+
+  QVariant leftData = left.data( QgsAttributeTableModel::SortRole );
+  QVariant rightData = right.data( QgsAttributeTableModel::SortRole );
+
+  if ( leftData.isNull() )
+    return true;
+
+  if ( rightData.isNull() )
+    return false;
+
+  switch ( leftData.type() )
+  {
+    case QVariant::Int:
+    case QVariant::UInt:
+    case QVariant::LongLong:
+    case QVariant::ULongLong:
+      return leftData.toLongLong() < rightData.toLongLong();
+
+    case QVariant::Double:
+      return leftData.toDouble() < rightData.toDouble();
+
+    default:
+      return leftData.toString().localeAwareCompare( rightData.toString() ) < 0;
+  }
+
+  // Avoid warning. Will never reach this
+  return false;
 }
 
 void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
 {
-  mSelectedOnTop = selectedOnTop;
-  if ( sortColumn() == -1 )
+  if ( mSelectedOnTop != selectedOnTop )
   {
-    sort( 0, sortOrder() );
-  }
-  invalidate();
-}
+    mSelectedOnTop = selectedOnTop;
 
+    if ( sortColumn() == -1 )
+    {
+      sort( 0 );
+    }
+    invalidate();
+  }
+}
 
 void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel* sourceModel )
 {
@@ -79,10 +107,6 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel* sourc
   mMasterSelection = new QItemSelectionModel( sourceModel, this );
 
   QSortFilterProxyModel::setSourceModel( sourceModel );
-
-  connect( mMasterSelection, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( masterSelectionChanged( QItemSelection, QItemSelection ) ) );
-  // Issue a selectionChanged, so the selection gets synchronized to the map canvas selection
-  selectionChanged();
 }
 
 bool QgsAttributeTableFilterModel::selectedOnTop()
@@ -94,7 +118,7 @@ void QgsAttributeTableFilterModel::setFilteredFeatures( QgsFeatureIds ids )
 {
   mFilteredFeatures = ids;
   mFilterMode = ShowFilteredList;
-  announcedInvalidateFilter();
+  invalidateFilter();
 }
 
 void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
@@ -111,80 +135,14 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
       disconnect( SLOT( extentsChanged() ) );
     }
 
+    if ( filterMode == ShowSelected )
+    {
+      generateListOfVisibleFeatures();
+    }
+
     mFilterMode = filterMode;
-    announcedInvalidateFilter();
+    invalidateFilter();
   }
-}
-
-void QgsAttributeTableFilterModel::selectionChanged()
-{
-  disconnect( mMasterSelection, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( masterSelectionChanged( QItemSelection, QItemSelection ) ) );
-  mMasterSelection->clear();
-
-  QItemSelection selection;
-
-  foreach ( QgsFeatureId fid, layer()->selectedFeaturesIds() )
-  {
-    selection.append( QItemSelectionRange( mTableModel->idToIndex( fid ) ) );
-  }
-
-  mMasterSelection->select( selection, QItemSelectionModel::ClearAndSelect );
-
-  if ( mFilterMode == ShowSelected )
-  {
-    announcedInvalidateFilter();
-  }
-
-  if ( mSelectedOnTop )
-  {
-    invalidate();
-    sort( sortColumn(), sortOrder() );
-  }
-
-  connect( mMasterSelection, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( masterSelectionChanged( QItemSelection, QItemSelection ) ) );
-}
-
-void QgsAttributeTableFilterModel::masterSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
-{
-  disconnect( layer(), SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
-
-  // Filter duplicate items (multiple columns)
-  QgsFeatureIds selectedFeatureIds;
-  QgsFeatureIds deselectedFeatureIds;
-
-  foreach ( QItemSelectionRange selectedRange, selected )
-  {
-    foreach ( QModelIndex selectedModelIdx, selectedRange.indexes() )
-    {
-      selectedFeatureIds << masterModel()->rowToId( selectedModelIdx.row() );
-    }
-  }
-
-  foreach ( QItemSelectionRange deselectedRange, deselected )
-  {
-    foreach ( QModelIndex deselectedModelIdx, deselectedRange.indexes() )
-    {
-      deselectedFeatureIds << masterModel()->rowToId( deselectedModelIdx.row() );
-    }
-  }
-
-  // Change selection without emitting a signal
-  foreach ( QgsFeatureId seletedFid, selectedFeatureIds )
-  {
-    layer()->select( seletedFid, false );
-  }
-  foreach ( QgsFeatureId deselectedFid, deselectedFeatureIds )
-  {
-    layer()->deselect( deselectedFid, false );
-  }
-
-  // Now emit the signal
-  if ( mSyncSelection )
-  {
-    layer()->setSelectedFeatures( layer()->selectedFeaturesIds() );
-  }
-
-  connect( layer(), SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
 }
 
 bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
@@ -233,14 +191,21 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
 void QgsAttributeTableFilterModel::extentsChanged()
 {
   generateListOfVisibleFeatures();
-  announcedInvalidateFilter();
+  invalidateFilter();
 }
 
-void QgsAttributeTableFilterModel::announcedInvalidateFilter()
+void QgsAttributeTableFilterModel::selectionChanged()
 {
-  emit filterAboutToBeInvalidated();
-  invalidateFilter();
-  emit filterInvalidated();
+  if ( ShowSelected == mFilterMode )
+  {
+    generateListOfVisibleFeatures();
+    invalidateFilter();
+  }
+  else if ( mSelectedOnTop )
+  {
+    sort( sortColumn(), sortOrder() );
+    invalidate();
+  }
 }
 
 void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
@@ -277,11 +242,12 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
       renderContext.setExtent( mCanvas->mapRenderer()->rendererContext()->extent() );
       renderContext.setMapToPixel( mCanvas->mapRenderer()->rendererContext()->mapToPixel() );
       renderContext.setRendererScale( mCanvas->mapRenderer()->scale() );
-      renderer->startRender( renderContext, layer() );
     }
 
     filter = renderer && renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
+
+  renderer->startRender( renderContext, layer() );
 
   QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setFilterRect( rect ) );
 
@@ -319,20 +285,20 @@ QgsFeatureId QgsAttributeTableFilterModel::rowToId( const QModelIndex& row )
   return masterModel()->rowToId( mapToSource( row ).row() );
 }
 
-QItemSelectionModel* QgsAttributeTableFilterModel::masterSelection()
+QModelIndex QgsAttributeTableFilterModel::fidToIndex( QgsFeatureId fid )
 {
-  return mMasterSelection;
+  return mapFromMaster( masterModel()->idToIndex( fid ) );
 }
 
-void QgsAttributeTableFilterModel::disableSelectionSync()
+QModelIndexList QgsAttributeTableFilterModel::fidToIndexList( QgsFeatureId fid )
 {
-  mSyncSelection = false;
-}
+  QModelIndexList indexes;
+  foreach ( QModelIndex idx, masterModel()->idToIndexList( fid ) )
+  {
+    indexes.append( mapFromMaster( idx ) );
+  }
 
-void QgsAttributeTableFilterModel::enableSelectionSync()
-{
-  mSyncSelection = true;
-  layer()->setSelectedFeatures( layer()->selectedFeaturesIds() );
+  return indexes;
 }
 
 QModelIndex QgsAttributeTableFilterModel::mapToMaster( const QModelIndex &proxyIndex ) const
@@ -345,10 +311,4 @@ QModelIndex QgsAttributeTableFilterModel::mapFromMaster( const QModelIndex &sour
 {
   // Master is source
   return mapFromSource( sourceIndex );
-}
-
-QItemSelection QgsAttributeTableFilterModel::mapSelectionFromMaster( const QItemSelection& sourceSelection ) const
-{
-  // Master is source
-  return mapSelectionFromMaster( sourceSelection );
 }

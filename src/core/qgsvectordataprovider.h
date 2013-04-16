@@ -280,12 +280,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const { return mAttrPalIndexName; }
 
     /**
-     * Set whether provider should also return features that don't have
-     * associated geometry. false by default
-     */
-    void enableGeometrylessFeatures( bool fetch );
-
-    /**
      * check if provider supports type of field
      * @note added in 1.2
      */

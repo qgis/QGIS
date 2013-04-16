@@ -101,14 +101,6 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
       return false;
     }
 
-    // skip features without geometry
-    if ( !OGR_F_GetGeometryRef( fet ) && !P->mFetchFeaturesWithoutGeom )
-    {
-      OGR_F_Destroy( fet );
-      close();
-      return false;
-    }
-
     readFeature( fet, feature );
 
     feature.setValid( true );
@@ -120,13 +112,6 @@ bool QgsOgrFeatureIterator::nextFeature( QgsFeature& feature )
 
   while (( fet = OGR_L_GetNextFeature( P->ogrLayer ) ) )
   {
-    // skip features without geometry
-    if ( !P->mFetchFeaturesWithoutGeom && !OGR_F_GetGeometryRef( fet ) )
-    {
-      OGR_F_Destroy( fet );
-      continue;
-    }
-
     if ( !readFeature( fet, feature ) )
       continue;
 

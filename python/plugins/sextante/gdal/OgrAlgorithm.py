@@ -48,9 +48,6 @@ class OgrAlgorithm(GeoAlgorithm):
         if layer == None:
             return uri;
         provider = layer.dataProvider().name()
-        qDebug("inputLayer provider '%s'" % provider)
-        #qDebug("inputLayer layer '%s'" % layer.providerType())
-        qDebug("inputLayer.source '%s'" % layer.source())
         if provider == 'spatialite':
             #dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
             regex = re.compile("dbname='(.+)'")

@@ -165,15 +165,16 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
     //read snapping settings from project
     bool ok; //todo: take the default snapping tolerance for all vector layers if snapping not defined in project
     bool snappingDefinedInProject = true;
-    QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", &ok );
+    QStringList defList;
+    QStringList layerIdList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingList", defList, &ok );
     if ( !ok )
     {
       snappingDefinedInProject = false;
     }
-    QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", &ok );
-    QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", &ok );
-    QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", &ok );
-    QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", &ok );
+    QStringList enabledList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingEnabledList", defList, &ok );
+    QStringList toleranceList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceList", defList, &ok );
+    QStringList toleranceUnitList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnappingToleranceUnitList", defList, &ok );
+    QStringList snapToList = QgsProject::instance()->readListEntry( "Digitizing", "/LayerSnapToList", defList, &ok );
 
     if ( !( layerIdList.size() == enabledList.size() && layerIdList.size() == toleranceList.size() && layerIdList.size() == toleranceUnitList.size() && layerIdList.size() == snapToList.size() ) )
     {

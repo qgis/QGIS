@@ -150,6 +150,7 @@
 %Include raster/qgsrasterpipe.sip
 %Include raster/qgsrasterprojector.sip
 %Include raster/qgsrasterpyramid.sip
+%Include raster/qgsrasterrange.sip
 %Include raster/qgsrasterrenderer.sip
 %Include raster/qgsrasterresamplefilter.sip
 %Include raster/qgsrasterresampler.sip

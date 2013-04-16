@@ -24,6 +24,7 @@ email                : tim at linfiniti.com
 #include "qgsprojectfiletransform.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterrange.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
@@ -1453,42 +1454,12 @@ double QgsRasterLayer::rasterUnitsPerPixel()
 // horisontal one.
 
   //return qAbs( mGeoTransform[1] );
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution && mDataProvider->xSize() > 0 )
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && mDataProvider->xSize() > 0 )
   {
     return mDataProvider->extent().width() / mDataProvider->xSize();
   }
   return 1;
 }
-
-#if 0
-void QgsRasterLayer::resetNoDataValue()
-{
-  mNoDataValue = std::numeric_limits<int>::max();
-  mValidNoDataValue = false;
-  if ( mDataProvider != NULL && mDataProvider->bandCount() > 0 )
-  {
-    // TODO: add 'has null value' to capabilities
-#if 0
-    int myRequestValid;
-    myRequestValid = 1;
-    double myValue = mDataProvider->noDataValue();
-
-    if ( 0 != myRequestValid )
-    {
-      setNoDataValue( myValue );
-    }
-    else
-    {
-      setNoDataValue( -9999.0 );
-      mValidNoDataValue = false;
-
-    }
-#endif
-    setNoDataValue( mDataProvider->noDataValue() );
-    mValidNoDataValue = mDataProvider->isNoDataValueValid();
-  }
-}
-#endif
 
 void QgsRasterLayer::init()
 {
@@ -2471,17 +2442,16 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
     if ( ok && ( bandNo > 0 ) && ( bandNo <= mDataProvider->bandCount() ) )
     {
       mDataProvider->setUseSrcNoDataValue( bandNo, bandElement.attribute( "useSrcNoData" ).toInt() );
-      QList<QgsRasterBlock::Range> myNoDataRangeList;
+      QgsRasterRangeList myNoDataRangeList;
 
       QDomNodeList rangeList = bandElement.elementsByTagName( "noDataRange" );
 
       for ( int j = 0; j < rangeList.size(); ++j )
       {
         QDomElement rangeElement = rangeList.at( j ).toElement();
-        QgsRasterBlock::Range myNoDataRange;
-        myNoDataRange.min = rangeElement.attribute( "min" ).toDouble();
-        myNoDataRange.max = rangeElement.attribute( "max" ).toDouble();
-        QgsDebugMsg( QString( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min ) );
+        QgsRasterRange myNoDataRange( rangeElement.attribute( "min" ).toDouble(),
+                                      rangeElement.attribute( "max" ).toDouble() );
+        QgsDebugMsg( QString( "min = %1 %2" ).arg( rangeElement.attribute( "min" ) ).arg( myNoDataRange.min() ) );
         myNoDataRangeList << myNoDataRange;
       }
       mDataProvider->setUserNoDataValue( bandNo, myNoDataRangeList );
@@ -2575,12 +2545,12 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
 
-    foreach ( QgsRasterBlock::Range range, mDataProvider->userNoDataValue( bandNo ) )
+    foreach ( QgsRasterRange range, mDataProvider->userNoDataValue( bandNo ) )
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 
-      noDataRange.setAttribute( "min", range.min );
-      noDataRange.setAttribute( "max", range.max );
+      noDataRange.setAttribute( "min", range.min() );
+      noDataRange.setAttribute( "max", range.max() );
       noDataRangeList.appendChild( noDataRange );
     }
 
@@ -2662,7 +2632,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
                ", dest size: " + QString::number( viewPort->drawableAreaXDim ) +
                ", " + QString::number( viewPort->drawableAreaYDim ) );
 #endif
-  void *data = QgsMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
+  void *data = qgsMalloc( size * viewPort->drawableAreaXDim * viewPort->drawableAreaYDim );
 
   /* Abort if out of memory */
   if ( data == NULL )

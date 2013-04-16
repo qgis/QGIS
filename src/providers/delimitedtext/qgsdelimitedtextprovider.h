@@ -23,10 +23,13 @@
 
 class QgsFeature;
 class QgsField;
+class QgsGeometry;
+class QgsPoint;
 class QFile;
 class QTextStream;
 
 class QgsDelimitedTextFeatureIterator;
+class QgsDelimitedTextFile;
 
 
 /**
@@ -34,19 +37,32 @@ class QgsDelimitedTextFeatureIterator;
 \brief Data provider for delimited text files.
 *
 * The provider needs to know both the path to the text file and
-* the delimiter to use. Since the means to add a layer is farily
+* the delimiter to use. Since the means to add a layer is fairly
 * rigid, we must provide this information encoded in a form that
 * the provider can decipher and use.
-* The uri must contain the path and delimiter in this format:
-* /full/path/too/delimited.txt?delimiter=<delimiter>
 *
-* Example uri = "/home/foo/delim.txt?delimiter=|"
+* The uri must defines the file path and the parameters used to
+* interpret the contents of the file.
+*
+* Example uri = "/home/foo/delim.txt?delimiter=|"*
+*
+* For detailed information on the uri format see the QGSVectorLayer
+* documentation.
+*
+
 */
 class QgsDelimitedTextProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
+
+    /**
+     * Regular expression defining possible prefixes to WKT string,
+     * (EWKT srid, Informix SRID)
+      */
+    static QRegExp WktPrefixRegexp;
+    static QRegExp CrdDmsRegexp;
 
     QgsDelimitedTextProvider( QString uri = QString() );
 
@@ -149,22 +165,25 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     */
     bool boundsCheck( QgsGeometry *geom );
 
-
-    static QString readLine( QTextStream *stream );
-    static QStringList splitLine( QString line, QString delimiterType, QString delimiter );
-
   private:
 
-    void handleInvalidLines();
+    static QRegExp WktZMRegexp;
+    static QRegExp WktCrdRegexp;
 
-    //! Fields
+    void clearInvalidLines();
+    void recordInvalidLine( QString message );
+    void handleInvalidLines();
+    void resetStream();
+
+    QgsGeometry *geomFromWkt( QString &sWkt );
+    bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );
+    double dmsStringToDouble( const QString &sX, bool *xOk );
+    //! Text file
+    QgsDelimitedTextFile *mFile;
+
+    // Fields
     QList<int> attributeColumns;
     QgsFields attributeFields;
-
-    QString mFileName;
-    QString mDelimiter;
-    QRegExp mDelimiterRegexp;
-    QString mDelimiterType;
 
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
@@ -174,19 +193,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     // Handling of WKT types with .. Z, .. M, and .. ZM geometries (ie
     // Z values and/or measures).  mWktZMRegexp is used to test for and
     // remove the Z or M fields, and mWktCrdRegexp is used to remove the
-    // extra coordinate values.
+    // extra coordinate values. mWktPrefix regexp is used to clean up
+    // prefixes sometimes used for WKT (postgis EWKT, informix SRID)
 
     bool mWktHasZM;
-    QRegExp mWktZMRegexp;
-    QRegExp mWktCrdRegexp;
+    bool mWktHasPrefix;
 
     //! Layer extent
     QgsRectangle mExtent;
-
-    //! Text file
-    QFile *mFile;
-
-    QTextStream *mStream;
 
     bool mValid;
 
@@ -194,10 +208,12 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     long mNumberFeatures;
     int mSkipLines;
-    int mFirstDataLine; // Actual first line of data (accounting for blank lines)
     QString mDecimalPoint;
+    bool mXyDms;
 
     //! Storage for any lines in the file that couldn't be loaded
+    int mMaxInvalidLines;
+    int mNExtraInvalidLines;
     QStringList mInvalidLines;
     //! Only want to show the invalid lines once to the user
     bool mShowInvalidLines;
@@ -215,8 +231,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QgsCoordinateReferenceSystem mCrs;
 
     QGis::WkbType mWkbType;
-
-    QStringList splitLine( QString line ) { return splitLine( line, mDelimiterType, mDelimiter ); }
+    QGis::GeometryType mGeometryType;
 
     friend class QgsDelimitedTextFeatureIterator;
     QgsDelimitedTextFeatureIterator* mActiveIterator;

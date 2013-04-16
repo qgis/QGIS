@@ -2316,8 +2316,15 @@ bool QgsOracleProvider::convertField( QgsField &field )
       fieldPrec = 0;
       break;
 
+    case QVariant::DateTime:
+    case QVariant::Time:
     case QVariant::String:
       fieldType = "VARCHAR2(2047)";
+      fieldPrec = -1;
+      break;
+
+    case QVariant::Date:
+      fieldType = "DATE";
       fieldPrec = -1;
       break;
 

@@ -109,93 +109,93 @@ void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double 
                                         const QgsRectangle& clipRect, QPolygonF& pts )
 {
   //test the different edge combinations...
-  if ( doubleNear( x0, clipRect.xMinimum() ) )
+  if ( qgsDoubleNear( x0, clipRect.xMinimum() ) )
   {
-    if ( doubleNear( x1, clipRect.xMinimum() ) )
+    if ( qgsDoubleNear( x1, clipRect.xMinimum() ) )
     {
       return;
     }
-    else if ( doubleNear( y1, clipRect.yMaximum() ) )
+    else if ( qgsDoubleNear( y1, clipRect.yMaximum() ) )
     {
       pts << QPointF( clipRect.xMinimum(), clipRect.yMaximum() );
       return;
     }
-    else if ( doubleNear( x1, clipRect.xMaximum() ) )
+    else if ( qgsDoubleNear( x1, clipRect.xMaximum() ) )
     {
       pts << QPointF( clipRect.xMinimum(), clipRect.yMaximum() );
       pts << QPointF( clipRect.xMaximum(), clipRect.yMaximum() );
       return;
     }
-    else if ( doubleNear( y1, clipRect.yMinimum() ) )
+    else if ( qgsDoubleNear( y1, clipRect.yMinimum() ) )
     {
       pts << QPointF( clipRect.xMinimum(), clipRect.yMinimum() );
       return;
     }
   }
-  else if ( doubleNear( y0, clipRect.yMaximum() ) )
+  else if ( qgsDoubleNear( y0, clipRect.yMaximum() ) )
   {
-    if ( doubleNear( y1, clipRect.yMaximum() ) )
+    if ( qgsDoubleNear( y1, clipRect.yMaximum() ) )
     {
       return;
     }
-    else if ( doubleNear( x1, clipRect.xMaximum() ) )
+    else if ( qgsDoubleNear( x1, clipRect.xMaximum() ) )
     {
       pts << QPointF( clipRect.xMaximum(), clipRect.yMaximum() );
       return;
     }
-    else if ( doubleNear( y1, clipRect.yMinimum() ) )
+    else if ( qgsDoubleNear( y1, clipRect.yMinimum() ) )
     {
       pts << QPointF( clipRect.xMaximum(), clipRect.yMaximum() );
       pts << QPointF( clipRect.xMaximum(), clipRect.yMinimum() );
       return;
     }
-    else if ( doubleNear( x1, clipRect.xMinimum() ) )
+    else if ( qgsDoubleNear( x1, clipRect.xMinimum() ) )
     {
       pts << QPointF( clipRect.xMinimum(), clipRect.yMaximum() );
       return;
     }
   }
-  else if ( doubleNear( x0, clipRect.xMaximum() ) )
+  else if ( qgsDoubleNear( x0, clipRect.xMaximum() ) )
   {
-    if ( doubleNear( x1, clipRect.xMaximum() ) )
+    if ( qgsDoubleNear( x1, clipRect.xMaximum() ) )
     {
       return;
     }
-    else if ( doubleNear( y1, clipRect.yMinimum() ) )
+    else if ( qgsDoubleNear( y1, clipRect.yMinimum() ) )
     {
       pts << QPointF( clipRect.xMaximum(), clipRect.yMinimum() );
       return;
     }
-    else if ( doubleNear( x1, clipRect.xMinimum() ) )
+    else if ( qgsDoubleNear( x1, clipRect.xMinimum() ) )
     {
       pts << QPointF( clipRect.xMaximum(), clipRect.yMinimum() );
       pts << QPointF( clipRect.xMinimum(), clipRect.yMinimum() );
       return;
     }
-    else if ( doubleNear( y1, clipRect.yMaximum() ) )
+    else if ( qgsDoubleNear( y1, clipRect.yMaximum() ) )
     {
       pts << QPointF( clipRect.xMaximum(), clipRect.yMaximum() );
       return;
     }
   }
-  else if ( doubleNear( y0, clipRect.yMinimum() ) )
+  else if ( qgsDoubleNear( y0, clipRect.yMinimum() ) )
   {
-    if ( doubleNear( y1, clipRect.yMinimum() ) )
+    if ( qgsDoubleNear( y1, clipRect.yMinimum() ) )
     {
       return;
     }
-    else if ( doubleNear( x1, clipRect.xMinimum() ) )
+    else if ( qgsDoubleNear( x1, clipRect.xMinimum() ) )
     {
       pts << QPointF( clipRect.xMinimum(), clipRect.yMinimum() );
       return;
     }
-    else if ( doubleNear( y1, clipRect.yMaximum() ) )
+    else if ( qgsDoubleNear( y1, clipRect.yMaximum() ) )
     {
       pts << QPointF( clipRect.xMinimum(), clipRect.yMinimum() );
       pts << QPointF( clipRect.xMinimum(), clipRect.yMaximum() );
       return;
     }
-    else if ( doubleNear( x1, clipRect.xMaximum() ) )
+    else if ( qgsDoubleNear( x1, clipRect.xMaximum() ) )
     {
       pts << QPointF( clipRect.xMaximum(), clipRect.yMinimum() );
       return;

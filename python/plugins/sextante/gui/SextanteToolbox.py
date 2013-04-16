@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -26,6 +27,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 import webbrowser
+from sextante.gui.MissingDependencyDialog import MissingDependencyDialog
 from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.modeler.Providers import Providers
 from sextante.gui.AlgorithmClassification import AlgorithmDecorator
@@ -115,7 +117,9 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             alg = Sextante.getAlgorithm(item.alg.commandLineName())
             message = alg.checkBeforeOpeningParametersDialog()
             if message:
-                QMessageBox.warning(self, self.tr("Warning"), message)
+                dlg = MissingDependencyDialog(message)
+                dlg.exec_()
+                #QMessageBox.warning(self, self.tr("Warning"), message)
                 return
             alg = alg.getCopy()
             dlg = alg.getCustomParametersDialog()

@@ -23,13 +23,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+
 from PyQt4 import QtGui
+
 from sextante.core.GeoAlgorithm import GeoAlgorithm
+
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterBoolean import ParameterBoolean
-import os
-from sextante.gdal.GdalUtils import GdalUtils
+
 from sextante.outputs.OutputHTML import OutputHTML
+
+from sextante.gdal.GdalUtils import GdalUtils
 
 class information(GeoAlgorithm):
 
@@ -51,13 +56,13 @@ class information(GeoAlgorithm):
         self.addOutput(OutputHTML(information.OUTPUT, "Layer information"))
 
     def processAlgorithm(self, progress):
-        commands = ["gdalinfo"]
+        arguments = []
         if self.getParameterValue(information.NOGCP):
-            commands.append("-nogcp")
+            arguments.append("-nogcp")
         if self.getParameterValue(information.NOMETADATA):
-            commands.append("-nomd")
-        commands.append(self.getParameterValue(information.INPUT))
-        GdalUtils.runGdal(commands, progress)
+            arguments.append("-nomd")
+        arguments.append(self.getParameterValue(information.INPUT))
+        GdalUtils.runGdal(["gdalinfo", GdalUtils.escapeAndJoin(arguments)], progress)
         output = self.getOutputValue(information.OUTPUT)
         f = open(output, "w")
         for s in GdalUtils.getConsoleOutput()[1:]:

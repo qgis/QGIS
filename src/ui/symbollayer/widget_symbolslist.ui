@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>356</width>
-    <height>441</height>
+    <width>375</width>
+    <height>429</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -86,6 +86,18 @@
        </item>
        <item row="2" column="1">
         <widget class="QgsColorButton" name="btnColor">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string/>
          </property>

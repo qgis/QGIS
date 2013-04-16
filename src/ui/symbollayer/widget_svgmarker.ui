@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
-    <height>521</height>
+    <width>509</width>
+    <height>516</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
     <widget class="QTreeView" name="viewGroups">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>1</horstretch>
+       <horstretch>3</horstretch>
        <verstretch>1</verstretch>
       </sizepolicy>
      </property>
@@ -45,7 +45,7 @@
     <widget class="QListView" name="viewImages">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>3</horstretch>
+       <horstretch>5</horstretch>
        <verstretch>1</verstretch>
       </sizepolicy>
      </property>
@@ -105,6 +105,9 @@
     <layout class="QFormLayout" name="formLayout_2">
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <property name="labelAlignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
      </property>
      <property name="horizontalSpacing">
       <number>28</number>
@@ -182,30 +185,90 @@
      <item row="2" column="0">
       <widget class="QLabel" name="mColorLabel">
        <property name="text">
-        <string>Color</string>
+        <string>Colors</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QgsColorButton" name="mChangeColorButton">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="mBorderColorLabel">
-       <property name="text">
-        <string>Border color</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QgsColorButton" name="mChangeBorderColorButton">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Fill</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsColorButton" name="mChangeColorButton">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="mBorderColorLabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Border</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsColorButton" name="mChangeBorderColorButton">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="mBorderWidthLabel">

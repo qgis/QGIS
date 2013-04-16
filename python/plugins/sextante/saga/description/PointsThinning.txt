@@ -1,6 +1,6 @@
 Points Thinning
 shapes_points
 ParameterVector|POINTS|Points|0|False
-ParameterTableField|FIELD|Attribute|POINTS
+ParameterTableField|FIELD|Attribute|POINTS|-1|False
 ParameterNumber|RESOLUTION|Resolution|0.0|None|1.0
 OutputVector|THINNED|Thinned Points

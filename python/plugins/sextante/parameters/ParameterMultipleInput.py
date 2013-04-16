@@ -150,7 +150,7 @@ class ParameterMultipleInput(ParameterDataObject):
 
     def deserialize(self, s):
         tokens = s.split("|")
-        return ParameterMultipleInput(tokens[0], tokens[1], float(tokens[2]), tokens[3] == str(True))
+        return ParameterMultipleInput(tokens[1], tokens[2], float(tokens[3]), tokens[4] == str(True))
 
     def getAsScriptCode(self):
         if self.datatype == ParameterMultipleInput.TYPE_RASTER:

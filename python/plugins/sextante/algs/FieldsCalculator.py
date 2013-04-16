@@ -23,22 +23,32 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.outputs.OutputVector import OutputVector
-from sextante.parameters.ParameterVector import ParameterVector
-from qgis.core import *
 from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from sextante.parameters.ParameterString import ParameterString
+
+from qgis.core import *
+
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 from sextante.core.QGisLayers import QGisLayers
 
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterString import ParameterString
+from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.parameters.ParameterSelection import ParameterSelection
+
+from sextante.outputs.OutputVector import OutputVector
 
 class FieldsCalculator(GeoAlgorithm):
 
     INPUT_LAYER = "INPUT_LAYER"
     FIELD_NAME = "FIELD_NAME"
+    FIELD_TYPE = "FIELD_TYPE"
+    FIELD_LENGTH = "FIELD_LENGTH"
+    FIELD_PRECISION = "FIELD_PRECISION"
     FORMULA = "FORMULA"
     OUTPUT_LAYER = "OUTPUT_LAYER"
+
+    TYPE_NAMES = ["Integer", "Float", "String"]
+    TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
     #===========================================================================
     # def getIcon(self):
@@ -50,30 +60,38 @@ class FieldsCalculator(GeoAlgorithm):
         self.group = "Vector table tools"
         self.addParameter(ParameterVector(self.INPUT_LAYER, "Input layer", ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterString(self.FIELD_NAME, "Result field name"))
+        self.addParameter(ParameterSelection(self.FIELD_TYPE, "Field type", self.TYPE_NAMES))
+        self.addParameter(ParameterNumber(self.FIELD_LENGTH, "Field lenght", 1, 255, 10))
+        self.addParameter(ParameterNumber(self.FIELD_PRECISION, "Field precision", 0, 10, 0))
         self.addParameter(ParameterString(self.FORMULA, "Formula"))
         self.addOutput(OutputVector(self.OUTPUT_LAYER, "Output layer"))
 
     def processAlgorithm(self, progress):
-        fieldname = self.getParameterValue(self.FIELD_NAME)
+        fieldName = self.getParameterValue(self.FIELD_NAME)
+        fieldType = self.getParameterValue(self.FIELD_TYPE)
+        fieldLength = self.getParameterValue(self.FIELD_LENGTH)
+        fieldPrecision = self.getParameterValue(self.FIELD_PRECISION)
         formula = self.getParameterValue(self.FORMULA)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
-        vlayer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
-        vprovider = vlayer.dataProvider()
-        fields = vprovider.fields()
-        fields.append(QgsField(fieldname, QVariant.Double))
-        writer = output.getVectorWriter(fields, vprovider.geometryType(), vlayer.crs())
+
+        layer = QGisLayers.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
+        provider = layer.dataProvider()
+        fields = provider.fields()
+        fields.append(QgsField(fieldName, self.TYPES[fieldType], "", fieldLength, fieldPrecision))
+        writer = output.getVectorWriter(fields, provider.geometryType(), layer.crs())
+
         outFeat = QgsFeature()
         inGeom = QgsGeometry()
-        nFeat = vprovider.featureCount()
+        nFeat = provider.featureCount()
         nElement = 0
-        features = QGisLayers.features(vlayer)
+        features = QGisLayers.features(layer)
         for inFeat in features:
             progress.setPercentage(int((100 * nElement) / nFeat))
             attrs = inFeat.attributes()
             expression = formula
             k = 0
             for attr in attrs:
-                expression = expression.replace(str(fields[k].name()), str(attr.toString()))
+                expression = expression.replace(unicode(fields[k].name()), unicode(attr.toString()))
                 k += 1
             try:
                 result = eval(expression)
@@ -89,8 +107,6 @@ class FieldsCalculator(GeoAlgorithm):
             writer.addFeature(outFeat)
         del writer
 
-
     def checkParameterValuesBeforeExecuting(self):
         ##TODO check that formula is correct and fields exist
         pass
-

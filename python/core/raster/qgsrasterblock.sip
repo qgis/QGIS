@@ -6,13 +6,6 @@ class QgsRasterBlock
 %End
 
   public:
-    struct Range
-    {
-      double min;
-      double max;
-      bool operator==( const QgsRasterBlock::Range &o ) const;
-    };
-
     QgsRasterBlock();
 
     QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
@@ -25,7 +18,7 @@ class QgsRasterBlock
 
     int typeSize( int dataType ) const;
 
-    int dataTypeSize( int bandNo ) const;
+    int dataTypeSize() const;
 
     /** Returns true if data type is numeric */
     bool typeIsNumeric( QGis::DataType type ) const;
@@ -39,13 +32,15 @@ class QgsRasterBlock
     /** For given data type returns wider type and sets no data value */
     static QGis::DataType typeWithNoDataValue( QGis::DataType dataType, double *noDataValue );
 
+    bool hasNoDataValue() const;
+
     double noDataValue( ) const;
 
-    void setNoDataValue( double noDataValue );
+    //void setNoDataValue( double noDataValue );
 
-    static bool isNoDataValue( double value, double noDataValue );
+    //static bool isNoDataValue( double value, double noDataValue );
 
-    bool isNoDataValue( double value ) const;
+    //bool isNoDataValue( double value ) const;
 
     double value( int row, int column ) const;
     double value( size_t index) const;
@@ -65,8 +60,5 @@ class QgsRasterBlock
     bool convert( QGis::DataType destDataType );
     QImage image() const;
     bool setImage( const QImage * image );
-
-    static bool valueInRange( double value, const QList<QgsRasterBlock::Range> &rangeList );
-
 };
 

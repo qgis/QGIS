@@ -246,7 +246,7 @@ inline void ( *cast_to_fptr( void *p ) )()
 //
 // compare two doubles (but allow some difference)
 //
-inline bool doubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
+inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 {
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;
@@ -255,7 +255,7 @@ inline bool doubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
 //
 // compare two doubles using specified number of significant digits
 //
-inline bool doubleNearSig( double a, double b, int significantDigits = 10 )
+inline bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 )
 {
   // The most simple would be to print numbers as %.xe and compare as strings
   // but that is probably too costly
@@ -278,7 +278,7 @@ bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
     @param size size in bytes
  */
-void CORE_EXPORT *QgsMalloc( size_t size );
+void CORE_EXPORT *qgsMalloc( size_t size );
 
 /** Allocates  memory for an array of nmemb elements of size bytes each and returns
     a pointer to the allocated memory. Works like C calloc() but prints debug message
@@ -286,12 +286,12 @@ void CORE_EXPORT *QgsMalloc( size_t size );
     @param nmemb number of elements
     @param size size of element in bytes
  */
-void CORE_EXPORT *QgsCalloc( size_t nmemb, size_t size );
+void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size );
 
 /** Frees the memory space  pointed  to  by  ptr. Works like C free().
     @param ptr pointer to memory space
  */
-void CORE_EXPORT QgsFree( void *ptr );
+void CORE_EXPORT qgsFree( void *ptr );
 
 /** Wkt string that represents a geographic coord sys
  * @note added in 1.8 to replace GEOWkt

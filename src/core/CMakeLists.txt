@@ -197,6 +197,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasternuller.cpp
   raster/qgsrastertransparency.cpp
   raster/qgsrasterpipe.cpp
+  raster/qgsrasterrange.cpp
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
 
@@ -477,6 +478,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrastertransparency.h
   raster/qgsrasterpipe.h
   raster/qgsrasterprojector.h
+  raster/qgsrasterrange.h
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h

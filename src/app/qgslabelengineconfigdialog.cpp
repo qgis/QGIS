@@ -39,8 +39,8 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWi
   spinCandPolygon->setValue( candPolygon );
 
   chkShowCandidates->setChecked( mLBL->isShowingCandidates() );
-
   chkShowAllLabels->setChecked( mLBL->isShowingAllLabels() );
+  mShadowDebugRectChkBox->setChecked( mLBL->isShowingShadowRectangles() );
 
   mSaveWithProjectChkBox->setChecked( mLBL->isStoredWithProject() );
 }
@@ -56,7 +56,7 @@ void QgsLabelEngineConfigDialog::onOK()
                                   spinCandPolygon->value() );
 
   mLBL->setShowingCandidates( chkShowCandidates->isChecked() );
-
+  mLBL->setShowingShadowRectangles( mShadowDebugRectChkBox->isChecked() );
   mLBL->setShowingAllLabels( chkShowAllLabels->isChecked() );
 
   if ( mSaveWithProjectChkBox->isChecked() )
@@ -79,4 +79,5 @@ void QgsLabelEngineConfigDialog::setDefaults()
   spinCandPolygon->setValue( p.getPolyP() );
   chkShowCandidates->setChecked( false );
   chkShowAllLabels->setChecked( false );
+  mShadowDebugRectChkBox->setChecked( false );
 }

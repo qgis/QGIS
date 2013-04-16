@@ -59,7 +59,7 @@ class ConvexHull(GeoAlgorithm):
         self.name = "Convex hull"
         self.group = "Vector geometry tools"
         self.addParameter(ParameterVector(ConvexHull.INPUT, "Input layer", ParameterVector.VECTOR_TYPE_ANY))
-        self.addParameter(ParameterTableField(ConvexHull.FIELD, "Field", ConvexHull.INPUT))
+        self.addParameter(ParameterTableField(ConvexHull.FIELD, "Field (optional, only used if creating convex hulls by classes)", ConvexHull.INPUT, optional = True))
         self.addParameter(ParameterSelection(ConvexHull.METHOD, "Method", ConvexHull.METHODS))
         self.addOutput(OutputVector(ConvexHull.OUTPUT, "Convex hull"))
 
@@ -71,22 +71,23 @@ class ConvexHull(GeoAlgorithm):
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
 
-        index = layer.fieldNameIndex(fieldName)
-        fType = layer.pendingFields()[index].type()
+
         f = QgsField("value")
         f.setType(QVariant.String)
         f.setLength(255)
         if useField:
-          if fType == QVariant.Int:
-              f.setType(QVariant.Int)
-              f.setLength(20)
-          elif fType == QVariant.Double:
-              f.setType(QVariant.Double)
-              f.setLength(20)
-              f.setPrecision(6)
-          else:
-              f.setType(QVariant.String)
-              f.setLength(255)
+            index = layer.fieldNameIndex(fieldName)
+            fType = layer.pendingFields()[index].type()
+            if fType == QVariant.Int:
+                f.setType(QVariant.Int)
+                f.setLength(20)
+            elif fType == QVariant.Double:
+                f.setType(QVariant.Double)
+                f.setLength(20)
+                f.setPrecision(6)
+            else:
+                f.setType(QVariant.String)
+                f.setLength(255)
 
         fields = [QgsField("id", QVariant.Int, "", 20),
                   f,

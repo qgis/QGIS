@@ -34,9 +34,10 @@ class MultilineTextPanel(QtGui.QWidget):
 
     USE_TEXT = 0
 
-    def __init__(self, options, parent = None):
+    def __init__(self, options, model, parent = None):
         super(MultilineTextPanel, self).__init__(parent)
         self.options = options
+        self.model = model
         self.verticalLayout = QtGui.QVBoxLayout(self)
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
@@ -71,7 +72,7 @@ class MultilineTextPanel(QtGui.QWidget):
                 if item.alg == value.alg and item.param == value.param:
                     self.combo.setCurrentIndex(idx)
                     return
-        self.combo.setCurrentIndex(idx)
+        self.combo.setCurrentIndex(0)
         value = self.model.getValueFromAlgorithmAndParameter(value)
         if value:
             self.textBox.setPlainText(str(value))

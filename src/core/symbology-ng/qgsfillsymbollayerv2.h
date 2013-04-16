@@ -83,14 +83,6 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    QString dataDefinedPropertyString( const QString& property ) const;
-    void setDataDefinedProperty( const QString& property, const QString& expressionString );
-    void removeDataDefinedProperty( const QString& property );
-    void removeDataDefinedProperties();
-
-    QSet<QString> usedAttributes() const;
-
   protected:
     QBrush mBrush;
     QBrush mSelBrush;
@@ -105,14 +97,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QPointF mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
 
-    //data defined properties
-    QgsExpression* mColorExpression;
-    QgsExpression* mColorBorderExpression;
-    QgsExpression* mWidthBorderExpression;
-
   private:
     //helper functions for data defined symbology
-    void prepareExpressions( const QgsVectorLayer* vl );
     void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QBrush& brush, QPen& pen, QPen& selPen );
 };
 
@@ -190,14 +176,6 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    QString dataDefinedPropertyString( const QString& property ) const;
-    void setDataDefinedProperty( const QString& property, const QString& expressionString );
-    void removeDataDefinedProperty( const QString& property );
-    void removeDataDefinedProperties();
-
-    QSet<QString> usedAttributes() const;
-
   protected:
     /**Width of the pattern (in output units)*/
     double mPatternWidth;
@@ -220,14 +198,6 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     double mSvgOutlineWidth;
     QgsSymbolV2::OutputUnit mSvgOutlineWidthUnit;
 
-    //data defined properties
-    QgsExpression* mWidthExpression;
-    QgsExpression* mSvgFileExpression;
-    QgsExpression* mAngleExpression;
-    QgsExpression* mFillColorExpression;
-    QgsExpression* mOutlineColorExpression;
-    QgsExpression* mOutlineWidthExpression;
-
     void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
 
   private:
@@ -235,7 +205,6 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void storeViewBox();
     void setDefaultSvgParams(); //fills mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth with default values for mSvgFilePath
 
-    void prepareExpressions( const QgsVectorLayer* vl );
     /**Applies the svg pattern to the brush*/
     void applyPattern( QBrush& brush, const QString& svgFilePath, double patternWidth, QgsSymbolV2::OutputUnit patternWidthUnit, const QColor& svgFillColor, const QColor& svgOutlineColor,
                        double svgOutlineWidth, QgsSymbolV2::OutputUnit svgOutlineWidthUnit, const QgsSymbolV2RenderContext& context );
@@ -288,14 +257,6 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    QString dataDefinedPropertyString( const QString& property ) const;
-    void setDataDefinedProperty( const QString& property, const QString& expressionString );
-    void removeDataDefinedProperty( const QString& property );
-    void removeDataDefinedProperties();
-
-    QSet<QString> usedAttributes() const;
-
   protected:
     /**Distance (in mm or map units) between lines*/
     double mDistance;
@@ -310,16 +271,9 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;
 
-    //data defined properties
-    QgsExpression* mLineAngleExpression;
-    QgsExpression* mDistanceExpression;
-    QgsExpression* mLineWidthExpression;
-    QgsExpression* mColorExpression;
-
     void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
 
   private:
-    void prepareExpressions( const QgsVectorLayer* vl );
     /**Applies the svg pattern to the brush*/
     void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double lineAngle, double distance, double lineWidth, const QColor& color );
 };
@@ -376,14 +330,6 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    QString dataDefinedPropertyString( const QString& property ) const;
-    void setDataDefinedProperty( const QString& property, const QString& expressionString );
-    void removeDataDefinedProperty( const QString& property );
-    void removeDataDefinedProperties();
-
-    QSet<QString> usedAttributes() const;
-
   protected:
     QgsMarkerSymbolV2* mMarkerSymbol;
     double mDistanceX;
@@ -395,17 +341,11 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double mDisplacementY;
     QgsSymbolV2::OutputUnit mDisplacementYUnit;
 
-    QgsExpression* mDistanceXExpression;
-    QgsExpression* mDistanceYExpression;
-    QgsExpression* mDisplacementXExpression;
-    QgsExpression* mDisplacementYExpression;
-
     void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
 
   private:
     void applyPattern( const QgsSymbolV2RenderContext& context, QBrush& brush, double distanceX, double distanceY,
                        double displacementX, double displacementY );
-    void prepareExpressions( const QgsVectorLayer* vl );
 };
 
 class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2

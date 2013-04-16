@@ -43,8 +43,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 
   //getFeatureAttributes
-  QList<QgsAttributeMap> attributeList;
-  if ( !getFeatureAttributeMap( attributeList ) )
+  QList<QgsAttributes> attributeList;
+  if ( !getFeatureAttributes( attributeList ) )
   {
     return;
   }
@@ -56,6 +56,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   adaptItemFrame( maxColumnWidthMap, attributeList );
 
   drawBackground( painter );
+  painter->setPen( Qt::SolidLine );
 
   //now draw the text
   double currentX = mGridStrokeWidth;
@@ -76,18 +77,15 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     currentY += mGridStrokeWidth;
 
     //draw the attribute values
-    QList<QgsAttributeMap>::const_iterator attIt = attributeList.begin();
+    QList<QgsAttributes>::const_iterator attIt = attributeList.begin();
     for ( ; attIt != attributeList.end(); ++attIt )
     {
       currentY += fontAscentMillimeters( mContentFont );
       currentY += mLineTextDistance;
 
-      QgsAttributeMap currentAttributeMap = *attIt;
-      QgsAttributeMap::const_iterator attMapIt = currentAttributeMap.find( columnIt.key() );
-      if ( attMapIt != currentAttributeMap.constEnd() )
-      {
-        drawText( painter, currentX, currentY, attMapIt.value().toString(), mContentFont );
-      }
+      QgsAttributes currentAttributeMap = *attIt;
+      QString str = currentAttributeMap.at( columnIt.key() ).toString();
+      drawText( painter, currentX, currentY, str, mContentFont );
       currentY += mLineTextDistance;
       currentY += mGridStrokeWidth;
     }
@@ -118,8 +116,8 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
 void QgsComposerTable::adjustFrameToSize()
 {
-  QList<QgsAttributeMap> attributes;
-  if ( !getFeatureAttributeMap( attributes ) )
+  QList<QgsAttributes> attributes;
+  if ( !getFeatureAttributes( attributes ) )
   {
     return;
   }
@@ -174,7 +172,7 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
   return true;
 }
 
-bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList ) const
+bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributes>& attributeList ) const
 {
   maxWidthMap.clear();
   QMap<int, QString> headerMap = getHeaderLabels();
@@ -185,21 +183,19 @@ bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap,
   }
 
   //go through all the attributes and adapt the max width values
-  QList<QgsAttributeMap>::const_iterator attIt = attributeList.constBegin();
+  QList<QgsAttributes>::const_iterator attIt = attributeList.constBegin();
 
   QgsAttributeMap currentAttributeMap;
   double currentAttributeTextWidth;
 
   for ( ; attIt != attributeList.constEnd(); ++attIt )
   {
-    currentAttributeMap = *attIt;
-    QgsAttributeMap::const_iterator attMapIt = currentAttributeMap.constBegin();
-    for ( ; attMapIt != currentAttributeMap.constEnd(); ++attMapIt )
+    for ( int i = 0; i < attIt->size(); ++i )
     {
-      currentAttributeTextWidth = textWidthMillimeters( mContentFont, attMapIt.value().toString() );
-      if ( currentAttributeTextWidth > maxWidthMap[attMapIt.key()] )
+      currentAttributeTextWidth = textWidthMillimeters( mContentFont, attIt->at( i ).toString() );
+      if ( currentAttributeTextWidth > maxWidthMap[i] )
       {
-        maxWidthMap[attMapIt.key()] = currentAttributeTextWidth;
+        maxWidthMap[i] = currentAttributeTextWidth;
       }
     }
   }
@@ -210,7 +206,7 @@ bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap,
 
 
 
-void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList )
+void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributes>& attributeList )
 {
   //calculate height
   double totalHeight = fontAscentMillimeters( mHeaderFont ) + attributeList.size() * fontAscentMillimeters( mContentFont )

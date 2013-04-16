@@ -1,7 +1,7 @@
 Modifed Quadratic Shepard
 grid_gridding
 ParameterVector|SHAPES|Points|0|False
-ParameterTableField|FIELD|Attribute|SHAPES
+ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 ParameterSelection|TARGET|Target Grid|[0] user defined
 ParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|1.0|None|13
 ParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors|1.0|None|19
