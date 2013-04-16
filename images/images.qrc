@@ -82,6 +82,20 @@
         <file>themes/default/console/imgHelpConsole.png</file>
         <file>themes/default/console/imgHelpDialog.png</file>
         <file>themes/default/console/imgHelpMenu.png</file>
+        <file>themes/default/console/iconHideToolConsole.png</file>
+        <file>themes/default/console/iconTabEditorConsole.png</file>
+        <file>themes/default/console/iconNewTabEditorConsole.png</file>
+        <file>themes/default/console/iconCloseTabEditorConsole.png</file>
+        <file>themes/default/console/iconRestoreTabsConsole.png</file>
+        <file>themes/default/console/iconFileTabsMenuConsole.png</file>
+        <file>themes/default/console/iconShowEditorConsole.png</file>
+        <file>themes/default/console/iconSaveAsConsole.png</file>
+        <file>themes/default/console/iconCutEditorConsole.png</file>
+        <file>themes/default/console/iconCopyEditorConsole.png</file>
+        <file>themes/default/console/iconPasteEditorConsole.png</file>
+        <file>themes/default/console/iconRunScriptConsole.png</file>
+        <file>themes/default/console/iconCommentEditorConsole.png</file>
+        <file>themes/default/console/iconUncommentEditorConsole.png</file>
         <file>themes/default/extents.png</file>
         <file>themes/default/favourites.png</file>
         <file>themes/default/geographic.png</file>
