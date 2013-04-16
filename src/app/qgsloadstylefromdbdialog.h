@@ -32,8 +32,6 @@ class QgsLoadStyleFromDBDialog: public QDialog, private Ui::QgsLoadStyleFromDBDi
   public slots:    
     void cellSelectedRelatedTable( int r );
     void cellSelectedOthersTable( int r );
-    void cancelButtonClicked();
-    void loadButtonClicked();
 
 private:
 

@@ -752,26 +752,35 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     QString errorMsg;
     QVector<QString> ids, names, descriptions;
 
-
-
     int sectionLimit = layer->listStylesInDatabase(ids, names, descriptions, errorMsg);
-
     if( !errorMsg.isNull() )
     {
-        QMessageBox::warning(this, tr( "Error!" ), tr( "Retrieving" ) );
+        QMessageBox::warning( this, tr( "Error occured retrievning styles from database "), errorMsg );
         return;
     }
+
     QgsLoadStyleFromDBDialog dialog;
     dialog.initializeLists(ids, names, descriptions, sectionLimit);
-    dialog.exec();
 
-    QString selectedStyleId = dialog.getSelectedStyleId();
-    if( selectedStyleId.compare( tr( "" ) ) )
+    if( dialog.exec() == QDialog::Accepted )
     {
+        QString selectedStyleId = dialog.getSelectedStyleId();
+
         QString qmlStyle = layer->getStyleFromDatabase( selectedStyleId, errorMsg );
-        if( !qmlStyle.isNull() ){
-            layer->applyNamedStyle( qmlStyle, errorMsg);
+        if( !errorMsg.isNull() )
+        {
+            QMessageBox::warning( this, tr( "Error occured retrievning styles from database "), errorMsg );
+            return;
+        }
+        if( layer->applyNamedStyle( qmlStyle, errorMsg) )
+        {
             reset();
+        }
+        else
+        {
+            QMessageBox::warning( this, tr( "Error occured retrievning styles from database "),
+                                  tr( "The style retriev is not a valid named style. Error message: %1" )
+                                  .arg( errorMsg ) );
         }
 
     }

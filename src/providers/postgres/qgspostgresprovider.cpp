@@ -3360,7 +3360,7 @@ QGISEXTERN int listStyles( const QString& uri,  QVector<QString> &ids, QVector<Q
     QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
     if ( !conn )
     {
-        errCause = QObject::tr( "Connection to database failed" );
+        errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
         return -1;
     }
 
@@ -3377,6 +3377,12 @@ QGISEXTERN int listStyles( const QString& uri,  QVector<QString> &ids, QVector<Q
             .arg( QgsPostgresConn::quotedValue( f_geometry_column ) );
 
     PGresult* result = conn->PQexec( selectRelatedQuery );
+    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    {
+        QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectRelatedQuery ) );
+        errCause = QObject::tr( "Error executing the select query for related styles. The query was logged" );
+        return -1;
+    }
     int numberOfRelatedStyles = PQntuples( result );
     for( int i=0; i<numberOfRelatedStyles; i++ )
     {
@@ -3393,6 +3399,12 @@ QGISEXTERN int listStyles( const QString& uri,  QVector<QString> &ids, QVector<Q
             .arg( QgsPostgresConn::quotedValue( f_geometry_column ) );
 
     result = conn->PQexec( selectOthersQuery );
+    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    {
+        QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectOthersQuery ) );
+        errCause = QObject::tr( "Error executing the select query for unrelated styles. The query was logged" );
+        return -1;
+    }
     for( int i=0; i<PQntuples( result ); i++ )
     {
         ids.push_front( QObject::tr( PQgetvalue( result, i, 0 ) ) );
@@ -3411,17 +3423,28 @@ QGISEXTERN QString getStyleById(const QString& uri, QString styleId, QString& er
     QgsPostgresConn* conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
     if ( !conn )
     {
-        errCause = QObject::tr( "Connection to database failed" );
-        return "";
+        errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
+        return QObject::tr( "" );
     }
 
     QString selectQmlQuery = QObject::tr( "SELECT styleQml FROM %1 WHERE id=%2")
                                          .arg( styleTableName )
                                          .arg( styleId );
     PGresult* result = conn->PQexec( selectQmlQuery );
+    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    {
+        QgsMessageLog::logMessage( QObject::tr( "Error executing query: %1" ).arg( selectQmlQuery ) );
+        errCause = QObject::tr( "Error executing the select query. The query was logged" );
+        return QObject::tr( "" );
+    }
     if( PQntuples( result ) == 1)
     {
         return PQgetvalue( result, 0, 0 );
     }
-    return "";
+    else
+    {
+        errCause = QObject::tr( "Consistence error in table '%1'. Style id should be unique" ).arg( styleTableName );
+        return QObject::tr( "" );
+    }
+
 }

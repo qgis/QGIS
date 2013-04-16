@@ -31,12 +31,17 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
 
   connect(mRelatedTable, SIGNAL( cellClicked( int,int ) ), this, SLOT( cellSelectedRelatedTable( int ) ) );
   connect(mOthersTable, SIGNAL( cellClicked( int,int ) ), this, SLOT( cellSelectedOthersTable( int ) ) );
-  connect(mCancelButton, SIGNAL( clicked() ), this, SLOT( cancelButtonClicked() ) );
-  connect(mLoadButton, SIGNAL( clicked() ), this, SLOT( loadButtonClicked() ) );
+  connect(mRelatedTable, SIGNAL( doubleClicked( QModelIndex ) ),
+          this, SLOT( accept() ) );
+  connect(mOthersTable, SIGNAL( doubleClicked( QModelIndex ) ),
+          this, SLOT( accept() ) );
+  connect(mCancelButton, SIGNAL( clicked() ), this, SLOT( reject() ) );
+  connect(mLoadButton, SIGNAL( clicked() ), this, SLOT( accept() ) );
 
   setTabOrder( mRelatedTable, mOthersTable );
   setTabOrder( mOthersTable, mCancelButton );
   setTabOrder( mCancelButton, mLoadButton );
+
 }
 
 void QgsLoadStyleFromDBDialog::initializeLists( QVector<QString> ids, QVector<QString> names,
@@ -49,7 +54,7 @@ void QgsLoadStyleFromDBDialog::initializeLists( QVector<QString> ids, QVector<QS
     int relatedTableNOfCols = ( sectionLimit > 0 ) ? 2 : 1;
     int othersTableNOfCols = ( ids.count() - sectionLimit > 0 ) ? 2 : 1;
     QString twoColsHeader( "Name;Description" );
-    QString oneColsHeader( "No style found in the database" );
+    QString oneColsHeader( "No styles found in the database" );
     QString relatedTableHeader = ( relatedTableNOfCols == 1 ) ? oneColsHeader : twoColsHeader;
     QString othersTableHeader = ( othersTableNOfCols == 1 ) ? oneColsHeader : twoColsHeader;
 
@@ -89,15 +94,4 @@ void QgsLoadStyleFromDBDialog::cellSelectedOthersTable( int r )
 {
     mLoadButton->setEnabled( true );
     mSelectedStyleId = mIds.value( r + mSectionLimit );
-}
-
-void QgsLoadStyleFromDBDialog::cancelButtonClicked()
-{
-    mSelectedStyleId = tr( "" ) ;
-    this->close();
-}
-
-void QgsLoadStyleFromDBDialog::loadButtonClicked()
-{
-    this->close();
 }
