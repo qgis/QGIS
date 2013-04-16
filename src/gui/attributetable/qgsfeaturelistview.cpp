@@ -100,7 +100,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();
 
-  QModelIndex index = mModel->mapToMaster( indexAt( pos ) );
+  QModelIndex index = indexAt( pos );
 
   if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
   {
@@ -111,6 +111,7 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
   {
     mFeatureSelectionModel->enableSync( false );
     selectRow( index, true );
+    repaintRequested();
   }
 }
 
@@ -176,7 +177,7 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();
 
-  QModelIndex index = mModel->mapToMaster( indexAt( pos ) );
+  QModelIndex index = indexAt( pos );
 
   if ( mEditSelectionDrag )
   {
