@@ -3294,6 +3294,32 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                          .arg( uiFileColumn )
                          .arg( uiFileValue );
 
+  QString checkQuery = QObject::tr( "SELECT styleName FROM %1 WHERE f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5 AND styleName=%6" )
+          .arg( styleTableName )
+          .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
+          .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
+          .arg( QgsPostgresConn::quotedValue(f_table_name ) )
+          .arg( QgsPostgresConn::quotedValue(f_geometry_column ) )
+          .arg( QgsPostgresConn::quotedValue( name ) );
+
+  result = conn->PQexec( checkQuery );
+  if( PQntuples( result ) > 0 )
+  {
+      sql = QObject::tr( "UPDATE %1 SET useAsDefault=%2, styleQML=XMLPARSE(DOCUMENT %3), styleSLD=XMLPARSE(DOCUMENT %4), description=%5, owner=%6, ui=XMLPARSE(DOCUMENT %7) WHERE f_table_catalog=%8 AND f_table_schema=%9 AND f_table_name=%10 AND f_geometry_column=%11 AND styleName=%12")
+              .arg( styleTableName )
+              .arg( isdef )
+              .arg( QgsPostgresConn::quotedValue( qmlStyle
+                                                  ) )
+              .arg( QgsPostgresConn::quotedValue( sldStyle ) )
+              .arg( QgsPostgresConn::quotedValue( desc ) )
+              .arg( QgsPostgresConn::quotedValue( owner ) )
+              .arg( QgsPostgresConn::quotedValue( uiFileContent ) )
+              .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
+              .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
+              .arg( QgsPostgresConn::quotedValue( f_table_name ) )
+              .arg( QgsPostgresConn::quotedValue( f_geometry_column ) )
+              .arg( QgsPostgresConn::quotedValue( name ) );
+  }
 
   if( useAsDefault )
   {
@@ -3311,7 +3337,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   conn->disconnect();
   if ( res.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    errCause = QObject::tr( "Unable to save layer style. It's not possible to insert a new record in style table. Maybe this is due to table permissions (user=%1). Please contact your database admin" );
+    errCause = QObject::tr( "Unable to save layer style. It's not possible to insert a new record in style table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( owner );
     return false;
   }
   return true;
