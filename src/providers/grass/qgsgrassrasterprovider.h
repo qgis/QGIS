@@ -184,13 +184,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     int xSize() const;
     int ySize() const;
 
-
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
-
-    //double noDataValue() const;
-    double minimumValue( int bandNo )const;
-    double maximumValue( int bandNo )const;
 
     QgsRasterBandStats bandStatistics( int theBandNo,
                                        int theStats = QgsRasterBandStats::All,
@@ -232,7 +227,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QgsGrassRasterValue mRasterValue;
 
-    //double mNoDataValue;
+    double mNoDataValue;
 };
 
 #endif

@@ -120,21 +120,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual int ySize() const;
 
     /** read block of data  */
-    // TODO clarify what happens on the last block (the part outside raster)
-    // virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data );
-
-    /** read block of data using give extent and size */
-    // virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
-
-    /** read block of data using give extent and size */
-    // virtual void *readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
-
-    /** Read block of data using given extent and size. */
-    // virtual void *readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) / Factory /;
-
-    /* Read a value from a data block at a given index. */
-    //virtual double readValue( void *data, int type, int index );
 
     /* Return true if source band has no data value */
     virtual bool srcHasNoDataValue( int bandNo ) const;
@@ -145,14 +131,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** \brief Set source nodata value usage */
     virtual void setUseSrcNoDataValue( int bandNo, bool use );
 
-    /** value representing null data */
-    //virtual double noDataValue() const;
-
-    /** Value representing currentno data.
-     *  WARNING: this value returned by this method is not constant. It may change
-     *  for example if user disable use of source no data value. */
-    //virtual double noDataValue( int bandNo ) const;
-
     /** Value representing no data value. */
     virtual double srcNoDataValue( int bandNo ) const;
 
@@ -160,9 +138,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     /** Get list of user no data value ranges */
     virtual  QgsRasterRangeList userNoDataValue( int bandNo ) const;
-
-    virtual double minimumValue( int bandNo ) const;
-    virtual double maximumValue( int bandNo ) const;
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const;
 
@@ -235,11 +210,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
       @note: this method was added in version 1.2*/
     void setDpi( int dpi );
 
-    static QStringList cStringList2Q_( char ** stringList );
-
-    static QString makeTableCell( const QString & value );
-    static QString makeTableCells( const QStringList & values );
-
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const;
 
@@ -273,9 +243,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual bool remove();
 
     /** Returns a list of pyramid resampling method names for given provider */
-    static QStringList pyramidResamplingMethods( QString providerKey = "gdal" );
-    /** Returns the pyramid resampling argument that corresponds to a given method */
-    static QString pyramidResamplingArg( QString method, QString providerKey = "gdal" );
+    static QList<QPair<QString,QString> > pyramidResamplingMethods( QString providerKey );
 
     /** Validates creation options for a specific dataset and destination format.
      * @note used by GDAL provider only

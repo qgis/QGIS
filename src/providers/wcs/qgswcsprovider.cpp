@@ -62,6 +62,8 @@
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
+#define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
+
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()
 #define FROM8(x) QString::fromUtf8(x)
@@ -1433,11 +1435,9 @@ int QgsWcsProvider::capabilities() const
   int capability = NoCapabilities;
   capability |= QgsRasterDataProvider::Identify;
   capability |= QgsRasterDataProvider::IdentifyValue;
-  capability |= QgsRasterDataProvider::Histogram;
 
   if ( mHasSize )
   {
-    capability |= QgsRasterDataProvider::ExactResolution;
     capability |= QgsRasterDataProvider::Size;
   }
 

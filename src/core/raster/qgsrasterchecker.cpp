@@ -145,12 +145,16 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
 
     int width = expectedProvider->xSize();
     int height = expectedProvider->ySize();
-    int blockSize =  width * height * QgsRasterBlock::typeSize( expectedProvider->dataType( band ) ) ;
-    void * expectedData = malloc( blockSize );
-    void * verifiedData = malloc( blockSize );
+    QgsRasterBlock *expectedBlock = expectedProvider->block( band, expectedProvider->extent(), width, height );
+    QgsRasterBlock *verifiedBlock = verifiedProvider->block( band, expectedProvider->extent(), width, height );
 
-    expectedProvider->readBlock( band, expectedProvider->extent(), width, height, expectedData );
-    verifiedProvider->readBlock( band, expectedProvider->extent(), width, height, verifiedData );
+    if ( !expectedBlock || !expectedBlock->isValid() ||
+         !verifiedBlock || !verifiedBlock->isValid() )
+    {
+      allOk = false;
+      mReport += "cannot read raster block";
+      continue;
+    }
 
     // compare data values
     QString htmlTable = QString( "<table style='%1'>" ).arg( mTabStyle );
@@ -160,8 +164,8 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
       for ( int col = 0; col < width; col ++ )
       {
         bool cellOk = true;
-        double verifiedVal =  QgsRasterBlock::readValue( verifiedData,  verifiedProvider->dataType( band ), row * width + col );
-        double expectedVal =  QgsRasterBlock::readValue( expectedData,  expectedProvider->dataType( band ), row * width + col );
+        double verifiedVal = verifiedBlock->value( row, col );
+        double expectedVal = expectedBlock->value( row, col );
 
         QString valStr;
         if ( compare( verifiedVal, expectedVal, 0 ) )
@@ -182,8 +186,8 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
 
     mReport += htmlTable;
 
-    free( expectedData );
-    free( verifiedData );
+    delete expectedBlock;
+    delete verifiedBlock;
   }
   delete verifiedProvider;
   delete expectedProvider;

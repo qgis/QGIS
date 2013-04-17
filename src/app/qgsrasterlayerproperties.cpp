@@ -164,9 +164,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     // initialize resampling methods
     cboResamplingMethod->clear();
-    foreach ( QString method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
-      cboResamplingMethod->addItem( method );
-
+    QPair<QString, QString> method;
+    foreach ( method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
+    {
+      cboResamplingMethod->addItem( method.second, method.first );
+    }
     // build pyramid list
     QList< QgsRasterPyramid > myPyramidList = provider->buildPyramidList();
     QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
@@ -195,7 +197,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     mOptsPage_Pyramids->setEnabled( false );
   }
 
-  if ( !( provider->capabilities() & QgsRasterDataProvider::Histogram ) )
+  // We can calculate histogram for all data sources but estimated only if
+  // size is unknown - could also be enabled if well supported (estimated histogram
+  // and and let user know that it is estimated)
+  if ( !( provider->capabilities() & QgsRasterDataProvider::Size ) )
   {
     // disable Histogram tab completely
     mOptsPage_Histogram->setEnabled( false );
@@ -572,7 +577,7 @@ void QgsRasterLayerProperties::sync()
     }
   }
 
-  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
+  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size ) )
   {
     if ( mOptsPage_Histogram != NULL )
     {
@@ -933,7 +938,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QString res = provider->buildPyramids(
                   myPyramidList,
-                  cboResamplingMethod->currentText(),
+                  cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString(),
                   ( QgsRasterDataProvider::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );

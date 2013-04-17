@@ -42,6 +42,8 @@
 #include <qwt_plot_renderer.h>
 #endif
 
+#define RASTER_HISTOGRAM_BINS 256
+
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget *parent )
     : QWidget( parent ),
     mRasterLayer( lyr ), mRendererWidget( 0 )
@@ -206,7 +208,7 @@ void QgsRasterHistogramWidget::on_btnHistoCompute_clicked()
 
 bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
 {
-  const int BINCOUNT = RASTER_HISTOGRAM_BINS; // 256 - defined in qgsrasterdataprovider.h
+  const int BINCOUNT = RASTER_HISTOGRAM_BINS;
   //bool myIgnoreOutOfRangeFlag = true;
   //bool myThoroughBandScanFlag = false;
   int myBandCountInt = mRasterLayer->bandCount();
@@ -262,7 +264,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
   // bin in all selected layers, and the min. It then draws a scaled line between min
   // and max - scaled to image height. 1 line drawn per selected band
   //
-  const int BINCOUNT = RASTER_HISTOGRAM_BINS; // 256 - defined in qgsrasterdataprovider.h
+  const int BINCOUNT = RASTER_HISTOGRAM_BINS;
   int myBandCountInt = mRasterLayer->bandCount();
 
   QgsDebugMsg( "entered." );

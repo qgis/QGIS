@@ -127,7 +127,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     //myInternalNoDataValue = -1e+30;
     myInternalNoDataValue = std::numeric_limits<float>::quiet_NaN();
   }
-  mInternalNoDataValue.append( myInternalNoDataValue );
+  mNoDataValue = myInternalNoDataValue;
   QgsDebugMsg( QString( "myInternalNoDataValue = %1" ).arg( myInternalNoDataValue ) );
 
   // TODO: refresh mRows and mCols if raster was rewritten
@@ -303,17 +303,6 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   memcpy( block, data.data(), size );
 }
 
-double  QgsGrassRasterProvider::minimumValue( int bandNo ) const
-{
-  Q_UNUSED( bandNo );
-  return mInfo["MIN_VALUE"].toDouble();
-}
-double  QgsGrassRasterProvider::maximumValue( int bandNo ) const
-{
-  Q_UNUSED( bandNo );
-  return mInfo["MAX_VALUE"].toDouble();
-}
-
 QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int theStats, const QgsRectangle & theExtent, int theSampleSize )
 {
   QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
@@ -468,7 +457,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   }
 
   // no data?
-  if ( qIsNaN( value ) || qgsDoubleNear( value, mInternalNoDataValue[0] ) )
+  if ( qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue ) )
   {
     return noDataResult;
   }
@@ -489,8 +478,6 @@ int QgsGrassRasterProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
                    | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::ExactResolution
-                   | QgsRasterDataProvider::ExactMinimumMaximum
                    | QgsRasterDataProvider::Size;
   return capability;
 }
