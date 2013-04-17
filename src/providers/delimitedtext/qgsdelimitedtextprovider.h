@@ -174,6 +174,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void recordInvalidLine( QString message );
     void handleInvalidLines();
     void resetStream();
+    bool recordIsEmpty( QStringList &record );
 
     QgsGeometry *geomFromWkt( QString &sWkt );
     bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );

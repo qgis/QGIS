@@ -53,8 +53,10 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
   while ( true )
   {
     QgsDelimitedTextFile::Status status = P->mFile->nextRecord( tokens );
+    int fid = P->mFile->recordLineNumber();
     if ( status == QgsDelimitedTextFile::RecordEOF ) break;
     if ( status != QgsDelimitedTextFile::RecordOk ) continue;
+    if( P->recordIsEmpty(tokens)) continue;
 
     while ( tokens.size() < P->mFieldCount )
       tokens.append( QString::null );
@@ -80,13 +82,11 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
       continue;
     }
 
-    mFid++;
-
     // At this point the current feature values are valid
 
     feature.setValid( true );
     feature.setFields( &P->attributeFields ); // allow name-based attribute lookups
-    feature.setFeatureId( mFid );
+    feature.setFeatureId( fid );
     feature.initAttributes( P->attributeFields.count() );
 
     if ( geom )
@@ -127,8 +127,6 @@ bool QgsDelimitedTextFeatureIterator::rewind()
   if ( mClosed )
     return false;
 
-  // Reset feature id to 0
-  mFid = 0;
   // Skip to first data record
   P->resetStream();
   return true;

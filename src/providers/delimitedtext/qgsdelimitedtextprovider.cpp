@@ -246,6 +246,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
       recordInvalidLine( tr( "Invalid record format at line %1" ) );
       continue;
     }
+    // Skip over empty records
+    if( recordIsEmpty(parts)) continue;
 
     // If not using column headers, then expand column count to include
     // last non-null (blank) column
@@ -532,6 +534,15 @@ void QgsDelimitedTextProvider::clearInvalidLines()
 {
   mInvalidLines.clear();
   mNExtraInvalidLines = 0;
+}
+
+bool QgsDelimitedTextProvider::recordIsEmpty(QStringList &record)
+{
+    foreach( QString s, record )
+    {
+        if( ! s.isEmpty()) return false;
+    }
+    return true;
 }
 
 void QgsDelimitedTextProvider::recordInvalidLine( QString message )
