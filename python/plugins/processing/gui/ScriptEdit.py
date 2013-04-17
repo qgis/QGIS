@@ -29,6 +29,8 @@ from PyQt4.Qsci import *
 
 from qgis.core import *
 
+from sextante.gui.LexerR import LexerR
+
 class ScriptEdit(QsciScintilla):
 
     LEXER_PYTHON = 0
@@ -189,6 +191,6 @@ class ScriptEdit(QsciScintilla):
                 self.lexer.setAPIs(self.api)
         elif self.lexerType == self.LEXER_R:
             # R lexer
-            pass
+            self.lexer = LexerR()
 
         self.setLexer(self.lexer)
