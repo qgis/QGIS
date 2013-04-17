@@ -1836,6 +1836,8 @@ void QgisApp::setupConnections()
            this, SLOT( oldProjectVersionWarning( QString ) ) );
   connect( QgsProject::instance(), SIGNAL( layerLoaded( int, int ) ),
            this, SLOT( showProgress( int, int ) ) );
+  connect( QgsProject::instance(), SIGNAL( loadingLayer( QString ) ),
+           this, SLOT( showStatusMessage( QString ) ) );
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),

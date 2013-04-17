@@ -685,6 +685,10 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     QDomNode node = nl.item( i );
     QDomElement element = node.toElement();
 
+    QString name = node.namedItem( "layername" ).toElement().text();
+    if( !name.isNull() )
+      emit loadingLayer( tr( "Loading layer %1" ).arg( name ) );
+
     if ( element.attribute( "embedded" ) == "1" )
     {
       createEmbeddedLayer( element.attribute( "id" ), readPath( element.attribute( "project" ) ), brokenNodes, vLayerList );
