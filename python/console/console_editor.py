@@ -341,6 +341,7 @@ class Editor(QsciScintilla):
         self.parent.pc.showEditorButton.setChecked(False)
 
     def commentEditorCode(self, commentCheck):
+        self.beginUndoAction()
         if self.hasSelectedText():
             startLine, _, endLine, _ = self.getSelection()
             for line in range(startLine, endLine + 1):
@@ -355,7 +356,6 @@ class Editor(QsciScintilla):
                        self.insert(selCmd[1:])
                     else:
                         self.insert(selCmd)
-                    self.setCursorPosition(endLine, selCmd.length() - 2)
         else:
             line, pos = self.getCursorPosition()
             selCmd = self.text(line)
@@ -369,7 +369,7 @@ class Editor(QsciScintilla):
                    self.insert(selCmd[1:])
                 else:
                     self.insert(selCmd)
-                self.setCursorPosition(line, selCmd.length() - 2)
+        self.endUndoAction()
 
     def runScriptCode(self):
         tabWidget = self.parent.mw.currentWidget()
