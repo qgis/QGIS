@@ -294,7 +294,8 @@ class ModelerAlgorithm(GeoAlgorithm):
             self.deactivated.remove(algIndex)
             dependent = self.getDependentAlgorithms(algIndex)
             for alg in dependent:
-                self.deactivated.remove(alg)
+                if alg in self.deactivated:
+                    self.deactivated.remove(alg)
         if update:
             self.updateModelerView()
         return True
