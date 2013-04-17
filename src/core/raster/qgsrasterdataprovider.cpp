@@ -341,13 +341,21 @@ QString QgsRasterDataProvider::lastErrorFormat()
   return "text/plain";
 }
 
-typedef QList<QPair<QString, QString> > pyramidResamplingMethods_t();
+typedef QList<QPair<QString, QString> > *pyramidResamplingMethods_t();
 QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods( QString providerKey )
 {
   pyramidResamplingMethods_t *pPyramidResamplingMethods = ( pyramidResamplingMethods_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey,  "pyramidResamplingMethods" ) );
   if ( pPyramidResamplingMethods )
   {
-    return pPyramidResamplingMethods();
+    QList<QPair<QString, QString> > *methods = pPyramidResamplingMethods();
+    if ( !methods )
+    {
+      QgsDebugMsg( "provider pyramidResamplingMethods returned no methods" );
+    }
+    else
+    {
+      return *methods;
+    }
   }
   else
   {

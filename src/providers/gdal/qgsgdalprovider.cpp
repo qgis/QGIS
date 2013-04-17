@@ -2753,16 +2753,19 @@ QString QgsGdalProvider::validatePyramidsCreationOptions( RasterPyramidsFormat p
 //   by running one of the other resampling strategies below.
 //   see ticket #284
 
-QGISEXTERN QList<QPair<QString, QString> > pyramidResamplingMethods()
+QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
 {
-  QList<QPair<QString, QString> > methods;
-  methods.append( QPair<QString, QString>( "NEAREST", QObject::tr( "Nearest Neighbour" ) ) );
-  methods.append( QPair<QString, QString>( "AVERAGE", QObject::tr( "Average" ) ) );
-  methods.append( QPair<QString, QString>( "GAUSS", QObject::tr( "Gauss" ) ) );
-  methods.append( QPair<QString, QString>( "CUBIC", QObject::tr( "Cubic" ) ) );
-  methods.append( QPair<QString, QString>( "MODE", QObject::tr( "Mode" ) ) );
-  methods.append( QPair<QString, QString>( "NONE", QObject::tr( "None" ) ) );
+  static QList<QPair<QString, QString> > methods;
 
-  return methods;
+  if ( methods.isEmpty() )
+  {
+    methods.append( QPair<QString, QString>( "NEAREST", QObject::tr( "Nearest Neighbour" ) ) );
+    methods.append( QPair<QString, QString>( "AVERAGE", QObject::tr( "Average" ) ) );
+    methods.append( QPair<QString, QString>( "GAUSS", QObject::tr( "Gauss" ) ) );
+    methods.append( QPair<QString, QString>( "CUBIC", QObject::tr( "Cubic" ) ) );
+    methods.append( QPair<QString, QString>( "MODE", QObject::tr( "Mode" ) ) );
+    methods.append( QPair<QString, QString>( "NONE", QObject::tr( "None" ) ) );
+  }
+
+  return &methods;
 }
-
