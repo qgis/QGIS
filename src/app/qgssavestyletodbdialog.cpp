@@ -13,6 +13,7 @@
 #include <QSettings>
 #include <QDomDocument>
 #include <QMessageBox>
+#include <QDateTime>
 
 QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent ) :
     QDialog( parent )
@@ -40,6 +41,15 @@ bool QgsSaveStyleToDbDialog::isDefault()
 QString QgsSaveStyleToDbDialog::getUIFileContent()
 {
     return mUIFileContent;
+}
+
+void QgsSaveStyleToDbDialog::accept()
+{
+    if( getName().isEmpty() ){
+        QMessageBox::information( this, tr( "Save style in database" ), tr( "A name is mandatory" ) );
+        return;
+    }
+    QDialog::accept();
 }
 
 void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()

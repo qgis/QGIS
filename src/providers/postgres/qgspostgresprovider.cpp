@@ -3229,7 +3229,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                            const QString& uiFileContent, bool useAsDefault, QString& errCause )
 {
   QgsDataSourceURI dsUri( uri );
-  QString f_table_catalog, f_table_schema, f_table_name, f_geometry_column;
+  QString f_table_catalog, f_table_schema, f_table_name, f_geometry_column, owner, isdef, name, desc;
   QString styleTableName = QObject::tr( "layer_styles" );
   QgsPostgresResult res;
 
@@ -3261,8 +3261,11 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   f_table_schema = dsUri.schema();
   f_table_name = dsUri.table();
   f_geometry_column = dsUri.geometryColumn();
-  QString owner = dsUri.username();
-  QString isdef = (useAsDefault) ? QObject::tr( "true" ) : QObject::tr( "false" );
+  owner = dsUri.username();
+  isdef = (useAsDefault) ? QObject::tr( "true" ) : QObject::tr( "false" );
+  name = ( styleName.isEmpty() ) ? dsUri.table() : styleName;
+  desc = ( styleDescription.isEmpty() ) ? QDateTime::currentDateTime().toString() : styleDescription;
+
   QString uiFileColumn( "" );
   QString uiFileValue( "" );
   if( !uiFileContent.isEmpty() )
@@ -3282,11 +3285,11 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                          .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
                          .arg( QgsPostgresConn::quotedValue( f_table_name ) )
                          .arg( QgsPostgresConn::quotedValue( f_geometry_column ) )
-                         .arg( QgsPostgresConn::quotedValue( styleName ) )
+                         .arg( QgsPostgresConn::quotedValue( name ) )
                          .arg( QgsPostgresConn::quotedValue( qmlStyle ) )
                          .arg( QgsPostgresConn::quotedValue( sldStyle ) )
                          .arg( isdef )
-                         .arg( QgsPostgresConn::quotedValue( styleDescription ) )
+                         .arg( QgsPostgresConn::quotedValue( desc ) )
                          .arg( QgsPostgresConn::quotedValue( owner ) )
                          .arg( uiFileColumn )
                          .arg( uiFileValue );
@@ -3386,9 +3389,9 @@ QGISEXTERN int listStyles( const QString& uri,  QVector<QString> &ids, QVector<Q
     int numberOfRelatedStyles = PQntuples( result );
     for( int i=0; i<numberOfRelatedStyles; i++ )
     {
-        ids.push_front( QObject::tr( PQgetvalue( result, i, 0 ) ) );
-        names.push_front( QObject::tr( PQgetvalue( result, i, 1 ) ) );
-        descriptions.push_front( QObject::tr( PQgetvalue( result, i, 2 ) ) );
+        ids.append( QObject::tr( PQgetvalue( result, i, 0 ) ) );
+        names.append( QObject::tr( PQgetvalue( result, i, 1 ) ) );
+        descriptions.append( QObject::tr( PQgetvalue( result, i, 2 ) ) );
     }
 
     QString selectOthersQuery = QObject::tr( "SELECT id, styleName, description FROM %1 WHERE NOT(f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5) ORDER BY update_time DESC;")
@@ -3407,9 +3410,9 @@ QGISEXTERN int listStyles( const QString& uri,  QVector<QString> &ids, QVector<Q
     }
     for( int i=0; i<PQntuples( result ); i++ )
     {
-        ids.push_front( QObject::tr( PQgetvalue( result, i, 0 ) ) );
-        names.push_front( QObject::tr( PQgetvalue( result, i, 1 ) ) );
-        descriptions.push_front( QObject::tr( PQgetvalue( result, i, 2 ) ) );
+        ids.append( QObject::tr( PQgetvalue( result, i, 0 ) ) );
+        names.append( QObject::tr( PQgetvalue( result, i, 1 ) ) );
+        descriptions.append( QObject::tr( PQgetvalue( result, i, 2 ) ) );
     }
 
     return numberOfRelatedStyles;

@@ -129,7 +129,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mSaveAsMenu->addAction( tr( "QGIS Layer Style File" ) );
   mSaveAsMenu->addAction( tr( "SLD File" ) );
 
-  //Only if the provider support loading & saving style to db add new choices
+  //Only if the provider support loading & saving styles to db add new choices
   if( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
   {
       //for loading
@@ -557,18 +557,40 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
 
 void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()
 {
-  apply(); // make sure the qml to save is uptodate
+    apply();
+    QString errorMsg;
+    if( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+    {
+        QMessageBox askToUser;
+        askToUser.setText( tr( "Save default style to: " ) );
+        askToUser.setIcon( QMessageBox::Question );
+        askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole);
+        askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
+        askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
 
-  // a flag passed by reference
-  bool defaultSavedFlag = false;
-  // after calling this the above flag will be set true for success
-  // or false if the save operation failed
-  QString myMessage = layer->saveDefaultStyle( defaultSavedFlag );
-  if ( !defaultSavedFlag )
-  {
-    //only raise the message if something went wrong
-    QMessageBox::information( this, tr( "Default Style" ), myMessage );
-  }
+        switch ( askToUser.exec() )
+        {
+            case (0):
+                return;
+                break;
+            case (2):
+                layer->saveStyleToDatabase("", "", true, "", errorMsg );
+                if( errorMsg.isNull() )
+                {
+                    return;
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    bool defaultSavedFlag = false;
+    errorMsg = layer->saveDefaultStyle( defaultSavedFlag );
+    if ( !defaultSavedFlag )
+    {
+      QMessageBox::warning( this, tr( "Default Style" ), errorMsg );
+    }
 }
 
 

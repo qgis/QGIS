@@ -29,6 +29,7 @@ public slots:
     QString getDescription();
     bool isDefault();
     void on_mFilePickButton_clicked();
+    void accept();
 };
 
 #endif // QGSSAVESTYLETODBDIALOG_H

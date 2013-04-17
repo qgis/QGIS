@@ -24,10 +24,12 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
   mRelatedTable->setEditTriggers( QTableWidget::NoEditTriggers );
   mRelatedTable->horizontalHeader()->setStretchLastSection( true );
   mRelatedTable->setSelectionBehavior( QTableWidget::SelectRows );
+  mRelatedTable->verticalHeader()->setVisible( false );
 
   mOthersTable->setEditTriggers( QTableWidget::NoEditTriggers );
   mOthersTable->horizontalHeader()->setStretchLastSection( true );
   mOthersTable->setSelectionBehavior( QTableWidget::SelectRows );
+  mOthersTable->verticalHeader()->setVisible( false );
 
   connect(mRelatedTable, SIGNAL( cellClicked( int,int ) ), this, SLOT( cellSelectedRelatedTable( int ) ) );
   connect(mOthersTable, SIGNAL( cellClicked( int,int ) ), this, SLOT( cellSelectedOthersTable( int ) ) );
@@ -74,8 +76,9 @@ void QgsLoadStyleFromDBDialog::initializeLists( QVector<QString> ids, QVector<QS
     }
     for( int i=sectionLimit; i<ids.count(); i++ )
     {
-        mOthersTable->setItem(i, 0, new QTableWidgetItem( names.value( i, "" ) ) );
-        mOthersTable->setItem(i, 1, new QTableWidgetItem( descriptions.value( i, "" ) ) );
+        int j = i-sectionLimit;
+        mOthersTable->setItem(j, 0, new QTableWidgetItem( names.value( i, "" ) ) );
+        mOthersTable->setItem(j, 1, new QTableWidgetItem( descriptions.value( i, "" ) ) );
     }
 }
 

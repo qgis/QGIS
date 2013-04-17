@@ -1711,10 +1711,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   // renderer specific settings
   QString errorMsg;
   return writeSymbology( layer_node, document, errorMsg );
-} // bool QgsVectorLayer::writeXml
-
-
-
+}
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
@@ -3774,6 +3771,7 @@ QString QgsVectorLayer::getStyleFromDatabase(QString styleId, QString &msgError)
     return getStyleByIdMethod( mDataSource, styleId, msgError );
 }
 
+
 void QgsVectorLayer::saveStyleToDatabase(QString name, QString description,
                                          bool useAsDefault, QString uiFileContent,  QString &msgError){
 
@@ -3819,7 +3817,6 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString description,
 QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
 {
     QgsDataSourceURI dsUri( theURI );
-
     if ( !dsUri.database().isEmpty() )
     {
         QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
@@ -3831,7 +3828,7 @@ QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFla
             {
                QString qml, errorMsg;
                qml = loadStyleExternalMethod( mDataSource, errorMsg );
-               if( qml.compare( tr( "" ) ) )
+               if( !qml.isEmpty() )
                {
                     theResultFlag = this->applyNamedStyle( qml, errorMsg );
                }
