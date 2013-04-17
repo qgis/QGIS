@@ -55,6 +55,7 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
 geomkey = "#geometry"
+fidkey = "#fid"
 tolerance = 0.000001 # Tolerance for coordinate comparisons in checkWktEqual
 
 # Thought we could connect to messageReceived signal but doesn't seem to be available
@@ -99,6 +100,7 @@ def layerData( layer ):
         else:
             fielddata[geomkey] = "None";
 
+        fielddata[fidkey] = f.id()
         id = fielddata[fields[0]]
         description = fielddata[fields[1]]
         fielddata['id']=id
@@ -106,6 +108,7 @@ def layerData( layer ):
         if 'id' not in fields: fields.insert(0,'id')
         if 'description' not in fields: fields.insert(1,'description')
         data[id]=fielddata
+    fields.append(fidkey)
     fields.append(geomkey)
     return fields, data
 
@@ -259,7 +262,6 @@ class TestQgsDelimitedTextProvider(TestCase):
 
 #START
 
-
     def test_002_load_csv_file(self):
         description='CSV file parsing'
         filename='test.csv'
@@ -273,6 +275,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Basic unquoted record',
                 'data': u'Some data',
                 'info': u'Some info',
+                '#fid': 2L,
                 '#geometry': 'None',
                 },
             u'2': {
@@ -280,6 +283,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Quoted field',
                 'data': u'Quoted data',
                 'info': u'Unquoted',
+                '#fid': 3L,
                 '#geometry': 'None',
                 },
             u'3': {
@@ -287,6 +291,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Escaped quotes',
                 'data': u'Quoted "citation" data',
                 'info': u'Unquoted',
+                '#fid': 4L,
                 '#geometry': 'None',
                 },
             u'4': {
@@ -294,6 +299,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Quoted newlines',
                 'data': u'Line 1\nLine 2\n\nLine 4',
                 'info': u'No data',
+                '#fid': 5L,
                 '#geometry': 'None',
                 },
             u'5': {
@@ -301,6 +307,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Extra fields',
                 'data': u'data',
                 'info': u'info',
+                '#fid': 9L,
                 '#geometry': 'None',
                 },
             u'6': {
@@ -308,6 +315,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Missing fields',
                 'data': u'',
                 'info': u'',
+                '#fid': 10L,
                 '#geometry': 'None',
                 },
             }
@@ -329,6 +337,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Simple_whitespace_file',
                 'data': u'data1',
                 'info': u'info1',
+                '#fid': 2L,
                 '#geometry': 'None',
                 },
             u'2': {
@@ -336,6 +345,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Whitespace_at_start_of_line',
                 'data': u'data2',
                 'info': u'info2',
+                '#fid': 3L,
                 '#geometry': 'None',
                 },
             u'3': {
@@ -343,6 +353,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Tab_whitespace',
                 'data': u'data3',
                 'info': u'info3',
+                '#fid': 4L,
                 '#geometry': 'None',
                 },
             u'4': {
@@ -350,6 +361,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Multiple_whitespace_characters',
                 'data': u'data4',
                 'info': u'info4',
+                '#fid': 5L,
                 '#geometry': 'None',
                 },
             u'5': {
@@ -357,6 +369,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Extra_fields',
                 'data': u'data5',
                 'info': u'info5',
+                '#fid': 6L,
                 '#geometry': 'None',
                 },
             u'6': {
@@ -364,6 +377,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Missing_fields',
                 'data': u'',
                 'info': u'',
+                '#fid': 7L,
                 '#geometry': 'None',
                 },
             }
@@ -385,6 +399,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Using pipe delimiter',
                 'data': u'data 1',
                 'info': u'info 1',
+                '#fid': 2L,
                 '#geometry': 'None',
                 },
             u'2': {
@@ -392,6 +407,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Using backslash escape on pipe',
                 'data': u'data 2 | piped',
                 'info': u'info2',
+                '#fid': 3L,
                 '#geometry': 'None',
                 },
             u'3': {
@@ -399,6 +415,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Backslash escaped newline',
                 'data': u'data3 \nline2 \nline3',
                 'info': u'info3',
+                '#fid': 4L,
                 '#geometry': 'None',
                 },
             u'4': {
@@ -406,6 +423,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Empty field',
                 'data': u'',
                 'info': u'info4',
+                '#fid': 7L,
                 '#geometry': 'None',
                 },
             u'5': {
@@ -413,6 +431,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Quoted field',
                 'data': u'More | piped data',
                 'info': u'info5',
+                '#fid': 8L,
                 '#geometry': 'None',
                 },
             u'6': {
@@ -420,6 +439,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Escaped quote',
                 'data': u'Field "citation" ',
                 'info': u'info6',
+                '#fid': 9L,
                 '#geometry': 'None',
                 },
             u'7': {
@@ -427,6 +447,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Missing fields',
                 'data': u'',
                 'info': u'',
+                '#fid': 10L,
                 '#geometry': 'None',
                 },
             u'8': {
@@ -434,6 +455,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Extra fields',
                 'data': u'data8',
                 'info': u'info8',
+                '#fid': 11L,
                 '#geometry': 'None',
                 },
             }
@@ -455,6 +477,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Multiple quotes 1',
                 'data': u'Quoted,data1',
                 'info': u'info1',
+                '#fid': 2L,
                 '#geometry': 'None',
                 },
             u'2': {
@@ -462,6 +485,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Multiple quotes 2',
                 'data': u'Quoted,data2',
                 'info': u'info2',
+                '#fid': 3L,
                 '#geometry': 'None',
                 },
             u'3': {
@@ -469,6 +493,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Leading and following whitespace',
                 'data': u'Quoted, data3',
                 'info': u'info3',
+                '#fid': 4L,
                 '#geometry': 'None',
                 },
             u'4': {
@@ -476,6 +501,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Embedded quotes 1',
                 'data': u'Quoted \'\'"\'\' data4',
                 'info': u'info4',
+                '#fid': 5L,
                 '#geometry': 'None',
                 },
             u'5': {
@@ -483,6 +509,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Embedded quotes 2',
                 'data': u'Quoted \'""\' data5',
                 'info': u'info5',
+                '#fid': 6L,
                 '#geometry': 'None',
                 },
             u'9': {
@@ -490,6 +517,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Final record',
                 'data': u'date9',
                 'info': u'info9',
+                '#fid': 10L,
                 '#geometry': 'None',
                 },
             }
@@ -517,6 +545,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'Col01': u'3',
                 'Col02': u'Less data',
                 'Col03': u'data3',
+                '#fid': 3L,
                 '#geometry': 'None',
                 },
             }
@@ -538,6 +567,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Basic point',
                 'geom_x': u'10.0',
                 'geom_y': u'20',
+                '#fid': 2L,
                 '#geometry': 'POINT(10.0 20.0)',
                 },
             u'2': {
@@ -545,6 +575,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Integer point',
                 'geom_x': u'11',
                 'geom_y': u'22',
+                '#fid': 3L,
                 '#geometry': 'POINT(11.0 22.0)',
                 },
             u'4': {
@@ -552,6 +583,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Final point',
                 'geom_x': u'13.0',
                 'geom_y': u'23',
+                '#fid': 5L,
                 '#geometry': 'POINT(13.0 23.0)',
                 },
             }
@@ -574,26 +606,31 @@ class TestQgsDelimitedTextProvider(TestCase):
             u'1': {
                 'id': u'1',
                 'description': u'Point wkt',
+                '#fid': 2L,
                 '#geometry': 'POINT(10.0 20.0)',
                 },
             u'2': {
                 'id': u'2',
                 'description': u'Multipoint wkt',
+                '#fid': 3L,
                 '#geometry': 'MULTIPOINT(10.0 20.0, 11.0 21.0)',
                 },
             u'8': {
                 'id': u'8',
                 'description': u'EWKT prefix',
+                '#fid': 9L,
                 '#geometry': 'POINT(10.0 10.0)',
                 },
             u'9': {
                 'id': u'9',
                 'description': u'Informix prefix',
+                '#fid': 10L,
                 '#geometry': 'POINT(10.0 10.0)',
                 },
             u'10': {
                 'id': u'10',
                 'description': u'Measure in point',
+                '#fid': 11L,
                 '#geometry': 'POINT(10.0 20.0)',
                 },
             }
@@ -616,26 +653,31 @@ class TestQgsDelimitedTextProvider(TestCase):
             u'1': {
                 'id': u'1',
                 'description': u'Point wkt',
+                '#fid': 2L,
                 '#geometry': 'POINT(10.0 20.0)',
                 },
             u'2': {
                 'id': u'2',
                 'description': u'Multipoint wkt',
+                '#fid': 3L,
                 '#geometry': 'MULTIPOINT(10.0 20.0, 11.0 21.0)',
                 },
             u'8': {
                 'id': u'8',
                 'description': u'EWKT prefix',
+                '#fid': 9L,
                 '#geometry': 'POINT(10.0 10.0)',
                 },
             u'9': {
                 'id': u'9',
                 'description': u'Informix prefix',
+                '#fid': 10L,
                 '#geometry': 'POINT(10.0 10.0)',
                 },
             u'10': {
                 'id': u'10',
                 'description': u'Measure in point',
+                '#fid': 11L,
                 '#geometry': 'POINT(10.0 20.0)',
                 },
             }
@@ -658,26 +700,31 @@ class TestQgsDelimitedTextProvider(TestCase):
             u'3': {
                 'id': u'3',
                 'description': u'Linestring wkt',
+                '#fid': 4L,
                 '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
                 },
             u'4': {
                 'id': u'4',
                 'description': u'Multiline string wkt',
+                '#fid': 5L,
                 '#geometry': 'MULTILINESTRING((10.0 20.0, 11.0 21.0), (20.0 30.0, 21.0 31.0))',
                 },
             u'11': {
                 'id': u'11',
                 'description': u'Measure in line',
+                '#fid': 12L,
                 '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
                 },
             u'12': {
                 'id': u'12',
                 'description': u'Z in line',
+                '#fid': 13L,
                 '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
                 },
             u'13': {
                 'id': u'13',
                 'description': u'Measure and Z in line',
+                '#fid': 14L,
                 '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
                 },
             }
@@ -700,11 +747,13 @@ class TestQgsDelimitedTextProvider(TestCase):
             u'5': {
                 'id': u'5',
                 'description': u'Polygon wkt',
+                '#fid': 6L,
                 '#geometry': 'POLYGON((10.0 10.0,10.0 20.0,20.0 20.0,20.0 10.0,10.0 10.0),(14.0 14.0,14.0 16.0,16.0 16.0,14.0 14.0))',
                 },
             u'6': {
                 'id': u'6',
                 'description': u'MultiPolygon wkt',
+                '#fid': 7L,
                 '#geometry': 'MULTIPOLYGON(((10.0 10.0,10.0 20.0,20.0 20.0,20.0 10.0,10.0 10.0),(14.0 14.0,14.0 16.0,16.0 16.0,14.0 14.0)),((30.0 30.0,30.0 35.0,35.0 35.0,30.0 30.0)))',
                 },
             }
@@ -714,6 +763,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             u'Invalid WKT at line 8',
             ]
         runTest(description,wanted,log_wanted,filename,**params)
+
 
     def test_013_read_dms_xy(self):
         description='Reading degrees/minutes/seconds angles'
@@ -728,6 +778,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Basic DMS string',
                 'lon': u'1 5 30.6',
                 'lat': u'35 51 20',
+                '#fid': 3L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'2': {
@@ -735,6 +786,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Basic DMS string 2',
                 'lon': u'1 05 30.6005',
                 'lat': u'035 51 20',
+                '#fid': 4L,
                 '#geometry': 'POINT(1.09183347 35.85555556)',
                 },
             u'3': {
@@ -742,6 +794,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Basic DMS string 3',
                 'lon': u'1 05 30.6',
                 'lat': u'35 59 9.99',
+                '#fid': 5L,
                 '#geometry': 'POINT(1.09183333 35.98610833)',
                 },
             u'4': {
@@ -749,6 +802,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Prefix sign 1',
                 'lon': u'n1 05 30.6',
                 'lat': u'e035 51 20',
+                '#fid': 7L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'5': {
@@ -756,6 +810,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Prefix sign 2',
                 'lon': u'N1 05 30.6',
                 'lat': u'E035 51 20',
+                '#fid': 8L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'6': {
@@ -763,6 +818,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Prefix sign 3',
                 'lon': u'N 1 05 30.6',
                 'lat': u'E 035 51 20',
+                '#fid': 9L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'7': {
@@ -770,6 +826,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Prefix sign 4',
                 'lon': u'S1 05 30.6',
                 'lat': u'W035 51 20',
+                '#fid': 10L,
                 '#geometry': 'POINT(-1.09183333 -35.85555556)',
                 },
             u'8': {
@@ -777,6 +834,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Prefix sign 5',
                 'lon': u'+1 05 30.6',
                 'lat': u'+035 51 20',
+                '#fid': 11L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'9': {
@@ -784,6 +842,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Prefix sign 6',
                 'lon': u'-1 05 30.6',
                 'lat': u'-035 51 20',
+                '#fid': 12L,
                 '#geometry': 'POINT(-1.09183333 -35.85555556)',
                 },
             u'10': {
@@ -791,6 +850,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Postfix sign 1',
                 'lon': u'1 05 30.6n',
                 'lat': u'035 51 20e',
+                '#fid': 14L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'11': {
@@ -798,6 +858,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Postfix sign 2',
                 'lon': u'1 05 30.6N',
                 'lat': u'035 51 20E',
+                '#fid': 15L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'12': {
@@ -805,6 +866,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Postfix sign 3',
                 'lon': u'1 05 30.6 N',
                 'lat': u'035 51 20 E',
+                '#fid': 16L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'13': {
@@ -812,6 +874,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Postfix sign 4',
                 'lon': u'1 05 30.6S',
                 'lat': u'035 51 20W',
+                '#fid': 17L,
                 '#geometry': 'POINT(-1.09183333 -35.85555556)',
                 },
             u'14': {
@@ -819,6 +882,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Postfix sign 5',
                 'lon': u'1 05 30.6+',
                 'lat': u'035 51 20+',
+                '#fid': 18L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'15': {
@@ -826,6 +890,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Postfix sign 6',
                 'lon': u'1 05 30.6-',
                 'lat': u'035 51 20-',
+                '#fid': 19L,
                 '#geometry': 'POINT(-1.09183333 -35.85555556)',
                 },
             u'16': {
@@ -833,6 +898,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Leading and trailing blanks 1',
                 'lon': u'   1 05 30.6',
                 'lat': u'035 51 20   ',
+                '#fid': 21L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'17': {
@@ -840,6 +906,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Leading and trailing blanks 2',
                 'lon': u' N  1 05 30.6',
                 'lat': u'035 51 20 E  ',
+                '#fid': 22L,
                 '#geometry': 'POINT(1.09183333 35.85555556)',
                 },
             u'18': {
@@ -847,6 +914,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Alternative characters for D,M,S',
                 'lon': u'1d05m30.6s S',
                 'lat': u"35d51'20",
+                '#fid': 24L,
                 '#geometry': 'POINT(-1.09183333 35.85555556)',
                 },
             u'19': {
@@ -854,6 +922,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'description': u'Degrees/minutes format',
                 'lon': u'1 05.23',
                 'lat': u'4 55.03',
+                '#fid': 25L,
                 '#geometry': 'POINT(1.08716667 4.91716667)',
                 },
             }
@@ -884,6 +953,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'geom_y': u'20',
                 'other': u'30',
                 'text field': u'Field with , in it',
+                '#fid': 2L,
                 '#geometry': 'POINT(10.0 20.0)',
                 },
             u'2': {
@@ -893,12 +963,14 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'geom_y': u'25.003',
                 'other': u'-38.55',
                 'text field': u'Plain text field',
+                '#fid': 3L,
                 '#geometry': 'POINT(12.0 25.003)',
                 },
             }
         log_wanted=[
             ]
         runTest(description,wanted,log_wanted,filename,**params)
+
 
 #END
 
