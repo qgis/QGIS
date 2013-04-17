@@ -516,7 +516,14 @@
            <string>Geometry is read as a well known text string from the selected fields</string>
           </property>
           <property name="text">
-           <string>Well known text (WKT) geometry </string>
+           <string>Well known text (WKT) </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Geometry field</string>
           </property>
          </widget>
         </item>
