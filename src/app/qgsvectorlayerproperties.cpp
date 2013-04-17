@@ -540,8 +540,48 @@ void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
 
 void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
 {
+  QString msg;
   bool defaultLoadedFlag = false;
-  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
+
+  if( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
+  {
+      QMessageBox askToUser;
+      askToUser.setText( tr( "Load default style from: " ) );
+      askToUser.setIcon( QMessageBox::Question );
+      askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole);
+      askToUser.addButton( tr( "Local database" ), QMessageBox::NoRole );
+      askToUser.addButton( tr( "Datasource database" ), QMessageBox::YesRole );
+
+      switch ( askToUser.exec() )
+      {
+          case (0):
+              return;
+              break;
+          case (2):
+                msg = layer->loadNamedStyle( layer->styleURI(), defaultLoadedFlag );
+                if( !defaultLoadedFlag )
+                {
+                    //something went wrong - let them know why
+                    QMessageBox::information( this, tr( "Default Style" ), msg );
+                }
+                if( msg.compare( tr( "Loaded from Provider" ) ) )
+                {
+                    QMessageBox::information( this, tr( "Default Style" ),
+                                              tr( "No default style was found for this layer" ) );
+                }
+                else{
+                    reset();
+                }
+
+                return;
+              break;
+          default:
+              break;
+      }
+  }
+
+  QString myMessage = layer->loadNamedStyle(layer->styleURI(), defaultLoadedFlag, true);
+//  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
@@ -553,6 +593,7 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
     //something went wrong - let them know why
     QMessageBox::information( this, tr( "Default Style" ), myMessage );
   }
+
 }
 
 void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()

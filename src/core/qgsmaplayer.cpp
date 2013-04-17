@@ -698,7 +698,6 @@ QString QgsMapLayer::styleURI( )
 
 QString QgsMapLayer::loadDefaultStyle( bool & theResultFlag )
 {
-    QString ciao = styleURI();
   return loadNamedStyle( styleURI(), theResultFlag );
 }
 

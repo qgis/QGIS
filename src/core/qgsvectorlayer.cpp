@@ -3814,10 +3814,10 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString description,
 
 
 
-QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
+QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag , bool loadFromLocalDB )
 {
     QgsDataSourceURI dsUri( theURI );
-    if ( !dsUri.database().isEmpty() )
+    if ( !loadFromLocalDB && !dsUri.database().isEmpty() )
     {
         QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
         QLibrary *myLib = pReg->providerLibrary( mProviderKey );
@@ -3834,12 +3834,13 @@ QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFla
                }
             }
         }
+
     }
     if( !theResultFlag )
     {
         return QgsMapLayer::loadNamedStyle( theURI, theResultFlag );
     }
-    return tr( "" );
+    return QObject::tr( "Loaded from Provider" );
 }
 
 bool QgsVectorLayer::applyNamedStyle(QString namedStyle, QString errorMsg )

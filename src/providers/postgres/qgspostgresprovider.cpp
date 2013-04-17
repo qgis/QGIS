@@ -3372,7 +3372,8 @@ QGISEXTERN int listStyles( const QString& uri,  QVector<QString> &ids, QVector<Q
     f_table_name = dsUri.table();
     f_geometry_column = dsUri.geometryColumn();
 
-    QString selectRelatedQuery = QObject::tr( "SELECT id, styleName, description FROM %1 WHERE f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5 ORDER BY (CASE WHEN useAsDefault THEN 1 ELSE 2 END), update_time DESC;")
+    // ORDER BY (CASE WHEN useAsDefault THEN 1 ELSE 2 END), update_time DESC;")
+    QString selectRelatedQuery = QObject::tr( "SELECT id, styleName, description FROM %1 WHERE f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5 AND useAsDefault=true;" )
             .arg( styleTableName )
             .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
             .arg( QgsPostgresConn::quotedValue( f_table_schema ) )

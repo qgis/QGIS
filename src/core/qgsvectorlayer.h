@@ -410,7 +410,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual QString getStyleFromDatabase( QString styleId, QString &msgError );
 
-    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag );
+    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag, bool loadFromLocalDb=false );
     virtual bool applyNamedStyle(QString namedStyle , QString errorMsg);
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
