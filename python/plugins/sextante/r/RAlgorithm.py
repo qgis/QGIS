@@ -281,10 +281,10 @@ class RAlgorithm(GeoAlgorithm):
         commands.append(
             'tryCatch(find.package("rgdal"), error=function(e) install.packages("rgdal", dependencies=TRUE, lib="%s"))' % rLibDir)
         commands.append("library(\"rgdal\")");
-        if not self.useRasterPackage or self.passFileNames:
-            commands.append(
+        #if not self.useRasterPackage or self.passFileNames:
+        commands.append(
                 'tryCatch(find.package("raster"), error=function(e) install.packages("raster", dependencies=TRUE, lib="%s"))' % rLibDir)
-            commands.append("library(\"raster\")");
+        commands.append("library(\"raster\")");
 
         for param in self.parameters:
             if isinstance(param, ParameterRaster):
