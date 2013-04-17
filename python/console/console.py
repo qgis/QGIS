@@ -80,7 +80,7 @@ class PythonConsole(QDockWidget):
         QDockWidget.setFocus(self)
 
     def closeEvent(self, event):
-        self.console.shell.writeHistoryFile()
+        self.console.saveSettingsConsole()
         QWidget.closeEvent(self, event)
 
 class PythonConsoleWidget(QWidget):
@@ -109,19 +109,36 @@ class PythonConsoleWidget(QWidget):
         self.splitter.addWidget(self.shellOut)
         self.splitter.addWidget(self.shell)
         #self.splitterEditor.addWidget(self.tabEditorWidget)
+        
+        self.splitterObj = QSplitter(self.splitterEditor)
+        self.splitterObj.setHandleWidth(3)
+        self.splitterObj.setOrientation(Qt.Horizontal)
+        #self.splitterObj.setSizes([0, 0])
+        #self.splitterObj.setStretchFactor(0, 1)
+        
+        self.widgetEditor = QWidget(self.splitterObj)
+        
+        self.listClassMethod = QTreeWidget(self.splitterObj)
+        self.listClassMethod.setColumnCount(2)
+        self.listClassMethod.setHeaderLabels(['Object', 'Line'])
+        self.listClassMethod.setColumnHidden(1, True)
+        self.listClassMethod.setAlternatingRowColors(True)
 
-        self.widgetEditor = QWidget(self.splitterEditor)
+        
+        #self.splitterEditor.addWidget(self.widgetEditor)
+        #self.splitterObj.addWidget(self.listClassMethod)
+        #self.splitterObj.addWidget(self.widgetEditor)
 
         # Hide side editor on start up
         self.widgetEditor.hide()
-
-        # List for tab script
-        self.settings = QSettings()
-        storedTabScripts = self.settings.value("pythonConsole/tabScripts")
-        self.tabListScript = storedTabScripts.toList()
+        self.listClassMethod.hide()
 
         sizes = self.splitter.sizes()
         self.splitter.setSizes(sizes)
+
+        ##----------------Restore Settings------------------------------------
+
+        self.restoreSettingsConsole()
 
         ##------------------Toolbar Editor-------------------------------------
 
@@ -215,13 +232,22 @@ class PythonConsoleWidget(QWidget):
         self.uncommentEditorButton.setIconVisibleInMenu(True)
         self.uncommentEditorButton.setToolTip(uncommentEditorBt)
         self.uncommentEditorButton.setText(uncommentEditorBt)
+        ## Action for Object browser
+        objList = QCoreApplication.translate("PythonConsole", "Object browser")
+        self.objectListButton = QAction(parent)
+        self.objectListButton.setCheckable(True)
+        self.objectListButton.setEnabled(True)
+        self.objectListButton.setIcon(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png"))
+        self.objectListButton.setMenuRole(QAction.PreferencesRole)
+        self.objectListButton.setIconVisibleInMenu(True)
+        self.objectListButton.setToolTip(objList)
+        self.objectListButton.setText(objList)
 
         ##----------------Toolbar Console-------------------------------------
 
         ## Action Show Editor
         showEditor = QCoreApplication.translate("PythonConsole", "Show editor")
         self.showEditorButton = QAction(parent)
-        self.showEditorButton.setCheckable(False)
         self.showEditorButton.setEnabled(True)
         self.showEditorButton.setCheckable(True)
         self.showEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconShowEditorConsole.png"))
@@ -351,6 +377,8 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.commentEditorButton)
         self.toolBarEditor.addAction(self.uncommentEditorButton)
         self.toolBarEditor.addSeparator()
+        self.toolBarEditor.addAction(self.objectListButton)
+        self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.runScriptEditorButton)
 
         ## Menu Import Class
@@ -369,7 +397,7 @@ class PythonConsoleWidget(QWidget):
         sizePolicy.setHeightForWidth(self.widgetButton.sizePolicy().hasHeightForWidth())
         self.widgetButton.setSizePolicy(sizePolicy)
 
-        self.widgetButtonEditor = QWidget(self.splitterEditor)
+        self.widgetButtonEditor = QWidget(self.widgetEditor)
         sizePolicy = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -414,6 +442,7 @@ class PythonConsoleWidget(QWidget):
 
         ##------------ Signal -------------------------------
 
+        self.objectListButton.toggled.connect(self.toggleObjectListWidget)
         self.commentEditorButton.triggered.connect(self.commentCode)
         self.uncommentEditorButton.triggered.connect(self.uncommentCode)
         self.runScriptEditorButton.triggered.connect(self.runScriptEditor)
@@ -431,8 +460,15 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.saveAsFileButton.triggered.connect(self.saveAsScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
-        QObject.connect(self.options.buttonBox, SIGNAL("accepted()"),
-                        self.prefChanged)
+        self.connect(self.options.buttonBox, SIGNAL("accepted()"),
+                     self.prefChanged)
+        self.connect(self.listClassMethod, SIGNAL('itemClicked(QTreeWidgetItem*, int)'),
+                     self.onClickGoToLine)
+
+    def onClickGoToLine(self, item, column):
+        linenr = int(item.text(1))
+        objName = item.text(0)
+        self.tabEditorWidget.currentWidget().newEditor.goToLine(objName, linenr)
 
     def sextante(self):
        self.shell.commandConsole('sextante')
@@ -445,6 +481,10 @@ class PythonConsoleWidget(QWidget):
 
     def toggleEditor(self, checked):
         self.widgetEditor.show() if checked else self.widgetEditor.hide()
+        self.tabEditorWidget.checkToRestoreTabs()
+
+    def toggleObjectListWidget(self, checked):
+        self.listClassMethod.show() if checked else self.listClassMethod.hide()
 
     def pasteEditor(self):
         self.tabEditorWidget.currentWidget().newEditor.paste()
@@ -564,6 +604,7 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.widgetMessageBar(iface, text)
 
     def updateTabListScript(self, script, action=None): 
+        settings = QSettings()
         if script == 'empty':
             self.tabListScript = []
         if script is not None and not action and script != 'empty':
@@ -571,8 +612,25 @@ class PythonConsoleWidget(QWidget):
         if action:
             if script not in self.tabListScript:
                 self.tabListScript.append(script)
-        self.settings.setValue("pythonConsole/tabScripts",
+        settings.setValue("pythonConsole/tabScripts",
                                QVariant(self.tabListScript))
+
+    def saveSettingsConsole(self):
+        settings = QSettings()
+        #settings.setValue("pythonConsole/geometry", self.saveGeometry())
+        settings.setValue("pythonConsole/splitterObj", self.splitterObj.saveState())
+        settings.setValue("pythonConsole/splitterEditor", self.splitterEditor.saveState())
+
+        self.shell.writeHistoryFile()
+
+    def restoreSettingsConsole(self):
+        # List for tab script
+        settings = QSettings()
+        storedTabScripts = settings.value("pythonConsole/tabScripts")
+        self.tabListScript = storedTabScripts.toList()
+        #self.restoreGeometry(settings.value("pythonConsole/geometry").toByteArray())
+        self.splitterEditor.restoreState(settings.value("pythonConsole/splitterEditor").toByteArray())
+        self.splitterObj.restoreState(settings.value("pythonConsole/splitterObj").toByteArray())
 
 if __name__ == '__main__':
     a = QApplication(sys.argv)
