@@ -216,16 +216,24 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
   switch ( P->attributeFields[fieldIdx].type() )
   {
     case QVariant::Int:
-      if ( !value.isEmpty() )
-        val = QVariant( value );
-      else
+      if ( value.isEmpty() )
         val = QVariant( P->attributeFields[fieldIdx].type() );
+      else
+        val = QVariant( value );
       break;
     case QVariant::Double:
-      if ( !value.isEmpty() )
-        val = QVariant( value.toDouble() );
-      else
+      if ( value.isEmpty() )
+      {
         val = QVariant( P->attributeFields[fieldIdx].type() );
+      }
+      else if ( P->mDecimalPoint.isEmpty() )
+      {
+        val = QVariant( value.toDouble() );
+      }
+      else
+      {
+        val = QVariant( QString( value ).replace( P->mDecimalPoint, "." ).toDouble() );
+      }
       break;
     default:
       val = QVariant( value );

@@ -372,6 +372,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
       }
       if ( couldBeDouble[fieldPos] )
       {
+        if ( ! mDecimalPoint.isEmpty() )
+        {
+          value.replace( mDecimalPoint, "." );
+        }
         value.toDouble( &couldBeDouble[fieldPos] );
       }
       fieldPos++;
