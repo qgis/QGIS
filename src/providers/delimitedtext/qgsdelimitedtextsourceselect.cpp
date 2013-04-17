@@ -50,12 +50,12 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
     buttonBox->button( QDialogButtonBox::Ok )->hide();
   }
 
-  cbxEncoding->clear();
+  cmbEncoding->clear();
   foreach ( QByteArray codec, QTextCodec::availableCodecs() )
   {
-    cbxEncoding->addItem( codec );
+    cmbEncoding->addItem( codec );
   }
-  cbxEncoding->setCurrentIndex( cbxEncoding->findText( "UTF-8" ) );
+  cmbEncoding->setCurrentIndex( cmbEncoding->findText( "UTF-8" ) );
   loadSettings();
 
   updateFieldsAndEnable();
@@ -249,7 +249,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( QString subkey, bool loadGeomSe
   }
 
   QString encoding = settings.value( key + "/encoding", "" ).toString();
-  if ( ! encoding.isEmpty() ) cbxEncoding->setCurrentIndex( cbxEncoding->findText( encoding ) );
+  if ( ! encoding.isEmpty() ) cmbEncoding->setCurrentIndex( cmbEncoding->findText( encoding ) );
   QString delimiters = settings.value( key + "/delimiters", "" ).toString();
   if ( ! delimiters.isEmpty() ) setSelectedChars( delimiters );
 
@@ -281,7 +281,7 @@ void QgsDelimitedTextSourceSelect::saveSettings( QString subkey, bool saveGeomSe
   QSettings settings;
   QString key = mPluginKey;
   if ( ! subkey.isEmpty() ) key.append( "/" ).append( subkey );
-  settings.setValue( key + "/encoding", cbxEncoding->currentText() );
+  settings.setValue( key + "/encoding", cmbEncoding->currentText() );
   settings.setValue( key + "/geometry", saveGeometry() );
 
   if ( delimiterCSV->isChecked() )
@@ -331,7 +331,7 @@ void QgsDelimitedTextSourceSelect::saveSettingsForFile( QString filename )
 bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
 {
   mFile->setFileName( txtFilePath->text() );
-  mFile->setEncoding( cbxEncoding->currentText() );
+  mFile->setEncoding( cmbEncoding->currentText() );
   if ( delimiterChars->isChecked() )
   {
     mFile->setTypeCSV( selectedChars(), txtQuoteChars->text(), txtEscapeChars->text() );
