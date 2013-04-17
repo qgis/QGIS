@@ -336,7 +336,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *
  * - decimalPoint=c
  *
- *   Defines a character that is used as a decimal point in the X and Y columns.
+ *   Defines a character that is used as a decimal point in the numeric columns
  *   The default is '.'.
  *
  * - xyDms=(yes|no)
