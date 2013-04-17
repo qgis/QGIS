@@ -37,6 +37,7 @@ my $translators= {
 	af => 'Hendrik Bosman',
 	ar => 'Assem Kamal, Latif Jalil',
 	bg => 'Захари Савов, Jordan Tzvetkov',
+	bs_BA => 'Almir Karabegovic',
 	ca_ES => 'Xavier Roijals',
 	cs_CZ => 'Martin Landa, Peter Antolik, Martin Dzurov, Jan Helebrant',
 	da_DK => 'Jacob Overgaard Madsen, Preben Lisby',
