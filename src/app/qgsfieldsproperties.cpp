@@ -203,15 +203,16 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   leEditForm->setText( layer->editForm() );
   leEditFormInit->setText( layer->editFormInit() );
 
-  mEditorLayoutComboBox->setCurrentIndex( layer->editorLayout() );
-
-  loadAttributeEditorTree();
   updateButtons();
 }
 
 void QgsFieldsProperties::init()
 {
   loadRows();
+
+  mEditorLayoutComboBox->setCurrentIndex( mLayer->editorLayout() );
+
+  loadAttributeEditorTree();
 }
 
 void QgsFieldsProperties::onAttributeSelectionChanged()
