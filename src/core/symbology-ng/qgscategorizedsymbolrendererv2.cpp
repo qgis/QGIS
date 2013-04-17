@@ -210,12 +210,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   if ( symbol == NULL )
   {
     // if no symbol found use default one
-    //return symbolForValue( QVariant( "" ) );
-    // What is default? Empty string may be a legal value, and features not found
-    // should not be rendered using empty string value category symbology.
-    // We also need to get NULL in that case so that willRenderFeature()
-    // may be used to count features.
-    return 0;
+    return symbolForValue( QVariant( "" ) );
   }
 
   if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )

@@ -58,7 +58,7 @@ class ParameterVector(ParameterDataObject):
             self.value = unicode(obj)
             layers = QGisLayers.getVectorLayers(self.shapetype)
             for layer in layers:
-                if layer.name() == self.value:
+                if layer.name() == self.value  or layer.source() == self.value:
                     self.value = unicode(layer.source())
                     return True
             return os.path.exists(self.value)

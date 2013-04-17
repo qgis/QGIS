@@ -391,8 +391,7 @@ class PythonConsoleWidget(QWidget):
         self.mainLayout.setMargin(0)
         self.mainLayout.setSpacing(0)
         self.mainLayout.addWidget(self.widgetButton, 0, 0, 1, 1)
-        self.mainLayout.addWidget(self.widgetButtonEditor, 0, 1, 1, 1)
-        self.mainLayout.addWidget(self.splitterEditor, 0, 2, 1, 1)
+        self.mainLayout.addWidget(self.splitterEditor, 0, 1, 1, 1)
 
         self.layoutEditor = QGridLayout(self.widgetEditor)
         self.layoutEditor.setMargin(0)

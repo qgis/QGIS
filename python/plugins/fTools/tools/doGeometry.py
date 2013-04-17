@@ -655,14 +655,17 @@ class geometryThread( QThread ):
       indicies = list( triangle )
       indicies.append( indicies[ 0 ] )
       polygon = []
+      attrs = []
       step = 0
       for index in indicies:
         vprovider.getFeatures( QgsFeatureRequest().setFilterFid( ptDict[ ids[ index ] ] ) ).nextFeature( inFeat )
         geom = QgsGeometry( inFeat.geometry() )
         point = QgsPoint( geom.asPoint() )
         polygon.append( point )
-        if step <= 3: feat.setAttribute( step, QVariant( ids[ index ] ) )
+        if step <= 3:
+          attrs.append(QVariant( ids[ index ] ) )
         step += 1
+      feat.setAttributes(attrs)
       geometry = QgsGeometry().fromPolygon( [ polygon ] )
       feat.setGeometry( geometry )
       writer.addFeature( feat )

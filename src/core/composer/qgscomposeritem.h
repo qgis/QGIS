@@ -197,6 +197,19 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
      */
     void setBackgroundEnabled( bool drawBackground ) {mBackground = drawBackground;}
 
+    /** Gets the background color for this item
+     * @returns background color
+     * @note introduced in 2.0
+     */
+    QColor backgroundColor() const { return mBackgroundColor; }
+
+    /** Sets the background color for this item
+     * @param backgroundColor new background color
+     * @returns nothing
+     * @note introduced in 2.0
+     */
+    void setBackgroundColor( const QColor& backgroundColor );
+
     /** Returns the item's composition blending mode */
     QPainter::CompositionMode blendMode() const {return mBlendMode;}
 
@@ -309,6 +322,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool mFrame;
     /**True if item background needs to be painted*/
     bool mBackground;
+    /**Background color*/
+    QColor mBackgroundColor;
 
     /**True if item position  and size cannot be changed with mouse move
     @note: this member was added in version 1.2*/
