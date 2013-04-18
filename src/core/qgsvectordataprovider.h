@@ -328,6 +328,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     QStringList errors();
 
+    /**
+     * It returns false by default.
+     * Must be implemented by providers that support saving style to db returning true
+     */
+    virtual bool isSavingStyleToDBSupported() { return false; }
+
 
   protected:
     QVariant convertValue( QVariant::Type type, QString value );

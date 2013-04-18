@@ -40,6 +40,7 @@
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
+#include "qgssavestyletodbdialog.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsconfig.h"
@@ -125,6 +126,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mSaveAsMenu = new QMenu( pbnSaveStyleAs );
   mSaveAsMenu->addAction( tr( "QGIS Layer Style File" ) );
   mSaveAsMenu->addAction( tr( "SLD File" ) );
+
+  //Only if the provider support saving style to db add new choice
+  if( layer->dataProvider()->isSavingStyleToDBSupported() )
+  {
+      mSaveAsMenu->addAction( tr( "Save on database (%1)" ).arg( layer->providerType() ) );
+  }
+
   QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ), this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
 
   mFieldsPropertiesDialog = new QgsFieldsProperties( layer, mFieldsFrame );
@@ -614,61 +622,95 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
 
-  QString format, extension;
-  if ( styleType == SLD )
+  if( styleType == DB )
   {
-    format = tr( "SLD File" ) + " (*.sld)";
-    extension = ".sld";
+         QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( layer->providerType() );
+         QString msgError;
+
+         QgsSaveStyleToDbDialog askToUser;
+
+         if( askToUser.exec() == QDialog::Accepted )
+         {
+             QString styleName = askToUser.getName();
+             QString styleDesc = askToUser.getDescription();
+             bool isDefault = askToUser.isDefault();
+
+             apply();
+
+             layer->saveStyleToDatabase( styleName, styleDesc, isDefault, msgError );
+             if( !msgError.isNull() )
+             {
+                 QMessageBox::warning( this, infoWindowTitle, msgError );
+             }
+             else
+             {
+                 QMessageBox::information( this, infoWindowTitle, tr( "Style saved" ) );
+             }
+         }
+         else
+         {
+             return;
+         }
   }
   else
   {
-    format =  tr( "QGIS Layer Style File" ) + " (*.qml)";
-    extension = ".qml";
-  }
 
-  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ),
-                             myLastUsedDir, format );
-  if ( myOutputFileName.isNull() ) //dialog canceled
-  {
-    return;
-  }
+      QString format, extension;
+      if ( styleType == SLD )
+      {
+        format = tr( "SLD File" ) + " (*.sld)";
+        extension = ".sld";
+      }
+      else
+      {
+        format =  tr( "QGIS Layer Style File" ) + " (*.qml)";
+        extension = ".qml";
+      }
 
-  apply(); // make sure the style to save is uptodate
+      QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ),
+                                 myLastUsedDir, format );
+      if ( myOutputFileName.isNull() ) //dialog canceled
+      {
+        return;
+      }
 
-  QString myMessage;
-  bool defaultLoadedFlag = false;
+      apply(); // make sure the style to save is uptodate
 
-  //ensure the user never omitted the extension from the file name
-  if ( !myOutputFileName.endsWith( extension, Qt::CaseInsensitive ) )
-  {
-    myOutputFileName += extension;
-  }
+      QString myMessage;
+      bool defaultLoadedFlag = false;
 
-  if ( styleType == SLD )
-  {
-    // convert to SLD
-    myMessage = layer->saveSldStyle( myOutputFileName, defaultLoadedFlag );
-  }
-  else
-  {
-    myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
-  }
+      //ensure the user never omitted the extension from the file name
+      if ( !myOutputFileName.endsWith( extension, Qt::CaseInsensitive ) )
+      {
+        myOutputFileName += extension;
+      }
 
-  //reset if the default style was loaded ok only
-  if ( defaultLoadedFlag )
-  {
-    reset();
-  }
-  else
-  {
-    //let the user know what went wrong
-    QMessageBox::information( this, tr( "Saved Style" ), myMessage );
-  }
+      if ( styleType == SLD )
+      {
+        // convert to SLD
+        myMessage = layer->saveSldStyle( myOutputFileName, defaultLoadedFlag );
+      }
+      else
+      {
+        myMessage = layer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
+      }
 
-  QFileInfo myFI( myOutputFileName );
-  QString myPath = myFI.path();
-  // Persist last used dir
-  myQSettings.setValue( "style/lastStyleDir", myPath );
+      //reset if the default style was loaded ok only
+      if ( defaultLoadedFlag )
+      {
+        reset();
+      }
+      else
+      {
+        //let the user know what went wrong
+        QMessageBox::information( this, tr( "Saved Style" ), myMessage );
+      }
+
+      QFileInfo myFI( myOutputFileName );
+      QString myPath = myFI.path();
+      // Persist last used dir
+      myQSettings.setValue( "style/lastStyleDir", myPath );
+  }
 }
 
 QList<QgsVectorOverlayPlugin*> QgsVectorLayerProperties::overlayPlugins() const
