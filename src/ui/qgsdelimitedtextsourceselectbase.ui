@@ -19,13 +19,13 @@
    </iconset>
   </property>
   <property name="toolTip">
-   <string>Number fields use comma for a decimal point</string>
+   <string>Number fields use comma for a decimal separator</string>
   </property>
   <property name="statusTip">
-   <string>Number fields use comma for a decimal point</string>
+   <string>Number fields use comma for a decimal separator</string>
   </property>
   <property name="whatsThis">
-   <string>Number fields use comma for a decimal point</string>
+   <string>Number fields use comma for a decimal separator</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="1" column="0">
@@ -52,7 +52,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Each line in the  file is split using a regular expression to define the end of each field</string>
+         <string>Each line in the file is split using a regular expression to define the end of each field</string>
         </property>
         <property name="statusTip">
          <string>Each line in the  file is split using a regular expression to define the end of each field</string>
@@ -74,7 +74,7 @@
          <string>Fields are delimited by specified delimiters with quote and escape characters</string>
         </property>
         <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Fields are delimited by specified delimiters with quote and escape characters&lt;/p&gt;&lt;p&gt;Fields quoted using a quote characters may contain delimiters and new lines&lt;/p&gt;&lt;p&gt;The escape character can escape new lines and  quotes within quoted fields&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Fields are delimited by specified delimiters with quote and escape characters&lt;/p&gt;&lt;p&gt;Fields quoted using a quote characters may contain delimiters and new lines&lt;/p&gt;&lt;p&gt;The escape character can escape new lines and quotes within quoted fields&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Selected delimiters</string>
@@ -919,7 +919,7 @@
           <string>Discard empty fields in each record</string>
          </property>
          <property name="text">
-          <string>Discard  empty fields</string>
+          <string>Discard empty fields</string>
          </property>
         </widget>
        </item>
@@ -929,13 +929,13 @@
           <bool>true</bool>
          </property>
          <property name="toolTip">
-          <string>X and Y coordinates have comma for decimal point</string>
+          <string>X and Y coordinates have comma for decimal separator</string>
          </property>
          <property name="statusTip">
-          <string>X and Y coordinates have comma for decimal point</string>
+          <string>X and Y coordinates have comma for decimal separator</string>
          </property>
          <property name="whatsThis">
-          <string>X and Y coordinates have comma for decimal point</string>
+          <string>X and Y coordinates have comma for decimal separator</string>
          </property>
          <property name="text">
           <string>Decimal point is comma</string>
