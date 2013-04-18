@@ -223,6 +223,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   if ( !renderer )
   {
     QgsDebugMsg( "Cannot get renderer" );
+    return;
   }
 
   if ( layer()->hasScaleBasedVisibility() &&

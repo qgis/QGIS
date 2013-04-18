@@ -557,7 +557,7 @@
      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
    </property>
    <property name="text">
-    <string>Show All</string>
+    <string>Show All Features</string>
    </property>
   </action>
   <action name="mActionSelectedFilter">
@@ -566,7 +566,7 @@
      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
    </property>
    <property name="text">
-    <string>Show Selected</string>
+    <string>Show Selected Features</string>
    </property>
   </action>
   <action name="mActionVisibleFilter">
@@ -589,7 +589,7 @@
      <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
    </property>
    <property name="text">
-    <string>Filter Edited</string>
+    <string>Show Edited and New Features</string>
    </property>
    <property name="toolTip">
     <string>Filter all the features which have been edited but not yet saved</string>
