@@ -657,8 +657,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     }
 
     //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
-    if ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
-         !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
+    if ( mImageMimeType == "image/x-jpegorpng" ||
+         ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
+           !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) ) )
     {
       setQueryItem( url, "TRANSPARENT", "TRUE" );  // some servers giving error for 'true' (lowercase)
     }
@@ -834,8 +835,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
           setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
         }
 
-        if ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
-             !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
+        if ( mImageMimeType == "image/x-jpegorpng" ||
+             ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
+               !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) ) )
         {
           setQueryItem( url, "TRANSPARENT", "TRUE" );  // some servers giving error for 'true' (lowercase)
         }
