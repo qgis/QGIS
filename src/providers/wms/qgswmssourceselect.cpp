@@ -303,6 +303,11 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
     }
 
     mImageFormatGroup->button( id )->setVisible( true );
+    // set it to checked, meaning the last one will be enabled
+    // which is fine when service has just 1 image format
+    // but maybe not when service has more,
+    // and you actually want to default to eg image/png
+    mImageFormatGroup->button( id )->setChecked( true );
   }
 
   btnGrpImageEncoding->setEnabled( true );
