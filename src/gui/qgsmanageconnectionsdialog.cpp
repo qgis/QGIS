@@ -346,6 +346,7 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
       el.setAttribute( "ignoreAxisOrientation", settings.value( path + connections[i] + "/ignoreAxisOrientation", false ).toBool() ? "true" : "false" );
       el.setAttribute( "invertAxisOrientation", settings.value( path + connections[i] + "/invertAxisOrientation", false ).toBool() ? "true" : "false" );
       el.setAttribute( "referer", settings.value( path + connections[ i ] + "/referer", "" ).toString() );
+      el.setAttribute( "smoothPixmapTransform", settings.value( path + connections[i] + "/smoothPixmapTransform", false ).toBool() ? "true" : "false" );
     }
 
     path = "/Qgis/" + service.toUpper() + "/";
@@ -580,6 +581,7 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     settings.setValue( QString( "/" + connectionName + "/ignoreAxisOrientation" ), child.attribute( "ignoreAxisOrientation" ) == "true" );
     settings.setValue( QString( "/" + connectionName + "/invertAxisOrientation" ), child.attribute( "invertAxisOrientation" ) == "true" );
     settings.setValue( QString( "/" + connectionName + "/referer" ), child.attribute( "referer" ) );
+    settings.setValue( QString( "/" + connectionName + "/smoothPixmapTransform" ), child.attribute( "smoothPixmapTransform" ) == "true" );
     settings.endGroup();
 
     if ( !child.attribute( "username" ).isEmpty() )

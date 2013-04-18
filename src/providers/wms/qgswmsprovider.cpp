@@ -158,6 +158,7 @@ bool QgsWmsProvider::parseUri( QString uriString )
   mIgnoreGetFeatureInfoUrl = uri.hasParam( "IgnoreGetFeatureInfoUrl" );
   mIgnoreAxisOrientation = uri.hasParam( "IgnoreAxisOrientation" ); // must be before parsing!
   mInvertAxisOrientation = uri.hasParam( "InvertAxisOrientation" ); // must be before parsing!
+  mSmoothPixmapTransform = uri.hasParam( "SmoothPixmapTransform" );
 
   mUserName = uri.param( "username" );
   QgsDebugMsg( "set username to " + mUserName );
@@ -1184,7 +1185,8 @@ void QgsWmsProvider::tileReplyFinished()
       if ( !myLocalImage.isNull() )
       {
         QPainter p( mCachedImage );
-        p.setRenderHint( QPainter::SmoothPixmapTransform, true );
+        if ( mSmoothPixmapTransform )
+          p.setRenderHint( QPainter::SmoothPixmapTransform, true );
         p.drawImage( dst, myLocalImage );
 #if 0
         myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );

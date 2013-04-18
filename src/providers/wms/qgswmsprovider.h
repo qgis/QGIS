@@ -1084,6 +1084,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool mIgnoreGetFeatureInfoUrl;
     bool mIgnoreAxisOrientation;
     bool mInvertAxisOrientation;
+    bool mSmoothPixmapTransform;
 
     //! supported formats for GetFeatureInfo in order of preference
     QStringList mSupportedGetFeatureFormats;
