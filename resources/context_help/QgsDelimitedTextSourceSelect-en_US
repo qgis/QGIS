@@ -43,7 +43,7 @@ the data in the QGis legend.
 <p>
 By default files are assumed to be encoded as UTF-8.  However other file
 encodings can be selected.  For example &quot;System&quot; uses the default encoding for the operating system.  
-If you are expecting to move the QGis project then it is safer to use a specific encoding.
+It is safer to use an explicit coding if the QGis project needs to be portable.
 </p>
 <h5>Specifying the file format</h5>
 <p>The file format can be one of
@@ -61,13 +61,13 @@ If you are expecting to move the QGis project then it is safer to use a specific
 <h5>Record and field options</h5>
 <p>The following options affect the selection of records and fields from the data file</p>
 <ul>
-    <li>Number of header lines to discard: used to skip over header lines at the beginning of the text file</li>
-    <li>First record has fields names: if selected then the first record in the file (after the skipped lines) is interpreted as names of fields, rather than as a data record.</li>
+    <li>Number of header lines to discard: used to ignore header lines at the beginning of the text file</li>
+    <li>First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.</li>
     <li>Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). </li>
     <li>Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
     affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
     single delimiter.  Quoted fields are never discarded.</li>
-    <li>Decimal point is comma: if selected then commas in real numbers represent the decimal point.  For
+    <li>Decimal point is comma: if selected then commas are used as the decimal point in real numbers.  For
     example &quot;-51,354&quot; is equivalent to -51.354.
     </li>
 </ul>
@@ -125,21 +125,22 @@ entering it twice.  For example if ' is a quote character and an escape characte
 <h4><a name="regexp">How regular expression delimiters work</a></h4>
 <p>Regular expressions are mini-language used to represent character patterns.  There are many variations
 of regular expression syntax - QGis uses the syntax provided by the <a href="http://qt-project.org/doc/qt-4.8/qregexp.html">QRegExp</a> class of the <a href="http://qt.digia.com">Qt</a> framework.</p>
-<p>In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  If the regular expression contains capture groups
-then these are extracted as fields. </p>
-<p>The regular expression is treated slightly differently if it is anchored to the start of the line (that is, the pattern starts with &quot;^&quot;.
+<p>In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains grouped expressions (eg &quot;(cat|dog)&quot;)
+ then these are extracted as fields. 
+If this is not desired then use non-capturing groups eg &quot;(?:cat|dog)&quot;.
+</p>
+<p>The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &quot;^&quot;.
 In this case the regular expression is matched against each line.  If the line does not match it is discarded
 as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
 is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example if the data has fields of 5
-characters, 10 characters, and 2 fields of 20 characters, then this can be loaded with a regular 
-expression such as 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
 <pre>
 ^(.{5})(.{10})(.{20})(.{20}).*
 </pre>
-<p>
-(If the records are possibly not completely filled then the counts could be entered as {,5}, meaning
-up to 5 characters, so that the regular expression will not fail).
+<p>will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 45 characters long will be discarded.
 </p>
 
 <h4><a name="wkt">How WKT text is interpreted</a></h4>
@@ -150,7 +151,7 @@ POINT, MULTIPOINT, LINESTRING, MULTILINESTRING, POLYGON, and MULTIPOLYGON.  It w
 a Z coordinate (eg &quot;POINT&nbsp;Z&quot;), a measure (&quot;POINT&nbsp;M&quot;), or both (&quot;POINT&nbsp;ZM&quot;).
 </p>
 <p>
-It can also handle the PostGIS EWKT variation, in which the geomtry is preceded by an spatial reference 
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
 system id (eg &quot;SRID=4326;POINT(175.3&nbsp;41.2)&quot;), and a variant used by Informix in which the WKT is 
 preceded by an integer spatial reference id (eg &quot;1 POINT(175.3&nbsp;41.2)&quot;).
 In both cases the SRID is ignored.
@@ -210,7 +211,7 @@ The following options can be added
 </p>
 <ul>
     <li><i>encoding=..</i> defines the file encoding.  The default is &quot;UTF-8&quot;</li>
-    <li><i>type=(csv|regexp|whitespace)</i>< defines the delimiter type.  Valid values are csv, 
+    <li><i>type=(csv|regexp|whitespace)</i> defines the delimiter type.  Valid values are csv, 
        regexp, and whitespace (which is just a special case of regexp).  Default is csv.</li>
        <li><i>delimiter=...</i> defines the delimiters that will be used for csv formatted files, 
        or the regular expression for regexp formatted files.  Default is , for CSV files.  There is
