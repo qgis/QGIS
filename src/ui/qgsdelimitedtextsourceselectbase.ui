@@ -68,13 +68,13 @@
       <item row="2" column="0">
        <widget class="QRadioButton" name="delimiterChars">
         <property name="toolTip">
-         <string>Fields are delimited by specified delimiters with quote and escape characters which allow delimiters and new lines within a field</string>
+         <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
         </property>
         <property name="statusTip">
-         <string>Fields are delimited by specified delimiters with quote and escape characters which allow delimiters and new lines within a field</string>
+         <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
         </property>
         <property name="whatsThis">
-         <string>Fields are delimited by specified delimiters with quote and escape characters which allow delimiters and new lines within a field</string>
+         <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
         </property>
         <property name="text">
          <string>Selected delimiters</string>
