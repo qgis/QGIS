@@ -125,7 +125,22 @@ entering it twice.  For example if ' is a quote character and an escape characte
 <h4><a name="regexp">How regular expression delimiters work</a></h4>
 <p>Regular expressions are mini-language used to represent character patterns.  There are many variations
 of regular expression syntax - QGis uses the syntax provided by the <a href="http://qt-project.org/doc/qt-4.8/qregexp.html">QRegExp</a> class of the <a href="http://qt.digia.com">Qt</a> framework.</p>
-<p>In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.</p>
+<p>In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  If the regular expression contains capture groups
+then these are extracted as fields. </p>
+<p>The regular expression is treated slightly differently if it is anchored to the start of the line (that is, the pattern starts with &quot;^&quot;.
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example if the data has fields of 5
+characters, 10 characters, and 2 fields of 20 characters, then this can be loaded with a regular 
+expression such as 
+<pre>
+^(.{5})(.{10})(.{20})(.{20}).*
+</pre>
+<p>
+(If the records are possibly not completely filled then the counts could be entered as {,5}, meaning
+up to 5 characters, so that the regular expression will not fail).
+</p>
 
 <h4><a name="wkt">How WKT text is interpreted</a></h4>
 <p>
@@ -172,3 +187,51 @@ id|wkt<br />
 </ul>
 
 <h4><a name="python">Using delimited text layers in Python</a></h4>
+<p>Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+</p>
+<pre>
+from PyQt4.QtCore import QUrl, QString<br />
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry<br />
+<br />
+# Define the data source<br />
+filename="test.csv"<br />
+uri=QUrl.fromLocalFile(filename)<br />
+uri.addQueryItem("type","csv")<br />
+uri.addQueryItem("delimiter","|")<br />
+# ... other delimited text parameters<br />
+layer=QgsVectorLayer(QString(uri.toEncoded()),"Test CSV layer","delimitedtext")<br />
+# Add the layer to the map<br />
+if layer.isValid():<br />
+    QgsMapLayerRegistry.instance().addMapLayer( layer )<br />
+</pre>
+<p>The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+</p>
+<ul>
+    <li><i>encoding=..</i> defines the file encoding.  The default is &quot;UTF-8&quot;</li>
+    <li><i>type=(csv|regexp|whitespace)</i>< defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  Default is csv.</li>
+       <li><i>delimiter=...</i> defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  Default is , for CSV files.  There is
+       no default for regexp files.</li>
+       <li><i>quote=..</i> (for csv files) defines the characters used to quote fields. Default is &quot;</li>
+       <li><i>escape=..</i> (for csv files) defines the characters used to escape the special meaning of the next character. Default is &quot;</li>
+       <li><i>skipLines=#</i> defines the number of lines to discard from the beginning of the file. Default is 0.</li>
+       <li><i>useHeader=(yes|no)</i> defines whether the first data record contains the names of the data fields. Default is yes.</li>
+       <li><i>trimFields=(yes|no)</i> defines whether leading and trailing whitespace is to be removed from unquoted fields. Default is no.</li>
+       <li><i>maxFields=#</i> defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. Default is 0 - display all fields.
+       (This option is not available from the delimited text layer dialog box).</li>
+       <li><i>skipEmptyFields=(yes|no)</i> defines whether empty unquoted fields will be discarded if they are empty (applied after trimFields). Default is no.</li>
+       <li><i>decimalPoint=.</i> specifies an alternative character that may be used as a decimal point in numeric fields.  Default is a point (full stop) character.</li>
+       <li><i>wktField=fieldname</i> specifies the name or number (starting at 1) of the field containing a well known text geometry definition</li>
+       <li><i>xField=fieldname</i> specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)</li>
+       <li><i>yField=fieldname</i> specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)</li>
+       <li><i>geomType=(auto|point|line|polygon|none)</i> specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  Default is auto.</li>
+       <li><i>crs=...</i> specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &quot;EPSG:4167&quot;).  If this is not 
+       specified then a dialog box may request this information from the user.</li>
+       <li><i>quiet=(yes|no)</i> specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGis log in any case). Default is no.</li>
+</ul>
+
+

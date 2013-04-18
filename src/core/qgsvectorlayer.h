@@ -310,15 +310,6 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *
  *   Defines the characters used to escape delimiter, quote, and newline characters.
  *
- * - skipEmptyFields=(yes|no)
- *
- *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
- *   delimiters)
- *
- * - trimFields=(yes|no)
- *
- *   If yes then leading and trailing whitespace will be removed from fields
- *
  * - skipLines=n
  *
  *   Defines the number of lines to ignore at the beginning of the file (default 0)
@@ -328,16 +319,30 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *   Defines whether the first record in the file (after skipped lines) contains
  *   column names (default yes)
  *
- * - xField=column yField=column
+ * - trimFields=(yes|no)
  *
- *   Defines the name of the columns holding the x and y coordinates for XY point geometries.
- *   If the useHeader is no (ie there are no column names), then this is the column
- *   number (with the first column as 1).
+ *   If yes then leading and trailing whitespace will be removed from fields
+ *
+ * - skipEmptyFields=(yes|no)
+ *
+ *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
+ *   delimiters)
+ *
+ * - maxFields=#
+ *
+ *   Specifies the maximum number of fields to load for each record.  Additional
+ *   fields will be discarded.  Default is 0 - load all fields.
  *
  * - decimalPoint=c
  *
  *   Defines a character that is used as a decimal point in the numeric columns
  *   The default is '.'.
+ *
+ * - xField=column yField=column
+ *
+ *   Defines the name of the columns holding the x and y coordinates for XY point geometries.
+ *   If the useHeader is no (ie there are no column names), then this is the column
+ *   number (with the first column as 1).
  *
  * - xyDms=(yes|no)
  *
@@ -382,8 +387,6 @@ struct CORE_EXPORT QgsVectorJoinInfo
  * \subsection grass Grass data provider (grass)
  *
  * Provider to display vector data in a GRASS GIS layer.
- *
- *
  *
  */
 

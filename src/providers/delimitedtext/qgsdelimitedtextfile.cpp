@@ -151,6 +151,12 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
       quote = "'\"";
       escape = "";
     }
+    else if( type == "regexp ")
+    {
+      delimiter="";
+      quote="";
+      escape="";
+    }
   }
   if ( url.hasQueryItem( "delimiter" ) )
   {
