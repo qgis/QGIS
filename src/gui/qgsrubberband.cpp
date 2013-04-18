@@ -153,9 +153,12 @@ void QgsRubberBand::removeLastPoint( int geometryIndex )
     return;
   }
 
-  if ( mPoints[geometryIndex].size() > 0 )
+  // removing the last point from a rubber band is actually not removing
+  // the last one, but the one before last
+  if ( mPoints[geometryIndex].size() > 1 )
   {
-    mPoints[geometryIndex].pop_back();
+    //mPoints[geometryIndex].pop_back(); // wrong
+    mPoints[geometryIndex].removeAt(mPoints[geometryIndex].size() - 2);
   }
 
   updateRect();
