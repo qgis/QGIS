@@ -86,6 +86,12 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
   return false;
 }
 
+void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
+{
+  masterModel()->prefetchColumnData( column );
+  QSortFilterProxyModel::sort( column, order );
+}
+
 void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
 {
   if ( mSelectedOnTop != selectedOnTop )

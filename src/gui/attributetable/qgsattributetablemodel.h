@@ -22,6 +22,7 @@
 #include <QObject>
 #include <QHash>
 #include <QQueue>
+#include <QMap>
 
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsvectorlayercache.h"
@@ -173,8 +174,19 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void executeAction( int action, const QModelIndex &idx ) const;
 
     /**
-     * return feature attributes at given index */
+     * Return the feature attributes at given model index
+     * @return feature attributes at given model index
+     */
     QgsFeature feature( const QModelIndex &idx ) const;
+
+    /**
+     * Caches the entire data for one column. This should be called prior to sorting,
+     * so the data does not have to be fetched for every single comparison.
+     * Specify -1 as column to invalidate the cache
+     *
+     * @param column The column index of the field to catch
+     */
+    void prefetchColumnData( int column );
 
   signals:
     /**
@@ -245,6 +257,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual bool loadFeatureAtId( QgsFeatureId fid ) const;
 
     QgsFeatureRequest mFeatureRequest;
+
+    /** The currently cached column */
+    int mCachedField;
+    /** Allows to cache one specific column (used for sorting) */
+    QMap<QgsFeatureId, QVariant> mFieldCache;
 };
 
 
