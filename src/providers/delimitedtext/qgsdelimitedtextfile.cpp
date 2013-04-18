@@ -27,6 +27,11 @@
 #include <QRegExp>
 #include <QUrl>
 
+static QString DefaultFieldName( "field_%1" );
+static QRegExp InvalidFieldRegexp( "^\\d*(\\.\\d*)?$" );
+// field_ is optional in following regexp to simplify QgsDelimitedTextFile::fieldNumber()
+static QRegExp DefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive );
+
 QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mFileName( QString() ),
     mEncoding( "UTF-8" ),
@@ -39,7 +44,8 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mSkipLines( 0 ),
     mMaxFields( 0 ),
     mLineNumber( 0 ),
-    mRecordLineNumber( 0 )
+    mRecordLineNumber( 0 ),
+    mMaxFieldCount( 0 )
 {
   // The default type is CSV
   setTypeCSV();
@@ -80,7 +86,7 @@ bool QgsDelimitedTextFile::open()
       return false;
     }
     mStream = new QTextStream( mFile );
-    if ( mEncoding.isEmpty() && mEncoding != "System" )
+    if ( ! mEncoding.isEmpty() )
     {
       QTextCodec *codec =  QTextCodec::codecForName( mEncoding.toAscii() );
       mStream->setCodec( codec );
@@ -93,8 +99,8 @@ bool QgsDelimitedTextFile::open()
 void QgsDelimitedTextFile::resetDefinition()
 {
   close();
-  mColumnNames.clear();
-  mMaxFields = 0;
+  mFieldNames.clear();
+  mMaxFieldCount = 0;
 }
 
 // Extract the provider definition from the url
@@ -275,11 +281,17 @@ void QgsDelimitedTextFile::setTypeRegexp( QString regexp )
   resetDefinition();
   mType = DelimTypeRegexp;
   mDelimRegexp.setPattern( regexp );
+  mAnchoredRegexp = regexp.startsWith( "^" );
   mParser = &QgsDelimitedTextFile::parseRegexp;
   mDefinitionValid = regexp.size() > 0 && mDelimRegexp.isValid();
   if ( ! mDefinitionValid )
   {
     QgsDebugMsg( "Invalid regular expression in delimited text file delimiter: " + regexp );
+  }
+  else if ( mAnchoredRegexp && mDelimRegexp.captureCount() == 0 )
+  {
+    mDefinitionValid = false;
+    QgsDebugMsg( "Invalid anchored regular expression - must have capture groups: " + regexp );
   }
 }
 
@@ -335,12 +347,89 @@ void QgsDelimitedTextFile::setDiscardEmptyFields( bool discardEmptyFields )
   mDiscardEmptyFields = discardEmptyFields;
 }
 
-QStringList &QgsDelimitedTextFile::columnNames()
+
+void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
+{
+  mFieldNames.empty();
+  foreach ( QString name, names )
+  {
+    bool nameOk = true;
+    int fieldNo = mFieldNames.size() + 1;
+    name = name.trimmed();
+
+    // If the name is invalid then reset it to default name
+    if ( InvalidFieldRegexp.exactMatch( name ) )
+    {
+      name = DefaultFieldName.arg( fieldNo );
+    }
+    // If the name looks like a default field name (field_##), then it is
+    // valid if the number matches its column number..
+    else if ( DefaultFieldRegexp.indexIn( name ) == 0 )
+    {
+      int col = DefaultFieldRegexp.capturedTexts()[1].toInt();
+      nameOk = col == fieldNo;
+    }
+    // Otherwise it is valid if isn't the name of an existing field...
+    else
+    {
+      nameOk = ! mFieldNames.contains( name, Qt::CaseInsensitive );
+    }
+    // If it is not a valid name then try appending a number to generate
+    // a valid name.
+    if ( ! nameOk )
+    {
+      int suffix = 0;
+      QString basename = name + "_%1";
+      while ( true )
+      {
+        suffix++;
+        name = basename.arg( suffix );
+        // Not ok if it is already in the name list
+        if ( mFieldNames.contains( name, Qt::CaseInsensitive ) ) continue;
+        // Not ok if it is already in proposed names
+        if ( names.contains( name, Qt::CaseInsensitive ) ) continue;
+        break;
+      }
+    }
+    mFieldNames.append( name );
+  }
+}
+
+
+QStringList &QgsDelimitedTextFile::fieldNames()
 {
   // If not yet opened then reset file to read column headers
   //
   if ( mUseHeader && ! mFile ) reset();
-  return mColumnNames;
+  // If have read more fields than field names, then append field names
+  // to match the field count (will only happen if parsed some records)
+  if ( mMaxFieldCount > mFieldNames.size() )
+  {
+    for ( int i = mFieldNames.size() + 1; i <= mMaxFieldCount; i++ )
+    {
+      mFieldNames.append( DefaultFieldName.arg( i ) );
+    }
+  }
+  return mFieldNames;
+}
+
+int QgsDelimitedTextFile::fieldIndex( QString name )
+{
+  // If not yet opened then reset file to read column headers
+  //
+  if ( mUseHeader && ! mFile ) reset();
+  // Try to determine the field based on a default field name, includes
+  // Field_### and simple integer fields.
+  if ( DefaultFieldRegexp.indexIn( name ) == 0 )
+  {
+    return DefaultFieldRegexp.capturedTexts()[1].toInt() - 1;
+  }
+  for ( int i = 0; i < mFieldNames.size(); i++ )
+  {
+    if ( mFieldNames[i].compare( name, Qt::CaseInsensitive ) == 0 ) return i;
+  }
+  return -1;
+
 }
 
 QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList &record )
@@ -368,8 +457,9 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
   // Read the column names
   if ( mUseHeader )
   {
-    QgsDelimitedTextFile::Status result = ( this->*mParser )( mColumnNames );
-    mMaxFields = mColumnNames.size();
+    QStringList names;
+    QgsDelimitedTextFile::Status result = nextRecord( names );
+    setFieldNames( names );
     return result;
   }
   return RecordOk;
@@ -396,6 +486,22 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
   return RecordEOF;
 }
 
+void QgsDelimitedTextFile::appendField( QStringList &record, QString field, bool quoted )
+{
+  if ( mMaxFields > 0 && record.size() >= mMaxFields ) return;
+  if ( quoted )
+  {
+    record.append( field );
+  }
+  else
+  {
+    if ( mTrimFields ) field = field.trimmed();
+    if ( !( mDiscardEmptyFields && field.isEmpty() ) ) record.append( field );
+  }
+  // Keep track of maximum number of non-empty fields in a record
+  if ( record.size() > mMaxFieldCount && ! field.isEmpty() ) mMaxFieldCount = record.size();
+}
+
 QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QStringList &fields )
 {
   fields.clear();
@@ -404,12 +510,54 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QStringList &fie
   if ( status != RecordOk ) return status;
   mRecordLineNumber = mLineNumber;
 
-  QStringList parts = buffer.split( mDelimRegexp );
-  foreach ( QString f, parts )
+  // If match is anchored, then only interested in records which actually match
+  // and extract capture groups
+  if ( mAnchoredRegexp )
   {
-    if ( mTrimFields ) f = f.trimmed();
-    if ( mDiscardEmptyFields && f.isEmpty() ) continue;
-    fields.append( f );
+    if ( mDelimRegexp.indexIn( buffer ) < 0 ) return RecordInvalid;
+    QStringList groups = mDelimRegexp.capturedTexts();
+    for ( int i = 1; i < groups.size(); i++ )
+    {
+      appendField( fields, groups[i] );
+    }
+    return RecordOk;
+  }
+
+  int pos = 0;
+  int size = buffer.size();
+  while ( true )
+  {
+    if ( pos >= size ) break;
+    int matchPos = mDelimRegexp.indexIn( buffer, pos );
+    // If match won't advance cursor, then need to force it along one place
+    // to avoid infinite loop.
+    int matchLen = mDelimRegexp.matchedLength();
+    if ( matchPos == pos && matchLen == 0 )
+    {
+      matchPos = mDelimRegexp.indexIn( buffer, pos + 1 );
+      matchLen = mDelimRegexp.matchedLength();
+    }
+    // If no match, then field is to end of record
+    if ( matchPos < 0 )
+    {
+      appendField( fields, buffer.mid( pos ) );
+      break;
+    }
+    // Else append up to matched string, then any capture
+    // groups from match
+    appendField( fields, buffer.mid( pos, matchPos - pos ) );
+    if ( mDelimRegexp.captureCount() > 0 )
+    {
+      QStringList groups = mDelimRegexp.capturedTexts();
+      for ( int i = 1; i < groups.size(); i++ )
+      {
+        appendField( fields, groups[i] );
+      }
+    }
+    // Advance the buffer pointer
+    pos = matchPos + matchLen;
+
+    // Quit loop if we have enough fields.
     if ( mMaxFields > 0 && fields.size() >= mMaxFields ) break;
   }
   return RecordOk;
@@ -445,7 +593,11 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
       if ( quoted || escaped )
       {
         status = nextLine( buffer, false );
-        if ( status != RecordOk ) return status;
+        if ( status != RecordOk )
+        {
+          status = RecordInvalid;
+          break;
+        }
         field.append( '\n' );
         cp = 0;
         cpmax = buffer.size();
@@ -530,12 +682,8 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
     // If it is a delimiter, then end of field...
     else if ( isDelim )
     {
-      if ( mMaxFields <= 0 || fields.size() < mMaxFields )
-      {
-        // If wasn't quoted, then trim..
-        if ( mTrimFields && ! ended ) field = field.trimmed();
-        if ( ! field.isEmpty() || ended || ! mDiscardEmptyFields ) fields.append( field );
-      }
+      appendField( fields, field, ended );
+
       // Clear the field
       field.clear();
       started = false;
@@ -560,12 +708,12 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fie
     }
   }
   // If reached the end of the record, then add the last field...
-  if ( started && ( mMaxFields <= 0 || fields.size() < mMaxFields ) )
+  if ( started )
   {
-    if ( mTrimFields && ! ended ) field = field.trimmed();
-    if ( ! field.isEmpty() || ended || ! mDiscardEmptyFields ) fields.append( field );
+    appendField( fields, field, ended );
+
   }
-  return RecordOk;
+  return status;
 }
 
 bool QgsDelimitedTextFile::isValid()

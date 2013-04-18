@@ -172,7 +172,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     void clearInvalidLines();
     void recordInvalidLine( QString message );
-    void handleInvalidLines();
+    void reportErrors( QStringList messages = QStringList() );
     void resetStream();
     bool recordIsEmpty( QStringList &record );
 

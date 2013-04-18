@@ -794,6 +794,9 @@
           <property name="whatsThis">
            <string>Select the file encoding</string>
           </property>
+          <property name="insertPolicy">
+           <enum>QComboBox::InsertAtTop</enum>
+          </property>
          </widget>
         </item>
        </layout>

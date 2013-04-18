@@ -154,12 +154,12 @@ class QgsDelimitedTextFile
       return mSkipLines;
     }
 
-    /* Set reading column names from the first record
-     * @param useheaders Column names will be read if true
+    /* Set reading field names from the first record
+     * @param useheaders Field names will be read if true
      */
     void setUseHeader( bool useheader = true );
-    /* Return the option for reading column names from the first record
-     * @return useheaders Column names will be read if true
+    /* Return the option for reading field names from the first record
+     * @return useheaders Field names will be read if true
      */
     bool useHeader()
     {
@@ -190,11 +190,26 @@ class QgsDelimitedTextFile
       return mTrimFields;
     }
 
-    /** Return the column names read from the header, or default names
+    /** Set the field names
+     *  Field names are set from QStringList.  Names may be modified
+     *  to ensure that they are unique, not empty, and do not conflict
+     *  with default field name (Field_##)
+     */
+    void setFieldNames( const QStringList &names );
+
+    /** Return the field names read from the header, or default names
      *  Col## if none defined.  Will open and read the head of the file
      *  if required, then reset..
      */
-    QStringList &columnNames();
+    QStringList &fieldNames();
+
+    /** Return the index of a names field
+     *  @param name    The name of the field to find.  This will also accept an
+     *                 integer string ("1" = first field).
+     *  @return index  The zero based index of the field name, or -1 if the field
+     *                 name does not exist or cannot be inferred
+     */
+    int fieldIndex( QString name );
 
     /** Reads the next record from the stream splits into string fields.
      *  @param fields  The string list to populate with the fields
@@ -242,9 +257,6 @@ class QgsDelimitedTextFile
      */
     static QString decodeChars( QString string );
 
-
-
-
   private:
 
     /** Open the file
@@ -258,7 +270,7 @@ class QgsDelimitedTextFile
     void close();
 
     /** Reset the status if the definition is changing (eg clear
-     *  existing column names, etc...
+     *  existing field names, etc...
      */
     void resetDefinition();
 
@@ -272,6 +284,12 @@ class QgsDelimitedTextFile
      * delimited text parser implementation.
      */
     Status nextLine( QString &buffer, bool skipBlank = false );
+
+    /** Utility routine to add a field to a record, accounting for trimming
+     *  and discarding, and maximum field count
+     */
+
+    void appendField( QStringList &record, QString field, bool quoted = false );
 
     // Pointer to the currently selected parser
     Status( QgsDelimitedTextFile::*mParser )( QStringList &fields );
@@ -292,12 +310,14 @@ class QgsDelimitedTextFile
 
     // Parameters used by parsers
     QRegExp mDelimRegexp;
+    bool mAnchoredRegexp;
     QString mDelimChars;
     QString mQuoteChar;
     QString mEscapeChar;
 
     // Information extracted from file
-    QStringList mColumnNames;
+    QStringList mFieldNames;
     int mLineNumber;
     int mRecordLineNumber;
+    int mMaxFieldCount;
 };

@@ -34,9 +34,8 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
     QDialog( parent, fl ),
     mFile( new QgsDelimitedTextFile() ),
     mExampleRowCount( 20 ),
-    mColumnNamePrefix( "Column_" ),
     mPluginKey( "/Plugin-DelimitedText" ),
-    mLastFileType("")
+    mLastFileType( "" )
 {
 
   setupUi( this );
@@ -51,7 +50,13 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
   }
 
   cmbEncoding->clear();
+  QStringList codecs;
   foreach ( QByteArray codec, QTextCodec::availableCodecs() )
+  {
+    codecs.append( codec );
+  }
+  codecs.sort();
+  foreach( QString codec, codecs )
   {
     cmbEncoding->addItem( codec );
   }
@@ -62,6 +67,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
 
   connect( txtFilePath, SIGNAL( textChanged( QString ) ), this, SLOT( updateFileName() ) );
   connect( txtLayerName, SIGNAL( textChanged( QString ) ), this, SLOT( enableAccept() ) );
+  connect( cmbEncoding, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateFieldsAndEnable() ) );
 
   connect( delimiterCSV, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
   connect( delimiterChars, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
@@ -153,10 +159,8 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
     if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
     {
       QString field = cmbXField->currentText();
-      if ( ! useHeader ) field.remove( mColumnNamePrefix );
       url.addQueryItem( "xField", field );
       field = cmbYField->currentText();
-      if ( ! useHeader ) field.remove( mColumnNamePrefix );
       url.addQueryItem( "yField", field );
     }
   }
@@ -165,7 +169,6 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
     if ( ! cmbWktField->currentText().isEmpty() )
     {
       QString field = cmbWktField->currentText();
-      if ( ! useHeader ) field.remove( mColumnNamePrefix );
       url.addQueryItem( "wktField", field );
     }
     if ( cmbGeometryType->currentIndex() > 0 )
@@ -314,9 +317,9 @@ void QgsDelimitedTextSourceSelect::loadSettingsForFile( QString filename )
 {
   if ( filename.isEmpty() ) return;
   QFileInfo fi( filename );
-  QString filetype=fi.suffix();
+  QString filetype = fi.suffix();
   // Don't expect to change settings if not changing file type
-  if( filetype != mLastFileType ) loadSettings( fi.suffix(), true );
+  if ( filetype != mLastFileType ) loadSettings( fi.suffix(), true );
   mLastFileType = filetype;
 }
 
@@ -383,27 +386,13 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   if ( ! loadDelimitedFileDefinition() )
     return;
 
-  bool useHeader = mFile->useHeader();
-  QStringList fieldList;
-  QList<bool> isValidNumber;
+  // Put a sample set of records into the sample box.  Also while scanning assess suitability of
+  // fields for use as coordinate and WKT fields
+
+
+  QList<bool> isValidCoordinate;
   QList<bool> isValidWkt;
   QList<bool> isEmpty;
-
-  if ( useHeader )
-  {
-    fieldList = mFile->columnNames();
-    tblSample->setColumnCount( fieldList.size() );
-    tblSample->resizeColumnsToContents();
-    for ( int i = 0; i < fieldList.size(); i++ )
-    {
-      isValidNumber.append( false );
-      isValidWkt.append( false );
-      isEmpty.append( true );
-    }
-  }
-
-  // put a lines into the sample box
-
   int counter = 0;
   QStringList values;
   QRegExp wktre( "^\\s*(?:MULTI)?(?:POINT|LINESTRING|POLYGON)\\s*Z?\\s*M?\\(", Qt::CaseInsensitive );
@@ -415,24 +404,20 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     if ( status != QgsDelimitedTextFile::RecordOk ) continue;
     counter++;
 
-    // If don't have headers, then check column count and expand if necessary
-    // Don't count blank columns
+    // Look at count of non-blank fields
 
     int nv = values.size();
     while ( nv > 0 && values[nv-1].isEmpty() ) nv--;
 
-    if ( nv > fieldList.size() )
+    if ( isEmpty.size() < nv )
     {
-      while ( fieldList.size() < nv )
+      while ( isEmpty.size() < nv )
       {
-        int nc = fieldList.size();
-        QString column = mColumnNamePrefix + QString::number( nc + 1 );
-        fieldList.append( column );
         isEmpty.append( true );
-        isValidNumber.append( false );
+        isValidCoordinate.append( false );
         isValidWkt.append( false );
       }
-      tblSample->setColumnCount( fieldList.size() );
+      tblSample->setColumnCount( nv );
     }
 
     tblSample->setRowCount( counter );
@@ -449,10 +434,10 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
         if ( isEmpty[i] )
         {
           isEmpty[i] = false;
-          isValidNumber[i] = true;
+          isValidCoordinate[i] = true;
           isValidWkt[i] = true;
         }
-        if ( isValidNumber[i] )
+        if ( isValidCoordinate[i] )
         {
           bool ok = true;
           if ( cbxPointIsComma->isChecked() )
@@ -467,7 +452,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
           {
             value.toDouble( &ok );
           }
-          isValidNumber[i] = ok;
+          isValidCoordinate[i] = ok;
         }
         if ( isValidWkt[i] )
         {
@@ -476,6 +461,19 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
         }
       }
     }
+  }
+
+  QStringList fieldList = mFile->fieldNames();
+
+  if ( isEmpty.size() < fieldList.size() )
+  {
+    while ( isEmpty.size() < fieldList.size() )
+    {
+      isEmpty.append( true );
+      isValidCoordinate.append( false );
+      isValidWkt.append( false );
+    }
+    tblSample->setColumnCount( fieldList.size() );
   }
 
   tblSample->setHorizontalHeaderLabels( fieldList );
@@ -508,11 +506,11 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   // Now try setting optional X,Y fields - will only reset the fields if
   // not already set.
 
-  trySetXYField( fieldList, isValidNumber, "longitude", "latitude" );
-  trySetXYField( fieldList, isValidNumber, "lon", "lat" );
-  trySetXYField( fieldList, isValidNumber, "east", "north" );
-  trySetXYField( fieldList, isValidNumber, "x", "y" );
-  trySetXYField( fieldList, isValidNumber, "e", "n" );
+  trySetXYField( fieldList, isValidCoordinate, "longitude", "latitude" );
+  trySetXYField( fieldList, isValidCoordinate, "lon", "lat" );
+  trySetXYField( fieldList, isValidCoordinate, "east", "north" );
+  trySetXYField( fieldList, isValidCoordinate, "x", "y" );
+  trySetXYField( fieldList, isValidCoordinate, "e", "n" );
 
   // And also a WKT field if there is one
 
@@ -581,7 +579,7 @@ bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<boo
       if ( ! fields.contains( yfield, Qt::CaseInsensitive ) ) continue;
       for ( int iy = 0; iy < fields.size(); iy++ )
       {
-        if ( ! isValidNumber[i] ) continue;
+        if ( ! isValidNumber[iy] ) continue;
         if ( iy == i ) continue;
         if ( fields[iy].compare( yfield, Qt::CaseInsensitive ) == 0 )
         {

@@ -50,7 +50,6 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
   private:
     QgsDelimitedTextFile *mFile;
     int mExampleRowCount;
-    QString mColumnNamePrefix;
     QString mPluginKey;
     QString mLastFileType;
 

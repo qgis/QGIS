@@ -56,7 +56,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
     int fid = P->mFile->recordLineNumber();
     if ( status == QgsDelimitedTextFile::RecordEOF ) break;
     if ( status != QgsDelimitedTextFile::RecordOk ) continue;
-    if( P->recordIsEmpty(tokens)) continue;
+    if ( P->recordIsEmpty( tokens ) ) continue;
 
     while ( tokens.size() < P->mFieldCount )
       tokens.append( QString::null );
