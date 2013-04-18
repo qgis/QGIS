@@ -8,7 +8,7 @@ Loads and displays delimited text files
 <a href="#wkt">How WKT text is interpreted</a><br />
 <a href="#example">Example of a text file with X,Y point coordinates</a><br/>
 <a href="#wkt_example">Example of a text file with WKT geometries</a><br/>
-<a href="#notes">Notes</a><br/>
+<a href="#python">Using delimited text layers in Python</a><br/>
 </p>
 
 <h4><a name="re">Overview</a></h4>
@@ -170,3 +170,5 @@ id|wkt<br />
   <li>Uses <b>|</b> as a delimiter.</li>
   <li>Specifies each point using the WKT notation
 </ul>
+
+<h4><a name="python">Using delimited text layers in Python</a></h4>

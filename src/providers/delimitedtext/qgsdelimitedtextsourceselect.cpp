@@ -56,7 +56,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
     codecs.append( codec );
   }
   codecs.sort();
-  foreach( QString codec, codecs )
+  foreach ( QString codec, codecs )
   {
     cmbEncoding->addItem( codec );
   }
@@ -142,8 +142,6 @@ void QgsDelimitedTextSourceSelect::on_buttonBox_accepted()
   //Build the delimited text URI from the user provided information
 
   QUrl url = mFile->url();
-
-  bool useHeader = mFile->useHeader();
 
   if ( cbxPointIsComma->isChecked() )
   {
@@ -637,19 +635,11 @@ void QgsDelimitedTextSourceSelect::updateFileName()
 
 void QgsDelimitedTextSourceSelect::updateFieldsAndEnable()
 {
-  // Check the regular expression is valid
-  lblRegexpError->setText( "" );
-  if ( delimiterRegexp->isChecked() )
-  {
-    QRegExp re( txtDelimiterRegexp->text() );
-    if ( ! re.isValid() ) lblRegexpError->setText( tr( "Expression is not valid" ) );
-  }
-
   updateFieldLists();
   enableAccept();
 }
 
-void QgsDelimitedTextSourceSelect::enableAccept()
+bool QgsDelimitedTextSourceSelect::validate()
 {
   // Check that input data is valid - provide a status message if not..
 
@@ -672,9 +662,23 @@ void QgsDelimitedTextSourceSelect::enableAccept()
   {
     message = tr( "At least one delimiter character must be specified" );
   }
-  else if ( delimiterRegexp->isChecked() && ! QRegExp( txtDelimiterRegexp->text() ).isValid() )
+
+  if ( message.isEmpty() && delimiterRegexp->isChecked() )
   {
-    message = tr( "Regular expression is not valid" );
+    QRegExp re( txtDelimiterRegexp->text() );
+    if ( ! re.isValid() )
+    {
+      message = tr( "Regular expression is not valid" );
+    }
+    else if ( re.pattern().startsWith( "^" ) && re.captureCount() == 0 )
+    {
+      message = tr( "^.. expression needs capture groups" );
+    }
+    lblRegexpError->setText( message );
+  }
+  if ( ! message.isEmpty() )
+  {
+    // continue...
   }
   // Hopefully won't hit this none-specific message, but just in case ...
   else if ( ! mFile->isValid() )
@@ -702,8 +706,12 @@ void QgsDelimitedTextSourceSelect::enableAccept()
   {
     enabled = true;
   }
-
   lblStatus->setText( message );
+  return enabled;
+}
 
+void QgsDelimitedTextSourceSelect::enableAccept()
+{
+  bool enabled = validate();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }

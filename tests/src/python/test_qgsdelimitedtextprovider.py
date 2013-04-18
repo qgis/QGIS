@@ -362,6 +362,31 @@ class TestQgsDelimitedTextProvider(TestCase):
         runTest(description,wanted,log_wanted,filename,**params)
 
 
+    def test_002b_max_fields(self):
+        description='Limiting maximum number of fields'
+        filename='testfields.csv'
+        params={'geomType': 'none', 'maxFields': '7', 'type': 'csv'}
+        if printTests:
+            createTest(description,filename,**params)
+            assert False,"Set printTests to False to run delimited text tests"
+        wanted={
+            u'1': {
+                'id': u'1',
+                'description': u'Generation of field names',
+                'data': u'Some data',
+                'field_4': u'Some info',
+                'data_1': u'',
+                'field_6': u'',
+                'field_7': u'',
+                '#fid': 2L,
+                '#geometry': 'None',
+                },
+            }
+        log_wanted=[
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+
     def test_003_load_whitespace(self):
         description='Whitespace file parsing'
         filename='test.space'
@@ -589,7 +614,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             }
         log_wanted=[
             u'Errors in file file',
-            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid record format at line 7',
             u'Invalid record format at line 8',
             u'Invalid record format at line 9',
@@ -616,7 +641,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             }
         log_wanted=[
             u'Errors in file file',
-            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid record format at line 2',
             u'Invalid record format at line 5',
             ]
@@ -681,7 +706,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             }
         log_wanted=[
             u'Errors in file file',
-            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid X or Y fields at line 4',
             ]
         runTest(description,wanted,log_wanted,filename,**params)
@@ -728,7 +753,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             }
         log_wanted=[
             u'Errors in file file',
-            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid WKT at line 8',
             ]
         runTest(description,wanted,log_wanted,filename,**params)
@@ -775,7 +800,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             }
         log_wanted=[
             u'Errors in file file',
-            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid WKT at line 8',
             ]
         runTest(description,wanted,log_wanted,filename,**params)
@@ -822,7 +847,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             }
         log_wanted=[
             u'Errors in file file',
-            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid WKT at line 8',
             ]
         runTest(description,wanted,log_wanted,filename,**params)
@@ -851,7 +876,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             }
         log_wanted=[
             u'Errors in file file',
-            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid WKT at line 8',
             ]
         runTest(description,wanted,log_wanted,filename,**params)
@@ -1020,7 +1045,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             }
         log_wanted=[
             u'Errors in file file',
-            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid X or Y fields at line 27',
             u'Invalid X or Y fields at line 28',
             u'Invalid X or Y fields at line 29',
@@ -1161,8 +1186,58 @@ class TestQgsDelimitedTextProvider(TestCase):
             }
         log_wanted=[
             u'Errors in file file',
-            u'The following lines were not loaded from file into QGIS due to errors:\n',
+            u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid record format at line 3',
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+
+    def test_017a_regular_expression_4(self):
+        description='Parsing zero length re'
+        filename='testre3.txt'
+        params={'geomType': 'none', 'delimiter': 'x?', 'type': 'regexp'}
+        if printTests:
+            createTest(description,filename,**params)
+            assert False,"Set printTests to False to run delimited text tests"
+        wanted={
+            u'f': {
+                'id': u'f',
+                'description': u'i',
+                's': u'f',
+                'm': u'i',
+                'a': u'.',
+                'l': u'.',
+                'l_1': u'i',
+                'field_6': u'l',
+                'field_7': u'e',
+                '#fid': 2L,
+                '#geometry': 'None',
+                },
+            }
+        log_wanted=[
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+
+    def test_017a_regular_expression_5(self):
+        description='Parsing zero length re 2'
+        filename='testre3.txt'
+        params={'geomType': 'none', 'delimiter': '\\b', 'type': 'regexp'}
+        if printTests:
+            createTest(description,filename,**params)
+            assert False,"Set printTests to False to run delimited text tests"
+        wanted={
+            u'fi': {
+                'id': u'fi',
+                'description': u'..',
+                'small': u'fi',
+                'field_2': u'..',
+                'field_3': u'ile',
+                '#fid': 2L,
+                '#geometry': 'None',
+                },
+            }
+        log_wanted=[
             ]
         runTest(description,wanted,log_wanted,filename,**params)
 
@@ -1207,8 +1282,6 @@ class TestQgsDelimitedTextProvider(TestCase):
         log_wanted=[
             ]
         runTest(description,wanted,log_wanted,filename,**params)
-
-
 
 #END
 

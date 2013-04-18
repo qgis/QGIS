@@ -66,6 +66,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     void updateFileName();
     void updateFieldsAndEnable();
     void enableAccept();
+    bool validate();
 
   signals:
     void addVectorLayer( QString, QString, QString );

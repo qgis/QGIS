@@ -180,6 +180,10 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
   {
     mTrimFields = ! url.queryItemValue( "trimFields" ).toUpper().startsWith( 'N' );;
   }
+  if ( url.hasQueryItem( "maxFields" ) )
+  {
+    mMaxFields = url.queryItemValue( "maxFields" ).toInt();
+  }
 
   QgsDebugMsg( "Delimited text file is: " + mFileName );
   QgsDebugMsg( "Encoding is: " + mEncoding );
@@ -188,6 +192,7 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
   QgsDebugMsg( "Quote character is: [" + quote + "]" );
   QgsDebugMsg( "Escape character is: [" + escape + "]" );
   QgsDebugMsg( "Skip lines: " + QString::number( mSkipLines ) );
+  QgsDebugMsg( "Maximum number of fields in record: " + QString::number( mMaxFields ) );
   QgsDebugMsg( "Use headers: " + QString( mUseHeader ? "Yes" : "No" ) );
   QgsDebugMsg( "Discard empty fields: " + QString( mDiscardEmptyFields ? "Yes" : "No" ) );
   QgsDebugMsg( "Trim fields: " + QString( mTrimFields ? "Yes" : "No" ) );
@@ -245,6 +250,10 @@ QUrl QgsDelimitedTextFile::url()
   if ( mDiscardEmptyFields && mType != DelimTypeWhitespace )
   {
     url.addQueryItem( "skipEmptyFields", "Yes" );
+  }
+  if ( mMaxFields > 0 )
+  {
+    url.addQueryItem( "maxFields", QString::number( mMaxFields ) );
   }
   return url;
 }
@@ -339,6 +348,12 @@ void QgsDelimitedTextFile::setTrimFields( bool trimFields )
 {
   resetDefinition();
   mTrimFields = trimFields;
+}
+
+void QgsDelimitedTextFile::setMaxFields( int maxFields )
+{
+  resetDefinition();
+  mMaxFields = maxFields;
 }
 
 void QgsDelimitedTextFile::setDiscardEmptyFields( bool discardEmptyFields )

@@ -129,6 +129,9 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   if ( ! mFile->isValid() )
   {
     // uri is invalid so the layer must be too...
+    QStringList messages;
+    messages.append( "File cannot be opened or delimiter parameters are not valid" );
+    reportErrors( messages );
     QgsDebugMsg( "Delimited text source invalid - filename or delimiter parameters" );
     return;
   }
@@ -539,7 +542,7 @@ void QgsDelimitedTextProvider::recordInvalidLine( QString message )
 
 void QgsDelimitedTextProvider::reportErrors( QStringList messages )
 {
-  if ( !mInvalidLines.isEmpty() )
+  if ( !mInvalidLines.isEmpty() || ! messages.isEmpty() )
   {
     QString tag( "DelimitedText" );
     QgsMessageLog::logMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), tag );
@@ -547,12 +550,14 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages )
     {
       QgsMessageLog::logMessage( message );
     }
-    QgsMessageLog::logMessage( tr( "The following lines were not loaded from %1 into QGIS due to errors:\n" ).arg( mFile->fileName() ),
-                               tag );
-    for ( int i = 0; i < mInvalidLines.size(); ++i )
-      QgsMessageLog::logMessage( mInvalidLines.at( i ), tag );
-    if ( mNExtraInvalidLines > 0 )
-      QgsMessageLog::logMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ), tag );
+    if ( ! mInvalidLines.isEmpty() )
+    {
+      QgsMessageLog::logMessage( tr( "The following lines were not loaded into QGIS due to errors:" ), tag );
+      for ( int i = 0; i < mInvalidLines.size(); ++i )
+        QgsMessageLog::logMessage( mInvalidLines.at( i ), tag );
+      if ( mNExtraInvalidLines > 0 )
+        QgsMessageLog::logMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ), tag );
+    }
 
 
     // Display errors in a dialog...
@@ -565,11 +570,14 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages )
       {
         output->appendMessage( message );
       }
-      output->appendMessage( tr( "The following lines were not loaded from %1 into QGIS due to errors:\n" ).arg( mFile->fileName() ) );
-      for ( int i = 0; i < mInvalidLines.size(); ++i )
-        output->appendMessage( mInvalidLines.at( i ) );
-      if ( mNExtraInvalidLines > 0 )
-        output->appendMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ) );
+      if ( ! mInvalidLines.isEmpty() )
+      {
+        output->appendMessage( tr( "The following lines were not loaded into QGIS due to errors:" ) );
+        for ( int i = 0; i < mInvalidLines.size(); ++i )
+          output->appendMessage( mInvalidLines.at( i ) );
+        if ( mNExtraInvalidLines > 0 )
+          output->appendMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ) );
+      }
       output->showMessage();
     }
 
