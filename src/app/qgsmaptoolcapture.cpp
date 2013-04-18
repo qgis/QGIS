@@ -227,7 +227,8 @@ void QgsMapToolCapture::undo()
       return;
     }
 
-    mRubberBand->removeLastPoint();
+    // remove te second last point (the last point is the mouse point)
+    mRubberBand->removePoint( rubberBandSize - 2 );
     mCaptureList.removeLast();
 
     validateGeometry();
