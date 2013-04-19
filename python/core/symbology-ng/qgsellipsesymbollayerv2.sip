@@ -39,6 +39,18 @@ class QgsEllipseSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void setOutlineColor( const QColor& c );
     QColor outlineColor() const;
 
+    void setSymbolWidthUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit symbolWidthUnit() const;
+
+    void setSymbolHeightUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit symbolHeightUnit() const;
+
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
     QSet<QString> usedAttributes() const;
 
 };
