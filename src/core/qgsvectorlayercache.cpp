@@ -105,6 +105,11 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
   }
 }
 
+void QgsVectorLayerCache::addCacheIndex( QgsAbstractCacheIndex* cacheIndex )
+{
+  mCacheIndices.append( cacheIndex );
+}
+
 void QgsVectorLayerCache::setCacheAddedAttributes( bool cacheAddedAttributes )
 {
   if ( cacheAddedAttributes )
@@ -251,11 +256,8 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
     // Check if an index is able to deliver the requested features
     foreach ( QgsAbstractCacheIndex *idx, mCacheIndices )
     {
-      QgsFeatureIds featureIds;
-
-      if ( idx->getCachedIds( featureIds, featureRequest ) )
+      if ( idx->getCacheIterator( it, featureRequest ) )
       {
-        it = QgsFeatureIterator( new QgsCachedFeatureIterator( this, featureRequest, featureIds ) );
         requiresWriterIt = false;
         break;
       }
@@ -272,10 +274,25 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
   if ( requiresWriterIt && mLayer->dataProvider() )
   {
     // No index was able to satisfy the request
-    it = QgsFeatureIterator( new QgsCachedFeatureWriterIterator( this, featureRequest ) );
+    QgsFeatureRequest myRequest = QgsFeatureRequest( myRequest );
+
+    // Make sure if we cache the geometry, it gets fetched
+    if ( mCacheGeometry )
+      myRequest.setFlags( featureRequest.flags() & ~QgsFeatureRequest::NoGeometry );
+
+    // Make sure, all the cached attributes are requested as well
+    QSet<int> attrs = featureRequest.subsetOfAttributes().toSet() + mCachedAttributes.toSet();
+    myRequest.setSubsetOfAttributes( attrs.toList() );
+
+    it = QgsFeatureIterator( new QgsCachedFeatureWriterIterator( this, myRequest ) );
   }
 
   return it;
+}
+
+bool QgsVectorLayerCache::isFidCached( const QgsFeatureId fid )
+{
+  return mCache.contains( fid );
 }
 
 bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest& featureRequest )

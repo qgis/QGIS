@@ -38,6 +38,15 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
 {
 }
 
+QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
+{
+  mFlags = rh.mFlags;
+  mFilter = rh.mFilter;
+  mFilterRect = rh.mFilterRect;
+  mFilterFid = rh.mFilterFid;
+  mAttrs = rh.mAttrs;
+}
+
 
 QgsFeatureRequest& QgsFeatureRequest::setFilterRect( const QgsRectangle& rect )
 {

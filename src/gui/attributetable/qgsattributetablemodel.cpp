@@ -486,30 +486,26 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return QVariant( Qt::AlignLeft );
   }
 
-  const QVariant* pVal = NULL;
+  QVariant val;
 
   // if we don't have the row in current cache, load it from layer first
-  if ( mFeat.id() != rowId || !mFeat.isValid() )
+  if ( mCachedField == fieldId )
   {
-    if ( mCachedField == fieldId )
+    val = mFieldCache[ rowId ];
+  }
+  else
+  {
+    if ( mFeat.id() != rowId || !mFeat.isValid() )
     {
-      const QVariant& val = mFieldCache[rowId];
-      pVal = &val;
+      if ( !loadFeatureAtId( rowId ) )
+        return QVariant( "ERROR" );
+
+      if ( mFeat.id() != rowId )
+        return QVariant( "ERROR" );
     }
-    else if ( !loadFeatureAtId( rowId ) )
-      return QVariant( "ERROR" );
+
+    val = mFeat.attribute( fieldId );
   }
-
-  if ( pVal == NULL && mFeat.id() != rowId )
-    return QVariant( "ERROR" );
-
-  if ( !pVal )
-  {
-    const QVariant& val = mFeat.attribute( fieldId );
-    pVal =&val;
-  }
-
-  const QVariant& val = *pVal;
 
   // For sorting return unprocessed value
   if ( SortRole == role )

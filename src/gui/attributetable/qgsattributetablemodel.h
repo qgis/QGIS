@@ -261,7 +261,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /** The currently cached column */
     int mCachedField;
     /** Allows to cache one specific column (used for sorting) */
-    QMap<QgsFeatureId, QVariant> mFieldCache;
+    QHash<QgsFeatureId, QVariant> mFieldCache;
 };
 
 

@@ -78,6 +78,8 @@ class CORE_EXPORT QgsFeatureRequest
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
 
+    QgsFeatureRequest( const QgsFeatureRequest& rh );
+
     FilterType filterType() const { return mFilter; }
 
     //! Set rectangle from which features will be taken. Empty rectangle removes the filter.
