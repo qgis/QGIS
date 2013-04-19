@@ -18,7 +18,6 @@
 #include "qgsatlascomposition.h"
 #include "qgscomposition.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgscomposermap.h"
 
@@ -68,6 +67,8 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsCompos
   // Connect to addition / removal of maps
   connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( onComposerMapAdded( QgsComposerMap* ) ) );
   connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( onItemRemoved( QgsComposerItem* ) ) );
+
+  connect( mAtlasMarginRadio, SIGNAL( toggled( bool ) ), mAtlasMarginSpinBox, SLOT( setEnabled( bool ) ) );
 
   // connect to updates
   connect( &mComposition->atlasComposition(), SIGNAL( parameterChanged() ), this, SLOT( updateGuiElements() ) );
@@ -135,6 +136,7 @@ void QgsAtlasCompositionWidget::onLayerAdded( QgsMapLayer* map )
   if ( mAtlasCoverageLayerComboBox->count() == 1 )
   {
     atlasMap->setCoverageLayer( vectorLayer );
+    checkLayerType( vectorLayer );
   }
 }
 
@@ -183,10 +185,31 @@ void QgsAtlasCompositionWidget::on_mAtlasCoverageLayerComboBox_currentIndexChang
   else
   {
     QgsVectorLayer* layer = reinterpret_cast<QgsVectorLayer*>( mAtlasCoverageLayerComboBox->itemData( index ).value<void*>() );
+
+    checkLayerType( layer );
     atlasMap->setCoverageLayer( layer );
 
     // update sorting columns
     fillSortColumns();
+  }
+}
+
+void QgsAtlasCompositionWidget::checkLayerType( QgsVectorLayer *layer )
+{
+  // enable or disable fixed scale control based on layer type
+  switch ( layer->wkbType() )
+  {
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+      //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
+      mAtlasFixedScaleRadio->setChecked( true );
+      mAtlasMarginRadio->setEnabled( false );
+      break;
+    default:
+      //Not a point layer, so enable changes to fixed scale control
+      mAtlasMarginRadio->setEnabled( true );
   }
 }
 
@@ -250,24 +273,20 @@ void QgsAtlasCompositionWidget::on_mAtlasHideCoverageCheckBox_stateChanged( int 
   atlasMap->setHideCoverage( state == Qt::Checked );
 }
 
-void QgsAtlasCompositionWidget::on_mAtlasFixedScaleCheckBox_stateChanged( int state )
+void QgsAtlasCompositionWidget::on_mAtlasFixedScaleRadio_toggled( bool checked )
 {
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( !atlasMap )
   {
     return;
   }
-  atlasMap->setFixedScale( state == Qt::Checked );
+  atlasMap->setFixedScale( checked );
+}
 
-  // in fixed scale mode, the margin is meaningless
-  if ( state == Qt::Checked )
-  {
-    mAtlasMarginSpinBox->setEnabled( false );
-  }
-  else
-  {
-    mAtlasMarginSpinBox->setEnabled( true );
-  }
+void QgsAtlasCompositionWidget::on_mAtlasMarginSpinBox_valueChanged( int value )
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  atlasMap->setMargin( value / 100. );
 }
 
 void QgsAtlasCompositionWidget::on_mAtlasSingleFileCheckBox_stateChanged( int state )
@@ -426,6 +445,7 @@ void QgsAtlasCompositionWidget::updateGuiElements()
   if ( idx != -1 )
   {
     mAtlasCoverageLayerComboBox->setCurrentIndex( idx );
+    checkLayerType( atlasMap->coverageLayer() );
   }
   idx = mComposerMapComboBox->findData( qVariantFromValue(( void* )atlasMap->composerMap() ) );
   if ( idx != -1 )
@@ -435,7 +455,15 @@ void QgsAtlasCompositionWidget::updateGuiElements()
 
   mAtlasMarginSpinBox->setValue( static_cast<int>( atlasMap->margin() * 100 ) );
   mAtlasFilenamePatternEdit->setText( atlasMap->filenamePattern() );
-  mAtlasFixedScaleCheckBox->setCheckState( atlasMap->fixedScale() ? Qt::Checked : Qt::Unchecked );
+  if ( atlasMap->fixedScale() )
+  {
+    mAtlasFixedScaleRadio->setChecked( true );
+    mAtlasMarginSpinBox->setEnabled( false );
+  }
+  else
+  {
+    mAtlasMarginRadio->setChecked( true );
+  }
   mAtlasHideCoverageCheckBox->setCheckState( atlasMap->hideCoverage() ? Qt::Checked : Qt::Unchecked );
   mAtlasSingleFileCheckBox->setCheckState( atlasMap->singleFile() ? Qt::Checked : Qt::Unchecked );
   mAtlasSortFeatureCheckBox->setCheckState( atlasMap->sortFeatures() ? Qt::Checked : Qt::Unchecked );
