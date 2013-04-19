@@ -42,7 +42,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.actions = [CreateNewModelAction()]
+        #self.actions = [CreateNewModelAction()]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction(), SaveAsPythonScriptAction()]
 
     def initializeSettings(self):
@@ -56,7 +56,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         return ModelerUtils.modelsFolder()
 
     def getDescription(self):
-        return "Modeler"
+        return "Models"
 
     def getName(self):
         return "model"
