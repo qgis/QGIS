@@ -274,10 +274,10 @@ QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &fe
   if ( requiresWriterIt && mLayer->dataProvider() )
   {
     // No index was able to satisfy the request
-    QgsFeatureRequest myRequest = QgsFeatureRequest( myRequest );
+    QgsFeatureRequest myRequest = QgsFeatureRequest( featureRequest );
 
     // Make sure if we cache the geometry, it gets fetched
-    if ( mCacheGeometry )
+    if ( mCacheGeometry && mLayer->hasGeometryType() )
       myRequest.setFlags( featureRequest.flags() & ~QgsFeatureRequest::NoGeometry );
 
     // Make sure, all the cached attributes are requested as well
