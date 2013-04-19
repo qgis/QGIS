@@ -30,21 +30,6 @@
 
 #include <cmath>
 
-// MSVC compiler doesn't have defined M_PI in math.h
-#ifndef M_PI
-#define M_PI          3.14159265358979323846
-#endif
-
-#define DEG2RAD(x)    ((x)*M_PI/180)
-
-
-static QPointF _rotatedOffset( const QPointF& offset, double angle )
-{
-  angle = DEG2RAD( angle );
-  double c = cos( angle ), s = sin( angle );
-  return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
-}
-
 //////
 
 QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
@@ -424,23 +409,6 @@ bool QgsSimpleMarkerSymbolLayerV2::preparePath( QString name )
   }
 
   return false;
-}
-
-void QgsSimpleMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY )
-{
-  offsetX = mOffset.x();
-  offsetY = mOffset.y();
-
-  QgsExpression* offsetExpression = expression( "offset" );
-  if ( offsetExpression )
-  {
-    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( offsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
-    offsetX = offset.x();
-    offsetY = offset.y();
-  }
-
-  offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
-  offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
 }
 
 void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )

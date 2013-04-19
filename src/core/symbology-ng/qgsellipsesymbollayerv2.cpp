@@ -32,6 +32,7 @@ QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSy
   mPen.setJoinStyle( Qt::MiterJoin );
   mBrush.setColor( mFillColor );
   mBrush.setStyle( Qt::SolidPattern );
+  mOffset = QPointF( 0, 0 );
 
   mAngle = 0;
 }
@@ -83,6 +84,14 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   {
     layer->setOutlineColor( QgsSymbolLayerV2Utils::decodeColor( properties["outline_color"] ) );
   }
+  if ( properties.contains( "offset" ) )
+  {
+    layer->setOffset( QgsSymbolLayerV2Utils::decodePoint( properties["offset"] ) );
+  }
+  if ( properties.contains( "offset_unit" ) )
+  {
+    layer->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["offset_unit"] ) );
+  }
 
   //data defined properties
   if ( properties.contains( "width_expression" ) )
@@ -112,6 +121,10 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   if ( properties.contains( "symbol_name_expression" ) )
   {
     layer->setDataDefinedProperty( "symbol_name", properties["symbol_name_expression"] );
+  }
+  if ( properties.contains( "offset_expression" ) )
+  {
+    layer->setDataDefinedProperty( "offset", properties["offset_expression"] );
   }
 
   //compatibility with old project file format
@@ -183,6 +196,12 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
     preparePath( symbolName, context, context.feature() );
   }
 
+  //offset
+  double offsetX = 0;
+  double offsetY = 0;
+  markerOffset( context, offsetX, offsetY );
+  QPointF off( offsetX, offsetY );
+
   QPainter* p = context.renderContext().painter();
   if ( !p )
   {
@@ -199,9 +218,11 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   {
     rotation = mAngle;
   }
+  if ( rotation )
+    off = _rotatedOffset( off, rotation );
 
   QMatrix transform;
-  transform.translate( point.x(), point.y() );
+  transform.translate( point.x() + off.x(), point.y() + off.y() );
   if ( !qgsDoubleNear( rotation, 0.0 ) )
   {
     transform.rotate( rotation );
@@ -362,6 +383,8 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
   map["fill_color"] = QgsSymbolLayerV2Utils::encodeColor( mFillColor );
   map["outline_color"] = QgsSymbolLayerV2Utils::encodeColor( mOutlineColor );
+  map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   saveDataDefinedProperties( map );
   return map;
 }
@@ -370,7 +393,7 @@ bool QgsEllipseSymbolLayerV2::hasDataDefinedProperty() const
 {
   return ( dataDefinedProperty( "width" ) || dataDefinedProperty( "height" ) || dataDefinedProperty( "rotation" )
            || dataDefinedProperty( "outline_width" ) || dataDefinedProperty( "fill_color" ) || dataDefinedProperty( "outline_color" )
-           || dataDefinedProperty( "symbol_name" ) );
+           || dataDefinedProperty( "symbol_name" ) || dataDefinedProperty( "offset" ) );
 }
 
 void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, const QgsFeature* f )
