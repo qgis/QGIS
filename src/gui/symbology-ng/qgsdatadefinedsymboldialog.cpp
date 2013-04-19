@@ -138,7 +138,10 @@ void QgsDataDefinedSymbolDialog::expressionButtonClicked()
     }
     else
     {
-      attributeCombo->setItemText( 0, QString() );
+      if ( comboIndex != 0 )
+      {
+        attributeCombo->setItemText( 0, QString() );
+      }
       attributeCombo->setCurrentIndex( comboIndex );
     }
   }

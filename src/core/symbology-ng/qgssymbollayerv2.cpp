@@ -47,7 +47,7 @@ QgsExpression* QgsSymbolLayerV2::expression( const QString& property )
 QString QgsSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
 {
   const QgsExpression* ex = dataDefinedProperty( property );
-  return ex ? ex->dump() : QString();
+  return ex ? ex->expression() : QString();
 }
 
 void QgsSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
@@ -123,7 +123,7 @@ void QgsSymbolLayerV2::saveDataDefinedProperties( QgsStringMap& stringMap ) cons
   {
     if ( ddIt.value() )
     {
-      stringMap.insert( ddIt.key() + "_expression", ddIt.value()->dump() );
+      stringMap.insert( ddIt.key() + "_expression", ddIt.value()->expression() );
     }
   }
 }
@@ -141,7 +141,7 @@ void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) 
   {
     if ( ddIt.value() )
     {
-      destLayer->setDataDefinedProperty( ddIt.key(), ddIt.value()->dump() );
+      destLayer->setDataDefinedProperty( ddIt.key(), ddIt.value()->expression() );
     }
   }
 }
