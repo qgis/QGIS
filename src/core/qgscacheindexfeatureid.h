@@ -20,7 +20,7 @@
 
 class QgsVectorLayerCache;
 
-class QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
+class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
 {
   public:
     QgsCacheIndexFeatureId( QgsVectorLayerCache* );

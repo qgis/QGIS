@@ -26,7 +26,7 @@ class QgsFeatureIterator;
  * Abstract base class for cache indices
  */
 
-class QgsAbstractCacheIndex
+class CORE_EXPORT QgsAbstractCacheIndex
 {
   public:
     QgsAbstractCacheIndex();
