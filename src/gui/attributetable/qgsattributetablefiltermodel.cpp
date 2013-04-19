@@ -123,7 +123,7 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
 void QgsAttributeTableFilterModel::setFilteredFeatures( QgsFeatureIds ids )
 {
   mFilteredFeatures = ids;
-  mFilterMode = ShowFilteredList;
+  setFilterMode( ShowFilteredList );
   invalidateFilter();
 }
 
@@ -133,12 +133,12 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
   {
     if ( filterMode == ShowVisible )
     {
-      connect( mCanvas, SIGNAL( extentsChanged() ), SLOT( extentsChanged() ) );
+      connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
       generateListOfVisibleFeatures();
     }
     else
     {
-      disconnect( SLOT( extentsChanged() ) );
+      disconnect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
     }
 
     if ( filterMode == ShowSelected )
