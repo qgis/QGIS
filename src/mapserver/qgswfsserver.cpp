@@ -815,14 +815,18 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
       else if ( expFilterOk )
       {
-        QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest()
-                                 .setFilterRect( searchRect )
-                                 .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) )
-                                 .setSubsetOfAttributes( attrIndexes ) );
+        QgsFeatureRequest req;
+        req.setSubsetOfAttributes( attrIndexes );
+        if ( layer->wkbType() != QGis::WKBNoGeometry )
+        {
+          req.setFilterRect( searchRect )
+            .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+        }
+        QgsFeatureIterator fit = layer->getFeatures( req );
         QgsExpression *mFilter = new QgsExpression( expFilter );
         if ( mFilter->hasParserError() )
         {
-          throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
+          throw QgsMapServiceException( "RequestNotWellFormed",QString( "Expression filter error message: %1." ).arg( mFilter->parserErrorString() ) );
         }
         if ( mFilter )
         {
@@ -831,7 +835,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             QVariant res = mFilter->evaluate( &feature, fields );
             if ( mFilter->hasEvalError() )
             {
-              throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
+              throw QgsMapServiceException( "RequestNotWellFormed", QString( "Expression filter eval error message: %1." ).arg( mFilter->evalErrorString() ) );
             }
             if ( res.toInt() != 0 )
             {
@@ -921,20 +925,24 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
           if ( mFilter->hasParserError() )
           {
-            throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
+            throw QgsMapServiceException( "RequestNotWellFormed", QString( "OGC expression filter error message: %1." ).arg( mFilter->parserErrorString() ) );
           }
           if ( mFilter )
           {
-            QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest()
-                                     .setFilterRect( searchRect )
-                                     .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) )
-                                     .setSubsetOfAttributes( attrIndexes ) );
+            QgsFeatureRequest req;
+            req.setSubsetOfAttributes( attrIndexes );
+            if ( layer->wkbType() != QGis::WKBNoGeometry )
+            {
+              req.setFilterRect( searchRect )
+                .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+            }
+            QgsFeatureIterator fit = layer->getFeatures( req );
             while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
             {
               QVariant res = mFilter->evaluate( &feature, fields );
               if ( mFilter->hasEvalError() )
               {
-                throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
+                throw QgsMapServiceException( "RequestNotWellFormed", QString( "OGC expression filter eval error message: %1." ).arg( mFilter->evalErrorString() ) );
               }
               if ( res.toInt() != 0 )
               {
@@ -952,10 +960,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
       else
       {
-        QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest()
-                                 .setFilterRect( searchRect )
-                                 .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) )
-                                 .setSubsetOfAttributes( attrIndexes ) );
+        QgsFeatureRequest req;
+        req.setSubsetOfAttributes( attrIndexes );
+        if ( layer->wkbType() != QGis::WKBNoGeometry )
+        {
+          req.setFilterRect( searchRect )
+            .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+        }
+        QgsFeatureIterator fit = layer->getFeatures( req );
         while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
         {
           if ( featureCounter == 0 )
@@ -975,7 +987,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
   }
   if ( featureCounter == 0 )
-    throw QgsMapServiceException( "RequestNotWellFormed", mErrors.join( ". " ) );
+    throw QgsMapServiceException( "RequestNotWellFormed", QString( "No feature found error messages: %1." ).arg( mErrors.join( ". " ) ) );
   else
     endGetFeature( request, format );
 

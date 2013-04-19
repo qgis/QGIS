@@ -314,6 +314,8 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         QDomElement geomElem = doc.createElement( "element"/*xsd:element*/ );
         geomElem.setAttribute( "name", "geometry" );
         QGis::WkbType wkbType = layer->wkbType();
+        if ( wkbType != QGis::WKBNoGeometry )
+        {
         switch ( wkbType )
         {
           case QGis::WKBPoint25D:
@@ -347,6 +349,7 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         geomElem.setAttribute( "minOccurs", "0" );
         geomElem.setAttribute( "maxOccurs", "1" );
         sequenceElem.appendChild( geomElem );
+        }
 
         const QgsFields& fields = provider->fields();
         for ( int idx = 0; idx < fields.count(); ++idx )
