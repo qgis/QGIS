@@ -55,7 +55,7 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     void setMaxOversampling( double os ) { mMaxOversampling = os; }
     double maxOversampling() const { return mMaxOversampling; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem );
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXML( const QDomElement& filterElem );

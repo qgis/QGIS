@@ -2237,11 +2237,21 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   Q_UNUSED( errorMessage );
   QDomElement rasterRendererElem;
 
-  //rasterlayerproperties element there -> old format
-  if ( !layer_node.firstChildElement( "rasterproperties" ).isNull() )
+  // pipe element was introduced in the end of 1.9 development when there were
+  // already many project files in use so we support 1.9 backward compatibility
+  // even it was never officialy released -> use pipe element if present, otherwise
+  // use layer node
+  QDomNode pipeNode = layer_node.firstChildElement( "pipe" );
+  if ( pipeNode.isNull() ) // old project
+  {
+    pipeNode = layer_node;
+  }
+
+  //rasterlayerproperties element there -> old format (1.8 and early 1.9)
+  if ( !pipeNode.firstChildElement( "rasterproperties" ).isNull() )
   {
     //copy node because layer_node is const
-    QDomNode layerNodeCopy = layer_node.cloneNode();
+    QDomNode layerNodeCopy = pipeNode.cloneNode();
     QDomDocument doc = layerNodeCopy.ownerDocument();
     QDomElement rasterPropertiesElem = layerNodeCopy.firstChildElement( "rasterproperties" );
     QgsProjectFileTransform::convertRasterProperties( doc, layerNodeCopy, rasterPropertiesElem,
@@ -2251,7 +2261,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   }
   else
   {
-    rasterRendererElem = layer_node.firstChildElement( "rasterrenderer" );
+    rasterRendererElem = pipeNode.firstChildElement( "rasterrenderer" );
   }
 
   if ( !rasterRendererElem.isNull() )
@@ -2270,7 +2280,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   mPipe.set( brightnessFilter );
 
   //brightness coefficient
-  QDomElement brightnessElem = layer_node.firstChildElement( "brightnesscontrast" );
+  QDomElement brightnessElem = pipeNode.firstChildElement( "brightnesscontrast" );
   if ( !brightnessElem.isNull() )
   {
     brightnessFilter->readXML( brightnessElem );
@@ -2281,7 +2291,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   mPipe.set( hueSaturationFilter );
 
   //saturation coefficient
-  QDomElement hueSaturationElem = layer_node.firstChildElement( "huesaturation" );
+  QDomElement hueSaturationElem = pipeNode.firstChildElement( "huesaturation" );
   if ( !hueSaturationElem.isNull() )
   {
     hueSaturationFilter->readXML( hueSaturationElem );
@@ -2292,7 +2302,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   mPipe.set( resampleFilter );
 
   //max oversampling
-  QDomElement resampleElem = layer_node.firstChildElement( "rasterresampler" );
+  QDomElement resampleElem = pipeNode.firstChildElement( "rasterresampler" );
   if ( !resampleElem.isNull() )
   {
     resampleFilter->readXML( resampleElem );
@@ -2472,6 +2482,20 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   Q_UNUSED( errorMessage );
   QDomElement layerElem = layer_node.toElement();
 
+  // Store pipe members (except provider) into pipe element, in future, it will be
+  // possible to add custom filters into the pipe
+  QDomElement pipeElement  = document.createElement( "pipe" );
+
+  for ( int i = 1; i < mPipe.size(); i++ )
+  {
+    QgsRasterInterface * interface = mPipe.at( i );
+    if ( !interface ) continue;
+    interface->writeXML( document, pipeElement );
+  }
+
+  layer_node.appendChild( pipeElement );
+
+#if 0
   QgsRasterRenderer *renderer = mPipe.renderer();
   if ( renderer )
   {
@@ -2498,6 +2522,7 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
     QDomElement layerElem = layer_node.toElement();
     resampleFilter->writeXML( document, layerElem );
   }
+#endif
 
   // add blend mode node
   QDomElement blendModeElement  = document.createElement( "blendMode" );
