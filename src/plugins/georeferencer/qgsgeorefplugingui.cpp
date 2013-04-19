@@ -632,16 +632,16 @@ void QgsGeorefPluginGui::showGeorefConfigDialog()
 // Histogram stretch slots
 void QgsGeorefPluginGui::fullHistogramStretch()
 {
-  mLayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
-  mLayer->setMinimumMaximumUsingDataset();
+  mLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
   mLayer->setCacheImage( NULL );
   mCanvas->refresh();
 }
 
 void QgsGeorefPluginGui::localHistogramStretch()
 {
-  mLayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
-  mLayer->setMinimumMaximumUsingLastExtent();
+  QgsRectangle rectangle = mIface->mapCanvas()->mapRenderer()->outputExtentToLayerExtent( mLayer, mIface->mapCanvas()->extent() );
+
+  mLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterLayer::ContrastEnhancementMinMax, rectangle );
   mLayer->setCacheImage( NULL );
   mCanvas->refresh();
 }

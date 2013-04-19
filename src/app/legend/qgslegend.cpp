@@ -2753,25 +2753,11 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
   QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer->layer() );
   if ( layer )
   {
-    // Note: Do we really want to do these next clauses? The user will get a surprise when the
-    // drawing style they are using suddenly changes....! TS
-    if ( layer->drawingStyle() == QgsRasterLayer::SingleBandPseudoColor )
-    {
-      layer->setDrawingStyle( QgsRasterLayer::SingleBandGray );
-    }
-    else if ( layer->drawingStyle() == QgsRasterLayer::MultiBandSingleBandPseudoColor )
-    {
-      layer->setDrawingStyle( QgsRasterLayer::MultiBandSingleBandGray );
-    }
-
-    if ( layer->contrastEnhancementAlgorithmAsString() == "NoEnhancement" )
-    {
-      layer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
-    }
+    QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm = QgsContrastEnhancement::StretchToMinimumMaximum;
 
     QgsRectangle myRectangle;
     myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( layer, mMapCanvas->extent() );
-    layer->setContrastEnhancementAlgorithm( layer->contrastEnhancementAlgorithm(), QgsRasterLayer::ContrastEnhancementMinMax, myRectangle );
+    layer->setContrastEnhancementAlgorithm( contrastEnhancementAlgorithm, QgsRasterLayer::ContrastEnhancementMinMax, myRectangle );
 
     layer->setCacheImage( NULL );
     refreshLayerSymbology( layer->id() );
