@@ -14,14 +14,11 @@ email                : tim at linfiniti.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-//#include "gdalwarper.h"
-//#include "cpl_conv.h"
 #include "qgsapplication.h"
 #include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
-#include "qgsfreakoutshader.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
