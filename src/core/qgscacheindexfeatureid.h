@@ -54,8 +54,9 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
      * and write the list of feature ids of cached features to cachedFeatures. If it is not able
      * it will return false and the cachedFeatures state is undefined.
      *
-     * @param cachedFeatures   A reference to {@link QgsFeatureIds}, where a list of ids is written to,
-     *                         in case this index is able to answer the request.
+     * @param featureIterator  A reference to a {@link QgsFeatureIterator}. A valid featureIterator will
+     *                         be assigned in case this index is able to answer the request and the return
+     *                         value is true.
      * @param featureRequest   The feature request, for which this index is queried.
      *
      * @return   True, if this index holds the information to answer the request.
