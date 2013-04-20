@@ -129,7 +129,7 @@ class PythonConsoleWidget(QWidget):
         openFileBt = QCoreApplication.translate("PythonConsole", "Open file")
         self.openFileButton = QAction(parent)
         self.openFileButton.setCheckable(False)
-        self.openFileButton.setEnabled(False)
+        self.openFileButton.setEnabled(True)
         self.openFileButton.setIcon(QgsApplication.getThemeIcon("console/iconOpenConsole.png"))
         self.openFileButton.setMenuRole(QAction.PreferencesRole)
         self.openFileButton.setIconVisibleInMenu(True)
@@ -139,7 +139,7 @@ class PythonConsoleWidget(QWidget):
         saveFileBt = QCoreApplication.translate("PythonConsole", "Save")
         self.saveFileButton = QAction(parent)
         self.saveFileButton.setCheckable(False)
-        self.saveFileButton.setEnabled(False)
+        self.saveFileButton.setEnabled(True)
         self.saveFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveConsole.png"))
         self.saveFileButton.setMenuRole(QAction.PreferencesRole)
         self.saveFileButton.setIconVisibleInMenu(True)
@@ -149,7 +149,7 @@ class PythonConsoleWidget(QWidget):
         saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As..")
         self.saveAsFileButton = QAction(parent)
         self.saveAsFileButton.setCheckable(False)
-        self.saveAsFileButton.setEnabled(False)
+        self.saveAsFileButton.setEnabled(True)
         self.saveAsFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveAsConsole.png"))
         self.saveAsFileButton.setMenuRole(QAction.PreferencesRole)
         self.saveAsFileButton.setIconVisibleInMenu(True)
@@ -445,9 +445,6 @@ class PythonConsoleWidget(QWidget):
 
     def toggleEditor(self, checked):
         self.widgetEditor.show() if checked else self.widgetEditor.hide()
-        self.openFileButton.setEnabled(checked)
-        self.saveFileButton.setEnabled(checked)
-        self.saveAsFileButton.setEnabled(checked)
 
     def pasteEditor(self):
         self.tabEditorWidget.currentWidget().newEditor.paste()

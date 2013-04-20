@@ -496,6 +496,7 @@ class EditorTab(QWidget):
             os.remove(temp_path)
         fN = self.path.split('/')[-1]
         self.mw.setTabTitle(self, fN)
+        self.mw.setTabToolTip(self.mw.currentIndex(), self.path)
         self.newEditor.setModified(False)
         self.pc.updateTabListScript(self.path, action='append')
 
