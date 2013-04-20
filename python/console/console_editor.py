@@ -570,9 +570,11 @@ class EditorTabWidget(QTabWidget):
         self.settings = QSettings()
         tabScripts = self.settings.value("pythonConsole/tabScripts")
         self.restoreTabList = tabScripts.toList()
-        self.newTabEditor(filename=None)
+        
         if self.restoreTabList:
             self.topFrame.show()
+        else:
+            self.newTabEditor(filename=None)
 
         self.setDocumentMode(True)
         self.setMovable(True)
@@ -615,6 +617,10 @@ class EditorTabWidget(QTabWidget):
         self.iconTab = QgsApplication.getThemeIcon('console/iconTabEditorConsole.png')
         self.addTab(self.tab, self.iconTab, tabName)
         self.setCurrentWidget(self.tab)
+        if filename:
+            self.setTabToolTip(self.currentIndex(), unicode(filename))
+        else:
+            self.setTabToolTip(self.currentIndex(), tabName)
 
     def tabModified(self, tab, modified):
         index = self.indexOf(tab)
@@ -685,10 +691,13 @@ class EditorTabWidget(QTabWidget):
                         tabName = pathFile.split('/')[-1]
                         self.newTabEditor(tabName, pathFile)
         self.topFrame.close()
+        self.parent.toolBarEditor.setEnabled(True)
 
     def closeRestore(self):
         self.parent.updateTabListScript('empty')
         self.topFrame.close()
+        self.newTabEditor(filename=None)
+        self.parent.toolBarEditor.setEnabled(True)
 
     def showFileTabMenu(self):
         self.fileTabMenu.clear()

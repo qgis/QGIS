@@ -331,7 +331,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor = QToolBar()
         self.toolBarEditor.setStyleSheet('QToolBar{background-color: rgb(200, 200, 200);\
                                           border-right: 1px solid rgb(155, 155, 155);}')
-        self.toolBarEditor.setEnabled(True)
+        self.toolBarEditor.setEnabled(False)
         self.toolBarEditor.setFocusPolicy(Qt.NoFocus)
         self.toolBarEditor.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.toolBarEditor.setLayoutDirection(Qt.LeftToRight)
