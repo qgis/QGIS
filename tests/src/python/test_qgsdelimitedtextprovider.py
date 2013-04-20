@@ -92,7 +92,7 @@ def layerData( layer ):
             first = False
             for field in f.fields():
                 fields.append(str(field.name()))
-        fielddata = { name: unicode(f[name].toString()) for name in fields }
+        fielddata = dict ( (name, unicode(f[name].toString()) ) for name in fields )
         g = f.geometry()
         if g:
             fielddata[geomkey] = str(g.exportToWkt());
