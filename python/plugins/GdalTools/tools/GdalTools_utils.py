@@ -149,7 +149,7 @@ class LayerRegistry(QObject):
 
       LayerRegistry.layers = self.getAllLayers()
       LayerRegistry._instance = self
-      self.connect(QgsMapLayerRegistry.instance(), SIGNAL("removedAll()"), self.removeAllLayers)
+      self.connect(QgsMapLayerRegistry.instance(), SIGNAL("removeAll()"), self.removeAllLayers)
       self.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWasAdded(QgsMapLayer *)"), self.layerAdded)
       self.connect(QgsMapLayerRegistry.instance(), SIGNAL("layerWillBeRemoved(QString)"), self.removeLayer)
 

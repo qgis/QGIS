@@ -104,10 +104,10 @@ QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
   connect( QgsMapLayerRegistry::instance(),
            SIGNAL( layersWillBeRemoved( QStringList ) ),
            this, SLOT( removeLayers( QStringList ) ) );
-  connect( QgsMapLayerRegistry::instance(), SIGNAL( removedAll() ),
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( removeAll() ),
            this, SLOT( removeAll() ) );
   connect( QgsMapLayerRegistry::instance(),
-           SIGNAL( layersAdded( QList<QgsMapLayer*> ) ),
+           SIGNAL( legendLayersAdded( QList<QgsMapLayer*> ) ),
            this, SLOT( addLayers( QList<QgsMapLayer *> ) ) );
 
   connect( mMapCanvas, SIGNAL( layersChanged() ),

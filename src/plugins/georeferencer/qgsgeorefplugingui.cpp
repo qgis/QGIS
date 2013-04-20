@@ -1066,7 +1066,7 @@ void QgsGeorefPluginGui::removeOldLayer()
   if ( mLayer )
   {
     QgsMapLayerRegistry::instance()->removeMapLayers(
-      ( QStringList() << mLayer->id() ), false );
+      ( QStringList() << mLayer->id() ) );
     mLayer = NULL;
   }
   mCanvas->refresh();
