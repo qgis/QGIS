@@ -463,6 +463,7 @@ void QgsAtlasCompositionWidget::updateGuiElements()
   else
   {
     mAtlasMarginRadio->setChecked( true );
+    mAtlasMarginSpinBox->setEnabled( true );
   }
   mAtlasHideCoverageCheckBox->setCheckState( atlasMap->hideCoverage() ? Qt::Checked : Qt::Unchecked );
   mAtlasSingleFileCheckBox->setCheckState( atlasMap->singleFile() ? Qt::Checked : Qt::Unchecked );
