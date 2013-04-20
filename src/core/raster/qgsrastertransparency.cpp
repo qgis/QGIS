@@ -177,28 +177,6 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   return theGlobalTransparency;
 }
 
-// TODO: nodata per band
-#if 0
-bool QgsRasterTransparency::isEmpty( double nodataValue ) const
-{
-  // This was probably used when no data value was added by default to transparency list
-  // that is not true anamore
-  return (
-           ( mTransparentSingleValuePixelList.isEmpty() ||
-             ( mTransparentSingleValuePixelList.size() == 1 &&
-               ( qgsDoubleNear( mTransparentSingleValuePixelList.at( 0 ).min, nodataValue ) ||
-                 qgsDoubleNear( mTransparentSingleValuePixelList.at( 0 ).max, nodataValue ) ||
-                 ( nodataValue >= mTransparentSingleValuePixelList.at( 0 ).min &&
-                   nodataValue <= mTransparentSingleValuePixelList.at( 0 ).max ) ) ) )
-           &&
-           ( mTransparentThreeValuePixelList.isEmpty() ||
-             ( mTransparentThreeValuePixelList.size() == 1 &&
-               qgsDoubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
-               qgsDoubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) &&
-               qgsDoubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
-}
-#endif
-
 bool QgsRasterTransparency::isEmpty( ) const
 {
   return mTransparentSingleValuePixelList.isEmpty();
@@ -214,7 +192,6 @@ void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem
     for ( ; it != mTransparentSingleValuePixelList.constEnd(); ++it )
     {
       QDomElement pixelListElement = doc.createElement( "pixelListEntry" );
-      //pixelListElement.setAttribute( "pixelValue", QString::number( it->pixelValue, 'f' ) );
       pixelListElement.setAttribute( "min", QgsRasterBlock::printValue( it->min ) );
       pixelListElement.setAttribute( "max", QgsRasterBlock::printValue( it->max ) );
       pixelListElement.setAttribute( "percentTransparent", QString::number( it->percentTransparent ) );

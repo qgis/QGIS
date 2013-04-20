@@ -90,7 +90,6 @@ QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& 
     shader->readXML( rasterShaderElem );
   }
 
-  //QgsRasterRenderer* r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
   QgsSingleBandPseudoColorRenderer* r = new QgsSingleBandPseudoColorRenderer( input, band, shader );
   r->readXML( elem );
 

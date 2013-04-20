@@ -25,6 +25,8 @@
 #include <QTime>
 #include <QDesktopServices>
 
+#include "cpl_conv.h"
+
 //qgis includes...
 #include <qgsrasterchecker.h>
 #include <qgsrasterlayer.h>

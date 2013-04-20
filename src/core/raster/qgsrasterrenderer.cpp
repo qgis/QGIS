@@ -16,15 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrasterrenderer.h"
-#include "qgsrasterresampler.h"
-#include "qgsrasterprojector.h"
 #include "qgsrastertransparency.h"
-#include "qgsrasterviewport.h"
-#include "qgsmaptopixel.h"
-
-//resamplers
-#include "qgsbilinearrasterresampler.h"
-#include "qgscubicrasterresampler.h"
 
 #include <QCoreApplication>
 #include <QDomDocument>
@@ -97,8 +89,6 @@ bool QgsRasterRenderer::usesTransparency( ) const
   {
     return true;
   }
-  // TODO: nodata per band
-  //return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty( mInput->noDataValue( 1 ) ) ) || !qgsDoubleNear( mOpacity, 1.0 ) );
   return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !qgsDoubleNear( mOpacity, 1.0 ) );
 }
 
@@ -118,7 +108,6 @@ void QgsRasterRenderer::_writeXML( QDomDocument& doc, QDomElement& rasterRendere
   rasterRendererElem.setAttribute( "type", mType );
   rasterRendererElem.setAttribute( "opacity", QString::number( mOpacity ) );
   rasterRendererElem.setAttribute( "alphaBand", mAlphaBand );
-  //rasterRendererElem.setAttribute( "invertColor", mInvertColor );
 
   if ( mRasterTransparency )
   {
@@ -136,9 +125,7 @@ void QgsRasterRenderer::readXML( const QDomElement& rendererElem )
   mType = rendererElem.attribute( "type" );
   mOpacity = rendererElem.attribute( "opacity", "1.0" ).toDouble();
   mAlphaBand = rendererElem.attribute( "alphaBand", "-1" ).toInt();
-  //mInvertColor = rendererElem.attribute( "invertColor", "0" ).toInt();
 
-  //todo: read mRasterTransparency
   QDomElement rasterTransparencyElem = rendererElem.firstChildElement( "rasterTransparency" );
   if ( !rasterTransparencyElem.isNull() )
   {

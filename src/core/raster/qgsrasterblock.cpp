@@ -19,12 +19,9 @@
 
 #include <QByteArray>
 #include <QColor>
-#include <QTime>
 
 #include "qgslogger.h"
 #include "qgsrasterblock.h"
-
-#include "cpl_conv.h"
 
 QgsRasterBlock::QgsRasterBlock()
     : mValid( true )
