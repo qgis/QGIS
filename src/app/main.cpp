@@ -154,14 +154,16 @@ bool bundleclicked( int argc, char *argv[] )
 LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
 {
   QString dumpName = QDir::toNativeSeparators(
-                       QString( "%1\\qgis-%2-%3-%4.dmp" )
+                       QString( "%1\\qgis-%2-%3-%4-%5.dmp" )
                        .arg( QDir::tempPath() )
                        .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
                        .arg( GetCurrentProcessId() )
-                       .arg( GetCurrentThreadId() ) );
+                       .arg( GetCurrentThreadId() )
+                       .arg( QGis::QGIS_DEV_VERSION )
+                     );
 
   QString msg;
-  HANDLE hDumpFile = CreateFile( dumpName.toAscii(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
+  HANDLE hDumpFile = CreateFile( dumpName.toLocal8Bit(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
   if ( hDumpFile != INVALID_HANDLE_VALUE )
   {
     MINIDUMP_EXCEPTION_INFORMATION ExpParam;
