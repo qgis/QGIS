@@ -43,6 +43,14 @@ class TauDEMUtils:
         if folder == None:
             folder = ""
 
+        if SextanteUtils.isMac():
+            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+            if os.path.exists(os.path.join(testfolder, "slopearea")):
+                folder = testfolder
+            else:
+                testfolder = "/usr/local/bin"
+                if os.path.exists(os.path.join(testfolder, "slopearea")):
+                    folder = testfolder
         return folder
 
     @staticmethod
@@ -51,6 +59,14 @@ class TauDEMUtils:
         if folder == None:
             folder = ""
 
+        if SextanteUtils.isMac():
+            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+            if os.path.exists(os.path.join(testfolder, "mpiexec")):
+                folder = testfolder
+            else:
+                testfolder = "/usr/local/bin"
+                if os.path.exists(os.path.join(testfolder, "mpiexec")):
+                    folder = testfolder
         return folder
 
     @staticmethod
