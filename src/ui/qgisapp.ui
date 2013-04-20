@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -51,7 +51,7 @@
    </widget>
    <widget class="QMenu" name="mFileMenu">
     <property name="title">
-     <string>&amp;File</string>
+     <string>P&amp;roject</string>
     </property>
     <widget class="QMenu" name="mRecentProjectsMenu">
      <property name="title">
@@ -553,7 +553,7 @@
      <normaloff>:/images/themes/default/mActionFileExit.png</normaloff>:/images/themes/default/mActionFileExit.png</iconset>
    </property>
    <property name="text">
-    <string>Exit</string>
+    <string>Exit QGIS</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
