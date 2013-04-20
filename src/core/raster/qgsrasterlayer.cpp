@@ -487,7 +487,7 @@ QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
 QString QgsRasterLayer::metadata()
 {
   QString myMetadata ;
-  myMetadata += "<p class=\"glossy\">" + tr( "Driver:" ) + "</p>\n";
+  myMetadata += "<p class=\"glossy\">" + tr( "Driver" ) + "</p>\n";
   myMetadata += "<p>";
   myMetadata += mDataProvider->description();
   myMetadata += "</p>\n";
@@ -513,7 +513,7 @@ QString QgsRasterLayer::metadata()
 
   myMetadata += "</p>\n";
   myMetadata += "<p class=\"glossy\">";
-  myMetadata += tr( "Data Type:" );
+  myMetadata += tr( "Data Type" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   //just use the first band
@@ -558,19 +558,19 @@ QString QgsRasterLayer::metadata()
   myMetadata += "</p>\n";
 
   myMetadata += "<p class=\"glossy\">";
-  myMetadata += tr( "Pyramid overviews:" );
+  myMetadata += tr( "Pyramid overviews" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
 
   myMetadata += "<p class=\"glossy\">";
-  myMetadata += tr( "Layer Spatial Reference System: " );
+  myMetadata += tr( "Layer Spatial Reference System" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   myMetadata += crs().toProj4();
   myMetadata += "</p>\n";
 
   myMetadata += "<p class=\"glossy\">";
-  myMetadata += tr( "Layer Extent (layer original source projection): " );
+  myMetadata += tr( "Layer Extent (layer original source projection)" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   myMetadata += mDataProvider->extent().toString();
@@ -580,7 +580,7 @@ QString QgsRasterLayer::metadata()
   // TODO: this is not related to layer, to be removed? [MD]
 #if 0
   myMetadata += "<tr><td class=\"glossy\">";
-  myMetadata += tr( "Project Spatial Reference System: " );
+  myMetadata += tr( "Project Spatial Reference System" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   myMetadata +=  mCoordinateTransform->destCRS().toProj4();

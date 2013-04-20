@@ -374,14 +374,17 @@
         <file>themes/default/propertyicons/CRS.png</file>
         <file>themes/default/propertyicons/diagram.png</file>
         <file>themes/default/propertyicons/digitising.png</file>
+        <file>themes/default/propertyicons/display.svg</file>
         <file>themes/default/propertyicons/gdal.png</file>
         <file>themes/default/propertyicons/general.png</file>
         <file>themes/default/propertyicons/histogram.png</file>
         <file>themes/default/propertyicons/join.png</file>
         <file>themes/default/propertyicons/labels.png</file>
+        <file>themes/default/propertyicons/labels.svg</file>
         <file>themes/default/propertyicons/locale.png</file>
         <file>themes/default/propertyicons/map_tools.png</file>
         <file>themes/default/propertyicons/metadata.png</file>
+        <file>themes/default/propertyicons/metadata.svg</file>
         <file>themes/default/propertyicons/network_and_proxy.png</file>
         <file>themes/default/propertyicons/overlay.png</file>
         <file>themes/default/propertyicons/pyramids.png</file>

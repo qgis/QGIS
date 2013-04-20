@@ -69,23 +69,34 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QWidget * parent,
   Qt::WFlags fl
 )
-    : QDialog( parent, fl )
+    : QgsOptionsDialogBase( "VectorLayerProperties", parent, fl )
     , layer( lyr )
     , mMetadataFilled( false )
     , mRendererDialog( 0 )
 {
   setupUi( this );
+  // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
+  // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
+  // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
+  initOptionsBase( false );
 
   mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.png" ) );
   mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.png" ) );
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
 
+  connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
+
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
   connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
+
+  // connections for Map Tip display
+  connect( htmlRadio, SIGNAL( toggled( bool ) ), htmlMapTip, SLOT( setEnabled( bool ) ) );
+  connect( htmlRadio, SIGNAL( toggled( bool ) ), insertFieldButton, SLOT( setEnabled( bool ) ) );
+  connect( htmlRadio, SIGNAL( toggled( bool ) ), fieldComboBox, SLOT( setEnabled( bool ) ) );
+  connect( htmlRadio, SIGNAL( toggled( bool ) ), insertExpressionButton, SLOT( setEnabled( bool ) ) );
+  connect( fieldComboRadio, SIGNAL( toggled( bool ) ), displayFieldComboBox, SLOT( setEnabled( bool ) ) );
 
   QVBoxLayout *layout;
 
@@ -95,6 +106,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     layout = new QVBoxLayout( labelingFrame );
     layout->setMargin( 0 );
     labelingDialog = new QgsLabelingGui( QgisApp::instance()->palLabeling(), layer, QgisApp::instance()->mapCanvas(), labelingFrame );
+    labelingDialog->layout()->setMargin( 0 );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
 
@@ -102,6 +114,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     layout = new QVBoxLayout( labelOptionsFrame );
     layout->setMargin( 0 );
     labelDialog = new QgsLabelDialog( layer->label(), labelOptionsFrame );
+    labelDialog->layout()->setMargin( 0 );
     layout->addWidget( labelDialog );
     labelOptionsFrame->setLayout( layout );
     connect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
@@ -110,8 +123,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     labelingDialog = 0;
     labelDialog = 0;
-    tabWidget->setTabEnabled( 1, false ); // hide labeling item
-    tabWidget->setTabEnabled( 2, false ); // hide labeling (deprecated) item
+    mOptsPage_Labels->setEnabled( false ); // disable labeling item
+    mOptsPage_LabelsOld->setEnabled( false ); // disable labeling (deprecated) item
   }
 
   // Create the Actions dialog tab
@@ -119,6 +132,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   actionLayout->setMargin( 0 );
   const QgsFields &fields = layer->pendingFields();
   actionDialog = new QgsAttributeActionDialog( layer->actions(), fields, actionOptionsFrame );
+  actionDialog->layout()->setMargin( 0 );
   actionLayout->addWidget( actionDialog );
 
   // Create the menu for the save style button to choose the output format
@@ -128,7 +142,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ), this, SLOT( saveStyleAsMenuTriggered( QAction * ) ) );
 
   mFieldsPropertiesDialog = new QgsFieldsProperties( layer, mFieldsFrame );
+  mFieldsPropertiesDialog->layout()->setMargin( 0 );
   mFieldsFrame->setLayout( new QVBoxLayout( mFieldsFrame ) );
+  mFieldsFrame->layout()->setMargin( 0 );
   mFieldsFrame->layout()->addWidget( mFieldsPropertiesDialog );
 
   connect( mFieldsPropertiesDialog, SIGNAL( toggleEditing() ), this, SLOT( toggleEditing() ) );
@@ -158,8 +174,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     }
     else
     {
-      // currently only encoding can be set in this group, so hide it completely
-      grpProviderOptions->hide();
+      mDataSourceEncodingFrame->hide();
     }
   }
 
@@ -174,7 +189,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
 
   diagramPropertiesDialog = new QgsDiagramProperties( layer, mDiagramFrame );
+  diagramPropertiesDialog->layout()->setMargin( 0 );
   mDiagramFrame->setLayout( new QVBoxLayout( mDiagramFrame ) );
+  mDiagramFrame->layout()->setMargin( 0 );
   mDiagramFrame->layout()->addWidget( diagramPropertiesDialog );
 
   //layer title and abstract
@@ -184,26 +201,18 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mLayerAbstractTextEdit->setPlainText( layer->abstract() );
   }
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/VectorLayerProperties/geometry" ).toByteArray() );
-  int tabIndex = settings.value( "/Windows/VectorLayerProperties/row", 0 ).toInt();
-
-  // if the last used tab is not enabled display the first enabled one
-  if ( !tabWidget->isTabEnabled( tabIndex ) )
-  {
-    tabIndex = 0;
-    for ( int i = 0; i < tabWidget->count(); i++ )
-    {
-      if ( tabWidget->isTabEnabled( i ) )
-      {
-        tabIndex = i;
-        break;
-      }
-    }
-  }
-  tabWidget->setCurrentIndex( tabIndex );
-
   setWindowTitle( tr( "Layer Properties - %1" ).arg( layer->name() ) );
+
+  QSettings settings;
+  // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
+  // this will be read by restoreOptionsBaseUi()
+  if ( !settings.contains( QString( "/Windows/VectorLayerProperties/tab" ) ) )
+  {
+    settings.setValue( QString( "/Windows/VectorLayerProperties/tab" ),
+                       mOptStackedWidget->indexOf( mOptsPage_Style ) );
+  }
+
+  restoreOptionsBaseUi();
 } // QgsVectorLayerProperties ctor
 
 
@@ -213,10 +222,6 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
   {
     disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
   }
-
-  QSettings settings;
-  settings.setValue( "/Windows/VectorLayerProperties/geometry", saveGeometry() );
-  settings.setValue( "/Windows/VectorLayerProperties/row", tabWidget->currentIndex() );
 }
 
 void QgsVectorLayerProperties::toggleEditing()
@@ -788,13 +793,15 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   }
   else
   {
-    tabWidget->setTabEnabled( 0, false ); // hide symbology item
+    mOptsPage_Style->setEnabled( false ); // hide symbology item
   }
 
   if ( mRendererDialog )
   {
+    mRendererDialog->layout()->setMargin( 0 );
     widgetStackRenderers->addWidget( mRendererDialog );
     widgetStackRenderers->setCurrentWidget( mRendererDialog );
+    widgetStackRenderers->currentWidget()->layout()->setMargin( 0 );
   }
 }
 
@@ -804,9 +811,9 @@ void QgsVectorLayerProperties::on_pbnUpdateExtents_clicked()
   mMetadataFilled = false;
 }
 
-void QgsVectorLayerProperties::on_tabWidget_currentChanged( int index )
+void QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
 {
-  if ( index != 6 || mMetadataFilled )
+  if ( indx != mOptStackedWidget->indexOf( mOptsPage_Metadata ) || mMetadataFilled )
     return;
 
   //set the metadata contents (which can be expensive)
