@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
+from qgis.core import QgsApplication
 import subprocess
 
 from sextante.core.SextanteConfig import SextanteConfig
