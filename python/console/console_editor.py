@@ -531,9 +531,6 @@ class EditorTab(QWidget):
         self.pc.updateTabListScript(self.path, action='append')
         self.mw.listObject(self)
 
-    def changeFont(self):
-        self.newEditor.refreshLexerProperties()
-
     def modified(self, modified):
         self.mw.tabModified(self, modified)
 
@@ -798,6 +795,11 @@ class EditorTabWidget(QTabWidget):
                 s = traceback.format_exc()
                 print '## Error: '
                 sys.stderr.write(s)
+                
+    def changeFont(self):
+        countTab = self.count()
+        for i in range(countTab):
+            self.widget(i).newEditor.refreshLexerProperties()
 
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)

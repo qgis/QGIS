@@ -602,7 +602,7 @@ class PythonConsoleWidget(QWidget):
     def prefChanged(self):
         self.shell.refreshLexerProperties()
         self.shellOut.refreshLexerProperties()
-        self.tabEditorWidget.currentWidget().changeFont()
+        self.tabEditorWidget.changeFont()
 
     def callWidgetMessageBar(self, text):
         self.shellOut.widgetMessageBar(iface, text)
