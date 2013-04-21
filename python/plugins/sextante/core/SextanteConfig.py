@@ -54,8 +54,8 @@ class SextanteConfig():
     def initialize():
         icon =  QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
         SextanteConfig.settingIcons["General"] = icon
-        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_THREADS, "Run algorithms in a new thread (still unstable)", True))
-        SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_DEBUG_IN_DIALOG, "Show debug information and commands executed in the execution dialog's Log panel (threaded execution only)", True))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_THREADS, "Run algorithms in a new thread", True))
+        SextanteConfig.addSetting(Setting("General", SextanteConfig.SHOW_DEBUG_IN_DIALOG, "Show extra info in Log panel (threaded execution only)", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.KEEP_DIALOG_OPEN, "Keep dialog open after running an algorithm", False))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.USE_SELECTED, "Use only selected features", True))
         SextanteConfig.addSetting(Setting("General", SextanteConfig.TABLE_LIKE_PARAM_PANEL, "Show table-like parameter panels", False))
@@ -80,6 +80,8 @@ class SextanteConfig():
 
     @staticmethod
     def getGroupIcon(group):
+        if group == "General":
+            return QtGui.QIcon(os.path.dirname(__file__) + "/../images/toolbox.png")
         if group in SextanteConfig.settingIcons:
             return SextanteConfig.settingIcons[group]
         else:
