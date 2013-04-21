@@ -481,7 +481,7 @@ class PythonConsoleWidget(QWidget):
 
     def toggleEditor(self, checked):
         self.widgetEditor.show() if checked else self.widgetEditor.hide()
-        self.tabEditorWidget.checkToRestoreTabs()
+        self.tabEditorWidget.enableToolBarEditor(checked)
 
     def toggleObjectListWidget(self, checked):
         self.listClassMethod.show() if checked else self.listClassMethod.hide()

@@ -309,9 +309,13 @@ class Editor(QsciScintilla):
         action = menu.exec_(self.mapToGlobal(e.pos()))
 
     def objectListEditor(self):
-        listObj = self.parent.pc.splitterObj
-        listObj.hide() if listObj.isVisible() else listObj.show()
-        self.parent.pc.objectListButton.setChecked(False)
+        listObj = self.parent.pc.listClassMethod
+        if listObj.isVisible():
+             listObj.hide()
+             self.parent.pc.objectListButton.setChecked(False)
+        else:
+            listObj.show()
+            self.parent.pc.objectListButton.setChecked(True)
     
     def codepad(self):
         import urllib2, urllib
@@ -348,8 +352,8 @@ class Editor(QsciScintilla):
             self.parent.pc.callWidgetMessageBarEditor(msgText + str(e.args))
 
     def hideEditor(self):
-        Ed = self.parent.pc.widgetEditor
-        Ed.hide()
+        self.parent.pc.widgetEditor.hide()
+        self.parent.pc.listClassMethod.hide()
         self.parent.pc.showEditorButton.setChecked(False)
 
     def commentEditorCode(self, commentCheck):
@@ -599,6 +603,11 @@ class EditorTabWidget(QTabWidget):
         tabScripts = self.settings.value("pythonConsole/tabScripts")
         self.restoreTabList = tabScripts.toList()
 
+        if self.restoreTabList:
+            self.topFrame.show()
+        else:
+            self.newTabEditor(filename=None)
+
         self.setDocumentMode(True)
         self.setMovable(True)
         #self.setTabsClosable(True)
@@ -629,12 +638,10 @@ class EditorTabWidget(QTabWidget):
         self.setCornerWidget(self.newTabButton, Qt.TopLeftCorner)
         self.connect(self.newTabButton, SIGNAL('clicked()'), self.newTabEditor)
 
-    def checkToRestoreTabs(self):
-        if self.restoreTabList:
-            self.topFrame.show()
-        else:
-            self.newTabEditor(filename=None)
-            self.parent.toolBarEditor.setEnabled(True)
+    def enableToolBarEditor(self, enable):
+        if self.topFrame.isVisible():
+            enable = False
+        self.parent.toolBarEditor.setEnabled(enable)
 
     def newTabEditor(self, tabName=None, filename=None):
         nr = self.count()
@@ -722,14 +729,16 @@ class EditorTabWidget(QTabWidget):
                     if os.path.exists(pathFile):
                         tabName = pathFile.split('/')[-1]
                         self.newTabEditor(tabName, pathFile)
+                    else:
+                        self.newTabEditor(filename=None)
         self.topFrame.close()
-        self.parent.toolBarEditor.setEnabled(True)
+        self.enableToolBarEditor(True)
 
     def closeRestore(self):
         self.parent.updateTabListScript('empty')
         self.topFrame.close()
         self.newTabEditor(filename=None)
-        self.parent.toolBarEditor.setEnabled(True)
+        self.enableToolBarEditor(True)
 
     def showFileTabMenu(self):
         self.fileTabMenu.clear()
