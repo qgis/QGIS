@@ -477,7 +477,7 @@ class EditorTab(QWidget):
         self.newEditor.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.newEditor.modificationChanged.connect(self.modified)
         if filename:
-            self.newEditor.setText(open(filename, "r").read())
+            self.newEditor.setText(open(filename, "rt").read())
             self.newEditor.setModified(False)
             self.path = filename
         
@@ -763,7 +763,6 @@ class EditorTabWidget(QTabWidget):
             #print sys.modules[module]
             if pathFile not in sys.path:
                 sys.path.append(pathFile)
-            
             try:
                 reload(pyclbr)
                 dictObject = {}

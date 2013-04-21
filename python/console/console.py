@@ -354,9 +354,16 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.addAction(self.optionsButton)
         self.toolBar.addAction(self.helpButton)
 
+        if sys.platform.startswith('win'):
+            bkgrcolor = ['170', '170', '170']
+            bordercl = ['125', '125', '125']
+        else:
+            bkgrcolor = ['200', '200', '200']
+            bordercl = ['155', '155', '155']
+
         self.toolBarEditor = QToolBar()
-        self.toolBarEditor.setStyleSheet('QToolBar{background-color: rgb(200, 200, 200);\
-                                          border-right: 1px solid rgb(155, 155, 155);}')
+        self.toolBarEditor.setStyleSheet('QToolBar{background-color: rgb(%s, %s, %s' % tuple(bkgrcolor) + ');\
+                                          border-right: 1px solid rgb(%s, %s, %s' % tuple(bordercl) + ');}')
         self.toolBarEditor.setEnabled(False)
         self.toolBarEditor.setFocusPolicy(Qt.NoFocus)
         self.toolBarEditor.setContextMenuPolicy(Qt.DefaultContextMenu)
@@ -604,16 +611,17 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.widgetMessageBar(iface, text)
 
     def updateTabListScript(self, script, action=None): 
-        settings = QSettings()
-        if script == 'empty':
-            self.tabListScript = []
-        if script is not None and not action and script != 'empty':
-            self.tabListScript.remove(script)
-        if action:
-            if script not in self.tabListScript:
-                self.tabListScript.append(script)
-        settings.setValue("pythonConsole/tabScripts",
-                               QVariant(self.tabListScript))
+        if script != '':
+            settings = QSettings()
+            if script == 'empty':
+                self.tabListScript = []
+            if script is not None and not action and script != 'empty':
+                self.tabListScript.remove(script)
+            if action:
+                if script not in self.tabListScript:
+                    self.tabListScript.append(script)
+            settings.setValue("pythonConsole/tabScripts",
+                                   QVariant(self.tabListScript))
 
     def saveSettingsConsole(self):
         settings = QSettings()
