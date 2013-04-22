@@ -477,7 +477,7 @@ class EditorTab(QWidget):
         self.newEditor.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.newEditor.modificationChanged.connect(self.modified)
         if filename:
-            self.newEditor.setText(open(filename, "rt").read())
+            self.newEditor.setText(open(unicode(filename), "rt").read())
             self.newEditor.setModified(False)
             self.path = filename
         
@@ -513,22 +513,23 @@ class EditorTab(QWidget):
                                                  'Script was correctly saved.')
             self.pc.callWidgetMessageBarEditor(msgText)
         # Rename the original file, if it exists
-        overwrite = os.path.exists(self.path)
+        path = unicode(self.path)
+        overwrite = os.path.exists(path)
         if overwrite:
-            temp_path = self.path + "~"
+            temp_path = path + "~"
             if os.path.exists(temp_path):
                 os.remove(temp_path)
-            os.rename(self.path, temp_path)
+            os.rename(path, temp_path)
         # Save the new contents
-        with open(self.path, "w") as f:
+        with open(path, "w") as f:
             f.write(self.newEditor.text())
         if overwrite:
             os.remove(temp_path)
-        fN = self.path.split('/')[-1]
+        fN = path.split('/')[-1]
         self.mw.setTabTitle(self, fN)
-        self.mw.setTabToolTip(self.mw.currentIndex(), self.path)
+        self.mw.setTabToolTip(self.mw.currentIndex(), path)
         self.newEditor.setModified(False)
-        self.pc.updateTabListScript(self.path, action='append')
+        self.pc.updateTabListScript(path, action='append')
         self.mw.listObject(self)
 
     def modified(self, modified):
@@ -722,7 +723,7 @@ class EditorTabWidget(QTabWidget):
 
     def restoreTabs(self):
         for script in self.restoreTabList:
-            pathFile = str(script.toString())
+            pathFile = unicode(script.toString())
             if os.path.exists(pathFile):
                 tabName = pathFile.split('/')[-1]
                 self.newTabEditor(tabName, pathFile)
@@ -755,9 +756,8 @@ class EditorTabWidget(QTabWidget):
         else:
             tabWidget = self.widget(tab)
         if tabWidget.path:
-            pathFile, file = os.path.split(str(tabWidget.path))
+            pathFile, file = os.path.split(unicode(tabWidget.path))
             module, ext = os.path.splitext(file)
-            #print sys.modules[module]
             if pathFile not in sys.path:
                 sys.path.append(pathFile)
             try:
