@@ -219,9 +219,7 @@ double HeatmapGui::estimateRadius()
 
   // Find max dimension of layer bounding box
   QgsRectangle mExtent = inputLayer->extent();
-  double extentWidth = abs( mExtent.xMinimum() - mExtent.xMaximum() );
-  double extentHeight = abs( mExtent.yMinimum() - mExtent.yMaximum() );
-  double maxExtent = max( extentWidth, extentHeight );
+  double maxExtent = max( mExtent.width(), mExtent.height() );
 
   // Return max dimension divided by 30. This is fairly arbitrary
   // but approximately corresponds to the default value chosen by ArcMap

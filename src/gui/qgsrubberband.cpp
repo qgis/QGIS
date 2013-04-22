@@ -146,20 +146,36 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool doUpdate /* = true */, in
   }
 }
 
-void QgsRubberBand::removeLastPoint( int geometryIndex )
+
+void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geometryIndex/* = 0*/ )
 {
+
   if ( mPoints.size() < geometryIndex + 1 )
   {
     return;
   }
 
+
   if ( mPoints[geometryIndex].size() > 0 )
   {
-    mPoints[geometryIndex].pop_back();
+    // negative index removes from end, eg -1 removes last one
+    if ( index < 0 )
+    {
+      index = mPoints[geometryIndex].size() + index;
+    }
+    mPoints[geometryIndex].removeAt(index);
   }
 
-  updateRect();
-  update();
+  if ( doUpdate )
+  {
+    updateRect();
+    update();
+  }
+}
+
+void QgsRubberBand::removeLastPoint( int geometryIndex )
+{
+  removePoint(-1, true, geometryIndex);
 }
 
 /*!

@@ -220,7 +220,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   return outputBlock; // No resampling
 }
 
-void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentElem )
+void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {

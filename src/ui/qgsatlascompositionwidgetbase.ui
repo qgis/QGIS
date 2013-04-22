@@ -91,7 +91,7 @@
            <x>0</x>
            <y>0</y>
            <width>431</width>
-           <height>567</height>
+           <height>568</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
@@ -299,7 +299,7 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="0" column="0">
-              <widget class="QLabel" name="label_3">
+              <widget class="QRadioButton" name="mAtlasMarginRadio">
                <property name="text">
                 <string>Margin around feature</string>
                </property>
@@ -324,8 +324,8 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="0" colspan="2">
-              <widget class="QCheckBox" name="mAtlasFixedScaleCheckBox">
+             <item row="1" column="0">
+              <widget class="QRadioButton" name="mAtlasFixedScaleRadio">
                <property name="text">
                 <string>Fixed scale</string>
                </property>

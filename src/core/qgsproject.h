@@ -348,6 +348,8 @@ class CORE_EXPORT QgsProject : public QObject
     // @param n number of layers
     void layerLoaded( int i, int n );
 
+    void loadingLayer( QString );
+
     void snapSettingsChanged();
 
   private:

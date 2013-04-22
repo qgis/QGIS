@@ -364,6 +364,8 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
     // Store the painter in case we need to swap it out for the
     // cache painter
     QPainter * mypContextPainter = mRenderContext.painter();
+    // Flattened image for drawing when a blending mode is set
+    QImage * mypFlattenedImage = 0;
 
     QString layerId = li.previous();
 
@@ -509,6 +511,26 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         }
       }
 
+      // If we are drawing with an alternative blending mode then we need to render to a seperate image
+      // before compositing this on the map. This effectively flattens the layer and prevents
+      // blending occuring between objects on the layer
+      // (this is not required for raster layers or when layer caching is enabled, since that has the same effect)
+      if (( ml->blendMode()  != QPainter::CompositionMode_SourceOver ) &&
+          ( ml->type() != QgsMapLayer::RasterLayer ) &&
+          ( split || !mySettings.value( "/qgis/enable_render_caching", false ).toBool() ) )
+      {
+        mypFlattenedImage = new QImage( mRenderContext.painter()->device()->width(),
+                                        mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
+        mypFlattenedImage->fill( 0 );
+        QPainter * mypPainter = new QPainter( mypFlattenedImage );
+        if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
+        {
+          mypPainter->setRenderHint( QPainter::Antialiasing );
+        }
+        mypPainter->scale( rasterScaleFactor,  rasterScaleFactor );
+        mRenderContext.setPainter( mypPainter );
+      }
+
       if ( scaleRaster )
       {
         bk_mapToPixel = mRenderContext.mapToPixel();
@@ -557,6 +579,22 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
             mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
         }
       }
+
+      // If we flattened this layer for alternate blend modes, composite it now
+      if (( ml->blendMode()  != QPainter::CompositionMode_SourceOver ) &&
+          ( ml->type() != QgsMapLayer::RasterLayer ) &&
+          ( split || !mySettings.value( "/qgis/enable_render_caching", false ).toBool() ) )
+      {
+        delete mRenderContext.painter();
+        mRenderContext.setPainter( mypContextPainter );
+        mypContextPainter->save();
+        mypContextPainter->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
+        mypContextPainter->drawImage( 0, 0, *( mypFlattenedImage ) );
+        mypContextPainter->restore();
+        delete mypFlattenedImage;
+        mypFlattenedImage = 0;
+      }
+
       disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
     }
     else // layer not visible due to scale

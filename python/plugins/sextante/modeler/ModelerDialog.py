@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.core.SextanteConfig import SextanteConfig
-from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.gui.AlgorithmClassification import AlgorithmDecorator
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -33,10 +30,12 @@ import codecs
 import pickle
 
 from sextante.core.SextanteUtils import SextanteUtils
-
 from sextante.gui.HelpEditionDialog import HelpEditionDialog
 from sextante.gui.ParametersDialog import ParametersDialog
-
+from sextante.core.SextanteConfig import SextanteConfig
+from sextante.core.GeoAlgorithm import GeoAlgorithm
+from sextante.gui.AlgorithmClassification import AlgorithmDecorator
+#from sextante.gui.SextanteToolbox import SextanteToolbox
 from sextante.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from sextante.modeler.ModelerAlgorithm import ModelerAlgorithm
 from sextante.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -44,10 +43,12 @@ from sextante.modeler.ModelerUtils import ModelerUtils
 from sextante.modeler.WrongModelException import WrongModelException
 from sextante.modeler.ModelerScene import ModelerScene
 from sextante.modeler.Providers import Providers
-
 from sextante.ui.ui_DlgModeler import Ui_DlgModeler
 
 class ModelerDialog(QDialog, Ui_DlgModeler):
+    
+    USE_CATEGORIES = "/SextanteQGIS/UseCategories"
+    
     def __init__(self, alg=None):
         QDialog.__init__(self)
 
@@ -257,7 +258,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.view.ensureVisible(self.scene.getLastAlgorithmItem())
 
     def fillAlgorithmTree(self):
-        useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
+        settings = QSettings()
+        useCategories = settings.value(self.USE_CATEGORIES).toBool()  
         if useCategories:
             self.fillAlgorithmTreeUsingCategories()
         else:
@@ -400,7 +402,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
-        useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
+        useCategories = SextanteConfig.getSetting(ModelerDialog.USE_CATEGORIES)
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()

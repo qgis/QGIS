@@ -1836,6 +1836,8 @@ void QgisApp::setupConnections()
            this, SLOT( oldProjectVersionWarning( QString ) ) );
   connect( QgsProject::instance(), SIGNAL( layerLoaded( int, int ) ),
            this, SLOT( showProgress( int, int ) ) );
+  connect( QgsProject::instance(), SIGNAL( loadingLayer( QString ) ),
+           this, SLOT( showStatusMessage( QString ) ) );
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
@@ -8481,6 +8483,13 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
   {
     stopRendering();
   }
+#if defined(Q_OS_WIN)&& defined(QGISDEBUG)
+  else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
+  {
+    extern LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
+    qgisCrashDump( 0 );
+  }
+#endif
   else
   {
     e->ignore();

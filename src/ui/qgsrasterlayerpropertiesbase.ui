@@ -94,18 +94,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Metadata</string>
-          </property>
-          <property name="toolTip">
-           <string>Metadata</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Style</string>
           </property>
           <property name="toolTip">
@@ -152,6 +140,18 @@
             <normaloff>:/images/themes/default/propertyicons/histogram.png</normaloff>:/images/themes/default/propertyicons/histogram.png</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Metadata</string>
+          </property>
+          <property name="toolTip">
+           <string>Metadata</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -182,7 +182,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -212,8 +212,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>713</width>
-                <height>686</height>
+                <width>693</width>
+                <height>646</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -379,6 +379,9 @@
                   <string notr="true">rastergeneral</string>
                  </property>
                  <layout class="QGridLayout" name="_5">
+                  <property name="verticalSpacing">
+                   <number>6</number>
+                  </property>
                   <property name="margin">
                    <number>11</number>
                   </property>
@@ -652,130 +655,6 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptsPage_Metadata">
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label_9">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Metadata</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QScrollArea" name="scrollArea_4">
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_4">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>150</width>
-                <height>236</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_10">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="mMetaDescriptionGrpBx">
-                 <property name="title">
-                  <string>Description</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">rastermeta</string>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_5">
-                  <item row="3" column="1">
-                   <widget class="QTextEdit" name="mLayerAbstractTextEdit">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>16777215</width>
-                      <height>50</height>
-                     </size>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QLineEdit" name="mLayerTitleLineEdit"/>
-                  </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="mLayerTitleLabel">
-                    <property name="text">
-                     <string>Title</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="mLayerAbstractLabel">
-                    <property name="text">
-                     <string>Abstract</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <widget class="QgsCollapsibleGroupBox" name="mMetaPropertiesGrpBx">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>5</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>Properties</string>
-                 </property>
-                 <property name="syncGroup" stdset="0">
-                  <string notr="true">rastermeta</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_11">
-                  <item>
-                   <widget class="QTextBrowser" name="txtbMetadata"/>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>0</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
-          </layout>
-         </widget>
          <widget class="QWidget" name="mOptsPage_Style">
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <property name="margin">
@@ -804,8 +683,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>713</width>
-                <height>686</height>
+                <width>610</width>
+                <height>360</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1319,8 +1198,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>431</width>
-                <height>384</height>
+                <width>472</width>
+                <height>439</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1736,8 +1615,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>557</width>
-                <height>164</height>
+                <width>632</width>
+                <height>199</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1800,7 +1679,7 @@
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
@@ -1907,8 +1786,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>82</width>
-                <height>18</height>
+                <width>98</width>
+                <height>31</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1932,6 +1811,130 @@ p, li { white-space: pre-wrap; }
                   </item>
                  </layout>
                 </widget>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptsPage_Metadata">
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_9">
+             <property name="styleSheet">
+              <string notr="true">font-weight:bold;</string>
+             </property>
+             <property name="text">
+              <string>Metadata</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QScrollArea" name="scrollArea_4">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="scrollAreaWidgetContents_4">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>195</width>
+                <height>267</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_10">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mMetaDescriptionGrpBx">
+                 <property name="title">
+                  <string>Description</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastermeta</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_5">
+                  <item row="3" column="1">
+                   <widget class="QTextEdit" name="mLayerAbstractTextEdit">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>16777215</width>
+                      <height>50</height>
+                     </size>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="mLayerTitleLineEdit"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="mLayerTitleLabel">
+                    <property name="text">
+                     <string>Title</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="mLayerAbstractLabel">
+                    <property name="text">
+                     <string>Abstract</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mMetaPropertiesGrpBx">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>5</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>Properties</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">rastermeta</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_11">
+                  <item>
+                   <widget class="QTextBrowser" name="txtbMetadata"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </widget>
@@ -2008,9 +2011,9 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsScaleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsscalecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
@@ -2019,9 +2022,9 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>

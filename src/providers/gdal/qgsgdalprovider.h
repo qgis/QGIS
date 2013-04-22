@@ -175,14 +175,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
-    //void * readBlock( int bandNo, QgsRectangle  const & extent, int width, int height );
-
-    //bool srcHasNoDataValue( int bandNo ) const;
-    //double noDataValue() const;
-    void computeMinMax( int bandNo ) const;
-    double minimumValue( int bandNo ) const;
-    double maximumValue( int bandNo ) const;
-
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
 
     /**
@@ -294,13 +286,13 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int mXBlockSize;
     int mYBlockSize;
 
-    mutable QList<bool> mMinMaxComputed;
+    //mutable QList<bool> mMinMaxComputed;
 
     // List of estimated min values, index 0 for band 1
-    mutable QList<double> mMinimum;
+    //mutable QList<double> mMinimum;
 
     // List of estimated max values, index 0 for band 1
-    mutable QList<double> mMaximum;
+    //mutable QList<double> mMaximum;
 
     /** \brief Pointer to the gdaldataset */
     GDALDatasetH mGdalBaseDataset;
@@ -317,7 +309,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     /** \brief sublayers list saved for subsequent access */
     QStringList mSubLayers;
-
 };
 
 #endif

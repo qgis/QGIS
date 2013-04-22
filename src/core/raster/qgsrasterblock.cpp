@@ -19,12 +19,9 @@
 
 #include <QByteArray>
 #include <QColor>
-#include <QTime>
 
 #include "qgslogger.h"
 #include "qgsrasterblock.h"
-
-#include "cpl_conv.h"
 
 QgsRasterBlock::QgsRasterBlock()
     : mValid( true )
@@ -497,8 +494,8 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
       QByteArray noDataByteArray = valueBytes( mDataType, mNoDataValue );
 
       char *nodata = noDataByteArray.data();
-      char *nodataRow = new char[mWidth]; // full row of no data
-      for ( int c = 0; c < mWidth; c ++ )
+      char *nodataRow = new char[mWidth*dataTypeSize]; // full row of no data
+      for ( int c = 0; c < mWidth; c++ )
       {
         memcpy( nodataRow + c*dataTypeSize, nodata, dataTypeSize );
       }

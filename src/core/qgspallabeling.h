@@ -309,6 +309,16 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false ) const;
 
+    /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit SizeUnit enum value of size
+     * @param rasterfactor whether to consider oversampling
+     * @return size that will render, as double
+     * @note added in 1.9, as a better precision replacement for sizeToPixel
+     */
+    double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false ) const;
+
     /** List of data defined enum names
      * @note adding in 1.9
      */
@@ -378,6 +388,9 @@ class CORE_EXPORT QgsLabelComponent
         , mUseCenter( false )
         , mSize( QgsPoint() )
         , mOffset( QgsPoint() )
+        , mPicture( 0 )
+        , mPictureBuffer( 0.0 )
+        , mDpiRatio( 1.0 )
     {}
 
     const QString& text() { return mText; }
@@ -416,6 +429,9 @@ class CORE_EXPORT QgsLabelComponent
     double pictureBuffer() const { return mPictureBuffer; }
     void setPictureBuffer( double buffer ) { mPictureBuffer = buffer; }
 
+    double dpiRatio() const { return mDpiRatio; }
+    void setDpiRatio( double ratio ) { mDpiRatio = ratio; }
+
   private:
     // current label component text,
     // e.g. single line in a multi-line label or charcater in curved labeling
@@ -444,6 +460,9 @@ class CORE_EXPORT QgsLabelComponent
     // buffer for component to accommodate graphic items ignored by QPicture,
     // e.g. half-width of an applied QPen, which would extend beyond boundingRect() of QPicture
     double mPictureBuffer;
+
+    // a ratio of native painter dpi and that of rendering context's painter
+    double mDpiRatio;
 };
 
 class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface

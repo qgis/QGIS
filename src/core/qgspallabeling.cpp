@@ -281,13 +281,13 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   shadowDraw = false;
   shadowUnder = ShadowLowest;
   shadowOffsetAngle = 135;
-  shadowOffsetDist = 0.0;
+  shadowOffsetDist = 1.0;
   shadowOffsetUnits = MM;
   shadowOffsetGlobal = true;
-  shadowRadius = 0.0;
+  shadowRadius = 1.5;
   shadowRadiusUnits = MM;
   shadowRadiusAlphaOnly = false;
-  shadowTransparency = 0;
+  shadowTransparency = 30;
   shadowScale = 100;
   shadowColor = Qt::black;
   shadowBlendMode = QPainter::CompositionMode_Multiply;
@@ -689,13 +689,13 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   shadowDraw = layer->customProperty( "labeling/shadowDraw", QVariant( false ) ).toBool();
   shadowUnder = ( ShadowType )layer->customProperty( "labeling/shadowUnder", QVariant( ShadowLowest ) ).toUInt();//ShadowLowest;
   shadowOffsetAngle = layer->customProperty( "labeling/shadowOffsetAngle", QVariant( 135 ) ).toInt();
-  shadowOffsetDist = layer->customProperty( "labeling/shadowOffsetDist", QVariant( 0.0 ) ).toDouble();
+  shadowOffsetDist = layer->customProperty( "labeling/shadowOffsetDist", QVariant( 1.0 ) ).toDouble();
   shadowOffsetUnits = ( SizeUnit )layer->customProperty( "labeling/shadowOffsetUnits", QVariant( MM ) ).toUInt();
   shadowOffsetGlobal = layer->customProperty( "labeling/shadowOffsetGlobal", QVariant( true ) ).toBool();
-  shadowRadius = layer->customProperty( "labeling/shadowRadius", QVariant( 0.0 ) ).toDouble();
+  shadowRadius = layer->customProperty( "labeling/shadowRadius", QVariant( 1.5 ) ).toDouble();
   shadowRadiusUnits = ( SizeUnit )layer->customProperty( "labeling/shadowRadiusUnits", QVariant( MM ) ).toUInt();
   shadowRadiusAlphaOnly = layer->customProperty( "labeling/shadowRadiusAlphaOnly", QVariant( false ) ).toBool();
-  shadowTransparency = layer->customProperty( "labeling/shadowTransparency", QVariant( 0 ) ).toInt();
+  shadowTransparency = layer->customProperty( "labeling/shadowTransparency", QVariant( 30 ) ).toInt();
   shadowScale = layer->customProperty( "labeling/shadowScale", QVariant( 100 ) ).toInt();
   shadowColor = _readColor( layer, "labeling/shadowColor", Qt::black, false );
   shadowBlendMode = QgsMapRenderer::getCompositionMode(
@@ -1348,23 +1348,24 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
 
 int QgsPalLayerSettings::sizeToPixel( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor ) const
 {
-  // if render context is that of device (i.e. not a scaled map), just return rounded size
-  double pixelSize = size;
+  return ( int )( scaleToPixelContext( size, c, unit, rasterfactor ) + 0.5 );
+}
+
+double QgsPalLayerSettings::scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor ) const
+{
+  // if render context is that of device (i.e. not a scaled map), just return size
   double mapUnitsPerPixel = c.mapToPixel().mapUnitsPerPixel();
 
-  if ( mapUnitsPerPixel > 0.0 )
+  if ( unit == MapUnits && mapUnitsPerPixel > 0.0 )
   {
-    if ( unit == MapUnits )
-    {
-      pixelSize = size / mapUnitsPerPixel * ( rasterfactor ? c.rasterScaleFactor() : 1 );
-    }
-    else // e.g. in points or mm
-    {
-      double ptsTomm = ( unit == Points ? 0.352778 : 1 );
-      pixelSize = ptsTomm * size * c.scaleFactor() * ( rasterfactor ? c.rasterScaleFactor() : 1 );
-    }
+    size = size / mapUnitsPerPixel * ( rasterfactor ? c.rasterScaleFactor() : 1 );
   }
-  return ( int )( pixelSize + 0.5 );
+  else // e.g. in points or mm
+  {
+    double ptsTomm = ( unit == Points ? 0.352778 : 1 );
+    size *= ptsTomm * c.scaleFactor() * ( rasterfactor ? c.rasterScaleFactor() : 1 );
+  }
+  return size;
 }
 
 // -------------
@@ -2097,9 +2098,26 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 
   QgsLabelComponent component;
 
-  QgsPoint outPt = xform->transform( label->getX(), label->getY() );
-  component.setOrigin( outPt );
+  // account for print output or image saving @ specific dpi
+  if ( !qgsDoubleNear( context.rasterScaleFactor(), 1.0, 0.1 ) )
+  {
+    // find relative dpi scaling for local painter
+    QPicture localPict;
+    QPainter localp;
+    localp.begin( &localPict );
 
+    double localdpi = ( localp.device()->logicalDpiX() + localp.device()->logicalDpiY() ) / 2;
+    double contextdpi = ( painter->device()->logicalDpiX() + painter->device()->logicalDpiY() ) / 2;
+    component.setDpiRatio( localdpi / contextdpi );
+
+    localp.end();
+  }
+
+  QgsPoint outPt = xform->transform( label->getX(), label->getY() );
+//  QgsPoint outPt2 = xform->transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+//  QRectF labelRect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+
+  component.setOrigin( outPt );
   component.setRotation( label->getAlpha() );
 
   if ( drawType == QgsPalLabeling::LabelShape )
@@ -2271,8 +2289,10 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
         painter->setCompositionMode( tmpLyr.blendMode );
 //        painter->setPen( Qt::NoPen );
 //        painter->setBrush( tmpLyr.textColor );
-//        painter->setCompositionMode( tmpLyr.blendMode );
 //        painter->drawPath( path );
+
+        // scale for any print output or image saving @ specific dpi
+        painter->scale( component.dpiRatio(), component.dpiRatio() );
         painter->drawPicture( 0, 0, textPict );
 
         // regular text draw, for testing optimization
@@ -2296,13 +2316,13 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
 {
   QPainter* p = context.painter();
 
-  int penPixelSize = tmpLyr.sizeToPixel( tmpLyr.bufferSize, context,
-                                         ( tmpLyr.bufferSizeInMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM ) );
+  double penSize = tmpLyr.scaleToPixelContext( tmpLyr.bufferSize, context,
+                   ( tmpLyr.bufferSizeInMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::MM ), true );
 
   QPainterPath path;
   path.addText( 0, 0, tmpLyr.textFont, component.text() );
   QPen pen( tmpLyr.bufferColor );
-  pen.setWidthF( penPixelSize );
+  pen.setWidthF( penSize );
   pen.setJoinStyle( tmpLyr.bufferJoinStyle );
   QColor tmpColor( tmpLyr.bufferColor );
   // honor pref for whether to fill buffer interior
@@ -2324,7 +2344,7 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
   {
     component.setOrigin( QgsPoint( 0.0, 0.0 ) );
     component.setPicture( &buffPict );
-    component.setPictureBuffer(( double )( penPixelSize ) / 2.0 );
+    component.setPictureBuffer( penSize / 2.0 );
 
     drawLabelShadow( context, component, tmpLyr );
   }
@@ -2334,6 +2354,9 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
 //  p->setPen( pen );
 //  p->setBrush( tmpColor );
 //  p->drawPath( path );
+
+  // scale for any print output or image saving @ specific dpi
+  p->scale( component.dpiRatio(), component.dpiRatio() );
   p->drawPicture( 0, 0, buffPict );
   p->restore();
 }
@@ -2363,11 +2386,6 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 
   // mm to map units conversion factor
   double mmToMapUnits = context.mapToPixel().mapUnitsPerPixel() * context.scaleFactor();
-
-  // convert offsets to map pixels
-  double xoff = tmpLyr.sizeToPixel( tmpLyr.shapeOffset.x(), context, tmpLyr.shapeOffsetUnits );
-  double yoff = tmpLyr.sizeToPixel( tmpLyr.shapeOffset.y(), context, tmpLyr.shapeOffsetUnits );
-
 
   // TODO: the following label-buffered generated shapes and SVG symbols should be moved into marker symbology classes
 
@@ -2404,7 +2422,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 
     // don't bother rendering symbols smaller than 1x1 pixels in size
     // TODO: add option to not show any svgs under/over a certian size
-    if ( tmpLyr.sizeToPixel( sizeOut, context, tmpLyr.shapeSizeUnits ) < 1 )
+    if ( tmpLyr.scaleToPixelContext( sizeOut, context, tmpLyr.shapeSizeUnits ) < 1.0 )
       return;
 
     QgsStringMap map; // for SVG symbology marker
@@ -2435,6 +2453,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       QgsStringMap shdwmap( map );
       shdwmap["fill"] = tmpLyr.shadowColor.name();
       shdwmap["outline"] = tmpLyr.shadowColor.name();
+      shdwmap["size"] = QString::number( sizeOut * tmpLyr.rasterCompressFactor );
 
       // store SVG's drawing in QPicture for drop shadow call
       QPicture svgPict;
@@ -2457,7 +2476,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       QgsSymbolV2RenderContext svgShdwContext( shdwContext, QgsSymbolV2::Mixed,
           ( 100.0 - ( double )( tmpLyr.shapeTransparency ) ) / 100.0 );
 
-      double svgSize = tmpLyr.sizeToPixel( sizeOut, context, tmpLyr.shapeSizeUnits );
+      double svgSize = tmpLyr.scaleToPixelContext( sizeOut, context, tmpLyr.shapeSizeUnits, true );
       svgShdwM->renderPoint( QPointF( svgSize / 2, -svgSize / 2 ), svgShdwContext );
       svgp.end();
 
@@ -2472,6 +2491,9 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       p->save();
       p->translate( component.center().x(), component.center().y() );
       p->rotate( component.rotation() );
+      p->scale( 1.0 / tmpLyr.rasterCompressFactor, 1.0 / tmpLyr.rasterCompressFactor );
+      double xoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.x(), context, tmpLyr.shapeOffsetUnits, true );
+      double yoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.y(), context, tmpLyr.shapeOffsetUnits, true );
       p->translate( QPointF( xoff, yoff ) );
       p->rotate( component.rotationOffset() );
       p->translate( -svgSize / 2, svgSize / 2 );
@@ -2493,6 +2515,8 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     p->setCompositionMode( tmpLyr.shapeBlendMode );
     p->translate( component.center().x(), component.center().y() );
     p->rotate( component.rotation() );
+    double xoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.x(), context, tmpLyr.shapeOffsetUnits );
+    double yoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.y(), context, tmpLyr.shapeOffsetUnits );
     p->translate( QPointF( xoff, yoff ) );
     p->rotate( component.rotationOffset() );
     svgM->renderPoint( QPointF( 0, 0 ), svgContext );
@@ -2505,13 +2529,13 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
   }
   else  // Generated Shapes
   {
-    // all calculations done in map units
+    // all calculations done in shapeSizeUnits
 
-    double w = labelWidth;
-    double h = labelHeight;
+    double w = labelWidth / ( tmpLyr.shapeSizeUnits == QgsPalLayerSettings::MM ? mmToMapUnits : 1 );
+    double h = labelHeight / ( tmpLyr.shapeSizeUnits == QgsPalLayerSettings::MM ? mmToMapUnits : 1 );
 
-    double xsize = tmpLyr.shapeSize.x() * ( tmpLyr.shapeSizeUnits == QgsPalLayerSettings::MM ? mmToMapUnits : 1 );
-    double ysize = tmpLyr.shapeSize.y() * ( tmpLyr.shapeSizeUnits == QgsPalLayerSettings::MM ? mmToMapUnits : 1 );
+    double xsize = tmpLyr.shapeSize.x();
+    double ysize = tmpLyr.shapeSize.y();
 
     if ( tmpLyr.shapeSizeType == QgsPalLayerSettings::SizeFixed )
     {
@@ -2545,12 +2569,11 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     }
 
     // convert everything over to map pixels from here on
+    w = tmpLyr.scaleToPixelContext( w, context, tmpLyr.shapeSizeUnits, true );
+    h = tmpLyr.scaleToPixelContext( h, context, tmpLyr.shapeSizeUnits, true );
 
     // offsets match those of symbology: -x = left, -y = up
-    QRectF rect( -( w / 2 / context.mapToPixel().mapUnitsPerPixel() ),
-                 -( h / 2 / context.mapToPixel().mapUnitsPerPixel() ),
-                 ( w / context.mapToPixel().mapUnitsPerPixel() ),
-                 ( h / context.mapToPixel().mapUnitsPerPixel() ) );
+    QRectF rect( -w / 2.0, - h / 2.0, w, h );
 
     if ( rect.isNull() )
       return;
@@ -2558,28 +2581,31 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     p->save();
     p->translate( QPointF( component.center().x(), component.center().y() ) );
     p->rotate( component.rotation() );
+    double xoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.x(), context, tmpLyr.shapeOffsetUnits, true );
+    double yoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.y(), context, tmpLyr.shapeOffsetUnits, true );
     p->translate( QPointF( xoff, yoff ) );
     p->rotate( component.rotationOffset() );
+
+    double penSize = tmpLyr.scaleToPixelContext( tmpLyr.shapeBorderWidth, context, tmpLyr.shapeBorderWidthUnits, true );
+
+    QPen pen;
+    if ( tmpLyr.shapeBorderWidth > 0 )
+    {
+      pen.setColor( tmpLyr.shapeBorderColor );
+      pen.setWidthF( penSize );
+      if ( tmpLyr.shapeType == QgsPalLayerSettings::ShapeRectangle )
+        pen.setJoinStyle( tmpLyr.shapeJoinStyle );
+    }
+    else
+    {
+      pen = Qt::NoPen;
+    }
 
     // store painting in QPicture for shadow drawing
     QPicture shapePict;
     QPainter shapep;
     shapep.begin( &shapePict );
-
-    int penPixelSize = tmpLyr.sizeToPixel( tmpLyr.shapeBorderWidth, context, tmpLyr.shapeBorderWidthUnits );
-
-    if ( tmpLyr.shapeBorderWidth > 0 )
-    {
-      QPen pen( tmpLyr.shapeBorderColor );
-      pen.setWidthF(( double )penPixelSize );
-      if ( tmpLyr.shapeType == QgsPalLayerSettings::ShapeRectangle )
-        pen.setJoinStyle( tmpLyr.shapeJoinStyle );
-      shapep.setPen( pen );
-    }
-    else
-    {
-      shapep.setPen( Qt::NoPen );
-    }
+    shapep.setPen( pen );
     shapep.setBrush( tmpLyr.shapeFillColor );
 
     if ( tmpLyr.shapeType == QgsPalLayerSettings::ShapeRectangle
@@ -2591,8 +2617,8 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
       }
       else
       {
-        double xRadius = tmpLyr.sizeToPixel( tmpLyr.shapeRadii.x(), context, tmpLyr.shapeRadiiUnits );
-        double yRadius = tmpLyr.sizeToPixel( tmpLyr.shapeRadii.y(), context, tmpLyr.shapeRadiiUnits );
+        double xRadius = tmpLyr.scaleToPixelContext( tmpLyr.shapeRadii.x(), context, tmpLyr.shapeRadiiUnits, true );
+        double yRadius = tmpLyr.scaleToPixelContext( tmpLyr.shapeRadii.y(), context, tmpLyr.shapeRadiiUnits, true );
         shapep.drawRoundedRect( rect, xRadius, yRadius );
       }
     }
@@ -2601,22 +2627,25 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     {
       shapep.drawEllipse( rect );
     }
-
     shapep.end();
+
+    p->scale( 1.0 / tmpLyr.rasterCompressFactor, 1.0 / tmpLyr.rasterCompressFactor );
 
     if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowShape )
     {
       component.setPicture( &shapePict );
-      component.setPictureBuffer(( double )( penPixelSize ) / 2.0 );
+      component.setPictureBuffer( penSize / 2.0 );
 
       component.setSize( QgsPoint( rect.width(), rect.height() ) );
       component.setOffset( QgsPoint( rect.width() / 2, -rect.height() / 2 ) );
       drawLabelShadow( context, component, tmpLyr );
     }
 
-
     p->setOpacity(( 100.0 - ( double )( tmpLyr.shapeTransparency ) ) / 100.0 );
     p->setCompositionMode( tmpLyr.shapeBlendMode );
+
+    // scale for any print output or image saving @ specific dpi
+    p->scale( component.dpiRatio(), component.dpiRatio() );
     p->drawPicture( 0, 0, shapePict );
     p->restore();
   }
@@ -2626,14 +2655,20 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
                                       QgsLabelComponent component,
                                       const QgsPalLayerSettings& tmpLyr )
 {
+  // incoming component sizes should be multiplied by rasterCompressFactor, as
+  // this allows shadows to be created at paint device dpi (e.g. high resolution),
+  // then scale device painter by 1.0 / rasterCompressFactor for output
+
   QPainter* p = context.painter();
   double componentWidth = component.size().x(), componentHeight = component.size().y();
   double xOffset = component.offset().x(), yOffset = component.offset().y();
   double pictbuffer = component.pictureBuffer();
 
   // generate pixmap representation of label component drawing
-  int radius = tmpLyr.sizeToPixel( tmpLyr.shadowRadius , context, tmpLyr.shadowRadiusUnits );
-  radius /= ( tmpLyr.shadowRadiusUnits == QgsPalLayerSettings::MapUnits ? tmpLyr.vectorScaleFactor : 1 );
+  bool mapUnits = ( tmpLyr.shadowRadiusUnits == QgsPalLayerSettings::MapUnits );
+  double radius = tmpLyr.scaleToPixelContext( tmpLyr.shadowRadius , context, tmpLyr.shadowRadiusUnits, !mapUnits );
+  radius /= ( mapUnits ? tmpLyr.vectorScaleFactor / component.dpiRatio() : 1 );
+  radius = ( int )( radius + 0.5 );
 
   // TODO: add labeling gui option to adjust blurBufferClippingScale to minimize pixels, or
   //       to ensure shadow isn't clipped too tight. (Or, find a better method of buffering)
@@ -2647,8 +2682,10 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
   // TODO: add labeling gui option to not show any shadows under/over a certian size
   // keep very small QImages from causing paint device issues, i.e. must be at least > 1
   int minBlurImgSize = 1;
-  // max matches limitation on QgsSvgCache, which will probably be reasonable for future caching here, too
-  int maxBlurImgSize = 10000;
+  // max limitation on QgsSvgCache is 10,000 for screen, which will probably be reasonable for future caching here, too
+  // 4 x QgsSvgCache limit for output to print/image at higher dpi
+  // TODO: should it be higher, scale with dpi, or have no limit? Needs testing with very large labels rendered at high dpi output
+  int maxBlurImgSize = 40000;
   if ( blurImg.isNull()
        || ( blurImg.width() < minBlurImgSize || blurImg.height() < minBlurImgSize )
        || ( blurImg.width() > maxBlurImgSize || blurImg.height() > maxBlurImgSize ) )
@@ -2658,7 +2695,7 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
   QPainter pictp;
   if ( !pictp.begin( &blurImg ) )
     return;
-  pictp.setRenderHints( QPainter::Antialiasing );
+  pictp.setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
   QPointF imgOffset( blurbuffer + pictbuffer + xOffset,
                      blurbuffer + pictbuffer + componentHeight + yOffset );
 
@@ -2690,7 +2727,7 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
     picti.end();
   }
 
-  int offsetDist = tmpLyr.sizeToPixel( tmpLyr.shadowOffsetDist, context, tmpLyr.shadowOffsetUnits );
+  double offsetDist = tmpLyr.scaleToPixelContext( tmpLyr.shadowOffsetDist, context, tmpLyr.shadowOffsetUnits, true );
   double angleRad = tmpLyr.shadowOffsetAngle * M_PI / 180; // to radians
   if ( tmpLyr.shadowOffsetGlobal )
   {
@@ -2709,6 +2746,7 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
   p->setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
   p->setCompositionMode( tmpLyr.shadowBlendMode );
   p->setOpacity(( 100.0 - ( double )( tmpLyr.shadowTransparency ) ) / 100.0 );
+
   double scale = ( double )tmpLyr.shadowScale / 100.0;
   // TODO: scale from center/center, left/center or left/top, instead of default left/bottom?
   p->scale( scale, scale );
@@ -2719,7 +2757,6 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
   p->translate( transPt );
   p->translate( -imgOffset.x(),
                 -imgOffset.y() );
-
   p->drawImage( 0, 0, blurImg );
   p->restore();
 

@@ -129,7 +129,6 @@
 %Include gps/qgsqtlocationconnection.sip
 
 %Include raster/qgscliptominmaxenhancement.sip
-%Include raster/qgsfreakoutshader.sip
 %Include raster/qgscolorrampshader.sip
 %Include raster/qgscontrastenhancement.sip
 %Include raster/qgscontrastenhancementfunction.sip

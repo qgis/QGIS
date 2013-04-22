@@ -31,6 +31,9 @@ import sys
 import os
 import subprocess
 import datetime
+import pyclbr
+from operator import itemgetter
+import traceback
 
 class KeyFilter(QObject):
     SHORTCUTS = {
@@ -56,9 +59,10 @@ class KeyFilter(QObject):
             self._handlers[qt_keycode] = handlers
 
     def get_handler(self, key, modifier):
-        for modifiers, handler in self._handlers.get(key, []):
-            if modifiers == modifier:
-                return handler
+        if self.window.count() > 1:
+            for modifiers, handler in self._handlers.get(key, []):
+                if modifiers == modifier:
+                    return handler
         return None
             
     def eventFilter(self, obj, event):
@@ -69,7 +73,6 @@ class KeyFilter(QObject):
         return QObject.eventFilter(self, obj, event)
 
 class Editor(QsciScintilla):
-    #ARROW_MARKER_NUM = 4
     def __init__(self, parent=None):
         super(Editor,self).__init__(parent)
         self.parent = parent
@@ -109,6 +112,7 @@ class Editor(QsciScintilla):
 #            self.ARROW_MARKER_NUM)
 
         self.setMinimumHeight(120)
+        #self.setMinimumWidth(300)
         
         self.setAutoCompletionThreshold(2)
         self.setAutoCompletionSource(self.AcsAPIs)
@@ -123,9 +127,9 @@ class Editor(QsciScintilla):
         self.setEdgeColumn(80)
         self.setEdgeColor(QColor("#FF0000"))
 
-        self.setWrapMode(QsciScintilla.WrapCharacter)
+        #self.setWrapMode(QsciScintilla.WrapCharacter)
         self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)
-        self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
+        #self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
         
         # Annotations
         #self.setAnnotationDisplay(QsciScintilla.ANNOTATION_BOXED)
@@ -272,6 +276,9 @@ class Editor(QsciScintilla):
                                         "Share on codepad",
                                         self.codepad)
         menu.addSeparator()
+        showCodeInspection = menu.addAction("Hide/Show Object list",
+                                     self.objectListEditor)
+        menu.addSeparator()
         selectAllAction = menu.addAction("Select All",
                                          self.selectAll,
                                          QKeySequence.SelectAll)
@@ -301,6 +308,15 @@ class Editor(QsciScintilla):
             pasteAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
 
+    def objectListEditor(self):
+        listObj = self.parent.pc.listClassMethod
+        if listObj.isVisible():
+             listObj.hide()
+             self.parent.pc.objectListButton.setChecked(False)
+        else:
+            listObj.show()
+            self.parent.pc.objectListButton.setChecked(True)
+    
     def codepad(self):
         import urllib2, urllib
         listText = self.selectedText().split('\n')
@@ -336,13 +352,15 @@ class Editor(QsciScintilla):
             self.parent.pc.callWidgetMessageBarEditor(msgText + str(e.args))
 
     def hideEditor(self):
-        Ed = self.parent.pc.widgetEditor
-        Ed.hide()
+        self.parent.pc.widgetEditor.hide()
+        self.parent.pc.listClassMethod.hide()
         self.parent.pc.showEditorButton.setChecked(False)
 
     def commentEditorCode(self, commentCheck):
+        self.beginUndoAction()
         if self.hasSelectedText():
             startLine, _, endLine, _ = self.getSelection()
+            self.beginUndoAction()
             for line in range(startLine, endLine + 1):
                 selCmd = self.text(line)
                 self.setSelection(line, 0, line, selCmd.length())
@@ -355,9 +373,9 @@ class Editor(QsciScintilla):
                        self.insert(selCmd[1:])
                     else:
                         self.insert(selCmd)
-                    self.setCursorPosition(endLine, selCmd.length() - 2)
         else:
             line, pos = self.getCursorPosition()
+            self.beginUndoAction()
             selCmd = self.text(line)
             self.setSelection(line, 0, line, selCmd.length())
             self.removeSelectedText()
@@ -369,7 +387,7 @@ class Editor(QsciScintilla):
                    self.insert(selCmd[1:])
                 else:
                     self.insert(selCmd)
-                self.setCursorPosition(line, selCmd.length() - 2)
+        self.endUndoAction()
 
     def runScriptCode(self):
         tabWidget = self.parent.mw.currentWidget()
@@ -432,6 +450,17 @@ class Editor(QsciScintilla):
         text = self.text()
         textList = text.split("\n")
         return textList
+    
+    def goToLine(self, objName, linenr):
+        self.SendScintilla(QsciScintilla.SCI_GOTOLINE, linenr-1)
+        self.SendScintilla(QsciScintilla.SCI_SETTARGETSTART, self.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS))
+        self.SendScintilla(QsciScintilla.SCI_SETTARGETEND, len(self.text()))
+        pos = self.SendScintilla(QsciScintilla.SCI_SEARCHINTARGET, len(objName), objName)
+        index = pos - self.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
+        #line, _ = self.getCursorPosition()
+        self.setSelection(linenr - 1, index, linenr - 1, index + len(objName))
+        self.ensureLineVisible(linenr)
+        self.setFocus()
 
 class EditorTab(QWidget):
     def __init__(self, parent, parentConsole, filename, *args):
@@ -445,12 +474,13 @@ class EditorTab(QWidget):
 
         self.newEditor = Editor(self)
         self.newEditor.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.newEditor.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.newEditor.modificationChanged.connect(self.modified)
         if filename:
-            self.newEditor.setText(open(filename, "r").read())
+            self.newEditor.setText(open(unicode(filename), "rt").read())
             self.newEditor.setModified(False)
             self.path = filename
-
+        
         # Creates layout for message bar
         self.layout = QGridLayout(self.newEditor)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -483,24 +513,24 @@ class EditorTab(QWidget):
                                                  'Script was correctly saved.')
             self.pc.callWidgetMessageBarEditor(msgText)
         # Rename the original file, if it exists
-        overwrite = os.path.exists(self.path)
+        path = unicode(self.path)
+        overwrite = os.path.exists(path)
         if overwrite:
-            temp_path = self.path + "~"
+            temp_path = path + "~"
             if os.path.exists(temp_path):
                 os.remove(temp_path)
-            os.rename(self.path, temp_path)
+            os.rename(path, temp_path)
         # Save the new contents
-        with open(self.path, "w") as f:
+        with open(path, "w") as f:
             f.write(self.newEditor.text())
         if overwrite:
             os.remove(temp_path)
-        fN = self.path.split('/')[-1]
+        fN = path.split('/')[-1]
         self.mw.setTabTitle(self, fN)
+        self.mw.setTabToolTip(self.mw.currentIndex(), path)
         self.newEditor.setModified(False)
-        self.pc.updateTabListScript(self.path, action='append')
-
-    def changeFont(self):
-        self.newEditor.refreshLexerProperties()
+        self.pc.updateTabListScript(path, action='append')
+        self.mw.listObject(self)
 
     def modified(self, modified):
         self.mw.tabModified(self, modified)
@@ -570,9 +600,11 @@ class EditorTabWidget(QTabWidget):
         self.settings = QSettings()
         tabScripts = self.settings.value("pythonConsole/tabScripts")
         self.restoreTabList = tabScripts.toList()
-        self.newTabEditor(filename=None)
+
         if self.restoreTabList:
             self.topFrame.show()
+        else:
+            self.newTabEditor(filename=None)
 
         self.setDocumentMode(True)
         self.setMovable(True)
@@ -593,6 +625,8 @@ class EditorTabWidget(QTabWidget):
         self.fileTabButton.setMenu(self.fileTabMenu)
         self.setCornerWidget(self.fileTabButton, Qt.TopRightCorner)
         self.connect(self, SIGNAL("tabCloseRequested(int)"), self._removeTab)
+        self.connect(self, SIGNAL('currentChanged(int)'), self.listObject)
+        self.connect(self, SIGNAL('currentChanged(int)'), self.changeLastDirPath)
 
         # Open button
         self.newTabButton = QToolButton(self)
@@ -601,6 +635,11 @@ class EditorTabWidget(QTabWidget):
         self.newTabButton.setIcon(QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.png"))
         self.setCornerWidget(self.newTabButton, Qt.TopLeftCorner)
         self.connect(self.newTabButton, SIGNAL('clicked()'), self.newTabEditor)
+
+    def enableToolBarEditor(self, enable):
+        if self.topFrame.isVisible():
+            enable = False
+        self.parent.toolBarEditor.setEnabled(enable)
 
     def newTabEditor(self, tabName=None, filename=None):
         nr = self.count()
@@ -615,6 +654,10 @@ class EditorTabWidget(QTabWidget):
         self.iconTab = QgsApplication.getThemeIcon('console/iconTabEditorConsole.png')
         self.addTab(self.tab, self.iconTab, tabName)
         self.setCurrentWidget(self.tab)
+        if filename:
+            self.setTabToolTip(self.currentIndex(), unicode(filename))
+        else:
+            self.setTabToolTip(self.currentIndex(), tabName)
 
     def tabModified(self, tab, modified):
         index = self.indexOf(tab)
@@ -680,15 +723,20 @@ class EditorTabWidget(QTabWidget):
 
     def restoreTabs(self):
         for script in self.restoreTabList:
-                    pathFile = str(script.toString())
-                    if os.path.exists(pathFile):
-                        tabName = pathFile.split('/')[-1]
-                        self.newTabEditor(tabName, pathFile)
+            pathFile = unicode(script.toString())
+            if os.path.exists(pathFile):
+                tabName = pathFile.split('/')[-1]
+                self.newTabEditor(tabName, pathFile)
+            else:
+                self.newTabEditor(filename=None)
         self.topFrame.close()
+        self.enableToolBarEditor(True)
 
     def closeRestore(self):
         self.parent.updateTabListScript('empty')
         self.topFrame.close()
+        self.newTabEditor(filename=None)
+        self.enableToolBarEditor(True)
 
     def showFileTabMenu(self):
         self.fileTabMenu.clear()
@@ -700,6 +748,76 @@ class EditorTabWidget(QTabWidget):
         index, ok = action.data().toInt()
         if ok:
             self.setCurrentIndex(index)
+
+    def listObject(self, tab):
+        self.parent.listClassMethod.clear()
+        if isinstance(tab, EditorTab):
+            tabWidget = self.widget(self.indexOf(tab))
+        else:
+            tabWidget = self.widget(tab)
+        if tabWidget.path:
+            pathFile, file = os.path.split(unicode(tabWidget.path))
+            module, ext = os.path.splitext(file)
+            if pathFile not in sys.path:
+                sys.path.append(pathFile)
+            try:
+                reload(pyclbr)
+                dictObject = {}
+                superClassName = []
+                readModule = pyclbr.readmodule(module)
+                readModuleFunction = pyclbr.readmodule_ex(module)
+                for name, class_data in sorted(readModule.items(), key=lambda x:x[1].lineno):
+                    if class_data.file == tabWidget.path:
+                        for superClass in class_data.super:
+                            if superClass == 'object':
+                                continue
+                            if isinstance(superClass, basestring):
+                                superClassName.append(superClass)
+                            else:
+                                superClassName.append(superClass.name)
+                        classItem = QTreeWidgetItem()
+                        if superClassName:
+                            for i in superClassName: super = i
+                            classItem.setText(0, name + ' [' + super + ']')
+                            classItem.setToolTip(0, name + ' [' + super + ']')
+                        else:
+                            classItem.setText(0, name)
+                            classItem.setToolTip(0, name)
+                        classItem.setText(1, str(class_data.lineno))
+                        classItem.setIcon(0, QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png"))
+                        dictObject[name] = class_data.lineno
+                        for meth, lineno in sorted(class_data.methods.items(), key=itemgetter(1)):
+                            methodItem = QTreeWidgetItem()
+                            methodItem.setText(0, meth)
+                            methodItem.setText(1, str(lineno))
+                            methodItem.setToolTip(0, meth)
+                            methodItem.setIcon(0, QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png"))
+                            classItem.addChild(methodItem)
+                            dictObject[meth] = lineno
+                        self.parent.listClassMethod.addTopLevelItem(classItem)
+                for func_name, data in sorted(readModuleFunction.items(), key=lambda x:x[1].lineno):
+                    if isinstance(data, pyclbr.Function) and data.file == tabWidget.path:
+                        funcItem = QTreeWidgetItem()
+                        funcItem.setText(0, func_name)
+                        funcItem.setText(1, str(data.lineno))
+                        funcItem.setToolTip(0, func_name)
+                        funcItem.setIcon(0, QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png"))
+                        dictObject[func_name] = data.lineno
+                        self.parent.listClassMethod.addTopLevelItem(funcItem)
+            except:
+                s = traceback.format_exc()
+                print '## Error: '
+                sys.stderr.write(s)
+                
+    def changeFont(self):
+        countTab = self.count()
+        for i in range(countTab):
+            self.widget(i).newEditor.refreshLexerProperties()
+
+    def changeLastDirPath(self, tab):
+        tabWidget = self.widget(tab)
+        settings = QSettings()
+        settings.setValue("pythonConsole/lastDirPath", QVariant(tabWidget.path))
 
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()

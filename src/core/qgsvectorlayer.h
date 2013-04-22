@@ -336,7 +336,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *
  * - decimalPoint=c
  *
- *   Defines a character that is used as a decimal point in the X and Y columns.
+ *   Defines a character that is used as a decimal point in the numeric columns
  *   The default is '.'.
  *
  * - xyDms=(yes|no)
@@ -489,6 +489,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *               parameters used by the data provider as url query items.
      * @param  baseName The name used to represent the layer in the legend
      * @param  providerLib  The name of the data provider, eg "memory", "postgres"
+     * @param  loadDefaultStyleFlag whether to load the default style
      *
      */
     QgsVectorLayer( QString path = QString::null, QString baseName = QString::null,

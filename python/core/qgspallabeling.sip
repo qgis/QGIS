@@ -253,6 +253,16 @@ class QgsPalLayerSettings
      */
     int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false ) const;
 
+    /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit SizeUnit enum value of size
+     * @param rasterfactor whether to consider oversampling
+     * @return size that will render, as double
+     * @note added in 1.9, as a better precision replacement for sizeToPixel
+     */
+    double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false ) const;
+
     /** List of data defined enum names
      * @note adding in 1.9
      */
@@ -297,6 +307,9 @@ class QgsLabelComponent
     double rotation() const;
     void setRotation( double rotation );
 
+    double rotationOffset() const;
+    void setRotationOffset( double rotation );
+
     bool useRotation() const;
     void setUseRotation( bool use );
 
@@ -317,6 +330,9 @@ class QgsLabelComponent
 
     double pictureBuffer() const;
     void setPictureBuffer( double buffer );
+
+    double dpiRatio() const;
+    void setDpiRatio( double ratio );
 };
 
 class QgsPalLabeling : QgsLabelingEngineInterface

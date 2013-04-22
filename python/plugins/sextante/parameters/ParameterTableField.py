@@ -55,7 +55,7 @@ class ParameterTableField(Parameter):
 
     def serialize(self):
         return self.__module__.split(".")[-1] + "|" + self.name + "|" + self.description +\
-                "|" + str(self.parent) + "|" + str(self.datatype)
+                "|" + str(self.parent) + "|" + str(self.datatype) + "|" + str(self.optional)
 
     def deserialize(self, s):
         tokens = s.split("|")

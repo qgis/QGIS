@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>225</width>
-    <height>444</height>
+    <width>289</width>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,8 +24,8 @@
     <item>
      <widget class="QPushButton" name="externalAppsButton">
       <property name="text">
-       <string>Click here to configure
-additional algorithm providers</string>
+       <string>Click here to learn more
+about SEXTANTE</string>
       </property>
      </widget>
     </item>
@@ -50,6 +50,9 @@ additional algorithm providers</string>
        </property>
       </column>
      </widget>
+    </item>
+    <item>
+     <widget class="QComboBox" name="modeComboBox"/>
     </item>
    </layout>
   </widget>

@@ -100,6 +100,8 @@ class CORE_EXPORT QgsContrastEnhancement
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
 
+    static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
+
     static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
 
     /*

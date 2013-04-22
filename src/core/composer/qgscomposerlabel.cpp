@@ -81,6 +81,15 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
     webPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
     webPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
+    // QGIS segfaults when rendering web page while in composer if html
+    // contains images. So if we are not printing the composition, then
+    // disable image loading
+    if ( mComposition->plotStyle() != QgsComposition::Print &&
+         mComposition->plotStyle() != QgsComposition::Postscript )
+    {
+      webPage->settings()->setAttribute( QWebSettings::AutoLoadImages, false );
+    }
+
     //Connect timeout and webpage loadFinished signals to loop
     connect( &timeoutTimer, SIGNAL( timeout() ), &loop, SLOT( quit() ) );
     connect( webPage, SIGNAL( loadFinished( bool ) ), &loop, SLOT( quit() ) );

@@ -19,6 +19,7 @@
 #ifndef QGSVECTORLAYERPROPERTIES
 #define QGSVECTORLAYERPROPERTIES
 
+#include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgisgui.h"
 #include "qgsaddattrdialog.h"
@@ -41,7 +42,7 @@ class QgsLabelingGui;
 class QgsDiagramProperties;
 class QgsFieldsProperties;
 
-class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPropertiesBase
+class QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase
 {
     Q_OBJECT
 
@@ -106,7 +107,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void on_pbnSaveDefaultStyle_clicked();
     void on_pbnLoadStyle_clicked();
     void on_pbnSaveStyleAs_clicked();
-    void on_tabWidget_currentChanged( int idx );
+    void mOptionsStackedWidget_CurrentChanged( int indx );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_pbnUpdateExtents_clicked();
 

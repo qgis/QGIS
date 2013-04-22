@@ -56,7 +56,6 @@ from sextante.parameters.ParameterFile import ParameterFile
 from sextante.parameters.ParameterCrs import ParameterCrs
 from sextante.parameters.ParameterString import ParameterString
 
-from sextante.outputs.OutputHTML import OutputHTML
 from sextante.outputs.OutputRaster import OutputRaster
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
@@ -167,12 +166,6 @@ class ParametersPanel(QtGui.QWidget):
 
             self.verticalLayout.addStretch(1000)
             self.setLayout(self.verticalLayout)
-
-        #=======================================================================
-        # for param in self.alg.parameters:
-        #    if isinstance(param, ParameterExtent):
-        #        self.widgets[param.name].useMinCovering()
-        #=======================================================================
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced

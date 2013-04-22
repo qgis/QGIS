@@ -52,6 +52,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     int mExampleRowCount;
     QString mColumnNamePrefix;
     QString mPluginKey;
+    QString mLastFileType;
 
   private slots:
     void on_buttonBox_accepted();

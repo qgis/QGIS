@@ -164,9 +164,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     // initialize resampling methods
     cboResamplingMethod->clear();
-    foreach ( QString method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
-      cboResamplingMethod->addItem( method );
-
+    QPair<QString, QString> method;
+    foreach ( method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
+    {
+      cboResamplingMethod->addItem( method.second, method.first );
+    }
     // build pyramid list
     QList< QgsRasterPyramid > myPyramidList = provider->buildPyramidList();
     QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
@@ -936,7 +938,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QString res = provider->buildPyramids(
                   myPyramidList,
-                  cboResamplingMethod->currentText(),
+                  cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString(),
                   ( QgsRasterDataProvider::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );

@@ -92,7 +92,7 @@ def layerData( layer ):
             first = False
             for field in f.fields():
                 fields.append(str(field.name()))
-        fielddata = { name: unicode(f[name].toString()) for name in fields }
+        fielddata = dict ( (name, unicode(f[name].toString()) ) for name in fields )
         g = f.geometry()
         if g:
             fielddata[geomkey] = str(g.exportToWkt());
@@ -865,6 +865,38 @@ class TestQgsDelimitedTextProvider(TestCase):
             u'Invalid X or Y fields at line 29',
             u'Invalid X or Y fields at line 30',
             u'Invalid X or Y fields at line 31',
+            ]
+        runTest(description,wanted,log_wanted,filename,**params)
+
+
+    def test_014_decimal_point(self):
+        description='Reading degrees/minutes/seconds angles'
+        filename='testdp.csv'
+        params={'yField': 'geom_y', 'xField': 'geom_x', 'type': 'csv', 'delimiter': ';', 'decimalPoint': ','}
+        if printTests:
+            createTest('014_decimal_point',description,filename,**params)
+            assert False,"Set printTests to False to run delimited text tests"
+        wanted={
+            u'1': {
+                'id': u'1',
+                'description': u'Comma as decimal point 1',
+                'geom_x': u'10',
+                'geom_y': u'20',
+                'other': u'30',
+                'text field': u'Field with , in it',
+                '#geometry': 'POINT(10.0 20.0)',
+                },
+            u'2': {
+                'id': u'2',
+                'description': u'Comma as decimal point 2',
+                'geom_x': u'12',
+                'geom_y': u'25.003',
+                'other': u'-38.55',
+                'text field': u'Plain text field',
+                '#geometry': 'POINT(12.0 25.003)',
+                },
+            }
+        log_wanted=[
             ]
         runTest(description,wanted,log_wanted,filename,**params)
 

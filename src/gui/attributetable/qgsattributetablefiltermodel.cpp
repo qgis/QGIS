@@ -86,6 +86,12 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
   return false;
 }
 
+void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
+{
+  masterModel()->prefetchColumnData( column );
+  QSortFilterProxyModel::sort( column, order );
+}
+
 void QgsAttributeTableFilterModel::setSelectedOnTop( bool selectedOnTop )
 {
   if ( mSelectedOnTop != selectedOnTop )
@@ -117,7 +123,7 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
 void QgsAttributeTableFilterModel::setFilteredFeatures( QgsFeatureIds ids )
 {
   mFilteredFeatures = ids;
-  mFilterMode = ShowFilteredList;
+  setFilterMode( ShowFilteredList );
   invalidateFilter();
 }
 
@@ -127,12 +133,12 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
   {
     if ( filterMode == ShowVisible )
     {
-      connect( mCanvas, SIGNAL( extentsChanged() ), SLOT( extentsChanged() ) );
+      connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
       generateListOfVisibleFeatures();
     }
     else
     {
-      disconnect( SLOT( extentsChanged() ) );
+      disconnect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
     }
 
     if ( filterMode == ShowSelected )
@@ -223,6 +229,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   if ( !renderer )
   {
     QgsDebugMsg( "Cannot get renderer" );
+    return;
   }
 
   if ( layer()->hasScaleBasedVisibility() &&

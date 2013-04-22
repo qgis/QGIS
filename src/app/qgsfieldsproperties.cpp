@@ -40,8 +40,8 @@ QTreeWidgetItem* QgsAttributesTree::addContainer( QTreeWidgetItem* parent, QStri
   newItem->setBackground( 0 , QBrush( Qt::lightGray ) );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
   newItem->setData( 0 , Qt::UserRole , "container" );
-  newItem->setExpanded( true );
   parent->addChild( newItem );
+  newItem->setExpanded( true );
   return newItem;
 }
 
@@ -203,15 +203,16 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   leEditForm->setText( layer->editForm() );
   leEditFormInit->setText( layer->editFormInit() );
 
-  mEditorLayoutComboBox->setCurrentIndex( layer->editorLayout() );
-
-  loadAttributeEditorTree();
   updateButtons();
 }
 
 void QgsFieldsProperties::init()
 {
   loadRows();
+
+  mEditorLayoutComboBox->setCurrentIndex( mLayer->editorLayout() );
+
+  loadAttributeEditorTree();
 }
 
 void QgsFieldsProperties::onAttributeSelectionChanged()

@@ -158,6 +158,7 @@ bool QgsWmsProvider::parseUri( QString uriString )
   mIgnoreGetFeatureInfoUrl = uri.hasParam( "IgnoreGetFeatureInfoUrl" );
   mIgnoreAxisOrientation = uri.hasParam( "IgnoreAxisOrientation" ); // must be before parsing!
   mInvertAxisOrientation = uri.hasParam( "InvertAxisOrientation" ); // must be before parsing!
+  mSmoothPixmapTransform = uri.hasParam( "SmoothPixmapTransform" );
 
   mUserName = uri.param( "username" );
   QgsDebugMsg( "set username to " + mUserName );
@@ -657,8 +658,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     }
 
     //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
-    if ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
-         !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
+    if ( mImageMimeType == "image/x-jpegorpng" ||
+         ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
+           !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) ) )
     {
       setQueryItem( url, "TRANSPARENT", "TRUE" );  // some servers giving error for 'true' (lowercase)
     }
@@ -834,8 +836,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
           setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
         }
 
-        if ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
-             !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
+        if ( mImageMimeType == "image/x-jpegorpng" ||
+             ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
+               !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) ) )
         {
           setQueryItem( url, "TRANSPARENT", "TRUE" );  // some servers giving error for 'true' (lowercase)
         }
@@ -1182,7 +1185,8 @@ void QgsWmsProvider::tileReplyFinished()
       if ( !myLocalImage.isNull() )
       {
         QPainter p( mCachedImage );
-        p.setRenderHint( QPainter::SmoothPixmapTransform, true );
+        if ( mSmoothPixmapTransform )
+          p.setRenderHint( QPainter::SmoothPixmapTransform, true );
         p.drawImage( dst, myLocalImage );
 #if 0
         myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
