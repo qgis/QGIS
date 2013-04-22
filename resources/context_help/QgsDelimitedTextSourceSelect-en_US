@@ -173,7 +173,10 @@ In both cases the SRID is ignored.
 <h4><a name="attributes">Attributes in delimited text files</a></h4> 
 <p>Each record in the delimited text file is split into fields representing
 attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named <tt>field_1</tt>, <tt>field_2</tt>, and so on.  QGis may override 
+data record in the file.  However if this does not contain attribute names, then they will be named <tt>field_1</tt>, <tt>field_2</tt>, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named <tt>field_#</tt>, where # is the field number (note that empty fields at the end of a record are ignored).
+QGis may override 
 the names in the text file if they are numbers, or have names like <tt>field_#</tt>,
 or are duplicated.
 </p>
