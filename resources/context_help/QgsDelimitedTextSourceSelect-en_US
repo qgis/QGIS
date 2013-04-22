@@ -23,10 +23,10 @@ Delimited text files can be loaded into QGIS as a layer.
 The records can be displayed spatially either as a point
 defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
 describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGis.
+only table, which can then be joined to other tables in QGIS.
 </p>
 <p>
-In addition to the geometry definition the file can contain text, integer, and real number fields.  QGis
+In addition to the geometry definition the file can contain text, integer, and real number fields.  QGIS
 will choose the type of field based on its contents. 
 </p>
 <h4><a name="creating">Creating a delimited text layer</a></h4>
@@ -39,12 +39,12 @@ options have been applied.
 <h5>Choosing the data file</h5>
 <p>Use the &quot;Browse...&quot; button to select the data file.  Once the file is selected the
 layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGis legend.  
+the data in the QGIS legend.  
 </p>
 <p>
 By default files are assumed to be encoded as UTF-8.  However other file
 encodings can be selected.  For example &quot;System&quot; uses the default encoding for the operating system.  
-It is safer to use an explicit coding if the QGis project needs to be portable.
+It is safer to use an explicit coding if the QGIS project needs to be portable.
 </p>
 <h5>Specifying the file format</h5>
 <p>The file format can be one of
@@ -79,14 +79,14 @@ It is safer to use an explicit coding if the QGis project needs to be portable.
     <li>Well known text (WKT) geometry: each feature is represented as a well known text string, for example
     <tt>POINT(1.525622 51.20836)</tt>.  See details of the <a href="#wkt">well known text</a> format.
     <li>No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGis</li>
+    in the attribute table and joined to other layers in QGIS</li>
 </ul>
 <p>For point coordinates the following options apply:</p>
 <ul>
     <li>X field: specifies the field containing the X coordinate</li>
     <li>Y field: specifies the field containing the Y coordinate</li>
     <li>DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGis is quite permissive in its interpretation of degrees/minutes/seconds.
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
     A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
     (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
     generally discarded.  For example <tt>N41d54'01.54&quot;</tt> is a valid coordinate.
@@ -96,7 +96,7 @@ It is safer to use an explicit coding if the QGis project needs to be portable.
 <ul>
     <li>Geometry field: the field containing the well known text definition.</li>
     <li>Geometry type: one of &quot;Detect&quot; (detect), &quot;Point&quot;, &quot;Line&quot;, or &quot;Polygon&quot;.
-    QGis layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
     which geometry type is displayed in text files containing multiple geometry types. Records containing
    other geometry types are discarded.   
     If &quot;Detect&quot; is selected then the type of the first geometry in the file will be used.
@@ -133,7 +133,7 @@ are escaped.</p>
 
 <h4><a name="regexp">How regular expression delimiters work</a></h4>
 <p>Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGis uses the syntax provided by the <a href="http://qt-project.org/doc/qt-4.8/qregexp.html">QRegExp</a> class of the <a href="http://qt.digia.com">Qt</a> framework.</p>
+of regular expression syntax - QGIS uses the syntax provided by the <a href="http://qt-project.org/doc/qt-4.8/qregexp.html">QRegExp</a> class of the <a href="http://qt.digia.com">Qt</a> framework.</p>
 <p>In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
 If the regular expression contains capture groups (eg <tt>(cat|dog)</tt>)
  then these are extracted as fields. 
@@ -176,12 +176,12 @@ attributes of the record.  Usually the attribute names are taken from the first
 data record in the file.  However if this does not contain attribute names, then they will be named <tt>field_1</tt>, <tt>field_2</tt>, and so on.  
 Also if records have more fields than are defined in the header record then these
 will be named <tt>field_#</tt>, where # is the field number (note that empty fields at the end of a record are ignored).
-QGis may override 
+QGIS may override 
 the names in the text file if they are numbers, or have names like <tt>field_#</tt>,
 or are duplicated.
 </p>
 <p>
-In addition to the attributes explicitly in the data file QGis assigns a unique 
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
 feature id to each record.  This is the line number in the source file on which
 the record starts.  
 </p>
@@ -272,8 +272,8 @@ The following options can be added
        <li><tt>geomType=(auto|point|line|polygon|none)</tt> specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.</li>
        <li><tt>crs=...</tt> specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &quot;EPSG:4167&quot;).  If this is not 
        specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGis CRS settings).</li>
-       <li><tt>quiet=(yes|no)</tt> specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGis log in any case). The default is no.</li>
+       when the layer is loaded (depending on QGIS CRS settings).</li>
+       <li><tt>quiet=(yes|no)</tt> specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.</li>
 </ul>
 
 
