@@ -477,7 +477,7 @@ class EditorTab(QWidget):
         self.newEditor.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.newEditor.modificationChanged.connect(self.modified)
         if filename:
-            self.newEditor.setText(open(unicode(filename), "rt").read())
+            self.newEditor.setText(open(unicode(filename), "r").read())
             self.newEditor.setModified(False)
             self.path = filename
         
@@ -605,8 +605,11 @@ class EditorTabWidget(QTabWidget):
             self.topFrame.show()
         else:
             self.newTabEditor(filename=None)
+        
+        ## Fixes #7653
+        if sys.platform != 'darwin':
+            self.setDocumentMode(True)
 
-        self.setDocumentMode(True)
         self.setMovable(True)
         #self.setTabsClosable(True)
         self.setTabPosition(QTabWidget.South)
@@ -723,12 +726,13 @@ class EditorTabWidget(QTabWidget):
 
     def restoreTabs(self):
         for script in self.restoreTabList:
-            pathFile = unicode(script.toString())
-            if os.path.exists(pathFile):
-                tabName = pathFile.split('/')[-1]
-                self.newTabEditor(tabName, pathFile)
-            else:
-                self.newTabEditor(filename=None)
+            if script != '':
+                pathFile = unicode(script.toString())
+                if os.path.exists(pathFile):
+                    tabName = pathFile.split('/')[-1]
+                    self.newTabEditor(tabName, pathFile)
+                else:
+                    self.newTabEditor(filename=None)
         self.topFrame.close()
         self.enableToolBarEditor(True)
 
@@ -788,7 +792,7 @@ class EditorTabWidget(QTabWidget):
                         dictObject[name] = class_data.lineno
                         for meth, lineno in sorted(class_data.methods.items(), key=itemgetter(1)):
                             methodItem = QTreeWidgetItem()
-                            methodItem.setText(0, meth)
+                            methodItem.setText(0, meth + ' ')
                             methodItem.setText(1, str(lineno))
                             methodItem.setToolTip(0, meth)
                             methodItem.setIcon(0, QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png"))
@@ -798,7 +802,7 @@ class EditorTabWidget(QTabWidget):
                 for func_name, data in sorted(readModuleFunction.items(), key=lambda x:x[1].lineno):
                     if isinstance(data, pyclbr.Function) and data.file == tabWidget.path:
                         funcItem = QTreeWidgetItem()
-                        funcItem.setText(0, func_name)
+                        funcItem.setText(0, func_name + ' ')
                         funcItem.setText(1, str(data.lineno))
                         funcItem.setToolTip(0, func_name)
                         funcItem.setIcon(0, QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png"))
