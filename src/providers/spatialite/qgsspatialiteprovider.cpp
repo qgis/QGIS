@@ -57,6 +57,9 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       fieldPrec = 0;
       break;
 
+    case QVariant::DateTime:
+    case QVariant::Date:
+    case QVariant::Time:
     case QVariant::String:
       fieldType = "TEXT";
       fieldPrec = -1;

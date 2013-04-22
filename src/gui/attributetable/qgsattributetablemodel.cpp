@@ -33,6 +33,7 @@
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent )
     : QAbstractTableModel( parent )
     , mLayerCache( layerCache )
+    , mCachedField( -1 )
 {
   QgsDebugMsg( "entered." );
 
@@ -51,24 +52,19 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   connect( layer(), SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
   connect( layer(), SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( featureAdded( QgsFeatureId ) ) );
   connect( layer(), SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
-  connect( layer(), SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
-  connect( layer(), SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+  connect( layer(), SIGNAL( updatedFields() ), this, SLOT( updatedFields() ) );
   connect( mLayerCache, SIGNAL( cachedLayerDeleted() ), this, SLOT( layerDeleted() ) );
 }
 
 QgsAttributeTableModel::~QgsAttributeTableModel()
 {
-  if ( layer() )
+  const QMap<QString, QVariant> *item;
+  foreach ( item, mValueMaps )
   {
-    const QgsFields& fields = layer()->pendingFields();
-    for ( int idx = 0; idx < fields.count(); ++idx )
-    {
-      if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
-        continue;
-
-      delete mValueMaps.take( idx );
-    }
+    delete item;
   }
+
+  mValueMaps.clear();
 }
 
 bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
@@ -85,7 +81,7 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
 
 void QgsAttributeTableModel::featureDeleted( QgsFeatureId fid )
 {
-  QgsDebugMsgLevel( QString( "deleted fid=%1 => row=%2" ).arg( fid ).arg( idToRow( fid ) ), 3 );
+  prefetchColumnData( -1 ); // Invalidate cached column data
 
   int row = idToRow( fid );
 
@@ -136,8 +132,7 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
 void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool newOperation )
 {
-  QgsDebugMsgLevel( QString( "feature %1 added (%2, rows %3, ids %4)" ).arg( fid ).arg( newOperation ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
-
+  prefetchColumnData( -1 ); // Invalidate cached column data
   int n = mRowIdMap.size();
   if ( newOperation )
     beginInsertRows( QModelIndex(), n, n );
@@ -151,18 +146,8 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool newOperation )
   reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
 }
 
-void QgsAttributeTableModel::attributeAdded( int idx )
+void QgsAttributeTableModel::updatedFields()
 {
-  Q_UNUSED( idx );
-  QgsDebugMsg( "entered." );
-  loadAttributes();
-  loadLayer();
-  emit modelChanged();
-}
-
-void QgsAttributeTableModel::attributeDeleted( int idx )
-{
-  Q_UNUSED( idx );
   QgsDebugMsg( "entered." );
   loadAttributes();
   emit modelChanged();
@@ -176,18 +161,20 @@ void QgsAttributeTableModel::layerDeleted()
   removeRows( 0, rowCount() );
   endRemoveRows();
 
-  const QgsFields& fields = layer()->pendingFields();
-  for ( int idx = 0; idx < fields.count(); ++idx )
+  const QMap<QString, QVariant> *item;
+  foreach ( item, mValueMaps )
   {
-    if ( layer()->editType( idx ) != QgsVectorLayer::ValueRelation )
-      continue;
-
-    delete mValueMaps.take( idx );
+    delete item;
   }
+
+  mValueMaps.clear();
 }
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
+  if ( mCachedField == idx )
+    mFieldCache[ fid ] = value;
+
   if ( fid == mFeat.id() )
   {
     mFeat.setValid( false );
@@ -294,7 +281,7 @@ void QgsAttributeTableModel::loadAttributes()
 
   mFieldCount = attributes.size();
   mAttributes = attributes;
-  
+
   if ( ins )
   {
     endInsertColumns();
@@ -381,6 +368,19 @@ QModelIndex QgsAttributeTableModel::idToIndex( QgsFeatureId id ) const
   return index( idToRow( id ), 0 );
 }
 
+QModelIndexList QgsAttributeTableModel::idToIndexList( QgsFeatureId id ) const
+{
+  QModelIndexList indexes;
+
+  int row = idToRow( id );
+  for ( int column = 0; column < columnCount(); ++column )
+  {
+    indexes.append( index( row, column ) );
+  }
+
+  return indexes;
+}
+
 QgsFeatureId QgsAttributeTableModel::rowToId( const int row ) const
 {
   if ( !mRowIdMap.contains( row ) )
@@ -449,15 +449,30 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole && role != SortRole ) )
+  if ( !index.isValid() ||
+       ( role != Qt::TextAlignmentRole
+         && role != Qt::DisplayRole
+         && role != Qt::EditRole
+         && role != SortRole
+         && role != FeatureIdRole
+         && role != FieldIndexRole
+       )
+     )
     return QVariant();
 
   QgsFeatureId rowId = rowToId( index.row() );
+
+  if ( role == FeatureIdRole )
+    return rowId;
 
   if ( index.column() >= mFieldCount )
     return role == Qt::DisplayRole ? rowId : QVariant();
 
   int fieldId = mAttributes[ index.column()];
+
+  if ( role == FieldIndexRole )
+    return fieldId;
+
   const QgsField& field = layer()->pendingFields()[ fieldId ];
 
   QVariant::Type fldType = field.type();
@@ -471,17 +486,32 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
       return QVariant( Qt::AlignLeft );
   }
 
+  QVariant val;
+
   // if we don't have the row in current cache, load it from layer first
-  if ( mFeat.id() != rowId || !mFeat.isValid() )
+  if ( mCachedField == fieldId )
   {
-    if ( !loadFeatureAtId( rowId ) )
-      return QVariant( "ERROR" );
+    val = mFieldCache[ rowId ];
+  }
+  else
+  {
+    if ( mFeat.id() != rowId || !mFeat.isValid() )
+    {
+      if ( !loadFeatureAtId( rowId ) )
+        return QVariant( "ERROR" );
+
+      if ( mFeat.id() != rowId )
+        return QVariant( "ERROR" );
+    }
+
+    val = mFeat.attribute( fieldId );
   }
 
-  if ( mFeat.id() != rowId )
-    return QVariant( "ERROR" );
-
-  const QVariant &val = mFeat.attribute( fieldId );
+  // For sorting return unprocessed value
+  if ( SortRole == role )
+  {
+    return val;
+  }
 
   if ( val.isNull() )
   {
@@ -510,10 +540,6 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  if ( role == SortRole )
-  {
-    return val;
-  }
 
   return field.displayString( val );
 }
@@ -584,4 +610,31 @@ QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
   }
 
   return f;
+}
+
+void QgsAttributeTableModel::prefetchColumnData( int column )
+{
+  mFieldCache.clear();
+
+  if ( column == -1 )
+  {
+    mCachedField = -1;
+  }
+  else
+  {
+    int fieldId = mAttributes[ column ];
+    const QgsFields& fields = layer()->pendingFields();
+    QStringList fldNames;
+    fldNames << fields[ fieldId ].name();
+
+    QgsFeatureIterator it = mLayerCache->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fldNames, fields ) );
+
+    QgsFeature f;
+    while ( it.nextFeature( f ) )
+    {
+      mFieldCache.insert( f.id(), f.attribute( fieldId ) );
+    }
+
+    mCachedField = fieldId;
+  }
 }

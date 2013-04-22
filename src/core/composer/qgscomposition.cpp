@@ -1277,7 +1277,7 @@ QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, d
   QList< QGraphicsLineItem* >::const_iterator it = mSnapLines.constBegin();
   for ( ; it != mSnapLines.constEnd(); ++it )
   {
-    bool itemHorizontal = doubleNear(( *it )->line().y2() - ( *it )->line().y1(), 0 );
+    bool itemHorizontal = qgsDoubleNear(( *it )->line().y2() - ( *it )->line().y1(), 0 );
     if ( horizontal && itemHorizontal )
     {
       currentYCoord = ( *it )->line().y1();
@@ -1312,30 +1312,30 @@ QGraphicsLineItem* QgsComposition::nearestSnapLine( bool horizontal, double x, d
 
       if ( horizontal )
       {
-        if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().top(), itemTolerance ) )
+        if ( qgsDoubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().top(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::UpperMiddle ) );
         }
-        else if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().center().y(), itemTolerance ) )
+        else if ( qgsDoubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().center().y(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
         }
-        else if ( doubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().bottom(), itemTolerance ) )
+        else if ( qgsDoubleNear( currentYCoord, currentItem->transform().dy() + currentItem->rect().bottom(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::LowerMiddle ) );
         }
       }
       else
       {
-        if ( doubleNear( currentXCoord, currentItem->transform().dx(), itemTolerance ) )
+        if ( qgsDoubleNear( currentXCoord, currentItem->transform().dx(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleLeft ) );
         }
-        else if ( doubleNear( currentXCoord, currentItem->transform().dx() + currentItem->rect().center().x(), itemTolerance ) )
+        else if ( qgsDoubleNear( currentXCoord, currentItem->transform().dx() + currentItem->rect().center().x(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::Middle ) );
         }
-        else if ( doubleNear( currentXCoord,  currentItem->transform().dx() + currentItem->rect().width(), itemTolerance ) )
+        else if ( qgsDoubleNear( currentXCoord,  currentItem->transform().dx() + currentItem->rect().width(), itemTolerance ) )
         {
           snappedItems.append( qMakePair( currentItem, QgsComposerItem::MiddleRight ) );
         }
@@ -2038,7 +2038,7 @@ void QgsComposition::collectAlignCoordinates( QMap< double, const QgsComposerIte
   {
     double x = ( *sIt )->line().x1();
     double y = ( *sIt )->line().y1();
-    if ( doubleNear( y, 0.0 ) )
+    if ( qgsDoubleNear( y, 0.0 ) )
     {
       alignCoordsX.insert( x, 0 );
     }

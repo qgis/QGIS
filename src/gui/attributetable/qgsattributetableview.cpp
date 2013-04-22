@@ -27,12 +27,14 @@
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsfeatureselectionmodel.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
-    : QTableView( parent ),
-    mMasterModel( NULL ),
-    mFilterModel( NULL ),
-    mActionPopup( NULL )
+    : QTableView( parent )
+    , mMasterModel( NULL )
+    , mFilterModel( NULL )
+    , mFeatureSelectionModel( NULL )
+    , mActionPopup( NULL )
 {
   QSettings settings;
   restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
@@ -40,13 +42,17 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
 
-  setItemDelegate( new QgsAttributeTableDelegate( this ) );
+  mTableDelegate = new QgsAttributeTableDelegate( this );
+  setItemDelegate( mTableDelegate );
 
   setSelectionBehavior( QAbstractItemView::SelectRows );
   setSelectionMode( QAbstractItemView::ExtendedSelection );
   setSortingEnabled( true );
 
   verticalHeader()->viewport()->installEventFilter( this );
+
+  connect( verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( selectRow( int ) ) );
+  connect( verticalHeader(), SIGNAL( sectionEntered( int ) ), this, SLOT( _q_selectRow( int ) ) );
 }
 
 QgsAttributeTableView::~QgsAttributeTableView()
@@ -70,23 +76,28 @@ void QgsAttributeTableView::setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVec
 
   mFilterModel = new QgsAttributeTableFilterModel( canvas, mMasterModel, mMasterModel );
   setModel( mFilterModel );
+  delete mFeatureSelectionModel;
+  mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, layerCache->layer(), mFilterModel );
+  connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
+  connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
+  setSelectionModel( mFeatureSelectionModel );
 
   delete oldModel;
   delete filterModel;
 }
 
-bool QgsAttributeTableView::eventFilter(QObject *object, QEvent *event)
+bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
 {
   if ( object == verticalHeader()->viewport() )
   {
     switch ( event->type() )
     {
       case QEvent::MouseButtonPress:
-        mFilterModel->disableSelectionSync();
+        mFeatureSelectionModel->enableSync( false );
         break;
 
       case QEvent::MouseButtonRelease:
-        mFilterModel->enableSelectionSync();
+        mFeatureSelectionModel->enableSync( true );
         break;
 
       default:
@@ -101,9 +112,6 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
   if ( mFilterModel )
   {
     // Cleanup old model stuff if present
-    disconnect( mMasterSelection, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onMasterSelectionChanged( QItemSelection, QItemSelection ) ) );
-    disconnect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
-
     disconnect( mFilterModel, SIGNAL( filterAboutToBeInvalidated() ), this, SLOT( onFilterAboutToBeInvalidated() ) );
     disconnect( mFilterModel, SIGNAL( filterInvalidated() ), this, SLOT( onFilterInvalidated() ) );
   }
@@ -111,22 +119,12 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
   mFilterModel = filterModel;
   QTableView::setModel( filterModel );
 
-  if ( filterModel )
-  {
-    // Connect new model stuff
-    mMasterSelection = mFilterModel->masterSelection();
-
-    connect( mMasterSelection, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( onMasterSelectionChanged( QItemSelection, QItemSelection ) ) );
-    connect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
-
-    connect( mFilterModel, SIGNAL( filterAboutToBeInvalidated() ), SLOT( onFilterAboutToBeInvalidated() ) );
-    connect( mFilterModel, SIGNAL( filterInvalidated() ), SLOT( onFilterInvalidated() ) );
-  }
-}
-
-QItemSelectionModel* QgsAttributeTableView::masterSelection()
-{
-  return mMasterSelection;
+  delete mFeatureSelectionModel;
+  mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, mFilterModel->layer(), mFilterModel );
+  setSelectionModel( mFeatureSelectionModel );
+  mTableDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
+  connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
+  connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
 }
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
@@ -179,47 +177,24 @@ void QgsAttributeTableView::keyPressEvent( QKeyEvent *event )
   }
 }
 
-void QgsAttributeTableView::onFilterAboutToBeInvalidated()
+void QgsAttributeTableView::repaintRequested( QModelIndexList indexes )
 {
-  disconnect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
+  foreach ( const QModelIndex index, indexes )
+  {
+    update( index );
+  }
 }
 
-void QgsAttributeTableView::onFilterInvalidated()
+void QgsAttributeTableView::repaintRequested()
 {
-  QItemSelection localSelection = mFilterModel->mapSelectionFromSource( mMasterSelection->selection() );
-  selectionModel()->select( localSelection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
-  connect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
-}
-
-void QgsAttributeTableView::onSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
-{
-  disconnect( mMasterSelection, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onMasterSelectionChanged( QItemSelection, QItemSelection ) ) );
-  QItemSelection masterSelected = mFilterModel->mapSelectionToSource( selected );
-  QItemSelection masterDeselected = mFilterModel->mapSelectionToSource( deselected );
-
-  mMasterSelection->select( masterSelected, QItemSelectionModel::Select );
-  mMasterSelection->select( masterDeselected, QItemSelectionModel::Deselect );
-  connect( mMasterSelection, SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), SLOT( onMasterSelectionChanged( QItemSelection, QItemSelection ) ) );
-}
-
-void QgsAttributeTableView::onMasterSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected )
-{
-  Q_UNUSED( selected )
-  Q_UNUSED( deselected )
-  disconnect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
-
-  // Synchronizing the whole selection seems to work faster than using the deltas (Deselecting takes pretty long)
-  QItemSelection localSelection = mFilterModel->mapSelectionFromSource( mMasterSelection->selection() );
-  selectionModel()->select( localSelection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
-
-  connect( selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onSelectionChanged( QItemSelection, QItemSelection ) ) );
+  setDirtyRegion( viewport()->rect() );
 }
 
 void QgsAttributeTableView::selectAll()
 {
   QItemSelection selection;
   selection.append( QItemSelectionRange( mFilterModel->index( 0, 0 ), mFilterModel->index( mFilterModel->rowCount() - 1, 0 ) ) );
-  selectionModel()->select( selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+  mFeatureSelectionModel->selectFeatures( selection, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
 }
 
 void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
@@ -250,5 +225,53 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent* event )
   if ( mActionPopup->actions().count() > 0 )
   {
     mActionPopup->popup( event->globalPos() );
+  }
+}
+
+void QgsAttributeTableView::selectRow( int row )
+{
+  selectRow( row, true );
+}
+
+void QgsAttributeTableView::_q_selectRow( int row )
+{
+  selectRow( row, false );
+}
+
+void QgsAttributeTableView::selectRow( int row, bool anchor )
+{
+  if ( selectionBehavior() == QTableView::SelectColumns
+       || ( selectionMode() == QTableView::SingleSelection
+            && selectionBehavior() == QTableView::SelectItems ) )
+    return;
+
+  if ( row >= 0 && row < model()->rowCount() )
+  {
+    int column = horizontalHeader()->logicalIndexAt( isRightToLeft() ? viewport()->width() : 0 );
+    QModelIndex index = model()->index( row, column );
+    QItemSelectionModel::SelectionFlags command =  selectionCommand( index );
+    selectionModel()->setCurrentIndex( index, QItemSelectionModel::NoUpdate );
+    if (( anchor && !( command & QItemSelectionModel::Current ) )
+        || ( selectionMode() == QTableView::SingleSelection ) )
+      mRowSectionAnchor = row;
+
+    if ( selectionMode() != QTableView::SingleSelection
+         && command.testFlag( QItemSelectionModel::Toggle ) )
+    {
+      if ( anchor )
+        mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index )
+                                 ? QItemSelectionModel::Deselect : QItemSelectionModel::Select;
+      command &= ~QItemSelectionModel::Toggle;
+      command |= mCtrlDragSelectionFlag;
+      if ( !anchor )
+        command |= QItemSelectionModel::Current;
+    }
+
+    QModelIndex tl = model()->index( qMin( mRowSectionAnchor, row ), 0 );
+    QModelIndex br = model()->index( qMax( mRowSectionAnchor, row ), model()->columnCount() - 1 );
+    if ( verticalHeader()->sectionsMoved() && tl.row() != br.row() )
+      setSelection( visualRect( tl ) | visualRect( br ), command );
+    else
+      mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
   }
 }

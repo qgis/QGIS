@@ -47,7 +47,7 @@ class OgrAlgorithm(GeoAlgorithm):
         layer = QGisLayers.getObjectFromUri(uri, False)
         if layer == None:
             return uri;
-        provider = layer.dataProvider().name()        
+        provider = layer.dataProvider().name()
         if provider == 'spatialite':
             #dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
             regex = re.compile("dbname='(.+)'")

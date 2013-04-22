@@ -34,7 +34,6 @@ from sextante.core.SextanteUtils import SextanteUtils, mkdir
 from sextante.core.SextanteLog import SextanteLog
 import stat
 import shutil
-import plugin_installer
 
 class GrassUtils:
 
@@ -43,7 +42,7 @@ class GrassUtils:
     GRASS_REGION_XMAX = "GRASS_REGION_XMAX"
     GRASS_REGION_YMAX = "GRASS_REGION_YMAX"
     GRASS_REGION_CELLSIZE = "GRASS_REGION_CELLSIZE"
-    GRASS_FOLDER = "GRASS_FOLDER"    
+    GRASS_FOLDER = "GRASS_FOLDER"
     GRASS_WIN_SHELL = "GRASS_WIN_SHELL"
     GRASS_LOG_COMMANDS = "GRASS_LOG_COMMANDS"
     GRASS_LOG_CONSOLE = "GRASS_LOG_CONSOLE"
@@ -76,16 +75,14 @@ class GrassUtils:
 
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_FOLDER)
         if folder == None:
-            if SextanteUtils.isWindows():
-                folder = plugin_installer.__file__
-                idx = folder.find('qgis')
-                folder = folder[:idx] + "grass"
-                if not os.path.isdir(folder):
-                    return ""
-                for subfolder in os.listdir(folder):
-                    if subfolder.startswith("grass"):
-                        folder = folder + os.sep + subfolder
-                        break
+            if SextanteUtils.isWindows():                    
+                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))                                
+                testfolder = os.path.join(testfolder,  "grass")
+                if os.path.isdir(testfolder):                                                                
+                    for subfolder in os.listdir(testfolder):
+                        if subfolder.startswith("grass"):
+                            folder = os.path.join(testfolder, subfolder)
+                            break
             else:
                 folder = os.path.join(str(QgsApplication.prefixPath()), "grass")
                 if not os.path.isdir(folder):
@@ -97,10 +94,8 @@ class GrassUtils:
     def grassWinShell():
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_WIN_SHELL)
         if folder == None:
-            folder = plugin_installer.__file__
-            idx = folder.find('qgis')
-            folder = folder[:idx] + "msys"
-
+            folder = os.path.dirname(str(QgsApplication.prefixPath()))                
+            folder = os.path.join(folder,  "msys")            
         return folder
 
     @staticmethod
@@ -326,8 +321,8 @@ class GrassUtils:
                         + "folder is correctly configured")
 
         settings = QSettings()
+        GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"
         if not ignoreRegistrySettings:
-            GRASS_INSTALLED = "/SextanteQGIS/GrassInstalled"
             if settings.contains(GRASS_INSTALLED):
                 return
 

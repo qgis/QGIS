@@ -79,5 +79,5 @@ class ReprojectLayer(GeoAlgorithm):
             progress.setPercentage(int(current * total))
 
         del writer
-        
+
         self.crs = targetCrs

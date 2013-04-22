@@ -38,11 +38,26 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theDataType raster data type
      *  @param theWidth width of data matrix
      *  @param theHeight height of data matrix
+     */
+    QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight );
+
+    /** \brief Constructor which allocates data block in memory
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
      *  @param theNoDataValue the value representing no data (NULL)
      */
-    QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
+    QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     virtual ~QgsRasterBlock();
+
+    /** \brief Reset block
+     *  @param theDataType raster data type
+     *  @param theWidth width of data matrix
+     *  @param theHeight height of data matrix
+     *  @return true on success
+     */
+    bool reset( QGis::DataType theDataType, int theWidth, int theHeight );
 
     /** \brief Reset block
      *  @param theDataType raster data type
@@ -51,7 +66,7 @@ class CORE_EXPORT QgsRasterBlock
      *  @param theNoDataValue the value representing no data (NULL)
      *  @return true on success
      */
-    bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue = std::numeric_limits<double>::quiet_NaN() );
+    bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
 
     // TODO: consider if use isValid() at all, isEmpty() should be sufficient
     // and works also if block is valid but empty - difference between valid and empty?
@@ -107,9 +122,8 @@ class CORE_EXPORT QgsRasterBlock
     }
 
     // Data type in bytes
-    int dataTypeSize( int bandNo ) const
+    int dataTypeSize( ) const
     {
-      Q_UNUSED( bandNo );
       return typeSize( mDataType );
     }
 
@@ -125,36 +139,36 @@ class CORE_EXPORT QgsRasterBlock
     /** For given data type returns wider type and sets no data value */
     static QGis::DataType typeWithNoDataValue( QGis::DataType dataType, double *noDataValue );
 
-    /** Return no data value.
+    /** True if the block has no data value.
+     * @return true if the block has no data value */
+    bool hasNoDataValue() const { return mHasNoDataValue; }
+
+    /** Returns true if thee block may contain no data. It does not guarantee
+     * that it really contains any no data. It can be used to speed up processing.
+     * Not the difference between this method and hasNoDataValue().
+     * @return true if the block may contain no data */
+    bool hasNoData() const;
+
+    /** Return no data value. If the block does not have a no data value the
+     *  returned value is undefined.
      * @return No data value */
     double noDataValue() const { return mNoDataValue; }
 
-    /** Set no data value.
-     * @param noDataValue the value to be considered no data
-     */
-    void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
-
-    /** Test if value is nodata comparing to noDataValue
-     * @param value tested value
-     * @param noDataValue no data value
-     * @return true if value is nodata */
-    static bool isNoDataValue( double value, double noDataValue );
-
-    /** Test if value is nodata for specific band
-     * @param value tested value
-     * @return true if value is nodata */
-    bool isNoDataValue( double value ) const;
-
-    // get byte array representing no data value
+    /** Get byte array representing a value.
+     * @param theDataType data type
+     * @param theValue value
+     * @return byte array representing the value */
     static QByteArray valueBytes( QGis::DataType theDataType, double theValue );
 
-    /** \brief Read a single value
+    /** \brief Read a single value if type of block is numeric. If type is color,
+     *  returned value is undefined.
      *  @param row row index
      *  @param column column index
      *  @return value */
     double value( int row, int column ) const;
 
-    /** \brief Read a single value
+    /** \brief Read a single value if type of block is numeric. If type is color,
+     *  returned value is undefined.
      *  @param index data matrix index
      *  @return value */
     double value( size_t index ) const;
@@ -201,6 +215,12 @@ class CORE_EXPORT QgsRasterBlock
      *  @return true on success */
     bool setColor( int row, int column, QRgb color );
 
+    /** \brief Set color on index (indexed line by line)
+     *  @param index data matrix index
+     *  @param color the color to be set, QRgb value
+     *  @return true on success */
+    bool setColor( size_t index, QRgb color );
+
     /** \brief Set no data on pixel
      *  @param row row index
      *  @param column column index
@@ -216,11 +236,9 @@ class CORE_EXPORT QgsRasterBlock
      *  @return true on success */
     bool setIsNoData( );
 
-    /** \brief Set color on index (indexed line by line)
-     *  @param index data matrix index
-     *  @param color the color to be set, QRgb value
+    /** \brief Set the whole block to no data except specified rectangle
      *  @return true on success */
-    bool setColor( size_t index, QRgb color );
+    bool setIsNoDataExcept( const QRect & theExceptRect );
 
     /** \brief Get pointer to data
      *  @param row row index
@@ -231,9 +249,12 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Get pointer to data
      *  @param index data matrix index
-     *  @return pointer to data
-     */
+     *  @return pointer to data */
     char * bits( size_t index );
+
+    /** \brief Get pointer to data
+     *  @return pointer to data */
+    char * bits();
 
     /** \brief Print double value with all necessary significant digits.
      *         It is ensured that conversion back to double gives the same number.
@@ -243,24 +264,60 @@ class CORE_EXPORT QgsRasterBlock
 
     /** \brief Convert data to different type.
      *  @param destDataType dest data type
-     *  @return true on success
-     */
+     *  @return true on success */
     bool convert( QGis::DataType destDataType );
 
+    /** \brief Get image if type is color.
+    *   @return image */
     QImage image() const;
+
+    /** \brief set image.
+     *  @param image image
+     *  @return true on success */
     bool setImage( const QImage * image );
 
-    /** Create a new image with extraneous data, such data may be used
-     *  after the image is destroyed. The memory is not initialized.
+    inline static double readValue( void *data, QGis::DataType type, size_t index );
+
+    inline static void writeValue( void *data, QGis::DataType type, size_t index, double value );
+
+    void applyNoDataValues( const QgsRasterRangeList & rangeList );
+
+    /** \brief Get error */
+    QgsError error() const { return mError; }
+
+    /** \brief Set error */
+    void setError( const QgsError & theError ) { mError = theError;}
+
+    /** \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
+     * The output rect has x oriented from left to right and y from top to bottom
+     * (upper-left to lower-right orientation).
+     * @param theExtent extent, usually the larger
+     * @param theWidth numbers of columns in theExtent
+     * @param theHeight numbers of rows in theExtent
+     * @param theSubExtent extent, usually smaller than theExtent
+     * @return the rectangle covered by sub extent
      */
-    // TODO: remove, no more necessary with QgsRasterBlock
-    QImage * createImage( int width, int height, QImage::Format format );
+    static QRect subRect( const QgsRectangle & theExtent, int theWidth, int theHeight, const QgsRectangle &  theSubExtent );
 
-    // TODO: remove this direct access to data, it was used in transition period
-    void * data() { if ( mData ) return mData; return mImage->bits(); }
+  private:
+    static QImage::Format imageFormat( QGis::DataType theDataType );
+    static QGis::DataType dataType( QImage::Format theFormat );
 
+    /** Test if value is nodata comparing to noDataValue
+     * @param value tested value
+     * @param noDataValue no data value
+     * @return true if value is nodata */
+    static bool isNoDataValue( double value, double noDataValue );
 
-    // TODO: move to private, currently used by file writer
+    /** Test if value is nodata for specific band
+     * @param value tested value
+     * @return true if value is nodata */
+    bool isNoDataValue( double value ) const;
+
+    /** Allocate no data bitmap
+     *  @return true on success */
+    bool createNoDataBitmap();
+
     /** \brief Convert block of data from one type to another. Original block memory
      *         is not release.
      *  @param srcData source data
@@ -269,23 +326,6 @@ class CORE_EXPORT QgsRasterBlock
      *  @param size block size (width * height)
      *  @return block of data in destDataType */
     static void * convert( void *srcData, QGis::DataType srcDataType, QGis::DataType destDataType, size_t size );
-
-    inline static double readValue( void *data, QGis::DataType type, size_t index );
-
-    inline static void writeValue( void *data, QGis::DataType type, size_t index, double value );
-
-    void applyNodataValues( const QgsRasterRangeList & rangeList );
-
-    /** \brief Get error */
-    QgsError error() const { return mError; }
-
-    /** \brief Set error */
-    void setError( const QgsError & theError ) { mError = theError;}
-
-  private:
-
-    static QImage::Format imageFormat( QGis::DataType theDataType );
-    static QGis::DataType dataType( QImage::Format theFormat );
 
     // Valid
     bool mValid;
@@ -302,6 +342,9 @@ class CORE_EXPORT QgsRasterBlock
     // Height
     int mHeight;
 
+    // Has no data value
+    bool mHasNoDataValue;
+
     // No data value
     double mNoDataValue;
 
@@ -312,25 +355,28 @@ class CORE_EXPORT QgsRasterBlock
     // Image for image data types, not used with numerical data types
     QImage *mImage;
 
+    // Bitmap of no data. One bit for each pixel. Bit is 1 if a pixels is no data.
+    // Each row is represented by whole number of bytes (last bits may be unused)
+    // to make processing rows easy.
+    char *mNoDataBitmap;
+
+    // number of bytes in mNoDataBitmap row
+    int mNoDataBitmapWidth;
+
+    // total size in bytes of mNoDataBitmap
+    size_t mNoDataBitmapSize;
+
     // Error
     QgsError mError;
 };
 
 inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, size_t index )
 {
-#if 0
-  if ( !mInput )
-  {
-    return 0;
-  }
-
   if ( !data )
   {
-    return mInput->noDataValue();
+    return std::numeric_limits<double>::quiet_NaN();
   }
-#endif
 
-  // TODO: define QGIS types to avoid cpl_port.h
   switch ( type )
   {
     case QGis::Byte:
@@ -355,12 +401,10 @@ inline double QgsRasterBlock::readValue( void *data, QGis::DataType type, size_t
       return ( double )(( double * )data )[index];
       break;
     default:
-      //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
+      QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );
       break;
   }
 
-  // TODO: noDataValue is per band
-  //return mInput->noDataValue();
   return std::numeric_limits<double>::quiet_NaN();
 }
 
@@ -392,31 +436,19 @@ inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, size_t 
       (( double * )data )[index] = value;
       break;
     default:
-      //QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
+      QgsDebugMsg( QString( "Data type %1 is not supported" ).arg( type ) );
       break;
   }
 }
 
 inline double QgsRasterBlock::value( size_t index ) const
 {
-  /*if ( index >= ( size_t )mWidth*mHeight )
-  {
-    QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
-    return mNoDataValue;
-  }*/
   return readValue( mData, mDataType, index );
 }
 
 inline bool QgsRasterBlock::isNoDataValue( double value ) const
 {
-  // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
-  // not important and slower
-  if ( qIsNaN( value ) ||
-       doubleNear( value, mNoDataValue ) )
-  {
-    return true;
-  }
-  return false;
+  return qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue );
 }
 
 #endif

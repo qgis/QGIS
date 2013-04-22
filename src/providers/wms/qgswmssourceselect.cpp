@@ -109,6 +109,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
 
     layout->addStretch();
     btnGrpImageEncoding->setLayout( layout );
+    setTabOrder( lstLayers, mImageFormatGroup->button( 0 ) );
 
     //set the current project CRS if available
     long currentCRS = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
@@ -292,6 +293,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   if ( !wmsProvider->supportedLayers( layers ) )
     return false;
 
+  bool first = true;
   foreach ( QString encoding, wmsProvider->supportedImageEncodings() )
   {
     int id = mMimeMap.value( encoding, -1 );
@@ -302,6 +304,11 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
     }
 
     mImageFormatGroup->button( id )->setVisible( true );
+    if ( first )
+    {
+      mImageFormatGroup->button( id )->setChecked( true );
+      first = false;
+    }
   }
 
   btnGrpImageEncoding->setEnabled( true );

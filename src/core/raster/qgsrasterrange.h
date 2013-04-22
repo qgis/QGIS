@@ -1,5 +1,5 @@
 /***************************************************************************
-          qgsrasterrange.h 
+          qgsrasterrange.h
      --------------------------------------
     Date                 : Oct 9, 2012
     Copyright            : (C) 2012 by Radim Blazek
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsRasterRange
      *  @param theMin minimum value
      *  @param theMax max value
      */
-    QgsRasterRange( double theMin, double theMax  );
+    QgsRasterRange( double theMin, double theMax );
 
     ~QgsRasterRange();
 

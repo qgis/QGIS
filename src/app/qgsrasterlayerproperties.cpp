@@ -66,7 +66,7 @@
 #include <QVector>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl ),
+    : QgsOptionsDialogBase( "RasterLayerProperties", parent, fl ),
     // Constant that signals property not used.
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
     mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) ), mRendererWidget( 0 )
@@ -75,13 +75,18 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mRGBMinimumMaximumEstimated = true;
 
   setupUi( this );
+  // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
+  // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
+  // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
+  initOptionsBase( false );
 
   mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.png" ) );
   mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomOut.png" ) );
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+
+  connect( mOptionsStackedWidget, SIGNAL( currentChanged( int ) ), this, SLOT( mOptionsStackedWidget_CurrentChanged( int ) ) );
 
   connect( sliderTransparency, SIGNAL( valueChanged( int ) ), this, SLOT( sliderTransparency_valueChanged( int ) ) );
 
@@ -128,10 +133,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   QIcon myPyramidPixmap( QgsApplication::getThemeIcon( "/mIconPyramid.png" ) );
   QIcon myNoPyramidPixmap( QgsApplication::getThemeIcon( "/mIconNoPyramid.png" ) );
 
-  pbnAddValuesManually->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
+  pbnAddValuesManually->setIcon( QgsApplication::getThemeIcon( "/mActionSignPlus.png" ) );
   pbnAddValuesFromDisplay->setIcon( QgsApplication::getThemeIcon( "/mActionContextHelp.png" ) );
-  pbnRemoveSelectedRow->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
-  pbnDefaultValues->setIcon( QgsApplication::getThemeIcon( "/mActionRemove.png" ) );
+  pbnRemoveSelectedRow->setIcon( QgsApplication::getThemeIcon( "/mActionSignMinus.png" ) );
+  pbnDefaultValues->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
   pbnImportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileOpen.png" ) );
   pbnExportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( "/mActionFileSave.png" ) );
 
@@ -159,9 +164,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     // initialize resampling methods
     cboResamplingMethod->clear();
-    foreach ( QString method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
-      cboResamplingMethod->addItem( method );
-
+    QPair<QString, QString> method;
+    foreach ( method, QgsRasterDataProvider::pyramidResamplingMethods( mRasterLayer->providerType() ) )
+    {
+      cboResamplingMethod->addItem( method.second, method.first );
+    }
     // build pyramid list
     QList< QgsRasterPyramid > myPyramidList = provider->buildPyramidList();
     QList< QgsRasterPyramid >::iterator myRasterPyramidIterator;
@@ -187,13 +194,16 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   else
   {
     // disable Pyramids tab completely
-    tabPagePyramids->setEnabled( false );
+    mOptsPage_Pyramids->setEnabled( false );
   }
 
-  if ( !( provider->capabilities() & QgsRasterDataProvider::Histogram ) )
+  // We can calculate histogram for all data sources but estimated only if
+  // size is unknown - could also be enabled if well supported (estimated histogram
+  // and and let user know that it is estimated)
+  if ( !( provider->capabilities() & QgsRasterDataProvider::Size ) )
   {
     // disable Histogram tab completely
-    tabPageHistogram->setEnabled( false );
+    mOptsPage_Histogram->setEnabled( false );
   }
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt() );
@@ -213,9 +223,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   tePyramidDescription->setHtml( pyramidFormat.arg( pyramidHeader ).arg( pyramidSentence1 )
                                  .arg( pyramidSentence2 ).arg( pyramidSentence3 )
                                  .arg( pyramidSentence4 ).arg( pyramidSentence5 ) );
-
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/RasterLayerProperties/geometry" ).toByteArray() );
 
   setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
 
@@ -268,7 +275,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   }
 
   // Hue and saturation color control
-  mHueSaturationGroupBox->setSaveCheckedState( true );
   const QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
   //set hue and saturation controls to current values
   if ( hueSaturationFilter )
@@ -322,9 +328,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   // create histogram widget
   mHistogramWidget = NULL;
-  if ( tabPageHistogram->isEnabled() )
+  if ( mOptsPage_Histogram->isEnabled() )
   {
-    mHistogramWidget = new QgsRasterHistogramWidget( mRasterLayer, tabPageHistogram );
+    mHistogramWidget = new QgsRasterHistogramWidget( mRasterLayer, mOptsPage_Histogram );
     mHistogramStackedWidget->addWidget( mHistogramWidget );
   }
 
@@ -369,25 +375,38 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
       mRenderTypeComboBox->removeItem( mRenderTypeComboBox->findData( "singlebandcolordata" ) );
     }
 #endif
+    if ( rendererType == "singlebandcolordata" && mRenderTypeComboBox->count() == 1 )
+    {
+      // no band rendering options for singlebandcolordata, so minimize group box
+      QSizePolicy sizep = mBandRenderingGrpBx->sizePolicy();
+      sizep.setVerticalStretch( 0 );
+      sizep.setVerticalPolicy( QSizePolicy::Maximum );
+      mBandRenderingGrpBx->setSizePolicy( sizep );
+      mBandRenderingGrpBx->updateGeometry();
+    }
   }
   on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
-
-  updatePipeList();
 
   // update based on lyr's current state
   sync();
 
-  // set current tab after everything has been initialized
-  tabBar->setCurrentIndex( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
+  QSettings settings;
+  // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
+  // this will be read by restoreOptionsBaseUi()
+  if ( !settings.contains( QString( "/Windows/RasterLayerProperties/tab" ) ) )
+  {
+    settings.setValue( QString( "/Windows/RasterLayerProperties/tab" ),
+                       mOptStackedWidget->indexOf( mOptsPage_Style ) );
+  }
 
+  mResetColorRenderingBtn->setIcon( QgsApplication::getThemeIcon( "/mActionUndo.png" ) );
+
+  restoreOptionsBaseUi();
 } // QgsRasterLayerProperties ctor
 
 
 QgsRasterLayerProperties::~QgsRasterLayerProperties()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/RasterLayerProperties/geometry", saveGeometry() );
-  settings.setValue( "/Windows/RasterLayerProperties/row", tabBar->currentIndex() );
   if ( mPixelSelectorTool )
   {
     delete mPixelSelectorTool;
@@ -531,7 +550,7 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
   @note moved from ctor
 
   Previously this dialog was created anew with each right-click pop-up menu
-  invokation.  Changed so that the dialog always exists after first
+  invocation.  Changed so that the dialog always exists after first
   invocation, and is just re-synchronized with its layer's state when
   re-shown.
 
@@ -545,24 +564,25 @@ void QgsRasterLayerProperties::sync()
   {
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
-    tabBar->setCurrentWidget( tabPageMetadata );
+    mOptionsStackedWidget->setCurrentWidget( mOptsPage_Metadata );
   }
 
+  // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
-    if ( tabPagePyramids != NULL )
+    if ( mOptsPage_Pyramids != NULL )
     {
-      delete tabPagePyramids;
-      tabPagePyramids = NULL;
+      delete mOptsPage_Pyramids;
+      mOptsPage_Pyramids = NULL;
     }
   }
 
-  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
+  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size ) )
   {
-    if ( tabPageHistogram != NULL )
+    if ( mOptsPage_Histogram != NULL )
     {
-      delete tabPageHistogram;
-      tabPageHistogram = NULL;
+      delete mOptsPage_Histogram;
+      mOptsPage_Histogram = NULL;
       delete mHistogramWidget;
       mHistogramWidget = NULL;
     }
@@ -676,7 +696,7 @@ void QgsRasterLayerProperties::sync()
     // TODO: all bands
     if ( mRasterLayer->dataProvider()->srcHasNoDataValue( 1 ) )
     {
-      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->noDataValue( 1 ) ) );
+      lblNoData->setText( tr( "No-Data Value: %1" ).arg( mRasterLayer->dataProvider()->srcNoDataValue( 1 ) ) );
     }
     else
     {
@@ -887,8 +907,6 @@ void QgsRasterLayerProperties::apply()
 
   // notify the project we've made a change
   QgsProject::instance()->dirty( true );
-
-  updatePipeList();
 }//apply
 
 void QgsRasterLayerProperties::on_mLayerOrigNameLineEd_textEdited( const QString& text )
@@ -920,7 +938,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QApplication::setOverrideCursor( Qt::WaitCursor );
   QString res = provider->buildPyramids(
                   myPyramidList,
-                  cboResamplingMethod->currentText(),
+                  cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString(),
                   ( QgsRasterDataProvider::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
@@ -1079,31 +1097,6 @@ void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()
   delete r; // really delete?
 
   setupTransparencyTable( nBands );
-
-// I don't think that noDataValue should be added to transparency list
-#if 0
-  if ( nBands == 3 )
-  {
-    if ( mRasterLayer->isNoDataValueValid() )
-    {
-      tableTransparency->insertRow( tableTransparency->rowCount() );
-      setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 1, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 2, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 1, 100 );
-    }
-  }
-  else //1 band
-  {
-    if ( mRasterLayer->isNoDataValueValid() )
-    {
-      tableTransparency->insertRow( tableTransparency->rowCount() );
-      setTransparencyCell( 0, 0, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 1, mRasterLayer->noDataValue() );
-      setTransparencyCell( 0, 1, 100 );
-    }
-  }
-#endif
 
   tableTransparency->resizeColumnsToContents(); // works only with values
   tableTransparency->resizeRowsToContents();
@@ -1311,11 +1304,11 @@ void QgsRasterLayerProperties::setTransparencyToEdited( int row )
   mTransparencyToEdited[row] = true;
 }
 
-void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
+void QgsRasterLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
 {
   if ( mHistogramWidget == 0 ) return;
 
-  if ( theTab == 5 )
+  if ( indx == 5 )
   {
     mHistogramWidget->setActive( true );
   }
@@ -1458,20 +1451,18 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
 
     QList<int> bands = renderer->usesBands();
 
-    QgsRasterDataProvider * provider = mRasterLayer->dataProvider();
     QList<double> values;
     for ( int i = 0; i < bands.size(); ++i )
     {
       int bandNo = bands.value( i );
       if ( myPixelMap.count( bandNo ) == 1 )
       {
-        double value = myPixelMap.value( bandNo ).toDouble();
-        QgsDebugMsg( QString( "value = %1" ).arg( value, 0, 'g', 17 ) );
-
-        if ( provider->isNoDataValue( bandNo, value ) )
+        if ( myPixelMap.value( bandNo ).isNull() )
         {
           return; // Don't add nodata, transparent anyway
         }
+        double value = myPixelMap.value( bandNo ).toDouble();
+        QgsDebugMsg( QString( "value = %1" ).arg( value, 0, 'g', 17 ) );
         values.append( value );
       }
     }
@@ -1691,22 +1682,6 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   settings.setValue( "style/lastStyleDir", QFileInfo( outputFileName ).absolutePath() );
 }
 
-#if 0
-void QgsRasterLayerProperties::on_btnResetNull_clicked( )
-{
-  //If reset NoDataValue is checked do this first, will ignore what ever is in the LineEdit
-  mRasterLayer->resetNoDataValue();
-  if ( mRasterLayer->isNoDataValueValid() )
-  {
-    leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'g' ) );
-  }
-  else
-  {
-    leNoDataValue->clear();
-  }
-}
-#endif
-
 void QgsRasterLayerProperties::toggleBuildPyramidsButton()
 {
   if ( lbxPyramidResolutions->selectedItems().empty() )
@@ -1716,107 +1691,6 @@ void QgsRasterLayerProperties::toggleBuildPyramidsButton()
   else
   {
     buttonBuildPyramids->setEnabled( true );
-  }
-}
-
-void QgsRasterLayerProperties::updatePipeList()
-{
-  QgsDebugMsg( "Entered" );
-
-#ifndef QGISDEBUG
-  tabBar->removeTab( tabBar->indexOf( tabPagePipe ) );
-#else
-  mPipeTreeWidget->clear();
-
-  mPipeTreeWidget->header()->setResizeMode( QHeaderView::ResizeToContents );
-
-  if ( mPipeTreeWidget->columnCount() <= 1 )
-  {
-    QStringList labels;
-    labels << tr( "Filter" ) << tr( "Bands" );
-    mPipeTreeWidget->setHeaderLabels( labels );
-    connect( mPipeTreeWidget, SIGNAL( itemClicked( QTreeWidgetItem *, int ) ), this, SLOT( pipeItemClicked( QTreeWidgetItem *, int ) ) );
-  }
-
-  QgsRasterPipe *pipe = mRasterLayer->pipe();
-  for ( int i = 0; i < pipe->size(); i++ )
-  {
-    QgsRasterInterface * interface = pipe->at( i );
-    QStringList texts;
-    QString name;
-    // Unfortunately at this moment not all interfaces inherits from QObject
-    QObject *o = dynamic_cast<QObject*>( interface );
-    if ( o )
-    {
-      //name = o->objectName(); // gives empty with provider
-      name = o->metaObject()->className();
-    }
-    else
-    {
-      name = QString( typeid( *interface ).name() ).replace( QRegExp( ".*Qgs" ), "Qgs" );
-    }
-
-    texts <<  name << QString( "%1" ).arg( interface->bandCount() );
-    //texts << QString( "%1 ms" ).arg( interface->time() );
-    QTreeWidgetItem *item = new QTreeWidgetItem( texts );
-
-#if 0
-    // Switching on/off would be possible but problematic - drawer is not pipe
-    // memer so we don't know required output format
-    // Checkboxes are very useful however for QgsRasterPipe debugging.
-    bool on = interface->on();
-    item->setCheckState( 0, on ? Qt::Checked : Qt::Unchecked );
-
-    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
-#endif
-    Qt::ItemFlags flags = Qt::ItemIsEnabled;
-    item->setFlags( flags );
-
-    mPipeTreeWidget->addTopLevelItem( item );
-  }
-  updatePipeItems();
-#endif
-}
-
-void QgsRasterLayerProperties::pipeItemClicked( QTreeWidgetItem * item, int column )
-{
-  Q_UNUSED( column );
-  QgsDebugMsg( "Entered" );
-  int idx = mPipeTreeWidget->indexOfTopLevelItem( item );
-
-  // This should not fail because we have enabled only checkboxes of items
-  // which may be changed
-  mRasterLayer->pipe()->setOn( idx, item->checkState( 0 ) );
-
-  updatePipeItems();
-}
-
-void QgsRasterLayerProperties::updatePipeItems()
-{
-  QgsDebugMsg( "Entered" );
-
-  QgsRasterPipe *pipe = mRasterLayer->pipe();
-
-  for ( int i = 0; i < pipe->size(); i++ )
-  {
-    if ( i >= mPipeTreeWidget->topLevelItemCount() ) break;
-    QTreeWidgetItem *item = mPipeTreeWidget->topLevelItem( i );
-    if ( !item ) continue;
-    // Checkboxes disabled for now, see above
-#if 0
-    QgsRasterInterface * iface = pipe->at( i );
-    bool on = iface->on();
-    Qt::ItemFlags flags = item->flags();
-    if ( pipe->canSetOn( i, !on ) )
-    {
-      flags |= Qt::ItemIsUserCheckable;
-    }
-    else
-    {
-      flags |= ( Qt::ItemFlags )~Qt::ItemIsUserCheckable;
-    }
-    item->setFlags( flags );
-#endif
   }
 }
 
@@ -1830,3 +1704,13 @@ void QgsRasterLayerProperties::on_mMaximumScaleSetCurrentPushButton_clicked()
   cbMaximumScale->setScale( 1.0 / QgisApp::instance()->mapCanvas()->mapRenderer()->scale() );
 }
 
+void QgsRasterLayerProperties::on_mResetColorRenderingBtn_clicked()
+{
+  mBlendModeComboBox->setBlendMode( QPainter::CompositionMode_SourceOver );
+  mSliderBrightness->setValue( 0 );
+  mSliderContrast->setValue( 0 );
+  sliderSaturation->setValue( 0 );
+  comboGrayscale->setCurrentIndex(( int ) QgsHueSaturationFilter::GrayscaleOff );
+  mColorizeCheck->setChecked( false );
+  sliderColorizeStrength->setValue( 100 );
+}

@@ -158,6 +158,7 @@ bool QgsWmsProvider::parseUri( QString uriString )
   mIgnoreGetFeatureInfoUrl = uri.hasParam( "IgnoreGetFeatureInfoUrl" );
   mIgnoreAxisOrientation = uri.hasParam( "IgnoreAxisOrientation" ); // must be before parsing!
   mInvertAxisOrientation = uri.hasParam( "InvertAxisOrientation" ); // must be before parsing!
+  mSmoothPixmapTransform = uri.hasParam( "SmoothPixmapTransform" );
 
   mUserName = uri.param( "username" );
   QgsDebugMsg( "set username to " + mUserName );
@@ -657,8 +658,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     }
 
     //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
-    if ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
-         !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
+    if ( mImageMimeType == "image/x-jpegorpng" ||
+         ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
+           !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) ) )
     {
       setQueryItem( url, "TRANSPARENT", "TRUE" );  // some servers giving error for 'true' (lowercase)
     }
@@ -834,8 +836,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
           setQueryItem( url, "FORMAT_OPTIONS", QString( "dpi:%1" ).arg( mDpi ) ); //geoserver
         }
 
-        if ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
-             !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
+        if ( mImageMimeType == "image/x-jpegorpng" ||
+             ( !mImageMimeType.contains( "jpeg", Qt::CaseInsensitive ) &&
+               !mImageMimeType.contains( "jpg", Qt::CaseInsensitive ) ) )
         {
           setQueryItem( url, "TRANSPARENT", "TRUE" );  // some servers giving error for 'true' (lowercase)
         }
@@ -1182,6 +1185,8 @@ void QgsWmsProvider::tileReplyFinished()
       if ( !myLocalImage.isNull() )
       {
         QPainter p( mCachedImage );
+        if ( mSmoothPixmapTransform )
+          p.setRenderHint( QPainter::SmoothPixmapTransform, true );
         p.drawImage( dst, myLocalImage );
 #if 0
         myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
@@ -2116,12 +2121,18 @@ void QgsWmsProvider::parseRequest( QDomElement const & e, QgsWmsRequestProperty&
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      if ( e1.tagName() == "GetMap" )
+      QString operation = e1.tagName();
+      if ( operation == "Operation" )
+      {
+        operation = e1.attribute( "name" );
+      }
+
+      if ( operation == "GetMap" )
       {
         QgsDebugMsg( "      GetMap." );
         parseOperationType( e1, requestProperty.getMap );
       }
-      else if ( e1.tagName() == "GetFeatureInfo" )
+      else if ( operation == "GetFeatureInfo" )
       {
         QgsDebugMsg( "      GetFeatureInfo." );
         parseOperationType( e1, requestProperty.getFeatureInfo );
@@ -2753,21 +2764,52 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
     l.abstract   = e0.firstChildElement( "ows:Abstract" ).text();
     parseKeywords( e0, l.keywords );
 
-    QDomElement bbox = e0.firstChildElement( "ows:WGS84BoundingBox" );
-    QStringList ll   = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
-    QStringList ur   = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+    l.boundingBox.crs = "";
 
-    if ( ll.size() == 2 && ur.size() == 2 )
+    QDomElement bbox = e0.firstChildElement( "ows:WGS84BoundingBox" );
+    if ( !bbox.isNull() )
     {
-      l.boundingBox.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                                        QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+      QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
+      QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+
+      if ( ll.size() == 2 && ur.size() == 2 )
+      {
+        l.boundingBox.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
+                                          QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        l.boundingBox.crs = DEFAULT_LATLON_CRS;
+      }
     }
-    else
+
+    if ( l.boundingBox.crs.isEmpty() )
+    {
+      bbox = e0.firstChildElement( "ows:BoundingBox" );
+      if ( !bbox.isNull() )
+      {
+        QStringList ll = bbox.firstChildElement( "ows:LowerCorner" ).text().split( " " );
+        QStringList ur = bbox.firstChildElement( "ows:UpperCorner" ).text().split( " " );
+
+        if ( ll.size() == 2 && ur.size() == 2 )
+        {
+          l.boundingBox.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
+                                            QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+
+          if ( bbox.hasAttribute( "SRS" ) )
+            l.boundingBox.crs = bbox.attribute( "SRS" );
+          else if ( bbox.hasAttribute( "srs" ) )
+            l.boundingBox.crs = bbox.attribute( "srs" );
+          else if ( bbox.hasAttribute( "CRS" ) )
+            l.boundingBox.crs = bbox.attribute( "CRS" );
+          else if ( bbox.hasAttribute( "crs" ) )
+            l.boundingBox.crs = bbox.attribute( "crs" );
+        }
+      }
+    }
+
+    if ( l.boundingBox.crs.isEmpty() )
     {
       l.boundingBox.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
+      l.boundingBox.crs = DEFAULT_LATLON_CRS;
     }
-
-    l.boundingBox.crs = DEFAULT_LATLON_CRS;
 
     for ( QDomElement e1 = e0.firstChildElement( "Style" );
           !e1.isNull();
@@ -2818,6 +2860,9 @@ void QgsWmsProvider::parseWMTSContents( QDomElement const &e )
       QgsWmtsDimension d;
 
       d.identifier   = e1.firstChildElement( "ows:Identifier" ).text();
+      if ( d.identifier.isEmpty() )
+        continue;
+
       d.title        = e1.firstChildElement( "ows:Title" ).text();
       d.abstract     = e1.firstChildElement( "ows:Abstract" ).text();
       parseKeywords( e1, d.keywords );
@@ -3222,13 +3267,13 @@ bool QgsWmsProvider::calculateExtent()
           it != mActiveSubLayers.end();
           ++it )
     {
-      QgsDebugMsg( "Sublayer Iterator: " + *it );
+      QgsDebugMsg( "Sublayer iterator: " + *it );
       // This is the extent for the layer name in *it
       if ( !mExtentForLayer.contains( *it ) )
       {
         mLayerExtent = QgsRectangle();
         appendError( ERR( tr( "Extent for layer %1 not found in capabilities" ).arg( *it ) ) );
-        return false;
+        continue;
       }
 
       QgsRectangle extent = mExtentForLayer.find( *it ).value();
@@ -4399,6 +4444,12 @@ QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
     QgsWmsSupportedFormat j1 = { "image/jpeg", "JPEG" };
     QgsWmsSupportedFormat j2 = { "jpeg", "JPEG" }; // used by french IGN geoportail
     formats << j1 << j2;
+  }
+
+  if ( supportedFormats.contains( "png" ) && supportedFormats.contains( "jpg" ) )
+  {
+    QgsWmsSupportedFormat g1 = { "image/x-jpegorpng", "JPEG/PNG" }; // used by cubewerx
+    formats << g1;
   }
 
   if ( supportedFormats.contains( "gif" ) )

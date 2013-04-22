@@ -4,6 +4,7 @@
 #include "qgsfeaturelistmodel.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsfeatureselectionmodel.h"
 
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -14,6 +15,7 @@
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
     : QItemDelegate( parent )
+    , mFeatureSelectionModel( NULL )
     , mListModel( listModel )
 {
 }
@@ -28,6 +30,11 @@ QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElemen
   {
     return SelectionElement;
   }
+}
+
+void QgsFeatureListViewDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )
+{
+  mFeatureSelectionModel = featureSelectionModel;
 }
 
 void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* editSelectionModel )
@@ -54,7 +61,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   QPixmap icon;
 
-  if ( option.state.testFlag( QStyle::State_Selected ) )
+  if ( mFeatureSelectionModel->isSelected( index ) )
   {
     // Item is selected
     icon = QgsApplication::getThemePixmap( "/mIconSelected.svg" );

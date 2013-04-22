@@ -25,6 +25,7 @@
 #include <QTime>
 #include <QDesktopServices>
 
+#include "cpl_conv.h"
 
 //qgis includes...
 #include <qgsrasterlayer.h>
@@ -151,7 +152,7 @@ void TestQgsRasterLayer::cleanupTestCase()
 void TestQgsRasterLayer::isValid()
 {
   QVERIFY( mpRasterLayer->isValid() );
-  mpRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, false );
+  mpRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterLayer::ContrastEnhancementMinMax );
   mpMapRenderer->setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster" ) );
 }
@@ -289,7 +290,7 @@ void TestQgsRasterLayer::colorRamp4()
 
 void TestQgsRasterLayer::landsatBasic()
 {
-  mpLandsatRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, false );
+  mpLandsatRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterLayer::ContrastEnhancementMinMax );
   QStringList myLayers;
   myLayers << mpLandsatRasterLayer->id();
   mpMapRenderer->setLayerSet( myLayers );

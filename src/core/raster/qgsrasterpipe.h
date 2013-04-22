@@ -18,18 +18,18 @@
 #ifndef QGSRASTERPIPE_H
 #define QGSRASTERPIPE_H
 
-#include <QObject>
 #include <QImage>
+#include <QObject>
 
-#include "qgsrectangle.h"
-#include "qgsrasterinterface.h"
-#include "qgsrasterresamplefilter.h"
 #include "qgsbrightnesscontrastfilter.h"
 #include "qgshuesaturationfilter.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasternuller.h"
-#include "qgsrasterrenderer.h"
 #include "qgsrasterprojector.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgsrectangle.h"
 
 #if defined(Q_OS_WIN)
 #undef interface
@@ -100,9 +100,6 @@ class CORE_EXPORT QgsRasterPipe
     QgsHueSaturationFilter * hueSaturationFilter() const;
     QgsRasterProjector * projector() const;
     QgsRasterNuller * nuller() const;
-
-    /** Set on/off collection of statistics */
-    //void setStatsOn( bool on ) { if ( last() ) last()->setStatsOn( on ); }
 
   private:
     /** Get known parent type_info of interface parent */

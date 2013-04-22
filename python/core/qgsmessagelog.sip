@@ -1,4 +1,4 @@
-class QgsMessageLog
+class QgsMessageLog : QObject
 {
 %TypeHeaderCode
 #include <qgsmessagelog.h>
@@ -18,7 +18,7 @@ class QgsMessageLog
     static void logMessage( QString message, QString tag = QString::null, MessageLevel level = WARNING);
 
   signals:
-    void messageReceived( QString message, QString tag, int level );
+    void messageReceived( QString message, QString tag, MessageLevel level );
 
   private:
     QgsMessageLog();

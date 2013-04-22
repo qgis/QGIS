@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+import os
+from PyQt4 import QtGui
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,9 +36,7 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
     def __init__(self, toolbox):
         QDialog.__init__(self)
         self.setupUi(self)
-
         self.toolbox = toolbox
-
         self.groupIcon = QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(QStyle.SP_DirClosedIcon),
                                  QIcon.Normal, QIcon.Off)
@@ -47,15 +47,21 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
             self.searchBox.setPlaceholderText(self.tr("Search..."))
 
         self.searchBox.textChanged.connect(self.fillTree)
-
         self.fillTree()
+        self.tree.itemClicked.connect(self.edit)
+        self.tree.itemDoubleClicked.connect(self.edit)
+        
+    def edit(self, item, column):        
+        if column > 0:
+           self.tree.editItem(item, column)
 
     def fillTree(self):
         self.items = {}
         self.tree.clear()
         text = str(self.searchBox.text())
         settings = SextanteConfig.getSettings()
-        for group in settings.keys():
+        priorityKeys = ['General', "Models", "Scripts"]
+        for group in priorityKeys:
             groupItem = QTreeWidgetItem()
             groupItem.setText(0,group)
             icon = SextanteConfig.getGroupIcon(group)
@@ -70,10 +76,32 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
             self.tree.addTopLevelItem(groupItem)
             if text != "":
                 groupItem.setExpanded(True)
+                
+        providersItem = QTreeWidgetItem()
+        providersItem.setText(0, "Providers")
+        icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")        
+        providersItem.setIcon(0, icon)
+        for group in settings.keys():
+            if group in priorityKeys:
+                continue
+            groupItem = QTreeWidgetItem()
+            groupItem.setText(0,group)
+            icon = SextanteConfig.getGroupIcon(group)
+            groupItem.setIcon(0, icon)
+            for setting in settings[group]:
+                if setting.hidden:
+                    continue
+                if text =="" or text.lower() in setting.description.lower():
+                    settingItem = TreeSettingItem(setting, icon)
+                    self.items[setting]=settingItem
+                    groupItem.addChild(settingItem)        
+            if text != "":
+                groupItem.setExpanded(True)
+            providersItem.addChild(groupItem)
+        self.tree.addTopLevelItem(providersItem)                
 
         self.tree.sortItems(0, Qt.AscendingOrder)
-        self.tree.resizeColumnToContents(0)
-        self.tree.resizeColumnToContents(1)
+        self.tree.setColumnWidth(0, 400)
 
     def accept(self):
         for setting in self.items.keys():
@@ -103,13 +131,13 @@ class TreeSettingItem(QTreeWidgetItem):
     def __init__(self, setting, icon):
         QTreeWidgetItem.__init__(self)
         self.setting = setting
-        self.setText(0, setting.description)
-        self.setFlags(self.flags() | Qt.ItemIsEditable)
+        self.setText(0, setting.description)        
         if isinstance(setting.value,bool):
             if setting.value:
                 self.setCheckState(1, Qt.Checked)
             else:
                 self.setCheckState(1, Qt.Unchecked)
         else:
+            self.setFlags(self.flags() | Qt.ItemIsEditable)
             self.setText(1, unicode(setting.value))
         self.setIcon(0, icon)

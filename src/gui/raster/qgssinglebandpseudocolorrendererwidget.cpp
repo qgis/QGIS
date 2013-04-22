@@ -365,22 +365,23 @@ void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const Q
 
 void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
 {
-  if ( !mRasterLayer )
+  if ( !mRasterLayer || !mRasterLayer->dataProvider() )
   {
     return;
   }
 
-  QList<QgsColorRampShader::ColorRampItem> colorRampList;
   int bandIndex = mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt();
 
-  if ( mRasterLayer->readColorTable( bandIndex, &colorRampList ) )
+
+  QList<QgsColorRampShader::ColorRampItem> colorRampList = mRasterLayer->dataProvider()->colorTable( bandIndex );
+  if ( colorRampList.size() > 0 )
   {
     populateColormapTreeWidget( colorRampList );
     mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Linear" ) ) );
   }
   else
   {
-    QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 failed to load" ).arg( bandIndex ) );
+    QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 has no entries" ).arg( bandIndex ) );
   }
 }
 

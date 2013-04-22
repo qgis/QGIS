@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.tests.TestData import points
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,6 +27,7 @@ import os
 import stat
 import traceback
 import subprocess
+from sextante.tests.TestData import points
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.SextanteConfig import SextanteConfig
 from sextante.core.SextanteLog import SextanteLog
@@ -63,14 +63,19 @@ class SagaUtils:
         folder = SextanteConfig.getSetting(SagaUtils.SAGA_FOLDER)
         if folder == None:
             folder =""
-
-        if SextanteUtils.isMac():
-            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
-            if os.path.exists(os.path.join(testfolder, "saga_cmd")):
-                folder = testfolder
-            else:
-                testfolder = "/usr/local/bin"
+            #try to auto-configure the folder
+            if SextanteUtils.isMac():
+                testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
                 if os.path.exists(os.path.join(testfolder, "saga_cmd")):
+                    folder = testfolder
+                else:
+                    testfolder = "/usr/local/bin"
+                    if os.path.exists(os.path.join(testfolder, "saga_cmd")):
+                        folder = testfolder
+            elif SextanteUtils.isWindows():                
+                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))                
+                testfolder = os.path.join(testfolder,  "saga")                
+                if os.path.exists(os.path.join(testfolder, "saga_cmd.exe")):
                     folder = testfolder
         return folder
 
@@ -136,8 +141,8 @@ class SagaUtils:
                         + "folder is correctly configured")
 
         settings = QSettings()
+        SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
         if not ignoreRegistrySettings:
-            SAGA_INSTALLED = "/SextanteQGIS/SagaInstalled"
             if settings.contains(SAGA_INSTALLED):
                 return
 

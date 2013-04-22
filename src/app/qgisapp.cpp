@@ -711,19 +711,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsShortcutsManager::instance()->registerAllChildrenActions( this );
 
-  // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
-  QgsApplication::setFileOpenEventReceiver( this );
-
   QgsProviderRegistry::instance()->registerGuis( this );
 
   // update windows
   qApp->processEvents();
 
-  // check if a project has been loaded already via drag/drop or filesystem loading
-  if ( !QgsProject::instance() )
-  {
-    fileNewBlank(); // prepare empty project
-  }
+  fileNewBlank(); // prepare empty project, also skips any default templates from loading
+
+  // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
+  // should come after fileNewBlank to ensure project is properly set up to receive any data source files
+  QgsApplication::setFileOpenEventReceiver( this );
 
 } // QgisApp ctor
 
@@ -866,8 +863,8 @@ void QgisApp::readSettings()
 {
   QSettings settings;
   // get the users theme preference from the settings
-  // defaulting to 'gis' theme
-  setTheme( settings.value( "/Themes", "gis" ).toString() );
+  // 'gis' theme is new /themes/default directory (2013-04-15)
+  setTheme( settings.value( "/Themes", "default" ).toString() );
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
@@ -1839,6 +1836,8 @@ void QgisApp::setupConnections()
            this, SLOT( oldProjectVersionWarning( QString ) ) );
   connect( QgsProject::instance(), SIGNAL( layerLoaded( int, int ) ),
            this, SLOT( showProgress( int, int ) ) );
+  connect( QgsProject::instance(), SIGNAL( loadingLayer( QString ) ),
+           this, SLOT( showStatusMessage( QString ) ) );
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
@@ -3532,17 +3531,6 @@ bool QgisApp::addProject( QString projectFile )
   mMapCanvas->setCanvasColor( myColor ); //this is fill color before rendering starts
   QgsDebugMsg( "Canvas background color restored..." );
 
-  //set the color for selections
-  QSettings settings;
-  int defaultRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
-  int defaultGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
-  int defaultBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
-  int defaultAlpha = settings.value( "/qgis/default_selection_color_alpha", 255 ).toInt();
-  int myRed = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", defaultRed );
-  int myGreen = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", defaultGreen );
-  int myBlue = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", defaultBlue );
-  int myAlpha = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorAlphaPart", defaultAlpha );
-
   //load project scales
   bool projectScales = QgsProject::instance()->readBoolEntry( "Scales", "/useProjectScales" );
   if ( projectScales )
@@ -3552,6 +3540,8 @@ bool QgisApp::addProject( QString projectFile )
 
   mMapCanvas->updateScale();
   QgsDebugMsg( "Scale restored..." );
+
+  QSettings settings;
 
   // does the project have any macros?
   if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -8493,6 +8483,13 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
   {
     stopRendering();
   }
+#if defined(Q_OS_WIN)&& defined(QGISDEBUG)
+  else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
+  {
+    extern LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
+    qgisCrashDump( 0 );
+  }
+#endif
   else
   {
     e->ignore();

@@ -1,3 +1,28 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    QgisAlgsTest.py
+    ---------------------
+    Date                 : March 2013
+    Copyright            : (C) 2013 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'March 2013'
+__copyright__ = '(C) 2013, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import sextante
 import unittest
 from sextante.tests.TestData import points, points2, polygons, polygons2, lines, union,\
@@ -142,7 +167,7 @@ class QgisAlgsTest(unittest.TestCase):
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
 
     def test_qgiscreategridnointeger(self):
-        outputs=sextante.runalg("qgis:creategrid",0.1,0.1,1,1,0,0,None)
+        outputs=sextante.runalg("qgis:creategrid",0.1,0.1,1,1,0,0,0,None)
         output=outputs['SAVENAME']
         layer=QGisLayers.getObjectFromUri(output, True)
         fields=layer.pendingFields()
@@ -161,7 +186,7 @@ class QgisAlgsTest(unittest.TestCase):
         self.assertEqual(expectedvalues, values)
         wkt='LINESTRING(-0.5 -0.5, -0.5 -0.4, -0.5 -0.3, -0.5 -0.2, -0.5 -0.1, -0.5 -0.0, -0.5 0.1, -0.5 0.2, -0.5 0.3, -0.5 0.4, -0.5 0.5)'
         self.assertEqual(wkt, str(feature.geometry().exportToWkt()))
-    
+
     def test_qgiscreategridhex(self):
         outputs=sextante.runalg("qgis:creategrid",10,10,360,180,0,0,3,None)
         output=outputs['SAVENAME']
@@ -919,9 +944,9 @@ class QgisAlgsTest(unittest.TestCase):
         output=outputs['OUTPUT']
         layer=QGisLayers.getObjectFromUri(output, True)
         fields=layer.pendingFields()
-        expectednames=['category','min','max','mean','stddev']        
+        expectednames=['category','min','max','mean','stddev']
         names=[str(f.name()) for f in fields]
-        self.assertEqual(expectednames, names)        
+        self.assertEqual(expectednames, names)
         features=sextante.getfeatures(layer)
         self.assertEqual(3, len(features))
         feature=features.next()

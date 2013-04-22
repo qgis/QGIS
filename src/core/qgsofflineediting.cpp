@@ -229,7 +229,7 @@ void QgsOfflineEditing::synchronize()
 
       // remove offline layer
       QgsMapLayerRegistry::instance()->removeMapLayers(
-        ( QStringList() << qgisLayerId ), true );
+        ( QStringList() << qgisLayerId ) );
 
       // disable offline project
       QString projectTitle = QgsProject::instance()->title();

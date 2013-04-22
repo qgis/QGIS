@@ -143,8 +143,252 @@ struct CORE_EXPORT QgsVectorJoinInfo
 
 
 /** \ingroup core
- * Vector layer backed by a data source provider.
+ * Represents a vector layer which manages a vector based data sets.
+ *
+ * The QgsVectorLayer is instantiated by specifying the name of a data provider,
+ * such as postgres or wfs, and url defining the specific data set to connect to.
+ * The vector layer constructor in turn instantiates a QgsVectorDataProvider subclass
+ * corresponding to the provider type, and passes it the url.  The data provider
+ * connects to the data source.
+ *
+ * The QgsVectorLayer provides a common interface to the different data types.  It also
+ * manages editing transactions.
+ *
+ *  Sample usage of the QgsVectorLayer class:
+ *
+ * \code
+ *     QString uri = "point?crs=epsg:4326&field=id:integer";
+ *     QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
+ * \endcode
+ *
+ * The main data providers supported by QGis are listed below.
+ *
+ * \section providers Vector data providers
+ *
+ * \subsection memory Memory data providerType (memory)
+ *
+ * The memory data provider is used to construct in memory data, for example scratch
+ * data or data generated from spatial operations such as contouring.  There is no
+ * inherent persistent storage of the data.  The data source uri is constructed.  The
+ * url specifies the geometry type ("point", "linestring", "polygon",
+ * "multipoint","multilinestring","multipolygon"), optionally followed by url parameters
+ * as follows:
+ *
+ * - crs=definition
+ *   Defines the coordinate reference system to use for the layer.
+ *   definition is any string accepted by QgsCoordinateReferenceSystem::createFromString()
+ *
+ * - index=yes
+ *   Specifies that the layer will be constructed with a spatial index
+ *
+ * - field=name:type(length,precision)
+ *   Defines an attribute of the layer.  Multiple field parameters can be added
+ *   to the data provider definition.  type is one of "integer", "double", "string".
+ *
+ * An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
+ *
+ * \subsection ogr OGR data provider (ogr)
+ *
+ * Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
+ * is the OGR connection string.  A wide variety of data formats can be accessed using this
+ * driver, including file based formats used by many GIS systems, database formats, and
+ * web services.  Some of these formats are also supported by custom data providers listed
+ * below.
+ *
+ * \subsection spatialite Spatialite data provider (spatialite)
+ *
+ * Access data in a spatialite database. The url defines the connection parameters, table,
+ * geometry column, and other attributes.  The url can be constructed using the
+ * QgsDataSourceURI class.
+ *
+ * \subsection postgres Postgresql data provider (postgres)
+ *
+ * Connects to a postgresql database.  The url defines the connection parameters, table,
+ * geometry column, and other attributes.  The url can be constructed using the
+ * QgsDataSourceURI class.
+ *
+ * \subsection mssql Microsoft SQL server data provider (mssql)
+ *
+ * Connects to a Microsoft SQL server database.  The url defines the connection parameters, table,
+ * geometry column, and other attributes.  The url can be constructed using the
+ * QgsDataSourceURI class.
+ *
+ * \subsection sqlanywhere SQL Anywhere data provider (sqlanywhere)
+ *
+ * Connects to an SQLanywhere database.  The url defines the connection parameters, table,
+ * geometry column, and other attributes.  The url can be constructed using the
+ * QgsDataSourceURI class.
+ *
+ * \subsection wfs WFS (web feature service) data provider (wfs)
+ *
+ * Used to access data provided by a web feature service.
+ *
+ * The url can be a HTTP url to a WFS 1.0.0 server or a GML2 data file path.
+ * Examples are http://foobar/wfs or /foo/bar/file.gml
+ *
+ * If a GML2 file path is provided the driver will attempt to read the schema from a
+ * file in the same directory with the same basename + “.xsd”. This xsd file must be
+ * in the same format as a WFS describe feature type response. If no xsd file is provide
+ * then the driver will attempt to guess the attribute types from the file.
+ *
+ * In the case of a HTTP URL the ‘FILTER’ query string parameter can be used to filter
+ * the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
+ * or an OGC XML filter. If the value is set to a QGIS expression the driver will
+ * turn it into OGC XML filter before passing it to the WFS server. Beware the
+ * QGIS expression filter only supports” =, != ,<,> ,<= ,>= ,AND ,OR ,NOT, LIKE, IS NULL”
+ * attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
+ * spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
+ * geometry constructor functions.
+ *
+ * Also note:
+ *
+ * - You can use various functions available in the QGIS Expression list,
+ *   however the function must exist server side and have the same name and arguments to work.
+ *
+ * - Use the special $geometry parameter to provide the layer geometry column as input
+ *   into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
+ *
+ * \subsection delimitedtext Delimited text file data provider (delimitedtext)
+ *
+ * Accesses data in a delimited text file, for example CSV files generated by
+ * spreadsheets. The contents of the file are split into columns based on specified
+ * delimiter characters.  Each record may be represented spatially either by an
+ * X and Y coordinate column, or by a WKT (well known text) formatted columns.
+ *
+ * The url defines the filename, the formatting options (how the
+ * text in the file is divided into data fields, and which fields contain the
+ * X,Y coordinates or WKT text definition.  The options are specified as url query
+ * items.
+ *
+ * At its simplest the url can just be the filename, in which case it will be loaded
+ * as a CSV formatted file.
+ *
+ * The url may include the following items:
+ *
+ * - encoding=UTF-8
+ *
+ *   Defines the character encoding in the file.  The default is UTF-8.  To use
+ *   the default encoding for the operating system use "System".
+ *
+ * - type=(csv|regexp|whitespace|plain)
+ *
+ *   Defines the algorithm used to split records into columns. Records are
+ *   defined by new lines, except for csv format files for which quoted fields
+ *   may span multiple records.  The default type is csv.
+ *
+ *   -  "csv" splits the file based on three sets of characters:
+ *      delimiter characters, quote characters,
+ *      and escape characters.  Delimiter characters mark the end
+ *      of a field. Quote characters enclose a field which can contain
+ *      delimiter characters, and newlines.  Escape characters cause the
+ *      following character to be treated literally (including delimiter,
+ *      quote, and newline characters).  Escape and quote characters must
+ *      be different from delimiter characters. Escape characters that are
+ *      also quote characters are treated specially - they can only
+ *      escape themselves within quotes.  Elsewhere they are treated as
+ *      quote characters.  The defaults for delimiter, quote, and escape
+ *      are ',', '"', '"'.
+ *   -  "regexp" splits each record using a regular expression (see QRegExp
+ *      documentation for details).
+ *   -  "whitespace" splits each record based on whitespace (on or more whitespace
+ *      characters.  Leading whitespace in the record is ignored.
+ *   -  "plain" is provided for backwards compatibility.  It is equivalent to
+ *      CSV except that the default quote characters are single and double quotes,
+ *      and there is no escape characters.
+ *
+ * - delimiter=characters
+ *
+ *   Defines the delimiter characters used for csv and plain type files, or the
+ *   regular expression for regexp type files.  It is a literal string of characters
+ *   except that "\t" may be used to represent a tab character.
+ *
+ * - quote=characters
+ *
+ *   Defines the characters that are used as quote characters for csv and plain type
+ *   files.
+ *
+ * - escape=characters
+ *
+ *   Defines the characters used to escape delimiter, quote, and newline characters.
+ *
+ * - skipEmptyFields=(yes|no)
+ *
+ *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
+ *   delimiters)
+ *
+ * - trimFields=(yes|no)
+ *
+ *   If yes then leading and trailing whitespace will be removed from fields
+ *
+ * - skipLines=n
+ *
+ *   Defines the number of lines to ignore at the beginning of the file (default 0)
+ *
+ * - useHeader=(yes|no)
+ *
+ *   Defines whether the first record in the file (after skipped lines) contains
+ *   column names (default yes)
+ *
+ * - xField=column yField=column
+ *
+ *   Defines the name of the columns holding the x and y coordinates for XY point geometries.
+ *   If the useHeader is no (ie there are no column names), then this is the column
+ *   number (with the first column as 1).
+ *
+ * - decimalPoint=c
+ *
+ *   Defines a character that is used as a decimal point in the numeric columns
+ *   The default is '.'.
+ *
+ * - xyDms=(yes|no)
+ *
+ *   If yes then the X and Y coordinates are interpreted as
+ *   degrees/minutes/seconds format (fairly permissively),
+ *   or degree/minutes format.
+ *
+ * - wktField=column
+ *
+ *   Defines the name of the columns holding the WKT geometry definition for WKT geometries.
+ *   If the useHeader is no (ie there are no column names), then this is the column
+ *   number (with the first column as 1).
+ *
+ * - geomType=(point|line|polygon|none)
+ *
+ *   Defines the geometry type for WKT type geometries.  QGis will only display one
+ *   type of geometry for the layer - any others will be ignored when the file is
+ *   loaded.  By default the provider uses the type of the first geometry in the file.
+ *   Use geomType to override this type.
+ *
+ *   geomType can also be set to none, in which case the layer is loaded without
+ *   geometries.
+ *
+ * - crs=crsstring
+ *
+ *   Defines the coordinate reference system used for the layer.  This can be
+ *   any string accepted by QgsCoordinateReferenceSystem::createFromString()
+ *
+ * - quiet
+ *
+ *   Errors encountered loading the file will not be reported in a user dialog if
+ *   quiet is included (They will still be shown in the output log).
+ *
+ * \subsection gpx GPX data provider (gpx)
+ *
+ * Provider reads tracks, routes, and waypoints from a GPX file.  The url
+ * defines the name of the file, and the type of data to retrieve from it
+ * ("track", "route", or "waypoint").
+ *
+ * An example url is "/home/user/data/holiday.gpx?type=route"
+ *
+ * \subsection grass Grass data provider (grass)
+ *
+ * Provider to display vector data in a GRASS GIS layer.
+ *
+ *
+ *
  */
+
+
 class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 {
     Q_OBJECT
@@ -236,7 +480,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       QList<GroupData> mGroups;
     };
 
-    /** Constructor */
+    /** Constructor - creates a vector layer
+     *
+     * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
+     * interprets the supplied path (url) of the data source to connect to and access the
+     * data.
+     *
+     * @param  path  The path or url of the parameter.  Typically this encodes
+     *               parameters used by the data provider as url query items.
+     * @param  baseName The name used to represent the layer in the legend
+     * @param  providerLib  The name of the data provider, eg "memory", "postgres"
+     * @param  loadDefaultStyleFlag whether to load the default style
+     *
+     */
     QgsVectorLayer( QString path = QString::null, QString baseName = QString::null,
                     QString providerLib = QString::null, bool loadDefaultStyleFlag = true );
 
@@ -259,7 +515,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     const QString displayField() const;
 
     /** Set the preview expression, used to create a human readable preview string.
-     *  Used e.g. in the attribute table feature list. Uses @link QgsExpression @endlink
+     *  Used e.g. in the attribute table feature list. Uses { @link QgsExpression }.
      *
      *  @param displayExpression The expression which will be used to preview features
      *                           for this layer
@@ -269,9 +525,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      *  Get the preview expression, used to create a human readable preview string.
-     *  Uses @link QgsExpression @endlink
+     *  Uses { @link QgsExpression }
      *
      *  @return The expression which will be used to preview features for this layer
+     *
      *  @note added in 2.0
      */
     const QString displayExpression();
@@ -309,25 +566,72 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     QgsAttributeAction *actions() { return mActions; }
 
-    /** The number of features that are selected in this layer */
+    /**
+     * The number of features that are selected in this layer
+     *
+     * @return See description
+     */
     int selectedFeatureCount();
 
-    /** Select features found within the search rectangle (in layer's coordinates) */
-    void select( QgsRectangle & rect, bool lock );
+    /**
+     * Select features found within the search rectangle (in layer's coordinates)
+     *
+     * @param rect            The search rectangle
+     * @param addToSelection  If set to true will not clear before selecting
+     *
+     * @see   invertSelectionInRectangle(QgsRectangle & rect)
+     */
+    void select( QgsRectangle & rect, bool addToSelection );
+
+    /**
+     * Modifies the current selection on this layer
+     *
+     * @param selectIds    Select these ids
+     * @param deselectIds  Deselect these ids
+     *
+     * @see   select(QgsFeatureIds)
+     * @see   select(QgsFeatureId)
+     * @see   deselect(QgsFeatureIds)
+     * @see   deselect(QgsFeatureId)
+     */
+    void modifySelection( QgsFeatureIds selectIds, QgsFeatureIds deselectIds );
 
     /** Select not selected features and deselect selected ones */
     void invertSelection();
 
-    /** Invert selection of features found within the search rectangle (in layer's coordinates) */
+    /**
+     * Invert selection of features found within the search rectangle (in layer's coordinates)
+     *
+     * @param rect  The rectangle in which the selection of features will be inverted
+     *
+     * @see   invertSelection()
+     */
     void invertSelectionInRectangle( QgsRectangle & rect );
 
-    /** Get a copy of the user-selected features */
+    /**
+     * Get a copy of the user-selected features
+     *
+     * @return A list of { @link QgsFeature } 's
+     *
+     * @see    selectedFeaturesIds()
+     */
     QgsFeatureList selectedFeatures();
 
-    /** Return reference to identifiers of selected features */
+    /**
+     * Return reference to identifiers of selected features
+     *
+     * @return A list of { @link QgsFeatureId } 's
+     * @see selectedFeatures()
+     */
     const QgsFeatureIds &selectedFeaturesIds() const;
 
-    /** Change selection to the new set of features */
+    /**
+     * Change selection to the new set of features. Dismisses the current selection.
+     * Will emit the { @link selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) } signal with the
+     * clearAndSelect flag set.
+     *
+     * @param ids   The ids which will be the new selection
+     */
     void setSelectedFeatures( const QgsFeatureIds &ids );
 
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
@@ -890,14 +1194,48 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QVariant maximumValue( int index );
 
   public slots:
-    /** Select feature by its ID, optionally emit signal selectionChanged() */
-    void select( QgsFeatureId featureId, bool emitSignal = true );
+    /**
+     * Select feature by its ID
+     *
+     * @param featureId  The id of the feature to select
+     *
+     * @see select(QgsFeatureIds)
+     */
+    void select( const QgsFeatureId &featureId );
 
-    /** Deselect feature by its ID, optionally emit signal selectionChanged() */
-    void deselect( QgsFeatureId featureId, bool emitSignal = true );
+    /**
+     * Select features by their ID
+     *
+     * @param featureIds The ids of the features to select
+     *
+     * @see select(QgsFeatureId)
+     */
+    void select( const QgsFeatureIds& featureIds );
 
-    /** Clear selection */
-    void removeSelection( bool emitSignal = true );
+    /**
+     * Deselect feature by its ID
+     *
+     * @param featureId  The id of the feature to deselect
+     *
+     * @see deselect(QgsFeatureIds)
+     */
+    void deselect( const QgsFeatureId featureId );
+
+    /**
+     * Deselect features by their ID
+     *
+     * @param featureIds The ids of the features to deselect
+     *
+     * @see deselect(QgsFeatureId)
+     */
+    void deselect( const QgsFeatureIds& featureIds );
+
+    /**
+     * Clear selection
+     *
+     * @see setSelectedFeatures(const QgsFeatureIds&)
+     */
+    void removeSelection();
 
     void triggerRepaint();
 
@@ -922,18 +1260,57 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
   signals:
 
+    /**
+     * This signal is emited when selection was changed
+     *
+     * @param selected        Newly selected feature ids
+     * @param deselected      Ids of all features which have previously been selected but are not any more
+     * @param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+     */
+    void selectionChanged( const QgsFeatureIds selected, const QgsFeatureIds deselected, const bool clearAndSelect );
+
     /** This signal is emited when selection was changed */
     void selectionChanged();
 
     /** This signal is emitted when modifications has been done on layer */
     void layerModified();
 
+    /** Is emitted, when editing on this layer has started*/
     void editingStarted();
+
+    /** Is emitted, when edited changes succesfully have been written to the data provider */
     void editingStopped();
+
+    /** Is emitted, before changes are commited to the data provider */
+    void beforeCommitChanges();
+
+    /**
+     * Will be emitted, when a new attribute has been added to this vector layer.
+     * Applies only to types {@link QgsFields::OriginEdit} and {@link QgsFields::OriginProvider}
+     *
+     * @param idx The index of the new attribute
+     *
+     * @see updatedFields()
+     */
     void attributeAdded( int idx );
+    /**
+     * Will be emitted, when an attribute has been deleted from this vector layer.
+     * Applies only to types {@link QgsFields::OriginEdit} and {@link QgsFields::OriginProvider}
+     *
+     * @param idx The index of the deleted attribute
+     *
+     * @see updatedFields()
+     */
     void attributeDeleted( int idx );
     void featureAdded( QgsFeatureId fid );  // added in 1.7
     void featureDeleted( QgsFeatureId fid );
+    /**
+     * Is emitted, whenever the fields available from this layer have been changed.
+     * This can be due to manually adding attributes or due to a join.
+     *
+     * @note Added in 2.0
+     */
+    void updatedFields();
     void layerDeleted();
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );

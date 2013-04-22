@@ -80,6 +80,14 @@ class QgsPalLayerSettings
       Percent
     };
 
+    enum ShadowType
+    {
+      ShadowLowest = 0,
+      ShadowText,
+      ShadowBuffer,
+      ShadowShape
+    };
+
     // update mDataDefinedNames QList in constructor when adding/deleting enum value
     enum DataDefinedProperties
     {
@@ -172,6 +180,21 @@ class QgsPalLayerSettings
     int shapeTransparency;
     QPainter::CompositionMode shapeBlendMode;
 
+    // drop shadow
+    bool shadowDraw;
+    ShadowType shadowUnder;
+    int shadowOffsetAngle;
+    double shadowOffsetDist;
+    SizeUnit shadowOffsetUnits;
+    bool shadowOffsetGlobal;
+    double shadowRadius;
+    SizeUnit shadowRadiusUnits;
+    bool shadowRadiusAlphaOnly;
+    int shadowTransparency;
+    int shadowScale;
+    QColor shadowColor;
+    QPainter::CompositionMode shadowBlendMode;
+
     bool formatNumbers;
     int decimals;
     bool plusSign;
@@ -228,7 +251,17 @@ class QgsPalLayerSettings
      * @param rasterfactor whether to consider oversampling
      * @return font pixel size
      */
-    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor ) const;
+    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false ) const;
+
+    /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit SizeUnit enum value of size
+     * @param rasterfactor whether to consider oversampling
+     * @return size that will render, as double
+     * @note added in 1.9, as a better precision replacement for sizeToPixel
+     */
+    double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false ) const;
 
     /** List of data defined enum names
      * @note adding in 1.9
@@ -247,6 +280,59 @@ class QgsLabelCandidate
 
     QRectF rect;
     double cost;
+};
+
+/** \ingroup core
+  * Maintains current state of more grainular and temporal values when creating/painting
+  * component parts of an individual label (e.g. buffer, background, shadow, etc.).
+  */
+class QgsLabelComponent
+{
+%TypeHeaderCode
+#include <qgspallabeling.h>
+%End
+
+  public:
+    QgsLabelComponent();
+
+    const QString& text();
+    void setText( const QString& text );
+
+    const QgsPoint& origin();
+    void setOrigin( QgsPoint point );
+
+    bool useOrigin() const;
+    void setUseOrigin( bool use );
+
+    double rotation() const;
+    void setRotation( double rotation );
+
+    double rotationOffset() const;
+    void setRotationOffset( double rotation );
+
+    bool useRotation() const;
+    void setUseRotation( bool use );
+
+    const QgsPoint& center();
+    void setCenter( QgsPoint point );
+
+    bool useCenter() const;
+    void setUseCenter( bool use );
+
+    const QgsPoint& size();
+    void setSize( QgsPoint point );
+
+    const QgsPoint& offset();
+    void setOffset( QgsPoint point );
+
+    const QPicture* picture();
+    void setPicture( QPicture* picture );
+
+    double pictureBuffer() const;
+    void setPictureBuffer( double buffer );
+
+    double dpiRatio() const;
+    void setDpiRatio( double ratio );
 };
 
 class QgsPalLabeling : QgsLabelingEngineInterface
@@ -282,6 +368,9 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     void setShowingCandidates( bool showing );
     const QList<QgsLabelCandidate>& candidates();
 
+    bool isShowingShadowRectangles() const;
+    void setShowingShadowRectangles( bool showing );
+
     bool isShowingAllLabels() const;
     void setShowingAllLabels( bool showing );
 
@@ -313,13 +402,19 @@ class QgsPalLabeling : QgsLabelingEngineInterface
 /*
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
-    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmplyr, DrawLabelType drawType );
+    void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType );
 */
-    static void drawLabelBuffer( QgsRenderContext& context, QString text, const QgsPalLayerSettings& tmpLyr );
+    static void drawLabelBuffer( QgsRenderContext& context,
+                                 QgsLabelComponent component,
+                                 const QgsPalLayerSettings& tmpLyr );
 
     static void drawLabelBackground( QgsRenderContext& context,
-                                     const QgsPoint& centerPt, double labelRotation, double labelWidth, double labelHeight,
+                                     QgsLabelComponent component,
                                      const QgsPalLayerSettings& tmpLyr );
+
+    static void drawLabelShadow( QgsRenderContext& context,
+                                 QgsLabelComponent component,
+                                 const QgsPalLayerSettings& tmpLyr );
 
     //! load/save engine settings to project file
     //! @note added in QGIS 1.9

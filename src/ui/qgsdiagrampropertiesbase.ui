@@ -39,8 +39,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>756</width>
-           <height>627</height>
+           <width>752</width>
+           <height>613</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="scrollAreaLayout">
@@ -63,7 +63,7 @@
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
+                <width>20</width>
                 <height>20</height>
                </size>
               </property>
@@ -124,8 +124,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>725</width>
-               <height>397</height>
+               <width>713</width>
+               <height>394</height>
               </rect>
              </property>
              <attribute name="label">
@@ -307,7 +307,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
+                  <width>0</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -320,8 +320,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>725</width>
-               <height>293</height>
+               <width>715</width>
+               <height>278</height>
               </rect>
              </property>
              <attribute name="label">
@@ -343,7 +343,7 @@
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>20</width>
-                  <height>40</height>
+                  <height>0</height>
                  </size>
                 </property>
                </spacer>
@@ -378,7 +378,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>483</width>
+                  <width>0</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -490,7 +490,7 @@
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
-                        <width>40</width>
+                        <width>0</width>
                         <height>20</height>
                        </size>
                       </property>
@@ -509,8 +509,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>725</width>
-               <height>278</height>
+               <width>713</width>
+               <height>271</height>
               </rect>
              </property>
              <attribute name="label">
@@ -638,7 +638,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
+                  <width>0</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -651,7 +651,7 @@
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>40</width>
+                  <width>0</width>
                   <height>20</height>
                  </size>
                 </property>
@@ -671,8 +671,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>738</width>
-               <height>196</height>
+               <width>728</width>
+               <height>166</height>
               </rect>
              </property>
              <attribute name="label">
@@ -781,7 +781,7 @@
                 <property name="sizeHint" stdset="0">
                  <size>
                   <width>20</width>
-                  <height>40</height>
+                  <height>0</height>
                  </size>
                 </property>
                </spacer>
@@ -844,7 +844,7 @@
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>40</height>
+                   <height>0</height>
                   </size>
                  </property>
                 </spacer>
@@ -891,7 +891,7 @@
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>40</height>
+                   <height>0</height>
                   </size>
                  </property>
                 </spacer>

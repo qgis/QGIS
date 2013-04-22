@@ -44,6 +44,7 @@ class QNetworkRequest;
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
+#include "cpl_conv.h"
 
 /**
 

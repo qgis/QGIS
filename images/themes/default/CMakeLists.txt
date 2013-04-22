@@ -1,8 +1,6 @@
-FILE (GLOB IMAGES *.png)
+ADD_SUBDIRECTORY(plugins)
+
+FILE(GLOB IMAGES *.png *.svg)
 
 INSTALL (FILES ${IMAGES}
          DESTINATION ${QGIS_DATA_DIR}/themes/default)
-
-FILE (GLOB PLUG_IMAGES  plugins/*.png)
-
-INSTALL (FILES ${PLUG_IMAGES} DESTINATION ${QGIS_DATA_DIR}/themes/default/plugins)

@@ -20,6 +20,7 @@
 #include "qgisgui.h"
 
 class QgisInterface;
+class QgsDelimitedTextFile;
 
 /**
  * \class QgsDelimitedTextSourceSelect
@@ -35,18 +36,35 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     QStringList splitLine( QString line );
 
   private:
-    bool haveValidFileAndDelimiters();
+    bool loadDelimitedFileDefinition();
     void updateFieldLists();
     void getOpenFileName();
-    QStringList selectedChars();
+    QString selectedChars();
+    void setSelectedChars( QString delimiters );
+    void loadSettings( QString subkey = QString(), bool loadGeomSettings = true );
+    void saveSettings( QString subkey = QString(), bool saveGeomSettings = true );
+    void loadSettingsForFile( QString filename );
+    void saveSettingsForFile( QString filename );
+    bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, QString xname, QString yname );
+
+  private:
+    QgsDelimitedTextFile *mFile;
+    int mExampleRowCount;
+    QString mColumnNamePrefix;
+    QString mPluginKey;
+    QString mLastFileType;
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested()
+    {
+      QgsContextHelp::run( metaObject()->className() );
+    }
     void on_btnBrowseForFile_clicked();
 
   public slots:
+    void updateFileName();
     void updateFieldsAndEnable();
     void enableAccept();
 

@@ -40,7 +40,7 @@ class MissingDependencyDialog(QtGui.QDialog):
         layout = QVBoxLayout()
         webView = QtWebKit.QWebView()
         webView.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
-        webView.connect(webView, SIGNAL("linkClicked(const QUrl&)"), self.linkClicked)        
+        webView.connect(webView, SIGNAL("linkClicked(const QUrl&)"), self.linkClicked)
         webView.setHtml(self.msg)
         closeButton = QtGui.QPushButton()
         closeButton.setText("Close")

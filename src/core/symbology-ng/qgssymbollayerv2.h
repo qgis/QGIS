@@ -15,7 +15,12 @@
 #ifndef QGSSYMBOLLAYERV2_H
 #define QGSSYMBOLLAYERV2_H
 
+// MSVC compiler doesn't have defined M_PI in math.h
+#ifndef M_PI
+#define M_PI          3.14159265358979323846
+#endif
 
+#define DEG2RAD(x)    ((x)*M_PI/180)
 
 #include <QColor>
 #include <QMap>
@@ -43,7 +48,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual void setColor( const QColor& color ) { mColor = color; }
     virtual QColor color() const { return mColor; }
 
-    virtual ~QgsSymbolLayerV2() {}
+    virtual ~QgsSymbolLayerV2() { removeDataDefinedProperties(); }
 
     virtual QString layerType() const = 0;
 
@@ -78,13 +83,13 @@ class CORE_EXPORT QgsSymbolLayerV2
     int renderingPass() const { return mRenderingPass; }
 
     // symbol layers normally only use additional attributes to provide data defined settings
-    virtual QSet<QString> usedAttributes() const { return QSet<QString>(); }
+    virtual QSet<QString> usedAttributes() const;
 
-    virtual const QgsExpression* dataDefinedProperty( const QString& property ) const { Q_UNUSED( property ); return 0; } //= 0;
-    virtual QString dataDefinedPropertyString( const QString& property ) const { Q_UNUSED( property ); return QString(); } //= 0;
-    virtual void setDataDefinedProperty( const QString& property, const QString& expressionString ) { Q_UNUSED( property ); Q_UNUSED( expressionString ); } //=0;
-    virtual void removeDataDefinedProperty( const QString& property ) { Q_UNUSED( property ); } //=0;
-    virtual void removeDataDefinedProperties() {} //=0;
+    virtual const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    virtual QString dataDefinedPropertyString( const QString& property ) const;
+    virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    virtual void removeDataDefinedProperty( const QString& property );
+    virtual void removeDataDefinedProperties();
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
@@ -95,11 +100,19 @@ class CORE_EXPORT QgsSymbolLayerV2
     QColor mColor;
     int mRenderingPass;
 
+    QMap< QString, QgsExpression* > mDataDefinedProperties;
+
     // Configuration of selected symbology implementation
     static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
     static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
 
+    virtual void prepareExpressions( const QgsVectorLayer* vl );
+    virtual QgsExpression* expression( const QString& property );
+    /**Saves data defined properties to string map*/
+    void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
+    /**Copies data defined properties of this layer to another symbol layer*/
+    void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
 };
 
 //////////////////////
@@ -139,6 +152,8 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
+    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
+    static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
     double mAngle;
     double mSize;

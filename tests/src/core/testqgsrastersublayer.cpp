@@ -26,6 +26,7 @@
 #include <QDesktopServices>
 
 #include <gdal.h>
+#include "cpl_conv.h"
 
 //qgis includes...
 #include <qgsrasterlayer.h>
@@ -168,8 +169,8 @@ void TestQgsRasterSubLayer::checkStats()
 
     QVERIFY( sublayer->width() == width );
     QVERIFY( sublayer->height() == height );
-    QVERIFY( doubleNear( myStatistics.minimumValue, min ) );
-    QVERIFY( doubleNear( myStatistics.maximumValue, max ) );
+    QVERIFY( qgsDoubleNear( myStatistics.minimumValue, min ) );
+    QVERIFY( qgsDoubleNear( myStatistics.maximumValue, max ) );
     mReport += "<p>Passed</p>";
     delete sublayer;
   }

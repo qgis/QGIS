@@ -65,7 +65,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
           // That's the reason we need this wrapper:
           // Inform the cache that this feature has been removed
           mCache->featureRemoved( mFeature->id() );
-          delete( mFeature );
+          delete mFeature;
         }
 
         inline const QgsFeature* feature() { return mFeature; }
@@ -86,7 +86,6 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * @param cacheSize indicates the maximum number of features to keep in the cache
      */
-
     void setCacheSize( int cacheSize );
 
     /**
@@ -140,9 +139,25 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      *
      * @param cacheIndex  The cache index to add.
      */
-    void addCacheIndex( const QgsAbstractCacheIndex& cacheIndex );
+    void addCacheIndex( QgsAbstractCacheIndex *cacheIndex );
 
+    /**
+     * Query this VectorLayerCache for features.
+     * If the VectorLayerCache (and moreover any of its indices) is able to satisfy
+     * the request, the returned {@link QgsFeatureIterator} will iterate over cached features.
+     * If it's not possible to fully satisfy the request from the cache, part or all of the features
+     * will be requested from the data provider.
+     * @param featureRequest  The request specifying filter and required data.
+     * @return An iterator over the requested data.
+     */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest& featureRequest );
+
+    /**
+     * Check if a certain feature id is cached.
+     * @param  fid The feature id to look for
+     * @return True if this id is in the cache
+     */
+    bool isFidCached(const QgsFeatureId fid );
 
     /**
      * Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
@@ -216,7 +231,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     void cachedLayerDeleted();
 
-  public slots:
+  private slots:
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant& value );
     void featureDeleted( QgsFeatureId fid );
     void featureAdded( QgsFeatureId fid );
@@ -224,6 +239,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void attributeDeleted( int field );
     void geometryChanged( QgsFeatureId fid, QgsGeometry& geom );
     void layerDeleted();
+    void updatedFields();
 
   private:
 

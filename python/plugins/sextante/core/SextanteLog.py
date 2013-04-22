@@ -23,34 +23,36 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import datetime
 import os
+import codecs
+import datetime
+from PyQt4 import QtGui
+
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.core.SextanteConfig import SextanteConfig
-import codecs
-from PyQt4 import QtGui
+
 class SextanteLog():
 
     LOG_ERROR = "ERROR"
     LOG_INFO = "INFO"
     LOG_WARNING = "WARNING"
     LOG_ALGORITHM = "ALGORITHM"
+    DATE_FORMAT = u"%a %b %d %Y %H:%M:%S".encode("utf-8")
     recentAlgs = []
 
     @staticmethod
     def startLogging():
         if os.path.isfile(SextanteLog.logFilename()):
-            logfile = open(SextanteLog.logFilename(), "a")
+            logfile = codecs.open(SextanteLog.logFilename(), "a", encoding="utf-8")
         else:
-            logfile = open(SextanteLog.logFilename(), "w")
-        logfile.write("Started logging at " + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S") + "\n")
+            logfile = codecs.open(SextanteLog.logFilename(), "w", encoding="utf-8")
+        logfile.write("Started logging at " + datetime.datetime.now().strftime(SextanteLog.DATE_FORMAT).decode("utf-8") + "\n")
         logfile.close()
 
     @staticmethod
     def logFilename():
         batchfile = SextanteUtils.userFolder() + os.sep + "sextante_qgis.log"
         return batchfile
-
 
     @staticmethod
     def addToLog(msgtype, msg):
@@ -63,8 +65,8 @@ class SextanteLog():
                 text = a
             else:
                 text = msg.replace("\n", "|")
-            line = msgtype + "|" + datetime.datetime.now().strftime("%a %b %d %Y %H:%M:%S") + "|" + text + "\n"
-            logfile = open(SextanteLog.logFilename(), "a")
+            line = msgtype + "|" + datetime.datetime.now().strftime(SextanteLog.DATE_FORMAT).decode("utf-8") + "|" + text + "\n"
+            logfile = codecs.open(SextanteLog.logFilename(), "a", encoding="utf-8")
             #logfile = codecs.open(SextanteLog.logFilename(), "a", encoding='utf-8')
             logfile.write(line)
             logfile.close()
@@ -77,7 +79,6 @@ class SextanteLog():
                    SextanteConfig.setSettingValue(SextanteConfig.RECENT_ALGORITHMS, recentAlgsString)
         except:
             pass
-
 
     @staticmethod
     def getLogEntries():
@@ -115,7 +116,6 @@ class SextanteLog():
         entries[SextanteLog.LOG_WARNING] = warnings
         return entries
 
-
     @staticmethod
     def getRecentAlgorithms():
         recentAlgsSetting = SextanteConfig.getSetting(SextanteConfig.RECENT_ALGORITHMS)
@@ -125,13 +125,10 @@ class SextanteLog():
             pass
         return SextanteLog.recentAlgs
 
-
     @staticmethod
     def clearLog():
         os.unlink(SextanteLog.logFilename())
         SextanteLog.startLogging()
-
-
 
 class LogEntry():
     def __init__(self, date, text):
@@ -140,8 +137,6 @@ class LogEntry():
 
 import re
 import time
-
-
 
 #===============================================================================
 
@@ -173,7 +168,7 @@ class Tailer(object):
 
     def __init__(self, filename, read_size=1024, end=False):
         self.read_size = read_size
-        self.file = open(filename)
+        self.file = codecs.open(filename, encoding="utf-8")
         self.start_pos = self.file.tell()
         if end:
             self.seek_end()
@@ -259,8 +254,6 @@ class Tailer(object):
         else:
             return []
 
-
-
     def __iter__(self):
         return self.follow()
 
@@ -269,7 +262,3 @@ class Tailer(object):
 
 def tail(file, lines=200):
     return Tailer(file).tail(lines)
-
-
-
-

@@ -42,7 +42,7 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
      * @param bothDirectionValue value for road
      * @param defaultDirection 1 - direct direction, 2 - reverse direction, 3 - both direction
      */
-    QgsLineVectorLayerDirector( QgsVectorLayer* vl,
+    QgsLineVectorLayerDirector( QgsVectorLayer* myLayer,
                                 int directionFieldId,
                                 const QString& directDirectionValue,
                                 const QString& reverseDirectionValue,

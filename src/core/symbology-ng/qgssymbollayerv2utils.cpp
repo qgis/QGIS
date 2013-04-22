@@ -1434,9 +1434,9 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
         map["fill"] = fillColor.name();
         map["outline"] = borderColor.name();
         map["outline-width"] = QString::number( borderWidth );
-        if ( !doubleNear( size, 0.0 ) )
+        if ( !qgsDoubleNear( size, 0.0 ) )
           map["size"] = QString::number( size );
-        if ( !doubleNear( angle, 0.0 ) )
+        if ( !qgsDoubleNear( angle, 0.0 ) )
           map["angle"] = QString::number( angle );
         if ( !offset.isNull() )
           map["offset"] = QgsSymbolLayerV2Utils::encodePoint( offset );
@@ -1450,7 +1450,7 @@ bool QgsSymbolLayerV2Utils::convertPolygonSymbolizerToPointMarker( QDomElement &
         map["color"] = QgsSymbolLayerV2Utils::encodeColor( validFill ? fillColor : Qt::transparent );
         if ( size > 0 )
           map["size"] = QString::number( size );
-        if ( !doubleNear( angle, 0.0 ) )
+        if ( !qgsDoubleNear( angle, 0.0 ) )
           map["angle"] = QString::number( angle );
         if ( !offset.isNull() )
           map["offset"] = QgsSymbolLayerV2Utils::encodePoint( offset );
@@ -1642,7 +1642,7 @@ void QgsSymbolLayerV2Utils::lineToSld( QDomDocument &doc, QDomElement &element,
   if ( pattern->size() > 0 )
   {
     element.appendChild( createSvgParameterElement( doc, "stroke-dasharray", encodeSldRealVector( *pattern ) ) );
-    if ( !doubleNear( dashOffset, 0.0 ) )
+    if ( !qgsDoubleNear( dashOffset, 0.0 ) )
       element.appendChild( createSvgParameterElement( doc, "stroke-dashoffset", QString::number( dashOffset ) ) );
   }
 }
@@ -1846,7 +1846,7 @@ void QgsSymbolLayerV2Utils::externalMarkerToSld( QDomDocument &doc, QDomElement 
   markElem.appendChild( fillElem );
 
   // <Size>
-  if ( !doubleNear( size, 0.0 ) && size > 0 )
+  if ( !qgsDoubleNear( size, 0.0 ) && size > 0 )
   {
     QDomElement sizeElem = doc.createElement( "se:Size" );
     sizeElem.appendChild( doc.createTextNode( QString::number( size ) ) );
@@ -1926,7 +1926,7 @@ void QgsSymbolLayerV2Utils::wellKnownMarkerToSld( QDomDocument &doc, QDomElement
   }
 
   // <Size>
-  if ( !doubleNear( size, 0.0 ) && size > 0 )
+  if ( !qgsDoubleNear( size, 0.0 ) && size > 0 )
   {
     QDomElement sizeElem = doc.createElement( "se:Size" );
     sizeElem.appendChild( doc.createTextNode( QString::number( size ) ) );
@@ -2160,7 +2160,7 @@ QString QgsSymbolLayerV2Utils::ogrFeatureStylePen( double width, double mmScaleF
   }
 
   //offset
-  if ( !doubleNear( offset, 0.0 ) )
+  if ( !qgsDoubleNear( offset, 0.0 ) )
   {
     penStyle.append( ",dp:" );
     penStyle.append( QString::number( offset * mapUnitScaleFactor ) );
@@ -2254,7 +2254,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
   }
   else
   {
-    function = expr->dump();
+    function = expr->expression();
   }
 
   delete expr;
@@ -2626,6 +2626,82 @@ void QgsSymbolLayerV2Utils::multiplyImageOpacity( QImage* image, qreal alpha )
       else
         scanLine[widthIndex] = qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), alpha * qAlpha( myRgb ) );
     }
+  }
+}
+
+void QgsSymbolLayerV2Utils::blurImageInPlace( QImage& image, const QRect& rect, int radius, bool alphaOnly )
+{
+  // culled from Qt's qpixmapfilter.cpp, see: http://www.qtcentre.org/archive/index.php/t-26534.html
+  int tab[] = { 14, 10, 8, 6, 5, 5, 4, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2 };
+  int alpha = ( radius < 1 )  ? 16 : ( radius > 17 ) ? 1 : tab[radius-1];
+
+  if ( image.format() != QImage::Format_ARGB32_Premultiplied
+       && image.format() != QImage::Format_RGB32 )
+  {
+    image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied );
+  }
+
+  int r1 = rect.top();
+  int r2 = rect.bottom();
+  int c1 = rect.left();
+  int c2 = rect.right();
+
+  int bpl = image.bytesPerLine();
+  int rgba[4];
+  unsigned char* p;
+
+  int i1 = 0;
+  int i2 = 3;
+
+  if ( alphaOnly ) // this seems to only work right for a black color
+    i1 = i2 = ( QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3 );
+
+  for ( int col = c1; col <= c2; col++ )
+  {
+    p = image.scanLine( r1 ) + col * 4;
+    for ( int i = i1; i <= i2; i++ )
+      rgba[i] = p[i] << 4;
+
+    p += bpl;
+    for ( int j = r1; j < r2; j++, p += bpl )
+      for ( int i = i1; i <= i2; i++ )
+        p[i] = ( rgba[i] += (( p[i] << 4 ) - rgba[i] ) * alpha / 16 ) >> 4;
+  }
+
+  for ( int row = r1; row <= r2; row++ )
+  {
+    p = image.scanLine( row ) + c1 * 4;
+    for ( int i = i1; i <= i2; i++ )
+      rgba[i] = p[i] << 4;
+
+    p += 4;
+    for ( int j = c1; j < c2; j++, p += 4 )
+      for ( int i = i1; i <= i2; i++ )
+        p[i] = ( rgba[i] += (( p[i] << 4 ) - rgba[i] ) * alpha / 16 ) >> 4;
+  }
+
+  for ( int col = c1; col <= c2; col++ )
+  {
+    p = image.scanLine( r2 ) + col * 4;
+    for ( int i = i1; i <= i2; i++ )
+      rgba[i] = p[i] << 4;
+
+    p -= bpl;
+    for ( int j = r1; j < r2; j++, p -= bpl )
+      for ( int i = i1; i <= i2; i++ )
+        p[i] = ( rgba[i] += (( p[i] << 4 ) - rgba[i] ) * alpha / 16 ) >> 4;
+  }
+
+  for ( int row = r1; row <= r2; row++ )
+  {
+    p = image.scanLine( row ) + c2 * 4;
+    for ( int i = i1; i <= i2; i++ )
+      rgba[i] = p[i] << 4;
+
+    p -= 4;
+    for ( int j = c1; j < c2; j++, p -= 4 )
+      for ( int i = i1; i <= i2; i++ )
+        p[i] = ( rgba[i] += (( p[i] << 4 ) - rgba[i] ) * alpha / 16 ) >> 4;
   }
 }
 

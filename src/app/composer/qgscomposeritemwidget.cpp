@@ -48,6 +48,8 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   setValuesForGuiElements();
   connect( mItem, SIGNAL( sizeChanged() ), this, SLOT( setValuesForGuiPositionElements() ) );
 
+  connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpnBx, SLOT( setValue( int ) ) );
+  connect( mTransparencySpnBx, SIGNAL( valueChanged( int ) ), mTransparencySlider, SLOT( setValue( int ) ) );
 }
 
 QgsComposerItemWidget::QgsComposerItemWidget(): QWidget( 0 ), mItem( 0 )
@@ -99,10 +101,9 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor
   {
     return;
   }
-//  QColor newColor( newBackgroundColor );
   mItem->beginCommand( tr( "Background color changed" ) );
-//  newColor.setAlpha( 255 - ( mTransparencySpinBox->value() * 2.55 ) );
-  mItem->setBrush( QBrush( QColor( newBackgroundColor ), Qt::SolidPattern ) );
+  mItem->setBackgroundColor( newBackgroundColor );
+
   //if the item is a composer map, we need to regenerate the map image
   //because it usually is cached
   QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
@@ -113,40 +114,6 @@ void QgsComposerItemWidget::on_mBackgroundColorButton_colorChanged( const QColor
   mItem->update();
   mItem->endCommand();
 }
-
-//void QgsComposerItemWidget::on_mTransparencySpinBox_valueChanged( int value )
-//{
-//  if ( !mItem )
-//  {
-//    return;
-//  }
-
-//  mTransparencySlider->blockSignals( true );
-//  mTransparencySlider->setValue( value );
-//  mTransparencySlider->blockSignals( false );
-//  changeItemTransparency( value );
-//}
-
-//void QgsComposerItemWidget::on_mTransparencySlider_valueChanged( int value )
-//{
-//  if ( !mItem )
-//  {
-//    return;
-//  }
-//  // do item updates only off of mTransparencySpinBox valueChanged
-//  mTransparencySpinBox->setValue( value );
-//}
-
-//void QgsComposerItemWidget::changeItemTransparency( int value )
-//{
-//  mItem->beginCommand( tr( "Item transparency changed" ) );
-//  QBrush itemBrush = mItem->brush();
-//  QColor brushColor = itemBrush.color();
-//  brushColor.setAlpha( 255 - ( value * 2.55 ) );
-//  mItem->setBrush( QBrush( brushColor ) );
-//  mItem->update();
-//  mItem->endCommand();
-//}
 
 void QgsComposerItemWidget::changeItemPosition()
 {
@@ -248,6 +215,15 @@ void QgsComposerItemWidget::on_mBackgroundGroupBox_toggled( bool state )
 
   mItem->beginCommand( tr( "Item background toggled" ) );
   mItem->setBackgroundEnabled( state );
+
+  //if the item is a composer map, we need to regenerate the map image
+  //because it usually is cached
+  QgsComposerMap* cm = dynamic_cast<QgsComposerMap *>( mItem );
+  if ( cm )
+  {
+    cm->cache();
+  }
+
   mItem->update();
   mItem->endCommand();
 }
@@ -348,7 +324,6 @@ void QgsComposerItemWidget::setValuesForGuiElements()
 
   setValuesForGuiPositionElements();
 
-//  mTransparencySlider->blockSignals( true );
   mOutlineWidthSpinBox->blockSignals( true );
   mFrameGroupBox->blockSignals( true );
   mBackgroundGroupBox->blockSignals( true );
@@ -356,15 +331,11 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mItemUuidLineEdit->blockSignals( true );
   mBlendModeCombo->blockSignals( true );
   mTransparencySlider->blockSignals( true );
-//  mTransparencySpinBox->blockSignals( true );
+  mTransparencySpnBx->blockSignals( true );
 
   mBackgroundColorButton->setColor( mItem->brush().color() );
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
-//  int alphaPercent = ( 255 - mItem->brush().color().alpha() ) / 2.55;
-//  mTransparencySpinBox->setValue( alphaPercent );
-//  mTransparencySlider->setValue( alphaPercent );
-
   mFrameColorButton->setColor( mItem->pen().color() );
   mFrameColorButton->setColorDialogTitle( tr( "Select frame color" ) );
   mFrameColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
@@ -375,8 +346,8 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
   mTransparencySlider->setValue( mItem->transparency() );
+  mTransparencySpnBx->setValue( mItem->transparency() );
 
-//  mTransparencySlider->blockSignals( false );
   mOutlineWidthSpinBox->blockSignals( false );
   mFrameGroupBox->blockSignals( false );
   mBackgroundGroupBox->blockSignals( false );
@@ -384,7 +355,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mItemUuidLineEdit->blockSignals( false );
   mBlendModeCombo->blockSignals( false );
   mTransparencySlider->blockSignals( false );
-//  mTransparencySpinBox->blockSignals( false );
+  mTransparencySpnBx->blockSignals( false );
 }
 
 void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
@@ -413,4 +384,111 @@ void QgsComposerItemWidget::on_mItemIdLineEdit_editingFinished()
     mItemIdLineEdit->setText( mItem->id() );
     mItem->endCommand();
   }
+}
+
+void QgsComposerItemWidget::on_mUpperLeftCheckBox_stateChanged( int state )
+{
+  if ( state != Qt::Checked )
+    return;
+  if ( mItem )
+  {
+    mItem->setItemPosition( mItem->transform().dx(), mItem->transform().dy(), QgsComposerItem::UpperLeft );
+  }
+  setValuesForGuiPositionElements();
+}
+
+void QgsComposerItemWidget::on_mUpperMiddleCheckBox_stateChanged( int state )
+{
+  if ( state != Qt::Checked )
+    return;
+  if ( mItem )
+  {
+    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width() / 2.0,
+                            mItem->transform().dy(), QgsComposerItem::UpperMiddle );
+  }
+  setValuesForGuiPositionElements();
+}
+
+void QgsComposerItemWidget::on_mUpperRightCheckBox_stateChanged( int state )
+{
+  if ( state != Qt::Checked )
+    return;
+  if ( mItem )
+  {
+    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width(),
+                            mItem->transform().dy(), QgsComposerItem::UpperRight );
+  }
+  setValuesForGuiPositionElements();
+}
+
+void QgsComposerItemWidget::on_mMiddleLeftCheckBox_stateChanged( int state )
+{
+  if ( state != Qt::Checked )
+    return;
+  if ( mItem )
+  {
+    mItem->setItemPosition( mItem->transform().dx(),
+                            mItem->transform().dy() + mItem->rect().height() / 2.0, QgsComposerItem::MiddleLeft );
+  }
+  setValuesForGuiPositionElements();
+}
+
+void QgsComposerItemWidget::on_mMiddleCheckBox_stateChanged( int state )
+{
+  if ( state != Qt::Checked )
+    return;
+  if ( mItem )
+  {
+    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width() / 2.0,
+                            mItem->transform().dy() + mItem->rect().height() / 2.0, QgsComposerItem::Middle );
+  }
+  setValuesForGuiPositionElements();
+}
+
+void QgsComposerItemWidget::on_mMiddleRightCheckBox_stateChanged( int state )
+{
+  if ( state != Qt::Checked )
+    return;
+  if ( mItem )
+  {
+    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width(),
+                            mItem->transform().dy() + mItem->rect().height() / 2.0, QgsComposerItem::MiddleRight );
+  }
+  setValuesForGuiPositionElements();
+}
+
+void QgsComposerItemWidget::on_mLowerLeftCheckBox_stateChanged( int state )
+{
+  if ( state != Qt::Checked )
+    return;
+  if ( mItem )
+  {
+    mItem->setItemPosition( mItem->transform().dx(),
+                            mItem->transform().dy() + mItem->rect().height(), QgsComposerItem::LowerLeft );
+  }
+  setValuesForGuiPositionElements();
+}
+
+void QgsComposerItemWidget::on_mLowerMiddleCheckBox_stateChanged( int state )
+{
+  if ( state != Qt::Checked )
+    return;
+  if ( mItem )
+  {
+    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width() / 2.0,
+                            mItem->transform().dy() + mItem->rect().height(), QgsComposerItem::LowerMiddle );
+  }
+  setValuesForGuiPositionElements();
+}
+
+void QgsComposerItemWidget::on_mLowerRightCheckBox_stateChanged( int state )
+{
+  if ( state != Qt::Checked )
+    return;
+  if ( mItem )
+  {
+    mItem->setItemPosition( mItem->transform().dx() + mItem->rect().width(),
+                            mItem->transform().dy() + mItem->rect().height(), QgsComposerItem::LowerRight );
+  }
+  setValuesForGuiPositionElements();
 }

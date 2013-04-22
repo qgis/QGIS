@@ -231,7 +231,7 @@ class CORE_EXPORT QgsProject : public QObject
         @note The key string <em>must</em> include '/'s.  E.g., "/foo" not "foo".
     */
     //@{
-    QStringList readListEntry( const QString & scope, const QString & key, QStringList def = QStringList(), bool *ok = 0  ) const;
+    QStringList readListEntry( const QString & scope, const QString & key, QStringList def = QStringList(), bool *ok = 0 ) const;
 
     QString readEntry( const QString & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
     int readNumEntry( const QString & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
@@ -347,6 +347,8 @@ class CORE_EXPORT QgsProject : public QObject
     // @param i current layer
     // @param n number of layers
     void layerLoaded( int i, int n );
+
+    void loadingLayer( QString );
 
     void snapSettingsChanged();
 

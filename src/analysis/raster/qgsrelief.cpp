@@ -715,7 +715,7 @@ void QgsRelief::optimiseClassBreaks( QList<int>& breaks, double* frequencies )
       continue;
     }
 
-    if ( doubleNear( a[i - 1 ], a[i] ) )
+    if ( qgsDoubleNear( a[i - 1 ], a[i] ) )
     {
       continue;
     }

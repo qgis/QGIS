@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -46,12 +47,28 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
+    
+    USE_CATEGORIES = "/SextanteQGIS/UseCategories"
+    
+    
     def __init__(self, iface):
         QDockWidget.__init__(self, None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.iface=iface
+        
+        self.modeComboBox.clear()
+        self.modeComboBox.addItems(['Simplified interface', 'Advanced interface'])
+        settings = QSettings()
+        if not settings.contains(self.USE_CATEGORIES):
+            settings.setValue(self.USE_CATEGORIES, True)                
+        useCategories = settings.value(self.USE_CATEGORIES).toBool()       
+        if useCategories:
+            self.modeComboBox.setCurrentIndex(0)
+        else:
+            self.modeComboBox.setCurrentIndex(1)
+        self.modeComboBox.currentIndexChanged.connect(self.modeHasChanged)
 
         self.externalAppsButton.clicked.connect(self.configureProviders)
         self.searchBox.textChanged.connect(self.fillTree)
@@ -61,6 +78,16 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr("Search..."))
 
+        self.fillTree()
+        
+    def modeHasChanged(self):
+        idx = self.modeComboBox.currentIndex()
+        settings = QSettings()
+        if idx == 0: #simplified
+            settings.setValue(self.USE_CATEGORIES, True)  
+        else:
+            settings.setValue(self.USE_CATEGORIES, False)  
+                                           
         self.fillTree()
 
     def algsListHasChanged(self):
@@ -145,7 +172,8 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             action.execute()
 
     def fillTree(self):
-        useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
+        settings = QSettings()
+        useCategories = settings.value(self.USE_CATEGORIES).toBool() 
         if useCategories:
             self.fillTreeUsingCategories()
         else:
@@ -279,7 +307,7 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
         if (text != ""):
             self.algorithmTree.expandAll()
 
-    def fillTreeUsingProviders(self):
+    def fillTreeUsingProviders(self):             
         self.algorithmTree.clear()
         text = unicode(self.searchBox.text())
         for providerName in Sextante.algs.keys():
@@ -334,7 +362,8 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
 class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
-        useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
+        settings = QSettings()
+        useCategories = settings.value(SextanteToolbox.USE_CATEGORIES)
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()

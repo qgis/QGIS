@@ -17,10 +17,10 @@
 
 #include <typeinfo>
 
-#include "qgsrasterpipe.h"
-#include "qgslogger.h"
-
 #include <QByteArray>
+
+#include "qgslogger.h"
+#include "qgsrasterpipe.h"
 
 QgsRasterPipe::QgsRasterPipe()
 {

@@ -51,6 +51,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mVAlignSnapItem( 0 )
     , mFrame( false )
     , mBackground( true )
+    , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
@@ -72,6 +73,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mVAlignSnapItem( 0 )
     , mFrame( false )
     , mBackground( true )
+    , mBackgroundColor( QColor( 255, 255, 255, 255 ) )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
@@ -326,7 +328,7 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
     if ( redOk && greenOk && blueOk && alphaOk )
     {
       QColor brushColor( bgRed, bgGreen, bgBlue, bgAlpha );
-      setBrush( QBrush( brushColor ) );
+      setBackgroundColor( brushColor );
     }
   }
 
@@ -884,6 +886,12 @@ void QgsComposerItem::drawBackground( QPainter* p )
   }
 }
 
+void QgsComposerItem::setBackgroundColor( const QColor& backgroundColor )
+{
+  mBackgroundColor = backgroundColor;
+  setBrush( QBrush( mBackgroundColor, Qt::SolidPattern ) );
+}
+
 void QgsComposerItem::setBlendMode( QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
@@ -1110,7 +1118,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
     return true;
   }
 
-  if ( doubleNear( qAbs( mRotation ), 90 ) || doubleNear( qAbs( mRotation ), 270 ) )
+  if ( qgsDoubleNear( qAbs( mRotation ), 90 ) || qgsDoubleNear( qAbs( mRotation ), 270 ) )
   {
     double tmp = width;
     width = height;

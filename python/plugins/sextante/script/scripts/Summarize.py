@@ -1,8 +1,11 @@
+##[Example scripts]=group
 ##input=vector
 ##output=output vector
-from sextante.core.SextanteVectorWriter import SextanteVectorWriter
-from qgis.core import *
+
 from PyQt4.QtCore import *
+from qgis.core import *
+
+from sextante.core.SextanteVectorWriter import SextanteVectorWriter
 
 inputLayer = sextante.getobject(input)
 features = sextante.getfeatures(inputLayer)

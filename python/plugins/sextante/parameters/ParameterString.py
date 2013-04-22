@@ -35,6 +35,7 @@ class ParameterString(Parameter):
         self.default = default
         self.value = None
         self.multiline = multiline
+        self.optional = optional
 
     def setValue(self, obj):
         if obj is None:

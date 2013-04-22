@@ -7,13 +7,14 @@
 #include <QVariant>
 #include <QItemSelectionModel>
 
+#include "qgsfeaturemodel.h"
 #include "qgsfeature.h" // QgsFeatureId
 
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
-class QgsFeatureListModel : public QAbstractProxyModel
+class QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
 
@@ -40,17 +41,6 @@ class QgsFeatureListModel : public QAbstractProxyModel
     virtual Qt::ItemFlags flags( const QModelIndex& index ) const;
 
     QgsAttributeTableModel* masterModel();
-
-    /**
-     * Returns a selection model which is mapped to the sourceModel (tableModel) of this proxy.
-     * This selection also contains the features not visible because of the current filter.
-     * Views using this filter model may update this selection and subscribe to changes in
-     * this selection. This selection will synchronize itself with the selection on the map
-     * canvas.
-     *
-     * @return The master selection
-     */
-    QItemSelectionModel* masterSelection();
 
     /**
      *  @param  expression   A {@link QgsExpression} compatible string.
@@ -85,20 +75,8 @@ class QgsFeatureListModel : public QAbstractProxyModel
     virtual int columnCount( const QModelIndex&parent = QModelIndex() ) const;
     virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const;
 
-    /**
-     * Disables selection synchronisation with the map canvas. Changes to the selection in the master
-     * model are propagated to the layer, but no redraw is requested until @link enableSelectionSync() @endlink
-     * is called.
-     */
-    void disableSelectionSync();
-
-    /**
-     * Enables selection synchronisation with the map canvas. Changes to the selection in the master
-     * are propagated and upon every change, a redraw will be requested. This method will update the
-     * selection to account for any cached selection change since @link disableSelectionSync() @endlink
-     * was called.
-     */
-    void enableSelectionSync();
+    QModelIndex fidToIndex( QgsFeatureId fid );
+    QModelIndexList fidToIndexList( QgsFeatureId fid );
 
   public slots:
     void onBeginRemoveRows( const QModelIndex& parent, int first, int last );

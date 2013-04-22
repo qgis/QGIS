@@ -127,7 +127,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     //myInternalNoDataValue = -1e+30;
     myInternalNoDataValue = std::numeric_limits<float>::quiet_NaN();
   }
-  mInternalNoDataValue.append( myInternalNoDataValue );
+  mNoDataValue = myInternalNoDataValue;
   QgsDebugMsg( QString( "myInternalNoDataValue = %1" ).arg( myInternalNoDataValue ) );
 
   // TODO: refresh mRows and mCols if raster was rewritten
@@ -303,17 +303,6 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   memcpy( block, data.data(), size );
 }
 
-double  QgsGrassRasterProvider::minimumValue( int bandNo ) const
-{
-  Q_UNUSED( bandNo );
-  return mInfo["MIN_VALUE"].toDouble();
-}
-double  QgsGrassRasterProvider::maximumValue( int bandNo ) const
-{
-  Q_UNUSED( bandNo );
-  return mInfo["MAX_VALUE"].toDouble();
-}
-
 QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int theStats, const QgsRectangle & theExtent, int theSampleSize )
 {
   QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
@@ -441,6 +430,9 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   Q_UNUSED( theHeight );
   QgsDebugMsg( "Entered" );
   QMap<int, QVariant> results;
+  QMap<int, QVariant> noDataResults;
+  noDataResults.insert( 1, QVariant() );
+  QgsRasterIdentifyResult noDataResult( IdentifyFormatValue, results );
 
   if ( theFormat != IdentifyFormatValue )
   {
@@ -449,8 +441,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
 
   if ( !extent().contains( thePoint ) )
   {
-    results.insert( 1, noDataValue( 1 ) );
-    return QgsRasterIdentifyResult( IdentifyFormatValue, results );
+    return noDataResult;
   }
 
   // TODO: use doubles instead of strings
@@ -465,13 +456,17 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
     return QgsRasterIdentifyResult( ERROR( tr( "Cannot read data" ) ) );
   }
 
-  if ( qIsNaN( value ) ) value = noDataValue( 1 );
+  // no data?
+  if ( qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue ) )
+  {
+    return noDataResult;
+  }
 
   // Apply user no data
   QgsRasterRangeList myNoDataRangeList = userNoDataValue( 1 );
   if ( QgsRasterRange::contains( value, myNoDataRangeList ) )
   {
-    value = noDataValue( 1 );
+    return noDataResult;
   }
 
   results.insert( 1, value );
@@ -483,8 +478,6 @@ int QgsGrassRasterProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
                    | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::ExactResolution
-                   | QgsRasterDataProvider::ExactMinimumMaximum
                    | QgsRasterDataProvider::Size;
   return capability;
 }

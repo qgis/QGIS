@@ -39,7 +39,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.activate = False
+        self.activate = True
         self.createAlgsList() #preloading algorithms to speed up
 
     def initializeSettings(self):
@@ -114,25 +114,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def getSupportedOutputTableLayerExtensions(self):
         return ["dbf"]
 
-
     def getIcon(self):
         return  QIcon(os.path.dirname(__file__) + "/../images/saga.png")
-
-    def createDescriptionFiles(self):
-        folder = "C:\\descs\\saga"
-        i = 0
-        for alg in self.preloadedAlgs:
-            f = open (os.path.join(folder, alg.name.replace(" ","").replace("/", "") + ".txt"), "w")
-            f.write(alg.name + "\n")
-            f.write(alg.undecoratedGroup + "\n")
-            for param in alg.parameters:
-                f.write(param.serialize() + "\n")
-            for out in alg.outputs:
-                f.write(out.serialize() + "\n")
-            f.close()
-            i+=1
-
-
-
-
 

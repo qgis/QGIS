@@ -323,7 +323,7 @@ QgsFeatureIterator QgsWFSProvider::getFeatures( const QgsFeatureRequest& request
         //    avoids unnecessary second fetch on zoom-in/zoom-out sequences
         QgsRectangle olap( rect );
         olap = olap.intersect( &mGetExtent );
-        if ( doubleNear( rect.width(), olap.width() ) && doubleNear( rect.height(), olap.height() ) )
+        if ( qgsDoubleNear( rect.width(), olap.width() ) && qgsDoubleNear( rect.height(), olap.height() ) )
         { //difference between canvas and layer extents is within rounding error: do not re-fetch
           QgsDebugMsg( QString( "Layer %1 GetRenderedOnly: no fetch required" ).arg( mLayer->name() ) );
         }

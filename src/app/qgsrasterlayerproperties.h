@@ -19,6 +19,7 @@
 #ifndef QGSRASTERLAYERPROPERTIES_H
 #define QGSRASTERLAYERPROPERTIES_H
 
+#include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
 #include "qgsmaptool.h"
@@ -37,7 +38,7 @@ class QgsRasterHistogramWidget;
   *@author Tim Sutton
   */
 
-class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPropertiesBase
+class QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRasterLayerPropertiesBase
 {
     Q_OBJECT
 
@@ -72,7 +73,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /** \brief slot executed when user wishes to export transparency values */
     void on_pbnExportTransparentPixelValues_clicked();
     /** \brief auto slot executed when the active page in the main widget stack is changed */
-    void on_tabBar_currentChanged( int theTab );
+    void mOptionsStackedWidget_CurrentChanged( int indx );
     /** \brief slow executed when user wishes to import transparency values */
     void on_pbnImportTransparentPixelValues_clicked();
     /** \brief slot executed when user presses "Remove Selected Row" button on the transparency page */
@@ -100,6 +101,11 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_mMinimumScaleSetCurrentPushButton_clicked();
     void on_mMaximumScaleSetCurrentPushButton_clicked();
 
+    /** Slot to reset all color rendering options to default
+     * @note added in 1.9
+     */
+    void on_mResetColorRenderingBtn_clicked();
+
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 
@@ -108,9 +114,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     /**Enable or disable colorize controls depending on checkbox */
     void toggleColorizeControls( bool colorizeEnabled );
-
-    /** Update items in pipe list */
-    void pipeItemClicked( QTreeWidgetItem * item, int column );
 
     /** Transparency cell changed */
     void transparencyCellTextEdited( const QString & text );
@@ -165,8 +168,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     void setRendererWidget( const QString& rendererName );
 
-    //@TODO we should move these gradient generators somewhere more generic
-    //so they can be used generically throughut the app
+    //TODO: we should move these gradient generators somewhere more generic
+    //so they can be used generically throughout the app
     QLinearGradient greenGradient();
     QLinearGradient redGradient();
     QLinearGradient blueGradient();
@@ -174,12 +177,6 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     QLinearGradient highlightGradient();
     qreal mGradientHeight;
     qreal mGradientWidth;
-
-    /** Update pipe tab - interfaces list */
-    void updatePipeList();
-
-    /** Update items in pipe list */
-    void updatePipeItems();
 
     QgsMapCanvas* mMapCanvas;
     QgsMapToolEmitPoint* mPixelSelectorTool;

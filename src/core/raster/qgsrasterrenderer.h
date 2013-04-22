@@ -18,20 +18,15 @@
 #ifndef QGSRASTERRENDERER_H
 #define QGSRASTERRENDERER_H
 
-#include "qgsrasterinterface.h"
-#include "qgsrasterdataprovider.h"
 #include <QPair>
 
-#include "cpl_conv.h"
-
-class QPainter;
-class QgsMapToPixel;
-class QgsRasterResampler;
-class QgsRasterProjector;
-class QgsRasterTransparency;
-struct QgsRasterViewPort;
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 
 class QDomElement;
+
+class QPainter;
+class QgsRasterTransparency;
 
 /** \ingroup core
   * Raster renderer pipe that applies colours to a raster.
@@ -71,14 +66,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     virtual bool setInput( QgsRasterInterface* input );
 
-#if 0
-    virtual void * readBlock( int bandNo, const QgsRectangle &extent, int width, int height )
-    {
-      Q_UNUSED( bandNo ); Q_UNUSED( extent ); Q_UNUSED( width ); Q_UNUSED( height );
-      return 0;
-    }
-#endif
-
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
 
     bool usesTransparency() const;
@@ -91,9 +78,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
-
-    //void setInvertColor( bool invert ) { mInvertColor = invert; }
-    //bool invertColor() const { return mInvertColor; }
 
     /**Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
@@ -122,8 +106,6 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     /**Read alpha value from band. Is combined with value from raster transparency / global alpha value.
         Default: -1 (not set)*/
     int mAlphaBand;
-
-    //bool mInvertColor;
 };
 
 #endif // QGSRASTERRENDERER_H

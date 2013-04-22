@@ -221,8 +221,21 @@ class QgsVectorLayer : QgsMapLayer
     /** The number of features that are selected in this layer */
     int selectedFeatureCount();
 
-    /** Select features found within the search rectangle (in layer's coordinates) */
-    void select( QgsRectangle & rect, bool lock );
+    /**
+     * Select features found within the search rectangle (in layer's coordinates)
+     *
+     * @param rect            The search rectangle
+     * @param addToSelection  If set to true will not clear before selecting
+     */
+    void select( QgsRectangle & rect, bool addToSelection );
+
+    /**
+     * Modifies the current selection on this layer
+     *
+     * @param selectIds    Select these ids
+     * @param deselectIds  Deselect these ids
+     */
+    void modifySelection(QgsFeatureIds selectIds, QgsFeatureIds deselectIds );
 
     /** Select not selected features and deselect selected ones */
     void invertSelection();
@@ -769,14 +782,36 @@ class QgsVectorLayer : QgsMapLayer
     QVariant maximumValue( int index );
 
   public slots:
-    /** Select feature by its ID, optionally emit signal selectionChanged() */
-    void select( QgsFeatureId featureId, bool emitSignal = true );
+    /**
+     * Select feature by its ID
+     *
+     * @param featureId  The id of the feature to select
+     */
+    void select( QgsFeatureId featureId );
 
-    /** Deselect feature by its ID, optionally emit signal selectionChanged() */
-    void deselect( QgsFeatureId featureId, bool emitSignal = true );
+    /**
+     * Select features by their ID
+     *
+     * @param featureIds The ids of the features to select
+     */
+    void select( QgsFeatureIds featureIds );
+
+    /**
+     * Deselect feature by its ID
+     *
+     * @param featureId  The id of the feature to deselect
+     */
+    void deselect( QgsFeatureId featureId );
+
+    /**
+     * Deselect features by their ID
+     *
+     * @param featureIds The ids of the features to deselect
+     */
+    void deselect( QgsFeatureIds featureIds );
 
     /** Clear selection */
-    void removeSelection( bool emitSignal = true );
+    void removeSelection();
 
     void triggerRepaint();
 
@@ -801,9 +836,34 @@ class QgsVectorLayer : QgsMapLayer
 
     void editingStarted();
     void editingStopped();
+
+    /**
+     * Will be emitted, when a new attribute has been added to this vector layer.
+     * Applies only to types {@link QgsFields::OriginEdit} and {@link QgsFields::OriginProvider}
+     *
+     * @param The index of the new attribute
+     *
+     * @see updatedFields()
+     */
     void attributeAdded( int idx );
+
+    /**
+     * Will be emitted, when an attribute has been deleted from this vector layer.
+     * Applies only to types {@link QgsFields::OriginEdit} and {@link QgsFields::OriginProvider}
+     *
+     * @param The index of the deleted attribute
+     *
+     * @see updatedFields()
+     */
     void attributeDeleted( int idx );
     void featureAdded( QgsFeatureId fid );  // added in 1.7
+
+    /**
+     * Is emitted, whenever the fields available from this layer have been changed.
+     * This can be due to manually adding attributes or due to a join.
+     */
+    void updatedFields();
+
     void featureDeleted( QgsFeatureId fid );
     void layerDeleted();
 

@@ -23,6 +23,7 @@
 
 class QFontMetricsF;
 class QPainter;
+class QPicture;
 class QgsGeometry;
 class QgsMapRenderer;
 class QgsRectangle;
@@ -134,6 +135,14 @@ class CORE_EXPORT QgsPalLayerSettings
       Percent
     };
 
+    enum ShadowType
+    {
+      ShadowLowest = 0,
+      ShadowText,
+      ShadowBuffer,
+      ShadowShape
+    };
+
     // update mDataDefinedNames QList in constructor when adding/deleting enum value
     enum DataDefinedProperties
     {
@@ -226,6 +235,21 @@ class CORE_EXPORT QgsPalLayerSettings
     int shapeTransparency;
     QPainter::CompositionMode shapeBlendMode;
 
+    // drop shadow
+    bool shadowDraw;
+    ShadowType shadowUnder;
+    int shadowOffsetAngle;
+    double shadowOffsetDist;
+    SizeUnit shadowOffsetUnits;
+    bool shadowOffsetGlobal;
+    double shadowRadius;
+    SizeUnit shadowRadiusUnits;
+    bool shadowRadiusAlphaOnly;
+    int shadowTransparency;
+    int shadowScale;
+    QColor shadowColor;
+    QPainter::CompositionMode shadowBlendMode;
+
     bool formatNumbers;
     int decimals;
     bool plusSign;
@@ -285,6 +309,16 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false ) const;
 
+    /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+     * @param size size to convert
+     * @param c rendercontext
+     * @param unit SizeUnit enum value of size
+     * @param rasterfactor whether to consider oversampling
+     * @return size that will render, as double
+     * @note added in 1.9, as a better precision replacement for sizeToPixel
+     */
+    double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false ) const;
+
     /** List of data defined enum names
      * @note adding in 1.9
      */
@@ -301,6 +335,8 @@ class CORE_EXPORT QgsPalLayerSettings
     int mFeaturesToLabel; // total features that will probably be labeled, may be less (figured before PAL)
     int mFeatsSendingToPal; // total features tested for sending into PAL (relative to maxNumLabels)
     int mFeatsRegPal; // number of features registered in PAL, when using limitNumLabels
+
+    bool showingShadowRects; // whether to show debug rectangles for drop shadows
 
   private:
     void readDataDefinedPropertyMap( QgsVectorLayer* layer,
@@ -335,6 +371,100 @@ class CORE_EXPORT QgsLabelCandidate
     double cost;
 };
 
+/** \ingroup core
+  * Maintains current state of more grainular and temporal values when creating/painting
+  * component parts of an individual label (e.g. buffer, background, shadow, etc.).
+  */
+class CORE_EXPORT QgsLabelComponent
+{
+  public:
+    QgsLabelComponent(): mText( QString() )
+        , mOrigin( QgsPoint() )
+        , mUseOrigin( false )
+        , mRotation( 0.0 )
+        , mRotationOffset( 0.0 )
+        , mUseRotation( false )
+        , mCenter( QgsPoint() )
+        , mUseCenter( false )
+        , mSize( QgsPoint() )
+        , mOffset( QgsPoint() )
+        , mPicture( 0 )
+        , mPictureBuffer( 0.0 )
+        , mDpiRatio( 1.0 )
+    {}
+
+    const QString& text() { return mText; }
+    void setText( const QString& text ) { mText = text; }
+
+    const QgsPoint& origin() { return mOrigin; }
+    void setOrigin( QgsPoint point ) { mOrigin = point; }
+
+    bool useOrigin() const { return mUseOrigin; }
+    void setUseOrigin( bool use ) { mUseOrigin = use; }
+
+    double rotation() const { return mRotation; }
+    void setRotation( double rotation ) { mRotation = rotation; }
+
+    double rotationOffset() const { return mRotationOffset; }
+    void setRotationOffset( double rotation ) { mRotationOffset = rotation; }
+
+    bool useRotation() const { return mUseRotation; }
+    void setUseRotation( bool use ) { mUseRotation = use; }
+
+    const QgsPoint& center() { return mCenter; }
+    void setCenter( QgsPoint point ) { mCenter = point; }
+
+    bool useCenter() const { return mUseCenter; }
+    void setUseCenter( bool use ) { mUseCenter = use; }
+
+    const QgsPoint& size() { return mSize; }
+    void setSize( QgsPoint point ) { mSize = point; }
+
+    const QgsPoint& offset() { return mOffset; }
+    void setOffset( QgsPoint point ) { mOffset = point; }
+
+    const QPicture* picture() { return mPicture; }
+    void setPicture( QPicture* picture ) { mPicture = picture; }
+
+    double pictureBuffer() const { return mPictureBuffer; }
+    void setPictureBuffer( double buffer ) { mPictureBuffer = buffer; }
+
+    double dpiRatio() const { return mDpiRatio; }
+    void setDpiRatio( double ratio ) { mDpiRatio = ratio; }
+
+  private:
+    // current label component text,
+    // e.g. single line in a multi-line label or charcater in curved labeling
+    QString mText;
+    // current origin point for painting (generally current painter rotation point)
+    QgsPoint mOrigin;
+    // whether to translate the painter to supplied origin
+    bool mUseOrigin;
+    // any rotation to be applied to painter (in radians)
+    double mRotation;
+    // any rotation to be applied to painter (in radians) after initial rotation
+    double mRotationOffset;
+    // whether to use the rotation to rotate the painter
+    bool mUseRotation;
+    // current center point of label compnent, after rotation
+    QgsPoint mCenter;
+    // whether to translate the painter to supplied origin based upon center
+    bool mUseCenter;
+    // width and height of label component, transformed and ready for painting
+    QgsPoint mSize;
+    // any translation offsets to be applied before painting, transformed and ready for painting
+    QgsPoint mOffset;
+
+    // a stored QPicture of painting for the component
+    QPicture* mPicture;
+    // buffer for component to accommodate graphic items ignored by QPicture,
+    // e.g. half-width of an applied QPen, which would extend beyond boundingRect() of QPicture
+    double mPictureBuffer;
+
+    // a ratio of native painter dpi and that of rendering context's painter
+    double mDpiRatio;
+};
+
 class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 {
   public:
@@ -363,6 +493,9 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool isShowingCandidates() const { return mShowingCandidates; }
     void setShowingCandidates( bool showing ) { mShowingCandidates = showing; }
     const QList<QgsLabelCandidate>& candidates() { return mCandidates; }
+
+    bool isShowingShadowRectangles() const { return mShowingShadowRects; }
+    void setShowingShadowRectangles( bool showing ) { mShowingShadowRects = showing; }
 
     bool isShowingAllLabels() const { return mShowingAllLabels; }
     void setShowingAllLabels( bool showing ) { mShowingAllLabels = showing; }
@@ -398,11 +531,17 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! @note not available in python bindings
     void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType );
 
-    static void drawLabelBuffer( QgsRenderContext& context, QString text, const QgsPalLayerSettings& tmpLyr );
+    static void drawLabelBuffer( QgsRenderContext& context,
+                                 QgsLabelComponent component,
+                                 const QgsPalLayerSettings& tmpLyr );
 
     static void drawLabelBackground( QgsRenderContext& context,
-                                     const QgsPoint& centerPt, double labelRotation, double labelWidth, double labelHeight,
+                                     QgsLabelComponent component,
                                      const QgsPalLayerSettings& tmpLyr );
+
+    static void drawLabelShadow( QgsRenderContext& context,
+                                 QgsLabelComponent component,
+                                 const QgsPalLayerSettings& tmpLyr );
 
     //! load/save engine settings to project file
     //! @note added in QGIS 1.9
@@ -428,10 +567,9 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     // list of candidates from last labeling
     QList<QgsLabelCandidate> mCandidates;
     bool mShowingCandidates;
-
     bool mShowingAllLabels; // whether to avoid collisions or not
-
     bool mSavedWithProject; // whether engine settings have been read from project file
+    bool mShowingShadowRects; // whether to show debugging rectangles for drop shadows
 
     QgsLabelSearchTree* mLabelSearchTree;
 };

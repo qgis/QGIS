@@ -173,29 +173,33 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
 
   QgsDebugMsg( "Number of new selected features: " + QString::number( newSelectedFeatures.size() ) );
 
-  QgsFeatureIds layerSelectedFeatures;
   if ( doDifference )
   {
-    layerSelectedFeatures = vlayer->selectedFeaturesIds();
+    QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeaturesIds();
+
+    QgsFeatureIds selectedFeatures;
+    QgsFeatureIds deselectedFeatures;
+
     QgsFeatureIds::const_iterator i = newSelectedFeatures.constEnd();
     while ( i != newSelectedFeatures.constBegin() )
     {
       --i;
       if ( layerSelectedFeatures.contains( *i ) )
       {
-        layerSelectedFeatures.remove( *i );
+        deselectedFeatures.insert( *i );
       }
       else
       {
-        layerSelectedFeatures.insert( *i );
+        selectedFeatures.insert( *i );
       }
     }
+
+    vlayer->modifySelection( selectedFeatures, deselectedFeatures );
   }
   else
   {
-    layerSelectedFeatures = newSelectedFeatures;
+    vlayer->setSelectedFeatures( newSelectedFeatures );
   }
-  vlayer->setSelectedFeatures( layerSelectedFeatures );
 
   QApplication::restoreOverrideCursor();
 }

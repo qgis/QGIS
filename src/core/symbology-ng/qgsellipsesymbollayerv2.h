@@ -58,8 +58,6 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setOutlineColor( const QColor& c ) { mOutlineColor = c; }
     QColor outlineColor() const { return mOutlineColor; }
 
-    QSet<QString> usedAttributes() const;
-
     void setSymbolWidthUnit( QgsSymbolV2::OutputUnit unit ) { mSymbolWidthUnit = unit; }
     QgsSymbolV2::OutputUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
 
@@ -72,12 +70,6 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
 
-    const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    QString dataDefinedPropertyString( const QString& property ) const;
-    void setDataDefinedProperty( const QString& property, const QString& expressionString );
-    void removeDataDefinedProperty( const QString& property );
-    void removeDataDefinedProperties();
-
   private:
     QString mSymbolName;
     double mSymbolWidth;
@@ -88,15 +80,6 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QColor mOutlineColor;
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
-
-    //data defined property fields
-    QgsExpression* mWidthExpression;
-    QgsExpression* mHeightExpression;
-    QgsExpression* mRotationExpression;
-    QgsExpression* mOutlineWidthExpression;
-    QgsExpression* mFillColorExpression;
-    QgsExpression* mOutlineColorExpression;
-    QgsExpression* mSymbolNameExpression;
 
     QPainterPath mPainterPath;
 
@@ -111,8 +94,6 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
 
     /**True if this symbol layer uses a data defined property*/
     bool hasDataDefinedProperty() const;
-
-    void prepareExpressions( const QgsVectorLayer* vl );
 };
 
 #endif // QGSELLIPSESYMBOLLAYERV2_H

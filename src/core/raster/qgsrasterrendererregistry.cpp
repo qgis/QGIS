@@ -92,7 +92,6 @@ bool QgsRasterRendererRegistry::rendererData( const QString& rendererName, QgsRa
 
 QStringList QgsRasterRendererRegistry::renderersList() const
 {
-  // return QStringList( mEntries.keys() );
   return mSortedEntries;
 }
 
@@ -159,23 +158,6 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
             provider->dataType( grayBand ) ) );
 
 // Default contrast enhancement is set from QgsRasterLayer, it has already setContrastEnhancementAlgorithm(). Default enhancement must only be set if default style was not loaded (to avoid stats calculation).
-// TODO: reconsider moving contrast setting of enhancement somwhere down from QgsRasterLayer
-#if 0
-      QSettings s;
-      QgsContrastEnhancement::ContrastEnhancementAlgorithm ceAlgorithm;
-      ceAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString(
-                      s.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString() );
-      ce->setContrastEnhancementAlgorithm( ceAlgorithm );
-
-      if ( ceAlgorithm != QgsContrastEnhancement::NoEnhancement )
-      {
-        double minValue = 0;
-        double maxValue = 0;
-        minMaxValuesForBand( grayBand, provider, minValue, maxValue );
-        ce->setMinimumValue( minValue );
-        ce->setMaximumValue( maxValue );
-      }
-#endif
       (( QgsSingleBandGrayRenderer* )renderer )->setContrastEnhancement( ce );
       break;
     }
@@ -193,15 +175,6 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
     case QgsRasterLayer::MultiBandColor:
     {
       QSettings s;
-#if 0
-      QgsContrastEnhancement::ContrastEnhancementAlgorithm ceAlgorithm;
-      ceAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString(
-                      s.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString() );
-
-      QgsContrastEnhancement* redEnhancement = 0;
-      QgsContrastEnhancement* greenEnhancement = 0;
-      QgsContrastEnhancement* blueEnhancement = 0;
-#endif
 
       int redBand = s.value( "/Raster/defaultRedBand", 1 ).toInt();
       if ( redBand < 0 || redBand > provider->bandCount() )
@@ -219,45 +192,6 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
         blueBand = -1;
       }
 
-#if 0
-      double minValue = 0;
-      double maxValue = 0;
-      if ( ceAlgorithm !=  QgsContrastEnhancement::NoEnhancement )
-      {
-        if ( redBand > 0 )
-        {
-          redEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
-                provider->dataType( redBand ) ) );
-          minMaxValuesForBand( redBand, provider, minValue, maxValue );
-          redEnhancement->setMinimumValue( minValue );
-          redEnhancement->setMaximumValue( maxValue );
-          redEnhancement->setContrastEnhancementAlgorithm( ceAlgorithm );
-        }
-
-        if ( greenBand > 0 )
-        {
-          greenEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
-                provider->dataType( greenBand ) ) );
-          minMaxValuesForBand( greenBand, provider, minValue, maxValue );
-          greenEnhancement->setMinimumValue( minValue );
-          greenEnhancement->setMaximumValue( maxValue );
-          greenEnhancement->setContrastEnhancementAlgorithm( ceAlgorithm );
-        }
-
-        if ( blueBand > 0 )
-        {
-          blueEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
-                provider->dataType( blueBand ) ) );
-          minMaxValuesForBand( blueBand, provider, minValue, maxValue );
-          blueEnhancement->setMinimumValue( minValue );
-          blueEnhancement->setMaximumValue( maxValue );
-          blueEnhancement->setContrastEnhancementAlgorithm( ceAlgorithm );
-        }
-      }
-
-      renderer = new QgsMultiBandColorRenderer( provider, redBand, greenBand, blueBand,
-          redEnhancement, greenEnhancement, blueEnhancement );
-#endif
       renderer = new QgsMultiBandColorRenderer( provider, redBand, greenBand, blueBand );
       break;
     }
@@ -275,59 +209,14 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
   if ( bandCount == 1 )
   {
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleList;
-    // No need to set no data value in transparency list, I think
-#if 0
-    QgsRasterTransparency::TransparentSingleValuePixel singleEntry;
-    singleEntry.min = provider->noDataValue();
-    singleEntry.max = provider->noDataValue();
-    singleEntry.percentTransparent = 100;
-    transparentSingleList.push_back( singleEntry );
-#endif
     tr->setTransparentSingleValuePixelList( transparentSingleList );
   }
   else if ( bandCount == 3 )
   {
     QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValueList;
-#if 0
-    QgsRasterTransparency::TransparentThreeValuePixel threeValueEntry;
-    threeValueEntry.red = provider->noDataValue();
-    threeValueEntry.green = provider->noDataValue();
-    threeValueEntry.blue = provider->noDataValue();
-    threeValueEntry.percentTransparent = 100;
-    transparentThreeValueList.push_back( threeValueEntry );
-#endif
     tr->setTransparentThreeValuePixelList( transparentThreeValueList );
   }
   renderer->setRasterTransparency( tr );
-#if 0
-  if ( !renderer )
-  {
-    return;
-  }
-
-  renderer->setOpacity( mTransparencyLevel / 255.0 );
-
-  QgsRasterTransparency* tr = new QgsRasterTransparency(); //renderer takes ownership
-  if ( mDataProvider->bandCount() == 1 )
-  {
-    tr->setTransparentSingleValuePixelList( mRasterTransparency.transparentSingleValuePixelList() );
-  }
-  else if ( mDataProvider->bandCount() == 3 )
-  {
-    tr->setTransparentThreeValuePixelList( mRasterTransparency.transparentThreeValuePixelList() );
-  }
-  renderer->setRasterTransparency( tr );
-
-  if ( mTransparencyBandName != TRSTRING_NOT_SET )
-  {
-    int tBand = bandNumber( mTransparencyBandName );
-    if ( tBand > 0 )
-    {
-      renderer->setAlphaBand( tBand );
-    }
-  }
-  renderer->setInvertColor( mInvertColor );
-#endif //0
   return renderer;
 }
 
@@ -338,23 +227,24 @@ bool QgsRasterRendererRegistry::minMaxValuesForBand( int band, QgsRasterDataProv
     return false;
   }
 
-
   minValue = 0;
   maxValue = 0;
 
   QSettings s;
   if ( s.value( "/Raster/useStandardDeviation", false ).toBool() )
   {
+    QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
+
     double stdDevFactor = s.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble();
-    QgsRasterBandStats stats = provider->bandStatistics( band );
     double diff = stdDevFactor * stats.stdDev;
     minValue = stats.mean - diff;
     maxValue = stats.mean + diff;
   }
   else
   {
-    minValue = provider->minimumValue( band );
-    maxValue = provider->maximumValue( band );
+    QgsRasterBandStats stats = provider->bandStatistics( band, QgsRasterBandStats::Min | QgsRasterBandStats::Max );
+    minValue = stats.minimumValue;
+    maxValue = stats.maximumValue;
   }
   return true;
 }

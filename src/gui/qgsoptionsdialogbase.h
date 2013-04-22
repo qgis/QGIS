@@ -70,6 +70,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
   protected slots:
     void updateOptionsListVerticalTabs();
     void optionsStackedWidget_CurrentChanged( int indx );
+    void optionsStackedWidget_WidgetRemoved( int indx );
     void warnAboutMissingObjects();
 
   protected:

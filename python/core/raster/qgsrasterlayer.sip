@@ -99,23 +99,6 @@ class QgsRasterLayer : QgsMapLayer
       ContrastEnhancementCumulativeCut
     };
 
-    /** \brief A list containing on ContrastEnhancement object per raster band in this raster layer */
-    typedef QList<QgsContrastEnhancement> ContrastEnhancementList;
-
-    /** \brief  A list containing one RasterPyramid struct per raster band in this raster layer.
-     * POTENTIAL pyramid layer. This works by dividing the height
-     * and width of the raster by an incrementing number. As soon as the result
-     * of the division is <=256 we stop allowing RasterPyramid structs
-     * to be added to the list. Each time a RasterPyramid is created
-     * we will check to see if a pyramid matching these dimensions already exists
-     * in the raster layer, and if so mark the exists flag as true */
-    /* typedef QList<QgsRasterPyramid> RasterPyramidList; */
-
-    /** \brief  A list containing one RasterBandStats struct per raster band in this raster layer.
-     * Note that while every RasterBandStats element will have the name and number of its associated
-     * band populated, any additional stats are calculated on a need to know basis.*/
-    /* typedef QList<QgsRasterBandStats> RasterStatsList; */
-
     //
     // Static methods:
     //
@@ -128,48 +111,21 @@ class QgsRasterLayer : QgsMapLayer
      */
     static bool isValidRasterFileName( const QString & theFileNameQString, QString &retError );
     static bool isValidRasterFileName( const QString & theFileNameQString );
-    //static QStringList subLayers( GDALDatasetH dataset );
 
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );
 
-    // Keep this for now, it is used by Python interface!!!
-    /** \brief ensures that GDAL drivers are registered, but only once */
-    static void registerGdalDrivers();
-
     //
     // Non Static inline methods
     //
-
-    /** \brief Initialize default values */
-    void init();
-
     /**  [ data provider interface ] Set the data provider */
     void setDataProvider( const QString & provider );
-
-    /** \brief  Accessor for blue band name mapping */
-    QString blueBandName() const;
-
-    /** \brief Accessor for color shader algorithm */
-    QgsRasterLayer::ColorShadingAlgorithm colorShadingAlgorithm() const;
-
-    /** \brief Accessor for contrast enhancement algorithm */
-    QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm();
-
-    /** \brief Returns contrast enhancement algorithm as a string */
-    QString contrastEnhancementAlgorithmAsString() const;
 
     /** \brief Accessor for drawing style */
     DrawingStyle drawingStyle();
 
-    /** \brief Accessor for mHasPyramids (READ ONLY) */
-    /* bool hasPyramids(); */
-
-    /** \brief Accessor for mUserDefinedGrayMinimumMaximum */
-    bool hasUserDefinedGrayMinimumMaximum() const;
-
-    /** \brief Accessor for mUserDefinedRGBMinimumMaximum */
-    bool hasUserDefinedRGBMinimumMaximum() const;
+    /** \brief Accessor that returns the width of the (unclipped) raster  */
+    int width();
 
     /** \brief Accessor that returns the height of the (unclipped) raster */
     int height();
@@ -177,20 +133,8 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType();
 
-
     /** \brief Mutator for drawing style */
     void setDrawingStyle( const DrawingStyle &  theDrawingStyle );
-    /**Sets corresponding renderer for style*/
-    void setRendererForDrawingStyle( const DrawingStyle &  theDrawingStyle );
-
-    /** \brief Mutator to alter the number of standard deviations that should be plotted */
-    void setStandardDeviations( double theStandardDeviations );
-
-    /** \brief Mutator for mUserDefinedGrayMinimumMaximum */
-    void setUserDefinedGrayMinimumMaximum( bool theBool );
-
-    /** \brief Mutator for mUserDefinedRGBMinimumMaximum */
-    void setUserDefinedRGBMinimumMaximum( bool theBool );
 
     /**Set raster renderer. Takes ownership of the renderer object*/
     void setRenderer( QgsRasterRenderer* theRenderer /Transfer/ );
@@ -203,12 +147,6 @@ class QgsRasterLayer : QgsMapLayer
     /** Get raster pipe */
     QgsRasterPipe * pipe();
 
-    /** \brief Accessor to find out how many standard deviations are being plotted */
-    double standardDeviations() const;
-
-    /** \brief Accessor that returns the width of the (unclipped) raster  */
-    int width();
-
     //
     // Non Static methods
     //
@@ -217,33 +155,6 @@ class QgsRasterLayer : QgsMapLayer
 
     /** \brief Get the name of a band given its number  */
     const  QString bandName( int theBandNoInt );
-
-    /** \brief Get the number of a band given its name. The name is the rewritten name set
-    *   up in the constructor, and will not necessarily be the same as the name retrieved directly from gdal!
-    *   If no matching band is found zero will be returned! */
-    int bandNumber( const QString & theBandName ) const;
-
-    /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the
-     * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
-     * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
-     * list.
-     */
-    // RasterPyramidList buildPyramidList();
-
-    /** \brief Accessor for color shader algorithm */
-    QString colorShadingAlgorithmAsString() const;
-
-    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
-      \note added in v1.6 */
-    //void computeMinimumMaximumFromLastExtent( int theBand, double& theMin /Out/, double& theMax /Out/ );
-
-    /** \brief Get a pointer to the contrast enhancement for the selected band */
-    QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );
-
-    const QgsContrastEnhancement* constContrastEnhancement( unsigned int theBand ) const;
-
-    /** \brief Get a pointer to the color table */
-    QList<QgsColorRampShader::ColorRampItem> colorTable( int theBandNoInt );
 
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
@@ -266,33 +177,6 @@ class QgsRasterLayer : QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    /** \brief Returns a string representation of drawing style
-     *
-     * Implemented mainly for serialisation / deserialisation of settings to xml.
-     * NOTE: May be deprecated in the future!. DrawingStyle drawingStyle() instead.
-     * */
-    QString drawingStyleAsString() const;
-
-    /** \brief Identify raster value(s) found on the point position */
-    //bool identify( const QgsPoint & point, QMap<QString, QString>& results /Out/ );
-
-    /** \brief Identify raster value(s) found on the point position */
-//    bool identifyMap( const QgsPoint & point, QMap<int, QString>& results /Out/ );
-//%MethodCode
-//      sipRes = sipCpp->identify( *a0, *a1 );
-//%End
-
-    /** \brief Identify arbitrary details from the WMS server found on the point position */
-    //QString identifyAsText( const QgsPoint & point );
-
-    /** \brief Identify arbitrary details from the WMS server found on the point position
-     * @note added in 1.5
-     */
-    //QString identifyAsHtml( const QgsPoint & point );
-
-    /** \brief Currently returns always false */
-    bool isEditable() const;
-
     /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure  */
     QString lastError();
 
@@ -303,20 +187,8 @@ class QgsRasterLayer : QgsMapLayer
       @note this method was added in version 1.8*/
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
-    /** \brief Accessor for maximum value user for contrast enhancement */
-    double maximumValue( unsigned int theBand );
-
-    /** \brief Accessor for maximum value user for contrast enhancement */
-    double maximumValue( QString theBand );
-
     /** \brief Obtain GDAL Metadata for this layer */
     QString metadata();
-
-    /** \brief Accessor for minimum value user for contrast enhancement */
-    double minimumValue( unsigned int theBand );
-
-    /** \brief Accessor for minimum value user for contrast enhancement */
-    double minimumValue( QString theBand );
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
@@ -329,19 +201,8 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
 
-    /** \brief Read color table from GDAL raster band */
-    // bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList );
-
-    /** \brief Simple reset function that set the noDataValue back to the value stored in the first raster band */
-    //void resetNoDataValue();
-
     static QString contrastEnhancementLimitsAsString( QgsRasterLayer::ContrastEnhancementLimits theLimits );
     static ContrastEnhancementLimits contrastEnhancementLimitsFromString( QString theLimits );
-
-    /** \brief Mutator for contrast enhancement algorithm using min/max */
-    // TODO: remove in 2.0, replaced by following
-    // void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-    //                                       bool theGenerateLookupTableFlag = true );
 
     /** \brief Mutator for contrast enhancement algorithm
      *  @param theAlgorithm Contrast enhancement algorithm
@@ -357,29 +218,11 @@ class QgsRasterLayer : QgsMapLayer
                                           int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                           bool theGenerateLookupTableFlag = true );
 
-    /** \brief Mutator for contrast enhancement algorithm */
-    void setContrastEnhancementAlgorithm( QString theAlgorithm, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Mutator for contrast enhancement function */
-    void setContrastEnhancementFunction( QgsContrastEnhancementFunction* theFunction );
-
     /** \brief Set default contrast enhancement */
     void setDefaultContrastEnhancement();
 
     /** \brief Overloaded version of the above function for convenience when restoring from xml */
     void setDrawingStyle( const QString & theDrawingStyleQString );
-
-    /** \brief Mutator for setting the maximum value for contrast enhancement */
-    void setMaximumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Sets the minimum and maximum values for the band(s) currently
-     * being displayed using the only pixel values from the last/current extent
-     * */
-    void setMinimumMaximumUsingLastExtent();
-
-    /** \brief Sets the minimum and maximum values for the band(s) currently
-     * being displayed using the only pixel values from the dataset min/max */
-    void setMinimumMaximumUsingDataset();
 
     /**  \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );
@@ -413,11 +256,6 @@ class QgsRasterLayer : QgsMapLayer
     virtual QDateTime timestamp() const;
 
   public slots:
-    /** \brief Create GDAL pyramid overviews */
-    // QString buildPyramids( const RasterPyramidList &,
-    //                        const QString &  theResamplingMethod = "NEAREST",
-    //                        bool theTryInternalFlag = false );
-
     void showStatusMessage( const QString & theMessage );
 
     /** \brief Propagate progress updates from GDAL up to the parent app */

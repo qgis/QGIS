@@ -345,7 +345,16 @@
      <property name="collapsed" stdset="0">
       <bool>true</bool>
      </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">composeritem</string>
+     </property>
      <layout class="QFormLayout" name="formLayout_3">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+      </property>
+      <property name="labelAlignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="labelBlendMode">
         <property name="text">
@@ -364,14 +373,25 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSlider" name="mTransparencySlider">
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QSlider" name="mTransparencySlider">
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="mTransparencySpnBx">
+          <property name="maximum">
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -401,15 +421,15 @@
    <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

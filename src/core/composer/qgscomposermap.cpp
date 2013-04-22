@@ -228,7 +228,18 @@ void QgsComposerMap::cache( void )
   double forcedWidthScaleFactor = w / requestExtent.width() / mapUnitsToMM();
 
   mCacheImage = QImage( w, h,  QImage::Format_ARGB32 );
-  mCacheImage.fill( QColor( 255, 255, 255, 0 ).rgba() ); // the background is drawn by composerItem, but we still need to start with that empty fill to avoid artifacts
+
+  if ( hasBackground() )
+  {
+    //Initially fill image with specified background color. This ensures that layers with blend modes will
+    //preview correctly
+    mCacheImage.fill( backgroundColor().rgba() );
+  }
+  else
+  {
+    //no background, but start with empty fill to avoid artifacts
+    mCacheImage.fill( QColor( 255, 255, 255, 0 ).rgba() );
+  }
 
   double mapUnitsPerPixel = mExtent.width() / w;
 
@@ -257,10 +268,10 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
   painter->save();
   painter->setClipRect( thisPaintRect );
 
-  drawBackground( painter );
-
   if ( mComposition->plotStyle() == QgsComposition::Preview && mPreviewMode == Rectangle )
   {
+    // Fill with background color
+    drawBackground( painter );
     QFont messageFont( "", 12 );
     painter->setFont( messageFont );
     painter->setPen( QColor( 0, 0, 0 ) );
@@ -272,6 +283,8 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     //Qt 4.4.0 and 4.4.1 have problems with recursive paintings
     //QgsComposerMap::cache() and QgsComposerMap::update() need to be called by
     //client functions
+    
+    //Background color is already included in cached image, so no need to draw
 
     QgsRectangle requestRectangle;
     requestedExtent( requestRectangle );
@@ -322,6 +335,9 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     {
       return;
     }
+
+    // Fill with background color
+    drawBackground( painter );
 
     QgsRectangle requestRectangle;
     requestedExtent( requestRectangle );
@@ -1344,7 +1360,7 @@ int QgsComposerMap::xGridLines( QList< QPair< double, QLineF > >& lines ) const
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
 
-  if ( doubleNear( mRotation, 0.0 ) )
+  if ( qgsDoubleNear( mRotation, 0.0 ) )
   {
     //no rotation. Do it 'the easy way'
 
@@ -1412,7 +1428,7 @@ int QgsComposerMap::yGridLines( QList< QPair< double, QLineF > >& lines ) const
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
   double currentLevel = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
 
-  if ( doubleNear( mRotation, 0.0 ) )
+  if ( qgsDoubleNear( mRotation, 0.0 ) )
   {
     //no rotation. Do it 'the easy way'
     double xCanvasCoord;

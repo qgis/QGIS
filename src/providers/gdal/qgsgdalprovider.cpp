@@ -289,7 +289,7 @@ QString QgsGdalProvider::metadata()
   // end my added code
 
   myMetadata += "<p class=\"glossy\">";
-  myMetadata += tr( "Dimensions:" );
+  myMetadata += tr( "Dimensions" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
@@ -326,7 +326,7 @@ QString QgsGdalProvider::metadata()
   else
   {
     myMetadata += "<p class=\"glossy\">";
-    myMetadata += tr( "Origin:" );
+    myMetadata += tr( "Origin" );
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[0] );
@@ -335,7 +335,7 @@ QString QgsGdalProvider::metadata()
     myMetadata += "</p>\n";
 
     myMetadata += "<p class=\"glossy\">";
-    myMetadata += tr( "Pixel Size:" );
+    myMetadata += tr( "Pixel Size" );
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[1] );
@@ -364,15 +364,29 @@ QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth,
 
 QgsRasterBlock* QgsGdalProvider::block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
-  QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
+  //QgsRasterBlock *block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, noDataValue( theBandNo ) );
+  QgsRasterBlock *block;
+  if ( srcHasNoDataValue( theBandNo ) && useSrcNoDataValue( theBandNo ) )
+  {
+    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight, srcNoDataValue( theBandNo ) );
+  }
+  else
+  {
+    block = new QgsRasterBlock( dataType( theBandNo ), theWidth, theHeight );
+  }
 
   if ( block->isEmpty() )
   {
     return block;
   }
 
-  readBlock( theBandNo, theExtent, theWidth, theHeight, block->data() );
-  block->applyNodataValues( userNoDataValue( theBandNo ) );
+  if ( !mExtent.contains( theExtent ) )
+  {
+    QRect subRect = QgsRasterBlock::subRect( theExtent, theWidth, theHeight, mExtent );
+    block->setIsNoDataExcept( subRect );
+  }
+  readBlock( theBandNo, theExtent, theWidth, theHeight, block->bits() );
+  block->applyNoDataValues( userNoDataValue( theBandNo ) );
   return block;
 }
 
@@ -407,6 +421,8 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   int dataSize = dataTypeSize( theBandNo );
 
+  // moved to block()
+#if 0
   if ( !mExtent.contains( theExtent ) )
   {
     // fill with null values
@@ -419,6 +435,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
       block += dataSize;
     }
   }
+#endif
 
   QgsRectangle myRasterExtent = theExtent.intersect( &mExtent );
   if ( myRasterExtent.isEmpty() )
@@ -434,6 +451,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   // Find top, bottom rows and left, right column the raster extent covers
   // These are limits in target grid space
+#if 0
   int top = 0;
   int bottom = thePixelHeight - 1;
   int left = 0;
@@ -456,7 +474,14 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   {
     right = qRound(( myRasterExtent.xMaximum() - theExtent.xMinimum() ) / xRes ) - 1;
   }
+#endif
+  QRect subRect = QgsRasterBlock::subRect( theExtent, thePixelWidth, thePixelHeight, myRasterExtent );
+  int top = subRect.top();
+  int bottom = subRect.bottom();
+  int left = subRect.left();
+  int right = subRect.right();
   QgsDebugMsg( QString( "top = %1 bottom = %2 left = %3 right = %4" ).arg( top ).arg( bottom ).arg( left ).arg( right ) );
+
 
   // We want to avoid another resampling, so we read data approximately with
   // the same resolution as requested and exactly the width/height we need.
@@ -548,7 +573,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   QgsDebugMsg( QString( "tmpXMin = %1 tmpYMax = %2 tmpWidth = %3 tmpHeight = %4" ).arg( tmpXMin ).arg( tmpYMax ).arg( tmpWidth ).arg( tmpHeight ) );
 
   // Allocate temporary block
-  char *tmpBlock = ( char * )QgsMalloc( dataSize * tmpWidth * tmpHeight );
+  char *tmpBlock = ( char * )qgsMalloc( dataSize * tmpWidth * tmpHeight );
   if ( ! tmpBlock )
   {
     QgsDebugMsg( QString( "Coudn't allocate temporary buffer of %1 bytes" ).arg( dataSize * tmpWidth * tmpHeight ) );
@@ -566,7 +591,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   if ( err != CPLE_None )
   {
     QgsLogger::warning( "RasterIO error: " + QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    QgsFree( tmpBlock );
+    qgsFree( tmpBlock );
     return;
   }
 
@@ -600,7 +625,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     y -= yRes;
   }
 
-  QgsFree( tmpBlock );
+  qgsFree( tmpBlock );
   QgsDebugMsg( QString( "resample time (ms): %1" ).arg( time.elapsed() ) );
 
   return;
@@ -676,10 +701,10 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   myWarpOptions->nBandCount = 1;
   myWarpOptions->panSrcBands =
-    ( int * ) QgsMalloc( sizeof( int ) * myWarpOptions->nBandCount );
+    ( int * ) qgsMalloc( sizeof( int ) * myWarpOptions->nBandCount );
   myWarpOptions->panSrcBands[0] = theBandNo;
   myWarpOptions->panDstBands =
-    ( int * ) QgsMalloc( sizeof( int ) * myWarpOptions->nBandCount );
+    ( int * ) qgsMalloc( sizeof( int ) * myWarpOptions->nBandCount );
   myWarpOptions->panDstBands[0] = 1;
 
   // TODO move here progressCallback and use it
@@ -715,8 +740,8 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   //CPLAssert( myWarpOptions->pTransformerArg  != NULL );
   myWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
-  myWarpOptions->padfDstNoDataReal = ( double * ) QgsMalloc( myWarpOptions->nBandCount * sizeof( double ) );
-  myWarpOptions->padfDstNoDataImag = ( double * ) QgsMalloc( myWarpOptions->nBandCount * sizeof( double ) );
+  myWarpOptions->padfDstNoDataReal = ( double * ) qgsMalloc( myWarpOptions->nBandCount * sizeof( double ) );
+  myWarpOptions->padfDstNoDataImag = ( double * ) qgsMalloc( myWarpOptions->nBandCount * sizeof( double ) );
 
   myWarpOptions->padfDstNoDataReal[0] = mNoDataValue[theBandNo-1];
   myWarpOptions->padfDstNoDataImag[0] = 0.0;
@@ -790,6 +815,7 @@ double  QgsGdalProvider::noDataValue() const
 }
 #endif
 
+#if 0
 void QgsGdalProvider::computeMinMax( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1 mMinMaxComputed = %2" ).arg( theBandNo ).arg( mMinMaxComputed[theBandNo-1] ) );
@@ -809,27 +835,7 @@ void QgsGdalProvider::computeMinMax( int theBandNo ) const
   mMinimum[theBandNo-1] = adfMinMax[0];
   mMaximum[theBandNo-1] = adfMinMax[1];
 }
-
-double  QgsGdalProvider::minimumValue( int theBandNo ) const
-{
-  QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
-  if ( !mMinMaxComputed[theBandNo-1] )
-  {
-    computeMinMax( theBandNo );
-    mMinMaxComputed[theBandNo-1] = true;
-  }
-  return  mMinimum[theBandNo-1];
-}
-double  QgsGdalProvider::maximumValue( int theBandNo ) const
-{
-  QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
-  if ( !mMinMaxComputed[theBandNo-1] )
-  {
-    computeMinMax( theBandNo );
-    mMinMaxComputed[theBandNo-1] = true;
-  }
-  return  mMaximum[theBandNo-1];
-}
+#endif
 
 /**
  * @param theBandNumber the number of the band for which you want a color table
@@ -885,7 +891,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Id
     // Outside the raster
     for ( int bandNo = 1; bandNo <= bandCount(); bandNo++ )
     {
-      results.insert( bandNo, noDataValue( bandNo ) );
+      results.insert( bandNo, QVariant() ); // null QVariant represents no data
     }
     return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
   }
@@ -955,7 +961,16 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Id
 
     double value = myBlock->value( r, c );
 
-    results.insert( i, value );
+    if (( srcHasNoDataValue( i ) && useSrcNoDataValue( i ) &&
+          ( qIsNaN( value ) || qgsDoubleNear( value, srcNoDataValue( i ) ) ) ) ||
+        ( QgsRasterRange::contains( value, userNoDataValue( i ) ) ) )
+    {
+      results.insert( i, QVariant() ); // null QVariant represents no data
+    }
+    else
+    {
+      results.insert( i, value );
+    }
   }
   return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
 }
@@ -964,10 +979,8 @@ int QgsGdalProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
                    | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::ExactResolution
-                   | QgsRasterDataProvider::EstimatedMinimumMaximum
+                   | QgsRasterDataProvider::Size
                    | QgsRasterDataProvider::BuildPyramids
-                   | QgsRasterDataProvider::Histogram
                    | QgsRasterDataProvider::Create
                    | QgsRasterDataProvider::Remove;
   GDALDriverH myDriver = GDALGetDatasetDriver( mGdalDataset );
@@ -2254,13 +2267,14 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
 
 void QgsGdalProvider::initBaseDataset()
 {
+#if 0
   for ( int i = 0; i < GDALGetRasterCount( mGdalBaseDataset ); i++ )
   {
     mMinMaxComputed.append( false );
     mMinimum.append( 0 );
     mMaximum.append( 0 );
   }
-
+#endif
   // Check if we need a warped VRT for this file.
   bool hasGeoTransform = GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None;
   if (( hasGeoTransform
@@ -2408,6 +2422,8 @@ void QgsGdalProvider::initBaseDataset()
     // disabled by user, in that case we need another value to be used for nodata
     // (for reprojection for example) -> always internaly represent as wider type
     // with mInternalNoDataValue in reserve.
+    // Not used
+#if 0
     int myInternalGdalDataType = myGdalDataType;
     double myInternalNoDataValue = 123;
     switch ( srcDataType( i ) )
@@ -2437,9 +2453,12 @@ void QgsGdalProvider::initBaseDataset()
         // NaN should work well
         myInternalNoDataValue = std::numeric_limits<double>::quiet_NaN();
     }
-    mGdalDataType.append( myInternalGdalDataType );
-    mInternalNoDataValue.append( myInternalNoDataValue );
-    QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
+#endif
+    //mGdalDataType.append( myInternalGdalDataType );
+
+    mGdalDataType.append( myGdalDataType );
+    //mInternalNoDataValue.append( myInternalNoDataValue );
+    //QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
   }
 
   mValid = true;
@@ -2717,4 +2736,36 @@ QString QgsGdalProvider::validatePyramidsCreationOptions( RasterPyramidsFormat p
   }
 
   return QString();
+}
+
+// pyramids resampling
+
+// see http://www.gdal.org/gdaladdo.html
+//     http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
+//     http://www.gdal.org/classGDALRasterBand.html#afaea945b13ec9c86c2d783b883c68432
+
+// from http://www.gdal.org/gdaladdo.html
+//   average_mp is unsuitable for use thus not included
+
+// from qgsgdalprovider.cpp (removed)
+//   NOTE magphase is disabled in the gui since it tends
+//   to create corrupted images. The images can be repaired
+//   by running one of the other resampling strategies below.
+//   see ticket #284
+
+QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
+{
+  static QList<QPair<QString, QString> > methods;
+
+  if ( methods.isEmpty() )
+  {
+    methods.append( QPair<QString, QString>( "NEAREST", QObject::tr( "Nearest Neighbour" ) ) );
+    methods.append( QPair<QString, QString>( "AVERAGE", QObject::tr( "Average" ) ) );
+    methods.append( QPair<QString, QString>( "GAUSS", QObject::tr( "Gauss" ) ) );
+    methods.append( QPair<QString, QString>( "CUBIC", QObject::tr( "Cubic" ) ) );
+    methods.append( QPair<QString, QString>( "MODE", QObject::tr( "Mode" ) ) );
+    methods.append( QPair<QString, QString>( "NONE", QObject::tr( "None" ) ) );
+  }
+
+  return &methods;
 }

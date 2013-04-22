@@ -52,12 +52,6 @@ from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 from sextante.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
 from sextante.admintools.AdminToolsAlgorithmProvider import AdminToolsAlgorithmProvider
 
-from threading import settrace
-
-import sys
-sys.path.append("D:\eclipse\plugins\org.python.pydev_2.6.0.2012062818\pysrc")
-from pydevd import *
-
 class Sextante:
 
     iface = None
@@ -274,8 +268,6 @@ class Sextante:
                 return
         else:
             i = 0
-
-            settrace()
             for param in alg.parameters:
                 if not param.hidden:
                     if not param.setValue(args[i]):

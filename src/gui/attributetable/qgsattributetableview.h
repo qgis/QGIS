@@ -24,7 +24,8 @@
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsVectorLayerCache;
-
+class QgsFeatureSelectionModel;
+class QgsAttributeTableDelegate;
 class QgsMapCanvas;
 class QgsVectorLayer;
 class QMenu;
@@ -47,12 +48,6 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     virtual ~QgsAttributeTableView();
 
     virtual void setModel( QgsAttributeTableFilterModel* filterModel );
-
-    /**
-     * The selection used for synchronisation with other views.
-     *
-     */
-    QItemSelectionModel* masterSelection();
 
     /**
      * Autocreates the models
@@ -137,19 +132,23 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void finished();
 
   public slots:
-    void onFilterAboutToBeInvalidated();
-    void onFilterInvalidated();
-    void onSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
-    void onMasterSelectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested();
     virtual void selectAll();
+    virtual void selectRow( int row );
+    virtual void _q_selectRow( int row );
 
   private:
+    void selectRow( int row, bool anchor );
     QgsAttributeTableModel* mMasterModel;
     QgsAttributeTableFilterModel* mFilterModel;
+    QgsFeatureSelectionModel* mFeatureSelectionModel;
+    QgsAttributeTableDelegate* mTableDelegate;
     QAbstractItemModel* mModel; // Most likely the filter model
     QMenu *mActionPopup;
     QgsVectorLayerCache* mLayerCache;
-    QItemSelectionModel* mMasterSelection;
+    int mRowSectionAnchor;
+    QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
 };
 
 #endif

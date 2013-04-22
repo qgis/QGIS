@@ -25,6 +25,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
+#include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsscalecalculator.h"
 #include "qgscoordinatereferencesystem.h"
@@ -1374,24 +1375,28 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
 
   QgsDebugMsg( QString( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ) );
 
-  QMap<QString, QString> attributes;
+  if ( !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyValue ) )
+  {
+    return 1;
+  }
+  QMap<int, QVariant> attributes;
   // use context extent, width height (comes with request) to use WCS cache
   // We can only use context if raster is not reprojected, otherwise it is difficult
   // to guess correct source resolution
   if ( mMapRenderer->hasCrsTransformEnabled() && layer->dataProvider()->crs() != mMapRenderer->destinationCrs() )
   {
-    attributes = layer->dataProvider()->identify( *infoPoint );
+    attributes = layer->dataProvider()->identify( *infoPoint, QgsRasterDataProvider::IdentifyFormatValue ).results();
   }
   else
   {
-    attributes = layer->dataProvider()->identify( *infoPoint, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() );
+    attributes = layer->dataProvider()->identify( *infoPoint, QgsRasterDataProvider::IdentifyFormatValue, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() ).results();
   }
 
-  for ( QMap<QString, QString>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
+  for ( QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
   {
     QDomElement attributeElement = infoDocument.createElement( "Attribute" );
-    attributeElement.setAttribute( "name", it.key() );
-    attributeElement.setAttribute( "value", it.value() );
+    attributeElement.setAttribute( "name", layer->bandName( it.key() ) );
+    attributeElement.setAttribute( "value", QString::number( it.value().toDouble() ) );
     layerElement.appendChild( attributeElement );
   }
   return 0;

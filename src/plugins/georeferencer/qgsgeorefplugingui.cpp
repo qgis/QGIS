@@ -632,16 +632,16 @@ void QgsGeorefPluginGui::showGeorefConfigDialog()
 // Histogram stretch slots
 void QgsGeorefPluginGui::fullHistogramStretch()
 {
-  mLayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
-  mLayer->setMinimumMaximumUsingDataset();
+  mLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
   mLayer->setCacheImage( NULL );
   mCanvas->refresh();
 }
 
 void QgsGeorefPluginGui::localHistogramStretch()
 {
-  mLayer->setContrastEnhancementAlgorithm( "StretchToMinimumMaximum" );
-  mLayer->setMinimumMaximumUsingLastExtent();
+  QgsRectangle rectangle = mIface->mapCanvas()->mapRenderer()->outputExtentToLayerExtent( mLayer, mIface->mapCanvas()->extent() );
+
+  mLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterLayer::ContrastEnhancementMinMax, rectangle );
   mLayer->setCacheImage( NULL );
   mCanvas->refresh();
 }
@@ -1066,7 +1066,7 @@ void QgsGeorefPluginGui::removeOldLayer()
   if ( mLayer )
   {
     QgsMapLayerRegistry::instance()->removeMapLayers(
-      ( QStringList() << mLayer->id() ), false );
+      ( QStringList() << mLayer->id() ) );
     mLayer = NULL;
   }
   mCanvas->refresh();
@@ -1368,7 +1368,7 @@ bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, dou
   double rotationX = 0;
   double rotationY = 0;
 
-  if ( !doubleNear( rotation, 0.0 ) )
+  if ( !qgsDoubleNear( rotation, 0.0 ) )
   {
     rotationX = pixelXSize * sin( rotation );
     rotationY = pixelYSize * sin( rotation );
