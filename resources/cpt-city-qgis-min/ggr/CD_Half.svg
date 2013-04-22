@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="CD Half" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(209,209,209)" stop-opacity="1.0000"/>
+        <stop offset="2.11%" stop-color="rgb(217,217,217)" stop-opacity="1.0000"/>
+        <stop offset="4.67%" stop-color="rgb(224,224,224)" stop-opacity="1.0000"/>
+        <stop offset="9.14%" stop-color="rgb(240,240,240)" stop-opacity="1.0000"/>
+        <stop offset="12.69%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+        <stop offset="16.53%" stop-color="rgb(244,244,244)" stop-opacity="1.0000"/>
+        <stop offset="35.39%" stop-color="rgb(232,232,232)" stop-opacity="1.0000"/>
+        <stop offset="41.07%" stop-color="rgb(221,221,221)" stop-opacity="1.0000"/>
+        <stop offset="47.25%" stop-color="rgb(209,209,209)" stop-opacity="1.0000"/>
+        <stop offset="53.52%" stop-color="rgb(220,232,105)" stop-opacity="1.0000"/>
+        <stop offset="56.26%" stop-color="rgb(230,255,0)" stop-opacity="1.0000"/>
+        <stop offset="59.27%" stop-color="rgb(115,239,128)" stop-opacity="1.0000"/>
+        <stop offset="62.10%" stop-color="rgb(0,224,255)" stop-opacity="1.0000"/>
+        <stop offset="64.27%" stop-color="rgb(49,239,242)" stop-opacity="1.0000"/>
+        <stop offset="68.11%" stop-color="rgb(98,255,230)" stop-opacity="1.0000"/>
+        <stop offset="71.43%" stop-color="rgb(154,232,219)" stop-opacity="1.0000"/>
+        <stop offset="74.79%" stop-color="rgb(209,209,209)" stop-opacity="1.0000"/>
+        <stop offset="86.84%" stop-color="rgb(217,217,217)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(224,224,224)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#CD Half)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:17 2012"/>
+  </metadata>
+</svg>

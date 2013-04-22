@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Gery</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Contributed to the Public Domain by the author.
+    </informal>
+    <year>2011</year>
+  </license>
+  <src>
+    <format>cpt</format>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

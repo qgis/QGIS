@@ -90,7 +90,7 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
                            "This file can be found at [%2]\nand current file is [%3]"
                          ).arg( QgsApplication::qgisSettingsDirPath()
                               ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/"
-                                   ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.02.zip" );
+                                   ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip" );
     edit->setText( helpText );
     mStackedWidget->addWidget( edit );
     mStackedWidget->setCurrentIndex( 1 );

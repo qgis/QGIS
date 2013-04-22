@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.mrao.cam.ac.uk/~dag/index.html">
+      <name>Dave Green</name>
+      <org>Cavendish Laboratory, University of Cambridge</org>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Contributed to the public domain, citation requested.
+    </informal>
+    <year>2011</year>
+    <text>
+Contributed to the public domain. Citation of the paper describing 
+the motivation for and design of the schemes 
+
+  http://adsabs.harvard.edu/abs/2011BASI...39..289G
+
+requested.
+    </text>
+  </license>
+  <src>
+    <format>PNG images from cubetry tool</format>
+    <link href="http://www.mrao.cam.ac.uk/~dag/CUBEHELIX/">Cubehelix page</link>
+    <link href="http://www.mrao.cam.ac.uk/~dag/CUBEHELIX/cubetry.html">The cubetry tool</link>
+    <link href="http://adsabs.harvard.edu/abs/2011BASI...39..289G">ADS entry for paper</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

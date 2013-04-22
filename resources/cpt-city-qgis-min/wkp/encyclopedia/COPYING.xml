@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Unknown</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Public domain due to age</informal>
+    <year>2012</year>
+  </license>
+  <src>
+    <format>JPEG scans</format>
+    <link href="http://commons.wikimedia.org/wiki/File:Nord-Amerika._Flod-_och_bergssystem,_Nordisk_familjebok.jpg">Nordisk familjebok</link>
+    <link href="http://commons.wikimedia.org/wiki/File:Meyers_b1_s0457a.jpg">Meyer's</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://elvensword.deviantart.com/">
+      <name>ElvenSword</name>
+    </author>
+  </authors>
+  <license>
+    <informal>
+      Credit requested for use, required for distribution
+    </informal>
+    <year>2008</year>
+    <text href="http://elvensword.deviantart.com/">
+      For use:
+
+      * Using for commercial works, prints:
+      Yes. There is no need ask permission first, or after.
+      My resources are free for personal or commercial arts works. Credit is 
+      enough if possible, if there is a description. Note link to me not 
+      necessary. But it is good, I can not see them otherwise, feel free 
+      about it.
+
+      * Using in only DA:
+      I submit them only DA yes, but you may use out of DA.
+    
+      For distribute:
+    
+      * I like sharing. So okay distributing my resources with credit,
+      for good, for free. But,
+    
+      * Do not distribute my resource files without original preview. 
+      ('cause previews including credit. Credit is important point on 
+      this situation.)
+    
+      * Do not remove my name on it (preview). I saw some Turkish and 
+      Russian forum sites delete artists names though, and they puting 
+      their own cursed crappy logos on the previews. It is not sharing. 
+      It is ...
+    
+      * Do not create collection with new preview, claiming open or close 
+      they're your own creations.
+    
+      * Do not Rip/Merge with other artists work. Example: All in one 
+      gradients by Merger/Ripper Nickname) for download/sell
+    
+      * Thanks
+    </text>
+  </license>
+  <src>
+    <format>Paint Shop Pro</format>
+    <link href="http://elvensword.deviantart.com/gallery/">DeviantArt gallery</link>
+    <link href="http://elvensword.deviantart.com/journal/18622706/">Author approval</link>
+    <remark>Author approved inclusion in journal Sep 23, 2009</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="wiki-ice-greenland" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(247,253,254)" stop-opacity="1.0000"/>
+        <stop offset="30.99%" stop-color="rgb(247,253,254)" stop-opacity="1.0000"/>
+        <stop offset="30.99%" stop-color="rgb(242,248,248)" stop-opacity="1.0000"/>
+        <stop offset="46.64%" stop-color="rgb(242,248,248)" stop-opacity="1.0000"/>
+        <stop offset="46.64%" stop-color="rgb(229,240,242)" stop-opacity="1.0000"/>
+        <stop offset="62.28%" stop-color="rgb(229,240,242)" stop-opacity="1.0000"/>
+        <stop offset="62.28%" stop-color="rgb(217,231,233)" stop-opacity="1.0000"/>
+        <stop offset="77.93%" stop-color="rgb(217,231,233)" stop-opacity="1.0000"/>
+        <stop offset="77.93%" stop-color="rgb(207,225,228)" stop-opacity="1.0000"/>
+        <stop offset="93.58%" stop-color="rgb(207,225,228)" stop-opacity="1.0000"/>
+        <stop offset="93.58%" stop-color="rgb(195,219,223)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(195,219,223)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#wiki-ice-greenland)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:31:01 2012"/>
+  </metadata>
+</svg>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="GPS-Simple-Smoke" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(125,121,114)" stop-opacity="0.5000"/>
+        <stop offset="15.65%" stop-color="rgb(124,122,119)" stop-opacity="0.7500"/>
+        <stop offset="30.47%" stop-color="rgb(124,124,124)" stop-opacity="1.0000"/>
+        <stop offset="36.32%" stop-color="rgb(126,126,120)" stop-opacity="1.0000"/>
+        <stop offset="41.72%" stop-color="rgb(128,128,115)" stop-opacity="1.0000"/>
+        <stop offset="48.31%" stop-color="rgb(105,106,104)" stop-opacity="1.0000"/>
+        <stop offset="63.10%" stop-color="rgb(82,85,94)" stop-opacity="1.0000"/>
+        <stop offset="84.51%" stop-color="rgb(55,59,68)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(28,33,43)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#GPS-Simple-Smoke)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:25 2012"/>
+  </metadata>
+</svg>

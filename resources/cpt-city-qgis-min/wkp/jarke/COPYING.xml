@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://commons.wikimedia.org/wiki/User:Jarke">
+      <name>Jarke</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Creative commons attribution share-alike 3.0 unported</informal>
+    <year>2013</year>
+    <text href="http://creativecommons.org/licenses/by-sa/3.0/deed.fr"/>
+  </license>
+  <src>
+    <format>PNG image</format>
+    <link href="http://fr.wikipedia.org/wiki/Fichier:Pakistan_geography_en.svg">source</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://en.wikipedia.org/wiki/User:Plumbago">
+      <name>Plumbago</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Creative commons attribution share-alike 3.0 unported</informal>
+    <year>2009</year>
+    <text href="http://creativecommons.org/licenses/by-sa/3.0/deed.en"/>
+  </license>
+  <src>
+    <format>SVG image</format>
+    <link href="http://en.wikipedia.org/wiki/File:AYool_topography_15min.png">Original image</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>
