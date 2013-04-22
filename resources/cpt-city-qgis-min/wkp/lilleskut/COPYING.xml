@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://de.wikipedia.org/wiki/Benutzer:Lilleskut">
+      <name>Lilleskut</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Creative commons attribution share-alike 3.0 unported</informal>
+    <year>2012</year>
+    <text href="http://creativecommons.org/licenses/by-sa/3.0/deed.en"/>
+  </license>
+  <src>
+    <format>cpt file</format>
+    <link href="http://de.wikipedia.org/wiki/Benutzer:Lilleskut/Afrikakarte">source</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>

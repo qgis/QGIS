@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>gps</dir>
+  <name>Gradients from GIMP Paint Studio</name>
+  <full>
+    GIMP Paint Studio is a collection of brushes, gradients and
+    accompanying "tool presets" for the GIMP. The aim is to create a
+    working environment for graphic designers and artists to begin to
+    paint and feel comfortable with GIMP from their first encounter.
+    These gradients here are taken from version 1.5 of the package. 
+  </full>
+  <date>01/08/2012</date>
+</description>

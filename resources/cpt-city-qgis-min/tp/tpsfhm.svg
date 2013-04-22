@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="tpsfhm" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(45,127,148)" stop-opacity="1.0000"/>
+        <stop offset="8.33%" stop-color="rgb(45,127,148)" stop-opacity="1.0000"/>
+        <stop offset="8.33%" stop-color="rgb(41,135,161)" stop-opacity="1.0000"/>
+        <stop offset="16.67%" stop-color="rgb(41,135,161)" stop-opacity="1.0000"/>
+        <stop offset="16.67%" stop-color="rgb(55,146,175)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(55,146,175)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(70,154,190)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(70,154,190)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(95,169,204)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(95,169,204)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(115,179,207)" stop-opacity="1.0000"/>
+        <stop offset="83.33%" stop-color="rgb(115,179,207)" stop-opacity="1.0000"/>
+        <stop offset="83.33%" stop-color="rgb(143,195,217)" stop-opacity="1.0000"/>
+        <stop offset="91.67%" stop-color="rgb(143,195,217)" stop-opacity="1.0000"/>
+        <stop offset="91.67%" stop-color="rgb(170,208,219)" stop-opacity="1.0000"/>
+        <stop offset="96.67%" stop-color="rgb(170,208,219)" stop-opacity="1.0000"/>
+        <stop offset="96.67%" stop-color="rgb(198,229,231)" stop-opacity="1.0000"/>
+        <stop offset="98.33%" stop-color="rgb(198,229,231)" stop-opacity="1.0000"/>
+        <stop offset="98.33%" stop-color="rgb(226,240,241)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(226,240,241)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#tpsfhm)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:31:06 2012"/>
+  </metadata>
+</svg>

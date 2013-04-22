@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Skyline" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="0.99%" stop-color="rgb(12,7,62)" stop-opacity="1.0000"/>
+        <stop offset="1.98%" stop-color="rgb(16,10,85)" stop-opacity="1.0000"/>
+        <stop offset="2.96%" stop-color="rgb(20,12,102)" stop-opacity="1.0000"/>
+        <stop offset="3.95%" stop-color="rgb(22,13,114)" stop-opacity="1.0000"/>
+        <stop offset="4.94%" stop-color="rgb(24,14,124)" stop-opacity="1.0000"/>
+        <stop offset="5.93%" stop-color="rgb(24,15,127)" stop-opacity="1.0000"/>
+        <stop offset="6.92%" stop-color="rgb(25,15,128)" stop-opacity="1.0000"/>
+        <stop offset="7.91%" stop-color="rgb(25,15,129)" stop-opacity="1.0000"/>
+        <stop offset="8.89%" stop-color="rgb(25,15,130)" stop-opacity="1.0000"/>
+        <stop offset="9.88%" stop-color="rgb(25,15,131)" stop-opacity="1.0000"/>
+        <stop offset="10.87%" stop-color="rgb(26,16,132)" stop-opacity="1.0000"/>
+        <stop offset="11.86%" stop-color="rgb(26,16,133)" stop-opacity="1.0000"/>
+        <stop offset="12.85%" stop-color="rgb(26,16,134)" stop-opacity="1.0000"/>
+        <stop offset="13.83%" stop-color="rgb(26,16,135)" stop-opacity="1.0000"/>
+        <stop offset="14.82%" stop-color="rgb(26,16,136)" stop-opacity="1.0000"/>
+        <stop offset="15.81%" stop-color="rgb(26,16,137)" stop-opacity="1.0000"/>
+        <stop offset="16.80%" stop-color="rgb(27,16,138)" stop-opacity="1.0000"/>
+        <stop offset="17.79%" stop-color="rgb(27,16,138)" stop-opacity="1.0000"/>
+        <stop offset="18.77%" stop-color="rgb(27,16,139)" stop-opacity="1.0000"/>
+        <stop offset="19.76%" stop-color="rgb(27,16,140)" stop-opacity="1.0000"/>
+        <stop offset="20.75%" stop-color="rgb(27,16,140)" stop-opacity="1.0000"/>
+        <stop offset="21.74%" stop-color="rgb(27,17,141)" stop-opacity="1.0000"/>
+        <stop offset="22.73%" stop-color="rgb(27,17,141)" stop-opacity="1.0000"/>
+        <stop offset="23.72%" stop-color="rgb(27,17,142)" stop-opacity="1.0000"/>
+        <stop offset="24.70%" stop-color="rgb(27,17,142)" stop-opacity="1.0000"/>
+        <stop offset="25.69%" stop-color="rgb(28,17,143)" stop-opacity="1.0000"/>
+        <stop offset="26.68%" stop-color="rgb(28,17,143)" stop-opacity="1.0000"/>
+        <stop offset="27.67%" stop-color="rgb(28,17,144)" stop-opacity="1.0000"/>
+        <stop offset="28.66%" stop-color="rgb(28,17,144)" stop-opacity="1.0000"/>
+        <stop offset="29.64%" stop-color="rgb(28,17,144)" stop-opacity="1.0000"/>
+        <stop offset="30.63%" stop-color="rgb(28,17,144)" stop-opacity="1.0000"/>
+        <stop offset="31.62%" stop-color="rgb(28,17,145)" stop-opacity="1.0000"/>
+        <stop offset="32.61%" stop-color="rgb(28,17,145)" stop-opacity="1.0000"/>
+        <stop offset="33.60%" stop-color="rgb(28,17,145)" stop-opacity="1.0000"/>
+        <stop offset="34.58%" stop-color="rgb(28,17,145)" stop-opacity="1.0000"/>
+        <stop offset="35.57%" stop-color="rgb(28,17,145)" stop-opacity="1.0000"/>
+        <stop offset="36.56%" stop-color="rgb(28,17,145)" stop-opacity="1.0000"/>
+        <stop offset="60.27%" stop-color="rgb(131,14,78)" stop-opacity="1.0000"/>
+        <stop offset="74.96%" stop-color="rgb(234,11,11)" stop-opacity="1.0000"/>
+        <stop offset="78.96%" stop-color="rgb(244,73,5)" stop-opacity="1.0000"/>
+        <stop offset="86.48%" stop-color="rgb(255,136,0)" stop-opacity="1.0000"/>
+        <stop offset="89.65%" stop-color="rgb(247,186,27)" stop-opacity="1.0000"/>
+        <stop offset="93.49%" stop-color="rgb(239,236,55)" stop-opacity="1.0000"/>
+        <stop offset="93.49%" stop-color="rgb(137,101,8)" stop-opacity="1.0000"/>
+        <stop offset="95.83%" stop-color="rgb(69,50,4)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Skyline)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:18 2012"/>
+  </metadata>
+</svg>

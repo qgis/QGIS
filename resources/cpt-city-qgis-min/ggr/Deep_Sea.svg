@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Deep Sea" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,2,43)" stop-opacity="1.0000"/>
+        <stop offset="58.10%" stop-color="rgb(23,51,100)" stop-opacity="1.0000"/>
+        <stop offset="76.46%" stop-color="rgb(46,99,158)" stop-opacity="1.0000"/>
+        <stop offset="88.81%" stop-color="rgb(23,173,203)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(0,247,247)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Deep Sea)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:21 2012"/>
+  </metadata>
+</svg>

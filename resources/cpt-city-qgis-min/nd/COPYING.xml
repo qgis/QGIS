@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://start.at/nevit/">
+      <name>Nevit Dilmen</name>
+    </author>
+  </authors>
+  <license>
+    <informal>GPL</informal>
+    <year>2007</year>
+    <text>
+      I, the author of this work, hereby publish it under the following 
+      license: Permission is granted to copy, distribute and/or modify 
+      this package under the terms of the GNU Free License, Version 1.2 
+      or any later version published by the Free Software Foundation a 
+      copy of which can be found at www.GNU.org
+    </text>
+  </license>
+  <src>
+    <format>GIMP gradient (ggr)</format>
+    <link href="http://nevit.deviantart.com/art/900gradients-for-GIMP-Inkscape-103771340">DeviantArt page</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gpl"/>
+  </distribute>
+</copying>

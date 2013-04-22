@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="qgis">QGis</name>
+  <synopsis>Palettes for QGis</synopsis>
+  <description>Palettes for QGis.</description>
+  <seealsocollects>
+    <collect dir="cb">Cynthia Brewer</collect>
+    <collect dir="grass">Grass></collect>
+  </seealsocollects>
+</selection>

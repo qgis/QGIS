@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.cisl.ucar.edu/">
+      <name>University Corporation for Atmospheric Research (UCAR)</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Custom open-source</informal>
+    <year>2011</year>
+    <text>
+NCL - UNIX Version 6.0.0
+Copyright (C) 2011
+University Corporation for Atmospheric Research
+
+NCL Source Code License
+
+Copyright (c) 2011 University Corporation for Atmospheric Research
+(UCAR).  All rights reserved.  Developed by NCAR's Computational and
+Information Systems Laboratory, UCAR, www.cisl.ucar.edu, with the
+following contributions:
+
+dcdflib
+The University of Texas, M.D. Anderson Cancer Center
+http://www.netlib.org/random/
+
+FFTPACK5
+Copyright 1995-2004
+UCAR
+http://www.cisl.ucar.edu/css/software/fftpack5/
+
+GRIBEX
+Copyright (c) 1981-2010
+European Centre for Medium-Range Weather Forecast
+http://www.ecmwf.int/products/data/software/grib.html
+
+LAPACK
+Copyright (c) 1999
+Society for Industrial and Applied Mathematics
+http://www.netlib.org/lapack/lug/lapack_lug.html
+
+random
+The University of Texas, M.D. Anderson Cancer Center
+http://www.netlib.org/random/
+
+RANGS / GSHHS
+Dr. Rainer Feistel
+Baltic Sea Research Institute Warnemunde
+http://www.io-warnemuende.de/homepages/rfeistel/
+
+Spherepack (V3.1)
+Copyright (c) 1998
+UCAR
+http://www.cisl.ucar.edu/css/software/spherepack/
+
+UDUNITS-2 
+Copyright 2008, 2009
+University Corporation for Atmospheric Research
+http://www.unidata.ucar.edu/software/udunits/udunits-2/udunits2.html
+
+Udunits extensions from ncview
+David Pierce, UCSD
+http://meteora.ucsd.edu/~pierce/ncview_home_page.html
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+Neither the names of NCAR's Computational and Information Systems
+Laboratory, the University Corporation for Atmospheric Research, nor
+the names of its contributors may be used to endorse or promote
+products derived from this Software without specific prior written
+permission.
+
+Redistributions of source code must retain the above copyright
+notice, this list of conditions, and the disclaimer below.
+
+Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions, and the disclaimer below in the
+documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE CONTRIBUTORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH THE
+SOFTWARE.
+    </text>
+  </license>
+  <src>
+    <format>Custom text files of RGB triples</format>
+    <link href="http://www.ncl.ucar.edu/">NCL website</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

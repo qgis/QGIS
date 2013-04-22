@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Atmospheric_GreyOClock" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(217,217,217)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(207,210,209)" stop-opacity="1.0000"/>
+        <stop offset="22.87%" stop-color="rgb(197,203,202)" stop-opacity="1.0000"/>
+        <stop offset="38.40%" stop-color="rgb(190,203,208)" stop-opacity="1.0000"/>
+        <stop offset="40.07%" stop-color="rgb(182,203,213)" stop-opacity="1.0000"/>
+        <stop offset="41.57%" stop-color="rgb(166,189,195)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(150,175,177)" stop-opacity="1.0000"/>
+        <stop offset="85.00%" stop-color="rgb(134,161,160)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(118,147,142)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Atmospheric_GreyOClock)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:34:29 2012"/>
+  </metadata>
+</svg>

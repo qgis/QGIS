@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="div">Diverging</name>
+  <synopsis>
+    Palettes for diverging, signed or anomoly data 
+  </synopsis>
+  <description>
+    Palettes for diverging, signed or anomoly data. 
+  </description>
+  <seealsocollects>
+    <collect dir="km">Kenneth Moreland</collect>
+    <collect dir="cb/div">Cynthia Brewer</collect>
+    <collect dir="jjg/cbac/div">CBAC</collect>
+    <collect dir="jjg/polarity">Polarity</collect>
+  </seealsocollects>
+  <gradients>
+    <gradient file="bhw2_39" dir="bhw/bhw2"/>
+    <gradient file="BrBG_11" dir="cb/div"/>
+    <gradient file="cw1-002" dir="cw/1"/>
+    <gradient file="es_landscape_90" dir="es/landscape"/>
+    <gradient file="es_landscape_76" dir="es/landscape"/>
+    <gradient file="fire_active_2" dir="esri/events"/>
+    <gradient file="seismic" dir="gery"/>
+    <gradient file="French_flag_smooth" dir="ggr"/>
+    <gradient file="Mexican_flag_smooth" dir="ggr"/>
+    <gradient file="Romanian_flag_smooth" dir="ggr"/>
+    <gradient file="curvature" dir="grass"/>
+    <gradient file="dkbluered" dir="h5"/>
+    <gradient file="voxpop" dir="jjg/misc"/>
+    <gradient file="cbcBrBG" dir="jjg/cbcont/div"/>
+    <gradient file="cbacBrBG11" dir="jjg/cbac/div"/>
+    <gradient file="BrBG" dir="jjg/polarity"/>
+    <gradient file="Andy_GIlmore_2" dir="jjg/ccolo/evad"/>
+    <gradient file="Need_I_Say_More" dir="jjg/ccolo/sugar"/>
+    <gradient file="Grand_Boucle" dir="jjg/ccolo/vredeling"/>
+    <gradient file="Optimus_Prime" dir="jjg/ccolo/vredeling"/>
+    <gradient file="British_Cheer" dir="jjg/ccolo/vredeling"/>
+    <gradient file="Tubular_Bells" dir="/jjg/ccolo/vredeling"/>
+    <gradient file="xmas_22" dir="ma/xmas"/>
+    <gradient file="ha_14" dir="ma/postcard"/>
+    <gradient file="departure" dir="mjf"/>
+    <gradient file="Split_02" dir="nd/vermillion"/>
+    <gradient file="Tertiary_01" dir="nd/vermillion"/>
+    <gradient file="Analogous_12b" dir="nd/turanj"/>
+    <gradient file="Primary_3" dir="nd/red"/>
+    <gradient file="occ100" dir="occ/2"/>
+    <gradient file="occ083" dir="occ/2"/>
+    <gradient file="wildwinds" dir="rc"/>
+    <gradient file="temp_19lev" dir="ncl"/>
+    <gradient file="sunshine_diff_12lev" dir="ncl"/>
+    <gradient file="GreenYellow" dir="ncl"/>
+    <gradient file="BlueYellowRed" dir="ncl"/>
+    <gradient file="BlueWhiteOrangeRed" dir="ncl"/>
+    <gradient file="BlueDarkRed18" dir="ncl"/>
+    <gradient file="BlWhRe" dir="ncl"/>
+    <gradient file="blue-tan-d14" dir="km"/>
+    <gradient file="cool-warm-d07" dir="km"/>
+    <gradient file="green-purple" dir="km"/>
+    <gradient file="gyr_centre" dir="imagej"/>
+  </gradients>
+</selection>

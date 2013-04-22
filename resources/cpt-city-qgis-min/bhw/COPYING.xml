@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://blackheartedwolf.deviantart.com/">
+      <name>Blackheartedworf</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Attribution required</informal>
+    <year>2011</year>
+    <text href="http://creativecommons.org/licenses/by/3.0/"/>
+  </license>
+  <src>
+    <format>Paint Shop Pro gradients</format>
+    <link href="http://blackheartedwolf.deviantart.com/art/Gradients-1-22145298">Set 1</link>
+    <link href="http://blackheartedwolf.deviantart.com/art/Gradients-2-33255087">Set 2</link>
+    <link href="http://blackheartedwolf.deviantart.com/art/Gradients-3-41631439">Set 3</link>
+    <link href="http://blackheartedwolf.deviantart.com/art/Gradients-Pack-4-50008222">Set 4</link>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="cc3"/>
+  </distribute>
+</copying>

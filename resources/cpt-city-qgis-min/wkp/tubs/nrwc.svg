@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="nrwc" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(5,6,3)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(55,55,36)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(24,62,41)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(52,105,69)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(62,138,89)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(108,163,99)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(165,186,111)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(231,213,122)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(199,167,92)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(176,120,58)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(215,127,63)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#nrwc)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:31:05 2012"/>
+  </metadata>
+</svg>
