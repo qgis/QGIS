@@ -77,6 +77,8 @@ QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement& ce
 
 QgsContrastEnhancement::~QgsContrastEnhancement()
 {
+  delete [] mLookupTable;
+  delete mContrastEnhancementFunction;
 }
 /*
  *
