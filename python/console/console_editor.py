@@ -722,12 +722,12 @@ class EditorTabWidget(QTabWidget):
 
     def restoreTabs(self):
         for script in self.restoreTabList:
-                    pathFile = str(script.toString())
-                    if os.path.exists(pathFile):
-                        tabName = pathFile.split('/')[-1]
-                        self.newTabEditor(tabName, pathFile)
-                    else:
-                        self.newTabEditor(filename=None)
+            pathFile = str(script.toString())
+            if os.path.exists(pathFile):
+                tabName = pathFile.split('/')[-1]
+                self.newTabEditor(tabName, pathFile)
+            else:
+                self.newTabEditor(filename=None)
         self.topFrame.close()
         self.enableToolBarEditor(True)
 
