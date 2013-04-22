@@ -971,6 +971,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Id
     {
       results.insert( i, value );
     }
+    delete myBlock;
   }
   return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
 }
