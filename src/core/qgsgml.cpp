@@ -85,7 +85,16 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
 
   //find out if there is a QGIS main window. If yes, display a progress dialog
   QProgressDialog* progressDialog = 0;
-  QWidget* mainWindow = qApp->activeWindow();
+  QWidget* mainWindow = 0;
+  QWidgetList topLevelWidgets = qApp->topLevelWidgets();
+  for ( QWidgetList::iterator it = topLevelWidgets.begin(); it != topLevelWidgets.end(); ++it )
+  {
+    if (( *it )->objectName() == "QgisApp" )
+    {
+      mainWindow = *it;
+      break;
+    }
+  }
   if ( mainWindow )
   {
     progressDialog = new QProgressDialog( tr( "Loading GML data\n%1" ).arg( mTypeName ), tr( "Abort" ), 0, 0, mainWindow );
