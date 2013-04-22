@@ -763,14 +763,27 @@ class EditorTabWidget(QTabWidget):
             try:
                 reload(pyclbr)
                 dictObject = {}
+                superClassName = []
                 readModule = pyclbr.readmodule(module)
                 readModuleFunction = pyclbr.readmodule_ex(module)
                 for name, class_data in sorted(readModule.items(), key=lambda x:x[1].lineno):
                     if class_data.file == tabWidget.path:
+                        for superClass in class_data.super:
+                            if superClass == 'object':
+                                continue
+                            if isinstance(superClass, basestring):
+                                superClassName.append(superClass)
+                            else:
+                                superClassName.append(superClass.name)
                         classItem = QTreeWidgetItem()
-                        classItem.setText(0, name)
+                        if superClassName:
+                            for i in superClassName: super = i
+                            classItem.setText(0, name + ' [' + super + ']')
+                            classItem.setToolTip(0, name + ' [' + super + ']')
+                        else:
+                            classItem.setText(0, name)
+                            classItem.setToolTip(0, name)
                         classItem.setText(1, str(class_data.lineno))
-                        classItem.setToolTip(0, name)
                         classItem.setIcon(0, QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png"))
                         dictObject[name] = class_data.lineno
                         for meth, lineno in sorted(class_data.methods.items(), key=itemgetter(1)):
