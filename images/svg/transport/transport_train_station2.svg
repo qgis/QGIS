@@ -1,132 +1,32 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   width="580"
-   height="580"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="train_station2.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
-  <defs
-     id="defs22">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 290 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="580 : 290 : 1"
-       inkscape:persp3d-origin="290 : 193.33333 : 1"
-       id="perspective24" />
-    <marker
-       viewBox="0 0 10 10"
-       refY="5"
-       refX="10"
-       orient="auto"
-       markerWidth="4"
-       markerUnits="strokeWidth"
-       markerHeight="3"
-       id="ArrowStart">
-      <path
-         id="path3568"
-         d="M 10 0 L 0 5 L 10 10 z" />
-    </marker>
-    <marker
-       viewBox="0 0 10 10"
-       refY="5"
-       refX="0"
-       orient="auto"
-       markerWidth="4"
-       markerUnits="strokeWidth"
-       markerHeight="3"
-       id="ArrowEnd">
-      <path
-         id="path3565"
-         d="M 0 0 L 10 5 L 0 10 z" />
-    </marker>
-    <inkscape:perspective
-       id="perspective2683"
-       inkscape:persp3d-origin="306.082 : 204.39034 : 1"
-       inkscape:vp_z="612.164 : 306.58551 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 306.58551 : 1"
-       sodipodi:type="inkscape:persp3d" />
-  </defs>
-  <metadata
-     id="metadata10">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-			  <cc:license
-           rdf:resource="http://web.resource.org/cc/PublicDomain" />
-        <dc:language>en</dc:language>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="1005"
-     inkscape:window-width="1280"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     showgrid="false"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="615.26172"
-     inkscape:cy="415.25176"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:current-layer="svg2" />
-  <g
-     id="g1327">
-    <path
-       d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z"
-       style="fill:#111111;stroke:#eeeeee;stroke-width:3.40799999"
-       id="path1329" />
-  </g>
-  <g
-     id="g2319"
-     transform="translate(879.29125,36.805119)">
-    <path
-       id="path2323"
-       style="fill:#ffffff;stroke:none"
-       d="" />
-  </g>
-  <g
-     id="g2325"
-     transform="translate(879.29125,36.805119)">
-    <path
-       id="path2329"
-       style="fill:#ffffff;stroke:none"
-       d="" />
-  </g>
-  <g
-     id="g3574"
-     transform="matrix(1.2317123,0,0,1.2317123,-81.360132,-113.23274)">
-    <g
-       id="g3576">
-      <path
-         style="fill:#ffffff;stroke:none"
-         d="M 295.5625,77.1875 L 213.03125,77.25 C 174.59259,77.249989 146.3125,108.11801 146.3125,141.75 L 146.3125,379.96875 C 146.31253,412.55139 171.80358,439.27577 197.4375,443.40625 L 120.5625,558.71875 L 164.9375,558.71875 L 219.90625,478.125 L 295.1875,478.125 L 295.25,478.125 L 295.3125,478.125 L 370.59375,478.125 L 425.5625,558.71875 L 469.9375,558.71875 L 393.0625,443.40625 C 418.69638,439.27575 444.21875,412.55141 444.21875,379.96875 L 444.21875,141.75 C 444.21871,108.11804 415.90738,77.25 377.46875,77.25 L 295.5625,77.1875 z M 262.875,91 L 295.1875,91 L 295.25,91 L 295.3125,91 L 327.625,91 C 333.47317,91 338.5625,95.90183 338.5625,101.75 L 338.5625,120.6875 C 338.5625,126.53567 333.75166,131.5625 327.625,131.5625 L 295.3125,131.5625 L 295.25,131.5625 L 295.1875,131.5625 L 262.875,131.5625 C 256.74835,131.5625 251.9375,126.53567 251.9375,120.6875 L 251.9375,101.75 C 251.9375,95.90183 257.02682,91.000003 262.875,91 z M 215.25,144.40625 L 295.1875,144.40625 L 295.3125,144.40625 L 375.25,144.40625 C 396.97176,144.40626 408.50001,159.95825 408.5,177.78125 L 408.5,220.65625 C 408.66931,241.26409 393.62996,253.90625 375.25,253.90625 L 295.3125,253.90625 L 295.25,253.90625 L 295.1875,253.90625 L 215.25,253.90625 C 196.87003,253.90625 181.83068,241.26409 182,220.65625 L 182,177.78125 C 181.99999,159.95825 193.52822,144.40625 215.25,144.40625 z M 211.625,350.15625 C 227.78266,350.15622 240.90625,363.24859 240.90625,379.40625 C 240.90625,395.56275 227.78266,408.65625 211.625,408.65625 C 195.46731,408.65623 182.375,395.56279 182.375,379.40625 C 182.37496,363.24855 195.46734,350.15625 211.625,350.15625 z M 378.1875,350.15625 C 394.34514,350.15623 407.4375,363.24858 407.4375,379.40625 C 407.43748,395.56277 394.34517,408.65626 378.1875,408.65625 C 362.02982,408.65623 348.93749,395.56278 348.9375,379.40625 C 348.93748,363.24857 362.02985,350.15625 378.1875,350.15625 z"
-         transform="matrix(0.8977168,0,0,0.8977168,40.710583,46.777129)"
-         id="path3578" />
-    </g>
-    <g
-       id="g3584" />
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="train_station2.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
+	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective24" inkscape:persp3d-origin="290 : 193.33333 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="612.164 : 306.58551 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 306.58551 : 1" sodipodi:type="inkscape:persp3d" id="perspective2683" inkscape:persp3d-origin="306.082 : 204.39034 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="false" inkscape:cy="415.25176" inkscape:cx="615.26172" inkscape:zoom="0.70710678" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="1005">
+	</sodipodi:namedview>
+<g id="g3584">
+</g>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M403.404,434.67c28.344-4.567,56.564-34.117,56.564-70.145V101.12
+	c0-37.188-31.305-71.319-73.807-71.319l-90.566-0.069l-91.257,0.069c-42.503,0-73.773,34.132-73.773,71.319v263.405
+	c0,36.027,28.187,65.577,56.53,70.145l-85.002,127.505h49.066l60.781-89.115h83.241h0.068h0.069h83.24l60.781,89.115h49.066
+	L403.404,434.67z M247.358,56.891c0-6.466,5.627-11.887,12.094-11.887h35.729h0.068h0.069h35.729c6.467,0,12.094,5.42,12.094,11.887
+	v20.94c0,6.466-5.319,12.024-12.094,12.024h-35.729h-0.069h-0.068h-35.729c-6.774,0-12.094-5.558-12.094-12.024V56.891z
+	 M202.784,396.246c-17.866,0-32.343-14.478-32.343-32.342c0-17.867,14.477-32.344,32.343-32.344
+	c17.866,0,32.377,14.477,32.377,32.344C235.161,381.769,220.649,396.246,202.784,396.246z M295.25,225.135h-0.068h-88.39
+	c-20.324,0-36.953-13.979-36.766-36.766v-47.408c0-19.707,12.747-36.903,36.766-36.903h88.39h0.138h88.389
+	c24.019,0,36.766,17.196,36.766,36.903v47.408c0.188,22.787-16.442,36.766-36.766,36.766h-88.389H295.25z M354.614,363.904
+	c0-17.867,14.477-32.344,32.342-32.344c17.866,0,32.343,14.477,32.343,32.344c0,17.864-14.477,32.342-32.343,32.342
+	C369.091,396.246,354.614,381.769,354.614,363.904z"/>
 </svg>

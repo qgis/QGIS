@@ -1,114 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16"
-   height="16"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="amenity=fire_station.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=fast_food.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90"
-   version="1.0"
-   style="display:inline">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="31.875"
-     inkscape:cx="8"
-     inkscape:cy="6.9435104"
-     inkscape:current-layer="layer2"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="0" />
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>amenity=fire_station</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="new"
-     style="display:inline">
-    <path
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 7.8117647,14.682353 C 6.783679,14.691332 5.3129205,14.558589 4.454902,13.992157 C 3.5180008,13.37365 2.3215686,10.917647 2.3215686,10.917647 C 2.3215686,10.917647 2.8352444,9.9130987 2.917647,9.4431372 C 3.049399,8.6917248 3.0431372,6.9333334 3.0431372,6.9333334 L 4.8313725,10.133333 C 4.8313725,10.133333 5.936451,8.399881 5.9294118,7.5607843 C 5.9212831,6.5918179 4.6216559,5.5807147 4.6117647,4.6117647 C 4.6043597,3.8863636 5.5529412,2.3843138 5.5529412,2.3843138 C 5.5529412,2.3843138 5.9097875,4.490274 6.4313726,5.2078431 C 6.8244258,5.7485851 8.2509804,6.4941177 8.2509804,6.4941177 C 8.2509804,6.4941177 8.384132,4.657795 8.7529412,3.9843137 C 9.0854428,3.3771336 10.415687,2.3843138 10.415687,2.3843138 C 10.415687,2.3843138 10.331187,4.5890056 10.572549,5.4901961 C 10.807766,6.3684409 11.952941,8.1882353 11.952941,8.1882353 L 13.082353,6.6196079 C 13.082353,6.6196079 13.819054,9.073443 13.678431,10.133333 C 13.521684,11.314749 12.942677,12.992176 12.015686,13.741176 C 11.010424,14.553418 9.1041121,14.671066 7.8117647,14.682353 z"
-       id="path5065"
-       sodipodi:nodetypes="cscsccsscscscsccsss" />
-    <path
-       sodipodi:nodetypes="csscsscsscsss"
-       id="path5067"
-       d="M 8.028225,14.480529 C 7.4745076,14.485365 6.7359282,14.310544 6.2202498,14.108796 C 5.630307,13.877994 4.8000281,13.51867 4.4124326,13.0176 C 3.9354071,12.400917 3.671651,10.526587 3.671651,10.526587 C 3.671651,10.526587 5.4223297,12.208614 6.3916408,11.967724 C 7.2300589,11.759362 7.3522528,10.764862 7.5477404,9.9233494 C 7.7157355,9.200183 7.5959574,7.4490756 7.5959574,7.4490756 C 7.5959574,7.4490756 8.6534869,8.4219589 8.9818246,9.1532477 C 9.2693595,9.7936589 9.1374633,11.126962 9.7880358,11.3907 C 10.572201,11.708596 11.964954,10.232127 11.964954,10.232127 C 11.964954,10.232127 11.904872,11.926587 11.5958,12.563802 C 11.344429,13.082057 10.791585,13.686205 10.292418,13.97362 C 9.6891941,14.32095 8.7242713,14.47445 8.028225,14.480529 z"
-       style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.53859079px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=fast_food.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="amenity=fire_station.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+	</inkscape:perspective>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M490.788,234l-10.842-36.129l-46.382,64.456
+	c-10.587-18.262-28.587-50.786-33.366-68.625c-6.551-24.481-5.854-85.383-5.032-106.783l1.492-38.863L365.49,71.316
+	c-5.253,3.92-51.715,39.014-65.315,63.821c-9.035,16.505-14.43,46.67-17.384,69.37c-17.949-11.118-30.772-20.987-35.236-27.126
+	c-11.849-16.31-23.753-66.485-28.473-94.281l-8.112-47.861l-25.914,41.048c-6.213,9.842-37.191,60.466-36.888,90.644
+	c0.23,22.981,13.784,43.488,26.893,63.323c10.147,15.353,20.641,31.228,20.738,43.267c0.087,9.988-7.496,30.109-20.823,55.282
+	L91.189,178.938l0.254,71.82c0.002,0.62,0.143,62.365-4.26,87.48c-1.805,10.333-13.09,34.96-19.779,48.056l-4.221,8.258l4.063,8.336
+	c4.654,9.553,46.545,94.036,83.597,118.519c36.97,24.407,96.182,28.052,128.188,28.052c1.199,0,2.392-0.006,3.572-0.016
+	c50.452-0.458,122.292-4.911,163.506-38.16c37.123-29.972,60.32-93.155,66.842-142.478C518.4,327.732,493.631,243.473,490.788,234z
+	 M275.229,270.561c5.892,5.554,38.389,36.819,49.084,60.592c3.679,8.196,5.421,19.439,7.266,31.343
+	c3.318,21.422,6.751,43.572,22.132,49.808c2.718,1.104,5.753,1.662,9.023,1.662c26.332,0,63.063-36.325,69.313-42.71
+	c-0.4,9.015-3.158,61.97-13.241,82.808c-9.119,18.731-29.282,40.543-46.901,50.734c-21.443,12.318-56.453,18.047-81.637,18.26
+	l-0.816,0.004c-20.764,0-47.292-6.724-64.37-13.388c-23.225-9.111-51.617-21.814-65.144-39.314
+	c-15.592-20.174-24.978-78.549-26.473-88.417c7.817,7.277,57.339,52.121,90.247,52.121c2.658,0,5.184-0.293,7.503-0.87
+	c27.343-6.785,33.747-36.016,39.939-64.285c0.723-3.299,1.47-6.71,2.233-9.987C278.935,335.023,275.791,279.625,275.229,270.561z"/>
 </svg>

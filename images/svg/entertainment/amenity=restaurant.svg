@@ -1,111 +1,23 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="amenity=restaurant.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=restaurant.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="31.875"
-     inkscape:cx="1.6784314"
-     inkscape:cy="7.7474869"
-     inkscape:current-layer="layer3"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="0" />
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>amenity=restaurant</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:#ffb922;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer3"
-     inkscape:label="top">
-    <path
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 10.349947,13.336476 L 11.513009,7.8194011 L 10.349947,6.7458082 C 10.349947,4.3896795 11.451946,1.46731 12.70589,1.46731 L 12.70589,13.455764 C 12.70589,15.748739 9.8552049,15.014196 10.349947,13.336476 z"
-       id="path4851"
-       sodipodi:nodetypes="cccccc" />
-    <path
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1.5;stroke-linecap:square;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 3.5900075,1.5947304 C 3.026767,1.5947304 2.5626225,2.058875 2.5626225,2.6221154 L 2.5626225,5.5868549 C 2.5626225,6.1500954 3.026767,6.61424 3.5900075,6.6142399 L 4.2969174,6.6142399 L 3.6780691,13.336273 C 3.6780691,14.128075 4.3246064,14.774612 5.1164081,14.774612 L 5.3512389,14.774612 C 6.1430406,14.774612 6.7895779,14.128075 6.7895779,13.336273 L 6.1117916,6.6142399 L 6.8776395,6.6142399 C 7.44088,6.6142399 7.905024,6.1500955 7.9050245,5.5868549 L 7.9050245,2.6221154 C 7.9050245,2.0588749 7.44088,1.5947304 6.8776395,1.5947304 L 6.760224,1.5947304 L 6.760224,4.0898082 C 6.7602242,4.3591843 6.5305844,4.5888238 6.2612085,4.5888238 C 5.9918325,4.5888239 5.7915468,4.3591841 5.7915468,4.0898082 L 5.7915468,1.5947304 L 4.6761002,1.5947304 L 4.6761002,4.0898082 C 4.6761,4.3591843 4.4758144,4.5888238 4.2064385,4.5888238 C 3.9370625,4.5888239 3.7074229,4.3591841 3.7074229,4.0898082 L 3.7074229,1.5947304 L 3.5900075,1.5947304 z"
-       id="rect4853"
-       sodipodi:nodetypes="ccccccccccccccccsccccsccc" />
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=restaurant.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="amenity=restaurant.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="580.457px" viewBox="0 0 579.997 580.457" enable-background="new 0 0 579.997 580.457" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="true" inkscape:cy="7.7474869" inkscape:cx="1.6784314" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer3" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280">
+	</sodipodi:namedview>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M376.025,245.082l42.292,39.013l-42.292,200.43
+	c-17.954,60.956,85.615,87.637,85.615,4.328V53.31C416.084,53.31,376.025,159.486,376.025,245.082z"/>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M249.872,57.939h-4.256v90.653c0,9.792-8.338,18.132-18.132,18.132
+	c-9.793,0-17.066-8.34-17.066-18.132V57.939h-40.517v90.653c0,9.792-7.293,18.132-17.068,18.132c-9.792,0-18.13-8.34-18.13-18.132
+	V57.939h-4.276c-20.453,0-37.324,16.872-37.324,37.326v107.72c0,20.455,16.871,37.324,37.324,37.324h25.688l-22.477,244.215
+	c0,28.774,23.488,52.263,52.245,52.263h8.532c28.777,0,52.264-23.488,52.264-52.263L222.058,240.31h27.814
+	c20.474,0,37.345-16.869,37.345-37.324V95.266C287.217,74.812,270.346,57.939,249.872,57.939z"/>
 </svg>

@@ -1,106 +1,35 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="religion=hindu.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/religion=buddhist.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="31.875"
-     inkscape:cx="8"
-     inkscape:cy="8"
-     inkscape:current-layer="layer2"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="0" />
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>religion=hindu</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:#535353;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="import"
-     style="display:inline">
-    <path
-       d="M 4.5909188,14.493385 C 3.0669469,13.948795 1.9603924,12.593662 1.5222653,10.735386 C 1.3234263,9.8919801 1.2672016,8.4983365 1.432036,8.4983365 C 1.4868004,8.4983365 1.6330648,8.8807425 1.7570716,9.3481277 C 2.0284385,10.37087 2.4912915,11.33261 2.9383829,11.802719 C 3.6810127,12.583571 5.5204021,12.88939 6.580237,12.40821 C 7.4058192,12.033382 7.7406116,11.142505 7.3816095,10.27578 C 7.1041875,9.6060329 6.474825,9.382083 5.3025155,9.5359646 C 5.3025155,9.5359646 4.5840592,8.7626162 4.355168,7.3892695 L 5.0915786,7.4560439 C 5.9785343,7.5364707 6.648208,7.3404106 6.9957791,6.8985567 C 7.3223883,6.4833382 7.3153261,6.3227504 6.9518667,5.9002077 C 6.4274004,5.2904813 5.4856929,5.4449381 3.5789872,6.4534194 L 2.616935,4.8407302 L 3.0202649,4.5330944 C 4.0310133,3.7621556 5.7860153,3.3767423 6.7847914,3.7063692 C 7.6945466,4.0066137 8.3622817,5.1979723 8.1839134,6.2026175 C 8.0633187,6.8818258 7.5186966,7.8331334 7.0979302,8.0995422 L 6.7350629,8.3292932 L 7.2362887,8.5553139 C 8.0880317,8.939391 8.6080034,8.6457884 9.2292449,7.429991 C 10.088983,5.7474666 10.646584,5.3119071 11.943203,5.3100429 C 12.546933,5.309174 12.76181,5.3725036 13.202153,5.6810906 C 14.301154,6.4512489 14.899558,8.0460701 14.768124,9.8545111 C 14.60164,12.144898 13.516752,13.534138 11.894619,13.534138 C 11.004378,13.534138 10.430561,13.221899 9.9737889,12.488928 C 9.5725865,11.845104 9.3917881,10.569996 9.6221888,10.009076 C 9.7327247,9.7399791 9.7527046,9.7308511 9.7599306,9.9461301 C 9.7732126,10.341911 10.223489,10.985195 10.636877,11.198967 C 11.651151,11.723468 13.107216,11.064487 13.683286,9.8202341 C 14.120658,8.8755722 13.886014,7.0534504 13.285634,6.7321333 C 13.160029,6.6649105 12.849647,6.6099105 12.595918,6.6099105 C 12.056558,6.6099105 11.632985,6.9976701 11.039138,8.0350643 C 10.833828,8.3937262 10.488309,8.8571372 10.271317,9.064864 C 9.9187597,9.402375 9.7928648,9.4425494 9.0877517,9.4425494 L 8.2986918,9.4425494 L 8.5537429,10.009076 C 8.918813,10.81998 8.9015406,12.137514 8.515332,12.939579 C 8.1740683,13.648319 7.3850087,14.365856 6.7541865,14.541096 C 6.1400952,14.711688 5.1400858,14.689631 4.5909188,14.493385 z M 7.5623066,3.5334939 C 7.2132502,2.937878 6.9984352,1.8258988 7.2324236,1.8258988 C 7.5072738,2.4221776 8.0706942,2.9541469 8.6739726,3.3253355 C 9.7575134,3.8498656 10.856225,3.6381468 12.056571,2.6735188 C 12.320825,2.4611628 12.554839,2.3110445 12.576606,2.3399223 C 12.869705,2.7947754 13.376702,3.1664713 13.544285,3.6950272 C 13.544285,3.9180392 12.58426,4.559866 11.826738,4.8432882 C 9.9491649,5.3841567 8.6712878,5.1702002 7.5623066,3.5334939 z M 8.5084835,2.1566777 L 9.7308743,0.80126806 L 11.089331,2.0588045 C 10.624676,2.4415027 10.289256,3.0354324 9.7584201,3.3366393 C 9.3389798,3.0274361 8.712959,2.6628583 8.5084835,2.1566777 z"
-       style="fill:#ffffff;fill-opacity:1"
-       id="path4042" />
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:version="0.32" sodipodi:docname="religion=hindu.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/religion=buddhist.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="8" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="layer2" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280" inkscape:document-units="px" inkscape:grid-bbox="true">
+	</sodipodi:namedview>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M426.849,174.811c27.352-10.223,62.035-33.398,62.035-41.451
+	c-6.063-19.07-24.391-32.482-34.965-48.906c-0.775-1.041-9.235,4.369-18.752,12.037c-43.319,34.824-82.973,42.455-122.098,23.527
+	c-21.766-13.395-42.104-32.586-52.025-54.105c-8.442,0-0.688,40.129,11.913,61.631C312.999,186.617,359.103,194.338,426.849,174.811
+	z"/>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M352.194,120.439c19.174-10.873,31.3-32.32,48.077-46.139
+	L351.207,28.92l-44.13,48.924C314.479,96.119,337.072,109.268,352.194,120.439z"/>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M476.513,205.053c-15.897-11.139-23.651-13.43-45.435-13.395
+	c-46.809,0.07-66.936,15.791-97.953,76.523c-22.453,43.9-41.204,54.475-71.94,40.586l-18.1-8.141l13.112-8.283
+	c15.174-9.623,34.842-43.955,39.195-68.469c6.433-36.252-17.677-79.254-50.51-90.094c-36.041-11.896-99.381,2.01-135.862,29.838
+	l-14.575,11.102l34.737,58.213c68.82-36.412,102.799-41.98,121.728-19.969c13.13,15.244,13.376,21.043,1.586,36.023
+	c-12.53,15.949-36.711,23.035-68.715,20.127l-26.595-2.414c8.266,49.574,34.208,77.49,34.208,77.49
+	c42.297-5.568,65.014,2.504,75.042,26.684c12.953,31.299,0.863,63.445-28.938,76.98c-38.243,17.377-104.633,6.344-131.438-21.854
+	c-16.144-16.99-32.851-51.674-42.649-88.613c-4.459-16.848-9.746-30.646-11.72-30.646c-5.957,0-3.931,50.314,3.261,80.734
+	c15.808,67.076,55.744,116,110.748,135.633c19.826,7.084,55.92,7.895,78.091,1.727c22.752-6.344,51.232-32.217,63.569-57.807
+	c13.923-28.938,14.557-76.486,1.374-105.742l-9.199-20.479h28.479c25.449,0,29.996-1.445,42.721-13.641
+	c7.825-7.473,20.303-24.215,27.704-37.15c21.431-37.451,36.729-51.445,56.185-51.445c9.165,0,20.374,1.992,24.886,4.406
+	c21.712,11.613,30.172,77.352,14.381,111.471c-20.796,44.906-73.351,68.697-109.973,49.77c-14.91-7.719-31.159-30.947-31.652-45.223
+	c-0.247-7.789-0.987-7.438-4.97,2.291c-8.319,20.232-1.798,66.266,12.688,89.459c16.496,26.471,37.187,37.75,69.332,37.75
+	c58.547,0,97.707-50.158,103.699-132.813C537.772,290.404,516.166,232.846,476.513,205.053z"/>
 </svg>

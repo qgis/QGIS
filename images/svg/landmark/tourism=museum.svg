@@ -1,153 +1,30 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="tourism=museum.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/religion=buddhist.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="31.875"
-     inkscape:cx="8"
-     inkscape:cy="8"
-     inkscape:current-layer="layer2"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="0">
-    <inkscape:grid
-       type="xygrid"
-       id="grid4283" />
-  </sodipodi:namedview>
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>tourism=museum</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-        <dc:description></dc:description>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:#535353;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="import"
-     style="display:inline">
-    <path
-       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#ffffff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 8,1.2235299 L 13.960784,3.7647062 L 2.0392157,3.7647062 L 8,1.2235299 z"
-       id="path4285"
-       sodipodi:nodetypes="cccc" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.29999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4287"
-       width="10.065564"
-       height="0.85518384"
-       x="2.9672174"
-       y="9.6078444" />
-    <rect
-       y="11.148869"
-       x="2.3137255"
-       height="1.0079954"
-       width="11.372549"
-       id="rect4322"
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.29999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <rect
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.29999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4324"
-       width="13.066667"
-       height="1.1061642"
-       x="1.4666667"
-       y="12.909503" />
-    <path
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 3.5137252,9.25098 C 3.5137252,6.2392153 3.8578312,4.5490192 3.8578312,4.5490192 L 4.5919241,4.5490192 C 4.5919241,4.5490192 4.9647056,6.2392153 4.9647056,9.25098 L 3.5137252,9.25098 z"
-       id="path4326"
-       sodipodi:nodetypes="ccccc" />
-    <path
-       sodipodi:nodetypes="ccccc"
-       id="path4328"
-       d="M 6.0235274,9.25098 C 6.0235274,6.2392153 6.3676334,4.5490192 6.3676334,4.5490192 L 7.1017263,4.5490192 C 7.1017263,4.5490192 7.4745078,6.2392153 7.4745078,9.25098 L 6.0235274,9.25098 z"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    <path
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 8.5333302,9.25098 C 8.5333302,6.2392153 8.8774362,4.5490192 8.8774362,4.5490192 L 9.6115291,4.5490192 C 9.6115291,4.5490192 9.984311,6.2392153 9.984311,9.25098 L 8.5333302,9.25098 z"
-       id="path4330"
-       sodipodi:nodetypes="ccccc" />
-    <path
-       sodipodi:nodetypes="ccccc"
-       id="path4332"
-       d="M 11.043133,9.25098 C 11.043133,6.2392153 11.387239,4.5490192 11.387239,4.5490192 L 12.121332,4.5490192 C 12.121332,4.5490192 12.494114,6.2392153 12.494114,9.25098 L 11.043133,9.25098 z"
-       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:version="0.32" sodipodi:docname="tourism=museum.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/religion=buddhist.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="8" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="layer2" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280" inkscape:document-units="px" inkscape:grid-bbox="true">
+	<inkscape:grid  type="xygrid" id="grid4283"></inkscape:grid>
+</sodipodi:namedview>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M504.772,154.191l7.089-34.708L289.248,24.588L66.636,119.483
+	l7.089,34.708H504.772z M289.248,63.893l127.014,54.143H162.235L289.248,63.893z"/>
+<rect x="107.285" y="347.365" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="363.944" height="30.932"/>
+<rect x="83.663" y="403.082" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="411.188" height="36.439"/>
+<rect x="53.033" y="466.779" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="472.43" height="39.971"/>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M139.486,164.467c0,0-12.446,61.119-12.446,170.012h52.469
+	c0-108.893-13.488-170.012-13.488-170.012H139.486z"/>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M230.229,164.467c0,0-12.446,61.119-12.446,170.012h52.469
+	c0-108.893-13.487-170.012-13.487-170.012H230.229z"/>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M320.955,164.467c0,0-12.429,61.119-12.429,170.012h52.469
+	c0-108.893-13.487-170.012-13.487-170.012H320.955z"/>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M411.698,164.467c0,0-12.429,61.119-12.429,170.012h52.469
+	c0-108.893-13.487-170.012-13.487-170.012H411.698z"/>
 </svg>
