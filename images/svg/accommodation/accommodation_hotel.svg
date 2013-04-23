@@ -29,21 +29,21 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<polygon opacity="0.5" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="295.237,39.758 294.855,39.364 
+<polygon opacity="0.5" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="295.237,39.758 294.855,39.364 
 	106.54,232.642 144.682,232.642 144.682,520.607 257.98,520.607 257.98,374.266 334.294,374.266 334.294,520.607 445.027,520.607 
 	445.027,232.642 483.169,232.642 "/>
 <g>
-	<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" points="505.014,350.967 503.808,412.455 
+	<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" points="505.014,350.967 503.808,412.455 
 		77.661,409.614 79.33,279.464 45.71,279.033 42.709,513.187 76.328,513.618 77.23,443.234 503.148,446.073 502.012,504.067 
 		535.627,504.726 538.629,351.625 	"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M257.652,402.149h195.127
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M257.652,402.149h195.127
 		c22.248,0,40.348-18.1,40.348-40.347s-18.1-40.347-40.348-40.347H257.652c-22.247,0-40.346,18.1-40.346,40.347
 		S235.405,402.149,257.652,402.149z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M169.841,328.922h0.013
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M169.841,328.922h0.013
 		c9.029-0.003,17.523-3.125,23.917-8.791c6.433-5.7,9.974-13.29,9.97-21.394c-0.007-16.617-15.216-30.136-33.915-30.136
 		c-9.029,0.003-17.523,3.125-23.917,8.792c-6.433,5.701-9.974,13.29-9.97,21.393C135.947,315.402,151.155,328.922,169.841,328.922z
 		 M169.841,327.772L169.841,327.772L169.841,327.772L169.841,327.772z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M106.799,398.126h84.055
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M106.799,398.126h84.055
 		c11.339,0,20.563-9.225,20.563-20.563S202.193,357,190.854,357h-84.055c-11.339,0-20.563,9.224-20.563,20.563
 		S95.46,398.126,106.799,398.126z"/>
 </g>

@@ -5,17 +5,17 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="sport_jetski.svg" inkscape:version="0.46" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M319.044,304.938c-1.021-1.625-12.027-19.432-12.027-32.917
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M319.044,304.938c-1.021-1.625-12.027-19.432-12.027-32.917
 	c0-14.004,11.658-40.1,11.885-40.604c0.196-0.172,0.402-0.328,0.595-0.509l74.945-71.611c7.971-7.562,8.303-20.154,0.74-28.125
 	l-1.521-1.602c-7.563-7.971-20.154-8.304-28.125-0.742l-70.365,67.234c-1.36-0.35-2.749-0.537-4.153-0.537h-28.188l-55.046-75.82
 	c-6.352-8.965-18.769-11.085-27.734-4.734l-1.802,1.277c-8.966,6.351-11.085,18.768-4.734,27.734l57.508,79.21v94.25
 	l-45.275,126.521c-3.702,10.344,1.684,21.732,12.028,25.435l2.08,0.743c10.345,3.702,21.732-1.685,25.434-12.027l44.05-123.098
 	h20.193l86.695,100.358c7.183,8.314,19.746,9.23,28.061,2.049l1.672-1.443c8.313-7.18,9.229-19.745,2.049-28.059L319.044,304.938z"
 	/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M470.747,105.791c-48.208-48.208-112.304-74.757-180.48-74.757
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M470.747,105.791c-48.208-48.208-112.304-74.757-180.48-74.757
 	c-68.177,0-132.272,26.549-180.48,74.757c-48.208,48.208-74.758,112.304-74.758,180.48c0,68.176,26.549,132.272,74.758,180.48
 	c48.208,48.208,112.304,74.758,180.48,74.758c68.176,0,132.272-26.55,180.48-74.758s74.758-112.304,74.758-180.48
 	C545.505,218.094,518.955,153.999,470.747,105.791z M290.267,521.509c-129.711,0-235.238-105.527-235.238-235.238
 	S160.556,51.033,290.267,51.033c129.71,0,235.238,105.527,235.238,235.238S419.978,521.509,290.267,521.509z"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="285.427" cy="143.93" r="35"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="285.427" cy="143.93" r="35"/>
 </svg>

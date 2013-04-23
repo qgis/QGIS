@@ -5,9 +5,9 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:version="0.32" sodipodi:docname="amenity_atm.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46" sodipodi:docbase="s:\Data\FacilityIcons"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path opacity="0.5" fill="#FFFB3D" d="M337.228,304.361v77.477c9.786-2.029,18.019-6.173,24.689-12.445
+<path opacity="0.5" fill="param(fill) #FFF" d="M337.228,304.361v77.477c9.786-2.029,18.019-6.173,24.689-12.445
 	c7.772-7.309,11.659-16.528,11.659-27.66c0-9.776-2.943-17.641-8.83-23.594C359.501,312.835,350.32,308.243,337.228,304.361z"/>
-<path opacity="0.5" fill="#FFFB3D" d="M401.652,116.069l-158.958,1.519c-1.603,9.296-122.338,358.618-122.338,358.618l403.838-3.412
+<path opacity="0.5" fill="param(fill) #FFF" d="M401.652,116.069l-158.958,1.519c-1.603,9.296-122.338,358.618-122.338,358.618l403.838-3.412
 	L401.652,116.069z M337.228,404.118v28.213c0,8.284-6.716,15-15,15s-15-6.716-15-15v-28.369
 	c-20.077-2.749-35.751-8.892-46.991-18.452c-12.459-10.6-19.49-25.434-21.09-44.504l30.864-4.646
 	c2.4,14.326,7.259,25.36,14.575,33.104c5.931,6.278,13.479,10.361,22.642,12.249v-83.585c-19.88-4.348-35.041-11.005-45.447-19.992
@@ -16,9 +16,9 @@
 	l-32.064,3.92c-1.829-9.873-5.659-17.689-11.488-23.449c-4.806-4.747-10.993-8.074-18.517-10.026v75.425
 	c22.229,3.952,39.044,10.87,50.409,20.775c11.773,10.261,17.661,23.715,17.661,40.364c0,17.036-6.459,31.798-19.376,44.285
 	C373.959,395.695,357.722,402.351,337.228,404.118z"/>
-<path opacity="0.5" fill="#FFFB3D" d="M275.326,237.626c0,9.971,3.429,17.835,10.288,23.595c5.53,4.645,12.737,8.422,21.613,11.335
+<path opacity="0.5" fill="param(fill) #FFF" d="M275.326,237.626c0,9.971,3.429,17.835,10.288,23.595c5.53,4.645,12.737,8.422,21.613,11.335
 	V203.19c-9.246,2.224-16.565,6.031-21.957,11.423C278.641,221.244,275.326,228.915,275.326,237.626z"/>
-<polygon opacity="0.5" fill="#FFFB3D" points="236.747,136.361 197.5,136.361 58.5,522.5 510.5,517.5 498.504,473.011 
+<polygon opacity="0.5" fill="param(fill) #FFF" points="236.747,136.361 197.5,136.361 58.5,522.5 510.5,517.5 498.504,473.011 
 	120.356,476.206 "/>
 <sodipodi:namedview  showgrid="false" inkscape:cy="302.63451" inkscape:cx="285.84646" inkscape:zoom="1.3034483" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="1005" inkscape:window-width="1280">
 	</sodipodi:namedview>
@@ -30,10 +30,10 @@
 </defs>
 <g id="g4372" transform="translate(-130.0802,122.26983)">
 </g>
-<path fill="none" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M337.228,304.361v77.477
+<path fill="none" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M337.228,304.361v77.477
 	c9.786-2.029,18.019-6.173,24.689-12.445c7.772-7.309,11.659-16.528,11.659-27.66c0-9.776-2.943-17.641-8.83-23.594
 	C359.501,312.835,350.32,308.243,337.228,304.361z"/>
-<path fill="none" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M401.652,116.069l-158.958,1.519
+<path fill="none" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M401.652,116.069l-158.958,1.519
 	c-1.603,9.296-122.338,358.618-122.338,358.618l403.838-3.412L401.652,116.069z M337.228,404.118v28.213c0,8.284-6.716,15-15,15
 	s-15-6.716-15-15v-28.369c-20.077-2.749-35.751-8.892-46.991-18.452c-12.459-10.6-19.49-25.434-21.09-44.504l30.864-4.646
 	c2.4,14.326,7.259,25.36,14.575,33.104c5.931,6.278,13.479,10.361,22.642,12.249v-83.585c-19.88-4.348-35.041-11.005-45.447-19.992
@@ -42,12 +42,12 @@
 	l-32.064,3.92c-1.829-9.873-5.659-17.689-11.488-23.449c-4.806-4.747-10.993-8.074-18.517-10.026v75.425
 	c22.229,3.952,39.044,10.87,50.409,20.775c11.773,10.261,17.661,23.715,17.661,40.364c0,17.036-6.459,31.798-19.376,44.285
 	C373.959,395.695,357.722,402.351,337.228,404.118z"/>
-<path fill="none" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M275.326,237.626
+<path fill="none" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M275.326,237.626
 	c0,9.971,3.429,17.835,10.288,23.595c5.53,4.645,12.737,8.422,21.613,11.335V203.19c-9.246,2.224-16.565,6.031-21.957,11.423
 	C278.641,221.244,275.326,228.915,275.326,237.626z"/>
-<polygon fill="none" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" points="236.747,136.361 197.5,136.361 
+<polygon fill="none" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" points="236.747,136.361 197.5,136.361 
 	58.5,522.5 510.5,517.5 498.504,473.011 120.356,476.206 "/>
-<path opacity="0.75" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M500.615,69.491H99.979
+<path opacity="0.75" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M500.615,69.491H99.979
 	c-9.898,0-17.922,8.024-17.922,17.922v62.924c0,9.898,8.024,17.922,17.922,17.922h86.039l11.482-31.898h39.247l-7.45,21.753
 	l1.751-0.021h-1.571c3.331-8.832,13.217-40.506,13.217-40.506l158.958-1.519l15.793,45.974c3.342,3.869,8.249,6.217,13.557,6.217
 	h69.613c9.898,0,17.923-8.024,17.923-17.922V87.413C518.538,77.515,510.514,69.491,500.615,69.491z"/>

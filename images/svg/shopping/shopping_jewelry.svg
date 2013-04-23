@@ -5,9 +5,9 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="shopping_jewelry.svg" inkscape:version="0.46" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<polygon opacity="0.33" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="417.956,109.62 341.506,59.524 
+<polygon opacity="0.33" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="417.956,109.62 341.506,59.524 
 	324.201,59.524 254.912,59.524 249.23,59.524 172.78,109.62 233.673,222.646 295.367,215.243 357.063,222.646 "/>
-<path opacity="0.66" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M362.153,218.065l58.812-109.199l-76.728-50.284
+<path opacity="0.66" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M362.153,218.065l58.812-109.199l-76.728-50.284
 	l-0.159-1.335H342.2h-93.663h-0.766l-0.049,0.534l-77.949,51.084l58.746,109.079l-1.078,7.786l4.95-0.597l0,0l62.978-7.592
 	l62.978,7.592v0l4.628,0.558L362.153,218.065z M336.531,131.274l8.165,75.905l-48.359-5.83h-0.001l-0.968-0.117l-0.968,0.117h-0.001
 	l-48.037,5.791l10.507-75.866H336.531z M195.362,122.23l45.378,7.471l-8.46,61.08L195.362,122.23z M352.602,129.272l42.773-7.042
@@ -36,7 +36,7 @@
 </g>
 <g id="g3338" transform="matrix(1.3973279,-0.2437849,0.2437849,1.3973279,-185.07402,-56.183307)">
 </g>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M295.114,509.804c-90.733,0-164.551-73.816-164.551-164.55
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M295.114,509.804c-90.733,0-164.551-73.816-164.551-164.55
 	c0-90.734,73.817-164.552,164.551-164.552s164.551,73.817,164.551,164.552C459.665,435.987,385.848,509.804,295.114,509.804z
 	 M295.114,241.089c-57.436,0-104.164,46.728-104.164,104.165c0,57.436,46.728,104.163,104.164,104.163
 	c57.437,0,104.164-46.728,104.164-104.163C399.278,287.817,352.551,241.089,295.114,241.089z"/>

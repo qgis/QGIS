@@ -28,17 +28,17 @@
 		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective2830" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="path2838" sodipodi:nodetypes="csssssssssc" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M34.703,408.135
+<path id="path2838" sodipodi:nodetypes="csssssssssc" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M34.703,408.135
 	c2.367-5.481,32.405-47.876,66.75-94.211c49.255-66.448,74.614-89.479,120.05-109.024c71.126-30.597,142.329-32.355,168.26-4.154
 	c61.336,66.705,124.631,142.878,142.858,171.926c25.686,40.934,12.602,60.074-14.51,21.227
 	c-10.688-15.314-40.647-51.885-66.578-81.269c-111.094-125.887-111.433-126.017-214.625-82.056
 	c-50.718,21.607-70.43,39.487-113.298,102.77c-28.543,42.137-61.192,78.444-72.554,80.684
 	C39.695,416.268,32.336,413.615,34.703,408.135z"/>
-<path id="path3593" sodipodi:nodetypes="cssscccc" opacity="0.1" fill="#FFFB3D" enable-background="new    " d="M34.703,408.135
+<path id="path3593" sodipodi:nodetypes="cssscccc" opacity="0.1" fill="param(fill) #FFF" enable-background="new    " d="M34.703,408.135
 	c2.367-5.481,32.405-47.876,66.75-94.211c49.255-66.448,74.614-89.479,120.05-109.024c71.126-30.597,142.329-32.355,168.26-4.154
 	c61.336,66.705,124.631,142.878,142.858,171.926c34.402,55.715-22.69,62.232-174.088,65.958
 	c-80.614,2.313-85.242,0.874-168.923,1.714C150.536,439.221,33.249,420.603,34.703,408.135L34.703,408.135z"/>
-<path id="path3638" sodipodi:nodetypes="cssssc" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M150.979,415.182
+<path id="path3638" sodipodi:nodetypes="cssssc" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M150.979,415.182
 	c0-32.367,90.191-134.77,118.699-134.77c45.606,0,92.848,28.288,127.256,76.202c20.306,28.275,36.92,54.521,36.92,58.322
 	c0,3.803-63.646,6.913-141.438,6.913C214.625,421.849,150.979,418.849,150.979,415.182z"/>
 </svg>

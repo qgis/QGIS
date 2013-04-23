@@ -22,7 +22,7 @@
 		<inkscape:perspective  inkscape:vp_z="357.08099 : 237.7245 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 237.7245 : 1" sodipodi:type="inkscape:persp3d" id="perspective7597" inkscape:persp3d-origin="178.5405 : 158.483 : 1">
 		</inkscape:perspective>
 </defs>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M463.082,144.693c-9.316-19.048-21.888-34.135-37.367-44.844
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M463.082,144.693c-9.316-19.048-21.888-34.135-37.367-44.844
 	c-15.23-10.535-34.178-17.752-56.313-21.452c-15.499-2.809-37.015-4.174-65.769-4.174H145.358c-6.265,0-11.344,5.079-11.344,11.344
 	V505.15c0,6.265,5.079,11.344,11.344,11.344h55.525c6.265,0,11.344-5.079,11.344-11.344V345.913h96.271
 	c63.248,0,106.237-13.323,131.423-40.732c24.584-26.753,37.05-59.813,37.051-98.262

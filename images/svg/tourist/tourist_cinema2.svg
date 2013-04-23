@@ -19,7 +19,7 @@
 		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective18697" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="rect3391" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M329.403,25.42
+<path id="rect3391" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M329.403,25.42
 	c-3.771,2.707-7.331,5.738-10.783,8.934l12.498,25.989l-19.943,9.611l-9.385-19.537c-3.385,3.054-6.835,5.918-10.513,8.393
 	l39.39,81.892l-185.532,89.292L95.639,127.12c-0.856,0.347-1.686,0.724-2.526,1.128c-8.334,4.073-15.884,10.901-23.237,18.183
 	l16.108-7.761l15.521,32.17l-19.943,9.61l-14.844-30.862c-2.646,2.661-5.285,5.363-7.941,7.941L250.67,556.342
@@ -32,12 +32,12 @@
 	l15.477,32.17l-19.943,9.61l-15.476-32.17L456.686,321.314z M191.789,358.538l15.476,32.17l-19.897,9.565l-15.521-32.17
 	L191.789,358.538z M491.924,394.588l15.477,32.216l-19.897,9.565l-15.477-32.17L491.924,394.588z M227.072,431.812l15.476,32.171
 	l-19.943,9.61l-15.476-32.216L227.072,431.812z"/>
-<path id="rect3445" opacity="0.3317" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="rect3445" opacity="0.3317" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M291.277,58.809c-2.452,1.65-5.005,3.129-7.67,4.376c-21.626,9.647-49.577,4.75-70.928,13.807
 	c-21.754,8.955-36.237,31.301-56.399,40.021c-19.1,7.991-41.757,2.46-60.641,10.107l49.497,102.873L330.667,140.7L291.277,58.809z"
 	/>
-<rect id="rect3447" x="186.173" y="193.144" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 676.1891 429.4578)" opacity="0.3317" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " width="205.896" height="197.389"/>
-<path id="rect3449" opacity="0.3317" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<rect id="rect3447" x="186.173" y="193.144" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 676.1891 429.4578)" opacity="0.3317" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " width="205.896" height="197.389"/>
+<path id="rect3449" opacity="0.3317" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M433.134,353.71l-185.532,89.247l41.33,85.907c17.439-4.473,37.173-0.886,54.144-7.986c20.162-8.72,34.69-31.065,56.444-40.021
 	c21.351-9.057,49.302-4.159,70.928-13.807c4.711-2.205,9.005-5.159,13.13-8.482L433.134,353.71z"/>
 </svg>

@@ -13,9 +13,9 @@
 </defs>
 <sodipodi:namedview  showgrid="true" inkscape:cy="7.7474869" inkscape:cx="1.6784314" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer3" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280">
 	</sodipodi:namedview>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M376.025,245.082l42.292,39.013l-42.292,200.43
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M376.025,245.082l42.292,39.013l-42.292,200.43
 	c-17.954,60.956,85.615,87.637,85.615,4.328V53.31C416.084,53.31,376.025,159.486,376.025,245.082z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M249.872,57.939h-4.256v90.653c0,9.792-8.338,18.132-18.132,18.132
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M249.872,57.939h-4.256v90.653c0,9.792-8.338,18.132-18.132,18.132
 	c-9.793,0-17.066-8.34-17.066-18.132V57.939h-40.517v90.653c0,9.792-7.293,18.132-17.068,18.132c-9.792,0-18.13-8.34-18.13-18.132
 	V57.939h-4.276c-20.453,0-37.324,16.872-37.324,37.326v107.72c0,20.455,16.871,37.324,37.324,37.324h25.688l-22.477,244.215
 	c0,28.774,23.488,52.263,52.245,52.263h8.532c28.777,0,52.264-23.488,52.264-52.263L222.058,240.31h27.814

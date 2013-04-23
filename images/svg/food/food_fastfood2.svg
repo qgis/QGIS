@@ -5,7 +5,7 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:version="0.32" sodipodi:docname="food_fastfood2.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.47 r22583"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="path4780" sodipodi:nodetypes="ccccccsccccccccscccccccscccccc" opacity="0.5" fill="#FFFB3D" enable-background="new    " d="
+<path id="path4780" sodipodi:nodetypes="ccccccsccccccccscccccccscccccc" opacity="0.5" fill="param(fill) #FFF" enable-background="new    " d="
 	M290.375,61.094c-51.811,0.008-105.41,13.894-149.969,37.5c-44.207,23.438-79.648,56.464-95.063,95.5
 	c-8.024,7.344-13.897,15.25-17.125,23.719c-4.322,10.579-6.523,23.496-6.531,36.875c0,12.438,1.931,25.274,6,37.031
 	c-1.308,7.955-1.875,15.971-1.875,23.781c0,12.943,1.577,25.345,4.094,36.031c2.532,10.709,5.928,19.688,9.875,25.969l0.281,0.469
@@ -51,7 +51,7 @@
 		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective4729" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="path5" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M290.375,61.094
+<path id="path5" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M290.375,61.094
 	c-51.811,0.008-105.41,13.894-149.969,37.5c-44.207,23.438-79.648,56.464-95.063,95.5c-8.024,7.344-13.897,15.25-17.125,23.719
 	c-4.322,10.579-6.523,23.496-6.531,36.875c0,12.438,1.931,25.274,6,37.031c-1.308,7.955-1.875,15.971-1.875,23.781
 	c0,12.943,1.577,25.345,4.094,36.031c2.532,10.709,5.928,19.688,9.875,25.969l0.281,0.469c1.079,1.882,2.254,3.734,3.531,5.563

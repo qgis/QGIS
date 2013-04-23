@@ -5,11 +5,11 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="barrier_stile.svg" inkscape:version="0.47 r22583" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path opacity="0.5" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M183.242,107.215H129.1
+<path opacity="0.5" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M183.242,107.215H129.1
 	c-5.884,0-11.525,2.344-15.676,6.514c-4.151,4.169-6.469,9.821-6.442,15.705l1.592,350.519c0.044,9.758,6.478,18.334,15.833,21.106
 	c2.08,0.616,4.193,0.913,6.284,0.913c7.313,0,14.33-3.64,18.493-9.984l52.551-80.078c2.366-3.605,3.626-7.823,3.626-12.136V129.333
 	C205.361,117.118,195.458,107.215,183.242,107.215z"/>
-<path opacity="0.5" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M458.335,113.729
+<path opacity="0.5" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M458.335,113.729
 	c-4.151-4.17-9.792-6.514-15.676-6.514h-54.144c-12.216,0-22.118,9.903-22.118,22.119v270.441c0,4.313,1.26,8.53,3.626,12.136
 	l52.552,80.078c4.164,6.345,11.179,9.984,18.493,9.984c2.09,0,4.205-0.297,6.284-0.913c9.355-2.772,15.789-11.349,15.833-21.106
 	l1.592-350.519C464.805,123.55,462.485,117.898,458.335,113.729z"/>
@@ -33,9 +33,9 @@
 </defs>
 <sodipodi:namedview  showgrid="false" inkscape:cy="164.66358" inkscape:cx="529.79508" inkscape:zoom="0.35355339" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:window-maximized="0" inkscape:current-layer="svg2" inkscape:window-y="117" inkscape:window-x="271" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="770" inkscape:window-height="708">
 	</sodipodi:namedview>
-<path id="path2323" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M879.291,36.805"/>
-<path id="path2329" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M879.291,36.805"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M491.332,87.05H82.637
+<path id="path2323" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
+<path id="path2329" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M491.332,87.05H82.637
 	c-6.108,0-11.06,4.951-11.06,11.059v393.125c0,6.107,4.952,11.06,11.06,11.06h54.147c6.108,0,11.059-4.952,11.059-11.06V138.833
 	h278.283v351.723c0,6.107,4.952,11.06,11.06,11.06h54.146c6.107,0,11.06-4.952,11.06-11.06V98.109
 	C502.392,92.001,497.439,87.05,491.332,87.05z"/>

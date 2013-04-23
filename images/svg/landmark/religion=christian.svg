@@ -13,7 +13,7 @@
 </defs>
 <sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="1.6784314" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="layer4" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280" inkscape:document-units="px" inkscape:grid-bbox="true">
 	</sodipodi:namedview>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="442.018,193.939 313.972,193.939 313.972,71.225 
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="442.018,193.939 313.972,193.939 313.972,71.225 
 	263.265,71.225 263.265,193.939 129.542,193.939 129.542,244.646 263.265,244.646 263.265,513.953 313.972,513.953 313.972,244.646 
 	442.018,244.646 "/>
 </svg>

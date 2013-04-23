@@ -13,7 +13,7 @@
 </defs>
 <sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="1.6784314" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="layer4" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280" inkscape:document-units="px" inkscape:grid-bbox="true">
 	</sodipodi:namedview>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M355.362,414.504l148.542,0.068l-74.291-128.807l74.29-128.806
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M355.362,414.504l148.542,0.068l-74.291-128.807l74.29-128.806
 	l-148.545,0.062l-74.096-128.47l-74.285,128.53l-148.701,0.062l74.331,128.616L58.276,414.368l148.697,0.068l74.289,128.544
 	L355.362,414.504z M447.266,381.838l-73.043-0.033l36.512-63.306L447.266,381.838z M336.473,381.787l-110.619-0.05l-55.468-95.978
 	l55.471-95.977l110.613-0.045l55.385,96.027L336.473,381.787z M447.267,189.692l-36.532,63.34l-36.515-63.31L447.267,189.692z

@@ -5,8 +5,8 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="sport_jetski.svg" inkscape:version="0.46" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="201.591" cy="427.93" r="50.546"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M506.386,446.305l-90.51-90.509
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="201.591" cy="427.93" r="50.546"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M506.386,446.305l-90.51-90.509
 	c-3.727-3.728-8.923-5.071-13.722-4.058c-22.709-30.555-35.685-62.187-42.022-80.761c17.662-44.908-3.276-95.118-45.019-136.861
 	c-53.502-53.501-127.868-64.464-173.241-20.506c-49.437,47.896-32.996,119.739,20.506,173.242
 	c41.901,41.9,91.901,63.271,137.089,45.097c18.605,6.366,50.105,19.327,80.532,41.942c-1.016,4.799,0.331,9.996,4.058,13.724

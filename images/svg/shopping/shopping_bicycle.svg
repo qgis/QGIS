@@ -13,7 +13,7 @@
 </defs>
 <sodipodi:namedview  showgrid="false" inkscape:cy="415.25176" inkscape:cx="615.26172" inkscape:zoom="0.70710678" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="20" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1400" inkscape:window-height="1003">
 	</sodipodi:namedview>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M456.567,260.844c-12.175,0-23.791,2.433-34.395,6.83
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M456.567,260.844c-12.175,0-23.791,2.433-34.395,6.83
 	c-0.981-3.392-1.977-6.835-2.977-10.292c-4.166-14.401-8.411-29.021-11.985-40.967c-3.521-11.769-6.78-19.016-7.849-24.232
 	c-0.832-4.064,4.317-3.716,9.743-8.237c4.098-3.415,7.574-9.183,8.638-15.054c0.887-5.163-0.212-10.35-2.612-14.598
 	c-8.342-12.744-16.48-12.503-27.247-12.503c-14.157,0-37.525,0-37.525,0l0.089,22.993l36.001,0.073

@@ -38,21 +38,21 @@
 <sodipodi:namedview  showgrid="false" inkscape:cy="127.99465" inkscape:cx="289.43356" inkscape:zoom="1" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:window-maximized="1" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1400" inkscape:window-height="994">
 	</sodipodi:namedview>
 <g id="g2319" transform="translate(879.29125,36.805119)">
-	<path id="path2323" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M0,0"/>
+	<path id="path2323" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M0,0"/>
 </g>
 <g id="g2325" transform="translate(879.29125,36.805119)">
-	<path id="path2329" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M0,0"/>
+	<path id="path2329" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M0,0"/>
 </g>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M520.941,150.742
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M520.941,150.742
 	c-3.286-14.739-17.901-24.022-32.637-20.738l-369.528,82.38c-14.739,3.286-24.023,17.898-20.738,32.637
 	c2.839,12.736,14.134,21.399,26.662,21.399c1.97,0,3.972-0.215,5.975-0.661l369.527-82.38
 	C514.942,180.093,524.228,165.481,520.941,150.742z"/>
-<path id="rect3827" sodipodi:nodetypes="csccsccsccscc" opacity="0.75" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" enable-background="new    " d="
+<path id="rect3827" sodipodi:nodetypes="csccsccsccscc" opacity="0.75" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" enable-background="new    " d="
 	M458.25,264.906c-3.723-0.002-7.424,1.53-10.056,4.163c-2.633,2.633-4.165,6.333-4.163,10.056v170.531
 	c-0.002,3.723,1.53,7.424,4.163,10.056c2.632,2.633,6.333,4.165,10.056,4.163h51.844c3.723,0.002,7.424-1.53,10.056-4.163
 	c2.633-2.632,4.165-6.333,4.163-10.056V279.125c0.002-3.723-1.53-7.423-4.163-10.056c-2.632-2.632-6.333-4.164-10.056-4.163H458.25z
 	"/>
-<path id="rect3925" opacity="0.75" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" enable-background="new    " d="
+<path id="rect3925" opacity="0.75" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" enable-background="new    " d="
 	M81.75,121.906c-4.639,0-9.251,1.907-12.531,5.188s-5.188,7.893-5.188,12.531v306.531c0,4.639,1.907,9.251,5.188,12.531
 	s7.893,5.188,12.531,5.188h44.844c4.639,0,9.251-1.907,12.531-5.188s5.188-7.893,5.188-12.531V291.688
 	c-22.416,6.883-49.301,0.786-63.781-18.25c-21.96-26.269-10.755-72.689,21.625-84.938c14.05-3.254,28.104-6.478,42.156-9.719

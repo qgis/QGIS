@@ -17,7 +17,7 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M542.936,486.242c0,31.312-25.383,56.693-56.693,56.693H93.757
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M542.936,486.242c0,31.312-25.383,56.693-56.693,56.693H93.757
 	c-31.311,0-56.693-25.382-56.693-56.693V93.757c0-31.311,25.382-56.693,56.693-56.693h392.485c31.311,0,56.693,25.382,56.693,56.693
 	V486.242z"/>
 </svg>

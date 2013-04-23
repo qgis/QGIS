@@ -5,7 +5,7 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="poi_bunker.svg" inkscape:version="0.47 r22583" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="path3921" sodipodi:type="arc" sodipodi:cx="42.5" sodipodi:rx="45.5" sodipodi:cy="1083.5" sodipodi:ry="45.5" opacity="0.1" fill="#FFFB3D" enable-background="new    " d="
+<path id="path3921" sodipodi:type="arc" sodipodi:cx="42.5" sodipodi:rx="45.5" sodipodi:cy="1083.5" sodipodi:ry="45.5" opacity="0.1" fill="param(fill) #FFF" enable-background="new    " d="
 	M459.478,282.72c0,94.344-76.48,170.826-170.825,170.826S117.828,377.064,117.828,282.72s76.481-170.825,170.825-170.825
 	S459.478,188.376,459.478,282.72z"/>
 <sodipodi:namedview  showgrid="false" inkscape:cy="37.630316" inkscape:cx="83.218997" inkscape:zoom="0.35355339" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:window-maximized="0" inkscape:current-layer="svg2" inkscape:window-y="20" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1400" inkscape:window-height="1003" inkscape:guide-bbox="true" showguides="true">
@@ -43,7 +43,7 @@
 		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective3825" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
 		</inkscape:perspective>
 </defs>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M469.72,328.672h22.226
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M469.72,328.672h22.226
 	c22.092,0,40-17.908,40-40c0-22.091-17.908-40-40-40H469.72c-1.849,0-3.663,0.136-5.445,0.379
 	c-4.16-21.746-12.269-42.104-23.554-60.3c2.43-1.545,4.733-3.368,6.854-5.488l60.563-60.563c15.621-15.621,15.621-40.947,0-56.568
 	s-40.947-15.621-56.568,0l-60.563,60.563c-1.901,1.902-3.567,3.949-5.007,6.104c-16.856-10.982-35.668-19.2-55.792-24.008

@@ -5,10 +5,10 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="shopping_butcher.svg" inkscape:version="0.46" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="path6439" opacity="0.33" fill="#FFFB3D" enable-background="new    " d="M66.574,398.9l43.902,49.467l56.269,33.39
+<path id="path6439" opacity="0.33" fill="param(fill) #FFF" enable-background="new    " d="M66.574,398.9l43.902,49.467l56.269,33.39
 	l60.597,17.932l51.94,3.092l20.405-12.366l13.604-22.879l9.894-74.2l-52.559-98.315l-85.949-35.864l-71.727-7.42l-33.39,12.367
 	l-23.497,22.26l-8.657,35.864l4.947,43.901L66.574,398.9z"/>
-<path id="path6441" opacity="0.33" fill="#FFFB3D" enable-background="new    " d="M397.384,173.826l41.429-17.932l35.245-30.298
+<path id="path6441" opacity="0.33" fill="param(fill) #FFF" enable-background="new    " d="M397.384,173.826l41.429-17.932l35.245-30.298
 	l19.169,9.275l29.68,19.787l4.947,17.932l-16.695,14.84l-33.391,5.565l-46.375,30.917l-51.94-6.802L397.384,173.826z"/>
 <sodipodi:namedview  showgrid="false" inkscape:cy="153.73396" inkscape:cx="474.33777" inkscape:zoom="1.0610557" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="69" inkscape:window-x="97" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="1005">
 	</sodipodi:namedview>
@@ -27,11 +27,11 @@
 		<inkscape:perspective  inkscape:vp_z="357.08099 : 237.7245 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 237.7245 : 1" sodipodi:type="inkscape:persp3d" id="perspective7597" inkscape:persp3d-origin="178.5405 : 158.483 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="path2323" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M879.291,36.805"/>
-<path id="path2329" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M879.291,36.805"/>
+<path id="path2323" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
+<path id="path2329" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
 <g id="g13" transform="translate(166.42563,67.96431)">
 </g>
-<path id="path3" sodipodi:nodetypes="ccccssccccccscccczzssscccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccsscccsscccc" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="
+<path id="path3" sodipodi:nodetypes="ccccssccccccscccczzssscccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccsscccsscccc" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="
 	M478.278,119c-4.157,0.011-7.614,1.137-10.438,2.494c-4.94,2.448-8.472,5.595-11.83,8.814c-4.944,4.831-9.304,10.109-13.048,14.266
 	c-1.853,2.065-3.516,3.859-4.756,4.987c-0.612,0.566-1.119,0.967-1.392,1.16c-0.046,0.035-0.086,0.038-0.116,0.058l-22.79,9.801
 	c-0.806-0.013-1.56,0-2.378,0c-31.137,0.042-58.995,9.078-85.304,17.339c-29.003,9.186-56.703,20.101-84.667,25.516

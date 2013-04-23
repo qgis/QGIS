@@ -31,7 +31,7 @@
 		<inkscape:perspective  inkscape:vp_z="450 : 225 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 225 : 1" sodipodi:type="inkscape:persp3d" id="perspective4312" inkscape:persp3d-origin="225 : 150 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="path1873" sodipodi:nodetypes="cssscccssssssssssssssssssssssssssssssssccscccssssssssssssssssssssssssssscccscccsc" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="
+<path id="path1873" sodipodi:nodetypes="cssscccssssssssssssssssssssssssssssssssccscccssssssssssssssssssssssssssscccscccsc" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="
 	M231.99,308.725c-0.198-22.225-0.762-40.811-1.253-41.302c-0.936-0.936-41.061,4.717-65.01,9.159
 	c-13.754,2.551-18.741,1.837-18.741-2.68c0-1.268,11.361-16.398,25.247-33.623l25.247-31.317l-8.435-4.977
 	c-4.639-2.737-8.935-4.977-9.545-4.977s-6.813-3.665-13.785-8.144c-6.971-4.479-17.916-11.101-24.32-14.715
@@ -58,10 +58,10 @@
 	c-3.843,5.087-10.929,14.501-15.746,20.921l-8.758,11.672l11.648-1.595c6.407-0.877,15.462-2.582,20.124-3.789
 	c4.661-1.207,11.471-2.201,15.133-2.208l6.659-0.014l0.033,21.188c0.028,17.976,1.546,32.083,3.453,32.083
 	C257.288,291.02,264.503,282.303,273.048,271.648z"/>
-<path opacity="0.5" fill="#FFFB3D" d="M375.979,362.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
+<path opacity="0.5" fill="param(fill) #FFF" d="M375.979,362.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
 	c0,5.561,4.507,10.068,10.068,10.068h168.92c5.561,0,10.068-4.508,10.068-10.068V373
 	C386.048,367.439,381.54,362.932,375.979,362.932z"/>
-<path fill="none" stroke="#1EFF31" stroke-width="4.4444" d="M375.979,362.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
+<path fill="none" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M375.979,362.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
 	c0,5.561,4.507,10.068,10.068,10.068h168.92c5.561,0,10.068-4.508,10.068-10.068V373
 	C386.048,367.439,381.54,362.932,375.979,362.932z"/>
 </svg>

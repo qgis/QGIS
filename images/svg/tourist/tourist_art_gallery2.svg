@@ -5,10 +5,10 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="tourist_art_gallery2.svg" inkscape:version="0.46" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="path3185" opacity="0.1" fill="#FFFB3D" enable-background="new    " d="M98.201,309.947l-6.138,61.375l39.894,49.102
+<path id="path3185" opacity="0.1" fill="param(fill) #FFF" enable-background="new    " d="M98.201,309.947l-6.138,61.375l39.894,49.102
 	l116.614,56.772H377.46l76.72-53.704l32.223-55.238l10.74-69.047l-55.237-78.255l-32.223-42.963l-76.72-16.878l-38.359,141.164
 	l-82.857,12.275L98.201,309.947z"/>
-<path id="path3187" opacity="0.1" fill="#FFFB3D" enable-background="new    " d="M165.714,429.63l95.132-127.354l96.667,12.275
+<path id="path3187" opacity="0.1" fill="param(fill) #FFF" enable-background="new    " d="M165.714,429.63l95.132-127.354l96.667,12.275
 	l88.994-61.376l36.825,18.413l16.879,69.047l-32.223,70.582l-136.561-79.788l-32.223,38.359l6.138,102.805l-65.979,3.068
 	L165.714,429.63z"/>
 <sodipodi:namedview  showgrid="false" inkscape:cy="348.04571" inkscape:cx="290" inkscape:zoom="0.65172414" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="20" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1400" inkscape:window-height="1003">
@@ -23,7 +23,7 @@
 		</inkscape:perspective>
 </defs>
 <g>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M490.476,246.322c-14.328-24.312-40.188-53.044-59.586-66.163
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M490.476,246.322c-14.328-24.312-40.188-53.044-59.586-66.163
 		c-33.154-22.422-92.774-44.911-131.599-49.667c-11.283-0.619-22.259-1.738-33.292-2.053l-8.546-50.534l-27.102,3.581l8.892,48.432
 		c-7.151,1.16-14.446,3.083-21.968,6.07L190.25,81.125l-22.813,10.406l29.553,58.103c-2.773,3.525-5.856,7.636-8.807,10.905
 		c-20.163,22.339-23.87,54.008-9.483,80.769c14.955,27.817,12.442,47.001-6.939,52.974c-8.208,2.529-11.822,1.852-29.938-5.268
@@ -54,9 +54,9 @@
 		 M479.358,325.528c-2.059,7.295-4.268,17.865-4.905,23.544c-2.62,23.33-16.428,33.681-34.407,25.724
 		c-31.105-13.766-31.032-13.731-34.844-30.011c-3.864-16.508-2.489-20.062,14.424-36.951c4.585-4.578,10.656-10.964,13.48-14.17
 		c3.226-3.664,6.715-5.046,13.807-4.978c1.636,0.016,3.462,0.129,5.522,0.291C478.618,291.028,486.19,301.313,479.358,325.528z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M166.524,88.017l22-8.611c-2.337-9.447,1.938-17.762-8.521-27.314
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M166.524,88.017l22-8.611c-2.337-9.447,1.938-17.762-8.521-27.314
 		c-14.632-13.362-21.124-17.041-29.959-24.501C147.981,45.461,144.317,68.271,166.524,88.017z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M256.219,75.77c0.655-9.711,7.813-16.482,0.061-28.57
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M256.219,75.77c0.655-9.711,7.813-16.482,0.061-28.57
 		c-10.844-16.91-16.39-22.256-23.136-31.884c-7.979,16.549-19.232,37.387-2.599,62.539L256.219,75.77z"/>
 </g>
 </svg>

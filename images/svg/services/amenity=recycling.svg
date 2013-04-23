@@ -13,13 +13,13 @@
 </defs>
 <sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="1.6784314" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer5" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="723">
 	</sodipodi:namedview>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M351.523,205.037l21.24,41.117l-48.392,24.516l111.475,3.664
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M351.523,205.037l21.24,41.117l-48.392,24.516l111.475,3.664
 	l60.039-91.582l-52.959,27.205l-29.807-53.223C335.947,25.699,246.014,49.012,204.932,106.766l-59.968,98.271
 	C205.091,107.668,295.326,106.73,351.523,205.037z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M518.542,344.797L463.459,243.73
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M518.542,344.797L463.459,243.73
 	c54.233,100.783,9.912,179.371-103.298,178.877l-46.232-2.125l2.974-54.197l-58.924,94.73l49.295,97.811l2.903-59.543l61.029,0.85
 	C523.25,498.789,548.03,409.262,518.542,344.797z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M159.619,325.469l24.975-38.939l45.419,29.664l-52.569-98.412
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M159.619,325.469l24.975-38.939l45.419,29.664l-52.569-98.412
 	l-109.334-6.195l50.074,32.268l-31.224,52.41c-74.889,132.361-9.717,198.596,60.836,205.285l115.086,2.832
 	C148.486,500.982,102.572,423.279,159.619,325.469z"/>
 </svg>

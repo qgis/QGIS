@@ -30,11 +30,11 @@
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
 <g>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M304.187,289.491
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M304.187,289.491
 		c8.983,0,16.803-3.243,23.457-9.73s9.981-14.39,9.981-23.709c0-9.308-3.327-17.206-9.981-23.693s-14.474-9.73-23.457-9.73
 		c-9.31,0-17.207,3.244-23.693,9.73c-6.487,6.487-9.73,14.385-9.73,23.693c0,9.319,3.243,17.222,9.73,23.709
 		C286.98,286.248,294.877,289.491,304.187,289.491z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M403.724,319.902
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M403.724,319.902
 		c6.428-5.305,3.68-4.353,7.669-8.342l38.788-69.436c2.994-3.665,4.492-7.659,4.491-11.984c0.001-11.643-5.653-17.465-16.963-17.465
 		c-5.318,0-9.974,2.163-13.963,6.487l-36.563,64.35l-55.172,13.577c-0.762-0.073-1.542-0.123-2.366-0.123h-63.375l-47.765-13.454
 		l-36.563-64.35c-3.99-4.324-8.644-6.486-13.963-6.487c-11.309,0-16.963,5.822-16.963,17.465c0,4.325,1.498,8.319,4.492,11.984
@@ -43,18 +43,18 @@
 		l81.635,85.759c10.807,11.419,14.828,13.739,26.797,13.739c6.658,0,12.483-2.41,17.473-7.232s7.483-10.558,7.484-17.206
 		c-0.001-2.335-0.336-4.665-1.005-6.989l-89.475-98.996v-95.359L403.724,319.902z"/>
 </g>
-<path id="rect20031" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M137.413,151.303h4.125
+<path id="rect20031" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M137.413,151.303h4.125
 	c2.441,0,4.42,1.979,4.42,4.42v74.85c0,2.441-1.979,4.42-4.42,4.42h-4.125c-2.441,0-4.42-1.979-4.42-4.42v-74.85
 	C132.993,153.282,134.972,151.303,137.413,151.303z"/>
-<path id="rect20033" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M463.34,151.303h4.126c2.441,0,4.42,1.979,4.42,4.42
+<path id="rect20033" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M463.34,151.303h4.126c2.441,0,4.42,1.979,4.42,4.42
 	v74.85c0,2.441-1.979,4.42-4.42,4.42h-4.126c-2.44,0-4.42-1.979-4.42-4.42v-74.85C458.92,153.282,460.899,151.303,463.34,151.303z"
 	/>
 <g id="path20035" opacity="0.5" enable-background="new    ">
 	
-		<rect x="135.881" y="20.902" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" width="8" height="128.483"/>
+		<rect x="135.881" y="20.902" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" width="8" height="128.483"/>
 </g>
 <g id="path20037" opacity="0.5" enable-background="new    ">
 	
-		<rect x="461.808" y="20.902" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" width="8" height="128.483"/>
+		<rect x="461.808" y="20.902" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" width="8" height="128.483"/>
 </g>
 </svg>

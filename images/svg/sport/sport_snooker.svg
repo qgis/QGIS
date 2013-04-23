@@ -7,22 +7,22 @@
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
 <sodipodi:namedview  inkscape:cy="290" inkscape:cx="290" inkscape:zoom="0.92167711" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1277" inkscape:window-height="1005">
 	</sodipodi:namedview>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="143.873" cy="454.941" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="216.252" cy="454.941" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="288.631" cy="454.941" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="361.01" cy="454.941" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="433.389" cy="454.941" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="178.999" cy="391.101" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="251.377" cy="391.101" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="323.757" cy="391.101" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="396.136" cy="391.101" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="215.621" cy="328.19" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="288" cy="328.19" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="360.379" cy="328.19" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="251.345" cy="265.884" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="323.724" cy="265.884" r="33.689"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="288" cy="204.646" r="33.689"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M485.368,430.94c-6.329-10.965-11.255-19.225-18.118-30.608
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="143.873" cy="454.941" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="216.252" cy="454.941" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="288.631" cy="454.941" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="361.01" cy="454.941" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="433.389" cy="454.941" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="178.999" cy="391.101" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="251.377" cy="391.101" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="323.757" cy="391.101" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="396.136" cy="391.101" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="215.621" cy="328.19" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="288" cy="328.19" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="360.379" cy="328.19" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="251.345" cy="265.884" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="323.724" cy="265.884" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="288" cy="204.646" r="33.689"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M485.368,430.94c-6.329-10.965-11.255-19.225-18.118-30.608
 	l-55.035-95.801l-69.229-121.448c-6.169-10.799-13.846-24.239-27.15-31.921c-8.45-4.878-18.052-7.458-27.767-7.458
 	c-19.85,0-38.336,10.662-48.245,27.825c-3.533,6.119-6.062,11.239-8.508,16.191c-2.249,4.552-4.372,8.852-7.189,13.772
 	c-0.029,0.05-0.057,0.101-0.084,0.152l-56.805,104.491L98.483,417.438c-0.889,1.478-1.806,2.947-2.725,4.42
@@ -36,5 +36,5 @@
 	c7.103-12.302,20.359-19.945,34.597-19.945c6.953,0,13.829,1.849,19.886,5.346c9.614,5.551,15.578,15.992,21.343,26.083
 	l69.239,121.465l55.089,95.895c0.028,0.049,0.056,0.097,0.085,0.144c6.835,11.338,11.729,19.544,18.01,30.424
 	C482.716,457.865,476.167,482.307,457.122,493.304z"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="286" cy="90.27" r="33.689"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="286" cy="90.27" r="33.689"/>
 </svg>

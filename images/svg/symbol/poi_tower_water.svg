@@ -5,7 +5,7 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="poi_tower_water.svg" inkscape:version="0.46" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="rect7883" opacity="0.25" fill="#FFFB3D" enable-background="new    " d="M134.639,99.167h306.307
+<path id="rect7883" opacity="0.25" fill="param(fill) #FFF" enable-background="new    " d="M134.639,99.167h306.307
 	c11.094,0,20.087,8.994,20.087,20.088v112.559c0,11.094-8.993,20.088-20.087,20.088H134.639c-11.094,0-20.088-8.994-20.088-20.088
 	V119.255C114.551,108.161,123.545,99.167,134.639,99.167z"/>
 <sodipodi:namedview  showgrid="false" inkscape:cy="259.98847" inkscape:cx="184.52059" inkscape:zoom="0.70710678" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="1" inkscape:window-x="1" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1014" inkscape:window-height="711">
@@ -31,7 +31,7 @@
 		<inkscape:perspective  inkscape:vp_z="177.85829 : 151.79668 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 151.79668 : 1" sodipodi:type="inkscape:persp3d" id="perspective3730" inkscape:persp3d-origin="88.929146 : 101.19778 : 1">
 		</inkscape:perspective>
 </defs>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M465.793,50.074c-6.903,0-12.5,5.597-12.5,12.5v18.653
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M465.793,50.074c-6.903,0-12.5,5.597-12.5,12.5v18.653
 	c-14.698,5.56-31.304,6.816-46.137,0.898c-18.026-5.888-37.567-14.063-56.399-7.006c-18.064,5.243-37.83,13.609-56.538,6.1
 	c-12.047-3.717-23.725-10.379-36.688-10.031c-23.396,1.433-43.654,20.159-67.781,15.375c-18.406-3.499-35.774-17.696-55.156-11.344
 	c-4.18,1.004-8.258,2.337-12.302,3.775v-16.42c0-6.903-5.597-12.5-12.5-12.5c-6.904,0-12.5,5.597-12.5,12.5v197.249

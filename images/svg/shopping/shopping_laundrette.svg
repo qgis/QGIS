@@ -5,10 +5,10 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="shopping_laundrette.svg" inkscape:version="0.46" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="path7099" opacity="0.1" fill="#FFFB3D" enable-background="new    " d="M82.438,65.406v454.969h411.781V65.406H82.438z
+<path id="path7099" opacity="0.1" fill="param(fill) #FFF" enable-background="new    " d="M82.438,65.406v454.969h411.781V65.406H82.438z
 	 M286,198.094c55.222,0,100.031,44.841,100.031,100.063S341.222,398.188,286,398.188s-100.063-44.81-100.063-100.031
 	S230.778,198.094,286,198.094z"/>
-<path id="path7103" sodipodi:type="arc" sodipodi:cx="277.75455" sodipodi:rx="95.478119" sodipodi:cy="276.20596" sodipodi:ry="95.478119" opacity="0.2" fill="#FFFB3D" enable-background="new    " d="
+<path id="path7103" sodipodi:type="arc" sodipodi:cx="277.75455" sodipodi:rx="95.478119" sodipodi:cy="276.20596" sodipodi:ry="95.478119" opacity="0.2" fill="param(fill) #FFF" enable-background="new    " d="
 	M386.027,298.146c0.006,55.25-44.779,100.044-100.029,100.05s-100.044-44.779-100.05-100.029c0-0.007,0-0.014,0-0.021
 	c-0.006-55.25,44.779-100.044,100.029-100.05c55.25-0.005,100.044,44.779,100.05,100.029
 	C386.027,298.131,386.027,298.139,386.027,298.146z"/>
@@ -36,10 +36,10 @@
 <g id="g3338" transform="matrix(1.3973279,-0.2437849,0.2437849,1.3973279,-185.07402,-56.183307)">
 </g>
 <g>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M494.219,54.929H82.438
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M494.219,54.929H82.438
 		c-5.787,0-10.478,4.691-10.478,10.478v454.969c0,5.787,4.691,10.478,10.478,10.478h411.781c5.787,0,10.478-4.69,10.478-10.478
 		V65.406C504.696,59.62,500.006,54.929,494.219,54.929z M483.741,509.898H92.915V75.884h390.826V509.898z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M180.985,332.662v20.02
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M180.985,332.662v20.02
 		c0,5.154,4.178,9.333,9.333,9.333c1.694,0,3.279-0.459,4.648-1.248c19.957,28.911,53.317,47.898,91.034,47.898
 		c57.146,0,104.299-43.601,109.942-99.282c1.364-2.696,2.15-5.735,2.15-8.964c0-2.891-0.63-5.63-1.738-8.108
 		c-3.05-58.246-51.381-104.694-110.354-104.694c-39.256,0-73.793,20.572-93.411,51.498c-0.729-0.183-1.487-0.29-2.272-0.29
@@ -47,15 +47,15 @@
 		 M286,208.571c43.346,0,79.595,30.968,87.807,71.947h-16.459c-10.99,0-19.9,8.91-19.9,19.9c0,10.99,8.91,19.9,19.9,19.9h15.429
 		c-9.889,38.695-45.044,67.391-86.776,67.391c-41.133,0-75.875-27.858-86.35-65.689v-47.737
 		C210.125,236.439,244.867,208.571,286,208.571z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M383.478,139.82
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M383.478,139.82
 		c11.996,0,21.755-9.759,21.755-21.755c0-11.996-9.759-21.755-21.755-21.755s-21.755,9.759-21.755,21.755
 		C361.723,130.061,371.481,139.82,383.478,139.82z M383.478,114.82c1.789,0,3.245,1.456,3.245,3.245c0,1.79-1.456,3.245-3.245,3.245
 		s-3.245-1.456-3.245-3.245C380.232,116.275,381.689,114.82,383.478,114.82z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M440.755,139.82
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M440.755,139.82
 		c11.996,0,21.755-9.759,21.755-21.755c0-11.996-9.759-21.755-21.755-21.755s-21.756,9.759-21.756,21.755
 		C418.999,130.061,428.759,139.82,440.755,139.82z M440.755,114.82c1.789,0,3.244,1.456,3.244,3.245c0,1.79-1.455,3.245-3.244,3.245
 		s-3.245-1.456-3.245-3.245C437.51,116.275,438.966,114.82,440.755,114.82z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M326.2,139.82
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M326.2,139.82
 		c11.996,0,21.755-9.759,21.755-21.755c0-11.996-9.759-21.755-21.755-21.755s-21.755,9.759-21.755,21.755
 		C304.445,130.061,314.204,139.82,326.2,139.82z M326.2,114.82c1.789,0,3.245,1.456,3.245,3.245c0,1.79-1.456,3.245-3.245,3.245
 		s-3.245-1.456-3.245-3.245C322.955,116.275,324.411,114.82,326.2,114.82z"/>

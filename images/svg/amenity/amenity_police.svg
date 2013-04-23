@@ -22,26 +22,26 @@
 		<inkscape:perspective  inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d" id="perspective3354" inkscape:persp3d-origin="372.04724 : 350.78739 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="path3325" sodipodi:nodetypes="csccssccc" opacity="0.75" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path3325" sodipodi:nodetypes="csccssccc" opacity="0.75" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M92.003,280.691C23.749,313.462-5.336,396.022,27.435,464.277c24.106,50.207,71.868,85.371,124.372,84.113l4.647-62.574
 	c-34.863,9.17-61.593-3.626-80.011-41.987c-22.359-46.567-7.335-98.144,39.233-120.502c12.966-6.226,20.218-3.29,35.587-4.814
 	l-9.696-50.958C124.818,268.737,108.007,273.007,92.003,280.691z"/>
-<path id="path3556" sodipodi:nodetypes="csccssccc" opacity="0.75" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path3556" sodipodi:nodetypes="csccssccc" opacity="0.75" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M384.72,76.054C456.95,53.352,534.595,93.77,557.297,166c16.699,53.132,5.847,111.441-33.353,146.394L477.8,269.875
 	c31.723-17.123,42.5-44.729,29.74-85.324c-15.488-49.281-61.696-76.679-110.977-61.19c-13.722,4.313-17.013,11.411-29.276,20.798
 	l-27.734-43.835C352.591,89.745,367.784,81.376,384.72,76.054z"/>
 <g>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M255.722,67.474c-0.169,0.906-0.41,1.796-0.717,2.667
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M255.722,67.474c-0.169,0.906-0.41,1.796-0.717,2.667
 		c0.213,0.857,0.368,1.735,0.445,2.633L255.722,67.474z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M145.588,109.705c0.931-0.063,1.864-0.05,2.794,0.034
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M145.588,109.705c0.931-0.063,1.864-0.05,2.794,0.034
 		c0.77-0.415,1.563-0.794,2.405-1.089L145.588,109.705z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M175.617,193.094c-0.931,0.063-1.865,0.05-2.795-0.034
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M175.617,193.094c-0.931,0.063-1.865,0.05-2.795-0.034
 		c-0.771,0.415-1.564,0.794-2.406,1.09L175.617,193.094z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M175.617,193.094c1.511-0.102,3.015-0.396,4.483-0.911
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M175.617,193.094c1.511-0.102,3.015-0.396,4.483-0.911
 		L175.617,193.094z"/>
-	<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="167.014,339.982 158.463,338.424 149.901,337.008 	"/>
-	<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="380.917,156.734 375.627,163.626 370.453,170.598 	"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M529.903,311.681c6.916-10.071,7.262-18.675,4.789-25.739
+	<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="167.014,339.982 158.463,338.424 149.901,337.008 	"/>
+	<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="380.917,156.734 375.627,163.626 370.453,170.598 	"/>
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M529.903,311.681c6.916-10.071,7.262-18.675,4.789-25.739
 		c-1.218-6.673-4.292-13.087-9.271-18.408c-13.221-14.129-35-15.435-49.792-3.418c-11.048,6.587-16.695,19.374-31.005,23.871
 		c-45.671,14.354-86.488-9.209-100.843-54.879c-3.319-10.563-4.854-20.816-4.721-30.525c9.341-5.057,18.629-14.468,28.532-28.489
 		l8.033-10.465l7.866-10.6c18.994-23.577,24.743-41.393,17.486-57.313c-0.231-0.849-0.493-1.663-0.791-2.426

@@ -38,7 +38,7 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="439.906,223.457 358.478,223.457 358.478,142.029 
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="439.906,223.457 358.478,223.457 358.478,142.029 
 	235.621,142.029 235.621,223.457 154.192,223.457 154.192,346.315 235.621,346.315 235.621,427.743 358.478,427.743 
 	358.478,346.315 439.906,346.315 "/>
 </svg>

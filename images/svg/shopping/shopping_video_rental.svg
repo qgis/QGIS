@@ -5,12 +5,12 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="tourist_cinema2.svg" inkscape:version="0.47 r22583" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="rect3445" opacity="0.3317" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="rect3445" opacity="0.3317" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M312.377,199.067c-1.793,1.206-3.659,2.287-5.607,3.199c-15.809,7.053-36.242,3.473-51.85,10.093
 	c-15.902,6.547-26.49,22.882-41.229,29.256c-13.962,5.842-30.525,1.798-44.33,7.388l36.183,75.201l135.627-65.273L312.377,199.067z"
 	/>
-<rect id="rect3447" x="235.544" y="297.269" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 751.0414 567.5414)" opacity="0.3317" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " width="150.514" height="144.295"/>
-<path id="rect3449" opacity="0.3317" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<rect id="rect3447" x="235.544" y="297.269" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 751.0414 567.5414)" opacity="0.3317" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " width="150.514" height="144.295"/>
+<path id="rect3449" opacity="0.3317" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M416.076,414.646l-135.627,65.241l30.212,62.8c12.749-3.27,27.175-0.647,39.58-5.838c14.739-6.374,25.359-22.71,41.262-29.256
 	c15.608-6.621,36.041-3.041,51.85-10.094c3.444-1.611,6.583-3.771,9.599-6.2L416.076,414.646z"/>
 <sodipodi:namedview  showgrid="false" inkscape:cy="253.54186" inkscape:cx="60.568354" inkscape:zoom="0.79655172" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:window-maximized="0" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1400" inkscape:window-height="1003">
@@ -30,7 +30,7 @@
 		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective18782" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="rect3391" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M340.247,174.66
+<path id="rect3391" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M340.247,174.66
 	c-2.757,1.979-5.358,4.195-7.883,6.531l9.137,18.999l-14.579,7.025l-6.86-14.282c-2.475,2.232-4.996,4.326-7.685,6.135
 	l28.794,59.864l-135.627,65.273l-36.183-75.201c-0.626,0.253-1.233,0.53-1.847,0.825c-6.093,2.977-11.612,7.969-16.987,13.292
 	l11.775-5.673l11.346,23.517l-14.579,7.025l-10.852-22.561c-1.934,1.945-3.863,3.921-5.805,5.805l140.278,291.539
@@ -43,7 +43,7 @@
 	l11.313,23.517l-14.578,7.025l-11.313-23.517L433.293,390.964z M239.648,418.175l11.313,23.518l-14.545,6.992l-11.346-23.518
 	L239.648,418.175z M459.053,444.528l11.313,23.55l-14.546,6.993l-11.313-23.518L459.053,444.528z M265.441,471.739l11.313,23.518
 	l-14.579,7.025l-11.313-23.55L265.441,471.739z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M450.357,93.164c-1.843-1.57-3.583-3.053-4.503-4.455
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M450.357,93.164c-1.843-1.57-3.583-3.053-4.503-4.455
 	c-0.244-0.372-0.537-0.709-0.871-1.004c-1.593-1.406-3.203-3.196-4.908-5.091c-4.932-5.482-11.069-12.305-20.239-12.305
 	c-1.219,0-2.465,0.124-3.712,0.369c-3.89,0.301-8.053,0.441-13.065,0.441c-4.085,0-8.283-0.095-12.343-0.188
 	c-4.124-0.094-8.388-0.191-12.605-0.191c-3.021,0-5.737,0.049-8.303,0.15h-0.892c-9.264,0-18.693,0.055-27.813,0.108

@@ -13,16 +13,16 @@
 </defs>
 <sodipodi:namedview  showgrid="true" inkscape:cy="7.5963771" inkscape:cx="3.2470588" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer3" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280">
 	</sodipodi:namedview>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M191.412,155.646c-26.369,0.018-47.714,21.399-47.714,47.751
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M191.412,155.646c-26.369,0.018-47.714,21.399-47.714,47.751
 	c0,0.018,0,0.018,0,0.035c0.018,26.368,21.398,47.715,47.749,47.715c26.352-0.018,47.715-21.398,47.697-47.75
 	c0-0.018,0-0.035,0-0.035C239.145,176.993,217.764,155.646,191.412,155.646z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M190.263,310.198c-26.352,0-47.715,21.364-47.697,47.751
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M190.263,310.198c-26.352,0-47.715,21.364-47.697,47.751
 	c0,0,0,0,0,0.035c0.019,26.35,21.381,47.714,47.75,47.714c26.352-0.035,47.716-21.399,47.698-47.749c0-0.036,0-0.036,0-0.071
 	C238.014,331.526,216.632,310.198,190.263,310.198z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M328.898,255.639c-26.352,0.02-47.716,21.399-47.698,47.751
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M328.898,255.639c-26.352,0.02-47.716,21.399-47.698,47.751
 	c0,0.018,0,0.018,0,0.034c0,26.369,21.382,47.733,47.732,47.733c26.352-0.035,47.715-21.435,47.715-47.768c0-0.018,0-0.035,0-0.035
 	C376.647,276.985,355.248,255.639,328.898,255.639z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M503.994,358.721c-27.486-92.77-78.904-170.038-148.696-223.453
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M503.994,358.721c-27.486-92.77-78.904-170.038-148.696-223.453
 	C284.799,81.312,196.733,52.65,100.62,52.384c-0.026,0-0.051,0-0.077,0c-14.966,0-27.121,12.112-27.162,27.089
 	c0,0.113,0.007,0.226,0.008,0.338c-0.014,0.273-0.042,0.543-0.043,0.817L72.196,490.82c-0.017,5.723,2.673,11.115,7.253,14.546
 	c3.171,2.374,6.988,3.614,10.857,3.614c1.721,0,3.452-0.245,5.142-0.745L488.75,391.761c4.896-1.449,8.707-4.79,10.898-8.983

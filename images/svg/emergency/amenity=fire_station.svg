@@ -7,7 +7,7 @@
 	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
 <inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
 	</inkscape:perspective>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M490.788,234l-10.842-36.129l-46.382,64.456
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M490.788,234l-10.842-36.129l-46.382,64.456
 	c-10.587-18.262-28.587-50.786-33.366-68.625c-6.551-24.481-5.854-85.383-5.032-106.783l1.492-38.863L365.49,71.316
 	c-5.253,3.92-51.715,39.014-65.315,63.821c-9.035,16.505-14.43,46.67-17.384,69.37c-17.949-11.118-30.772-20.987-35.236-27.126
 	c-11.849-16.31-23.753-66.485-28.473-94.281l-8.112-47.861l-25.914,41.048c-6.213,9.842-37.191,60.466-36.888,90.644

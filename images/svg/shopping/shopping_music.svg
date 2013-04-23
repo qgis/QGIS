@@ -5,19 +5,19 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="shopping_music.svg" inkscape:version="0.47 r22583" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="path10992" opacity="0.3" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path10992" opacity="0.3" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M39.059,156.858h507.77"/>
-<path id="path10994" opacity="0.3" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path10994" opacity="0.3" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M39.059,216.858h507.77"/>
-<path id="path10996" opacity="0.3" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path10996" opacity="0.3" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M39.059,276.858h507.77"/>
-<path id="path10998" opacity="0.3" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path10998" opacity="0.3" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M39.059,336.858h507.77"/>
-<path id="path11000" opacity="0.3" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path11000" opacity="0.3" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M39.059,396.858h507.77"/>
-<path id="path11002" opacity="0.3" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path11002" opacity="0.3" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M39.059,456.858h507.77"/>
-<path id="path11004" opacity="0.3" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path11004" opacity="0.3" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M39.059,516.858h507.77"/>
 <sodipodi:namedview  showgrid="false" inkscape:cy="204.16132" inkscape:cx="491.9285" inkscape:zoom="0.46083856" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:window-maximized="1" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="1005" inkscape:guide-bbox="true" showguides="true">
 	</sodipodi:namedview>
@@ -93,10 +93,10 @@
 </g>
 <g id="g3338" transform="matrix(1.3973279,-0.2437849,0.2437849,1.3973279,-185.07402,-56.183307)">
 </g>
-<path id="path10961" sodipodi:type="arc" sodipodi:cx="101.26984" sodipodi:rx="52.169312" sodipodi:cy="408.14816" sodipodi:ry="52.169312" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="
+<path id="path10961" sodipodi:type="arc" sodipodi:cx="101.26984" sodipodi:rx="52.169312" sodipodi:cy="408.14816" sodipodi:ry="52.169312" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="
 	M221.013,437.085c0,35.687-28.93,64.616-64.616,64.616c-35.687,0-64.617-28.93-64.617-64.616s28.93-64.616,64.617-64.616
 	C192.084,372.469,221.013,401.398,221.013,437.085z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M455.203,342.154V65.948
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M455.203,342.154V65.948
 	c0.056-5.984-2.341-11.834-6.579-16.06c-4.163-4.152-9.928-6.534-15.814-6.534l-0.341,0.002c-5.88,0.092-11.603,2.563-15.703,6.779
 	c-0.054,0.055-0.099,0.117-0.151,0.172l-203.461,80.649c-5.016,0.631-9.766,2.961-13.303,6.601
 	c-4.082,4.198-6.388,9.959-6.334,15.814v218.943c-11.144-6.429-23.821-9.844-37.105-9.844c-41.156,0-74.639,33.465-74.639,74.6

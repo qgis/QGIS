@@ -41,16 +41,16 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<rect x="35.845" y="500.614" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="504.904" height="18.023"/>
-<rect x="53.554" y="464.505" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="469.233" height="18.023"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M71.617,446.564l433.112-0.061l-0.002-18.023l-17.801,0.003
+<rect x="35.845" y="500.614" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" width="504.904" height="18.023"/>
+<rect x="53.554" y="464.505" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" width="469.233" height="18.023"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M71.617,446.564l433.112-0.061l-0.002-18.023l-17.801,0.003
 	l-0.027-198.249l17.973-0.003l-0.006-36.045l-433.112,0.061l0.005,36.045l18.642-0.002l0.028,198.248l-18.815,0.003L71.617,446.564z
 	 M126.446,230.284l36.045-0.005l0.028,198.249l-36.046,0.005L126.446,230.284z M198.537,230.274l36.045-0.005l0.028,198.249
 	l-36.045,0.005L198.537,230.274z M270.627,230.264l36.046-0.005l0.027,198.248l-36.046,0.005L270.627,230.264z M342.719,230.253
 	l36.045-0.005l0.027,198.249l-36.045,0.005L342.719,230.253z M414.809,230.243l36.046-0.005l0.027,198.249l-36.046,0.005
 	L414.809,230.243z"/>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="196.037,174.702 287.306,144.35 378.835,176.756 
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="196.037,174.702 287.306,144.35 378.835,176.756 
 	440.794,177.038 287.823,112.438 130.548,175.349 "/>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="502.566,174.873 502.566,141.908 286.162,53.075 
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="502.566,174.873 502.566,141.908 286.162,53.075 
 	71.974,143.903 71.974,176.867 284.19,90.54 "/>
 </svg>

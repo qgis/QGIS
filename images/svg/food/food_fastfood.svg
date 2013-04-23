@@ -26,13 +26,13 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M297.226,363.07c3.131-27.416-17.623-42.296-62.261-44.639H127.457
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M297.226,363.07c3.131-27.416-17.623-42.296-62.261-44.639H127.457
 	c-44.639,2.343-65.589,17.223-62.853,44.639H297.226z"/>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="523.984,81.687 505.771,76.398 474.632,186.255 
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="523.984,81.687 505.771,76.398 474.632,186.255 
 	316.031,186.255 354.216,489.366 484.025,489.366 522.802,186.255 493.437,186.255 "/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M64.604,445.319c-2.737,27.404,18.214,42.087,62.853,44.047h107.508
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M64.604,445.319c-2.737,27.404,18.214,42.087,62.853,44.047h107.508
 	c44.638-1.96,65.392-16.643,62.261-44.047H64.604z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M287.24,384.224H73.998c-5.474,0.001-10.171,1.958-14.091,5.871
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M287.24,384.224H73.998c-5.474,0.001-10.171,1.958-14.091,5.871
 	c-3.92,3.915-5.88,8.417-5.88,13.509c0,5.88,1.96,10.678,5.88,14.395c3.92,3.718,8.617,5.576,14.091,5.575H287.24
 	c5.485,0.001,10.186-1.857,14.1-5.575c3.914-3.717,5.871-8.515,5.871-14.395c0-5.092-1.957-9.594-5.871-13.509
 	C297.426,386.182,292.726,384.225,287.24,384.224z"/>

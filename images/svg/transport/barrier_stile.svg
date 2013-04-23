@@ -25,7 +25,7 @@
 </defs>
 <sodipodi:namedview  showgrid="false" inkscape:cy="-18.59059" inkscape:cx="408.45204" inkscape:zoom="0.1767767" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:window-maximized="0" inkscape:current-layer="svg2" inkscape:window-y="117" inkscape:window-x="271" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="770" inkscape:window-height="708">
 	</sodipodi:namedview>
-<path id="path2900" sodipodi:nodetypes="csccccsssccccsssccccccccccccccccccccccccsssccccsssccccsssccccccscccccc" opacity="0.75" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" enable-background="new    " d="
+<path id="path2900" sodipodi:nodetypes="csccccsssccccsssccccccccccccccccccccccccsssccccsssccccsssccccccscccccc" opacity="0.75" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" enable-background="new    " d="
 	M97.688,138.375c-5.231,0.082-10.388,2.309-14.031,6.063s-5.73,8.988-5.656,14.219v20v8.844h-9.313
 	c-6.604-0.093-13.203,2.551-17.906,7.188s-7.438,11.208-7.438,17.813s2.734,13.176,7.438,17.813s11.302,7.281,17.906,7.188H78
 	v75.563h-9.313c-6.604-0.094-13.203,2.551-17.906,7.188s-7.438,11.208-7.438,17.813s2.734,13.176,7.438,17.813
@@ -36,8 +36,8 @@
 	s-9.103-5.927-14.438-5.844c-5.23,0.082-10.388,2.309-14.031,6.063s-5.729,8.988-5.656,14.219v20v8.844H118v-8.844v-20
 	c0.075-5.335-2.099-10.667-5.875-14.438S103.022,138.292,97.688,138.375z M118,237.5h356v75.563H118V237.5z"/>
 <g>
-	<rect x="207" y="443" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" width="190" height="50"/>
+	<rect x="207" y="443" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" width="190" height="50"/>
 	
-		<rect x="240.316" y="361" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" width="119.369" height="50"/>
+		<rect x="240.316" y="361" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" width="119.369" height="50"/>
 </g>
 </svg>

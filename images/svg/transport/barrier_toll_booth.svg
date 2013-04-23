@@ -32,13 +32,13 @@
 <sodipodi:namedview  showgrid="false" inkscape:cy="266.77613" inkscape:cx="481.20871" inkscape:zoom="0.35355339" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:window-maximized="1" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1400" inkscape:window-height="994">
 	</sodipodi:namedview>
 <g id="g2319" transform="translate(879.29125,36.805119)">
-	<path id="path2323" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M0,0"/>
+	<path id="path2323" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M0,0"/>
 </g>
 <g id="g2325" transform="translate(879.29125,36.805119)">
-	<path id="path2329" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M0,0"/>
+	<path id="path2329" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M0,0"/>
 </g>
 <g>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M364.788,386.388
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M364.788,386.388
 		c-10.628-9.264-29.576-16.851-53.821-21.643v-76.84c6.895,2.067,13.535,5.019,17.364,8.801c5.953,5.881,9.927,14.017,11.81,24.179
 		c0.165,0.893,0.995,1.5,1.896,1.392l34.306-4.193c0.469-0.057,0.894-0.305,1.174-0.685s0.392-0.859,0.308-1.324
 		c-3.119-17.33-10.923-31.01-23.192-40.658c-9.539-7.5-25.109-13.103-43.665-15.871V249.04c0-9.217-7.473-16.689-16.689-16.689
@@ -51,17 +51,17 @@
 		c5.939,6.007,8.951,14.094,8.951,24.036c0,11.362-4.016,20.897-11.934,28.342c-5.848,5.498-15.056,9.294-24,11.595V396.304z
 		 M277.588,357.046c-9.003-3.021-16.378-6.911-21.977-11.612c-6.994-5.874-10.394-13.701-10.394-23.929
 		c0-8.806,3.411-16.681,10.138-23.408c5.423-5.423,12.886-9.321,22.233-11.644V357.046z"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M518.005,88.499
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M518.005,88.499
 		c-3.286-14.739-17.901-24.023-32.637-20.738l-369.529,82.38c-14.739,3.286-24.023,17.898-20.738,32.637
 		c2.839,12.736,14.134,21.399,26.662,21.399c1.97,0,3.972-0.215,5.975-0.661l369.528-82.38
 		C512.006,117.85,521.291,103.238,518.005,88.499z"/>
 </g>
-<path id="rect3827" sodipodi:nodetypes="csccsccsccscc" opacity="0.75" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" enable-background="new    " d="
+<path id="rect3827" sodipodi:nodetypes="csccsccsccscc" opacity="0.75" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" enable-background="new    " d="
 	M455.313,202.663c-3.723-0.002-7.423,1.53-10.056,4.163c-2.633,2.632-4.164,6.333-4.163,10.056v170.531
 	c-0.002,3.724,1.53,7.424,4.163,10.056c2.633,2.633,6.333,4.165,10.056,4.163h51.844c3.724,0.002,7.424-1.53,10.057-4.163
 	c2.632-2.632,4.164-6.332,4.162-10.056V216.882c0.002-3.723-1.53-7.423-4.162-10.056c-2.633-2.633-6.333-4.165-10.057-4.163H455.313
 	z"/>
-<path id="rect3925" opacity="0.75" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" enable-background="new    " d="
+<path id="rect3925" opacity="0.75" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" enable-background="new    " d="
 	M78.813,59.663c-4.639,0-9.251,1.908-12.531,5.188c-3.28,3.28-5.188,7.893-5.188,12.531v306.531c0,4.639,1.907,9.251,5.188,12.531
 	c3.28,3.28,7.892,5.188,12.531,5.188h44.844c4.639,0,9.251-1.907,12.531-5.188c3.28-3.28,5.188-7.893,5.188-12.531V229.444
 	c-22.415,6.882-49.301,0.786-63.781-18.25c-21.961-26.269-10.755-72.689,21.625-84.938c14.049-3.254,28.104-6.478,42.156-9.719

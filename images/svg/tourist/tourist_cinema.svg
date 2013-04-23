@@ -16,7 +16,7 @@
 		<inkscape:perspective  inkscape:vp_z="32 : 16 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 16 : 1" sodipodi:type="inkscape:persp3d" id="perspective2539" inkscape:persp3d-origin="16 : 10.666667 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="rect3391" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M97.635,126.286l200.315,416.31l187.958-90.439
+<path id="rect3391" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M97.635,126.286l200.315,416.31l187.958-90.439
 	L285.593,35.847L97.635,126.286z M130.5,120.5l128.504-61.832l59.275,123.19L189.775,243.69L130.5,120.5z M110.604,136.324
 	l13.799-6.64l10.723,22.285l-13.799,6.64L110.604,136.324z M269.641,59.8l13.799-6.64l10.724,22.285l-13.8,6.64L269.641,59.8z
 	 M135.026,187.081l13.8-6.64l10.723,22.285l-13.799,6.64L135.026,187.081z M294.063,110.557l13.8-6.64l10.723,22.285l-13.799,6.64
@@ -29,7 +29,7 @@
 	l-128.504,61.832L260.753,391.201z M257.139,440.863l13.8-6.64l10.723,22.285l-13.799,6.64L257.139,440.863z M416.176,364.34
 	l13.8-6.641l10.723,22.285l-13.799,6.641L416.176,364.34z M281.562,491.62l13.8-6.641l10.723,22.286l-13.8,6.64L281.562,491.62z
 	 M440.599,415.096l13.799-6.64l10.724,22.285l-13.8,6.641L440.599,415.096z"/>
-<rect id="rect3445" x="153.078" y="82.816" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 492.1179 190.1048)" opacity="0.3317" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " width="142.605" height="136.712"/>
-<rect id="rect3447" x="218.204" y="218.166" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 674.6172 419.185)" opacity="0.3317" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " width="142.605" height="136.712"/>
-<rect id="rect3449" x="283.331" y="353.517" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 857.1152 648.2646)" opacity="0.3317" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " width="142.604" height="136.712"/>
+<rect id="rect3445" x="153.078" y="82.816" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 492.1179 190.1048)" opacity="0.3317" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " width="142.605" height="136.712"/>
+<rect id="rect3447" x="218.204" y="218.166" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 674.6172 419.185)" opacity="0.3317" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " width="142.605" height="136.712"/>
+<rect id="rect3449" x="283.331" y="353.517" transform="matrix(-0.9011 0.4336 -0.4336 -0.9011 857.1152 648.2646)" opacity="0.3317" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " width="142.604" height="136.712"/>
 </svg>

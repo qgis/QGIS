@@ -19,15 +19,15 @@
 </defs>
 <sodipodi:namedview  showgrid="false" inkscape:cy="415.25176" inkscape:cx="615.26172" inkscape:zoom="0.70710678" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="1005">
 	</sodipodi:namedview>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="283.447" cy="106.244" r="72.563"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M455.629,301.082l-98.115-98.268
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="283.447" cy="106.244" r="72.563"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M455.629,301.082l-98.115-98.268
 	c-8.107-7.974-17.337-12.799-31.02-12.799h-43.093h-0.073h-43.928c-13.683,0-22.305,4.977-30.183,12.799l-97.128,97.315
 	c-26.545,26.548,9.375,60.529,35.877,34.027l58.66-59.049v55.385h76.703h0.073h76.171v-55.689l60.198,60.324
 	C444.01,360.658,480.9,326.354,455.629,301.082z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M359.255,359.216l-57.645,57.649l42.322,42.243l-43.367,43.366
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M359.255,359.216l-57.645,57.649l42.322,42.243l-43.367,43.366
 	c-25.594,25.597,9.715,62.205,36.184,35.736l68.585-71.313c14.719-15.021,18.789-42.765,3.009-58.544
 	C408.289,408.3,359.255,359.216,359.255,359.216z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M221.961,459.108l42.323-42.243l-57.647-57.649
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M221.961,459.108l42.323-42.243l-57.647-57.649
 	c0,0-49.033,49.084-49.086,49.138c-15.78,15.779-11.71,43.523,3.009,58.544l68.585,71.313c26.468,26.469,61.777-10.14,36.183-35.736
 	L221.961,459.108z"/>
 </svg>

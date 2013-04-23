@@ -31,7 +31,7 @@
 		<inkscape:perspective  inkscape:vp_z="450 : 225 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 225 : 1" sodipodi:type="inkscape:persp3d" id="perspective4312" inkscape:persp3d-origin="225 : 150 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="path1873" sodipodi:nodetypes="cccccsscccsscscssssssscccsccsscscccccscccccccccscccccccsccssssccccccsccssssccccssccccccccc" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="
+<path id="path1873" sodipodi:nodetypes="cccccsscccsscscssssssscccsccsscscccccscccccccccscccccccsccssssccccccsccssssccccssccccccccc" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="
 	M280.452,351.086c-3.018-3.019-4.604-7.675-4.604-13.515v-8.909l-13.357-2.629c-51.833-10.197-97.677-63.926-108.801-119.598
 	c-3.393-0.262-5.269-0.394-8.854-0.394c-11.213,0-18.637-7.482-18.637-18.786c0-10.274,6.315-16.284,17.84-16.978l8.636-0.52
 	l4.076-15.817c6.8-26.389,16.897-43.749,37.339-64.198c20.951-20.959,38.487-31.484,63.803-37.756
@@ -55,10 +55,10 @@
 	 M275.848,113.905V83.932l-6.331,1.43c-11.538,0.505-35.671,13.845-35.11,16.334c0.352,1.563,39.268,42.183,40.818,42.183
 	C275.567,143.879,275.848,130.391,275.848,113.905z M338.931,91.67c-8.598-4.036-18.476-5.384-21.642-5.78l-5.756-0.72l-0.64,29.93
 	l-0.64,29.93l22.028-21.872l22.029-21.872L338.931,91.67z"/>
-<path opacity="0.5" fill="#FFFB3D" d="M375.979,362.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
+<path opacity="0.5" fill="param(fill) #FFF" d="M375.979,362.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
 	c0,5.561,4.507,10.068,10.068,10.068h168.92c5.561,0,10.068-4.508,10.068-10.068V373
 	C386.048,367.439,381.54,362.932,375.979,362.932z"/>
-<path fill="none" stroke="#1EFF31" stroke-width="4.4444" d="M375.979,362.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
+<path fill="none" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M375.979,362.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
 	c0,5.561,4.507,10.068,10.068,10.068h168.92c5.561,0,10.068-4.508,10.068-10.068V373
 	C386.048,367.439,381.54,362.932,375.979,362.932z"/>
 </svg>

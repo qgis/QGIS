@@ -50,7 +50,7 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="529.47,221.775 62.929,221.775 62.929,261.775 
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="529.47,221.775 62.929,221.775 62.929,261.775 
 	132.557,261.775 132.557,365.174 162.557,365.174 162.557,261.775 429.841,261.775 429.841,365.174 459.841,365.174 
 	459.841,261.775 529.47,261.775 "/>
 </svg>

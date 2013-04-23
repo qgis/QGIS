@@ -31,10 +31,10 @@
 		<inkscape:perspective  inkscape:vp_z="450 : 225 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 225 : 1" sodipodi:type="inkscape:persp3d" id="perspective4312" inkscape:persp3d-origin="225 : 150 : 1">
 		</inkscape:perspective>
 </defs>
-<path opacity="0.5" fill="#FFFB3D" d="M373.979,195.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
+<path opacity="0.5" fill="param(fill) #FFF" d="M373.979,195.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
 	c0,5.561,4.507,10.068,10.068,10.068h168.92c5.561,0,10.068-4.508,10.068-10.068V206
 	C384.048,200.439,379.54,195.932,373.979,195.932z"/>
-<path fill="none" stroke="#1EFF31" stroke-width="4.4444" d="M373.979,195.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
+<path fill="none" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M373.979,195.932h-168.92c-5.561,0-10.068,4.508-10.068,10.068v168.921
 	c0,5.561,4.507,10.068,10.068,10.068h168.92c5.561,0,10.068-4.508,10.068-10.068V206
 	C384.048,200.439,379.54,195.932,373.979,195.932z"/>
 </svg>

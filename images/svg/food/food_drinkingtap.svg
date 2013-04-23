@@ -5,7 +5,7 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:version="0.32" sodipodi:docname="drinkingtap.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46" sodipodi:docbase="s:\Data\FacilityIcons"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="path2381" sodipodi:nodetypes="ccccc" opacity="0.5" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" enable-background="new    " d="
+<path id="path2381" sodipodi:nodetypes="ccccc" opacity="0.5" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" enable-background="new    " d="
 	M188.191,276.644l194.888,1.578l-31.561,249.549l-133.345,1.578L188.191,276.644z"/>
 <sodipodi:namedview  showgrid="false" inkscape:cy="603.08644" inkscape:cx="341.019" inkscape:zoom="0.46083856" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="25" inkscape:window-x="91" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="947" inkscape:window-width="1048">
 	</sodipodi:namedview>
@@ -34,7 +34,7 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M543.102,117.819l-85.766-0.484
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M543.102,117.819l-85.766-0.484
 	c-3.319-16.777-10.823-29.686-20.894-36.087V67.033c5.792,1.9,10.293,2.997,13.575,2.997c10.118,0,18.35-8.231,18.35-18.35
 	s-8.231-18.35-18.35-18.35c-0.096,0-0.191,0.002-0.287,0.005c-4.132,0.158-10.433,2.146-19.747,5.479
 	c-2.425-1.684-5.365-2.677-8.541-2.677c-3.123,0-6.021,0.956-8.423,2.589c-9.181-3.281-15.404-5.234-19.5-5.391
@@ -44,7 +44,7 @@
 	c-0.012-0.168-0.505-17.438,9.349-27.806c6.228-6.554,16.479-9.76,30.415-9.548l37.46,0.212
 	c6.156,18.976,18.384,31.053,33.454,31.053c0.007,0,0.031,0,0.039,0c14.948-0.022,27.09-11.929,33.281-30.676l88.056,0.498
 	L543.102,117.819z"/>
-<path id="path2209" sodipodi:nodetypes="ccsssccccsssccccccc" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="
+<path id="path2209" sodipodi:nodetypes="ccsssccccsssccccccc" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="
 	M401.203,264.665h-0.157c0.18-0.156,0.279-0.313,0.279-0.471c0-3.731-50.95-6.756-113.801-6.756
 	c-62.851,0-113.801,3.025-113.801,6.756c0,0.158,0.099,0.315,0.28,0.471h-0.28l35.518,270.836h0.16
 	c-0.314,0.169-0.481,0.342-0.481,0.516c0,2.578,35.193,4.667,78.606,4.667c43.413,0,78.605-2.089,78.605-4.667

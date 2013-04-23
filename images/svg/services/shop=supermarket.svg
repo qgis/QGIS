@@ -13,7 +13,7 @@
 </defs>
 <sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="8" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer5" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="723">
 	</sodipodi:namedview>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M506.043,75.631c-10.592-8.793-23.444-12.57-36.155-12.43
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M506.043,75.631c-10.592-8.793-23.444-12.57-36.155-12.43
 	c-12.712,0.143-25.74,3.689-36.156,12.43c-10.416,8.756-16.948,22.527-16.948,38.416v22.598L60.872,185.229l-19.208,2.26
 	l4.52,20.338l41.806,168.352l3.39,13.559h13.558h311.847v40.676H103.736l9.074,36.156h322.051h18.078V448.49v-58.754v-18.078
 	V152.463v-21.469v-16.947c0-6.109,1.554-7.662,4.52-10.17c2.966-2.506,7.273-4.449,12.429-4.52
@@ -22,8 +22,8 @@
 	l9.039,55.363H119.625z M198.717,203.307l92.65-12.43l4.519,58.754l-88.13,9.039L198.717,203.307z M221.314,353.58l-9.039-58.754
 	l85.87-9.039l5.649,67.793H221.314z M416.783,353.58h-76.832l-5.649-71.182l82.481-7.91V353.58z M416.783,238.332l-84.741,7.91
 	l-4.52-61.014l89.261-12.43V238.332z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M158.235,469.604c-18.484,0-33.455,14.973-33.455,33.473
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M158.235,469.604c-18.484,0-33.455,14.973-33.455,33.473
 	c0,18.467,14.971,33.473,33.455,33.473s33.455-15.006,33.455-33.473C191.69,484.576,176.72,469.604,158.235,469.604z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M417.983,468.475c-18.466,0-33.473,14.971-33.473,33.473
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M417.983,468.475c-18.466,0-33.473,14.971-33.473,33.473
 	c0,18.467,15.007,33.438,33.473,33.438c18.502,0,33.473-14.971,33.473-33.438C451.456,483.445,436.485,468.475,417.983,468.475z"/>
 </svg>

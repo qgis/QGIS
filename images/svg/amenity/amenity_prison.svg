@@ -23,14 +23,14 @@
 		</inkscape:perspective>
 </defs>
 <g id="g2319" transform="translate(879.29125,36.805119)">
-	<path id="path2323" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M0,0"/>
+	<path id="path2323" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M0,0"/>
 </g>
 <g id="g2325" transform="translate(879.29125,36.805119)">
-	<path id="path2329" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M0,0"/>
+	<path id="path2329" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M0,0"/>
 </g>
 <g id="g8776" transform="matrix(1.871692,0,0,1.871692,79.48837,-14.535408)" opacity="0.5">
 	
-		<path id="flowRoot3192" sodipodi:nodetypes="cccsscssccsccccsccscccccccsccsccc" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="
+		<path id="flowRoot3192" sodipodi:nodetypes="cccsscssccsccccsccscccccccsccsccc" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="
 		M117.853,49.031c-10.577,0.001-19.8,3.838-27.635,11.474c-7.834,7.637-11.744,16.907-11.744,27.866
 		c0,10.972,3.91,20.306,11.744,27.943c7.834,7.637,17.058,11.436,27.635,11.436c0.39,0,0.771-0.01,1.157-0.019
 		c0.39,0.01,0.782,0.019,1.177,0.019c10.576,0,19.761-3.798,27.596-11.436c7.834-7.637,11.744-16.971,11.744-27.943
@@ -41,7 +41,7 @@
 		v-11.744c1.121-0.51,2.206-1.077,3.278-1.717c10.398-6.195,16.656-17.501,16.373-29.601l-0.675-78.256
 		c0.047-9.066-3.578-17.773-10.047-24.125c-5.828-5.722-13.523-9.089-21.618-9.546c-1.836-0.453-3.865-0.675-6.094-0.675H87.884z"/>
 </g>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M534.666,48.007
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M534.666,48.007
 	c0.176-0.777,0.219-1.585,0.101-2.392c-0.205-1.394-0.064-3.597,0.072-5.728c0.309-4.821,0.659-10.286-2.3-14.424
 	c-1.226-1.714-3.202-2.731-5.31-2.731H54.053c-1.897,0-3.701,0.825-4.94,2.261s-1.794,3.34-1.517,5.217
 	c0.205,1.394,0.064,3.597-0.073,5.728c-0.224,3.487-0.462,7.309,0.54,10.725c-0.289,0.75-0.448,1.552-0.448,2.376V534.21

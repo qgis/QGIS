@@ -5,7 +5,7 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="shopping_mobile_phone.svg" inkscape:version="0.47 r22583" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path opacity="0.33" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M423.87,83.206L255.122,44.607
+<path opacity="0.33" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M423.87,83.206L255.122,44.607
 	c-0.363-0.083-0.733-0.187-1.096-0.25c-11.24-1.982-22.112,5.15-24.687,16.406l-51.474,225.042l9.657,2.209l-0.341,3.696
 	l-10.136-2.318l-43.87,191.797c-2.658,11.619,4.569,23.133,16.189,25.791l168.749,38.598c11.619,2.657,23.1-4.577,25.757-16.196
 	l43.87-191.798l-48.874-11.179l-3.155-4.496l52.85,12.089l51.474-225.042C442.691,97.336,435.489,85.863,423.87,83.206z"/>
@@ -54,9 +54,9 @@
 <g id="g3338" transform="matrix(1.3973279,-0.2437849,0.2437849,1.3973279,-185.07402,-56.183307)">
 </g>
 <g>
-	<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="151.878,-241.068 40.288,-263.533 27.243,-248.978 
+	<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="151.878,-241.068 40.288,-263.533 27.243,-248.978 
 		39.549,-228.791 152.864,-184.086 	"/>
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M425.321,83.596l10.11-44.203c0.879-3.84-1.522-7.666-5.362-8.543
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M425.321,83.596l10.11-44.203c0.879-3.84-1.522-7.666-5.362-8.543
 		l-24.415-5.585c-3.841-0.878-7.666,1.523-8.544,5.363l-10.098,44.147L255.122,44.607c-0.363-0.083-0.733-0.187-1.096-0.25
 		c-11.24-1.982-22.112,5.15-24.687,16.406L133.175,481.19c-2.658,11.619,4.569,23.133,16.189,25.791l168.749,38.598
 		c11.619,2.657,23.1-4.577,25.757-16.196l96.164-420.426C442.579,97.829,436.079,86.842,425.321,83.596z M184.103,348.533

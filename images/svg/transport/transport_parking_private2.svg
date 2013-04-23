@@ -5,7 +5,7 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="transport_parking_private2.svg" inkscape:version="0.47 r22583" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="text2419" opacity="0.5" fill="#FFFB3D" enable-background="new    " d="M145.358,505.15V85.566h158.274
+<path id="text2419" opacity="0.5" fill="param(fill) #FFF" enable-background="new    " d="M145.358,505.15V85.566h158.274
 	c27.857,0,49.132,1.336,63.824,4.007c20.607,3.435,37.875,9.97,51.805,19.605c13.929,9.636,25.138,23.136,33.63,40.499
 	c8.49,17.364,12.735,36.445,12.736,57.242c-0.001,35.681-11.354,65.876-34.06,90.585c-22.706,24.71-63.729,37.064-123.07,37.064
 	H200.883V505.15H145.358z M200.883,285.055h108.473c35.872,0,61.345-6.678,76.418-20.035c15.074-13.356,22.61-32.151,22.611-56.383
@@ -31,10 +31,10 @@
 		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective2868" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
 		</inkscape:perspective>
 </defs>
-<path id="path2323" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M879.291,36.805"/>
-<path id="path2329" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M879.291,36.805"/>
+<path id="path2323" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
+<path id="path2329" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M879.291,36.805"/>
 <g id="text2419_2_">
-	<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M200.883,516.494h-55.525
+	<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M200.883,516.494h-55.525
 		c-6.265,0-11.344-5.079-11.344-11.344V85.566c0-6.265,5.079-11.344,11.344-11.344h158.274c28.754,0,50.27,1.366,65.769,4.174
 		c22.136,3.7,41.083,10.917,56.313,21.452c15.479,10.709,28.051,25.796,37.367,44.844c9.216,18.848,13.889,39.783,13.89,62.226
 		c-0.001,38.449-12.467,71.509-37.051,98.262c-25.186,27.409-68.175,40.732-131.423,40.732h-96.271V505.15

@@ -31,7 +31,7 @@
 </g>
 <g id="g3338" transform="matrix(1.3973279,-0.2437849,0.2437849,1.3973279,-185.07402,-56.183307)">
 </g>
-<path id="path7165" sodipodi:nodetypes="ccsccccsccccccccssccsccsccsccccccssccsccsccsccsccsccsccccccsscccssccssccccccccccccccsccsccssccsccsccsccsccsccccccssccsccccssccsccccssccsccsccsccccsccsccsccccssccsccccssccccccssccsccsccsccccccssccsc" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="
+<path id="path7165" sodipodi:nodetypes="ccsccccsccccccccssccsccsccsccccccssccsccsccsccsccsccsccccccsscccssccssccccccccccccccsccsccssccsccsccsccsccsccccccssccsccccssccsccccssccsccsccsccccsccsccsccccssccsccccssccccccssccsccsccsccccccssccsc" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="
 	M200.531,120.56c-20.777,0.256-41.598,5.173-60.832,14.935c-0.216,0.1-0.418,0.216-0.633,0.316c-0.284,0.146-0.58,0.254-0.863,0.403
 	v0.029c-81.294,38.604-104.57,140.66-66.789,215.875c52.473,109.814,186.724,147.358,294.319,112.687
 	c98.66-27.239,180.913-124.362,160.482-234.063c-0.127-0.682-0.211-1.36-0.346-2.043h-0.058
@@ -86,7 +86,7 @@
 	l21.093-1.611C373.512,425.828,373.637,425.818,373.762,425.814z M262.687,431.165c1.064-0.023,2.145,0.245,3.108,0.863
 	l17.812,11.425c0.108,0.063,0.214,0.13,0.317,0.201c2.511,1.737,3.119,5.2,1.381,7.712c-1.737,2.512-5.171,3.147-7.683,1.41
 	l-17.812-11.453c-2.567-1.65-3.291-5.058-1.64-7.625C259.201,432.093,260.914,431.206,262.687,431.165z"/>
-<path id="path7219" opacity="0.33" fill="#FFFB3D" enable-background="new    " d="M200.7,120.726
+<path id="path7219" opacity="0.33" fill="param(fill) #FFF" enable-background="new    " d="M200.7,120.726
 	c-20.777,0.256-41.598,5.173-60.832,14.935c-0.216,0.1-0.417,0.216-0.633,0.316c-0.284,0.146-0.58,0.255-0.863,0.403v0.029
 	c-81.294,38.604-104.57,140.66-66.789,215.876c52.474,109.814,186.724,147.358,294.319,112.686
 	c98.66-27.238,180.913-124.361,160.482-234.062c-0.127-0.682-0.21-1.36-0.346-2.043h-0.058

@@ -50,6 +50,6 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="290.565,67.281 35.067,509.815 33.98,511.7 
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="290.565,67.281 35.067,509.815 33.98,511.7 
 	545.209,512.093 547.389,512.095 "/>
 </svg>

@@ -32,15 +32,15 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="98.928" cy="285.783" r="57.534"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M429.705,443.527c-1.956-2.607-5.506-3.115-8.188-1.304
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="98.928" cy="285.783" r="57.534"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M429.705,443.527c-1.956-2.607-5.506-3.115-8.188-1.304
 	l-78.111,56.735c-2.608,1.957-3.116,5.652-1.305,8.188l10.58,14.71c1.956,2.607,5.65,3.115,8.188,1.304l78.111-56.735
 	c2.608-1.957,3.115-5.652,1.305-8.188L429.705,443.527z"/>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="285.945,326.578 316.958,381.212 333.262,369.039 
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="285.945,326.578 316.958,381.212 333.262,369.039 
 	302.25,314.694 "/>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="260.947,242.09 140.447,30.508 117.333,30.653 
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="260.947,242.09 140.447,30.508 117.333,30.653 
 	244.498,254.118 "/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M509.846,345.417l-111.95-0.146c-8.913,0-16.666,3.841-23.477,8.768
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M509.846,345.417l-111.95-0.146c-8.913,0-16.666,3.841-23.477,8.768
 	l-86.662,60.939l-59.562-58.91l82.966-60.721c12.898-10.797,14.564-29.999,3.841-42.896c-10.941-12.753-29.999-14.419-42.896-3.695
 	l-129.558,92.241c-18.839,15.868-22.245,51.663-6.521,70.503l93.618,93.69c0,0,25.506,33.259,67.532,2.971l119.269-84.198
 	l93.4,0.146c21.81,0,39.346-17.536,39.346-39.346C549.191,363.098,531.655,345.417,509.846,345.417z"/>

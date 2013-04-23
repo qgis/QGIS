@@ -5,7 +5,7 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="transport_parking_private3.svg" inkscape:version="0.47 r22583" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="text2419_1_" opacity="0.5" fill="#FFFB3D" enable-background="new    " d="M145.358,505.15V85.566h158.274
+<path id="text2419_1_" opacity="0.5" fill="param(fill) #FFF" enable-background="new    " d="M145.358,505.15V85.566h158.274
 	c27.857,0,49.132,1.336,63.824,4.007c20.607,3.435,37.875,9.97,51.805,19.604c13.93,9.636,25.139,23.136,33.63,40.499
 	c8.49,17.364,12.735,36.445,12.736,57.242c-0.001,35.681-11.354,65.876-34.06,90.585c-22.706,24.71-63.729,37.064-123.07,37.064
 	H200.883V505.15H145.358z M200.883,285.055h108.474c35.871,0,61.345-6.678,76.418-20.035c15.073-13.356,22.609-32.151,22.61-56.383
@@ -40,7 +40,7 @@
 <g id="g2325" transform="translate(879.29125,36.805119)">
 	<path id="path2329" fill="#111111" stroke="#EEEEEE" stroke-width="3.408" d="M0,0"/>
 </g>
-<path id="text2419-4" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M144.625,74.625
+<path id="text2419-4" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M144.625,74.625
 	c-6.265,0.001-11.343,5.079-11.344,11.344v419.563c0.001,6.265,5.079,11.343,11.344,11.344h55.5
 	c6.265-0.001,11.343-5.079,11.344-11.344v-159.22h96.281c60.915,0,105.399-12.414,131.438-40.75
 	c24.546-26.711,37.03-60.163,37.03-98.25c0-22.341-4.6-43.25-13.875-62.219c-9.203-18.818-21.712-34.007-37.375-44.844

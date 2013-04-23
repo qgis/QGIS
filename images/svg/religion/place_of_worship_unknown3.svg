@@ -31,5 +31,5 @@
 		<inkscape:perspective  inkscape:vp_z="450 : 225 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 225 : 1" sodipodi:type="inkscape:persp3d" id="perspective4312" inkscape:persp3d-origin="225 : 150 : 1">
 		</inkscape:perspective>
 </defs>
-<rect x="131.772" y="133.714" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="299.494" height="299.494"/>
+<rect x="131.772" y="133.714" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" width="299.494" height="299.494"/>
 </svg>

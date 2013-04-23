@@ -41,9 +41,9 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<rect x="53.554" y="414.505" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="449.234" height="18.023"/>
-<rect x="35.845" y="450.614" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="504.904" height="18.023"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M90.429,378.538l-18.815,0.003l0.003,18.023l255.424-0.042
+<rect x="53.554" y="414.505" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" width="449.234" height="18.023"/>
+<rect x="35.845" y="450.614" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" width="504.904" height="18.023"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M90.429,378.538l-18.815,0.003l0.003,18.023l255.424-0.042
 	l2.923,4.173l5.96-4.175l108.807-0.018l-0.004-18.023l-86.306,0.015L259.456,237.2l-2.347,1.644l-3.974-44.208l70.32,5.539
 	l2.83-35.934L73.172,144.302l-2.831,35.934l20.061,1.581L90.429,378.538z M126.447,184.656l36.046,2.839l0.027,191.031
 	l-36.045,0.006L126.447,184.656z M198.539,190.335l18.147,1.429l16.789,186.75l-34.91,0.006L198.539,190.335z M263.074,305.195

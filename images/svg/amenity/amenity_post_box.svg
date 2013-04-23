@@ -17,7 +17,7 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M99.193,142.368v292.258h384.845V142.368H99.193z M436.766,169.86
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M99.193,142.368v292.258h384.845V142.368H99.193z M436.766,169.86
 	L313.802,292.354c-6.112,6.112-13.829,9.168-23.15,9.168c-9.645,0-17.686-3.218-24.122-9.654L144.523,169.86H436.766z
 	 M126.2,188.669l99.828,100.313L126.2,388.811V188.669z M144.037,407.619l100.313-99.828l4.342,4.342
 	c11.578,11.254,25.564,16.881,41.959,16.881c16.396,0,30.22-5.627,41.474-16.881l4.342-4.342l100.299,99.828H144.037z

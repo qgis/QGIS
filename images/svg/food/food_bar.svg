@@ -5,7 +5,7 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:version="0.32" sodipodi:docname="refreshments.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46" sodipodi:docbase="s:\Data\FacilityIcons"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M468.232,97.93h-0.251c0.286-0.248,0.444-0.498,0.444-0.75
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M468.232,97.93h-0.251c0.286-0.248,0.444-0.498,0.444-0.75
 	c0-5.937-81.066-10.75-181.07-10.75c-100.002,0-181.07,4.813-181.07,10.75c0,0.252,0.158,0.502,0.446,0.75h-0.446L266.76,246.465
 	v168.073l-103.962,74.32h0.255c-0.5,0.27-0.765,0.544-0.765,0.82c0,4.103,55.996,7.426,125.07,7.426
 	c69.075,0,125.07-3.323,125.07-7.426c0-0.276-0.266-0.552-0.765-0.82h0.06l-103.962-74.32V246.466L468.232,97.93z M292.521,217.569

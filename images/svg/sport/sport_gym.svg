@@ -5,25 +5,25 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="sport_jetski.svg" inkscape:version="0.46" sodipodi:version="0.32"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="123.427" cy="496.93" r="33"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="428.427" cy="470.93" r="59"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M428.427,389.261c-6.581-0.001-12.036,0.765-13.063,0.918
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="123.427" cy="496.93" r="33"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="428.427" cy="470.93" r="59"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M428.427,389.261c-6.581-0.001-12.036,0.765-13.063,0.918
 	l-0.322,0.05l-301.628,51.935c-26.487,4.862-45.657,27.89-45.657,54.768c0,30.696,24.974,55.67,55.67,55.67h305
 	c45.033,0,81.67-36.637,81.67-81.67C510.097,425.898,473.46,389.261,428.427,389.261z M476.252,518.754
 	c-12.797,12.797-29.782,19.846-47.825,19.846h-305c-22.977,0-41.67-18.692-41.67-41.67c0-20.12,14.345-37.355,34.108-40.983
 	c0,0,301.33-51.882,301.479-51.907c0.044-0.008,0.089-0.016,0.089-0.016c0.524-0.077,5.285-0.765,10.994-0.765
 	c37.313,0,67.67,30.356,67.67,67.67C496.097,488.972,489.049,505.957,476.252,518.754z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M190.545,162.754l18.102,45.524
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M190.545,162.754l18.102,45.524
 	c3.833,9.315,14.448,13.845,23.834,10.115c9.386-3.729,13.998-14.311,10.391-23.715l-12.38-31.176l31.171-12.394
 	c9.315-3.833,13.845-14.448,10.115-23.835c-3.729-9.387-14.31-13.998-23.715-10.392l-45.53,18.081
 	c-0.961,0.212-1.919,0.48-2.864,0.856c-4.792,1.904-8.334,5.596-10.182,10.003c-1.934,4.367-2.187,9.476-0.284,14.265
 	C189.578,161.03,190.039,161.91,190.545,162.754z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M262.452,377.783c5.82,10.095,18.668,13.599,28.805,7.915
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M262.452,377.783c5.82,10.095,18.668,13.599,28.805,7.915
 	l48.977-28.226c1.061-0.401,2.107-0.867,3.123-1.453c5.15-2.971,8.58-7.772,9.958-13.109c1.481-5.309,0.92-11.184-2.052-16.338
 	c-0.585-1.016-1.259-1.943-1.977-2.823l-28.247-48.96c-5.927-9.997-18.801-13.401-28.896-7.58
 	c-10.094,5.819-13.597,18.669-7.914,28.805l19.325,33.532l-33.522,19.341C260.035,354.814,256.631,367.688,262.452,377.783z"/>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="336.248" cy="72.087" r="44"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M189.617,417.802c10.782,4.65,23.291-0.319,27.941-11.103
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="336.248" cy="72.087" r="44"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M189.617,417.802c10.782,4.65,23.291-0.319,27.941-11.103
 	l96.836-224.573l12.013,21.467c0.324,0.892,0.704,1.774,1.183,2.63c2.435,4.347,6.421,7.269,10.876,8.477
 	c4.428,1.295,9.352,0.887,13.693-1.545c0.854-0.479,1.64-1.033,2.383-1.624l41.288-23.13c8.431-4.854,11.417-15.596,6.649-24.109
 	c-4.766-8.511-15.484-11.582-24.03-6.93l-28.273,15.821l-20.548-36.694c-1.448-6.397-5.807-12.042-12.292-14.839

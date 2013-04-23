@@ -23,10 +23,10 @@
 <sodipodi:namedview  showgrid="false" inkscape:cy="415.25176" inkscape:cx="615.26172" inkscape:zoom="0.70710678" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="1005" inkscape:window-width="1280">
 	</sodipodi:namedview>
 <g id="g3302">
-	<path id="path3304" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M374.559,125.864
+	<path id="path3304" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M374.559,125.864
 		c22.55,0,40.834-18.284,40.834-40.835c0-22.552-18.284-40.836-40.834-40.836c-22.552,0-40.834,18.284-40.834,40.836
 		C333.725,107.58,352.007,125.864,374.559,125.864z"/>
-	<path id="path3306" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M322.091,200.916
+	<path id="path3306" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M322.091,200.916
 		l0.25,311.75c0,31.184,45.857,30.899,45.857-0.714l0.027-181.366l8.926-0.086l-0.028,181.367c0,31.612,46.394,32.411,46.394,0.799
 		l0.026-313.057h8.059v111.795c0,26.838,36.42,26.838,36.42,0.479V189.586c0-32.876-24.469-52.237-50.349-52.237h-72.61
 		c-17.222,0-29.722,6.817-40.222,21.817l-36.75,53.554h-63.77c-25.624,0-24.186,36.34-0.48,36.34h73.5
@@ -35,22 +35,22 @@
 <g id="g3308">
 	<g id="g3310">
 		<g id="g3312">
-			<path id="path3314" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M202.272,392.12v-29.863
+			<path id="path3314" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M202.272,392.12v-29.863
 				h-29.863v29.863H202.272z"/>
-			<path id="path3316" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M106.149,44.193"/>
+			<path id="path3316" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M106.149,44.193"/>
 		</g>
 		<g id="g3318">
-			<path id="path3320" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M218.481,325.846
+			<path id="path3320" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M218.481,325.846
 				l-21.751-21.753l-21.75,21.753l21.75,21.748L218.481,325.846z"/>
-			<path id="path3322" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M106.149,44.193"/>
+			<path id="path3322" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M106.149,44.193"/>
 		</g>
 		<g id="g3324">
-			<path id="path3326" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M198.191,284.764
+			<path id="path3326" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M198.191,284.764
 				l-21.752-21.749l-21.751,21.749l21.751,21.751L198.191,284.764z"/>
-			<path id="path3328" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M106.149,44.193"/>
+			<path id="path3328" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M106.149,44.193"/>
 		</g>
 	</g>
-	<path id="path3330" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M243.34,535.754
+	<path id="path3330" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M243.34,535.754
 		l38.776-206.161h-29.172L218.96,507.04h-50.383l-33.256-177.374h-29.172l38.048,206.088H243.34z"/>
 </g>
 </svg>

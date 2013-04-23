@@ -53,13 +53,13 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M257.633,492.351l-97.215-0.607
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M257.633,492.351l-97.215-0.607
 	C160.851,559.313,257.633,559.314,257.633,492.351z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M458.139,492.331l-97.215-0.607
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M458.139,492.331l-97.215-0.607
 	C361.356,559.293,458.139,559.294,458.139,492.331z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M343.76,492.199h-68.506c-0.485,15.811-2.964,23.147-7.139,30.379
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M343.76,492.199h-68.506c-0.485,15.811-2.964,23.147-7.139,30.379
 	h81.417C345.388,515.401,343.497,507.792,343.76,492.199z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M437.675,205.029l-9.793-10.272h-78.137l114.125-76.872
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M437.675,205.029l-9.793-10.272h-78.137l114.125-76.872
 	L333.107,29.908l-133.674,88.05l116.809,76.799h-81.105l-8.56,10.272h-94.806l0.259,29.15h-0.309L65.769,365.445v79.616
 	c0,14.379,16.979,29.327,29.924,29.287h413.344V368.588v-0.592V235.819v-1.412v-29.378H437.675z M333.047,42.165l112.554,75.726
 	l-112.473,75.759L217.993,117.95L333.047,42.165z M285.326,249.212l-0.088,188.167c-1.735,9.831-8.6,11.653-14.109,16.929h-46.806

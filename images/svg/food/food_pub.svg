@@ -5,7 +5,7 @@
 	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:version="0.32" sodipodi:docname="amenity_pub.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
 	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<path id="path2381" opacity="0.5" fill="#FFFB3D" enable-background="new    " d="M129.307,119.264l310.086,2.511l-50.216,371.602
+<path id="path2381" opacity="0.5" fill="param(fill) #FFF" enable-background="new    " d="M129.307,119.264l310.086,2.511l-50.216,371.602
 	l-212.165,2.511L129.307,119.264z"/>
 <sodipodi:namedview  showgrid="false" inkscape:cy="290" inkscape:cx="107.33766" inkscape:zoom="0.79655172" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="88" inkscape:window-x="88" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="675" inkscape:window-width="640">
 	</sodipodi:namedview>
@@ -15,7 +15,7 @@
 		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective12" inkscape:persp3d-origin="290 : 193.33333 : 1">
 		</inkscape:perspective>
 </defs>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" stroke-miterlimit="10" d="M467.981,77.93
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M467.981,77.93
 	c0.286-0.248,0.444-0.498,0.444-0.75c0-5.937-81.066-10.75-181.07-10.75c-100.002,0-181.07,4.813-181.07,10.75
 	c0,0.252,0.158,0.502,0.446,0.75h-0.446l56.512,430.928h0.255c-0.5,0.27-0.765,0.544-0.765,0.82c0,4.103,55.996,7.426,125.07,7.426
 	c69.075,0,125.07-3.323,125.07-7.426c0-0.276-0.266-0.552-0.765-0.82L468.232,77.93H467.981z M375.379,477.353

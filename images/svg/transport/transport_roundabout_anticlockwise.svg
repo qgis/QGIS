@@ -40,8 +40,8 @@
 		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective4729" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
 		</inkscape:perspective>
 </defs>
-<circle fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="294.322" cy="291.75" r="76.263"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M563.241,323.163l-77.969-77.969
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="294.322" cy="291.75" r="76.263"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M563.241,323.163l-77.969-77.969
 	c-18.662-76.536-82.249-135.667-161.132-147.724V26.674c0-2.499-1.505-4.751-3.813-5.708c-2.308-0.955-4.966-0.428-6.732,1.339
 	l-78.678,78.677c-1.07,1.07-1.701,2.494-1.792,3.996c-67.079,22.034-118.332,79.258-131.827,149.739h-73.49
 	c-2.499,0-4.751,1.505-5.708,3.813s-0.428,4.966,1.339,6.732l78.677,78.677c0.874,0.874,1.982,1.458,3.176,1.692

@@ -14,17 +14,17 @@
 <sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="8" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:current-layer="layer2" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="723" inkscape:window-width="1280" inkscape:document-units="px" inkscape:grid-bbox="true">
 	<inkscape:grid  type="xygrid" id="grid4283"></inkscape:grid>
 </sodipodi:namedview>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M504.772,154.191l7.089-34.708L289.248,24.588L66.636,119.483
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M504.772,154.191l7.089-34.708L289.248,24.588L66.636,119.483
 	l7.089,34.708H504.772z M289.248,63.893l127.014,54.143H162.235L289.248,63.893z"/>
-<rect x="107.285" y="347.365" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="363.944" height="30.932"/>
-<rect x="83.663" y="403.082" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="411.188" height="36.439"/>
-<rect x="53.033" y="466.779" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="472.43" height="39.971"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M139.486,164.467c0,0-12.446,61.119-12.446,170.012h52.469
+<rect x="107.285" y="347.365" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" width="363.944" height="30.932"/>
+<rect x="83.663" y="403.082" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" width="411.188" height="36.439"/>
+<rect x="53.033" y="466.779" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" width="472.43" height="39.971"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M139.486,164.467c0,0-12.446,61.119-12.446,170.012h52.469
 	c0-108.893-13.488-170.012-13.488-170.012H139.486z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M230.229,164.467c0,0-12.446,61.119-12.446,170.012h52.469
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M230.229,164.467c0,0-12.446,61.119-12.446,170.012h52.469
 	c0-108.893-13.487-170.012-13.487-170.012H230.229z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M320.955,164.467c0,0-12.429,61.119-12.429,170.012h52.469
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M320.955,164.467c0,0-12.429,61.119-12.429,170.012h52.469
 	c0-108.893-13.487-170.012-13.487-170.012H320.955z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M411.698,164.467c0,0-12.429,61.119-12.429,170.012h52.469
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M411.698,164.467c0,0-12.429,61.119-12.429,170.012h52.469
 	c0-108.893-13.487-170.012-13.487-170.012H411.698z"/>
 </svg>
