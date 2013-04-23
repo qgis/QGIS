@@ -42,7 +42,7 @@ QgsField::~QgsField()
 
 bool QgsField::operator==( const QgsField& other ) const
 {
-  return (( mName == other.mName ) && ( mType == other.mType ) && ( mTypeName == other.mTypeName )
+  return (( mName == other.mName ) && ( mType == other.mType )
           && ( mLength == other.mLength ) && ( mPrecision == other.mPrecision ) );
 }
 
