@@ -160,7 +160,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *     QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
  * \endcode
  *
- * The main data providers supported by QGis are listed below.
+ * The main data providers supported by QGIS are listed below.
  *
  * \section providers Vector data providers
  *
@@ -358,7 +358,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *
  * - geomType=(point|line|polygon|none)
  *
- *   Defines the geometry type for WKT type geometries.  QGis will only display one
+ *   Defines the geometry type for WKT type geometries.  QGIS will only display one
  *   type of geometry for the layer - any others will be ignored when the file is
  *   loaded.  By default the provider uses the type of the first geometry in the file.
  *   Use geomType to override this type.
