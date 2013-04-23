@@ -151,7 +151,6 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     // check if there is a default style / propertysheet defined
     // for this layer and if so apply it
     bool defaultLoadedFlag = false;
-
     if ( loadDefaultStyleFlag )
     {
       loadDefaultStyle( defaultLoadedFlag );
@@ -1717,7 +1716,7 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   // renderer specific settings
   QString errorMsg;
   return writeSymbology( layer_node, document, errorMsg );
-}
+} // bool QgsVectorLayer::writeXml
 
 bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage )
 {
@@ -2030,8 +2029,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
   }
   return true;
 }
-
-
 
 QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement( QDomElement &elem, QObject* parent )
 {
@@ -3081,6 +3078,7 @@ void QgsVectorLayer::destroyEditCommand()
   undoStack()->endMacro();
   undoStack()->undo();
 }
+
 
 void QgsVectorLayer::setCheckedState( int idx, QString checked, QString unchecked )
 {

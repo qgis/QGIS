@@ -586,9 +586,10 @@ class PythonConsoleWidget(QWidget):
             return
         filename = QFileDialog.getSaveFileName(self,
                         "Save File As",
-                        "*.py", "Script file (*.py)")
+                        tabWidget.path, "Script file (*.py)")
         if not filename.isEmpty():
-            self.tabListScript.remove(tabWidget.path)
+            #print tabWidget.path
+            self.tabListScript.remove(unicode(tabWidget.path))
             tabWidget.path = filename
             self.saveScriptFile()
 

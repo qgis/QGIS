@@ -23,53 +23,9 @@
    <iconset resource="../../images/images.qrc">
     <normaloff>:/images/icons/qgis-icon-16x16.png</normaloff>:/images/icons/qgis-icon-16x16.png</iconset>
   </property>
-<<<<<<< HEAD
-  <property name="modal">
-   <bool>true</bool>
-  </property>
-  <layout class="QGridLayout" name="gridLayout_8">
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="pbnLoadDefaultStyle">
-       <property name="text">
-        <string>Restore Default Style</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnSaveDefaultStyle">
-       <property name="text">
-        <string>Save As Default</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnLoadStyle">
-       <property name="text">
-        <string>Load Style ...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnSaveStyleAs">
-       <property name="contextMenuPolicy">
-        <enum>Qt::PreventContextMenu</enum>
-       </property>
-       <property name="text">
-        <string>Save Style ...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-=======
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QSplitter" name="mOptionsSplitter">
->>>>>>> 1a9184144d82bd87cdd387e2637217a3001cd097
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -122,40 +78,8 @@
          <property name="textElideMode">
           <enum>Qt::ElideNone</enum>
          </property>
-<<<<<<< HEAD
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="mFieldsPage">
-      <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Fields</string>
-      </attribute>
-      <layout class="QGridLayout" name="mFieldsGridLayout">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QFrame" name="mFieldsFrame">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-=======
          <property name="resizeMode">
           <enum>QListView::Adjust</enum>
->>>>>>> 1a9184144d82bd87cdd387e2637217a3001cd097
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -284,27 +208,6 @@
        </item>
       </layout>
      </widget>
-<<<<<<< HEAD
-     <widget class="QWidget" name="tabWidgetPage4">
-      <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>General</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_7">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-=======
      <widget class="QFrame" name="mOptionsFrame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -320,7 +223,6 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <property name="margin">
->>>>>>> 1a9184144d82bd87cdd387e2637217a3001cd097
         <number>0</number>
        </property>
        <item>
@@ -334,22 +236,6 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-<<<<<<< HEAD
-         <widget class="QWidget" name="scrollAreaWidgetContents_2">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>910</width>
-            <height>732</height>
-           </rect>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <item row="0" column="0">
-            <widget class="QGroupBox" name="indexGroupBox">
-             <property name="title">
-              <string>Options</string>
-=======
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <property name="margin">
@@ -362,7 +248,6 @@
              </property>
              <property name="text">
               <string>General</string>
->>>>>>> 1a9184144d82bd87cdd387e2637217a3001cd097
              </property>
             </widget>
            </item>
@@ -374,20 +259,6 @@
              <property name="widgetResizable">
               <bool>true</bool>
              </property>
-<<<<<<< HEAD
-             <layout class="QGridLayout">
-              <property name="leftMargin">
-               <number>11</number>
-              </property>
-              <property name="topMargin">
-               <number>11</number>
-              </property>
-              <property name="rightMargin">
-               <number>11</number>
-              </property>
-              <property name="bottomMargin">
-               <number>11</number>
-=======
              <widget class="QWidget" name="scrollAreaWidgetContents">
               <property name="geometry">
                <rect>
@@ -396,7 +267,6 @@
                 <width>785</width>
                 <height>755</height>
                </rect>
->>>>>>> 1a9184144d82bd87cdd387e2637217a3001cd097
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
                <property name="topMargin">
@@ -804,59 +674,6 @@
              <property name="text">
               <string>Style</string>
              </property>
-<<<<<<< HEAD
-             <layout class="QGridLayout">
-              <property name="leftMargin">
-               <number>11</number>
-              </property>
-              <property name="topMargin">
-               <number>11</number>
-              </property>
-              <property name="rightMargin">
-               <number>11</number>
-              </property>
-              <property name="bottomMargin">
-               <number>11</number>
-              </property>
-              <item row="0" column="0" colspan="2">
-               <widget class="QTextEdit" name="txtSubsetSQL">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="acceptDrops">
-                 <bool>false</bool>
-                </property>
-                <property name="acceptRichText">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <spacer>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Expanding</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>480</width>
-                  <height>21</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="1">
-               <widget class="QPushButton" name="pbnQueryBuilder">
-                <property name="text">
-                 <string>Query Builder</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-=======
->>>>>>> 1a9184144d82bd87cdd387e2637217a3001cd097
             </widget>
            </item>
            <item>
@@ -1042,45 +859,6 @@
            <property name="margin">
             <number>0</number>
            </property>
-<<<<<<< HEAD
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tabWidgetPage5">
-      <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Metadata</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_15">
-       <item row="0" column="0">
-        <widget class="QScrollArea" name="scrollArea">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>892</width>
-            <height>714</height>
-           </rect>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout">
-=======
->>>>>>> 1a9184144d82bd87cdd387e2637217a3001cd097
            <item>
             <widget class="QLabel" name="label_7">
              <property name="styleSheet">
@@ -1366,71 +1144,6 @@
            </item>
           </layout>
          </widget>
-<<<<<<< HEAD
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tabWidgetPage6">
-      <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/action.png</normaloff>:/images/themes/default/propertyicons/action.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Actions</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_9">
-       <item row="0" column="0">
-        <widget class="QFrame" name="actionOptionsFrame">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="mJoinPage">
-      <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/join.png</normaloff>:/images/themes/default/propertyicons/join.png</iconset>
-      </attribute>
-      <attribute name="title">
-       <string>Joins</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_10">
-       <item row="0" column="0" colspan="2">
-        <widget class="QScrollArea" name="scrollArea_3">
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents_3">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>892</width>
-            <height>714</height>
-           </rect>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_17">
-           <item row="0" column="0">
-            <widget class="QPushButton" name="mButtonAddJoin">
-=======
          <widget class="QWidget" name="mOptsPage_Joins">
           <layout class="QVBoxLayout" name="verticalLayout_17">
            <property name="margin">
@@ -1441,7 +1154,6 @@
              <property name="styleSheet">
               <string notr="true">font-weight:bold;</string>
              </property>
->>>>>>> 1a9184144d82bd87cdd387e2637217a3001cd097
              <property name="text">
               <string>Joins</string>
              </property>

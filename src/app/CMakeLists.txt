@@ -42,6 +42,8 @@ SET(QGIS_APP_SRCS
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelpreview.cpp
+  qgsloadstylefromdbdialog.cpp
+  qgssavestyletodbdialog.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdvertex.cpp
@@ -81,8 +83,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
   qgsmaptoolvertexedit.cpp  
-  qgssavestyletodbdialog.cpp
-  qgsloadstylefromdbdialog.cpp
 
   nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
@@ -197,6 +197,8 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
   qgslabelpropertydialog.h
+  qgsloadstylefromdbdialog.h
+  qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
 
   qgsmaptooladdfeature.h
@@ -229,8 +231,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolsimplify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolvertexedit.h
-  qgssavestyletodbdialog.h
-  qgsloadstylefromdbdialog.h
 
   nodetool/qgsmaptoolnodetool.h
   nodetool/qgsselectedfeature.h

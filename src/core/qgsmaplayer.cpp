@@ -743,7 +743,6 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString db, const QString theURI, 
   sqlite3_close( myDatabase );
 
   return theResultFlag;
-
 }
 
 QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
@@ -753,8 +752,8 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   theResultFlag = false;
 
   QDomDocument myDocument( "qgis" );
-  // location of problem associated with errorMsg
 
+  // location of problem associated with errorMsg
   int line, column;
   QString myErrorMessage;
 
@@ -775,7 +774,7 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
     QString qml;
     if ( loadNamedStyleFromDb( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( "qgis.qmldb" ), theURI, qml ) ||
          ( project.exists() && loadNamedStyleFromDb( project.absoluteDir().absoluteFilePath( project.baseName() + ".qmldb" ), theURI, qml ) ) ||
-         loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( "resources/qgis.qmldb" ), theURI, qml )/* || (loadStyleExternalMethod && loadStyleExternalMethod(theURI, qml, myErrorMessage))*/)
+         loadNamedStyleFromDb( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( "resources/qgis.qmldb" ), theURI, qml ) )
     {
       theResultFlag = myDocument.setContent( qml, &myErrorMessage, &line, &column );
       if ( !theResultFlag )
@@ -881,12 +880,11 @@ void QgsMapLayer::exportNamedStyle(QDomDocument &doc, QString &errorMsg)
 
 QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
 {
-    return saveNamedStyle( styleURI(), theResultFlag );
+  return saveNamedStyle( styleURI(), theResultFlag );
 }
 
 QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag )
 {
-
   QString myErrorMessage;
   QDomDocument myDocument;
   exportNamedStyle( myDocument, myErrorMessage );

@@ -1198,7 +1198,7 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 
 int QgsOgrProvider::capabilities() const
 {
-  int ability = SetEncoding;
+  int ability = 0;
 
   // collect abilities reported by OGR
   if ( ogrLayer )
@@ -1288,6 +1288,15 @@ int QgsOgrProvider::capabilities() const
     {
       ability |= DeleteAttributes;
     }
+
+#if defined(OLCStringsAsUTF8)
+    if ( !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
+    {
+      ability |= SelectEncoding;
+    }
+#else
+    ability |= SelectEncoding;
+#endif
 
     // OGR doesn't handle shapefiles without attributes, ie. missing DBFs well, fixes #803
     if ( ogrDriverName == "ESRI Shapefile" )

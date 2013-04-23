@@ -219,6 +219,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int theBandNo,
         myMean += myDelta / myRasterBandStats.elementCount;
         mySumOfSquares += myDelta * ( myValue - myMean );
       }
+      delete blk;
     }
   }
 
@@ -478,6 +479,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
         myHistogram.histogramVector[myBinIndex] += 1;
         myHistogram.nonNullCount++;
       }
+      delete blk;
     }
   }
 

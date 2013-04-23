@@ -34,7 +34,6 @@
 #include "qgslabelinggui.h"
 #include "qgslabel.h"
 #include "qgslegenditem.h"
-
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -182,7 +181,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       pbnIndex->setEnabled( false );
     }
 
-    if ( capabilities & QgsVectorDataProvider::SetEncoding )
+    if ( capabilities & QgsVectorDataProvider::SelectEncoding )
     {
       cboProviderEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
       QString enc = layer->dataProvider()->encoding();
@@ -194,8 +193,16 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       }
       cboProviderEncoding->setCurrentIndex( encindex );
     }
+    else if ( layer->dataProvider()->name() == "ogr" )
+    {
+      // if OGR_L_TestCapability(OLCStringsAsUTF8) returns true, OGR provider encoding can be set to only UTF-8
+      // so make encoding box grayed out
+      cboProviderEncoding->addItem( layer->dataProvider()->encoding() );
+      cboProviderEncoding->setEnabled( false );
+    }
     else
     {
+      // other providers do not use mEncoding, so hide the group completely
       mDataSourceEncodingFrame->hide();
     }
   }
@@ -413,7 +420,7 @@ void QgsVectorLayerProperties::apply()
   // provider-specific options
   if ( layer->dataProvider() )
   {
-    if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SetEncoding )
+    if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SelectEncoding )
     {
       layer->setProviderEncoding( cboProviderEncoding->currentText() );
     }
@@ -598,7 +605,6 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
     //something went wrong - let them know why
     QMessageBox::information( this, tr( "Default Style" ), myMessage );
   }
-
 }
 
 void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()
@@ -704,6 +710,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
 
+  QString format, extension;
   if( styleType == DB )
   {
          QString infoWindowTitle = QObject::tr( "Save style to DB (%1)" ).arg( layer->providerType() );
