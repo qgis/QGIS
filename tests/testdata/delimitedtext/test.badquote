@@ -1,0 +1,5 @@
+id,description,data,info
+1,Unclosed quotes 1,"Quoted,data1
+2,Unclosed quotes 2,"Quoted,data2",info2
+3,Recovered after unclosed quore,"Data ok",inf3
+4,Unclosed quotes to end of file,"Never ending field ...

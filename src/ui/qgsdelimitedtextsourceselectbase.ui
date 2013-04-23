@@ -19,13 +19,13 @@
    </iconset>
   </property>
   <property name="toolTip">
-   <string>Number fields use comma for a decimal separator</string>
+   <string/>
   </property>
   <property name="statusTip">
-   <string>Number fields use comma for a decimal separator</string>
+   <string/>
   </property>
   <property name="whatsThis">
-   <string>Number fields use comma for a decimal separator</string>
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
    <item row="1" column="0">
@@ -52,7 +52,7 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Each line in the file is split using a regular expression to define the end of each field</string>
+         <string>Each line in the  file is split using a regular expression to define the end of each field</string>
         </property>
         <property name="statusTip">
          <string>Each line in the  file is split using a regular expression to define the end of each field</string>
@@ -68,13 +68,13 @@
       <item row="2" column="0">
        <widget class="QRadioButton" name="delimiterChars">
         <property name="toolTip">
-         <string>Fields are delimited by specified delimiters with quote and escape characters</string>
+         <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
         </property>
         <property name="statusTip">
-         <string>Fields are delimited by specified delimiters with quote and escape characters</string>
+         <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
         </property>
         <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Fields are delimited by specified delimiters with quote and escape characters&lt;/p&gt;&lt;p&gt;Fields quoted using a quote characters may contain delimiters and new lines&lt;/p&gt;&lt;p&gt;The escape character can escape new lines and quotes within quoted fields&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
         </property>
         <property name="text">
          <string>Selected delimiters</string>
@@ -122,6 +122,15 @@
            </property>
            <item>
             <widget class="QCheckBox" name="cbxDelimComma">
+             <property name="toolTip">
+              <string>Comma character is one of the delimiters</string>
+             </property>
+             <property name="statusTip">
+              <string>Comma character is one of the delimiters</string>
+             </property>
+             <property name="whatsThis">
+              <string>Comma character is one of the delimiters</string>
+             </property>
              <property name="text">
               <string>Comma</string>
              </property>
@@ -130,6 +139,12 @@
            <item>
             <widget class="QCheckBox" name="cbxDelimTab">
              <property name="toolTip">
+              <string>Tab character is one of the delimiters</string>
+             </property>
+             <property name="statusTip">
+              <string>Tab character is one of the delimiters</string>
+             </property>
+             <property name="whatsThis">
               <string>Tab character is one of the delimiters</string>
              </property>
              <property name="text">
@@ -145,6 +160,12 @@
              <property name="toolTip">
               <string>Space character is one of the delimiters</string>
              </property>
+             <property name="statusTip">
+              <string>Space character is one of the delimiters</string>
+             </property>
+             <property name="whatsThis">
+              <string>Space character is one of the delimiters</string>
+             </property>
              <property name="text">
               <string>Space</string>
              </property>
@@ -155,6 +176,15 @@
            </item>
            <item>
             <widget class="QCheckBox" name="cbxDelimColon">
+             <property name="toolTip">
+              <string>Colon character is one of the delimiters</string>
+             </property>
+             <property name="statusTip">
+              <string>Colon character is one of the delimiters</string>
+             </property>
+             <property name="whatsThis">
+              <string>Colon character is one of the delimiters</string>
+             </property>
              <property name="text">
               <string>Colon</string>
              </property>
@@ -162,6 +192,15 @@
            </item>
            <item>
             <widget class="QCheckBox" name="cbxDelimSemicolon">
+             <property name="toolTip">
+              <string>Semicolon character is one of the delimiters</string>
+             </property>
+             <property name="statusTip">
+              <string>Semicolon character is one of the delimiters</string>
+             </property>
+             <property name="whatsThis">
+              <string>Semicolon character is one of the delimiters</string>
+             </property>
              <property name="text">
               <string>Semicolon</string>
              </property>
@@ -545,10 +584,13 @@
            </size>
           </property>
           <property name="toolTip">
-           <string>Name of the field containing y values</string>
+           <string>Name of the field containing well known text value</string>
+          </property>
+          <property name="statusTip">
+           <string>Name of the field containing well known text value</string>
           </property>
           <property name="whatsThis">
-           <string>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</string>
+           <string>Name of the field containing well known text value</string>
           </property>
           <property name="editable">
            <bool>false</bool>
@@ -742,7 +784,20 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="cbxEncoding"/>
+         <widget class="QComboBox" name="cmbEncoding">
+          <property name="toolTip">
+           <string>Select the file encoding</string>
+          </property>
+          <property name="statusTip">
+           <string>Select the file encoding</string>
+          </property>
+          <property name="whatsThis">
+           <string>Select the file encoding</string>
+          </property>
+          <property name="insertPolicy">
+           <enum>QComboBox::InsertAtTop</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -829,13 +884,13 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>The number of lines at the beginning of the file to ignore</string>
+          <string>The number of lines to discard from the beginning of the file</string>
          </property>
          <property name="statusTip">
-          <string>The number of lines at the beginning of the file to ignore</string>
+          <string>The number of lines to discard from the beginning of the file</string>
          </property>
          <property name="whatsThis">
-          <string>The number of lines at the beginning of the file to ignore</string>
+          <string>The number of lines to discard from the beginning of the file</string>
          </property>
          <property name="wrapping">
           <bool>false</bool>
@@ -851,13 +906,13 @@
        <item>
         <widget class="QCheckBox" name="cbxUseHeader">
          <property name="toolTip">
-          <string>Field names are read from the first line.  If not selected then fields are numbered</string>
+          <string>Field names are read from the first record.  If not selected then fields are numbered</string>
          </property>
          <property name="statusTip">
-          <string>Field names are read from the first line.  If not selected then fields are numbered</string>
+          <string>Field names are read from the first record.  If not selected then fields are numbered</string>
          </property>
          <property name="whatsThis">
-          <string>Field names are read from the first line.  If not selected then fields are numbered</string>
+          <string>Field names are read from the first record.  If not selected then fields are numbered</string>
          </property>
          <property name="text">
           <string>First record has field names</string>
@@ -929,16 +984,16 @@
           <bool>true</bool>
          </property>
          <property name="toolTip">
-          <string>X and Y coordinates have comma for decimal separator</string>
+          <string>Number fields use comma for a decimal separator</string>
          </property>
          <property name="statusTip">
-          <string>X and Y coordinates have comma for decimal separator</string>
+          <string>Number fields use comma for a decimal separator</string>
          </property>
          <property name="whatsThis">
-          <string>X and Y coordinates have comma for decimal separator</string>
+          <string>Number fields use comma for a decimal separator</string>
          </property>
          <property name="text">
-          <string>Decimal point is comma</string>
+          <string>Decimal separator is comma</string>
          </property>
         </widget>
        </item>
@@ -966,7 +1021,7 @@
   <tabstop>txtFilePath</tabstop>
   <tabstop>btnBrowseForFile</tabstop>
   <tabstop>txtLayerName</tabstop>
-  <tabstop>cbxEncoding</tabstop>
+  <tabstop>cmbEncoding</tabstop>
   <tabstop>delimiterCSV</tabstop>
   <tabstop>delimiterChars</tabstop>
   <tabstop>cbxDelimComma</tabstop>
