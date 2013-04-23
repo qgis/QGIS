@@ -681,9 +681,17 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 void QgsLabelingGui::populateFieldNames()
 {
   const QgsFields& fields = mLayer->pendingFields();
+  QRegExp nonalpha( "[^a-zA-Z]" );
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    cboFieldName->addItem( fields[idx].name() );
+    if ( fields[idx].name().contains( nonalpha ) )
+    {
+      cboFieldName->addItem( "\"" + fields[idx].name() + "\"" );
+    }
+    else
+    {
+      cboFieldName->addItem( fields[idx].name() );
+    }
   }
 }
 
@@ -1015,7 +1023,7 @@ void QgsLabelingGui::showEngineConfigDialog()
 
 void QgsLabelingGui::showExpressionDialog()
 {
-  QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
+  QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText(), this );
   dlg.setWindowTitle( tr( "Expression based label" ) );
 
   QgsDistanceArea myDa;
