@@ -142,6 +142,15 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
+    /**
+     * Sort by the given column using the given order.
+     * Prefetches all the data from the layer to speed up sorting.
+     *
+     * @param column The column which should be sorted
+     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
+     */
+    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+
   public slots:
     /**
      * Is called upon every change of the visible extents on the map canvas.

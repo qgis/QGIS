@@ -42,7 +42,7 @@ class OTBUtils:
         folder = SextanteConfig.getSetting(OTBUtils.OTB_FOLDER)
         if folder == None:
             folder = ""
-
+            #try to configure the path automatically
             if SextanteUtils.isMac():
                 testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
                 if os.path.exists(os.path.join(testfolder, "otbcli")):
@@ -51,6 +51,13 @@ class OTBUtils:
                     testfolder = "/usr/local/bin"
                     if os.path.exists(os.path.join(testfolder, "otbcli")):
                         folder = testfolder
+            elif SextanteUtils.isWindows():
+                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
+                testfolder = os.path.dirname(testfolder)
+                testfolder = os.path.join(testfolder,  "bin")
+                path = os.path.join(testfolder, "otbcli.bat")
+                if os.path.exists(path):
+                    folder = testfolder
             else:
                 testfolder = "/usr/bin"
                 if os.path.exists(os.path.join(testfolder, "otbcli")):
@@ -62,7 +69,7 @@ class OTBUtils:
         folder = SextanteConfig.getSetting(OTBUtils.OTB_LIB_FOLDER)
         if folder == None:
             folder =""
-
+            #try to configure the path automatically
             if SextanteUtils.isMac():
                 testfolder = os.path.join(str(QgsApplication.prefixPath()), "lib/otb/applications")
                 if os.path.exists(testfolder):
@@ -70,11 +77,17 @@ class OTBUtils:
                 else:
                     testfolder = "/usr/local/lib/otb/applications"
                     if os.path.exists(testfolder):
-                        folder = testfolder
+                        folder = testfolder                    
+            elif SextanteUtils.isWindows():
+                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))                
+                testfolder = os.path.join(testfolder,  "orfeotoolbox")
+                testfolder = os.path.join(testfolder,  "applications")                
+                if os.path.exists(testfolder):
+                    folder = testfolder
             else:
                 testfolder = "/usr/lib/otb/applications"
                 if os.path.exists(testfolder):
-                    folder = testfolder
+                    folder = testfolder                                                        
         return folder
 
     @staticmethod

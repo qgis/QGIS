@@ -77,6 +77,8 @@ QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement& ce
 
 QgsContrastEnhancement::~QgsContrastEnhancement()
 {
+  delete [] mLookupTable;
+  delete mContrastEnhancementFunction;
 }
 /*
  *
@@ -395,7 +397,7 @@ void QgsContrastEnhancement::writeXML( QDomDocument& doc, QDomElement& parentEle
 
   //algorithm
   QDomElement algorithmElem = doc.createElement( "algorithm" );
-  QDomText algorithmText = doc.createTextNode( QString::number( mContrastEnhancementAlgorithm ) );
+  QDomText algorithmText = doc.createTextNode( contrastEnhancementAlgorithmString( mContrastEnhancementAlgorithm ) );
   algorithmElem.appendChild( algorithmText );
   parentElem.appendChild( algorithmElem );
 }
@@ -415,8 +417,54 @@ void QgsContrastEnhancement::readXML( const QDomElement& elem )
   QDomElement algorithmElem = elem.firstChildElement( "algorithm" );
   if ( !algorithmElem.isNull() )
   {
-    setContrastEnhancementAlgorithm(( ContrastEnhancementAlgorithm )( algorithmElem.text().toInt() ) );
+    QString algorithmString = algorithmElem.text();
+    ContrastEnhancementAlgorithm algorithm = NoEnhancement;
+    // old version ( < 19 Apr 2013) was using enum directly -> for backward compatibility
+    if ( algorithmString == "0" )
+    {
+      algorithm = NoEnhancement;
+    }
+    else if ( algorithmString == "1" )
+    {
+      algorithm = StretchToMinimumMaximum;
+    }
+    else if ( algorithmString == "2" )
+    {
+      algorithm = StretchAndClipToMinimumMaximum;
+    }
+    else if ( algorithmString == "3" )
+    {
+      algorithm = ClipToMinimumMaximum;
+    }
+    else if ( algorithmString == "4" )
+    {
+      algorithm = UserDefinedEnhancement;
+    }
+    else
+    {
+      algorithm = contrastEnhancementAlgorithmFromString( algorithmString );
+    }
+
+    setContrastEnhancementAlgorithm( algorithm );
   }
+}
+
+QString QgsContrastEnhancement::contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm )
+{
+  switch ( algorithm )
+  {
+    case NoEnhancement:
+      return "NoEnhancement";
+    case StretchToMinimumMaximum:
+      return "StretchToMinimumMaximum";
+    case StretchAndClipToMinimumMaximum:
+      return "StretchAndClipToMinimumMaximum";
+    case ClipToMinimumMaximum:
+      return "ClipToMinimumMaximum";
+    case UserDefinedEnhancement:
+      return "UserDefinedEnhancement";
+  }
+  return "NoEnhancement";
 }
 
 QgsContrastEnhancement::ContrastEnhancementAlgorithm QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString )
@@ -432,6 +480,10 @@ QgsContrastEnhancement::ContrastEnhancementAlgorithm QgsContrastEnhancement::con
   else if ( contrastEnhancementString == "ClipToMinimumMaximum" )
   {
     return ClipToMinimumMaximum;
+  }
+  else if ( contrastEnhancementString == "UserDefinedEnhancement" )
+  {
+    return UserDefinedEnhancement;
   }
   else
   {

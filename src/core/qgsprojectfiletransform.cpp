@@ -816,10 +816,13 @@ int QgsProjectFileTransform::rasterBandNumber( const QDomElement& rasterProperti
   QDomElement rasterBandElem = rasterPropertiesElem.firstChildElement( bandName );
   if ( !rasterBandElem.isNull() )
   {
-    band = rlayer->bandNumber( rasterBandElem.text() );
-    if ( band == 0 )
+    for ( int i = 1; i <= rlayer->bandCount(); i++ )
     {
-      band = -1;
+      if ( rlayer->bandName( i ) == rasterBandElem.text() )
+      {
+        band = i;
+        break;
+      }
     }
   }
   return band;

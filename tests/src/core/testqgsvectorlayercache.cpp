@@ -23,6 +23,8 @@
 #include <qgsvectordataprovider.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayereditbuffer.h>
+#include <qgscacheindexfeatureid.h>
+#include <QDebug>
 
 /** @ingroup UnitTests
  * This is a unit test for the vector layer cache
@@ -36,17 +38,19 @@ class TestVectorLayerCache: public QObject
   private slots:
     void initTestCase();      // will be called before the first testfunction is executed.
     void cleanupTestCase();   // will be called after the last testfunction was executed.
-    void init() {};           // will be called before each testfunction is executed.
-    void cleanup() {};        // will be called after every testfunction.
+    void init();              // will be called before each testfunction is executed.
+    void cleanup();           // will be called after every testfunction.
 
     void testCacheOverflow();    // Test cache will work if too many features to cache them all are present
     void testCacheAttrActions(); // Test attribute add/ attribute delete
     void testFeatureActions();   // Test adding/removing features works
+    void testSubsetRequest();
 
     void onCommittedFeaturesAdded( QString, QgsFeatureList );
 
   private:
     QgsVectorLayerCache*           mVectorLayerCache;
+    QgsCacheIndexFeatureId*        mFeatureIdIndex;
     QgsVectorLayer*                mPointsLayer;
     QgsFeatureList                 mAddedFeatures;
     QMap<QString, QString> mTmpFiles;
@@ -88,8 +92,19 @@ void TestVectorLayerCache::initTestCase()
   QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), "ogr" );
+}
 
+void TestVectorLayerCache::init()
+{
   mVectorLayerCache = new QgsVectorLayerCache( mPointsLayer, 10 );
+  mFeatureIdIndex = new QgsCacheIndexFeatureId( mVectorLayerCache );
+  mVectorLayerCache->addCacheIndex( mFeatureIdIndex );
+}
+
+void TestVectorLayerCache::cleanup()
+{
+  delete mVectorLayerCache;
+  delete mFeatureIdIndex;
 }
 
 //runs after all tests
@@ -107,8 +122,6 @@ void TestVectorLayerCache::cleanupTestCase()
     mAddedFeatures.clear();
   }
 
-  delete mVectorLayerCache;
-  mVectorLayerCache = NULL;
 
   delete mPointsLayer;
   mPointsLayer = NULL;
@@ -190,9 +203,28 @@ void TestVectorLayerCache::testFeatureActions()
   // Delete feature...
   mPointsLayer->startEditing();
   QVERIFY( mPointsLayer->deleteFeature( fid ) );
-  mPointsLayer->commitChanges();
 
   QVERIFY( false == mVectorLayerCache->featureAtId( fid, f ) );
+  mPointsLayer->rollBack();
+}
+
+void TestVectorLayerCache::testSubsetRequest()
+{
+  QgsFeature f;
+
+  QgsFields fields = mPointsLayer->pendingFields();
+  QStringList requiredFields;
+  requiredFields << "Class" << "Cabin Crew";
+
+  mVectorLayerCache->featureAtId( 16, f );
+  QVariant a = f.attribute( 3 );
+
+  QgsFeatureIterator itSubset = mVectorLayerCache->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( requiredFields, fields) );
+  while ( itSubset.nextFeature( f ) ) {}
+  itSubset.close();
+
+  mVectorLayerCache->featureAtId( 16, f );
+  QVERIFY( a == f.attribute( 3 ) );
 }
 
 void TestVectorLayerCache::onCommittedFeaturesAdded( QString layerId, QgsFeatureList features )

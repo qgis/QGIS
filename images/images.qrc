@@ -95,6 +95,10 @@
         <file>themes/default/console/iconRunScriptConsole.png</file>
         <file>themes/default/console/iconCommentEditorConsole.png</file>
         <file>themes/default/console/iconUncommentEditorConsole.png</file>
+        <file>themes/default/console/iconClassTreeWidgetConsole.png</file>
+        <file>themes/default/console/iconMethodTreeWidgetConsole.png</file>
+        <file>themes/default/console/iconFunctionTreeWidgetConsole.png</file>
+        <file>themes/default/console/iconClassBrowserConsole.png</file>
         <file>themes/default/extents.png</file>
         <file>themes/default/favourites.png</file>
         <file>themes/default/geographic.png</file>
@@ -370,14 +374,17 @@
         <file>themes/default/propertyicons/CRS.png</file>
         <file>themes/default/propertyicons/diagram.png</file>
         <file>themes/default/propertyicons/digitising.png</file>
+        <file>themes/default/propertyicons/display.svg</file>
         <file>themes/default/propertyicons/gdal.png</file>
         <file>themes/default/propertyicons/general.png</file>
         <file>themes/default/propertyicons/histogram.png</file>
         <file>themes/default/propertyicons/join.png</file>
         <file>themes/default/propertyicons/labels.png</file>
+        <file>themes/default/propertyicons/labels.svg</file>
         <file>themes/default/propertyicons/locale.png</file>
         <file>themes/default/propertyicons/map_tools.png</file>
         <file>themes/default/propertyicons/metadata.png</file>
+        <file>themes/default/propertyicons/metadata.svg</file>
         <file>themes/default/propertyicons/network_and_proxy.png</file>
         <file>themes/default/propertyicons/overlay.png</file>
         <file>themes/default/propertyicons/pyramids.png</file>
@@ -403,6 +410,7 @@
         <file>themes/default/transp-background_8x8.png</file>
         <file>themes/default/unlocked.png</file>
         <file>themes/default/user.png</file>
+        <file>flags/bs_BA.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

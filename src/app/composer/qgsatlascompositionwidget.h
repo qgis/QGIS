@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "ui_qgsatlascompositionwidgetbase.h"
+#include "qgsvectorlayer.h"
 
 class QgsComposition;
 class QgsMapLayer;
@@ -40,7 +41,7 @@ class QgsAtlasCompositionWidget:
     void on_mAtlasFilenamePatternEdit_textChanged( const QString& text );
     void on_mAtlasFilenameExpressionButton_clicked();
     void on_mAtlasHideCoverageCheckBox_stateChanged( int state );
-    void on_mAtlasFixedScaleCheckBox_stateChanged( int state );
+    void on_mAtlasFixedScaleRadio_toggled( bool checked );
     void on_mAtlasSingleFileCheckBox_stateChanged( int state );
 
     void on_mAtlasSortFeatureCheckBox_stateChanged( int state );
@@ -49,6 +50,7 @@ class QgsAtlasCompositionWidget:
     void on_mAtlasFeatureFilterEdit_textChanged( const QString& text );
     void on_mAtlasFeatureFilterButton_clicked();
     void on_mAtlasFeatureFilterCheckBox_stateChanged( int state );
+    void on_mAtlasMarginSpinBox_valueChanged( int value );
 
     // extract fields from the current coverage layer and populate the corresponding combo box
     void fillSortColumns();
@@ -64,4 +66,5 @@ class QgsAtlasCompositionWidget:
     QgsComposition* mComposition;
 
     void blockAllSignals( bool b );
+    void checkLayerType( QgsVectorLayer *layer );
 };

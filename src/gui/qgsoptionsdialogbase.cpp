@@ -95,6 +95,23 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi()
     settings.value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).isNull() ? 150 : 16777215 );
   mOptSplitter->restoreState( settings.value( QString( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
   int curIndx = settings.value( QString( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
+
+  // if the last used tab is not enabled, or is missing, display the first enabled one
+  if ( !mOptStackedWidget->widget( curIndx )->isEnabled()
+       || mOptStackedWidget->count() < ( curIndx + 1 ) )
+  {
+    curIndx = 0;
+    for ( int i = 0; i < mOptStackedWidget->count(); i++ )
+    {
+      if ( mOptStackedWidget->widget( i )->isEnabled() )
+      {
+        curIndx = i;
+        break;
+      }
+    }
+    curIndx = -1; // default fallback
+  }
+
   mOptStackedWidget->setCurrentIndex( curIndx );
   mOptListWidget->setCurrentRow( curIndx );
 

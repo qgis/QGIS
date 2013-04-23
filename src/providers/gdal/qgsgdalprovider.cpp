@@ -289,7 +289,7 @@ QString QgsGdalProvider::metadata()
   // end my added code
 
   myMetadata += "<p class=\"glossy\">";
-  myMetadata += tr( "Dimensions:" );
+  myMetadata += tr( "Dimensions" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
@@ -326,7 +326,7 @@ QString QgsGdalProvider::metadata()
   else
   {
     myMetadata += "<p class=\"glossy\">";
-    myMetadata += tr( "Origin:" );
+    myMetadata += tr( "Origin" );
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[0] );
@@ -335,7 +335,7 @@ QString QgsGdalProvider::metadata()
     myMetadata += "</p>\n";
 
     myMetadata += "<p class=\"glossy\">";
-    myMetadata += tr( "Pixel Size:" );
+    myMetadata += tr( "Pixel Size" );
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[1] );
@@ -971,6 +971,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Id
     {
       results.insert( i, value );
     }
+    delete myBlock;
   }
   return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
 }

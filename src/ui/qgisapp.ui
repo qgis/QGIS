@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -51,11 +51,11 @@
    </widget>
    <widget class="QMenu" name="mFileMenu">
     <property name="title">
-     <string>&amp;File</string>
+     <string>P&amp;roject</string>
     </property>
     <widget class="QMenu" name="mRecentProjectsMenu">
      <property name="title">
-      <string>&amp;Open Recent Projects</string>
+      <string>&amp;Open Recent</string>
      </property>
     </widget>
     <widget class="QMenu" name="mPrintComposersMenu">
@@ -65,7 +65,7 @@
     </widget>
     <widget class="QMenu" name="mProjectFromTemplateMenu">
      <property name="title">
-      <string>New Project From Template</string>
+      <string>New From Template</string>
      </property>
     </widget>
     <addaction name="mActionNewProject"/>
@@ -475,7 +475,7 @@
      <normaloff>:/images/themes/default/mActionFileNew.png</normaloff>:/images/themes/default/mActionFileNew.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;New Project</string>
+    <string>&amp;New</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -487,7 +487,7 @@
      <normaloff>:/images/themes/default/mActionFileOpen.png</normaloff>:/images/themes/default/mActionFileOpen.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open Project...</string>
+    <string>&amp;Open...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -499,7 +499,7 @@
      <normaloff>:/images/themes/default/mActionFileSave.png</normaloff>:/images/themes/default/mActionFileSave.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Save Project</string>
+    <string>&amp;Save</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -511,7 +511,7 @@
      <normaloff>:/images/themes/default/mActionFileSaveAs.png</normaloff>:/images/themes/default/mActionFileSaveAs.png</iconset>
    </property>
    <property name="text">
-    <string>Save Project &amp;As...</string>
+    <string>Save &amp;As...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -553,7 +553,7 @@
      <normaloff>:/images/themes/default/mActionFileExit.png</normaloff>:/images/themes/default/mActionFileExit.png</iconset>
    </property>
    <property name="text">
-    <string>Exit</string>
+    <string>Exit QGIS</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>

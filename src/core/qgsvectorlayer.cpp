@@ -3396,31 +3396,33 @@ void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )
 QString QgsVectorLayer::metadata()
 {
   QString myMetadata = "<html><body>";
-  myMetadata += "<table width=\"100%\">";
 
   //-------------
 
-  myMetadata += "<tr class=\"glossy\"><td>";
-  myMetadata += tr( "General:" );
-  myMetadata += "</td></tr>";
+  myMetadata += "<p class=\"subheaderglossy\">";
+  myMetadata += tr( "General" );
+  myMetadata += "</p>\n";
 
   // data comment
   if ( !( dataComment().isEmpty() ) )
   {
-    myMetadata += "<tr><td>";
-    myMetadata += tr( "Layer comment: %1" ).arg( dataComment() );
-    myMetadata += "</td></tr>";
+    myMetadata += "<p class=\"glossy\">" + tr( "Layer comment" ) + "</p>\n";
+    myMetadata += "<p>";
+    myMetadata += dataComment();
+    myMetadata += "</p>\n";
   }
 
   //storage type
-  myMetadata += "<tr><td>";
-  myMetadata += tr( "Storage type of this layer: %1" ).arg( storageType() );
-  myMetadata += "</td></tr>";
+  myMetadata += "<p class=\"glossy\">" + tr( "Storage type of this layer" ) + "</p>\n";
+  myMetadata += "<p>";
+  myMetadata += storageType();
+  myMetadata += "</p>\n";
 
   // data source
-  myMetadata += "<tr><td>";
-  myMetadata += tr( "Source for this layer: %1" ).arg( publicSource() );
-  myMetadata += "</td></tr>";
+  myMetadata += "<p class=\"glossy\">" + tr( "Source for this layer" ) + "</p>\n";
+  myMetadata += "<p>";
+  myMetadata += publicSource();
+  myMetadata += "</p>\n";
 
   //geom type
 
@@ -3434,42 +3436,46 @@ QString QgsVectorLayer::metadata()
   {
     QString typeString( QGis::vectorGeometryType( geometryType() ) );
 
-    myMetadata += "<tr><td>";
-    myMetadata += tr( "Geometry type of the features in this layer: %1" ).arg( typeString );
-    myMetadata += "</td></tr>";
+    myMetadata += "<p class=\"glossy\">" + tr( "Geometry type of the features in this layer" ) + "</p>\n";
+    myMetadata += "<p>";
+    myMetadata += typeString;
+    myMetadata += "</p>\n";
   }
 
   QgsAttributeList pkAttrList = pendingPkAttributesList();
   if ( !pkAttrList.isEmpty() )
   {
-    myMetadata += "<tr><td>";
-    myMetadata += tr( "Primary key attributes: " );
+    myMetadata += "<p class=\"glossy\">" + tr( "Primary key attributes" ) + "</p>\n";
+    myMetadata += "<p>";
     foreach ( int idx, pkAttrList )
     {
       myMetadata += pendingFields()[ idx ].name() + " ";
     }
-    myMetadata += "</td></tr>";
+    myMetadata += "</p>\n";
   }
 
 
   //feature count
-  myMetadata += "<tr><td>";
-  myMetadata += tr( "The number of features in this layer: %1" ).arg( featureCount() );
-  myMetadata += "</td></tr>";
+  myMetadata += "<p class=\"glossy\">" + tr( "The number of features in this layer" ) + "</p>\n";
+  myMetadata += "<p>";
+  myMetadata += QString::number( featureCount() );
+  myMetadata += "</p>\n";
   //capabilities
-  myMetadata += "<tr><td>";
-  myMetadata += tr( "Editing capabilities of this layer: %1" ).arg( capabilitiesString() );
-  myMetadata += "</td></tr>";
+  myMetadata += "<p class=\"glossy\">" + tr( "Editing capabilities of this layer" ) + "</p>\n";
+  myMetadata += "<p>";
+  myMetadata += capabilitiesString();
+  myMetadata += "</p>\n";
 
   //-------------
 
   QgsRectangle myExtent = extent();
-  myMetadata += "<tr class=\"glossy\"><td>";
-  myMetadata += tr( "Extents:" );
-  myMetadata += "</td></tr>";
-  //extents in layer cs  TODO...maybe make a little nested table to improve layout...
-  myMetadata += "<tr><td>" + tr( "In layer spatial reference system units : " );
+  myMetadata += "<p class=\"subheaderglossy\">";
+  myMetadata += tr( "Extents" );
+  myMetadata += "</p>\n";
 
+  //extents in layer cs  TODO...maybe make a little nested table to improve layout...
+  myMetadata += "<p class=\"glossy\">" + tr( "In layer spatial reference system units" ) + "</p>\n";
+  myMetadata += "<p>";
   // Try to be a bit clever over what number format we use for the
   // extents. Some people don't like it using scientific notation when the
   // numbers get large, but for small numbers this is the more practical
@@ -3525,7 +3531,7 @@ QString QgsVectorLayer::metadata()
     myMetadata += tr( "unknown extent" );
   }
 
-  myMetadata += "</td></tr>";
+  myMetadata += "</p>\n";
 
   //extents in project cs
 
@@ -3534,37 +3540,34 @@ QString QgsVectorLayer::metadata()
 #if 0
     // TODO: currently disabled, will revisit later [MD]
     QgsRectangle myProjectedExtent = coordinateTransform->transformBoundingBox( extent() );
-    myMetadata += "<tr><td>";
-    myMetadata += tr( "In project spatial reference system units : " )
-                  + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
+    myMetadata += "<p class=\"glossy\">" + tr( "In project spatial reference system units" ) + "</p>\n";
+    myMetadata += "<p>";
+    myMetadata += tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
                   .arg( myProjectedExtent.xMinimum() )
                   .arg( myProjectedExtent.yMinimum() )
                   .arg( myProjectedExtent.xMaximum() )
                   .arg( myProjectedExtent.yMaximum() );
-    myMetadata += "</td></tr>";
+    myMetadata += "</p>\n";
 #endif
 
     //
     // Display layer spatial ref system
     //
-    myMetadata += "<tr class=\"glossy\"><td>";
-    myMetadata += tr( "Layer Spatial Reference System:" );
-    myMetadata += "</td></tr>";
-    myMetadata += "<tr><td>";
+    myMetadata += "<p class=\"glossy\">" + tr( "Layer Spatial Reference System" ) + "</p>\n";
+    myMetadata += "<p>";
     myMetadata += crs().toProj4().replace( QRegExp( "\"" ), " \"" );
-    myMetadata += "</td></tr>";
+    myMetadata += "</p>\n";
 
     //
     // Display project (output) spatial ref system
     //
 #if 0
     // TODO: disabled for now, will revisit later [MD]
-    myMetadata += "<tr><td bgcolor=\"gray\">";
-    myMetadata += tr( "Project (Output) Spatial Reference System:" );
-    myMetadata += "</td></tr>";
-    myMetadata += "<tr><td>";
+    //myMetadata += "<tr><td bgcolor=\"gray\">";
+    myMetadata += "<p class=\"glossy\">" + tr( "Project (Output) Spatial Reference System" ) + "</p>\n";
+    myMetadata += "<p>";
     myMetadata += coordinateTransform->destCRS().toProj4().replace( QRegExp( "\"" ), " \"" );
-    myMetadata += "</td></tr>";
+    myMetadata += "</p>\n";
 #endif
   }
   catch ( QgsCsException &cse )
@@ -3572,10 +3575,10 @@ QString QgsVectorLayer::metadata()
     Q_UNUSED( cse );
     QgsDebugMsg( cse.what() );
 
-    myMetadata += "<tr><td>";
-    myMetadata += tr( "In project spatial reference system units : " )
-                  + tr( "(Invalid transformation of layer extents)" );
-    myMetadata += "</td></tr>";
+    myMetadata += "<p class=\"glossy\">" + tr( "In project spatial reference system units" ) + "</p>\n";
+    myMetadata += "<p>";
+    myMetadata += tr( "(Invalid transformation of layer extents)" );
+    myMetadata += "</p>\n";
 
   }
 
@@ -3583,10 +3586,8 @@ QString QgsVectorLayer::metadata()
   //
   // Add the info about each field in the attribute table
   //
-  myMetadata += "<tr class=\"glossy\"><td>";
-  myMetadata += tr( "Attribute field info:" );
-  myMetadata += "</td></tr>";
-  myMetadata += "<tr><td>";
+  myMetadata += "<p class=\"glossy\">" + tr( "Attribute field info" ) + "</p>\n";
+  myMetadata += "<p>";
 
   // Start a nested table in this trow
   myMetadata += "<table width=\"100%\">";
@@ -3632,13 +3633,6 @@ QString QgsVectorLayer::metadata()
   //close field list
   myMetadata += "</table>"; //end of nested table
 #endif
-
-  myMetadata += "</td></tr>"; //end of stats container table row
-  //
-  // Close the table
-  //
-
-  myMetadata += "</table>";
 
   myMetadata += "</body></html>";
   return myMetadata;

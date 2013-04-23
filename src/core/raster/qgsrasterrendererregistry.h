@@ -23,7 +23,6 @@
 #include <QString>
 
 class QDomElement;
-//class QgsRasterDataProvider;
 class QgsRasterInterface;
 class QgsRasterLayer;
 class QgsRasterRenderer;

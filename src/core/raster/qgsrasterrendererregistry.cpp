@@ -92,7 +92,6 @@ bool QgsRasterRendererRegistry::rendererData( const QString& rendererName, QgsRa
 
 QStringList QgsRasterRendererRegistry::renderersList() const
 {
-  // return QStringList( mEntries.keys() );
   return mSortedEntries;
 }
 

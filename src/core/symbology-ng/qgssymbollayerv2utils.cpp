@@ -2254,7 +2254,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
   }
   else
   {
-    function = expr->dump();
+    function = expr->expression();
   }
 
   delete expr;

@@ -40,8 +40,8 @@ QTreeWidgetItem* QgsAttributesTree::addContainer( QTreeWidgetItem* parent, QStri
   newItem->setBackground( 0 , QBrush( Qt::lightGray ) );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
   newItem->setData( 0 , Qt::UserRole , "container" );
-  newItem->setExpanded( true );
   parent->addChild( newItem );
+  newItem->setExpanded( true );
   return newItem;
 }
 

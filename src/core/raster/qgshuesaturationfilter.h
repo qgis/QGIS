@@ -65,7 +65,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
     int colorizeStrength() const { return mColorizeStrength; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem );
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXML( const QDomElement& filterElem );

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>509</width>
-    <height>416</height>
+    <width>444</width>
+    <height>383</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -65,14 +65,17 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout">
+      <layout class="QHBoxLayout" name="pushBtnBox">
+       <property name="spacing">
+        <number>6</number>
+       </property>
        <item>
         <widget class="QPushButton" name="btnAddLayer">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="toolTip">
           <string>Add symbol layer</string>
@@ -81,11 +84,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="btnRemoveLayer">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="toolTip">
           <string>Remove symbol layer</string>
@@ -94,11 +97,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="btnLock">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="toolTip">
           <string>Lock layer's color</string>
@@ -110,11 +113,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="btnUp">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="toolTip">
           <string>Move up</string>
@@ -123,11 +126,11 @@
        </item>
        <item>
         <widget class="QPushButton" name="btnDown">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="toolTip">
           <string>Move down</string>
@@ -175,8 +178,6 @@
        </widget>
       </item>
      </layout>
-     <zorder>stackedWidget</zorder>
-     <zorder>stackedWidget</zorder>
     </widget>
    </item>
   </layout>

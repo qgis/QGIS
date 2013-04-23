@@ -26,6 +26,7 @@
 #include <QDesktopServices>
 
 #include <gdal.h>
+#include "cpl_conv.h"
 
 //qgis includes...
 #include <qgsrasterlayer.h>

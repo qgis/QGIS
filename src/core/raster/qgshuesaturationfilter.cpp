@@ -333,7 +333,7 @@ void QgsHueSaturationFilter::setColorizeColor( QColor colorizeColor )
   mColorizeS = mColorizeColor.saturation();
 }
 
-void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentElem )
+void QgsHueSaturationFilter::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {
