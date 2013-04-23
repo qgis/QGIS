@@ -10,6 +10,7 @@
 %Include qgisinterface.sip
 %Include qgsannotationitem.sip
 %Include qgsattributeeditor.sip
+%Include qgsattributedialog.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
 %Include qgscolorbutton.sip
