@@ -160,7 +160,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       pbnIndex->setEnabled( false );
     }
 
-    if ( capabilities & QgsVectorDataProvider::SetEncoding )
+    if ( capabilities & QgsVectorDataProvider::SelectEncoding )
     {
       cboProviderEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
       QString enc = layer->dataProvider()->encoding();
@@ -172,8 +172,16 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       }
       cboProviderEncoding->setCurrentIndex( encindex );
     }
+    else if ( layer->dataProvider()->name() == "ogr" )
+    {
+      // if OGR_L_TestCapability(OLCStringsAsUTF8) returns true, OGR provider encoding can be set to only UTF-8
+      // so make encoding box grayed out
+      cboProviderEncoding->addItem( layer->dataProvider()->encoding() );
+      cboProviderEncoding->setEnabled( false );
+    }
     else
     {
+      // other providers do not use mEncoding, so hide the group completely
       mDataSourceEncodingFrame->hide();
     }
   }
@@ -391,7 +399,7 @@ void QgsVectorLayerProperties::apply()
   // provider-specific options
   if ( layer->dataProvider() )
   {
-    if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SetEncoding )
+    if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SelectEncoding )
     {
       layer->setProviderEncoding( cboProviderEncoding->currentText() );
     }

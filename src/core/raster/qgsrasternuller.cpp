@@ -50,9 +50,9 @@ QGis::DataType QgsRasterNuller::dataType( int bandNo ) const
 QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   QgsDebugMsg( "Entered" );
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )
   {
+    QgsRasterBlock *outputBlock = new QgsRasterBlock();
     return outputBlock;
   }
 
