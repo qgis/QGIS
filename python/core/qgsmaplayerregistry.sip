@@ -47,7 +47,7 @@ class QgsMapLayerRegistry : QObject
      * @note As a side-effect QgsProject is made dirty.
      * @note Added in QGIS 1.8
      */
-    QList<QgsMapLayer *> addMapLayers(QList<QgsMapLayer *> theMapLayers,
+    QList<QgsMapLayer *> addMapLayers(QList<QgsMapLayer *> theMapLayers /Transfer/,
                                        bool addToLegend = true );
 
     /**
@@ -71,7 +71,7 @@ class QgsMapLayerRegistry : QObject
      * @note As a side-effect QgsProject is made dirty.
      * @note Use addMapLayers if adding more than one layer at a time
      */
-    QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer, bool addToLegend = true );
+    QgsMapLayer* addMapLayer( QgsMapLayer * theMapLayer /Transfer/, bool addToLegend = true );
 
     /**
      * @brief
