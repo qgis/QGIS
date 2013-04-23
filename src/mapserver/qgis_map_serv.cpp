@@ -109,6 +109,19 @@ void printRequestInfos()
   {
     QgsDebugMsg( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ) );
   }
+  if ( getenv( "HTTP_PROXY" ) != NULL )
+  {
+    QgsDebugMsg( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ) );
+  }
+  if ( getenv( "HTTPS_PROXY" ) != NULL )
+  {
+    QgsDebugMsg( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ) );
+  }
+  if ( getenv( "NO_PROXY" ) != NULL )
+  {
+    QgsDebugMsg( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ) );
+  }
+
 #endif //QGSMSDEBUG
 }
 
