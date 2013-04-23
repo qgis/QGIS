@@ -50,7 +50,6 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
   private:
     QgsDelimitedTextFile *mFile;
     int mExampleRowCount;
-    QString mColumnNamePrefix;
     QString mPluginKey;
     QString mLastFileType;
 
@@ -67,6 +66,7 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     void updateFileName();
     void updateFieldsAndEnable();
     void enableAccept();
+    bool validate();
 
   signals:
     void addVectorLayer( QString, QString, QString );
