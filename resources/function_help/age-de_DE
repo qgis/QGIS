@@ -1,0 +1,29 @@
+<h3>Funktion age()</h3>
+Gibt den Unterschied zwischen zwei Daten zurück.
+<br><br>
+Der Unterschied wird als <code>Intervall</code> zurückgegeben
+und muß mit folgenden Funktionen weiterverarbeitet werde, um
+sinnvolle Informationen zu erhalten:
+><code>year</code>
+<li><code>month</code>
+<li><code>week</code>
+<li><code>day</code>
+<li><code>hour</code>
+<li><code>minute</code>
+<li><code>second</code>
+</ul>
+<h4>Syntax</h4>
+<code>age(zeichenkette,zeichenkette)</code><br>
+<code>age(datetime,datetime)</code><br>
+<code>age(zeichenkette,datetime)</code><br>
+<code>age(datetime,zeichenkette)</code><br>
+
+<h4>Argumente</h4>
+<code>zeichenkette</code> - ist string. Eine Zeichenkette in Datumsformat. <br>
+<code>datetime</code> - ist date oder datetime. Eine Datums oder eine Zeit.
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>age('2012-05-12','2012-05-2') &rarr; Intervall</code><br>
+<code>day</code> benutzen um die Anzahl der Tage zur bestimmen<br>
+<code>day(age('2012-05-12','2012-05-2')) &rarr; 10</code><br>

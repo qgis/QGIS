@@ -3,7 +3,7 @@
     ---------------------
     begin                : October 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -36,6 +36,5 @@ class QgsGdalLayerItem : public QgsLayerItem
 
     QString layerName() const;
 };
-
 
 #endif // QGSGDALDATAITEMS_H

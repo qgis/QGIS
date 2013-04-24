@@ -39,7 +39,7 @@ namespace QgsMapToolSelectUtils
     must be in terms of the canvas coordinate system.
     @param doContains Features will only be selected if contained within the
     selection rubber band.
-    @param doDifference Take the symmetric difference of the the current selected
+    @param doDifference Take the symmetric difference of the current selected
     features and the new features found within the provided selectGeometry.
     @param singleSelect Only selects the closest feature to the selectGeometry.
   */

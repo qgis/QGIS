@@ -20,24 +20,6 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-def name():
-	return "DB Manager"
-
-def description():
-	return "Manage your databases within QGis"
-
-def version():
-	return "0.1.20"
-
-def qgisMinimumVersion():
-	return "1.5.0"
-
-def icon():
-	return "icons/dbmanager.png"
-
-def authorName():
-	return "Giuseppe Sucameli"
-
 def classFactory(iface):
 	from .db_manager_plugin import DBManagerPlugin
 	return DBManagerPlugin(iface)

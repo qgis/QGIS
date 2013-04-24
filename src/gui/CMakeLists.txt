@@ -1,12 +1,20 @@
 
 SET(QGIS_GUI_SRCS
 
+raster/qgsrasterminmaxwidget.cpp
+raster/qgsrasterrendererwidget.cpp
+raster/qgsmultibandcolorrendererwidget.cpp
+raster/qgspalettedrendererwidget.cpp
+raster/qgssinglebandgrayrendererwidget.cpp
+raster/qgssinglebandpseudocolorrendererwidget.cpp
+raster/qgsrasterhistogramwidget.cpp
+
 symbology-ng/qgsbrushstylecombobox.cpp
 symbology-ng/qgscolorrampcombobox.cpp
 symbology-ng/qgsdashspacedialog.cpp
+symbology-ng/qgsdatadefinedsymboldialog.cpp
 symbology-ng/qgspenstylecombobox.cpp
 symbology-ng/qgssymbollayerv2widget.cpp
-symbology-ng/qgssymbolv2propertiesdialog.cpp
 symbology-ng/qgsrendererv2widget.cpp
 symbology-ng/qgssinglesymbolrendererv2widget.cpp
 symbology-ng/qgscategorizedsymbolrendererv2widget.cpp
@@ -19,34 +27,52 @@ symbology-ng/qgssymbolv2selectordialog.cpp
 symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp
 symbology-ng/qgsvectorrandomcolorrampv2dialog.cpp
 symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
+symbology-ng/qgscptcitycolorrampv2dialog.cpp
 symbology-ng/characterwidget.cpp
 symbology-ng/qgsstylev2exportimportdialog.cpp
 symbology-ng/qgsellipsesymbollayerv2widget.cpp
 symbology-ng/qgspointdisplacementrendererwidget.cpp
 symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
+symbology-ng/qgssymbolslistwidget.cpp
+symbology-ng/qgssvgselectorwidget.cpp
+symbology-ng/qgslayerpropertieswidget.cpp
+symbology-ng/qgssmartgroupeditordialog.cpp
 
 attributetable/qgsattributetablemodel.cpp
-attributetable/qgsattributetablememorymodel.cpp
 attributetable/qgsattributetableview.cpp
 attributetable/qgsattributetablefiltermodel.cpp
-attributetable/qgsattributetableidcolumnpair.cpp
 attributetable/qgsattributetabledelegate.cpp
+attributetable/qgsfeaturelistview.cpp
+attributetable/qgsfeaturelistmodel.cpp
+attributetable/qgsfeaturelistviewdelegate.cpp
+attributetable/qgsfeatureselectionmodel.cpp
+attributetable/qgsdualview.cpp
 
 qgisgui.cpp
 qgisinterface.cpp
 qgsannotationitem.cpp
 qgsattributeeditor.cpp
+qgsattributedialog.cpp
+qgsbusyindicatordialog.cpp
 qgslegendinterface.cpp
+qgsblendmodecombobox.cpp
+qgscharacterselectdialog.cpp
 qgscolorbutton.cpp
+qgscolordialog.cpp
 qgscomposerview.cpp
+qgscomposerruler.cpp
 qgscursors.cpp
 qgsdetaileditemdelegate.cpp
 qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
+qgsdialog.cpp
 qgsencodingfiledialog.cpp
+qgserrordialog.cpp
 qgsfiledropedit.cpp
 qgsfieldvalidator.cpp
 qgsformannotationitem.cpp
+qgshtmlannotationitem.cpp
+qgshighlight.cpp
 qgsgenericprojectionselector.cpp
 qgsmanageconnectionsdialog.cpp
 qgsmapcanvas.cpp
@@ -57,27 +83,37 @@ qgsmapoverviewcanvas.cpp
 qgsmaptip.cpp
 qgsmaptool.cpp
 qgsmaptoolemitpoint.cpp
+qgsmaptoolidentify.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
+qgsmessagebar.cpp
 qgsmessageviewer.cpp
 qgsmessagelogviewer.cpp
 qgsnewhttpconnection.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
+qgsoptionsdialogbase.cpp
 qgscredentialdialog.cpp
+qgsowssourceselect.cpp
 qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
-qgsquickprint.cpp
+qgsrasterlayersaveasdialog.cpp
+qgsrasterformatsaveoptionswidget.cpp
+qgsrasterpyramidsoptionswidget.cpp
 qgsrubberband.cpp
 qgsscalecombobox.cpp
+qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
 qgsvertexmarker.cpp
 qgsludialog.cpp
 qgssearchquerybuilder.cpp
 qgsexpressionbuilderwidget.cpp
 qgsexpressionbuilderdialog.cpp
+qgsexpressionselectiondialog.cpp
 qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
+qgscollapsiblegroupbox.cpp
+qgsfilterlineedit.cpp
 )
 
 IF (WITH_TOUCH)
@@ -89,11 +125,20 @@ ENDIF (WITH_TOUCH)
 
 SET(QGIS_GUI_MOC_HDRS
 
+qgscolorbutton.h
+
+raster/qgsrasterminmaxwidget.h
+raster/qgspalettedrendererwidget.h
+raster/qgsmultibandcolorrendererwidget.h
+raster/qgssinglebandgrayrendererwidget.h
+raster/qgssinglebandpseudocolorrendererwidget.h
+raster/qgsrasterhistogramwidget.h
+
 symbology-ng/qgsdashspacedialog.h
 symbology-ng/qgssymbollayerv2widget.h
-symbology-ng/qgssymbolv2propertiesdialog.h
 symbology-ng/qgssinglesymbolrendererv2widget.h
 symbology-ng/qgscategorizedsymbolrendererv2widget.h
+symbology-ng/qgsdatadefinedsymboldialog.h
 symbology-ng/qgsgraduatedsymbolrendererv2widget.h
 symbology-ng/qgsrulebasedrendererv2widget.h
 symbology-ng/qgsrendererv2widget.h
@@ -104,6 +149,7 @@ symbology-ng/qgssymbolv2selectordialog.h
 symbology-ng/qgsvectorgradientcolorrampv2dialog.h
 symbology-ng/qgsvectorrandomcolorrampv2dialog.h
 symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
+symbology-ng/qgscptcitycolorrampv2dialog.h
 symbology-ng/qgscolorrampcombobox.h
 symbology-ng/characterwidget.h
 symbology-ng/qgspenstylecombobox.h
@@ -112,33 +158,56 @@ symbology-ng/qgsstylev2exportimportdialog.h
 symbology-ng/qgsellipsesymbollayerv2widget.h
 symbology-ng/qgspointdisplacementrendererwidget.h
 symbology-ng/qgsvectorfieldsymbollayerwidget.h
+symbology-ng/qgssymbolslistwidget.h
+symbology-ng/qgssvgselectorwidget.h
+symbology-ng/qgslayerpropertieswidget.h
+symbology-ng/qgssmartgroupeditordialog.h
 
 attributetable/qgsattributetableview.h
 attributetable/qgsattributetablemodel.h
-attributetable/qgsattributetablememorymodel.h
+attributetable/qgsattributetablefiltermodel.h
 attributetable/qgsattributetabledelegate.h
+attributetable/qgsfeaturelistview.h
+attributetable/qgsfeaturelistmodel.h
+attributetable/qgsfeatureselectionmodel.h
+attributetable/qgsfeaturelistviewdelegate.h
+attributetable/qgsdualview.h
 
+qgsattributedialog.h
 qgsattributeeditor.h
+qgsblendmodecombobox.h
+qgsbusyindicatordialog.h
+qgscharacterselectdialog.h
+qgscolordialog.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
+qgsdialog.h
 qgslegendinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
+qgserrordialog.h
 qgsfieldvalidator.h
 qgsformannotationitem.h
+qgshtmlannotationitem.h
 qgsgenericprojectionselector.h
 qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
+qgsmaptoolidentify.h
+qgsmessagebar.h
 qgsmessageviewer.h
 qgsmessagelogviewer.h
 qgsnewhttpconnection.h
 qgsnewvectorlayerdialog.h
+qgsoptionsdialogbase.h
 qgscredentialdialog.h
+qgsowssourceselect.h
 qgsprojectionselector.h
-qgsquickprint.h
+qgsrasterlayersaveasdialog.h
+qgsrasterformatsaveoptionswidget.h
+qgsrasterpyramidsoptionswidget.h
 qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
@@ -146,7 +215,10 @@ qgssearchquerybuilder.h
 qgsscalecombobox.h
 qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
+qgsexpressionselectiondialog.h
 qgsquerybuilder.h
+qgscollapsiblegroupbox.h
+qgsfilterlineedit.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -156,11 +228,14 @@ QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 SET(QGIS_GUI_HDRS
 qgisgui.h
 qgisinterface.h
-qgscolorbutton.h
+qgsbusyindicatordialog.h
+qgscharacterselectdialog.h
+qgscolordialog.h
 qgscursors.h
 qgsencodingfiledialog.h
 qgsfiledropedit.h
 qgsgenericprojectionselector.h
+qgshighlight.h
 qgsmapcanvas.h
 qgsmapcanvasitem.h
 qgsmapcanvasmap.h
@@ -168,28 +243,41 @@ qgsmapcanvassnapper.h
 qgsmapoverviewcanvas.h
 qgsmaptool.h
 qgsmaptoolemitpoint.h
+qgsmaptoolidentify.h
 qgsmaptoolpan.h
 qgsmaptoolzoom.h
+qgsmessagebar.h
 qgsmessageviewer.h
+qgsoptionsdialogbase.h
 qgscredentialdialog.h
+qgsowssourceselect.h
 qgsprojectionselector.h
 qgsrubberband.h
 qgsvertexmarker.h
 qgsmaptip.h
 qgsscalecombobox.h
+qgsblendmodecombobox.h
 qgssearchquerybuilder.h
 qgsattributeeditor.h
+qgsattributedialog.h
 qgsfieldvalidator.h
 qgsexpressionbuilderwidget.h
 qgsexpressionbuilderdialog.h
+qgsexpressionselectiondialog.h
 qgsexpressionhighlighter.h
+qgscollapsiblegroupbox.h
+qgsfilterlineedit.h
 
 attributetable/qgsattributetablemodel.h
-attributetable/qgsattributetablememorymodel.h
 attributetable/qgsattributetableview.h
 attributetable/qgsattributetablefiltermodel.h
-attributetable/qgsattributetableidcolumnpair.h
 attributetable/qgsattributetabledelegate.h
+attributetable/qgsfeaturelistview.h
+attributetable/qgsfeaturemodel.h
+attributetable/qgsfeaturelistmodel.h
+attributetable/qgsfeaturelistviewdelegate.h
+attributetable/qgsfeatureselectionmodel.h
+attributetable/qgsdualview.h
 )
 
 IF (WITH_TOUCH)
@@ -204,11 +292,13 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
 )
 
 # ModelTest
@@ -228,14 +318,14 @@ INCLUDE_DIRECTORIES(
   ${QT_QTUITOOLS_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng
+  ${CMAKE_CURRENT_SOURCE_DIR}/attributetable
   ../core
   ../core/composer
   ../core/raster
-  ../core/renderer
-  ../core/symbology
   ../core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${QWT_INCLUDE_DIR}
 )
 IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(../core/spatialite/headers)
@@ -245,6 +335,7 @@ ELSE (WITH_INTERNAL_SPATIALITE)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${GDAL_INCLUDE_DIR})
 
 IF (WIN32)
   IF (MSVC)
@@ -277,14 +368,21 @@ ADD_LIBRARY(qgis_gui SHARED
      #${MODELTEST_SRCS} ${MODELTEST_MOC_SRCS}  # for ModelTest
 )
 
-SET_TARGET_PROPERTIES(qgis_gui PROPERTIES
-  PUBLIC_HEADER "${QGIS_GUI_HDRS};${QGIS_GUI_MOC_HDRS}"
-  CLEAN_DIRECT_OUTPUT 1
-  FRAMEWORK 1
-  FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
-  MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
-  MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-  MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_gui)
+IF(NOT APPLE)
+  INSTALL(FILES ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+ELSE(NOT APPLE)
+  SET_TARGET_PROPERTIES(qgis_gui PROPERTIES
+    CLEAN_DIRECT_OUTPUT 1
+    FRAMEWORK 1
+    FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
+    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
+    MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
+    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis2_gui
+    BUILD_WITH_INSTALL_RPATH TRUE
+    PUBLIC_HEADER "${QGIS_GUI_HDRS};${QGIS_GUI_MOC_HDRS}"
+    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
+  )
+ENDIF(NOT APPLE)
 
 #generate unversioned libs for android
 IF (NOT ANDROID)
@@ -300,16 +398,13 @@ ADD_DEPENDENCIES(qgis_gui ui)
 TARGET_LINK_LIBRARIES(qgis_gui
   qgis_core
   ${QT_QTUITOOLS_LIBRARY}
+  ${QWT_LIBRARY}
   #${QT_QTTEST_LIBRARY}  # for ModelTest
 )
 
-IF (NOT WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(qgis_gui ${SQLITE3_LIBRARIES})
-ENDIF (NOT WITH_INTERNAL_SPATIALITE)
-
-IF (APPLE)
-  SET_TARGET_PROPERTIES(qgis_gui PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
-ENDIF (APPLE)
+IF(WIN32)
+  ADD_DEFINITIONS(-DQWT_DLL)
+ENDIF(WIN32)
 
 # install
 

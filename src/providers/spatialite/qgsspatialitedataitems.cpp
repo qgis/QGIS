@@ -3,7 +3,7 @@
     ---------------------
     begin                : October 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
+#include "qgsmessageoutput.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -126,7 +127,7 @@ QVector<QgsDataItem*> QgsSLConnectionItem::createChildren()
   QString connectionInfo = QString( "dbname='%1'" ).arg( QString( connection.path() ).replace( "'", "\\'" ) );
   QgsDataSourceURI uri( connectionInfo );
 
-  foreach( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
+  foreach ( const QgsSpatiaLiteConnection::TableEntry& entry, connection.tables() )
   {
     uri.setDataSource( QString(), entry.tableName, entry.column, QString(), QString() );
     QgsSLLayerItem * layer = new QgsSLLayerItem( this, entry.tableName, mPath + "/" + entry.tableName, uri.uri(), _layerTypeFromDb( entry.type ) );
@@ -186,7 +187,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QStringList importResults;
   bool hasError = false;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-  foreach( const QgsMimeDataUtils::Uri& u, lst )
+  foreach ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "vector" )
     {
@@ -200,7 +201,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     if ( srcLayer->isValid() )
     {
-      destUri.setDataSource( QString(), u.name, "geomm" );
+      destUri.setDataSource( QString(), u.name, "geom" );
       QgsDebugMsg( "URI " + destUri.uri() );
       QgsVectorLayerImport::ImportError err;
       QString importError;
@@ -226,14 +227,16 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   if ( hasError )
   {
-    QMessageBox::warning( 0, tr( "Import to SpatiaLite database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ) );
+    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
+    output->setTitle( tr( "Import to SpatiaLite database" ) );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ), QgsMessageOutput::MessageText );
+    output->showMessage();
   }
   else
   {
     QMessageBox::information( 0, tr( "Import to SpatiaLite database" ), tr( "Import was successful." ) );
+    refresh();
   }
-
-  refresh();
 
   return true;
 }
@@ -244,7 +247,7 @@ bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
 QgsSLRootItem::QgsSLRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconSpatialite.png" ) );
+  mIcon = QgsApplication::getThemeIcon( "mIconSpatialite.png" );
   populate();
 }
 
@@ -255,7 +258,7 @@ QgsSLRootItem::~QgsSLRootItem()
 QVector<QgsDataItem*> QgsSLRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  foreach( QString connName, QgsSpatiaLiteConnection::connectionList() )
+  foreach ( QString connName, QgsSpatiaLiteConnection::connectionList() )
   {
     QgsDataItem * conn = new QgsSLConnectionItem( this, connName, mPath + "/" + connName );
     connections.push_back( conn );

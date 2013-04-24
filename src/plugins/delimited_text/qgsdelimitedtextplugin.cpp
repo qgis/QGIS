@@ -25,15 +25,14 @@ Functions:
 #include "qgisgui.h"
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
+#include "qgsproviderregistry.h"
 #include "qgsdelimitedtextplugin.h"
 
 #include <QMenu>
 #include <QAction>
 #include <QFile>
 #include <QToolBar>
-
-//the gui subclass
-#include "qgsdelimitedtextplugingui.h"
+#include <QMessageBox>
 
 static const QString pluginVersion = QObject::tr( "Version 0.2" );
 static const QString description_ = QObject::tr( "Loads and displays delimited text files containing x,y coordinates" );
@@ -118,22 +117,24 @@ void QgsDelimitedTextPlugin::initGui()
 // Slot called when the buffer menu item is activated
 void QgsDelimitedTextPlugin::run()
 {
-  QgsDelimitedTextPluginGui *myQgsDelimitedTextPluginGui =
-    new QgsDelimitedTextPluginGui( qGisInterface,
-                                   qGisInterface->mainWindow(), QgisGui::ModalDialogFlags );
-  myQgsDelimitedTextPluginGui->setAttribute( Qt::WA_DeleteOnClose );
+  // show the DelimitedText dialog
+  QDialog *dlg = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "delimitedtext" ), qGisInterface->mainWindow() ) );
+  if ( !dlg )
+  {
+    QMessageBox::warning( qGisInterface->mainWindow(), tr( "Delimited Text" ), tr( "Cannot get Delimited Text select dialog from provider." ) );
+    return;
+  }
   //listen for when the layer has been made so we can draw it
-  connect( myQgsDelimitedTextPluginGui,
-           SIGNAL( drawVectorLayer( QString, QString, QString ) ),
-           this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
-  myQgsDelimitedTextPluginGui->exec();
+  connect( dlg, SIGNAL( addVectorLayer( QString, QString, QString ) ),
+           this, SLOT( addVectorLayer( QString, QString, QString ) ) );
+
+  dlg->exec();
+  delete dlg;
 }
 
-//!draw a vector layer in the qui - intended to respond to signal
-//sent by diolog when it as finished creating a layer
-////needs to be given vectorLayerPath, baseName,
-//providerKey ("ogr" or "postgres");
-void QgsDelimitedTextPlugin::drawVectorLayer( QString thePathNameQString,
+//!add a vector layer - intended to respond to signal
+//sent by dialog when it as finished
+void QgsDelimitedTextPlugin::addVectorLayer( QString thePathNameQString,
     QString theBaseNameQString, QString theProviderQString )
 {
   qGisInterface->addVectorLayer( thePathNameQString,

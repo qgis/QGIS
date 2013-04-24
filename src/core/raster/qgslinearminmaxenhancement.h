@@ -28,7 +28,7 @@ class CORE_EXPORT QgsLinearMinMaxEnhancement : public QgsContrastEnhancementFunc
 {
 
   public:
-    QgsLinearMinMaxEnhancement( QgsContrastEnhancement::QgsRasterDataType, double, double );
+    QgsLinearMinMaxEnhancement( QGis::DataType, double, double );
 
     int enhance( double );
 

@@ -1,0 +1,12 @@
+<h3>Funktion $length</h3>
+Liefert die Länge der aktuellen Geometrie.
+
+<h4>Syntax</h4>
+<pre>$length</pre>
+
+<h4>Argumente</h4>
+Keine
+
+<h4>Beispiel</h4>
+<pre>$length &rarr; 42.4711</pre>
+

@@ -37,6 +37,7 @@ email                : sherman at mrcc.com
 #include <QWheelEvent>
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
@@ -47,6 +48,7 @@ email                : sherman at mrcc.com
 #include "qgsmaptopixel.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
@@ -83,15 +85,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mPainting( false )
     , mAntiAliasing( false )
 {
-  Q_UNUSED( name );
-  //disable the update that leads to the resize crash
-  if ( viewport() )
-  {
-#ifndef ANDROID
-    viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
-#endif //ANDROID
-  }
-
+  setObjectName( name );
   mScene = new QGraphicsScene();
   setScene( mScene );
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -102,6 +96,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mMapTool = NULL;
   mLastNonZoomMapTool = NULL;
 
+  mBackbufferEnabled = true;
   mDrawing = false;
   mFrozen = false;
   mDirty = true;
@@ -158,7 +153,7 @@ QgsMapCanvas::~QgsMapCanvas()
     it++;
   }
 
-  delete mScene;
+  mScene->deleteLater();  // crashes in python tests on windows
 
   delete mMapRenderer;
   // mCanvasProperties auto-deleted via std::auto_ptr
@@ -272,45 +267,48 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
   bool layerSetChanged = layerSetOld != layerSet;
 
   // update only if needed
-  if ( !layerSetChanged )
-    return;
-
-  QgsDebugMsg( "Layer changed to: " + layerSet.join( ", " ) );
-
-  for ( i = 0; i < layerCount(); i++ )
+  if ( layerSetChanged )
   {
-    // Add check if vector layer when disconnecting from selectionChanged slot
-    // Ticket #811 - racicot
-    QgsMapLayer *currentLayer = layer( i );
-    disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-    disconnect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
-    QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
-    if ( isVectLyr )
-    {
-      disconnect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
-    }
-  }
+    QgsDebugMsg( "Layers changed to: " + layerSet.join( ", " ) );
 
-  mMapRenderer->setLayerSet( layerSet );
-
-  for ( i = 0; i < layerCount(); i++ )
-  {
-    // Add check if vector layer when connecting to selectionChanged slot
-    // Ticket #811 - racicot
-    QgsMapLayer *currentLayer = layer( i );
-    connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-    connect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
-    QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
-    if ( isVectLyr )
+    for ( i = 0; i < layerCount(); i++ )
     {
-      connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
+      // Add check if vector layer when disconnecting from selectionChanged slot
+      // Ticket #811 - racicot
+      QgsMapLayer *currentLayer = layer( i );
+      disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+      disconnect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
+      QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
+      if ( isVectLyr )
+      {
+        disconnect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
+      }
     }
+
+    mMapRenderer->setLayerSet( layerSet );
+
+    for ( i = 0; i < layerCount(); i++ )
+    {
+      // Add check if vector layer when connecting to selectionChanged slot
+      // Ticket #811 - racicot
+      QgsMapLayer *currentLayer = layer( i );
+      connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+      connect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
+      QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
+      if ( isVectLyr )
+      {
+        connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
+      }
+    }
+
+    QgsDebugMsg( "Layers have changed, refreshing" );
+    emit layersChanged();
+
+    refresh();
   }
 
   if ( mMapOverview )
   {
-    mMapOverview->updateFullExtent( fullExtent() );
-
     QStringList& layerSetOvOld = mMapOverview->layerSet();
     if ( layerSetOvOld != layerSetOverview )
     {
@@ -321,12 +319,6 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
     // because full extent might have changed
     updateOverview();
   }
-
-  QgsDebugMsg( "Layers have changed, refreshing" );
-  emit layersChanged();
-
-  refresh();
-
 } // setLayerSet
 
 void QgsMapCanvas::enableOverviewMode( QgsMapOverviewCanvas* overview )
@@ -377,6 +369,40 @@ void QgsMapCanvas::refresh()
   if ( mDrawing )
     return;
 
+  QSettings settings;
+  bool logRefresh = settings.value( "/Map/logCanvasRefreshEvent", false ).toBool();
+  QTime t;
+  if ( logRefresh )
+  {
+    t.start();
+  }
+
+#ifdef Q_WS_X11
+  bool enableBackbufferSetting = settings.value( "/Map/enableBackbuffer", 1 ).toBool();
+#endif
+
+#ifdef Q_WS_X11
+#ifndef ANDROID
+  // disable the update that leads to the resize crash on X11 systems
+  if ( viewport() )
+  {
+    if ( enableBackbufferSetting != mBackbufferEnabled )
+    {
+      qDebug() << "Enable back buffering: " << enableBackbufferSetting;
+      if ( enableBackbufferSetting )
+      {
+        viewport()->setAttribute( Qt::WA_PaintOnScreen, false );
+      }
+      else
+      {
+        viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
+      }
+      mBackbufferEnabled = enableBackbufferSetting;
+    }
+  }
+#endif // ANDROID
+#endif // Q_WS_X11
+
   mDrawing = true;
 
   if ( mRenderFlag && !mFrozen )
@@ -407,6 +433,21 @@ void QgsMapCanvas::refresh()
   }
 
   mDrawing = false;
+
+  // Done refreshing
+  emit mapCanvasRefreshed();
+
+  if ( logRefresh )
+  {
+    QString logMsg = tr( "Canvas refresh: %1 ms" ).arg( t.elapsed() );
+    QObject* senderObj = QObject::sender();
+    if ( senderObj )
+    {
+      logMsg += tr( ", sender '%1'" ).arg( senderObj->metaObject()->className() );
+    }
+    QgsMessageLog::logMessage( logMsg, tr( "Rendering" ) );
+  }
+
 } // refresh
 
 void QgsMapCanvas::updateMap()
@@ -490,11 +531,6 @@ void QgsMapCanvas::updateFullExtent()
   QgsDebugMsg( "updating full extent" );
 
   mMapRenderer->updateFullExtent();
-  if ( mMapOverview )
-  {
-    mMapOverview->updateFullExtent( fullExtent() );
-    updateOverview();
-  }
   refresh();
 }
 
@@ -703,7 +739,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
     // zoom in
     QgsPoint c = rect.center();
     rect = extent();
-    rect.expand( 0.25, &c );
+    rect.scale( 0.5, &c );
   }
   //zoom to an area
   else
@@ -1058,6 +1094,17 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
     return;
   }
 
+  if ( mMapTool )
+  {
+    mMapTool->wheelEvent( e );
+  }
+
+  if ( QgsApplication::keyboardModifiers() )
+  {
+    // leave the wheel for map tools if any modifier pressed
+    return;
+  }
+
   switch ( mWheelAction )
   {
     case WheelZoom:
@@ -1247,7 +1294,7 @@ int QgsMapCanvas::layerCount() const
 QList<QgsMapLayer*> QgsMapCanvas::layers() const
 {
   QList<QgsMapLayer*> lst;
-  foreach( QString layerID, mMapRenderer->layerSet() )
+  foreach ( QString layerID, mMapRenderer->layerSet() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
     if ( layer )
@@ -1277,31 +1324,6 @@ bool QgsMapCanvas::isFrozen()
   return mFrozen;
 } // freeze
 
-
-QPixmap& QgsMapCanvas::canvasPixmap()
-{
-  QPixmap *pixmap = dynamic_cast<QPixmap *>( &canvasPaintDevice() );
-  if ( pixmap )
-  {
-    return *pixmap;
-  }
-
-  qWarning( "QgsMapCanvas::canvasPixmap() deprecated - returning static pixmap instance - use QgsMapCanvas::paintDevice()" );
-
-  static QPixmap staticPixmap;
-
-  QImage *image = dynamic_cast<QImage *>( &mMap->paintDevice() );
-  if ( image )
-  {
-    staticPixmap = QPixmap::fromImage( *image );
-  }
-  else
-  {
-    staticPixmap = QPixmap( canvasPaintDevice().width(), canvasPaintDevice().height() );
-  }
-
-  return staticPixmap;
-} // canvasPixmap
 
 QPaintDevice &QgsMapCanvas::canvasPaintDevice()
 {

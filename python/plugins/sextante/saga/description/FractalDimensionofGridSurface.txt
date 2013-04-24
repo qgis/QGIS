@@ -1,0 +1,4 @@
+Fractal Dimension of Grid Surface
+recreations_fractals
+ParameterRaster|INPUT|Input|False
+OutputTable|RESULT|Result

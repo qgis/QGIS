@@ -1,0 +1,6 @@
+Slope Over Area Ratio
+slopearearatio
+Specialized Grid Analysis tools
+ParameterRaster|-slp|Slope Grid|False
+ParameterRaster|-sca|Specific Catchment Area Grid|False
+OutputRaster|-sar|Slope Divided By Area Ratio Grid

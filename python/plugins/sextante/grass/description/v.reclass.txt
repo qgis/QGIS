@@ -1,0 +1,9 @@
+v.reclass
+v.reclass - Changes vector category values for an existing vector map according to results of SQL queries or a value in attribute table column.
+Vector (v.*)
+ParameterVector|input|Input layer|-1|False
+ParameterString|type|Feature type|point,line,boundary,centroid
+ParameterTableField|column|The name of the column whose values are to be used as new categories|input|-1|False
+ParameterFile|rules|Reclass rule file|False
+OutputVector|output|Reclassified layer
+

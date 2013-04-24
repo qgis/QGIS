@@ -109,7 +109,7 @@ class Dialog(QDialog, Ui_Dialog):
                       .arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
               if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-                QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
@@ -123,26 +123,23 @@ class Dialog(QDialog, Ui_Dialog):
     def compute(self, inName, joinName, outName, summary, sumList, keep, progressBar):
         layer1 = ftools_utils.getVectorLayerByName(inName)
         provider1 = layer1.dataProvider()
-        allAttrs = provider1.attributeIndexes()
-        provider1.select(allAttrs)
-        fieldList1 = ftools_utils.getFieldList(layer1).values()
+        fieldList1 = ftools_utils.getFieldList(layer1).toList()
 
         layer2 = ftools_utils.getVectorLayerByName(joinName)
         provider2 = layer2.dataProvider()
-        allAttrs = provider2.attributeIndexes()
-        provider2.select(allAttrs)
-        fieldList2 = ftools_utils.getFieldList(layer2)
+
+        fieldList2 = ftools_utils.getFieldList(layer2).toList()
         fieldList = []
         if provider1.crs() != provider2.crs():
             QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
         if not summary:
-            fieldList2 = ftools_utils.testForUniqueness(fieldList1, fieldList2.values())
+            fieldList2 = ftools_utils.testForUniqueness(fieldList1, fieldList2)
             seq = range(0, len(fieldList1) + len(fieldList2))
             fieldList1.extend(fieldList2)
             fieldList1 = dict(zip(seq, fieldList1))
         else:
             numFields = {}
-            for j in fieldList2.keys():
+            for j in xrange(len(fieldList2)):
                 if fieldList2[j].type() == QVariant.Int or fieldList2[j].type() == QVariant.Double:
                     numFields[j] = []
                     for i in sumList:
@@ -156,7 +153,8 @@ class Dialog(QDialog, Ui_Dialog):
             fieldList1 = dict(zip(seq, fieldList1))
 
         # check for correct field names
-        longNames = ftools_utils.checkFieldNameLength( fieldList1 )
+        print fieldList1
+        longNames = ftools_utils.checkFieldNameLength( fieldList1.values() )
         if not longNames.isEmpty():
             QMessageBox.warning( self, self.tr( 'Incorrect field names' ),
                         self.tr( 'No output will be created.\nFollowing field names are longer than 10 characters:\n%1' )
@@ -171,7 +169,10 @@ class Dialog(QDialog, Ui_Dialog):
                 QMessageBox.warning( self, self.tr( 'Error deleting shapefile' ),
                             self.tr( "Can't delete existing shapefile\n%1" ).arg( self.shapefileName ) )
                 return False
-        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList1, provider1.geometryType(), sRs)
+        fields = QgsFields()
+        for f in fieldList1.values():
+          fields.append(f)
+        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fields, provider1.geometryType(), sRs)
         #writer = QgsVectorFileWriter(outName, "UTF-8", fieldList1, provider1.geometryType(), sRs)
         inFeat = QgsFeature()
         outFeat = QgsFeature()
@@ -180,11 +181,12 @@ class Dialog(QDialog, Ui_Dialog):
         progressBar.setValue(15)
         start = 15.00
         add = 85.00 / provider1.featureCount()
-        provider1.rewind()
+
         index = ftools_utils.createIndex(provider2)
-        while provider1.nextFeature(inFeat):
+        fit1 = provider1.getFeatures()
+        while fit1.nextFeature(inFeat):
             inGeom = inFeat.geometry()
-            atMap1 = inFeat.attributeMap()
+            atMap1 = inFeat.attributes()
             outFeat.setGeometry(inGeom)
             none = True
             joinList = []
@@ -206,15 +208,15 @@ class Dialog(QDialog, Ui_Dialog):
                 count = 0
                 for i in joinList:
                     #tempGeom = i.geometry()
-                    provider2.featureAtId(int(i), inFeatB , True, allAttrs)
+                    provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(i) ) ).nextFeature( inFeatB )
                     tmpGeom = QgsGeometry( inFeatB.geometry() )
                     if inGeom.intersects(tmpGeom):
                         count = count + 1
                         none = False
-                        atMap2 = inFeatB.attributeMap()
+                        atMap2 = inFeatB.attributes()
                         if not summary:
-                            atMap = atMap1.values()
-                            atMap2 = atMap2.values()
+                            atMap = atMap1
+                            atMap2 = atMap2
                             atMap.extend(atMap2)
                             atMap = dict(zip(seq, atMap))
                             break
@@ -222,7 +224,7 @@ class Dialog(QDialog, Ui_Dialog):
                             for j in numFields.keys():
                                 numFields[j].append(atMap2[j].toDouble()[0])
                 if summary and not none:
-                    atMap = atMap1.values()
+                    atMap = atMap1
                     for j in numFields.keys():
                         for k in sumList:
                             if k == "SUM": atMap.append(QVariant(sum(numFields[j])))
@@ -234,9 +236,9 @@ class Dialog(QDialog, Ui_Dialog):
                     atMap.append(QVariant(count))
                     atMap = dict(zip(seq, atMap))
             if none:
-                outFeat.setAttributeMap(atMap1)
+                outFeat.setAttributes(atMap1)
             else:
-                outFeat.setAttributeMap(atMap)
+                outFeat.setAttributes(atMap.values())
             if keep: # keep all records
                 writer.addFeature(outFeat)
             else: # keep only matching records

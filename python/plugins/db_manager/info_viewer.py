@@ -36,6 +36,8 @@ class InfoViewer(QTextBrowser):
 		self.dirty = False
 
 		self._clear()
+		self._showPluginInfo()
+
 		self.connect(self, SIGNAL("anchorClicked(const QUrl&)"), self._linkClicked)
 
 	def _linkClicked(self, url):
@@ -56,10 +58,10 @@ class InfoViewer(QTextBrowser):
 
 	def refresh(self):
 		self.setDirty(True)
-		self.showInfo( self.item )		
+		self.showInfo( self.item )
 
 	def showInfo(self, item):
-		if item == self.item and not self.dirty: 
+		if item == self.item and not self.dirty:
 			return
 		self._clear()
 		if item is None:
@@ -89,6 +91,15 @@ class InfoViewer(QTextBrowser):
 		self.item = None
 		self.setHtml("")
 
+
+	def _showPluginInfo(self):
+		from .db_plugins import getDbPluginErrors
+		html  = u'<div style="background-color:#ffffcc;"><h1>&nbsp;DB Manager</h1></div>'
+		html += '<div style="margin-left:8px;">'
+		for msg in getDbPluginErrors():
+			html += u"<p>%s" % msg
+		self.setHtml(html)
+
 	def _showDatabaseInfo(self, connection):
 		html  = u'<div style="background-color:#ccffcc;"><h1>&nbsp;%s</h1></div>' % connection.connectionName()
 		html += '<div style="margin-left:8px;">'
@@ -96,13 +107,13 @@ class InfoViewer(QTextBrowser):
 			if connection.database() == None:
 				html += connection.info().toHtml()
 			else:
-				html += connection.database().info().toHtml()			
+				html += connection.database().info().toHtml()
 		except DbError, e:
 			html += u'<p style="color:red">%s</p>' % unicode(e).replace('\n', '<br>')
 		html += '</div>'
 		self.setHtml(html)
-	
-	
+
+
 	def _showSchemaInfo(self, schema):
 		html  = u'<div style="background-color:#ffcccc;"><h1>&nbsp;%s</h1></div>' % schema.name
 		html += '<div style="margin-left:8px;">'
@@ -114,7 +125,7 @@ class InfoViewer(QTextBrowser):
 		self.setHtml(html)
 
 
-	def _showTableInfo(self, table):		
+	def _showTableInfo(self, table):
 		html = u'<div style="background-color:#ccccff"><h1>&nbsp;%s</h1></div>' % table.name
 		html += '<div style="margin-left:8px;">'
 		try:
@@ -124,7 +135,6 @@ class InfoViewer(QTextBrowser):
 		html += '</div>'
 		self.setHtml(html)
 		return True
-
 
 
 	def setHtml(self, html):

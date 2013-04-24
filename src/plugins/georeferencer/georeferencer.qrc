@@ -20,14 +20,5 @@
     <file>icons/default/mActionSaveGCPpointsAs.png</file>
     <file>icons/default/mActionStartGeoref.png</file>
     <file>icons/default/mActionTransformSettings.png</file>
-    <file>icons/gis/mActionAddGCPPoint.png</file>
-    <file>icons/gis/mActionDeleteGCPPoint.png</file>
-    <file>icons/gis/mActionGDALScript.png</file>
-    <file>icons/gis/mActionLoadGCPpoints.png</file>
-    <file>icons/gis/mActionMoveGCPPoint.png</file>
-    <file>icons/gis/mActionOpenRaster.png</file>
-    <file>icons/gis/mActionSaveGCPpointsAs.png</file>
-    <file>icons/gis/mActionStartGeoref.png</file>
-    <file>icons/gis/mActionTransformSettings.png</file>
   </qresource>
 </RCC>

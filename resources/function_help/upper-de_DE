@@ -6,8 +6,8 @@ Wandelt eine Zeichenkette in Großbuchstaben.
 
 <p><h4>Argumente</h4>
 <!-- List args for functions here-->
-<i>  zeichenkette</i> -> ist eine Zeichenkette.  Die Zeichenkette, die in Großbuchstaben umzuwandeln ist.</p>
+<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die Zeichenkette, die in Großbuchstaben umzuwandeln ist.</p>
 
 <p><h4>Beispiel</h4>
 <!-- Show example of function.-->
-     upper('hello WOrld') -> 'HELLO WORLD'</p>
+     upper('hello WOrld') &rarr; 'HELLO WORLD'</p>

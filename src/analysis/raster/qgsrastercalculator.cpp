@@ -389,7 +389,7 @@ bool QgsRasterCalculator::transformationsEqual( double* t1, double* t2 ) const
 {
   for ( int i = 0; i < 6; ++i )
   {
-    if ( !doubleNear( t1[i], t2[i], 0.00001 ) )
+    if ( !qgsDoubleNear( t1[i], t2[i], 0.00001 ) )
     {
       return false;
     }

@@ -38,8 +38,8 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
   mDraw = false;
-  mRubberBand = new QgsRubberBand( mCanvas, true );
-  mSrcRubberBand = new QgsRubberBand( mCanvas, true );
+  mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+  mSrcRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
   QString gisdbase = QgsGrass::getDefaultGisdbase();
   QString location = QgsGrass::getDefaultLocation();
   mCrs = QgsGrass::crs( gisdbase, location );
@@ -273,23 +273,17 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
   // Symbology
   QPen pen = mPlugin->regionPen();
   mColorButton->setColor( pen.color() );
-  connect( mColorButton, SIGNAL( clicked() ), this, SLOT( changeColor() ) );
+  connect( mColorButton, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeColor( const QColor& ) ) );
 
   mWidthSpinBox->setValue( pen.width() );
   connect( mWidthSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( changeWidth() ) );
 }
 
-void QgsGrassRegion::changeColor( void )
+void QgsGrassRegion::changeColor( const QColor& color )
 {
   QPen pen = mPlugin->regionPen();
-  QColor color = QColorDialog::getColor( pen.color(), this );
-  if ( color.isValid() )
-  {
-    mColorButton->setColor( color );
-
-    pen.setColor( color );
-    mPlugin->setRegionPen( pen );
-  }
+  pen.setColor( color );
+  mPlugin->setRegionPen( pen );
 }
 
 void QgsGrassRegion::changeWidth( void )

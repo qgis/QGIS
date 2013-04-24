@@ -53,18 +53,26 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QMouseEvent *e )
   QgsVectorLayer* vlayer = currentLayer();
   if ( mLabelRubberBand && mCanvas && vlayer )
   {
-    QgsLabelPropertyDialog d( mCurrentLabelPos.layerID, mCurrentLabelPos.featureId, mCanvas->mapRenderer() );
+    QString labeltext = QString(); // NULL QString signifies no expression
+    bool settingsOk;
+    QgsPalLayerSettings& labelSettings = currentLabelSettings( &settingsOk );
+    if ( settingsOk && labelSettings.isExpression )
+    {
+      labeltext = mCurrentLabelPos.labelText;
+    }
+
+    QgsLabelPropertyDialog d( mCurrentLabelPos.layerID, mCurrentLabelPos.featureId, labeltext, mCanvas->mapRenderer() );
     if ( d.exec() == QDialog::Accepted )
     {
       const QgsAttributeMap& changes = d.changedProperties();
       if ( changes.size() > 0 )
       {
-        vlayer->beginEditCommand( tr( "Label properties changed" ) );
+        vlayer->beginEditCommand( tr( "Changed properties for label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
 
         QgsAttributeMap::const_iterator changeIt = changes.constBegin();
         for ( ; changeIt != changes.constEnd(); ++changeIt )
         {
-          vlayer->changeAttributeValue( mCurrentLabelPos.featureId, changeIt.key(), changeIt.value(), false );
+          vlayer->changeAttributeValue( mCurrentLabelPos.featureId, changeIt.key(), changeIt.value(), true );
         }
 
         vlayer->endEditCommand();

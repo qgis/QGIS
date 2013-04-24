@@ -25,6 +25,7 @@
 #include <QVector>
 #include <QTreeWidget>
 
+#include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 
@@ -51,7 +52,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     };
 
     QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
-    virtual ~QgsDataItem() {}
+    virtual ~QgsDataItem();
 
     bool hasChildren();
 
@@ -66,13 +67,18 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // Populate children using children vector created by createChildren()
     virtual void populate();
+    bool isPopulated() { return mPopulated; }
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
     virtual void addChildItem( QgsDataItem * child, bool refresh = false );
 
-    // remove and delete child item, signals to browser are emited
+    // remove and delete child item, signals to browser are emitted
     virtual void deleteChildItem( QgsDataItem * child );
+
+    // remove child item but don't delete it, signals to browser are emited
+    // returns pointer to the removed item or null if no such item was found
+    virtual QgsDataItem * removeChildItem( QgsDataItem * child );
 
     virtual bool equal( const QgsDataItem *other );
 
@@ -103,8 +109,6 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // static methods
 
-    static QPixmap getThemePixmap( const QString theName );
-
     // Find child index in vector of items using '==' operator
     static int findItem( QVector<QgsDataItem*> items, QgsDataItem * item );
 
@@ -112,6 +116,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     Type type() const { return mType; }
     QgsDataItem* parent() const { return mParent; }
+    void setParent( QgsDataItem* parent ) { mParent = parent; }
     QVector<QgsDataItem*> children() const { return mChildren; }
     QIcon icon() const { return mIcon; }
     QString name() const { return mName; }
@@ -239,6 +244,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     virtual QWidget * paramWidget();
 
     /* static QVector<QgsDataProvider*> mProviders; */
+    //! @note not available via python bindings
     static QVector<QLibrary*> mLibraries;
 };
 
@@ -260,7 +266,7 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 
 // ---------
 
-class QgsDirectoryParamWidget : public QTreeWidget
+class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
 {
     Q_OBJECT
 
@@ -293,6 +299,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     Q_OBJECT
 
   protected:
+    QString mVsiPrefix;
     QStringList mZipFileList;
 
   public:
@@ -300,16 +307,17 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     ~QgsZipItem();
 
     QVector<QgsDataItem*> createChildren();
-    QStringList getFiles();
+    const QStringList & getZipFileList();
 
+    //! @note not available via python bindings
     static QVector<dataItem_t *> mDataItemPtr;
     static QStringList mProviderNames;
+
+    static QString vsiPrefix( QString uri );
 
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
 
     static const QIcon &iconZip();
-
-    const QStringList & getZipFileList() const { return mZipFileList; }
 
 };
 

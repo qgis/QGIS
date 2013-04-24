@@ -1,4 +1,5 @@
 SET(INSTALLER_FILES
+metadata.txt
 __init__.py
 installer_data.py
 installer_gui.py
@@ -8,6 +9,8 @@ qgis-icon.png
 repoConnected.png
 repoDisabled.png
 repoUnavailable.png
+pluginExperimental.png
+pluginStable.png
 unzip.py
 version_compare.py
 )
@@ -23,8 +26,4 @@ PYQT4_WRAP_UI(PYUI_FILES
 
 PYQT4_ADD_RESOURCES(PYRC_FILES resources.qrc)
 
-ADD_CUSTOM_TARGET(pluginstaller ALL DEPENDS ${PYUI_FILES} ${PYRC_FILES})
-
-INSTALL(FILES ${PYUI_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/plugin_installer)
-INSTALL(FILES ${PYRC_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/plugin_installer)
-INSTALL(FILES ${INSTALLER_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/plugin_installer)
+PLUGIN_INSTALL(plugin_installer . ${PYUI_FILES} ${PYRC_FILES} ${INSTALLER_FILES})

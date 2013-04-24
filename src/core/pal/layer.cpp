@@ -58,9 +58,9 @@
 namespace pal
 {
 
-  Layer::Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal )
+  Layer::Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll )
       :  pal( pal ), obstacle( obstacle ), active( active ),
-      toLabel( toLabel ), label_unit( label_unit ),
+      toLabel( toLabel ), displayAll( displayAll ), label_unit( label_unit ),
       min_scale( min_scale ), max_scale( max_scale ),
       arrangement( arrangement ), arrangementFlags( 0 ), mode( LabelPerFeature ), mergeLines( false )
   {
@@ -227,7 +227,8 @@ namespace pal
 
 
   bool Layer::registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x, double label_y, const char* labelText,
-                               double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle )
+                               double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle,
+                               int xQuadOffset, int yQuadOffset, double xOffset, double yOffset, bool alwaysShow )
   {
     if ( !geom_id || label_x < 0 || label_y < 0 )
       return false;
@@ -250,10 +251,25 @@ namespace pal
     {
       f->setFixedPosition( labelPosX, labelPosY );
     }
+    if ( xQuadOffset != 0 || yQuadOffset != 0 )
+    {
+      f->setQuadOffset( xQuadOffset, yQuadOffset );
+    }
+    if ( xOffset != 0.0 || yOffset != 0.0 )
+    {
+      f->setPosOffset( xOffset, yOffset );
+    }
     if ( fixedAngle )
     {
       f->setFixedAngle( angle );
     }
+    // use layer-level defined rotation, but not if position fixed
+    if ( !fixedPos && angle != 0.0 )
+    {
+      f->setFixedAngle( angle );
+    }
+
+    f->setAlwaysShow( alwaysShow );
 
     bool first_feat = true;
 

@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgsfield.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QCheckBox>
 #include <QGroupBox>
@@ -30,6 +31,7 @@ class QgsGrassModuleItem;
 class QgsGrassModuleOptions;
 
 class QgisInterface;
+class QgsFields;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -40,7 +42,6 @@ class QDomElement;
 class QLineEdit;
 class QValidator;
 
-
 /*! \class QgsGrassModule
  *  \brief Interface to GRASS modules.
  *
@@ -50,14 +51,28 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
     Q_OBJECT
 
   public:
+    class Description
+    {
+      public:
+        QString label;
+        // supported by GRASS Direct
+        bool direct;
+        Description(): direct( true ) {}
+        Description( QString lab, bool dir = false ): label( lab ), direct( dir ) { }
+        Description( const Description & desc ) { label = desc.label; direct =  desc.direct; }
+    };
+
     //! Constructor
     QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                    QString path, QWidget *parent, Qt::WFlags f = 0 );
+                    QString path, bool direct, QWidget *parent, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassModule();
 
     QString translate( QString string );
+
+    //! Returns module description (info from .qgs file) for module description path
+    static Description description( QString path );
 
     //! Returns module label for module description path
     static QString label( QString path );
@@ -93,6 +108,15 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
     // Returns empty list if not found.
     static QStringList execArguments( QString module );
 
+    //! Returns true if module is direct
+    bool isDirect() { return mDirect; }
+
+    //! Get name of library path environment variable
+    static QString libraryPathVariable();
+
+    //! Set LD_LIBRARY_PATH or equivalent to GRASS Direct library
+    static void setDirectLibraryPath( QProcessEnvironment & environment );
+
   signals:
     // ! emitted when the module started
     void moduleStarted();
@@ -121,6 +145,9 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
 
     //! Read module's standard error
     void readStderr();
+
+    //! Call on mapset change, i.e. also possible direct/indirect mode change
+    //void mapsetChanged();
 
   private:
     //! Pointer to the QGIS interface object
@@ -161,6 +188,9 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
 
     //! True if the module successfully finished
     bool mSuccess;
+
+    //! Direct mode
+    bool mDirect;
 };
 
 /*! \class QgsGrassModuleOptions
@@ -170,10 +200,15 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
 class QgsGrassModuleOptions
 {
   public:
+    enum RegionMode
+    {
+      RegionInput = 1,  // intersection of input maps extent and highest input resolution
+      RegionCurrent = 0 // current map canvas extent and resolution
+    };
     //! Constructor
     QgsGrassModuleOptions(
       QgsGrassTools *tools, QgsGrassModule *module,
-      QgisInterface *iface );
+      QgisInterface *iface, bool direct );
 
     //! Destructor
     virtual ~QgsGrassModuleOptions();
@@ -218,8 +253,8 @@ class QgsGrassModuleOptions
     //! Get region covering all input maps
     // \param all true all input maps
     // \param all false only the mas which were switched on
-    virtual bool inputRegion( struct Cell_head *window, bool all )
-    { Q_UNUSED( window ); Q_UNUSED( all ); return false; }
+    virtual bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all )
+    { Q_UNUSED( window ); Q_UNUSED( crs ); Q_UNUSED( all ); return false; }
 
     // ! Flag names
     virtual QStringList flagNames() { return QStringList() ; }
@@ -242,6 +277,12 @@ class QgsGrassModuleOptions
 
     //! QGIS directory
     QString mAppDir;
+
+    //! Region mode select box
+    QComboBox * mRegionModeComboBox;
+
+    //! Direct mode
+    bool mDirect;
 };
 
 /*! \class QgsGrassModuleStandardOptions
@@ -258,7 +299,7 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
       QString xname, QDomElement docElem,
-      QWidget * parent = 0, Qt::WFlags f = 0 );
+      bool direct, QWidget * parent = 0, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassModuleStandardOptions();
@@ -282,7 +323,7 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
     QStringList checkRegion();
     bool usesRegion();
     bool requestsRegion();
-    bool inputRegion( struct Cell_head *window, bool all );
+    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all );
     QStringList flagNames() { return mFlagNames; }
 
   public slots:
@@ -357,7 +398,7 @@ class QgsGrassModuleItem
      * \param gnode option node in GRASS module XML description file
      */
     QgsGrassModuleItem( QgsGrassModule *module, QString key,
-                        QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode );
+                        QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct );
 
     //! Destructor
     virtual ~QgsGrassModuleItem();
@@ -404,6 +445,8 @@ class QgsGrassModuleItem
     //! Is it required
     bool mRequired;
 
+    bool mDirect;
+
   private:
 
 };
@@ -425,7 +468,7 @@ class QgsGrassModuleGroupBoxItem: public QGroupBox, public QgsGrassModuleItem
      */
     QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
                                 QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                                QWidget * parent = 0 );
+                                bool direct, QWidget * parent = 0 );
 
     //! Destructor
     virtual ~QgsGrassModuleGroupBoxItem();
@@ -454,7 +497,7 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
      */
     QgsGrassModuleOption( QgsGrassModule *module, QString key,
                           QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                          QWidget * parent = 0 );
+                          bool direct, QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleOption();
@@ -500,6 +543,9 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
 
     // Remove one line edit for multiple options
     void removeLineEdit();
+
+    // Browse output
+    void browse( bool checked );
 
   private:
     //! Control type
@@ -557,7 +603,7 @@ class QgsGrassModuleFlag: public QgsGrassModuleCheckBox, public QgsGrassModuleIt
      */
     QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                        QWidget * parent = 0 );
+                        bool direct, QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleFlag();
@@ -584,7 +630,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
     QgsGrassModuleInput( QgsGrassModule *module,
                          QgsGrassModuleStandardOptions *options, QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                         QWidget * parent = 0 );
+                         bool direct, QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleInput();
@@ -595,7 +641,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
     virtual QStringList options();
 
     // ! Return vector of attribute fields of current vector
-    std::vector<QgsField> currentFields();
+    QgsFields currentFields();
 
     //! Returns pointer to currently selected layer or null
     QgsMapLayer * currentLayer();
@@ -664,8 +710,11 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
     //! Pointers to vector layers in combobox
     std::vector<QgsMapLayer*> mMapLayers;
 
+    //! Vector of band numbers in combobox for rasters in direct mode
+    QList<int> mBands;
+
     //! Attribute fields of layers in the combobox
-    std::vector< std::vector<QgsField> > mVectorFields;
+    std::vector< QgsFields > mVectorFields;
 
     //! The imput map will be updated -> must be from current mapset
     bool mUpdate;
@@ -693,7 +742,7 @@ class QgsGrassModuleGdalInput: public QgsGrassModuleGroupBoxItem
      */
     QgsGrassModuleGdalInput( QgsGrassModule *module, int type, QString key,
                              QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                             QWidget * parent = 0 );
+                             bool direct, QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleGdalInput();
@@ -757,7 +806,7 @@ class QgsGrassModuleField: public QgsGrassModuleGroupBoxItem
                          QgsGrassModuleStandardOptions *options,
                          QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                         QWidget * parent = 0 );
+                         bool direct, QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleField();
@@ -805,7 +854,7 @@ class QgsGrassModuleSelection: public QgsGrassModuleGroupBoxItem
                              QString key,
                              QDomElement &qdesc, QDomElement &gdesc,
                              QDomNode &gnode,
-                             QWidget * parent = 0 );
+                             bool direct, QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleSelection();
@@ -855,7 +904,7 @@ class QgsGrassModuleFile: public QgsGrassModuleGroupBoxItem
                         QString key,
                         QDomElement &qdesc, QDomElement &gdesc,
                         QDomNode &gnode,
-                        QWidget * parent = 0 );
+                        bool direct, QWidget * parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleFile();

@@ -28,7 +28,6 @@
 #include "sanewconnection.h"
 #include "qgsquerybuilder.h"
 
-#include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
@@ -63,7 +62,7 @@ SaSourceSelect::SaSourceSelect( QWidget *parent, Qt::WFlags fl )
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
   mAddButton->setEnabled( false );
 
-  mBuildQueryButton = new QPushButton( tr( "&Build Query" ) );
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
   connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
   mBuildQueryButton->setEnabled( false );

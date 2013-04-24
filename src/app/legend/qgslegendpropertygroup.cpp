@@ -3,7 +3,7 @@
     ---------------------
     begin                : January 2007
     copyright            : (C) 2007 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -22,7 +22,7 @@ QgsLegendPropertyGroup::QgsLegendPropertyGroup( QTreeWidgetItem* theLegendItem, 
     : QgsLegendItem( theLegendItem, theString )
 {
   mType = LEGEND_PROPERTY_GROUP;
-  QIcon myIcon = QgisApp::getThemeIcon( "/mIconProperties.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( "/mIconProperties.png" );
   setText( 0, theString );
   setIcon( 0, myIcon );
 }

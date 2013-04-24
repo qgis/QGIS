@@ -108,6 +108,8 @@ class Dialog(QDialog, Ui_Dialog):
                     self.tr("Identical output spatial reference system chosen\n\nAre you sure you want to proceed?"),
                     QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
                     if responce == QMessageBox.No:
+                        self.progressBar.setValue(0)
+                        self.buttonOk.setEnabled( True )
                         return
                 provider = vLayer.dataProvider()
                 self.progressBar.setValue(35)

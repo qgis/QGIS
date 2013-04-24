@@ -32,11 +32,11 @@
 
 #include "qgslogger.h"
 #include "qgsrectangle.h"
-#include "qgssymbol.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgsprojectfiletransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 
@@ -46,17 +46,17 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mTransparencyLevel( 255 ), // 0 is completely transparent
     mValid( false ), // assume the layer is invalid
     mDataSource( source ),
+    mLayerOrigName( lyrname ), // store the original name
     mID( "" ),
-    mLayerType( type )
-
+    mLayerType( type ),
+    mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
 {
-  QgsDebugMsg( "lyrname is '" + lyrname + "'" );
-
   mCRS = new QgsCoordinateReferenceSystem();
 
   // Set the display name = internal name
-  mLayerName = capitaliseLayerName( lyrname );
-  QgsDebugMsg( "layerName is '" + mLayerName + "'" );
+  QgsDebugMsg( "original name: '" + mLayerOrigName + "'" );
+  mLayerName = capitaliseLayerName( mLayerOrigName );
+  QgsDebugMsg( "display name: '" + mLayerName + "'" );
 
   // Generate the unique ID of this layer
   QDateTime dt = QDateTime::currentDateTime();
@@ -75,8 +75,6 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mScaleBasedVisibility = false;
   mpCacheImage = 0;
 }
-
-
 
 QgsMapLayer::~QgsMapLayer()
 {
@@ -101,8 +99,12 @@ QString QgsMapLayer::id() const
 /** Write property of QString layerName. */
 void QgsMapLayer::setLayerName( const QString & name )
 {
-  QgsDebugMsg( "new name is '" + name + "'" );
-  mLayerName = capitaliseLayerName( name );
+  QgsDebugMsg( "new original name: '" + name + "'" );
+  QString newName = capitaliseLayerName( name );
+  QgsDebugMsg( "new display name: '" + name + "'" );
+  if ( name == mLayerOrigName && newName == mLayerName ) return;
+  mLayerOrigName = name; // store the new original name
+  mLayerName = newName;
   emit layerNameChanged();
 }
 
@@ -126,9 +128,21 @@ QString const & QgsMapLayer::source() const
   return mDataSource;
 }
 
-QgsRectangle QgsMapLayer::extent() const
+QgsRectangle QgsMapLayer::extent()
 {
-  return mLayerExtent;
+  return mExtent;
+}
+
+/** Write blend mode for layer */
+void QgsMapLayer::setBlendMode( const QPainter::CompositionMode blendMode )
+{
+  mBlendMode = blendMode;
+}
+
+/** Read blend mode for layer */
+QPainter::CompositionMode QgsMapLayer::blendMode() const
+{
+  return mBlendMode;
 }
 
 bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
@@ -165,6 +179,7 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
   mne = mnl.toElement();
   mDataSource = mne.text();
 
+  // TODO: this should go to providers
   if ( provider == "spatialite" )
   {
     QgsDataSourceURI uri( mDataSource );
@@ -191,6 +206,82 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
     QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->readPath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     mDataSource = QString::fromAscii( urlDest.toEncoded() );
+  }
+  else if ( provider == "wms" )
+  {
+    // >>> BACKWARD COMPATIBILITY < 1.9
+    // For project file backward compatibility we must support old format:
+    // 1. mode: <url>
+    //    example: http://example.org/wms?
+    // 2. mode: tiled=<width>;<height>;<resolution>;<resolution>...,ignoreUrl=GetMap;GetFeatureInfo,featureCount=<count>,username=<name>,password=<password>,url=<url>
+    //    example: tiled=256;256;0.703;0.351,url=http://example.org/tilecache?
+    //    example: featureCount=10,http://example.org/wms?
+    //    example: ignoreUrl=GetMap;GetFeatureInfo,username=cimrman,password=jara,url=http://example.org/wms?
+    // This is modified version of old QgsWmsProvider::parseUri
+    // The new format has always params crs,format,layers,styles and that params
+    // should not appear in old format url -> use them to identify version
+    if ( !mDataSource.contains( "crs=" ) && !mDataSource.contains( "format=" ) )
+    {
+      QgsDebugMsg( "Old WMS URI format detected -> converting to new format" );
+      QgsDataSourceURI uri;
+      if ( !mDataSource.startsWith( "http:" ) )
+      {
+        QStringList parts = mDataSource.split( "," );
+        QStringListIterator iter( parts );
+        while ( iter.hasNext() )
+        {
+          QString item = iter.next();
+          if ( item.startsWith( "username=" ) )
+          {
+            uri.setParam( "username", item.mid( 9 ) );
+          }
+          else if ( item.startsWith( "password=" ) )
+          {
+            uri.setParam( "password", item.mid( 9 ) );
+          }
+          else if ( item.startsWith( "tiled=" ) )
+          {
+            // in < 1.9 tiled= may apper in to variants:
+            // tiled=width;height - non tiled mode, specifies max width and max height
+            // tiled=width;height;resolutions-1;resolution2;... - tile mode
+
+            QStringList params = item.mid( 6 ).split( ";" );
+
+            if ( params.size() == 2 ) // non tiled mode
+            {
+              uri.setParam( "maxWidth", params.takeFirst() );
+              uri.setParam( "maxHeight", params.takeFirst() );
+            }
+            else if ( params.size() > 2 ) // tiled mode
+            {
+              // resolutions are no more needed and size limit is not used for tiles
+              // we have to tell to the provider however that it is tiled
+              uri.setParam( "tileMatrixSet", "" );
+            }
+          }
+          else if ( item.startsWith( "featureCount=" ) )
+          {
+            uri.setParam( "featureCount", item.mid( 13 ) );
+          }
+          else if ( item.startsWith( "url=" ) )
+          {
+            uri.setParam( "url", item.mid( 4 ) );
+          }
+          else if ( item.startsWith( "ignoreUrl=" ) )
+          {
+            uri.setParam( "ignoreUrl", item.mid( 10 ).split( ";" ) );
+          }
+        }
+      }
+      else
+      {
+        uri.setParam( "url", mDataSource );
+      }
+      mDataSource = uri.encodedUri();
+      // At this point, the URI is obviously incomplete, we add additional params
+      // in QgsRasterLayer::readXml
+    }
+    // <<< BACKWARD COMPATIBILITY < 1.9
   }
   else
   {
@@ -269,6 +360,7 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
     mAbstract = abstractElem.text();
   }
 
+#if 0
   //read transparency level
   QDomNode transparencyNode = layer_node.namedItem( "transparencyLevelInt" );
   if ( ! transparencyNode.isNull() )
@@ -278,6 +370,7 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
     QDomElement myElement = transparencyNode.toElement();
     setTransparency( myElement.text().toInt() );
   }
+#endif
 
   readCustomProperties( layer_node );
 
@@ -318,6 +411,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QString src = source();
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
+  // TODO: what about postgres, mysql and others, they should not go through writePath()
   if ( vlayer && vlayer->providerType() == "spatialite" )
   {
     QgsDataSourceURI uri( src );
@@ -351,7 +445,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   // layer name
   QDomElement layerName = document.createElement( "layername" );
-  QDomText layerNameText = document.createTextNode( name() );
+  QDomText layerNameText = document.createTextNode( originalName() );
   layerName.appendChild( layerNameText );
 
   // layer title
@@ -388,11 +482,14 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   mCRS->writeXML( mySrsElement, document );
   maplayer.appendChild( mySrsElement );
 
+#if 0
   // <transparencyLevelInt>
   QDomElement transparencyLevelIntElement = document.createElement( "transparencyLevelInt" );
   QDomText    transparencyLevelIntText    = document.createTextNode( QString::number( getTransparency() ) );
   transparencyLevelIntElement.appendChild( transparencyLevelIntText );
   maplayer.appendChild( transparencyLevelIntElement );
+#endif
+
   // now append layer node to map layer node
 
   layer_node.appendChild( maplayer );
@@ -503,13 +600,6 @@ const QgsCoordinateReferenceSystem& QgsMapLayer::crs() const
   return *mCRS;
 }
 
-const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
-{
-  // This will be dropped in QGIS 2.0 due to conflicting name
-  // Please use crs() in the future
-  return *mCRS;
-}
-
 void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal )
 {
   *mCRS = srs;
@@ -524,6 +614,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSign
     emit layerCrsChanged();
 }
 
+#if 0
 unsigned int QgsMapLayer::getTransparency()
 {
   return mTransparencyLevel;
@@ -533,13 +624,14 @@ void QgsMapLayer::setTransparency( unsigned int theInt )
 {
   mTransparencyLevel = theInt;
 }
+#endif
 
-QString QgsMapLayer::capitaliseLayerName( const QString name )
+QString QgsMapLayer::capitaliseLayerName( const QString& name )
 {
   // Capitalise the first letter of the layer name if requested
   QSettings settings;
   bool capitaliseLayerName =
-    settings.value( "qgis/capitaliseLayerName", QVariant( false ) ).toBool();
+    settings.value( "/qgis/capitaliseLayerName", QVariant( false ) ).toBool();
 
   QString layerName( name );
 
@@ -564,6 +656,14 @@ QString QgsMapLayer::styleURI( )
     // ideally we should look for .qml file inside zip file
     myURI.remove( 0, 8 );
   }
+  else if ( myURI.startsWith( "/vsitar/", Qt::CaseInsensitive ) &&
+            ( myURI.endsWith( ".tar", Qt::CaseInsensitive ) ||
+              myURI.endsWith( ".tar.gz", Qt::CaseInsensitive ) ||
+              myURI.endsWith( ".tgz", Qt::CaseInsensitive ) ) )
+  {
+    // ideally we should look for .qml file inside tar file
+    myURI.remove( 0, 8 );
+  }
 
   QFileInfo myFileInfo( myURI );
   QString key;
@@ -572,15 +672,18 @@ QString QgsMapLayer::styleURI( )
   {
     // if file is using the /vsizip/ or /vsigzip/ mechanism, cleanup the name
     if ( myURI.endsWith( ".gz", Qt::CaseInsensitive ) )
-    {
       myURI.chop( 3 );
-      myFileInfo.setFile( myURI );
-    }
     else if ( myURI.endsWith( ".zip", Qt::CaseInsensitive ) )
-    {
       myURI.chop( 4 );
-      myFileInfo.setFile( myURI );
-    }
+    else if ( myURI.endsWith( ".tar", Qt::CaseInsensitive ) )
+      myURI.chop( 4 );
+    else if ( myURI.endsWith( ".tar.gz", Qt::CaseInsensitive ) )
+      myURI.chop( 7 );
+    else if ( myURI.endsWith( ".tgz", Qt::CaseInsensitive ) )
+      myURI.chop( 4 );
+    else if ( myURI.endsWith( ".gz", Qt::CaseInsensitive ) )
+      myURI.chop( 3 );
+    myFileInfo.setFile( myURI );
     // get the file name for our .qml style file
     key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
   }
@@ -689,6 +792,23 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
     return myErrorMessage;
   }
 
+  // get style file version string, if any
+  QgsProjectVersion fileVersion( myDocument.firstChildElement( "qgis" ).attribute( "version" ) );
+  QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
+
+  if ( thisVersion > fileVersion )
+  {
+    QgsLogger::warning( "Loading a style file that was saved with an older "
+                        "version of qgis (saved in " + fileVersion.text() +
+                        ", loaded in " + QGis::QGIS_VERSION +
+                        "). Problems may occur." );
+
+    QgsProjectFileTransform styleFile( myDocument, fileVersion );
+    // styleFile.dump();
+    styleFile.updateRevision( thisVersion );
+    // styleFile.dump();
+  }
+
   // now get the layer node out and pass it over to the layer
   // to deserialise...
   QDomElement myRoot = myDocument.firstChildElement( "qgis" );
@@ -704,6 +824,7 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
   setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
 
+#if 0
   //read transparency level
   QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
   if ( ! transparencyNode.isNull() )
@@ -713,6 +834,7 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
     QDomElement myElement = transparencyNode.toElement();
     setTransparency( myElement.text().toInt() );
   }
+#endif
 
   QString errorMsg;
   theResultFlag = readSymbology( myRoot, errorMsg );
@@ -748,11 +870,14 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   myRootNode.setAttribute( "minimumScale", QString::number( minimumScale() ) );
   myRootNode.setAttribute( "maximumScale", QString::number( maximumScale() ) );
 
+#if 0
   // <transparencyLevelInt>
   QDomElement transparencyLevelIntElement = myDocument.createElement( "transparencyLevelInt" );
   QDomText    transparencyLevelIntText    = myDocument.createTextNode( QString::number( getTransparency() ) );
   transparencyLevelIntElement.appendChild( transparencyLevelIntText );
   myRootNode.appendChild( transparencyLevelIntElement );
+#endif
+
   // now append layer node to map layer node
 
   QString errorMsg;
@@ -1134,6 +1259,7 @@ void QgsMapLayer::setCacheImage( QImage * thepImage )
 
   if ( mpCacheImage )
   {
+    onCacheImageDelete();
     delete mpCacheImage;
   }
   mpCacheImage = thepImage;
@@ -1157,4 +1283,9 @@ void QgsMapLayer::clearCacheImage()
 QString QgsMapLayer::metadata()
 {
   return QString();
+}
+
+void QgsMapLayer::setExtent( const QgsRectangle &r )
+{
+  mExtent = r;
 }

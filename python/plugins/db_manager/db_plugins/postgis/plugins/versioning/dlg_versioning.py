@@ -42,7 +42,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 
 		self.connect(self.buttonBox, SIGNAL("accepted()"), self.onOK)
 		self.connect(self.buttonBox, SIGNAL("helpRequested()"), self.showHelp)
-		
+
 		self.populateSchemas()
 		self.populateTables()
 
@@ -62,7 +62,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 		self.connect(self.editEnd, SIGNAL("textChanged(const QString &)"), self.updateSql)
 
 		self.updateSql()
-		
+
 
 	def populateSchemas(self):
 		self.cboSchema.clear()
@@ -124,7 +124,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 				self.origPkeyName = self.db.connector.quoteId(constr.name)
 				self.colOrigPkey = map(lambda (x, y): self.db.connector.quoteId(y.name), constr.fields().iteritems())
 				break
-				
+
 		if self.colOrigPkey is None:
 			self.txtSql.setPlainText("Table doesn't have a primary key!")
 			self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
@@ -148,9 +148,9 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 		self.trigger_update = self.get_escaped_name( None, self.table.name, "_update" )
 		self.trigger_insert = self.get_escaped_name( None, self.table.name, "_insert" )
 
-				
+
 		sql = []
-		
+
 		# modify table: add serial column, start time, end time
 		sql.append( self.sql_alterTable() )
 		# add primary key to the table
@@ -167,7 +167,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 
 		self.txtSql.setPlainText( u'\n\n'.join(sql) )
 		self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True)
-		
+
 		return sql
 
 	def showHelp(self):
@@ -177,7 +177,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 
 	def sql_alterTable(self):
 		return u"ALTER TABLE %s ADD %s serial, ADD %s timestamp, ADD %s timestamp;" % (self.schematable, self.colPkey, self.colStart, self.colEnd)
-		
+
 	def sql_setPkey(self):
 		return u"ALTER TABLE %s DROP CONSTRAINT %s, ADD PRIMARY KEY (%s);" % (self.schematable, self.origPkeyName, self.colPkey)
 
@@ -230,7 +230,7 @@ END;
 $$
 LANGUAGE 'plpgsql';""" % { 'view' : self.view, 'schematable': self.schematable, 'cols' : cols, 'oldcols' : old_cols, 'start' : self.colStart, 'end' : self.colEnd, 'func_at_time' : self.func_at_time, 'func_update' : self.func_update, 'func_insert' : self.func_insert }
 		return sql
-	
+
 	def sql_triggers(self):
 		return u"""
 CREATE RULE %(rule_del)s AS ON DELETE TO %(schematable)s
@@ -255,15 +255,15 @@ CREATE OR REPLACE RULE "_INSERT" AS ON INSERT TO %(view)s DO INSTEAD
   INSERT INTO %(schematable)s (%(cols)s) VALUES (%(newcols)s);
 CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
   UPDATE %(schematable)s SET %(assign)s WHERE %(origpkey)s = NEW.%(origpkey)s;""" % { 'view': self.view, 'schematable' : self.schematable, 'cols' : cols, 'newcols' : new_cols, 'assign' : assign_cols, 'origpkey' : self.colOrigPkey }
-		
+
 
 	def onOK(self):
 		# execute and commit the code
 		QApplication.setOverrideCursor(Qt.WaitCursor)
-		try:	
+		try:
 			sql = u"\n".join(self.updateSql())
 			self.db.connector._execute_and_commit( sql )
-			
+
 		except BaseError, e:
 			DlgDbError.showError(e, self)
 			return

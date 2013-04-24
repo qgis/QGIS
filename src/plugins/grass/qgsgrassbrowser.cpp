@@ -154,8 +154,7 @@ void QgsGrassBrowser::addMap()
     {
       QgsDebugMsg( QString( "add raster: %1" ).arg( uri ) );
       //mIface->addRasterLayer( uri, map );
-      mIface->addRasterLayer( uri, map, "grassraster", QStringList(), QStringList(),
-                              QString(), QString() );
+      mIface->addRasterLayer( uri, map, "grassraster" );
     }
     else if ( type == QgsGrassModel::Vector )
     {
@@ -225,7 +224,7 @@ void QgsGrassBrowser::copyMap()
 
   // Filter VectorLayer type from selection
   QModelIndexList indexes;
-  foreach( QModelIndex index, mTree->selectionModel()->selectedIndexes() )
+  foreach ( QModelIndex index, mTree->selectionModel()->selectedIndexes() )
   {
     int type = mModel->itemType( index );
     if ( type != QgsGrassModel::VectorLayer )
@@ -307,7 +306,7 @@ void QgsGrassBrowser::renameMap()
 
   // Filter VectorLayer type from selection
   QModelIndexList indexes;
-  foreach( QModelIndex index, mTree->selectionModel()->selectedIndexes() )
+  foreach ( QModelIndex index, mTree->selectionModel()->selectedIndexes() )
   {
     int type = mModel->itemType( index );
     if ( type != QgsGrassModel::VectorLayer )
@@ -385,7 +384,7 @@ void QgsGrassBrowser::deleteMap()
 
   // Filter VectorLayer type from selection
   QModelIndexList indexes;
-  foreach( QModelIndex index, mTree->selectionModel()->selectedIndexes() )
+  foreach ( QModelIndex index, mTree->selectionModel()->selectedIndexes() )
   {
     int type = mModel->itemType( index );
     QString mapset = mModel->itemMapset( index );
@@ -400,7 +399,7 @@ void QgsGrassBrowser::deleteMap()
         QString uri = gisbase + "/" + location + "/"
                       + mapset + "/" + map + "/" + layers[i];
 
-        foreach( QgsMapLayer *layer, mIface->legendInterface()->layers() )
+        foreach ( QgsMapLayer *layer, mIface->legendInterface()->layers() )
         {
           QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
           if ( vl && vl->dataProvider()->name() == "grass" && vl->source() == uri )

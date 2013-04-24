@@ -40,10 +40,11 @@ class SqlCompleter(QCompleter):
 		wordlist = QStringList()
 		for name, value in dictionary.iteritems():
 			wordlist << value
+		wordlist = QStringList() << list(set( wordlist ))	# remove duplicates
 
 		# setup the completer
 		QCompleter.__init__(self, sorted(wordlist), editor)
-		self.setModelSorting(QCompleter.CaseInsensitivelySortedModel)
+		self.setModelSorting(QCompleter.CaseSensitivelySortedModel)
 		self.setWrapAround(False)
 
 		if isinstance(editor, CompletionTextEdit):

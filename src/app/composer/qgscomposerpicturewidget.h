@@ -40,8 +40,6 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
     void on_mPictureBrowseButton_clicked();
     void on_mPictureLineEdit_editingFinished();
     void on_mRotationSpinBox_valueChanged( double d );
-    void on_mWidthLineEdit_editingFinished();
-    void on_mHeightLineEdit_editingFinished();
     void on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
     void on_mAddDirectoryButton_clicked();
     void on_mRemoveDirectoryButton_clicked();
@@ -50,6 +48,7 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
 
   protected:
     void showEvent( QShowEvent * event );
+    void resizeEvent( QResizeEvent * event );
 
   private slots:
     /**Sets the GUI elements to the values of mPicture*/

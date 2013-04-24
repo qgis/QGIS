@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -27,6 +27,7 @@ class QgsVectorLayer;
 class CORE_EXPORT QgsRendererCategoryV2
 {
   public:
+    QgsRendererCategoryV2( );
 
     //! takes ownership of symbol
     QgsRendererCategoryV2( QVariant value, QgsSymbolV2* symbol, QString label );
@@ -34,7 +35,10 @@ class CORE_EXPORT QgsRendererCategoryV2
     //! copy constructor
     QgsRendererCategoryV2( const QgsRendererCategoryV2& cat );
 
+
     ~QgsRendererCategoryV2();
+
+    QgsRendererCategoryV2& operator=( const QgsRendererCategoryV2& cat );
 
     QVariant value() const;
     QgsSymbolV2* symbol() const;
@@ -81,9 +85,11 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! returns bitwise OR-ed capabilities of the renderer
     //! \note added in 2.0
-    virtual int capabilities() { return SymbolLevels | RotationField; }
+    virtual int capabilities() { return SymbolLevels | RotationField | Filter; }
 
     virtual QgsSymbolV2List symbols();
+    //! @note added in 2.0
+    void updateSymbols( QgsSymbolV2 * sym );
 
     const QgsCategoryList& categories() { return mCategories; }
 
@@ -97,6 +103,12 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     void addCategory( const QgsRendererCategoryV2 &category );
     bool deleteCategory( int catIndex );
     void deleteAllCategories();
+
+    //! Moves the category at index position from to index position to.
+    void moveCategory( int from, int to );
+
+    void sortByValue( Qt::SortOrder order = Qt::AscendingOrder );
+    void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
     QString classAttribute() const { return mAttrName; }
     void setClassAttribute( QString attr ) { mAttrName = attr; }
@@ -112,6 +124,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! return a list of item text / symbol
     //! @note: this method was added in version 1.5
+    //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems();
 
     QgsSymbolV2* sourceSymbol();
@@ -130,6 +143,11 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 1.6
     QString sizeScaleField() const { return mSizeScaleField; }
 
+    //! @note added in 2.0
+    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
+    //! @note added in 2.0
+    QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
+
   protected:
     QString mAttrName;
     QgsCategoryList mCategories;
@@ -137,6 +155,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     QgsVectorColorRampV2* mSourceColorRamp;
     QString mRotationField;
     QString mSizeScaleField;
+    QgsSymbolV2::ScaleMethod mScaleMethod;
 
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;

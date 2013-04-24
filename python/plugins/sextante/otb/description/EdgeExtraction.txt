@@ -1,0 +1,12 @@
+Edge Extraction
+otbcli_EdgeExtraction
+Edge Extraction
+Feature Extraction
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image
+ParameterNumber|-channel|Selected Channel|None|None|1
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterSelection|-filter|Edge feature|gradient;sobel;touzi|0
+ParameterNumber|-filter.touzi.xradius|The X Radius|None|None|1
+ParameterNumber|-filter.touzi.yradius|The Y Radius|None|None|1
+

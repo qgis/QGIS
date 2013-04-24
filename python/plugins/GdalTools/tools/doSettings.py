@@ -1,5 +1,28 @@
 # -*- coding: utf-8 -*-
 
+"""
+***************************************************************************
+    doSettings.py
+    ---------------------
+    Date                 : June 2010
+    Copyright            : (C) 2010 by Giuseppe Sucameli
+    Email                : brush dot tyler at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Giuseppe Sucameli'
+__date__ = 'June 2010'
+__copyright__ = '(C) 2010, Giuseppe Sucameli'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -22,8 +45,8 @@ class GdalToolsSettingsDialog( QDialog, Ui_Dialog ):
     QObject.connect( self.btnSetBinPath, SIGNAL( "clicked()" ), self.setBinPath )
     self.bin_tooltip_label.setPixmap( QPixmap(':/icons/tooltip.png') )
     self.bin_tooltip_label.setToolTip( self.tr( \
-u"""A list of colon-separated (Linux and MacOS) or 
-semicolon-separated (Windows) paths to both binaries 
+u"""A list of colon-separated (Linux and MacOS) or
+semicolon-separated (Windows) paths to both binaries
 and python executables.
 
 MacOS users usually need to set it to something like
@@ -34,7 +57,7 @@ MacOS users usually need to set it to something like
     QObject.connect( self.btnSetPymodPath, SIGNAL( "clicked()" ), self.setPymodPath )
     self.pymod_tooltip_label.setPixmap( QPixmap(':/icons/tooltip.png') )
     self.pymod_tooltip_label.setToolTip( self.tr( \
-u"""A list of colon-separated (Linux and MacOS) or 
+u"""A list of colon-separated (Linux and MacOS) or
 semicolon-separated (Windows) paths to python modules.""") )
 
     # help
@@ -42,7 +65,7 @@ semicolon-separated (Windows) paths to python modules.""") )
     QObject.connect( self.btnSetHelpPath, SIGNAL( "clicked()" ), self.setHelpPath )
     self.help_tooltip_label.setPixmap( QPixmap(':/icons/tooltip.png') )
     self.help_tooltip_label.setToolTip( self.tr( \
-u"""Useful to open local GDAL documentation instead of online help 
+u"""Useful to open local GDAL documentation instead of online help
 when pressing on the tool dialog's Help button.""") )
 
 

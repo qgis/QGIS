@@ -1,5 +1,19 @@
+REM ***************************************************************************
+REM    package-nightly.cmd
+REM    ---------------------
+REM    begin                : January 2011
+REM    copyright            : (C) 2011 by Juergen E. Fischer
+REM    email                : jef at norbit dot de
+REM ***************************************************************************
+REM *                                                                         *
+REM *   This program is free software; you can redistribute it and/or modify  *
+REM *   it under the terms of the GNU General Public License as published by  *
+REM *   the Free Software Foundation; either version 2 of the License, or     *
+REM *   (at your option) any later version.                                   *
+REM *                                                                         *
+REM ***************************************************************************
 @echo off
-set GRASS_VERSION=6.4.2
+set GRASS_VERSION=6.4.3RC3
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -47,6 +61,8 @@ set SRCDIR=%CD%
 if "%BUILDDIR:~1,1%"==":" %BUILDDIR:~0,2%
 cd %BUILDDIR%
 
+if exist repackage goto package
+
 if not exist build.log goto build
 
 REM
@@ -85,25 +101,26 @@ if errorlevel 1 goto error
 
 set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
+set GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION%
 
 cmake -G "Visual Studio 9 2008" ^
 	-D BUILDNAME="OSGeo4W-Nightly-VC9" ^
 	-D SITE="qgis.org" ^
 	-D PEDANTIC=TRUE ^
-	-D WITH_SPATIALITE=TRUE ^
+	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_MAPSERVER=TRUE ^
 	-D WITH_ASTYLE=TRUE ^
 	-D WITH_GLOBE=TRUE ^
-	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
+	-D WITH_TOUCH=TRUE ^
+	-D WITH_ORACLE=TRUE ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
-	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c_i.lib ^
+	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c.lib ^
 	-D SQLITE3_LIBRARY=%O4W_ROOT%/lib/sqlite3_i.lib ^
 	-D SPATIALITE_LIBRARY=%O4W_ROOT%/lib/spatialite_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
 	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python27/include ^
 	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python27/libs/python27.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
-	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION% ^
 	-D QT_BINARY_DIR=%O4W_ROOT%/bin ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/include/qt4 ^
@@ -111,10 +128,8 @@ cmake -G "Visual Studio 9 2008" ^
 	-D QT_PNG_LIBRARY=%O4W_ROOT%/lib/libpng13.lib ^
 	-D QWT_INCLUDE_DIR=%O4W_ROOT%/include/qwt ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
-	-D ZLIB_INCLUDE_DIR=%O4W_ROOT%/include ^
-	-D ZLIB_LIBRARY=%O4W_ROOT%/lib/zlib.lib ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
-	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /Od /D NDEBUG" ^
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /Od /D NDEBUG /D QGISDEBUG" ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
 	%SRCDIR%>>%LOG% 2>&1
@@ -142,11 +157,12 @@ echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project INSTALL /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 goto error
 
+:package
 echo PACKAGE: %DATE% %TIME%>>%LOG% 2>&1
 
 cd ..
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' postinstall.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' preremove.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' postinstall-dev.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' preremove-desktop.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' browser.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.bat.tmpl
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' qgis.reg.tmpl >%OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qgis.reg.tmpl
@@ -158,11 +174,18 @@ REM del %OSGEO4W_ROOT%\apps\%PACKAGENAME%\python\qgis\qgisconfig.py
 
 touch exclude
 
+move %OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%.exe
+move %OSGEO4W_ROOT%\apps\%PACKAGENAME%\bin\qbrowser.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.exe
+
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	apps/%PACKAGENAME% ^
+	bin/%PACKAGENAME%.exe ^
+	bin/%PACKAGENAME%-browser.exe ^
 	bin/%PACKAGENAME%.bat.tmpl ^
 	bin/%PACKAGENAME%-browser.bat.tmpl ^
+	apps/qt4/plugins/sqldrivers/qsqlocispatial.dll ^
+	apps/qt4/plugins/sqldrivers/qsqlspatialite.dll ^
 	etc/postinstall/%PACKAGENAME%.bat ^
 	etc/preremove/%PACKAGENAME%.bat ^
 	>>%LOG% 2>&1

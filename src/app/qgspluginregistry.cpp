@@ -23,6 +23,7 @@
 #include <QSettings>
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgisinterface.h"
 #include "qgspluginregistry.h"
 #include "qgspluginmetadata.h"
@@ -137,7 +138,7 @@ void QgsPluginRegistry::dump()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     QgsDebugMsg( "PYTHON PLUGINS IN REGISTRY:" );
-    foreach( QString pluginName, mPythonUtils->listActivePlugins() )
+    foreach ( QString pluginName, mPythonUtils->listActivePlugins() )
     {
       QgsDebugMsg( pluginName );
     }
@@ -175,7 +176,7 @@ void QgsPluginRegistry::unloadAll()
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    foreach( QString pluginName, mPythonUtils->listActivePlugins() )
+    foreach ( QString pluginName, mPythonUtils->listActivePlugins() )
     {
       mPythonUtils->unloadPlugin( pluginName );
     }
@@ -249,6 +250,8 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
     // if plugin is not compatible, disable it
     if ( ! isPythonPluginCompatible( packageName ) )
     {
+      QgsMessageLog::logMessage( QObject::tr( "Plugin \"%1\" is not compatible with this version of Quantum GIS.\nIt will be disabled." ).arg( packageName ),
+                                 QObject::tr( "Plugins" ) );
       settings.setValue( "/PythonPlugins/" + packageName, false );
       return;
     }
@@ -262,7 +265,7 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
-    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName ).arg( packageName ), QObject::tr( "Plugins" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName ).arg( packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
   }
 }
 
@@ -316,7 +319,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
           addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
           //add it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, true );
-          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName() ).arg( myLib.fileName() ), QObject::tr( "Plugins" ) );
+          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName() ).arg( myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
 
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
@@ -382,7 +385,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
 {
   QSettings mySettings;
 
-#ifdef WIN32
+#if defined(WIN32) || defined(__CYGWIN__)
   QString pluginExt = "*.dll";
 #elif ANDROID
   QString pluginExt = "*plugin.so";
@@ -414,27 +417,39 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
     QStringList pluginList = mPythonUtils->pluginList();
     QgsDebugMsg( "Loading python plugins" );
 
-    // make the plugin installer and the fTools enabled by default:
-    if ( !mySettings.contains( "/PythonPlugins/plugin_installer" ) )
+    QStringList corePlugins = QStringList();
+    corePlugins << "plugin_installer";
+    corePlugins << "fTools";
+    corePlugins << "GdalTools";
+    corePlugins << "db_manager";
+
+    // make the required core plugins enabled by default:
+    for ( int i = 0; i < corePlugins.size(); i++ )
     {
-      mySettings.setValue( "/PythonPlugins/plugin_installer", true );
-    }
-    if ( !mySettings.contains( "/PythonPlugins/fTools" ) )
-    {
-      mySettings.setValue( "/PythonPlugins/fTools", true );
-    }
-    if ( !mySettings.contains( "/PythonPlugins/GdalTools" ) )
-    {
-      mySettings.setValue( "/PythonPlugins/GdalTools", true );
-    }
-    if ( !mySettings.contains( "/PythonPlugins/db_manager" ) )
-    {
-      mySettings.setValue( "/PythonPlugins/db_manager", true );
+      if ( !mySettings.contains( "/PythonPlugins/" + corePlugins[i] ) )
+      {
+        mySettings.setValue( "/PythonPlugins/" + corePlugins[i], true );
+      }
     }
 
     for ( int i = 0; i < pluginList.size(); i++ )
     {
       QString packageName = pluginList[i];
+
+      // TODO: apply better solution for #5879
+      // start - temporary fix for issue #5879
+      if ( QgsApplication::isRunningFromBuildDir() )
+      {
+        if ( corePlugins.contains( packageName ) )
+        {
+          QgsApplication::setPkgDataPath( QString( "" ) );
+        }
+        else
+        {
+          QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
+        }
+      }
+      // end - temporary fix for issue #5879, more below
 
       if ( checkPythonPlugin( packageName ) )
       {
@@ -446,6 +461,12 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
         }
       }
     }
+    // start - temporary fix for issue #5879, more above
+    if ( QgsApplication::isRunningFromBuildDir() )
+    {
+      QgsApplication::setPkgDataPath( QgsApplication::buildSourcePath() );
+    }
+    // end - temporary fix for issue #5879
   }
 
   QgsDebugMsg( "Plugin loading completed" );
@@ -477,28 +498,20 @@ bool QgsPluginRegistry::checkCppPlugin( QString pluginFullPath )
 
 bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
 {
-  // import plugin's package
-  if ( !mPythonUtils->loadPlugin( packageName ) )
-    return false;
-
-  QString pluginName, description, category, version;
+  QString pluginName, description, /*category,*/ version;
 
   // get information from the plugin
   // if there are some problems, don't continue with metadata retreival
-  pluginName = mPythonUtils->getPluginMetadata( packageName, "name" );
-  if ( pluginName != "__error__" )
-  {
-    description = mPythonUtils->getPluginMetadata( packageName, "description" );
-    if ( description != "__error__" )
-      version = mPythonUtils->getPluginMetadata( packageName, "version" );
-    // for Python plugins category still optional, by default used "Plugins" category
-    //category = mPythonUtils->getPluginMetadata( packageName, "category" );
-  }
+  pluginName  = mPythonUtils->getPluginMetadata( packageName, "name" );
+  description = mPythonUtils->getPluginMetadata( packageName, "description" );
+  version     = mPythonUtils->getPluginMetadata( packageName, "version" );
+  // for Python plugins category still optional, by default used "Plugins" category
+  //category = mPythonUtils->getPluginMetadata( packageName, "category" );
 
   if ( pluginName == "__error__" || description == "__error__" || version == "__error__" )
   {
-    QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Python error" ),
-                          QObject::tr( "Error when reading metadata of plugin %1" ).arg( packageName ) );
+    QgsMessageLog::logMessage( QObject::tr( "Error when reading metadata of plugin %1" ).arg( packageName ),
+                               QObject::tr( "Plugins" ) );
     return false;
   }
 
@@ -508,15 +521,7 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
 bool QgsPluginRegistry::isPythonPluginCompatible( QString packageName )
 {
   QString minVersion = mPythonUtils->getPluginMetadata( packageName, "qgisMinimumVersion" );
-  if ( minVersion == "__error__" || !checkQgisVersion( minVersion ) )
-  {
-    //QMessageBox::information(mQgisInterface->mainWindow(),
-    //   QObject::tr("Incompatible plugin"),
-    //   QObject::tr("Plugin \"%1\" is not compatible with this version of Quantum GIS.\nIt will be disabled.").arg(pluginName));
-    //settings.setValue( "/PythonPlugins/" + packageName, false );
-    return false;
-  }
-  return true;
+  return minVersion != "__error__" && checkQgisVersion( minVersion );
 }
 
 QList<QgsPluginMetadata*> QgsPluginRegistry::pluginData()

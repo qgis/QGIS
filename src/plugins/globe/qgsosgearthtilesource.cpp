@@ -71,7 +71,7 @@ void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const P
   mMapRenderer->setOutputUnits( mainRenderer->outputUnits() );
   mMapRenderer->setMapUnits( QGis::Degrees );
 
-  mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
+  //mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 }
 
 osg::Image* QgsOsgEarthTileSource::createImage( const TileKey& key, ProgressCallback* progress )

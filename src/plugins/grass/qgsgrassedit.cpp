@@ -50,11 +50,6 @@ extern "C"
 #include <grass/Vect.h>
 }
 
-#ifdef _MSC_VER
-#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
-#endif
-
-
 class QgsGrassEditLayer : public QgsMapCanvasItem
 {
   public:
@@ -1718,8 +1713,7 @@ void QgsGrassEdit::displayElement( int line, const QPen & pen, int size, QPainte
       point.setX( mPoints->x[i] );
       point.setY( mPoints->y[i] );
       point = transformLayerToCanvas( point );
-      pointArray.setPoint( i, static_cast<int>( round( point.x() ) ),
-                           static_cast<int>( round( point.y() ) ) );
+      pointArray.setPoint( i, qRound( point.x() ), qRound( point.y() ) );
     }
 
     myPainter->setPen( pen );
@@ -1846,8 +1840,8 @@ void QgsGrassEdit::displayIcon( double x, double y, const QPen & pen,
 
   point = transformLayerToCanvas( point );
 
-  int px = static_cast<int>( round( point.x() ) );
-  int py = static_cast<int>( round( point.y() ) );
+  int px = qRound( point.x() );
+  int py = qRound( point.y() );
   int m = ( size - 1 ) / 2;
 
   QPainter *myPainter;

@@ -8,7 +8,7 @@ SET (sqlanywhere_SRCS
      sadbtablemodel.cpp
 )
 
-SET (sqlanywhere_UIS 
+SET (sqlanywhere_UIS
     sanewconnectionbase.ui
     sasourceselectbase.ui
 )
@@ -48,10 +48,8 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
-     ../../core 
-     ../../core/raster 
-     ../../core/renderer 
-     ../../core/symbology
+     ../../core
+     ../../core/raster
      ../../gui
      ../../app
      ..

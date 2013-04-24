@@ -1,16 +1,34 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    v.out.ogr.pg.py
+    ---------------------
+    Date                 : July 2009
+    Copyright            : (C) 2009 by Radim Blazek
+    Email                : radim dot blazek at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Radim Blazek'
+__date__ = 'July 2009'
+__copyright__ = '(C) 2009, Radim Blazek'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 
 ############################################################################
 #
 # MODULE:       qgis.v.out.ogr.pg.py
-# AUTHOR(S):    Radim Blazek
-#
-# PURPOSE:      Export a vectore to PostGIS (PostgreSQL) database table
-# COPYRIGHT:    (C) 2009 by Radim Blazek
-#
-#               This program is free software under the GNU General Public
-#               License (>=v2). Read the file COPYING that comes with GRASS
-#               for details.
+# PURPOSE:      Export a vector to PostGIS (PostgreSQL) database table
 #
 #############################################################################
 
@@ -56,7 +74,7 @@
 #% key: host
 #% type: string
 #% label: Host
-#% description: Host name of the machine on which the server is running. 
+#% description: Host name of the machine on which the server is running.
 #% required : no
 #%end
 
@@ -91,7 +109,7 @@
 #% key: user
 #% type: string
 #% label: User
-#% description: Connect to the database as the user username instead of the  default. 
+#% description: Connect to the database as the user username instead of the  default.
 #% required : no
 #%end
 
@@ -139,7 +157,7 @@ def main():
 
     if grass.run_command('v.out.ogr', flags=flags_string, input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer ) != 0:
          grass.fatal("Cannot export vector to database.")
-	
+
 if __name__ == "__main__":
     options, flags = grass.parser()
     flags_string = "".join([k for k in flags.keys() if flags[k] and k != 'r'])

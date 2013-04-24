@@ -42,7 +42,7 @@ bool QgsComposerTextTable::readXML( const QDomElement& itemElem, const QDomDocum
   return tableReadXML( itemElem, doc );
 }
 
-bool QgsComposerTextTable::getFeatureAttributes( QList<QgsAttributeMap>& attributes )
+bool QgsComposerTextTable::getFeatureAttributes( QList<QgsAttributes>& attributes )
 {
   attributes.clear();
 
@@ -51,12 +51,12 @@ bool QgsComposerTextTable::getFeatureAttributes( QList<QgsAttributeMap>& attribu
   for ( ; rowIt != mRowText.constEnd(); ++rowIt )
   {
     currentStringList = *rowIt;
-    QgsAttributeMap map;
+    QVector<QVariant> vec;
     for ( int i = 0; i < currentStringList.size(); ++i )
     {
-      map.insert( i, QVariant( currentStringList.at( i ) ) );
+      vec.append( QVariant( currentStringList.at( i ) ) );
     }
-    attributes.append( map );
+    attributes.append( vec );
   }
   return true;
 }

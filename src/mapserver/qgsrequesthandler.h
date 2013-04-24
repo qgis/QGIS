@@ -48,6 +48,7 @@ class QgsRequestHandler
   protected:
     /**This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')*/
     QString mFormat;
+    QString mFormatString; //format string as it is passed in the request (with base
     QString mService;
 };
 

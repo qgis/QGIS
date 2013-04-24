@@ -3,7 +3,7 @@
     ---------------------
     begin                : January 2007
     copyright            : (C) 2007 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -23,7 +23,7 @@ QgsLegendSymbologyGroup::QgsLegendSymbologyGroup( QTreeWidgetItem * theItem, QSt
     : QgsLegendItem( theItem, theString )
 {
   mType = LEGEND_SYMBOL_GROUP;
-  QIcon myIcon = QgisApp::getThemeIcon( "/mIconSymbology.png" );
+  QIcon myIcon = QgsApplication::getThemeIcon( "/mIconSymbology.png" );
   setText( 0, theString );
   setIcon( 0, myIcon );
 }

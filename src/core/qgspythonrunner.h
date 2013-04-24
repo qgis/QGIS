@@ -3,7 +3,7 @@
     ---------------------
     begin                : May 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -37,6 +37,9 @@ class CORE_EXPORT QgsPythonRunner
     /** execute a python statement */
     static bool run( QString command, QString messageOnError = QString() );
 
+    /** Eval a python statement */
+    static bool eval( QString command, QString& result );
+
     /** assign an instance of python runner so that run() can be used.
       This method should be called during app initialization.
       Takes ownership of the object, deletes previous instance. */
@@ -48,6 +51,8 @@ class CORE_EXPORT QgsPythonRunner
     virtual ~QgsPythonRunner();
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
+
+    virtual bool evalCommand( QString command, QString& result ) = 0;
 
     static QgsPythonRunner* mInstance;
 };

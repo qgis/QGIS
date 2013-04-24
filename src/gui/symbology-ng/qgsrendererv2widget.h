@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,10 +17,10 @@
 
 #include <QWidget>
 #include <QMenu>
+#include "qgssymbolv2.h"
 
 class QgsVectorLayer;
 class QgsStyleV2;
-class QgsSymbolV2;
 class QgsFeatureRendererV2;
 class QgsSymbolV2SelectorDialog;
 
@@ -80,8 +80,8 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
 
 class QMenu;
 class QgsField;
+class QgsFields;
 
-typedef QMap<int, QgsField> QgsFieldMap;
 
 /**
 Utility class for prividing GUI for data-defined rendering.
@@ -92,25 +92,32 @@ class QgsRendererV2DataDefinedMenus : public QObject
 
   public:
 
-    QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFieldMap& flds, QString rotationField, QString sizeScaleField );
+    QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFields& flds, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
+    ~QgsRendererV2DataDefinedMenus();
 
-    void populateMenu( QMenu* menu, const char* slot, QString fieldName );
-    void updateMenu( QMenu* menu, QString fieldName );
-
+    void populateMenu( QMenu* menu, const char* slot, QString fieldName, QActionGroup *actionGroup );
+#if 0
+    void updateMenu( QActionGroup* actionGroup, QString fieldName );
+#endif
   public slots:
 
-    void rotationFieldSelected();
-    void sizeScaleFieldSelected();
+    void rotationFieldSelected( QAction *a );
+    void sizeScaleFieldSelected( QAction *a );
+    void scaleMethodSelected( QAction *a );
 
   signals:
 
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
+    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 
   protected:
     QMenu* mRotationMenu;
     QMenu* mSizeScaleMenu;
-    const QgsFieldMap& mFlds;
+    QActionGroup *mSizeMethodActionGroup;
+    QActionGroup *mRotationAttributeActionGroup;
+    QActionGroup *mSizeAttributeActionGroup;
+    const QgsFields& mFlds;
 };
 
 #endif // QGSRENDERERV2WIDGET_H

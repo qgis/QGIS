@@ -23,8 +23,13 @@
 
 class QgsFeature;
 class QgsField;
+class QgsGeometry;
+class QgsPoint;
 class QFile;
 class QTextStream;
+
+class QgsDelimitedTextFeatureIterator;
+class QgsDelimitedTextFile;
 
 
 /**
@@ -32,19 +37,32 @@ class QTextStream;
 \brief Data provider for delimited text files.
 *
 * The provider needs to know both the path to the text file and
-* the delimiter to use. Since the means to add a layer is farily
+* the delimiter to use. Since the means to add a layer is fairly
 * rigid, we must provide this information encoded in a form that
 * the provider can decipher and use.
-* The uri must contain the path and delimiter in this format:
-* /full/path/too/delimited.txt?delimiter=<delimiter>
 *
-* Example uri = "/home/foo/delim.txt?delimiter=|"
+* The uri must defines the file path and the parameters used to
+* interpret the contents of the file.
+*
+* Example uri = "/home/foo/delim.txt?delimiter=|"*
+*
+* For detailed information on the uri format see the QGSVectorLayer
+* documentation.
+*
+
 */
 class QgsDelimitedTextProvider : public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
+
+    /**
+     * Regular expression defining possible prefixes to WKT string,
+     * (EWKT srid, Informix SRID)
+      */
+    static QRegExp WktPrefixRegexp;
+    static QRegExp CrdDmsRegexp;
 
     QgsDelimitedTextProvider( QString uri = QString() );
 
@@ -57,27 +75,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     virtual QString storageType() const;
 
-    /** Select features based on a bounding rectangle. Features can be retrieved with calls to nextFeature.
-     *  @param fetchAttributes list of attributes which should be fetched
-     *  @param rect spatial filter
-     *  @param fetchGeometry true if the feature geometry should be fetched
-     *  @param useIntersect true if an accurate intersection test should be used,
-     *                     false if a test based on bounding box is sufficient
-     */
-    virtual void select( QgsAttributeList fetchAttributes = QgsAttributeList(),
-                         QgsRectangle rect = QgsRectangle(),
-                         bool fetchGeometry = true,
-                         bool useIntersect = false );
-
-    /**
-     * Get the next feature resulting from a select operation.
-     * @param feature feature which will receive data from the provider
-     * @return true when there was a feature to fetch, false when end was hit
-     *
-     * mFile should be open with the file pointer at the record of the next
-     * feature, or EOF.  The feature found on the current line is parsed.
-     */
-    virtual bool nextFeature( QgsFeature& feature );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
 
     /**
      * Get feature type.
@@ -92,18 +90,10 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     virtual long featureCount() const;
 
     /**
-     * Number of attribute fields for a feature in the layer
-     */
-    virtual uint fieldCount() const;
-
-    /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
      */
-    virtual const QgsFieldMap & fields() const;
-
-    /** Restart reading features from previous select operation */
-    virtual void rewind();
+    virtual const QgsFields & fields() const;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
@@ -177,16 +167,24 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
   private:
 
-    //! Fields
+    static QRegExp WktZMRegexp;
+    static QRegExp WktCrdRegexp;
+
+    void clearInvalidLines();
+    void recordInvalidLine( QString message );
+    void reportErrors( QStringList messages = QStringList() );
+    void resetStream();
+    bool recordIsEmpty( QStringList &record );
+
+    QgsGeometry *geomFromWkt( QString &sWkt );
+    bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );
+    double dmsStringToDouble( const QString &sX, bool *xOk );
+    //! Text file
+    QgsDelimitedTextFile *mFile;
+
+    // Fields
     QList<int> attributeColumns;
-    QgsFieldMap attributeFields;
-
-    QgsAttributeList mAttributesToFetch;
-
-    QString mFileName;
-    QString mDelimiter;
-    QRegExp mDelimiterRegexp;
-    QString mDelimiterType;
+    QgsFields attributeFields;
 
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
@@ -196,41 +194,30 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     // Handling of WKT types with .. Z, .. M, and .. ZM geometries (ie
     // Z values and/or measures).  mWktZMRegexp is used to test for and
     // remove the Z or M fields, and mWktCrdRegexp is used to remove the
-    // extra coordinate values.
+    // extra coordinate values. mWktPrefix regexp is used to clean up
+    // prefixes sometimes used for WKT (postgis EWKT, informix SRID)
 
     bool mWktHasZM;
-    QRegExp mWktZMRegexp;
-    QRegExp mWktCrdRegexp;
+    bool mWktHasPrefix;
 
     //! Layer extent
     QgsRectangle mExtent;
 
-    //! Current selection rectangle
-
-    QgsRectangle mSelectionRectangle;
-
-    //! Text file
-    QFile *mFile;
-
-    QTextStream *mStream;
-
     bool mValid;
-    bool mUseIntersect;
 
     int mGeomType;
 
     long mNumberFeatures;
     int mSkipLines;
-    int mFirstDataLine; // Actual first line of data (accounting for blank lines)
     QString mDecimalPoint;
+    bool mXyDms;
 
     //! Storage for any lines in the file that couldn't be loaded
+    int mMaxInvalidLines;
+    int mNExtraInvalidLines;
     QStringList mInvalidLines;
     //! Only want to show the invalid lines once to the user
     bool mShowInvalidLines;
-
-    //! Feature id
-    long mFid;
 
     struct wkbPoint
     {
@@ -245,7 +232,8 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QgsCoordinateReferenceSystem mCrs;
 
     QGis::WkbType mWkbType;
+    QGis::GeometryType mGeometryType;
 
-    QString readLine( QTextStream *stream );
-    QStringList splitLine( QString line );
+    friend class QgsDelimitedTextFeatureIterator;
+    QgsDelimitedTextFeatureIterator* mActiveIterator;
 };

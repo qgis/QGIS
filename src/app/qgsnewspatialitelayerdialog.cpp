@@ -48,8 +48,8 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/NewSpatiaLiteLayer/geometry" ).toByteArray() );
 
-  mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
-  mRemoveAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
+  mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionNewAttribute.png" ) );
+  mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mTypeBox->addItem( tr( "Text data" ), "text" );
   mTypeBox->addItem( tr( "Whole number" ), "integer" );
   mTypeBox->addItem( tr( "Decimal number" ), "real" );
@@ -76,7 +76,8 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   QgsCoordinateReferenceSystem srs;
   srs.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
   srs.validate();
-  mCrsId = srs.srsid();
+  bool ok;
+  mCrsId = srs.authid().split( ':' ).at( 1 ).toInt( &ok );
   leSRID->setText( srs.authid() + " - " + srs.description() );
 
   pbnFindSRID->setEnabled( mDatabaseComboBox->count() );

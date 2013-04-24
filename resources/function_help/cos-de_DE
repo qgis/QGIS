@@ -1,0 +1,12 @@
+<h3>Funktion cos()</h3>
+Gibt den Cosinus eines Winkels zurück.
+
+
+<p><h4>Syntax</h4>
+     cos(<i>winkel</i>)</p>
+
+<p><h4>Argumente</h4>
+<i>winkel</i> -> Winkel im Bogenmaß.</p>
+
+<p><h4>Beispiel</h4>
+     cos(1.571) -> 0.000796326710733263</p>

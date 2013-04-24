@@ -18,26 +18,20 @@
 #include "qgsdiagramoverlayplugin.h"
 #include "qgisinterface.h"
 #include "qgslegendinterface.h"
-#include "qgsdiagramdialog.h"
 #include "qgsdiagramoverlay.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include <QDomDocument>
 #include <QFile>
+#include <QWidget>
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
-
-static const QString pluginName = QObject::tr( "Diagram Overlay" );
+static const QString pluginName = QObject::tr( "Diagram Overlay (Legacy)" );
 static const QString pluginDescription = QObject::tr( "A plugin for placing diagrams on vector layers" );
 static const QString pluginCategory = QObject::tr( "Plugins" );
-static const QString pluginVersion = QObject::tr( "Version 0.0.1" );
+static const QString pluginVersion = QObject::tr( "Version 0.0.1 (Legacy)" );
 
-QgsDiagramOverlayPlugin::QgsDiagramOverlayPlugin( QgisInterface* iface ): QObject(), QgsVectorOverlayPlugin( pluginName, pluginDescription, pluginCategory, pluginVersion ), mInterface( iface )
+QgsDiagramOverlayPlugin::QgsDiagramOverlayPlugin( QgisInterface* iface ): QObject(), QgisPlugin( pluginName, pluginDescription, pluginCategory, pluginVersion, VECTOR_OVERLAY ), mInterface( iface )
 {
   if ( iface && iface->mainWindow() )
   {
@@ -120,11 +114,6 @@ void QgsDiagramOverlayPlugin::projectRead()
       }
     }
   }
-}
-
-QgsApplyDialog* QgsDiagramOverlayPlugin::dialog( QgsVectorLayer* vl ) const
-{
-  return new QgsDiagramDialog( vl );
 }
 
 QGISEXTERN QgisPlugin* classFactory( QgisInterface* iface )

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>529</width>
-    <height>324</height>
+    <width>525</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,11 +33,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnOldSymbology">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Old symbology</string>
+        <string>Blending mode</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox"/>
      </item>
     </layout>
    </item>
@@ -57,6 +60,9 @@
        </sizepolicy>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
@@ -77,6 +83,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>
   <tabstop>buttonBox</tabstop>

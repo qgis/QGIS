@@ -270,8 +270,6 @@ class GeomThread( QThread ):
 
     if self.writeShape:
       vProvider = self.inputLayer.dataProvider()
-      allAttrs = vProvider.attributeIndexes()
-      vProvider.select( allAttrs )
       shapeFields = vProvider.fields()
       crs = vProvider.crs()
       wkbType = self.inputLayer.wkbType()
@@ -284,7 +282,7 @@ class GeomThread( QThread ):
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), len( selection ) )
         for f in selection:
           featGeometry = QgsGeometry( f.geometry() )
-          attrMap = f.attributeMap()
+          attrMap = f.attributes()
 
           pointsBefore += geomVertexCount( featGeometry )
           newGeometry = featGeometry.simplify( self.tolerance )
@@ -292,7 +290,7 @@ class GeomThread( QThread ):
 
           feature = QgsFeature()
           feature.setGeometry( newGeometry )
-          feature.setAttributeMap( attrMap )
+          feature.setAttributes( attrMap )
           shapeFileWriter.addFeature( feature )
           featureId += 1
           self.emit( SIGNAL( "featureProcessed()" ) )
@@ -306,9 +304,10 @@ class GeomThread( QThread ):
       else:
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-        while vProvider.nextFeature( f ):
+	fit = vProvider.getFeatures()
+        while fit.nextFeature( f ):
           featGeometry = QgsGeometry( f.geometry() )
-          attrMap = f.attributeMap()
+          attrMap = f.attributes()
 
           pointsBefore += geomVertexCount( featGeometry )
           newGeometry = featGeometry.simplify( self.tolerance )
@@ -316,7 +315,7 @@ class GeomThread( QThread ):
 
           feature = QgsFeature()
           feature.setGeometry( newGeometry )
-          feature.setAttributeMap( attrMap )
+          feature.setAttributes( attrMap )
           shapeFileWriter.addFeature( feature )
           featureId += 1
           self.emit( SIGNAL( "featureProcessed()" ) )
@@ -355,7 +354,8 @@ class GeomThread( QThread ):
         vProvider = self.inputLayer.dataProvider()
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-        while vProvider.nextFeature( f ):
+	fit = vProvider.getFeatures()
+        while fit.nextFeature( f ):
           featureId = f.id()
           featGeometry = QgsGeometry( f.geometry() )
 
@@ -399,8 +399,6 @@ class GeomThread( QThread ):
     if self.writeShape:
       # prepare writer
       vProvider = self.inputLayer.dataProvider()
-      allAttrs = vProvider.attributeIndexes()
-      vProvider.select( allAttrs )
       shapeFields = vProvider.fields()
       crs = vProvider.crs()
       wkbType = self.inputLayer.wkbType()
@@ -414,12 +412,12 @@ class GeomThread( QThread ):
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), len( selection ) )
         for f in selection:
           featGeometry = QgsGeometry( f.geometry() )
-          attrMap = f.attributeMap()
+          attrMap = f.attributes()
           newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
 
           feature = QgsFeature()
           feature.setGeometry( newGeometry )
-          feature.setAttributeMap( attrMap )
+          feature.setAttributes( attrMap )
           shapeFileWriter.addFeature( feature )
           featureId += 1
           self.emit( SIGNAL( "featureProcessed()" ) )
@@ -433,14 +431,15 @@ class GeomThread( QThread ):
       else:
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-        while vProvider.nextFeature( f ):
+	fit = vProvider.getFeatures()
+        while fit.nextFeature( f ):
           featGeometry = QgsGeometry( f.geometry() )
-          attrMap = f.attributeMap()
+          attrMap = f.attributes()
           newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )
 
           feature = QgsFeature()
           feature.setGeometry( newGeometry )
-          feature.setAttributeMap( attrMap )
+          feature.setAttributes( attrMap )
           shapeFileWriter.addFeature( feature )
           featureId += 1
           self.emit( SIGNAL( "featureProcessed()" ) )
@@ -478,7 +477,8 @@ class GeomThread( QThread ):
         vProvider = self.inputLayer.dataProvider()
         self.emit( SIGNAL( "rangeCalculated( PyQt_PyObject )" ), vProvider.featureCount() )
         f = QgsFeature()
-        while vProvider.nextFeature( f ):
+	fit = vProvider.getFeatures()
+        while fit.nextFeature( f ):
           featureId = f.id()
           featGeometry = QgsGeometry( f.geometry() )
           newGeometry = densifyGeometry( featGeometry, int( self.tolerance ), isPolygon )

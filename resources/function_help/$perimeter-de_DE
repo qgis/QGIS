@@ -1,0 +1,12 @@
+<h3>Funktion $perimeter</h3>
+Liefert den Umfang des aktuellen Objekts zurück.
+
+<h4>Syntax</h4>
+<pre>$perimeter</pre>
+
+<h4>Argumente</h4>
+Keine
+
+<h4>Beispiel</h4>
+<pre>$perimeter &rarr; 42</pre>
+

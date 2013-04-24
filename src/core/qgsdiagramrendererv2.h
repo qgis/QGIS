@@ -30,89 +30,127 @@ class QgsRenderContext;
 class QDomElement;
 namespace pal { class Layer; }
 
-struct CORE_EXPORT QgsDiagramLayerSettings
+class CORE_EXPORT QgsDiagramLayerSettings
 {
-  //avoid inclusion of QgsPalLabeling
-  enum Placement
-  {
-    AroundPoint, // Point / Polygon
-    OverPoint, // Point / Polygon
-    Line, // Line / Polygon
-    Curved, // Line
-    Horizontal, // Polygon
-    Free // Polygon
-  };
+  public:
+    //avoid inclusion of QgsPalLabeling
+    enum Placement
+    {
+      AroundPoint = 0, // Point / Polygon
+      OverPoint, // Point / Polygon
+      Line, // Line / Polygon
+      Curved, // Line
+      Horizontal, // Polygon
+      Free // Polygon
+    };
 
-  enum LinePlacementFlags
-  {
-    OnLine    = 1,
-    AboveLine = 2,
-    BelowLine = 4,
-    MapOrientation = 8
-  };
+    enum LinePlacementFlags
+    {
+      OnLine    = 1,
+      AboveLine = 2,
+      BelowLine = 4,
+      MapOrientation = 8
+    };
 
-  QgsDiagramLayerSettings()
-      : placement( AroundPoint )
-      , placementFlags( OnLine )
-      , priority( 5 )
-      , obstacle( false )
-      , dist( 0.0 )
-      , renderer( 0 )
-      , palLayer( 0 )
-      , ct( 0 )
-      , xform( 0 )
-      , xPosColumn( -1 )
-      , yPosColumn( -1 )
-  {
-  }
+    QgsDiagramLayerSettings()
+        : placement( AroundPoint )
+        , placementFlags( OnLine )
+        , priority( 5 )
+        , obstacle( false )
+        , dist( 0.0 )
+        , renderer( 0 )
+        , palLayer( 0 )
+        , ct( 0 )
+        , xform( 0 )
+        , xPosColumn( -1 )
+        , yPosColumn( -1 )
+    {
+    }
 
-  //pal placement properties
-  Placement placement;
-  LinePlacementFlags placementFlags;
-  int priority; // 0 = low, 10 = high
-  bool obstacle; // whether it's an obstacle
-  double dist; // distance from the feature (in mm)
-  QgsDiagramRendererV2* renderer;
+    //pal placement properties
+    Placement placement;
+    LinePlacementFlags placementFlags;
+    int priority; // 0 = low, 10 = high
+    bool obstacle; // whether it's an obstacle
+    double dist; // distance from the feature (in mm)
+    QgsDiagramRendererV2* renderer;
 
-  //assigned when layer gets prepared
-  pal::Layer* palLayer;
-  const QgsCoordinateTransform* ct;
-  const QgsMapToPixel* xform;
-  QList<QgsPalGeometry*> geometries;
+    //assigned when layer gets prepared
+    pal::Layer* palLayer;
+    const QgsCoordinateTransform* ct;
+    const QgsMapToPixel* xform;
+    QList<QgsPalGeometry*> geometries;
 
-  int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
-  int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
+    int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
+    int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
 
-  void readXML( const QDomElement& elem );
-  void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
+    void readXML( const QDomElement& elem );
+    void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
 };
 
 //diagram settings for rendering
-struct CORE_EXPORT QgsDiagramSettings
+class CORE_EXPORT QgsDiagramSettings
 {
-  enum SizeType
-  {
-    MM,
-    MapUnits
-  };
+  public:
+    enum SizeType
+    {
+      MM,
+      MapUnits
+    };
 
-  QgsDiagramSettings(): sizeType( MM ), minScaleDenominator( -1 ), maxScaleDenominator( -1 )
-  {}
-  QFont font;
-  QList< QColor > categoryColors;
-  QList< int > categoryIndices;
-  QSizeF size; //size
-  SizeType sizeType; //mm or map units
-  QColor backgroundColor;
-  QColor penColor;
-  double penWidth;
+    enum LabelPlacementMethod
+    {
+      Height,
+      XHeight
+    };
 
-  //scale range (-1 if no lower / upper bound )
-  double minScaleDenominator;
-  double maxScaleDenominator;
+    //! Orientation of histogram
+    enum DiagramOrientation
+    {
+      Up,
+      Down,
+      Left,
+      Right
+    };
 
-  void readXML( const QDomElement& elem );
-  void writeXML( QDomElement& rendererElem, QDomDocument& doc ) const;
+    QgsDiagramSettings(): sizeType( MM ), minScaleDenominator( -1 ), maxScaleDenominator( -1 )
+    {}
+    QFont font;
+    QList< QColor > categoryColors;
+    QList< int > categoryIndices;
+    QSizeF size; //size
+    SizeType sizeType; //mm or map units
+    QColor backgroundColor;
+    QColor penColor;
+    double penWidth;
+    LabelPlacementMethod labelPlacementMethod;
+    DiagramOrientation diagramOrientation;
+    double barWidth;
+    int transparency; // 0 - 100
+    bool scaleByArea;
+    int angleOffset;
+
+    //scale range (-1 if no lower / upper bound )
+    double minScaleDenominator;
+    double maxScaleDenominator;
+
+    //! Scale diagrams smaller than mMinimumSize to mMinimumSize
+    double minimumSize;
+
+    void readXML( const QDomElement& elem );
+    void writeXML( QDomElement& rendererElem, QDomDocument& doc ) const;
+};
+
+//additional diagram settings for interpolated size rendering
+class CORE_EXPORT QgsDiagramInterpolationSettings
+{
+  public:
+    QSizeF lowerSize;
+    QSizeF upperSize;
+    double lowerValue;
+    double upperValue;
+    /**Index of the classification attribute*/
+    int classificationAttribute;
 };
 
 /**Returns diagram settings for a feature*/
@@ -124,14 +162,14 @@ class CORE_EXPORT QgsDiagramRendererV2
     virtual ~QgsDiagramRendererV2();
 
     /**Returns size of the diagram for feature f in map units. Returns an invalid QSizeF in case of error*/
-    virtual QSizeF sizeMapUnits( const QgsAttributeMap& attributes, const QgsRenderContext& c );
+    virtual QSizeF sizeMapUnits( const QgsAttributes& attributes, const QgsRenderContext& c );
 
     virtual QString rendererName() const = 0;
 
     /**Returns attribute indices needed for diagram rendering*/
     virtual QList<int> diagramAttributes() const = 0;
 
-    void renderDiagram( const QgsAttributeMap& att, QgsRenderContext& c, const QPointF& pos );
+    void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QPointF& pos );
 
     void setDiagram( QgsDiagram* d );
     const QgsDiagram* diagram() const { return mDiagram; }
@@ -149,10 +187,10 @@ class CORE_EXPORT QgsDiagramRendererV2
      * @param c render context
      * @param s out: diagram settings for the feature
      */
-    virtual bool diagramSettings( const QgsAttributeMap& att, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
+    virtual bool diagramSettings( const QgsAttributes& att, const QgsRenderContext& c, QgsDiagramSettings& s ) = 0;
 
     /**Returns size of the diagram (in painter units) or an invalid size in case of error*/
-    virtual QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c ) = 0;
+    virtual QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c ) = 0;
 
     /**Converts size from mm to map units*/
     void convertSizeToMapUnits( QSizeF& size, const QgsRenderContext& context ) const;
@@ -169,7 +207,7 @@ class CORE_EXPORT QgsDiagramRendererV2
 };
 
 /**Renders the diagrams for all features with the same settings*/
-class CORE_EXPORT QgsSingleCategoryDiagramRenderer: public QgsDiagramRendererV2
+class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
 {
   public:
     QgsSingleCategoryDiagramRenderer();
@@ -187,16 +225,15 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer: public QgsDiagramRendererV2
     void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
 
   protected:
-    bool diagramSettings( const QgsAttributeMap&, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsAttributes&, const QgsRenderContext& c, QgsDiagramSettings& s );
 
-    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c )
-    { Q_UNUSED( attributes ); Q_UNUSED( c ); return mSettings.size; }
+    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c );
 
   private:
     QgsDiagramSettings mSettings;
 };
 
-class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer: public QgsDiagramRendererV2
+class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRendererV2
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
@@ -211,37 +248,32 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer: public QgsDiagramRende
 
     QString rendererName() const { return "LinearlyInterpolated"; }
 
-    void setLowerValue( double val ) { mLowerValue = val; }
-    double lowerValue() const { return mLowerValue; }
+    void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
+    double lowerValue() const { return mInterpolationSettings.lowerValue; }
 
-    void setUpperValue( double val ) { mUpperValue = val; }
-    double upperValue() const { return mUpperValue; }
+    void setUpperValue( double val ) { mInterpolationSettings.upperValue = val; }
+    double upperValue() const { return mInterpolationSettings.upperValue; }
 
-    void setLowerSize( QSizeF s ) { mLowerSize = s; }
-    QSizeF lowerSize() const { return mLowerSize; }
+    void setLowerSize( QSizeF s ) { mInterpolationSettings.lowerSize = s; }
+    QSizeF lowerSize() const { return mInterpolationSettings.lowerSize; }
 
-    void setUpperSize( QSizeF s ) { mUpperSize = s; }
-    QSizeF upperSize() const { return mUpperSize; }
+    void setUpperSize( QSizeF s ) { mInterpolationSettings.upperSize = s; }
+    QSizeF upperSize() const { return mInterpolationSettings.upperSize; }
 
-    int classificationAttribute() const { return mClassificationAttribute; }
-    void setClassificationAttribute( int index ) { mClassificationAttribute = index; }
+    int classificationAttribute() const { return mInterpolationSettings.classificationAttribute; }
+    void setClassificationAttribute( int index ) { mInterpolationSettings.classificationAttribute = index; }
 
     void readXML( const QDomElement& elem );
     void writeXML( QDomElement& layerElem, QDomDocument& doc ) const;
 
   protected:
-    bool diagramSettings( const QgsAttributeMap&, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsAttributes&, const QgsRenderContext& c, QgsDiagramSettings& s );
 
-    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c );
+    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c );
 
   private:
     QgsDiagramSettings mSettings;
-    QSizeF mLowerSize;
-    QSizeF mUpperSize;
-    double mLowerValue;
-    double mUpperValue;
-    /**Index of the classification attribute*/
-    int mClassificationAttribute;
+    QgsDiagramInterpolationSettings mInterpolationSettings;
 };
 
 #endif // QGSDIAGRAMRENDERERV2_H

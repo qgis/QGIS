@@ -1,0 +1,18 @@
+<h3>Funktion minute()</h3>
+Bestimmt die Minute eines Datums/Zeit oder die Anzahl der Minuten
+eines <code>Intervalls</code>
+
+<h4>Syntax</h4>
+<code>minute(datetime)</code><br>
+<code>minute(Intervall)</code><br>
+
+<h4>Argumente</h4>
+<code>datetime</code> - ist datetime oder time. Das Datum aus der die Minute bestimmt werden soll.<br>
+<code>Interval</code> - is Interval. Das Intervall aus dem die Minutenanzahl bestimmt werden soll.
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>minute('2012-07-22T13:24:57') &rarr; 24</code><br>
+<code>minute(tointerval('3 minutes')) &rarr; 3</code><br>
+<code>minute(age('2012-07-22T00:20:00','2012-07-22T00:00:00')) &rarr; 20</code><br>
+<code>minute(age('2012-01-01','2010-01-01')) &rarr; 1051200</code><br>

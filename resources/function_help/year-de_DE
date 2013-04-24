@@ -1,0 +1,17 @@
+<h3>Funktion year()</h3>
+Bestimmt das Jahr eines Datums oder die Länge eines <code>Intervals</code> in Jahren.
+
+<h4>Syntax</h4>
+<code>year(date)</code><br>
+<code>year(Interval)</code><br>
+
+<h4>Argumente</h4>
+<code>date</code> - ist date oder datetime. Das Datum dessen Jahr zurückgegeben werden soll.<br>
+<code>Interval</code> - ist Interval. Das Interval dessen Länge in Jahren zurückgegeben werden soll.
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>year('2012-05-12') &rarr; 2012</code><br>
+<code>year(tointerval('3 Years')) &rarr; 3</code><br>
+<code>year(age('2012-01-01','2010-01-01')) &rarr; 1.9986..</code><br>
+

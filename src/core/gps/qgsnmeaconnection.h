@@ -28,8 +28,6 @@ class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
     QgsNMEAConnection( QIODevice *dev );
     ~QgsNMEAConnection();
 
-    //bool poll( QgsGPSInformation& info, int maxTime );
-
   protected slots:
     /**Parse available data source content*/
     void parseData();

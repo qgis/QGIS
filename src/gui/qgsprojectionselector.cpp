@@ -185,7 +185,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 
   // iterate through all incoming CRSs
 
-  foreach( QString auth_id, crsFilter->values() )
+  foreach ( QString auth_id, crsFilter->values() )
   {
     QStringList parts = auth_id.split( ":" );
 
@@ -201,7 +201,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   if ( authParts.size() > 0 )
   {
     QString prefix = " AND (";
-    foreach( QString auth_name, authParts.keys() )
+    foreach ( QString auth_name, authParts.keys() )
     {
       sqlExpression += QString( "%1(upper(auth_name)='%2' AND upper(auth_id) IN ('%3'))" )
                        .arg( prefix )
@@ -225,11 +225,6 @@ void QgsProjectionSelector::setSelectedCrsName( QString theCRSName )
 void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
 {
   applySelection( QGIS_CRS_ID_COLUMN, QString::number( theCRSID ) );
-}
-
-void QgsProjectionSelector::setSelectedEpsg( long id )
-{
-  setSelectedAuthId( QString( "EPSG:%1" ).arg( id ) );
 }
 
 void QgsProjectionSelector::setSelectedAuthId( QString id )
@@ -438,18 +433,6 @@ QString QgsProjectionSelector::getSelectedExpression( QString expression )
   return attributeValue;
 }
 
-long QgsProjectionSelector::selectedEpsg()
-{
-  if ( getSelectedExpression( "auth_name" ).compare( "EPSG", Qt::CaseInsensitive ) == 0 )
-  {
-    return getSelectedExpression( "auth_id" ).toLong();
-  }
-  else
-  {
-    QgsDebugMsg( "selected projection is NOT EPSG" );
-    return 0;
-  }
-}
 
 long QgsProjectionSelector::selectedPostgresSrId()
 {
@@ -802,14 +785,18 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
 
 void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt )
 {
+  QString filterTxt = theFilterTxt;
+  filterTxt.replace( QRegExp( "\\s+" ), ".*" );
+  QRegExp re( filterTxt, Qt::CaseInsensitive );
+
   // filter recent crs's
   QTreeWidgetItemIterator itr( lstRecent );
   while ( *itr )
   {
     if (( *itr )->childCount() == 0 ) // it's an end node aka a projection
     {
-      if (( *itr )->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-          || ( *itr )->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+      if (( *itr )->text( NAME_COLUMN ).contains( re )
+          || ( *itr )->text( AUTHID_COLUMN ).contains( re )
          )
       {
         ( *itr )->setHidden( false );
@@ -839,8 +826,8 @@ void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTx
   {
     if (( *it )->childCount() == 0 ) // it's an end node aka a projection
     {
-      if (( *it )->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-          || ( *it )->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+      if (( *it )->text( NAME_COLUMN ).contains( re )
+          || ( *it )->text( AUTHID_COLUMN ).contains( re )
          )
       {
         ( *it )->setHidden( false );

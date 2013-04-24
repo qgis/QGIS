@@ -26,8 +26,6 @@
 #include <qgsrasterlayer.h>
 #include <qgsdataitem.h>
 #include "qgsconfig.h"
-#include <qgsrenderer.h>
-#include <qgsuniquevaluerenderer.h>
 
 #include <gdal.h>
 
@@ -41,8 +39,9 @@ class TestZipLayer: public QObject
   private:
 
     QString mDataDir;
-    int mMaxScanZipSetting;
-    int mScanZipSetting;
+    QString mScanZipSetting;
+    QStringList mScanZipSettings;
+    QString mSettingsKey;
 
     // get map layer using Passthru
     QgsMapLayer * getLayer( QString myPath, QString myName, QString myProviderKey );
@@ -52,7 +51,8 @@ class TestZipLayer: public QObject
     // test item(s) in zip item (supply name or test all)
     bool testZipItem( QString myFileName, QString myChildName = "", QString myDriverName = "" );
     // get layer transparency to test for .qml loading
-    int getLayerTransparency( QString myFileName, QString myProviderKey, int myScanZipSetting = 1 );
+    // int getLayerTransparency( QString myFileName, QString myProviderKey, QString myScanZipSetting = "basic" );
+    // bool testZipItemTransparency( QString myFileName, QString myProviderKey, int myTarget );
 
   private slots:
 
@@ -65,20 +65,30 @@ class TestZipLayer: public QObject
     // tests
     // test for .zip and .gz files using all options
     void testPassthruVectorZip();
+    void testPassthruVectorTar();
     void testPassthruVectorGzip();
     void testPassthruRasterZip();
+    void testPassthruRasterTar();
     void testPassthruRasterGzip();
     // test both "Basic Scan" and "Full scan" for .zip files
     void testZipItemRaster();
+    void testTarItemRaster();
     void testZipItemVector();
+    void testTarItemVector();
     void testZipItemAll();
+    void testTarItemAll();
+#if 0
     // test that styles are loaded from .qml files outside zip files
     void testZipItemVectorTransparency();
-    void testGZipItemVectorTransparency();
+    void testTarItemVectorTransparency();
+    void testGzipItemVectorTransparency();
     void testZipItemRasterTransparency();
-    void testGZipItemRasterTransparency();
+    void testTarItemRasterTransparency();
+    void testGzipItemRasterTransparency();
+#endif
     //make sure items inside subfolders can be read
     void testZipItemSubfolder();
+    void testTarItemSubfolder();
     //make sure .vrt items are loaded by proper provider (gdal/ogr)
     void testZipItemVRT();
 };
@@ -144,7 +154,7 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   if ( myChildren.size() > 0 )
   {
     QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
-    foreach( QgsDataItem* item, myChildren )
+    foreach ( QgsDataItem* item, myChildren )
     {
       QgsDebugMsg( QString( "child name=%1" ).arg( item->name() ) );
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem*>( item );
@@ -203,16 +213,17 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   return ok;
 }
 
-int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKey, int myScanZipSetting )
+#if 0
+int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKey, QString myScanZipSetting )
 {
   int myTransparency = -1;
   QSettings settings;
-  settings.setValue( "/qgis/scanZipInBrowser", myScanZipSetting );
-  if ( myScanZipSetting != settings.value( "/qgis/scanZipInBrowser" ).toInt() )
+  settings.setValue( mSettingsKey, myScanZipSetting );
+  if ( myScanZipSetting != settings.value( mSettingsKey ).toString() )
     return myTransparency;
 
   QgsMapLayer * myLayer = NULL;
-  if ( myScanZipSetting == 1 )
+  if ( myFileName.endsWith( ".gz", Qt::CaseInsensitive ) )
     myLayer = getLayer( myFileName, "", myProviderKey );
   else
     myLayer = getZipLayer( myFileName, "" );
@@ -224,6 +235,22 @@ int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKe
     delete myLayer;
   return myTransparency;
 }
+
+bool TestZipLayer::testZipItemTransparency( QString myFileName, QString myProviderKey, int myTarget )
+{
+  int myTransparency;
+  foreach ( QString s, mScanZipSettings )
+  {
+    myTransparency = getLayerTransparency( myFileName, myProviderKey, s );
+    if ( myTransparency != myTarget )
+    {
+      QWARN( QString( "Transparency of %1 is %2, should be %3" ).arg( myFileName ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+      return false;
+    }
+  }
+  return true;
+}
+#endif
 
 
 // slots
@@ -238,7 +265,9 @@ void TestZipLayer::initTestCase()
   qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
 
   // save data dir
-  mDataDir = QString( TEST_DATA_DIR ) + QDir::separator();
+  QFile::remove( QDir::tempPath() + "/testzip.zip" );
+  QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator() + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
+  mDataDir = QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator();
   // Set up the QSettings environment
   QCoreApplication::setOrganizationName( "QuantumGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
@@ -246,21 +275,17 @@ void TestZipLayer::initTestCase()
 
   // save current zipSetting value
   QSettings settings;
-  mScanZipSetting = settings.value( "/qgis/scanZipInBrowser", 1 ).toInt();
-
-  // max zipSetting value depends on zlib presence
-  mMaxScanZipSetting = 1;
-  mMaxScanZipSetting = 3;
-
+  mSettingsKey = "/qgis/scanZipInBrowser2";
+  mScanZipSetting = settings.value( mSettingsKey, "" ).toString();
+  mScanZipSettings << "" << "basic" << "full";
 }
 
 void TestZipLayer::cleanupTestCase()
 {
   // restore zipSetting
   QSettings settings;
-  settings.setValue( "/qgis/scanZipInBrowser", mScanZipSetting );
+  settings.setValue( mSettingsKey, mScanZipSetting );
 }
-
 
 void TestZipLayer::testPassthruVectorZip()
 {
@@ -271,24 +296,39 @@ void TestZipLayer::testPassthruVectorZip()
   myFileName = "/vsizip/" + myFileName + "/points.shp";
 #endif
   QgsDebugMsg( "FILE: " + QString( myFileName ) );
-  for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
+  foreach ( QString s, mScanZipSettings )
   {
-    settings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
+    QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
+  }
+}
+
+void TestZipLayer::testPassthruVectorTar()
+{
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
+#endif
+  QSettings settings;
+  QString myFileName = mDataDir + "points2.tar";
+  foreach ( QString s, mScanZipSettings )
+  {
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
     QVERIFY( testZipItemPassthru( myFileName, "ogr" ) );
   }
 }
 
 void TestZipLayer::testPassthruVectorGzip()
 {
-  QSettings settings;
 #if GDAL_VERSION_NUM < 1700
   QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
 #endif
-  for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
+  QSettings settings;
+  foreach ( QString s, mScanZipSettings )
   {
-    settings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
     QVERIFY( testZipItemPassthru( mDataDir + "points3.geojson.gz", "ogr" ) );
   }
 }
@@ -296,21 +336,35 @@ void TestZipLayer::testPassthruVectorGzip()
 void TestZipLayer::testPassthruRasterZip()
 {
   QSettings settings;
-  for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
+  foreach ( QString s, mScanZipSettings )
   {
-    settings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
     QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.zip", "gdal" ) );
+  }
+}
+
+void TestZipLayer::testPassthruRasterTar()
+{
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
+#endif
+  QSettings settings;
+  foreach ( QString s, mScanZipSettings )
+  {
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
+    QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tar", "gdal" ) );
   }
 }
 
 void TestZipLayer::testPassthruRasterGzip()
 {
   QSettings settings;
-  for ( int i = 1 ; i <= mMaxScanZipSetting ; i++ )
+  foreach ( QString s, mScanZipSettings )
   {
-    settings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
     QVERIFY( testZipItemPassthru( mDataDir + "landsat_b1.tif.gz", "gdal" ) );
   }
 }
@@ -318,22 +372,50 @@ void TestZipLayer::testPassthruRasterGzip()
 void TestZipLayer::testZipItemRaster()
 {
   QSettings settings;
-  for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
+  foreach ( QString s, mScanZipSettings )
   {
-    settings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
-    QVERIFY( testZipItem( mDataDir + "testzip.zip", "landsat_b1.tif" ) );
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
+    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.tif" ) );
+  }
+}
+
+void TestZipLayer::testTarItemRaster()
+{
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
+#endif
+  QSettings settings;
+  foreach ( QString s, mScanZipSettings )
+  {
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
+    QVERIFY( testZipItem( mDataDir + "testtar.tgz", "landsat_b1.tif" ) );
   }
 }
 
 void TestZipLayer::testZipItemVector()
 {
   QSettings settings;
-  for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
+  foreach ( QString s, mScanZipSettings )
   {
-    settings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
-    QVERIFY( testZipItem( mDataDir + "testzip.zip", "points.shp" ) );
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
+    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.shp" ) );
+  }
+}
+
+void TestZipLayer::testTarItemVector()
+{
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
+#endif
+  QSettings settings;
+  foreach ( QString s, mScanZipSettings )
+  {
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
+    QVERIFY( testZipItem( mDataDir + "testtar.tgz", "points.shp" ) );
   }
 }
 
@@ -344,62 +426,88 @@ void TestZipLayer::testZipItemAll()
   // using zipSetting 2 (Basic Scan) would raise errors, because QgsZipItem would not test for valid items
   // and return child names of the invalid items
   QSettings settings;
-  settings.setValue( "/qgis/scanZipInBrowser", 3 );
-  QVERIFY( 3 == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
-  QVERIFY( testZipItem( mDataDir + "testzip.zip", "" ) );
+  settings.setValue( mSettingsKey, "full" );
+  QVERIFY( "full" == settings.value( mSettingsKey ).toString() );
+  QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "" ) );
 }
 
+void TestZipLayer::testTarItemAll()
+{
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
+#endif
+  QSettings settings;
+  settings.setValue( mSettingsKey, "full" );
+  QVERIFY( "full" == settings.value( mSettingsKey ).toString() );
+  QVERIFY( testZipItem( mDataDir + "testtar.tgz", "" ) );
+}
 
+#if 0
 void TestZipLayer::testZipItemVectorTransparency()
 {
 #if GDAL_VERSION_NUM < 1800
   QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
 #endif
-  int myTarget = 250;
-  int myTransparency = getLayerTransparency( mDataDir + "points2.zip", "ogr", 1 );
-  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
-  myTransparency = getLayerTransparency( mDataDir + "points2.zip", "ogr", 2 );
-  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+  QVERIFY( testZipItemTransparency( mDataDir + "points2.zip", "ogr", 250 ) );
 }
 
-void TestZipLayer::testGZipItemVectorTransparency()
+void TestZipLayer::testTarItemVectorTransparency()
+{
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
+#endif
+  QVERIFY( testZipItemTransparency( mDataDir + "points2.tar", "ogr", 250 ) );
+}
+
+void TestZipLayer::testGzipItemVectorTransparency()
 {
 #if GDAL_VERSION_NUM < 1700
   QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
 #endif
-  int myTarget = 250;
-  int myTransparency = getLayerTransparency( mDataDir + "points3.geojson.gz", "ogr", 1 );
-  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
-  myTransparency = getLayerTransparency( mDataDir + "points3.geojson.gz", "ogr", 2 );
-  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+  QVERIFY( testZipItemTransparency( mDataDir + "points3.geojson.gz", "ogr", 250 ) );
 }
 
 void TestZipLayer::testZipItemRasterTransparency()
 {
-  int myTarget = 250;
-  int myTransparency = getLayerTransparency( mDataDir + "landsat_b1.zip", "gdal", 1 );
-  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
-  myTransparency = getLayerTransparency( mDataDir + "landsat_b1.zip", "gdal", 2 );
-  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+  QVERIFY( testZipItemTransparency( mDataDir + "landsat_b1.zip", "gdal", 250 ) );
 }
 
-void TestZipLayer::testGZipItemRasterTransparency()
+void TestZipLayer::testTarItemRasterTransparency()
 {
-  int myTarget = 250;
-  int myTransparency = getLayerTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", 1 );
-  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
-  myTransparency = getLayerTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", 2 );
-  QVERIFY2(( myTransparency == myTarget ), QString( "Transparency is %1, should be %2" ).arg( myTransparency ).arg( myTarget ).toLocal8Bit().data() );
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
+#endif
+  QVERIFY( testZipItemTransparency( mDataDir + "landsat_b1.tar", "gdal", 250 ) );
 }
+
+void TestZipLayer::testGzipItemRasterTransparency()
+{
+  QVERIFY( testZipItemTransparency( mDataDir + "landsat_b1.tif.gz", "gdal", 250 ) );
+}
+#endif
 
 void TestZipLayer::testZipItemSubfolder()
 {
   QSettings settings;
-  for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
+  foreach ( QString s, mScanZipSettings )
   {
-    settings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
-    QVERIFY( testZipItem( mDataDir + "testzip.zip", "folder/folder2/landsat_b2.tif" ) );
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
+    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "folder/folder2/landsat_b2.tif" ) );
+  }
+}
+
+void TestZipLayer::testTarItemSubfolder()
+{
+#if GDAL_VERSION_NUM < 1800
+  QSKIP( "This test requires GDAL >= 1.8", SkipSingle );
+#endif
+  QSettings settings;
+  foreach ( QString s, mScanZipSettings )
+  {
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
+    QVERIFY( testZipItem( mDataDir + "testtar.tgz", "folder/folder2/landsat_b2.tif" ) );
   }
 }
 
@@ -410,12 +518,13 @@ void TestZipLayer::testZipItemVRT()
   QSKIP( "This test requires GDAL >= 1.7", SkipSingle );
 #endif
   QSettings settings;
-  for ( int i = 2 ; i <= mMaxScanZipSetting ; i++ )
+  foreach ( QString s, mScanZipSettings )
   {
-    settings.setValue( "/qgis/scanZipInBrowser", i );
-    QVERIFY( i == settings.value( "/qgis/scanZipInBrowser" ).toInt() );
-    QVERIFY( testZipItem( mDataDir + "testzip.zip", "landsat.vrt", "gdal" ) );
-    QVERIFY( testZipItem( mDataDir + "testzip.zip", "points.vrt", "ogr" ) );
+    settings.setValue( mSettingsKey, s );
+    QVERIFY( s == settings.value( mSettingsKey ).toString() );
+    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat.vrt", "gdal" ) );
+    // this file is buggy with gdal svn - skip for now
+    // QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.vrt", "ogr" ) );
   }
 }
 

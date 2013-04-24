@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
+#include "qgsproject.h"
 #include "qgsrubberband.h"
 #include <QMouseEvent>
 #include <QSettings>
@@ -27,6 +28,9 @@
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas ): QgsMapTool( canvas ), mRubberBand( 0 ), mResultDisplay( 0 )
 {
   mSnapper.setMapCanvas( canvas );
+
+  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ),
+           this, SLOT( updateSettings() ) );
 }
 
 QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
@@ -85,10 +89,8 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QMouseEvent * e )
   {
     if ( mResultDisplay == NULL )
     {
-      mResultDisplay = new QgsDisplayAngle( mCanvas->topLevelWidget() );
+      mResultDisplay = new QgsDisplayAngle( this, Qt::WindowStaysOnTopHint );
       QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );
-      QObject::connect( mResultDisplay, SIGNAL( changeProjectionEnabledState() ),
-                        this, SLOT( changeProjectionEnabledState() ) );
     }
     configureDistanceArea();
     createRubberBand();
@@ -125,7 +127,7 @@ void QgsMapToolMeasureAngle::deactivate()
 void QgsMapToolMeasureAngle::createRubberBand()
 {
   delete mRubberBand;
-  mRubberBand = new QgsRubberBand( mCanvas, false );
+  mRubberBand = new QgsRubberBand( mCanvas, QGis::Line );
 
   QSettings settings;
   int myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
@@ -147,10 +149,11 @@ QgsPoint QgsMapToolMeasureAngle::snapPoint( const QPoint& p )
   }
 }
 
-void QgsMapToolMeasureAngle::changeProjectionEnabledState()
+void QgsMapToolMeasureAngle::updateSettings()
 {
   if ( mAnglePoints.size() != 3 )
     return;
+
   if ( !mResultDisplay )
     return;
 
@@ -173,18 +176,23 @@ void QgsMapToolMeasureAngle::changeProjectionEnabledState()
       resultAngle = -M_PI + ( resultAngle - M_PI );
     }
   }
-  mResultDisplay->setValueInRadians( resultAngle );
 
+  mResultDisplay->setValueInRadians( resultAngle );
 }
 
 void QgsMapToolMeasureAngle::configureDistanceArea()
 {
   QSettings settings;
-  QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+  QString ellipsoidId = QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE );
   mDa.setSourceCrs( mCanvas->mapRenderer()->destinationCrs().srsid() );
   mDa.setEllipsoid( ellipsoidId );
-  mDa.setProjectionsEnabled( mResultDisplay->projectionEnabled() );
+  // Only use ellipsoidal calculation when project wide transformation is enabled.
+  if ( mCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  {
+    mDa.setEllipsoidalMode( true );
+  }
+  else
+  {
+    mDa.setEllipsoidalMode( false );
+  }
 }
-
-
-

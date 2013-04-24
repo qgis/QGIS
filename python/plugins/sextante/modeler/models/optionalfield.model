@@ -1,0 +1,12 @@
+NAME:A model with an optional field
+GROUP:[Test models]
+PARAMETER:ParameterVector|VECTORLAYER_V|v|-1|False
+120.0,60.0
+VALUE:HARDCODEDPARAMVALUE_METHOD_0===0
+ALGORITHM:qgis:convexhull
+135.0,186.0
+None
+-1|VECTORLAYER_V
+None
+-1|HARDCODEDPARAMVALUE_METHOD_0
+result

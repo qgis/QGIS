@@ -24,11 +24,11 @@ class QgsComposerMap;
 class QgsVectorLayer;
 
 /**Helper class for sorting, takes into account sorting column and ascending / descending*/
-class QgsComposerAttributeTableCompare
+class CORE_EXPORT QgsComposerAttributeTableCompare
 {
   public:
     QgsComposerAttributeTableCompare();
-    bool operator()( const QgsAttributeMap& m1, const QgsAttributeMap& m2 );
+    bool operator()( const QgsAttributes& m1, const QgsAttributes& m2 );
     void setSortColumn( int col ) { mCurrentSortColumn = col; }
     void setAscending( bool asc ) { mAscending = asc; }
   private:
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    void setVectorLayer( QgsVectorLayer* vl );// { mVectorLayer = vl; }
+    void setVectorLayer( QgsVectorLayer* vl );
     const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
     void setComposerMap( const QgsComposerMap* map );
@@ -74,12 +74,19 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     /**Adapts mMaximumNumberOfFeatures depending on the rectangle height*/
     void setSceneRect( const QRectF& rectangle );
 
+    // @note not available in python bindings
     void setSortAttributes( const QList<QPair<int, bool> > att ) { mSortInformation = att; }
+
+    // @note not available in python bindings
     QList<QPair<int, bool> > sortAttributes() const { return mSortInformation; }
 
   protected:
-    /**Retrieves feature attributes*/
-    bool getFeatureAttributes( QList<QgsAttributeMap>& attributes );
+    /**Retrieves feature attributes
+     * @note not available in python bindings
+     */
+    bool getFeatureAttributes( QList<QgsAttributes>& attributes );
+
+    //! @note not available in python bindings
     QMap<int, QString> getHeaderLabels() const;
 
   private:
@@ -112,7 +119,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
 
   signals:
     /**This signal is emitted if the maximum number of feature changes (interactively)*/
-    void maximumNumerOfFeaturesChanged( int n );
+    void maximumNumberOfFeaturesChanged( int n );
 };
 
 #endif // QGSCOMPOSERATTRIBUTETABLE_H

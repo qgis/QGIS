@@ -94,7 +94,7 @@ void QgsMapToolDeleteRing::canvasReleaseEvent( QMouseEvent *e )
 void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer )
 {
   QgsFeature f;
-  vlayer->featureAtId( fId, f );
+  vlayer->getFeatures( QgsFeatureRequest().setFilterFid( fId ) ).nextFeature( f );
 
   QgsGeometry* g = f.geometry();
   QGis::WkbType wkbtype = g->wkbType();

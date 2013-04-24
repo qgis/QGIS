@@ -1,0 +1,6 @@
+Split Shapes Layer Randomly
+shapes_tools
+ParameterVector|SHAPES|Shapes|-1|False
+ParameterNumber|PERCENT|Relation B / A|None|None|1
+OutputVector|A|Group A
+OutputVector|B|Group B

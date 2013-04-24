@@ -1,4 +1,19 @@
 #!/bin/bash
+###########################################################################
+#    make_gource_video.sh
+#    ---------------------
+#    Date                 : October 2011
+#    Copyright            : (C) 2011 by Tim Sutton
+#    Email                : tim dot linfiniti at com
+###########################################################################
+#                                                                         #
+#   This program is free software; you can redistribute it and/or modify  #
+#   it under the terms of the GNU General Public License as published by  #
+#   the Free Software Foundation; either version 2 of the License, or     #
+#   (at your option) any later version.                                   #
+#                                                                         #
+###########################################################################
+
 
 echo "A script to generate a source video progression"
 echo "see http://woostuff.wordpress.com/2011/01/03/generating-a-gource-source-commit-history-visualization-for-qgis-quantum-gis/"

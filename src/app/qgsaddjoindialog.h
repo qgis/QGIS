@@ -32,12 +32,8 @@ class QgsAddJoinDialog: public QDialog, private Ui::QgsAddJoinDialogBase
 
     /**Get the id of the layer to join*/
     QString joinedLayerId() const;
-    /**Returns the index of the join field*/
-    int joinField() const;
     /**Returns the name of the join field*/
     QString joinFieldName() const;
-    /**Returns the index of the target field (join-to field)*/
-    int targetField() const;
     /**Returns the name of the target field (join-to field)*/
     QString targetFieldName() const;
     /**True if joined layer should be cached in virtual memory*/

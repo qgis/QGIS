@@ -16,14 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef QGSGDALPROVIDER_H
 #define QGSGDALPROVIDER_H
-
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdataitem.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
 #include "qgsrasterbandstats.h"
@@ -35,18 +34,6 @@
 #include <QVector>
 
 class QgsRasterPyramid;
-
-#define CPL_SUPRESS_CPLUSPLUS
-#include <gdal.h>
-
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
-
 
 /** \ingroup core
  * A call back function for showing progress of gdal operations.
@@ -66,7 +53,7 @@ class QgsCoordinateTransform;
   to provide access to spatial data residing in a GDAL layers.
 
 */
-class QgsGdalProvider : public QgsRasterDataProvider
+class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 {
     Q_OBJECT
 
@@ -78,10 +65,15 @@ class QgsGdalProvider : public QgsRasterDataProvider
     *                otherwise we contact the host directly.
     *
     */
-    QgsGdalProvider( QString const & uri = 0 );
+    QgsGdalProvider( QString const & uri = 0, bool update = false );
+
+    /** Create invalid provider with error */
+    QgsGdalProvider( QString const & uri, QgsError error );
 
     //! Destructor
     ~QgsGdalProvider();
+
+    QgsRasterInterface * clone() const;
 
     /** \brief   Renders the layer as an image
      */
@@ -132,29 +124,7 @@ class QgsGdalProvider : public QgsRasterDataProvider
     */
     bool isValid();
 
-    /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
-
-    /**
-     * \brief Identify details from a GDAL layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GDAL layer
-     *
-     */
-    QString identifyAsText( const QgsPoint& point );
-
-    /**
-     * \brief Identify details from a GDAL layer from the last screen update
-     *
-     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
-     *
-     * \return  A text document containing the return from the GDAL layer
-     *
-     * \note  added in 1.5
-     */
-    QString identifyAsHtml( const QgsPoint& point );
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -184,10 +154,10 @@ class QgsGdalProvider : public QgsRasterDataProvider
       */
     int capabilities() const;
 
-    int dataType( int bandNo ) const;
-    int srcDataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType srcDataType( int bandNo ) const;
 
-    int dataTypeFormGdal( int theGdalDataType ) const;
+    QGis::DataType dataTypeFormGdal( int theGdalDataType ) const;
 
     int bandCount() const;
 
@@ -199,17 +169,13 @@ class QgsGdalProvider : public QgsRasterDataProvider
     int xSize() const;
     int ySize() const;
 
+    /**Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
+    QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight );
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
 
-    double noDataValue() const;
-    void computeMinMax( int bandNo );
-    double minimumValue( int bandNo ) const;
-    double maximumValue( int bandNo ) const;
-
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
-
 
     /**
      * Get metadata in a format suitable for feeding directly
@@ -217,55 +183,88 @@ class QgsGdalProvider : public QgsRasterDataProvider
      */
     QString metadata();
 
-    // Following methods specific for WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
-    void addLayers( QStringList const &layers, QStringList const &styles = QStringList() )
-    { Q_UNUSED( layers ); Q_UNUSED( styles ); }
-    QStringList supportedImageEncodings() { return QStringList(); }
-    QString imageEncoding() const { return QString(); }
-    void setImageEncoding( QString const &mimeType )
-    { Q_UNUSED( mimeType ); }
-    void setImageCrs( QString const &crs )
-    { Q_UNUSED( crs ); }
-
-    /** \brief ensures that GDAL drivers are registered, but only once */
-    static void registerGdalDrivers();
-
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const;
     static QStringList subLayers( GDALDatasetH dataset );
 
-    /** \brief If the provider supports it, return band stats for the
-        given band.
-        @note added in QGIS 1.7
-        @note overloads virtual method from QgsRasterProvider::bandStatistics
+    bool hasStatistics( int theBandNo,
+                        int theStats = QgsRasterBandStats::All,
+                        const QgsRectangle & theExtent = QgsRectangle(),
+                        int theSampleSize = 0 );
 
-    */
-    QgsRasterBandStats bandStatistics( int theBandNo );
+    QgsRasterBandStats bandStatistics( int theBandNo,
+                                       int theStats = QgsRasterBandStats::All,
+                                       const QgsRectangle & theExtent = QgsRectangle(),
+                                       int theSampleSize = 0 );
 
-    void populateHistogram( int theBandNoInt,
-                            QgsRasterBandStats & theBandStats,
-                            int theBinCountInt = 256,
-                            bool theIgnoreOutOfRangeFlag = true,
-                            bool theThoroughBandScanFlag = false
-                          );
+    bool hasHistogram( int theBandNo,
+                       int theBinCount = 0,
+                       double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+                       double theMaximum = std::numeric_limits<double>::quiet_NaN(),
+                       const QgsRectangle & theExtent = QgsRectangle(),
+                       int theSampleSize = 0,
+                       bool theIncludeOutOfRange = false );
 
-    QString buildPyramids( const QList<QgsRasterPyramid> &,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           bool theTryInternalFlag = false );
-    QList<QgsRasterPyramid> buildPyramidList();
+    QgsRasterHistogram histogram( int theBandNo,
+                                  int theBinCount = 0,
+                                  double theMinimum = std::numeric_limits<double>::quiet_NaN(),
+                                  double theMaximum = std::numeric_limits<double>::quiet_NaN(),
+                                  const QgsRectangle & theExtent = QgsRectangle(),
+                                  int theSampleSize = 0,
+                                  bool theIncludeOutOfRange = false );
+
+    QString buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
+                           const QString & theResamplingMethod = "NEAREST",
+                           QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
+                           const QStringList & theCreateOptions = QStringList() );
+    QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
 
     /** \brief Close data set and release related data */
     void closeDataset();
 
     /** Emit a signal to notify of the progress event. */
     void emitProgress( int theType, double theProgress, QString theMessage );
+    void emitProgressUpdate( int theProgress );
+
+    static QMap<QString, QString> supportedMimes();
+
+    /** Creates a new dataset with mDataSourceURI
+        @return true in case of success*/
+    /*
+    bool create( const QString& format, int nBands,
+                 QGis::DataType type,
+                 int width, int height, double* geoTransform,
+                 const QgsCoordinateReferenceSystem& crs,
+                 QStringList createOptions = QStringList() );
+    */
+
+    /**Writes into the provider datasource*/
+    bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
+
+    bool setNoDataValue( int bandNo, double noDataValue );
+
+    /**Returns the formats supported by create()*/
+    QStringList createFormats() const;
+
+    /**Remove dataset*/
+    bool remove();
+
+    QString validateCreationOptions( const QStringList& createOptions, QString format );
+    QString validatePyramidsCreationOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
+        const QStringList & theConfigOptions, const QString & fileFormat );
 
   signals:
     void statusChanged( QString );
 
   private:
+    // update mode
+    bool mUpdate;
+
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
+
+    /**Do some initialisation on the dataset (e.g. handling of south-up datasets)*/
+    void initBaseDataset();
 
     /**
     * Flag indicating if the layer data source is a valid layer
@@ -287,13 +286,13 @@ class QgsGdalProvider : public QgsRasterDataProvider
     int mXBlockSize;
     int mYBlockSize;
 
-    QList<bool> mMinMaxComputed;
+    //mutable QList<bool> mMinMaxComputed;
 
     // List of estimated min values, index 0 for band 1
-    QList<double> mMinimum;
+    //mutable QList<double> mMinimum;
 
     // List of estimated max values, index 0 for band 1
-    QList<double> mMaximum;
+    //mutable QList<double> mMaximum;
 
     /** \brief Pointer to the gdaldataset */
     GDALDatasetH mGdalBaseDataset;

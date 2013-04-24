@@ -48,7 +48,7 @@ class TableViewer(QTableView):
 		self.loadData( self.item )
 
 	def loadData(self, item ):
-		if item == self.item and not self.dirty: 
+		if item == self.item and not self.dirty:
 			return
 		self._clear()
 		if item is None:

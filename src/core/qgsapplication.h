@@ -20,8 +20,7 @@
 #include <QStringList>
 
 #include <qgis.h>
-
-#define ABISYM(x)  x ## VERSION_INT
+#include <qgsconfig.h>
 
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
@@ -68,7 +67,7 @@ class CORE_EXPORT QgsApplication: public QApplication
      * but plugin writers etc can use this method as a basis for searching
      * for resources in their own datastores e.g. a Qt4 resource bundle.
      */
-    static const QString themeName() ;
+    static const QString themeName();
 
     //! Returns the path to the authors file.
     static const QString authorsFilePath();
@@ -92,10 +91,6 @@ class CORE_EXPORT QgsApplication: public QApplication
      * @note This was added in QGIS 1.1
      */
     static const QString translatorsFilePath();
-
-    //! Returns the path to the developer image directory.
-    //! @deprecated images are not provided anymore :-P
-    Q_DECL_DEPRECATED static const QString developerPath();
 
     //! Returns the path to the help application.
     static const QString helpAppPath();
@@ -125,9 +120,9 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! @note added in 1.4
     static const QStringList svgPaths();
 
-    //! Returns the paths to svg applications svg directory.
-    //! @deprecated since 1.4 - use svgPaths()
-    Q_DECL_DEPRECATED static const QString svgPath();
+    //! Returns the system environment variables passed to application.
+    //! @note added in 1.9
+    static const QMap<QString, QString> systemEnvVars() { return ABISYM( mSystemEnvVars ); }
 
     //! Returns the path to the application prefix directory.
     static const QString prefixPath();
@@ -148,6 +143,16 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! First it tries to use the active theme path, then default theme path
     //! @note Added in 1.5
     static QString iconPath( QString iconFile );
+
+    //! Helper to get a theme icon. It will fall back to the
+    //! default theme if the active theme does not have the required icon.
+    //! @note Added in 2.0
+    static QIcon getThemeIcon( const QString theName );
+
+    //! Helper to get a theme icon as a pixmap. It will fall back to the
+    //! default theme if the active theme does not have the required icon.
+    //! @note Added in 2.0
+    static QPixmap getThemePixmap( const QString theName );
 
     //! Returns the path to user's style. Added in QGIS 1.4
     static const QString userStyleV2Path();
@@ -201,9 +206,11 @@ class CORE_EXPORT QgsApplication: public QApplication
      * the gradient fills for backgrounds.
      */
     static QString reportStyleSheet();
+
     /** Convenience function to get a summary of the paths used in this
      * application instance useful for debugging mainly.*/
     static QString showSettings();
+
     /** Register OGR drivers ensuring this only happens once.
      * This is a workaround for an issue with older gdal versions that
      * caused duplicate driver name entries to appear in the list
@@ -250,7 +257,7 @@ class CORE_EXPORT QgsApplication: public QApplication
      * GDAL_SKIP environment variable)
      * @note added in 2.0
      */
-    static QStringList skippedGdalDrivers( ) { return ABISYM( mGdalSkipList ); };
+    static QStringList skippedGdalDrivers( ) { return ABISYM( mGdalSkipList ); }
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver
@@ -260,6 +267,7 @@ class CORE_EXPORT QgsApplication: public QApplication
     static void applyGdalSkippedDrivers();
 
   signals:
+    //! @note not available in python bindings
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
   private:
@@ -273,6 +281,7 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QString ABISYM( mLibexecPath );
     static QString ABISYM( mThemeName );
     static QStringList ABISYM( mDefaultSvgPaths );
+    static QMap<QString, QString> ABISYM( mSystemEnvVars );
 
     static QString ABISYM( mConfigPath );
 

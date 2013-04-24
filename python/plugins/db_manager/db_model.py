@@ -40,11 +40,11 @@ class TreeItem(QObject):
 		self.populated = False
 		self.itemData = data
 		self.childItems = []
-		if parent: 
+		if parent:
 			parent.appendChild(self)
 
 	def childRemoved(self, child):
-		self.itemChanged()	
+		self.itemChanged()
 
 	def itemChanged(self):
 		self.emit( SIGNAL("itemChanged"), self )
@@ -62,7 +62,7 @@ class TreeItem(QObject):
 	def appendChild(self, child):
 		self.childItems.append(child)
 		self.connect(child, SIGNAL("itemRemoved"), self.childRemoved)
-	
+
 	def child(self, row):
 		return self.childItems[row]
 
@@ -71,13 +71,13 @@ class TreeItem(QObject):
 			self.childItems[row].itemData.deleteLater()
 			self.disconnect(self.childItems[row], SIGNAL("itemRemoved"), self.childRemoved)
 			del self.childItems[row]
-	
+
 	def childCount(self):
 		return len(self.childItems)
 
 	def columnCount(self):
 		return 1
-	
+
 	def row(self):
 		if self.parent():
 			for row, item in enumerate(self.parent().childItems):
@@ -87,7 +87,7 @@ class TreeItem(QObject):
 
 	def data(self, column):
 		return "" if column == 0 else None
-	
+
 	def icon(self):
 		return None
 
@@ -189,10 +189,10 @@ class SchemaItem(TreeItem):
 		if column == 0:
 			return self.getItemData().name
 		return None
-	
+
 	def icon(self):
 		return self.schemaIcon
-	
+
 	def populate(self):
 		if self.populated:
 			return True
@@ -210,7 +210,7 @@ class TableItem(TreeItem):
 		self.connect(table, SIGNAL("changed"), self.itemChanged)
 		self.connect(table, SIGNAL("deleted"), self.itemRemoved)
 		self.populate()
-		
+
 		# load (shared) icon with first instance of table item
 		if not hasattr(TableItem, 'tableIcon'):
 			TableItem.tableIcon = QIcon(":/db_manager/icons/table.png")
@@ -220,7 +220,7 @@ class TableItem(TreeItem):
 			TableItem.layerPolygonIcon = QIcon(":/db_manager/icons/layer_polygon.png")
 			TableItem.layerRasterIcon = QIcon(":/db_manager/icons/layer_raster.png")
 			TableItem.layerUnknownIcon = QIcon(":/db_manager/icons/layer_unknown.png")
-			
+
 	def data(self, column):
 		if column == 0:
 			return self.getItemData().name
@@ -228,7 +228,7 @@ class TableItem(TreeItem):
 			if self.getItemData().type == Table.VectorType:
 				return self.getItemData().geomType
 		return None
-		
+
 	def icon(self):
 		if self.getItemData().type == Table.VectorType:
 			geom_type = self.getItemData().geomType
@@ -327,21 +327,21 @@ class DBModel(QAbstractItemModel):
 
 	def columnCount(self, parent):
 		return 1
-		
+
 	def data(self, index, role):
 		if not index.isValid():
 			return QVariant()
-		
+
 		if role == Qt.DecorationRole and index.column() == 0:
 			icon = index.internalPointer().icon()
 			if icon: return QVariant(icon)
-			
+
 		if role != Qt.DisplayRole and role != Qt.EditRole:
 			return QVariant()
-		
+
 		retval = index.internalPointer().data(index.column())
 		return QVariant(retval) if retval else QVariant()
-	
+
 	def flags(self, index):
 		if not index.isValid():
 			return Qt.NoItemFlags
@@ -364,7 +364,7 @@ class DBModel(QAbstractItemModel):
 					flags |= Qt.ItemIsDropEnabled
 
 		return flags
-	
+
 	def headerData(self, section, orientation, role):
 		if orientation == Qt.Horizontal and role == Qt.DisplayRole and section < len(self.header):
 			return QVariant(self.header[section])
@@ -373,7 +373,7 @@ class DBModel(QAbstractItemModel):
 	def index(self, row, column, parent):
 		if not self.hasIndex(row, column, parent):
 			return QModelIndex()
-		
+
 		parentItem = parent.internalPointer() if parent.isValid() else self.rootItem
 		childItem = parentItem.child(row)
 		if childItem:
@@ -383,13 +383,13 @@ class DBModel(QAbstractItemModel):
 	def parent(self, index):
 		if not index.isValid():
 			return QModelIndex()
-		
+
 		childItem = index.internalPointer()
 		parentItem = childItem.parent()
 
 		if parentItem == self.rootItem:
 			return QModelIndex()
-		
+
 		return self.createIndex(parentItem.row(), 0, parentItem)
 
 
@@ -407,10 +407,10 @@ class DBModel(QAbstractItemModel):
 	def setData(self, index, value, role):
 		if role != Qt.EditRole or index.column() != 0:
 			return False
-			
+
 		item = index.internalPointer()
 		new_value = unicode(value.toString())
-		
+
 		if isinstance(item, SchemaItem) or isinstance(item, TableItem):
 			obj = item.getItemData()
 

@@ -18,8 +18,10 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <QRectF>
 #include <QString>
 #include <QTextStream>
+#include <QRegExp>
 #include <qnumeric.h>
 
 #include "qgspoint.h"
@@ -37,6 +39,14 @@ QgsRectangle::QgsRectangle( QgsPoint const & p1, QgsPoint const & p2 )
   set( p1, p2 );
 }
 
+QgsRectangle::QgsRectangle( QRectF const & qRectF )
+{
+  xmin = qRectF.topLeft().x();
+  ymin = qRectF.topLeft().y();
+  xmax = qRectF.bottomRight().x();
+  ymax = qRectF.bottomRight().y();
+}
+
 QgsRectangle::QgsRectangle( const QgsRectangle &r )
 {
   xmin = r.xMinimum();
@@ -44,6 +54,7 @@ QgsRectangle::QgsRectangle( const QgsRectangle &r )
   xmax = r.xMaximum();
   ymax = r.yMaximum();
 }
+
 
 void QgsRectangle::set( const QgsPoint& p1, const QgsPoint& p2 )
 {
@@ -104,29 +115,6 @@ void QgsRectangle::scale( double scaleFactor, const QgsPoint * cp )
   xmax = centerX + newWidth / 2.0;
   ymin = centerY - newHeight / 2.0;
   ymax = centerY + newHeight / 2.0;
-}
-
-void QgsRectangle::expand( double scaleFactor, const QgsPoint * cp )
-{
-  // scale from the center
-  double centerX, centerY;
-  if ( cp )
-  {
-    centerX = cp->x();
-    centerY = cp->y();
-  }
-  else
-  {
-    centerX = xmin + width() / 2;
-    centerY = ymin + height() / 2;
-  }
-
-  double newWidth = width() * scaleFactor;
-  double newHeight = height() * scaleFactor;
-  xmin = centerX - newWidth;
-  xmax = centerX + newWidth;
-  ymin = centerY - newHeight;
-  ymax = centerY + newHeight;
 }
 
 QgsRectangle QgsRectangle::intersect( const QgsRectangle * rect ) const
@@ -199,12 +187,38 @@ bool QgsRectangle::isEmpty() const
 QString QgsRectangle::asWktCoordinates() const
 {
   QString rep =
-    QString::number( xmin, 'f', 16 ) + " " +
-    QString::number( ymin, 'f', 16 ) + ", " +
-    QString::number( xmax, 'f', 16 ) + " " +
-    QString::number( ymax, 'f', 16 );
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) );
 
   return rep;
+}
+
+QString QgsRectangle::asWktPolygon() const
+{
+  QString rep =
+    QString( "POLYGON((" ) +
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymax, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + ", " +
+    QString::number( xmin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) + " " +
+    QString::number( ymin, 'f', 16 ).remove( QRegExp( "[0]{1,15}$" ) ) +
+    QString( "))" );
+
+  return rep;
+}
+
+//! returns a QRectF with same coordinates.
+//@note added in 2.0
+QRectF QgsRectangle::toRectF() const
+{
+  return QRectF(( qreal )xmin, ( qreal )ymin, ( qreal )xmax - xmin, ( qreal )ymax - ymin );
 }
 
 // Return a string representation of the rectangle with automatic or high precision

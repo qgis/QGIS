@@ -4,7 +4,7 @@
     ---------------------
     begin                : December 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -42,11 +42,6 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
 
     void apply();
     void onOK();
-
-    void useOldSymbology();
-
-  signals:
-    void useNewSymbology( bool );
 
   protected:
 

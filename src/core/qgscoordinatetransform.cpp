@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatetransform.h"
+#include "qgscrscache.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 
@@ -22,6 +23,8 @@
 #include <QDomNode>
 #include <QDomElement>
 #include <QApplication>
+#include <QPolygonF>
+#include <QVector>
 
 extern "C"
 {
@@ -147,9 +150,8 @@ void QgsCoordinateTransform::initialise()
   if ( !mDestCRS.isValid() )
   {
     //No destination projection is set so we set the default output projection to
-    //be the same as input proj. This only happens on the first layer loaded
-    //whatever that may be...
-    mDestCRS.createFromOgcWmsCrs( mSourceCRS.authid() );
+    //be the same as input proj.
+    mDestCRS = QgsCRSCache::instance()->crsByAuthId( mSourceCRS.authid() );
   }
 
   // init the projections (destination and source)
@@ -317,9 +319,45 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
   }
 }
 
-void QgsCoordinateTransform::transformInPlace( std::vector<double>& x,
-    std::vector<double>& y, std::vector<double>& z,
-    TransformDirection direction ) const
+void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirection direction ) const
+{
+  //create x, y arrays
+  int nVertices = poly.size();
+
+  QVector<double> x( nVertices );
+  QVector<double> y( nVertices );
+  QVector<double> z( nVertices );
+
+  for ( int i = 0; i < nVertices; ++i )
+  {
+    const QPointF& pt = poly.at( i );
+    x[i] = pt.x();
+    y[i] = pt.y();
+    z[i] = 0;
+  }
+
+  try
+  {
+    transformCoords( nVertices, x.data(), y.data(), z.data(), direction );
+  }
+  catch ( QgsCsException &cse )
+  {
+    // rethrow the exception
+    QgsDebugMsg( "rethrowing exception" );
+    throw cse;
+  }
+
+  for ( int i = 0; i < nVertices; ++i )
+  {
+    QPointF& pt = poly[i];
+    pt.rx() = x[i];
+    pt.ry() = y[i];
+  }
+}
+
+void QgsCoordinateTransform::transformInPlace(
+  QVector<double>& x, QVector<double>& y, QVector<double>& z,
+  TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
     return;
@@ -371,9 +409,9 @@ void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
   }
 }
 
-void QgsCoordinateTransform::transformInPlace( std::vector<float>& x,
-    std::vector<float>& y, std::vector<float>& z,
-    TransformDirection direction ) const
+void QgsCoordinateTransform::transformInPlace(
+  QVector<float>& x, QVector<float>& y, QVector<float>& z,
+  TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
     return;
@@ -389,9 +427,9 @@ void QgsCoordinateTransform::transformInPlace( std::vector<float>& x,
   {
     //copy everything to double vectors since proj needs double
     int vectorSize = x.size();
-    std::vector<double> xd( x.size() );
-    std::vector<double> yd( y.size() );
-    std::vector<double> zd( z.size() );
+    QVector<double> xd( x.size() );
+    QVector<double> yd( y.size() );
+    QVector<double> zd( z.size() );
     for ( int i = 0; i < vectorSize; ++i )
     {
       xd[i] = x[i];

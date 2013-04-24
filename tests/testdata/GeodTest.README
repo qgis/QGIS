@@ -1,0 +1,13 @@
+Data is from
+http://geographiclib.sourceforge.net/html/geodesic.html#testgeod
+
+The solutiion we currently use in QGis is the Vincenty equations
+( http://www.movable-type.co.uk/scripts/latlong-vincenty.html )
+not the one implementeed in the geographiclibray library. Some testdata
+(anitpodal) fails, and they are commented out.
+
+For a thorough discussion, see 
+C. F. F. Karney, Algorithms for geodesics, J. Geodesy, 2012; DOI: 10.1007/s00190-012-0578-z;
+available here http://dx.doi.org/10.1007/s00190-012-0578-z
+
+Magnus Homann 2012-09-02

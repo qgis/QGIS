@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,23 +15,145 @@
 
 #include "qgssymbollayerv2.h"
 #include "qgsclipper.h"
-#include "qgsrenderer.h"
+#include "qgsexpression.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorlayer.h"
 
 #include <QSize>
 #include <QPainter>
 #include <QPointF>
 #include <QPolygonF>
 
+const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& property ) const
+{
+  QMap< QString, QgsExpression* >::const_iterator it = mDataDefinedProperties.find( property );
+  if ( it != mDataDefinedProperties.constEnd() )
+  {
+    return it.value();
+  }
+  return 0;
+}
+
+QgsExpression* QgsSymbolLayerV2::expression( const QString& property )
+{
+  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.find( property );
+  if ( it != mDataDefinedProperties.end() )
+  {
+    return it.value();
+  }
+  return 0;
+}
+
+QString QgsSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
+{
+  const QgsExpression* ex = dataDefinedProperty( property );
+  return ex ? ex->expression() : QString();
+}
+
+void QgsSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
+{
+  removeDataDefinedProperty( property );
+  mDataDefinedProperties.insert( property, new QgsExpression( expressionString ) );
+}
+
+void QgsSymbolLayerV2::removeDataDefinedProperty( const QString& property )
+{
+  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.find( property );
+  if ( it != mDataDefinedProperties.end() )
+  {
+    delete( it.value() );
+    mDataDefinedProperties.erase( it );
+  }
+}
+
+void QgsSymbolLayerV2::removeDataDefinedProperties()
+{
+  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.begin();
+  for ( ; it != mDataDefinedProperties.constEnd(); ++it )
+  {
+    delete( it.value() );
+  }
+  mDataDefinedProperties.clear();
+}
+
+void QgsSymbolLayerV2::prepareExpressions( const QgsVectorLayer* vl )
+{
+  if ( !vl )
+  {
+    return;
+  }
+
+  const QgsFields& fields = vl->pendingFields();
+  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.begin();
+  for ( ; it != mDataDefinedProperties.end(); ++it )
+  {
+    if ( it.value() )
+    {
+      it.value()->prepare( fields );
+    }
+  }
+}
+
+QSet<QString> QgsSymbolLayerV2::usedAttributes() const
+{
+  QSet<QString> attributes;
+  QStringList columns;
+
+  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
+  for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
+  {
+    if ( ddIt.value() )
+    {
+      columns.append( ddIt.value()->referencedColumns() );
+    }
+  }
+
+  QStringList::const_iterator it = columns.constBegin();
+  for ( ; it != columns.constEnd(); ++it )
+  {
+    attributes.insert( *it );
+  }
+  return attributes;
+}
+
+void QgsSymbolLayerV2::saveDataDefinedProperties( QgsStringMap& stringMap ) const
+{
+  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
+  for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
+  {
+    if ( ddIt.value() )
+    {
+      stringMap.insert( ddIt.key() + "_expression", ddIt.value()->expression() );
+    }
+  }
+}
+
+void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const
+{
+  if ( !destLayer )
+  {
+    return;
+  }
+  destLayer->removeDataDefinedProperties();
+
+  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
+  for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
+  {
+    if ( ddIt.value() )
+    {
+      destLayer->setDataDefinedProperty( ddIt.key(), ddIt.value()->expression() );
+    }
+  }
+}
 
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
-    : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked )
+    : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked ), mSizeUnit( QgsSymbolV2::MM ),  mOffsetUnit( QgsSymbolV2::MM )
 {
 }
 
 QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
-    : QgsSymbolLayerV2( QgsSymbolV2::Line, locked )
+    : QgsSymbolLayerV2( QgsSymbolV2::Line, locked ), mWidthUnit( QgsSymbolV2::MM )
 {
 }
 
@@ -45,6 +167,46 @@ void QgsMarkerSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context,
   startRender( context );
   renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
   stopRender( context );
+}
+
+void QgsMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  mSizeUnit = unit;
+  mOffsetUnit = unit;
+}
+
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY )
+{
+  offsetX = mOffset.x();
+  offsetY = mOffset.y();
+
+  QgsExpression* offsetExpression = expression( "offset" );
+  if ( offsetExpression )
+  {
+    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( offsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    offsetX = offset.x();
+    offsetY = offset.y();
+  }
+
+  offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+}
+
+QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( const QPointF& offset, double angle )
+{
+  angle = DEG2RAD( angle );
+  double c = cos( angle ), s = sin( angle );
+  return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
+}
+
+QgsSymbolV2::OutputUnit QgsMarkerSymbolLayerV2::outputUnit() const
+{
+  QgsSymbolV2::OutputUnit unit = mSizeUnit;
+  if ( mOffsetUnit != unit )
+  {
+    return QgsSymbolV2::Mixed;
+  }
+  return unit;
 }
 
 void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
@@ -64,8 +226,8 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
   renderPolyline( points, context );
   if ( rings )
   {
-    foreach( const QPolygonF& ring, *rings )
-    renderPolyline( ring, context );
+    foreach ( const QPolygonF& ring, *rings )
+      renderPolyline( ring, context );
   }
 }
 

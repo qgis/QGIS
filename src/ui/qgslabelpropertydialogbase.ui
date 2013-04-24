@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>284</width>
-    <height>411</height>
+    <width>415</width>
+    <height>611</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,30 +28,12 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QGroupBox" name="mFontGroupBox">
      <property name="title">
       <string>Font</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="mFontSizeLabel">
-          <property name="text">
-           <string>Size</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="mFontSizeSpinBox">
-          <property name="maximum">
-           <double>999999.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
       <item row="0" column="2">
        <widget class="QPushButton" name="mFontPushButton">
         <property name="text">
@@ -59,13 +41,40 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="mFontSizeLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Size</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="mFontSizeSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="maximum">
+           <double>999999.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item row="0" column="1">
        <widget class="QgsColorButton" name="mFontColorButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
         </property>
         <property name="text">
          <string/>
@@ -75,7 +84,85 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Display</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="2" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Scale-based</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="mMinScaleSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="prefix">
+           <string>Min </string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>999999999</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="mMaxScaleSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="prefix">
+           <string>Max </string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>999999999</number>
+          </property>
+          <property name="value">
+           <number>10000000</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="mShowLabelChkbx">
+        <property name="text">
+         <string>Show label</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="mAlwaysShowChkbx">
+        <property name="toolTip">
+         <string>Ignores priority and permits collisions/overlaps</string>
+        </property>
+        <property name="text">
+         <string>Always show (exceptions above)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <widget class="QGroupBox" name="mBufferGroupBox">
      <property name="title">
       <string>Buffer</string>
@@ -85,6 +172,12 @@
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QLabel" name="mBufferSizeLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Size</string>
           </property>
@@ -92,6 +185,9 @@
         </item>
         <item>
          <widget class="QDoubleSpinBox" name="mBufferSizeSpinBox">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
           <property name="maximum">
            <double>999999.000000000000000</double>
           </property>
@@ -101,11 +197,11 @@
       </item>
       <item row="0" column="1">
        <widget class="QgsColorButton" name="mBufferColorButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>16777215</height>
+         </size>
         </property>
         <property name="text">
          <string/>
@@ -115,7 +211,7 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QGroupBox" name="mPositionGroupBlox">
      <property name="title">
       <string>Position</string>
@@ -123,16 +219,32 @@
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
        <widget class="QLabel" name="mLabelDistanceLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Label distance</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="mLabelDistanceSpinBox"/>
+       <widget class="QDoubleSpinBox" name="mLabelDistanceSpinBox">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="mXCoordLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>X Coordinate</string>
         </property>
@@ -140,6 +252,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QDoubleSpinBox" name="mXCoordSpinBox">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
         <property name="minimum">
          <double>-999999999.000000000000000</double>
         </property>
@@ -150,6 +265,12 @@
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="mYCoordLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Y Coordinate</string>
         </property>
@@ -157,6 +278,9 @@
       </item>
       <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="mYCoordSpinBox">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
         <property name="minimum">
          <double>-999999999.000000000000000</double>
         </property>
@@ -167,26 +291,52 @@
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="mHaliLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Horizontal alignment</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="mHaliComboBox"/>
+       <widget class="QComboBox" name="mHaliComboBox">
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+       </widget>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="mValiLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Vertical alignment</string>
         </property>
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QComboBox" name="mValiComboBox"/>
+       <widget class="QComboBox" name="mValiComboBox">
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+       </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="mRotationLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>Rotation</string>
         </property>
@@ -194,6 +344,9 @@
       </item>
       <item row="5" column="1">
        <widget class="QDoubleSpinBox" name="mRotationSpinBox">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
         <property name="maximum">
          <double>360.000000000000000</double>
         </property>
@@ -202,7 +355,7 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -217,7 +370,7 @@
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
+   <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
@@ -230,8 +383,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>260</x>
+     <y>565</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -246,8 +399,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>328</x>
+     <y>565</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

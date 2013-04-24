@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -78,6 +78,7 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
   public:
 
     /** construct metadata */
+    //! @note not available in python bindings
     QgsRendererV2Metadata( QString name,
                            QString visibleName,
                            QgsRendererV2CreateFunc pfCreate,
@@ -89,6 +90,7 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
         , mCreateFromSldFunc( NULL )
     {}
 
+    //! @note not available in python bindings
     QgsRendererV2Metadata( QString name,
                            QString visibleName,
                            QgsRendererV2CreateFunc pfCreate,
@@ -107,11 +109,14 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
     virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType )
     { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : NULL; }
 
-
+    //! @note not available in python bindings
     QgsRendererV2CreateFunc createFunction() const { return mCreateFunc; }
+    //! @note not available in python bindings
     QgsRendererV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
+    //! @note not available in python bindings
     QgsRendererV2CreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; }
 
+    //! @note not available in python bindings
     void setWidgetFunction( QgsRendererV2WidgetFunc f ) { mWidgetFunc = f; }
 
   protected:

@@ -225,6 +225,8 @@ namespace pal
       void init_sol_empty();
       void init_sol_falp();
 
+      static bool compareLabelArea( pal::LabelPosition* l1, pal::LabelPosition* l2 );
+
 #ifdef _EXPORT_MAP_
       void drawLabels( std::ofstream &svgmap );
 #endif

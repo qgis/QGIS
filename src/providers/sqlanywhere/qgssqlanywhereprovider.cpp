@@ -2,8 +2,8 @@
     qgssqlanywhereprovider.cpp - QGIS data provider for SQL Anywhere DBMS
     --------------------------
     begin                : Dec 2010
-    copyright            : (C) 2010 by iAnywhere Solutions, Inc.
-    author               : David DeHaan
+    copyright            : (C) 2013 by SAP AG or an SAP affiliate company.
+    author               : David DeHaan, Mary Steele
     email                : ddehaan at sybase dot com
 
  ***************************************************************************
@@ -22,12 +22,15 @@
 #include <qgsfield.h>
 #include <qgsgeometry.h>
 #include <qgsmessageoutput.h>
+#include <qgsmessagelog.h>
 #include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgslogger.h>
 #include <qgscredentials.h>
+#include <qgsfeatureiterator.h>
 
 #include "qgssqlanywhereprovider.h"
+#include "qgssqlanywherefeatureiterator.h"
 
 static const QString SQLANYWHERE_KEY = "sqlanywhere";
 static const QString SQLANYWHERE_DESCRIPTION = "SQL Anywhere data provider";
@@ -42,8 +45,6 @@ QgsSqlAnywhereProvider::QgsSqlAnywhereProvider( QString const &uri )
     , mCapabilities( 0 )
     , mSrid( -1 )
     , mNumberFeatures( 0 )
-    , mStmt( NULL )
-    , mIdStmt( NULL )
     , mConnRO( NULL )
     , mConnRW( NULL )
 {
@@ -251,10 +252,7 @@ QgsSqlAnywhereProvider::loadFields()
     }
 
 
-    mAttributeFields.insert(
-      fieldNames.size(),
-      QgsField( fieldName, fieldNativeType.mType, fieldNativeType.mTypeName, fieldLength, fieldPrecision )
-    );
+    mAttributeFields.append( QgsField( fieldName, fieldNativeType.mType, fieldNativeType.mTypeName, fieldLength, fieldPrecision ) );
 
     fieldDefault = getDefaultValue( fieldName );
     mAttributeDefaults.insert( fieldNames.size(), fieldDefault );
@@ -278,67 +276,16 @@ QgsSqlAnywhereProvider::storageType() const
   return "SQL Anywhere database";
 } // QgsSqlAnywhereProvider::storageType()
 
-bool
-QgsSqlAnywhereProvider::nextFeature( QgsFeature & feature, SqlAnyStatement *stmt )
+QgsFeatureIterator
+QgsSqlAnywhereProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  bool    ok;
-  int     col_idx = 0;
-  int     id;
-  a_sqlany_data_value geom;
-  unsigned char *geomBuf;
-
-  ok = ( stmt != NULL && stmt->fetchNext() );
-  if ( ok )
+  if ( !mValid )
   {
-    // first column contains mKeyColumn
-    ok = stmt->getInt( col_idx++, id );
-    feature.setFeatureId( id );
+    QgsMessageLog::logMessage( tr( "Read attempt on an invalid SqlAnywhere data source" ), tr( "SQLAnywhere" ) );
+    return QgsFeatureIterator();
   }
-
-  if ( ok && mFetchGeom )
-  {
-    // second column contains WKB geometry value
-    ok = stmt->getColumn( col_idx++, &geom );
-    if ( ok )
-    {
-      geomBuf = new unsigned char[ *geom.length + 1 ];
-      memset( geomBuf, '\0', *geom.length + 1 );
-      memcpy( geomBuf, geom.buffer, *geom.length );
-      feature.setGeometryAndOwnership( geomBuf, *geom.length + 1 );
-    }
-    else
-    {
-      SaDebugMsg( "Error retrieving feature geometry WKB." );
-      feature.setGeometryAndOwnership( 0, 0 );
-    }
-  }
-
-  if ( ok )
-  {
-    // iterate mAttributesToFetch
-    feature.clearAttributeMap();
-    for ( QgsAttributeList::const_iterator it = mAttributesToFetch.constBegin()
-          ; it != mAttributesToFetch.constEnd()
-          ; it++ )
-    {
-      QVariant val;
-      if ( field( *it ).name() == mKeyColumn )
-      {
-        stmt->getQVariant( 0, val );
-      }
-      else
-      {
-        stmt->getQVariant( col_idx++, val );
-      }
-      feature.addAttribute( *it, val );
-    }
-    ok = ( col_idx == stmt->numCols() );
-  }
-
-  feature.setValid( ok );
-  return ok;
-
-} // QgsSqlAnywhereProvider::nextFeature( .. )
+  return QgsFeatureIterator( new QgsSqlAnywhereFeatureIterator( this, request ) );
+}
 
 /**
  * Sets mNumberFeatures
@@ -504,9 +451,6 @@ QgsSqlAnywhereProvider::setSubsetString( QString theSQL, bool )
   // indicate that mLayerExtent needs to be recalculated upon next access
   mLayerExtent.setMinimal();
 
-  // clear cursors
-  closeCursors();
-
   return true;
 } // QgsSqlAnywhereProvider::setSubsetString()
 
@@ -557,7 +501,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
                    "FROM SYSTABCOL "
                    "WHERE table_id = %1 "
                    "AND column_name = %2 "
-                   "AND base_type_str IN ( 'int', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) " )
+                   "AND base_type_str IN ( 'int', 'integer', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) " )
           .arg( mTableId )
           .arg( quotedValue( mKeyColumn ) );
     stmt = mConnRO->execute_direct( sql );
@@ -630,7 +574,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
                  "'SELECT * FROM %1', 1 ) dq1 "
                  "WHERE is_key_column = 1 "
                  "AND is_added_key_column = 0 "
-                 "AND domain_name IN ( 'int', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) "
+                 "AND domain_name IN ( 'int', 'integer', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) "
                  "AND NOT EXISTS ( "
                  "SELECT column_number "
                  "FROM sa_describe_query( "
@@ -662,7 +606,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
                  "AND c.column_id = ic.column_id "
                  "WHERE i.table_id = %1 "
                  "AND i.\"unique\" IN ( 1, 2 ) "
-                 "AND c.base_type_str IN ( 'int', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) "
+                 "AND c.base_type_str IN ( 'int', 'integer', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) "
                  "AND NOT EXISTS ( "
                  "SELECT column_id "
                  "FROM SYSIDXCOL ic2 "
@@ -686,7 +630,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
   sql = QString( "SELECT column_name "
                  "FROM SYSTABCOL "
                  "WHERE table_id = %1 "
-                 "AND base_type_str IN ( 'int', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) " )
+                 "AND base_type_str IN ( 'int', 'integer', 'unsigned int', 'smallint', 'unsigned smallint', 'tinyint' ) " )
         .arg( mTableId );
   stmt = mConnRO->execute_direct( sql );
   while ( stmt->isValid() && stmt->fetchNext() )
@@ -707,235 +651,6 @@ QgsSqlAnywhereProvider::findKeyColumn()
   SaDebugMsg( "No key column found." );
   return false;
 } // QgsSqlAnywhereProvider::findKeyColumn()
-
-
-bool
-QgsSqlAnywhereProvider::featureAtId( QgsFeatureId featureId, QgsFeature & feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
-{
-  a_sqlany_bind_param     idParam;
-  size_t      idLen = sizeof( int );
-
-  if ( !ensureConnRO() )
-  {
-    SaDebugMsg( "No database connection." );
-    return false;
-  }
-
-  SaDebugMsg( QString( "Fetching feature for id=%1" ).arg( featureId ) );
-
-  mAttributesToFetch = fetchAttributes;
-  mFetchGeom = fetchGeometry;
-
-  // set or reset mIdStmt cursor
-  if ( mIdStmt == NULL
-       || !mIdStmt->isValid()
-       || fetchAttributes != mIdStmtAttributesToFetch
-       || fetchGeometry != mIdStmtFetchGeom
-       || !mIdStmt->reset() )
-  {
-
-    // prepare a new cursor
-    mIdStmtAttributesToFetch = fetchAttributes;
-    mIdStmtFetchGeom = fetchGeometry;
-
-    QString whereClause = getWhereClause()
-                          + QString( "AND %1 = ? " )
-                          .arg( quotedIdentifier( mKeyColumn ) );
-
-    if ( mIdStmt )
-      delete mIdStmt;
-    mIdStmt = mConnRO->prepare( makeSelectSql( whereClause ) );
-  }
-
-  // bind parameter
-  mIdStmt->describe_bind_param( 0, idParam );
-  idParam.value.buffer = ( char * ) & featureId;
-  idParam.value.length = & idLen;
-  idParam.value.type = A_VAL32;
-  mIdStmt->bind_param( 0, idParam );
-
-  mIdStmt->execute();
-  return nextFeature( feature, mIdStmt );
-
-} // QgsSqlAnywhereProvider::featureAtId()
-
-
-void
-QgsSqlAnywhereProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect, bool fetchGeometry, bool useIntersect )
-{
-  double xmin;
-  double ymin;
-  double xmax;
-  double ymax;
-
-  a_sqlany_bind_param xminParam;
-  a_sqlany_bind_param yminParam;
-  a_sqlany_bind_param xmaxParam;
-  a_sqlany_bind_param ymaxParam;
-
-  size_t xminLen = sizeof( double );
-  size_t yminLen = sizeof( double );
-  size_t xmaxLen = sizeof( double );
-  size_t ymaxLen = sizeof( double );
-
-  if ( !ensureConnRO() )
-  {
-    SaDebugMsg( "No database connection." );
-    return;
-  }
-
-  SaDebugMsg( "initial rectangle =" + rect.toString() );
-
-  rect = rect.intersect( &mSrsExtent );
-
-  SaDebugMsg( "rectangle clipped to SRS extent =" + rect.toString() );
-
-  mAttributesToFetch = fetchAttributes;
-  mFetchGeom = fetchGeometry;
-
-  // set or reset mStmt cursor
-  if ( mStmt == NULL
-       || !mStmt->isValid()
-       || fetchAttributes != mStmtAttributesToFetch
-       || mStmtRect.isEmpty() != rect.isEmpty()
-       || fetchGeometry != mStmtFetchGeom
-       || useIntersect != mStmtUseIntersect
-       || !mStmt->reset() )
-  {
-
-    // prepare a new cursor
-    mStmtAttributesToFetch = fetchAttributes;
-    mStmtFetchGeom = fetchGeometry;
-    mStmtUseIntersect = useIntersect;
-
-    QString whereClause = getWhereClause();
-    if ( !rect.isEmpty() )
-    {
-      whereClause += QString( "AND %1 .%2 ( new ST_Polygon( "
-                              "new ST_Point( ?, ?, %3), "
-                              "new ST_Point( ?, ?, %3 ) ) ) = 1 " )
-                     .arg( geomColIdent() )
-                     .arg(( useIntersect ? "ST_Intersects" : "ST_IntersectsFilter" ) )
-                     .arg( mSrid );
-    }
-
-    if ( mStmt )
-      delete mStmt;
-    mStmt = mConnRO->prepare( makeSelectSql( whereClause ) );
-  }
-
-  // bind parameters if necessary
-  mStmtRect = rect;
-  if ( !rect.isEmpty() )
-  {
-    xmin = mStmtRect.xMinimum();
-    ymin = mStmtRect.yMinimum();
-    xmax = mStmtRect.xMaximum();
-    ymax = mStmtRect.yMaximum();
-
-    if ( !mStmt->describe_bind_param( 0, xminParam )
-         || !mStmt->describe_bind_param( 1, yminParam )
-         || !mStmt->describe_bind_param( 2, xmaxParam )
-         || !mStmt->describe_bind_param( 3, ymaxParam ) )
-    {
-      reportError( tr( "Error describing bind parameters" ), mStmt );
-      return;
-    }
-
-    xminParam.value.buffer = ( char * ) & xmin;
-    yminParam.value.buffer = ( char * ) & ymin;
-    xmaxParam.value.buffer = ( char * ) & xmax;
-    ymaxParam.value.buffer = ( char * ) & ymax;
-
-    xminParam.value.length = &xminLen;
-    yminParam.value.length = &yminLen;
-    xmaxParam.value.length = &xmaxLen;
-    ymaxParam.value.length = &ymaxLen;
-
-    xminParam.value.type = A_DOUBLE;
-    yminParam.value.type = A_DOUBLE;
-    xmaxParam.value.type = A_DOUBLE;
-    ymaxParam.value.type = A_DOUBLE;
-
-    if ( !mStmt->bind_param( 0, xminParam )
-         || !mStmt->bind_param( 1, yminParam )
-         || !mStmt->bind_param( 2, xmaxParam )
-         || !mStmt->bind_param( 3, ymaxParam ) )
-    {
-      reportError( tr( "Error binding parameters" ), mStmt );
-      return;
-    }
-  }
-
-  mStmt->execute();
-
-} // QgsSqlAnywhereProvider::select()
-
-bool
-QgsSqlAnywhereProvider::nextFeature( QgsFeature & feature )
-{
-  feature.setValid( false );
-  if ( !isValid() )
-  {
-    SaDebugMsg( "Read attempt on an invalid SQL Anywhere data source" );
-    return false;
-  }
-
-  if ( mStmt == NULL || !mStmt->isValid() )
-  {
-    SaDebugMsg( "nextFeature() called with invalid cursor()" );
-    return false;
-  }
-
-  return nextFeature( feature, mStmt );
-} // QgsSqlAnywhereProvider::nextFeature()
-
-
-/**
- * makeSelectSql - returns a query such that
- *  1. first column is mKeyColumn
- *  2. if mFetchGeom then next column is mGeomColumn
- *  3. remaining columns are mAttributesToFetch less mKeyColumn
- */
-QString
-QgsSqlAnywhereProvider::makeSelectSql( QString whereClause ) const
-{
-  QString sql = QString( "SELECT %1" ).arg( quotedIdentifier( mKeyColumn ) );
-  if ( mFetchGeom )
-  {
-    sql += QString( ", %1 .ST_AsBinary('WKB(Version=1.1;endian=%2)') " )
-           .arg( geomColIdent() )
-           .arg( QgsApplication::endian() == QgsApplication::XDR ?  "xdr" : "ndr" );
-  }
-
-  for ( QgsAttributeList::const_iterator it = mAttributesToFetch.constBegin()
-        ; it != mAttributesToFetch.constEnd()
-        ; it++ )
-  {
-    QString attrName = field( *it ).name();
-    if ( !attrName.isEmpty() && attrName != mKeyColumn )
-    {
-      sql += "," + quotedIdentifier( attrName );
-    }
-  }
-
-  sql += QString( " FROM %1 WHERE %2 OPTIONS(FORCE OPTIMIZATION)" )
-         .arg( mQuotedTableName )
-         .arg( whereClause );
-
-  return sql;
-
-} // QgsSqlAnywhereProvider::makeSelectSql()
-
-/**
- * Restart reading features from previous select operation
- */
-void
-QgsSqlAnywhereProvider::rewind()
-{
-  select( mStmtAttributesToFetch, mStmtRect, mStmtFetchGeom, mStmtUseIntersect );
-}
-
 
 QString
 QgsSqlAnywhereProvider::name() const
@@ -1018,6 +733,7 @@ QgsSqlAnywhereProvider::uniqueValues( int index, QList < QVariant > &uniqueValue
   }
 } // QgsSqlAnywhereProvider::uniqueValues()
 
+
 QString
 QgsSqlAnywhereProvider::getDefaultValue( QString attrName )
 {
@@ -1046,6 +762,7 @@ QgsSqlAnywhereProvider::getDefaultValue( QString attrName )
 
   return val;
 } // QgsSqlAnywhereProvider::defaultValue()
+
 
 bool
 QgsSqlAnywhereProvider::addFeatures( QgsFeatureList & flist )
@@ -1082,7 +799,7 @@ QgsSqlAnywhereProvider::addFeatures( QgsFeatureList & flist )
     SqlAnyStatement *stmt;
     QString  sql;
     QString  values;
-    const QgsAttributeMap &attrMap = fit->attributeMap();
+    const QgsAttributes &attrs = fit->attributes();
 
     // retrieve geometry value
     QgsGeometry geom = *fit->geometry();
@@ -1099,16 +816,15 @@ QgsSqlAnywhereProvider::addFeatures( QgsFeatureList & flist )
              .arg( mSrid );
 
     // iterate attributes
-    for ( QgsAttributeMap::const_iterator ait = attrMap.constBegin()
-          ; ait != attrMap.constEnd()
-          ; ait++ )
+    for ( int idx = 0; idx < attrs.count(); ++idx )
     {
-
-      QString attr = field( ait.key() ).name();
-      if ( !attr.isEmpty() && attr != mGeometryColumn )
+      QVariant v = attrs[idx];
+      QString fieldname = mAttributeFields[idx].name();
+      QString fieldTypeName = mAttributeFields[idx].typeName();
+      if ( !fieldname.isEmpty() && fieldname != mGeometryColumn )
       {
-        sql += ", " + attr;
-        values += ", " + quotedValue( ait->toString() );
+        sql += ", " + fieldname;
+        values += ", " + quotedValue( v.toString() );
       }
     }
     sql += values + " )";
@@ -1272,9 +988,6 @@ QgsSqlAnywhereProvider::addAttributes( const QList<QgsField> &attributes )
            .arg( datatype );
   }
 
-  // clear cursors to release table locks
-  closeCursors();
-
   mConnRW->begin();
   ok = mConnRW->execute_immediate( sql, code, errbuf, sizeof( errbuf ) );
   if ( ok )
@@ -1363,9 +1076,6 @@ QgsSqlAnywhereProvider::deleteAttributes( const QgsAttributeIds & ids )
     }
   }
 
-  // clear cursors to release table locks
-  closeCursors();
-
   mConnRW->begin();
   ok = mConnRW->execute_immediate( sql, code, errbuf, sizeof( errbuf ) );
   if ( ok )
@@ -1433,12 +1143,16 @@ QgsSqlAnywhereProvider::changeAttributeValues( const QgsChangedAttributesMap & a
           ; ok && ait != fit->constEnd()
           ; ait++ )
     {
-
-      QString attr = field( ait.key() ).name();
+      QString attr;
+      if ( ait.key() < mAttributeFields.size() )
+      {
+        attr = field( ait.key() ).name();
+      }
       sql += ( cnt++ != 0 ? ", " : "" );
       sql += QString( "%1=%2" )
              .arg( attr )
              .arg( quotedValue( ait->toString() ) );
+
       ok = !attr.isEmpty();
     }
 
@@ -1453,7 +1167,7 @@ QgsSqlAnywhereProvider::changeAttributeValues( const QgsChangedAttributesMap & a
     }
     else
     {
-      strcpy( tr( "Attribute not found" ).toUtf8().data(), errbuf );
+      strcpy( errbuf, tr( "Attribute not found" ).toUtf8().data() );
     }
   }
 
@@ -1582,6 +1296,13 @@ QgsSqlAnywhereProvider::changeGeometryValues( QgsGeometryMap & gmap )
   return ok;
 } // QgsSqlAnywhereProvider::changeGeometryValues()
 
+QgsAttributeList QgsSqlAnywhereProvider::attributeIndexes()
+{
+  QgsAttributeList lst;
+  for ( int i = 0; i < mAttributeFields.count(); ++i )
+    lst.append( i );
+  return lst;
+}
 
 bool
 QgsSqlAnywhereProvider::ensureConnRO()
@@ -1634,29 +1355,12 @@ QgsSqlAnywhereProvider::closeDb()
 void
 QgsSqlAnywhereProvider::closeConnRO()
 {
-  closeConnROCursors();
   if ( mConnRO )
   {
     mConnRO->release();
     mConnRO = NULL;
   }
 } // QgsSqlAnywhereProvider::closeConnRO()
-
-void
-QgsSqlAnywhereProvider::closeConnROCursors()
-{
-  if ( mStmt )
-  {
-    delete mStmt;
-    mStmt = NULL;
-  }
-
-  if ( mIdStmt )
-  {
-    delete mIdStmt;
-    mIdStmt = NULL;
-  }
-} // QgsSqlAnywhereProvider::closeConnROCursors()
 
 void
 QgsSqlAnywhereProvider::closeConnRW()
@@ -1949,11 +1653,9 @@ QgsSqlAnywhereProvider::testInsertPermission()
                 .arg( mQuotedTableName )
                 .arg( geomColIdent() );
   QString values = ") VALUES ( ?";
-  for ( QgsFieldMap::const_iterator it = mAttributeFields.constBegin()
-                                         ; it != mAttributeFields.constEnd()
-        ; it++ )
+  for ( int i = 0; i < mAttributeFields.count(); ++i )
   {
-    QString attr = it->name();
+    QString attr = mAttributeFields[i].name();
     if ( attr != mGeometryColumn )
     {
       sql += ", " + attr;
@@ -1972,11 +1674,9 @@ QgsSqlAnywhereProvider::testUpdateGeomPermission()
 bool
 QgsSqlAnywhereProvider::testUpdateOtherPermission()
 {
-  for ( QgsFieldMap::const_iterator it = mAttributeFields.constBegin()
-                                         ; it != mAttributeFields.constEnd()
-        ; it++ )
+  for ( int i = 0; i < mAttributeFields.count(); ++i )
   {
-    QString colname = it->name();
+    QString colname = mAttributeFields[i].name();
     if ( colname != mGeometryColumn && testUpdateColumn( colname ) )
     {
       return true;

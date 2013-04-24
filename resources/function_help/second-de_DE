@@ -1,0 +1,19 @@
+<h3>Funktion second()</h3>
+Bestimmt die Sekunde eines Datums/Zeit oder die Anzahl der Sekunden
+aus einem <code>Intervall</code>
+
+<h4>Syntax</h4>
+<code>second(datetime)</code><br>
+<code>second(Intervall)</code><br>
+
+<h4>Argumente</h4>
+<code>date</code> - ist datetime oder time. Das Datum dessen Sekunden bestimmt werden sollen.<br>
+<code>Intervall</code> - ist Interval. Ergib die Intervalllänge in Sekunden.
+
+<h4>Beispiele</h4>
+<!-- Show example of function.-->
+<code>second('2012-07-22T13:24:57') &rarr; 57</code><br>
+<code>second(tointerval('3 seconds')) &rarr; 3</code><br>
+<code>second(age('2012-07-22T00:20:00','2012-07-22T00:00:00')) &rarr; 1200</code><br>
+<code>second(age('2012-01-01','2010-01-01')) &rarr; 63072000</code><br>
+

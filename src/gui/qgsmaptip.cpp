@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 // QGIS includes
-#include <qgsmapcanvas.h>
-#include <qgsvectorlayer.h>
+#include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
+#include "qgsexpression.h"
+#include "qgslogger.h"
 
 // Qt includes
 #include <QPoint>
@@ -91,15 +93,14 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
 
   r = mpMapCanvas->mapRenderer()->mapToLayerCoordinates( layer, r );
 
-  int idx = vlayer->fieldNameIndex( vlayer->displayField() );
-  if ( idx < 0 )
-    return "";
-
   QgsFeature feature;
 
-  vlayer->select( QgsAttributeList() << idx, r, true, true );
-  if ( !vlayer->nextFeature( feature ) )
+  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) ).nextFeature( feature ) )
     return "";
 
-  return feature.attributeMap().value( idx, "" ).toString();
+  int idx = vlayer->fieldNameIndex( vlayer->displayField() );
+  if ( idx < 0 )
+    return QgsExpression::replaceExpressionText( vlayer->displayField(), feature, vlayer );
+  else
+    return feature.attribute( idx ).toString();
 }

@@ -1,0 +1,12 @@
+<h3>Funktion atan()</h3>
+Gibt den Arcustanget eines Werts im Bogenmaß zurück.
+
+
+<p><h4>Syntax</h4>
+     atan(<i>zahl</i>)</p>
+
+<p><h4>Argumente</h4>
+<i>zahl</i> -> Tangens eines Winkels.</p>
+
+<p><h4>Beispiel</h4>
+     atan(0.5) -> 0.463647609000806</p>

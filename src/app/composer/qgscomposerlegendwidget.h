@@ -20,8 +20,21 @@
 
 #include "ui_qgscomposerlegendwidgetbase.h"
 #include <QWidget>
+#include <QItemDelegate>
 
 class QgsComposerLegend;
+
+class QgsComposerLegendWidgetStyleDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    QgsComposerLegendWidgetStyleDelegate( QObject *parent = 0 );
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+};
 
 /** \ingroup MapComposer
  * A widget for setting properties relating to a composer legend.
@@ -41,6 +54,9 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
 
     void on_mWrapCharLineEdit_textChanged( const QString& text );
     void on_mTitleLineEdit_textChanged( const QString& text );
+    void on_mColumnCountSpinBox_valueChanged( int c );
+    void on_mSplitLayerCheckBox_toggled( bool checked );
+    void on_mEqualColumnWidthCheckBox_toggled( bool checked );
     void on_mSymbolWidthSpinBox_valueChanged( double d );
     void on_mSymbolHeightSpinBox_valueChanged( double d );
     void on_mGroupSpaceSpinBox_valueChanged( double d );
@@ -51,7 +67,9 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mGroupFontButton_clicked();
     void on_mLayerFontButton_clicked();
     void on_mItemFontButton_clicked();
+    void on_mFontColorPushButton_clicked();
     void on_mBoxSpaceSpinBox_valueChanged( double d );
+    void on_mColumnSpaceSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
     void on_mMapComboBox_currentIndexChanged( int index );
 
@@ -61,9 +79,12 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mRemoveToolButton_clicked();
     void on_mAddToolButton_clicked();
     void on_mEditPushButton_clicked();
+    void on_mCountToolButton_clicked( bool checked );
     void on_mUpdatePushButton_clicked();
     void on_mUpdateAllPushButton_clicked();
     void on_mAddGroupButton_clicked();
+
+    void selectedChanged( const QModelIndex & current, const QModelIndex & previous );
 
   protected:
     void showEvent( QShowEvent * event );

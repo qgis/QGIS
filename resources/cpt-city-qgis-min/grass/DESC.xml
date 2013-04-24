@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>grass</dir>
+  <name>GRASS colour ramps</name>
+  <full>
+    The colour ramps distributed with the GRASS GIS.
+  </full>
+  <date>01/08/2012</date>
+</description>

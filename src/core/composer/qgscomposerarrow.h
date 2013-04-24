@@ -19,6 +19,8 @@
 #define QGSCOMPOSERARROW_H
 
 #include "qgscomposeritem.h"
+#include <QBrush>
+#include <QPen>
 
 /**An item that draws an arrow between to points*/
 class CORE_EXPORT QgsComposerArrow: public QgsComposerItem

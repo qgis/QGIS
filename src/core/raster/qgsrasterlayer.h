@@ -21,39 +21,37 @@
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 
-//
-// Includes
-//
-
 #include <QColor>
 #include <QDateTime>
-#include <QVector>
 #include <QList>
 #include <QMap>
 #include <QPair>
+#include <QVector>
 
 #include "qgis.h"
-#include "qgspoint.h"
-#include "qgsmaplayer.h"
-#include "qgsrasterviewport.h"
-#include "qgscontrastenhancement.h"
-#include "qgsrastertransparency.h"
-#include "qgsrastershader.h"
+#include "qgsbrightnesscontrastfilter.h"
 #include "qgscolorrampshader.h"
-#include "qgsrastershaderfunction.h"
+#include "qgscontrastenhancement.h"
+#include "qgshuesaturationfilter.h"
+#include "qgsmaplayer.h"
+#include "qgspoint.h"
+#include "qgsraster.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
+#include "qgsrasterpipe.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgsrastershaderfunction.h"
+#include "qgsrastershader.h"
+#include "qgsrastertransparency.h"
+#include "qgsrasterviewport.h"
 
-//
-// Forward declarations
-//
 class QgsMapToPixel;
+class QgsRasterRenderer;
 class QgsRectangle;
-class QgsRasterBandStats;
-class QgsRasterPyramid;
 class QImage;
+class QLibrary;
 class QPixmap;
 class QSlider;
-class QLibrary;
 
 /** \ingroup core
  *  This class provides qgis with the ability to render raster datasets
@@ -170,6 +168,18 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 {
     Q_OBJECT
   public:
+    /**  \brief Default cumulative cut lower limit */
+    static const double CUMULATIVE_CUT_LOWER;
+
+    /**  \brief Default cumulative cut upper limit */
+    static const double CUMULATIVE_CUT_UPPER;
+
+    /**  \brief Default sample size (number of pixels) for estimated statistics/histogram calculation */
+    static const double SAMPLE_SIZE;
+
+    /**  \brief Constructor. Provider is not set. */
+    QgsRasterLayer();
+
     /** \brief This is the constructor for the RasterLayer class.
      *
      * The main tasks carried out by the constructor are:
@@ -186,28 +196,19 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString & path = QString::null,
+    QgsRasterLayer( const QString & path,
                     const QString &  baseName = QString::null,
                     bool loadDefaultStyleFlag = true );
 
     /**  \brief [ data provider interface ] Constructor in provider mode */
-    QgsRasterLayer( int dummy,
-                    const QString & baseName = QString(),
-                    const QString & path = QString(),
-                    const QString & providerLib = QString(),
-                    const QStringList & layers = QStringList(),
-                    const QStringList & styles = QStringList(),
-                    const QString & format = QString(),
-                    const QString & crs = QString() );
-
+    QgsRasterLayer( const QString & uri,
+                    const QString & baseName,
+                    const QString & providerKey,
+                    bool loadDefaultStyleFlag = true );
 
     /** \brief The destructor */
     ~QgsRasterLayer();
 
-
-    //
-    // Enums, structs and typedefs
-    //
     /** \brief This enumerator describes the types of shading that can be used */
     enum ColorShadingAlgorithm
     {
@@ -224,16 +225,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       UndefinedDrawingStyle,
       SingleBandGray,                 // a single band image drawn as a range of gray colors
       SingleBandPseudoColor,          // a single band image drawn using a pseudocolor algorithm
-      PalettedColor,                  //a "Palette" image drawn using color table
-      PalettedSingleBandGray,        // a "Palette" layer drawn in gray scale
-      PalettedSingleBandPseudoColor, // a "Palette" layerdrawn using a pseudocolor algorithm
+      PalettedColor,                  // a "Palette" image drawn using color table
+      PalettedSingleBandGray,         // a "Palette" layer drawn in gray scale
+      PalettedSingleBandPseudoColor,  // a "Palette" layerdrawn using a pseudocolor algorithm
       PalettedMultiBandColor,         // currently not supported
-      MultiBandSingleGandGray,        // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
-      //added in 1.6 to fix naming glitch
-      MultiBandSingleBandGray = MultiBandSingleGandGray, // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
-      MultiBandSingleBandPseudoColor, //a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
-      MultiBandColor,                  //a layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
-      SingleBandColorDataStyle         // ARGB values rendered directly
+      MultiBandSingleBandGray,        // a layer containing 2 or more bands, but a single band drawn as a range of gray colors
+      MultiBandSingleBandPseudoColor, // a layer containing 2 or more bands, but a single band drawn using a pseudocolor algorithm
+      MultiBandColor,                 // a layer containing 2 or more bands, mapped to RGB color space. In the case of a multiband with only two bands, one band will be mapped to more than one color.
+      SingleBandColorDataStyle        // ARGB values rendered directly
     };
 
     /** \brief This enumerator describes the type of raster layer */
@@ -243,28 +242,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       Palette,
       Multiband,
       ColorLayer
-    } ;
+    };
 
-    /** \brief A list containing on ContrastEnhancement object per raster band in this raster layer */
-    typedef QList<QgsContrastEnhancement> ContrastEnhancementList;
-
-    /** \brief  A list containing one RasterPyramid struct per raster band in this raster layer.
-     * POTENTIAL pyramid layer. This works by dividing the height
-     * and width of the raster by an incrementing number. As soon as the result
-     * of the division is <=256 we stop allowing RasterPyramid structs
-     * to be added to the list. Each time a RasterPyramid is created
-     * we will check to see if a pyramid matching these dimensions already exists
-     * in the raster layer, and if so mark the exists flag as true */
-    typedef QList<QgsRasterPyramid> RasterPyramidList;
-
-    /** \brief  A list containing one RasterBandStats struct per raster band in this raster layer.
-     * Note that while every RasterBandStats element will have the name and number of its associated
-     * band populated, any additional stats are calculated on a need to know basis.*/
-    typedef QList<QgsRasterBandStats> RasterStatsList;
-
-    //
-    // Static methods:
-    //
     static void buildSupportedRasterFileFilter( QString & fileFilters );
 
     /** This helper checks to see whether the file name appears to be a valid
@@ -274,202 +253,53 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     static bool isValidRasterFileName( const QString & theFileNameQString, QString &retError );
     static bool isValidRasterFileName( const QString & theFileNameQString );
-    //static QStringList subLayers( GDALDatasetH dataset );
-
 
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );
 
-    // Keep this for now, it is used by Python interface!!!
-    /** \brief ensures that GDAL drivers are registered, but only once */
-    static void registerGdalDrivers();
-
-    //
-    // Non Static inline methods
-    //
-
-    /** \brief Initialize default values */
-    void init();
-
-    // For backward compatibility (Python) get rid of it once python is updated
-    void setDataProvider( const QString & provider,
-                          const QStringList & layers,
-                          const QStringList & styles,
-                          const QString & format,
-                          const QString & crs );
     /**  [ data provider interface ] Set the data provider */
-    void setDataProvider( const QString & provider,
-                          const QStringList & layers,
-                          const QStringList & styles,
-                          const QString & format,
-                          const QString & crs,
-                          bool loadDefaultStyleFlag );
-
-    static QLibrary* loadProviderLibrary( QString theProviderKey );
-    static QgsRasterDataProvider* loadProvider( QString theProviderKey, QString theDataSource = 0 );
-
-
-    /** \brief  Accessor for blue band name mapping */
-    QString blueBandName() const { return mBlueBandName; }
-
-    /** \brief Accessor for color shader algorithm */
-    QgsRasterLayer::ColorShadingAlgorithm colorShadingAlgorithm() const { return mColorShadingAlgorithm; }
-
-    /** \brief Accessor for contrast enhancement algorithm */
-    QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() { return mContrastEnhancementAlgorithm; }
-
-    /** \brief Returns contrast enhancement algorithm as a string */
-    QString contrastEnhancementAlgorithmAsString() const;
+    void setDataProvider( const QString & provider );
 
     /** \brief Accessor for drawing style */
     DrawingStyle drawingStyle() { return mDrawingStyle; }
 
-    /** \brief Accessor for gray band name mapping */
-    QString grayBandName() const { return mGrayBandName; }
-
-    /** \brief Accessor for green band name mapping */
-    QString greenBandName() const { return mGreenBandName; }
-
-    /** \brief Accessor for mHasPyramids (READ ONLY) */
-    bool hasPyramids() { return mHasPyramids; }
-
-    /** \brief Accessor for mUserDefinedGrayMinimumMaximum */
-    bool hasUserDefinedGrayMinimumMaximum() const { return mUserDefinedGrayMinimumMaximum; }
-
-    /** \brief Accessor for mUserDefinedRGBMinimumMaximum */
-    bool hasUserDefinedRGBMinimumMaximum() const { return mUserDefinedRGBMinimumMaximum; }
-
-    /** \brief Accessor that returns the height of the (unclipped) raster */
-    int height() { return mHeight; }
-
-    /** \brief Accessor to find out whether the histogram should be inverted  */
-    bool invertHistogram() const { return mInvertColor; }
-
-    /** \brief Is the NoDataValue Valid */
-    bool isNoDataValueValid() const { return mValidNoDataValue; }
-
-    /** \brief Accessor for mGrayMinimumMaximumEstimated */
-    bool isGrayMinimumMaximumEstimated() const { return mGrayMinimumMaximumEstimated; }
-
-    /** \brief Accessor for mRGBMinimumMaximumEstimated */
-    bool isRGBMinimumMaximumEstimated() const { return mRGBMinimumMaximumEstimated; }
-
-    /** \brief Accessor that returns the NO_DATA entry for this raster */
-    double noDataValue( bool* isValid = 0 ) { if ( isValid ) { *isValid = mValidNoDataValue;} return mNoDataValue; }
-
-    /** \brief Returns a pointer to the transparency object */
-    QgsRasterTransparency* rasterTransparency() { return &mRasterTransparency; }
-
-    /** \brief Accessor for raster shader */
-    QgsRasterShader* rasterShader() { return mRasterShader; }
-
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType() { return mRasterType; }
 
-    /** \brief Accessor for red band name (allows alternate mappings e.g. map blue as red color) */
-    QString redBandName() const { return mRedBandName; }
-
-
     /** \brief Mutator for drawing style */
-    void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; }
+    void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; setRendererForDrawingStyle( theDrawingStyle ); }
 
-    /** \brief Mutator for mGrayMinimumMaximumEstimated */
-    void setGrayMinimumMaximumEstimated( bool theBool ) { mGrayMinimumMaximumEstimated = theBool; }
+    /**Set raster renderer. Takes ownership of the renderer object*/
+    void setRenderer( QgsRasterRenderer* theRenderer );
+    QgsRasterRenderer* renderer() const { return mPipe.renderer(); }
 
-    /** \brief Mutator to alter the state of the invert histogram flag  */
-    void setInvertHistogram( bool theFlag ) { mInvertColor = theFlag; }
+    /**Set raster resample filter. Takes ownership of the resample filter object*/
+    QgsRasterResampleFilter * resampleFilter() const { return mPipe.resampleFilter(); }
 
-    /** \brief Mutator for mRGBMinimumMaximumEstimated */
-    void setRGBMinimumMaximumEstimated( bool theBool ) { mRGBMinimumMaximumEstimated = theBool; }
+    QgsBrightnessContrastFilter * brightnessFilter() const { return mPipe.brightnessFilter(); }
+    QgsHueSaturationFilter * hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 
-    /** \brief Mutator to alter the number of standard deviations that should be plotted */
-    void setStandardDeviations( double theStandardDeviations ) { mStandardDeviations = theStandardDeviations; }
-
-    /** \brief Mutator for mUserDefinedGrayMinimumMaximum */
-    void setUserDefinedGrayMinimumMaximum( bool theBool ) { mUserDefinedGrayMinimumMaximum = theBool; }
-
-    /** \brief Mutator for mUserDefinedRGBMinimumMaximum */
-    void setUserDefinedRGBMinimumMaximum( bool theBool ) { mUserDefinedRGBMinimumMaximum = theBool; }
-
-    /** \brief Accessor to find out how many standard deviations are being plotted */
-    double standardDeviations() const { return mStandardDeviations; }
-
-    /** \brief  Accessor for transparent band name mapping */
-    QString transparentBandName() const { return mTransparencyBandName; }
-
-    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data?
-     * @deprecated in 2.0
-     */
-    Q_DECL_DEPRECATED bool usesProvider();
+    /** Get raster pipe */
+    QgsRasterPipe * pipe() { return &mPipe; }
 
     /** \brief Accessor that returns the width of the (unclipped) raster  */
-    int width() { return mWidth; }
+    int width() const;
 
-    //
-    // Non Static methods
-    //
+    /** \brief Accessor that returns the height of the (unclipped) raster */
+    int height() const;
+
     /** \brief Get the number of bands in this layer  */
-    unsigned int bandCount() const;
+    int bandCount() const;
 
     /** \brief Get the name of a band given its number  */
     const  QString bandName( int theBandNoInt );
 
-    /** \brief Get the number of a band given its name. The name is the rewritten name set
-    *   up in the constructor, and will not necessarily be the same as the name retrieved directly from gdal!
-    *   If no matching band is found zero will be returned! */
-    int bandNumber( const QString & theBandName ) const;
-
-    /** \brief Get RasterBandStats for a band given its number (read only)  */
-    const  QgsRasterBandStats bandStatistics( int );
-
-    /** \brief Get RasterBandStats for a band given its name (read only)  */
-    const  QgsRasterBandStats bandStatistics( const QString & );
-
-    /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the
-     * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
-     * ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
-     * list.
-     */
-    RasterPyramidList buildPyramidList();
-
-    /** \brief Accessor for color shader algorithm */
-    QString colorShadingAlgorithmAsString() const;
-
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
-    void computeMinimumMaximumEstimates( int theBand, double* theMinMax );
-
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option */
-    void computeMinimumMaximumEstimates( QString theBand, double* theMinMax );
-
-    /** \brief Wrapper for GDALComputeRasterMinMax with the estimate option
-      \note added in v1.6 */
-    void computeMinimumMaximumEstimates( int theBand, double& theMin, double& theMax );
-
-    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
-    void computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax );
-
-    /** \brief Compute the actual minimum maximum pixel values based on the current (last) display extent */
-    void computeMinimumMaximumFromLastExtent( QString theBand, double* theMinMax );
-
-    /**  \brief Compute the actual minimum maximum pixel values based on the current (last) display extent
-      \note added in v1.6 */
-    void computeMinimumMaximumFromLastExtent( int theBand, double& theMin, double& theMax );
-
-    /** \brief Get a pointer to the contrast enhancement for the selected band */
-    QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );
-
-    const QgsContrastEnhancement* constContrastEnhancement( unsigned int theBand ) const;
-
-    /**Copies the symbology settings from another layer. Returns true in case of success*/
-    bool copySymbologySettings( const QgsMapLayer& theOther );
-
-    /** \brief Get a pointer to the color table */
-    QList<QgsColorRampShader::ColorRampItem>* colorTable( int theBandNoInt );
-
     /** Returns the data provider */
     QgsRasterDataProvider* dataProvider();
 
-    /** Returns the data provider in a const-correct manner */
+    /** Returns the data provider in a const-correct manner
+      @note available in python bindings as constDataProvider()
+     */
     const QgsRasterDataProvider* dataProvider() const;
 
     /**Synchronises with changes in the datasource
@@ -484,33 +314,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    /** \brief Returns a string representation of drawing style
-     *
-     * Implemented mainly for serialisation / deserialisation of settings to xml.
-     * NOTE: May be deprecated in the future!. DrawingStyle drawingStyle() instead.
-     * */
-    QString drawingStyleAsString() const;
-
-    /** \brief Checks if symbology is the same as another layers */
-    bool hasCompatibleSymbology( const QgsMapLayer& theOther ) const;
-
-    /** \brief  Check whether a given band number has stats associated with it */
-    bool hasStatistics( int theBandNoInt );
-
-    /** \brief Identify raster value(s) found on the point position */
-    bool identify( const QgsPoint & point, QMap<QString, QString>& results );
-
-    /** \brief Identify arbitrary details from the WMS server found on the point position */
-    QString identifyAsText( const QgsPoint & point );
-
-    /** \brief Identify arbitrary details from the WMS server found on the point position
-     * @note added in 1.5
-     */
-    QString identifyAsHtml( const QgsPoint & point );
-
-    /** \brief Currently returns always false */
-    bool isEditable() const;
-
     /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure  */
     QString lastError();
 
@@ -521,29 +324,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       @note this method was added in version 1.8*/
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
-    /** \brief Get a legend image for this layer */
-    QPixmap legendAsPixmap();
-
-    /** \brief  Overloaded version of above function that can print layer name onto legend */
-    QPixmap legendAsPixmap( bool );
-
-    /** \brief Use this method when you want an annotated legend suitable for print output etc */
-    QPixmap legendAsPixmap( int theLabelCount );
-
-    /** \brief Accessor for maximum value user for contrast enhancement */
-    double maximumValue( unsigned int theBand );
-
-    /** \brief Accessor for maximum value user for contrast enhancement */
-    double maximumValue( QString theBand );
-
     /** \brief Obtain GDAL Metadata for this layer */
     QString metadata();
-
-    /** \brief Accessor for minimum value user for contrast enhancement */
-    double minimumValue( unsigned int theBand );
-
-    /** \brief Accessor for minimum value user for contrast enhancement */
-    double minimumValue( QString theBand );
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
@@ -553,82 +335,28 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     QString providerType() const;
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
-     * @deprecated use providerType()
-     */
-    Q_DECL_DEPRECATED QString providerKey() const { return providerType(); }
-
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
 
-    /** \brief Read color table from GDAL raster band */
-    // Keep this for QgsRasterLayerProperties
-    bool readColorTable( int theBandNumber, QList<QgsColorRampShader::ColorRampItem>* theList );
+    /** \brief Set contrast enhancement algorithm
+     *  @param theAlgorithm Contrast enhancement algorithm
+     *  @param theLimits Limits
+     *  @param theExtent Extent used to calculate limits, if empty, use full layer extent
+     *  @param theSampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  @param theGenerateLookupTableFlag Generate llokup table. */
 
-    /** \brief Simple reset function that set the noDataValue back to the value stored in the first raster band */
-    void resetNoDataValue();
 
-    /** \brief Mutator for blue band name mapping */
-    void setBlueBandName( const QString & theBandName );
-
-    /** \brief Mutator for color shader algorithm */
-    void setColorShadingAlgorithm( QgsRasterLayer::ColorShadingAlgorithm theShaderAlgorithm );
-
-    /** \brief Mutator for color shader algorithm */
-    void setColorShadingAlgorithm( QString theShaderAlgorithm );
-
-    /** \brief Mutator for contrast enhancement algorithm */
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
+                                          QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
+                                          QgsRectangle theExtent = QgsRectangle(),
+                                          int theSampleSize = SAMPLE_SIZE,
                                           bool theGenerateLookupTableFlag = true );
 
-    /** \brief Mutator for contrast enhancement algorithm */
-    void setContrastEnhancementAlgorithm( QString theAlgorithm, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Mutator for contrast enhancement function */
-    void setContrastEnhancementFunction( QgsContrastEnhancementFunction* theFunction );
+    /** \brief Set default contrast enhancement */
+    void setDefaultContrastEnhancement();
 
     /** \brief Overloaded version of the above function for convenience when restoring from xml */
     void setDrawingStyle( const QString & theDrawingStyleQString );
-
-    /** \brief Mutator for gray band name mapping  */
-    void setGrayBandName( const QString & theBandName );
-
-    /** \brief Mutator for green band name mapping  */
-    void setGreenBandName( const QString & theBandName );
-
-    /** \brief Mutator for setting the maximum value for contrast enhancement */
-    void setMaximumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Mutator for setting the maximum value for contrast enhancement */
-    void setMaximumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Sets the minimum and maximum values for the band(s) currently
-     * being displayed using the only pixel values from the last/current extent
-     * */
-    void setMinimumMaximumUsingLastExtent();
-
-    /** \brief Sets the minimum and maximum values for the band(s) currently
-     * being displayed using the only pixel values from the dataset min/max */
-    void setMinimumMaximumUsingDataset();
-
-    /** \brief Mutator for setting the minimum value for contrast enhancement */
-    void setMinimumValue( unsigned int theBand, double theValue, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Mutator for setting the minimum value for contrast enhancement */
-    void setMinimumValue( QString theBand, double theValue, bool theGenerateLookupTableFlag = true );
-
-    /** \brief Mutator that allows the  NO_DATA entry for this raster to be overridden */
-    void setNoDataValue( double theNoData );
-
-    /** \brief Set the raster shader function to a user defined function
-      \note ownership of the shader function is transfered to raster shader */
-    void setRasterShaderFunction( QgsRasterShaderFunction* theFunction );
-
-    /** \brief Mutator for red band name (allows alternate mappings e.g. map blue as red color) */
-    void setRedBandName( const QString & theBandName );
-
-    /** \brief Mutator for transparent band name mapping  */
-    void setTransparentBandName( const QString & theBandName );
 
     /**  \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );
@@ -636,19 +364,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     virtual QStringList subLayers() const;
 
-    /** \brief Draws a thumbnail of the rasterlayer into the supplied pixmap pointer */
-    void thumbnailAsPixmap( QPixmap * theQPixmap );
-    /** \brief Draws a thumbnail of the rasterlayer into the supplied QImage pointer
-     * @note added in QGIS 1.6
-     * */
-    void thumbnailAsImage( QImage * thepImage );
+    /** \brief Draws a preview of the rasterlayer into a pixmap */
+    QPixmap previewAsPixmap( QSize size, QColor bgColor = Qt::white );
 
     /** \brief Emit a signal asking for a repaint. (inherited from maplayer) */
     void triggerRepaint();
 
-    //
-    // Virtual methods
-    //
     /**
      * Reorders the *previously selected* sublayers of this layer from bottom to top
      *
@@ -666,18 +387,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     virtual QDateTime timestamp() const { return mDataProvider->timestamp() ; }
 
   public slots:
-    /** \brief Create GDAL pyramid overviews */
-    QString buildPyramids( const RasterPyramidList &,
-                           const QString &  theResamplingMethod = "NEAREST",
-                           bool theTryInternalFlag = false );
-
-    /** \brief Populate the histogram vector for a given band */
-
-    void populateHistogram( int theBandNoInt,
-                            int theBinCountInt = 256,
-                            bool theIgnoreOutOfRangeFlag = true,
-                            bool theThoroughBandScanFlag = false );
-
     void showStatusMessage( const QString & theMessage );
 
     /** \brief Propagate progress updates from GDAL up to the parent app */
@@ -697,7 +406,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void dataChanged();
 
   protected:
-
     /** \brief Read the symbology for the current layer from the Dom node supplied */
     bool readSymbology( const QDomNode& node, QString& errorMessage );
 
@@ -711,129 +419,26 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool writeXml( QDomNode & layer_node, QDomDocument & doc );
 
   private:
-    //
-    // Private methods
-    //
-    /** \brief Drawing routine for color type data  */
-    void drawSingleBandColorData( QPainter * theQPainter,
-                                  QgsRasterViewPort * theRasterViewPort,
-                                  const QgsMapToPixel* theQgsMapToPixel,
-                                  int theBandNoInt );
-
-    /** \brief Drawing routine for multiband image  */
-    void drawMultiBandColor( QPainter * theQPainter,
-                             QgsRasterViewPort * theRasterViewPort,
-                             const QgsMapToPixel* theQgsMapToPixel );
-
-    /** \brief Drawing routine for multiband image, rendered as a single band image in grayscale */
-    void drawMultiBandSingleBandGray( QPainter * theQPainter,
-                                      QgsRasterViewPort * theRasterViewPort,
-                                      const QgsMapToPixel* theQgsMapToPixel,
-                                      int theBandNoInt );
-
-    /** \brief Drawing routine for multiband image, rendered as a single band image in pseudocolor */
-    void drawMultiBandSingleBandPseudoColor( QPainter * theQPainter,
-        QgsRasterViewPort * theRasterViewPort,
-        const QgsMapToPixel* theQgsMapToPixel,
-        int theBandNoInt );
-
-    /** \brief Drawing routine for single band with a color map */
-    void drawPalettedSingleBandColor( QPainter * theQPainter,
-                                      QgsRasterViewPort * theRasterViewPort,
-                                      const QgsMapToPixel* theQgsMapToPixel,
-                                      int theBandNoInt );
-
-    /** \brief Drawing routine for paletted image, rendered as a single band image in grayscale */
-    void drawPalettedSingleBandGray( QPainter * theQPainter,
-                                     QgsRasterViewPort * theRasterViewPort,
-                                     const QgsMapToPixel* theQgsMapToPixel,
-                                     int theBandNoInt );
-
-    /** \brief Drawing routine for paletted image, rendered as a single band image in pseudocolor */
-    void drawPalettedSingleBandPseudoColor( QPainter * theQPainter,
-                                            QgsRasterViewPort * theRasterViewPort,
-                                            const QgsMapToPixel* theQgsMapToPixel,
-                                            int theBandNoInt );
-
-    /** \brief Drawing routine for paletted multiband image */
-    void drawPalettedMultiBandColor( QPainter * theQPainter,
-                                     QgsRasterViewPort * theRasterViewPort,
-                                     const QgsMapToPixel* theQgsMapToPixel,
-                                     int theBandNoInt );
-
-    /** \brief Drawing routine for single band grayscale image */
-    void drawSingleBandGray( QPainter * theQPainter,
-                             QgsRasterViewPort * theRasterViewPort,
-                             const QgsMapToPixel* theQgsMapToPixel,
-                             int theBandNoInt );
-
-    /** \brief Drawing routine for single band grayscale image, rendered in pseudocolor */
-    void drawSingleBandPseudoColor( QPainter * theQPainter,
-                                    QgsRasterViewPort * theRasterViewPort,
-                                    const QgsMapToPixel* theQgsMapToPixel,
-                                    int theBandNoInt );
+    /** \brief Initialize default values */
+    void init();
 
     /** \brief Close data provider and clear related members */
     void closeDataProvider();
 
-    /** \brief helper function to create zero padded band names */
-    QString  generateBandName( int );
-
-    /** \brief Find out whether a given band exists.    */
-    bool hasBand( const QString &  theBandName );
-
-    /** \brief Query GDAL to find out the Wkt projection string for this layer.*/
-    QString projectionWkt();
-
-    /** \brief Allocate memory and load data to that allocated memory */
-    //void* readData( GDALRasterBandH gdalBand, QgsRasterViewPort *viewPort );
-    void* readData( int bandNo, QgsRasterViewPort *viewPort );
-
-    /** \brief Load the given raster file */
-    bool readFile( const QString & fileName );
-
-    /** \brief Read a raster value given position from memory block created by readData() */
-    //inline double readValue( void *data, GDALDataType type, int index );
-    inline double readValue( void *data, int type, int index );
-
     /** \brief Update the layer if it is outdated */
     bool update();
 
-    /** \brief Verify and transform band name for internal consistency. Return 'Not Set' on any type of failure */
-    QString validateBandName( const QString & theBandName );
+    /**Sets corresponding renderer for style*/
+    void setRendererForDrawingStyle( const DrawingStyle &  theDrawingStyle );
 
-    //
-    // Private member vars
-    //
     /** \brief  Constant defining flag for XML and a constant that signals property not used */
     const QString QSTRING_NOT_SET;
     const QString TRSTRING_NOT_SET;
 
-    /** \brief The number of bands in the dataset */
-    int mBandCount;
-
-    /** \brief The band to be associated with the color blue - usually 3 */
-    QString mBlueBandName;
-
-    /** \brief The raster shading algorithm being used */
-    ColorShadingAlgorithm mColorShadingAlgorithm;
-
-    /** \brief The contrast enhancement algorithm being used */
-    QgsContrastEnhancement::ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
-
-    /** \brief List containing the contrast enhancements for each band */
-    ContrastEnhancementList mContrastEnhancementList;
-
-    /** \brief Number of stddev to plot (0) to ignore. Not applicable to all layer types */
-    double mStandardDeviations;
-
-    /**  [ data provider interface ] Pointer to data provider derived from the abstract base class QgsDataProvider */
+    /** Pointer to data provider */
     QgsRasterDataProvider* mDataProvider;
 
     DrawingStyle mDrawingStyle;
-
-    /**  [ data provider interface ] Flag indicating whether the layer is in editing mode or not*/
-    bool mEditable;
 
     /** [ data provider interface ]The error message associated with the last error */
     QString mError;
@@ -841,149 +446,17 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** [ data provider interface ] The error caption associated with the last error */
     QString mErrorCaption;
 
-    /** \brief Pointer to the gdaldataset */
-    //GDALDatasetH mGdalBaseDataset;
-
-    /** \brief Pointer to the gdaldataset (possibly warped vrt) */
-    //GDALDatasetH mGdalDataset;
-
-    /** \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform */
-    double mGeoTransform[6];
-
-    /** \brief The band to be associated with the grayscale only output - usually 1 */
-    QString mGrayBandName;
-
-    /** \brief Flag to indicate of the min max values are actual or estimates/user defined */
-    bool mGrayMinimumMaximumEstimated;
-
-    /** \brief The band to be associated with the color green - usually 2 */
-    QString mGreenBandName;
-
-    /** \brief Whether this raster has overviews / pyramids or not */
-    bool mHasPyramids;
-
-    /** \brief  Raster width */
-    int mWidth;
-
-    /** \brief  Raster height */
-    int mHeight;
-
-    /** \brief Flag indicating whether the color of pixels should be inverted or not */
-    bool mInvertColor;
-
     /**  [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created */
     QDateTime mLastModified;
 
     QgsRasterViewPort mLastViewPort;
 
-    /**  [ data provider interface ] pointer for loading the provider library */
-    //QLibrary* mLib;
-
-    /**  [ data provider interface ] Flag indicating whether the layer has been modified since the last commit*/
-    bool mModified;
-
-    /** \brief Cell value representing no data. e.g. -9999  */
-    double mNoDataValue;
-
     /**  [ data provider interface ] Data provider key */
     QString mProviderKey;
 
-    /** \brief This list holds a series of RasterPyramid structs which store information for each potential pyramid level */
-    RasterPyramidList mPyramidList;
-
-    /** \brief The raster shader for the layer */
-    QgsRasterShader* mRasterShader;
-
-    /** \brief A collection of stats - one for each band in the layer */
-    RasterStatsList mRasterStatsList;
-
-    /** \brief The transparency container */
-    QgsRasterTransparency mRasterTransparency;
-
     LayerType mRasterType;
 
-    /** \brief The band to be associated with the color red - usually 1 */
-    QString mRedBandName;
-
-    /** \brief Flag to indicate of the min max values are actual or estimates/user defined */
-    bool mRGBMinimumMaximumEstimated;
-
-    /** \brief The band to be associated with transparency */
-    QString mTransparencyBandName;
-
-    /** \brief Flag to indicate if the user entered custom min max values */
-    bool mUserDefinedGrayMinimumMaximum;
-
-    /** \brief Flag to indicate if the user entered custom min max values */
-    bool mUserDefinedRGBMinimumMaximum;
-
-    /** \brief Flag indicating if the nodatavalue is valid*/
-    bool mValidNoDataValue;
-
-    /** WMS parameters */
-    /* TODO: put everything to URI */
-    QStringList mLayers;
-    QStringList mStyles;
-    QString mFormat;
-    QString mCrs;
-};
-
-/*#include <QColor>
-
-typedef void* GDALRasterBandH;
-class QgsMapToPixel;
-struct QgsRasterViewPort;
-class QImage;
-class QPainter;*/
-
-/**A class encapsulates reading from a raster band and drawing the pixels to a painter.
-   The class allows sequential reading of the scan lines and setting the image scan line pixels. It automatically decides
-   on how much of the band / image should stay in virtual memory at a time*/
-class CORE_EXPORT QgsRasterImageBuffer
-{
-  public:
-    QgsRasterImageBuffer( QgsRasterDataProvider *dataProvider, int bandNo, QPainter* p,
-                          QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* mGeoTransform );
-    ~QgsRasterImageBuffer();
-    void reset( int maxPixelsInVirtualMemory = 5000000 );
-    /**Returns a pointer to the next scan line (or 0 if end)*/
-    bool nextScanLine( QRgb** imageScanLine, void** rasterScanLine );
-
-    void setWritingEnabled( bool enabled ) { mWritingEnabled = enabled; }
-
-  private:
-    QgsRasterImageBuffer(); //forbidden
-    /**Creates next part image. Returns false if at end*/
-    bool createNextPartImage();
-
-    /**Peter's fix for zoomed in rasters*/
-    void drawPixelRectangle();
-
-    QgsRasterDataProvider* mDataProvider;
-    int mBandNo;
-    QPainter* mPainter;
-    QgsRasterViewPort* mViewPort;
-    const QgsMapToPixel* mMapToPixel;
-    double* mGeoTransform;
-
-    bool mValid;
-    /**True (default), if values are written to an image. If false, the class only reads the values, but does not create an image*/
-    bool mWritingEnabled;
-    /**Draws the raster pixels as rectangles. This is only used if the map units per pixel is very, very small*/
-    bool mDrawPixelRect;
-    int mCurrentRow;
-    int mNumPartImages; //number of part images
-    int mNumRasterRowsPerPart; //number of (raster source) rows per part
-    int mCurrentPartRasterMin; //minimum (raster source) row of current image
-    int mCurrentPartRasterMax; //maximum (raster source) row of current image
-    int mCurrentPartImageRow; //current image row
-    int mNumCurrentImageRows; //number of image rows for the current part
-
-    int mCurrentPart;
-
-    //current memory image and gdal scan data
-    QImage* mCurrentImage;
-    void* mCurrentGDALData;
+    QgsRasterPipe mPipe;
 };
 
 #endif

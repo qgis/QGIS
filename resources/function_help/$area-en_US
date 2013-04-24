@@ -1,0 +1,12 @@
+<h3>$area function</h3>
+Returns the area size of the current feature.
+
+<h4>Syntax</h4>
+<pre>$area</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre>$area &rarr; 42</pre>
+

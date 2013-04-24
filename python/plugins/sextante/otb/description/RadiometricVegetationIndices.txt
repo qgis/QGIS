@@ -1,0 +1,21 @@
+RadiometricVegetationIndices
+otbcli_RadiometricVegetationIndices
+Radiometric Vegetation
+Feature Extraction
+ParameterRaster|-in|Input Image|False
+OutputRaster|-out|Output Image
+ParameterNumber|-ram|Available RAM (Mb)|None|None|128
+ParameterNumber|-channels.red|Red Channel|None|None|3
+ParameterNumber|-channels.nir|NIR Channel|None|None|4
+ParameterBoolean|-index.ndvi|NDVI|
+ParameterBoolean|-index.tndvi|TNDVI|
+ParameterBoolean|-index.rvi|RVI|
+ParameterBoolean|-index.savi|SAVI|
+ParameterBoolean|-index.tsavi|TSAVI|
+ParameterBoolean|-index.msavi|MSAVI|
+ParameterBoolean|-index.msavi2|MSAVI2|
+ParameterBoolean|-index.gemi|GEMI|
+ParameterBoolean|-index.ipvi|IPVI|
+ParameterBoolean|-index.laindvilog|LAIFromNDVILog|
+ParameterBoolean|-index.lairefl|LAIFromReflLinear|
+ParameterBoolean|-index.laindviformo|LAIFromNDVIFormo|

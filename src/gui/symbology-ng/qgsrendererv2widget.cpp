@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -173,90 +173,137 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
 #include "qgsfield.h"
 #include <QMenu>
 
-QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFieldMap& flds, QString rotationField, QString sizeScaleField )
+QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, const QgsFields& flds, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
     : QObject( menu ), mFlds( flds )
 {
   mRotationMenu = new QMenu( tr( "Rotation field" ) );
   mSizeScaleMenu = new QMenu( tr( "Size scale field" ) );
 
-  populateMenu( mRotationMenu, SLOT( rotationFieldSelected() ), rotationField );
-  populateMenu( mSizeScaleMenu, SLOT( sizeScaleFieldSelected() ), sizeScaleField );
+  mRotationAttributeActionGroup = new QActionGroup( mRotationMenu );
+  mSizeAttributeActionGroup = new QActionGroup( mSizeScaleMenu );
+  mSizeMethodActionGroup = new QActionGroup( mSizeScaleMenu );
+
+  populateMenu( mRotationMenu, SLOT( rotationFieldSelected( QAction* a ) ), rotationField, mRotationAttributeActionGroup );
+  populateMenu( mSizeScaleMenu, SLOT( sizeScaleFieldSelected( QAction* a ) ), sizeScaleField, mSizeAttributeActionGroup );
+
+  mSizeScaleMenu->addSeparator();
+
+  QAction* aScaleByArea = new QAction( tr( "Scale area" ), mSizeMethodActionGroup ) ;
+  QAction* aScaleByDiameter = new QAction( tr( "Scale diameter" ), mSizeMethodActionGroup );
+
+  aScaleByArea->setCheckable( true );
+  aScaleByDiameter->setCheckable( true );
+
+  if ( scaleMethod == QgsSymbolV2::ScaleDiameter )
+  {
+    aScaleByDiameter->setChecked( true );
+  }
+  else
+  {
+    aScaleByArea->setChecked( true );
+  }
+
+  mSizeScaleMenu->addActions( mSizeMethodActionGroup->actions() );
 
   menu->addMenu( mRotationMenu );
   menu->addMenu( mSizeScaleMenu );
 }
 
-void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const char* slot, QString fieldName )
+QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
 {
-  QAction* aNo = menu->addAction( tr( "- no field -" ), this, slot );
+  delete mSizeMethodActionGroup;
+  delete mSizeAttributeActionGroup;
+  delete mRotationAttributeActionGroup;
+  delete mRotationMenu;
+  delete mSizeScaleMenu;
+}
+
+void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, const char* slot, QString fieldName, QActionGroup *actionGroup )
+{
+  Q_UNUSED( slot );
+  QAction* aNo = new QAction( tr( "- no field -" ), actionGroup );
   aNo->setCheckable( true );
+  menu->addAction( aNo );
   menu->addSeparator();
 
   bool hasField = false;
   //const QgsFieldMap& flds = mLayer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = mFlds.begin(); it != mFlds.end(); ++it )
+  for ( int idx = 0; idx < mFlds.count(); ++idx )
   {
-    const QgsField& fld = it.value();
+    const QgsField& fld = mFlds[idx];
     if ( fld.type() == QVariant::Int || fld.type() == QVariant::Double )
     {
-      QAction* a = menu->addAction( fld.name(), this, slot );
+      QAction* a = new QAction( fld.name(), actionGroup );
       a->setCheckable( true );
       if ( fieldName == fld.name() )
       {
         a->setChecked( true );
         hasField = true;
       }
+      menu->addAction( a );
     }
   }
 
   if ( !hasField )
+  {
     aNo->setChecked( true );
+  }
+
+  connect( mSizeMethodActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( scaleMethodSelected( QAction* ) ) );
+  connect( mRotationAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rotationFieldSelected( QAction* ) ) );
+  connect( mSizeAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( sizeScaleFieldSelected( QAction* ) ) );
 }
 
-void QgsRendererV2DataDefinedMenus::rotationFieldSelected()
+void QgsRendererV2DataDefinedMenus::rotationFieldSelected( QAction* a )
 {
-  QObject* s = sender();
-  if ( s == NULL )
-    return;
-
-  QAction* a = qobject_cast<QAction*>( s );
   if ( a == NULL )
     return;
 
   QString fldName = a->text();
-
-  updateMenu( mRotationMenu, fldName );
-
+#if 0
+  updateMenu( mRotationAttributeActionGroup, fldName );
+#endif
   if ( fldName == tr( "- no field -" ) )
     fldName = QString();
 
   emit rotationFieldChanged( fldName );
 }
 
-void QgsRendererV2DataDefinedMenus::sizeScaleFieldSelected()
+void QgsRendererV2DataDefinedMenus::sizeScaleFieldSelected( QAction* a )
 {
-  QObject* s = sender();
-  if ( s == NULL )
-    return;
-
-  QAction* a = qobject_cast<QAction*>( s );
   if ( a == NULL )
     return;
 
   QString fldName = a->text();
-
-  updateMenu( mSizeScaleMenu, fldName );
-
+#if 0
+  updateMenu( mSizeAttributeActionGroup, fldName );
+#endif
   if ( fldName == tr( "- no field -" ) )
     fldName = QString();
 
   emit sizeScaleFieldChanged( fldName );
 }
 
-void QgsRendererV2DataDefinedMenus::updateMenu( QMenu* menu, QString fieldName )
+void QgsRendererV2DataDefinedMenus::scaleMethodSelected( QAction* a )
 {
-  foreach( QAction* a, menu->actions() )
+  if ( a == NULL )
+    return;
+
+  if ( a->text() == tr( "Scale area" ) )
+  {
+    emit scaleMethodChanged( QgsSymbolV2::ScaleArea );
+  }
+  else if ( a->text() == tr( "Scale diameter" ) )
+  {
+    emit scaleMethodChanged( QgsSymbolV2::ScaleDiameter );
+  }
+}
+#if 0 // MK: is there any reason for this?
+void QgsRendererV2DataDefinedMenus::updateMenu( QActionGroup* actionGroup, QString fieldName )
+{
+  foreach ( QAction* a, actionGroup->actions() )
   {
     a->setChecked( a->text() == fieldName );
   }
 }
+#endif

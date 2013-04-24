@@ -16,7 +16,8 @@
  ***************************************************************************/
 
 #include "qgswfssourceselect.h"
-#include "qgswfsconnection.h"
+#include "qgsowsconnection.h"
+#include "qgswfscapabilities.h"
 #include "qgswfsprovider.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsgenericprojectionselector.h"
@@ -34,53 +35,88 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QFileDialog>
+#include <QPainter>
 
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool embeddedMode )
     : QDialog( parent, fl )
-    , mConn( NULL )
+    , mCapabilities( NULL )
 {
   setupUi( this );
 
-  btnAdd = buttonBox->button( QDialogButtonBox::Apply );
-  btnAdd->setEnabled( false );
-
   if ( embeddedMode )
   {
-    buttonBox->button( QDialogButtonBox::Apply )->hide();
     buttonBox->button( QDialogButtonBox::Close )->hide();
   }
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( addLayer() ) );
+  mAddButton = new QPushButton( tr( "&Add" ) );
+  mAddButton->setEnabled( false );
+
+  mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
+  mBuildQueryButton->setToolTip( tr( "Build query" ) );
+  mBuildQueryButton->setDisabled( true );
+
+
+  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addLayer() ) );
+
+  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( on_mBuildQueryButton_clicked() ) );
+
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( btnNew, SIGNAL( clicked() ), this, SLOT( addEntryToServerList() ) );
   connect( btnEdit, SIGNAL( clicked() ), this, SLOT( modifyEntryOfServerList() ) );
   connect( btnDelete, SIGNAL( clicked() ), this, SLOT( deleteEntryOfServerList() ) );
   connect( btnConnect, SIGNAL( clicked() ), this, SLOT( connectToServer() ) );
   connect( btnChangeSpatialRefSys, SIGNAL( clicked() ), this, SLOT( changeCRS() ) );
-  connect( treeWidget, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ), this, SLOT( changeCRSFilter() ) );
+  connect( lineFilter, SIGNAL( textChanged( QString ) ), this, SLOT( filterChanged( QString ) ) );
   populateConnectionList();
   mProjectionSelector = new QgsGenericProjectionSelector( this );
   mProjectionSelector->setMessage();
 
+  mItemDelegate = new QgsWFSItemDelegate( treeView );
+  treeView->setItemDelegate( mItemDelegate );
+
   QSettings settings;
-  QgsDebugMsg( "restoring geometry" );
+  QgsDebugMsg( "restoring settings" );
   restoreGeometry( settings.value( "/Windows/WFSSourceSelect/geometry" ).toByteArray() );
+  cbxUseTitleLayerName->setChecked( settings.value( "/Windows/WFSSourceSelect/UseTitleLayerName", false ).toBool() );
+
+  mModel = new QStandardItemModel();
+  mModel->setHorizontalHeaderItem( 0, new QStandardItem( "Title" ) );
+  mModel->setHorizontalHeaderItem( 1, new QStandardItem( "Name" ) );
+  mModel->setHorizontalHeaderItem( 2, new QStandardItem( "Abstract" ) );
+  mModel->setHorizontalHeaderItem( 3, new QStandardItem( "Cache Feature" ) );
+  mModel->setHorizontalHeaderItem( 4, new QStandardItem( "Filter" ) );
+
+  mModelProxy = new QSortFilterProxyModel( this );
+  mModelProxy->setSourceModel( mModel );
+  mModelProxy->setSortCaseSensitivity( Qt::CaseInsensitive );
+  treeView->setModel( mModelProxy );
+
+  connect( treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( on_treeWidget_itemDoubleClicked( const QModelIndex& ) ) );
+  connect( treeView->selectionModel(), SIGNAL( currentRowChanged( QModelIndex, QModelIndex ) ), this, SLOT( on_treeWidget_currentRowChanged( const QModelIndex&, const QModelIndex& ) ) );
 }
 
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
 {
   QSettings settings;
-  QgsDebugMsg( "saving geometry" );
+  QgsDebugMsg( "saving settings" );
   settings.setValue( "/Windows/WFSSourceSelect/geometry", saveGeometry() );
+  settings.setValue( "/Windows/WFSSourceSelect/UseTitleLayerName", cbxUseTitleLayerName->isChecked() );
 
+  delete mItemDelegate;
   delete mProjectionSelector;
-  delete mConn;
+  delete mCapabilities;
+  delete mModel;
+  delete mModelProxy;
+  delete mAddButton;
+  delete mBuildQueryButton;
 }
 
 void QgsWFSSourceSelect::populateConnectionList()
 {
-  QStringList keys = QgsWFSConnection::connectionList();
+  QStringList keys = QgsOWSConnection::connectionList( "WFS" );
 
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -107,16 +143,17 @@ void QgsWFSSourceSelect::populateConnectionList()
   }
 
   //set last used connection
-  QString selectedConnection = QgsWFSConnection::selectedConnection();
+  QString selectedConnection = QgsOWSConnection::selectedConnection( "WFS" );
   int index = cmbConnections->findText( selectedConnection );
   if ( index != -1 )
   {
     cmbConnections->setCurrentIndex( index );
   }
 
-  delete mConn;
-  mConn = new QgsWFSConnection( cmbConnections->currentText() );
-  connect( mConn, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
+  QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
+  delete mCapabilities;
+  mCapabilities = new QgsWFSCapabilities( connection.uri().encodedUri() );
+  connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 
 QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString>& crsSet ) const
@@ -155,43 +192,48 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 {
   btnConnect->setEnabled( true );
 
-  if ( !mConn )
+  if ( !mCapabilities )
     return;
-  QgsWFSConnection::ErrorCode err = mConn->errorCode();
-  if ( err != QgsWFSConnection::NoError )
+  QgsWFSCapabilities::ErrorCode err = mCapabilities->errorCode();
+  if ( err != QgsWFSCapabilities::NoError )
   {
     QString title;
     switch ( err )
     {
-      case QgsWFSConnection::NetworkError: title = tr( "Network Error" ); break;
-      case QgsWFSConnection::XmlError:     title = tr( "Capabilities document is not valid" ); break;
-      case QgsWFSConnection::ServerExceptionError: title = tr( "Server Exception" ); break;
+      case QgsWFSCapabilities::NetworkError: title = tr( "Network Error" ); break;
+      case QgsWFSCapabilities::XmlError:     title = tr( "Capabilities document is not valid" ); break;
+      case QgsWFSCapabilities::ServerExceptionError: title = tr( "Server Exception" ); break;
       default: tr( "Error" ); break;
     }
     // handle errors
-    QMessageBox::critical( 0, title, mConn->errorMessage() );
+    QMessageBox::critical( 0, title, mCapabilities->errorMessage() );
 
     btnAdd->setEnabled( false );
     return;
   }
 
-  QgsWFSConnection::GetCapabilities caps = mConn->capabilities();
+  QgsWFSCapabilities::GetCapabilities caps = mCapabilities->capabilities();
 
   mAvailableCRS.clear();
-  foreach( QgsWFSConnection::FeatureType featureType, caps.featureTypes )
+  foreach ( QgsWFSCapabilities::FeatureType featureType, caps.featureTypes )
   {
     // insert the typenames, titles and abstracts into the tree view
-    QTreeWidgetItem* newItem = new QTreeWidgetItem();
-    newItem->setText( 0, featureType.title );
-    newItem->setText( 1, featureType.name );
-    newItem->setText( 2, featureType.abstract );
-    newItem->setToolTip( 2, "<font color=black>" + featureType.abstract  + "</font>" );
-    newItem->setCheckState( 3, Qt::Checked );
-    treeWidget->addTopLevelItem( newItem );
+    QStandardItem* titleItem = new QStandardItem( featureType.title );
+    QStandardItem* nameItem = new QStandardItem( featureType.name );
+    QStandardItem* abstractItem = new QStandardItem( featureType.abstract );
+    abstractItem->setToolTip( "<font color=black>" + featureType.abstract  + "</font>" );
+    abstractItem->setTextAlignment( Qt::AlignLeft | Qt::AlignTop );
+    QStandardItem* cachedItem = new QStandardItem();
+    QStandardItem* filterItem = new QStandardItem();
+    cachedItem->setCheckable( true );
+    cachedItem->setCheckState( Qt::Checked );
+
+    typedef QList< QStandardItem* > StandardItemList;
+    mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << cachedItem << filterItem );
 
     // insert the available CRS into mAvailableCRS
     std::list<QString> currentCRSList;
-    foreach( QString crs, featureType.crslist )
+    foreach ( QString crs, featureType.crslist )
     {
       currentCRSList.push_back( crs );
     }
@@ -200,14 +242,30 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
   if ( caps.featureTypes.count() > 0 )
   {
-    btnAdd->setEnabled( true );
-    treeWidget->setCurrentItem( treeWidget->topLevelItem( 0 ) );
+    treeView->resizeColumnToContents( 0 );
+    treeView->resizeColumnToContents( 1 );
+    treeView->resizeColumnToContents( 2 );
+    treeView->resizeColumnToContents( 3 );
+    for ( int i = 0; i < 2; i++ )
+    {
+      if ( treeView->columnWidth( i ) > 300 )
+      {
+        treeView->setColumnWidth( i, 300 );
+      }
+    }
+    if ( treeView->columnWidth( 2 ) > 150 )
+    {
+      treeView->setColumnWidth( 2, 150 );
+    }
     btnChangeSpatialRefSys->setEnabled( true );
+    treeView->selectionModel()->select( mModel->index( 0, 0 ), QItemSelectionModel::SelectCurrent | QItemSelectionModel::Rows );
+    treeView->setFocus();
   }
   else
   {
     QMessageBox::information( 0, tr( "No Layers" ), tr( "capabilities document contained no layers." ) );
-    btnAdd->setEnabled( false );
+    mAddButton->setEnabled( false );
+    mBuildQueryButton->setEnabled( false );
   }
 }
 
@@ -242,7 +300,7 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
-    QgsWFSConnection::deleteConnection( cmbConnections->currentText() );
+    QgsOWSConnection::deleteConnection( "WFS", cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
     emit connectionsChanged();
   }
@@ -251,27 +309,29 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
 void QgsWFSSourceSelect::connectToServer()
 {
   btnConnect->setEnabled( false );
-  treeWidget->clear();
-
-  if ( mConn )
+  if ( mModel )
   {
-    mConn->requestCapabilities();
+    mModel->removeRows( 0, mModel->rowCount() );
+  }
+  if ( mCapabilities )
+  {
+    mCapabilities->requestCapabilities();
   }
 }
 
 
 void QgsWFSSourceSelect::addLayer()
 {
-  //get selected entry in lstWidget
-  QTreeWidgetItem* tItem = treeWidget->currentItem();
-  if ( !tItem )
+  //get selected entry in treeview
+  QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
+  if ( !currentIndex.isValid() )
   {
     return;
   }
 
-  QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
-  QList<QTreeWidgetItem*>::const_iterator sIt = selectedItems.constBegin();
-  QgsWFSConnection conn( cmbConnections->currentText() );
+  QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
+  QgsWFSCapabilities conn( connection.uri().encodedUri() );
+
   QString pCrsString( labelCoordRefSys->text() );
   QgsCoordinateReferenceSystem pCrs( pCrsString );
   //prepare canvas extent info for layers with "cache features" option not set
@@ -279,8 +339,6 @@ void QgsWFSSourceSelect::addLayer()
   QVariant extentVariant = property( "MapExtent" );
   if ( extentVariant.isValid() )
   {
-    QString crs;
-    QgsCoordinateTransform xform;
     QString extentString = extentVariant.toString();
     QStringList minMaxSplit = extentString.split( ":" );
     if ( minMaxSplit.size() > 1 )
@@ -307,13 +365,28 @@ void QgsWFSSourceSelect::addLayer()
       }
     }
   }
+
   //create layers that user selected from this WFS source
-  for ( ; sIt != selectedItems.constEnd(); ++sIt )
+  QModelIndexList list = treeView->selectionModel()->selectedRows();
+  for ( int i = 0; i < list.size(); i++ )
   { //add a wfs layer to the map
-    QString typeName = ( *sIt )->text( 1 );  //WFS repository's name for layer
-    QString filter = ( *sIt )->text( 4 );    //optional filter specified by user
+    QModelIndex idx = mModelProxy->mapToSource( list[i] );
+    if ( !idx.isValid() )
+    {
+      continue;
+    }
+    int row = idx.row();
+    QString typeName = mModel->item( row,  1 )->text(); //WFS repository's name for layer
+    QString titleName = mModel->item( row,  0 )->text(); //WFS type name title for layer name (if option is set)
+    QString filter = mModel->item( row,  4 )->text(); //optional filter specified by user
+    QString layerName = typeName;
+    if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
+    {
+      layerName = titleName;
+    }
+    QgsDebugMsg( "Layer " + typeName + " Filter is " + filter );
     //is "cache features" checked?
-    if (( *sIt )->checkState( 3 ) == Qt::Checked )
+    if ( mModel->item( row,  3 )->checkState() == Qt::Checked )
     { //yes: entire WFS layer will be retrieved and cached
       mUri = conn.uriGetFeature( typeName, pCrsString, filter );
     }
@@ -321,9 +394,51 @@ void QgsWFSSourceSelect::addLayer()
     { //no: include BBOX of current canvas extent in URI
       mUri = conn.uriGetFeature( typeName, pCrsString, filter, extent );
     }
-    emit addWfsLayer( mUri, typeName );
+    emit addWfsLayer( mUri, layerName );
   }
   accept();
+}
+
+void QgsWFSSourceSelect::buildQuery( const QModelIndex& index )
+{
+  if ( !index.isValid() )
+  {
+    return;
+  }
+  QModelIndex filterIndex = index.sibling( index.row(), 4 );
+  QString typeName = index.sibling( index.row(), 1 ).data().toString();
+
+  //get available fields for wfs layer
+  QgsWFSProvider p( "" );  //bypasses most provider instantiation logic
+  QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
+  QgsWFSCapabilities conn( connection.uri().encodedUri() );
+  QString uri = conn.uriDescribeFeatureType( typeName );
+
+  QgsFields fields;
+  QString geometryAttribute;
+  QGis::WkbType geomType;
+  if ( p.describeFeatureType( uri, geometryAttribute, fields, geomType ) != 0 )
+  {
+    return;
+  }
+
+  //show expression builder
+  QgsExpressionBuilderDialog d( 0, filterIndex.data().toString() );
+
+  //add available attributes to expression builder
+  QgsExpressionBuilderWidget* w = d.expressionBuilder();
+  if ( !w )
+  {
+    return;
+  }
+
+  w->loadFieldNames( fields );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QgsDebugMsg( "Expression text = " + w->expressionText() );
+    mModelProxy->setData( filterIndex, QVariant( w->expressionText() ) );
+  }
 }
 
 void QgsWFSSourceSelect::changeCRS()
@@ -337,11 +452,12 @@ void QgsWFSSourceSelect::changeCRS()
 
 void QgsWFSSourceSelect::changeCRSFilter()
 {
+  QgsDebugMsg( "changeCRSFilter called" );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
-  QTreeWidgetItem* currentTreeItem = treeWidget->currentItem();
-  if ( currentTreeItem )
+  QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
+  if ( currentIndex.isValid() )
   {
-    QString currentTypename = currentTreeItem->text( 1 );
+    QString currentTypename = currentIndex.sibling( currentIndex.row(), 1 ).data().toString();
     QgsDebugMsg( QString( "the current typename is: %1" ).arg( currentTypename ) );
 
     std::map<QString, std::list<QString> >::const_iterator crsIterator = mAvailableCRS.find( currentTypename );
@@ -375,11 +491,13 @@ void QgsWFSSourceSelect::changeCRSFilter()
 void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
-  QgsWFSConnection::setSelectedConnection( cmbConnections->currentText() );
+  QgsOWSConnection::setSelectedConnection( "WFS", cmbConnections->currentText() );
 
-  delete mConn;
-  mConn = new QgsWFSConnection( cmbConnections->currentText() );
-  connect( mConn, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
+  QgsOWSConnection connection( "WFS", cmbConnections->currentText() );
+
+  delete mCapabilities;
+  mCapabilities = new QgsWFSCapabilities( connection.uri().encodedUri() );
+  connect( mCapabilities, SIGNAL( gotCapabilities() ), this, SLOT( capabilitiesReplyFinished() ) );
 }
 
 void QgsWFSSourceSelect::on_btnSave_clicked()
@@ -403,38 +521,47 @@ void QgsWFSSourceSelect::on_btnLoad_clicked()
   emit connectionsChanged();
 }
 
-void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
+void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( const QModelIndex& index )
 {
-  if ( item && column == 4 )
+  QgsDebugMsg( "double click called" );
+  buildQuery( index );
+}
+
+void QgsWFSSourceSelect::on_treeWidget_currentRowChanged( const QModelIndex & current, const QModelIndex & previous )
+{
+  Q_UNUSED( previous )
+  QgsDebugMsg( "treeWidget_currentRowChanged called" );
+  changeCRSFilter();
+  mBuildQueryButton->setEnabled( current.isValid() );
+  mAddButton->setEnabled( current.isValid() );
+}
+
+void QgsWFSSourceSelect::on_mBuildQueryButton_clicked()
+{
+  QgsDebugMsg( "mBuildQueryButton click called" );
+  buildQuery( treeView->selectionModel()->currentIndex() );
+}
+
+void QgsWFSSourceSelect::filterChanged( QString text )
+{
+  QgsDebugMsg( "WFS FeatureType filter changed to :" + text );
+  QRegExp::PatternSyntax mySyntax = QRegExp::PatternSyntax( QRegExp::RegExp );
+  Qt::CaseSensitivity myCaseSensitivity = Qt::CaseInsensitive;
+  QRegExp myRegExp( text, myCaseSensitivity, mySyntax );
+  mModelProxy->setFilterRegExp( myRegExp );
+  mModelProxy->sort( mModelProxy->sortColumn(), mModelProxy->sortOrder() );
+}
+
+QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+  QVariant indexData;
+  indexData = index.data( Qt::DisplayRole );
+  if ( indexData.isNull() )
   {
-    //get available fields for wfs layer
-    QgsWFSProvider p( "" );  //bypasses most provider instantiation logic
-    QgsWFSConnection conn( cmbConnections->currentText() );
-    QString uri = conn.uriDescribeFeatureType( item->text( 1 ) );
-
-    QgsFieldMap fields;
-    QString geometryAttribute;
-    QGis::WkbType geomType;
-    if ( p.describeFeatureType( uri, geometryAttribute, fields, geomType ) != 0 )
-    {
-      return;
-    }
-
-    //show expression builder
-    QgsExpressionBuilderDialog d( 0, item->text( 3 ) );
-
-    //add available attributes to expression builder
-    QgsExpressionBuilderWidget* w = d.expressionBuilder();
-    if ( !w )
-    {
-      return;
-    }
-
-    w->loadFieldNames( fields );
-
-    if ( d.exec() == QDialog::Accepted )
-    {
-      item->setText( 4, w->expressionText() );
-    }
+    return QSize();
   }
+  QString data = indexData.toString();
+  QSize size = option.fontMetrics.boundingRect( data ).size();
+  size.setHeight( size.height() + 2 );
+  return size;
 }

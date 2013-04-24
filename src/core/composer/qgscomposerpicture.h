@@ -22,6 +22,8 @@
 #include <QImage>
 #include <QSvgRenderer>
 
+class QgsComposerMap;
+
 /** \ingroup MapComposer
  * A composer class that displays svg files or raster format (jpg, png, ...)
  * */

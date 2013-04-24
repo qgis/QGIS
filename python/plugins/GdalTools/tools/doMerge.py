@@ -1,4 +1,28 @@
 # -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    doMerge.py
+    ---------------------
+    Date                 : June 2010
+    Copyright            : (C) 2010 by Giuseppe Sucameli
+    Email                : brush dot tyler at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Giuseppe Sucameli'
+__date__ = 'June 2010'
+__copyright__ = '(C) 2010, Giuseppe Sucameli'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -20,21 +44,22 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.inSelector.setType( self.inSelector.FILE )
       self.outSelector.setType( self.outSelector.FILE )
       self.recurseCheck.hide()
+      # use this for approx. previous UI
+      #self.creationOptionsTable.setType(QgsRasterFormatSaveOptionsWidget.Table)
 
       self.outputFormat = Utils.fillRasterOutputFormat()
       self.extent = None
 
       self.setParamsStatus(
         [
-          (self.inSelector, SIGNAL("filenameChanged()")), 
-          (self.outSelector, SIGNAL("filenameChanged()")), 
+          (self.inSelector, SIGNAL("filenameChanged()")),
+          (self.outSelector, SIGNAL("filenameChanged()")),
           (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck),
           (self.inputDirCheck, SIGNAL("stateChanged(int)")),
           (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
           ( self.separateCheck, SIGNAL( "stateChanged( int )" ) ),
           ( self.pctCheck, SIGNAL( "stateChanged( int )" ) ),
-          ( self.intersectCheck, SIGNAL( "stateChanged( int )" ) ),
-          (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox)
+          ( self.intersectCheck, SIGNAL( "stateChanged( int )" ) )
         ]
       )
 
@@ -91,7 +116,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         QMessageBox.warning( self, self.tr( "Empty extent" ), self.tr( 'The computed extent is empty. \nDisable the "Use intersected extent" option to have a nonempty output.' ) )
 
       self.someValueChanged()
- 
+
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
       outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select where to save the Merge output" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )

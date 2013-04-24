@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrenderer.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
 
@@ -24,6 +23,9 @@
 #include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
 
+#include "qgsproject.h"
+#include "qgsstylev2.h"
+
 #include <QColor>
 #include <QImage>
 #include <QPainter>
@@ -32,7 +34,7 @@
 #include <cmath>
 
 QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
-    : mType( type ), mLayers( layers ), mOutputUnit( MM ), mAlpha( 1.0 ), mRenderHints( 0 )
+    : mType( type ), mLayers( layers ), mAlpha( 1.0 ), mRenderHints( 0 )
 {
 
   // check they're all correct symbol layers
@@ -58,21 +60,84 @@ QgsSymbolV2::~QgsSymbolV2()
     delete *it;
 }
 
-QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
+QgsSymbolV2::OutputUnit QgsSymbolV2::outputUnit() const
 {
-  QgsSymbolV2* s;
-  switch ( geomType )
+  QgsSymbolV2::OutputUnit unit( QgsSymbolV2::Mixed );
+
+  QgsSymbolLayerV2List::const_iterator it = mLayers.constBegin();
+  for ( ; it != mLayers.constEnd(); ++it )
   {
-    case QGis::Point: s = new QgsMarkerSymbolV2(); break;
-    case QGis::Line:  s = new QgsLineSymbolV2(); break;
-    case QGis::Polygon: s = new QgsFillSymbolV2(); break;
-    default: QgsDebugMsg( "unknown layer's geometry type" ); return NULL;
+    if ( it == mLayers.constBegin() )
+    {
+      unit = ( *it )->outputUnit();
+    }
+    else
+    {
+      if (( *it )->outputUnit() != unit )
+      {
+        return QgsSymbolV2::Mixed;
+      }
+    }
   }
 
-  s->setColor( QColor::fromHsv( rand() % 360, 64 + rand() % 192, 128 + rand() % 128 ) );
-  return s;
+  return unit;
 }
 
+void QgsSymbolV2::setOutputUnit( QgsSymbolV2::OutputUnit u )
+{
+  QgsSymbolLayerV2List::iterator it = mLayers.begin();
+  for ( ; it != mLayers.end(); ++it )
+  {
+    ( *it )->setOutputUnit( u );
+  }
+}
+
+QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
+{
+  QgsSymbolV2* s = 0;
+
+  // override global default if project has a default for this type
+  QString defaultSymbol;
+  switch ( geomType )
+  {
+    case QGis::Point :
+      defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Marker", "" );
+      break;
+    case QGis::Line :
+      defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Line", "" );
+      break;
+    case QGis::Polygon :
+      defaultSymbol = QgsProject::instance()->readEntry( "DefaultStyles", "/Fill", "" );
+      break;
+    default: defaultSymbol = ""; break;
+  }
+  if ( defaultSymbol != "" )
+    s = QgsStyleV2::defaultStyle()->symbol( defaultSymbol );
+
+  // if no default found for this type, get global default (as previously)
+  if ( ! s )
+  {
+    switch ( geomType )
+    {
+      case QGis::Point: s = new QgsMarkerSymbolV2(); break;
+      case QGis::Line:  s = new QgsLineSymbolV2(); break;
+      case QGis::Polygon: s = new QgsFillSymbolV2(); break;
+      default: QgsDebugMsg( "unknown layer's geometry type" ); return NULL;
+    }
+  }
+
+  // set alpha transparency
+  s->setAlpha( QgsProject::instance()->readDoubleEntry( "DefaultStyles", "/AlphaInt", 255 ) / 255.0 );
+
+  // set random color, it project prefs allow
+  if ( defaultSymbol == "" ||
+       QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) )
+  {
+    s->setColor( QColor::fromHsv( rand() % 360, 64 + rand() % 192, 128 + rand() % 128 ) );
+  }
+
+  return s;
+}
 
 QgsSymbolLayerV2* QgsSymbolV2::symbolLayer( int layer )
 {
@@ -150,7 +215,7 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 
 void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsVectorLayer* layer )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, false, mRenderHints );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
   symbolContext.setLayer( layer );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
     ( *it )->startRender( symbolContext );
@@ -158,7 +223,7 @@ void QgsSymbolV2::startRender( QgsRenderContext& context, const QgsVectorLayer* 
 
 void QgsSymbolV2::stopRender( QgsRenderContext& context )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, false, mRenderHints );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
     ( *it )->stopRender( symbolContext );
 }
@@ -186,7 +251,7 @@ QColor QgsSymbolV2::color()
 void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size )
 {
   QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( painter );
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, false, mRenderHints );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, false, mRenderHints );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     if ( mType == Fill && ( *it )->type() == Line )
@@ -309,6 +374,7 @@ QSet<QString> QgsSymbolV2::usedAttributes() const
 
 ////////////////////
 
+
 QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f )
     : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f ), mLayer( 0 )
 {
@@ -318,11 +384,6 @@ QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymb
 QgsSymbolV2RenderContext::~QgsSymbolV2RenderContext()
 {
 
-}
-
-QColor QgsSymbolV2RenderContext::selectionColor()
-{
-  return QgsRenderer::selectionColor();
 }
 
 
@@ -391,12 +452,14 @@ QgsMarkerSymbolV2::QgsMarkerSymbolV2( QgsSymbolLayerV2List layers )
     mLayers.append( new QgsSimpleMarkerSymbolLayerV2() );
 }
 
-void QgsMarkerSymbolV2::setAngle( double angle )
+void QgsMarkerSymbolV2::setAngle( double ang )
 {
+  double origAngle = angle();
+  double angleDiff = ang - origAngle;
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     QgsMarkerSymbolLayerV2* layer = ( QgsMarkerSymbolLayerV2* ) * it;
-    layer->setAngle( angle );
+    layer->setAngle( layer->angle() + angleDiff );
   }
 }
 
@@ -408,7 +471,7 @@ double QgsMarkerSymbolV2::angle()
     return 0;
 
   // return angle of the first symbol layer
-  const QgsMarkerSymbolLayerV2 *layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+  const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
   return layer->angle();
 }
 
@@ -444,9 +507,31 @@ double QgsMarkerSymbolV2::size()
   return maxSize;
 }
 
+
+void QgsMarkerSymbolV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
+{
+  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2*>( *it );
+    layer->setScaleMethod( scaleMethod );
+  }
+}
+
+QgsSymbolV2::ScaleMethod QgsMarkerSymbolV2::scaleMethod()
+{
+  QgsSymbolLayerV2List::const_iterator it = mLayers.begin();
+
+  if ( it == mLayers.end() )
+    return DEFAULT_SCALE_METHOD;
+
+  // return scale method of the first symbol layer
+  const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+  return layer->scaleMethod();
+}
+
 void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected, mRenderHints, f );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -464,7 +549,6 @@ void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, 
 QgsSymbolV2* QgsMarkerSymbolV2::clone() const
 {
   QgsSymbolV2* cloneSymbol = new QgsMarkerSymbolV2( cloneLayers() );
-  cloneSymbol->setOutputUnit( mOutputUnit );
   cloneSymbol->setAlpha( mAlpha );
   return cloneSymbol;
 }
@@ -515,7 +599,7 @@ double QgsLineSymbolV2::width()
 
 void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected, mRenderHints, f );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -534,7 +618,6 @@ void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature*
 QgsSymbolV2* QgsLineSymbolV2::clone() const
 {
   QgsSymbolV2* cloneSymbol = new QgsLineSymbolV2( cloneLayers() );
-  cloneSymbol->setOutputUnit( mOutputUnit );
   cloneSymbol->setAlpha( mAlpha );
   return cloneSymbol;
 }
@@ -551,7 +634,7 @@ QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
 
 void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected, mRenderHints, f );
+  QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -585,7 +668,6 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
 QgsSymbolV2* QgsFillSymbolV2::clone() const
 {
   QgsSymbolV2* cloneSymbol = new QgsFillSymbolV2( cloneLayers() );
-  cloneSymbol->setOutputUnit( mOutputUnit );
   cloneSymbol->setAlpha( mAlpha );
   return cloneSymbol;
 }

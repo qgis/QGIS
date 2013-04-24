@@ -12,6 +12,7 @@ class QgsAction
       Mac,
       Windows,
       Unix,
+      OpenUrl,
     };
 
     QgsAction( ActionType type, QString name, QString action, bool capture );
@@ -37,7 +38,8 @@ class QgsAttributeAction
 #include "qgsattributeaction.h"
 %End
   public:
-    QgsAttributeAction( QgsVectorLayer * );
+    //! Constructor
+    QgsAttributeAction( QgsVectorLayer *layer );
 
     //! Destructor
     virtual ~QgsAttributeAction();
@@ -49,21 +51,60 @@ class QgsAttributeAction
     // dialog box.
     void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
 
-    //! Does the action using the given values. defaultValueIndex is an
-    // index into values which indicates which value in the values vector
-    // is to be used if the action has a default placeholder.
-    // @note added to python API in 1.6 (without executePython parameter)
-    void doAction( int index,
-                   const QMap<int, QVariant> &values,
-                   int defaultValueIndex = 0 );
+    //! Remove an action at given index
+    void removeAction( int index );
+    
+     /*! Does the given values. defaultValueIndex is the index of the
+     *  field to be used if the action has a $currfield placeholder.
+     *  @note added in 1.9
+     *  @note not available in python bindings
+     */
+    void doActionFeature( int index,
+                          QgsFeature &feat,
+                          int defaultValueIndex = 0 );
+%MethodCode
+      sipCpp->doAction( a0, *a1, a2 );
+%End
+
+    /*! Does the action using the expression builder to expand it
+     *  and getting values from the passed feature attribute map.
+     *  substitutionMap is used to pass custom substitutions, to replace
+     *  each key in the map with the associated value
+     *  @note added in 1.9
+     *  @note available in python bindings as doActionFeatureSubstitution
+     */
+    void doActionFeatureWithSubstitution( int index,
+                                          QgsFeature &feat,
+                                          const QMap<QString, QVariant> *substitutionMap = 0 );
+%MethodCode
+      sipCpp->doAction( a0, *a1, a2 );
+%End
 
     //! Removes all actions
     void clearActions();
 
-    //! Expands the given action, replacing all %'s with the value as given.
+    //! Return the layer
+    QgsVectorLayer *layer();
+
+    /*! Expands the given action, replacing all %'s with the value as
+     *  given.
+     */
+    QString expandAction( QString action, const QMap<int, QVariant> &attributes, uint defaultValueIndex );
+
+    /*! Expands the given action using the expression builder
+     *  This function currently replaces each expression between [% and %]
+     *  placeholders in the action with the result of its evaluation on
+     *  the feature passed as argument.
+     *
+     *  Additional substitutions can be passed through the substitutionMap
+     *  parameter
+     *
+     *  @note added in 1.9
+     */
     QString expandAction( QString action,
-                          const QMap<int, QVariant> &values,
-                          uint defaultValueIndex );
+                          QgsFeature &feat,
+                          const QMap<QString, QVariant> *substitutionMap = 0 );
+
 
     //! Writes the actions out in XML format
     bool writeXML( QDomNode& layer_node, QDomDocument& doc ) const;
@@ -74,4 +115,8 @@ class QgsAttributeAction
     int size() const;
     QgsAction &at( int idx );
     QgsAction &operator[]( int idx );
+
+    //! Whether the action is the default action
+    int defaultAction() const;
+    void setDefaultAction( int actionNumber );
 };

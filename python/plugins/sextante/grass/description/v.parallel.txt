@@ -1,0 +1,13 @@
+v.parallel
+v.parallel - Creates parallel line to input vector lines.
+Vector (v.*)
+ParameterVector|input|Input lines|1|False
+ParameterNumber|distance|Offset along major axis in map units|None|None|1
+ParameterNumber|minordistance|Offset along minor axis in map units|None|None|1
+ParameterNumber|angle|Angle of major axis in degrees|None|None|0
+ParameterSelection|side|Side|left;right;both
+ParameterNumber|tolerance|Tolerance of arc polylines in map units|None|None|1
+ParameterBoolean|-r|Make outside corners round|False
+ParameterBoolean|-b|Create buffer-like parallel lines|False
+OutputVector|output|Layer with parallel lines
+

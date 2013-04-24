@@ -3,7 +3,7 @@
     ---------------------
     begin                : July 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -75,9 +75,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
-    // Reload the whole model
-    void reload();
-
     // Refresh item specified by path
     void refresh( QString path );
 
@@ -89,12 +86,12 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     void connectItem( QgsDataItem *item );
 
-  signals:
+    bool canFetchMore( const QModelIndex & parent ) const;
+    void fetchMore( const QModelIndex & parent );
 
   public slots:
-    //void removeItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
-    //void addItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
-    //void refreshItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
+    // Reload the whole model
+    void reload();
 
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();

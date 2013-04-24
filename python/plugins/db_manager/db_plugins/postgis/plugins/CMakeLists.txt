@@ -1,4 +1,4 @@
-INSTALL(FILES __init__.py DESTINATION ${DB_MANAGER_POSTGIS_DIR}/plugins)
-
 ADD_SUBDIRECTORY(qgis_topoview)
 ADD_SUBDIRECTORY(versioning)
+
+PLUGIN_INSTALL(db_manager db_plugins/postgis/plugins __init__.py)

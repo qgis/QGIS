@@ -1,4 +1,28 @@
 # -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    extentSelector.py
+    ---------------------
+    Date                 : December 2010
+    Copyright            : (C) 2010 by Giuseppe Sucameli
+    Email                : brush dot tyler at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Giuseppe Sucameli'
+__date__ = 'December 2010'
+__copyright__ = '(C) 2010, Giuseppe Sucameli'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -106,7 +130,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
       self.canvas = canvas
       QgsMapToolEmitPoint.__init__(self, self.canvas)
 
-      self.rubberBand = QgsRubberBand( self.canvas, True )	# true, its a polygon
+      self.rubberBand = QgsRubberBand( self.canvas, QGis.Polygon )
       self.rubberBand.setColor( Qt.red )
       self.rubberBand.setWidth( 1 )
 
@@ -115,7 +139,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
   def reset(self):
       self.startPoint = self.endPoint = None
       self.isEmittingPoint = False
-      self.rubberBand.reset( True )	# true, its a polygon
+      self.rubberBand.reset( QGis.Polygon )
 
   def canvasPressEvent(self, e):
       self.startPoint = self.toMapCoordinates( e.pos() )
@@ -137,7 +161,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
       self.showRect(self.startPoint, self.endPoint)
 
   def showRect(self, startPoint, endPoint):
-      self.rubberBand.reset( True )	# true, it's a polygon
+      self.rubberBand.reset( QGis.Polygon )
       if startPoint.x() == endPoint.x() or startPoint.y() == endPoint.y():
         return
 

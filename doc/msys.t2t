@@ -380,3 +380,4 @@ copy contents of pgsql directory from the archive to ``c:\msys\local``
 
 We're done with preparation of MSYS environment. Now you can delete all stuff in ``c:\msys\local\src`` - it takes quite a lot
 of space and it's not necessary at all.
+

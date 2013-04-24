@@ -1,5 +1,5 @@
 # Standard includes and utils to compile into all tests.
-SET (util_SRCS ../core/qgsrenderchecker.cpp)
+SET (util_SRCS)
 
 
 #####################################################
@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../core #for render checker class
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/symbology-ng
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/symbology-ng
@@ -18,6 +19,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ${QWT_INCLUDE_DIR}
   )
 
 #############################################################
@@ -37,12 +39,16 @@ IF (WIN32)
   SET(PLATFORM_LIBRARIES wsock32)
 ENDIF (WIN32)
 
+IF(WIN32)
+  ADD_DEFINITIONS(-DQWT_DLL)
+ENDIF(WIN32)
+
 # Since the tests are not actually installed, but rather
 # run directly from the build/src/tests dir we need to
 # ensure the omg libs can be found.
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/gui)
+#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/gui)
 ENDIF (APPLE)
 
 #note for tests we should not include the moc of our
@@ -93,6 +99,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
+    ${QWT_LIBRARY}
     qgis_core
     qgis_gui)
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
@@ -110,4 +117,8 @@ ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
 #QT4_WRAP_CPP(rendererv2gui_MOC_SRCS ${rendererv2gui_HDRS})
 #ADD_EXECUTABLE(qgis_rendererv2gui ${rendererv2gui_SRCS} ${rendererv2gui_MOC_SRCS})
 
+ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
+ADD_QGIS_TEST(projectionissues testprojectionissues.cpp)
+ADD_QGIS_TEST(scalecombobox testqgsscalecombobox.cpp)
+ADD_QGIS_TEST(dualviewtest testqgsdualview.cpp )
 

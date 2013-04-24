@@ -53,6 +53,7 @@ persistant:persistent
 developement:development
 necesary:necessary
 recieved:received
+retrun:return
 ressize:resize
 assigment:assignment
 automatizes:automates
@@ -456,3 +457,5 @@ writeable:writable
 vaild:valid
 opps:oops
 arount:around
+acheive:achieve
+specifed:specified

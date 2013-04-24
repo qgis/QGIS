@@ -33,7 +33,7 @@ CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas )
   QPixmap myCursor = QPixmap(( const char ** ) capture_point_cursor );
   mCursor = QCursor( myCursor, 8, 8 ); //8,8 is the point in the cursor where clicks register
   mpMapCanvas = thepCanvas;
-  mpRubberBand = new QgsRubberBand( mpMapCanvas, true ); //true - its a polygon
+  mpRubberBand = new QgsRubberBand( mpMapCanvas, QGis::Polygon );
   mpRubberBand->setColor( Qt::red );
   mpRubberBand->setWidth( 1 );
 }
@@ -78,7 +78,7 @@ void CoordinateCaptureMapTool::canvasReleaseEvent( QMouseEvent * thepEvent )
   QgsPoint myPoint4 =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x() - 1, thepEvent->y() + 1 );
 
-  mpRubberBand->reset( true );
+  mpRubberBand->reset( QGis::Polygon );
   // convert screen coordinates to map coordinates
   mpRubberBand->addPoint( myPoint1, false ); //true - update canvas
   mpRubberBand->addPoint( myPoint2, false ); //true - update canvas
@@ -90,6 +90,6 @@ void CoordinateCaptureMapTool::canvasReleaseEvent( QMouseEvent * thepEvent )
 
 void CoordinateCaptureMapTool::deactivate()
 {
-  mpRubberBand->reset( false );
+  mpRubberBand->reset( QGis::Line );
   QgsMapTool::deactivate();
 }

@@ -44,12 +44,12 @@
 #define M_PI 4*atan(1.0)
 #endif
 
-QgsLabel::QgsLabel( const QgsFieldMap & fields )
+QgsLabel::QgsLabel( const QgsFields & fields )
     : mMinScale( 0 ),
     mMaxScale( 100000000 ),
     mScaleBasedVisibility( false )
 {
-  mField = fields;
+  mFields = fields;
   mLabelFieldIdx.resize( LabelFieldCount );
   for ( int i = 0; i < LabelFieldCount; i++ )
   {
@@ -70,17 +70,7 @@ QString QgsLabel::fieldValue( int attr, QgsFeature &feature )
     return QString();
   }
 
-  const QgsAttributeMap& attrs = feature.attributeMap();
-  QgsAttributeMap::const_iterator it = attrs.find( mLabelFieldIdx[attr] );
-
-  if ( it != attrs.end() )
-  {
-    return it->toString();
-  }
-  else
-  {
-    return QString();
-  }
+  return feature.attribute( attr ).toString();
 }
 
 void QgsLabel::renderLabel( QgsRenderContext &renderContext,
@@ -492,14 +482,14 @@ void QgsLabel::addRequiredFields( QgsAttributeList& fields ) const
   }
 }
 
-void QgsLabel::setFields( const QgsFieldMap & fields )
+void QgsLabel::setFields( const QgsFields & fields )
 {
-  mField = fields;
+  mFields = fields;
 }
 
-QgsFieldMap & QgsLabel::fields( void )
+QgsFields & QgsLabel::fields( void )
 {
-  return mField;
+  return mFields;
 }
 
 void QgsLabel::setLabelField( int attr, int fieldIndex )
@@ -512,19 +502,16 @@ void QgsLabel::setLabelField( int attr, int fieldIndex )
 
 QString QgsLabel::labelField( int attr ) const
 {
-  if ( attr > LabelFieldCount )
+  if ( attr >= LabelFieldCount )
     return QString();
 
   int fieldIndex = mLabelFieldIdx[attr];
-  return mField[fieldIndex].name();
+  if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
+    return QString();
+  return mFields[fieldIndex].name();
 }
 
 QgsLabelAttributes *QgsLabel::labelAttributes( void )
-{
-  return mLabelAttributes;
-}
-// @note this will be deprecated use attributes rather
-QgsLabelAttributes *QgsLabel::layerAttributes( void )
 {
   return mLabelAttributes;
 }
@@ -716,18 +703,18 @@ bool QgsLabel::readLabelField( QDomElement &el, int attr, QString prefix = "fiel
   {
     name = el.attribute( name );
 
-    QgsFieldMap::const_iterator field_it = mField.constBegin();
-    for ( ; field_it != mField.constEnd(); ++field_it )
+    int idx = 0;
+    for ( ; idx < mFields.count(); ++idx )
     {
-      if ( field_it.value().name() == name )
+      if ( mFields[idx].name() == name )
       {
         break;
       }
     }
 
-    if ( field_it != mField.constEnd() )
+    if ( idx != mFields.count() )
     {
-      mLabelFieldIdx[attr] = field_it.key();
+      mLabelFieldIdx[attr] = idx;
       return true;
     }
   }

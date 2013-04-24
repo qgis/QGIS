@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>800</height>
+    <width>872</width>
+    <height>621</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,8 +21,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
-     <height>23</height>
+     <width>872</width>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -163,6 +163,19 @@
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QHBoxLayout" name="horizontalLayout_2"/>
    </widget>
+  </widget>
+  <widget class="QToolBar" name="toolBarHistogramStretch">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionFullHistogramStretch"/>
+   <addaction name="mActionLocalHistogramStretch"/>
   </widget>
   <action name="mActionOpenRaster">
    <property name="text">
@@ -349,6 +362,16 @@
   <action name="mActionZoomLast">
    <property name="text">
     <string>Zoom Last</string>
+   </property>
+  </action>
+  <action name="mActionLocalHistogramStretch">
+   <property name="text">
+    <string>Local histogram stretch</string>
+   </property>
+  </action>
+  <action name="mActionFullHistogramStretch">
+   <property name="text">
+    <string>Full histogram stretch</string>
    </property>
   </action>
  </widget>

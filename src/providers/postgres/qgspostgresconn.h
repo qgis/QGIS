@@ -33,19 +33,27 @@ extern "C"
 
 class QgsField;
 
+enum QgsPostgresGeometryColumnType
+{
+  sctNone,
+  sctGeometry,
+  sctGeography,
+  sctTopoGeometry
+};
+
 /** Layer Property structure */
 // TODO: Fill to Postgres/PostGIS specifications
 struct QgsPostgresLayerProperty
 {
   // Postgres/PostGIS layer properties
-  QString     type;
-  QString     schemaName;
-  QString     tableName;
-  QString     geometryColName;
-  QStringList pkCols;
-  QString     srid;
-  bool        isGeography;
-  QString     sql;
+  QString                       type;
+  QString                       schemaName;
+  QString                       tableName;
+  QString                       geometryColName;
+  QgsPostgresGeometryColumnType geometryColType;
+  QStringList                   pkCols;
+  QString                       srid;
+  QString                       sql;
 };
 
 class QgsPostgresResult
@@ -102,8 +110,11 @@ class QgsPostgresConn : public QObject
     //! encode wkb in hex
     bool useWkbHex() { return mUseWkbHex; }
 
-    //! major PostgreSQL version
+    //! major PostGIS version
     int majorVersion() { return mPostgisVersionMajor; }
+
+    //! minor PostGIS version
+    int minorVersion() { return mPostgisVersionMinor; }
 
     //! PostgreSQL version
     int pgVersion() { return mPostgresqlVersion; }
@@ -133,9 +144,12 @@ class QgsPostgresConn : public QObject
     PGresult *PQprepare( QString stmtName, QString query, int nParams, const Oid *paramTypes );
     PGresult *PQexecPrepared( QString stmtName, const QStringList &params );
 
+    // cancel running query
+    bool cancel();
+
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
-    static QString quotedIdentifier( QString ident, bool isGeography = false );
+    static QString quotedIdentifier( QString ident );
 
     /** Quote a value for placement in a SQL string.
      */
@@ -164,6 +178,7 @@ class QgsPostgresConn : public QObject
     static const int sGeomTypeSelectLimit;
 
     static QString displayStringForWkbType( QGis::WkbType wkbType );
+    static QString displayStringForGeomType( QgsPostgresGeometryColumnType geomType );
     static QGis::WkbType wkbTypeFromPostgis( QString dbType );
 
     static QString postgisWkbTypeName( QGis::WkbType wkbType );
@@ -180,6 +195,7 @@ class QgsPostgresConn : public QObject
     static QgsDataSourceURI connUri( QString theConnName );
     static bool publicSchemaOnly( QString theConnName );
     static bool geometryColumnsOnly( QString theConnName );
+    static bool dontResolveType( QString theConnName );
     static bool allowGeometrylessTables( QString theConnName );
     static void deleteConnection( QString theConnName );
 

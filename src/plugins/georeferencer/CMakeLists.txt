@@ -27,6 +27,8 @@ SET (GEOREF_SRCS
      qgsimagewarper.cpp
      qgsgeoreftransform.cpp
      qgsgcplistwidget.cpp
+
+     qgsrasterchangecoords.cpp
 )
 
 SET (GEOREF_UIS
@@ -72,7 +74,7 @@ ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology ../../core/composer
+     ../../core ../../core/raster ../../core/composer
      ../../gui
      ..
      ${GSL_INCLUDE_DIR}

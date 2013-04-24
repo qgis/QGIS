@@ -37,6 +37,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="mBoldPushButton">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
         <string>B</string>
        </property>
@@ -47,6 +53,12 @@
      </item>
      <item>
       <widget class="QPushButton" name="mItalicsPushButton">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="text">
         <string>I</string>
        </property>
@@ -57,59 +69,17 @@
      </item>
      <item>
       <widget class="QgsColorButton" name="mFontColorButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
        <property name="text">
         <string/>
        </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QTextEdit" name="mTextEdit"/>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="mBackgroundColorLabel">
-       <property name="text">
-        <string>Background color</string>
-       </property>
-       <property name="buddy">
-        <cstring>mBackgroundColorButton</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsColorButton" name="mBackgroundColorButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string/>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
     </layout>
    </item>
    <item row="3" column="0">
-    <widget class="QStackedWidget" name="mStackedWidget">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="page"/>
-     <widget class="QWidget" name="page_2"/>
-    </widget>
-   </item>
-   <item row="4" column="0">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -119,12 +89,24 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="0">
+    <widget class="QTextEdit" name="mTextEdit"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QStackedWidget" name="mStackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="page"/>
+     <widget class="QWidget" name="page_2"/>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
+   <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
@@ -135,7 +117,6 @@
   <tabstop>mItalicsPushButton</tabstop>
   <tabstop>mFontColorButton</tabstop>
   <tabstop>mTextEdit</tabstop>
-  <tabstop>mBackgroundColorButton</tabstop>
   <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>

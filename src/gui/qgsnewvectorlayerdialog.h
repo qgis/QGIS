@@ -37,7 +37,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     /**Returns the selected geometry type*/
     QGis::WkbType selectedType() const;
     /**Appends the chosen attribute names and types to at*/
-    void attributes( std::list<std::pair<QString, QString> >& at ) const;
+    void attributes( QList< QPair<QString, QString> >& at ) const;
     /**Returns the file format for storage*/
     QString selectedFileFormat() const;
     /**Returns the selected crs id*/

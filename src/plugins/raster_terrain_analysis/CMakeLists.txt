@@ -6,7 +6,7 @@ SET (RASTER_TERRAIN_SRCS
      qgsrasterterrainanalysisdialog.cpp
 )
 
-SET (RASTER_TERRAIN_UIS 
+SET (RASTER_TERRAIN_UIS
     qgsrasterterrainanalysisdialogbase.ui
     )
 
@@ -25,17 +25,17 @@ QT4_WRAP_CPP (RASTER_TERRAIN_MOC_SRCS  ${RASTER_TERRAIN_MOC_HDRS})
 
 QT4_ADD_RESOURCES(RASTER_TERRAIN_RCC_SRCS ${RASTER_TERRAIN_RCCS})
 
-ADD_LIBRARY (rasterterrainplugin MODULE 
+ADD_LIBRARY (rasterterrainplugin MODULE
   ${RASTER_TERRAIN_SRCS}
-  ${RASTER_TERRAIN_MOC_SRCS} 
-  ${RASTER_TERRAIN_RCC_SRCS} 
+  ${RASTER_TERRAIN_MOC_SRCS}
+  ${RASTER_TERRAIN_RCC_SRCS}
   ${RASTER_TERRAIN_UIS_H})
 
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ${GDAL_INCLUDE_DIR}
-     ../../core 
-     ../../core/raster 
+     ../../core
+     ../../core/raster
      ../../gui
      ../../analysis/raster
      ..

@@ -1,4 +1,28 @@
 # -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    doInfo.py
+    ---------------------
+    Date                 : June 2010
+    Copyright            : (C) 2010 by Giuseppe Sucameli
+    Email                : brush dot tyler at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Giuseppe Sucameli'
+__date__ = 'June 2010'
+__copyright__ = '(C) 2010, Giuseppe Sucameli'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -77,7 +101,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       arr = QByteArray()
       arr = self.base.process.readAllStandardOutput()
       if platform.system() == "Windows":
-        info = QString( arr ).trimmed().split( "\r\n" )
+        info = QString.fromLocal8Bit( arr ).trimmed().split( "\r\n" )
       else:
         info = QString( arr ).trimmed().split( "\n" )
       self.rasterInfoList.addItems( info )

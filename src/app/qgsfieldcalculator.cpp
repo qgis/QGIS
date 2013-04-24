@@ -13,12 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsfieldcalculator.h"
+#include "qgsdistancearea.h"
 #include "qgsexpression.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QSettings>
 
 QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
     : QDialog()
@@ -42,30 +47,54 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   mOutputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
 
-  // disable creation of new fields if not supported by data provider
-  if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
+  mUpdateExistingGroupBox->setEnabled( vl->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
+  mNewFieldGroupBox->setEnabled( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes );
+
+  Q_ASSERT( mNewFieldGroupBox->isEnabled() || mUpdateExistingGroupBox->isEnabled() );
+
+  if ( mNewFieldGroupBox->isEnabled() )
   {
+    mNewFieldGroupBox->setChecked( true );
+  }
+  else
+  {
+    mNewFieldGroupBox->setToolTip( tr( "Not available for layer" ) );
+    mUpdateExistingGroupBox->setChecked( true );
     mUpdateExistingGroupBox->setCheckable( false );
-    mNewFieldGroupBox->setChecked( false );
-    mNewFieldGroupBox->setTitle( mNewFieldGroupBox->title() + tr( " (not supported by provider)" ) );
   }
 
-  if ( vl->selectedFeaturesIds().size() > 0 )
+  if ( mUpdateExistingGroupBox->isEnabled() )
   {
-    mOnlyUpdateSelectedCheckBox->setChecked( true );
+    mUpdateExistingGroupBox->setChecked( !mNewFieldGroupBox->isEnabled() );
   }
+  else
+  {
+    mUpdateExistingGroupBox->setToolTip( tr( "Not available for layer" ) );
+    mNewFieldGroupBox->setChecked( true );
+    mNewFieldGroupBox->setCheckable( false );
+  }
+
+  mOnlyUpdateSelectedCheckBox->setChecked( vl->selectedFeaturesIds().size() > 0 );
 }
 
 QgsFieldCalculator::~QgsFieldCalculator()
 {
-
 }
 
 void QgsFieldCalculator::accept()
 {
 
+  // Set up QgsDistanceArea each time we (re-)calculate
+  QgsDistanceArea myDa;
+
+  myDa.setSourceCrs( mVectorLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
+  exp.setGeomCalculator( myDa );
 
   if ( !mVectorLayer || !mVectorLayer->isEditable() )
     return;
@@ -79,7 +108,7 @@ void QgsFieldCalculator::accept()
   mVectorLayer->beginEditCommand( "Field calculator" );
 
   //update existing field
-  if ( mUpdateExistingGroupBox->isChecked() )
+  if ( mUpdateExistingGroupBox->isChecked() || !mNewFieldGroupBox->isEnabled() )
   {
     QMap<QString, int>::const_iterator fieldIt = mFieldMap.find( mExistingFieldComboBox->currentText() );
     if ( fieldIt != mFieldMap.end() )
@@ -104,14 +133,13 @@ void QgsFieldCalculator::accept()
     }
 
     //get index of the new field
-    const QgsFieldMap fieldList = mVectorLayer->pendingFields();
+    const QgsFields& fields = mVectorLayer->pendingFields();
 
-    QgsFieldMap::const_iterator it = fieldList.constBegin();
-    for ( ; it != fieldList.constEnd(); ++it )
+    for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      if ( it.value().name() == mOutputFieldNameLineEdit->text() )
+      if ( fields[idx].name() == mOutputFieldNameLineEdit->text() )
       {
-        mAttributeId = it.key();
+        mAttributeId = idx;
         break;
       }
     }
@@ -128,17 +156,14 @@ void QgsFieldCalculator::accept()
   bool calculationSuccess = true;
   QString error;
 
-  bool onlySelected = ( mOnlyUpdateSelectedCheckBox->isChecked() );
+  bool onlySelected = mOnlyUpdateSelectedCheckBox->isChecked();
   QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
-
-  // block layerModified signals (that would trigger table update)
-  mVectorLayer->blockSignals( true );
 
   bool useGeometry = exp.needsGeometry();
   int rownum = 1;
 
-  mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), useGeometry, false );
-  while ( mVectorLayer->nextFeature( feature ) )
+  QgsFeatureIterator fit = mVectorLayer->getFeatures( QgsFeatureRequest().setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+  while ( fit.nextFeature( feature ) )
   {
     if ( onlySelected )
     {
@@ -149,7 +174,6 @@ void QgsFieldCalculator::accept()
     }
 
     exp.setCurrentRowNumber( rownum );
-
     QVariant value = exp.evaluate( &feature );
     if ( exp.hasEvalError() )
     {
@@ -159,15 +183,15 @@ void QgsFieldCalculator::accept()
     }
     else
     {
+      // FIXME workaround while QgsVectorLayer::changeAttributeValue's emitSignal is ignored (see #7071)
+      mVectorLayer->blockSignals( true );
       mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, false );
+      mVectorLayer->blockSignals( false );
     }
 
     rownum++;
   }
 
-  // stop blocking layerModified signals and make sure that one layerModified signal is emitted
-  mVectorLayer->blockSignals( false );
-  mVectorLayer->setModified( true, false );
 
   if ( !calculationSuccess )
   {
@@ -253,15 +277,14 @@ void QgsFieldCalculator::populateFields()
   if ( !mVectorLayer )
     return;
 
-  const QgsFieldMap fieldMap = mVectorLayer->pendingFields();
-  QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
-  for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
+  const QgsFields& fields = mVectorLayer->pendingFields();
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
 
-    QString fieldName = fieldIt.value().name();
+    QString fieldName = fields[idx].name();
 
     //insert into field list and field combo box
-    mFieldMap.insert( fieldName, fieldIt.key() );
+    mFieldMap.insert( fieldName, idx );
     mExistingFieldComboBox->addItem( fieldName );
   }
 }
@@ -269,18 +292,22 @@ void QgsFieldCalculator::populateFields()
 void QgsFieldCalculator::setOkButtonState()
 {
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
-  okButton->setToolTip( "" );
 
-  bool emptyFieldName = mOutputFieldNameLineEdit->text().isEmpty();
-  bool expressionValid = builder->isExpressionValid();
-
-  if ( emptyFieldName )
+  if (( mNewFieldGroupBox->isChecked() || !mUpdateExistingGroupBox->isEnabled() )
+      && mOutputFieldNameLineEdit->text().isEmpty() )
+  {
     okButton->setToolTip( tr( "Please enter a field name" ) );
+    okButton->setEnabled( false );
+    return;
+  }
 
-  if ( !expressionValid )
+  if ( !builder->isExpressionValid() )
+  {
     okButton->setToolTip( okButton->toolTip() + tr( "\n The expression is invalid see (more info) for details" ) );
+    okButton->setEnabled( false );
+    return;
+  }
 
-  bool okEnabled = ( !emptyFieldName || mUpdateExistingGroupBox->isChecked() ) && expressionValid;
-
-  okButton->setEnabled( okEnabled );
+  okButton->setToolTip( "" );
+  okButton->setEnabled( true );
 }

@@ -42,11 +42,12 @@ email                : tim@linfiniti.com
 
 
 QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
-    : QObject( parent )
+    : QgsDecorationItem( parent )
 {
   mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
   << tr( "Top Right" ) << tr( "Bottom Right" );
 
+  setName( "Copyright Label" );
   // initialise default values in the gui
   projectRead();
 }
@@ -56,20 +57,29 @@ QgsDecorationCopyright::~QgsDecorationCopyright()
 
 void QgsDecorationCopyright::projectRead()
 {
-  QDate now;
-  QString defString;
+  QgsDecorationItem::projectRead();
 
-  now = QDate::currentDate();
-  defString = "&copy; QGIS " + now.toString( "yyyy" );
+  QDate now = QDate::currentDate();
+  QString defString = "&copy; QGIS " + now.toString( "yyyy" );
 
   // there is no font setting in the UI, so just use the Qt/QGIS default font (what mQFont gets when created)
   //  mQFont.setFamily( QgsProject::instance()->readEntry( "CopyrightLabel", "/FontName", "Sans Serif" ) );
   //  mQFont.setPointSize( QgsProject::instance()->readNumEntry( "CopyrightLabel", "/FontSize", 9 ) );
   QgsProject* prj = QgsProject::instance();
-  mLabelQString = prj->readEntry( "CopyrightLabel", "/Label", defString );
-  mPlacementIndex = prj->readNumEntry( "CopyrightLabel", "/Placement", 3 );
-  mEnable = prj->readBoolEntry( "CopyrightLabel", "/Enabled", false );
-  mLabelQColor.setNamedColor( prj->readEntry( "CopyrightLabel", "/Color", "#000000" ) ); // default color is black
+  mLabelQString = prj->readEntry( mNameConfig, "/Label", defString );
+  mPlacementIndex = prj->readNumEntry( mNameConfig, "/Placement", 3 );
+  mLabelQColor.setNamedColor( prj->readEntry( mNameConfig, "/Color", "#000000" ) ); // default color is black
+}
+
+void QgsDecorationCopyright::saveToProject()
+{
+  QgsDecorationItem::saveToProject();
+  QgsProject* prj = QgsProject::instance();
+  prj->writeEntry( mNameConfig, "/FontName", mQFont.family() );
+  prj->writeEntry( mNameConfig, "/FontSize", mQFont.pointSize() );
+  prj->writeEntry( mNameConfig, "/Label", mLabelQString );
+  prj->writeEntry( mNameConfig, "/Color", mLabelQColor.name() );
+  prj->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
 }
 
 // Slot called when the buffer menu item is activated
@@ -79,16 +89,15 @@ void QgsDecorationCopyright::run()
 
   if ( dlg.exec() )
   {
-    saveToProject();
-    QgisApp::instance()->mapCanvas()->refresh();
+    update();
   }
 }
 
 
-void QgsDecorationCopyright::renderLabel( QPainter * theQPainter )
+void QgsDecorationCopyright::render( QPainter * theQPainter )
 {
   //Large IF statement to enable/disable copyright label
-  if ( mEnable )
+  if ( enabled() )
   {
     // need width/height of paint device
     int myHeight = theQPainter->device()->height();
@@ -139,14 +148,3 @@ void QgsDecorationCopyright::renderLabel( QPainter * theQPainter )
   }
 }
 
-void QgsDecorationCopyright::saveToProject()
-{
-  //save state to the project file.....
-  QgsProject* prj = QgsProject::instance();
-  prj->writeEntry( "CopyrightLabel", "/FontName", mQFont.family() );
-  prj->writeEntry( "CopyrightLabel", "/FontSize", mQFont.pointSize() );
-  prj->writeEntry( "CopyrightLabel", "/Label", mLabelQString );
-  prj->writeEntry( "CopyrightLabel", "/Color", mLabelQColor.name() );
-  prj->writeEntry( "CopyrightLabel", "/Placement", mPlacementIndex );
-  prj->writeEntry( "CopyrightLabel", "/Enabled", mEnable );
-}

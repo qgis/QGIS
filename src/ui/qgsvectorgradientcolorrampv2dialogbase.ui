@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>364</height>
+    <height>379</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,10 +26,13 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QgsColorButtonV2" name="btnColor1">
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Change</string>
+        <string>Color 2</string>
+       </property>
+       <property name="buddy">
+        <cstring>btnColor2</cstring>
        </property>
       </widget>
      </item>
@@ -49,20 +52,40 @@
        </property>
       </spacer>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Color 2</string>
+     <item row="2" column="1">
+      <widget class="QComboBox" name="cboType">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="buddy">
-        <cstring>btnColor2</cstring>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QComboBox::AdjustToMinimumContentsLength</enum>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsColorButtonV2" name="btnColor2">
+      <widget class="QgsColorButton" name="btnColor2">
        <property name="text">
-        <string>Change</string>
+        <string>Change...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Type</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QgsColorButton" name="btnColor1">
+       <property name="text">
+        <string>Change...</string>
        </property>
       </widget>
      </item>
@@ -70,6 +93,12 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupStops">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
      <property name="title">
       <string>Multiple stops</string>
      </property>
@@ -80,21 +109,7 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_1">
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btnAddStop">
-        <property name="text">
-         <string>Add stop</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="btnRemoveStop">
-        <property name="text">
-         <string>Remove stop</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" rowspan="2">
+      <item row="0" column="0" rowspan="3">
        <widget class="QTreeWidget" name="treeStops">
         <property name="rootIsDecorated">
          <bool>false</bool>
@@ -109,9 +124,23 @@
         </column>
         <column>
          <property name="text">
-          <string>Offset</string>
+          <string>Offset (%)</string>
          </property>
         </column>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="btnAddStop">
+        <property name="text">
+         <string>Add stop</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="btnRemoveStop">
+        <property name="text">
+         <string>Remove stop</string>
+        </property>
        </widget>
       </item>
      </layout>
@@ -122,7 +151,7 @@
      <property name="title">
       <string>Preview</string>
      </property>
-     <layout class="QVBoxLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
        <widget class="QLabel" name="lblPreview">
         <property name="frameShape">
@@ -140,20 +169,31 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="btnInformation">
+       <property name="text">
+        <string>Information</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>
@@ -164,8 +204,6 @@
   <tabstop>groupStops</tabstop>
   <tabstop>treeStops</tabstop>
   <tabstop>btnAddStop</tabstop>
-  <tabstop>btnRemoveStop</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

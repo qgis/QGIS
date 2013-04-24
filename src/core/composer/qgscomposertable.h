@@ -19,6 +19,7 @@
 #define QGSCOMPOSERTABLE_H
 
 #include "qgscomposeritem.h"
+#include "qgscomposition.h"
 #include "qgsfeature.h"
 #include <QSet>
 
@@ -74,14 +75,16 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     QColor mGridColor;
 
     /**Retrieves feature attributes*/
-    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributes )
-    { Q_UNUSED( attributes ); return false; } //= 0;
+    //! @note not available in python bindings
+    virtual bool getFeatureAttributes( QList<QgsAttributes>& attributes ) { Q_UNUSED( attributes ); return false; }
     virtual QMap<int, QString> getHeaderLabels() const { return QMap<int, QString>(); } //= 0;
     /**Calculate the maximum width values of the vector attributes*/
-    virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList ) const;
+    virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributes>& attributeList ) const;
     /**Adapts the size of the item frame to match the content*/
-    void adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList );
+    //! @note not available in python bindings
+    void adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributes>& attributeList );
     void drawHorizontalGridLines( QPainter* p, int nAttributes );
+    //! @note not available in python bindings
     void drawVerticalGridLines( QPainter* p, const QMap<int, double>& maxWidthMap );
 
     bool tableWriteXML( QDomElement& itemElem, QDomDocument& doc ) const;

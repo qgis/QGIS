@@ -3,7 +3,7 @@
     ---------------------
     begin                : October 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,6 +16,7 @@
 #define QGSWMSDATAITEMS_H
 
 #include "qgsdataitem.h"
+#include "qgsdatasourceuri.h"
 #include "qgswmsprovider.h"
 
 class QgsWMSConnectionItem : public QgsDataCollectionItem
@@ -46,13 +47,13 @@ class QgsWMSLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
-                     QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperties );
+                     QgsWmsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, QgsWmsLayerProperty layerProperties );
     ~QgsWMSLayerItem();
 
     QString createUri();
 
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QString mConnInfo;
+    QgsDataSourceURI mDataSourceUri;
     QgsWmsLayerProperty mLayerProperty;
 };
 

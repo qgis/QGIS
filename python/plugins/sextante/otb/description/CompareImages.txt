@@ -1,0 +1,15 @@
+CompareImages
+otbcli_CompareImages
+Images comparaison
+Miscellaneous
+ParameterRaster|-ref.in|Reference image|False
+ParameterNumber|-ref.channel|Reference image channel|None|None|1
+ParameterRaster|-meas.in|Measured image|False
+ParameterNumber|-meas.channel|Measured image channel|None|None|1
+ParameterNumber|-roi.startx|Start X|None|None|0
+ParameterNumber|-roi.starty|Start Y|None|None|0
+ParameterNumber|-roi.sizex|Size X|None|None|0
+ParameterNumber|-roi.sizey|Size Y|None|None|0
+ParameterNumber|-mse|MSE|None|None|0.0
+ParameterNumber|-mae|MAE|None|None|0.0
+ParameterNumber|-psnr|PSNR|None|None|0.0

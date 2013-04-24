@@ -397,6 +397,7 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   annotationElem.setAttribute( "canvasPosY", QString::number( canvasPos.y() ) );
   annotationElem.setAttribute( "frameBorderWidth", QString::number( mFrameBorderWidth ) );
   annotationElem.setAttribute( "frameColor", mFrameColor.name() );
+  annotationElem.setAttribute( "frameColorAlpha", mFrameColor.alpha() );
   annotationElem.setAttribute( "frameBackgroundColor", mFrameBackgroundColor.name() );
   annotationElem.setAttribute( "frameBackgroundColorAlpha", mFrameBackgroundColor.alpha() );
   annotationElem.setAttribute( "visible", isVisible() );
@@ -428,6 +429,7 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
   mMapPosition = mapPos;
   mFrameBorderWidth = annotationElem.attribute( "frameBorderWidth", "0.5" ).toDouble();
   mFrameColor.setNamedColor( annotationElem.attribute( "frameColor", "#000000" ) );
+  mFrameColor.setAlpha( annotationElem.attribute( "frameColorAlpha", "255" ).toInt() );
   mFrameBackgroundColor.setNamedColor( annotationElem.attribute( "frameBackgroundColor" ) );
   mFrameBackgroundColor.setAlpha( annotationElem.attribute( "frameBackgroundColorAlpha", "255" ).toInt() );
   mFrameSize.setWidth( annotationElem.attribute( "frameWidth", "50" ).toDouble() );

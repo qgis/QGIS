@@ -49,7 +49,7 @@ class CORE_EXPORT QgsProviderRegistry
     virtual ~QgsProviderRegistry();
 
     /** Return path for the library of the provider */
-    QString library( QString const & providerKey ) const;
+    QString library( const QString & providerKey ) const;
 
     /** Return list of provider plugins found */
     QString pluginList( bool asHtml = false ) const;
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsProviderRegistry
     const QDir & libraryDirectory() const;
 
     /** Set library directory where to search for plugins */
-    void setLibraryDirectory( QDir const & path );
+    void setLibraryDirectory( const QDir & path );
 
     /** Create an instance of the provider
         @param providerKey identificator of the provider
@@ -105,13 +105,15 @@ class CORE_EXPORT QgsProviderRegistry
     */
     virtual QString databaseDrivers() const;
     /** return a string containing the available directory drivers
-    * @note this method was added in QGIS 1.1
-    */
+     * @note this method was added in QGIS 1.1
+     */
     virtual QString directoryDrivers() const;
     /** return a string containing the available protocol drivers
-    * @note this method was added in QGIS 1.1
-    */
+     * @note this method was added in QGIS 1.1
+     */
     virtual QString protocolDrivers() const;
+
+    void registerGuis( QWidget *widget );
 
     /** open the given vector data source
 

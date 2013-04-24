@@ -77,7 +77,7 @@ class TestQgsVectorFileWriter: public QObject
     QString mEncoding;
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
-    QgsFieldMap mFields;
+    QgsFields mFields;
     QgsPoint mPoint1;
     QgsPoint mPoint2;
     QgsPoint mPoint3;
@@ -98,7 +98,7 @@ void TestQgsVectorFileWriter::initTestCase()
 
   mEncoding = "UTF-8";
   QgsField myField1( "Field1", QVariant::String, "String", 10, 0, "Field 1 comment" );
-  mFields.insert( 0, myField1 );
+  mFields.append( myField1 );
   mCRS = QgsCoordinateReferenceSystem( GEOWKT );
   mPoint1 = QgsPoint( 10.0, 10.0 );
   mPoint2 = QgsPoint( 15.0, 10.0 );
@@ -130,7 +130,8 @@ void TestQgsVectorFileWriter::createPoint()
   QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPointGeometry );
-  myFeature.addAttribute( 0, "HelloWorld" );
+  myFeature.initAttributes( 1 );
+  myFeature.setAttribute( 0, "HelloWorld" );
   //
   // Write the feature to the filewriter
   // and check for errors
@@ -176,9 +177,9 @@ void TestQgsVectorFileWriter::createLine()
   // delete it in its dtor!
   QgsGeometry * mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
   QgsFeature myFeature;
-  myFeature.setTypeName( "WKBLineString" );
   myFeature.setGeometry( mypLineGeometry );
-  myFeature.addAttribute( 0, "HelloWorld" );
+  myFeature.initAttributes( 1 );
+  myFeature.setAttribute( 0, "HelloWorld" );
   //
   // Write the feature to the filewriter
   // and check for errors
@@ -229,9 +230,9 @@ void TestQgsVectorFileWriter::createPolygon()
   // delete it in its dtor!
   QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
   QgsFeature myFeature;
-  myFeature.setTypeName( "WKBPolygon" );
   myFeature.setGeometry( mypPolygonGeometry );
-  myFeature.addAttribute( 0, "HelloWorld" );
+  myFeature.initAttributes( 1 );
+  myFeature.setAttribute( 0, "HelloWorld" );
   //
   // Write the feature to the filewriter
   // and check for errors
@@ -289,9 +290,9 @@ void TestQgsVectorFileWriter::polygonGridTest()
       // delete it in its dtor!
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
-      myFeature.setTypeName( "WKBPolygon" );
       myFeature.setGeometry( mypPolygonGeometry );
-      myFeature.addAttribute( 0, "HelloWorld" );
+      myFeature.initAttributes( 1 );
+      myFeature.setAttribute( 0, "HelloWorld" );
       //
       // Write the feature to the filewriter
       // and check for errors
@@ -362,9 +363,9 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       // delete it in its dtor!
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
       QgsFeature myFeature;
-      myFeature.setTypeName( "WKBPolygon" );
       myFeature.setGeometry( mypPolygonGeometry );
-      myFeature.addAttribute( 0, "HelloWorld" );
+      myFeature.initAttributes( 1 );
+      myFeature.setAttribute( 0, "HelloWorld" );
       //
       // Write the feature to the filewriter
       // and check for errors

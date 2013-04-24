@@ -9,10 +9,11 @@ class QgsVectorLayerImport
 %TypeHeaderCode
 #include <qgsvectorlayerimport.h>
 #include <qgsfield.h>
+class QProgressDialog;
 %End
 
-public:
-      
+  public:
+
     enum ImportError
     {
       NoError = 0,
@@ -23,7 +24,7 @@ public:
       ErrAttributeCreationFailed,
       ErrProjection,
       ErrFeatureWriteFailed,
-      ErrInvalidLayer, 
+      ErrInvalidLayer,
       ErrInvalidProvider,
       ErrProviderUnsupportedFeature,
       ErrConnectionFailed
@@ -34,20 +35,22 @@ public:
                                     const QString& uri,
                                     const QString& providerKey,
                                     const QgsCoordinateReferenceSystem *destCRS,
-                                    bool onlySelected = FALSE,
+                                    bool onlySelected = false,
                                     QString *errorMessage /Out/ = 0,
-                                    bool skipAttributeCreation = FALSE,
-                                    QMap<QString, QVariant> *options = 0
+                                    bool skipAttributeCreation = false,
+                                    QMap<QString, QVariant> *options = 0,
+                                    QProgressDialog *progress = 0
                                   );
 
     /** create a empty layer and add fields to it */
     QgsVectorLayerImport( const QString &uri,
                           const QString &provider,
-                          const QgsFieldMap& fields,
+                          const QgsFields &fields,
                           QGis::WkbType geometryType,
                           const QgsCoordinateReferenceSystem* crs,
                           bool overwrite = false,
-                          const QMap<QString, QVariant> *options = 0
+                          const QMap<QString, QVariant> *options = 0,
+                          QProgressDialog *progress = 0
                         );
 
     /** checks whether there were any errors */
@@ -56,10 +59,19 @@ public:
     /** retrieves error message */
     QString errorMessage();
 
+    int errorCount() const;
+
     /** add feature to the new created layer */
     bool addFeature( QgsFeature& feature );
 
     /** close the new created layer */
     ~QgsVectorLayerImport();
+
+  protected:
+    /** flush the buffer writing the features to the new layer */
+    bool flushBuffer();
+
+    /** create index */
+    bool createSpatialIndex();
 };
 

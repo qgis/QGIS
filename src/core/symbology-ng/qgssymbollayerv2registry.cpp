@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2009
     copyright            : (C) 2009 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -58,7 +58,7 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 
 QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()
 {
-  foreach( QString name, mMetadata.keys() )
+  foreach ( QString name, mMetadata.keys() )
   {
     delete mMetadata[name];
   }

@@ -3,7 +3,7 @@
     ---------------------
     begin                : November 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -68,7 +68,7 @@ QMimeData* QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList layers )
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  foreach( const QgsMimeDataUtils::Uri& u, layers )
+  foreach ( const QgsMimeDataUtils::Uri& u, layers )
   {
     stream << u.data();
   }

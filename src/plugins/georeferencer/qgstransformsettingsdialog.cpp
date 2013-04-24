@@ -52,7 +52,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   mListCompression.append( "PACKBITS" );
   mListCompression.append( "DEFLATE" );
   QStringList listCompressionTr;
-  foreach( QString item, mListCompression )
+  foreach ( QString item, mListCompression )
   {
     listCompressionTr.append( tr( item.toAscii().data() ) );
   }

@@ -52,15 +52,15 @@ QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QSty
   if ( index.column() == QgsMssqlTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    foreach( QGis::WkbType type,
-             QList<QGis::WkbType>()
-             << QGis::WKBPoint
-             << QGis::WKBLineString
-             << QGis::WKBPolygon
-             << QGis::WKBMultiPoint
-             << QGis::WKBMultiLineString
-             << QGis::WKBMultiPolygon
-             << QGis::WKBNoGeometry )
+    foreach ( QGis::WkbType type,
+              QList<QGis::WkbType>()
+              << QGis::WKBPoint
+              << QGis::WKBLineString
+              << QGis::WKBPolygon
+              << QGis::WKBMultiPoint
+              << QGis::WKBMultiLineString
+              << QGis::WKBMultiPolygon
+              << QGis::WKBNoGeometry )
     {
       cb->addItem( QgsMssqlTableModel::iconForWkbType( type ), QgsMssqlTableModel::displayStringForWkbType( type ), type );
     }
@@ -135,8 +135,8 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WFlags fl, bool
   mAddButton = new QPushButton( tr( "&Add" ) );
   mAddButton->setEnabled( false );
 
-  mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
-  mBuildQueryButton->setToolTip( tr( "Build query" ) );
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
+  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
   if ( !mManagerMode )
@@ -421,7 +421,7 @@ void QgsMssqlSourceSelect::addTables()
 {
   mSelectedTables.clear();
 
-  foreach( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
+  foreach ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
     if ( idx.column() != QgsMssqlTableModel::dbtmTable )
       continue;
@@ -527,12 +527,12 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   }
   else
   {
-    query += "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY' from sys.columns join sys.types on sys.columns.system_type_id = sys.types.system_type_id and sys.columns.user_type_id = sys.types.user_type_id join sys.objects on sys.objects.object_id = sys.columns.object_id join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where sys.types.name = 'geometry' or sys.types.name = 'geography' and sys.objects.type = 'U'";
+    query += "sys.schemas.name, sys.objects.name, sys.columns.name, null, 'GEOMETRY' from sys.columns join sys.types on sys.columns.system_type_id = sys.types.system_type_id and sys.columns.user_type_id = sys.types.user_type_id join sys.objects on sys.objects.object_id = sys.columns.object_id join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and (sys.objects.type = 'U' or sys.objects.type = 'V')";
   }
 
   if ( allowGeometrylessTables )
   {
-    query += " union all select sys.schemas.name, sys.objects.name, null, null, 'NONE' from sys.objects join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where not exists (select * from sys.columns sc1 join sys.types on sc1.system_type_id = sys.types.system_type_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and sys.objects.object_id = sc1.object_id) and sys.objects.type = 'U'";
+    query += " union all select sys.schemas.name, sys.objects.name, null, null, 'NONE' from sys.objects join sys.schemas on sys.objects.schema_id = sys.schemas.schema_id where not exists (select * from sys.columns sc1 join sys.types on sc1.system_type_id = sys.types.system_type_id where (sys.types.name = 'geometry' or sys.types.name = 'geography') and sys.objects.object_id = sc1.object_id) and (sys.objects.type = 'U' or sys.objects.type = 'V')";
   }
 
   // issue the sql query
@@ -735,7 +735,7 @@ void QgsMssqlGeomColumnTypeThread::run()
 {
   mStopped = false;
 
-  foreach( QgsMssqlLayerProperty layerProperty, layerProperties )
+  foreach ( QgsMssqlLayerProperty layerProperty, layerProperties )
   {
     if ( !mStopped )
     {

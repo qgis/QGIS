@@ -75,7 +75,7 @@ void QgsSelectedFeature::updateGeometry( QgsGeometry *geom )
   if ( !geom )
   {
     QgsFeature f;
-    mVlayer->featureAtId( mFeatureId, f );
+    mVlayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureId ) ).nextFeature( f );
     mGeometry = new QgsGeometry( *f.geometry() );
   }
   else
@@ -228,7 +228,7 @@ void QgsSelectedFeature::validationFinished()
 void QgsSelectedFeature::deleteSelectedVertexes()
 {
   int nSelected = 0;
-  foreach( QgsVertexEntry *entry, mVertexMap )
+  foreach ( QgsVertexEntry *entry, mVertexMap )
   {
     if ( entry->isSelected() )
       nSelected++;
@@ -253,6 +253,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
       {
         // to avoid try to delete some vertex twice
         mVertexMap[ mVertexMap[i]->equals()]->setSelected( false );
+        nSelected--;
       }
 
       if ( topologicalEditing )
@@ -303,7 +304,7 @@ void QgsSelectedFeature::deleteSelectedVertexes()
 void QgsSelectedFeature::moveSelectedVertexes( const QgsVector &v )
 {
   int nUpdates = 0;
-  foreach( QgsVertexEntry *entry, mVertexMap )
+  foreach ( QgsVertexEntry *entry, mVertexMap )
   {
     if ( entry->isSelected() )
       nUpdates++;
@@ -370,7 +371,7 @@ void QgsSelectedFeature::replaceVertexMap()
 
 void QgsSelectedFeature::deleteVertexMap()
 {
-  foreach( QgsVertexEntry *entry, mVertexMap )
+  foreach ( QgsVertexEntry *entry, mVertexMap )
   {
     delete entry;
   }

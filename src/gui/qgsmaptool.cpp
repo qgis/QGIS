@@ -64,7 +64,7 @@ QPoint QgsMapTool::toCanvasCoordinates( const QgsPoint& point )
 {
   double x = point.x(), y = point.y();
   mCanvas->getCoordinateTransform()->transformInPlace( x, y );
-  return QPoint(( int )( x + 0.5 ), ( int )( y + 0.5 ) ); // round the values
+  return QPoint( qRound( x ), qRound( y ) );
 }
 
 
@@ -131,6 +131,11 @@ void QgsMapTool::canvasReleaseEvent( QMouseEvent *e )
   Q_UNUSED( e );
 }
 
+void QgsMapTool::wheelEvent( QWheelEvent *e )
+{
+  Q_UNUSED( e );
+}
+
 void QgsMapTool::keyPressEvent( QKeyEvent *e )
 {
   Q_UNUSED( e );
@@ -145,6 +150,7 @@ void QgsMapTool::keyReleaseEvent( QKeyEvent *e )
 bool QgsMapTool::gestureEvent( QGestureEvent *e )
 {
   Q_UNUSED( e );
+  return true;
 }
 #endif
 

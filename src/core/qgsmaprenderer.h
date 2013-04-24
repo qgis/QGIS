@@ -20,6 +20,7 @@
 #include <QSize>
 #include <QStringList>
 #include <QVector>
+#include <QPainter>
 
 #include "qgis.h"
 #include "qgsrectangle.h"
@@ -39,28 +40,32 @@ class QgsDistanceArea;
 class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
 
-struct QgsDiagramLayerSettings;
+class QgsPalLayerSettings;
+class QgsDiagramLayerSettings;
 
-struct CORE_EXPORT QgsLabelPosition
+class CORE_EXPORT QgsLabelPosition
 {
-  QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, bool upside_down, bool diagram = false ):
-      featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), upsideDown( upside_down ), isDiagram( diagram ) {}
-  QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), upsideDown( false ), isDiagram( false ) {}
-  int featureId;
-  double rotation;
-  QVector< QgsPoint > cornerPoints;
-  QgsRectangle labelRect;
-  double width;
-  double height;
-  QString layerID;
-  bool upsideDown;
-  bool isDiagram;
+  public:
+    QgsLabelPosition( int id, double r, const QVector< QgsPoint >& corners, const QgsRectangle& rect, double w, double h, const QString& layer, const QString& labeltext, bool upside_down, bool diagram = false, bool pinned = false ):
+        featureId( id ), rotation( r ), cornerPoints( corners ), labelRect( rect ), width( w ), height( h ), layerID( layer ), labelText( labeltext ), upsideDown( upside_down ), isDiagram( diagram ), isPinned( pinned ) {}
+    QgsLabelPosition(): featureId( -1 ), rotation( 0 ), labelRect( QgsRectangle() ), width( 0 ), height( 0 ), layerID( "" ), labelText( "" ), upsideDown( false ), isDiagram( false ), isPinned( false ) {}
+    int featureId;
+    double rotation;
+    QVector< QgsPoint > cornerPoints;
+    QgsRectangle labelRect;
+    double width;
+    double height;
+    QString layerID;
+    QString labelText;
+    bool upsideDown;
+    bool isDiagram;
+    bool isPinned;
 };
 
 /** Labeling engine interface.
  * \note Added in QGIS v1.4
  */
-class QgsLabelingEngineInterface
+class CORE_EXPORT QgsLabelingEngineInterface
 {
   public:
 
@@ -73,6 +78,9 @@ class QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
+    //! returns PAL layer settings for a registered layer
+    //! @note: this method was added in version 1.9
+    virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s )
     { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
@@ -88,6 +96,9 @@ class QgsLabelingEngineInterface
     //! return infos about labels at a given (map) position
     //! @note: this method was added in version 1.7
     virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0;
+    //! return infos about labels within a given (map) rectangle
+    //! @note: this method was added in version 1.9
+    virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0;
 
     //! called when passing engine among map renderers
     virtual QgsLabelingEngineInterface* clone() = 0;
@@ -113,6 +124,26 @@ class CORE_EXPORT QgsMapRenderer : public QObject
       //MAP_UNITS probably supported in future versions
     };
 
+    /** Blending modes enum defining the available composition modes that can
+     * be used when rendering a layer
+     */
+    enum BlendMode
+    {
+      BlendNormal,
+      BlendLighten,
+      BlendScreen,
+      BlendDodge,
+      BlendAddition,
+      BlendDarken,
+      BlendMultiply,
+      BlendBurn,
+      BlendOverlay,
+      BlendSoftLight,
+      BlendHardLight,
+      BlendDifference,
+      BlendSubtract
+    };
+
     //! constructor
     QgsMapRenderer();
 
@@ -131,6 +162,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     const QgsMapToPixel* coordinateTransform() { return &( mRenderContext.mapToPixel() ); }
 
+    //! Scale denominator
     double scale() const { return mScale; }
     /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
@@ -143,9 +175,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Recalculate the map scale
     void updateScale();
 
-    //! Return the measuring object
-    //! @deprecated
-    Q_DECL_DEPRECATED QgsDistanceArea *distanceArea() { return mDistArea; }
     QGis::UnitType mapUnits() const;
     void setMapUnits( QGis::UnitType u );
 
@@ -164,6 +193,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! transform extent in layer's CRS to extent in output CRS
     QgsRectangle layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent );
 
+    //! transform extent in output CRS to extent in layer's CRS
+    QgsRectangle outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent );
+
     //! transform coordinates from layer's CRS to output CRS
     QgsPoint layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point );
 
@@ -177,25 +209,13 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     void setProjectionsEnabled( bool enabled );
 
     //! returns true if projections are enabled for this layer set
-    bool hasCrsTransformEnabled();
-
-    /** sets destination coordinate reference system
-     * @note deprecated by qgis 1.7
-     * @see setDestinationCrs
-     */
-    Q_DECL_DEPRECATED void setDestinationSrs( const QgsCoordinateReferenceSystem& srs ) { setDestinationCrs( srs ); };
-
-    /** returns CRS of destination coordinate reference system
-     * @note deprecated by qgis 1.7
-     * @see destinationCrs
-     */
-    Q_DECL_DEPRECATED const QgsCoordinateReferenceSystem& destinationSrs() { return destinationCrs(); };
+    bool hasCrsTransformEnabled() const;
 
     //! sets destination coordinate reference system
     void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
 
     //! returns CRS of destination coordinate reference system
-    const QgsCoordinateReferenceSystem& destinationCrs();
+    const QgsCoordinateReferenceSystem& destinationCrs() const;
 
     void setOutputUnits( OutputUnits u ) {mOutputUnits = u;}
 
@@ -231,6 +251,13 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Added in QGIS v1.4
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
 
+    //! Returns a QPainter::CompositionMode corresponding to a BlendMode
+    //! Added in 1.9
+    static QPainter::CompositionMode getCompositionMode( const QgsMapRenderer::BlendMode blendMode );
+    //! Returns a BlendMode corresponding to a QPainter::CompositionMode
+    //! Added in 1.9
+    static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode blendMode );
+
   signals:
 
     void drawingProgress( int current, int total );
@@ -250,12 +277,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! called by signal from layer current being drawn
     void onDrawingProgress( int current, int total );
-
-    //! invalidate cached layer CRS
-    void invalidateCachedLayerCrs();
-
-    //! cached layer was destroyed
-    void cachedLayerDestroyed();
 
   protected:
 
@@ -280,7 +301,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! map units per pixel
     double mMapUnitsPerPixel;
 
-    //! Map scale at its current zool level
+    //! Map scale denominator at its current zoom level
     double mScale;
 
     //! scale calculator
@@ -329,9 +350,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QMutex mRenderMutex;
 
   private:
-    QgsCoordinateTransform *tr( QgsMapLayer *layer );
-    QgsCoordinateTransform *mCachedTr;
-    QgsMapLayer *mCachedTrForLayer;
+    const QgsCoordinateTransform* tr( QgsMapLayer *layer );
 };
 
 #endif

@@ -2,38 +2,24 @@
 # Files
 
 SET (DIAGRAMOVERLAY_SRCS
-     qgsdiagramdialog.cpp
      qgsdiagramcategory.cpp
      qgsdiagramfactory.cpp
      qgswkndiagramfactory.cpp
-     qgswkndiagramfactorywidget.cpp
      qgsbardiagramfactory.cpp
      qgspiediagramfactory.cpp
      qgssvgdiagramfactory.cpp
-     qgssvgdiagramfactorywidget.cpp
-     qgsdiagramfactorywidget.cpp
      qgsdiagramoverlay.cpp
      qgsdiagramoverlayplugin.cpp
      qgsdiagramrenderer.cpp
-     qgsdiagramrendererwidget.cpp
-     qgslinearlyscalingdialog.cpp
 )
-
-SET (DIAGRAMOVERLAY_UIS qgsdiagramdialogbase.ui qgslinearlyscalingdialogbase.ui qgssvgdiagramfactorywidgetbase.ui qgswkndiagramfactorywidgetbase.ui)
 
 SET (DIAGRAMOVERLAY_MOC_HDRS
      qgsdiagramoverlayplugin.h
-     qgsdiagramdialog.h
-     qgslinearlyscalingdialog.h
-     qgssvgdiagramfactorywidget.h
-     qgswkndiagramfactorywidget.h
 )
 
 
 ########################################################
 # Build
-
-QT4_WRAP_UI (DIAGRAMOVERLAY_UIS_H  ${DIAGRAMOVERLAY_UIS})
 
 QT4_WRAP_CPP (DIAGRAMOVERLAY_MOC_SRCS  ${DIAGRAMOVERLAY_MOC_HDRS})
 
@@ -45,8 +31,7 @@ INCLUDE_DIRECTORIES(
      ../../core
      ../../core/pal
      ../../core/raster
-     ../../core/renderer
-     ../../core/symbology
+     ../../core/symbology-ng
      ../../gui
      ..
 )

@@ -1,5 +1,5 @@
 
-SET (MEMORY_SRCS qgsmemoryprovider.cpp)
+SET (MEMORY_SRCS qgsmemoryprovider.cpp qgsmemoryfeatureiterator.cpp)
 
 INCLUDE_DIRECTORIES(
   .

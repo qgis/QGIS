@@ -19,6 +19,7 @@ email                : ersts@amnh.org
 #ifndef QGSCONTRASTENHANCEMENTFUNCTION_H
 #define QGSCONTRASTENHANCEMENTFUNCTION_H
 
+#include "qgis.h"
 #include "qgscontrastenhancement.h"
 
 /** \ingroup core
@@ -31,7 +32,8 @@ class CORE_EXPORT QgsContrastEnhancementFunction
 {
 
   public:
-    QgsContrastEnhancementFunction( QgsContrastEnhancement::QgsRasterDataType, double, double );
+    QgsContrastEnhancementFunction( QGis::DataType, double, double );
+    QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction& f );
     virtual ~QgsContrastEnhancementFunction() {}
 
     /** \brief A customizable method that takes in a double and returns a int between 0 and 255 */
@@ -57,7 +59,7 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     double mMinimumMaximumRange;
 
     /** \brief Data type of the band */
-    QgsContrastEnhancement::QgsRasterDataType mQgsRasterDataType;
+    QGis::DataType mQgsRasterDataType;
 };
 
 #endif

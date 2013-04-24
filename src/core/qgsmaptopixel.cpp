@@ -15,19 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptopixel.h"
+
 #include <QPoint>
 #include <QTextStream>
+#include <QVector>
+
 #include "qgslogger.h"
 
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               double ymax,
                               double ymin,
                               double xmin )
-    : mMapUnitsPerPixel( mapUnitsPerPixel ),
-    yMax( ymax ),
-    yMin( ymin ),
-    xMin( xmin ),
-    xMax( 0 )                 // XXX wasn't originally specified?  Why?
+    : mMapUnitsPerPixel( mapUnitsPerPixel )
+    , yMax( ymax )
+    , yMin( ymin )
+    , xMin( xmin )
+    , xMax( 0 )                 // XXX wasn't originally specified?  Why?
 {
 }
 
@@ -136,11 +139,11 @@ void QgsMapToPixel::transformInPlace( double& x, double& y ) const
   y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
 }
 
-void QgsMapToPixel::transformInPlace( std::vector<double>& x,
-                                      std::vector<double>& y ) const
+void QgsMapToPixel::transformInPlace( QVector<double>& x,
+                                      QVector<double>& y ) const
 {
   assert( x.size() == y.size() );
-  for ( unsigned int i = 0; i < x.size(); ++i )
+  for ( int i = 0; i < x.size(); ++i )
     transformInPlace( x[i], y[i] );
 }
 
@@ -151,8 +154,8 @@ void QgsMapToPixel::transformInPlace( float& x, float& y ) const
   y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
 }
 
-void QgsMapToPixel::transformInPlace( std::vector<float>& x,
-                                      std::vector<float>& y ) const
+void QgsMapToPixel::transformInPlace( QVector<float>& x,
+                                      QVector<float>& y ) const
 {
   assert( x.size() == y.size() );
   for ( unsigned int i = 0; i < x.size(); ++i )

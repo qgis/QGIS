@@ -59,8 +59,8 @@ class Dialog(QDialog, Ui_Dialog):
         self.inField.clear()
         changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
         changedField = ftools_utils.getFieldList(changedLayer)
-        for i in changedField:
-            self.inField.addItem(unicode(changedField[i].name()))
+        for f in changedField:
+            self.inField.addItem(unicode(f.name()))
 
     def outFile(self):
         self.outShape.clear()
@@ -162,14 +162,15 @@ class SplitThread(QThread):
         index = provider.fieldNameIndex(self.field)
         unique = ftools_utils.getUniqueValues(provider, int(index))
         baseName = unicode( outPath + self.layer.name() + "_" + self.field + "_" )
-        allAttrs = provider.attributeIndexes()
-        provider.select(allAttrs)
+
         fieldList = ftools_utils.getFieldList(self.layer)
         sRs = provider.crs()
         geom = self.layer.wkbType()
         inFeat = QgsFeature()
 
         self.emit(SIGNAL("rangeCalculated(PyQt_PyObject)"), len(unique))
+
+        fit = provider.getFeatures()
 
         for i in unique:
             check = QFile(baseName + "_" + unicode(i.toString().trimmed()) + ".shp")
@@ -180,9 +181,10 @@ class SplitThread(QThread):
                     continue
 
             writer = QgsVectorFileWriter(fName, self.encoding, fieldList, geom, sRs)
-            provider.rewind()
-            while provider.nextFeature(inFeat):
-                atMap = inFeat.attributeMap()
+
+	    fit.rewind()
+            while fit.nextFeature(inFeat):
+                atMap = inFeat.attributes()
                 if atMap[index] == i:
                     writer.addFeature(inFeat)
             del writer

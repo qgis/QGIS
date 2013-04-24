@@ -46,6 +46,8 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     /**Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
 
+    const QgsComposerItem* item() const { return mItem; }
+
   protected:
     /**Target item of the command*/
     QgsComposerItem* mItem;
@@ -72,11 +74,15 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       //composer label
       ComposerLabelSetText,
       ComposerLabelSetId,
+      ComposerLabelRotation,
       //composer map
       ComposerMapRotation,
       ComposerMapAnnotationDistance,
       //composer legend
       ComposerLegendText,
+      LegendColumnCount,
+      LegendSplitLayer,
+      LegendEqualColumnWidth,
       LegendSymbolWidth,
       LegendSymbolHeight,
       LegendGroupSpace,
@@ -84,6 +90,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       LegendSymbolSpace,
       LegendIconSymbolSpace,
       LegendBoxSpace,
+      LegendColumnSpace,
       //composer picture
       ComposerPictureRotation,
       // composer scalebar
@@ -107,7 +114,8 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       ArrowOutlineWidth,
       ArrowHeadWidth,
       //item
-      ItemOutlineWidth
+      ItemOutlineWidth,
+      ItemMove
     };
 
     QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );

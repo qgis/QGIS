@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1052</width>
-    <height>489</height>
+    <width>1050</width>
+    <height>487</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1052</width>
-     <height>28</height>
+     <width>1050</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -35,6 +35,7 @@
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionDeleteSelected"/>
     <addaction name="separator"/>
+    <addaction name="mActionRotateFeature"/>
     <addaction name="mActionSimplifyFeature"/>
     <addaction name="mActionAddRing"/>
     <addaction name="mActionAddPart"/>
@@ -50,11 +51,11 @@
    </widget>
    <widget class="QMenu" name="mFileMenu">
     <property name="title">
-     <string>&amp;File</string>
+     <string>P&amp;roject</string>
     </property>
     <widget class="QMenu" name="mRecentProjectsMenu">
      <property name="title">
-      <string>&amp;Open Recent Projects</string>
+      <string>&amp;Open Recent</string>
      </property>
     </widget>
     <widget class="QMenu" name="mPrintComposersMenu">
@@ -62,10 +63,16 @@
       <string>Print Composers</string>
      </property>
     </widget>
+    <widget class="QMenu" name="mProjectFromTemplateMenu">
+     <property name="title">
+      <string>New From Template</string>
+     </property>
+    </widget>
     <addaction name="mActionNewProject"/>
     <addaction name="mActionOpenProject"/>
-    <addaction name="separator"/>
+    <addaction name="mProjectFromTemplateMenu"/>
     <addaction name="mRecentProjectsMenu"/>
+    <addaction name="separator"/>
     <addaction name="mActionSaveProject"/>
     <addaction name="mActionSaveProjectAs"/>
     <addaction name="mActionSaveMapAsImage"/>
@@ -103,9 +110,10 @@
      <property name="title">
       <string>&amp;Decorations</string>
      </property>
-     <addaction name="mActionDecorationCopyright"/>
-     <addaction name="mActionDecorationNorthArrow"/>
+     <addaction name="mActionDecorationGrid"/>
      <addaction name="mActionDecorationScaleBar"/>
+     <addaction name="mActionDecorationNorthArrow"/>
+     <addaction name="mActionDecorationCopyright"/>
     </widget>
     <addaction name="mActionPan"/>
     <addaction name="mActionPanToSelected"/>
@@ -128,39 +136,43 @@
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
     <addaction name="mActionDraw"/>
-    <addaction name="mActionTileScale"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
      <string>&amp;Layer</string>
     </property>
-    <widget class="QMenu" name="menuNew">
+    <widget class="QMenu" name="mNewLayerMenu">
      <property name="title">
       <string>New</string>
      </property>
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatialiteLayer"/>
     </widget>
-    <addaction name="menuNew"/>
+    <addaction name="mNewLayerMenu"/>
     <addaction name="mActionEmbedLayers"/>
     <addaction name="mActionAddOgrLayer"/>
     <addaction name="mActionAddRasterLayer"/>
     <addaction name="mActionAddPgLayer"/>
     <addaction name="mActionAddSpatiaLiteLayer"/>
     <addaction name="mActionAddMssqlLayer"/>
+    <addaction name="mActionAddOracleLayer"/>
     <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
+    <addaction name="mActionAddWcsLayer"/>
     <addaction name="mActionAddWfsLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
     <addaction name="mActionPasteStyle"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
-    <addaction name="mActionSaveEdits"/>
     <addaction name="mActionToggleEditing"/>
+    <addaction name="mActionSaveLayerEdits"/>
+    <addaction name="mActionAllEdits"/>
+    <addaction name="separator"/>
     <addaction name="mActionLayerSaveAs"/>
     <addaction name="mActionLayerSelectionSaveAs"/>
     <addaction name="mActionRemoveLayer"/>
+    <addaction name="mActionDuplicateLayer"/>
     <addaction name="mActionSetLayerCRS"/>
     <addaction name="mActionSetProjectCRSFromLayer"/>
     <addaction name="mActionLayerProperties"/>
@@ -181,12 +193,6 @@
     <addaction name="mActionManagePlugins"/>
     <addaction name="separator"/>
     <addaction name="mActionShowPythonDialog"/>
-   </widget>
-   <widget class="QMenu" name="mRasterMenu">
-    <property name="title">
-     <string>&amp;Raster</string>
-    </property>
-    <addaction name="mActionShowRasterCalculator"/>
    </widget>
    <widget class="QMenu" name="mHelpMenu">
     <property name="title">
@@ -213,12 +219,33 @@
     <addaction name="mActionOptions"/>
     <addaction name="mActionSnappingOptions"/>
    </widget>
+   <widget class="QMenu" name="mRasterMenu">
+    <property name="title">
+     <string>&amp;Raster</string>
+    </property>
+    <addaction name="mActionShowRasterCalculator"/>
+   </widget>
+   <widget class="QMenu" name="mVectorMenu">
+    <property name="title">
+     <string>Vect&amp;or</string>
+    </property>
+    <widget class="QMenu" name="menuOpenStreetMap">
+     <property name="title">
+      <string>&amp;OpenStreetMap</string>
+     </property>
+     <addaction name="mActionOSMDownload"/>
+     <addaction name="mActionOSMImport"/>
+     <addaction name="mActionOSMExport"/>
+    </widget>
+    <addaction name="menuOpenStreetMap"/>
+   </widget>
    <addaction name="mFileMenu"/>
    <addaction name="mEditMenu"/>
    <addaction name="mViewMenu"/>
    <addaction name="mLayerMenu"/>
    <addaction name="mSettingsMenu"/>
    <addaction name="mPluginMenu"/>
+   <addaction name="mVectorMenu"/>
    <addaction name="mRasterMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
@@ -255,7 +282,9 @@
    <addaction name="mActionAddPgLayer"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
    <addaction name="mActionAddMssqlLayer"/>
+   <addaction name="mActionAddOracleLayer"/>
    <addaction name="mActionAddWmsLayer"/>
+   <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionRemoveLayer"/>
@@ -270,8 +299,9 @@
    <attribute name="toolBarBreak">
     <bool>true</bool>
    </attribute>
+   <addaction name="mActionAllEdits"/>
    <addaction name="mActionToggleEditing"/>
-   <addaction name="mActionSaveEdits"/>
+   <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
    <addaction name="mActionMoveFeature"/>
    <addaction name="mActionNodeTool"/>
@@ -292,6 +322,7 @@
    </attribute>
    <addaction name="mActionUndo"/>
    <addaction name="mActionRedo"/>
+   <addaction name="mActionRotateFeature"/>
    <addaction name="mActionSimplifyFeature"/>
    <addaction name="mActionAddRing"/>
    <addaction name="mActionAddPart"/>
@@ -339,6 +370,7 @@
    </attribute>
    <addaction name="mActionIdentify"/>
    <addaction name="mActionDeselectAll"/>
+   <addaction name="mActionSelectByExpression"/>
    <addaction name="mActionOpenTable"/>
    <addaction name="mActionMapTips"/>
    <addaction name="mActionNewBookmark"/>
@@ -377,8 +409,14 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionFullHistogramStretch"/>
+   <addaction name="mActionLocalCumulativeCutStretch"/>
+   <addaction name="mActionFullCumulativeCutStretch"/>
    <addaction name="mActionLocalHistogramStretch"/>
+   <addaction name="mActionFullHistogramStretch"/>
+   <addaction name="mActionIncreaseBrightness"/>
+   <addaction name="mActionDecreaseBrightness"/>
+   <addaction name="mActionIncreaseContrast"/>
+   <addaction name="mActionDecreaseContrast"/>
   </widget>
   <widget class="QToolBar" name="mLabelToolBar">
    <property name="windowTitle">
@@ -391,6 +429,9 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionLabeling"/>
+   <addaction name="mActionShowPinnedLabels"/>
+   <addaction name="mActionPinLabels"/>
+   <addaction name="mActionShowHideLabels"/>
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
@@ -434,7 +475,7 @@
      <normaloff>:/images/themes/default/mActionFileNew.png</normaloff>:/images/themes/default/mActionFileNew.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;New Project</string>
+    <string>&amp;New</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -446,7 +487,7 @@
      <normaloff>:/images/themes/default/mActionFileOpen.png</normaloff>:/images/themes/default/mActionFileOpen.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open Project...</string>
+    <string>&amp;Open...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -458,7 +499,7 @@
      <normaloff>:/images/themes/default/mActionFileSave.png</normaloff>:/images/themes/default/mActionFileSave.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Save Project</string>
+    <string>&amp;Save</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -470,7 +511,7 @@
      <normaloff>:/images/themes/default/mActionFileSaveAs.png</normaloff>:/images/themes/default/mActionFileSaveAs.png</iconset>
    </property>
    <property name="text">
-    <string>Save Project &amp;As...</string>
+    <string>Save &amp;As...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -512,7 +553,7 @@
      <normaloff>:/images/themes/default/mActionFileExit.png</normaloff>:/images/themes/default/mActionFileExit.png</iconset>
    </property>
    <property name="text">
-    <string>Exit</string>
+    <string>Exit QGIS</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -586,8 +627,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>:/images/themes/default/mActionAddFeature.png</normaloff>:/images/themes/default/mActionAddFeature.png</iconset>
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCapturePolygon.png</normaloff>:/images/themes/default/mActionCapturePolygon.png</iconset>
    </property>
    <property name="text">
     <string>Add Feature</string>
@@ -1074,6 +1115,9 @@
    <property name="text">
     <string>Labeling</string>
    </property>
+   <property name="toolTip">
+    <string>Layer Labeling Options</string>
+   </property>
   </action>
   <action name="mActionNewVectorLayer">
    <property name="icon">
@@ -1168,6 +1212,18 @@
     <string>Ctrl+Shift+M</string>
    </property>
   </action>
+  <action name="mActionAddOracleLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddOracleLayer.png</normaloff>:/images/themes/default/mActionAddOracleLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Oracle Spatial Layer...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
+   </property>
+  </action>
   <action name="mActionAddWmsLayer">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -1195,7 +1251,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionToggleEditing.png</normaloff>:/images/themes/default/mActionToggleEditing.png</iconset>
+     <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
    </property>
    <property name="text">
     <string>Toggle Editing</string>
@@ -1207,10 +1263,10 @@
   <action name="mActionSaveEdits">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionSaveEdits.png</normaloff>:/images/themes/default/mActionSaveEdits.png</iconset>
+     <normaloff>:/images/themes/default/mActionSaveEdits.svg</normaloff>:/images/themes/default/mActionSaveEdits.svg</iconset>
    </property>
    <property name="text">
-    <string>Save Edits</string>
+    <string>Save for Selected Layer(s)</string>
    </property>
    <property name="statusTip">
     <string>Save edits to current layer, but continue editing</string>
@@ -1249,11 +1305,6 @@
   <action name="mActionSetProjectCRSFromLayer">
    <property name="text">
     <string>Set Project CRS from Layer</string>
-   </property>
-  </action>
-  <action name="mActionTileScale">
-   <property name="text">
-    <string>Tile scale slider</string>
    </property>
   </action>
   <action name="mActionLayerProperties">
@@ -1467,6 +1518,9 @@
    <property name="text">
     <string>Move Label</string>
    </property>
+   <property name="toolTip">
+    <string>Move Label</string>
+   </property>
   </action>
   <action name="mActionRotateLabel">
    <property name="checkable">
@@ -1478,6 +1532,10 @@
    </property>
    <property name="text">
     <string>Rotate Label</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate Label
+Ctl (Cmd) increments by 15 deg.</string>
    </property>
   </action>
   <action name="mActionChangeLabelProperties">
@@ -1493,6 +1551,10 @@
    </property>
   </action>
   <action name="mActionStyleManagerV2">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
+   </property>
    <property name="text">
     <string>Style Manager...</string>
    </property>
@@ -1637,7 +1699,7 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/gis/mActionTouch.png</normaloff>:/images/themes/gis/mActionTouch.png</iconset>
+     <normaloff>:/images/themes/default/mActionTouch.png</normaloff>:/images/themes/default/mActionTouch.png</iconset>
    </property>
    <property name="text">
     <string>Touch zoom and pan</string>
@@ -1674,6 +1736,336 @@
    </property>
    <property name="text">
     <string>Paste style</string>
+   </property>
+  </action>
+  <action name="mActionAddWcsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWcsLayer.png</normaloff>:/images/themes/default/mActionAddWcsLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add WCS Layer...</string>
+   </property>
+  </action>
+  <action name="mActionDecorationGrid">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/transformed.png</normaloff>:/images/themes/default/transformed.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Grid</string>
+   </property>
+   <property name="toolTip">
+    <string>Grid</string>
+   </property>
+   <property name="whatsThis">
+    <string>Creates a scale bar that is displayed on the map canvas</string>
+   </property>
+  </action>
+  <action name="mActionPinLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPinLabels.svg</normaloff>:/images/themes/default/mActionPinLabels.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Pin/Unpin Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Pin/Unpin Labels
+Click or marquee on label to pin
+Shift unpins, Ctl (Cmd) toggles state
+Acts on all editable layers</string>
+   </property>
+  </action>
+  <action name="mActionShowPinnedLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</normaloff>:/images/themes/default/mActionShowPinnedLabels.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Highlight Pinned Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Highlight Pinned Labels</string>
+   </property>
+  </action>
+  <action name="mActionNewBlankProject">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileNew.png</normaloff>:/images/themes/default/mActionFileNew.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Blank Project</string>
+   </property>
+   <property name="toolTip">
+    <string>New Blank Project</string>
+   </property>
+  </action>
+  <action name="mActionLocalCumulativeCutStretch">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.png</normaloff>:/images/themes/default/mActionLocalCumulativeCutStretch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Local Cumulative Cut Stretch</string>
+   </property>
+   <property name="toolTip">
+    <string>Local cumulative cut stretch using current extent, default limits and estimated values.</string>
+   </property>
+  </action>
+  <action name="mActionFullCumulativeCutStretch">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.png</normaloff>:/images/themes/default/mActionFullCumulativeCutStretch.png</iconset>
+   </property>
+   <property name="text">
+    <string>Full Dataset Cumulative Cut Stretch</string>
+   </property>
+   <property name="toolTip">
+    <string>Cumulative cut stretch using full dataset extent, default limits and estimated values.</string>
+   </property>
+  </action>
+  <action name="mActionShowHideLabels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionShowHideLabels.svg</normaloff>:/images/themes/default/mActionShowHideLabels.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Show/Hide Labels</string>
+   </property>
+   <property name="toolTip">
+    <string>Show/Hide Labels
+Click or marquee on feature to show label
+Shift+click or marquee on label to hide it
+Acts on currently active editable layer</string>
+   </property>
+  </action>
+  <action name="mActionHtmlAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFormAnnotation.png</normaloff>:/images/themes/default/mActionFormAnnotation.png</iconset>
+   </property>
+   <property name="text">
+    <string>Html Annotation</string>
+   </property>
+   <property name="toolTip">
+    <string>Html Annotation</string>
+   </property>
+  </action>
+  <action name="mActionDuplicateLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddMap.png</normaloff>:/images/themes/default/mActionAddMap.png</iconset>
+   </property>
+   <property name="text">
+    <string>Duplicate Layer(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Duplicate Layer(s)</string>
+   </property>
+  </action>
+  <action name="mActionSvgAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
+   </property>
+   <property name="text">
+    <string>SVG annotation</string>
+   </property>
+  </action>
+  <action name="mActionSaveAllEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAllEdits.svg</normaloff>:/images/themes/default/mActionSaveAllEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save for All Layers</string>
+   </property>
+   <property name="toolTip">
+    <string>Save for All Layers</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="mActionRollbackAllEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRollbackAllEdits.svg</normaloff>:/images/themes/default/mActionRollbackAllEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Rollback for All Layers</string>
+   </property>
+   <property name="toolTip">
+    <string>Rollback for All Layers</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="mActionCancelAllEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCancelAllEdits.svg</normaloff>:/images/themes/default/mActionCancelAllEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Cancel for All Layers</string>
+   </property>
+   <property name="toolTip">
+    <string>Cancel for All Layers</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="mActionRollbackEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRollbackEdits.svg</normaloff>:/images/themes/default/mActionRollbackEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Rollback for Selected Layer(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Rollback for Selected Layer(s)</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="mActionAllEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAllEdits.svg</normaloff>:/images/themes/default/mActionAllEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Current Edits</string>
+   </property>
+   <property name="toolTip">
+    <string>Current Edits</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="mActionCancelEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCancelEdits.svg</normaloff>:/images/themes/default/mActionCancelEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Cancel for Selected Layer(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Cancel for Selected Layer(s)</string>
+   </property>
+   <property name="statusTip">
+    <string/>
+   </property>
+  </action>
+  <action name="mActionSaveLayerEdits">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAllEdits.svg</normaloff>:/images/themes/default/mActionSaveAllEdits.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Layer Edits</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Layer Edits</string>
+   </property>
+  </action>
+  <action name="mActionRotateFeature">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRotateFeature.png</normaloff>:/images/themes/default/mActionRotateFeature.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate Feature(s)</string>
+   </property>
+  </action>
+  <action name="mActionOSMDownload">
+   <property name="text">
+    <string>&amp;Download data</string>
+   </property>
+  </action>
+  <action name="mActionOSMImport">
+   <property name="text">
+    <string>&amp;Import topology from XML</string>
+   </property>
+  </action>
+  <action name="mActionOSMExport">
+   <property name="text">
+    <string>&amp;Export topology to SpatiaLite</string>
+   </property>
+  </action>
+  <action name="mActionIncreaseBrightness">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIncreaseBrightness.svg</normaloff>:/images/themes/default/mActionIncreaseBrightness.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Increase brightness</string>
+   </property>
+  </action>
+  <action name="mActionDecreaseBrightness">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDecreaseBrightness.svg</normaloff>:/images/themes/default/mActionDecreaseBrightness.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Decrease brightness</string>
+   </property>
+  </action>
+  <action name="mActionIncreaseContrast">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIncreaseContrast.svg</normaloff>:/images/themes/default/mActionIncreaseContrast.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Increase contrast</string>
+   </property>
+  </action>
+  <action name="mActionDecreaseContrast">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDecreaseContrast.svg</normaloff>:/images/themes/default/mActionDecreaseContrast.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Decrease contrast</string>
+   </property>
+  </action>
+  <action name="mActionSelectByExpression">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconExpressionSelect.svg</normaloff>:/images/themes/default/mIconExpressionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select By Expression</string>
+   </property>
+   <property name="toolTip">
+    <string>Select features using an expression</string>
    </property>
   </action>
  </widget>

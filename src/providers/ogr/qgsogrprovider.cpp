@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsogrprovider.h"
+#include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
@@ -106,6 +107,14 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
       ogrType = OFTReal;
       break;
 
+    case QVariant::Date:
+      ogrType = OFTDate;
+      break;
+
+    case QVariant::DateTime:
+      ogrType = OFTDateTime;
+      break;
+
     default:
       return false;
   }
@@ -119,7 +128,7 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
 
 QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,
@@ -200,13 +209,15 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , ogrDriver( 0 )
     , valid( false )
     , featuresCounted( -1 )
+    , mActiveIterator( 0 )
 {
   QgsCPLErrorHandler handler;
 
   QgsApplication::registerOgrDrivers();
 
-  // set the selection rectangle pointer to 0
-  mSelectionRectangle = 0;
+  QSettings settings;
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ? "" : 0 );
+
   // make connection to the data source
 
   QgsDebugMsg( "Data source uri is " + uri );
@@ -264,26 +275,18 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
 
   // Try to open using VSIFileHandler
   //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
-  if ( mFilePath.endsWith( ".zip", Qt::CaseInsensitive ) )
+  QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
+  if ( vsiPrefix != "" )
   {
     // GDAL>=1.8.0 has write support for zip, but read and write operations
     // cannot be interleaved, so for now just use read-only.
     openReadOnly = true;
-    if ( !mFilePath.startsWith( "/vsizip/" ) )
+    if ( !mFilePath.startsWith( vsiPrefix ) )
     {
-      mFilePath = "/vsizip/" + mFilePath;
+      mFilePath = vsiPrefix + mFilePath;
       setDataSourceUri( mFilePath );
     }
-    QgsDebugMsg( QString( "Trying /vsizip syntax, mFilePath= %1" ).arg( mFilePath ) );
-  }
-  else if ( mFilePath.endsWith( ".gz", Qt::CaseInsensitive ) )
-  {
-    if ( !mFilePath.startsWith( "/vsigzip/" ) )
-    {
-      mFilePath = "/vsigzip/" + mFilePath;
-      setDataSourceUri( mFilePath );
-    }
-    QgsDebugMsg( QString( "Trying /vsigzip syntax, mFilePath= %1" ).arg( mFilePath ) );
+    QgsDebugMsg( QString( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix ).arg( mFilePath ) );
   }
 
   QgsDebugMsg( "mFilePath: " + mFilePath );
@@ -341,16 +344,20 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     QgsMessageLog::logMessage( tr( "Data source is invalid (%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), tr( "OGR" ) );
   }
 
-  // FIXME: sync with app/qgsnewvectorlayerdialog.cpp
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 15 )
   << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
+  << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date )
+  << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime )
   ;
 }
 
 QgsOgrProvider::~QgsOgrProvider()
 {
+  if ( mActiveIterator )
+    mActiveIterator->close();
+
   if ( ogrLayer != ogrOrigLayer )
   {
     OGR_DS_ReleaseResultSet( ogrDataSource, ogrLayer );
@@ -363,12 +370,6 @@ QgsOgrProvider::~QgsOgrProvider()
   {
     free( extent_ );
     extent_ = 0;
-  }
-
-  if ( mSelectionRectangle )
-  {
-    OGR_G_DestroyGeometry( mSelectionRectangle );
-    mSelectionRectangle = 0;
   }
 }
 
@@ -493,7 +494,7 @@ QStringList QgsOgrProvider::subLayers() const
       default:                    geom = QString( "Unknown WKB: %1" ).arg( layerGeomType );
     }
 
-    mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount ).arg( geom );
+    mSubLayerList << QString( "%1:%2:%3:%4" ).arg( i ).arg( theLayerName ).arg( theLayerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( theLayerFeatureCount ) ).arg( geom );
   }
 
   return mSubLayerList;
@@ -502,7 +503,8 @@ QStringList QgsOgrProvider::subLayers() const
 void QgsOgrProvider::setEncoding( const QString& e )
 {
 #if defined(OLCStringsAsUTF8)
-  if ( !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
+  QSettings settings;
+  if (( ogrDriverName == "ESRI Shapefile" && settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() ) || !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
   {
     QgsVectorDataProvider::setEncoding( e );
   }
@@ -565,16 +567,16 @@ void QgsOgrProvider::loadFields()
       {
         case OFTInteger: varType = QVariant::Int; break;
         case OFTReal: varType = QVariant::Double; break;
-          // unsupported in OGR 1.3
-          //case OFTDateTime: varType = QVariant::DateTime; break;
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1400
-        case OFTString: varType = QVariant::String; break;
+        case OFTDate: varType = QVariant::Date; break;
+        case OFTDateTime: varType = QVariant::DateTime; break;
+        case OFTString:
 #endif
         default: varType = QVariant::String; // other unsupported, leave it as a string
       }
 
-      mAttributeFields.insert(
-        i, QgsField(
+      mAttributeFields.append(
+        QgsField(
           //TODO: fix this hack
 #ifdef ANDROID
           OGR_Fld_GetNameRef( fldDef ),
@@ -633,211 +635,9 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 #endif
 }
 
-bool QgsOgrProvider::featureAtId( QgsFeatureId featureId,
-                                  QgsFeature& feature,
-                                  bool fetchGeometry,
-                                  QgsAttributeList fetchAttributes )
+QgsFeatureIterator QgsOgrProvider::getFeatures( const QgsFeatureRequest& request )
 {
-  setRelevantFields( fetchGeometry, fetchAttributes );
-
-  OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( featureId ) );
-  if ( !fet )
-    return false;
-
-  feature.setFeatureId( OGR_F_GetFID( fet ) );
-  feature.clearAttributeMap();
-  // skip features without geometry
-  if ( !OGR_F_GetGeometryRef( fet ) && !mFetchFeaturesWithoutGeom )
-  {
-    OGR_F_Destroy( fet );
-    return false;
-  }
-
-  /* fetch geometry */
-  if ( fetchGeometry )
-  {
-    OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
-    // skip features without geometry
-
-    // get the wkb representation
-    unsigned char *wkb = new unsigned char[OGR_G_WkbSize( geom )];
-    OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
-
-    feature.setGeometryAndOwnership( wkb, OGR_G_WkbSize( geom ) );
-  }
-
-  /* fetch attributes */
-  for ( QgsAttributeList::iterator it = fetchAttributes.begin(); it != fetchAttributes.end(); ++it )
-  {
-    getFeatureAttribute( fet, feature, *it );
-  }
-
-  if ( OGR_F_GetGeometryRef( fet ) != NULL )
-  {
-    feature.setValid( true );
-  }
-  else
-  {
-    feature.setValid( false );
-  }
-  OGR_F_Destroy( fet );
-  return true;
-}
-
-bool QgsOgrProvider::nextFeature( QgsFeature& feature )
-{
-  feature.setValid( false );
-
-  if ( !valid )
-  {
-    QgsMessageLog::logMessage( tr( "Read attempt on an invalid OGR data source" ), tr( "OGR" ) );
-    return false;
-  }
-
-  if ( !mRelevantFieldsForNextFeature )
-  {
-    // setting relevant fields has some overhead so set it only when necessary
-    setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
-                       mAttributesToFetch );
-    mRelevantFieldsForNextFeature = true;
-  }
-
-  OGRFeatureH fet;
-  QgsRectangle selectionRect;
-
-  while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
-  {
-    // skip features without geometry
-    if ( !mFetchFeaturesWithoutGeom && !OGR_F_GetGeometryRef( fet ) )
-    {
-      OGR_F_Destroy( fet );
-      continue;
-    }
-
-    OGRFeatureDefnH featureDefinition = OGR_F_GetDefnRef( fet );
-    QString featureTypeName = featureDefinition ? QString( OGR_FD_GetName( featureDefinition ) ) : QString( "" );
-    feature.setFeatureId( OGR_F_GetFID( fet ) );
-    feature.clearAttributeMap();
-    feature.setTypeName( featureTypeName );
-
-    /* fetch geometry */
-    if ( mFetchGeom || mUseIntersect )
-    {
-      OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
-
-      if ( geom == 0 )
-      {
-        OGR_F_Destroy( fet );
-        continue;
-      }
-
-      // get the wkb representation
-      unsigned char *wkb = new unsigned char[OGR_G_WkbSize( geom )];
-      OGR_G_ExportToWkb( geom, ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
-
-      feature.setGeometryAndOwnership( wkb, OGR_G_WkbSize( geom ) );
-
-      if ( mUseIntersect )
-      {
-        //precise test for intersection with search rectangle
-        //first make QgsRectangle from OGRPolygon
-        OGREnvelope env;
-        memset( &env, 0, sizeof( env ) );
-        if ( mSelectionRectangle )
-          OGR_G_GetEnvelope( mSelectionRectangle, &env );
-        if ( env.MinX != 0 || env.MinY != 0 || env.MaxX != 0 || env.MaxY != 0 ) //if envelope is invalid, skip the precise intersection test
-        {
-          selectionRect.set( env.MinX, env.MinY, env.MaxX, env.MaxY );
-          if ( !feature.geometry()->intersects( selectionRect ) )
-          {
-            OGR_F_Destroy( fet );
-            continue;
-          }
-        }
-
-      }
-    }
-
-    /* fetch attributes */
-    for ( QgsAttributeList::iterator it = mAttributesToFetch.begin(); it != mAttributesToFetch.end(); ++it )
-    {
-      getFeatureAttribute( fet, feature, *it );
-    }
-
-    /* we have a feature, end this cycle */
-    break;
-
-  } /* while */
-
-  if ( fet )
-  {
-    if ( OGR_F_GetGeometryRef( fet ) != NULL )
-    {
-      feature.setValid( true );
-    }
-    else
-    {
-      feature.setValid( false );
-    }
-    OGR_F_Destroy( fet );
-    return true;
-  }
-  else
-  {
-    QgsDebugMsg( "Feature is null" );
-    // probably should reset reading here
-    OGR_L_ResetReading( ogrLayer );
-    return false;
-  }
-}
-
-void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect, bool fetchGeometry, bool useIntersect )
-{
-  if ( geometryType() == QGis::WKBNoGeometry )
-  {
-    fetchGeometry = false;
-  }
-
-  mUseIntersect = useIntersect;
-  mAttributesToFetch = fetchAttributes;
-  mFetchGeom = fetchGeometry;
-  mFetchRect = rect;
-
-  setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
-                     mAttributesToFetch );
-  mRelevantFieldsForNextFeature = true;
-
-  // spatial query to select features
-  if ( rect.isEmpty() )
-  {
-    OGR_L_SetSpatialFilter( ogrLayer, 0 );
-  }
-  else
-  {
-    OGRGeometryH filter = 0;
-    QString wktExtent = QString( "POLYGON((%1))" ).arg( rect.asPolygon() );
-    QByteArray ba = wktExtent.toAscii();
-    const char *wktText = ba;
-
-    if ( useIntersect )
-    {
-      // store the selection rectangle for use in filtering features during
-      // an identify and display attributes
-      if ( mSelectionRectangle )
-        OGR_G_DestroyGeometry( mSelectionRectangle );
-
-      OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &mSelectionRectangle );
-      wktText = ba;
-    }
-
-    OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &filter );
-    QgsDebugMsg( "Setting spatial filter using " + wktExtent );
-    OGR_L_SetSpatialFilter( ogrLayer, filter );
-    OGR_G_DestroyGeometry( filter );
-  }
-
-  //start with first feature
-  OGR_L_ResetReading( ogrLayer );
+  return QgsFeatureIterator( new QgsOgrFeatureIterator( this, request ) );
 }
 
 
@@ -941,54 +741,10 @@ long QgsOgrProvider::featureCount() const
   return featuresCounted;
 }
 
-/**
- * Return the number of fields
- */
-uint QgsOgrProvider::fieldCount() const
-{
-  return mAttributeFields.size();
-}
 
-void QgsOgrProvider::getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex )
-{
-  OGRFieldDefnH fldDef = OGR_F_GetFieldDefnRef( ogrFet, attindex );
-
-  if ( ! fldDef )
-  {
-    QgsDebugMsg( "ogrFet->GetFieldDefnRef(attindex) returns NULL" );
-    return;
-  }
-
-  QVariant value;
-
-  if ( OGR_F_IsFieldSet( ogrFet, attindex ) )
-  {
-    switch ( mAttributeFields[attindex].type() )
-    {
-      case QVariant::String: value = QVariant( mEncoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attindex ) ) ); break;
-      case QVariant::Int: value = QVariant( OGR_F_GetFieldAsInteger( ogrFet, attindex ) ); break;
-      case QVariant::Double: value = QVariant( OGR_F_GetFieldAsDouble( ogrFet, attindex ) ); break;
-        //case QVariant::DateTime: value = QVariant(QDateTime::fromString(str)); break;
-      default: assert( NULL && "unsupported field type" );
-    }
-  }
-  else
-  {
-    value = QVariant( QString::null );
-  }
-
-  f.addAttribute( attindex, value );
-}
-
-
-const QgsFieldMap & QgsOgrProvider::fields() const
+const QgsFields & QgsOgrProvider::fields() const
 {
   return mAttributeFields;
-}
-
-void QgsOgrProvider::rewind()
-{
-  OGR_L_ResetReading( ogrLayer );
 }
 
 
@@ -1011,24 +767,24 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     unsigned char* wkb = f.geometry()->asWkb();
     OGRGeometryH geom = NULL;
 
-    if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() ) != OGRERR_NONE )
+    if ( wkb )
     {
-      pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
-      return false;
+      if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() ) != OGRERR_NONE )
+      {
+        pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
+        return false;
+      }
+      OGR_F_SetGeometryDirectly( feature, geom );
     }
-
-    OGR_F_SetGeometryDirectly( feature, geom );
   }
 
-  QgsAttributeMap attrs = f.attributeMap();
+  const QgsAttributes& attrs = f.attributes();
 
   //add possible attribute information
-  for ( QgsAttributeMap::iterator it = attrs.begin(); it != attrs.end(); ++it )
+  for ( int targetAttributeId = 0; targetAttributeId < attrs.count(); ++targetAttributeId )
   {
-    int targetAttributeId = it.key();
-
     // don't try to set field from attribute map if it's not present in layer
-    if ( targetAttributeId >= OGR_FD_GetFieldCount( fdef ) )
+    if ( targetAttributeId < 0 || targetAttributeId >= OGR_FD_GetFieldCount( fdef ) )
       continue;
 
     //if(!s.isEmpty())
@@ -1037,7 +793,8 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, targetAttributeId );
     OGRFieldType type = OGR_Fld_GetType( fldDef );
 
-    if ( it->isNull() || ( type != OFTString && it->toString().isEmpty() ) )
+    QVariant attrVal = attrs[targetAttributeId];
+    if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
       OGR_F_UnsetField( feature, targetAttributeId );
     }
@@ -1046,19 +803,38 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
       switch ( type )
       {
         case OFTInteger:
-          OGR_F_SetFieldInteger( feature, targetAttributeId, it->toInt() );
+          OGR_F_SetFieldInteger( feature, targetAttributeId, attrVal.toInt() );
           break;
 
         case OFTReal:
-          OGR_F_SetFieldDouble( feature, targetAttributeId, it->toDouble() );
+          OGR_F_SetFieldDouble( feature, targetAttributeId, attrVal.toDouble() );
+          break;
+
+        case OFTDate:
+          OGR_F_SetFieldDateTime( feature, targetAttributeId,
+                                  attrVal.toDate().year(),
+                                  attrVal.toDate().month(),
+                                  attrVal.toDate().day(),
+                                  0, 0, 0,
+                                  0 );
+          break;
+        case OFTDateTime:
+          OGR_F_SetFieldDateTime( feature, targetAttributeId,
+                                  attrVal.toDateTime().date().year(),
+                                  attrVal.toDateTime().date().month(),
+                                  attrVal.toDateTime().date().day(),
+                                  attrVal.toDateTime().time().hour(),
+                                  attrVal.toDateTime().time().minute(),
+                                  attrVal.toDateTime().time().second(),
+                                  0 );
           break;
 
         case OFTString:
           QgsDebugMsg( QString( "Writing string attribute %1 with %2, encoding %3" )
                        .arg( targetAttributeId )
-                       .arg( it->toString() )
+                       .arg( attrVal.toString() )
                        .arg( mEncoding->name().data() ) );
-          OGR_F_SetFieldString( feature, targetAttributeId, mEncoding->fromUnicode( it->toString() ).constData() );
+          OGR_F_SetFieldString( feature, targetAttributeId, mEncoding->fromUnicode( attrVal.toString() ).constData() );
           break;
 
         default:
@@ -1084,7 +860,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
 bool QgsOgrProvider::addFeatures( QgsFeatureList & flist )
 {
-  setRelevantFields( true, mAttributeFields.keys() );
+  setRelevantFields( true, attributeIndexes() );
 
   bool returnvalue = true;
   for ( QgsFeatureList::iterator it = flist.begin(); it != flist.end(); ++it )
@@ -1123,6 +899,12 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       case QVariant::Double:
         type = OFTReal;
         break;
+      case QVariant::Date:
+        type = OFTDate;
+        break;
+      case QVariant::DateTime:
+        type = OFTDateTime;
+        break;
       case QVariant::String:
         type = OFTString;
         break;
@@ -1154,7 +936,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   QList<int> attrsLst = attributes.toList();
   // sort in descending order
   qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
-  foreach( int attr, attrsLst )
+  foreach ( int attr, attrsLst )
   {
     if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
     {
@@ -1179,7 +961,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
   clearMinMaxCache();
 
-  setRelevantFields( true, mAttributeFields.keys() );
+  setRelevantFields( true, attributeIndexes() );
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
@@ -1229,6 +1011,24 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
           case OFTReal:
             OGR_F_SetFieldDouble( of, f, it2->toDouble() );
             break;
+          case OFTDate:
+            OGR_F_SetFieldDateTime( of, f,
+                                    it2->toDate().year(),
+                                    it2->toDate().month(),
+                                    it2->toDate().day(),
+                                    0, 0, 0,
+                                    0 );
+            break;
+          case OFTDateTime:
+            OGR_F_SetFieldDateTime( of, f,
+                                    it2->toDateTime().date().year(),
+                                    it2->toDateTime().date().month(),
+                                    it2->toDateTime().date().day(),
+                                    it2->toDateTime().time().hour(),
+                                    it2->toDateTime().time().minute(),
+                                    it2->toDateTime().time().second(),
+                                    0 );
+            break;
           case OFTString:
             OGR_F_SetFieldString( of, f, mEncoding->fromUnicode( it2->toString() ).constData() );
             break;
@@ -1254,7 +1054,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   OGRFeatureH theOGRFeature = 0;
   OGRGeometryH theNewGeometry = 0;
 
-  setRelevantFields( true, mAttributeFields.keys() );
+  setRelevantFields( true, attributeIndexes() );
 
   for ( QgsGeometryMap::iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
@@ -1316,7 +1116,7 @@ bool QgsOgrProvider::createSpatialIndex()
 {
   QgsCPLErrorHandler handler;
 
-  QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+  QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
 
   QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
@@ -1330,7 +1130,7 @@ bool QgsOgrProvider::createSpatialIndex()
 
 bool QgsOgrProvider::createAttributeIndex( int field )
 {
-  QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+  QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
   QString dropSql = QString( "DROP INDEX ON %1" ).arg( quotedIdentifier( layerName ) );
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( dropSql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
   QString createSql = QString( "CREATE INDEX ON %1 USING %2" ).arg( quotedIdentifier( layerName ) ).arg( fields()[field].name() );
@@ -1360,7 +1160,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
     returnvalue = false;
   }
 
-  QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
+  QString layerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) );
 
   QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
@@ -1398,7 +1198,7 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 
 int QgsOgrProvider::capabilities() const
 {
-  int ability = SetEncoding;
+  int ability = 0;
 
   // collect abilities reported by OGR
   if ( ogrLayer )
@@ -1488,6 +1288,15 @@ int QgsOgrProvider::capabilities() const
     {
       ability |= DeleteAttributes;
     }
+
+#if defined(OLCStringsAsUTF8)
+    if ( !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
+    {
+      ability |= SelectEncoding;
+    }
+#else
+    ability |= SelectEncoding;
+#endif
 
     // OGR doesn't handle shapefiles without attributes, ie. missing DBFs well, fixes #803
     if ( ogrDriverName == "ESRI Shapefile" )
@@ -1792,16 +1601,14 @@ QString createFilters( QString type )
     // VSIFileHandler (.zip and .gz files)
     //   see http://trac.osgeo.org/gdal/wiki/UserDocs/ReadInZip
     // Requires GDAL>=1.6.0 with libz support, let's assume we have it.
-    // For .zip this works only if there is one file (or dataset) in the root of the zip.
-    // Only tested with tiff, shape (zip) and spatialite (zip and gz).
     // This does not work for some file types, see VSIFileHandler doc.
-    // Ideally we should also add support for /vsitar/ (requires cpl_vsil_tar.cpp).
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
     QSettings settings;
-    if ( settings.value( "/qgis/scanZipInBrowser", 2 ).toInt() != 0 )
+    if ( settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString() != "no" )
     {
-      myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz" );
-      myExtensions << "zip" << "gz";
+      myFileFilters += createFileFilter_( QObject::tr( "GDAL/OGR VSIFileHandler" ), "*.zip *.gz *.tar *.tar.gz *.tgz" );
+      myExtensions << "zip" << "gz" << "tar" << "tar.gz" << "tgz";
+
     }
 #endif
 
@@ -1939,7 +1746,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
                                        const QString &format,
                                        const QString &encoding,
                                        QGis::WkbType vectortype,
-                                       const std::list<std::pair<QString, QString> > &attributes,
+                                       const QList< QPair<QString, QString> > &attributes,
                                        const QgsCoordinateReferenceSystem *srs = NULL )
 {
   QgsDebugMsg( QString( "Creating empty vector layer with format: %1" ).arg( format ) );
@@ -1964,7 +1771,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
     // check for duplicate fieldnames
     QSet<QString> fieldNames;
-    std::list<std::pair<QString, QString> >::const_iterator fldIt;
+    QList<QPair<QString, QString> >::const_iterator fldIt;
     for ( fldIt = attributes.begin(); fldIt != attributes.end(); ++fldIt )
     {
       QString name = fldIt->first.left( 10 );
@@ -2059,7 +1866,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     Q_ASSERT( codec );
   }
 
-  for ( std::list<std::pair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
+  for ( QList<QPair<QString, QString> >::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
   {
     QStringList fields = it->second.split( ";" );
 
@@ -2097,6 +1904,14 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
       field = OGR_Fld_Create( TO8( it->first ), OFTString );
       OGR_Fld_SetWidth( field, width );
+    }
+    else if ( fields[0] == "Date" )
+    {
+      field = OGR_Fld_Create( TO8( it->first ), OFTDate );
+    }
+    else if ( fields[0] == "DateTime" )
+    {
+      field = OGR_Fld_Create( TO8( it->first ), OFTDateTime );
     }
     else
     {
@@ -2193,7 +2008,10 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 {
   uniqueValues.clear();
 
-  QgsField fld = mAttributeFields.value( index );
+  if ( index < 0 || index >= mAttributeFields.count() )
+    return;
+
+  const QgsField& fld = mAttributeFields[index];
   if ( fld.name().isNull() )
   {
     return; //not a provider field
@@ -2232,14 +2050,13 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
 
 QVariant QgsOgrProvider::minimumValue( int index )
 {
-  QgsFieldMap::const_iterator attIt = mAttributeFields.find( index );
-  if ( attIt == mAttributeFields.constEnd() )
+  if ( index < 0 || index >= mAttributeFields.count() )
   {
     return QVariant();
   }
-  const QgsField& fld = attIt.value();
+  const QgsField& fld = mAttributeFields[index];
 
-  QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
+  QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   QString sql = QString( "SELECT MIN(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
@@ -2272,14 +2089,13 @@ QVariant QgsOgrProvider::minimumValue( int index )
 
 QVariant QgsOgrProvider::maximumValue( int index )
 {
-  QgsFieldMap::const_iterator attIt = mAttributeFields.find( index );
-  if ( attIt == mAttributeFields.constEnd() )
+  if ( index < 0 || index >= mAttributeFields.count() )
   {
     return QVariant();
   }
   const QgsField& fld = mAttributeFields[index];
 
-  QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
+  QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   QString sql = QString( "SELECT MAX(%1) FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
@@ -2377,7 +2193,7 @@ void QgsOgrProvider::recalculateFeatureCount()
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,
-  const QgsFieldMap &fields,
+  const QgsFields &fields,
   QGis::WkbType wkbType,
   const QgsCoordinateReferenceSystem *srs,
   bool overwrite,

@@ -3,7 +3,7 @@
     ---------------------
     begin                : January 2007
     copyright            : (C) 2007 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,7 +24,6 @@ class QgsLegendLayer;
 class QgsLegendPropertyGroup;
 class QgsMapLayer;
 class QgsRasterLayer;
-class QgsSymbol;
 class QgsVectorLayer;
 
 class QTreeWidget;
@@ -51,7 +50,13 @@ class QgsLegendLayer : public QgsLegendItem
     //void updateCheckState();
 
     /**Updates symbology of the layer and copies symbology to other layer files in the group*/
-    void refreshSymbology( const QString& key, double widthScale = 1.0 );
+    void refreshSymbology( const QString& key );
+
+    /** Helper method to set font characteristics.
+     *  Not to be confused with setFont() which is inherited
+     *  from the QTreeWidgetItem base class.
+     */
+    void setupFont();
 
     /** called to add appropriate menu items to legend's popup menu */
     void addToPopupMenu( QMenu& theMenu );
@@ -75,6 +80,15 @@ class QgsLegendLayer : public QgsLegendItem
     void setDrawingOrder( int order );
     int drawingOrder() const { return mDrawingOrder; }
 
+    /** Get layer name currently set in legend */
+    QString layerName();
+
+    /**Called before edit*/
+    void beforeEdit();
+
+    /**Called after edit*/
+    void afterEdit();
+
   public slots:
 
     /**Toggle show in overview*/
@@ -87,7 +101,6 @@ class QgsLegendLayer : public QgsLegendItem
     void layerNameChanged();
 
     /**Update symbology (e.g. to update feature count in the legend after editing operations)*/
-    void updateAfterLayerModification( bool onlyGeomChanged );
     void updateAfterLayerModification();
 
     void setShowFeatureCount( bool show, bool update = true );
@@ -96,8 +109,6 @@ class QgsLegendLayer : public QgsLegendItem
   protected:
 
     /** Prepare and change symbology for vector layer */
-    void vectorLayerSymbology( QgsVectorLayer* mapLayer, double widthScale = 1.0 );
-
     void vectorLayerSymbologyV2( QgsVectorLayer* vlayer );
 
     /** Prepare and change symbology for raster layer */
@@ -108,17 +119,13 @@ class QgsLegendLayer : public QgsLegendItem
 
     /**Adds feature counts to the symbology items (for symbology v2)*/
     void updateItemListCountV2( SymbologyList& itemList, QgsVectorLayer* layer );
-    /**Calculates feature count for the individual symbols (old symbology)*/
-    void updateItemListCount( QgsVectorLayer* layer, const QList<QgsSymbol*>& sym, QMap< QgsSymbol*, int >& featureCountMap );
 
     QPixmap getOriginalPixmap();
 
   private:
-    /** Helper method to make the font bold from all ctors.
-     *  Not to be confused with setFont() which is inherited
-     *  from the QTreeWidgetItem base class.
-     */
-    void setupFont();
+
+    /** Label, may be layer name or layer name + [feature count] */
+    QString label();
 
   protected:
 

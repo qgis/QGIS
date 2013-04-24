@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archive>
+  <!--version information for cpt-city packages-->
+  <version>2.02.1</version>
+  <variant>cpt-city-qgis-min</variant>
+  <parent>
+    <version>2.02</version>
+    <variant>full</variant>
+  </parent>
+  <creator>Etienne Tourigny</creator>
+  <created>Sat Aug 18 11:42:24 2012</created>
+</archive>

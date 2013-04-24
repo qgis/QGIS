@@ -1,0 +1,9 @@
+RGB Composite
+grid_visualisation
+ParameterRaster|GRID_R|R|False
+ParameterRaster|GRID_G|G|False
+ParameterRaster|GRID_B|B|False
+ParameterSelection|METHOD_R|Method for R value|0-255;Rescale to 0 - 255
+ParameterSelection|METHOD_G|Method for G value|0-255;Rescale to 0 - 255
+ParameterSelection|METHOD_B|Method for B value|0-255;Rescale to 0 - 255
+OutputRaster|GRID_RGB|Output RGB

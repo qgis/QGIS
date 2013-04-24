@@ -23,9 +23,7 @@
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-#include <vector>
-#include <utility>
-
+#include <QVector>
 #include <QPolygonF>
 
 /** \ingroup core
@@ -74,8 +72,8 @@ class CORE_EXPORT QgsClipper
     // feature in x and y. The shapeOpen parameter determines whether
     // the function treats the points as a closed shape (polygon), or as
     // an open shape (linestring).
-    static void trimFeature( std::vector<double>& x,
-                             std::vector<double>& y,
+    static void trimFeature( QVector<double>& x,
+                             QVector<double>& y,
                              bool shapeOpen );
 
     static void trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect );
@@ -93,10 +91,10 @@ class CORE_EXPORT QgsClipper
 
     // Trims the given feature to the given boundary. Returns the
     // trimmed feature in the outX and outY vectors.
-    static void trimFeatureToBoundary( const std::vector<double>& inX,
-                                       const std::vector<double>& inY,
-                                       std::vector<double>& outX,
-                                       std::vector<double>& outY,
+    static void trimFeatureToBoundary( const QVector<double>& inX,
+                                       const QVector<double>& inY,
+                                       QVector<double>& outX,
+                                       QVector<double>& outY,
                                        Boundary b,
                                        bool shapeOpen );
 
@@ -154,12 +152,12 @@ class CORE_EXPORT QgsClipper
 // one (the only?) that is guaranteed to always give the correct
 // result.
 
-inline void QgsClipper::trimFeature( std::vector<double>& x,
-                                     std::vector<double>& y,
+inline void QgsClipper::trimFeature( QVector<double>& x,
+                                     QVector<double>& y,
                                      bool shapeOpen )
 {
-  std::vector<double> tmpX;
-  std::vector<double> tmpY;
+  QVector<double> tmpX;
+  QVector<double> tmpY;
   trimFeatureToBoundary( x, y, tmpX, tmpY, XMax, shapeOpen );
 
   x.clear();
@@ -195,20 +193,20 @@ inline void QgsClipper::trimPolygon( QPolygonF& pts, const QgsRectangle& clipRec
 // Hodgman's polygon-clipping algorithm.
 
 inline void QgsClipper::trimFeatureToBoundary(
-  const std::vector<double>& inX,
-  const std::vector<double>& inY,
-  std::vector<double>& outX,
-  std::vector<double>& outY,
+  const QVector<double>& inX,
+  const QVector<double>& inY,
+  QVector<double>& outX,
+  QVector<double>& outY,
   Boundary b, bool shapeOpen )
 {
   // The shapeOpen parameter selects whether this function treats the
   // shape as open or closed. False is appropriate for polygons and
   // true for polylines.
 
-  unsigned int i1 = inX.size() - 1; // start with last point
+  int i1 = inX.size() - 1; // start with last point
 
   // and compare to the first point initially.
-  for ( unsigned int i2 = 0; i2 < inX.size() ; ++i2 )
+  for ( int i2 = 0; i2 < inX.size() ; ++i2 )
   {
     // look at each edge of the polygon in turn
 
@@ -262,7 +260,7 @@ inline void QgsClipper::trimFeatureToBoundary(
 
 inline void QgsClipper::trimPolygonToBoundary( const QPolygonF& inPts, QPolygonF& outPts, const QgsRectangle& rect, Boundary b, double boundaryValue )
 {
-  unsigned int i1 = inPts.size() - 1; // start with last point
+  int i1 = inPts.size() - 1; // start with last point
 
   // and compare to the first point initially.
   for ( int i2 = 0; i2 < inPts.size() ; ++i2 )
@@ -421,7 +419,7 @@ inline QPointF QgsClipper::intersectRect( const QPointF& pt1,
   }
 
   double r = 0;
-  if ( !doubleNear( r_d, 0.0 ) )
+  if ( !qgsDoubleNear( r_d, 0.0 ) )
   {
     r = r_n / r_d;
   }

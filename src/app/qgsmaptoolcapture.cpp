@@ -115,7 +115,7 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
       while ( !mSnappingMarkers.isEmpty() )
         delete mSnappingMarkers.takeFirst();
 
-      foreach( const QgsSnappingResult &r, snapResults )
+      foreach ( const QgsSnappingResult &r, snapResults )
       {
         QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
         m->setIconType( QgsVertexMarker::ICON_CROSS );
@@ -204,7 +204,7 @@ int QgsMapToolCapture::addVertex( const QPoint &p )
 
   if ( !mRubberBand )
   {
-    mRubberBand = createRubberBand( mCaptureMode == CapturePolygon );
+    mRubberBand = createRubberBand( mCaptureMode == CapturePolygon ? QGis::Polygon : QGis::Line );
   }
 
   mRubberBand->addPoint( mapPoint );
@@ -227,7 +227,7 @@ void QgsMapToolCapture::undo()
       return;
     }
 
-    mRubberBand->removeLastPoint();
+    mRubberBand->removePoint(-2); // remove the one before the last one
     mCaptureList.removeLast();
 
     validateGeometry();

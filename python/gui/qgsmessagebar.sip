@@ -1,0 +1,68 @@
+class QgsMessageBar: QFrame
+{
+%TypeHeaderCode
+#include <qgsmessagebar.h>
+%End
+
+  public:
+    enum MessageLevel
+    {
+      INFO = 0,
+      WARNING = 1,
+      CRITICAL = 2
+    };
+
+    QgsMessageBar( QWidget *parent = 0 );
+    ~QgsMessageBar();
+
+    /*! display a widget on the bar after hiding the currently visible one
+     *  and putting it in a stack
+     * @param widget widget to add
+     * @param level is QgsMessageBar::INFO, WARNING or CRITICAL
+     * @param duration timeout duration of message in seconds, 0 value indicates no timeout
+     */
+    void pushWidget( QWidget *widget /Transfer/, MessageLevel level = INFO, int duration = 0 );
+
+    /*! remove the passed widget from the bar (if previously added),
+     *  then display the next one in the stack if any or hide the bar
+     *  @param widget widget to remove
+     *  @return true if the widget was removed, false otherwise
+     */
+    bool popWidget( QWidget *widget );
+
+    //! make out a widget containing a message to be displayed on the bar
+    static QWidget* createMessage( const QString &text, QWidget *parent = 0 ) /Factory/;
+    //! make out a widget containing icon and message to be displayed on the bar
+    static QWidget* createMessage( const QString &text, const QIcon &icon, QWidget *parent = 0 ) /Factory/;
+    //! make out a widget containing title and message to be displayed on the bar
+    static QWidget* createMessage( const QString &title, const QString &text, QWidget *parent = 0 )  /Factory/;
+    //! make out a widget containing icon, title and message to be displayed on the bar
+    static QWidget* createMessage( const QString &title, const QString &text, const QIcon &icon, QWidget *parent = 0 ) /Factory/;
+
+    //! convenience method for pushing a non-widget-based message to the bar
+    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 0 );
+    //! convenience method for pushing a non-widget-based message with title to the bar
+    void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 0 );
+
+  signals:
+    //! emitted when a message widget is added to the bar
+    void widgetAdded( QWidget *widget );
+
+    //! emitted when a widget was removed from the bar
+    void widgetRemoved( QWidget *widget );
+
+  public slots:
+    /*! remove the currently displayed widget from the bar and
+     *  display the next in the stack if any or hide the bar
+     *  @return true if the widget was removed, false otherwise
+     */
+    bool popWidget();
+
+    /*! remove all items from the bar's widget list
+     *  @return true if all items were removed, false otherwise
+     */
+    bool clearWidgets();
+
+  protected:
+    void mousePressEvent( QMouseEvent * e );
+};

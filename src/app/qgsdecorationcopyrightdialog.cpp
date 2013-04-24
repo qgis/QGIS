@@ -33,7 +33,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   cboOrientation->hide();
   textLabel15->hide();
 
-  cboxEnabled->setChecked( mDeco.mEnable );
+  cboxEnabled->setChecked( mDeco.enabled() );
   // text
   txtCopyrightText->setPlainText( mDeco.mLabelQString );
   // placement
@@ -60,7 +60,7 @@ void QgsDecorationCopyrightDialog::on_buttonBox_accepted()
   mDeco.mLabelQString = txtCopyrightText->toPlainText();
   mDeco.mLabelQColor = pbnColorChooser->color();
   mDeco.mPlacementIndex = cboPlacement->currentIndex();
-  mDeco.mEnable = cboxEnabled->isChecked();
+  mDeco.setEnabled( cboxEnabled->isChecked() );
 
   accept();
 }
@@ -70,17 +70,12 @@ void QgsDecorationCopyrightDialog::on_buttonBox_rejected()
   reject();
 }
 
-void QgsDecorationCopyrightDialog::on_pbnColorChooser_clicked()
+void QgsDecorationCopyrightDialog::on_pbnColorChooser_colorChanged( const QColor& c )
 {
-  QColor c = QColorDialog::getColor();
-  if ( c.isValid() )
-  {
-    pbnColorChooser->setColor( c );
-    QTextCursor cursor = txtCopyrightText->textCursor();
-    txtCopyrightText->selectAll();
-    txtCopyrightText->setTextColor( c );
-    txtCopyrightText->setTextCursor( cursor );
-  }
+  QTextCursor cursor = txtCopyrightText->textCursor();
+  txtCopyrightText->selectAll();
+  txtCopyrightText->setTextColor( c );
+  txtCopyrightText->setTextCursor( cursor );
 }
 
 void QgsDecorationCopyrightDialog::on_buttonBox_helpRequested()

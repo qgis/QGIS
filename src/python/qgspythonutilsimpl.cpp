@@ -69,8 +69,11 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   // locally installed plugins have priority over the system plugins
   // use os.path.expanduser to support usernames with special characters (see #2512)
   QStringList pluginpaths;
-  foreach( QString p, extraPluginsPaths() )
+  foreach ( QString p, extraPluginsPaths() )
   {
+#ifdef Q_OS_WIN
+    p = p.replace( '\\', "\\\\" );
+#endif
     pluginpaths << '"' + p + '"';
   }
   pluginpaths << homePluginsPath();
@@ -125,6 +128,9 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 
   // initialize 'iface' object
   runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
+
+  QString startuppath = homePythonPath() + " + \"/startup.py\"";
+  runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
 }
 
 void QgsPythonUtilsImpl::exitPython()
@@ -439,22 +445,19 @@ QString QgsPythonUtilsImpl::pythonPath()
 
 QString QgsPythonUtilsImpl::pluginsPath()
 {
-  if ( QgsApplication::isRunningFromBuildDir() )
-    return QString(); // plugins not used
-  else
-    return pythonPath() + "/plugins";
+  return pythonPath() + "/plugins";
 }
 
 QString QgsPythonUtilsImpl::homePythonPath()
 {
   QString settingsDir = QgsApplication::qgisSettingsDirPath();
-  if( settingsDir == QDir::homePath() + "/.qgis/" )
+  if ( QDir::cleanPath( settingsDir ) == QDir::homePath() + QString( "/.qgis%1" ).arg( 2 /* FIXME QGis::QGIS_VERSION_INT / 10000 */ ) )
   {
-    return "os.path.expanduser(\"~/.qgis/python\")";
+    return QString( "os.path.expanduser(\"~/.qgis%1/python\")" ).arg( 2 /* FIXME: QGis::QGIS_VERSION_INT / 10000 */ );
   }
   else
   {
-    return '"' + settingsDir + "python\"";
+    return '"' + settingsDir.replace( '\\', "\\\\" ) + "python\"";
   }
 }
 

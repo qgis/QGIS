@@ -14,22 +14,37 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsfeature.h"
+#include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
+
+#ifdef QGISDEBUG
+#include "qgsmessagelog.h"
+#include <QObject>
+#endif
 
 /** \class QgsFeature
  * \brief Encapsulates a spatial feature with attributes
  */
 
-QgsFeature::QgsFeature( QgsFeatureId id, QString typeName )
+QgsFeature::QgsFeature( QgsFeatureId id )
     : mFid( id )
     , mGeometry( 0 )
     , mOwnsGeometry( 0 )
     , mValid( false )
-    , mDirty( 0 )
-    , mTypeName( typeName )
+    , mFields( 0 )
 {
   // NOOP
+}
+
+QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
+    : mFid( id )
+    , mGeometry( 0 )
+    , mOwnsGeometry( 0 )
+    , mValid( false )
+    , mFields( &fields )
+{
+  initAttributes( fields.count() );
 }
 
 QgsFeature::QgsFeature( QgsFeature const & rhs )
@@ -38,8 +53,7 @@ QgsFeature::QgsFeature( QgsFeature const & rhs )
     , mGeometry( 0 )
     , mOwnsGeometry( false )
     , mValid( rhs.mValid )
-    , mDirty( rhs.mDirty )
-    , mTypeName( rhs.mTypeName )
+    , mFields( rhs.mFields )
 {
 
   // copy embedded geometry
@@ -56,10 +70,9 @@ QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
     return *this;
 
   mFid =  rhs.mFid;
-  mDirty =  rhs.mDirty;
   mAttributes =  rhs.mAttributes;
   mValid =  rhs.mValid;
-  mTypeName = rhs.mTypeName;
+  mFields = rhs.mFields;
 
   // make sure to delete the old geometry (if exists)
   if ( mGeometry && mOwnsGeometry )
@@ -93,35 +106,6 @@ QgsFeatureId QgsFeature::id() const
   return mFid;
 }
 
-/**
- * Get the attributes for this feature.
- * @return A std::map containing the field name/value mapping
- */
-const QgsAttributeMap& QgsFeature::attributeMap() const
-{
-  return mAttributes;
-}
-
-/**Sets the attributes for this feature*/
-void QgsFeature::setAttributeMap( const QgsAttributeMap& attributes )
-{
-  mAttributes = attributes;
-}
-
-/**Clear attribute map for this feature*/
-void QgsFeature::clearAttributeMap()
-{
-  mAttributes.clear();
-}
-
-/**
- * Add an attribute to the map
- */
-void QgsFeature::addAttribute( int field, QVariant attr )
-{
-  mAttributes.insert( field, attr );
-}
-
 /**Deletes an attribute and its value*/
 void QgsFeature::deleteAttribute( int field )
 {
@@ -129,12 +113,7 @@ void QgsFeature::deleteAttribute( int field )
 }
 
 
-void QgsFeature::changeAttribute( int field, QVariant attr )
-{
-  mAttributes[field] = attr;
-}
-
-QgsGeometry *QgsFeature::geometry()
+QgsGeometry *QgsFeature::geometry() const
 {
   return mGeometry;
 }
@@ -154,21 +133,6 @@ void QgsFeature::setFeatureId( QgsFeatureId id )
 {
   mFid = id;
 }
-
-
-QString QgsFeature::typeName() const
-{
-  return mTypeName;
-} // QgsFeature::typeName
-
-
-
-/** sets the feature's type name
- */
-void QgsFeature::setTypeName( QString typeName )
-{
-  mTypeName = typeName;
-} // QgsFeature::typeName
 
 
 void QgsFeature::setGeometry( const QgsGeometry& geom )
@@ -209,12 +173,77 @@ void QgsFeature::setValid( bool validity )
   mValid = validity;
 }
 
-bool QgsFeature::isDirty() const
+void QgsFeature::initAttributes( int fieldCount )
 {
-  return mDirty;
+  mAttributes.resize( fieldCount );
+  QVariant* ptr = mAttributes.data();
+  for ( int i = 0; i < fieldCount; ++i, ++ptr )
+    ptr->clear();
 }
 
-void QgsFeature::clean()
+
+bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
-  mDirty = false;
+#ifdef QGISDEBUG
+  if ( idx < 0 || idx >= mAttributes.size() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2[" ).arg( idx ).arg( mAttributes.size() ), QString::null, QgsMessageLog::WARNING );
+    return false;
+  }
+#endif
+
+  mAttributes[idx] = value;
+  return true;
+}
+
+bool QgsFeature::setAttribute( const QString& name, QVariant value )
+{
+  int fieldIdx = fieldNameIndex( name );
+  if ( fieldIdx == -1 )
+    return false;
+
+  mAttributes[fieldIdx] = value;
+  return true;
+}
+
+bool QgsFeature::deleteAttribute( const QString& name )
+{
+  int fieldIdx = fieldNameIndex( name );
+  if ( fieldIdx == -1 )
+    return false;
+
+  mAttributes[fieldIdx].clear();
+  return true;
+}
+
+QVariant QgsFeature::attribute( int fieldIdx ) const
+{
+  if ( fieldIdx < 0 || fieldIdx >= mAttributes.count() )
+    return QVariant();
+  return mAttributes[fieldIdx];
+}
+
+
+QVariant QgsFeature::attribute( const QString& name ) const
+{
+  int fieldIdx = fieldNameIndex( name );
+  if ( fieldIdx == -1 )
+    return QVariant();
+
+  return mAttributes[fieldIdx];
+}
+
+int QgsFeature::fieldNameIndex( const QString& fieldName ) const
+{
+  if ( !mFields )
+    return -1;
+
+  for ( int i = 0; i < mFields->count(); ++i )
+  {
+    if ( QString::compare( mFields->at( i ).name(), fieldName, Qt::CaseInsensitive ) == 0 )
+    {
+      return i;
+    }
+  }
+  return -1;
 }

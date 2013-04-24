@@ -41,6 +41,17 @@ class QgsMapToolLabel: public QgsMapTool
         @param yCol out: index of the attribute for data defined y coordinate
         @return true if labels of layer can be moved*/
     bool diagramMoveable( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    /**Returns true if layer has attribute fields set up
+        @param xCol out: index of the attribute for data defined x coordinate
+        @param yCol out: index of the attribute for data defined y coordinate
+        @return true if layer fields set up and exist*/
+    bool layerCanPin( const QgsMapLayer* ml, int& xCol, int& yCol ) const;
+    /**Returns true if layer has attribute field set up
+      @param showCol out: attribute column for data defined label showing*/
+    bool layerCanShowHide( const QgsMapLayer* layer, int& showCol ) const;
+    /**Checks if labels in a layer can be rotated
+      @param rotationCol out: attribute column for data defined label rotation*/
+    bool layerIsRotatable( const QgsMapLayer* layer, int& rotationCol ) const;
 
   protected:
     QgsRubberBand* mLabelRubberBand;
@@ -58,8 +69,9 @@ class QgsMapToolLabel: public QgsMapTool
     bool labelAtPosition( QMouseEvent* e, QgsLabelPosition& p );
 
     /**Finds out rotation point of current label position
+      @param ignoreUpsideDown treat label as right-side-up
       @return true in case of success*/
-    bool rotationPoint( QgsPoint& pos );
+    bool rotationPoint( QgsPoint& pos, bool ignoreUpsideDown = false, bool rotatingUnpinned = false );
 
     /**Creates label / feature / fixpoint rubber bands for the current label position*/
     void createRubberBands();
@@ -73,7 +85,9 @@ class QgsMapToolLabel: public QgsMapTool
     /**Returns layer settings of current label position*/
     QgsPalLayerSettings& currentLabelSettings( bool* ok );
 
-    QString currentLabelText();
+    /**Returns current label's text
+      @param trunc number of chars to truncate to, with ... added (added in 1.9)*/
+    QString currentLabelText( int trunc = 0 );
 
     void currentAlignment( QString& hali, QString& vali );
 
@@ -84,8 +98,12 @@ class QgsMapToolLabel: public QgsMapTool
     /**Returns the font for the current feature (considering default font and data defined properties*/
     QFont labelFontCurrentFeature();
 
+    /**Returns whether to preserve predefined rotation data during label pin/unpin operations*/
+    bool preserveRotation();
+
     /**Get data defined position of a feature
-      @param layerId layer identification string
+      @param vlayer vector layer
+      @param featureId feature identification integer
       @param x out: data defined x-coordinate
       @param xSuccess out: false if attribute value is NULL
       @param y out: data defined y-coordinate
@@ -94,6 +112,26 @@ class QgsMapToolLabel: public QgsMapTool
       @param yCol out: index of the y position column
       @return false if layer does not have data defined label position enabled*/
     bool dataDefinedPosition( QgsVectorLayer* vlayer, int featureId, double& x, bool& xSuccess, double& y, bool& ySuccess, int& xCol, int& yCol ) const;
+
+    /**Returns data defined rotation of a feature.
+      @param vlayer vector layer
+      @param featureId feature identification integer
+      @param rotation out: rotation value
+      @param rotationSuccess out: false if rotation value is NULL
+      @param ignoreXY ignore that x and y are required to be data-defined
+      @return true if data defined rotation is enabled on the layer
+      */
+    bool dataDefinedRotation( QgsVectorLayer* vlayer, int featureId, double& rotation, bool& rotationSuccess, bool ignoreXY = false );
+
+    /**Returns data defined show/hide of a feature.
+      @param vlayer vector layer
+      @param featureId feature identification integer
+      @param show out: show/hide value
+      @param showSuccess out: false if show/hide value is NULL
+      @param showCol out: index of the show label column
+      @return true if data defined show/hide is enabled on the layer
+      */
+    bool dataDefinedShowHide( QgsVectorLayer* vlayer, int featureId, int& show, bool& showSuccess, int& showCol );
 
   private:
     QgsPalLayerSettings mInvalidLabelSettings;

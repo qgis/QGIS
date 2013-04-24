@@ -62,7 +62,8 @@
 namespace pal
 {
   Feature::Feature( Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly )
-      : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL ), fixedPos( false ), fixedRotation( false )
+      : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL ), fixedPos( false ),
+      quadOffset( false ), offsetPos( false ), fixedRotation( false ), alwaysShow( false )
   {
     uid = new char[strlen( geom_id ) +1];
     strcpy( uid, geom_id );
@@ -254,7 +255,7 @@ namespace pal
     return f->uid;
   }
 
-  int FeaturePart::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width )
+  int FeaturePart::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle )
   {
     Q_UNUSED( scale );
     Q_UNUSED( delta_width );
@@ -264,25 +265,83 @@ namespace pal
     // get from feature
     double label_x = f->label_x;
     double label_y = f->label_y;
+    double labelW = f->label_x;
+    double labelH = f->label_y;
 
-    double lx = x - label_x / 2;
-    double ly = y - label_y / 2;
+    double xdiff = 0.0;
+    double ydiff = 0.0;
+    double lx = 0.0;
+    double ly = 0.0;
     double cost = 0.0001;
     int id = 0;
-    double alpha = 0;
 
-    double offset = label_x / 4;
+    xdiff -= label_x / 2.0;
+    ydiff -= label_y / 2.0;
+
+    if ( ! f->fixedPosition() )
+    {
+      if ( angle != 0 )
+      {
+        double xd = xdiff * cos( angle ) - ydiff * sin( angle );
+        double yd = xdiff * sin( angle ) + ydiff * cos( angle );
+        xdiff = xd;
+        ydiff = yd;
+      }
+    }
+
+    if ( angle != 0 )
+    {
+      // use LabelPosition construction to calculate new rotated label dimensions
+      pal::LabelPosition* lp  = new LabelPosition( 1, lx, ly, label_x, label_y, angle, 0.0, this );
+
+      double amin[2], amax[2];
+      lp->getBoundingBox( amin, amax );
+      labelW = amax[0] - amin[0];
+      labelH = amax[1] - amin[1];
+
+      delete lp;
+    }
+
+    if ( f->quadOffset )
+    {
+      if ( f->quadOffsetX != 0 )
+      {
+        xdiff += labelW / 2 * f->quadOffsetX;
+      }
+      if ( f->quadOffsetY != 0 )
+      {
+        ydiff += labelH / 2 * f->quadOffsetY;
+      }
+    }
+
+    if ( f->offsetPos )
+    {
+      if ( f->offsetPosX != 0 )
+      {
+        xdiff += f->offsetPosX;
+      }
+      if ( f->offsetPosY != 0 )
+      {
+        ydiff += f->offsetPosY;
+      }
+    }
+
+    lx = x + xdiff;
+    ly = y + ydiff;
+
+//    double offset = label_x / 4;
+    double offset = 0.0; // don't shift what is supposed to be fixed
 
     // at the center
-    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, angle, cost, this );
     // shifted to the sides - with higher cost
     cost = 0.0021;
-    ( *lPos )[1] = new LabelPosition( id, lx + offset, ly, label_x, label_y, alpha, cost,  this );
-    ( *lPos )[2] = new LabelPosition( id, lx - offset, ly, label_x, label_y, alpha, cost,  this );
+    ( *lPos )[1] = new LabelPosition( id, lx + offset, ly, label_x, label_y, angle, cost, this );
+    ( *lPos )[2] = new LabelPosition( id, lx - offset, ly, label_x, label_y, angle, cost, this );
     return nbp;
   }
 
-  int FeaturePart::setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width )
+  int FeaturePart::setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle )
   {
 
 #ifdef _DEBUG_
@@ -426,7 +485,7 @@ namespace pal
       else
         cost =  0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
 
-      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, 0, cost,  this );
+      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost,  this );
 
       icost += inc;
 
@@ -778,7 +837,10 @@ namespace pal
       // normalise between -180 and 180
       while ( angle_delta > M_PI ) angle_delta -= 2 * M_PI;
       while ( angle_delta < -M_PI ) angle_delta += 2 * M_PI;
-      if ( f->labelInfo->max_char_angle_delta > 0 && fabs( angle_delta ) > f->labelInfo->max_char_angle_delta*( M_PI / 180 ) )
+      if (( f->labelInfo->max_char_angle_inside > 0 && angle_delta > 0
+            && angle_delta > f->labelInfo->max_char_angle_inside*( M_PI / 180 ) )
+          || ( f->labelInfo->max_char_angle_outside < 0 && angle_delta < 0
+               && angle_delta < f->labelInfo->max_char_angle_outside*( M_PI / 180 ) ) )
       {
         delete slp;
         return NULL;
@@ -913,7 +975,7 @@ namespace pal
           tmp = tmp->getNextPart();
         }
 
-        double angle_diff_avg = f->labelInfo->char_num > 1 ? (angle_diff / ( f->labelInfo->char_num - 1 )) : 0; // <0, pi> but pi/8 is much already
+        double angle_diff_avg = f->labelInfo->char_num > 1 ? ( angle_diff / ( f->labelInfo->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
         double cost = angle_diff_avg / 100; // <0, 0.031 > but usually <0, 0.003 >
         if ( cost < 0.0001 ) cost = 0.0001;
 
@@ -1053,7 +1115,7 @@ namespace pal
 
           if (( box->length * box->width ) > ( xmax - xmin ) *( ymax - ymin ) *5 )
           {
-            std::cout << "Very Large BBOX (should never occurs : bug-report please)" << std::endl;
+            std::cout << "Very Large BBOX (should never occur : bug-report please)" << std::endl;
             std::cout << "   Box size:  " << box->length << "/" << box->width << std::endl;
             std::cout << "   Alpha:     " << alpha << "   " << alpha * 180 / M_PI << std::endl;
             std::cout << "   Dx;Dy:     " << dx << "   " << dy  << std::endl;
@@ -1247,16 +1309,12 @@ namespace pal
     bbox[3] = bbox_max[1];
 
     double delta = bbox_max[0] - bbox_min[0];
+    double angle = f->fixedRotation ? f->fixedAngle : 0.0;
 
     if ( f->fixedPosition() )
     {
       nbp = 1;
       *lPos = new LabelPosition *[nbp];
-      double angle = 0.0;
-      if ( f->fixedRotation )
-      {
-        angle = f->fixedAngle;
-      }
       ( *lPos )[0] = new LabelPosition( 0, f->fixedPosX, f->fixedPosY, f->label_x, f->label_y, angle, 0.0,  this );
     }
     else
@@ -1265,9 +1323,9 @@ namespace pal
       {
         case GEOS_POINT:
           if ( f->layer->getArrangement() == P_POINT_OVER )
-            nbp = setPositionOverPoint( x[0], y[0], scale, lPos, delta );
+            nbp = setPositionOverPoint( x[0], y[0], scale, lPos, delta, angle );
           else
-            nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta );
+            nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta, angle );
           break;
         case GEOS_LINESTRING:
           if ( f->layer->getArrangement() == P_CURVED )
@@ -1284,9 +1342,9 @@ namespace pal
               double cx, cy;
               mapShape->getCentroid( cx, cy );
               if ( f->layer->getArrangement() == P_POINT_OVER )
-                nbp = setPositionOverPoint( cx, cy, scale, lPos, delta );
+                nbp = setPositionOverPoint( cx, cy, scale, lPos, delta, angle );
               else
-                nbp = setPositionForPoint( cx, cy, scale, lPos, delta );
+                nbp = setPositionForPoint( cx, cy, scale, lPos, delta, angle );
               break;
             case P_LINE:
               nbp = setPositionForLine( scale, lPos, mapShape, delta );

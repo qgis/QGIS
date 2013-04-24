@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsOracleNewConnectionBase</class>
+ <widget class="QDialog" name="QgsOracleNewConnectionBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>459</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Create a New Oracle connection</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout">
+   <property name="margin">
+    <number>9</number>
+   </property>
+   <property name="spacing">
+    <number>6</number>
+   </property>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="GroupBox1">
+     <property name="title">
+      <string>Connection Information</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_1">
+      <item row="4" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtUsername"/>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="TextLabel3_2">
+        <property name="text">
+         <string>Password</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtPassword</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtPassword">
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" colspan="2">
+       <widget class="QCheckBox" name="chkStoreUsername">
+        <property name="text">
+         <string>Save Username</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="TextLabel3">
+        <property name="text">
+         <string>Username</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtUsername</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtName">
+        <property name="toolTip">
+         <string>Name of the new connection</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Database</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtDatabase</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="TextLabel1_2">
+        <property name="text">
+         <string>Name</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtName</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_geometryColumnsOnly">
+        <property name="toolTip">
+         <string>Restrict the displayed tables to those that are in the geometry_columns table</string>
+        </property>
+        <property name="whatsThis">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Only look in meta data table</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_userTablesOnly">
+        <property name="toolTip">
+         <string>Restrict the search to the public schema for spatial tables not in the geometry_columns table</string>
+        </property>
+        <property name="whatsThis">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owner by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Only look for user's tables</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_allowGeometrylessTables">
+        <property name="text">
+         <string>Also list tables with no geometry</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="TextLabel2_2">
+        <property name="text">
+         <string>Port</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtPort</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtPort">
+        <property name="text">
+         <string>1521</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2" rowspan="2">
+       <widget class="QPushButton" name="btnConnect">
+        <property name="text">
+         <string>&amp;Test Connect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="2">
+       <widget class="QCheckBox" name="chkStorePassword">
+        <property name="text">
+         <string>Save Password</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtDatabase"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="TextLabel1">
+        <property name="text">
+         <string>Host</string>
+        </property>
+        <property name="buddy">
+         <cstring>txtHost</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QLineEdit" name="txtHost"/>
+      </item>
+      <item row="11" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_useEstimatedMetadata">
+        <property name="toolTip">
+         <string>Use estimated table statistics for the layer metadata.</string>
+        </property>
+        <property name="whatsThis">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Use estimated table metadata</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtDatabase</tabstop>
+  <tabstop>txtHost</tabstop>
+  <tabstop>txtPort</tabstop>
+  <tabstop>txtUsername</tabstop>
+  <tabstop>txtPassword</tabstop>
+  <tabstop>chkStoreUsername</tabstop>
+  <tabstop>chkStorePassword</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>cb_geometryColumnsOnly</tabstop>
+  <tabstop>cb_userTablesOnly</tabstop>
+  <tabstop>cb_allowGeometrylessTables</tabstop>
+  <tabstop>cb_useEstimatedMetadata</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsOracleNewConnectionBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>313</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>451</x>
+     <y>312</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsOracleNewConnectionBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>395</x>
+     <y>501</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>450</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -33,6 +33,7 @@
 #include <QMessageBox>
 #include <QAction>
 #include <QFile>
+#include <QMenu>
 #include <QToolBar>
 #include <QProcess>
 #include <QProgressDialog>
@@ -95,7 +96,7 @@ void QgsGPSPlugin::initGui()
   connect( mCreateGPXAction, SIGNAL( triggered() ), this, SLOT( createGPX() ) );
 
   mQGisInterface->layerToolBar()->addAction( mCreateGPXAction );
-  mQGisInterface->insertAddLayerAction( mCreateGPXAction );
+  mQGisInterface->newLayerMenu()->addAction( mCreateGPXAction );
   mQGisInterface->addPluginToVectorMenu( tr( "&GPS" ), mQActionPointer );
   mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
@@ -206,7 +207,7 @@ void QgsGPSPlugin::unload()
 {
   // remove the GUI
   mQGisInterface->layerToolBar()->removeAction( mCreateGPXAction );
-  mQGisInterface->removeAddLayerAction( mCreateGPXAction );
+  mQGisInterface->newLayerMenu()->removeAction( mCreateGPXAction );
   mQGisInterface->removePluginVectorMenu( tr( "&GPS" ), mQActionPointer );
   mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
@@ -661,13 +662,13 @@ void QgsGPSPlugin::setupBabel()
 void QgsGPSPlugin::setCurrentTheme( QString theThemeName )
 {
   Q_UNUSED( theThemeName );
-  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/gps_importer.png";
+  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/gps_importer/";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/gps_importer.png";
   QString myQrcPath = ":/gps_importer.png";
   if ( QFile::exists( myCurThemePath ) )
   {
-    mQActionPointer->setIcon( QIcon( myCurThemePath ) );
-    mCreateGPXAction->setIcon( QIcon( myCurThemePath ) );
+    mQActionPointer->setIcon( QIcon( myCurThemePath + "import_gpx.png" ) );
+    mCreateGPXAction->setIcon( QIcon( myCurThemePath + "create_gpx.png" ) );
   }
   else if ( QFile::exists( myDefThemePath ) )
   {

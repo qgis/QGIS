@@ -3,7 +3,7 @@
     ---------------------
     begin                : May 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -30,6 +30,19 @@ bool QgsPythonRunner::run( QString command, QString messageOnError )
   if ( mInstance )
   {
     return mInstance->runCommand( command, messageOnError );
+  }
+  else
+  {
+    QgsDebugMsg( "Unable to run Python command: runner not available!" );
+    return false;
+  }
+}
+
+bool QgsPythonRunner::eval( QString command, QString& result )
+{
+  if ( mInstance )
+  {
+    return mInstance->evalCommand( command, result );
   }
   else
   {

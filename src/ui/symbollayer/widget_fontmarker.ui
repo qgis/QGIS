@@ -6,27 +6,36 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>541</width>
+    <height>559</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>1</number>
+   </property>
    <item>
-    <layout class="QGridLayout" name="gridLayout">
+    <layout class="QFormLayout" name="formLayout">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
+     </property>
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <property name="labelAlignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="horizontalSpacing">
+      <number>28</number>
      </property>
      <property name="leftMargin">
       <number>0</number>
      </property>
      <property name="topMargin">
       <number>0</number>
-     </property>
-     <property name="horizontalSpacing">
-      <number>6</number>
      </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
@@ -35,7 +44,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1" colspan="2">
+     <item row="0" column="1">
       <widget class="QFontComboBox" name="cboFont"/>
      </item>
      <item row="1" column="0">
@@ -46,9 +55,21 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsColorButtonV2" name="btnColor">
+      <widget class="QgsColorButton" name="btnColor">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
-        <string>Change</string>
+        <string/>
        </property>
       </widget>
      </item>
@@ -58,6 +79,43 @@
         <string>Size</string>
        </property>
       </widget>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QDoubleSpinBox" name="spinSize">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="decimals">
+          <number>5</number>
+         </property>
+         <property name="maximum">
+          <double>99999999.000000000000000</double>
+         </property>
+         <property name="value">
+          <double>12.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="mSizeUnitComboBox">
+         <item>
+          <property name="text">
+           <string>Millimeter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Map unit</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_4">
@@ -79,16 +137,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="spinSize">
-       <property name="decimals">
-        <number>5</number>
-       </property>
-       <property name="value">
-        <double>12.000000000000000</double>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
@@ -100,6 +148,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetX">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="decimals">
           <number>5</number>
          </property>
@@ -113,6 +167,12 @@
        </item>
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetY">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="decimals">
           <number>5</number>
          </property>
@@ -122,6 +182,20 @@
          <property name="maximum">
           <double>100000.000000000000000</double>
          </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="mOffsetUnitComboBox">
+         <item>
+          <property name="text">
+           <string>Millimeter</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Map unit</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -146,7 +220,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QPushButton</extends>
    <header>qgscolorbutton.h</header>
   </customwidget>

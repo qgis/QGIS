@@ -103,7 +103,7 @@ class RgShortestPathWidget : public QDockWidget
 
   private:
     /**
-     * retrun path as a graph
+     * return path as a graph
      */
     QgsGraph* getPath( QgsPoint& p1, QgsPoint& p2 );
 

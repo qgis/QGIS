@@ -67,7 +67,7 @@ void QgsMessageOutputConsole::showMessage( bool )
   {
     mMessage.replace( "<br>", "\n" );
     mMessage.replace( "&nbsp;", " " );
-    mMessage.replace( QRegExp("</?[^>]+>"), "" );
+    mMessage.replace( QRegExp( "</?[^>]+>" ), "" );
   }
   QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle );
   emit destroyed();

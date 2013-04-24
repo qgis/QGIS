@@ -95,6 +95,17 @@ IF(NOT WIN32)
 		qtermwidget/k3processcontroller.h
 		qtermwidget/qtermwidget.h
 		)
+
+	IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+		SET_SOURCE_FILES_PROPERTIES(
+			${CMAKE_CURRENT_BINARY_DIR}/qtermwidget/moc_Pty.cxx
+			qtermwidget/Pty.cpp
+			qtermwidget/Session.cpp
+			qtermwidget/kpty.cpp
+			qtermwidget/k3process.cpp
+			PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual -Wno-mismatched-tags"
+		)
+	ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 ENDIF(NOT WIN32)
 
 SET (GRASS_PLUGIN_RCCS  qgsgrass_plugin.qrc)
@@ -125,8 +136,6 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core 
      ../../core/raster 
-     ../../core/renderer 
-     ../../core/symbology
      ../../gui
      ../../providers/grass
      ${CMAKE_CURRENT_BINARY_DIR}/../../ui
@@ -166,7 +175,7 @@ FILE (GLOB GMLS *.gml)
 INSTALL (FILES ${GMLS}
          DESTINATION ${QGIS_DATA_DIR}/grass)
 
-INSTALL (FILES themes/gis/grass_arrow.svg themes/gis/grass_plus.svg themes/gis/grass_arrow.png themes/gis/grass_plus.png
+INSTALL (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg themes/default/grass_arrow.png themes/default/grass_plus.png
          DESTINATION ${QGIS_DATA_DIR}/grass/modules)
 
 INSTALL(TARGETS qgis.g.browser 

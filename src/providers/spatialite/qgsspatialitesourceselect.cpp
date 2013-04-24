@@ -53,11 +53,15 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WFla
   btnSave->hide();
   btnLoad->hide();
 
+  mStatsButton = new QPushButton( tr( "&Update statistics" ) );
+  connect( mStatsButton, SIGNAL( clicked() ), this, SLOT( updateStatistics() ) );
+  mStatsButton->setEnabled( false );
+
   mAddButton = new QPushButton( tr( "&Add" ) );
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
   mAddButton->setEnabled( false );
 
-  mBuildQueryButton = new QPushButton( tr( "&Build Query" ) );
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
   mBuildQueryButton->setEnabled( false );
 
@@ -69,6 +73,7 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WFla
   {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+    buttonBox->addButton( mStatsButton, QDialogButtonBox::ActionRole );
   }
 
   populateConnectionList();
@@ -130,6 +135,35 @@ void QgsSpatiaLiteSourceSelect::on_cmbConnections_activated( int )
 void QgsSpatiaLiteSourceSelect::buildQuery()
 {
   setSql( mTablesTreeView->currentIndex() );
+}
+
+void QgsSpatiaLiteSourceSelect::updateStatistics()
+{
+  QString subKey = cmbConnections->currentText();
+  int idx = subKey.indexOf( "@" );
+  if ( idx > 0 )
+    subKey.truncate( idx );
+
+  QString msg = tr( "Are you sure you want to update the internal statistics for DB: %1?\n\n"
+                    "This could take a long time (depending on the DB size),\n"
+                    "but implies better performance thereafter." ).arg( subKey );
+  QMessageBox::StandardButton result =
+    QMessageBox::information( this, tr( "Confirm Update Statistics" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
+  if ( result != QMessageBox::Ok )
+    return;
+
+  // trying to connect to SpatiaLite DB
+  QgsSpatiaLiteConnection conn( subKey );
+  if ( conn.updateStatistics() == true )
+  {
+    QMessageBox::information( this, tr( "Update Statistics" ),
+                              tr( "Internal statistics successfully updated for: %1" ).arg( subKey ) );
+  }
+  else
+  {
+    QMessageBox::critical( this, tr( "Update Statistics" ),
+                           tr( "Error while updating internal statistics for: %1" ).arg( subKey ) );
+  }
 }
 
 void QgsSpatiaLiteSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
@@ -199,7 +233,7 @@ void QgsSpatiaLiteSourceSelect::setLayerType( QString table, QString column, QSt
 void QgsSpatiaLiteSourceSelect::populateConnectionList()
 {
   cmbConnections->clear();
-  foreach( QString name, QgsSpatiaLiteConnection::connectionList() )
+  foreach ( QString name, QgsSpatiaLiteConnection::connectionList() )
   {
     // retrieving the SQLite DB name and full path
     QString text = name + tr( "@" ) + QgsSpatiaLiteConnection::connectionPath( name );
@@ -417,13 +451,16 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   mTableModel.setSqliteDb( subKey );
 
   QList<QgsSpatiaLiteConnection::TableEntry> tables = conn.tables();
-  foreach( const QgsSpatiaLiteConnection::TableEntry& table, tables )
+  foreach ( const QgsSpatiaLiteConnection::TableEntry& table, tables )
   {
     mTableModel.addTableEntry( table.type, table.tableName, table.column, "" );
   }
 
   if ( cmbConnections->count() > 0 )
+  {
     mAddButton->setEnabled( true );
+    mStatsButton->setEnabled( true );
+  }
 
   mTablesTreeView->sortByColumn( 0, Qt::AscendingOrder );
 
@@ -492,6 +529,8 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
   QSettings settings;
   // If possible, set the item currently displayed database
   QString toSelect = settings.value( "/SpatiaLite/connections/selected" ).toString();
+
+  toSelect += "@" + settings.value( "/SpatiaLite/connections/" + toSelect + "/sqlitepath" ).toString();
 
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 

@@ -24,6 +24,8 @@
 //qt includes
 #include <QString>
 #include <QMap>
+#include <QHash>
+
 class QDomNode;
 class QDomDocument;
 
@@ -33,9 +35,14 @@ typedef struct sqlite3 sqlite3;
 //qgis includes
 #include "qgis.h"
 
-class QgsCoordinateReferenceSystem;
-typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem* );
+#ifdef DEBUG
+typedef struct OGRSpatialReferenceHS *OGRSpatialReferenceH;
+#else
+typedef void *OGRSpatialReferenceH;
+#endif
 
+class QgsCoordinateReferenceSystem;
+typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem& );
 
 /** \ingroup core
  * Class for storing a coordinate reference system (CRS)
@@ -48,7 +55,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     {
       InternalCrsId,
       PostgisCrsId,
-      EpsgCrsId  // deprecated
+      EpsgCrsId     // deprecated
     };
 
     //! Default constructor
@@ -112,16 +119,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool createFromWkt( const QString theWkt );
 
     /*! Set up this srs by fetching the appropriate information from the
-     * sqlite backend. First the system level read only srs.db will be checked
-     * and then the users ~/.qgis/qgis.db database will be checked for a match.
-     * @note Any members will be overwritten during this process.
-     * @param theEpsg The EpsgCrsId for the desired spatial reference system.
-     * @return bool TRUE if success else false
-     * @deprecated use createFromOgcWmsCrs()
-     */
-    Q_DECL_DEPRECATED bool createFromEpsg( const long theEpsg );
-
-    /*! Set up this srs by fetching the appropriate information from the
      * sqlite backend. If the srsid is < 100000, only the system srs.db
      * will be checked. If the srsid > 100000 the srs will be retrieved from
      * the ~/.qgis/qgis.db
@@ -138,7 +135,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * can easily present the user with 'natural language' representation
      * of the projection and ellipsoid by looking them up in the srs.bs sqlite
      * database. Also having the ellpse and proj elements stripped out
-     * is hepful to speed up globbing queries (see below).
+     * is helpful to speed up globbing queries (see below).
      *
      * We try to match the proj string to and srsid using the following logic:
      *
@@ -183,6 +180,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note this function generates a WKT string using OSRSetFromUserInput() and
      * passes it to createFromWkt() function.
      * @param theDefinition A String containing a coordinate reference system definition.
+     *
+     * @note added in 1.8
      */
     bool createFromUserInput( const QString theDefinition );
 
@@ -193,6 +192,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note This function sets CPL config option GDAL_FIX_ESRI_WKT to a proper value,
      * unless it has been set by the user through the commandline or an environment variable.
      * For more details refer to OGRSpatialReference::morphFromESRI() .
+     *
      * @note added in 1.8
      */
     static void setupESRIWktFix();
@@ -232,18 +232,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
       *  Returns opposite bool value to operator ==
      */
     bool operator!=( const QgsCoordinateReferenceSystem &theSrs ) const;
-    /*! Overloaded == operator used to compare to CRS's.
-     *  Internally it will use OGR isSameCRS() or isSameGeoCRS() methods as appropriate.
-     *  Additionally logic may also be applied if the result from the OGR methods
-     *  is inconclusive.
-     * @deprecated in 1.8 as the same proj.4 string not necessarily means the same CRS
-     */
-    Q_DECL_DEPRECATED bool equals( QString theProj4String );
 
     /*! Restores state from the given Dom node.
-    * @param theNode The node from which state will be restored
-    * @return bool True on success, False on failure
-    */
+     * @param theNode The node from which state will be restored
+     * @return bool True on success, False on failure
+     */
     bool readXML( QDomNode & theNode );
     /*! Stores state to the given Dom node in the given document.
      * Below is an example of the generated tag.
@@ -267,10 +260,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /** Sets custom function to force valid CRS
      *  QGIS uses implementation in QgisGui::customSrsValidation
+     * @note not available in python bindings
      */
     static void setCustomSrsValidation( CUSTOM_CRS_VALIDATION f );
 
     /** Gets custom function
+     * @note not available in python bindings
      */
     static CUSTOM_CRS_VALIDATION customSrsValidation();
 
@@ -285,12 +280,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @return  long theSRID the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
      */
     long postgisSrid() const;
-
-    /*! Get the EpsgCrsId identifier for this srs
-     * @return  long theEpsg the EPSG identifier for this srs (defaults to 0)
-     * @deprecated there are other authorities - use authid()
-     */
-    Q_DECL_DEPRECATED long epsg() const;
 
     /*! Get the authority identifier for this srs
      * @return  QString the Authority identifier for this srs
@@ -337,7 +326,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /*! return if axis is inverted (eg. for WMS 1.3)
      * @return  bool Whether this is crs axis is inverted
-     * @note added in 1.9.90
+     * @note added in 1.8
      */
     bool axisInverted() const;
 
@@ -467,12 +456,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for sql-safe value quoting
     static QString quotedValue( QString value );
 
-    void *mCRS;
+    OGRSpatialReferenceH mCRS;
 
     bool loadFromDb( QString db, QString expression, QString value );
 
     QString mValidationHint;
     mutable QString mWkt;
+
+    static bool loadIDs( QHash<int, QString> &wkts );
+    static bool loadWkts( QHash<int, QString> &wkts, const char *filename );
 
     //!Whether this is a coordinate system has inverted axis
     mutable int mAxisInverted;

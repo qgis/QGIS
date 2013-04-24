@@ -17,9 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgspointrotationitem.h"
-#include "qgsrenderer.h"
 #include "qgsrendererv2.h"
-#include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include <QGraphicsPixmapItem>
@@ -78,10 +76,17 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   mActiveLayer = currentVectorLayer();
   if ( !mActiveLayer )
   {
+    notifyNotVectorLayer();
     return;
   }
 
-  if ( mActiveLayer->geometryType() != QGis::Point || !mActiveLayer->isEditable() )
+  if ( !mActiveLayer->isEditable() )
+  {
+    notifyNotEditableLayer();
+    return;
+  }
+
+  if ( mActiveLayer->geometryType() != QGis::Point )
   {
     return;
   }
@@ -113,18 +118,17 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
 
   //find out initial arrow direction
   QgsFeature pointFeature;
-  if ( !mActiveLayer->featureAtId( mFeatureNumber, pointFeature, false, true ) )
+  if ( !mActiveLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setFilterFid( mFeatureNumber ) ).nextFeature( pointFeature ) )
   {
     return;
   }
-  const QgsAttributeMap pointFeatureAttributes = pointFeature.attributeMap();
-  const QgsAttributeMap::const_iterator attIt = pointFeatureAttributes.find( mCurrentRotationAttributes.at( 0 ) );
-  if ( attIt == pointFeatureAttributes.constEnd() )
+  QVariant attrVal = pointFeature.attribute( mCurrentRotationAttributes.at( 0 ) );
+  if ( !attrVal.isValid() )
   {
     return;
   }
 
-  mCurrentRotationFeature = attIt.value().toDouble();
+  mCurrentRotationFeature = attrVal.toDouble();
   createPixmapItem( pointFeature );
   if ( mRotationItem )
   {
@@ -232,26 +236,6 @@ int QgsMapToolRotatePointSymbols::layerRotationAttributes( QgsVectorLayer* vl, Q
     return 1;
   }
 
-  //old symbology
-  const QgsRenderer* layerRenderer = vl->renderer();
-  if ( layerRenderer )
-  {
-    //get renderer symbols
-    const QList<QgsSymbol*> rendererSymbols = layerRenderer->symbols();
-    int currentRotationAttribute;
-
-    QList<QgsSymbol*>::const_iterator symbolIt = rendererSymbols.constBegin();
-    for ( ; symbolIt != rendererSymbols.constEnd(); ++symbolIt )
-    {
-      currentRotationAttribute = ( *symbolIt )->rotationClassificationField();
-      if ( currentRotationAttribute >= 0 )
-      {
-        attList.push_back( currentRotationAttribute );
-      }
-    }
-    return 0;
-  }
-
   //new symbology
   const QgsFeatureRendererV2* symbologyNgRenderer = vl->rendererV2();
   if ( symbologyNgRenderer )
@@ -300,27 +284,10 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
 
   //get the image that is used for that symbol, but without point rotation
   QImage pointImage;
-  QgsRenderer* r = 0;
-  QgsFeatureRendererV2* rv2 = 0;
 
-  if ( mActiveLayer && mActiveLayer->renderer() ) //old symbology
+  if ( mActiveLayer && mActiveLayer->rendererV2() ) //symbology-ng
   {
-    //copy renderer
-    QgsRenderer* r = mActiveLayer->renderer()->clone();
-
-    //set all symbol fields of the cloned renderer to -1. Very ugly but necessary
-    QList<QgsSymbol*> symbolList( r->symbols() );
-    QList<QgsSymbol*>::iterator it = symbolList.begin();
-    for ( ; it != symbolList.end(); ++it )
-    {
-      ( *it )->setRotationClassificationField( -1 );
-    }
-
-    r->renderFeature( *renderContext, f, &pointImage, false );
-  }
-  else if ( mActiveLayer && mActiveLayer->rendererV2() ) //symbology-ng
-  {
-    rv2 = mActiveLayer->rendererV2()->clone();
+    QgsFeatureRendererV2* rv2 = mActiveLayer->rendererV2()->clone();
     rv2->setRotationField( "" );
     rv2->startRender( *renderContext, mActiveLayer );
 
@@ -330,12 +297,11 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
       pointImage = symbolV2->bigSymbolPreviewImage();
     }
     rv2->stopRender( *renderContext );
+    delete rv2;
   }
 
   mRotationItem = new QgsPointRotationItem( mCanvas );
   mRotationItem->setSymbol( pointImage );
-  delete r;
-  delete rv2;
 }
 
 void QgsMapToolRotatePointSymbols::setPixmapItemRotation( double rotation )

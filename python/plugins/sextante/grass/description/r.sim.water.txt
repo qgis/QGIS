@@ -1,0 +1,24 @@
+r.sim.water
+r.sim.water - Overland flow hydrologic simulation using path sampling method (SIMWE).
+Raster (r.*)
+ParameterRaster|elevin|Name of the elevation raster map [m]|False
+ParameterRaster|dxin|Name of the x-derivatives raster map [m/m]|False
+ParameterRaster|dyin|Name of the y-derivatives raster map [m/m]|False
+ParameterRaster|rain|Name of the rainfall excess rate (rain-infilt) raster map [mm/hr]|False
+ParameterString|rain_val|Rainfall excess rate unique value [mm/hr]|50
+ParameterRaster|infil|Name of the runoff infiltration rate raster map [mm/hr]|False
+ParameterString|infil_val|Runoff infiltration rate unique value [mm/hr]|0.0
+ParameterRaster|manin|Name of the Mannings n raster map|False
+ParameterString|manin_val|Mannings n unique value|0.1
+ParameterRaster|traps|Name of the flow controls raster map (permeability ratio 0-1)|False
+ParameterString|nwalk|Number of walkers, default is twice the no. of cells|
+ParameterString|niter|Time used for iterations [minutes]|10
+ParameterString|outiter|Time interval for creating output maps [minutes]|2
+ParameterString|diffc|Water diffusion constant|0.8
+ParameterString|hmax|Threshold water depth [m] (diffusion increases after this water depth is reached)|0.3
+ParameterString|halpha|Diffusion increase constant|4.0
+ParameterString|hbeta|Weighting factor for water flow velocity vector|0.5
+ParameterBoolean|-t|Time-series output|True
+OutputRaster|depth|Output water depth raster map [m]
+OutputRaster|disch|Output water discharge raster map [m3/s]
+OutputRaster|err|Output simulation error raster map [m]

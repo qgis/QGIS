@@ -18,9 +18,13 @@
 #include "qgsfeatureaction.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsidentifyresults.h"
+#include "qgsidentifyresultsdialog.h"
 #include "qgsattributedialog.h"
 #include "qgslogger.h"
+#include "qgsdistancearea.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
+#include "qgsmapcanvas.h"
 
 #include <QPushButton>
 #include <QSettings>
@@ -42,7 +46,14 @@ void QgsFeatureAction::execute()
 QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 {
   QgsFeature *f = cloneFeature ? new QgsFeature( mFeature ) : &mFeature;
-  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature );
+
+  QgsDistanceArea myDa;
+
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+  QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, myDa );
 
   if ( mLayer->actions()->size() > 0 )
   {
@@ -99,18 +110,18 @@ bool QgsFeatureAction::editFeature()
   }
   else
   {
-    QgsAttributeMap src = mFeature.attributeMap();
+    QgsAttributes src = mFeature.attributes();
 
     if ( dialog->exec() )
     {
       mLayer->beginEditCommand( text() );
 
-      const QgsAttributeMap &dst = mFeature.attributeMap();
-      for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
+      const QgsAttributes &dst = mFeature.attributes();
+      for ( int i = 0; i < dst.count(); ++i )
       {
-        if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
+        if ( dst[i] != src[i] )
         {
-          mLayer->changeAttributeValue( mFeature.id(), it.key(), it.value() );
+          mLayer->changeAttributeValue( mFeature.id(), i, dst[i] );
         }
       }
 
@@ -139,17 +150,18 @@ bool QgsFeatureAction::addFeature()
   QgsDebugMsg( QString( "reuseLastValues: %1" ).arg( reuseLastValues ) );
 
   // add the fields to the QgsFeature
-  const QgsFieldMap fields = mLayer->pendingFields();
-  for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
+  const QgsFields& fields = mLayer->pendingFields();
+  mFeature.initAttributes( fields.count() );
+  for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( it.key() ) )
+    if ( reuseLastValues && mLastUsedValues.contains( mLayer ) && mLastUsedValues[ mLayer ].contains( idx ) )
     {
-      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ mLayer ][ it.key()].toString() ).arg( it.key() ) );
-      mFeature.addAttribute( it.key(), mLastUsedValues[ mLayer ][ it.key()] );
+      QgsDebugMsg( QString( "reusing %1 for %2" ).arg( mLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+      mFeature.setAttribute( idx, mLastUsedValues[ mLayer ][idx] );
     }
     else
     {
-      mFeature.addAttribute( it.key(), provider->defaultValue( it.key() ) );
+      mFeature.setAttribute( idx, provider->defaultValue( idx ) );
     }
   }
 
@@ -165,24 +177,22 @@ bool QgsFeatureAction::addFeature()
   }
   else
   {
-    QgsAttributeMap origValues;
+    QgsAttributes origValues;
     if ( reuseLastValues )
-      origValues = mFeature.attributeMap();
+      origValues = mFeature.attributes();
 
     QgsAttributeDialog *dialog = newDialog( false );
     if ( dialog->exec() )
     {
       if ( reuseLastValues )
       {
-        for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
+        for ( int idx = 0; idx < fields.count(); ++idx )
         {
-          const QgsAttributeMap &newValues = mFeature.attributeMap();
-          if ( newValues.contains( it.key() )
-               && origValues.contains( it.key() )
-               && origValues[ it.key()] != newValues[ it.key()] )
+          const QgsAttributes &newValues = mFeature.attributes();
+          if ( origValues[idx] != newValues[idx] )
           {
-            QgsDebugMsg( QString( "saving %1 for %2" ).arg( mLastUsedValues[ mLayer ][ it.key()].toString() ).arg( it.key() ) );
-            mLastUsedValues[ mLayer ][ it.key()] = newValues[ it.key()];
+            QgsDebugMsg( QString( "saving %1 for %2" ).arg( mLastUsedValues[ mLayer ][idx].toString() ).arg( idx ) );
+            mLastUsedValues[ mLayer ][idx] = newValues[idx];
           }
         }
       }

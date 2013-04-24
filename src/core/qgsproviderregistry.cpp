@@ -75,7 +75,7 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
-#ifdef WIN32
+#if defined(WIN32) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
 #elif ANDROID
   mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
@@ -389,23 +389,8 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
         QgsDebugMsg( "Instantiated the data provider plugin" );
         QgsDebugMsg( "provider name: " + dataProvider->name() );
 
-        if ( dataProvider->isValid() )
-        {
-          delete myLib;
-          return dataProvider;
-        }
-        else
-        {
-          // this is likely because the dataSource is invalid, and isn't
-          // necessarily a reflection on the data provider itself
-          QgsDebugMsg( "Invalid data provider" );
-
-          delete dataProvider;
-
-          myLib->unload();
-          delete myLib;
-          return 0;
-        }
+        delete myLib;
+        return dataProvider;
       }
       else
       {
@@ -438,19 +423,14 @@ typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WFlags fl );
 QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
     QWidget * parent, Qt::WFlags fl )
 {
-  QLibrary *myLib = providerLibrary( providerKey );
-  if ( !myLib )
-    return 0;
-
   selectFactoryFunction_t * selectFactory =
-    ( selectFactoryFunction_t * ) cast_to_fptr( myLib->resolve( "selectWidget" ) );
+    ( selectFactoryFunction_t * ) cast_to_fptr( function( providerKey, "selectWidget" ) );
 
   if ( !selectFactory )
     return 0;
 
   return selectFactory( parent, fl );
 }
-
 
 void * QgsProviderRegistry::function( QString const & providerKey,
                                       QString const & functionName )
@@ -469,6 +449,7 @@ void * QgsProviderRegistry::function( QString const & providerKey,
     delete myLib;
     return ptr;
   }
+  QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
   delete myLib;
   return 0;
 }
@@ -487,8 +468,24 @@ QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) co
   {
     return myLib;
   }
+  QgsDebugMsg( "Cannot load library: " + myLib->errorString() );
   delete myLib;
   return 0;
+}
+
+void QgsProviderRegistry::registerGuis( QWidget *parent )
+{
+  typedef void registerGui_function( QWidget * parent );
+
+  foreach ( const QString &provider, providerList() )
+  {
+    registerGui_function *registerGui = ( registerGui_function * ) cast_to_fptr( function( provider, "registerGui" ) );
+
+    if ( !registerGui )
+      continue;
+
+    registerGui( parent );
+  }
 }
 
 QString QgsProviderRegistry::fileVectorFilters() const
@@ -529,10 +526,10 @@ const QgsProviderMetadata* QgsProviderRegistry::providerMetadata( const QString&
 }
 
 
-/*
+#if 0
 QgsDataProvider *
 QgsProviderRegistry::openVector( QString const & dataSource, QString const & providerKey )
 {
-    return getProvider( providerKey, dataSource );
+  return getProvider( providerKey, dataSource );
 } // QgsProviderRegistry::openVector
-*/
+#endif

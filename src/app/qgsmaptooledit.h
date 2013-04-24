@@ -53,7 +53,7 @@ class QgsMapToolEdit: public QgsMapTool
     /**Creates a rubber band with the color/line width from
      the QGIS settings. The caller takes ownership of the
     returned object*/
-    QgsRubberBand* createRubberBand( bool isPolygon = false );
+    QgsRubberBand* createRubberBand( QGis::GeometryType geometryType = QGis::Line );
 
     /**Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer* currentVectorLayer();
@@ -62,6 +62,13 @@ class QgsMapToolEdit: public QgsMapTool
        @param geom list of points (in layer coordinate system)
        @return 0 in case of success*/
     int addTopologicalPoints( const QList<QgsPoint>& geom );
+
+    /**Display a timed message bar noting the active layer is not vector.
+       @note added in QGIS 1.9*/
+    void notifyNotVectorLayer();
+    /**Display a timed message bar noting the active vector layer is not editable.
+       @note added in QGIS 1.9*/
+    void notifyNotEditableLayer();
 
 };
 

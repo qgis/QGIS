@@ -43,10 +43,6 @@ email                : tim@linfiniti.com
 #include <cassert>
 
 
-#ifdef _MSC_VER
-#define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
-#endif
-
 const double QgsDecorationNorthArrow::PI = 3.14159265358979323846;
 //  const double QgsNorthArrowPlugin::DEG2RAD = 0.0174532925199433;
 const double QgsDecorationNorthArrow::TOL = 1e-8;
@@ -59,13 +55,14 @@ const double QgsDecorationNorthArrow::TOL = 1e-8;
  * @param _qI Pointer to the QGIS interface object
  */
 QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
-    : QObject( parent )
+    : QgsDecorationItem( parent )
 {
   mRotationInt = 0;
   mAutomatic = true;
   mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
   << tr( "Top Right" ) << tr( "Bottom Right" );
 
+  setName( "North Arrow" );
   projectRead();
 }
 
@@ -75,20 +72,18 @@ QgsDecorationNorthArrow::~QgsDecorationNorthArrow()
 
 void QgsDecorationNorthArrow::projectRead()
 {
-  //default text to start with - try to fetch it from qgsproject
-
-  mRotationInt = QgsProject::instance()->readNumEntry( "NorthArrow", "/Rotation", 0 );
-  mPlacementIndex = QgsProject::instance()->readNumEntry( "NorthArrow", "/Placement", 0 );
-  mEnable = QgsProject::instance()->readBoolEntry( "NorthArrow", "/Enabled", false );
-  mAutomatic = QgsProject::instance()->readBoolEntry( "NorthArrow", "/Automatic", true );
+  QgsDecorationItem::projectRead();
+  mRotationInt = QgsProject::instance()->readNumEntry( mNameConfig, "/Rotation", 0 );
+  mPlacementIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", 0 );
+  mAutomatic = QgsProject::instance()->readBoolEntry( mNameConfig, "/Automatic", true );
 }
 
 void QgsDecorationNorthArrow::saveToProject()
 {
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Rotation", mRotationInt );
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Placement", mPlacementIndex );
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Enabled", mEnable );
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Automatic", mAutomatic );
+  QgsDecorationItem::saveToProject();
+  QgsProject::instance()->writeEntry( mNameConfig, "/Rotation", mRotationInt );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
+  QgsProject::instance()->writeEntry( mNameConfig, "/Automatic", mAutomatic );
 }
 
 // Slot called when the buffer menu item is activated
@@ -98,16 +93,15 @@ void QgsDecorationNorthArrow::run()
 
   if ( dlg.exec() )
   {
-    saveToProject();
-    QgisApp::instance()->mapCanvas()->refresh();
+    update();
   }
 }
 
-void QgsDecorationNorthArrow::renderNorthArrow( QPainter * theQPainter )
+void QgsDecorationNorthArrow::render( QPainter * theQPainter )
 {
 
   //Large IF statement controlled by enable check box
-  if ( mEnable )
+  if ( enabled() )
   {
     if ( theQPainter->isActive() )
     {
@@ -205,7 +199,15 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
 
   bool goodDirn = false;
 
-  if ( mapCanvas->layerCount() > 0 )
+  // Get the shown extent...
+  QgsRectangle canvasExtent = mapCanvas->extent();
+  // ... and all layers extent, ...
+  QgsRectangle fullExtent = mapCanvas->fullExtent();
+  // ... and combine
+  QgsRectangle extent = canvasExtent.intersect( & fullExtent );
+
+  // If no layers are added or shown, we can't get any direction
+  if ( mapCanvas->layerCount() > 0 && ! extent.isEmpty() )
   {
     QgsCoordinateReferenceSystem outputCRS = mapCanvas->mapRenderer()->destinationCrs();
 
@@ -218,7 +220,6 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
 
       QgsCoordinateTransform transform( outputCRS, ourCRS );
 
-      QgsRectangle extent = mapCanvas->extent();
       QgsPoint p1( extent.center() );
       // A point a bit above p1. XXX assumes that y increases up!!
       // May need to involve the maptopixel transform if this proves
@@ -257,20 +258,24 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
       double x = cos( p1.y() ) * sin( p2.y() ) -
                  sin( p1.y() ) * cos( p2.y() ) * cos( p2.x() - p1.x() );
 
+      // Use TOL to decide if the quotient is big enough.
+      // Both x and y can be very small, if heavily zoomed
+      // For small y/x, we set directly angle 0. Not sure
+      // if this is needed.
       if ( y > 0.0 )
       {
-        if ( x > TOL )
+        if ( x > 0.0 && ( y / x ) > TOL )
           angle = atan( y / x );
-        else if ( x < -TOL )
+        else if ( x < 0.0 && ( y / x ) < -TOL )
           angle = PI - atan( -y / x );
         else
           angle = 0.5 * PI;
       }
       else if ( y < 0.0 )
       {
-        if ( x > TOL )
+        if ( x > 0.0 && ( y / x ) < -TOL )
           angle = -atan( -y / x );
-        else if ( x < -TOL )
+        else if ( x < 0.0 && ( y / x ) > TOL )
           angle = atan( y / x ) - PI;
         else
           angle = 1.5 * PI;
@@ -289,7 +294,7 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
       }
       // And set the angle of the north arrow. Perhaps do something
       // different if goodDirn = false.
-      mRotationInt = static_cast<int>( round( fmod( 360.0 - angle * 180.0 / PI, 360.0 ) ) );
+      mRotationInt = qRound( fmod( 360.0 - angle * 180.0 / PI, 360.0 ) );
     }
     else
     {

@@ -67,6 +67,10 @@ ELSE(WIN32)
       ENDIF ()
     ENDIF (APPLE)
 
+    IF(CYGWIN)
+      FIND_LIBRARY(GDAL_LIBRARY NAMES gdal PATHS /usr/lib /usr/local/lib)
+    ENDIF(CYGWIN)
+
     IF (NOT GDAL_INCLUDE_DIR OR NOT GDAL_LIBRARY OR NOT GDAL_CONFIG)
       # didn't find OS X framework, and was not set by user
       SET(GDAL_CONFIG_PREFER_PATH "$ENV{GDAL_HOME}/bin" CACHE STRING "preferred path to GDAL (gdal-config)")

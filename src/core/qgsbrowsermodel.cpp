@@ -3,7 +3,7 @@
     ---------------------
     begin                : July 2011
     copyright            : (C) 2011 by Martin Dobias
-    email                : wonder.sk at gmail.com
+    email                : wonder dot sk at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,6 +24,7 @@
 #include "qgsproviderregistry.h"
 
 #include "qgsbrowsermodel.h"
+#include "qgsproject.h"
 
 #include <QSettings>
 
@@ -40,8 +41,18 @@ QgsBrowserModel::~QgsBrowserModel()
 
 void QgsBrowserModel::addRootItems()
 {
-  // give the home directory a prominent first place
-  QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
+  QgsDirectoryItem *item;
+
+  QString home = QgsProject::instance()->homePath();
+
+  if ( !home.isNull() )
+  {
+    item = new QgsDirectoryItem( NULL, tr( "Project home" ), home );
+    mRootItems << item;
+  }
+
+  // give the home directory a prominent second place
+  item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
@@ -57,7 +68,7 @@ void QgsBrowserModel::addRootItems()
   }
 
   // add drives
-  foreach( QFileInfo drive, QDir::drives() )
+  foreach ( QFileInfo drive, QDir::drives() )
   {
     QString path = drive.absolutePath();
     QgsDirectoryItem *item = new QgsDirectoryItem( NULL, path, path );
@@ -66,10 +77,17 @@ void QgsBrowserModel::addRootItems()
     mRootItems << item;
   }
 
+#ifdef Q_WS_MAC
+  QString path = QString( "/Volumes" );
+  QgsDirectoryItem *vols = new QgsDirectoryItem( NULL, path, path );
+  connectItem( vols );
+  mRootItems << vols;
+#endif
+
   // Add non file top level items
   QStringList providersList = QgsProviderRegistry::instance()->providerList();
   providersList.sort();
-  foreach( QString key, providersList )
+  foreach ( QString key, providersList )
   {
     QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
     if ( !library )
@@ -108,7 +126,7 @@ void QgsBrowserModel::addRootItems()
 
 void QgsBrowserModel::removeRootItems()
 {
-  foreach( QgsDataItem* item, mRootItems )
+  foreach ( QgsDataItem* item, mRootItems )
   {
     delete item;
   }
@@ -127,11 +145,7 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
   if ( ptr->type() == QgsDataItem::Layer )
   {
-    QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
-    if ( layer->providerKey() != "wms" )
-    {
-      flags |= Qt::ItemIsDragEnabled;
-    }
+    flags |= Qt::ItemIsDragEnabled;
   }
   if ( ptr->acceptDrop() )
     flags |= Qt::ItemIsDropEnabled;
@@ -361,14 +375,13 @@ QStringList QgsBrowserModel::mimeTypes() const
 QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QgsMimeDataUtils::UriList lst;
-  foreach( const QModelIndex &index, indexes )
+  foreach ( const QModelIndex &index, indexes )
   {
     if ( index.isValid() )
     {
       QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
       if ( ptr->type() != QgsDataItem::Layer ) continue;
       QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
-      if ( layer->providerKey() == "wms" ) continue;
       lst.append( QgsMimeDataUtils::Uri( layer ) );
     }
   }
@@ -396,4 +409,20 @@ QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
   QgsDataItem *d = reinterpret_cast<QgsDataItem*>( v );
   Q_ASSERT( !v || d );
   return d;
+}
+
+bool QgsBrowserModel::canFetchMore( const QModelIndex & parent ) const
+{
+  QgsDataItem* item = dataItem( parent );
+  // if ( item )
+  //   QgsDebugMsg( QString( "path = %1 canFetchMore = %2" ).arg( item->path() ).arg( item && ! item->isPopulated() ) );
+  return ( item && ! item->isPopulated() );
+}
+
+void QgsBrowserModel::fetchMore( const QModelIndex & parent )
+{
+  QgsDataItem* item = dataItem( parent );
+  if ( item )
+    item->populate();
+  QgsDebugMsg( "path = " + item->path() );
 }

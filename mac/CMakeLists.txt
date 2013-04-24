@@ -8,10 +8,10 @@ IF (APPLE)
   INSTALL (SCRIPT ${CMAKE_BINARY_DIR}/mac/0qgis.cmake)
   IF (QGIS_MACAPP_BUNDLE GREATER 0)
     # start with Qt
-    CONFIGURE_FILE (cmake/1qt.cmake.in 1qt.cmake @ONLY)
-    INSTALL (SCRIPT ${CMAKE_BINARY_DIR}/mac/1qt.cmake)
     CONFIGURE_FILE (cmake/1osg.cmake.in 1osg.cmake @ONLY)
     INSTALL (SCRIPT ${CMAKE_BINARY_DIR}/mac/1osg.cmake)
+    CONFIGURE_FILE (cmake/1qt.cmake.in 1qt.cmake @ONLY)
+    INSTALL (SCRIPT ${CMAKE_BINARY_DIR}/mac/1qt.cmake)
     IF (QGIS_MACAPP_BUNDLE GREATER 1)
       # next - libs
       CONFIGURE_FILE (cmake/2lib.cmake.in 2lib.cmake @ONLY)

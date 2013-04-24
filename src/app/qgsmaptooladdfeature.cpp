@@ -54,8 +54,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !vlayer )
   {
-    QMessageBox::information( 0, tr( "Not a vector layer" ),
-                              tr( "The current layer is not a vector layer" ) );
+    notifyNotVectorLayer();
     return;
   }
 
@@ -72,9 +71,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ),
-                              tr( "Cannot edit the vector layer. Use 'Toggle Editing' to make it editable." )
-                            );
+    notifyNotEditableLayer();
     return;
   }
 
@@ -116,7 +113,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     //grass provider has its own mechanism of feature addition
     if ( provider->capabilities() & QgsVectorDataProvider::AddFeatures )
     {
-      QgsFeature* f = new QgsFeature( 0, "WKBPoint" );
+      QgsFeature* f = new QgsFeature( vlayer->pendingFields(), 0 );
 
       QgsGeometry *g = 0;
       if ( layerWKBType == QGis::WKBPoint || layerWKBType == QGis::WKBPoint25D )
@@ -201,7 +198,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
 
       //create QgsFeature with wkb representation
-      QgsFeature* f = new QgsFeature( 0, "WKBLineString" );
+      QgsFeature* f = new QgsFeature( vlayer->pendingFields(),  0 );
 
       QgsGeometry *g;
 
@@ -268,6 +265,23 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         {
           QMessageBox::critical( 0, tr( "Error" ), tr( "An error was reported during intersection removal" ) );
         }
+
+        if ( !f->geometry()->asWkb() ) //avoid intersection might have removed the whole geometry
+        {
+          QString reason;
+          if ( avoidIntersectionsReturn != 2 )
+          {
+            reason = tr( "The feature cannot be added because it's geometry is empty" );
+          }
+          else
+          {
+            reason = tr( "The feature cannot be added because it's geometry collapsed due to intersection avoidance" );
+          }
+          QMessageBox::critical( 0, tr( "Error" ), reason );
+          delete f;
+          stopCapturing();
+          return;
+        }
       }
 
       vlayer->beginEditCommand( tr( "Feature added" ) );
@@ -276,7 +290,26 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       {
         //add points to other features to keep topology up-to-date
         int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-        if ( topologicalEditing )
+
+        //use always topological editing for avoidIntersection.
+        //Otherwise, no way to guarantee the geometries don't have a small gap in between.
+        QStringList intersectionLayers = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList" );
+        bool avoidIntersection = !intersectionLayers.isEmpty();
+        if ( avoidIntersection ) //try to add topological points also to background layers
+        {
+          QStringList::const_iterator lIt = intersectionLayers.constBegin();
+          for ( ; lIt != intersectionLayers.constEnd(); ++lIt )
+          {
+            QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( *lIt );
+            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( ml );
+            //can only add topological points if background layer is editable...
+            if ( vl && vl->geometryType() == QGis::Polygon && vl->isEditable() )
+            {
+              vl->addTopologicalPoints( f->geometry() );
+            }
+          }
+        }
+        else if ( topologicalEditing )
         {
           vlayer->addTopologicalPoints( f->geometry() );
         }

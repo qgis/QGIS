@@ -1,11 +1,36 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    r.external.all.py
+    ---------------------
+    Date                 : July 2009
+    Copyright            : (C) 2009 by Lorenzo Masini
+    Email                : rugginoso at develer dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Lorenzo Masini'
+__date__ = 'July 2009'
+__copyright__ = '(C) 2009, Lorenzo Masini'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 
 ############################################################################
 #
 # MODULE:       qgis.r.external.all.py
 # AUTHOR(S):    Lorenzo Masini
 #
-# PURPOSE:      Link all GDAL supported raster files into a directory 
+# PURPOSE:      Link all GDAL supported raster files into a directory
 #		to binary raster map layers.
 # COPYRIGHT:    (C) 2009 by Lorenzo Masini
 #
@@ -74,9 +99,9 @@ def import_directory_of_rasters(directory, recursive):
 def main():
     input = options['input']
     recursive = flags['r']
-	
+
     import_directory_of_rasters(input, recursive)
-	 	
+
 if __name__ == "__main__":
     options, flags = grass.parser()
     flags_string = "".join([k for k in flags.keys() if flags[k] and k != 'r'])

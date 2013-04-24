@@ -12,7 +12,7 @@ MACRO(FIND_BISON)
     IF (MSVC)
       FIND_PROGRAM(BISON_EXECUTABLE PATHS
       		   NAMES bison.exe
-	           PATHS $ENV{LIB_DIR}/bin $ENV{PROGRAMFILES}/GnuWin32/bin
+	           PATHS $ENV{LIB_DIR}/bin c:/cygwin/bin $ENV{PROGRAMFILES}/GnuWin32/bin
 	)
     ELSE (MSVC)
       FIND_PROGRAM(BISON_EXECUTABLE bison)

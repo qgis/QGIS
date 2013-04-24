@@ -167,7 +167,7 @@ void QgsBookmarks::addClicked()
 void QgsBookmarks::deleteClicked()
 {
   QList<int> rows;
-  foreach( const QModelIndex &idx, lstBookmarks->selectionModel()->selectedIndexes() )
+  foreach ( const QModelIndex &idx, lstBookmarks->selectionModel()->selectedIndexes() )
   {
     if ( idx.column() == 1 )
     {
@@ -185,7 +185,7 @@ void QgsBookmarks::deleteClicked()
     return;
 
   int i = 0;
-  foreach( int row, rows )
+  foreach ( int row, rows )
   {
     lstBookmarks->model()->removeRow( row - i );
     i++;

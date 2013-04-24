@@ -4,6 +4,7 @@
  * <http://www.UNIX-systems.org/online.html>
  *
  * Markus Kuhn -- 2001-01-12 -- public domain
+ * this file is in the public domain
  */
 
 #include "konsole_wcwidth.h"

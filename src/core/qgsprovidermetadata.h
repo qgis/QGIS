@@ -38,25 +38,25 @@ class CORE_EXPORT QgsProviderMetadata
 {
   public:
 
-    QgsProviderMetadata( QString const & _key, QString const & _description, QString const & _library );
+    QgsProviderMetadata( const QString & _key, const QString & _description, const QString & _library );
 
     /** this returns the unique key associated with the provider
 
         This key string is used for the associative container in QgsProviderRegistry
     */
-    QString const & key() const;
+    const QString & key() const;
 
     /** this returns descriptive text for the provider
 
         This is used to provide a descriptive list of available data providers.
     */
-    QString const & description() const;
+    const QString & description() const;
 
     /** this returns the library file name
 
         This is used to QLibrary calls to load the data provider.
     */
-    QString const & library() const;
+    const QString & library() const;
 
   private:
 

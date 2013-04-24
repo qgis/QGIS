@@ -21,6 +21,7 @@
 
 #include <QStringList>
 #include <QRegExp>
+#include <QUrl>
 
 QgsDataSourceURI::QgsDataSourceURI()
     : mSSLmode( SSLprefer )
@@ -101,7 +102,11 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
           int start = i;
           QString col;
           while ( i < uri.length() && uri[i] != ')' )
+          {
+            if ( uri[i] == '\\' )
+              i++;
             i++;
+          }
 
           if ( i == uri.length() )
           {
@@ -109,6 +114,8 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
           }
 
           mGeometryColumn = uri.mid( start, i - start );
+          mGeometryColumn.replace( "\\)", ")" );
+          mGeometryColumn.replace( "\\\\", "\\" );
 
           i++;
         }
@@ -148,7 +155,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
         {
           mWkbType = QGis::WKBMultiPoint;
         }
-        else if ( geomTypeUpper == "MULTLINESTRING" )
+        else if ( geomTypeUpper == "MULTILINESTRING" )
         {
           mWkbType = QGis::WKBMultiLineString;
         }
@@ -479,6 +486,10 @@ QString QgsDataSourceURI::connectionInfo() const
   else if ( mHost != "" )
   {
     connectionItems << "host=" + mHost;
+  }
+
+  if ( mService.isEmpty() )
+  {
     if ( mPort != "" )
       connectionItems << "port=" + mPort;
   }
@@ -579,12 +590,46 @@ QString QgsDataSourceURI::uri() const
     theUri += QString( " selectatid=false" );
   }
 
+  QString columnName( mGeometryColumn );
+  columnName.replace( "\\", "\\\\" );
+  columnName.replace( ")", "\\)" );
+
   theUri += QString( " table=%1%2 sql=%3" )
             .arg( quotedTablename() )
-            .arg( mGeometryColumn.isNull() ? QString() : QString( " (%1)" ).arg( mGeometryColumn ) )
+            .arg( mGeometryColumn.isNull() ? QString() : QString( " (%1)" ).arg( columnName ) )
             .arg( mSql );
 
   return theUri;
+}
+
+QByteArray QgsDataSourceURI::encodedUri() const
+{
+  QUrl url;
+  foreach ( QString key, mParams.uniqueKeys() )
+  {
+    foreach ( QString value, mParams.values( key ) )
+    {
+      url.addQueryItem( key, value );
+    }
+  }
+  return url.encodedQuery();
+}
+
+void QgsDataSourceURI::setEncodedUri( const QByteArray & uri )
+{
+  mParams.clear();
+  QUrl url;
+  url.setEncodedQuery( uri );
+  QPair<QString, QString> item;
+  foreach ( item, url.queryItems() )
+  {
+    mParams.insertMulti( item.first, item.second );
+  }
+}
+
+void QgsDataSourceURI::setEncodedUri( const QString & uri )
+{
+  setEncodedUri( uri.toAscii() );
 }
 
 QString QgsDataSourceURI::quotedTablename() const
@@ -662,4 +707,38 @@ QString QgsDataSourceURI::srid() const
 void QgsDataSourceURI::setSrid( QString srid )
 {
   mSrid = srid;
+}
+
+void QgsDataSourceURI::setParam( const QString &key, const QString &value )
+{
+  // may be multiple
+  mParams.insertMulti( key, value );
+}
+
+void QgsDataSourceURI::setParam( const QString &key, const QStringList &value )
+{
+  foreach ( QString val, value )
+  {
+    mParams.insertMulti( key, val );
+  }
+}
+
+int QgsDataSourceURI::removeParam( const QString &key )
+{
+  return mParams.remove( key );
+}
+
+QString QgsDataSourceURI::param( const QString &key ) const
+{
+  return mParams.value( key );
+}
+
+QStringList QgsDataSourceURI::params( const QString &key ) const
+{
+  return mParams.values( key );
+}
+
+bool QgsDataSourceURI::hasParam( const QString &key ) const
+{
+  return mParams.contains( key );
 }

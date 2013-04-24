@@ -238,6 +238,7 @@ void QgsGeorefPluginGui::openRaster()
   s.setValue( "/Plugin-GeoReferencer/lastusedfilter", lastUsedFilter );
 
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
+  mGeorefTransform.setRasterChangeCoords( mRasterFileName );
   statusBar()->showMessage( tr( "Raster loaded: %1" ).arg( mRasterFileName ) );
   setWindowTitle( tr( "Georeferencer - %1" ).arg( fileInfo.fileName() ) );
 
@@ -628,6 +629,23 @@ void QgsGeorefPluginGui::showGeorefConfigDialog()
   }
 }
 
+// Histogram stretch slots
+void QgsGeorefPluginGui::fullHistogramStretch()
+{
+  mLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+  mLayer->setCacheImage( NULL );
+  mCanvas->refresh();
+}
+
+void QgsGeorefPluginGui::localHistogramStretch()
+{
+  QgsRectangle rectangle = mIface->mapCanvas()->mapRenderer()->outputExtentToLayerExtent( mLayer, mIface->mapCanvas()->extent() );
+
+  mLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax, rectangle );
+  mLayer->setCacheImage( NULL );
+  mCanvas->refresh();
+}
+
 // Info slots
 void QgsGeorefPluginGui::contextHelp()
 {
@@ -673,7 +691,8 @@ void QgsGeorefPluginGui::extentsChangedGeorefCanvas()
     }
 
     // Reproject the georeference plugin canvas into world coordinates and fit axis aligned bounding box
-    QgsRectangle boundingBox = transformViewportBoundingBox( mCanvas->extent(), mGeorefTransform, true );
+    QgsRectangle rectMap = mGeorefTransform.hasCrs() ? mGeorefTransform.getBoundingBox( mCanvas->extent(), true ) : mCanvas->extent();
+    QgsRectangle boundingBox = transformViewportBoundingBox( rectMap, mGeorefTransform, true );
 
     mExtentsChangedRecursionGuard = true;
     // Just set the whole extent for now
@@ -703,11 +722,12 @@ void QgsGeorefPluginGui::extentsChangedQGisCanvas()
 
     // Reproject the canvas into raster coordinates and fit axis aligned bounding box
     QgsRectangle boundingBox = transformViewportBoundingBox( mIface->mapCanvas()->extent(), mGeorefTransform, false );
+    QgsRectangle rectMap = mGeorefTransform.hasCrs() ? mGeorefTransform.getBoundingBox( boundingBox, false ) : boundingBox;
 
     mExtentsChangedRecursionGuard = true;
     // Just set the whole extent for now
     // TODO: better fitting function which acounts for differing aspect ratios etc.
-    mCanvas->setExtent( boundingBox );
+    mCanvas->setExtent( rectMap );
     mCanvas->refresh();
     mExtentsChangedRecursionGuard = false;
   }
@@ -839,6 +859,15 @@ void QgsGeorefPluginGui::createActions()
 
   mActionGeorefConfig->setIcon( getThemeIcon( "/mActionGeorefConfig.png" ) );
   connect( mActionGeorefConfig, SIGNAL( triggered() ), this, SLOT( showGeorefConfigDialog() ) );
+
+  // Histogram stretch
+  mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
+  connect( mActionLocalHistogramStretch, SIGNAL( triggered() ), this, SLOT( localHistogramStretch() ) );
+  mActionLocalHistogramStretch->setEnabled( false );
+
+  mActionFullHistogramStretch->setIcon( getThemeIcon( "/mActionFullHistogramStretch.png" ) );
+  connect( mActionFullHistogramStretch, SIGNAL( triggered() ), this, SLOT( fullHistogramStretch() ) );
+  mActionFullHistogramStretch->setEnabled( false );
 
   // Help actions
   mActionHelp = new QAction( tr( "Help" ), this );
@@ -985,32 +1014,35 @@ void QgsGeorefPluginGui::createDockWidgets()
   connect( mGCPListWidget, SIGNAL( pointEnabled( QgsGeorefDataPoint*, int ) ), this, SLOT( updateGeorefTransform() ) );
 }
 
-void QgsGeorefPluginGui::createStatusBar()
+QLabel* QgsGeorefPluginGui::createBaseLabelStatus()
 {
   QFont myFont( "Arial", 9 );
+  QLabel* label = new QLabel( statusBar() );
+  label->setFont( myFont );
+  label->setMinimumWidth( 10 );
+  label->setMaximumHeight( 20 );
+  label->setMargin( 3 );
+  label->setAlignment( Qt::AlignCenter );
+  label->setFrameStyle( QFrame::NoFrame );
+  return label;
+}
 
-  mTransformParamLabel = new QLabel( statusBar() );
-  mTransformParamLabel->setFont( myFont );
-  mTransformParamLabel->setMinimumWidth( 10 );
-  mTransformParamLabel->setMaximumHeight( 20 );
-  mTransformParamLabel->setMargin( 3 );
-  mTransformParamLabel->setAlignment( Qt::AlignCenter );
-  mTransformParamLabel->setFrameStyle( QFrame::NoFrame );
+void QgsGeorefPluginGui::createStatusBar()
+{
+  mTransformParamLabel = createBaseLabelStatus();
   mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
   mTransformParamLabel->setToolTip( tr( "Current transform parametrisation" ) );
   statusBar()->addPermanentWidget( mTransformParamLabel, 0 );
 
-  mCoordsLabel = new QLabel( QString(), statusBar() );
-  mCoordsLabel->setFont( myFont );
-  mCoordsLabel->setMinimumWidth( 10 );
-  mCoordsLabel->setMaximumHeight( 20 );
+  mCoordsLabel = createBaseLabelStatus();
   mCoordsLabel->setMaximumWidth( 100 );
-  mCoordsLabel->setMargin( 3 );
-  mCoordsLabel->setAlignment( Qt::AlignCenter );
-  mCoordsLabel->setFrameStyle( QFrame::NoFrame );
   mCoordsLabel->setText( tr( "Coordinate: " ) );
   mCoordsLabel->setToolTip( tr( "Current map coordinate" ) );
   statusBar()->addPermanentWidget( mCoordsLabel, 0 );
+
+  mEPSG = createBaseLabelStatus();
+  mEPSG->setText( "EPSG:" );
+  statusBar()->addPermanentWidget( mEPSG, 0 );
 }
 
 void QgsGeorefPluginGui::setupConnections()
@@ -1030,19 +1062,19 @@ void QgsGeorefPluginGui::setupConnections()
 
 void QgsGeorefPluginGui::removeOldLayer()
 {
-    // delete layer (and don't signal it as it's our private layer)
-    if ( mLayer )
-    {
-      QgsMapLayerRegistry::instance()->removeMapLayers(
-        ( QStringList() << mLayer->id() ), false );
-      mLayer = NULL;
-    }
-    mCanvas->refresh();
+  // delete layer (and don't signal it as it's our private layer)
+  if ( mLayer )
+  {
+    QgsMapLayerRegistry::instance()->removeMapLayers(
+      ( QStringList() << mLayer->id() ) );
+    mLayer = NULL;
+  }
+  mCanvas->refresh();
 }
 
 void QgsGeorefPluginGui::updateIconTheme( QString theme )
 {
-  Q_UNUSED(theme);
+  Q_UNUSED( theme );
   // File actions
   mActionOpenRaster->setIcon( getThemeIcon( "/mActionOpenRaster.png" ) );
   mActionStartGeoref->setIcon( getThemeIcon( "/mActionStartGeoref.png" ) );
@@ -1088,6 +1120,22 @@ void QgsGeorefPluginGui::addRaster( QString file )
   mCanvas->setLayerSet( layers );
 
   mAgainAddRaster = false;
+
+  mActionLocalHistogramStretch->setEnabled( true );
+  mActionFullHistogramStretch->setEnabled( true );
+
+  // Status Bar
+  if ( mGeorefTransform.hasCrs() )
+  {
+    QString authid = mLayer->crs().authid();
+    mEPSG->setText( authid );
+    mEPSG->setToolTip( mLayer->crs().toProj4() );
+  }
+  else
+  {
+    mEPSG->setText( tr( "None" ) );
+    mEPSG->setToolTip( tr( "Coordinate of image(column/line)" ) );
+  }
 }
 
 // Settings
@@ -1173,7 +1221,7 @@ void QgsGeorefPluginGui::saveGCPs()
   {
     QTextStream points( &pointFile );
     points << "mapX,mapY,pixelX,pixelY,enable" << endl;
-    foreach( QgsGeorefDataPoint *pt, mPoints )
+    foreach ( QgsGeorefDataPoint *pt, mPoints )
     {
       points << ( QString( "%1,%2,%3,%4,%5" ).arg( pt->mapCoords().x(), 0, 'f', 15 ).
                   arg( pt->mapCoords().y(), 0, 'f', 15 ).arg( pt->pixelCoords().x(), 0, 'f', 15 ).
@@ -1320,7 +1368,7 @@ bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, dou
   double rotationX = 0;
   double rotationY = 0;
 
-  if ( !doubleNear( rotation, 0.0 ) )
+  if ( !qgsDoubleNear( rotation, 0.0 ) )
   {
     rotationX = pixelXSize * sin( rotation );
     rotationY = pixelYSize * sin( rotation );
@@ -1763,7 +1811,7 @@ QString QgsGeorefPluginGui::generateGDALtranslateCommand( bool generateTFW )
     gdalCommand << "-co TFW=YES";
   }
 
-  foreach( QgsGeorefDataPoint *pt, mPoints )
+  foreach ( QgsGeorefDataPoint *pt, mPoints )
   {
     gdalCommand << QString( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
     .arg( pt->mapCoords().x() ).arg( pt->mapCoords().y() );
@@ -1894,7 +1942,7 @@ bool QgsGeorefPluginGui::updateGeorefTransform()
 // Samples the given rectangle at numSamples per edge.
 // Returns an axis aligned bounding box which contains the transformed samples.
 QgsRectangle QgsGeorefPluginGui::transformViewportBoundingBox( const QgsRectangle &canvasExtent,
-    const QgsGeorefTransform &t,
+    QgsGeorefTransform &t,
     bool rasterToWorld, uint numSamples )
 {
   double minX, minY;

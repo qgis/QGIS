@@ -1,0 +1,13 @@
+<h3>Funktion tostring()</h3>
+Wandelt eine Zahl in eine Zeichenkette um.
+
+<p><h4>Syntax</h4>
+     tostring(<i>zahl</i>)</p>
+
+<p><h4>Argumente</h4>
+<!-- List args for functions here-->
+<i>zahl</i> -> ist eine ganze oder Fließkommazahl.  Die in eine Zeichenkette umzuwandelnde Zahl.</p>
+
+<p><h4>Beispiel</h4>
+<!-- Show example of function.-->
+     tostring(123) -> '123'</p>

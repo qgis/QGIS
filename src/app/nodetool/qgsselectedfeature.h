@@ -16,8 +16,6 @@
 #ifndef QGSSELECTEDFEATURE_H
 #define QGSSELECTEDFEATURE_H
 
-#include "nodetool/qgsselectedfeature.h"
-
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 

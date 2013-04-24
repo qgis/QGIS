@@ -69,14 +69,14 @@ class CORE_EXPORT QgsMapToPixel
 
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
-       transform. */
-    void transformInPlace( std::vector<double>& x,
-                           std::vector<double>& y ) const;
+       transform.
+       @note not available in python bindings
+     */
+    void transformInPlace( QVector<double>& x, QVector<double>& y ) const;
 
 #ifdef ANDROID
     void transformInPlace( float& x, float& y ) const;
-    void transformInPlace( std::vector<float>& x,
-                           std::vector<float>& y ) const;
+    void transformInPlace( QVector<float>& x, QVector<float>& y ) const;
 #endif
 
     QgsPoint toMapCoordinates( int x, int y ) const;
@@ -86,9 +86,9 @@ class CORE_EXPORT QgsMapToPixel
     QgsPoint toMapCoordinatesF( double x, double y ) const;
 
     /*! Tranform device coordinates to map (world)  coordinates
-    * @param p Point to be converted to map cooordinates
-    * @return QgsPoint in map coorndiates
-    */
+     * @param p Point to be converted to map cooordinates
+     * @return QgsPoint in map coorndiates
+     */
     QgsPoint toMapCoordinates( QPoint p ) const;
 
     QgsPoint toMapPoint( double x, double y ) const;
