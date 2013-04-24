@@ -70,13 +70,13 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             if element.parameters:                                                     
                 pt = self.getLinkPointForParameter(-1)
                 x = self.getXPositionForFoldButton() 
-                pt = QtCore.QPointF(x, pt.y())
+                pt = QtCore.QPointF(x, pt.y() + 3)
                 self.inButton = FoldButtonGraphicItem(pt, self.foldInput)
                 self.inButton.setParentItem(self)
             if element.outputs:
                 pt = self.getLinkPointForOutput(-1)
                 x = self.getXPositionForFoldButton() 
-                pt = QtCore.QPointF(x, pt.y()) 
+                pt = QtCore.QPointF(x, pt.y() + 3) 
                 self.outButton = FoldButtonGraphicItem(pt, self.foldOutput)
                 self.outButton.setParentItem(self)
         
@@ -325,8 +325,11 @@ class FlatButtonGraphicItem(QtGui.QGraphicsItem):
         
 class FoldButtonGraphicItem(FlatButtonGraphicItem):
 
-    icons = { True : QtGui.QIcon(os.path.dirname(__file__) + "/../images/plus.gif"), 
-             False : QtGui.QIcon(os.path.dirname(__file__) + "/../images/minus.gif")}
+    WIDTH = 11
+    HEIGHT = 11
+    
+    icons = { True : QtGui.QIcon(os.path.dirname(__file__) + "/../images/plus.png"), 
+             False : QtGui.QIcon(os.path.dirname(__file__) + "/../images/minus.png")}
     
     def __init__(self, position, action):
         self.folded = True
