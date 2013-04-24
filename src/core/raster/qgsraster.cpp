@@ -1,7 +1,7 @@
 /***************************************************************************
-      qgsrasteridentifyresult.cpp
+            qgsraster.cpp - Raster namespace
      --------------------------------------
-    Date                 : Apr 8, 2013
+    Date                 : Apr, 2013
     Copyright            : (C) 2013 by Radim Blazek
     email                : radim dot blazek at gmail dot com
  ***************************************************************************/
@@ -15,33 +15,42 @@
  *                                                                         *
  ***************************************************************************/
 
-//#include <QTime>
+#include "qgsraster.h"
 
-#include "qgis.h"
-#include "qgslogger.h"
-#include "qgsrasteridentifyresult.h"
-#include "qgsrasterdataprovider.h"
-
-QgsRasterIdentifyResult::QgsRasterIdentifyResult()
-    : mValid( false )
-    , mFormat( QgsRaster::IdentifyFormatUndefined )
+QString QgsRaster::contrastEnhancementLimitsAsString( ContrastEnhancementLimits theLimits )
 {
+  switch ( theLimits )
+  {
+    case QgsRaster::ContrastEnhancementMinMax:
+      return "MinMax";
+      break;
+    case QgsRaster::ContrastEnhancementStdDev:
+      return "StdDev";
+      break;
+    case QgsRaster::ContrastEnhancementCumulativeCut:
+      return "CumulativeCut";
+      break;
+    default:
+      break;
+  }
+  return "None";
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, QMap<int, QVariant> theResults )
-    : mValid( true )
-    , mFormat( theFormat )
-    , mResults( theResults )
+QgsRaster::ContrastEnhancementLimits QgsRaster::contrastEnhancementLimitsFromString( QString theLimits )
 {
+  if ( theLimits == "MinMax" )
+  {
+    return ContrastEnhancementMinMax;
+  }
+  else if ( theLimits == "StdDev" )
+  {
+    return ContrastEnhancementStdDev;
+  }
+  else if ( theLimits == "CumulativeCut" )
+  {
+    return ContrastEnhancementCumulativeCut;
+  }
+  return ContrastEnhancementNone;
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsError theError )
-    : mValid( false )
-    , mFormat( QgsRaster::IdentifyFormatUndefined )
-    , mError( theError )
-{
-}
 
-QgsRasterIdentifyResult::~QgsRasterIdentifyResult()
-{
-}

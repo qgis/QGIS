@@ -6446,25 +6446,25 @@ void QgisApp::options()
 
 void QgisApp::fullHistogramStretch()
 {
-  histogramStretch( false, QgsRasterLayer::ContrastEnhancementMinMax );
+  histogramStretch( false, QgsRaster::ContrastEnhancementMinMax );
 }
 
 void QgisApp::localHistogramStretch()
 {
-  histogramStretch( true, QgsRasterLayer::ContrastEnhancementMinMax );
+  histogramStretch( true, QgsRaster::ContrastEnhancementMinMax );
 }
 
 void QgisApp::fullCumulativeCutStretch()
 {
-  histogramStretch( false, QgsRasterLayer::ContrastEnhancementCumulativeCut );
+  histogramStretch( false, QgsRaster::ContrastEnhancementCumulativeCut );
 }
 
 void QgisApp::localCumulativeCutStretch()
 {
-  histogramStretch( true, QgsRasterLayer::ContrastEnhancementCumulativeCut );
+  histogramStretch( true, QgsRaster::ContrastEnhancementCumulativeCut );
 }
 
-void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterLayer::ContrastEnhancementLimits theLimits )
+void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhancementLimits theLimits )
 {
   QgsMapLayer * myLayer = mMapLegend->currentLayer();
 

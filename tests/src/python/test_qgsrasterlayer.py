@@ -18,7 +18,8 @@ import unittest
 from PyQt4.QtCore import QFileInfo, QString, QStringList
 from PyQt4 import QtGui
 
-from qgis.core import (QgsRasterLayer,
+from qgis.core import (QgsRaster,
+                       QgsRasterLayer,
                        QgsRasterDataProvider,
                        QgsColorRampShader,
                        QgsContrastEnhancement,
@@ -53,7 +54,7 @@ class TestQgsRasterLayer(TestCase):
         #print 'Extents: %s' % myRasterLayer.extent().toString()
         #myResult, myRasterValues = myRasterLayer.identify(myPoint)
         #assert myResult
-        myRasterValues =  myRasterLayer.dataProvider().identify(myPoint, QgsRasterDataProvider.IdentifyFormatValue ).results()
+        myRasterValues =  myRasterLayer.dataProvider().identify(myPoint, QgsRaster.IdentifyFormatValue ).results()
 
         assert len( myRasterValues ) > 0
 
@@ -90,7 +91,7 @@ class TestQgsRasterLayer(TestCase):
         myRasterLayer.setRenderer(renderer)
         myRasterLayer.setContrastEnhancementAlgorithm(
             QgsContrastEnhancement.StretchToMinimumMaximum,
-            QgsRasterLayer.ContrastEnhancementMinMax)
+            QgsRaster.ContrastEnhancementMinMax)
 
         myContrastEnhancement = myRasterLayer.renderer().contrastEnhancement()
         #print ("myContrastEnhancement.minimumValue = %.17g" %

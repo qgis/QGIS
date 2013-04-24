@@ -2757,7 +2757,7 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
 
     QgsRectangle myRectangle;
     myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( layer, mMapCanvas->extent() );
-    layer->setContrastEnhancementAlgorithm( contrastEnhancementAlgorithm, QgsRasterLayer::ContrastEnhancementMinMax, myRectangle );
+    layer->setContrastEnhancementAlgorithm( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
 
     layer->setCacheImage( NULL );
     refreshLayerSymbology( layer->id() );

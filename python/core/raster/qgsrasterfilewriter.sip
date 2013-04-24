@@ -44,8 +44,8 @@ class QgsRasterFileWriter
     void setMaxTileWidth( int w );
     int maxTileWidth() const;
 
-    QgsRasterDataProvider::RasterBuildPyramids buildPyramidsFlag() const;
-    void setBuildPyramidsFlag( QgsRasterDataProvider::RasterBuildPyramids f );
+    QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
+    void setBuildPyramidsFlag( QgsRaster::RasterBuildPyramids f );
 
     QList< int > pyramidsList() const;
     void setPyramidsList( const QList< int > & list );
@@ -53,8 +53,8 @@ class QgsRasterFileWriter
     QString pyramidsResampling() const;
     void setPyramidsResampling( const QString & str );
 
-    QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const;
-    void setPyramidsFormat( QgsRasterDataProvider::RasterPyramidsFormat f );
+    QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
+    void setPyramidsFormat( QgsRaster::RasterPyramidsFormat f );
 
     void setMaxTileHeight( int h );
     int maxTileHeight() const;

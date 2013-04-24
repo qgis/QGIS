@@ -39,8 +39,8 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget,
     QStringList configOptions() const { return mSaveOptionsWidget->options(); }
     QgsRasterFormatSaveOptionsWidget* createOptionsWidget() { return mSaveOptionsWidget; }
     const QList<int> overviewList() const { return mOverviewList; }
-    QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const
-    { return ( QgsRasterDataProvider::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex(); }
+    QgsRaster::RasterPyramidsFormat pyramidsFormat() const
+    { return ( QgsRaster::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex(); }
     QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer* rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
     void setRasterFileName( const QString& file ) { mSaveOptionsWidget->setRasterFileName( file ); }

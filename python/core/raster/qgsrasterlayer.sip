@@ -90,15 +90,6 @@ class QgsRasterLayer : QgsMapLayer
       ColorLayer
     };
 
-    /** \brief Contrast enhancement limits */
-    enum ContrastEnhancementLimits
-    {
-      ContrastEnhancementNone,
-      ContrastEnhancementMinMax,
-      ContrastEnhancementStdDev,
-      ContrastEnhancementCumulativeCut
-    };
-
     //
     // Static methods:
     //
@@ -201,9 +192,6 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
 
-    static QString contrastEnhancementLimitsAsString( QgsRasterLayer::ContrastEnhancementLimits theLimits );
-    static ContrastEnhancementLimits contrastEnhancementLimitsFromString( QString theLimits );
-
     /** \brief Mutator for contrast enhancement algorithm
      *  @param theAlgorithm Contrast enhancement algorithm
      *  @param theLimits Limits
@@ -213,7 +201,7 @@ class QgsRasterLayer : QgsMapLayer
 
 
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
-                                          ContrastEnhancementLimits theLimits = ContrastEnhancementMinMax,
+                                          QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
                                           QgsRectangle theExtent = QgsRectangle(),
                                           int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                           bool theGenerateLookupTableFlag = true );

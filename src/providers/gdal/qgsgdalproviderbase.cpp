@@ -173,60 +173,60 @@ int QgsGdalProviderBase::colorInterpretationFromGdal( int gdalColorInterpretatio
   switch ( gdalColorInterpretation )
   {
     case GCI_Undefined:
-      return QgsRasterDataProvider::UndefinedColorInterpretation;
+      return QgsRaster::UndefinedColorInterpretation;
       break;
     case GCI_GrayIndex:
-      return QgsRasterDataProvider::GrayIndex;
+      return QgsRaster::GrayIndex;
       break;
     case GCI_PaletteIndex:
-      return QgsRasterDataProvider::PaletteIndex;
+      return QgsRaster::PaletteIndex;
       break;
     case GCI_RedBand:
-      return QgsRasterDataProvider::RedBand;
+      return QgsRaster::RedBand;
       break;
     case GCI_GreenBand:
-      return QgsRasterDataProvider::GreenBand;
+      return QgsRaster::GreenBand;
       break;
     case GCI_BlueBand:
-      return QgsRasterDataProvider::BlueBand;
+      return QgsRaster::BlueBand;
       break;
     case GCI_AlphaBand:
-      return QgsRasterDataProvider::AlphaBand;
+      return QgsRaster::AlphaBand;
       break;
     case GCI_HueBand:
-      return QgsRasterDataProvider::HueBand;
+      return QgsRaster::HueBand;
       break;
     case GCI_SaturationBand:
-      return QgsRasterDataProvider::SaturationBand;
+      return QgsRaster::SaturationBand;
       break;
     case GCI_LightnessBand:
-      return QgsRasterDataProvider::LightnessBand;
+      return QgsRaster::LightnessBand;
       break;
     case GCI_CyanBand:
-      return QgsRasterDataProvider::CyanBand;
+      return QgsRaster::CyanBand;
       break;
     case GCI_MagentaBand:
-      return QgsRasterDataProvider::MagentaBand;
+      return QgsRaster::MagentaBand;
       break;
     case GCI_YellowBand:
-      return QgsRasterDataProvider::YellowBand;
+      return QgsRaster::YellowBand;
       break;
     case GCI_BlackBand:
-      return QgsRasterDataProvider::BlackBand;
+      return QgsRaster::BlackBand;
       break;
     case GCI_YCbCr_YBand:
-      return QgsRasterDataProvider::YCbCr_YBand;
+      return QgsRaster::YCbCr_YBand;
       break;
     case GCI_YCbCr_CbBand:
-      return QgsRasterDataProvider::YCbCr_CbBand;
+      return QgsRaster::YCbCr_CbBand;
       break;
     case GCI_YCbCr_CrBand:
-      return QgsRasterDataProvider::YCbCr_CrBand;
+      return QgsRaster::YCbCr_CrBand;
       break;
     default:
       break;
   }
-  return QgsRasterDataProvider::UndefinedColorInterpretation;
+  return QgsRaster::UndefinedColorInterpretation;
 }
 
 void QgsGdalProviderBase::registerGdalDrivers()

@@ -613,12 +613,12 @@ void QgsRasterHistogramWidget::on_cboHistoBand_currentIndexChanged( int index )
 
   int theBandNo = index + 1;
   // TODO - there are 2 definitions of raster data type that should be unified
-  // QgsRasterDataProvider::DataType and QgsContrastEnhancement::QgsRasterDataType
+  // QgsRasterDataProvider::DataType and QGis::DataType
   // TODO - fix gdal provider: changes data type when nodata value is not found
   // this prevents us from getting proper min and max values here
-  // minStr = QString::number( QgsContrastEnhancement::minimumValuePossible( ( QgsContrastEnhancement::QgsRasterDataType )
+  // minStr = QString::number( QgsContrastEnhancement::minimumValuePossible( ( QGis::DataType )
   //                                                                         mRasterLayer->dataProvider()->dataType( theBandNo ) ) );
-  // maxStr = QString::number( QgsContrastEnhancement::maximumValuePossible( ( QgsContrastEnhancement::QgsRasterDataType )
+  // maxStr = QString::number( QgsContrastEnhancement::maximumValuePossible( ( QGis::DataType )
   //                                                                         mRasterLayer->dataProvider()->dataType( theBandNo ) ) );
 
   QPair< QString, QString > myMinMax = rendererMinMax( theBandNo );
@@ -746,9 +746,9 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
         // TODO - fix gdal provider: changes data type when nodata value is not found
         // this prevents us from getting proper min and max values here
         minMaxValues[0] = QgsContrastEnhancement::minimumValuePossible(
-                            ( QgsContrastEnhancement::QgsRasterDataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
+                            ( QGis::DataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
         minMaxValues[1] = QgsContrastEnhancement::maximumValuePossible(
-                            ( QgsContrastEnhancement::QgsRasterDataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
+                            ( QGis::DataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
       }
       else
       {

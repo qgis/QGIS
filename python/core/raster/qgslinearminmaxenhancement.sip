@@ -5,7 +5,7 @@ class QgsLinearMinMaxEnhancement : QgsContrastEnhancementFunction
 %End
 
   public:
-    QgsLinearMinMaxEnhancement( QgsContrastEnhancement::QgsRasterDataType, double, double );
+    QgsLinearMinMaxEnhancement( QGis::DataType, double, double );
 
     int enhance( double );
 

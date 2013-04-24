@@ -9,7 +9,7 @@ class QgsLinearMinMaxEnhancementWithClip : QgsContrastEnhancementFunction
 %End
 
   public:
-    QgsLinearMinMaxEnhancementWithClip( QgsContrastEnhancement::QgsRasterDataType, double, double );
+    QgsLinearMinMaxEnhancementWithClip( QGis::DataType, double, double );
 
     int enhance( double );
 
