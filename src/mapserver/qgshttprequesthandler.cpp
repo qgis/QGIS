@@ -75,7 +75,7 @@ QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
   {
     return "image/png";
   }
-  else if ( format.compare( "jpg", Qt::CaseInsensitive ) == 0 )
+  else if ( format.compare( "jpg", Qt::CaseInsensitive ) == 0 || format.compare( "jpeg", Qt::CaseInsensitive ) )
   {
     return "image/jpeg";
   }
@@ -430,8 +430,8 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       {
         formatString = "PNG";
       }
-      else if ( formatString.contains( "image/jpeg", Qt::CaseInsensitive ) || formatString.contains( "image/jpg", Qt::CaseInsensitive )
-                || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
+      else if ( formatString.contains( "image/jpeg", Qt::CaseInsensitive ) || formatString.contains( "image/jpg", Qt::CaseInsensitive ) || formatString.contains( "image/jpeg", Qt::CaseInsensitive )
+                || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 || formatString.compare( "jpeg", Qt::CaseInsensitive ) == 0 )
       {
         formatString = "JPG";
       }
