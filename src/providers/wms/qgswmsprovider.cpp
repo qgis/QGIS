@@ -189,7 +189,7 @@ bool QgsWmsProvider::parseUri( QString uriString )
   if ( uri.hasParam( "tileDimensions" ) )
   {
     mTiled = true;
-    foreach ( QString param, uri.params( "tileDimensions" ) )
+    foreach ( QString param, uri.param( "tileDimensions" ).split( ";" ) )
     {
       QStringList kv = param.split( "=" );
       if ( kv.size() == 1 )
