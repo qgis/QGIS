@@ -90,7 +90,7 @@ class SextantePlugin:
         self.menu.addAction(self.resultsAction)
 
         menuBar = self.iface.mainWindow().menuBar()
-        menuBar.insertMenu(menuBar.actions()[-1], self.menu)
+        menuBar.insertMenu(self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
     def unload(self):
         self.toolbox.setVisible(False)
