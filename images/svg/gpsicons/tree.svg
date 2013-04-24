@@ -1,42 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg602"
-   xml:space="preserve"
-   sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docname="park.svg"
-   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
-     id="metadata11"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs9" /><sodipodi:namedview
-     inkscape:window-height="683"
-     inkscape:window-width="1024"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="3.6927131"
-     inkscape:cx="54.566925"
-     inkscape:cy="54.566925"
-     inkscape:window-x="0"
-     inkscape:window-y="36"
-     inkscape:current-layer="svg602" /><path
-     style="font-size:12px;stroke:#000000;stroke-width:3;fill:#a7a5a5;fill-opacity:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-linejoin:miter;stroke-linecap:butt"
-     d="M 56.010357,6.2503568 L 30.572857,43.031607 L 37.729107,43.031607 L 23.666607,63.344107 L 33.072857,63.344107 L 18.291607,84.719107 L 46.510357,84.719107 L 46.510357,99.812857 L 65.541607,99.812857 L 65.541607,84.687857 L 93.791607,84.687857 L 78.979107,63.312857 L 88.385357,63.312857 L 74.291607,43.000357 L 81.479107,43.000357 L 56.010357,6.2503568 z "
-     id="path658" /></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="park.svg" inkscape:version="0.43"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="svg602" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1024" inkscape:pageopacity="0.0" inkscape:window-height="683">
+	</sodipodi:namedview>
+<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="422.766,349.508 477.212,349.508 395.634,231.935 
+	437.237,231.935 289.818,19.217 142.58,232.116 184.001,232.116 102.604,349.69 157.05,349.69 71.493,473.414 234.83,473.414 
+	234.83,560.78 344.987,560.78 344.987,473.233 508.504,473.233 "/>
+</svg>

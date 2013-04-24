@@ -1,64 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg644"
-   xml:space="preserve"
-   sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docname="trailhead.svg"
-   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
-     id="metadata10"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs8" /><sodipodi:namedview
-     inkscape:window-height="683"
-     inkscape:window-width="1024"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="3.6927131"
-     inkscape:cx="54.566925"
-     inkscape:cy="54.566925"
-     inkscape:window-x="0"
-     inkscape:window-y="36"
-     inkscape:current-layer="g668" /><g
-     transform="matrix(1.070204,0,0,1.074902,-2.851691e-2,-4.370884)"
-     style="font-size:12;"
-     id="g668"><path
-       d="M 79.150393,99.126954 L 70.320632,61.112815 C 64.578219,36.082914 66.948473,46.174881 64.064017,37.246798 C 61.179561,28.318715 59.67262,28.398704 54.23234,23.326951 L 41.59672,26.937237 C 37.12161,33.040533 34.22597,41.206939 29.75086,44.47347 C 26.24098,46.708446 24.698662,46.106657 20.135802,46.536423 L 20.1154,38.284162 L 16.456139,38.284162 L 16.39941,99.018853 L 19.999091,99.104044 L 20.1154,54.78883 C 27.22291,54.616818 29.75086,54.187052 34.22597,53.499397 C 38.52556,52.123942 40.98249,49.4592 44.49236,47.052347 L 46.304448,59.452497 C 46.304448,59.452497 28.806066,98.880755 30.80383,99.14482 C 35.558697,99.77332 41.535505,99.396753 41.535505,99.396753 C 41.535505,99.396753 53.921662,67.705796 58.078912,67.764313 C 61.983124,67.822829 68.792156,99.126954 68.792156,99.126954 L 79.150393,99.126954 z "
-       style="fill-rule:evenodd"
-       id="path782"
-       sodipodi:nodetypes="cczccccccccccccsczcc" /><ellipse
-       cx="356.20523"
-       cy="165.82654"
-       rx="94.575562"
-       ry="94.575569"
-       transform="matrix(0.107441,0,0,0.103247,7.37939,-0.366581)"
-       style="fill-rule:evenodd"
-       id="path783"
-       sodipodi:cx="356.20523"
-       sodipodi:cy="165.82654"
-       sodipodi:rx="94.575562"
-       sodipodi:ry="94.575569" /><rect
-       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect1309"
-       width="13.658452"
-       height="38.561943"
-       x="46.707108"
-       y="38.490395"
-       transform="matrix(0.951509,-0.307622,0.310069,0.950714,0,0)" /></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg644" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="trailhead.svg" inkscape:version="0.43"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="g668" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1024" inkscape:pageopacity="0.0" inkscape:window-height="683">
+	</sodipodi:namedview>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M402.9,318.249l62.95-20.439L401.086,98.358l-70.397,22.857
+	l7.519,23.154c-5.28-4.731-11.488-10.002-19.134-17.161l-8.139,2.335c10.291-9.652,16.694-23.146,16.694-38.09
+	c0-29.34-24.645-53.123-55.041-53.123c-30.397,0-55.039,23.783-55.039,53.123c0,25.845,19.124,47.369,44.457,52.132l-11.376,3.265
+	c-24.238,33.205-39.924,77.633-64.163,95.404c-19.012,12.158-27.364,8.887-52.08,11.225l-0.111-44.896h-19.82l-0.309,330.42
+	l19.498,0.465l0.631-241.096c38.498-0.934,52.191-3.271,76.431-7.012c23.29-7.484,36.598-21.98,55.609-35.076l9.816,67.461
+	c0,0-94.783,214.506-83.961,215.939c25.754,3.42,58.128,1.375,58.128,1.375s67.089-172.41,89.607-172.094
+	c21.149,0.316,58.031,170.621,58.031,170.621h56.104l-47.825-206.811C405.05,327.667,403.947,322.834,402.9,318.249z"/>
+</svg>

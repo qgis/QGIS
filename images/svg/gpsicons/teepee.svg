@@ -1,48 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg644"
-   xml:space="preserve"
-   sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docname="teepee.svg"
-   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
-     id="metadata9"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs7" /><sodipodi:namedview
-     inkscape:window-height="584"
-     inkscape:window-width="874"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="3.6927131"
-     inkscape:cx="54.566925"
-     inkscape:cy="54.566925"
-     inkscape:window-x="5"
-     inkscape:window-y="60"
-     inkscape:current-layer="g659" /><g
-     transform="matrix(1.336648,0,0,1.232327,-9.237071,-4.56613)"
-     style="font-size:12;stroke:#000000;stroke-width:0.7792;"
-     id="g659"><path
-       d="M 14.45843 85.48747 L 81.01023 85.48747 L 50.01793 21.69807 L 54.58523 12.58527 L 51.64913 10.48227 L 48.06053 17.84267 L 44.79823 10.48227 L 42.18833 12.58527 L 45.77693 21.34757 L 14.45843 85.48747 z "
-       style="fill:#000000;fill-rule:evenodd;fill-opacity:1"
-       id="path719" /><path
-       d="M 33.86938,85.48747 L 61.59928,85.48747 L 46.91878,54.64427 L 33.86938,85.48747 z "
-       style="fill:#a7a5a5;fill-opacity:1;fill-rule:evenodd;stroke:#a7a5a5;stroke-opacity:1"
-       id="path721" /></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg644" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="teepee.svg" inkscape:version="0.43"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<polygon opacity="0.25" fill="#FFFB3D" points="284.318,317.942 192.103,518.877 388.059,518.877 "/>
+<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="307.871,114.845 339.458,56.739 316.024,41.268 
+	292.313,86.109 270.676,41.102 249.614,56.746 274.402,112.547 60.749,515.953 59.199,518.877 192.103,518.877 284.318,317.942 
+	388.059,518.877 520.791,518.877 "/>
+</svg>

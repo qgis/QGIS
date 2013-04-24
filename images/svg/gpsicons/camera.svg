@@ -1,57 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
-"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg602"
-   xml:space="preserve"><g
-   transform="translate(0,-11.00211)"
-   style="font-size:12;"
-   id="g675"><rect
-   width="95.5276642"
-   height="53.0126114"
-   x="8.39803696"
-   y="45.6236954"
-   style="fill-rule:evenodd;stroke:#000000;"
-   id="rect669" /><rect
-   width="9.44779301"
-   height="12.0721817"
-   x="16.2711964"
-   y="40.8997917"
-   style="fill-rule:evenodd;stroke:#000000;stroke-width:0.816497;"
-   id="rect670" /><rect
-   width="31.4926357"
-   height="24.1443596"
-   x="34.3591537"
-   y="32.5017548"
-   transform="translate(4.461455,-3.814697e-6)"
-   style="fill-rule:evenodd;stroke:#000000;stroke-width:0.882735;"
-   id="rect671" /><rect
-   width="19.9453468"
-   height="14.6965637"
-   x="39.8703537"
-   y="37.2256546"
-   transform="translate(4.723902,-3.814697e-6)"
-   style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:0.823755;"
-   id="rect672" /><ellipse
-   cx="54.0623627"
-   cy="78.6909637"
-   rx="15.7463207"
-   ry="15.7463207"
-   transform="translate(0.504565,-3.711447)"
-   style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1;"
-   id="path673" /><ellipse
-   cx="55.3745575"
-   cy="81.0529175"
-   rx="9.71022987"
-   ry="9.71023178"
-   transform="translate(-0.807629,-6.05308)"
-   style="fill-rule:evenodd;stroke:#000000;stroke-width:1;"
-   id="path674" /></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="svg602" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="579.997px" height="579.997px" viewBox="-235.433 -235.433 579.997 579.997"
+	 enable-background="new -235.433 -235.433 579.997 579.997" xml:space="preserve">
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M125.788-42.707v-62.611H-28.688v62.611h-58.462V-65.09h-48.975
+	v22.383h-37.724v257.159h460.021V-42.707H125.788z M48.55,26.441c40.267,0,73.026,32.759,73.026,73.026s-32.76,73.026-73.026,73.026
+	s-73.026-32.76-73.026-73.026S8.284,26.441,48.55,26.441z M3.072-12.655v-65.911H94.03v65.911H3.072z"/>
+<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M48.55,148.282c26.865,0,48.722-21.854,48.722-48.717
+	S75.416,50.849,48.55,50.849c-26.864,0-48.719,21.854-48.719,48.716S21.687,148.282,48.55,148.282z"/>
+</svg>

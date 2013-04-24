@@ -1,71 +1,16 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg644"
-   xml:space="preserve"
-   sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docname="house.svg"
-   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
-     id="metadata10"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs8" /><sodipodi:namedview
-     inkscape:window-height="584"
-     inkscape:window-width="874"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="3.6927131"
-     inkscape:cx="54.566925"
-     inkscape:cy="54.566925"
-     inkscape:window-x="5"
-     inkscape:window-y="60"
-     inkscape:current-layer="g669" /><g
-     transform="matrix(0.172735,0,0,0.178527,4.832985,-42.76391)"
-     style="font-size:12px;stroke:#000000;stroke-width:5.69449997"
-     id="g669"><rect
-       width="382.50006"
-       height="275"
-       x="172.50002"
-       y="459.86212"
-       transform="translate(-71.12637,33.09305)"
-       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-opacity:1;stroke-width:17.08358957;stroke-miterlimit:4;stroke-dasharray:none"
-       id="rect693" /><path
-       d="M 75.00001,477.3621 L 657.5001,479.8621 L 487.5001,292.3621 L 237.5,292.3621 L 75.00001,477.3621 z "
-       transform="translate(-73.62637,33.09305)"
-       style="fill:#7f7f7f;fill-rule:evenodd;fill-opacity:1;stroke:#000000;stroke-opacity:1;stroke-width:17.08358957;stroke-miterlimit:4;stroke-dasharray:none"
-       id="path695" /><rect
-       width="140"
-       height="203.1039"
-       x="307.28162"
-       y="558.46753"
-       style="fill-rule:evenodd"
-       id="rect698" /><rect
-       width="106.8793"
-       height="95.669266"
-       x="149.03896"
-       y="559.54572"
-       style="font-size:12px;fill-rule:evenodd;stroke:#000000;stroke-width:3.60241032"
-       id="rect3055" /><rect
-       width="109.89027"
-       height="51.518051"
-       x="287.06238"
-       y="275.21201"
-       style="font-size:12px;fill-rule:evenodd;stroke:#000000;stroke-width:2.68052268"
-       id="rect3057" /></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg644" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="house.svg" inkscape:version="0.43"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="g669" inkscape:window-y="60" inkscape:window-x="5" inkscape:pageshadow="2" inkscape:window-width="874" inkscape:pageopacity="0.0" inkscape:window-height="584">
+	</sodipodi:namedview>
+<rect id="rect693" x="157.748" y="273.439" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="316.255" height="234.997"/>
+<path id="path695" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M75.067,288.395l481.617,2.136L416.124,130.303h-206.7
+	L75.067,288.395z"/>
+<rect id="rect698" x="327.993" y="329.424" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.5136" width="115.758" height="179.012"/>
+<rect id="rect3055" x="197.158" y="330.34" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="88.37" height="81.756"/>
+<rect id="rect3057" x="311.279" y="87.369" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="90.859" height="44.026"/>
+</svg>
