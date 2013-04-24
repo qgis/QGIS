@@ -101,13 +101,11 @@ def layerData( layer ):
             fielddata[geomkey] = "None";
 
         fielddata[fidkey] = f.id()
-        id = fielddata[fields[0]]
-        description = fielddata[fields[1]]
-        fielddata['id']=id
-        fielddata['description']=description
-        if 'id' not in fields: fields.insert(0,'id')
-        if 'description' not in fields: fields.insert(1,'description')
-        data[id]=fielddata
+        if 'id' not in fielddata: fielddata['id'] = str(f.id())
+        if 'description' not in fielddata: fielddata['description'] = fielddata[fields[1]]
+        data[fielddata['id']]=fielddata
+    if 'id' not in fields: fields.insert(0,'id')
+    if 'description' not in fields: fields.insert(1,'description')
     fields.append(fidkey)
     fields.append(geomkey)
     return fields, data
@@ -656,8 +654,8 @@ class TestQgsDelimitedTextProvider(TestCase):
             createTest(description,filename,**params)
             assert False,"Set printTests to False to run delimited text tests"
         wanted={
-            u'3': {
-                'id': u'3',
+            '3': {
+                'id': '3',
                 'description': u'Less data',
                 'field_1': u'3',
                 'field_2': u'Less data',
@@ -1131,7 +1129,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'id': u'1',
                 'RE': u'RE',
                 'GEXP': u'GEXP',
-                'description': u'RE',
+                'description': u'Basic regular expression test',
                 'RE_1': u'RE',
                 'GEXP_1': u'GEXP',
                 'data': u'data1',
@@ -1145,7 +1143,7 @@ class TestQgsDelimitedTextProvider(TestCase):
                 'id': u'2',
                 'RE': u'RE',
                 'GEXP': u'GEXP',
-                'description': u'RE',
+                'description': u'Basic regular expression test 2',
                 'RE_1': u'RE',
                 'GEXP_1': u'',
                 'data': u'data2',
@@ -1200,8 +1198,8 @@ class TestQgsDelimitedTextProvider(TestCase):
             createTest(description,filename,**params)
             assert False,"Set printTests to False to run delimited text tests"
         wanted={
-            u'f': {
-                'id': u'f',
+            '2': {
+                'id': '2',
                 'description': u'i',
                 's': u'f',
                 'm': u'i',
@@ -1227,8 +1225,8 @@ class TestQgsDelimitedTextProvider(TestCase):
             createTest(description,filename,**params)
             assert False,"Set printTests to False to run delimited text tests"
         wanted={
-            u'fi': {
-                'id': u'fi',
+            '2': {
+                'id': '2',
                 'description': u'..',
                 'small': u'fi',
                 'field_2': u'..',
