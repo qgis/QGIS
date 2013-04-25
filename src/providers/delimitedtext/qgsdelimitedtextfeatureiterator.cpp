@@ -53,9 +53,11 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
   while ( true )
   {
     QgsDelimitedTextFile::Status status = P->mFile->nextRecord( tokens );
-    int fid = P->mFile->recordLineNumber();
     if ( status == QgsDelimitedTextFile::RecordEOF ) break;
     if ( status != QgsDelimitedTextFile::RecordOk ) continue;
+
+    int fid = P->mFile->recordLineNumber();
+    if( mRequest.filterType() == QgsFeatureRequest::FilterFid && fid != mRequest.filterFid()) continue;
     if ( P->recordIsEmpty( tokens ) ) continue;
 
     while ( tokens.size() < P->mFieldCount )
@@ -98,8 +100,6 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
       for ( QgsAttributeList::const_iterator i = attrs.begin(); i != attrs.end(); ++i )
       {
         int fieldIdx = *i;
-        if ( fieldIdx < 0 || fieldIdx >= P->attributeColumns.count() )
-          continue; // ignore non-existant fields
         fetchAttribute( feature, fieldIdx, tokens );
       }
     }
@@ -209,7 +209,10 @@ bool QgsDelimitedTextFeatureIterator::boundsCheck( QgsGeometry *geom )
 
 void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens )
 {
-  const QString &value = tokens[P->attributeColumns[fieldIdx]];
+  if( fieldIdx < 0 || fieldIdx >= P->attributeColumns.count()) return;
+  int column = P->attributeColumns[fieldIdx];
+  if( column < 0 || column >= tokens.count()) return;
+  const QString &value = tokens[column];
   QVariant val;
   switch ( P->attributeFields[fieldIdx].type() )
   {
