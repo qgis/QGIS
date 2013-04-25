@@ -170,7 +170,6 @@ class SplitThread(QThread):
 
         self.emit(SIGNAL("rangeCalculated(PyQt_PyObject)"), len(unique))
 
-        fit = provider.getFeatures()
 
         for i in unique:
             check = QFile(baseName + "_" + unicode(i.toString().trimmed()) + ".shp")
@@ -182,7 +181,7 @@ class SplitThread(QThread):
 
             writer = QgsVectorFileWriter(fName, self.encoding, fieldList, geom, sRs)
 
-	    fit.rewind()
+            fit = provider.getFeatures()
             while fit.nextFeature(inFeat):
                 atMap = inFeat.attributes()
                 if atMap[index] == i:
