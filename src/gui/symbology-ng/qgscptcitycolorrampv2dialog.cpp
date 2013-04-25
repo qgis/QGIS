@@ -29,6 +29,11 @@
 
 /////////
 
+// TODO
+// - remove dialog or add help as help button
+// - fix Diverging children when first show Selections
+// - fix crash on Diverging?
+
 class TreeFilterProxyModel : public QSortFilterProxyModel
 {
     //  Q_OBJECT
@@ -285,26 +290,24 @@ void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool
       lblSchemeName->setText( "" );
       populateVariants();
     }
-    lblSchemePath->setText( item->path() );
-    lblCollectionInfo->setText( item->info() );
-    updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
     updateListWidget( item );
+    lblSchemePath->setText( item->path() );
+    lblCollectionInfo->setText( QString( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
+    updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
   }
   else if ( item->type() == QgsCptCityDataItem::Selection )
   {
     lblSchemePath->setText( "" );
-    // lblCollectionName->setText( item->path() );
-    lblCollectionInfo->setText( item->info() );
     clearCopyingInfo( );
     updateListWidget( item );
+    lblCollectionInfo->setText( QString( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
   }
   else if ( item->type() == QgsCptCityDataItem::AllRamps )
   {
     lblSchemePath->setText( "" );
-    // lblCollectionName->setText( item->path() );
     clearCopyingInfo( );
     updateListWidget( item );
-    lblCollectionInfo->setText( tr( "All Ramps (%1)" ).arg( item->rowCount() ) );
+    lblCollectionInfo->setText( tr( "All Ramps (%1)" ).arg( item->leafCount() ) );
   }
   else
   {
