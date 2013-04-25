@@ -1292,8 +1292,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &ele
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mMarkerSymbol( 0 ), mDistanceX( 15 ),
     mDistanceXUnit( QgsSymbolV2::MM ), mDistanceY( 15 ), mDistanceYUnit( QgsSymbolV2::MM ), mDisplacementX( 0 ), mDisplacementXUnit( QgsSymbolV2::MM ),
-    mDisplacementY( 0 ), mDisplacementYUnit( QgsSymbolV2::MM ), mDistanceXExpression( 0 ), mDistanceYExpression( 0 ),
-    mDisplacementXExpression( 0 ), mDisplacementYExpression( 0 )
+    mDisplacementY( 0 ), mDisplacementYUnit( QgsSymbolV2::MM )
 {
   mDistanceX = 15;
   mDistanceY = 15;
@@ -1461,6 +1460,7 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
   {
     mOutline->startRender( context.renderContext() );
   }
+  prepareExpressions( context.layer() );
 }
 
 void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
@@ -1482,24 +1482,7 @@ QgsStringMap QgsPointPatternFillSymbolLayer::properties() const
   propertyMap["distance_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDistanceYUnit );
   propertyMap["displacement_x_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementXUnit );
   propertyMap["displacement_y_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mDisplacementYUnit );
-
-  //data defined properties
-  if ( mDistanceXExpression )
-  {
-    propertyMap["distance_x_expression"] = mDistanceXExpression->dump();
-  }
-  if ( mDistanceYExpression )
-  {
-    propertyMap["distance_y_expression"] = mDistanceYExpression->dump();
-  }
-  if ( mDisplacementXExpression )
-  {
-    propertyMap["displacement_x_expression"] = mDisplacementXExpression->dump();
-  }
-  if ( mDisplacementYExpression )
-  {
-    propertyMap["displacement_y_expression"] = mDisplacementYExpression->dump();
-  }
+  saveDataDefinedProperties( propertyMap );
   return propertyMap;
 }
 
@@ -1510,10 +1493,7 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::clone() const
   {
     clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
   }
-  clonedLayer->setDistanceXUnit( mDistanceXUnit );
-  clonedLayer->setDistanceYUnit( mDistanceYUnit );
-  clonedLayer->setDisplacementXUnit( mDisplacementXUnit );
-  clonedLayer->setDisplacementYUnit( mDisplacementYUnit );
+  copyDataDefinedProperties( clonedLayer );
   return clonedLayer;
 }
 
@@ -1576,150 +1556,38 @@ bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
   return true;
 }
 
-const QgsExpression* QgsPointPatternFillSymbolLayer::dataDefinedProperty( const QString& property ) const
-{
-  if ( property == "distance_x" )
-  {
-    return mDistanceXExpression;
-  }
-  else if ( property == "distance_x" )
-  {
-    return mDistanceYExpression;
-  }
-  else if ( property == "displacement_x" )
-  {
-    return mDisplacementXExpression;
-  }
-  else if ( property == "displacement_y" )
-  {
-    return mDisplacementYExpression;
-  }
-  return 0;
-}
-
-QString QgsPointPatternFillSymbolLayer::dataDefinedPropertyString( const QString& property ) const
-{
-  const QgsExpression* ex = dataDefinedProperty( property );
-  return ex ? ex->dump() : QString();
-}
-
-void QgsPointPatternFillSymbolLayer::setDataDefinedProperty( const QString& property, const QString& expressionString )
-{
-  if ( property == "distance_x" )
-  {
-    delete mDistanceXExpression; mDistanceXExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "distance_x" )
-  {
-    delete mDistanceYExpression; mDistanceYExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "displacement_x" )
-  {
-    delete mDisplacementXExpression; mDisplacementXExpression = new QgsExpression( expressionString );
-  }
-  else if ( property == "displacement_y" )
-  {
-    delete mDisplacementYExpression; mDisplacementYExpression = new QgsExpression( expressionString );
-  }
-}
-
-void QgsPointPatternFillSymbolLayer::removeDataDefinedProperty( const QString& property )
-{
-  if ( property == "distance_x" )
-  {
-    delete mDistanceXExpression; mDistanceXExpression = 0;
-  }
-  else if ( property == "distance_x" )
-  {
-    delete mDistanceYExpression; mDistanceYExpression = 0;
-  }
-  else if ( property == "displacement_x" )
-  {
-    delete mDisplacementXExpression; mDisplacementXExpression = 0;
-  }
-  else if ( property == "displacement_y" )
-  {
-    delete mDisplacementYExpression; mDisplacementYExpression = 0;
-  }
-}
-
-void QgsPointPatternFillSymbolLayer::removeDataDefinedProperties()
-{
-  delete mDistanceXExpression; mDistanceXExpression = 0;
-  delete mDistanceYExpression; mDistanceYExpression = 0;
-  delete mDisplacementXExpression; mDisplacementXExpression = 0;
-  delete mDisplacementYExpression; mDisplacementYExpression = 0;
-}
-
-QSet<QString> QgsPointPatternFillSymbolLayer::usedAttributes() const
-{
-  QSet<QString> attributes;
-
-  //add data defined attributes
-  QStringList columns;
-  if ( mDistanceXExpression )
-    columns.append( mDistanceXExpression->referencedColumns() );
-  if ( mDistanceYExpression )
-    columns.append( mDistanceYExpression->referencedColumns() );
-  if ( mDisplacementXExpression )
-    columns.append( mDisplacementXExpression->referencedColumns() );
-  if ( mDisplacementYExpression )
-    columns.append( mDisplacementYExpression->referencedColumns() );
-
-  QStringList::const_iterator it = columns.constBegin();
-  for ( ; it != columns.constEnd(); ++it )
-  {
-    attributes.insert( *it );
-  }
-  return attributes;
-}
-
 void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderContext& context )
 {
-  if ( !mDistanceXExpression && !mDistanceYExpression && !mDisplacementXExpression && !mDisplacementYExpression )
+  QgsExpression* distanceXExpression = expression( "distance_x" );
+  QgsExpression* distanceYExpression = expression( "distance_y" );
+  QgsExpression* displacementXExpression = expression( "displacement_x" );
+  QgsExpression* displacementYExpression = expression( "displacement_y" );
+  if ( !distanceXExpression && !distanceYExpression && !displacementXExpression && !displacementYExpression )
   {
     return;
   }
 
   double distanceX = mDistanceX;
-  if ( mDistanceXExpression )
+  if ( distanceXExpression )
   {
-    distanceX = mDistanceXExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    distanceX = distanceXExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
   double distanceY = mDistanceY;
-  if ( mDistanceYExpression )
+  if ( distanceYExpression )
   {
-    distanceY = mDistanceYExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    distanceY = distanceYExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
   double displacementX = mDisplacementX;
-  if ( mDisplacementXExpression )
+  if ( displacementXExpression )
   {
-    displacementX = mDisplacementXExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    displacementX = displacementXExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
   double displacementY = mDisplacementY;
-  if ( mDisplacementYExpression )
+  if ( displacementYExpression )
   {
-    displacementY = mDisplacementYExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+    displacementY = displacementYExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
   applyPattern( context, mBrush, distanceX, distanceY, displacementX, displacementY );
-}
-
-void QgsPointPatternFillSymbolLayer::prepareExpressions( const QgsVectorLayer* vl )
-{
-  if ( !vl )
-  {
-    return;
-  }
-
-  const QgsFields& fields = vl->pendingFields();
-  if ( mDistanceXExpression )
-    mDistanceXExpression->prepare( fields );
-  if ( mDistanceYExpression )
-    mDistanceYExpression->prepare( fields );
-  if ( mDisplacementXExpression )
-    mDisplacementXExpression->prepare( fields );
-  if ( mDisplacementYExpression )
-    mDisplacementYExpression->prepare( fields );
 }
 
 //////////////

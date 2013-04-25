@@ -39,7 +39,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        self.activate = False
+        self.activate = True
         self.createAlgsList() #preloading algorithms to speed up
 
     def initializeSettings(self):

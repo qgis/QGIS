@@ -46,6 +46,15 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
 
     void setOffset( QPointF offset );
     QPointF offset();
+
+    void setBorderWidthUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit borderWidthUnit() const;
+
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit offsetUnit() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
 };
 
 /**Base class for polygon renderers generating texture images*/
@@ -62,6 +71,9 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayerV2
 
     virtual QgsSymbolV2* subSymbol();
     virtual bool setSubSymbol( QgsSymbolV2* symbol );
+
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
 };
 
 /**A class for svg fill patterns. The class automatically scales the pattern to
@@ -105,6 +117,16 @@ class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
     QColor svgOutlineColor() const;
     void setSvgOutlineWidth( double w );
     double svgOutlineWidth() const;
+
+    void setPatternWidthUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit patternWidthUnit() const;
+
+    void setSvgOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit svgOutlineWidthUnit() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
 };
 
 class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
@@ -142,6 +164,18 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     QColor color() const;
     void setOffset( double offset );
     double offset() const;
+
+    void setDistanceUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit distanceUnit() const;
+
+    void setLineWidthUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit lineWidthUnit() const;
+
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit offsetUnit() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
 };
 
 class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
@@ -183,6 +217,21 @@ class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
 
     bool setSubSymbol( QgsSymbolV2* symbol );
     virtual QgsSymbolV2* subSymbol();
+
+    void setDistanceXUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit distanceXUnit() const;
+
+    void setDistanceYUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit distanceYUnit() const;
+
+    void setDisplacementXUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit displacementXUnit() const;
+
+    void setDisplacementYUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit displacementYUnit() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
 };
 
 class QgsCentroidFillSymbolLayerV2 : QgsFillSymbolLayerV2

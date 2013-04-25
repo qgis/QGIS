@@ -70,7 +70,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
     //extent
     setOutputExtent( mDataProvider->extent(), mLayerCrs, OriginalExtent );
 
-    if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
+    if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size )
     {
       setOriginalResolution();
       int xSize = mDataProvider->xSize();
@@ -104,7 +104,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
 
     // TODO enable "use existing", has no effect for now, because using Create() in gdal provider
     // if ( ! mDataProvider->hasPyramids() )
-    //   mPyramidsButtonGroup->button( QgsRasterDataProvider::CopyExisting )->setEnabled( false );
+    //   mPyramidsButtonGroup->button( QgsRaster::PyramidsCopyExisting )->setEnabled( false );
     mPyramidsUseExistingCheckBox->setEnabled( false );
     mPyramidsUseExistingCheckBox->setVisible( false );
 
@@ -335,7 +335,7 @@ void QgsRasterLayerSaveAsDialog::hideOutput()
 
 void QgsRasterLayerSaveAsDialog::toggleResolutionSize()
 {
-  bool hasResolution = mDataProvider && mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution;
+  bool hasResolution = mDataProvider && mDataProvider->capabilities() & QgsRasterDataProvider::Size;
 
   bool on = mResolutionRadioButton->isChecked();
   mXResolutionLineEdit->setEnabled( on );
@@ -350,7 +350,7 @@ void QgsRasterLayerSaveAsDialog::setOriginalResolution()
 {
   double xRes, yRes;
 
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactResolution )
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size )
   {
     xRes = mDataProvider->extent().width() / mDataProvider->xSize();
     yRes = mDataProvider->extent().height() / mDataProvider->ySize();
@@ -818,14 +818,14 @@ QList<int> QgsRasterLayerSaveAsDialog::pyramidsList() const
   return mPyramidsGroupBox->isChecked() ? mPyramidsOptionsWidget->overviewList() : QList<int>();
 }
 
-QgsRasterDataProvider::RasterBuildPyramids QgsRasterLayerSaveAsDialog::buildPyramidsFlag() const
+QgsRaster::RasterBuildPyramids QgsRasterLayerSaveAsDialog::buildPyramidsFlag() const
 {
   if ( ! mPyramidsGroupBox->isChecked() )
-    return QgsRasterDataProvider::PyramidsFlagNo;
+    return QgsRaster::PyramidsFlagNo;
   else if ( mPyramidsUseExistingCheckBox->isChecked() )
-    return QgsRasterDataProvider::CopyExisting;
+    return QgsRaster::PyramidsCopyExisting;
   else
-    return QgsRasterDataProvider::PyramidsFlagYes;
+    return QgsRaster::PyramidsFlagYes;
 }
 
 bool QgsRasterLayerSaveAsDialog::validate() const

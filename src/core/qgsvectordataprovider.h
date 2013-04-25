@@ -84,8 +84,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       /** DEPRECATED - do not use */
       SequentialSelectGeometryAtId = 1 << 11,
       CreateAttributeIndex =         1 << 12,
-      /** Uses mEncoding for conversion of 8-bit strings to unicode */
-      SetEncoding =                  1 << 13,
+      /** allows user to select encoding */
+      SelectEncoding =               1 << 13,
     };
 
     /** bitmask of all provider's editing capabilities */
@@ -174,6 +174,43 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @param enumList reference to the list to fill
       @note: added in version 1.2*/
     virtual void enumValues( int index, QStringList& enumList ) { Q_UNUSED( index ); enumList.clear(); }
+
+    /**
+     * Start editing transaction. This method must be called before edit methods.
+     * File based providers usually reopen files in update mode.
+     * Database based providers usually start new transaction.
+     * It is not possible to start more editing transactions, if a transaction
+     * was already started, this method fails and returns false.
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool startEditing() { return false; }
+
+    /**
+     * Stop editing transaction and discard the edits.
+     * Roll back is not supported by all providers. For example file based
+     * providers are usually writing changes immediately to files and in that case
+     * there is no way to do roll back on provider level. If roll back is required,
+     * QgsVectorLayer may be used, which keeps all changes in buffer until commitChanges()
+     * and fully supports rool back. If a provider does not support roll back,
+     * editing is canceled but false is returned.
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool rollBack() { return false; }
+
+    /**
+     * Commit changes and stop editing transaction.
+     * File based providers usually reopen files in read only mode.
+     * Database based providers usually commit transaction.
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool commitChanges() { return false; }
+
+    /**
+     * Returns editing status. True after successfull startEditing()
+     * before rollBack() or commitChanges().
+     * @return true if editing transaction is opened
+     */
+    virtual bool isEdited() { return false; }
 
     /**
      * Adds a list of features
@@ -328,6 +365,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     QStringList errors();
 
+  signals:
+    /** Is emitted, when editing has started */
+    void editingStarted();
+
+    /** Is emitted, when editing stopped */
+    void editingStopped();
 
   protected:
     QVariant convertValue( QVariant::Type type, QString value );

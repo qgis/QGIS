@@ -42,8 +42,8 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
     delete lyr;
   }
 
-  blockComboSignals( true );
-  blockComboSignals( false );
+  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
+  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
 }
 
 void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -78,6 +78,10 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     mOutlineWidthUnitComboBox->setCurrentIndex( mLayer->outlineWidthUnit() );
     mSymbolHeightUnitComboBox->setCurrentIndex( mLayer->symbolHeightUnit() );
   }
+
+  QPointF offsetPt = mLayer->offset();
+  spinOffsetX->setValue( offsetPt.x() );
+  spinOffsetY->setValue( offsetPt.y() );
   blockComboSignals( false );
 }
 
@@ -162,6 +166,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mSymbolWidthUnitComboBox_currentIndexChan
   if ( mLayer )
   {
     mLayer->setSymbolWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
   }
 }
 
@@ -170,6 +175,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mOutlineWidthUnitComboBox_currentIndexCha
   if ( mLayer )
   {
     mLayer->setOutlineWidthUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
   }
 }
 
@@ -178,6 +184,16 @@ void QgsEllipseSymbolLayerV2Widget::on_mSymbolHeightUnitComboBox_currentIndexCha
   if ( mLayer )
   {
     mLayer->setSymbolHeightUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
+  }
+}
+
+void QgsEllipseSymbolLayerV2Widget::on_mOffsetUnitComboBox_currentIndexChanged( int index )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffsetUnit(( QgsSymbolV2::OutputUnit ) index );
+    emit changed();
   }
 }
 
@@ -203,6 +219,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
   dataDefinedProperties.insert( "fill_color", qMakePair( tr( "Fill color" ), mLayer->dataDefinedPropertyString( "fill_color" ) ) );
   dataDefinedProperties.insert( "outline_color", qMakePair( tr( "Border color" ), mLayer->dataDefinedPropertyString( "outline_color" ) ) );
   dataDefinedProperties.insert( "symbol_name", qMakePair( tr( "Symbol name" ), mLayer->dataDefinedPropertyString( "symbol_name" ) ) );
+  dataDefinedProperties.insert( "offset", qMakePair( tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ) ) );
 
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
@@ -222,3 +239,11 @@ void QgsEllipseSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
     emit changed();
   }
 }
+
+void QgsEllipseSymbolLayerV2Widget::setOffset()
+{
+  mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
+  emit changed();
+}
+
+

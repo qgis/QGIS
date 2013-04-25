@@ -141,7 +141,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     */
     bool isValid();
 
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -184,13 +184,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     int xSize() const;
     int ySize() const;
 
-
     void readBlock( int bandNo, int xBlock, int yBlock, void *data );
     void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
-
-    //double noDataValue() const;
-    double minimumValue( int bandNo )const;
-    double maximumValue( int bandNo )const;
 
     QgsRasterBandStats bandStatistics( int theBandNo,
                                        int theStats = QgsRasterBandStats::All,
@@ -232,7 +227,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QgsGrassRasterValue mRasterValue;
 
-    //double mNoDataValue;
+    double mNoDataValue;
 };
 
 #endif

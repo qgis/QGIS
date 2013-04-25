@@ -90,6 +90,9 @@ class QgsSymbolLayerV2
     void setLocked( bool locked );
     bool isLocked() const;
 
+    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    virtual QgsSymbolV2::OutputUnit outputUnit() const;
+
     // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
     void setRenderingPass( int renderingPass );
     int renderingPass() const;
@@ -97,8 +100,21 @@ class QgsSymbolLayerV2
     // symbol layers normally only use additional attributes to provide data defined settings
     virtual QSet<QString> usedAttributes() const;
 
+    virtual const QgsExpression* dataDefinedProperty( const QString& property ) const;
+    virtual QString dataDefinedPropertyString( const QString& property ) const;
+    virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    virtual void removeDataDefinedProperty( const QString& property );
+    virtual void removeDataDefinedProperties();
+
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
+
+    virtual void prepareExpressions( const QgsVectorLayer* vl );
+    virtual QgsExpression* expression( const QString& property );
+    /**Saves data defined properties to string map*/
+    void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
+    /**Copies data defined properties of this layer to another symbol layer*/
+    void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
 };
 
 //////////////////////
@@ -130,6 +146,15 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit offsetUnit() const;
+
+    void setSizeUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit sizeUnit() const;
+
+    virtual void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    virtual QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
 };
@@ -148,6 +173,9 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
 
     virtual void setWidth( double width );
     virtual double width() const;
+
+    void setWidthUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit widthUnit() const;
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 

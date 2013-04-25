@@ -100,17 +100,18 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();
 
-  QModelIndex index = mModel->mapToMaster( indexAt( pos ) );
+  QModelIndex index = indexAt( pos );
 
   if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
   {
     mEditSelectionDrag = true;
-    mCurrentEditSelectionModel->select( index, QItemSelectionModel::ClearAndSelect );
+    mCurrentEditSelectionModel->select( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
   }
   else
   {
     mFeatureSelectionModel->enableSync( false );
     selectRow( index, true );
+    repaintRequested();
   }
 }
 
@@ -176,11 +177,11 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 {
   QPoint pos = event->pos();
 
-  QModelIndex index = mModel->mapToMaster( indexAt( pos ) );
+  QModelIndex index = indexAt( pos );
 
   if ( mEditSelectionDrag )
   {
-    mCurrentEditSelectionModel->select( index, QItemSelectionModel::ClearAndSelect );
+    mCurrentEditSelectionModel->select( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
   }
   else
   {

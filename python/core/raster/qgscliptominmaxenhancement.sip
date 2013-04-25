@@ -5,7 +5,7 @@ class QgsClipToMinMaxEnhancement : QgsContrastEnhancementFunction
 %End
 
   public:
-    QgsClipToMinMaxEnhancement( QgsContrastEnhancement::QgsRasterDataType, double, double );
+    QgsClipToMinMaxEnhancement( QGis::DataType, double, double );
 
     int enhance( double );
 

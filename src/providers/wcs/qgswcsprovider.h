@@ -44,6 +44,7 @@ class QNetworkRequest;
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
+#include "cpl_conv.h"
 
 /**
 
@@ -146,7 +147,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const;
     int ySize() const;
     QString metadata();
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
     QString lastErrorTitle();
     QString lastError();
     QString lastErrorFormat();

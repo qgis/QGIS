@@ -39,6 +39,12 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     QColor borderColor() const;
     void setBorderColor( QColor color );
 
+    double outlineWidth() const;
+    void setOutlineWidth( double w );
+
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit u );
+
   protected:
 
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
@@ -92,6 +98,12 @@ class QgsSvgMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
 
     double outlineWidth() const;
     void setOutlineWidth( double w );
+
+    void setOutlineWidthUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outlineWidthUnit() const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
 };
 
 class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2

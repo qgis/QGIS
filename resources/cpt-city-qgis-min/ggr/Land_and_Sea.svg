@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Land and Sea" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+        <stop offset="8.18%" stop-color="rgb(199,199,199)" stop-opacity="1.0000"/>
+        <stop offset="16.69%" stop-color="rgb(143,143,143)" stop-opacity="1.0000"/>
+        <stop offset="21.20%" stop-color="rgb(82,130,86)" stop-opacity="1.0000"/>
+        <stop offset="26.54%" stop-color="rgb(21,118,29)" stop-opacity="1.0000"/>
+        <stop offset="37.90%" stop-color="rgb(138,185,52)" stop-opacity="1.0000"/>
+        <stop offset="39.07%" stop-color="rgb(255,252,76)" stop-opacity="1.0000"/>
+        <stop offset="40.07%" stop-color="rgb(195,201,166)" stop-opacity="1.0000"/>
+        <stop offset="45.91%" stop-color="rgb(135,149,255)" stop-opacity="1.0000"/>
+        <stop offset="50.75%" stop-color="rgb(70,89,203)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(5,28,151)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Land and Sea)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:20 2012"/>
+  </metadata>
+</svg>

@@ -863,8 +863,8 @@ void QgisApp::readSettings()
 {
   QSettings settings;
   // get the users theme preference from the settings
-  // defaulting to 'gis' theme
-  setTheme( settings.value( "/Themes", "gis" ).toString() );
+  // 'gis' theme is new /themes/default directory (2013-04-15)
+  setTheme( settings.value( "/Themes", "default" ).toString() );
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
@@ -1836,6 +1836,8 @@ void QgisApp::setupConnections()
            this, SLOT( oldProjectVersionWarning( QString ) ) );
   connect( QgsProject::instance(), SIGNAL( layerLoaded( int, int ) ),
            this, SLOT( showProgress( int, int ) ) );
+  connect( QgsProject::instance(), SIGNAL( loadingLayer( QString ) ),
+           this, SLOT( showStatusMessage( QString ) ) );
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
@@ -6444,25 +6446,25 @@ void QgisApp::options()
 
 void QgisApp::fullHistogramStretch()
 {
-  histogramStretch( false, QgsRasterLayer::ContrastEnhancementMinMax );
+  histogramStretch( false, QgsRaster::ContrastEnhancementMinMax );
 }
 
 void QgisApp::localHistogramStretch()
 {
-  histogramStretch( true, QgsRasterLayer::ContrastEnhancementMinMax );
+  histogramStretch( true, QgsRaster::ContrastEnhancementMinMax );
 }
 
 void QgisApp::fullCumulativeCutStretch()
 {
-  histogramStretch( false, QgsRasterLayer::ContrastEnhancementCumulativeCut );
+  histogramStretch( false, QgsRaster::ContrastEnhancementCumulativeCut );
 }
 
 void QgisApp::localCumulativeCutStretch()
 {
-  histogramStretch( true, QgsRasterLayer::ContrastEnhancementCumulativeCut );
+  histogramStretch( true, QgsRaster::ContrastEnhancementCumulativeCut );
 }
 
-void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRasterLayer::ContrastEnhancementLimits theLimits )
+void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhancementLimits theLimits )
 {
   QgsMapLayer * myLayer = mMapLegend->currentLayer();
 
@@ -8481,6 +8483,13 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
   {
     stopRendering();
   }
+#if defined(Q_OS_WIN)&& defined(QGISDEBUG)
+  else if ( e->key() == Qt::Key_Backslash && e->modifiers() & Qt::ControlModifier )
+  {
+    extern LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
+    qgisCrashDump( 0 );
+  }
+#endif
   else
   {
     e->ignore();

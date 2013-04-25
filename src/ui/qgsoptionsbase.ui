@@ -2691,34 +2691,43 @@
                    <layout class="QVBoxLayout" name="verticalLayout_13">
                     <item>
                      <widget class="QToolButton" name="pbnAddScale">
+                      <property name="toolTip">
+                       <string>Add predefined scale</string>
+                      </property>
                       <property name="text">
                        <string>...</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionNewAttribute.png</normaloff>:/images/themes/default/mActionNewAttribute.png</iconset>
+                        <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QToolButton" name="pbnRemoveScale">
+                      <property name="toolTip">
+                       <string>Remove selected</string>
+                      </property>
                       <property name="text">
                        <string>...</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionDeleteAttribute.png</normaloff>:/images/themes/default/mActionDeleteAttribute.png</iconset>
+                        <normaloff>:/images/themes/default/mActionSignMinus.png</normaloff>:/images/themes/default/mActionSignMinus.png</iconset>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QToolButton" name="pbnDefaultScaleValues">
+                      <property name="toolTip">
+                       <string>Insert default scales</string>
+                      </property>
                       <property name="text">
                        <string>...</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionCopySelected.png</normaloff>:/images/themes/default/mActionCopySelected.png</iconset>
+                        <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -2737,17 +2746,23 @@
                     </item>
                     <item>
                      <widget class="QToolButton" name="pbnImportScales">
+                      <property name="toolTip">
+                       <string>Import from file</string>
+                      </property>
                       <property name="text">
                        <string>...</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionFolder.png</normaloff>:/images/themes/default/mActionFolder.png</iconset>
+                        <normaloff>:/images/themes/default/mActionFileOpen.png</normaloff>:/images/themes/default/mActionFileOpen.png</iconset>
                       </property>
                      </widget>
                     </item>
                     <item>
                      <widget class="QToolButton" name="pbnExportScales">
+                      <property name="toolTip">
+                       <string>Export to file</string>
+                      </property>
                       <property name="text">
                        <string>...</string>
                       </property>

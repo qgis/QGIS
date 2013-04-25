@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
+from qgis.core import QgsApplication
 import subprocess
 
 from sextante.core.SextanteConfig import SextanteConfig
@@ -43,6 +44,14 @@ class TauDEMUtils:
         if folder == None:
             folder = ""
 
+        if SextanteUtils.isMac():
+            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+            if os.path.exists(os.path.join(testfolder, "slopearea")):
+                folder = testfolder
+            else:
+                testfolder = "/usr/local/bin"
+                if os.path.exists(os.path.join(testfolder, "slopearea")):
+                    folder = testfolder
         return folder
 
     @staticmethod
@@ -51,6 +60,14 @@ class TauDEMUtils:
         if folder == None:
             folder = ""
 
+        if SextanteUtils.isMac():
+            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+            if os.path.exists(os.path.join(testfolder, "mpiexec")):
+                folder = testfolder
+            else:
+                testfolder = "/usr/local/bin"
+                if os.path.exists(os.path.join(testfolder, "mpiexec")):
+                    folder = testfolder
         return folder
 
     @staticmethod

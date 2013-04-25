@@ -127,7 +127,13 @@ public:
   void remove( int fieldIdx );
 
   bool isEmpty() const;
-  int count() const /__len__/;
+  // __len__ annotation since sip 4.10.3
+  //int count() const /__len__/;
+  int count() const;
+  int __len__() const;
+%MethodCode
+  sipRes = sipCpp->count();
+%End
   int size() const;
   //const QgsField& operator[](int i) const;
   //QgsField& operator[](int i);

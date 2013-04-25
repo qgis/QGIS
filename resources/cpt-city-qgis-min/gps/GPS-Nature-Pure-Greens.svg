@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="GPS-Nature-Pure-Greens" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(104,156,70)" stop-opacity="1.0000"/>
+        <stop offset="18.89%" stop-color="rgb(93,136,50)" stop-opacity="1.0000"/>
+        <stop offset="32.17%" stop-color="rgb(83,116,29)" stop-opacity="1.0000"/>
+        <stop offset="47.70%" stop-color="rgb(61,85,26)" stop-opacity="1.0000"/>
+        <stop offset="63.22%" stop-color="rgb(39,55,23)" stop-opacity="1.0000"/>
+        <stop offset="81.61%" stop-color="rgb(19,33,11)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(0,10,0)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#GPS-Nature-Pure-Greens)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:23 2012"/>
+  </metadata>
+</svg>

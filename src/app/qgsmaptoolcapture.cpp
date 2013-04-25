@@ -227,7 +227,7 @@ void QgsMapToolCapture::undo()
       return;
     }
 
-    mRubberBand->removeLastPoint();
+    mRubberBand->removePoint(-2); // remove the one before the last one
     mCaptureList.removeLast();
 
     validateGeometry();

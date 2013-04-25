@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.gimp.org/">
+      <name>The GIMP team</name>
+    </author>
+  </authors>
+  <license>
+    <informal>GPLv2</informal>
+    <year>2006</year>
+    <text href="http://www.gnu.org/licenses/gpl-2.0.html"/>
+  </license>
+  <src>
+    <format>GIMP gradient (ggr)</format>
+    <link href="http://www.gimp.org/downloads/">GIMP download</link>
+    <remark>
+      Files include with the GIMP distribution, usually
+      installed in /usr/share/gimp/[version]/gradients 
+      on Unix systems
+    </remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gplv2"/>
+  </distribute>
+</copying>

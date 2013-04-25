@@ -656,7 +656,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString metadata();
 
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -1084,12 +1084,13 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool mIgnoreGetFeatureInfoUrl;
     bool mIgnoreAxisOrientation;
     bool mInvertAxisOrientation;
+    bool mSmoothPixmapTransform;
 
     //! supported formats for GetFeatureInfo in order of preference
     QStringList mSupportedGetFeatureFormats;
 
     //! Formats supported by server and provider
-    QMap<IdentifyFormat, QString> mIdentifyFormats;
+    QMap<QgsRaster::IdentifyFormat, QString> mIdentifyFormats;
 
     QgsCoordinateReferenceSystem mCrs;
 

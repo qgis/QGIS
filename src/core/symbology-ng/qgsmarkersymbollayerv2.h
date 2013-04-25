@@ -99,9 +99,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QBrush mSelBrush;
     QImage mSelCache;
     bool mUsingCache;
-
-  private:
-    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
 };
 
 //////////

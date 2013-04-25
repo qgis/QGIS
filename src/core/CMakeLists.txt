@@ -179,12 +179,12 @@ SET(QGIS_CORE_SRCS
   pal/rtree.hpp
 
   raster/qgscliptominmaxenhancement.cpp
+  raster/qgsraster.cpp
   raster/qgsrasterblock.cpp
   raster/qgscolorrampshader.cpp
   raster/qgscontrastenhancement.cpp
   raster/qgscontrastenhancementfunction.cpp
   raster/qgsrasterdataprovider.cpp
-  raster/qgsfreakoutshader.cpp
   raster/qgslinearminmaxenhancement.cpp
   raster/qgslinearminmaxenhancementwithclip.cpp
   raster/qgspseudocolorshader.cpp
@@ -456,6 +456,7 @@ SET(QGIS_CORE_HDRS
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 
+  raster/qgsraster.h
   raster/qgsrasterblock.h
   raster/qgsrasterdataprovider.h
   raster/qgsrasterresamplefilter.h
@@ -464,7 +465,6 @@ SET(QGIS_CORE_HDRS
   raster/qgscolorrampshader.h
   raster/qgscontrastenhancement.h
   raster/qgscontrastenhancementfunction.h
-  raster/qgsfreakoutshader.h
   raster/qgslinearminmaxenhancement.h
   raster/qgslinearminmaxenhancementwithclip.h
   raster/qgspseudocolorshader.h

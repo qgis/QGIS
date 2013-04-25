@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsraster.h"
 
 /** \ingroup core
  * Raster identify results container.
@@ -34,7 +35,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
      *  @param theFormat the result format
      *  @param theResults the results
      */
-    QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormat theFormat, QMap<int, QVariant> theResults );
+    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, QMap<int, QVariant> theResults );
 
     /** \brief Constructor. Creates invalid result with error.
      *  @param theError the error
@@ -47,12 +48,12 @@ class CORE_EXPORT QgsRasterIdentifyResult
     bool isValid() const { return mValid; }
 
     /** \brief Get results format */
-    QgsRasterDataProvider::IdentifyFormat format() const { return mFormat; }
+    QgsRaster::IdentifyFormat format() const { return mFormat; }
 
     /** \brief Get results. Results are different for each format:
-     * IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
-     * IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
-     * IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+     * QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
+     * QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
+     * QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      */
     QMap<int, QVariant> results() const { return mResults; }
 
@@ -73,7 +74,7 @@ class CORE_EXPORT QgsRasterIdentifyResult
     bool mValid;
 
     /** \brief Results format */
-    QgsRasterDataProvider::IdentifyFormat mFormat;
+    QgsRaster::IdentifyFormat mFormat;
 
     /** \brief Results */
     // TODO: better hierarchy (sublayer multiple feature sets)?

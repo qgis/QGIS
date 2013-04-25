@@ -51,8 +51,10 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     void on_mSymbolWidthUnitComboBox_currentIndexChanged( int index );
     void on_mOutlineWidthUnitComboBox_currentIndexChanged( int index );
     void on_mSymbolHeightUnitComboBox_currentIndexChanged( int index );
+    void on_mOffsetUnitComboBox_currentIndexChanged( int index );
 
     void on_mDataDefinedPropertiesButton_clicked();
+    void setOffset();
 };
 
 #endif // QGSELLIPSESYMBOLLAYERV2WIDGET_H

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="temp_19lev" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(7,30,70)" stop-opacity="1.0000"/>
+        <stop offset="5.00%" stop-color="rgb(7,30,70)" stop-opacity="1.0000"/>
+        <stop offset="5.00%" stop-color="rgb(7,47,107)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(7,47,107)" stop-opacity="1.0000"/>
+        <stop offset="10.00%" stop-color="rgb(8,82,156)" stop-opacity="1.0000"/>
+        <stop offset="15.00%" stop-color="rgb(8,82,156)" stop-opacity="1.0000"/>
+        <stop offset="15.00%" stop-color="rgb(33,113,181)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(33,113,181)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(66,146,199)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(66,146,199)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(90,160,205)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(90,160,205)" stop-opacity="1.0000"/>
+        <stop offset="30.00%" stop-color="rgb(120,191,214)" stop-opacity="1.0000"/>
+        <stop offset="35.00%" stop-color="rgb(120,191,214)" stop-opacity="1.0000"/>
+        <stop offset="35.00%" stop-color="rgb(170,220,230)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(170,220,230)" stop-opacity="1.0000"/>
+        <stop offset="40.00%" stop-color="rgb(219,245,255)" stop-opacity="1.0000"/>
+        <stop offset="45.00%" stop-color="rgb(219,245,255)" stop-opacity="1.0000"/>
+        <stop offset="45.00%" stop-color="rgb(240,252,255)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(240,252,255)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(255,240,245)" stop-opacity="1.0000"/>
+        <stop offset="55.00%" stop-color="rgb(255,240,245)" stop-opacity="1.0000"/>
+        <stop offset="55.00%" stop-color="rgb(255,224,224)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(255,224,224)" stop-opacity="1.0000"/>
+        <stop offset="60.00%" stop-color="rgb(252,187,170)" stop-opacity="1.0000"/>
+        <stop offset="65.00%" stop-color="rgb(252,187,170)" stop-opacity="1.0000"/>
+        <stop offset="65.00%" stop-color="rgb(252,146,114)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(252,146,114)" stop-opacity="1.0000"/>
+        <stop offset="70.00%" stop-color="rgb(251,106,74)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(251,106,74)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(240,60,43)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(240,60,43)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(204,24,30)" stop-opacity="1.0000"/>
+        <stop offset="85.00%" stop-color="rgb(204,24,30)" stop-opacity="1.0000"/>
+        <stop offset="85.00%" stop-color="rgb(166,15,20)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(166,15,20)" stop-opacity="1.0000"/>
+        <stop offset="90.00%" stop-color="rgb(120,10,15)" stop-opacity="1.0000"/>
+        <stop offset="95.00%" stop-color="rgb(120,10,15)" stop-opacity="1.0000"/>
+        <stop offset="95.00%" stop-color="rgb(95,0,0)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(95,0,0)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#temp_19lev)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:29:29 2012"/>
+  </metadata>
+</svg>

@@ -36,8 +36,6 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QgsRasterInterface * clone() const;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
-
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height );
 
     /**Returns number of colors*/

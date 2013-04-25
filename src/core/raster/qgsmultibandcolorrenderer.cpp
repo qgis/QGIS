@@ -94,7 +94,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   QDomElement redContrastElem = elem.firstChildElement( "redContrastEnhancement" );
   if ( !redContrastElem.isNull() )
   {
-    redContrastEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+    redContrastEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           input->dataType( redBand ) ) );
     redContrastEnhancement->readXML( redContrastElem );
   }
@@ -103,7 +103,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   QDomElement greenContrastElem = elem.firstChildElement( "greenContrastEnhancement" );
   if ( !greenContrastElem.isNull() )
   {
-    greenContrastEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+    greenContrastEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           input->dataType( greenBand ) ) );
     greenContrastEnhancement->readXML( greenContrastElem );
   }
@@ -112,7 +112,7 @@ QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem, Q
   QDomElement blueContrastElem = elem.firstChildElement( "blueContrastEnhancement" );
   if ( !blueContrastElem.isNull() )
   {
-    blueContrastEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+    blueContrastEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           input->dataType( blueBand ) ) );
     blueContrastEnhancement->readXML( blueContrastElem );
   }

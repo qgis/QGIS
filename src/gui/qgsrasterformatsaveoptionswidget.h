@@ -54,7 +54,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     void setRasterFileName( const QString& file ) { mRasterLayer = 0; mRasterFileName = file; }
     QStringList options() const;
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
-    void setPyramidsFormat( QgsRasterDataProvider::RasterPyramidsFormat format )
+    void setPyramidsFormat( QgsRaster::RasterPyramidsFormat format )
     { mPyramids = true; mPyramidsFormat = format; }
 
   public slots:
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget,
     QMap< QString, QString> mOptionsMap;
     static QMap< QString, QStringList > mBuiltinProfiles;
     bool mPyramids;
-    QgsRasterDataProvider::RasterPyramidsFormat mPyramidsFormat;
+    QgsRaster::RasterPyramidsFormat mPyramidsFormat;
 
     QString settingsKey( QString profile ) const;
     QString currentProfileKey() const;

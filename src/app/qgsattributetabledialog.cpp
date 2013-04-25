@@ -229,11 +229,14 @@ void QgsAttributeTableDialog::columnBoxInit()
   }
 
   mFilterButton->addAction( mActionShowAllFilter );
-  mFilterButton->addAction( mActionAdvancedFilter );
   mFilterButton->addAction( mActionSelectedFilter );
-  mFilterButton->addAction( mActionVisibleFilter );
+  if ( mLayer->hasGeometryType() )
+  {
+    mFilterButton->addAction( mActionVisibleFilter );
+  }
   mFilterButton->addAction( mActionEditedFilter );
   mFilterButton->addAction( mActionFilterColumnsMenu );
+  mFilterButton->addAction( mActionAdvancedFilter );
 
   QList<QgsField> fields = mLayer->pendingFields().toList();
 
@@ -309,6 +312,12 @@ void QgsAttributeTableDialog::filterSelected()
 
 void QgsAttributeTableDialog::filterVisible()
 {
+  if ( !mLayer->hasGeometryType() )
+  {
+    filterShowAll();
+    return;
+  }
+
   mFilterButton->setDefaultAction( mActionVisibleFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   mCbxCaseSensitive->setVisible( false );

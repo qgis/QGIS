@@ -6,7 +6,7 @@ class QgsRasterIdentifyResult
   public:
     QgsRasterIdentifyResult();
 
-    QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormat theFormat, QMap<int, QVariant> theResults );
+    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, QMap<int, QVariant> theResults );
 
     QgsRasterIdentifyResult( QgsError theError );
 
@@ -14,7 +14,7 @@ class QgsRasterIdentifyResult
 
     bool isValid() const;
 
-    QgsRasterDataProvider::IdentifyFormat format() const;
+    QgsRaster::IdentifyFormat format() const;
 
     QMap<int, QVariant> results() const;
 

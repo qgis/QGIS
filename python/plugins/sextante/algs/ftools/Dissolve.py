@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -52,7 +53,6 @@ class Dissolve(GeoAlgorithm):
         fieldname = self.getParameterValue(Dissolve.FIELD)
         vlayerA = QGisLayers.getObjectFromUri(self.getParameterValue(Dissolve.INPUT))
         field = vlayerA.fieldNameIndex(fieldname)
-        GEOS_EXCEPT = True
         vproviderA = vlayerA.dataProvider()
         fields = vproviderA.fields()
         writer = self.getOutputFromName(Dissolve.OUTPUT).getVectorWriter(fields, vproviderA.geometryType(), vproviderA.crs() )
@@ -77,8 +77,7 @@ class Dissolve(GeoAlgorithm):
                         tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
                         outFeat.setGeometry( tmpOutGeom )
                     except:
-                        GEOS_EXCEPT = False
-                        continue
+                        raise GeoAlgorithmExecutionException("Geometry exception while dissolving")                        
                     outFeat.setAttributes( attrs )
                     writer.addFeature( outFeat )
         else:
@@ -100,21 +99,18 @@ class Dissolve(GeoAlgorithm):
                             outFeat.setGeometry( tmpInGeom )
                             first = False
                             attrs = inFeat.attributes()
-                        else:
+                        else:                        
                             tmpInGeom = QgsGeometry( inFeat.geometry() )
-                            tmpOutGeom = QgsGeometry( outFeat.geometry() )
-                        try:
-                            tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
-                            outFeat.setGeometry( tmpOutGeom )
-                        except:
-                            GEOS_EXCEPT = False
-                            add = False
+                            tmpOutGeom = QgsGeometry( outFeat.geometry() )  
+                            try:                      
+                                tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
+                                outFeat.setGeometry( tmpOutGeom )
+                            except:
+                                raise GeoAlgorithmExecutionException("Geometry exception while dissolving")                                                       
                 if add:
                     outFeat.setAttributes( attrs )
                     writer.addFeature( outFeat )
         del writer
-        if not GEOS_EXCEPT:
-            SextanteLog.addToLog(SextanteLog.LOG_WARNING, "Geometry exception while dissolving")
 
     def defineCharacteristics(self):
         self.name = "Dissolve"

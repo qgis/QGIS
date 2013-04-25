@@ -31,6 +31,7 @@
 #include <QPlastiqueStyle>
 #include <QTranslator>
 #include <QImageReader>
+#include <QMessageBox>
 
 #include "qgscustomization.h"
 #include "qgspluginregistry.h"
@@ -44,6 +45,8 @@
 #ifdef WIN32
 // Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
+#include <windows.h>
+#include <dbghelp.h>
 #ifdef MSVC
 #undef _fmode
 int _fmode = _O_BINARY;
@@ -75,7 +78,7 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
-#if defined(linux) && ! defined(ANDROID)
+#if defined(linux) && !defined(ANDROID)
 #include <unistd.h>
 #include <execinfo.h>
 #endif
@@ -147,6 +150,48 @@ bool bundleclicked( int argc, char *argv[] )
   return ( argc > 1 && memcmp( argv[1], "-psn_", 5 ) == 0 );
 }
 
+#ifdef Q_OS_WIN
+LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo )
+{
+  QString dumpName = QDir::toNativeSeparators(
+                       QString( "%1\\qgis-%2-%3-%4-%5.dmp" )
+                       .arg( QDir::tempPath() )
+                       .arg( QDateTime::currentDateTime().toString( "yyyyMMdd-hhmmss" ) )
+                       .arg( GetCurrentProcessId() )
+                       .arg( GetCurrentThreadId() )
+                       .arg( QGis::QGIS_DEV_VERSION )
+                     );
+
+  QString msg;
+  HANDLE hDumpFile = CreateFile( dumpName.toLocal8Bit(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
+  if ( hDumpFile != INVALID_HANDLE_VALUE )
+  {
+    MINIDUMP_EXCEPTION_INFORMATION ExpParam;
+    ExpParam.ThreadId = GetCurrentThreadId();
+    ExpParam.ExceptionPointers = ExceptionInfo;
+    ExpParam.ClientPointers = TRUE;
+
+    if ( MiniDumpWriteDump( GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpWithDataSegs, ExceptionInfo ? &ExpParam : NULL, NULL, NULL ) )
+    {
+      msg = QObject::tr( "minidump written to %1" ).arg( dumpName );
+    }
+    else
+    {
+      msg = QObject::tr( "writing of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
+    }
+
+    CloseHandle( hDumpFile );
+  }
+  else
+  {
+    msg = QObject::tr( "creation of minidump to %1 failed (%2)" ).arg( dumpName ).arg( GetLastError(), 0, 16 );
+  }
+
+  QMessageBox::critical( 0, QObject::tr( "Crash dumped" ), msg );
+
+  return EXCEPTION_EXECUTE_HANDLER;
+}
+#endif
 
 /*
  * Hook into the qWarning/qFatal mechanism so that we can channel messages
@@ -225,6 +270,10 @@ int main( int argc, char *argv[] )
 #if !defined(ANDROID) && !defined(_MSC_VER)
   // Set up the custom qWarning/qDebug custom handler
   qInstallMsgHandler( myMessageOutput );
+#endif
+
+#ifdef Q_OS_WIN
+  SetUnhandledExceptionFilter( qgisCrashDump );
 #endif
 
   /////////////////////////////////////////////////////////////////
@@ -569,6 +618,19 @@ int main( int argc, char *argv[] )
 #endif
 
   QSettings mySettings;
+
+  // update any saved setting for older themes to new default 'gis' theme (2013-04-15)
+  if ( mySettings.contains( "/Themes" ) )
+  {
+    QString theme = mySettings.value( "/Themes", "default" ).toString();
+    if ( theme == QString( "gis" )
+         || theme == QString( "classic" )
+         || theme == QString( "nkids" ) )
+    {
+      mySettings.setValue( "/Themes", QString( "default" ) );
+    }
+  }
+
 
   // custom environment variables
   QMap<QString, QString> systemEnvVars = QgsApplication::systemEnvVars();

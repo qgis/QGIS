@@ -77,6 +77,7 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
   bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();
   bool invertAxisOrientation = settings.value( key + "/invertAxisOrientation", false ).toBool();
+  bool smoothPixmapTransform = settings.value( key + "/smoothPixmapTransform", false ).toBool();
 
   QString connArgs, delim;
 
@@ -107,6 +108,13 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
     connArgs += delim + "InvertAxisOrientation";
     delim = ";";
     mUri.setParam( "InvertAxisOrientation", "1" );
+  }
+
+  if ( smoothPixmapTransform )
+  {
+    connArgs += delim + "SmoothPixmapTransform";
+    delim = ";";
+    mUri.setParam( "SmoothPixmapTransform", "1" );
   }
 
   if ( !connArgs.isEmpty() )

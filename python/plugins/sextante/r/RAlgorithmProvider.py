@@ -43,7 +43,7 @@ class RAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = False
-        self.actions.append(CreateNewRScriptAction())
+        #self.actions.append(CreateNewRScriptAction())
         self.contextMenuActions = [EditRScriptAction(), DeleteRScriptAction()]
 
     def initializeSettings(self):

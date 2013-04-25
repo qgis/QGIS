@@ -304,6 +304,20 @@ class QgsComposerItem: QObject, QGraphicsRectItem
       @note this method was added in version 2.0
       @note there is not setter since one can't manually set the id*/
     QString uuid() const;
+    
+    /* Returns the current blending mode for the composer item
+        @note added in version 1.9*/
+    const QPainter::CompositionMode blendMode() const;
+    /* Sets the composer item's blending mode
+        @note added in version 1.9*/
+    void setBlendMode( const QPainter::CompositionMode blendMode );
+    
+    /** Returns the composer item's transparency
+        @note added in version 1.9*/    
+    const int transparency() const;
+    /** Sets the composer item's transparency
+        @note added in version 1.9*/
+    void setTransparency( const int transparency );
 
   public slots:
     virtual void setRotation( double r );

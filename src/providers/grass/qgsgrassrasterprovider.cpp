@@ -127,7 +127,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     //myInternalNoDataValue = -1e+30;
     myInternalNoDataValue = std::numeric_limits<float>::quiet_NaN();
   }
-  mInternalNoDataValue.append( myInternalNoDataValue );
+  mNoDataValue = myInternalNoDataValue;
   QgsDebugMsg( QString( "myInternalNoDataValue = %1" ).arg( myInternalNoDataValue ) );
 
   // TODO: refresh mRows and mCols if raster was rewritten
@@ -303,17 +303,6 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   memcpy( block, data.data(), size );
 }
 
-double  QgsGrassRasterProvider::minimumValue( int bandNo ) const
-{
-  Q_UNUSED( bandNo );
-  return mInfo["MIN_VALUE"].toDouble();
-}
-double  QgsGrassRasterProvider::maximumValue( int bandNo ) const
-{
-  Q_UNUSED( bandNo );
-  return mInfo["MAX_VALUE"].toDouble();
-}
-
 QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int theBandNo, int theStats, const QgsRectangle & theExtent, int theSampleSize )
 {
   QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
@@ -434,7 +423,7 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   Q_UNUSED( theExtent );
   Q_UNUSED( theWidth );
@@ -443,9 +432,9 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   QMap<int, QVariant> results;
   QMap<int, QVariant> noDataResults;
   noDataResults.insert( 1, QVariant() );
-  QgsRasterIdentifyResult noDataResult( IdentifyFormatValue, results );
+  QgsRasterIdentifyResult noDataResult( QgsRaster::IdentifyFormatValue, results );
 
-  if ( theFormat != IdentifyFormatValue )
+  if ( theFormat != QgsRaster::IdentifyFormatValue )
   {
     return QgsRasterIdentifyResult( ERROR( tr( "Format not supported" ) ) );
   }
@@ -468,7 +457,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   }
 
   // no data?
-  if ( qIsNaN( value ) || qgsDoubleNear( value, mInternalNoDataValue[0] ) )
+  if ( qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue ) )
   {
     return noDataResult;
   }
@@ -482,15 +471,13 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
 
   results.insert( 1, value );
 
-  return QgsRasterIdentifyResult( IdentifyFormatValue, results );
+  return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
 
 int QgsGrassRasterProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
                    | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::ExactResolution
-                   | QgsRasterDataProvider::ExactMinimumMaximum
                    | QgsRasterDataProvider::Size;
   return capability;
 }
@@ -530,9 +517,9 @@ int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
   QList<QgsColorRampShader::ColorRampItem> ct = colorTable( bandNo );
   if ( ct.size() > 0 )
   {
-    return QgsRasterDataProvider::ContinuousPalette;
+    return QgsRaster::ContinuousPalette;
   }
-  return QgsRasterDataProvider::GrayIndex;
+  return QgsRaster::GrayIndex;
 }
 
 QString QgsGrassRasterProvider::metadata()

@@ -77,11 +77,16 @@ class ModelerScene(QtGui.QGraphicsScene):
                 iModelParam=0
                 for modelparam in self.model.parameters:
                     if modelparam.name == aap.param:
-                        items.append(self.paramItems[iModelParam])
+                        items.append((self.paramItems[iModelParam], -1))
                         break
                     iModelParam+=1
         else:
-            items.append(self.algItems[start])
+            idx = 0
+            for output in self.model.algs[start].outputs:
+                if output.name == aap.param:
+                    items.append((self.algItems[start], idx))
+                    break
+                idx += 1            
 
         return items
 
@@ -110,15 +115,17 @@ class ModelerScene(QtGui.QGraphicsScene):
         iAlg=0
         for alg in model.algs:
             params = model.algParameters[iAlg]
-            for key in params.keys():
-                param = params[key]
+            idx = 0
+            for parameter in alg.parameters: 
+                param = params[parameter.name]
                 if param:
-                    sourceItems = self.getItemsFromAAP(param, isinstance(alg.getParameterFromName(key), ParameterMultipleInput))
+                    sourceItems = self.getItemsFromAAP(param, isinstance(alg.getParameterFromName(parameter.name), ParameterMultipleInput))
                     for sourceItem in sourceItems:
-                        arrow = ModelerArrowItem(sourceItem, self.algItems[iAlg])
+                        arrow = ModelerArrowItem(sourceItem[0], sourceItem[1], self.algItems[iAlg], idx)
                         self.addItem(arrow)
+                idx += 1
             for depend in model.dependencies[iAlg]:
-                arrow = ModelerArrowItem(self.algItems[depend], self.algItems[iAlg])
+                arrow = ModelerArrowItem(self.algItems[depend], -1, self.algItems[iAlg], -1)
                 self.addItem(arrow)
             iAlg+=1
 

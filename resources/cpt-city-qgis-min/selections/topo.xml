@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="topo">Topography</name>
+  <synopsis>Selected palettes for topography</synopsis>
+  <description>Selected palettes for topography.</description>
+  <seealsocollects>
+    <collect dir="esri/hypsometry">ESRI hypsometry</collect>
+  </seealsocollects>
+  <seealsoselects>
+    <select short="topobath">Topographic-bathymetric schemes</select>
+  </seealsoselects>
+  <gradients>
+    <gradient file="DEM_poster" dir="td"/>
+    <gradient file="DEM_print" dir="td"/>
+    <gradient file="DEM_screen" dir="td"/>
+    <gradient file="c3t1" dir="jjg/dem"/>
+    <gradient file="c3t3" dir="jjg/dem"/>
+    <gradient file="garish14" dir="jjg/dem"/>
+    <gradient file="natural" dir="fme/feet"/>
+    <gradient file="neutral" dir="fme/feet"/>
+    <gradient file="textbook" dir="fme/feet"/>
+    <gradient file="tv-a" dir="jm/tv"/>
+    <gradient file="o2-a" dir="jm/o2"/>
+    <gradient file="db-a" dir="jm/db"/>
+    <gradient file="ao-a" dir="jm/ao"/>
+    <gradient file="wt-a" dir="jm/wt"/>
+    <gradient file="ws-a" dir="jm/ws"/>
+    <gradient file="cd-a" dir="jm/cd"/>
+    <gradient file="sd-a" dir="jm/sd"/>
+    <gradient file="elevation" dir="grass"/>
+    <gradient file="njdem100" dir="njgs"/>
+    <gradient file="palm_springs_4" dir="esri/hypsometry/na"/>
+    <gradient file="pnw_1113" dir="esri/hypsometry/na"/>
+    <gradient file="utah_1" dir="esri/hypsometry/na"/>
+    <gradient file="europe_3" dir="esri/hypsometry/eu"/>
+    <gradient file="iceland" dir="esri/hypsometry/eu"/>
+    <gradient file="spain" dir="esri/hypsometry/eu"/>
+    <gradient file="os250k-feet" dir="os"/>
+    <gradient file="tpushuf" dir="tp"/>
+    <gradient file="wiki-schwarzwald-cont" dir="wkp/schwarzwald"/>
+    <gradient file="wiki-schwarzwald-d050" dir="wkp/schwarzwald"/>
+    <gradient file="wiki-knutux" dir="wkp/knutux"/>
+    <gradient file="nrwc" dir="wkp/tubs"/>
+    <gradient file="pakistan" dir="wkp/jarke"/>
+  </gradients>
+</selection>

@@ -169,7 +169,7 @@ class PointsInPolygonThread(QThread):
         fieldList = ftools_utils.getFieldList(self.layerPoly)
         index = polyProvider.fieldNameIndex(unicode(self.fieldName))
         if index == -1:
-            index = polyProvider.fieldCount()
+            index = polyProvider.fields().count()
             fieldList.append( QgsField(unicode(self.fieldName), QVariant.Double, "real", 24, 15, self.tr("point count field")) )
 
         sRs = polyProvider.crs()
@@ -218,7 +218,8 @@ class PointsInPolygonThread(QThread):
                         interrupted = True
                         break
 
-            outFeat.setAttribute(index, QVariant(count))
+            atMap.append(QVariant(count))
+            outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
 
             self.emit( SIGNAL( "updateProgress()" ) )

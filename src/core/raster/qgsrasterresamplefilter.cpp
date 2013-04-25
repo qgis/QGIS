@@ -141,7 +141,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   {
     QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
     // Do not oversample if data source does not have fixed resolution (WMS)
-    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::ExactResolution ) )
+    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
     {
       double xRes = extent.width() / width;
       double providerXRes = provider->extent().width() / provider->xSize();
@@ -220,7 +220,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   return outputBlock; // No resampling
 }
 
-void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentElem )
+void QgsRasterResampleFilter::writeXML( QDomDocument& doc, QDomElement& parentElem ) const
 {
   if ( parentElem.isNull() )
   {

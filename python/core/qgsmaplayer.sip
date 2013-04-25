@@ -306,6 +306,13 @@ class QgsMapLayer : QObject
      * @note This method was added in QGIS 1.4 **/
     void setCacheImage( QImage * thepImage /Transfer/ );
 
+    /* Returns the current blending mode for a layer 
+        @note added in version 1.9*/
+    const QPainter::CompositionMode blendMode() const;
+    /* Sets the blending mode for a layer 
+        @note added in version 1.9*/    
+    void setBlendMode( const QPainter::CompositionMode blendMode );
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */

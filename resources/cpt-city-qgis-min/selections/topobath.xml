@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="topobath">Topography/bathymetry</name>
+  <synopsis>Mixed palettes for topography and bathymetry</synopsis>
+  <description>Mixed palettes for topography and bathymetry.</description>
+  <seealsoselects>
+    <select short="topo">Topography</select>
+    <select short="bath">Bathymetry</select>
+  </seealsoselects>
+  <gradients>
+    <gradient file="ibcao" dir="ibcao"/>
+    <gradient file="NZ_blue" dir="em"/>
+    <gradient file="wiki-2.0" dir="wkp/template"/>
+    <gradient file="wiki-scotland" dir="wkp/country"/>
+    <gradient file="wiki-france" dir="wkp/country"/>
+    <gradient file="GMT_globe" dir="gmt"/>
+    <gradient file="GMT_relief" dir="gmt"/>
+    <gradient file="GMT_sealand" dir="gmt"/>
+    <gradient file="GMT_topo" dir="gmt"/>
+    <gradient file="Caribbean" dir="vh"/>
+    <gradient file="etopo2" dir="grass"/>
+    <gradient file="srtm" dir="grass"/>
+    <gradient file="terrain" dir="grass"/>
+    <gradient file="ETOPO1" dir="ngdc"/>
+    <gradient file="ETOPO1-Reed" dir="ngdc"/>
+    <gradient file="wiki-plumbago" dir="wkp/plumbago"/>
+    <gradient file="topo_15lev" dir="ncl"/>
+    <gradient file="meyers" dir="wkp/encyclopedia"/>
+    <gradient file="nordisk-familjebok" dir="wkp/encyclopedia"/>
+    <gradient file="mby" dir="mby"/>
+    <gradient file="afrikakarte" dir="wkp/lilleskut"/>
+    <gradient file="colombia" dir="wkp/shadowxfox"/>
+  </gradients>
+</selection>

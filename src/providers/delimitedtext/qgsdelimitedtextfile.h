@@ -142,11 +142,11 @@ class QgsDelimitedTextFile
      */
     void setTypeCSV( QString delim = QString( "," ), QString quote = QString( "\"" ), QString escape = QString( "\"" ) );
 
-    /* Set the number of header lines to skip
+    /** Set the number of header lines to skip
      * @param skiplines The maximum lines to skip
      */
     void setSkipLines( int skiplines );
-    /* Return the number of header lines to skip
+    /** Return the number of header lines to skip
      * @return skiplines The maximum lines to skip
      */
     int skipLines()
@@ -154,23 +154,23 @@ class QgsDelimitedTextFile
       return mSkipLines;
     }
 
-    /* Set reading column names from the first record
-     * @param useheaders Column names will be read if true
+    /** Set reading field names from the first record
+     * @param useheaders Field names will be read if true
      */
     void setUseHeader( bool useheader = true );
-    /* Return the option for reading column names from the first record
-     * @return useheaders Column names will be read if true
+    /** Return the option for reading field names from the first record
+     * @return useheaders Field names will be read if true
      */
     bool useHeader()
     {
       return mUseHeader;
     }
 
-    /* Set the option for dicarding empty fields
+    /** Set the option for dicarding empty fields
      * @param useheaders Empty fields will be discarded if true
      */
     void setDiscardEmptyFields( bool discardEmptyFields = true );
-    /* Return the option for discarding empty fields
+    /** Return the option for discarding empty fields
      * @return useheaders Empty fields will be discarded if true
      */
     bool discardEmptyFields()
@@ -178,11 +178,11 @@ class QgsDelimitedTextFile
       return mDiscardEmptyFields;
     }
 
-    /* Set the option for trimming whitespace from fields
+    /** Set the option for trimming whitespace from fields
      * @param trimFields Fields will be trimmed if true
      */
     void setTrimFields( bool trimFields = true );
-    /* Return the option for trimming empty fields
+    /** Return the option for trimming empty fields
      * @return useheaders Empty fields will be trimmed if true
      */
     bool trimFields()
@@ -190,11 +190,41 @@ class QgsDelimitedTextFile
       return mTrimFields;
     }
 
-    /** Return the column names read from the header, or default names
-     *  Col## if none defined.  Will open and read the head of the file
-     *  if required, then reset..
+    /** Set the maximum number of fields that will be read from a record
+     *  By default the maximum number is unlimited (0)
+     *  @param maxFields  The maximum number of fields that will be read
      */
-    QStringList &columnNames();
+    void setMaxFields( int maxFields );
+    /** Return the maximum number of fields that will be read
+     *  @return maxFields The maximum number of fields that will be read
+     */
+    int maxFields() { return mMaxFields; }
+
+    /** Set the field names
+     *  Field names are set from QStringList.  Names may be modified
+     *  to ensure that they are unique, not empty, and do not conflict
+     *  with default field name (field_##)
+     *  @param names  A list of proposed field names
+     */
+    void setFieldNames( const QStringList &names );
+
+    /** Return the field names read from the header, or default names
+     *  field_## if none defined.  Will open and read the head of the file
+     *  if required, then reset.  Note that if header record record has
+     *  not been read then the field names are empty until records have
+     *  been read.  The list may be expanded as the file is read and records
+     *  with more fields are loaded.
+     *  @return names  A list of field names in the file
+     */
+    QStringList &fieldNames();
+
+    /** Return the index of a names field
+     *  @param name    The name of the field to find.  This will also accept an
+     *                 integer string ("1" = first field).
+     *  @return index  The zero based index of the field name, or -1 if the field
+     *                 name does not exist or cannot be inferred
+     */
+    int fieldIndex( QString name );
 
     /** Reads the next record from the stream splits into string fields.
      *  @param fields  The string list to populate with the fields
@@ -242,9 +272,6 @@ class QgsDelimitedTextFile
      */
     static QString decodeChars( QString string );
 
-
-
-
   private:
 
     /** Open the file
@@ -258,7 +285,7 @@ class QgsDelimitedTextFile
     void close();
 
     /** Reset the status if the definition is changing (eg clear
-     *  existing column names, etc...
+     *  existing field names, etc...
      */
     void resetDefinition();
 
@@ -272,6 +299,12 @@ class QgsDelimitedTextFile
      * delimited text parser implementation.
      */
     Status nextLine( QString &buffer, bool skipBlank = false );
+
+    /** Utility routine to add a field to a record, accounting for trimming
+     *  and discarding, and maximum field count
+     */
+
+    void appendField( QStringList &record, QString field, bool quoted = false );
 
     // Pointer to the currently selected parser
     Status( QgsDelimitedTextFile::*mParser )( QStringList &fields );
@@ -292,12 +325,14 @@ class QgsDelimitedTextFile
 
     // Parameters used by parsers
     QRegExp mDelimRegexp;
+    bool mAnchoredRegexp;
     QString mDelimChars;
     QString mQuoteChar;
     QString mEscapeChar;
 
     // Information extracted from file
-    QStringList mColumnNames;
+    QStringList mFieldNames;
     int mLineNumber;
     int mRecordLineNumber;
+    int mMaxFieldCount;
 };

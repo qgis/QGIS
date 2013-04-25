@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>Quantum GIS (QGIS)</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Sunday April 07, 2013</H3>
+<H3>Wednesday April 24, 2013</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Sunday April 07, 2013
 Last Change : Saturday December 08, 2012
+Last Updated: Wednesday April 24, 2013
 </P>
 <DIV CLASS="toc">
 
@@ -1858,6 +1858,11 @@ sudo make install
 <H3>5.3.1. Optional setup: ccache</H3>
 
 <P>
+<U>Xcode 4.4+ note:</U> You will probably not need to install ccache if you are using
+the clang frontend to LLVM compiler, a setup that already provides fairly quick
+compile times.
+</P>
+<P>
 Setup ccache to significantly speed up compile times after initial build.
 (Switching git branches will again cause longer initial build times unless
 separate build directories are used for each branch.)
@@ -2642,8 +2647,8 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
 -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
 -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
--D QWT_LIBRARY=/usr/local/qwt-5.2.2/lib/libqwt.dylib \
--D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.2/include \
+-D QWT_LIBRARY=/usr/local/qwt-6.0.2/lib/libqwt.dylib \
+-D QWT_INCLUDE_DIR=/usr/local/qwt-6.0.2/include \
 -D BISON_EXECUTABLE=/usr/local/bin/bison \
 ..
 </PRE></div>
@@ -2664,13 +2669,13 @@ ccmake ..
 <P>
 This will automatically find and use the previously installed frameworks, and
 the GRASS application if installed.  Remember to change the Qwt version if a
-different version was installed, and possibly paths, e.g. for Qwt 6.0.1, which
-installs as a framework, use:
+different version was installed, and possibly paths, e.g. for Qwt 6.0.2 installed
+as a framework use:
 </P>
 
 <div class="code"><PRE>
--D QWT_LIBRARY=/usr/local/qwt-6.0.1/lib/qwt.framework/qwt \
--D QWT_INCLUDE_DIR=/usr/local/qwt-6.0.1/lib/qwt.framework/Headers \
+-D QWT_LIBRARY=/usr/local/qwt-6.0.2/lib/qwt.framework/qwt \
+-D QWT_INCLUDE_DIR=/usr/local/qwt-6.0.2/lib/qwt.framework/Headers \
 </PRE></div>
 
 <P>

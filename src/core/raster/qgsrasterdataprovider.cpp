@@ -43,33 +43,6 @@ void QgsRasterDataProvider::setUseSrcNoDataValue( int bandNo, bool use )
   mUseSrcNoDataValue[bandNo-1] = use;
 }
 
-//bool QgsRasterDataProvider::hasNoDataValue ( int theBandNo )
-//{
-//return ( srcHasNoDataValue(theBandNo) && useSrcNoDataValue(theBandNo) ) ||
-//       mHasInternalNoDataValue[bandNo-1];
-//return srcHasNoDataValue(theBandNo) && useSrcNoDataValue(theBandNo);
-//}
-
-//bool QgsRasterDataProvider::noDataValue( int bandNo ) const
-//{
-//  return mHasNoDataValue.value( bandNo - 1 );
-//}
-
-#if 0
-double QgsRasterDataProvider::noDataValue( int bandNo ) const
-{
-  if ( mSrcHasNoDataValue.value( bandNo - 1 ) && mUseSrcNoDataValue.value( bandNo - 1 ) )
-  {
-    return mSrcNoDataValue.value( bandNo -1 );
-  }
-  //if ( mHasInternalNoDataValue[bandNo-1] )
-  //{
-  //  return mInternalNoDataValue.value( bandNo -1 );
-  //}
-  return std::numeric_limits<double>::quiet_NaN();
-}
-#endif
-
 QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  const & theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( QString( "theBandNo = %1 theWidth = %2 theHeight = %3" ).arg( theBandNo ).arg( theWidth ).arg( theHeight ) );
@@ -106,7 +79,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   double tmpXRes, tmpYRes;
   double providerXRes = 0;
   double providerYRes = 0;
-  if ( capabilities() & ExactResolution )
+  if ( capabilities() & Size )
   {
     providerXRes = extent().width() / xSize();
     providerYRes = extent().height() / ySize();
@@ -232,7 +205,6 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   }
 
   // apply user no data values
-  // TODO: there are other readBlock methods where no data are not applied
   block->applyNoDataValues( userNoDataValue( theBandNo ) );
   return block;
 }
@@ -254,7 +226,6 @@ QgsRasterDataProvider::QgsRasterDataProvider( QString const & uri )
 //Random Static convenience function
 //
 /////////////////////////////////////////////////////////
-//TODO: Change these to private function or make seprate class
 // convenience function for building metadata() HTML table cells
 // convenience function for creating a string list from a C style string list
 QStringList QgsRasterDataProvider::cStringList2Q_( char ** stringList )
@@ -271,13 +242,10 @@ QStringList QgsRasterDataProvider::cStringList2Q_( char ** stringList )
 
 } // cStringList2Q_
 
-
 QString QgsRasterDataProvider::makeTableCell( QString const & value )
 {
   return "<p>\n" + value + "</p>\n";
 } // makeTableCell_
-
-
 
 // convenience function for building metadata() HTML table cells
 QString QgsRasterDataProvider::makeTableCells( QStringList const & values )
@@ -303,13 +271,12 @@ QString QgsRasterDataProvider::metadata()
 }
 
 // Default implementation for values
-//QMap<int, QVariant> QgsRasterDataProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
-QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( "Entered" );
   QMap<int, QVariant> results;
 
-  if ( theFormat != IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
+  if ( theFormat != QgsRaster::IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
   {
     QgsDebugMsg( "Format not supported" );
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
@@ -322,7 +289,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
     {
       results.insert( bandNo, QVariant() );
     }
-    return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
+    return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
   }
 
   QgsRectangle myExtent = theExtent;
@@ -366,131 +333,35 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
       results.insert( i, QVariant() );
     }
   }
-  return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
+  return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
-
-#if 0
-QMap<QString, QString> QgsRasterDataProvider::identify( const QgsPoint & thePoint, const QgsRectangle &theExtent, int theWidth, int theHeight )
-{
-  QMap<QString, QString> results;
-
-  QgsRasterDataProvider::IdentifyFormat identifyFormat;
-  if ( capabilities() & QgsRasterDataProvider::IdentifyValue )
-  {
-    identifyFormat = QgsRasterDataProvider::IdentifyFormatValue;
-  }
-  else if ( capabilities() & QgsRasterDataProvider::IdentifyHtml )
-  {
-    identifyFormat = QgsRasterDataProvider::IdentifyFormatHtml;
-  }
-  else if ( capabilities() & QgsRasterDataProvider::IdentifyText )
-  {
-    identifyFormat = QgsRasterDataProvider::IdentifyFormatText;
-  }
-  else
-  {
-    return results;
-  }
-
-  QgsRasterIdentifyResult myResult = identify( thePoint, identifyFormat, theExtent, theWidth, theHeight );
-  QMap<int, QVariant> myResults = myResult.results();
-
-  if ( identifyFormat == QgsRasterDataProvider::IdentifyFormatValue )
-  {
-    foreach ( int bandNo, myResults.keys() )
-    {
-      double value = myResults.value( bandNo ).toDouble();
-      QString valueString;
-      if ( isNoDataValue( bandNo, value ) )
-      {
-        valueString = tr( "no data" );
-      }
-      else
-      {
-        valueString = QgsRasterBlock::printValue( value );
-      }
-      results.insert( generateBandName( bandNo ), valueString );
-    }
-  }
-  else // text or html
-  {
-    foreach ( int bandNo, myResults.keys() )
-    {
-      QString value = myResults.value( bandNo ).toString();
-      // TODO: better 'attribute' name, in theory it may be something else than WMS
-      // feature info
-      if ( identifyFormat == QgsRasterDataProvider::IdentifyFormatText )
-      {
-        value = "<pre>" + value + "</pre>";
-      }
-      results.insert( tr( "Feature info" ), value );
-    }
-  }
-
-  return results;
-}
-#endif
 
 QString QgsRasterDataProvider::lastErrorFormat()
 {
   return "text/plain";
 }
 
-// pyramids resampling
-
-// TODO move this to gdal provider
-// but we need some way to get a static instance of the provider
-// or use function pointers like in QgsRasterFormatSaveOptionsWidget::helpOptions()
-
-// see http://www.gdal.org/gdaladdo.html
-//     http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
-//     http://www.gdal.org/classGDALRasterBand.html#afaea945b13ec9c86c2d783b883c68432
-
-// from http://www.gdal.org/gdaladdo.html
-//   average_mp is unsuitable for use thus not included
-
-// from qgsgdalprovider.cpp (removed)
-//   NOTE magphase is disabled in the gui since it tends
-//   to create corrupted images. The images can be repaired
-//   by running one of the other resampling strategies below.
-//   see ticket #284
-QStringList QgsRasterDataProvider::mPyramidResamplingListGdal = QStringList();
-QgsStringMap QgsRasterDataProvider::mPyramidResamplingMapGdal = QgsStringMap();
-
-void QgsRasterDataProvider::initPyramidResamplingDefs()
+typedef QList<QPair<QString, QString> > *pyramidResamplingMethods_t();
+QList<QPair<QString, QString> > QgsRasterDataProvider::pyramidResamplingMethods( QString providerKey )
 {
-  mPyramidResamplingListGdal.clear();
-  mPyramidResamplingListGdal << tr( "Nearest Neighbour" ) << tr( "Average" ) << tr( "Gauss" ) << tr( "Cubic" ) << tr( "Mode" ) << tr( "None" ); // << tr( "Average magphase" )
-  mPyramidResamplingMapGdal.clear();
-  mPyramidResamplingMapGdal[ tr( "Nearest Neighbour" )] = "NEAREST";
-  mPyramidResamplingMapGdal[ tr( "Average" )] = "AVERAGE";
-  mPyramidResamplingMapGdal[ tr( "Gauss" )] = "GAUSS";
-  mPyramidResamplingMapGdal[ tr( "Cubic" )] = "CUBIC";
-  mPyramidResamplingMapGdal[ tr( "Mode" )] = "MODE";
-  // mPyramidResamplingMapGdal[ tr( "Average magphase" ) ] = "average_magphase";
-  mPyramidResamplingMapGdal[ tr( "None" )] = "NONE" ;
-}
-
-QStringList QgsRasterDataProvider::pyramidResamplingMethods( QString providerKey )
-{
-  if ( mPyramidResamplingListGdal.isEmpty() )
-    initPyramidResamplingDefs();
-
-  return providerKey == "gdal" ? mPyramidResamplingListGdal : QStringList();
-}
-
-QString QgsRasterDataProvider::pyramidResamplingArg( QString method, QString providerKey )
-{
-  if ( providerKey != "gdal" )
-    return QString();
-
-  if ( mPyramidResamplingListGdal.isEmpty() )
-    initPyramidResamplingDefs();
-
-  if ( mPyramidResamplingMapGdal.contains( method ) )
-    return mPyramidResamplingMapGdal.value( method );
+  pyramidResamplingMethods_t *pPyramidResamplingMethods = ( pyramidResamplingMethods_t * ) cast_to_fptr( QgsProviderRegistry::instance()->function( providerKey,  "pyramidResamplingMethods" ) );
+  if ( pPyramidResamplingMethods )
+  {
+    QList<QPair<QString, QString> > *methods = pPyramidResamplingMethods();
+    if ( !methods )
+    {
+      QgsDebugMsg( "provider pyramidResamplingMethods returned no methods" );
+    }
+    else
+    {
+      return *methods;
+    }
+  }
   else
-    return "NEAREST";
+  {
+    QgsDebugMsg( "Could not resolve pyramidResamplingMethods provider library" );
+  }
+  return QList<QPair<QString, QString> >();
 }
 
 bool QgsRasterDataProvider::hasPyramids()
@@ -513,46 +384,8 @@ bool QgsRasterDataProvider::hasPyramids()
   return false;
 }
 
-#if 0
-double QgsRasterDataProvider::readValue( void *data, int type, int index )
-{
-  if ( !data )
-    return std::numeric_limits<double>::quiet_NaN();
-
-  switch ( type )
-  {
-    case QGis::Byte:
-      return ( double )(( GByte * )data )[index];
-      break;
-    case QGis::UInt16:
-      return ( double )(( GUInt16 * )data )[index];
-      break;
-    case QGis::Int16:
-      return ( double )(( GInt16 * )data )[index];
-      break;
-    case QGis::UInt32:
-      return ( double )(( GUInt32 * )data )[index];
-      break;
-    case QGis::Int32:
-      return ( double )(( GInt32 * )data )[index];
-      break;
-    case QGis::Float32:
-      return ( double )(( float * )data )[index];
-      break;
-    case QGis::Float64:
-      return ( double )(( double * )data )[index];
-      break;
-    default:
-      QgsLogger::warning( "GDAL data type is not supported" );
-  }
-
-  return std::numeric_limits<double>::quiet_NaN();
-}
-#endif
-
 void QgsRasterDataProvider::setUserNoDataValue( int bandNo, QgsRasterRangeList noData )
 {
-  //if ( bandNo > bandCount() ) return;
   if ( bandNo >= mUserNoDataValue.size() )
   {
     for ( int i = mUserNoDataValue.size(); i < bandNo; i++ )
@@ -608,64 +441,70 @@ QgsRasterDataProvider* QgsRasterDataProvider::create( const QString &providerKey
   return createFn( uri, format, nBands, type, width, height, geoTransform, crs, createOptions );
 }
 
-QString QgsRasterDataProvider::identifyFormatName( IdentifyFormat format )
+QString QgsRasterDataProvider::identifyFormatName( QgsRaster::IdentifyFormat format )
 {
   switch ( format )
   {
-    case IdentifyFormatValue:
+    case QgsRaster::IdentifyFormatValue:
       return "Value";
-    case IdentifyFormatText:
+    case QgsRaster::IdentifyFormatText:
       return "Text";
-    case IdentifyFormatHtml:
+    case QgsRaster::IdentifyFormatHtml:
       return "Html";
-    case IdentifyFormatFeature:
+    case QgsRaster::IdentifyFormatFeature:
       return "Feature";
     default:
       return "Undefined";
   }
 }
 
-QString QgsRasterDataProvider::identifyFormatLabel( IdentifyFormat format )
+QString QgsRasterDataProvider::identifyFormatLabel( QgsRaster::IdentifyFormat format )
 {
   switch ( format )
   {
-    case IdentifyFormatValue:
+    case QgsRaster::IdentifyFormatValue:
       return tr( "Value" );
-    case IdentifyFormatText:
+    case QgsRaster::IdentifyFormatText:
       return ( "Text" );
-    case IdentifyFormatHtml:
+    case QgsRaster::IdentifyFormatHtml:
       return tr( "Html" );
-    case IdentifyFormatFeature:
+    case QgsRaster::IdentifyFormatFeature:
       return tr( "Feature" );
     default:
       return "Undefined";
   }
 }
 
-QgsRasterDataProvider::IdentifyFormat QgsRasterDataProvider::identifyFormatFromName( QString formatName )
+QgsRaster::IdentifyFormat QgsRasterDataProvider::identifyFormatFromName( QString formatName )
 {
-  if ( formatName == "Value" ) return IdentifyFormatValue;
-  if ( formatName == "Text" ) return IdentifyFormatText;
-  if ( formatName == "Html" ) return IdentifyFormatHtml;
-  if ( formatName == "Feature" ) return IdentifyFormatFeature;
-  return IdentifyFormatUndefined;
+  if ( formatName == "Value" ) return QgsRaster::IdentifyFormatValue;
+  if ( formatName == "Text" ) return QgsRaster::IdentifyFormatText;
+  if ( formatName == "Html" ) return QgsRaster::IdentifyFormatHtml;
+  if ( formatName == "Feature" ) return QgsRaster::IdentifyFormatFeature;
+  return QgsRaster::IdentifyFormatUndefined;
 }
 
-QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability( IdentifyFormat format )
+QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability( QgsRaster::IdentifyFormat format )
 {
   switch ( format )
   {
-    case IdentifyFormatValue:
+    case QgsRaster::IdentifyFormatValue:
       return IdentifyValue;
-    case IdentifyFormatText:
+    case QgsRaster::IdentifyFormatText:
       return IdentifyText;
-    case IdentifyFormatHtml:
+    case QgsRaster::IdentifyFormatHtml:
       return IdentifyHtml;
-    case IdentifyFormatFeature:
+    case QgsRaster::IdentifyFormatFeature:
       return IdentifyFeature;
     default:
       return NoCapabilities;
   }
+}
+
+bool QgsRasterDataProvider::userNoDataValueContains( int bandNo, double value ) const
+{
+  QgsRasterRangeList rangeList = mUserNoDataValue.value( bandNo - 1 );
+  return QgsRasterRange::contains( value, rangeList );
 }
 
 // ENDS

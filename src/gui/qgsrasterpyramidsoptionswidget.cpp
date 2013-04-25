@@ -34,7 +34,7 @@ QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent,
   setupUi( this );
 
   mSaveOptionsWidget->setProvider( provider );
-  mSaveOptionsWidget->setPyramidsFormat( QgsRasterDataProvider::PyramidsGTiff );
+  mSaveOptionsWidget->setPyramidsFormat( QgsRaster::PyramidsGTiff );
   mSaveOptionsWidget->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
 
   updateUi();
@@ -62,10 +62,13 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
   // initialize resampling methods
   cboResamplingMethod->clear();
-  foreach ( QString method, QgsRasterDataProvider::pyramidResamplingMethods( mProvider ) )
-    cboResamplingMethod->addItem( method );
-  cboResamplingMethod->setCurrentIndex( cboResamplingMethod->findText(
-                                          mySettings.value( prefix + "resampling", "Average" ).toString() ) );
+  QPair<QString, QString> method;
+  foreach ( method, QgsRasterDataProvider::pyramidResamplingMethods( mProvider ) )
+  {
+    cboResamplingMethod->addItem( method.second, method.first );
+  }
+  cboResamplingMethod->setCurrentIndex( cboResamplingMethod->findData(
+                                          mySettings.value( prefix + "resampling", "AVERAGE" ).toString() ) );
 
   // validate string, only space-separated positive integers are allowed
   lePyramidsLevels->setEnabled( cbxPyramidsLevelsCustom->isChecked() );
@@ -112,7 +115,7 @@ void QgsRasterPyramidsOptionsWidget::updateUi()
 
 QString QgsRasterPyramidsOptionsWidget::resamplingMethod() const
 {
-  return QgsRasterDataProvider::pyramidResamplingArg( cboResamplingMethod->currentText().trimmed() );
+  return cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString();
 }
 
 void QgsRasterPyramidsOptionsWidget::apply()
@@ -129,7 +132,7 @@ void QgsRasterPyramidsOptionsWidget::apply()
   else
     tmpStr = "external";
   mySettings.setValue( prefix + "format", tmpStr );
-  mySettings.setValue( prefix + "resampling", cboResamplingMethod->currentText().trimmed() );
+  mySettings.setValue( prefix + "resampling", resamplingMethod() );
   mySettings.setValue( prefix + "overviewStr", lePyramidsLevels->text().trimmed() );
 
   // overview list
@@ -162,7 +165,7 @@ void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsLevelsCustom_toggled( bool to
 void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsFormat_currentIndexChanged( int index )
 {
   mSaveOptionsWidget->setEnabled( index != 2 );
-  mSaveOptionsWidget->setPyramidsFormat(( QgsRasterDataProvider::RasterPyramidsFormat ) index );
+  mSaveOptionsWidget->setPyramidsFormat(( QgsRaster::RasterPyramidsFormat ) index );
 }
 
 void QgsRasterPyramidsOptionsWidget::setOverviewList()

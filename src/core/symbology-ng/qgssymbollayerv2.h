@@ -15,7 +15,12 @@
 #ifndef QGSSYMBOLLAYERV2_H
 #define QGSSYMBOLLAYERV2_H
 
+// MSVC compiler doesn't have defined M_PI in math.h
+#ifndef M_PI
+#define M_PI          3.14159265358979323846
+#endif
 
+#define DEG2RAD(x)    ((x)*M_PI/180)
 
 #include <QColor>
 #include <QMap>
@@ -147,6 +152,8 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 
   protected:
     QgsMarkerSymbolLayerV2( bool locked = false );
+    void markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY );
+    static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
     double mAngle;
     double mSize;

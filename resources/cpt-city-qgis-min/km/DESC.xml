@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>km</dir>
+  <name>Diverging colour-maps by Kenneth Moreland</name>
+  <full>
+    The color map derived here is an all-around good performer: it
+    works well for low and high frequency data, orders the data, is
+    perceptually linear, behaves well for observers with
+    color-deficient vision, and has reasonably low impact on the
+    shading of three-dimensional surfaces.
+  </full>
+  <date>01/08/2012</date>
+</description>

@@ -69,7 +69,7 @@ void TestContrastEnhancements::clipMinMaxEnhancementTest()
 {
   //Clips 0 < x < 10, 240 < X < 256
   //Stretch no stretch is applied
-  QgsClipToMinMaxEnhancement myEnhancement( QgsContrastEnhancement::QGS_Byte, 10.0, 240.0 );
+  QgsClipToMinMaxEnhancement myEnhancement( QGis::Byte, 10.0, 240.0 );
   // Original pixel value 0.0 Should be out of range thus clipped
   QVERIFY( !myEnhancement.isValueInDisplayableRange( 0.0 ) );
   //Original pixel value of 10.0 should be scaled to 10.0
@@ -82,7 +82,7 @@ void TestContrastEnhancements::linearMinMaxEnhancementWithClipTest()
 {
   //First clips 0 < x < 10, 240 < X < 256
   //Then stretch 10 = 0, 240 = 255 linearly distribute values 10 -> 240 between 0 -> 255
-  QgsLinearMinMaxEnhancementWithClip myEnhancement( QgsContrastEnhancement::QGS_Byte, 10.0, 240.0 );
+  QgsLinearMinMaxEnhancementWithClip myEnhancement( QGis::Byte, 10.0, 240.0 );
   // Original pixel value 0.0 Should be out of range thus clipped
   QVERIFY( !myEnhancement.isValueInDisplayableRange( 0.0 ) );
   //Original pixel value of 10.0 should be scaled to 0.0
@@ -94,7 +94,7 @@ void TestContrastEnhancements::linearMinMaxEnhancementWithClipTest()
 void TestContrastEnhancements::linearMinMaxEnhancementTest()
 {
   //Stretch 10 = 0, 240 = 255 linearly distribute values 10 -> 240 between 0 -> 255
-  QgsLinearMinMaxEnhancement myEnhancement( QgsContrastEnhancement::QGS_Byte, 10.0, 240.0 );
+  QgsLinearMinMaxEnhancement myEnhancement( QGis::Byte, 10.0, 240.0 );
   //0 should be scaled to 10 and not clipped
   QVERIFY( myEnhancement.isValueInDisplayableRange( 0.0 ) );
   //Original pixel value of 10.0 should be scaled to 0.0

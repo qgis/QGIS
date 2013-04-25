@@ -160,7 +160,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *     QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
  * \endcode
  *
- * The main data providers supported by QGis are listed below.
+ * The main data providers supported by QGIS are listed below.
  *
  * \section providers Vector data providers
  *
@@ -310,15 +310,6 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *
  *   Defines the characters used to escape delimiter, quote, and newline characters.
  *
- * - skipEmptyFields=(yes|no)
- *
- *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
- *   delimiters)
- *
- * - trimFields=(yes|no)
- *
- *   If yes then leading and trailing whitespace will be removed from fields
- *
  * - skipLines=n
  *
  *   Defines the number of lines to ignore at the beginning of the file (default 0)
@@ -328,16 +319,30 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *   Defines whether the first record in the file (after skipped lines) contains
  *   column names (default yes)
  *
+ * - trimFields=(yes|no)
+ *
+ *   If yes then leading and trailing whitespace will be removed from fields
+ *
+ * - skipEmptyFields=(yes|no)
+ *
+ *   If yes then empty fields will be discarded (eqivalent to concatenating consecutive
+ *   delimiters)
+ *
+ * - maxFields=#
+ *
+ *   Specifies the maximum number of fields to load for each record.  Additional
+ *   fields will be discarded.  Default is 0 - load all fields.
+ *
+ * - decimalPoint=c
+ *
+ *   Defines a character that is used as a decimal point in the numeric columns
+ *   The default is '.'.
+ *
  * - xField=column yField=column
  *
  *   Defines the name of the columns holding the x and y coordinates for XY point geometries.
  *   If the useHeader is no (ie there are no column names), then this is the column
  *   number (with the first column as 1).
- *
- * - decimalPoint=c
- *
- *   Defines a character that is used as a decimal point in the X and Y columns.
- *   The default is '.'.
  *
  * - xyDms=(yes|no)
  *
@@ -353,7 +358,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *
  * - geomType=(point|line|polygon|none)
  *
- *   Defines the geometry type for WKT type geometries.  QGis will only display one
+ *   Defines the geometry type for WKT type geometries.  QGIS will only display one
  *   type of geometry for the layer - any others will be ignored when the file is
  *   loaded.  By default the provider uses the type of the first geometry in the file.
  *   Use geomType to override this type.
@@ -382,8 +387,6 @@ struct CORE_EXPORT QgsVectorJoinInfo
  * \subsection grass Grass data provider (grass)
  *
  * Provider to display vector data in a GRASS GIS layer.
- *
- *
  *
  */
 
@@ -489,6 +492,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *               parameters used by the data provider as url query items.
      * @param  baseName The name used to represent the layer in the legend
      * @param  providerLib  The name of the data provider, eg "memory", "postgres"
+     * @param  loadDefaultStyleFlag whether to load the default style
      *
      */
     QgsVectorLayer( QString path = QString::null, QString baseName = QString::null,

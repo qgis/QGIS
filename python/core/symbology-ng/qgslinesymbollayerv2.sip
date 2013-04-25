@@ -44,8 +44,14 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     double offset() const;
     void setOffset( double offset );
 
+    QgsSymbolV2::OutputUnit offsetUnit() const;
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+
     bool useCustomDashPattern() const;
     void setUseCustomDashPattern( bool b );
+
+    QgsSymbolV2::OutputUnit customDashPatternUnit() const;
+    void setCustomDashPatternUnit( QgsSymbolV2::OutputUnit unit );
 
     QVector<qreal> customDashVector() const;
     void setCustomDashVector( const QVector<qreal>& vector );
@@ -114,6 +120,15 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     double offset() const;
     void setOffset( double offset );
 
+    QgsSymbolV2::OutputUnit intervalUnit() const;
+    void setIntervalUnit( QgsSymbolV2::OutputUnit unit );
+
+    QgsSymbolV2::OutputUnit offsetUnit() const;
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
     Placement placement() const;
     void setPlacement( Placement p );
 
@@ -157,4 +172,7 @@ class QgsLineDecorationSymbolLayerV2 : QgsLineSymbolLayerV2
     QgsSymbolLayerV2* clone() const /Factory/;
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit outputUnit() const;
 };

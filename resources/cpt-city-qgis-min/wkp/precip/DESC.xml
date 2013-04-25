@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>precip</dir>
+  <name>Global precipitation</name>
+  <full>
+    A scheme for global precipitation (in units of inch or mm/day) by
+    Wikipedia contributor PZmaps.
+  </full>
+  <date>01/08/2012</date>
+</description>

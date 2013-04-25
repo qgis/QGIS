@@ -47,7 +47,7 @@ QgsExpression* QgsSymbolLayerV2::expression( const QString& property )
 QString QgsSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
 {
   const QgsExpression* ex = dataDefinedProperty( property );
-  return ex ? ex->dump() : QString();
+  return ex ? ex->expression() : QString();
 }
 
 void QgsSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
@@ -123,7 +123,7 @@ void QgsSymbolLayerV2::saveDataDefinedProperties( QgsStringMap& stringMap ) cons
   {
     if ( ddIt.value() )
     {
-      stringMap.insert( ddIt.key() + "_expression", ddIt.value()->dump() );
+      stringMap.insert( ddIt.key() + "_expression", ddIt.value()->expression() );
     }
   }
 }
@@ -141,7 +141,7 @@ void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) 
   {
     if ( ddIt.value() )
     {
-      destLayer->setDataDefinedProperty( ddIt.key(), ddIt.value()->dump() );
+      destLayer->setDataDefinedProperty( ddIt.key(), ddIt.value()->expression() );
     }
   }
 }
@@ -173,6 +173,30 @@ void QgsMarkerSymbolLayerV2::setOutputUnit( QgsSymbolV2::OutputUnit unit )
 {
   mSizeUnit = unit;
   mOffsetUnit = unit;
+}
+
+void QgsMarkerSymbolLayerV2::markerOffset( QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY )
+{
+  offsetX = mOffset.x();
+  offsetY = mOffset.y();
+
+  QgsExpression* offsetExpression = expression( "offset" );
+  if ( offsetExpression )
+  {
+    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( offsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    offsetX = offset.x();
+    offsetY = offset.y();
+  }
+
+  offsetX *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+  offsetY *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit );
+}
+
+QPointF QgsMarkerSymbolLayerV2::_rotatedOffset( const QPointF& offset, double angle )
+{
+  angle = DEG2RAD( angle );
+  double c = cos( angle ), s = sin( angle );
+  return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
 }
 
 QgsSymbolV2::OutputUnit QgsMarkerSymbolLayerV2::outputUnit() const

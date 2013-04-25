@@ -1,14 +1,104 @@
 <RCC>
     <qresource prefix="/images">
-        <file>icons/qgis-icon-16x16.png</file>
         <file alias="last-hackfest.jpg">developers/essen-2012.jpg</file>
+        <file>flags/af.png</file>
+        <file>flags/ar.png</file>
+        <file>flags/bg.png</file>
+        <file>flags/ca_ES.png</file>
+        <file>flags/cs_CZ.png</file>
+        <file>flags/da_DK.png</file>
+        <file>flags/de.png</file>
+        <file>flags/el_GR.png</file>
+        <file>flags/en_US.png</file>
+        <file>flags/es.png</file>
+        <file>flags/et_EE.png</file>
+        <file>flags/eu_ES.png</file>
+        <file>flags/fa.png</file>
+        <file>flags/fi.png</file>
+        <file>flags/fr.png</file>
+        <file>flags/gl_ES.png</file>
+        <file>flags/he.png</file>
+        <file>flags/hr_HR.png</file>
+        <file>flags/hu.png</file>
+        <file>flags/id.png</file>
+        <file>flags/is.png</file>
+        <file>flags/it.png</file>
+        <file>flags/ja.png</file>
+        <file>flags/ka_GE.png</file>
+        <file>flags/km.png</file>
+        <file>flags/ko_KR.png</file>
+        <file>flags/lo.png</file>
+        <file>flags/lt.png</file>
+        <file>flags/lv.png</file>
+        <file>flags/ml_IN.png</file>
+        <file>flags/mn.png</file>
+        <file>flags/nl.png</file>
+        <file>flags/no.png</file>
+        <file>flags/pl_PL.png</file>
+        <file>flags/pt_BR.png</file>
+        <file>flags/pt_PT.png</file>
+        <file>flags/ro.png</file>
+        <file>flags/ru.png</file>
+        <file>flags/sk.png</file>
+        <file>flags/sl_SI.png</file>
+        <file>flags/sq_AL.png</file>
+        <file>flags/sr_Cyrl.png</file>
+        <file>flags/sr_Latn.png</file>
+        <file>flags/sv.png</file>
+        <file>flags/sw.png</file>
+        <file>flags/ta.png</file>
+        <file>flags/th.png</file>
+        <file>flags/tr.png</file>
+        <file>flags/uk.png</file>
+        <file>flags/vi.png</file>
+        <file>flags/xh.png</file>
+        <file>flags/zh_CN.png</file>
+        <file>flags/zh_TW.png</file>
+        <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
-        <file>north_arrows/gpsarrow2.svg</file>
+        <file>north_arrows/default.png</file>
         <file>north_arrows/gpsarrow.svg</file>
+        <file>north_arrows/gpsarrow2.svg</file>
+        <file>splash/splash.png</file>
         <file>themes/default/cap_flat.png</file>
         <file>themes/default/cap_round.png</file>
         <file>themes/default/cap_square.png</file>
         <file>themes/default/clearInput.png</file>
+        <file>themes/default/console/iconAboutConsole.png</file>
+        <file>themes/default/console/iconClassConsole.png</file>
+        <file>themes/default/console/iconClearConsole.png</file>
+        <file>themes/default/console/iconCodepadConsole.png</file>
+        <file>themes/default/console/iconHelpConsole.png</file>
+        <file>themes/default/console/iconHideToolConsole.png</file>
+        <file>themes/default/console/iconIfaceConsole.png</file>
+        <file>themes/default/console/iconOpenConsole.png</file>
+        <file>themes/default/console/iconQtCoreConsole.png</file>
+        <file>themes/default/console/iconQtGuiConsole.png</file>
+        <file>themes/default/console/iconRunConsole.png</file>
+        <file>themes/default/console/iconSaveConsole.png</file>
+        <file>themes/default/console/iconScriptConsole.png</file>
+        <file>themes/default/console/iconSettingsConsole.png</file>
+        <file>themes/default/console/iconSextanteConsole.png</file>
+        <file>themes/default/console/imgHelpConsole.png</file>
+        <file>themes/default/console/imgHelpDialog.png</file>
+        <file>themes/default/console/imgHelpMenu.png</file>
+        <file>themes/default/console/iconTabEditorConsole.png</file>
+        <file>themes/default/console/iconNewTabEditorConsole.png</file>
+        <file>themes/default/console/iconCloseTabEditorConsole.png</file>
+        <file>themes/default/console/iconRestoreTabsConsole.png</file>
+        <file>themes/default/console/iconFileTabsMenuConsole.png</file>
+        <file>themes/default/console/iconShowEditorConsole.png</file>
+        <file>themes/default/console/iconSaveAsConsole.png</file>
+        <file>themes/default/console/iconCutEditorConsole.png</file>
+        <file>themes/default/console/iconCopyEditorConsole.png</file>
+        <file>themes/default/console/iconPasteEditorConsole.png</file>
+        <file>themes/default/console/iconRunScriptConsole.png</file>
+        <file>themes/default/console/iconCommentEditorConsole.png</file>
+        <file>themes/default/console/iconUncommentEditorConsole.png</file>
+        <file>themes/default/console/iconClassTreeWidgetConsole.png</file>
+        <file>themes/default/console/iconMethodTreeWidgetConsole.png</file>
+        <file>themes/default/console/iconFunctionTreeWidgetConsole.png</file>
+        <file>themes/default/console/iconClassBrowserConsole.png</file>
         <file>themes/default/extents.png</file>
         <file>themes/default/favourites.png</file>
         <file>themes/default/geographic.png</file>
@@ -16,26 +106,34 @@
         <file>themes/default/gpsicons/polarchart.svg</file>
         <file>themes/default/grass_location.png</file>
         <file>themes/default/grass_mapset.png</file>
+        <file>themes/default/histogram.png</file>
         <file>themes/default/join_bevel.png</file>
         <file>themes/default/join_miter.png</file>
         <file>themes/default/join_round.png</file>
         <file>themes/default/join_style.svg</file>
+        <file>themes/default/locked.png</file>
+        <file>themes/default/mAction.png</file>
         <file>themes/default/mActionAdd.png</file>
         <file>themes/default/mActionAddAllToOverview.png</file>
         <file>themes/default/mActionAddArrow.png</file>
         <file>themes/default/mActionAddBasicShape.png</file>
+        <file>themes/default/mActionAddGPSLayer.png</file>
+        <file>themes/default/mActionAddHtml.png</file>
         <file>themes/default/mActionAddImage.png</file>
-        <file>themes/default/mActionAddPart.png</file>
         <file>themes/default/mActionAddLayer.png</file>
         <file>themes/default/mActionAddLegend.png</file>
         <file>themes/default/mActionAddMap.png</file>
+        <file>themes/default/mActionAddMssqlLayer.png</file>
         <file>themes/default/mActionAddNonDbLayer.png</file>
         <file>themes/default/mActionAddOgrLayer.png</file>
+        <file>themes/default/mActionAddOracleLayer.png</file>
+        <file>themes/default/mActionAddPart.png</file>
         <file>themes/default/mActionAddRasterLayer.png</file>
         <file>themes/default/mActionAddRing.png</file>
         <file>themes/default/mActionAddSpatiaLiteLayer.png</file>
         <file>themes/default/mActionAddVertex.png</file>
         <file>themes/default/mActionAddWcsLayer.png</file>
+        <file>themes/default/mActionAddWfsLayer.png</file>
         <file>themes/default/mActionAddWmsLayer.png</file>
         <file>themes/default/mActionAlignBottom.png</file>
         <file>themes/default/mActionAlignHCenter.png</file>
@@ -46,9 +144,9 @@
         <file>themes/default/mActionAllEdits.svg</file>
         <file>themes/default/mActionAnnotation.png</file>
         <file>themes/default/mActionArrowDown.png</file>
-        <file>themes/default/mActionArrowUp.png</file>
         <file>themes/default/mActionArrowLeft.png</file>
         <file>themes/default/mActionArrowRight.png</file>
+        <file>themes/default/mActionArrowUp.png</file>
         <file>themes/default/mActionCalculateField.png</file>
         <file>themes/default/mActionCancelAllEdits.svg</file>
         <file>themes/default/mActionCancelEdits.svg</file>
@@ -62,6 +160,8 @@
         <file>themes/default/mActionContextHelp.png</file>
         <file>themes/default/mActionCopySelected.png</file>
         <file>themes/default/mActionCustomProjection.png</file>
+        <file>themes/default/mActionDecreaseBrightness.svg</file>
+        <file>themes/default/mActionDecreaseContrast.svg</file>
         <file>themes/default/mActionDeleteAttribute.png</file>
         <file>themes/default/mActionDeletePart.png</file>
         <file>themes/default/mActionDeleteRing.png</file>
@@ -73,17 +173,18 @@
         <file>themes/default/mActionEditCopy.png</file>
         <file>themes/default/mActionEditCut.png</file>
         <file>themes/default/mActionEditPaste.png</file>
-        <file>themes/default/mActionExpandTree.png</file>
         <file>themes/default/mActionExpandNewTree.png</file>
+        <file>themes/default/mActionExpandTree.png</file>
         <file>themes/default/mActionExportMapServer.png</file>
         <file>themes/default/mActionFileExit.png</file>
         <file>themes/default/mActionFileNew.png</file>
         <file>themes/default/mActionFileOpen.png</file>
         <file>themes/default/mActionFilePrint.png</file>
-        <file>themes/default/mActionFileSaveAs.png</file>
         <file>themes/default/mActionFileSave.png</file>
+        <file>themes/default/mActionFileSaveAs.png</file>
         <file>themes/default/mActionFileSmall.png</file>
         <file>themes/default/mActionFilter.png</file>
+        <file>themes/default/mActionFilter.svg</file>
         <file>themes/default/mActionFolder.png</file>
         <file>themes/default/mActionFormAnnotation.png</file>
         <file>themes/default/mActionFromSelectedFeature.png</file>
@@ -96,17 +197,19 @@
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.png</file>
         <file>themes/default/mActionIdentify.png</file>
+        <file>themes/default/mActionIncreaseBrightness.svg</file>
+        <file>themes/default/mActionIncreaseContrast.svg</file>
         <file>themes/default/mActionInOverview.png</file>
         <file>themes/default/mActionInvertSelection.png</file>
-        <file>themes/default/mActionLabeling.png</file>
         <file>themes/default/mActionLabel.png</file>
+        <file>themes/default/mActionLabeling.png</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.png</file>
         <file>themes/default/mActionLocalHistogramStretch.png</file>
         <file>themes/default/mActionLowerItems.png</file>
         <file>themes/default/mActionMapTips.png</file>
+        <file>themes/default/mActionMeasure.png</file>
         <file>themes/default/mActionMeasureAngle.png</file>
         <file>themes/default/mActionMeasureArea.png</file>
-        <file>themes/default/mActionMeasure.png</file>
         <file>themes/default/mActionMergeFeatureAttributes.png</file>
         <file>themes/default/mActionMergeFeatures.png</file>
         <file>themes/default/mActionMoveFeature.png</file>
@@ -128,17 +231,15 @@
         <file>themes/default/mActionPanToSelected.png</file>
         <file>themes/default/mActionPanToSelected.svg</file>
         <file>themes/default/mActionPinLabels.svg</file>
-        <file>themes/default/mActionShowRasterCalculator.png</file>
-        <file>themes/default/mAction.png</file>
         <file>themes/default/mActionProjectProperties.png</file>
         <file>themes/default/mActionPropertyItem.png</file>
         <file>themes/default/mActionQgisHomePage.png</file>
         <file>themes/default/mActionRaiseItems.png</file>
-        <file>themes/default/mActionRefresh.png</file>
         <file>themes/default/mActionRedo.png</file>
+        <file>themes/default/mActionRefresh.png</file>
+        <file>themes/default/mActionRemove.png</file>
         <file>themes/default/mActionRemoveAllFromOverview.png</file>
         <file>themes/default/mActionRemoveLayer.png</file>
-        <file>themes/default/mActionRemove.png</file>
         <file>themes/default/mActionRemoveSelectedFeature.png</file>
         <file>themes/default/mActionReshape.png</file>
         <file>themes/default/mActionRollbackAllEdits.svg</file>
@@ -147,27 +248,28 @@
         <file>themes/default/mActionRotateLabel.png</file>
         <file>themes/default/mActionRotateLabel.svg</file>
         <file>themes/default/mActionRotatePointSymbols.png</file>
+        <file>themes/default/mActionSaveAllEdits.svg</file>
         <file>themes/default/mActionSaveAsPDF.png</file>
         <file>themes/default/mActionSaveAsSVG.png</file>
-        <file>themes/default/mActionSaveAllEdits.svg</file>
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.png</file>
         <file>themes/default/mActionScaleBar.png</file>
+        <file>themes/default/mActionSelect.png</file>
         <file>themes/default/mActionSelectedToTop.png</file>
         <file>themes/default/mActionSelectFreehand.png</file>
         <file>themes/default/mActionSelectPan.png</file>
-        <file>themes/default/mActionSelect.png</file>
         <file>themes/default/mActionSelectPolygon.png</file>
         <file>themes/default/mActionSelectPolygon.svg</file>
         <file>themes/default/mActionSelectRadius.png</file>
         <file>themes/default/mActionSelectRectangle.png</file>
-        <file>themes/default/mActionSignPlus.png</file>
-        <file>themes/default/mActionSignMinus.png</file>
         <file>themes/default/mActionShowAllLayers.png</file>
         <file>themes/default/mActionShowBookmarks.png</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.png</file>
+        <file>themes/default/mActionShowRasterCalculator.png</file>
+        <file>themes/default/mActionSignMinus.png</file>
+        <file>themes/default/mActionSignPlus.png</file>
         <file>themes/default/mActionSimplify.png</file>
         <file>themes/default/mActionSplitFeatures.png</file>
         <file>themes/default/mActionSplitFeatures.svg</file>
@@ -175,6 +277,8 @@
         <file>themes/default/mActionTextAnnotation.png</file>
         <file>themes/default/mActionToggleEditing.png</file>
         <file>themes/default/mActionToggleEditing.svg</file>
+        <file>themes/default/mActionTouch.png</file>
+        <file>themes/default/mActionTouch2.png</file>
         <file>themes/default/mActionUndo.png</file>
         <file>themes/default/mActionUngroupItems.png</file>
         <file>themes/default/mActionUnselectAttributes.png</file>
@@ -186,20 +290,20 @@
         <file>themes/default/mActionZoomOut.png</file>
         <file>themes/default/mActionZoomToLayer.png</file>
         <file>themes/default/mActionZoomToSelected.png</file>
-        <file>themes/default/mActionIncreaseBrightness.svg</file>
-        <file>themes/default/mActionDecreaseBrightness.svg</file>
-        <file>themes/default/mActionIncreaseContrast.svg</file>
-        <file>themes/default/mActionDecreaseContrast.svg</file>
+        <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
         <file>themes/default/mIconConnect.png</file>
-        <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconCritical.png</file>
         <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>
+        <file>themes/default/mIconDeselected.svg</file>
         <file>themes/default/mIconEditable.png</file>
         <file>themes/default/mIconEditableEdits.png</file>
         <file>themes/default/mIconExpand.png</file>
+        <file>themes/default/mIconExpressionFilter.svg</file>
+        <file>themes/default/mIconExpressionPreview.svg</file>
+        <file>themes/default/mIconExpressionSelect.svg</file>
         <file>themes/default/mIconFavourites.png</file>
         <file>themes/default/mIconFirst.png</file>
         <file>themes/default/mIconGeometryLayer.png</file>
@@ -208,11 +312,11 @@
         <file>themes/default/mIconLayer.png</file>
         <file>themes/default/mIconLineLayer.png</file>
         <file>themes/default/mIconLock.png</file>
-        <file>themes/default/mIconNew.png</file>
         <file>themes/default/mIconMssql.png</file>
-        <file>themes/default/mIconOracle.png</file>
+        <file>themes/default/mIconNew.png</file>
         <file>themes/default/mIconNext.png</file>
         <file>themes/default/mIconNoPyramid.png</file>
+        <file>themes/default/mIconOracle.png</file>
         <file>themes/default/mIconOws.png</file>
         <file>themes/default/mIconPointLayer.png</file>
         <file>themes/default/mIconPolygonLayer.png</file>
@@ -223,47 +327,70 @@
         <file>themes/default/mIconProjectionProblem.png</file>
         <file>themes/default/mIconProperties.png</file>
         <file>themes/default/mIconPyramid.png</file>
+        <file>themes/default/mIconRaster.png</file>
+        <file>themes/default/mIconRenderingDisabled.png</file>
+        <file>themes/default/mIconRenderingEnabled.png</file>
+        <file>themes/default/mIconSelectAdd.svg</file>
+        <file>themes/default/mIconSelected.svg</file>
+        <file>themes/default/mIconSelectIntersect.svg</file>
+        <file>themes/default/mIconSelectRemove.svg</file>
         <file>themes/default/mIconSpatialite.png</file>
         <file>themes/default/mIconStopRendering.png</file>
-        <file>themes/default/mIconRaster.png</file>
-        <file>themes/default/mIconRenderingEnabled.png</file>
-        <file>themes/default/mIconRenderingDisabled.png</file>
         <file>themes/default/mIconSymbology.png</file>
         <file>themes/default/mIconTableLayer.png</file>
-        <file>themes/default/mIconTimerPause.png</file>
         <file>themes/default/mIconTimerContinue.png</file>
+        <file>themes/default/mIconTimerPause.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconVectorLayer.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
+        <file>themes/default/mIconWarn.png</file>
         <file>themes/default/mIconWcs.png</file>
         <file>themes/default/mIconWfs.png</file>
         <file>themes/default/mIconWms.png</file>
         <file>themes/default/mIconWmsLayer.png</file>
-        <file>themes/default/mIconWarn.png</file>
-        <file>themes/default/mIconZoom.png</file>
         <file>themes/default/mIconZip.png</file>
+        <file>themes/default/mIconZoom.png</file>
         <file>themes/default/mMapserverExport.png</file>
+        <file>themes/default/pie-chart.png</file>
         <file>themes/default/plugin.png</file>
+        <file>themes/default/plugins/coordinate_capture/coordinate_capture.png</file>
+        <file>themes/default/plugins/copyright_label.png</file>
+        <file>themes/default/plugins/delimited_text.png</file>
+        <file>themes/default/plugins/dxf2shp_converter.png</file>
+        <file>themes/default/plugins/gps_importer.png</file>
+        <file>themes/default/plugins/gps_importer/create_gpx.png</file>
+        <file>themes/default/plugins/gps_importer/import_gpx.png</file>
+        <file>themes/default/plugins/interpolation.png</file>
+        <file>themes/default/plugins/mapserver_export.png</file>
+        <file>themes/default/plugins/mGeorefRun.png</file>
+        <file>themes/default/plugins/north_arrow.png</file>
+        <file>themes/default/plugins/ogr_converter.png</file>
+        <file>themes/default/plugins/quick_print.png</file>
+        <file>themes/default/plugins/scale_bar.png</file>
+        <file>themes/default/plugins/spit.png</file>
         <file>themes/default/propertyicons/action.png</file>
         <file>themes/default/propertyicons/attributes.png</file>
         <file>themes/default/propertyicons/colormap.png</file>
         <file>themes/default/propertyicons/CRS.png</file>
         <file>themes/default/propertyicons/diagram.png</file>
         <file>themes/default/propertyicons/digitising.png</file>
+        <file>themes/default/propertyicons/display.svg</file>
+        <file>themes/default/propertyicons/gdal.png</file>
         <file>themes/default/propertyicons/general.png</file>
         <file>themes/default/propertyicons/histogram.png</file>
         <file>themes/default/propertyicons/join.png</file>
         <file>themes/default/propertyicons/labels.png</file>
+        <file>themes/default/propertyicons/labels.svg</file>
         <file>themes/default/propertyicons/locale.png</file>
         <file>themes/default/propertyicons/map_tools.png</file>
         <file>themes/default/propertyicons/metadata.png</file>
+        <file>themes/default/propertyicons/metadata.svg</file>
         <file>themes/default/propertyicons/network_and_proxy.png</file>
         <file>themes/default/propertyicons/overlay.png</file>
         <file>themes/default/propertyicons/pyramids.png</file>
         <file>themes/default/propertyicons/rendering.png</file>
         <file>themes/default/propertyicons/symbology.png</file>
         <file>themes/default/propertyicons/transparency.png</file>
-        <file>themes/default/propertyicons/gdal.png</file>
         <file>themes/default/qgis.xpm</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
@@ -277,276 +404,13 @@
         <file>themes/default/symbologyEdit.png</file>
         <file>themes/default/symbologyRemove.png</file>
         <file>themes/default/symbologyUp.png</file>
+        <file>themes/default/text.png</file>
         <file>themes/default/tracking.png</file>
         <file>themes/default/transformed.png</file>
         <file>themes/default/transp-background_8x8.png</file>
-        <file>themes/default/user.png</file>
-        <file>themes/default/mActionAddHtml.png</file>
-        <file>themes/gis/mActionAddArrow.png</file>
-        <file>themes/gis/mActionAddBasicShape.png</file>
-        <file>themes/gis/mActionAddGPSLayer.png</file>
-        <file>themes/gis/mActionAddHtml.png</file>
-        <file>themes/gis/mActionAddImage.png</file>
-        <file>themes/gis/mActionAddPart.png</file>
-        <file>themes/gis/mActionAddLayer.png</file>
-        <file>themes/gis/mActionAddLegend.png</file>
-        <file>themes/gis/mActionAddMap.png</file>
-        <file>themes/gis/mActionAddOgrLayer.png</file>
-        <file>themes/gis/mActionAddRasterLayer.png</file>
-        <file>themes/gis/mActionAddRing.png</file>
-        <file>themes/gis/mActionAddSpatiaLiteLayer.png</file>
-        <file>themes/gis/mActionAddVertex.png</file>
-        <file>themes/gis/mActionAddWcsLayer.png</file>
-        <file>themes/gis/mActionAddWfsLayer.png</file>
-        <file>themes/gis/mActionAddWmsLayer.png</file>
-        <file>themes/gis/mActionAlignBottom.png</file>
-        <file>themes/gis/mActionAlignHCenter.png</file>
-        <file>themes/gis/mActionAlignLeft.png</file>
-        <file>themes/gis/mActionAlignRight.png</file>
-        <file>themes/gis/mActionAlignTop.png</file>
-        <file>themes/gis/mActionAlignVCenter.png</file>
-        <file>themes/gis/mActionAllEdits.svg</file>
-        <file>themes/gis/mActionAnnotation.png</file>
-        <file>themes/gis/mActionCalculateField.png</file>
-        <file>themes/gis/mActionCancelAllEdits.svg</file>
-        <file>themes/gis/mActionCancelEdits.svg</file>
-        <file>themes/gis/mActionCaptureLine.png</file>
-        <file>themes/gis/mActionCapturePoint.png</file>
-        <file>themes/gis/mActionCapturePolygon.png</file>
-        <file>themes/gis/mActionChangeLabelProperties.png</file>
-        <file>themes/gis/mActionComposerManager.png</file>
-        <file>themes/gis/mActionCopySelected.png</file>
-        <file>themes/gis/mActionDeleteAttribute.png</file>
-        <file>themes/gis/mActionDeletePart.png</file>
-        <file>themes/gis/mActionDeleteRing.png</file>
-        <file>themes/gis/mActionDeleteSelected.png</file>
-        <file>themes/gis/mActionDeleteVertex.png</file>
-        <file>themes/gis/mActionDeselectAll.png</file>
-        <file>themes/gis/mActionDraw.png</file>
-        <file>themes/gis/mActionDuplicateComposer.png</file>
-        <file>themes/gis/mActionEditCopy.png</file>
-        <file>themes/gis/mActionEditCut.png</file>
-        <file>themes/gis/mActionEditPaste.png</file>
-        <file>themes/gis/mActionFileNew.png</file>
-        <file>themes/gis/mActionFileOpen.png</file>
-        <file>themes/gis/mActionFilePrint.png</file>
-        <file>themes/gis/mActionFileSaveAs.png</file>
-        <file>themes/gis/mActionFileSave.png</file>
-        <file>themes/gis/mActionFilter.svg</file>
-        <file>themes/gis/mActionFolder.png</file>
-        <file>themes/gis/mActionFormAnnotation.png</file>
-        <file>themes/gis/mActionGroupItems.png</file>
-        <file>themes/gis/mActionHelpContents.png</file>
-        <file>themes/gis/mActionHideAllLayers.png</file>
-        <file>themes/gis/mActionIdentify.png</file>
-        <file>themes/gis/mActionInOverview.png</file>
-        <file>themes/gis/mActionInvertSelection.png</file>
-        <file>themes/gis/mActionLabeling.png</file>
-        <file>themes/gis/mActionLabel.png</file>
-        <file>themes/gis/mActionLowerItems.png</file>
-        <file>themes/gis/mActionMapTips.png</file>
-        <file>themes/gis/mActionMeasureAngle.png</file>
-        <file>themes/gis/mActionMeasureArea.png</file>
-        <file>themes/gis/mActionMeasure.png</file>
-        <file>themes/gis/mActionMergeFeatureAttributes.png</file>
-        <file>themes/gis/mActionMergeFeatures.png</file>
-        <file>themes/gis/mActionMoveFeature.png</file>
-        <file>themes/gis/mActionMoveItemContent.png</file>
-        <file>themes/gis/mActionMoveItemsToBottom.png</file>
-        <file>themes/gis/mActionMoveItemsToTop.png</file>
-        <file>themes/gis/mActionMoveLabel.png</file>
-        <file>themes/gis/mActionMoveVertex.png</file>
-        <file>themes/gis/mActionNewAttribute.png</file>
-        <file>themes/gis/mActionNewBookmark.png</file>
-        <file>themes/gis/mActionNewComposer.png</file>
-        <file>themes/gis/mActionNewVectorLayer.png</file>
-        <file>themes/gis/mActionNodeTool.png</file>
-        <file>themes/gis/mActionOffsetCurve.png</file>
-        <file>themes/gis/mActionOpenTable.png</file>
-        <file>themes/gis/mActionPan.png</file>
-        <file>themes/gis/mActionPanToSelected.png</file>
-        <file>themes/gis/mActionPanToSelected.svg</file>
-        <file>themes/gis/mActionPinLabels.svg</file>
-        <file>themes/gis/mActionShowRasterCalculator.png</file>
-        <file>themes/gis/mActionRaiseItems.png</file>
-        <file>themes/gis/mActionRedo.png</file>
-        <file>themes/gis/mActionRemoveLayer.png</file>
-        <file>themes/gis/mActionReshape.png</file>
-        <file>themes/gis/mActionRollbackAllEdits.svg</file>
-        <file>themes/gis/mActionRollbackEdits.svg</file>
-        <file>themes/gis/mActionRotateFeature.png</file>
-        <file>themes/gis/mActionRotateLabel.png</file>
-        <file>themes/gis/mActionRotateLabel.svg</file>
-        <file>themes/gis/mActionSaveAsPDF.png</file>
-        <file>themes/gis/mActionSaveAsSVG.png</file>
-        <file>themes/gis/mActionSaveAllEdits.svg</file>
-        <file>themes/gis/mActionSaveEdits.svg</file>
-        <file>themes/gis/mActionSaveMapAsImage.png</file>
-        <file>themes/gis/mActionScaleBar.png</file>
-        <file>themes/gis/mActionSelectedToTop.png</file>
-        <file>themes/gis/mActionSelectFreehand.png</file>
-        <file>themes/gis/mActionSelectPan.png</file>
-        <file>themes/gis/mActionSelect.png</file>
-        <file>themes/gis/mActionSelectPolygon.png</file>
-        <file>themes/gis/mActionSelectPolygon.svg</file>
-        <file>themes/gis/mActionSelectRadius.png</file>
-        <file>themes/gis/mActionSelectRectangle.png</file>
-        <file>themes/gis/mActionShowAllLayers.png</file>
-        <file>themes/gis/mActionShowBookmarks.png</file>
-        <file>themes/gis/mActionShowHideLabels.svg</file>
-        <file>themes/gis/mActionShowPinnedLabels.svg</file>
-        <file>themes/gis/mActionSimplify.png</file>
-        <file>themes/gis/mActionSplitFeatures.png</file>
-        <file>themes/gis/mActionSplitFeatures.svg</file>
-        <file>themes/gis/mActionTextAnnotation.png</file>
-        <file>themes/gis/mActionToggleEditing.png</file>
-        <file>themes/gis/mActionToggleEditing.svg</file>
-        <file>themes/gis/mActionUndo.png</file>
-        <file>themes/gis/mActionUngroupItems.png</file>
-        <file>themes/gis/mActionUnselectAttributes.png</file>
-        <file>themes/gis/mActionZoomActual.png</file>
-        <file>themes/gis/mActionZoomFullExtent.png</file>
-        <file>themes/gis/mActionZoomIn.png</file>
-        <file>themes/gis/mActionZoomLast.png</file>
-        <file>themes/gis/mActionZoomNext.png</file>
-        <file>themes/gis/mActionZoomOut.png</file>
-        <file>themes/gis/mActionZoomToLayer.png</file>
-        <file>themes/gis/mActionZoomToSelected.png</file>
-        <file>themes/gis/mActionIncreaseBrightness.svg</file>
-        <file>themes/gis/mActionDecreaseBrightness.svg</file>
-        <file>themes/gis/mActionIncreaseContrast.svg</file>
-        <file>themes/gis/mActionDecreaseContrast.svg</file>
-        <file>themes/gis/mIconClose.png</file>
-        <file>themes/gis/mIconEditable.png</file>
-        <file>themes/gis/mIconEditableEdits.png</file>
-        <file>themes/gis/mIconLineLayer.png</file>
-        <file>themes/gis/mIconPointLayer.png</file>
-        <file>themes/gis/mIconPolygonLayer.png</file>
-        <file>themes/gis/mIconTableLayer.png</file>
-        <file>themes/gis/plugins/coordinate_capture/coordinate_capture.png</file>
-        <file>themes/gis/plugins/copyright_label.png</file>
-        <file>themes/gis/plugins/delimited_text.png</file>
-        <file>themes/gis/plugins/dxf2shp_converter.png</file>
-        <file>themes/gis/plugins/gps_importer/create_gpx.png</file>
-        <file>themes/gis/plugins/gps_importer/import_gpx.png</file>
-        <file>themes/gis/plugins/gps_importer.png</file>
-        <file>themes/gis/plugins/interpolation.png</file>
-        <file>themes/gis/plugins/mapserver_export.png</file>
-        <file>themes/gis/plugins/mGeorefRun.png</file>
-        <file>themes/gis/plugins/north_arrow.png</file>
-        <file>themes/gis/plugins/ogr_converter.png</file>
-        <file>themes/gis/plugins/quick_print.png</file>
-        <file>themes/gis/plugins/scale_bar.png</file>
-        <file>themes/gis/plugins/spit.png</file>
-        <file>splash/splash.png</file>
-        <file>north_arrows/default.png</file>
-        <file>themes/default/locked.png</file>
         <file>themes/default/unlocked.png</file>
-        <file>themes/default/plugins/copyright_label.png</file>
-        <file>themes/default/plugins/north_arrow.png</file>
-        <file>themes/default/plugins/scale_bar.png</file>
-        <file>themes/default/mActionAddWfsLayer.png</file>
-        <file>themes/gis/mIconOws.png</file>
-        <file>themes/gis/mIconVectorLayer.png</file>
-        <file>themes/gis/mIconWcs.png</file>
-        <file>themes/gis/mIconWms.png</file>
-        <file>themes/gis/mIconWfs.png</file>
-        <file>themes/gis/mIconWarn.png</file>
-        <file>themes/gis/mIconSpatialite.png</file>
-        <file>themes/gis/mIconRaster.png</file>
-        <file>themes/gis/mIconPostgis.png</file>
-        <file>themes/gis/mIconMssql.png</file>
-        <file>themes/gis/mIconOracle.png</file>
-        <file>themes/gis/mIconConnect.png</file>
-        <file>themes/gis/mIconDbSchema.png</file>
-        <file>themes/gis/mActionTouch.png</file>
-        <file>themes/default/mActionAddMssqlLayer.png</file>
-        <file>themes/default/mActionAddOracleLayer.png</file>
-        <file>themes/default/mActionTouch.png</file>
-        <file>themes/default/mActionTouch2.png</file>
-        <file>themes/classic/mActionTouch.png</file>
-        <file>flags/af.png</file>
-        <file>flags/ar.png</file>
-        <file>flags/bg.png</file>
-        <file>flags/ca_ES.png</file>
-        <file>flags/cs_CZ.png</file>
-        <file>flags/de.png</file>
-        <file>flags/el_GR.png</file>
-        <file>flags/es.png</file>
-        <file>flags/fa.png</file>
-        <file>flags/fi.png</file>
-        <file>flags/fr.png</file>
-        <file>flags/gl_ES.png</file>
-        <file>flags/he.png</file>
-        <file>flags/hr_HR.png</file>
-        <file>flags/hu.png</file>
-        <file>flags/id.png</file>
-        <file>flags/is.png</file>
-        <file>flags/it.png</file>
-        <file>flags/ja.png</file>
-        <file>flags/ka_GE.png</file>
-        <file>flags/ko_KR.png</file>
-        <file>flags/lo.png</file>
-        <file>flags/lt.png</file>
-        <file>flags/lv.png</file>
-        <file>flags/mn.png</file>
-        <file>flags/nl.png</file>
-        <file>flags/no.png</file>
-        <file>flags/pl_PL.png</file>
-        <file>flags/pt_BR.png</file>
-        <file>flags/pt_PT.png</file>
-        <file>flags/ro.png</file>
-        <file>flags/ru.png</file>
-        <file>flags/sk.png</file>
-        <file>flags/sl_SI.png</file>
-        <file>flags/sq_AL.png</file>
-        <file>flags/sv.png</file>
-        <file>flags/ta.png</file>
-        <file>flags/th.png</file>
-        <file>flags/tr.png</file>
-        <file>flags/uk.png</file>
-        <file>flags/vi.png</file>
-        <file>flags/xh.png</file>
-        <file>flags/zh_CN.png</file>
-        <file>flags/zh_TW.png</file>
-        <file>flags/en_US.png</file>
-        <file>flags/da_DK.png</file>
-        <file>flags/et_EE.png</file>
-        <file>themes/default/text.png</file>
-        <file>themes/default/histogram.png</file>
-        <file>themes/default/pie-chart.png</file>
-        <file>themes/default/console/iconClassConsole.png</file>
-        <file>themes/default/console/iconSaveConsole.png</file>
-        <file>themes/default/console/iconHelpConsole.png</file>
-        <file>themes/default/console/iconSettingsConsole.png</file>
-        <file>themes/default/console/iconOpenConsole.png</file>
-        <file>themes/default/console/iconClearConsole.png</file>
-        <file>themes/default/console/imgHelpDialog.png</file>
-        <file>themes/default/console/iconSextanteConsole.png</file>
-        <file>themes/default/console/iconScriptConsole.png</file>
-        <file>themes/default/console/iconIfaceConsole.png</file>
-        <file>themes/default/console/iconQtCoreConsole.png</file>
-        <file>themes/default/console/iconQtGuiConsole.png</file>
-        <file>themes/default/console/iconRunConsole.png</file>
-        <file>themes/default/console/iconAboutConsole.png</file>
-        <file>themes/default/console/iconCodepadConsole.png</file>
-        <file>themes/default/console/imgHelpConsole.png</file>
-        <file>themes/default/console/imgHelpMenu.png</file>
-        <file>themes/default/console/iconHideToolConsole.png</file>
-        <file>flags/sr_Cyrl.png</file>
-        <file>flags/sr_Latn.png</file>
-        <file>flags/sw.png</file>
-        <file>flags/eu_ES.png</file>
-        <file>flags/ml_IN.png</file>
-        <file>flags/km.png</file>
-        <file>themes/gis/mIconExpressionFilter.svg</file>
-        <file>themes/gis/mIconExpressionPreview.svg</file>
-        <file>themes/gis/mIconExpressionSelect.svg</file>
-        <file>themes/gis/mIconSelectAdd.svg</file>
-        <file>themes/gis/mIconSelectIntersect.svg</file>
-        <file>themes/gis/mIconSelectRemove.svg</file>
-        <file>themes/gis/mIconSelected.svg</file>
-        <file>themes/gis/mIconDeselected.svg</file>
+        <file>themes/default/user.png</file>
+        <file>flags/bs_BA.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

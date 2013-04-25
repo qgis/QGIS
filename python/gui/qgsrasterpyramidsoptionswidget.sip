@@ -15,7 +15,7 @@ class QgsRasterPyramidsOptionsWidget: QWidget
     QStringList configOptions() const;
     QgsRasterFormatSaveOptionsWidget* createOptionsWidget() /Factory/;
     const QList<int> overviewList() const;
-    QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const;
+    QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
     QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer* rasterLayer );
     void setRasterFileName( const QString& file );

@@ -1156,7 +1156,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void createDecorations();
 
     /**Do histogram stretch for singleband gray / multiband color rasters*/
-    void histogramStretch( bool visibleAreaOnly = false, QgsRasterLayer::ContrastEnhancementLimits theLimits = QgsRasterLayer::ContrastEnhancementMinMax );
+    void histogramStretch( bool visibleAreaOnly = false, QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax );
 
     /**Apply raster brightness
      * @note Added in QGIS 2.0 */

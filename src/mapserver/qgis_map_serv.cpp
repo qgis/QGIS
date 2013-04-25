@@ -109,6 +109,19 @@ void printRequestInfos()
   {
     QgsDebugMsg( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ) );
   }
+  if ( getenv( "HTTP_PROXY" ) != NULL )
+  {
+    QgsDebugMsg( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ) );
+  }
+  if ( getenv( "HTTPS_PROXY" ) != NULL )
+  {
+    QgsDebugMsg( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ) );
+  }
+  if ( getenv( "NO_PROXY" ) != NULL )
+  {
+    QgsDebugMsg( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ) );
+  }
+
 #endif //QGSMSDEBUG
 }
 
@@ -316,7 +329,7 @@ int main( int argc, char * argv[] )
         continue;
       }
 
-      if ( request == "GetCapabilities" )
+      if ( request.toLower() == QString( "GetCapabilities" ).toLower() )
       {
         QDomDocument capabilitiesDocument;
         try
@@ -336,7 +349,7 @@ int main( int argc, char * argv[] )
         delete theServer;
         continue;
       }
-      else if ( request == "DescribeFeatureType" )
+      else if ( request.toLower() == QString( "DescribeFeatureType" ).toLower() )
       {
         QDomDocument describeDocument;
         try
@@ -356,7 +369,7 @@ int main( int argc, char * argv[] )
         delete theServer;
         continue;
       }
-      else if ( request == "GetFeature" )
+      else if ( request.toLower() == QString( "GetFeature" ).toLower() )
       {
         //output format for GetFeature
         QString outputFormat = parameterMap.value( "OUTPUTFORMAT" );
@@ -383,7 +396,7 @@ int main( int argc, char * argv[] )
           continue;
         }
       }
-      else if ( request == "Transaction" )
+      else if ( request.toLower() == QString( "Transaction" ).toLower() )
       {
         QDomDocument transactionDocument;
         try
@@ -433,13 +446,13 @@ int main( int argc, char * argv[] )
     }
 
     QString version = parameterMap.value( "VERSION", "1.3.0" );
-    bool getProjectSettings = ( request == "GetProjectSettings" );
+    bool getProjectSettings = ( request.toLower() == QString( "GetProjectSettings" ).toLower() );
     if ( getProjectSettings )
     {
       version = "1.3.0"; //getProjectSettings extends WMS 1.3.0 capabilities
     }
 
-    if ( request == "GetCapabilities" || getProjectSettings )
+    if ( request.toLower() == QString( "GetCapabilities" ).toLower() || getProjectSettings )
     {
       const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
       if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
@@ -473,7 +486,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request == "GetMap" )
+    else if ( request.toLower() == QString( "GetMap" ).toLower() )
     {
       QImage* result = 0;
       try
@@ -505,7 +518,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request == "GetFeatureInfo" )
+    else if ( request.toLower() == QString( "GetFeatureInfo" ).toLower() )
     {
       QDomDocument featureInfoDoc;
       try
@@ -531,7 +544,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request == "GetStyles" || request == "GetStyle" ) // GetStyle for compatibility with earlier QGIS versions
+    else if ( request.toLower() == QString( "GetStyles" ).toLower() || request.toLower() == QString( "GetStyle" ).toLower() ) // GetStyle for compatibility with earlier QGIS versions
     {
       try
       {
@@ -547,7 +560,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request == "GetLegendGraphic" || request == "GetLegendGraphics" ) // GetLegendGraphics for compatibility with earlier QGIS versions
+    else if ( request.toLower() == QString( "GetLegendGraphic" ).toLower() || request.toLower() == QString( "GetLegendGraphics" ).toLower() ) // GetLegendGraphics for compatibility with earlier QGIS versions
     {
       QImage* result = 0;
       try
@@ -576,7 +589,7 @@ int main( int argc, char * argv[] )
       continue;
 
     }
-    else if ( request == "GetPrint" )
+    else if ( request.toLower() == QString( "GetPrint" ).toLower() )
     {
       QByteArray* printOutput = 0;
       try

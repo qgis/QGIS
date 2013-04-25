@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ES Sky 29" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(247,249,248)" stop-opacity="1.0000"/>
+        <stop offset="14.99%" stop-color="rgb(196,224,232)" stop-opacity="1.0000"/>
+        <stop offset="28.00%" stop-color="rgb(161,207,222)" stop-opacity="1.0000"/>
+        <stop offset="60.01%" stop-color="rgb(136,194,214)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(92,172,199)" stop-opacity="1.0000"/>
+        <stop offset="99.00%" stop-color="rgb(68,135,154)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(68,135,154)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ES Sky 29)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:39:30 2012"/>
+  </metadata>
+</svg>

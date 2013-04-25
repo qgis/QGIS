@@ -289,7 +289,7 @@ QString QgsGdalProvider::metadata()
   // end my added code
 
   myMetadata += "<p class=\"glossy\">";
-  myMetadata += tr( "Dimensions:" );
+  myMetadata += tr( "Dimensions" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
@@ -326,7 +326,7 @@ QString QgsGdalProvider::metadata()
   else
   {
     myMetadata += "<p class=\"glossy\">";
-    myMetadata += tr( "Origin:" );
+    myMetadata += tr( "Origin" );
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[0] );
@@ -335,7 +335,7 @@ QString QgsGdalProvider::metadata()
     myMetadata += "</p>\n";
 
     myMetadata += "<p class=\"glossy\">";
-    myMetadata += tr( "Pixel Size:" );
+    myMetadata += tr( "Pixel Size" );
     myMetadata += "</p>\n";
     myMetadata += "<p>";
     myMetadata += QString::number( mGeoTransform[1] );
@@ -815,6 +815,7 @@ double  QgsGdalProvider::noDataValue() const
 }
 #endif
 
+#if 0
 void QgsGdalProvider::computeMinMax( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1 mMinMaxComputed = %2" ).arg( theBandNo ).arg( mMinMaxComputed[theBandNo-1] ) );
@@ -834,27 +835,7 @@ void QgsGdalProvider::computeMinMax( int theBandNo ) const
   mMinimum[theBandNo-1] = adfMinMax[0];
   mMaximum[theBandNo-1] = adfMinMax[1];
 }
-
-double  QgsGdalProvider::minimumValue( int theBandNo ) const
-{
-  QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
-  if ( !mMinMaxComputed[theBandNo-1] )
-  {
-    computeMinMax( theBandNo );
-    mMinMaxComputed[theBandNo-1] = true;
-  }
-  return  mMinimum[theBandNo-1];
-}
-double  QgsGdalProvider::maximumValue( int theBandNo ) const
-{
-  QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
-  if ( !mMinMaxComputed[theBandNo-1] )
-  {
-    computeMinMax( theBandNo );
-    mMinMaxComputed[theBandNo-1] = true;
-  }
-  return  mMaximum[theBandNo-1];
-}
+#endif
 
 /**
  * @param theBandNumber the number of the band for which you want a color table
@@ -894,13 +875,13 @@ int QgsGdalProvider::yBlockSize() const
 int QgsGdalProvider::xSize() const { return mWidth; }
 int QgsGdalProvider::ySize() const { return mHeight; }
 
-QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( thePoint.x(), 0, 'g', 10 ).arg( thePoint.y(), 0, 'g', 10 ) );
 
   QMap<int, QVariant> results;
 
-  if ( theFormat != IdentifyFormatValue )
+  if ( theFormat != QgsRaster::IdentifyFormatValue )
   {
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
   }
@@ -912,7 +893,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Id
     {
       results.insert( bandNo, QVariant() ); // null QVariant represents no data
     }
-    return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
+    return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
   }
 
   QgsRectangle myExtent = theExtent;
@@ -986,19 +967,21 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPoint & thePoint, Id
     {
       results.insert( i, QVariant() ); // null QVariant represents no data
     }
-    results.insert( i, value );
+    else
+    {
+      results.insert( i, value );
+    }
+    delete myBlock;
   }
-  return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
+  return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
 
 int QgsGdalProvider::capabilities() const
 {
   int capability = QgsRasterDataProvider::Identify
                    | QgsRasterDataProvider::IdentifyValue
-                   | QgsRasterDataProvider::ExactResolution
-                   | QgsRasterDataProvider::EstimatedMinimumMaximum
+                   | QgsRasterDataProvider::Size
                    | QgsRasterDataProvider::BuildPyramids
-                   | QgsRasterDataProvider::Histogram
                    | QgsRasterDataProvider::Create
                    | QgsRasterDataProvider::Remove;
   GDALDriverH myDriver = GDALGetDatasetDriver( mGdalDataset );
@@ -1281,7 +1264,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
   QgsDebugMsg( QString( "xSize() = %1 ySize() = %2 theSampleSize = %3 bApproxOK = %4" ).arg( xSize() ).arg( ySize() ).arg( theSampleSize ).arg( bApproxOK ) );
 
   QgsGdalProgress myProg;
-  myProg.type = ProgressHistogram;
+  myProg.type = QgsRaster::ProgressHistogram;
   myProg.provider = this;
 
 #if 0 // this is the old method
@@ -1382,7 +1365,7 @@ QgsRasterHistogram QgsGdalProvider::histogram( int theBandNo,
  * @return null string on success, otherwise a string specifying error
  */
 QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRasterPyramidList,
-                                        const QString & theResamplingMethod, RasterPyramidsFormat theFormat,
+                                        const QString & theResamplingMethod, QgsRaster::RasterPyramidsFormat theFormat,
                                         const QStringList & theConfigOptions )
 {
   //TODO: Consider making theRasterPyramidList modifyable by this method to indicate if the pyramid exists after build attempt
@@ -1406,7 +1389,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   }
 
   // check if building internally
-  if ( theFormat == PyramidsInternal )
+  if ( theFormat == QgsRaster::PyramidsInternal )
   {
 
     // test if the file is writable
@@ -1457,13 +1440,13 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   // are we using Erdas Imagine external overviews?
   QgsStringMap myConfigOptionsOld;
   myConfigOptionsOld[ "USE_RRD" ] = CPLGetConfigOption( "USE_RRD", "NO" );
-  if ( theFormat == PyramidsErdas )
+  if ( theFormat == QgsRaster::PyramidsErdas )
     CPLSetConfigOption( "USE_RRD", "YES" );
   else
     CPLSetConfigOption( "USE_RRD", "NO" );
 
   // add any driver-specific configuration options, save values to be restored later
-  if ( theFormat != PyramidsErdas && ! theConfigOptions.isEmpty() )
+  if ( theFormat != QgsRaster::PyramidsErdas && ! theConfigOptions.isEmpty() )
   {
     foreach ( QString option, theConfigOptions )
     {
@@ -1525,7 +1508,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   {
     //build the pyramid and show progress to console
     QgsGdalProgress myProg;
-    myProg.type = ProgressPyramids;
+    myProg.type = QgsRaster::ProgressPyramids;
     myProg.provider = this;
     myError = GDALBuildOverviews( mGdalBaseDataset, theMethod,
                                   myOverviewLevelsVector.size(), myOverviewLevelsVector.data(),
@@ -1585,7 +1568,7 @@ QString QgsGdalProvider::buildPyramids( const QList<QgsRasterPyramid> & theRaste
   // https://trac.osgeo.org/gdal/ticket/4831
   // Crash can be avoided if dataset is reopened, fixed in GDAL 1.9.2
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1920
-  if ( theFormat == PyramidsInternal )
+  if ( theFormat == QgsRaster::PyramidsInternal )
 #else
   if ( true ) // GDAL #4831 fix
 #endif
@@ -2221,7 +2204,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
   double pdfMean;
   double pdfStdDev;
   QgsGdalProgress myProg;
-  myProg.type = ProgressHistogram;
+  myProg.type = QgsRaster::ProgressHistogram;
   myProg.provider = this;
 
   // try to fetch the cached stats (bForce=FALSE)
@@ -2285,13 +2268,14 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
 
 void QgsGdalProvider::initBaseDataset()
 {
+#if 0
   for ( int i = 0; i < GDALGetRasterCount( mGdalBaseDataset ); i++ )
   {
     mMinMaxComputed.append( false );
     mMinimum.append( 0 );
     mMaximum.append( 0 );
   }
-
+#endif
   // Check if we need a warped VRT for this file.
   bool hasGeoTransform = GDALGetGeoTransform( mGdalBaseDataset, mGeoTransform ) == CE_None;
   if (( hasGeoTransform
@@ -2720,11 +2704,11 @@ QString QgsGdalProvider::validateCreationOptions( const QStringList& createOptio
   return message;
 }
 
-QString QgsGdalProvider::validatePyramidsCreationOptions( RasterPyramidsFormat pyramidsFormat,
+QString QgsGdalProvider::validatePyramidsCreationOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
     const QStringList & theConfigOptions, const QString & fileFormat )
 {
   // Erdas Imagine format does not support config options
-  if ( pyramidsFormat == PyramidsErdas )
+  if ( pyramidsFormat == QgsRaster::PyramidsErdas )
   {
     if ( ! theConfigOptions.isEmpty() )
       return "Erdas Imagine format does not support config options";
@@ -2732,7 +2716,7 @@ QString QgsGdalProvider::validatePyramidsCreationOptions( RasterPyramidsFormat p
       return QString();
   }
   // Internal pyramids format only supported for gtiff/georaster/hfa/jp2kak/mrsid/nitf files
-  else if ( pyramidsFormat == PyramidsInternal )
+  else if ( pyramidsFormat == QgsRaster::PyramidsInternal )
   {
     QStringList supportedFormats;
     supportedFormats << "gtiff" << "georaster" << "hfa" << "jp2kak" << "mrsid" << "nitf";
@@ -2753,4 +2737,36 @@ QString QgsGdalProvider::validatePyramidsCreationOptions( RasterPyramidsFormat p
   }
 
   return QString();
+}
+
+// pyramids resampling
+
+// see http://www.gdal.org/gdaladdo.html
+//     http://www.gdal.org/classGDALDataset.html#a2aa6f88b3bbc840a5696236af11dde15
+//     http://www.gdal.org/classGDALRasterBand.html#afaea945b13ec9c86c2d783b883c68432
+
+// from http://www.gdal.org/gdaladdo.html
+//   average_mp is unsuitable for use thus not included
+
+// from qgsgdalprovider.cpp (removed)
+//   NOTE magphase is disabled in the gui since it tends
+//   to create corrupted images. The images can be repaired
+//   by running one of the other resampling strategies below.
+//   see ticket #284
+
+QGISEXTERN QList<QPair<QString, QString> > *pyramidResamplingMethods()
+{
+  static QList<QPair<QString, QString> > methods;
+
+  if ( methods.isEmpty() )
+  {
+    methods.append( QPair<QString, QString>( "NEAREST", QObject::tr( "Nearest Neighbour" ) ) );
+    methods.append( QPair<QString, QString>( "AVERAGE", QObject::tr( "Average" ) ) );
+    methods.append( QPair<QString, QString>( "GAUSS", QObject::tr( "Gauss" ) ) );
+    methods.append( QPair<QString, QString>( "CUBIC", QObject::tr( "Cubic" ) ) );
+    methods.append( QPair<QString, QString>( "MODE", QObject::tr( "Mode" ) ) );
+    methods.append( QPair<QString, QString>( "NONE", QObject::tr( "None" ) ) );
+  }
+
+  return &methods;
 }

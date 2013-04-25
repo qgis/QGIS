@@ -46,12 +46,27 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
+
+    USE_CATEGORIES = "/SextanteQGIS/UseCategories"
+
     def __init__(self, iface):
         QDockWidget.__init__(self, None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.iface=iface
+
+        self.modeComboBox.clear()
+        self.modeComboBox.addItems(['Simplified interface', 'Advanced interface'])
+        settings = QSettings()
+        if not settings.contains(self.USE_CATEGORIES):
+            settings.setValue(self.USE_CATEGORIES, True)
+        useCategories = settings.value(self.USE_CATEGORIES).toBool()
+        if useCategories:
+            self.modeComboBox.setCurrentIndex(0)
+        else:
+            self.modeComboBox.setCurrentIndex(1)
+        self.modeComboBox.currentIndexChanged.connect(self.modeHasChanged)
 
         self.externalAppsButton.clicked.connect(self.configureProviders)
         self.searchBox.textChanged.connect(self.fillTree)
@@ -60,6 +75,16 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr("Search..."))
+
+        self.fillTree()
+
+    def modeHasChanged(self):
+        idx = self.modeComboBox.currentIndex()
+        settings = QSettings()
+        if idx == 0: #simplified
+            settings.setValue(self.USE_CATEGORIES, True)
+        else:
+            settings.setValue(self.USE_CATEGORIES, False)
 
         self.fillTree()
 
@@ -84,12 +109,15 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 executeBatchAction = QAction(self.tr("Execute as batch process"), self.algorithmTree)
                 executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
                 popupmenu.addAction(executeBatchAction)
+            popupmenu.addSeparator()
             editRenderingStylesAction = QAction(self.tr("Edit rendering styles for outputs"), self.algorithmTree)
             editRenderingStylesAction.triggered.connect(self.editRenderingStyles)
             popupmenu.addAction(editRenderingStylesAction)
             actions = Sextante.contextMenuActions
+            if len(actions) > 0:
+                popupmenu.addSeparator()
             for action in actions:
-                action.setData(alg,self)
+                action.setData(alg, self)
                 if action.isEnabled():
                     contextMenuAction = QAction(action.name, self.algorithmTree)
                     contextMenuAction.triggered.connect(action.execute)
@@ -145,7 +173,8 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
             action.execute()
 
     def fillTree(self):
-        useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
+        settings = QSettings()
+        useCategories = settings.value(self.USE_CATEGORIES).toBool()
         if useCategories:
             self.fillTreeUsingCategories()
         else:
@@ -329,12 +358,11 @@ class SextanteToolbox(QDockWidget, Ui_SextanteToolbox):
                 for groupItem in groups.values():
                     groupItem.setExpanded(text != "")
 
-
-
 class TreeAlgorithmItem(QTreeWidgetItem):
 
     def __init__(self, alg):
-        useCategories = SextanteConfig.getSetting(SextanteConfig.USE_CATEGORIES)
+        settings = QSettings()
+        useCategories = settings.value(SextanteToolbox.USE_CATEGORIES)
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()

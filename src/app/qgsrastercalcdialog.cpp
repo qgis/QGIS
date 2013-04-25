@@ -125,7 +125,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
         firstLayer = false;
       }
       //get number of bands
-      for ( unsigned int i = 0; i < rlayer->bandCount(); ++i )
+      for ( int i = 0; i < rlayer->bandCount(); ++i )
       {
         QgsRasterCalculatorEntry entry;
         entry.raster = rlayer;

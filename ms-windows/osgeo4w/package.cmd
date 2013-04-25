@@ -13,7 +13,7 @@ REM *   (at your option) any later version.                                   *
 REM *                                                                         *
 REM ***************************************************************************
 @echo off
-set GRASS_VERSION=6.4.3RC2
+set GRASS_VERSION=6.4.3RC3
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -316,4 +316,3 @@ if exist %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGEN
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1
-

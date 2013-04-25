@@ -1,5 +1,7 @@
 from PyQt4 import QtCore, QtGui
 import math
+from sextante.modeler.ModelerGraphicItem import ModelerGraphicItem
+from sextante.core.GeoAlgorithm import GeoAlgorithm
 
 #portions of this code have been taken and adapted from PyQt examples, released under the following license terms
 
@@ -45,9 +47,11 @@ import math
 
 class ModelerArrowItem(QtGui.QGraphicsLineItem):
 
-    def __init__(self, startItem, endItem, parent=None, scene=None):
+    def __init__(self, startItem, outputIndex, endItem, paramIndex ,parent=None, scene=None):
         super(ModelerArrowItem, self).__init__(parent, scene)
         self.arrowHead = QtGui.QPolygonF()
+        self.paramIndex = paramIndex
+        self.outputIndex = outputIndex
         self.myStartItem = startItem
         self.myEndItem = endItem
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, False)
@@ -66,13 +70,7 @@ class ModelerArrowItem(QtGui.QGraphicsLineItem):
     def boundingRect(self):
         #this is a quick fix to avoid arrows not being drawn
         return QtCore.QRectF(0, 0, 4000,4000)
-        #=======================================================================
-        # extra = (self.pen().width() + 20) / 2.0
-        # p1 = self.line().p1()
-        # p2 = self.line().p2()
-        # return QtCore.QRectF(p1, QtCore.QSizeF(p2.x() - p1.x(), p2.y() - p1.y())).normalized().adjusted(-extra, -extra, extra, extra)
-        #=======================================================================
-
+      
     def shape(self):
         path = super(ModelerArrowItem, self).shape()
         path.addPolygon(self.arrowHead)
@@ -82,47 +80,84 @@ class ModelerArrowItem(QtGui.QGraphicsLineItem):
         line = QtCore.QLineF(self.mapFromItem(self.myStartItem, 0, 0), self.mapFromItem(self.myEndItem, 0, 0))
         self.setLine(line)
 
-    def paint(self, painter, option, widget=None):
-        #if (self.myStartItem.collidesWithItem(self.myEndItem)):
-            #return
-
+    def paint(self, painter, option, widget=None):      
         myStartItem = self.myStartItem
         myEndItem = self.myEndItem
         myPen = self.pen()
         myPen.setColor(self.myColor)
         arrowSize = 6.0
         painter.setPen(myPen)
-        painter.setBrush(self.myColor)
+        painter.setBrush(self.myColor)       
 
-        centerLine = QtCore.QLineF(myStartItem.pos(), myEndItem.pos())
-        endPolygon = myEndItem.polygon()
-        p1 = endPolygon.first() + myEndItem.pos()
-
-        intersectPoint = QtCore.QPointF()
-        for i in endPolygon:
-            p2 = i + myEndItem.pos()
-            polyLine = QtCore.QLineF(p1, p2)
-            intersectType = polyLine.intersect(centerLine, intersectPoint)
-            if intersectType == QtCore.QLineF.BoundedIntersection:
-                break
-            p1 = p2
-
-        self.setLine(QtCore.QLineF(intersectPoint, myStartItem.pos()))
-        line = self.line()
+        if isinstance(self.startItem().element, GeoAlgorithm):
+            if self.startItem().element.outputs:
+                endPt = self.endItem().getLinkPointForParameter(self.paramIndex)
+                startPt = self.startItem().getLinkPointForOutput(self.outputIndex)                            
+                arrowLine = QtCore.QLineF(myEndItem.pos() + endPt - QtCore.QPointF(endPt.x() + ModelerGraphicItem.BOX_WIDTH /2, 0), myEndItem.pos() + endPt)        
+                painter.drawLine(arrowLine)
+                tailLine = QtCore.QLineF(myStartItem.pos() + startPt + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH /2 - startPt.x(),0), myStartItem.pos() + startPt)
+                painter.drawLine(tailLine)
+                pt = QtCore.QPointF(myStartItem.pos() + startPt + QtCore.QPointF(- 2, -2))
+                rect = QtCore.QRectF(pt.x(), pt.y(), 4, 4)            
+                painter.fillRect(rect, QtCore.Qt.gray)
+                line = QtCore.QLineF(myStartItem.pos() + startPt + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH /2 - startPt.x(),0), 
+                                 myEndItem.pos() + endPt - QtCore.QPointF(endPt.x() + ModelerGraphicItem.BOX_WIDTH /2, 0))
+            else: # case where there is a dependency on an algorithm not on an output
+                endPolygon = myEndItem.polygon()
+                p1 = endPolygon.first() + myEndItem.pos()
+                line = QtCore.QLineF(myStartItem.pos(), myEndItem.pos())
+                intersectPoint = QtCore.QPointF()
+                for i in endPolygon:
+                    p2 = i + myEndItem.pos()
+                    polyLine = QtCore.QLineF(p1, p2)
+                    intersectType = polyLine.intersect(line, intersectPoint)
+                    if intersectType == QtCore.QLineF.BoundedIntersection:
+                        break
+                    p1 = p2
+                    
+                self.setLine(QtCore.QLineF(intersectPoint, myStartItem.pos()))
+                line = self.line()                
+                if line.length() == 0: #division by zero might occur if arrow has no length
+                    return
+                angle = math.acos(line.dx() / line.length())
+                if line.dy() >= 0:
+                    angle = (math.pi * 2.0) - angle
+        
+                arrowP1 = line.p1() + QtCore.QPointF(math.sin(angle + math.pi / 3.0) * arrowSize,
+                                                math.cos(angle + math.pi / 3) * arrowSize)
+                arrowP2 = line.p1() + QtCore.QPointF(math.sin(angle + math.pi - math.pi / 3.0) * arrowSize,
+                                                math.cos(angle + math.pi - math.pi / 3.0) * arrowSize)
+        
+                self.arrowHead.clear()
+                for point in [line.p1(), arrowP1, arrowP2]:
+                    self.arrowHead.append(point)
+        
+                painter.drawLine(line)
+                painter.drawPolygon(self.arrowHead) 
+                return;                   
+        else:
+            endPt = self.endItem().getLinkPointForParameter(self.paramIndex)                                
+            arrowLine = QtCore.QLineF(myEndItem.pos() + endPt - QtCore.QPointF(endPt.x() + ModelerGraphicItem.BOX_WIDTH /2, 0), myEndItem.pos() + endPt)        
+            painter.drawLine(arrowLine)
+            line = QtCore.QLineF(myStartItem.pos(), 
+                             myEndItem.pos() + endPt - QtCore.QPointF(endPt.x() + ModelerGraphicItem.BOX_WIDTH /2, 0))
+                                
+        self.setLine(line);        
 
         if line.length() == 0: #division by zero might occur if arrow has no length
             return
+
         angle = math.acos(line.dx() / line.length())
         if line.dy() >= 0:
             angle = (math.pi * 2.0) - angle
 
-        arrowP1 = line.p1() + QtCore.QPointF(math.sin(angle + math.pi / 3.0) * arrowSize,
-                                        math.cos(angle + math.pi / 3) * arrowSize)
-        arrowP2 = line.p1() + QtCore.QPointF(math.sin(angle + math.pi - math.pi / 3.0) * arrowSize,
-                                        math.cos(angle + math.pi - math.pi / 3.0) * arrowSize)
+        arrowP1 = arrowLine.p2() + QtCore.QPointF(-math.cos(math.pi / 9.0) * arrowSize,
+                                        math.sin(math.pi / 9.0) * arrowSize)
+        arrowP2 = arrowLine.p2() + QtCore.QPointF(-math.cos(math.pi / 9.0) * arrowSize,
+                                        -math.sin(math.pi / 9.0) * arrowSize)
 
         self.arrowHead.clear()
-        for point in [line.p1(), arrowP1, arrowP2]:
+        for point in [arrowLine.p2(), arrowP1, arrowP2]:
             self.arrowHead.append(point)
 
         painter.drawLine(line)

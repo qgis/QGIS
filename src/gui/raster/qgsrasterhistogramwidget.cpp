@@ -42,6 +42,8 @@
 #include <qwt_plot_renderer.h>
 #endif
 
+#define RASTER_HISTOGRAM_BINS 256
+
 QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget *parent )
     : QWidget( parent ),
     mRasterLayer( lyr ), mRendererWidget( 0 )
@@ -206,7 +208,7 @@ void QgsRasterHistogramWidget::on_btnHistoCompute_clicked()
 
 bool QgsRasterHistogramWidget::computeHistogram( bool forceComputeFlag )
 {
-  const int BINCOUNT = RASTER_HISTOGRAM_BINS; // 256 - defined in qgsrasterdataprovider.h
+  const int BINCOUNT = RASTER_HISTOGRAM_BINS;
   //bool myIgnoreOutOfRangeFlag = true;
   //bool myThoroughBandScanFlag = false;
   int myBandCountInt = mRasterLayer->bandCount();
@@ -262,7 +264,7 @@ void QgsRasterHistogramWidget::refreshHistogram()
   // bin in all selected layers, and the min. It then draws a scaled line between min
   // and max - scaled to image height. 1 line drawn per selected band
   //
-  const int BINCOUNT = RASTER_HISTOGRAM_BINS; // 256 - defined in qgsrasterdataprovider.h
+  const int BINCOUNT = RASTER_HISTOGRAM_BINS;
   int myBandCountInt = mRasterLayer->bandCount();
 
   QgsDebugMsg( "entered." );
@@ -611,12 +613,12 @@ void QgsRasterHistogramWidget::on_cboHistoBand_currentIndexChanged( int index )
 
   int theBandNo = index + 1;
   // TODO - there are 2 definitions of raster data type that should be unified
-  // QgsRasterDataProvider::DataType and QgsContrastEnhancement::QgsRasterDataType
+  // QgsRasterDataProvider::DataType and QGis::DataType
   // TODO - fix gdal provider: changes data type when nodata value is not found
   // this prevents us from getting proper min and max values here
-  // minStr = QString::number( QgsContrastEnhancement::minimumValuePossible( ( QgsContrastEnhancement::QgsRasterDataType )
+  // minStr = QString::number( QgsContrastEnhancement::minimumValuePossible( ( QGis::DataType )
   //                                                                         mRasterLayer->dataProvider()->dataType( theBandNo ) ) );
-  // maxStr = QString::number( QgsContrastEnhancement::maximumValuePossible( ( QgsContrastEnhancement::QgsRasterDataType )
+  // maxStr = QString::number( QgsContrastEnhancement::maximumValuePossible( ( QGis::DataType )
   //                                                                         mRasterLayer->dataProvider()->dataType( theBandNo ) ) );
 
   QPair< QString, QString > myMinMax = rendererMinMax( theBandNo );
@@ -744,9 +746,9 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
         // TODO - fix gdal provider: changes data type when nodata value is not found
         // this prevents us from getting proper min and max values here
         minMaxValues[0] = QgsContrastEnhancement::minimumValuePossible(
-                            ( QgsContrastEnhancement::QgsRasterDataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
+                            ( QGis::DataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
         minMaxValues[1] = QgsContrastEnhancement::maximumValuePossible(
-                            ( QgsContrastEnhancement::QgsRasterDataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
+                            ( QGis::DataType ) mRasterLayer->dataProvider()->dataType( theBandNo ) );
       }
       else
       {

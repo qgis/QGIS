@@ -144,7 +144,7 @@ void QgsRasterProjector::calc()
   if ( mInput )
   {
     QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
-    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::ExactResolution ) )
+    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
     {
       mMaxSrcXRes = provider->extent().width() / provider->xSize();
       mMaxSrcYRes = provider->extent().height() / provider->ySize();
