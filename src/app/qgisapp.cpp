@@ -2822,7 +2822,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     }
     QgsDebugMsg( "Layer type " + layertype );
     // the user has done his choice
-    loadOGRSublayers( layertype , uri, chooseSublayersDialog.getSelection() );
+    loadOGRSublayers( layertype , uri, chooseSublayersDialog.getSelection(), chooseSublayersDialog.getSelectionIndexes() );
   }
 }
 
@@ -2831,23 +2831,27 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 // format of the ogrprovider so as to give precisions about which
 // sublayer to load into QGIS. It is normally triggered by the
 // sublayer selection dialog.
-void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list )
+void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList listNames, QList<int> listIndexes )
 {
   // The uri must contain the actual uri of the vectorLayer from which we are
   // going to load the sublayers.
   QString fileName = QFileInfo( uri ).baseName();
-  for ( int i = 0; i < list.size(); i++ )
+  for ( int i = 0; i < listNames.size(); i++ )
   {
     QString composedURI;
-    if ( layertype != "GRASS" )
+    if ( layertype == "GRASS" )
     {
-      composedURI = uri + "|layername=" + list.at( i );
+      composedURI = uri + "|layerindex=" + listNames.at( i );
+    }
+    else if ( layertype == "SQLite" ) // need this to support tables with multiple geometry columns
+    {
+      composedURI = uri + "|layerid=" + QString::number( listIndexes.at( i ) );
     }
     else
     {
-      composedURI = uri + "|layerindex=" + list.at( i );
+      composedURI = uri + "|layername=" + listNames.at( i );
     }
-    addVectorLayer( composedURI,  list.at( i ), "ogr" );
+    addVectorLayer( composedURI, listNames.at( i ), "ogr" );
   }
 }
 

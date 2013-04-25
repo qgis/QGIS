@@ -541,7 +541,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore & featureStore );
 
-    void loadOGRSublayers( QString layertype, QString uri, QStringList list );
+    void loadOGRSublayers( QString layertype, QString uri, QStringList listNames, QList<int> listIndexes );
     void loadGDALSublayers( QString uri, QStringList list );
 
     /**Deletes the selected attributes for the currently selected vector layer*/
