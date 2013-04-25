@@ -167,10 +167,6 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
 
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
-  // TODO - remove this when basic archive is complete
-  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE )
-    tabBar->setCurrentIndex( 1 );
-
 }
 
 QgsCptCityColorRampV2Dialog::~QgsCptCityColorRampV2Dialog()
@@ -495,7 +491,7 @@ void QgsCptCityColorRampV2Dialog::on_buttonBox_helpRequested()
   QString helpText = tr( "You can download a more complete set of cpt-city gradients "
                          "by installing the \"Color Ramp Manager\" plugin "
                          "(you must enable Experimental plugins in the plugin manager).\n\n"
-                         );
+                       );
   QMessageBox* msg = new QMessageBox( this );
   msg->setText( helpText );
   msg->exec();
@@ -510,12 +506,12 @@ bool QgsCptCityColorRampV2Dialog::saveAsGradientRamp() const
 
 void QgsCptCityColorRampV2Dialog::updateListWidget( QgsCptCityDataItem *item )
 {
+  mListWidget->clear();
+  mListRamps.clear();
   QgsCptCityCollectionItem* colItem = dynamic_cast<QgsCptCityCollectionItem*>( item );
   if ( colItem )
   {
     QgsDebugMsg( "path= " + item->path() );
-    mListWidget->clear();
-    mListRamps.clear();
     // recursively get children ramps
     QVector<QgsCptCityDataItem*> childrenRamps = colItem->childrenRamps( true );
     for ( int i = 0; i < childrenRamps.count(); i++ )
@@ -538,7 +534,6 @@ void QgsCptCityColorRampV2Dialog::updateListWidget( QgsCptCityDataItem *item )
   else
   {
     QgsDebugMsg( "invalid item" );
-    mListWidget->clear();
   }
 }
 

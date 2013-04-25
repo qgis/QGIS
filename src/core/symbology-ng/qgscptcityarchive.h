@@ -198,10 +198,12 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
   public:
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
                              QString name, QString path,
-                             QString variantName = QString() );
+                             QString variantName = QString(),
+                             bool initialize = false );
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
                              QString name, QString path,
-                             QStringList variantList );
+                             QStringList variantList,
+                             bool initialize = false );
     ~QgsCptCityColorRampItem() {}
 
     // --- reimplemented from QgsCptCityDataItem ---
