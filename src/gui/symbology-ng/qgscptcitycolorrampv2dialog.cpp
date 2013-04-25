@@ -24,13 +24,12 @@
 #include <QPushButton>
 #include <QTextEdit>
 #include <QTime>
-#include <QErrorMessage>
+#include <QMessageBox>
 #include <QSortFilterProxyModel>
 
 /////////
 
 // TODO
-// - remove dialog or add help as help button
 // - fix Diverging children when first show Selections
 // - fix crash on Diverging?
 
@@ -171,18 +170,6 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
   // TODO - remove this when basic archive is complete
   if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE )
     tabBar->setCurrentIndex( 1 );
-
-  // show error message to use color ramp manager to get more gradients
-  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE &&
-       QgsCptCityArchive::archiveRegistry().count() == 1 )
-  {
-    QString helpText = tr( "You can download a more complete set of cpt-city gradients "
-                           "by installing the \"Color Ramp Manager\" plugin "
-                           "(you must enable Experimental plugins in the plugin manager).\n\n"
-                         );
-    QErrorMessage* msg = new QErrorMessage( this );
-    msg->showMessage( helpText, "cpt-city" );
-  }
 
 }
 
@@ -500,6 +487,18 @@ void QgsCptCityColorRampV2Dialog::onFinished()
   QSettings settings;
   settings.setValue( "/Windows/CptCityColorRampV2Dialog/geometry", saveGeometry() );
   settings.setValue( "/Windows/CptCityColorRampV2Dialog/splitter", mSplitter->saveState() );
+}
+
+void QgsCptCityColorRampV2Dialog::on_buttonBox_helpRequested()
+{
+  // show error message to use color ramp manager to get more gradients
+  QString helpText = tr( "You can download a more complete set of cpt-city gradients "
+                         "by installing the \"Color Ramp Manager\" plugin "
+                         "(you must enable Experimental plugins in the plugin manager).\n\n"
+                         );
+  QMessageBox* msg = new QMessageBox( this );
+  msg->setText( helpText );
+  msg->exec();
 }
 
 bool QgsCptCityColorRampV2Dialog::saveAsGradientRamp() const
