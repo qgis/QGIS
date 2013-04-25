@@ -555,6 +555,22 @@ int QgsCptCityDataItem::rowCount()
   //   populate();
   return mChildren.size();
 }
+
+int QgsCptCityDataItem::leafCount() const
+{
+  if ( !mPopulated )
+    return 0;
+
+  int count = 0;
+  foreach ( QgsCptCityDataItem *child, mChildren )
+  {
+    if ( child )
+      count += child->leafCount();
+  }
+  return count;
+}
+
+
 bool QgsCptCityDataItem::hasChildren()
 {
   return ( mPopulated ? mChildren.count() > 0 : true );
@@ -833,6 +849,7 @@ QgsCptCityCollectionItem::~QgsCptCityCollectionItem()
 QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool recursive )
 {
   QVector< QgsCptCityDataItem* > rampItems;
+  QVector< QgsCptCityDataItem* > deleteItems;
 
   populate();
 
@@ -853,13 +870,24 @@ QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool rec
       rampItem->init();
       if ( rampItem->isValid() )
         rampItems << rampItem;
-      // should also delete item from parent, but we are in a loop now
+      else
+        deleteItems << rampItem;
     }
     else
     {
       QgsDebugMsg( "invalid item " + childItem->path() );
     }
   }
+  
+  // delete items - this is not efficient, but only happens once
+  foreach ( QgsCptCityDataItem* deleteItem, deleteItems )
+  {
+    int i = mChildren.indexOf( deleteItem );
+    if ( i != -1 )
+      mChildren.remove( i );
+    delete deleteItem;
+  }
+
   return rampItems;
 }
 
@@ -1178,7 +1206,12 @@ QVector<QgsCptCityDataItem*> QgsCptCitySelectionItem::createChildren()
       QgsCptCityDataItem* childItem =
         QgsCptCityDirectoryItem::dataItem( this, childPath, childPath );
       if ( childItem )
-        children << childItem;
+      {
+        if ( childItem->isValid() )
+          children << childItem;
+        else
+          delete childItem;
+      }
     }
     else
     {
