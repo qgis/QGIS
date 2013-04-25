@@ -52,6 +52,7 @@ class GUI_EXPORT QgsCptCityColorRampV2Dialog : public QDialog, private Ui::QgsCp
     void on_pbtnLicenseDetails_pressed();
     void on_cboVariantName_currentIndexChanged( int index );
     void onFinished();
+    void on_buttonBox_helpRequested();
     /* void refresh(); */
 
   protected:
