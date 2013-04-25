@@ -477,6 +477,8 @@ class GUI_EXPORT QgisInterface : public QObject
 
     virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f ) = 0;
 
+    virtual void preloadForm( QString uifile ) = 0;
+
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
      * @returns list of layers in legend order, or empty list
