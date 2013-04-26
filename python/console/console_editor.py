@@ -77,6 +77,8 @@ class Editor(QsciScintilla):
         super(Editor,self).__init__(parent)
         self.parent = parent
 
+        self.settings = QSettings()
+
         # Enable non-ascii chars for editor
         self.setUtf8(True)
 
@@ -113,9 +115,6 @@ class Editor(QsciScintilla):
 
         self.setMinimumHeight(120)
         #self.setMinimumWidth(300)
-        
-        self.setAutoCompletionThreshold(2)
-        self.setAutoCompletionSource(self.AcsAPIs)
 
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
@@ -130,6 +129,8 @@ class Editor(QsciScintilla):
         #self.setWrapMode(QsciScintilla.WrapCharacter)
         self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)
         #self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
+        
+        self.settingsEditor()
         
         # Annotations
         #self.setAnnotationDisplay(QsciScintilla.ANNOTATION_BOXED)
@@ -155,7 +156,7 @@ class Editor(QsciScintilla):
         ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCS = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
         self.newShortcutCS.setContext(Qt.WidgetShortcut)
-        self.newShortcutCS.activated.connect(self.autoComplete)
+        self.newShortcutCS.activated.connect(self.autoCompleteKeyBinding)
         self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runScut.setContext(Qt.WidgetShortcut)
         self.runScut.activated.connect(self.runSelectedCode)
@@ -169,9 +170,33 @@ class Editor(QsciScintilla):
         self.uncommentScut = QShortcut(QKeySequence(Qt.SHIFT + Qt.CTRL + Qt.Key_3), self)
         self.uncommentScut.setContext(Qt.WidgetShortcut)
         self.uncommentScut.activated.connect(self.parent.pc.uncommentCode)
+        
+    def settingsEditor(self):
+        self.setLexers()
+        threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0]
+        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI').toString()
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool()
+        self.setAutoCompletionThreshold(threshold)
+        if autoCompEnabled:
+            if radioButtonSource == 'fromDoc':
+                self.setAutoCompletionSource(self.AcsDocument)
+            elif radioButtonSource == 'fromAPI':
+                self.setAutoCompletionSource(self.AcsAPIs)
+            elif radioButtonSource == 'fromDocAPI':
+                self.setAutoCompletionSource(self.AcsAll)
+        else:
+            self.setAutoCompletionSource(self.AcsNone)
 
-    def autoComplete(self):
-        self.autoCompleteFromAll()
+    def autoCompleteKeyBinding(self):
+        radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor").toString()
+        autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor").toBool()
+        if autoCompEnabled:
+            if radioButtonSource == 'fromDoc':
+                self.autoCompleteFromDocument()
+            elif radioButtonSource == 'fromAPI':
+                self.autoCompleteFromAPIs()
+            elif radioButtonSource == 'fromDocAPI':
+                self.autoCompleteFromAll()
 
     def on_margin_clicked(self, nmargin, nline, modifiers):
         # Toggle marker for the line the margin was clicked on
@@ -180,16 +205,13 @@ class Editor(QsciScintilla):
         else:
             self.markerAdd(nline, self.ARROW_MARKER_NUM)
 
-    def refreshLexerProperties(self):
-        self.setLexers()
-
     def setLexers(self):
         from qgis.core import QgsApplication
 
         self.lexer = QsciLexerPython()
-        settings = QSettings()
-        loadFont = settings.value("pythonConsole/fontfamilytext", "Monospace").toString()
-        fontSize = settings.value("pythonConsole/fontsize", 10).toInt()[0]
+
+        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor", "Monospace").toString()
+        fontSize = self.settings.value("pythonConsole/fontsizeEditor", 10).toInt()[0]
 
         font = QFont(loadFont)
         font.setFixedPitch(True)
@@ -208,11 +230,11 @@ class Editor(QsciScintilla):
         self.lexer.setFont(font, 4)
 
         self.api = QsciAPIs(self.lexer)
-        chekBoxAPI = settings.value("pythonConsole/preloadAPI", True).toBool()
+        chekBoxAPI = self.settings.value("pythonConsole/preloadAPI", True).toBool()
         if chekBoxAPI:
             self.api.loadPrepared( QgsApplication.pkgDataPath() + "/python/qsci_apis/pyqgis_master.pap" )
         else:
-            apiPath = settings.value("pythonConsole/userAPI").toStringList()
+            apiPath = self.settings.value("pythonConsole/userAPI").toStringList()
             for i in range(0, len(apiPath)):
                 self.api.load(QString(unicode(apiPath[i])))
             self.api.prepare()
@@ -239,6 +261,7 @@ class Editor(QsciScintilla):
         iconNewEditor = QgsApplication.getThemeIcon("console/iconTabEditorConsole.png")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
         iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.png")
+        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
         hideEditorAction = menu.addAction("Hide Editor",
                                      self.hideEditor)
         menu.addSeparator()
@@ -282,6 +305,10 @@ class Editor(QsciScintilla):
         selectAllAction = menu.addAction("Select All",
                                          self.selectAll,
                                          QKeySequence.SelectAll)
+        menu.addSeparator()
+        settingsDialog = menu.addAction(iconSettings,
+                                        "Settings",
+                                        self.parent.pc.openSettings)
         pasteAction.setEnabled(False)
         codePadAction.setEnabled(False)
         cutAction.setEnabled(False)
@@ -360,7 +387,6 @@ class Editor(QsciScintilla):
         self.beginUndoAction()
         if self.hasSelectedText():
             startLine, _, endLine, _ = self.getSelection()
-            self.beginUndoAction()
             for line in range(startLine, endLine + 1):
                 selCmd = self.text(line)
                 self.setSelection(line, 0, line, selCmd.length())
@@ -370,12 +396,12 @@ class Editor(QsciScintilla):
                     self.setCursorPosition(endLine, selCmd.length())
                 else:
                     if selCmd.startsWith('#'):
-                       self.insert(selCmd[1:])
+                        self.insert(selCmd[1:])
                     else:
                         self.insert(selCmd)
+                    self.setCursorPosition(endLine, self.text(line).length() - 1)
         else:
             line, pos = self.getCursorPosition()
-            self.beginUndoAction()
             selCmd = self.text(line)
             self.setSelection(line, 0, line, selCmd.length())
             self.removeSelectedText()
@@ -384,61 +410,88 @@ class Editor(QsciScintilla):
                 self.setCursorPosition(line, selCmd.length())
             else:
                 if selCmd.startsWith('#'):
-                   self.insert(selCmd[1:])
+                    self.insert(selCmd[1:])
                 else:
                     self.insert(selCmd)
+                self.setCursorPosition(line, self.text(line).length() - 1)
         self.endUndoAction()
+        
+    def createTempFile(self):
+        import tempfile
+        fd, path = tempfile.mkstemp()
+        tmpFileName = path + '.py'
+        with open(path, "w") as f:
+            f.write(self.text())
+        os.close(fd)
+        os.rename(path, tmpFileName)
+        return tmpFileName
 
-    def runScriptCode(self):
-        tabWidget = self.parent.mw.currentWidget()
-        filename = tabWidget.path
+    def _runSubProcess(self, filename, tmp=False):
         dir, name = os.path.split(unicode(filename))
         if dir not in sys.path:
             sys.path.append(dir)
+        try:
+            p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            out, _traceback = p.communicate()
+
+            ## Fix interrupted system call on OSX
+            if sys.platform == 'darwin':
+                status = None
+                while status is None:
+                    try:
+                        status = p.wait()
+                    except OSError, e:
+                        if e.errno == 4:
+                            pass
+                        else:
+                            raise e
+            if tmp:
+                name = name + ' [Temporary file saved in ' + dir + ']'
+            if _traceback:
+                print "## %s" % datetime.datetime.now()
+                print "## Script error: %s" % name
+                sys.stderr.write(_traceback)
+                p.stderr.close()
+            else:
+                print "## %s" % datetime.datetime.now()
+                print "## Script executed successfully: %s" % name
+                sys.stdout.write(out)
+                p.stdout.close()
+            del p
+            if tmp:
+                os.remove(filename)
+        except IOError, error:
+            print 'Cannot execute file %s. Error: %s' % (filename, error.strerror)
+        except:
+            s = traceback.format_exc()
+            print '## Error: '
+            sys.stderr.write(s)
+
+    def runScriptCode(self):
+        autoSave = self.settings.value("pythonConsole/autoSaveScript").toBool()
+        
+        tabWidget = self.parent.mw.currentWidget()
+        filename = tabWidget.path
+        
         msgEditorBlank = QCoreApplication.translate('PythonConsole', 
                                                     'Hey, type something for running !')
         msgEditorUnsaved = QCoreApplication.translate('PythonConsole', 
-                                                      'You have to save the file before running.')
-        if filename is None:
-            if not self.isModified():
-                self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank)
-            else:
-                self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved)
-            return
-        if self.isModified():
-            self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved)
-            return
-        else:
-            try:
-                p = subprocess.Popen(['python', filename], shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-                out, traceback = p.communicate()
-
-                ## Fix interrupted system call on OSX
-                if sys.platform == 'darwin':
-                    status = None
-                    while status is None:
-                        try:
-                            status = p.wait()
-                        except OSError, e:
-                            if e.errno == 4:
-                                pass
-                            else:
-                                raise e
-
-                if traceback:
-                    print "## %s" % datetime.datetime.now()
-                    print "## Script error: %s" % name
-                    sys.stderr.write(traceback)
-                    p.stderr.close()
+                                                  'You have to save the file before running.')
+        if not autoSave:
+            if filename is None:
+                if not self.isModified():
+                    self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank)
                 else:
-                    print "## %s" % datetime.datetime.now()
-                    print "## Script executed successfully: %s" % name
-                    sys.stdout.write(out)
-                    p.stdout.close()
-                del p
-                #execfile(unicode(filename))
-            except IOError, error:
-                print 'Cannot execute file %s. Error: %s' % (filename, error.strerror)
+                    self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved)
+                    return
+            if self.isModified():
+                self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved)
+                return
+            else:
+                self._runSubProcess(filename)
+        else:
+            tmpFile = self.createTempFile()
+            self._runSubProcess(tmpFile, True)
 
     def runSelectedCode(self):
         cmd = self.selectedText()
@@ -827,18 +880,17 @@ class EditorTabWidget(QTabWidget):
                 s = traceback.format_exc()
                 print '## Error: '
                 sys.stderr.write(s)
-      
-    def changeFont(self):
+          
+    def refreshSettingsEditor(self):
         countTab = self.count()
         for i in range(countTab):
-            self.widget(i).newEditor.refreshLexerProperties()
+            self.widget(i).newEditor.settingsEditor()
 
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)
-        settings = QSettings()
-        settings.setValue("pythonConsole/lastDirPath", QVariant(tabWidget.path))
+        self.settings.setValue("pythonConsole/lastDirPath", QVariant(tabWidget.path))
 
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
         currWidget = self.currentWidget()
-        currWidget.infoBar.pushMessage('Editor', text, QgsMessageBar.INFO, timeout)
+        currWidget.infoBar.pushMessage(text, QgsMessageBar.INFO, timeout)

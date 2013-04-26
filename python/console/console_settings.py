@@ -28,18 +28,15 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
     def __init__(self, parent):
         QDialog.__init__(self, parent)
         self.setWindowTitle(QCoreApplication.translate("SettingsDialogPythonConsole", "Settings Python Console"))
-        #self.iface = iface
         self.parent = parent
         self.setupUi(self)
-        #self.show()
 
         self.listPath = []
 
         self.restoreSettings()
         self.initialCheck()
+        self.autoCompletionOptions()
         self.fontConfig()
-
-        self.lineEdit.setReadOnly(True)
 
         self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.png"))
         self.addAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Add API path"))
@@ -48,10 +45,12 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         self.connect( self.preloadAPI,
                       SIGNAL("stateChanged(int)"), self.initialCheck)
-        self.connect(self.browseButton,
-                     SIGNAL("clicked()"), self.loadAPIFile)
+        self.connect( self.autoCompleteEnabled,
+                      SIGNAL("stateChanged(int)"), self.autoCompletionOptions)
+        self.connect( self.autoCompleteEnabledEditor,
+                      SIGNAL("stateChanged(int)"), self.autoCompletionOptions)
         self.connect(self.addAPIpath,
-                     SIGNAL("clicked()"), self.addAPI)
+                     SIGNAL("clicked()"), self.loadAPIFile)
         self.connect(self.removeAPIpath,
                      SIGNAL("clicked()"), self.removeAPI)
 
@@ -63,20 +62,41 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def enableDisable(self, value):
         self.tableWidget.setEnabled(value)
-        self.lineEdit.setEnabled(value)
-        self.browseButton.setEnabled(value)
         self.addAPIpath.setEnabled(value)
         self.removeAPIpath.setEnabled(value)
+        
+    def autoCompletionOptions(self):
+        if self.autoCompleteEnabled.isChecked():
+            self.enableDisableAutoCompleteOptions(True)
+        else:
+            self.enableDisableAutoCompleteOptions(False)
+        if self.autoCompleteEnabledEditor.isChecked():
+            self.enableDisableAutoCompleteOptions(True, editor='editor')
+        else:
+            self.enableDisableAutoCompleteOptions(False, editor='editor')
+
+    def enableDisableAutoCompleteOptions(self, value, editor=None):
+        if editor:
+            self.autoCompFromAPIEditor.setEnabled(value)
+            self.autoCompFromDocAPIEditor.setEnabled(value)
+            self.autoCompFromDocEditor.setEnabled(value)
+            self.autoCompThresholdEditor.setEnabled(value)
+        else:
+            self.autoCompFromAPI.setEnabled(value)
+            self.autoCompFromDocAPI.setEnabled(value)
+            self.autoCompFromDoc.setEnabled(value)
+            self.autoCompThreshold.setEnabled(value)
 
     def loadAPIFile(self):
         settings = QSettings()
         lastDirPath = settings.value("pythonConsole/lastDirAPIPath").toString()
         fileAPI = QFileDialog.getOpenFileName(
                         self, "Open API File", lastDirPath, "API file (*.api)")
-        self.lineEdit.setText(fileAPI)
+        if fileAPI:
+            self.addAPI(fileAPI)
 
-        lastDirPath = QFileInfo(fileAPI).path()
-        settings.setValue("pythonConsole/lastDirAPIPath", QVariant(fileAPI))
+            lastDirPath = QFileInfo(fileAPI).path()
+            settings.setValue("pythonConsole/lastDirAPIPath", QVariant(fileAPI))
 
     def accept(self):
         if not self.preloadAPI.isChecked():
@@ -88,15 +108,12 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.listPath = []
         QDialog.accept( self )
 
-    def addAPI(self):
-        if self.lineEdit.text() == "":
-            return
-        path = self.lineEdit.text()
+    def addAPI(self, pathAPI):
         count = self.tableWidget.rowCount()
         self.tableWidget.setColumnCount(2)
         self.tableWidget.insertRow(count)
-        pathItem = QTableWidgetItem(path)
-        pathSplit = path.split("/")
+        pathItem = QTableWidgetItem(pathAPI)
+        pathSplit = pathAPI.split("/")
         apiName = pathSplit[-1][0:-4]
         apiNameItem = QTableWidgetItem(apiName)
         self.tableWidget.setItem(count, 0, apiNameItem)
@@ -105,14 +122,11 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.tableWidget.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
         self.tableWidget.horizontalHeader().show()
         self.tableWidget.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
-        #self.tableWidget.resizeRowsToContents()
-        self.lineEdit.clear()
 
     def removeAPI(self):
-        listItemSel = self.tableWidget.selectedIndexes()
-        #row = self.tableWidget.currentRow()
-        for indx in listItemSel:
-            self.tableWidget.removeRow(indx.row())
+        listItemSel = self.tableWidget.selectionModel().selectedRows()
+        for index in reversed(listItemSel):
+            self.tableWidget.removeRow(index.row())
 
     def fontConfig(self):
         #fontFamily = ['Courier','Monospace','Aurulent Sans','Bitstream Vera Serif']
@@ -120,25 +134,57 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             #self.comboBox.addItem(fontFamily[i])
         settings = QSettings()
         self.fontComboBox.setCurrentIndex(settings.value("pythonConsole/fontfamilyindex").toInt()[0])
+        self.fontComboBoxEditor.setCurrentIndex(settings.value("pythonConsole/fontfamilyindexEditor").toInt()[0])
 
     def saveSettings(self):
         settings = QSettings()
         settings.setValue("pythonConsole/preloadAPI", QVariant(self.preloadAPI.isChecked()))
+        settings.setValue("pythonConsole/autoSaveScript", QVariant(self.autoSaveScript.isChecked()))
         fontFamilyIndex = self.fontComboBox.currentIndex()
         settings.setValue("pythonConsole/fontfamilyindex", QVariant(fontFamilyIndex))
         fontFamilyText = self.fontComboBox.currentText()
         settings.setValue("pythonConsole/fontfamilytext", QVariant(fontFamilyText))
+        
+        fontFamilyIndexEditor = self.fontComboBoxEditor.currentIndex()
+        settings.setValue("pythonConsole/fontfamilyindexEditor", QVariant(fontFamilyIndexEditor))
+        fontFamilyTextEditor = self.fontComboBoxEditor.currentText()
+        settings.setValue("pythonConsole/fontfamilytextEditor", QVariant(fontFamilyTextEditor))
+        
         fontSize = self.spinBox.value()
+        fontSizeEditor = self.spinBoxEditor.value()
+        
         for i in range(0, self.tableWidget.rowCount()):
             text = self.tableWidget.item(i, 1).text()
             self.listPath.append(text)
         settings.setValue("pythonConsole/fontsize", QVariant(fontSize))
+        settings.setValue("pythonConsole/fontsizeEditor", QVariant(fontSizeEditor))
         settings.setValue("pythonConsole/userAPI", QVariant(self.listPath))
+        
+        settings.setValue("pythonConsole/autoCompThreshold", QVariant(self.autoCompThreshold.value()))
+        settings.setValue("pythonConsole/autoCompThresholdEditor", QVariant(self.autoCompThresholdEditor.value()))
+        
+        if self.autoCompFromAPIEditor.isChecked():
+            settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromAPI'))
+        elif self.autoCompFromDocEditor.isChecked():
+            settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromDoc'))
+        elif self.autoCompFromDocAPIEditor.isChecked():
+            settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromDocAPI'))
+            
+        if self.autoCompFromAPI.isChecked():
+            settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromAPI'))
+        elif self.autoCompFromDoc.isChecked():
+            settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromDoc'))
+        elif self.autoCompFromDocAPI.isChecked():
+            settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromDocAPI'))
+
+        settings.setValue("pythonConsole/autoCompleteEnabledEditor", QVariant(self.autoCompleteEnabledEditor.isChecked()))
+        settings.setValue("pythonConsole/autoCompleteEnabled", QVariant(self.autoCompleteEnabled.isChecked()))
 
     def restoreSettings(self):
         settings = QSettings()
-        self.spinBox.setValue(settings.value("pythonConsole/fontsize").toInt()[0])
-        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True).toBool())
+        self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10).toInt()[0])
+        self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10).toInt()[0])
+        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI").toBool())
         itemTable = settings.value("pythonConsole/userAPI").toStringList()
         for i in range(len(itemTable)):
             self.tableWidget.insertRow(i)
@@ -151,7 +197,27 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self.tableWidget.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
             self.tableWidget.horizontalHeader().show()
             self.tableWidget.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
-        #self.comboBox.setCurrentIndex(settings.value("pythonConsole/fontfamilyindex").toInt()[0])
+        self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False).toBool())
+        
+        self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2).toInt()[0])
+        self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0])
+        
+        self.autoCompleteEnabledEditor.setChecked(settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool())
+        self.autoCompleteEnabled.setChecked(settings.value("pythonConsole/autoCompleteEnabled", True).toBool())
+        
+        if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
+            self.autoCompFromDoc.setChecked(True)
+        elif settings.value("pythonConsole/autoCompleteSource") == 'fromAPI':
+            self.autoCompFromAPI.setChecked(True)
+        elif settings.value("pythonConsole/autoCompleteSource") == 'fromDocAPI':
+            self.autoCompFromDocAPI.setChecked(True)
+            
+        if settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromDoc':
+            self.autoCompFromDocEditor.setChecked(True)
+        elif settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromAPI':
+            self.autoCompFromAPIEditor.setChecked(True)
+        elif settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromDocAPI':
+            self.autoCompFromDocAPIEditor.setChecked(True)
 
-    def reject( self ):
-        QDialog.reject( self )
+    def reject(self):
+        QDialog.reject(self)
