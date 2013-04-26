@@ -30,6 +30,8 @@
 #include <QTextCodec>
 #include <QUrl>
 
+const int MAX_SAMPLE_LENGTH=200;
+
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl, bool embedded ):
     QDialog( parent, fl ),
     mFile( new QgsDelimitedTextFile() ),
@@ -425,6 +427,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
       QString value = i < nv ? values[i] : "";
+      if( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid(0,MAX_SAMPLE_LENGTH)+"...";
       QTableWidgetItem *item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
       if ( ! value.isEmpty() )
