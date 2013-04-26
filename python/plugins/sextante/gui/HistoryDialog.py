@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from sextante.gui import TestTools
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,6 +25,7 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from sextante.gui import TestTools
 from sextante.core.SextanteLog import SextanteLog
 from sextante.ui.ui_DlgHistory import Ui_DlgHistory
 

@@ -42,8 +42,8 @@ class CommanderWindow(QtGui.QDialog):
     def __init__(self, parent, canvas): 
         self.canvas = canvas
         QtGui.QDialog.__init__(self, parent, Qt.FramelessWindowHint)    
-        self.setModal(True)
-        self.commands = imp.load_source("commands", self.commandsFile())    
+        #self.setModal(True)
+        self.commands = imp.load_source("commands", self.commandsFile())                    
         self.initGui()                            
         
     def commandsFolder(self):        
@@ -65,29 +65,14 @@ class CommanderWindow(QtGui.QDialog):
             out.close()
         return f 
     
+    def algsListHasChanged(self):
+        self.fillCombo()
                 
     def initGui(self):        
-        self.combo= ExtendedComboBox()        
-        #add algorithm
-        for providerName in Sextante.algs.keys():
-            provider = Sextante.algs[providerName]            
-            algs = provider.values()            
-            for alg in algs:
-                self.combo.addItem("SEXTANTE algorithm: " + alg.name)
-        #add functions
-        for command in dir(self.commands):
-            if isinstance(self.commands.__dict__.get(command), types.FunctionType):
-                self.combo.addItem("Command: " + command);    
-        #add menu entries
-        menuActions = []
-        actions = Sextante.getInterface().mainWindow().menuBar().actions()
-        for action in actions:
-            menuActions.extend(self.getActions(action))
-        for action in menuActions:
-            self.combo.addItem("Menu action: " + unicode(action.text()))
+        self.combo= ExtendedComboBox()   
+        self.fillCombo()             
        
         self.combo.setEditable(True)
-        self.combo.setEditText("")
         self.label = QtGui.QLabel("Enter command:")
         self.errorLabel = QtGui.QLabel("Enter command:")
         self.vlayout = QtGui.QVBoxLayout()
@@ -104,6 +89,31 @@ class CommanderWindow(QtGui.QDialog):
         self.vlayout.addSpacerItem(QtGui.QSpacerItem(0, OFFSET, QSizePolicy.Maximum, QSizePolicy.Expanding));
         self.setLayout(self.vlayout)
         self.combo.lineEdit().returnPressed.connect(self.run)
+        self.prepareGui()
+        
+    def fillCombo(self):
+        self.combo.clear()
+        #add algorithms
+        for providerName in Sextante.algs.keys():
+            provider = Sextante.algs[providerName]            
+            algs = provider.values()            
+            for alg in algs:
+                self.combo.addItem("SEXTANTE algorithm: " + alg.name)        
+        #add functions
+        for command in dir(self.commands):
+            if isinstance(self.commands.__dict__.get(command), types.FunctionType):
+                self.combo.addItem("Command: " + command);    
+        #add menu entries
+        menuActions = []
+        actions = Sextante.getInterface().mainWindow().menuBar().actions()
+        for action in actions:
+            menuActions.extend(self.getActions(action))
+        for action in menuActions:
+            self.combo.addItem("Menu action: " + unicode(action.text()))
+        
+        
+    def prepareGui(self):
+        self.combo.setEditText("")
         self.combo.setMaximumSize(QtCore.QSize(self.canvas.rect().width()  - 2 * OFFSET, ITEMHEIGHT))
         self.combo.view().setStyleSheet("min-height: 150px")        
         self.combo.setFocus(Qt.OtherFocusReason)  
