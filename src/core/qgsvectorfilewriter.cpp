@@ -109,8 +109,6 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     return;
   }
 
-  QSettings settings;
-
   if ( driverName == "ESRI Shapefile" )
   {
     if ( layOptions.join( "" ).toUpper().indexOf( "ENCODING=" ) == -1 )
@@ -118,16 +116,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       layOptions.append( "ENCODING=" + fileEncoding );
     }
 
-    if ( settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() )
-    {
-      CPLSetConfigOption( "SHAPE_ENCODING", "" );
-    }
-    else
-    {
-      CPLSetConfigOption( "SHAPE_ENCODING", fileEncoding.toLocal8Bit().data() );
-      // WARNING!! If SHAPE_ENCODING and -lco ENCODING are used, the fileEncoding must be set to the layer internal encoding!!
-      fileEncoding = "UTF-8";
-    }
+    CPLSetConfigOption( "SHAPE_ENCODING", "" );
 
     if ( !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) &&
          !vectorFileName.endsWith( ".dbf", Qt::CaseInsensitive ) )
@@ -235,6 +224,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   {
     QgsDebugMsg( "error finding QTextCodec for " + fileEncoding );
 
+    QSettings settings;
     QString enc = settings.value( "/UI/encoding", "System" ).toString();
     mCodec = QTextCodec::codecForName( enc.toLocal8Bit().constData() );
     if ( !mCodec )

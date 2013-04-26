@@ -21,6 +21,9 @@
 #include <QMenu>
 #include <QDialog>
 #include <QAbstractButton>
+#include <QSignalMapper>
+#include <QTimer>
+#include <QUiLoader>
 
 #include "qgisappinterface.h"
 #include "qgisappstylesheet.h"
@@ -539,6 +542,37 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
   {
     return action.viewFeatureForm();
   }
+}
+
+void QgisAppInterface::preloadForm( QString uifile )
+{
+    QSignalMapper* signalMapper = new QSignalMapper ( this );
+    mTimer = new QTimer(this);
+
+    connect( mTimer ,SIGNAL( timeout() ), signalMapper,SLOT( map() ) );
+    connect( signalMapper, SIGNAL( mapped(QString) ), mTimer, SLOT( stop() ) );
+    connect( signalMapper, SIGNAL( mapped(QString) ), this, SLOT( cacheloadForm( QString ) ) );
+
+    signalMapper->setMapping( mTimer, uifile );
+
+    mTimer->start(0);
+}
+
+void QgisAppInterface::cacheloadForm( QString uifile )
+{
+    QUiLoader loader;
+
+    QFile file( uifile );
+
+    if ( file.open( QFile::ReadOnly ) )
+    {
+      QUiLoader loader;
+
+      QFileInfo fi( uifile );
+      loader.setWorkingDirectory( fi.dir() );
+      QWidget *myWidget = loader.load( &file );
+      file.close();
+    }
 }
 
 QDialog* QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeature &f )

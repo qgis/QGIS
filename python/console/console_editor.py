@@ -477,7 +477,7 @@ class EditorTab(QWidget):
         self.newEditor.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.newEditor.modificationChanged.connect(self.modified)
         if filename:
-            self.newEditor.setText(open(unicode(filename), "rt").read())
+            self.newEditor.setText(open(unicode(filename), "r").read())
             self.newEditor.setModified(False)
             self.path = filename
         
@@ -606,7 +606,10 @@ class EditorTabWidget(QTabWidget):
         else:
             self.newTabEditor(filename=None)
 
-        self.setDocumentMode(True)
+        ## Fixes #7653
+        if sys.platform != 'darwin':
+            self.setDocumentMode(True)
+
         self.setMovable(True)
         #self.setTabsClosable(True)
         self.setTabPosition(QTabWidget.South)
@@ -723,12 +726,18 @@ class EditorTabWidget(QTabWidget):
 
     def restoreTabs(self):
         for script in self.restoreTabList:
-            pathFile = unicode(script.toString())
-            if os.path.exists(pathFile):
-                tabName = pathFile.split('/')[-1]
-                self.newTabEditor(tabName, pathFile)
-            else:
-                self.newTabEditor(filename=None)
+            if script != '':
+                pathFile = unicode(script.toString())
+                if os.path.exists(pathFile):
+                    tabName = pathFile.split('/')[-1]
+                    self.newTabEditor(tabName, pathFile)
+                else:
+                    print  '## Error: '
+                    s = 'Unable to restore the file: \n%s\n' % pathFile
+                    sys.stderr.write(s)
+                    self.parent.updateTabListScript(pathFile)
+        if self.count() < 1:
+            self.newTabEditor(filename=None)
         self.topFrame.close()
         self.enableToolBarEditor(True)
 
@@ -758,8 +767,10 @@ class EditorTabWidget(QTabWidget):
         if tabWidget.path:
             pathFile, file = os.path.split(unicode(tabWidget.path))
             module, ext = os.path.splitext(file)
+            found = False
             if pathFile not in sys.path:
                 sys.path.append(pathFile)
+                found = True
             try:
                 reload(pyclbr)
                 dictObject = {}
@@ -767,7 +778,7 @@ class EditorTabWidget(QTabWidget):
                 readModule = pyclbr.readmodule(module)
                 readModuleFunction = pyclbr.readmodule_ex(module)
                 for name, class_data in sorted(readModule.items(), key=lambda x:x[1].lineno):
-                    if class_data.file == tabWidget.path:
+                    if os.path.normpath(str(class_data.file)) == os.path.normpath(str(tabWidget.path)):
                         for superClass in class_data.super:
                             if superClass == 'object':
                                 continue
@@ -784,31 +795,39 @@ class EditorTabWidget(QTabWidget):
                             classItem.setText(0, name)
                             classItem.setToolTip(0, name)
                         classItem.setText(1, str(class_data.lineno))
-                        classItem.setIcon(0, QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png"))
+                        iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png")
+                        classItem.setIcon(0, iconClass)
                         dictObject[name] = class_data.lineno
                         for meth, lineno in sorted(class_data.methods.items(), key=itemgetter(1)):
                             methodItem = QTreeWidgetItem()
-                            methodItem.setText(0, meth)
+                            methodItem.setText(0, meth + ' ')
                             methodItem.setText(1, str(lineno))
                             methodItem.setToolTip(0, meth)
-                            methodItem.setIcon(0, QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png"))
+                            iconMeth = QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png")
+                            methodItem.setIcon(0, iconMeth)
                             classItem.addChild(methodItem)
                             dictObject[meth] = lineno
+#                        if found:
+#                            sys.path.remove(os.path.split(unicode(str(class_data.file)))[0])
                         self.parent.listClassMethod.addTopLevelItem(classItem)
                 for func_name, data in sorted(readModuleFunction.items(), key=lambda x:x[1].lineno):
-                    if isinstance(data, pyclbr.Function) and data.file == tabWidget.path:
+                    if isinstance(data, pyclbr.Function) and \
+                        os.path.normpath(str(data.file)) == os.path.normpath(str(tabWidget.path)):
                         funcItem = QTreeWidgetItem()
-                        funcItem.setText(0, func_name)
+                        funcItem.setText(0, func_name + ' ')
                         funcItem.setText(1, str(data.lineno))
                         funcItem.setToolTip(0, func_name)
-                        funcItem.setIcon(0, QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png"))
+                        iconFunc = QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png")
+                        funcItem.setIcon(0, iconFunc)
                         dictObject[func_name] = data.lineno
                         self.parent.listClassMethod.addTopLevelItem(funcItem)
+                if found:
+                    sys.path.remove(pathFile)
             except:
                 s = traceback.format_exc()
                 print '## Error: '
                 sys.stderr.write(s)
-                
+      
     def changeFont(self):
         countTab = self.count()
         for i in range(countTab):

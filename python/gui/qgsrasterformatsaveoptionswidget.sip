@@ -27,7 +27,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
     void setRasterFileName( const QString& file );
     QStringList options() const;
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
-    void setPyramidsFormat( QgsRasterDataProvider::RasterPyramidsFormat format );
+    void setPyramidsFormat( QgsRaster::RasterPyramidsFormat format );
 
   public slots:
 

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="ETOPO1" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(10,0,121)" stop-opacity="1.0000"/>
+        <stop offset="2.56%" stop-color="rgb(26,0,137)" stop-opacity="1.0000"/>
+        <stop offset="5.13%" stop-color="rgb(38,0,152)" stop-opacity="1.0000"/>
+        <stop offset="7.69%" stop-color="rgb(27,3,166)" stop-opacity="1.0000"/>
+        <stop offset="10.26%" stop-color="rgb(16,6,180)" stop-opacity="1.0000"/>
+        <stop offset="12.82%" stop-color="rgb(5,9,193)" stop-opacity="1.0000"/>
+        <stop offset="15.38%" stop-color="rgb(0,14,203)" stop-opacity="1.0000"/>
+        <stop offset="17.95%" stop-color="rgb(0,22,210)" stop-opacity="1.0000"/>
+        <stop offset="20.51%" stop-color="rgb(0,30,216)" stop-opacity="1.0000"/>
+        <stop offset="23.08%" stop-color="rgb(0,39,223)" stop-opacity="1.0000"/>
+        <stop offset="25.64%" stop-color="rgb(12,68,231)" stop-opacity="1.0000"/>
+        <stop offset="28.21%" stop-color="rgb(26,102,240)" stop-opacity="1.0000"/>
+        <stop offset="30.77%" stop-color="rgb(19,117,244)" stop-opacity="1.0000"/>
+        <stop offset="33.33%" stop-color="rgb(14,133,249)" stop-opacity="1.0000"/>
+        <stop offset="35.90%" stop-color="rgb(21,158,252)" stop-opacity="1.0000"/>
+        <stop offset="38.46%" stop-color="rgb(30,178,255)" stop-opacity="1.0000"/>
+        <stop offset="41.03%" stop-color="rgb(43,186,255)" stop-opacity="1.0000"/>
+        <stop offset="43.59%" stop-color="rgb(55,193,255)" stop-opacity="1.0000"/>
+        <stop offset="46.15%" stop-color="rgb(65,200,255)" stop-opacity="1.0000"/>
+        <stop offset="48.72%" stop-color="rgb(79,210,255)" stop-opacity="1.0000"/>
+        <stop offset="51.28%" stop-color="rgb(94,223,255)" stop-opacity="1.0000"/>
+        <stop offset="53.85%" stop-color="rgb(138,227,255)" stop-opacity="1.0000"/>
+        <stop offset="56.41%" stop-color="rgb(188,230,255)" stop-opacity="1.0000"/>
+        <stop offset="56.41%" stop-color="rgb(51,102,0)" stop-opacity="1.0000"/>
+        <stop offset="56.92%" stop-color="rgb(51,204,102)" stop-opacity="1.0000"/>
+        <stop offset="57.44%" stop-color="rgb(187,228,146)" stop-opacity="1.0000"/>
+        <stop offset="58.97%" stop-color="rgb(255,220,185)" stop-opacity="1.0000"/>
+        <stop offset="61.54%" stop-color="rgb(243,202,137)" stop-opacity="1.0000"/>
+        <stop offset="64.10%" stop-color="rgb(230,184,88)" stop-opacity="1.0000"/>
+        <stop offset="66.67%" stop-color="rgb(217,166,39)" stop-opacity="1.0000"/>
+        <stop offset="69.23%" stop-color="rgb(168,154,31)" stop-opacity="1.0000"/>
+        <stop offset="71.79%" stop-color="rgb(164,144,25)" stop-opacity="1.0000"/>
+        <stop offset="74.36%" stop-color="rgb(162,134,19)" stop-opacity="1.0000"/>
+        <stop offset="76.92%" stop-color="rgb(159,123,13)" stop-opacity="1.0000"/>
+        <stop offset="79.49%" stop-color="rgb(156,113,7)" stop-opacity="1.0000"/>
+        <stop offset="82.05%" stop-color="rgb(153,102,0)" stop-opacity="1.0000"/>
+        <stop offset="84.62%" stop-color="rgb(162,89,89)" stop-opacity="1.0000"/>
+        <stop offset="87.18%" stop-color="rgb(178,118,118)" stop-opacity="1.0000"/>
+        <stop offset="89.74%" stop-color="rgb(183,147,147)" stop-opacity="1.0000"/>
+        <stop offset="92.31%" stop-color="rgb(194,176,176)" stop-opacity="1.0000"/>
+        <stop offset="94.87%" stop-color="rgb(204,204,204)" stop-opacity="1.0000"/>
+        <stop offset="97.44%" stop-color="rgb(229,229,229)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#ETOPO1)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:53 2012"/>
+  </metadata>
+</svg>

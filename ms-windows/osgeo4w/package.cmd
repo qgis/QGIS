@@ -316,4 +316,3 @@ if exist %PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGEN
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1
-

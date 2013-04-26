@@ -7,7 +7,7 @@ class QgsContrastEnhancementFunction
 %End
 
   public:
-    QgsContrastEnhancementFunction( QgsContrastEnhancement::QgsRasterDataType, double, double );
+    QgsContrastEnhancementFunction( QGis::DataType, double, double );
     virtual ~QgsContrastEnhancementFunction();
 
     /** \brief Mustator for the maximum value */

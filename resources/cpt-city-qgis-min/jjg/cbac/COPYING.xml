@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://soliton.vm.bytemark.co.uk/pub/jjg/">
+      <name>J.J. Green</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Apache-like</informal>
+    <year>2004</year>
+    <text>
+      As Cynthia Brewer.
+    </text>
+  </license>
+  <src>
+    <format>GMT colour palette (cpt)</format>
+    <remark>
+      Derived from the diverging and sequential schemes by 
+      Cynthia Brewer and so released under the same licence.
+    </remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="apache"/>
+  </distribute>
+</copying>

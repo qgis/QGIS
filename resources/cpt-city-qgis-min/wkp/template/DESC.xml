@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description>
+  <dir>template</dir>
+  <name>Template for the standard scheme for elevation maps</name>
+  <full>
+    These files are taken from the cartographic template of the same
+    version. They have have a nominal scaling.
+  </full>
+  <date>01/08/2012</date>
+</description>

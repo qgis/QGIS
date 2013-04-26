@@ -29,8 +29,8 @@
 QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ):
     mMode( Raw ), mOutputUrl( outputUrl ), mOutputProviderKey( "gdal" ), mOutputFormat( "GTiff" ),
     mTiledMode( false ), mMaxTileWidth( 500 ), mMaxTileHeight( 500 ),
-    mBuildPyramidsFlag( QgsRasterDataProvider::PyramidsFlagNo ),
-    mPyramidsFormat( QgsRasterDataProvider::PyramidsGTiff ),
+    mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo ),
+    mPyramidsFormat( QgsRaster::PyramidsGTiff ),
     mProgressDialog( 0 ), mPipe( 0 ), mInput( 0 )
 {
 
@@ -212,8 +212,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         QgsRasterBandStats stats = srcProvider->bandStatistics( bandNo, QgsRasterBandStats::Min | QgsRasterBandStats::Max, srcExtent, 250000 );
 
         // Test if we have free (not used) values
-        double typeMinValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
-        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible(( QgsContrastEnhancement::QgsRasterDataType )srcProvider->srcDataType( bandNo ) );
+        double typeMinValue = QgsContrastEnhancement::maximumValuePossible(( QGis::DataType )srcProvider->srcDataType( bandNo ) );
+        double typeMaxValue = QgsContrastEnhancement::maximumValuePossible(( QGis::DataType )srcProvider->srcDataType( bandNo ) );
         if ( stats.minimumValue > typeMinValue )
         {
           destNoDataValue = typeMinValue;
@@ -363,14 +363,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
         {
           QString vrtFilePath( mOutputUrl + "/" + vrtFileName() );
           writeVRT( vrtFilePath );
-          if ( mBuildPyramidsFlag == QgsRasterDataProvider::PyramidsFlagYes )
+          if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
           {
             buildPyramids( vrtFilePath );
           }
         }
         else
         {
-          if ( mBuildPyramidsFlag == QgsRasterDataProvider::PyramidsFlagYes )
+          if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
           {
             buildPyramids( mOutputUrl );
           }
@@ -600,14 +600,14 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   {
     QString vrtFilePath( mOutputUrl + "/" + vrtFileName() );
     writeVRT( vrtFilePath );
-    if ( mBuildPyramidsFlag == QgsRasterDataProvider::PyramidsFlagYes )
+    if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
     {
       buildPyramids( vrtFilePath );
     }
   }
   else
   {
-    if ( mBuildPyramidsFlag == QgsRasterDataProvider::PyramidsFlagYes )
+    if ( mBuildPyramidsFlag == QgsRaster::PyramidsFlagYes )
     {
       buildPyramids( mOutputUrl );
     }

@@ -130,7 +130,7 @@ class PythonConsoleWidget(QWidget):
         #self.splitterObj.addWidget(self.widgetEditor)
 
         # Hide side editor on start up
-        self.widgetEditor.hide()
+        self.splitterObj.hide()
         self.listClassMethod.hide()
 
         sizes = self.splitter.sizes()
@@ -474,7 +474,12 @@ class PythonConsoleWidget(QWidget):
 
     def onClickGoToLine(self, item, column):
         linenr = int(item.text(1))
-        objName = item.text(0)
+        itemName = str(item.text(0))
+        charPos = itemName.find(' ')
+        if charPos != -1:
+            objName = itemName[0:charPos]
+        else:
+            objName = itemName
         self.tabEditorWidget.currentWidget().newEditor.goToLine(objName, linenr)
 
     def sextante(self):
@@ -487,7 +492,7 @@ class PythonConsoleWidget(QWidget):
        self.shell.commandConsole('qtGui')
 
     def toggleEditor(self, checked):
-        self.widgetEditor.show() if checked else self.widgetEditor.hide()
+        self.splitterObj.show() if checked else self.splitterObj.hide()
         self.tabEditorWidget.enableToolBarEditor(checked)
 
     def toggleObjectListWidget(self, checked):

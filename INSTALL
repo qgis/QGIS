@@ -1,10 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Sunday April 07, 2013
+Wednesday April 24, 2013
 
 
-Last Updated: Sunday April 07, 2013
 Last Change : Saturday December 08, 2012
+Last Updated: Wednesday April 24, 2013
 
 
   1. Introduction
@@ -1312,6 +1312,10 @@ Double-click the source tarball to unpack it, then cd to the source folder and:
     5.3.1. Optional setup: ccache
     =============================
 
+Xcode 4.4+ note: You will probably not need to install ccache if you are using
+the clang frontend to LLVM compiler, a setup that already provides fairly quick
+compile times.
+
 Setup ccache to significantly speed up compile times after initial build.
 (Switching git branches will again cause longer initial build times unless
 separate build directories are used for each branch.)
@@ -1885,8 +1889,8 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
   -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
   -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
   -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
-  -D QWT_LIBRARY=/usr/local/qwt-5.2.2/lib/libqwt.dylib \
-  -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.2/include \
+  -D QWT_LIBRARY=/usr/local/qwt-6.0.2/lib/libqwt.dylib \
+  -D QWT_INCLUDE_DIR=/usr/local/qwt-6.0.2/include \
   -D BISON_EXECUTABLE=/usr/local/bin/bison \
   ..
 
@@ -1900,11 +1904,11 @@ After the initial Terminal configure, you can use ccmake to make further changes
 
 This will automatically find and use the previously installed frameworks, and
 the GRASS application if installed.  Remember to change the Qwt version if a
-different version was installed, and possibly paths, e.g. for Qwt 6.0.1, which
-installs as a framework, use:
+different version was installed, and possibly paths, e.g. for Qwt 6.0.2 installed
+as a framework use:
 
-  -D QWT_LIBRARY=/usr/local/qwt-6.0.1/lib/qwt.framework/qwt \
-  -D QWT_INCLUDE_DIR=/usr/local/qwt-6.0.1/lib/qwt.framework/Headers \
+  -D QWT_LIBRARY=/usr/local/qwt-6.0.2/lib/qwt.framework/qwt \
+  -D QWT_INCLUDE_DIR=/usr/local/qwt-6.0.2/lib/qwt.framework/Headers \
 
 If you want to use a newer PostgreSQL client than the default Mac OS X version,
 e.g. install from kyngchaos.com, set the following option to pg_config's path:

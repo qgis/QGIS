@@ -1,0 +1,7 @@
+r.stream.stats
+r.stream.stats - Calculate Horton's and optionally Hack's statistics
+Raster (r.*)
+ParameterRaster|stream|Input map: stream mask|False
+ParameterRaster|dir|Input map: flow direction|False
+ParameterRaster|dem|Input map: elevation|False
+OutputFile|outputtext

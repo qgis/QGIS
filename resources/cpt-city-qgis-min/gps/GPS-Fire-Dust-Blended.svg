@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="GPS-Fire-Dust-Blended" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(25,9,8)" stop-opacity="1.0000"/>
+        <stop offset="14.14%" stop-color="rgb(51,43,43)" stop-opacity="1.0000"/>
+        <stop offset="39.27%" stop-color="rgb(78,78,78)" stop-opacity="1.0000"/>
+        <stop offset="56.02%" stop-color="rgb(98,40,40)" stop-opacity="1.0000"/>
+        <stop offset="69.11%" stop-color="rgb(119,3,1)" stop-opacity="1.0000"/>
+        <stop offset="76.96%" stop-color="rgb(153,32,1)" stop-opacity="1.0000"/>
+        <stop offset="84.90%" stop-color="rgb(186,61,0)" stop-opacity="1.0000"/>
+        <stop offset="95.26%" stop-color="rgb(221,113,12)" stop-opacity="1.0000"/>
+        <stop offset="96.98%" stop-color="rgb(255,165,24)" stop-opacity="1.0000"/>
+        <stop offset="98.71%" stop-color="rgb(255,205,120)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,244,216)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#GPS-Fire-Dust-Blended)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:24 2012"/>
+  </metadata>
+</svg>

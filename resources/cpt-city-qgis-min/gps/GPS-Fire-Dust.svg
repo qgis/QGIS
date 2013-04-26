@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="GPS-Fire-Dust" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(4,5,12)" stop-opacity="1.0000"/>
+        <stop offset="0.98%" stop-color="rgb(5,5,12)" stop-opacity="1.0000"/>
+        <stop offset="1.96%" stop-color="rgb(6,5,12)" stop-opacity="1.0000"/>
+        <stop offset="2.94%" stop-color="rgb(6,5,12)" stop-opacity="1.0000"/>
+        <stop offset="3.92%" stop-color="rgb(7,6,11)" stop-opacity="1.0000"/>
+        <stop offset="4.90%" stop-color="rgb(8,6,11)" stop-opacity="1.0000"/>
+        <stop offset="5.88%" stop-color="rgb(8,6,11)" stop-opacity="1.0000"/>
+        <stop offset="6.86%" stop-color="rgb(9,6,11)" stop-opacity="1.0000"/>
+        <stop offset="7.84%" stop-color="rgb(9,6,11)" stop-opacity="1.0000"/>
+        <stop offset="8.82%" stop-color="rgb(10,6,11)" stop-opacity="1.0000"/>
+        <stop offset="9.80%" stop-color="rgb(10,6,11)" stop-opacity="1.0000"/>
+        <stop offset="10.78%" stop-color="rgb(11,6,11)" stop-opacity="1.0000"/>
+        <stop offset="11.76%" stop-color="rgb(11,6,11)" stop-opacity="1.0000"/>
+        <stop offset="12.74%" stop-color="rgb(12,7,10)" stop-opacity="1.0000"/>
+        <stop offset="13.71%" stop-color="rgb(13,7,10)" stop-opacity="1.0000"/>
+        <stop offset="14.69%" stop-color="rgb(13,7,10)" stop-opacity="1.0000"/>
+        <stop offset="15.67%" stop-color="rgb(13,7,10)" stop-opacity="1.0000"/>
+        <stop offset="16.65%" stop-color="rgb(14,7,10)" stop-opacity="1.0000"/>
+        <stop offset="17.63%" stop-color="rgb(14,7,10)" stop-opacity="1.0000"/>
+        <stop offset="18.61%" stop-color="rgb(15,7,10)" stop-opacity="1.0000"/>
+        <stop offset="19.59%" stop-color="rgb(15,7,10)" stop-opacity="1.0000"/>
+        <stop offset="20.57%" stop-color="rgb(16,7,10)" stop-opacity="1.0000"/>
+        <stop offset="21.55%" stop-color="rgb(16,7,10)" stop-opacity="1.0000"/>
+        <stop offset="22.53%" stop-color="rgb(17,7,10)" stop-opacity="1.0000"/>
+        <stop offset="23.51%" stop-color="rgb(17,8,9)" stop-opacity="1.0000"/>
+        <stop offset="24.49%" stop-color="rgb(18,8,9)" stop-opacity="1.0000"/>
+        <stop offset="25.47%" stop-color="rgb(18,8,9)" stop-opacity="1.0000"/>
+        <stop offset="26.45%" stop-color="rgb(19,8,9)" stop-opacity="1.0000"/>
+        <stop offset="27.43%" stop-color="rgb(19,8,9)" stop-opacity="1.0000"/>
+        <stop offset="28.41%" stop-color="rgb(19,8,9)" stop-opacity="1.0000"/>
+        <stop offset="29.39%" stop-color="rgb(20,8,9)" stop-opacity="1.0000"/>
+        <stop offset="30.37%" stop-color="rgb(20,8,9)" stop-opacity="1.0000"/>
+        <stop offset="31.35%" stop-color="rgb(21,8,9)" stop-opacity="1.0000"/>
+        <stop offset="32.33%" stop-color="rgb(21,8,9)" stop-opacity="1.0000"/>
+        <stop offset="33.31%" stop-color="rgb(22,8,9)" stop-opacity="1.0000"/>
+        <stop offset="34.29%" stop-color="rgb(22,8,9)" stop-opacity="1.0000"/>
+        <stop offset="35.27%" stop-color="rgb(22,9,8)" stop-opacity="1.0000"/>
+        <stop offset="36.25%" stop-color="rgb(23,9,8)" stop-opacity="1.0000"/>
+        <stop offset="37.23%" stop-color="rgb(23,9,8)" stop-opacity="1.0000"/>
+        <stop offset="38.21%" stop-color="rgb(24,9,8)" stop-opacity="1.0000"/>
+        <stop offset="39.18%" stop-color="rgb(24,9,8)" stop-opacity="1.0000"/>
+        <stop offset="40.16%" stop-color="rgb(25,9,8)" stop-opacity="1.0000"/>
+        <stop offset="41.14%" stop-color="rgb(25,9,8)" stop-opacity="1.0000"/>
+        <stop offset="53.51%" stop-color="rgb(48,23,23)" stop-opacity="1.0000"/>
+        <stop offset="59.41%" stop-color="rgb(71,37,37)" stop-opacity="1.0000"/>
+        <stop offset="78.41%" stop-color="rgb(95,20,19)" stop-opacity="1.0000"/>
+        <stop offset="82.47%" stop-color="rgb(119,3,1)" stop-opacity="1.0000"/>
+        <stop offset="86.35%" stop-color="rgb(153,32,1)" stop-opacity="1.0000"/>
+        <stop offset="90.66%" stop-color="rgb(186,61,0)" stop-opacity="1.0000"/>
+        <stop offset="95.26%" stop-color="rgb(221,113,12)" stop-opacity="1.0000"/>
+        <stop offset="96.98%" stop-color="rgb(255,165,24)" stop-opacity="1.0000"/>
+        <stop offset="98.71%" stop-color="rgb(255,205,120)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,244,216)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#GPS-Fire-Dust)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:23 2012"/>
+  </metadata>
+</svg>

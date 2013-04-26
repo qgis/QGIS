@@ -314,6 +314,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "year with interval" ) << "year(tointerval('2 years'))" << false << QVariant( 2.0 );
       QTest::newRow( "age" ) << "age('2012-06-30','2012-06-28')" << false << QVariant::fromValue( QgsExpression::Interval( 172800 ) );
       QTest::newRow( "negative age" ) << "age('2012-06-28','2012-06-30')" << false << QVariant::fromValue( QgsExpression::Interval( -172800 ) );
+
+      // Color functions
+      QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "#fdbe73" );
+      QTest::newRow( "color rgb" ) << "color_rgb(255,127,0)" << false << QVariant( "#ff7f00" );
+      QTest::newRow( "color rgba" ) << "color_rgba(255,127,0,200)" << false << QVariant( "255,127,0,200" );
     }
 
     void evaluation()

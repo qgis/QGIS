@@ -24,8 +24,7 @@ email                : sherman at mrcc.com
 #include <gdal.h>         // to collect version information
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
-#include <cpl_error.h>
-#include <cpl_conv.h>
+#include <cpl_string.h>
 
 #include <limits>
 
@@ -1848,8 +1847,15 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     }
   }
 
+  char **papszOptions = NULL;
+  if ( driverName == "ESRI Shapefile" )
+  {
+    papszOptions = CSLSetNameValue( papszOptions, "ENCODING", encoding.toLocal8Bit().data() );
+  }
+
   OGRLayerH layer;
-  layer = OGR_DS_CreateLayer( dataSource, TO8F( QFileInfo( uri ).completeBaseName() ), reference, OGRvectortype, NULL );
+  layer = OGR_DS_CreateLayer( dataSource, TO8F( QFileInfo( uri ).completeBaseName() ), reference, OGRvectortype, papszOptions );
+  CSLDestroy( papszOptions );
   if ( !layer )
   {
     QgsMessageLog::logMessage( QObject::tr( "Creation of OGR data source %1 failed: %2" ).arg( uri ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), QObject::tr( "OGR" ) );

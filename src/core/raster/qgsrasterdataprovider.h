@@ -33,6 +33,7 @@
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsrasterbandstats.h"
+#include "qgsraster.h"
 #include "qgsrasterhistogram.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterpyramid.h"
@@ -53,61 +54,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     Q_OBJECT
 
   public:
-    // This is modified copy of GDALColorInterp
-    enum ColorInterpretation
-    {
-      UndefinedColorInterpretation = 0,
-      /*! Greyscale */                                      GrayIndex = 1,
-      /*! Paletted (see associated color table) */          PaletteIndex = 2, // indexed color table
-      /*! Red band of RGBA image */                         RedBand = 3,
-      /*! Green band of RGBA image */                       GreenBand = 4,
-      /*! Blue band of RGBA image */                        BlueBand = 5,
-      /*! Alpha (0=transparent, 255=opaque) */              AlphaBand = 6,
-      /*! Hue band of HLS image */                          HueBand = 7,
-      /*! Saturation band of HLS image */                   SaturationBand = 8,
-      /*! Lightness band of HLS image */                    LightnessBand = 9,
-      /*! Cyan band of CMYK image */                        CyanBand = 10,
-      /*! Magenta band of CMYK image */                     MagentaBand = 11,
-      /*! Yellow band of CMYK image */                      YellowBand = 12,
-      /*! Black band of CMLY image */                       BlackBand = 13,
-      /*! Y Luminance */                                    YCbCr_YBand = 14,
-      /*! Cb Chroma */                                      YCbCr_CbBand = 15,
-      /*! Cr Chroma */                                      YCbCr_CrBand = 16,
-      /*! Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17,
-      /*! Max current value */                              ColorInterpretationMax = 17
-    };
-
-    enum IdentifyFormat
-    {
-      IdentifyFormatUndefined = 0,
-      IdentifyFormatValue     = 1, // numerical pixel value
-      IdentifyFormatText      = 1 << 1, // WMS text
-      IdentifyFormatHtml      = 1 << 2, // WMS HTML
-      IdentifyFormatFeature   = 1 << 3  // WMS GML -> feature
-    };
-
-    // Progress types
-    enum RasterProgressType
-    {
-      ProgressHistogram = 0,
-      ProgressPyramids  = 1,
-      ProgressStatistics = 2
-    };
-
-    enum RasterBuildPyramids
-    {
-      PyramidsFlagNo = 0,
-      PyramidsFlagYes = 1,
-      CopyExisting = 2
-    };
-
-    enum RasterPyramidsFormat
-    {
-      PyramidsGTiff = 0,
-      PyramidsInternal = 1,
-      PyramidsErdas = 2
-    };
-
     QgsRasterDataProvider();
 
     QgsRasterDataProvider( const QString & uri );
@@ -137,7 +83,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual int colorInterpretation( int theBandNo ) const
     {
       Q_UNUSED( theBandNo );
-      return QgsRasterDataProvider::UndefinedColorInterpretation;
+      return QgsRaster::UndefinedColorInterpretation;
     }
 
     QString colorName( int colorInterpretation ) const
@@ -145,55 +91,55 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       // Modified copy from GDAL
       switch ( colorInterpretation )
       {
-        case UndefinedColorInterpretation:
+        case QgsRaster::UndefinedColorInterpretation:
           return "Undefined";
 
-        case GrayIndex:
+        case QgsRaster::GrayIndex:
           return "Gray";
 
-        case PaletteIndex:
+        case QgsRaster::PaletteIndex:
           return "Palette";
 
-        case RedBand:
+        case QgsRaster::RedBand:
           return "Red";
 
-        case GreenBand:
+        case QgsRaster::GreenBand:
           return "Green";
 
-        case BlueBand:
+        case QgsRaster::BlueBand:
           return "Blue";
 
-        case AlphaBand:
+        case QgsRaster::AlphaBand:
           return "Alpha";
 
-        case HueBand:
+        case QgsRaster::HueBand:
           return "Hue";
 
-        case SaturationBand:
+        case QgsRaster::SaturationBand:
           return "Saturation";
 
-        case LightnessBand:
+        case QgsRaster::LightnessBand:
           return "Lightness";
 
-        case CyanBand:
+        case QgsRaster::CyanBand:
           return "Cyan";
 
-        case MagentaBand:
+        case QgsRaster::MagentaBand:
           return "Magenta";
 
-        case YellowBand:
+        case QgsRaster::YellowBand:
           return "Yellow";
 
-        case BlackBand:
+        case QgsRaster::BlackBand:
           return "Black";
 
-        case YCbCr_YBand:
+        case QgsRaster::YCbCr_YBand:
           return "YCbCr_Y";
 
-        case YCbCr_CbBand:
+        case QgsRaster::YCbCr_CbBand:
           return "YCbCr_Cb";
 
-        case YCbCr_CrBand:
+        case QgsRaster::YCbCr_CrBand:
           return "YCbCr_Cr";
 
         default:
@@ -243,7 +189,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
                                    const QString & theResamplingMethod = "NEAREST",
-                                   RasterPyramidsFormat theFormat = PyramidsGTiff,
+                                   QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() )
     {
       Q_UNUSED( thePyramidList ); Q_UNUSED( theResamplingMethod );
@@ -285,15 +231,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * @param theExtent context extent
      * @param theWidth context width
      * @param theHeight context height
-     * @return IdentifyFormatValue: map of values for each band, keys are band numbers
+     * @return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
-     *         IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
-     *         (WMS) - TODO: it is not consistent with IdentifyFormatValue.
-     *         IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+     *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
+     *         (WMS) - TODO: it is not consistent with QgsRaster::IdentifyFormatValue.
+     *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      *         Empty if failed or there are no results (TODO: better error reporting).
      */
-    //virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
-    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    //virtual QMap<int, QVariant> identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -384,14 +330,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     /** Validates pyramid creation options for a specific dataset and destination format
      * @note used by GDAL provider only */
-    virtual QString validatePyramidsConfigOptions( RasterPyramidsFormat pyramidsFormat,
+    virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList & theConfigOptions, const QString & fileFormat )
     { Q_UNUSED( pyramidsFormat ); Q_UNUSED( theConfigOptions ); Q_UNUSED( fileFormat ); return QString(); }
 
-    static QString identifyFormatName( IdentifyFormat format );
-    static IdentifyFormat identifyFormatFromName( QString formatName );
-    static QString identifyFormatLabel( IdentifyFormat format );
-    static Capability identifyFormatToCapability( IdentifyFormat format );
+    static QString identifyFormatName( QgsRaster::IdentifyFormat format );
+    static QgsRaster::IdentifyFormat identifyFormatFromName( QString formatName );
+    static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
+    static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
 
   signals:
     /** Emit a signal to notify of the progress event.

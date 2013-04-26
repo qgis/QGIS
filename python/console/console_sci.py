@@ -416,16 +416,16 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             stringDrag = e.mimeData().text()
             self.insertFromDropPaste(stringDrag)
             self.setFocus()
-            e.setDropAction(Qt.MoveAction)
+            e.setDropAction(Qt.CopyAction)
             e.accept()
         else:
             QsciScintillaCompat.dropEvent(self, e)
 
     def insertFromDropPaste(self, textDP):
-        pasteList = textDP.split("\n")
+        pasteList = str(textDP).splitlines()
         for line in pasteList[:-1]:
             line.replace(">>> ", "").replace("... ", "")
-            self.insert(line)
+            self.insert(unicode(line))
             self.move_cursor_to_end()
             self.runCommand(unicode(self.currentCommand()))
         if pasteList[-1] != "":
@@ -493,6 +493,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             more = self.runsource(src, "<input>")
             if not more:
                 self.buffer = []
+            ## prevents to commands with more lines to break the console 
+            ## in the case they have a eol different from '\n'
+            self.setText('')
             self.move_cursor_to_end()
             self.displayPrompt(more)
 

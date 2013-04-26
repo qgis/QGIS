@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="discord">Discord</name>
+  <synopsis>Gradients of discord</synopsis>
+  <description>Some of the stranger gradients in the archive. Use of
+  protective goggles may be advisable.</description>
+  <gradients>
+    <gradient dir="rc" file="teabearrose"/>
+    <gradient dir="pj/3" file="grand-old-flag"/>
+    <gradient dir="pj/5" file="vampirelips"/>
+    <gradient dir="pj/6" file="nunoftheabove"/>
+    <gradient dir="pd/food" file="curry_house"/>
+    <gradient dir="ocal" file="christmas-candy"/>
+    <gradient dir="nd/strips" file="Wood_Green"/>
+    <gradient dir="nd/atmospheric" file="Sunset_Real"/>
+    <gradient dir="ing/general2" file="ib63"/>
+    <gradient dir="hult" file="gr41_hult"/>
+    <gradient dir="ggr" file="Nauseating_Headache"/>
+    <gradient dir="ds/rgi" file="rgi_15"/>
+  </gradients>
+</selection>

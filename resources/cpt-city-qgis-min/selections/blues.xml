@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="blues">Blues</name>
+  <synopsis>A selection of blues which may be useful for 
+  bathymetric maps</synopsis>
+  <description>A selection of blues which may be useful for 
+  bathymetric maps.</description>
+  <seealsocollects>
+    <collect dir="es/skywalker">skywalker</collect>
+    <collect dir="es/sea_dreams">sea dreams</collect>
+  </seealsocollects>
+  <gradients>
+    <gradient dir="cb/seq" file="Blues_09"/>
+    <gradient dir="cb/seq" file="GnBu_09"/>
+    <gradient dir="cb/seq" file="PuBu_09"/>
+    <gradient dir="cb/seq" file="YlGnBu_09"/>
+    <gradient dir="erj/misc" file="cyanotype_01"/>
+    <gradient dir="erj/misc" file="cyanotype_02"/>
+    <gradient dir="erj/multiple" file="cyanotype_01"/>
+    <gradient dir="ggr" file="Deep_Sea"/>
+    <gradient dir="neota/base" file="sky-blue"/>
+    <gradient dir="neota/clth" file="purplish-blue"/>
+    <gradient dir="neota/clth" file="jeans"/>
+    <gradient dir="neota/elem" file="crisp-ice"/>
+    <gradient dir="neota/elem" file="rain"/>
+    <gradient dir="neota/face/eyes" file="blue"/>
+    <gradient dir="neota/liht" file="twilight"/>
+    <gradient dir="ocal" file="blues"/>
+    <gradient dir="ocal" file="pastel-purple-blue"/>
+    <gradient dir="occ/1" file="occ019"/>
+    <gradient dir="occ/2" file="occ079"/>
+  </gradients>
+</selection>

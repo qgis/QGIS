@@ -24,11 +24,11 @@
 
 QgsRasterIdentifyResult::QgsRasterIdentifyResult()
     : mValid( false )
-    , mFormat( QgsRasterDataProvider::IdentifyFormatUndefined )
+    , mFormat( QgsRaster::IdentifyFormatUndefined )
 {
 }
 
-QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormat theFormat, QMap<int, QVariant> theResults )
+QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, QMap<int, QVariant> theResults )
     : mValid( true )
     , mFormat( theFormat )
     , mResults( theResults )
@@ -37,7 +37,7 @@ QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsRasterDataProvider::Identif
 
 QgsRasterIdentifyResult::QgsRasterIdentifyResult( QgsError theError )
     : mValid( false )
-    , mFormat( QgsRasterDataProvider::IdentifyFormatUndefined )
+    , mFormat( QgsRaster::IdentifyFormatUndefined )
     , mError( theError )
 {
 }

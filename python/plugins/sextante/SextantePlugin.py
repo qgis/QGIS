@@ -16,6 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from PyQt4 import QtGui
+from sextante.commander.parser import parse
+from sextante.commander.CommanderWindow import CommanderWindow
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -50,6 +53,7 @@ class SextantePlugin:
         QGisLayers.setInterface(iface)
         Sextante.initialize()
         Sextante.setInterface(iface)
+        Sextante.setPlugin(self)
 
     def initGui(self):
         self.toolbox = SextanteToolbox(self.iface)
@@ -90,7 +94,14 @@ class SextantePlugin:
         self.menu.addAction(self.resultsAction)
 
         menuBar = self.iface.mainWindow().menuBar()
-        menuBar.insertMenu(menuBar.actions()[-1], self.menu)
+        menuBar.insertMenu(self.iface.firstRightStandardMenu().menuAction(), self.menu)
+
+        self.commanderAction = QAction(QIcon(":/sextante/images/toolbox.png"),
+            QCoreApplication.translate("SEXTANTE", "&SEXTANTE commander"),
+            self.iface.mainWindow())
+        self.commanderAction.triggered.connect(self.openCommander)
+        self.menu.addAction(self.commanderAction)
+        self.iface.registerMainWindowAction(self.commanderAction, "Ctrl+Alt+M")        
 
     def unload(self):
         self.toolbox.setVisible(False)
@@ -99,7 +110,15 @@ class SextantePlugin:
         folder = SextanteUtils.tempFolder()
         if QDir(folder).exists():
             shutil.rmtree(folder, True)
-
+            
+        self.iface.unregisterMainWindowAction(self.commanderAction)
+        
+    def openCommander(self):
+        dlg = CommanderWindow(self.iface.mainWindow(), self.iface.mapCanvas())
+        dlg.show()        
+        dlg.exec_()
+        
+                
     def openToolbox(self):
         if self.toolbox.isVisible():
             self.toolbox.hide()

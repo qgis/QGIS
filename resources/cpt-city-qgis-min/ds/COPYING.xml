@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://www.myspace.com/dlsdesigns">
+      <name>Diane Simoni</name>
+      <alias>Webgoddess</alias>
+    </author>
+  </authors>
+  <license>
+    <informal>Link requested</informal>
+    <year>2006</year>
+    <text href="http://webgoddess.deviantart.com/journal/10627311/">
+      1. These are the general rules. Any additional rules will be listed 
+         in the individual deviation descriptions.
+      2. My gradients can be used anywhere anytime.
+      3. If you use them on dA, I would appreciate a link back to the gradients, 
+         so other people can find them.
+      4. I would also LOVE to see your piece and I will probably fav it.
+    </text>
+  </license>
+  <src>
+    <format>GIMP gradient (ggr)</format>
+    <link href="http://webgoddess.deviantart.com/art/Fuschia-Gradients-For-Gimp-32824719">Fuscia</link>
+    <link href="http://webgoddess.deviantart.com/art/Reddish-Inspired-Gradients-42208824">Reddish grunge</link>
+    <link href="http://webgoddess.deviantart.com/art/Gradients-from-Icons-for-Gimp-42207414">Icons</link>
+    <remark>Contributed via email, Thu, 04 May 2006</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="other"/>
+  </distribute>
+</copying>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: COPYING.xml,v 1.4 2012/08/15 15:49:37 jjg Exp $ -->
+<copying>
+  <authors>
+    <author href="http://www.uni-hamburg.de/geographie/personal/professoren/boehner/">
+      <name>J. Böhner</name>
+      <org>Universität Hamburg</org>
+    </author>
+    <author href="http://www.uni-hamburg.de/geographie/personal/Mitarbeiter/conrad.html">
+      <name>O. Conrad</name>
+      <org>Universität Hamburg</org>
+    </author>
+  </authors>
+  <license>
+    <informal>GPLv2</informal>
+    <year>2012</year>
+    <text href="http://www.gnu.org/licenses/gpl-2.0.html"/>
+  </license>
+  <src>
+    <format>SAGA parameter (sprm) files</format>
+    <link href="http://www.saga-gis.org/en/index.html">SAGA homepage</link>
+    <remark>Files generated from the SAGA GUI</remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gplv2"/>
+  </distribute>
+</copying>

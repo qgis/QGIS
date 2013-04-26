@@ -436,7 +436,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   QgsDebugMsg( QString( "feature.isValid() = %1" ).arg( feature.isValid() ) );
   QTreeWidgetItem *layItem = layerItem( layer );
 
-  QgsRasterDataProvider::IdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( "identify/format" ).toString() );
+  QgsRaster::IdentifyFormat currentFormat = QgsRasterDataProvider::identifyFormatFromName( layer->customProperty( "identify/format" ).toString() );
 
   if ( layItem == 0 )
   {
@@ -450,12 +450,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     // Add all supported formats, best first. HTML is considered the best because
     // it usually holds most informations.
     int capabilities = layer->dataProvider()->capabilities();
-    QList<QgsRasterDataProvider::IdentifyFormat> formats;
-    formats << QgsRasterDataProvider::IdentifyFormatHtml
-    << QgsRasterDataProvider::IdentifyFormatFeature
-    << QgsRasterDataProvider::IdentifyFormatText
-    << QgsRasterDataProvider::IdentifyFormatValue;
-    foreach ( QgsRasterDataProvider::IdentifyFormat f, formats )
+    QList<QgsRaster::IdentifyFormat> formats;
+    formats << QgsRaster::IdentifyFormatHtml
+    << QgsRaster::IdentifyFormatFeature
+    << QgsRaster::IdentifyFormatText
+    << QgsRaster::IdentifyFormatValue;
+    foreach ( QgsRaster::IdentifyFormat f, formats )
     {
       if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) ) continue;
       formatCombo->addItem( QgsRasterDataProvider::identifyFormatLabel( f ), f );
@@ -506,7 +506,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     }
   }
 
-  if ( currentFormat == QgsRasterDataProvider::IdentifyFormatHtml )
+  if ( currentFormat == QgsRaster::IdentifyFormatHtml )
   {
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
     featItem->addChild( attrItem ); // before setHtml()!
@@ -1395,7 +1395,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
     QgsDebugMsg( "sender is not QComboBox" );
     return;
   }
-  QgsRasterDataProvider::IdentifyFormat format = ( QgsRasterDataProvider::IdentifyFormat ) combo->itemData( index, Qt::UserRole ).toInt();
+  QgsRaster::IdentifyFormat format = ( QgsRaster::IdentifyFormat ) combo->itemData( index, Qt::UserRole ).toInt();
   QgsDebugMsg( QString( "format = %1" ).arg( format ) );
   QgsRasterLayer *layer = ( QgsRasterLayer * )combo->itemData( index, Qt::UserRole + 1 ).value<void *>();
   if ( !layer )

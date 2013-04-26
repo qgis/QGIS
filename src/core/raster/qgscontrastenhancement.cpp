@@ -28,7 +28,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsContrastEnhancement::QgsContrastEnhancement( QgsRasterDataType theDataType )
+QgsContrastEnhancement::QgsContrastEnhancement( QGis::DataType theDataType )
 {
   mLookupTable = 0;
   mContrastEnhancementFunction = 0;
@@ -89,45 +89,46 @@ QgsContrastEnhancement::~QgsContrastEnhancement()
 /**
     Simple function to compute the maximum possible value for a data types.
 */
-double QgsContrastEnhancement::maximumValuePossible( QgsRasterDataType theDataType )
+double QgsContrastEnhancement::maximumValuePossible( QGis::DataType theDataType )
 {
   switch ( theDataType )
   {
-    case QGS_Byte:
+    case QGis::Byte:
       return std::numeric_limits<unsigned char>::max();
       break;
-    case QGS_UInt16:
+    case QGis::UInt16:
       return std::numeric_limits<unsigned short>::max();
       break;
-    case QGS_Int16:
+    case QGis::Int16:
       return std::numeric_limits<short>::max();
       break;
-    case QGS_UInt32:
+    case QGis::UInt32:
       return std::numeric_limits<unsigned int>::max();
       break;
-    case QGS_Int32:
+    case QGis::Int32:
       return std::numeric_limits<int>::max();
       break;
-    case QGS_Float32:
+    case QGis::Float32:
       return std::numeric_limits<float>::max();
       break;
-    case QGS_Float64:
+    case QGis::Float64:
       return std::numeric_limits<double>::max();
       break;
-    case QGS_CInt16:
+    case QGis::CInt16:
       return std::numeric_limits<short>::max();
       break;
-    case QGS_CInt32:
+    case QGis::CInt32:
       return std::numeric_limits<int>::max();
       break;
-    case QGS_CFloat32:
+    case QGis::CFloat32:
       return std::numeric_limits<float>::max();
       break;
-    case QGS_CFloat64:
+    case QGis::CFloat64:
       return std::numeric_limits<double>::max();
       break;
-    case QGS_Unknown:
-    case QGS_TypeCount:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
+    case QGis::UnknownDataType:
       // XXX - mloskot: not handled?
       break;
   }
@@ -137,45 +138,46 @@ double QgsContrastEnhancement::maximumValuePossible( QgsRasterDataType theDataTy
 /**
     Simple function to compute the minimum possible value for a data type.
 */
-double QgsContrastEnhancement::minimumValuePossible( QgsRasterDataType theDataType )
+double QgsContrastEnhancement::minimumValuePossible( QGis::DataType theDataType )
 {
   switch ( theDataType )
   {
-    case QGS_Byte:
+    case QGis::Byte:
       return std::numeric_limits<unsigned char>::min();
       break;
-    case QGS_UInt16:
+    case QGis::UInt16:
       return std::numeric_limits<unsigned short>::min();
       break;
-    case QGS_Int16:
+    case QGis::Int16:
       return std::numeric_limits<short>::min();
       break;
-    case QGS_UInt32:
+    case QGis::UInt32:
       return std::numeric_limits<unsigned int>::min();
       break;
-    case QGS_Int32:
+    case QGis::Int32:
       return std::numeric_limits<int>::min();
       break;
-    case QGS_Float32:
+    case QGis::Float32:
       return std::numeric_limits<float>::max() * -1.0;
       break;
-    case QGS_Float64:
+    case QGis::Float64:
       return std::numeric_limits<double>::max() * -1.0;
       break;
-    case QGS_CInt16:
+    case QGis::CInt16:
       return std::numeric_limits<short>::min();
       break;
-    case QGS_CInt32:
+    case QGis::CInt32:
       return std::numeric_limits<int>::min();
       break;
-    case QGS_CFloat32:
+    case QGis::CFloat32:
       return std::numeric_limits<float>::max() * -1.0;
       break;
-    case QGS_CFloat64:
+    case QGis::CFloat64:
       return std::numeric_limits<double>::max() * -1.0;
       break;
-    case QGS_Unknown:
-    case QGS_TypeCount:
+    case QGis::ARGB32:
+    case QGis::ARGB32_Premultiplied:
+    case QGis::UnknownDataType:
       // XXX - mloskot: not handled?
       break;
   }
@@ -224,7 +226,7 @@ bool QgsContrastEnhancement::generateLookupTable()
     return false;
   if ( NoEnhancement == mContrastEnhancementAlgorithm )
     return false;
-  if ( QGS_Byte != mRasterDataType && QGS_UInt16 != mRasterDataType && QGS_Int16 != mRasterDataType )
+  if ( QGis::Byte != mRasterDataType && QGis::UInt16 != mRasterDataType && QGis::Int16 != mRasterDataType )
     return false;
   if ( !mLookupTable )
     return false;

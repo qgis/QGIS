@@ -101,6 +101,8 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     bool hasChildren();
 
     int rowCount();
+    // retrieve total count of "leaf" items (all children which are end nodes)
+    virtual int leafCount() const;
 
     //
 
@@ -196,15 +198,18 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
   public:
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
                              QString name, QString path,
-                             QString variantName = QString() );
+                             QString variantName = QString(),
+                             bool initialize = false );
     QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
                              QString name, QString path,
-                             QStringList variantList );
+                             QStringList variantList,
+                             bool initialize = false );
     ~QgsCptCityColorRampItem() {}
 
     // --- reimplemented from QgsCptCityDataItem ---
 
     virtual bool equal( const QgsCptCityDataItem *other );
+    virtual int leafCount() const { return 1; }
 
     // --- New virtual methods for layer item derived classes ---
     const QgsCptCityColorRampV2& ramp() const { return mRamp; }

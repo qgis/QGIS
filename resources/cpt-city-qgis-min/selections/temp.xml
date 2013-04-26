@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="temp">Temperature</name>
+  <synopsis>Palettes for temperature</synopsis>
+  <description>Palettes for temperature.</description>
+  <gradients>
+    <gradient dir="oc" file="sst"/>
+    <gradient dir="jjg/misc" file="temperature"/>
+    <gradient dir="grass" file="celsius"/>
+    <gradient dir="ukmo/wow" file="temp-c"/>
+    <gradient dir="ncl" file="temp_19lev"/>
+  </gradients>
+</selection>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Horizon 2" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(12,92,146)" stop-opacity="1.0000"/>
+        <stop offset="29.05%" stop-color="rgb(53,126,173)" stop-opacity="1.0000"/>
+        <stop offset="34.89%" stop-color="rgb(94,160,201)" stop-opacity="1.0000"/>
+        <stop offset="47.08%" stop-color="rgb(175,206,226)" stop-opacity="1.0000"/>
+        <stop offset="53.26%" stop-color="rgb(255,251,251)" stop-opacity="1.0000"/>
+        <stop offset="54.03%" stop-color="rgb(61,79,106)" stop-opacity="1.0000"/>
+        <stop offset="54.81%" stop-color="rgb(21,43,76)" stop-opacity="1.0000"/>
+        <stop offset="55.59%" stop-color="rgb(10,34,68)" stop-opacity="1.0000"/>
+        <stop offset="56.54%" stop-color="rgb(80,134,167)" stop-opacity="1.0000"/>
+        <stop offset="57.48%" stop-color="rgb(104,168,201)" stop-opacity="1.0000"/>
+        <stop offset="58.43%" stop-color="rgb(119,189,222)" stop-opacity="1.0000"/>
+        <stop offset="59.38%" stop-color="rgb(127,201,233)" stop-opacity="1.0000"/>
+        <stop offset="60.32%" stop-color="rgb(132,208,240)" stop-opacity="1.0000"/>
+        <stop offset="61.27%" stop-color="rgb(133,210,242)" stop-opacity="1.0000"/>
+        <stop offset="75.46%" stop-color="rgb(78,122,153)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(22,33,64)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Horizon 2)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:21 2012"/>
+  </metadata>
+</svg>

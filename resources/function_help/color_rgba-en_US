@@ -1,0 +1,17 @@
+
+<h3>color_rgba() function</h3>
+Returns a string representation of a color based on its red, green, blue, and alpha (transparency) components
+
+<p><h4>Syntax</h4>
+     color_rgba(<i>red, green, blue, alpha</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  red</i> &rarr; the red component as an integer value from 0 to 255.<br>
+<i>  green</i> &rarr; the green component as an integer value from 0 to 255.<br>
+<i>  blue</i> &rarr; the blue component as an integer value from 0 to 255.<br>
+<i>  alpha</i> &rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).<br>
+
+<p><h4>Example</h4>
+<!-- Show example of function.-->
+     color_rgba(255,127,0,200) &rarr; '255,127,0,200'</p>

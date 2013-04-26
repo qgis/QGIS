@@ -24,10 +24,14 @@
 #include <QPushButton>
 #include <QTextEdit>
 #include <QTime>
-#include <QErrorMessage>
+#include <QMessageBox>
 #include <QSortFilterProxyModel>
 
 /////////
+
+// TODO
+// - fix Diverging children when first show Selections
+// - fix crash on Diverging?
 
 class TreeFilterProxyModel : public QSortFilterProxyModel
 {
@@ -86,11 +90,11 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
                            "and use it to download latest cpt-city package.\n"
                            "You can install the entire cpt-city archive or a selection for QGIS.\n\n"
                            "2) Download the complete archive (in svg format) "
-                           "and unzip it to your QGis settings directory [%1] .\n\n"
+                           "and unzip it to your QGIS settings directory [%1] .\n\n"
                            "This file can be found at [%2]\nand current file is [%3]"
                          ).arg( QgsApplication::qgisSettingsDirPath()
                               ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/"
-                                   ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.02.zip" );
+                                   ).arg( "http://soliton.vm.bytemark.co.uk/pub/cpt-city/pkg/cpt-city-svg-2.07.zip" );
     edit->setText( helpText );
     mStackedWidget->addWidget( edit );
     mStackedWidget->setCurrentIndex( 1 );
@@ -162,22 +166,6 @@ QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2*
   tabBar->blockSignals( false );
 
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
-
-  // TODO - remove this when basic archive is complete
-  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE )
-    tabBar->setCurrentIndex( 1 );
-
-  // show error message to use color ramp manager to get more gradients
-  if ( mArchive->archiveName() == DEFAULT_CPTCITY_ARCHIVE &&
-       QgsCptCityArchive::archiveRegistry().count() == 1 )
-  {
-    QString helpText = tr( "You can download a more complete set of cpt-city gradients "
-                           "by installing the \"Color Ramp Manager\" plugin "
-                           "(you must enable Experimental plugins in the plugin manager).\n\n"
-                         );
-    QErrorMessage* msg = new QErrorMessage( this );
-    msg->showMessage( helpText, "cpt-city" );
-  }
 
 }
 
@@ -285,26 +273,24 @@ void QgsCptCityColorRampV2Dialog::updateTreeView( QgsCptCityDataItem *item, bool
       lblSchemeName->setText( "" );
       populateVariants();
     }
-    lblSchemePath->setText( item->path() );
-    lblCollectionInfo->setText( item->info() );
-    updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
     updateListWidget( item );
+    lblSchemePath->setText( item->path() );
+    lblCollectionInfo->setText( QString( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
+    updateCopyingInfo( mArchive->copyingInfo( mArchive->copyingFileName( item->path() ) ) );
   }
   else if ( item->type() == QgsCptCityDataItem::Selection )
   {
     lblSchemePath->setText( "" );
-    // lblCollectionName->setText( item->path() );
-    lblCollectionInfo->setText( item->info() );
     clearCopyingInfo( );
     updateListWidget( item );
+    lblCollectionInfo->setText( QString( "%1 (%2)" ).arg( item->info() ).arg( item->leafCount() ) );
   }
   else if ( item->type() == QgsCptCityDataItem::AllRamps )
   {
     lblSchemePath->setText( "" );
-    // lblCollectionName->setText( item->path() );
     clearCopyingInfo( );
     updateListWidget( item );
-    lblCollectionInfo->setText( tr( "All Ramps (%1)" ).arg( item->rowCount() ) );
+    lblCollectionInfo->setText( tr( "All Ramps (%1)" ).arg( item->leafCount() ) );
   }
   else
   {
@@ -499,6 +485,18 @@ void QgsCptCityColorRampV2Dialog::onFinished()
   settings.setValue( "/Windows/CptCityColorRampV2Dialog/splitter", mSplitter->saveState() );
 }
 
+void QgsCptCityColorRampV2Dialog::on_buttonBox_helpRequested()
+{
+  // show error message to use color ramp manager to get more gradients
+  QString helpText = tr( "You can download a more complete set of cpt-city gradients "
+                         "by installing the \"Color Ramp Manager\" plugin "
+                         "(you must enable Experimental plugins in the plugin manager).\n\n"
+                       );
+  QMessageBox* msg = new QMessageBox( this );
+  msg->setText( helpText );
+  msg->exec();
+}
+
 bool QgsCptCityColorRampV2Dialog::saveAsGradientRamp() const
 {
   QgsDebugMsg( QString( "result: %1 checked: %2" ).arg( result() ).arg( cboConvertStandard->isChecked() ) );
@@ -508,12 +506,12 @@ bool QgsCptCityColorRampV2Dialog::saveAsGradientRamp() const
 
 void QgsCptCityColorRampV2Dialog::updateListWidget( QgsCptCityDataItem *item )
 {
+  mListWidget->clear();
+  mListRamps.clear();
   QgsCptCityCollectionItem* colItem = dynamic_cast<QgsCptCityCollectionItem*>( item );
   if ( colItem )
   {
     QgsDebugMsg( "path= " + item->path() );
-    mListWidget->clear();
-    mListRamps.clear();
     // recursively get children ramps
     QVector<QgsCptCityDataItem*> childrenRamps = colItem->childrenRamps( true );
     for ( int i = 0; i < childrenRamps.count(); i++ )
@@ -536,7 +534,6 @@ void QgsCptCityColorRampV2Dialog::updateListWidget( QgsCptCityDataItem *item )
   else
   {
     QgsDebugMsg( "invalid item" );
-    mListWidget->clear();
   }
 }
 

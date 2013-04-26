@@ -189,7 +189,7 @@ bool QgsWmsProvider::parseUri( QString uriString )
   if ( uri.hasParam( "tileDimensions" ) )
   {
     mTiled = true;
-    foreach ( QString param, uri.params( "tileDimensions" ) )
+    foreach ( QString param, uri.param( "tileDimensions" ).split( ";" ) )
     {
       QStringList kv = param.split( "=" );
       if ( kv.size() == 1 )
@@ -1424,19 +1424,19 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
           //      GML.1, GML.2, or GML.3
           // 1.1.0, 1.3.0 - mime types, GML should use application/vnd.ogc.gml
           //      but in UMN Mapserver it may be also OUTPUTFORMAT, e.g. OGRGML
-          IdentifyFormat format = IdentifyFormatUndefined;
+          QgsRaster::IdentifyFormat format = QgsRaster::IdentifyFormatUndefined;
           if ( f == "MIME" )
-            format = IdentifyFormatText; // 1.0
+            format = QgsRaster::IdentifyFormatText; // 1.0
           else if ( f == "text/plain" )
-            format = IdentifyFormatText;
+            format = QgsRaster::IdentifyFormatText;
           else if ( f == "text/html" )
-            format = IdentifyFormatHtml;
+            format = QgsRaster::IdentifyFormatHtml;
           else if ( f.startsWith( "GML." ) )
-            format = IdentifyFormatFeature; // 1.0
+            format = QgsRaster::IdentifyFormatFeature; // 1.0
           else if ( f == "application/vnd.ogc.gml" )
-            format = IdentifyFormatFeature;
+            format = QgsRaster::IdentifyFormatFeature;
           else if ( f.contains( "gml", Qt::CaseInsensitive ) )
-            format = IdentifyFormatFeature;
+            format = QgsRaster::IdentifyFormatFeature;
 
           mIdentifyFormats.insert( format, f );
 #if 0
@@ -3357,7 +3357,7 @@ int QgsWmsProvider::identifyCapabilities() const
 {
   int capability = NoCapabilities;
 
-  foreach ( IdentifyFormat f, mIdentifyFormats.keys() )
+  foreach ( QgsRaster::IdentifyFormat f, mIdentifyFormats.keys() )
   {
     capability |= identifyFormatToCapability( f );
   }
@@ -3918,7 +3918,7 @@ QString QgsWmsProvider::metadata()
   return metadata;
 }
 
-QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( QString( "theFormat = %1" ).arg( theFormat ) );
   QStringList resultStrings;
@@ -4117,13 +4117,13 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Ide
       }
     }
 
-    if ( theFormat == IdentifyFormatHtml || theFormat == IdentifyFormatText )
+    if ( theFormat == QgsRaster::IdentifyFormatHtml || theFormat == QgsRaster::IdentifyFormatText )
     {
       //resultStrings << mIdentifyResult;
       //results.insert( count, mIdentifyResult );
       results.insert( count, QString::fromUtf8( mIdentifyResultBodies.value( 0 ) ) );
     }
-    else if ( theFormat == IdentifyFormatFeature ) // GML
+    else if ( theFormat == QgsRaster::IdentifyFormatFeature ) // GML
     {
       // The response maybe
       // 1) simple GML
@@ -4290,12 +4290,12 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Ide
 #if 0
   QString str;
 
-  if ( theFormat == IdentifyFormatHtml )
+  if ( theFormat == QgsRaster::IdentifyFormatHtml )
   {
     str = "<table>\n<tr><td>" + resultStrings.join( "</td></tr>\n<tr><td>" ) + "</td></tr>\n</table>";
     results.insert( 1, str );
   }
-  else if ( theFormat == IdentifyFormatText )
+  else if ( theFormat == QgsRaster::IdentifyFormatText )
   {
     str = resultStrings.join( "\n-------------\n" );
     results.insert( 1, str );

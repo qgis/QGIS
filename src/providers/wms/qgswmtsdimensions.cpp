@@ -45,8 +45,6 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
     int idx = cb->findText( d.defaultValue );
     cb->setCurrentIndex( idx < 0 ? 0 : idx );
     mDimensions->setCellWidget( i, 4, cb );
-
-    i++;
   }
 
   QSettings settings;

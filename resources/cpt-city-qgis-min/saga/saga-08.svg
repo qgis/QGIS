@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="saga-08" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+        <stop offset="5.26%" stop-color="rgb(241,248,241)" stop-opacity="1.0000"/>
+        <stop offset="10.53%" stop-color="rgb(228,241,228)" stop-opacity="1.0000"/>
+        <stop offset="15.79%" stop-color="rgb(214,234,214)" stop-opacity="1.0000"/>
+        <stop offset="21.05%" stop-color="rgb(201,228,201)" stop-opacity="1.0000"/>
+        <stop offset="26.32%" stop-color="rgb(187,221,187)" stop-opacity="1.0000"/>
+        <stop offset="31.58%" stop-color="rgb(174,214,174)" stop-opacity="1.0000"/>
+        <stop offset="36.84%" stop-color="rgb(161,207,161)" stop-opacity="1.0000"/>
+        <stop offset="42.11%" stop-color="rgb(147,201,147)" stop-opacity="1.0000"/>
+        <stop offset="47.37%" stop-color="rgb(134,194,134)" stop-opacity="1.0000"/>
+        <stop offset="52.63%" stop-color="rgb(120,187,120)" stop-opacity="1.0000"/>
+        <stop offset="57.89%" stop-color="rgb(107,180,107)" stop-opacity="1.0000"/>
+        <stop offset="63.16%" stop-color="rgb(93,174,93)" stop-opacity="1.0000"/>
+        <stop offset="68.42%" stop-color="rgb(80,167,80)" stop-opacity="1.0000"/>
+        <stop offset="73.68%" stop-color="rgb(67,160,67)" stop-opacity="1.0000"/>
+        <stop offset="78.95%" stop-color="rgb(53,153,53)" stop-opacity="1.0000"/>
+        <stop offset="84.21%" stop-color="rgb(40,147,40)" stop-opacity="1.0000"/>
+        <stop offset="89.47%" stop-color="rgb(26,140,26)" stop-opacity="1.0000"/>
+        <stop offset="94.74%" stop-color="rgb(13,133,13)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(0,127,0)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#saga-08)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:30:22 2012"/>
+  </metadata>
+</svg>

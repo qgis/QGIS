@@ -555,6 +555,22 @@ int QgsCptCityDataItem::rowCount()
   //   populate();
   return mChildren.size();
 }
+
+int QgsCptCityDataItem::leafCount() const
+{
+  if ( !mPopulated )
+    return 0;
+
+  int count = 0;
+  foreach ( QgsCptCityDataItem *child, mChildren )
+  {
+    if ( child )
+      count += child->leafCount();
+  }
+  return count;
+}
+
+
 bool QgsCptCityDataItem::hasChildren()
 {
   return ( mPopulated ? mChildren.count() > 0 : true );
@@ -692,23 +708,25 @@ bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other )
 // ---------------------------------------------------------------------
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
-    QString name, QString path, QString variantName )
+    QString name, QString path, QString variantName, bool initialize )
     : QgsCptCityDataItem( ColorRamp, parent, name, path ),
     mInitialised( false ), mRamp( path, variantName, false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
   mPopulated = true;
-  //init();
+  if ( initialize )
+    init();
 }
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
-    QString name, QString path, QStringList variantList )
+    QString name, QString path, QStringList variantList, bool initialize )
     : QgsCptCityDataItem( ColorRamp, parent, name, path ),
     mInitialised( false ), mRamp( path, variantList, QString(), false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
   mPopulated = true;
-  //init();
+  if ( initialize )
+    init();
 }
 
 // TODO only load file when icon is requested...
@@ -833,6 +851,7 @@ QgsCptCityCollectionItem::~QgsCptCityCollectionItem()
 QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool recursive )
 {
   QVector< QgsCptCityDataItem* > rampItems;
+  QVector< QgsCptCityDataItem* > deleteItems;
 
   populate();
 
@@ -853,13 +872,25 @@ QVector< QgsCptCityDataItem* > QgsCptCityCollectionItem::childrenRamps( bool rec
       rampItem->init();
       if ( rampItem->isValid() )
         rampItems << rampItem;
-      // should also delete item from parent, but we are in a loop now
+      else
+        deleteItems << rampItem;
     }
     else
     {
       QgsDebugMsg( "invalid item " + childItem->path() );
     }
   }
+
+  // delete invalid items - this is not efficient, but should only happens once
+  foreach ( QgsCptCityDataItem* deleteItem, deleteItems )
+  {
+    QgsDebugMsg( QString( "item %1 is invalid, will be deleted" ).arg( deleteItem->path() ) );
+    int i = mChildren.indexOf( deleteItem );
+    if ( i != -1 )
+      mChildren.remove( i );
+    delete deleteItem;
+  }
+
   return rampItems;
 }
 
@@ -1178,11 +1209,17 @@ QVector<QgsCptCityDataItem*> QgsCptCitySelectionItem::createChildren()
       QgsCptCityDataItem* childItem =
         QgsCptCityDirectoryItem::dataItem( this, childPath, childPath );
       if ( childItem )
-        children << childItem;
+      {
+        if ( childItem->isValid() )
+          children << childItem;
+        else
+          delete childItem;
+      }
     }
     else
     {
-      item = new QgsCptCityColorRampItem( this, childPath, childPath );
+      // init item to test if is valid after loading file
+      item = new QgsCptCityColorRampItem( this, childPath, childPath, QString(), true );
       if ( item->isValid() )
         children << item;
       else

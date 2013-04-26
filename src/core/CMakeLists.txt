@@ -179,6 +179,7 @@ SET(QGIS_CORE_SRCS
   pal/rtree.hpp
 
   raster/qgscliptominmaxenhancement.cpp
+  raster/qgsraster.cpp
   raster/qgsrasterblock.cpp
   raster/qgscolorrampshader.cpp
   raster/qgscontrastenhancement.cpp
@@ -455,6 +456,7 @@ SET(QGIS_CORE_HDRS
   composer/qgslegendmodel.h
   composer/qgscomposerlegenditem.h
 
+  raster/qgsraster.h
   raster/qgsrasterblock.h
   raster/qgsrasterdataprovider.h
   raster/qgsrasterresamplefilter.h
