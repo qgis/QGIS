@@ -1336,7 +1336,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     }
     if ( featureBBox && geom && mapRender ) //extend feature info bounding box if requested
     {
-      QgsRectangle box = mapRender->layerExtentToOutputExtent( layer, geom->boundingBox() );
+      QgsRectangle box = mapRender->layerToMapCoordinates( layer, geom->boundingBox() );
       if ( featureBBox->isEmpty() )
       {
         *featureBBox = box;

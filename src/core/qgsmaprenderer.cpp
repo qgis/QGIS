@@ -823,50 +823,6 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
   return split;
 }
 
-QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent )
-{
-  QgsDebugMsg( QString( "sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
-  QgsDebugMsg( QString( "destCRS = " + tr( theLayer )->destCRS().authid() ) );
-  QgsDebugMsg( QString( "extent = " + extent.toString() ) );
-  if ( hasCrsTransformEnabled() )
-  {
-    try
-    {
-      extent = tr( theLayer )->transformBoundingBox( extent );
-    }
-    catch ( QgsCsException &cse )
-    {
-      QgsMessageLog::logMessage( tr( "Transform error caught: %1" ).arg( cse.what() ), tr( "CRS" ) );
-    }
-  }
-
-  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
-
-  return extent;
-}
-
-QgsRectangle QgsMapRenderer::outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent )
-{
-  QgsDebugMsg( QString( "layer sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
-  QgsDebugMsg( QString( "layer destCRS = " + tr( theLayer )->destCRS().authid() ) );
-  QgsDebugMsg( QString( "extent = " + extent.toString() ) );
-  if ( hasCrsTransformEnabled() )
-  {
-    try
-    {
-      extent = tr( theLayer )->transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
-    }
-    catch ( QgsCsException &cse )
-    {
-      QgsMessageLog::logMessage( tr( "Transform error caught: %1" ).arg( cse.what() ), tr( "CRS" ) );
-    }
-  }
-
-  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
-
-  return extent;
-}
-
 QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point )
 {
   if ( hasCrsTransformEnabled() )
@@ -886,6 +842,28 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
     // leave point without transformation
   }
   return point;
+}
+
+
+QgsRectangle QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect )
+{
+  if ( hasCrsTransformEnabled() )
+  {
+    try
+    {
+      rect = tr( theLayer )->transform( rect, QgsCoordinateTransform::ForwardTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      QgsDebugMsg( QString( "Transform error caught: %1" ).arg( cse.what() ) );
+    }
+  }
+  else
+  {
+    // leave point without transformation
+  }
+  return rect;
 }
 
 QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point )
@@ -954,7 +932,7 @@ void QgsMapRenderer::updateFullExtent()
 
       // Layer extents are stored in the coordinate system (CS) of the
       // layer. The extent must be projected to the canvas CS
-      QgsRectangle extent = layerExtentToOutputExtent( lyr, lyr->extent() );
+      QgsRectangle extent = layerToMapCoordinates( lyr, lyr->extent() );
 
       QgsDebugMsg( "Output extent: " + extent.toString() );
       mFullExtent.unionRect( extent );

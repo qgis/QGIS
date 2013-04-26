@@ -730,7 +730,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
     return;
   }
 
-  QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  QgsRectangle rect = mMapRenderer->layerToMapCoordinates( layer, layer->boundingBoxOfSelected() );
 
   // no selected features, only one selected point feature
   //or two point features with the same x- or y-coordinates
@@ -777,7 +777,7 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
     return;
   }
 
-  QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  QgsRectangle rect = mMapRenderer->layerToMapCoordinates( layer, layer->boundingBoxOfSelected() );
   setExtent( QgsRectangle( rect.center(), rect.center() ) );
   refresh();
 } // panToSelected

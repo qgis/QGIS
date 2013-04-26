@@ -2656,7 +2656,7 @@ void QgsLegend::legendLayerZoom()
       QgsMapRenderer* renderer = mMapCanvas->mapRenderer();
       if ( renderer )
       {
-        extent = renderer->layerExtentToOutputExtent( theLayer, extent );
+        extent = renderer->layerToMapCoordinates( theLayer, extent );
       }
     }
   }
@@ -2678,7 +2678,7 @@ void QgsLegend::legendLayerZoom()
         QgsMapRenderer* renderer = mMapCanvas->mapRenderer();
         if ( renderer )
         {
-          layerExtent = renderer->layerExtentToOutputExtent( theLayer, layerExtent );
+          layerExtent = renderer->layerToMapCoordinates( theLayer, layerExtent );
         }
       }
 
@@ -2756,7 +2756,7 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
     QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm = QgsContrastEnhancement::StretchToMinimumMaximum;
 
     QgsRectangle myRectangle;
-    myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( layer, mMapCanvas->extent() );
+    myRectangle = mMapCanvas->mapRenderer()->mapToLayerCoordinates( layer, mMapCanvas->extent() );
     layer->setContrastEnhancementAlgorithm( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
 
     layer->setCacheImage( NULL );

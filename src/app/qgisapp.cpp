@@ -6486,7 +6486,7 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhance
   }
 
   QgsRectangle myRectangle;
-  if ( visibleAreaOnly ) myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
+  if ( visibleAreaOnly ) myRectangle = mMapCanvas->mapRenderer()->mapToLayerCoordinates( myRasterLayer, mMapCanvas->extent() );
 
   myRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
 
