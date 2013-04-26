@@ -1,0 +1,16 @@
+
+<h3>color_hsl() function</h3>
+Returns a string representation of a color based on its hue, saturation, and lightness attributes
+
+<p><h4>Syntax</h4>
+     color_hsl(<i>hue, saturation, lightness</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  hue</i> &rarr; the hue of the color, as an integer value from 0 to 360.<br>
+<i>  saturation</i> &rarr; the saturation of the color as an integer value from 0 to 100.<br>
+<i>  lightness</i> &rarr; the lightness of the color as an integer value from 0 to 100.<br>
+
+<p><h4>Example</h4>
+<!-- Show example of function.-->
+     color_hsl(100,50,70) &rarr; '#a6d98c'</p>

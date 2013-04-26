@@ -319,6 +319,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "#fdbe73" );
       QTest::newRow( "color rgb" ) << "color_rgb(255,127,0)" << false << QVariant( "#ff7f00" );
       QTest::newRow( "color rgba" ) << "color_rgba(255,127,0,200)" << false << QVariant( "255,127,0,200" );
+      QTest::newRow( "color hsl" ) << "color_hsl(100,50,70)" << false << QVariant( "#a6d98c" );
+      QTest::newRow( "color hsla" ) << "color_hsla(100,50,70,200)" << false << QVariant( "166,217,140,200" );
     }
 
     void evaluation()

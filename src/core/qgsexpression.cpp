@@ -1023,6 +1023,46 @@ QVariant fcnRampColor( const QVariantList &values, QgsFeature *, QgsExpression *
   return color.name();
 }
 
+static QVariant fcnColorHsl( const QVariantList &values, QgsFeature *, QgsExpression *parent )
+{
+  // Hue ranges from 0 - 360
+  double hue = getIntValue( values.at( 0 ), parent ) / 360.0;
+  // Saturation ranges from 0 - 100
+  double saturation = getIntValue( values.at( 1 ), parent ) / 100.0;
+  // Lightness ranges from 0 - 100
+  double lightness = getIntValue( values.at( 2 ), parent ) / 100.0;
+
+  QColor color = QColor::fromHslF( hue, saturation, lightness );
+
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3' to color" ).arg( hue ).arg( saturation ).arg( lightness ) );
+    color = QColor( 0, 0, 0 );
+  }
+
+  return color.name();
+}
+
+static QVariant fncColorHsla( const QVariantList &values, QgsFeature *, QgsExpression *parent )
+{
+  // Hue ranges from 0 - 360
+  double hue = getIntValue( values.at( 0 ), parent ) / 360.0;
+  // Saturation ranges from 0 - 100
+  double saturation = getIntValue( values.at( 1 ), parent ) / 100.0;
+  // Lightness ranges from 0 - 100
+  double lightness = getIntValue( values.at( 2 ), parent ) / 100.0;
+  // Alpha ranges from 0 - 255
+  double alpha = getIntValue( values.at( 3 ), parent ) / 255.0;
+
+  QColor color = QColor::fromHslF( hue, saturation, lightness, alpha );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( hue ).arg( saturation ).arg( lightness ).arg( alpha ) );
+    color = QColor( 0, 0, 0 );
+  }
+  return QgsSymbolLayerV2Utils::encodeColor( color );
+}
+
 static QVariant fcnSpecialColumn( const QVariantList& values, QgsFeature* /*f*/, QgsExpression* parent )
 {
   QString varName = getStringValue( values.at( 0 ), parent );
@@ -1078,6 +1118,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "right" << "rpad" << "lpad"
     << "format_number" << "format_date"
     << "color_rgb" << "color_rgba" << "ramp_color"
+    << "color_hsl" << "color_hsla"
     << "xat" << "yat" << "$area"
     << "$length" << "$perimeter" << "$x" << "$y"
     << "$rownum" << "$id" << "$scale" << "_specialcol_";
@@ -1142,6 +1183,8 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "color_rgb", 3, fcnColorRgb, QObject::tr( "Color" ) )
     << new StaticFunction( "color_rgba", 4, fncColorRgba, QObject::tr( "Color" ) )
     << new StaticFunction( "ramp_color", 2, fcnRampColor, QObject::tr( "Color" ) )
+    << new StaticFunction( "color_hsl", 3, fcnColorHsl, QObject::tr( "Color" ) )
+    << new StaticFunction( "color_hsla", 4, fncColorHsla, QObject::tr( "Color" ) )
     << new StaticFunction( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "$area", 0, fcnGeomArea, QObject::tr( "Geometry" ), "", true )
