@@ -475,7 +475,7 @@ void QgsProjectProperties::setMapUnits( QGis::UnitType unit )
   }
 
   radMeters->setChecked( unit == QGis::Meters );
-  radFeet->setChecked( unit == QGis::Feet );
+  radFeet->setChecked( unit == QGis::Feet );      
   radDegrees->setChecked( unit == QGis::Degrees );
 
   mMapCanvas->mapRenderer()->setMapUnits( unit );

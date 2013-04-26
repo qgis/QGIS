@@ -398,6 +398,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   {
     radFeet->setChecked( true );
   }
+  else if ( myDisplayUnits == QGis::NauticalMiles )
+  {
+    radNautical->setChecked( true );
+  }
   else
   {
     radMeters->setChecked( true );
@@ -1130,6 +1134,10 @@ void QgsOptions::saveOptions()
   if ( radFeet->isChecked() )
   {
     settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Feet ) );
+  }
+  else if ( radNautical->isChecked() )
+  {
+    settings.setValue( "/qgis/measure/displayunits", QGis::toLiteral( QGis::NauticalMiles ) );
   }
   else
   {

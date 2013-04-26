@@ -919,6 +919,17 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
         }
       }
       break;
+    //ADDS NAUTICAL MILES TO SWITCH
+    case QGis::NauticalMiles:
+      if ( isArea )
+      {
+          unitLabel = QObject::tr( " sq. NM" );
+        }
+      else
+      {
+          unitLabel = QObject::tr( " NM" );
+        }
+      break;
     case QGis::Degrees:
       if ( isArea )
       {
@@ -946,8 +957,9 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
 {
   // Helper for converting between meters and feet
   // The parameters measure and measureUnits are in/out
+  // ADDED BY JTORNERO --> CONVERSION TO NAUTICAL MILES
 
-  if (( measureUnits == QGis::Degrees || measureUnits == QGis::Feet ) &&
+  if (( measureUnits == QGis::Degrees || measureUnits == QGis::Feet || measureUnits==QGis::NauticalMiles) &&
       mEllipsoid != GEO_NONE &&
       mEllipsoidalMode )
   {
@@ -978,5 +990,52 @@ void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measu
     }
     QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
     measureUnits = QGis::Meters;
+  }
+  
+  //NAUTICAL MILES TO METERS
+    if ( measureUnits == QGis::Meters && displayUnits == QGis::NauticalMiles )
+  {
+    QgsDebugMsg( QString( "Converting %1 meters" ).arg( QString::number( measure ) ) );
+    measure /= 1852.0;
+    if ( isArea )
+    {
+      measure /= 1852.0;
+    }
+    QgsDebugMsg( QString( "to %1 nautical miles" ).arg( QString::number( measure ) ) );
+    measureUnits = QGis::NauticalMiles;
+  }
+  /*if ( measureUnits == QGis::NauticalMiles && displayUnits == QGis::Meters )
+  {
+    QgsDebugMsg( QString( "Converting %1 nautical miles" ).arg( QString::number( measure ) ) );
+    measure *= 1852.0;
+    if ( isArea )
+    {
+      measure *= 1852.0;
+    }
+    QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
+    measureUnits = QGis::Meters;
+  }*/
+  //NAUTICAL MILES TO FEET
+    if ( measureUnits == QGis::Feet && displayUnits == QGis::NauticalMiles )
+  {
+    QgsDebugMsg( QString( "Converting %1 meters" ).arg( QString::number( measure ) ) );
+    measure /= 6076.12;
+    if ( isArea )
+    {
+      measure /= 6076.12;
+    }
+    QgsDebugMsg( QString( "to %1 nautical miles" ).arg( QString::number( measure ) ) );
+    measureUnits = QGis::Feet;
+  }
+  if ( measureUnits == QGis::NauticalMiles && displayUnits == QGis::Feet )
+  {
+    QgsDebugMsg( QString( "Converting %1 nautical miles" ).arg( QString::number( measure ) ) );
+    measure *= 6076.12;
+    if ( isArea )
+    {
+      measure *= 6076.12;
+    }
+    QgsDebugMsg( QString( "to %1 meters" ).arg( QString::number( measure ) ) );
+    measureUnits = QGis::Feet;
   }
 }
