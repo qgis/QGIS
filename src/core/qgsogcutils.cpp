@@ -1267,11 +1267,11 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
         {
           if ( jdx != 0 )
           {
-            coordString += cs;
+            coordString += ts;
           }
           x = ( double * ) ptr;
           coordString += QString::number( *x, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );
-          coordString += ts;
+          coordString += cs;
           ptr += sizeof( double );
           y = ( double * ) ptr;
           coordString += QString::number( *y, 'f', 8 ).remove( QRegExp( "[0]{1,7}$" ) );

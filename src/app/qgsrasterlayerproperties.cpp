@@ -939,7 +939,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QString res = provider->buildPyramids(
                   myPyramidList,
                   cboResamplingMethod->itemData( cboResamplingMethod->currentIndex() ).toString(),
-                  ( QgsRasterDataProvider::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
+                  ( QgsRaster::RasterPyramidsFormat ) cbxPyramidsFormat->currentIndex() );
   QApplication::restoreOverrideCursor();
   mPyramidProgress->setValue( 0 );
   buttonBuildPyramids->setEnabled( false );
@@ -1447,7 +1447,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
     int myWidth = mMapCanvas->extent().width() / mapUnitsPerPixel;
     int myHeight = mMapCanvas->extent().height() / mapUnitsPerPixel;
 
-    QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint,  QgsRasterDataProvider::IdentifyFormatValue, myExtent, myWidth, myHeight ).results();
+    QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint,  QgsRaster::IdentifyFormatValue, myExtent, myWidth, myHeight ).results();
 
     QList<int> bands = renderer->usesBands();
 

@@ -126,6 +126,8 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button
 
   mPointFromCanvasPushButton->setChecked( false );
   buttonBox->button( QDialogButtonBox::Ok )->setFocus();
+  activateWindow();
+  raise();
 }
 
 void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )

@@ -132,7 +132,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   double redMax = mRedMaxLineEdit->text().toDouble( &redMaxOk );
   if ( redMinOk && redMaxOk )
   {
-    redEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+    redEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           provider->dataType( redBand ) ) );
     redEnhancement->setMinimumValue( redMin );
     redEnhancement->setMaximumValue( redMax );
@@ -143,7 +143,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   double greenMax = mGreenMaxLineEdit->text().toDouble( &greenMaxOk );
   if ( greenMinOk && greenMaxOk )
   {
-    greenEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+    greenEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           provider->dataType( greenBand ) ) );
     greenEnhancement->setMinimumValue( greenMin );
     greenEnhancement->setMaximumValue( greenMax );
@@ -154,7 +154,7 @@ void QgsMultiBandColorRendererWidget::setCustomMinMaxValues( QgsMultiBandColorRe
   double blueMax = mBlueMaxLineEdit->text().toDouble( &blueMaxOk );
   if ( blueMinOk && blueMaxOk )
   {
-    blueEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )(
+    blueEnhancement = new QgsContrastEnhancement(( QGis::DataType )(
           provider->dataType( blueBand ) ) );
     blueEnhancement->setMinimumValue( blueMin );
     blueEnhancement->setMaximumValue( blueMax );

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author>
+      <name>Piecrust Design</name>
+    </author>
+  </authors>
+  <license>
+    <informal>Public domain</informal>
+    <year>2007</year>
+  </license>
+  <src>
+    <format>PNG file</format>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="otherok"/>
+  </distribute>
+</copying>

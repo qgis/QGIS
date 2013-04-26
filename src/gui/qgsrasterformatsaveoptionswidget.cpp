@@ -35,7 +35,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* par
     QgsRasterFormatSaveOptionsWidget::Type type, QString provider )
     : QWidget( parent ), mFormat( format ), mProvider( provider ), mRasterLayer( 0 ),
     mRasterFileName( QString() ), mPyramids( false ),
-    mPyramidsFormat( QgsRasterDataProvider::PyramidsGTiff )
+    mPyramidsFormat( QgsRaster::PyramidsGTiff )
 
 {
   setupUi( this );

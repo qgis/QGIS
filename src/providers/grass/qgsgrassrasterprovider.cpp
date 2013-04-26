@@ -423,7 +423,7 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   Q_UNUSED( theExtent );
   Q_UNUSED( theWidth );
@@ -432,9 +432,9 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   QMap<int, QVariant> results;
   QMap<int, QVariant> noDataResults;
   noDataResults.insert( 1, QVariant() );
-  QgsRasterIdentifyResult noDataResult( IdentifyFormatValue, results );
+  QgsRasterIdentifyResult noDataResult( QgsRaster::IdentifyFormatValue, results );
 
-  if ( theFormat != IdentifyFormatValue )
+  if ( theFormat != QgsRaster::IdentifyFormatValue )
   {
     return QgsRasterIdentifyResult( ERROR( tr( "Format not supported" ) ) );
   }
@@ -471,7 +471,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
 
   results.insert( 1, value );
 
-  return QgsRasterIdentifyResult( IdentifyFormatValue, results );
+  return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
 
 int QgsGrassRasterProvider::capabilities() const
@@ -517,9 +517,9 @@ int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
   QList<QgsColorRampShader::ColorRampItem> ct = colorTable( bandNo );
   if ( ct.size() > 0 )
   {
-    return QgsRasterDataProvider::ContinuousPalette;
+    return QgsRaster::ContinuousPalette;
   }
-  return QgsRasterDataProvider::GrayIndex;
+  return QgsRaster::GrayIndex;
 }
 
 QString QgsGrassRasterProvider::metadata()

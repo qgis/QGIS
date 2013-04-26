@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="GPS-Nature-Grass" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(184,230,124)" stop-opacity="1.0000"/>
+        <stop offset="4.17%" stop-color="rgb(166,194,103)" stop-opacity="1.0000"/>
+        <stop offset="8.33%" stop-color="rgb(147,159,81)" stop-opacity="1.0000"/>
+        <stop offset="12.50%" stop-color="rgb(124,160,48)" stop-opacity="1.0000"/>
+        <stop offset="16.67%" stop-color="rgb(101,161,16)" stop-opacity="1.0000"/>
+        <stop offset="20.83%" stop-color="rgb(98,147,55)" stop-opacity="1.0000"/>
+        <stop offset="26.77%" stop-color="rgb(96,132,95)" stop-opacity="1.0000"/>
+        <stop offset="32.84%" stop-color="rgb(84,121,78)" stop-opacity="1.0000"/>
+        <stop offset="41.22%" stop-color="rgb(72,111,61)" stop-opacity="1.0000"/>
+        <stop offset="52.38%" stop-color="rgb(60,93,47)" stop-opacity="1.0000"/>
+        <stop offset="67.82%" stop-color="rgb(48,75,32)" stop-opacity="1.0000"/>
+        <stop offset="80.62%" stop-color="rgb(52,69,29)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(57,62,27)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#GPS-Nature-Grass)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:24 2012"/>
+  </metadata>
+</svg>

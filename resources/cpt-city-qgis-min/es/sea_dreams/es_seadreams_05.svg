@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="G SeaDreams 05" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(64,147,198)" stop-opacity="1.0000"/>
+        <stop offset="20.00%" stop-color="rgb(111,176,212)" stop-opacity="1.0000"/>
+        <stop offset="36.01%" stop-color="rgb(118,201,226)" stop-opacity="1.0000"/>
+        <stop offset="42.99%" stop-color="rgb(190,252,251)" stop-opacity="1.0000"/>
+        <stop offset="55.74%" stop-color="rgb(166,232,249)" stop-opacity="1.0000"/>
+        <stop offset="67.99%" stop-color="rgb(141,212,246)" stop-opacity="1.0000"/>
+        <stop offset="80.00%" stop-color="rgb(134,207,246)" stop-opacity="1.0000"/>
+        <stop offset="98.00%" stop-color="rgb(210,235,248)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(210,235,248)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#G SeaDreams 05)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:39:35 2012"/>
+  </metadata>
+</svg>

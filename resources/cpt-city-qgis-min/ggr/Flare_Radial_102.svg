@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Flare Radial 102" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(255,255,255)" stop-opacity="1.0000"/>
+        <stop offset="2.49%" stop-color="rgb(255,255,255)" stop-opacity="0.9500"/>
+        <stop offset="5.84%" stop-color="rgb(255,255,255)" stop-opacity="0.9000"/>
+        <stop offset="8.38%" stop-color="rgb(255,190,190)" stop-opacity="0.8600"/>
+        <stop offset="10.52%" stop-color="rgb(255,125,125)" stop-opacity="0.8200"/>
+        <stop offset="15.78%" stop-color="rgb(255,94,94)" stop-opacity="0.7350"/>
+        <stop offset="20.87%" stop-color="rgb(255,64,64)" stop-opacity="0.6500"/>
+        <stop offset="27.88%" stop-color="rgb(255,64,64)" stop-opacity="0.4500"/>
+        <stop offset="40.57%" stop-color="rgb(255,64,64)" stop-opacity="0.2500"/>
+        <stop offset="53.42%" stop-color="rgb(255,64,64)" stop-opacity="0.1250"/>
+        <stop offset="79.97%" stop-color="rgb(255,64,64)" stop-opacity="0.0000"/>
+        <stop offset="89.98%" stop-color="rgb(255,64,64)" stop-opacity="0.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,64,64)" stop-opacity="0.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Flare Radial 102)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:15 2012"/>
+  </metadata>
+</svg>

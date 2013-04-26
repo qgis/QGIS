@@ -1,0 +1,13 @@
+r.stream.angle
+r.stream.angle - Route azimuth, direction and relation to streams of higher order.
+Raster (r.*)
+ParameterRaster|stream|Input map: stream mask|False
+ParameterRaster|dirs|Input map: direction map|False
+ParameterRaster|elev|Input map: elevation map|True
+ParameterSelection|order|Stream ordering method|none;hack;horton;strahler|0
+ParameterNumber|length|Search length to calculat direction|1|None|15
+ParameterNumber|skip|Skip segments shorter than|1|None|5
+ParameterNumber|treshold|Max angle (degrees) beetwen stream segments to|1.0|360.0|150.0
+ParameterBoolean|-r|Output angles in radians|False
+ParameterBoolean|-e|Extended topology|False
+OutputVector|seg_vector|Vector to store new network with segments

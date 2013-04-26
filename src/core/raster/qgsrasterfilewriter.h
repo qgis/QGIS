@@ -73,8 +73,8 @@ class CORE_EXPORT QgsRasterFileWriter
     void setMaxTileWidth( int w ) { mMaxTileWidth = w; }
     int maxTileWidth() const { return mMaxTileWidth; }
 
-    QgsRasterDataProvider::RasterBuildPyramids buildPyramidsFlag() const { return mBuildPyramidsFlag; }
-    void setBuildPyramidsFlag( QgsRasterDataProvider::RasterBuildPyramids f ) { mBuildPyramidsFlag = f; }
+    QgsRaster::RasterBuildPyramids buildPyramidsFlag() const { return mBuildPyramidsFlag; }
+    void setBuildPyramidsFlag( QgsRaster::RasterBuildPyramids f ) { mBuildPyramidsFlag = f; }
 
     QList< int > pyramidsList() const { return mPyramidsList; }
     void setPyramidsList( const QList< int > & list ) { mPyramidsList = list; }
@@ -82,8 +82,8 @@ class CORE_EXPORT QgsRasterFileWriter
     QString pyramidsResampling() const { return mPyramidsResampling; }
     void setPyramidsResampling( const QString & str ) { mPyramidsResampling = str; }
 
-    QgsRasterDataProvider::RasterPyramidsFormat pyramidsFormat() const { return mPyramidsFormat; }
-    void setPyramidsFormat( QgsRasterDataProvider::RasterPyramidsFormat f ) { mPyramidsFormat = f; }
+    QgsRaster::RasterPyramidsFormat pyramidsFormat() const { return mPyramidsFormat; }
+    void setPyramidsFormat( QgsRaster::RasterPyramidsFormat f ) { mPyramidsFormat = f; }
 
     void setMaxTileHeight( int h ) { mMaxTileHeight = h; }
     int maxTileHeight() const { return mMaxTileHeight; }
@@ -157,8 +157,8 @@ class CORE_EXPORT QgsRasterFileWriter
 
     QList< int > mPyramidsList;
     QString mPyramidsResampling;
-    QgsRasterDataProvider::RasterBuildPyramids mBuildPyramidsFlag;
-    QgsRasterDataProvider::RasterPyramidsFormat mPyramidsFormat;
+    QgsRaster::RasterBuildPyramids mBuildPyramidsFlag;
+    QgsRaster::RasterPyramidsFormat mPyramidsFormat;
     QStringList mPyramidsConfigOptions;
 
     QDomDocument mVRTDocument;

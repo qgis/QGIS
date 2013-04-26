@@ -16,61 +16,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
   public:
 
-    // This is modified copy of GDALColorInterp
-    enum ColorInterpretation
-    {
-      UndefinedColorInterpretation = 0,
-      /*! Greyscale */                                      GrayIndex = 1,
-      /*! Paletted (see associated color table) */          PaletteIndex = 2, // indexed color table
-      /*! Red band of RGBA image */                         RedBand = 3,
-      /*! Green band of RGBA image */                       GreenBand = 4,
-      /*! Blue band of RGBA image */                        BlueBand = 5,
-      /*! Alpha (0=transparent, 255=opaque) */              AlphaBand = 6,
-      /*! Hue band of HLS image */                          HueBand = 7,
-      /*! Saturation band of HLS image */                   SaturationBand = 8,
-      /*! Lightness band of HLS image */                    LightnessBand = 9,
-      /*! Cyan band of CMYK image */                        CyanBand = 10,
-      /*! Magenta band of CMYK image */                     MagentaBand = 11,
-      /*! Yellow band of CMYK image */                      YellowBand = 12,
-      /*! Black band of CMLY image */                       BlackBand = 13,
-      /*! Y Luminance */                                    YCbCr_YBand = 14,
-      /*! Cb Chroma */                                      YCbCr_CbBand = 15,
-      /*! Cr Chroma */                                      YCbCr_CrBand = 16,
-      /*! Continuous palette, QGIS addition, GRASS */       ContinuousPalette = 17,
-      /*! Max current value */                              ColorInterpretationMax = 17
-    };
-
-    enum IdentifyFormat
-    {
-      IdentifyFormatUndefined = 0,
-      IdentifyFormatValue = 1,
-      IdentifyFormatText  = 2,
-      IdentifyFormatHtml  = 4,
-      IdentifyFormatFeature = 8
-    };
-
-    // Progress types
-    enum RasterProgressType
-    {
-      ProgressHistogram = 0,
-      ProgressPyramids  = 1,
-      ProgressStatistics = 2
-    };
-
-    enum RasterBuildPyramids
-    {
-      PyramidsFlagNo = 0,
-      PyramidsFlagYes = 1,
-      CopyExisting = 2
-    };
-
-    enum RasterPyramidsFormat
-    {
-      PyramidsGTiff = 0,
-      PyramidsInternal = 1,
-      PyramidsErdas = 2
-    };
-
     QgsRasterDataProvider();
 
     QgsRasterDataProvider( const QString & uri );
@@ -148,7 +93,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,
                                    const QString & theResamplingMethod = "NEAREST",
-                                   RasterPyramidsFormat theFormat = PyramidsGTiff,
+                                   QgsRaster::RasterPyramidsFormat theFormat = QgsRaster::PyramidsGTiff,
                                    const QStringList & theConfigOptions = QStringList() );
  
     /** \brief Accessor for ths raster layers pyramid list.
@@ -169,7 +114,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      */
     virtual QString metadata() = 0;
 
-    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    virtual QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
     //QMap<QString, QString> identify( const QgsPoint & thePoint, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
 
@@ -252,7 +197,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
     /** Validates pyramid creation options for a specific dataset and destination format
      * @note used by GDAL provider only */
-    virtual QString validatePyramidsConfigOptions( RasterPyramidsFormat pyramidsFormat,
+    virtual QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
         const QStringList & theConfigOptions, const QString & fileFormat );
 
    signals:

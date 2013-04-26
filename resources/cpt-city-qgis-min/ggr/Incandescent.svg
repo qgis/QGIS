@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Incandescent" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,0,0)" stop-opacity="1.0000"/>
+        <stop offset="45.91%" stop-color="rgb(93,0,0)" stop-opacity="1.0000"/>
+        <stop offset="59.43%" stop-color="rgb(186,0,0)" stop-opacity="1.0000"/>
+        <stop offset="67.78%" stop-color="rgb(221,69,25)" stop-opacity="1.0000"/>
+        <stop offset="80.97%" stop-color="rgb(255,139,50)" stop-opacity="1.0000"/>
+        <stop offset="85.31%" stop-color="rgb(251,189,34)" stop-opacity="1.0000"/>
+        <stop offset="89.98%" stop-color="rgb(248,239,19)" stop-opacity="1.0000"/>
+        <stop offset="94.82%" stop-color="rgb(249,243,116)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(249,247,212)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Incandescent)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:21 2012"/>
+  </metadata>
+</svg>

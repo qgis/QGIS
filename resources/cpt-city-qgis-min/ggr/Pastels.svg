@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Pastels" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(245,224,176)" stop-opacity="1.0000"/>
+        <stop offset="3.57%" stop-color="rgb(245,207,207)" stop-opacity="1.0000"/>
+        <stop offset="9.15%" stop-color="rgb(246,189,237)" stop-opacity="1.0000"/>
+        <stop offset="12.72%" stop-color="rgb(220,198,242)" stop-opacity="1.0000"/>
+        <stop offset="13.78%" stop-color="rgb(194,207,246)" stop-opacity="1.0000"/>
+        <stop offset="17.20%" stop-color="rgb(189,184,207)" stop-opacity="1.0000"/>
+        <stop offset="18.92%" stop-color="rgb(184,160,168)" stop-opacity="1.0000"/>
+        <stop offset="22.37%" stop-color="rgb(177,173,208)" stop-opacity="1.0000"/>
+        <stop offset="25.21%" stop-color="rgb(171,186,248)" stop-opacity="1.0000"/>
+        <stop offset="30.05%" stop-color="rgb(207,217,236)" stop-opacity="1.0000"/>
+        <stop offset="32.38%" stop-color="rgb(243,248,224)" stop-opacity="1.0000"/>
+        <stop offset="36.56%" stop-color="rgb(246,205,203)" stop-opacity="1.0000"/>
+        <stop offset="38.68%" stop-color="rgb(249,162,183)" stop-opacity="1.0000"/>
+        <stop offset="43.09%" stop-color="rgb(175,138,153)" stop-opacity="1.0000"/>
+        <stop offset="47.08%" stop-color="rgb(100,115,124)" stop-opacity="1.0000"/>
+        <stop offset="54.92%" stop-color="rgb(175,160,163)" stop-opacity="1.0000"/>
+        <stop offset="58.14%" stop-color="rgb(251,205,202)" stop-opacity="1.0000"/>
+        <stop offset="59.88%" stop-color="rgb(210,166,194)" stop-opacity="1.0000"/>
+        <stop offset="64.61%" stop-color="rgb(170,128,185)" stop-opacity="1.0000"/>
+        <stop offset="72.03%" stop-color="rgb(211,175,195)" stop-opacity="1.0000"/>
+        <stop offset="74.29%" stop-color="rgb(252,222,204)" stop-opacity="1.0000"/>
+        <stop offset="77.30%" stop-color="rgb(229,172,211)" stop-opacity="1.0000"/>
+        <stop offset="80.47%" stop-color="rgb(206,122,218)" stop-opacity="1.0000"/>
+        <stop offset="82.97%" stop-color="rgb(230,173,197)" stop-opacity="1.0000"/>
+        <stop offset="86.14%" stop-color="rgb(254,223,175)" stop-opacity="1.0000"/>
+        <stop offset="89.29%" stop-color="rgb(254,230,209)" stop-opacity="1.0000"/>
+        <stop offset="91.15%" stop-color="rgb(254,236,244)" stop-opacity="1.0000"/>
+        <stop offset="96.43%" stop-color="rgb(255,214,232)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,191,221)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Pastels)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:33:16 2012"/>
+  </metadata>
+</svg>

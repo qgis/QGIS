@@ -6,9 +6,10 @@ Loads and displays delimited text files
 <a href="#csv">How the delimiter, quote, and escape characters work</a><br />
 <a href="#regexp">How regular expression delimiters work</a><br />
 <a href="#wkt">How WKT text is interpreted</a><br />
+<a href="#attributes">Attributes in delimited text files</a><br />
 <a href="#example">Example of a text file with X,Y point coordinates</a><br/>
 <a href="#wkt_example">Example of a text file with WKT geometries</a><br/>
-<a href="#notes">Notes</a><br/>
+<a href="#python">Using delimited text layers in Python</a><br/>
 </p>
 
 <h4><a name="re">Overview</a></h4>
@@ -22,10 +23,10 @@ Delimited text files can be loaded into QGIS as a layer.
 The records can be displayed spatially either as a point
 defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
 describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGis.
+only table, which can then be joined to other tables in QGIS.
 </p>
 <p>
-In addition to the geometry definition the file can contain text, integer, and real number fields.  QGis
+In addition to the geometry definition the file can contain text, integer, and real number fields.  QGIS
 will choose the type of field based on its contents. 
 </p>
 <h4><a name="creating">Creating a delimited text layer</a></h4>
@@ -38,12 +39,12 @@ options have been applied.
 <h5>Choosing the data file</h5>
 <p>Use the &quot;Browse...&quot; button to select the data file.  Once the file is selected the
 layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGis legend.  
+the data in the QGIS legend.  
 </p>
 <p>
 By default files are assumed to be encoded as UTF-8.  However other file
 encodings can be selected.  For example &quot;System&quot; uses the default encoding for the operating system.  
-If you are expecting to move the QGis project then it is safer to use a specific encoding.
+It is safer to use an explicit coding if the QGIS project needs to be portable.
 </p>
 <h5>Specifying the file format</h5>
 <p>The file format can be one of
@@ -61,14 +62,14 @@ If you are expecting to move the QGis project then it is safer to use a specific
 <h5>Record and field options</h5>
 <p>The following options affect the selection of records and fields from the data file</p>
 <ul>
-    <li>Number of header lines to discard: used to skip over header lines at the beginning of the text file</li>
-    <li>First record has fields names: if selected then the first record in the file (after the skipped lines) is interpreted as names of fields, rather than as a data record.</li>
+    <li>Number of header lines to discard: used to ignore header lines at the beginning of the text file</li>
+    <li>First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.</li>
     <li>Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). </li>
     <li>Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
     affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
     single delimiter.  Quoted fields are never discarded.</li>
-    <li>Decimal point is comma: if selected then commas in real numbers represent the decimal point.  For
-    example &quot;-51,354&quot; is equivalent to -51.354.
+    <li>Decimal point is comma: if selected then commas are used as the decimal point in real numbers.  For
+    example <tt>-51,354</tt> is equivalent to -51.354.
     </li>
 </ul>
 <h5>Geometry definition</h5>
@@ -76,26 +77,26 @@ If you are expecting to move the QGis project then it is safer to use a specific
 <ul>
     <li>Point coordinates: each feature is represented as a point defined by X and Y coordinates.</li>
     <li>Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    &quot;POINT(1.525622 51.20836)&quot;.  See details of the <a href="#wkt">well known text</a> format.
+    <tt>POINT(1.525622 51.20836)</tt>.  See details of the <a href="#wkt">well known text</a> format.
     <li>No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGis</li>
+    in the attribute table and joined to other layers in QGIS</li>
 </ul>
 <p>For point coordinates the following options apply:</p>
 <ul>
     <li>X field: specifies the field containing the X coordinate</li>
     <li>Y field: specifies the field containing the Y coordinate</li>
     <li>DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGis is quite permissive in its interpretation of degrees/minutes/seconds.
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
     A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
     (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &quot;N41d54'01.54&quot;&quot; is a valid coordinate.
+    generally discarded.  For example <tt>N41d54'01.54&quot;</tt> is a valid coordinate.
     </li>
 </ul>
 <p>For well known text geometry the following options apply:</p>
 <ul>
     <li>Geometry field: the field containing the well known text definition.</li>
     <li>Geometry type: one of &quot;Detect&quot; (detect), &quot;Point&quot;, &quot;Line&quot;, or &quot;Polygon&quot;.
-    QGis layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
     which geometry type is displayed in text files containing multiple geometry types. Records containing
    other geometry types are discarded.   
     If &quot;Detect&quot; is selected then the type of the first geometry in the file will be used.
@@ -104,42 +105,96 @@ If you are expecting to move the QGis project then it is safer to use a specific
 </ul>
 
 <h4><a name="csv">How the delimiter, quote, and escape characters work</a></h4>
-<p>Records are split into fields using three character sets: delimiter characters, quote characters, 
-and escape characters.  Quote and escape characters cannot be the same as delimiter characters - they
+<p>Records are split into fields using three character sets: 
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+</p>
+<p>
+Quote and escape characters cannot be the same as delimiter characters - they
 will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
 if they are.</p>
 <p>The delimiter characters are used to mark the end of each field.  If more than one delimiter character
 is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal character.</p>
+can override the delimiter character, so that it is treated as a normal data character.</p>
 <p>Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
 contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
 start and end with the same quote character.  Quote characters cannot occur within a field unless they
 are escaped.</p>
-<p>Escape characters which are not quote characters force the following character to be treated normally 
+<p>Escape characters which are not quote characters force the following character to be treated as data.  
 (that is, to stop it being treated as a new line, delimiter, or quote character).  
 </p>
-<p>If a quote character is also an escape character, then it can be represented in a quoted field by 
-entering it twice.  For example if ' is a quote character and an escape character, then the string 
-'Smith''s&nbsp;Creek' will represent the value Smith's&nbsp;Creek.
+<p>Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
+<tt>'</tt> is a quote and escape character, then the string
+<tt>'Smith''s&nbsp;Creek'</tt> will represent the value Smith's&nbsp;Creek.
 </p>
+
+
 <h4><a name="regexp">How regular expression delimiters work</a></h4>
 <p>Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGis uses the syntax provided by the <a href="http://qt-project.org/doc/qt-4.8/qregexp.html">QRegExp</a> class of the <a href="http://qt.digia.com">Qt</a> framework.</p>
-<p>In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.</p>
+of regular expression syntax - QGIS uses the syntax provided by the <a href="http://qt-project.org/doc/qt-4.8/qregexp.html">QRegExp</a> class of the <a href="http://qt.digia.com">Qt</a> framework.</p>
+<p>In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains capture groups (eg <tt>(cat|dog)</tt>)
+ then these are extracted as fields. 
+ If this is not desired then use non-capturing groups (eg <tt>(?:cat|dog)</tt>).
+</p>
+<p>The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with <tt>^</tt>).
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
+<pre>
+^(.{5})(.{10})(.{20})(.{20}).*
+</pre>
+<p>will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 45 characters long will be discarded.
+</p>
+
 
 <h4><a name="wkt">How WKT text is interpreted</a></h4>
 <p>
 The delimited text layer recognizes the following 
 <a href="http://en.wikipedia.org/wiki/Well-known_text">well known text</a> types - 
-POINT, MULTIPOINT, LINESTRING, MULTILINESTRING, POLYGON, and MULTIPOLYGON.  It will accept geometries with
-a Z coordinate (eg &quot;POINT&nbsp;Z&quot;), a measure (&quot;POINT&nbsp;M&quot;), or both (&quot;POINT&nbsp;ZM&quot;).
+<tt>POINT</tt>, <tt>MULTIPOINT</tt>, <tt>LINESTRING</tt>, <tt>MULTILINESTRING</tt>, <tt>POLYGON</tt>, and <tt>MULTIPOLYGON</tt>.  
+It will accept geometries with
+a Z coordinate (eg <tt>POINT&nbsp;Z</tt>), a measure (<tt>POINT&nbsp;M</tt>), or both (<tt>POINT&nbsp;ZM</tt>).
 </p>
 <p>
-It can also handle the PostGIS EWKT variation, in which the geomtry is preceded by an spatial reference 
-system id (eg &quot;SRID=4326;POINT(175.3&nbsp;41.2)&quot;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &quot;1 POINT(175.3&nbsp;41.2)&quot;).
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
+system id (eg <tt>SRID=4326;POINT(175.3&nbsp;41.2)</tt>), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (eg <tt>1 POINT(175.3&nbsp;41.2)</tt>).
 In both cases the SRID is ignored.
 </p>
+
+
+
+<h4><a name="attributes">Attributes in delimited text files</a></h4> 
+<p>Each record in the delimited text file is split into fields representing
+attributes of the record.  Usually the attribute names are taken from the first
+data record in the file.  However if this does not contain attribute names, then they will be named <tt>field_1</tt>, <tt>field_2</tt>, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named <tt>field_#</tt>, where # is the field number (note that empty fields at the end of a record are ignored).
+QGIS may override 
+the names in the text file if they are numbers, or have names like <tt>field_#</tt>,
+or are duplicated.
+</p>
+<p>
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
+feature id to each record.  This is the line number in the source file on which
+the record starts.  
+</p>
+<p>
+Each attribute also has a data type, one of string (text), integer, or real number.
+The data type is inferred from the content of the fields - if every non blank value
+is a valid integer then the type is integer, otherwise if it is a valid real
+number then the type is real, otherwise the type is string.  Note that this is
+based on the content of the fields - quoting fields does not change the way they
+are interpreted.
+</p>
+
+
 <h4><a name="example">Example of a text file with X,Y point coordinates</a></h4> 
 <pre>
 X;Y;ELEV<br />
@@ -151,7 +206,6 @@ X;Y;ELEV<br />
 <ul>
 <li> Uses <b>;</b> as delimiter. Any character can be used to delimit the fields.</li>
 <li>The first row is the header row. It contains the field names X, Y and ELEV.</li>
-<li>No quotes (") are used to delimit text fields.</li>
 <li>The x coordinates are contained in the X field.</li>
 <li>The y coordinates are contained in the Y field.</li>
 </ul>
@@ -170,3 +224,56 @@ id|wkt<br />
   <li>Uses <b>|</b> as a delimiter.</li>
   <li>Specifies each point using the WKT notation
 </ul>
+
+<h4><a name="python">Using delimited text layers in Python</a></h4>
+<p>Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+</p>
+<pre>
+from PyQt4.QtCore import QUrl, QString<br />
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry<br />
+<br />
+# Define the data source<br />
+filename="test.csv"<br />
+uri=QUrl.fromLocalFile(filename)<br />
+uri.addQueryItem("type","csv")<br />
+uri.addQueryItem("delimiter","|")<br />
+uri.addQueryItem("wktField","wkt")<br />
+# ... other delimited text parameters<br />
+layer=QgsVectorLayer(QString(uri.toEncoded()),"Test CSV layer","delimitedtext")<br />
+# Add the layer to the map<br />
+if layer.isValid():<br />
+    QgsMapLayerRegistry.instance().addMapLayer( layer )<br />
+</pre>
+<p>This could be used to load the second example file above.</p>
+<p>The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+</p>
+<ul>
+    <li><tt>encoding=..</tt> defines the file encoding.  The default is &quot;UTF-8&quot;</li>
+    <li><tt>type=(csv|regexp|whitespace)</tt> defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  The default is csv.</li>
+       <li><tt>delimiter=...</tt> defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
+       no default for regexp files.</li>
+       <li><tt>quote=..</tt> (for csv files) defines the characters used to quote fields. The default is &quot;</li>
+       <li><tt>escape=..</tt> (for csv files) defines the characters used to escape the special meaning of the next character. The default is &quot;</li>
+       <li><tt>skipLines=#</tt> defines the number of lines to discard from the beginning of the file. The default is 0.</li>
+       <li><tt>useHeader=(yes|no)</tt> defines whether the first data record contains the names of the data fields. The default is yes.</li>
+       <li><tt>trimFields=(yes|no)</tt> defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.</li>
+       <li><tt>maxFields=#</tt> defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. The default is 0 - include all fields.
+       (This option is not available from the delimited text layer dialog box).</li>
+       <li><tt>skipEmptyFields=(yes|no)</tt> defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.</li>
+       <li><tt>decimalPoint=.</tt> specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.</li>
+       <li><tt>wktField=fieldname</tt> specifies the name or number (starting at 1) of the field containing a well known text geometry definition</li>
+       <li><tt>xField=fieldname</tt> specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)</li>
+       <li><tt>yField=fieldname</tt> specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)</li>
+       <li><tt>geomType=(auto|point|line|polygon|none)</tt> specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.</li>
+       <li><tt>crs=...</tt> specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &quot;EPSG:4167&quot;).  If this is not 
+       specified then a dialog box may request this information from the user
+       when the layer is loaded (depending on QGIS CRS settings).</li>
+       <li><tt>quiet=(yes|no)</tt> specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.</li>
+</ul>
+
+

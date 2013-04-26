@@ -34,7 +34,7 @@ QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent,
   setupUi( this );
 
   mSaveOptionsWidget->setProvider( provider );
-  mSaveOptionsWidget->setPyramidsFormat( QgsRasterDataProvider::PyramidsGTiff );
+  mSaveOptionsWidget->setPyramidsFormat( QgsRaster::PyramidsGTiff );
   mSaveOptionsWidget->setType( QgsRasterFormatSaveOptionsWidget::ProfileLineEdit );
 
   updateUi();
@@ -165,7 +165,7 @@ void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsLevelsCustom_toggled( bool to
 void QgsRasterPyramidsOptionsWidget::on_cbxPyramidsFormat_currentIndexChanged( int index )
 {
   mSaveOptionsWidget->setEnabled( index != 2 );
-  mSaveOptionsWidget->setPyramidsFormat(( QgsRasterDataProvider::RasterPyramidsFormat ) index );
+  mSaveOptionsWidget->setPyramidsFormat(( QgsRaster::RasterPyramidsFormat ) index );
 }
 
 void QgsRasterPyramidsOptionsWidget::setOverviewList()

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<copying>
+  <authors>
+    <author href="http://itstriangle.com/~fme/">
+      <name>Fred M. Erickson</name>
+    </author>
+  </authors>
+  <license>
+    <informal>GPLv2</informal>
+    <year>2005</year>
+    <text href="http://www.gnu.org/licenses/gpl-2.0.html"/>
+  </license>
+  <src>
+    <format>C source code</format>
+    <link href="http://itstriangle.com/~fme/drawmap.html">Drawmap 
+      homepage</link>
+    <remark>
+      Gradients manually extracted from C header file
+      colors.h in the drawmap distribution.
+    </remark>
+  </src>
+  <distribute>
+    <qgis distribute="yes" license="gplv2"/>
+  </distribute>
+</copying>

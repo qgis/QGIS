@@ -38,9 +38,6 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
   protected:
     QgsDelimitedTextProvider* P;
 
-    //! Feature id
-    long mFid;
-
     QgsGeometry* loadGeometryWkt( const QStringList& tokens );
     QgsGeometry* loadGeometryXY( const QStringList& tokens );
 

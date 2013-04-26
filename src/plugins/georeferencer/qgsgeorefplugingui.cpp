@@ -641,7 +641,7 @@ void QgsGeorefPluginGui::localHistogramStretch()
 {
   QgsRectangle rectangle = mIface->mapCanvas()->mapRenderer()->outputExtentToLayerExtent( mLayer, mIface->mapCanvas()->extent() );
 
-  mLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRasterLayer::ContrastEnhancementMinMax, rectangle );
+  mLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax, rectangle );
   mLayer->setCacheImage( NULL );
   mCanvas->refresh();
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="reds">Reds</name>
+  <synopsis>A selection of red, pinks and oranges</synopsis>
+  <description>A selection of red, pinks and oranges.</description>
+  <seealsocollects>
+    <collect dir="nd/red">Nevit Dilmen</collect>
+    <collect dir="es/rosa">ElvenSword</collect>
+  </seealsocollects>
+  <gradients>
+    <gradient file="Reds_09"  dir="cb/seq"/>
+    <gradient file="YlOrRd_09" dir="cb/seq"/>
+    <gradient file="scent_of_spring" dir="colo/angelafaye"/>
+    <gradient file="Colours_Are_Evil" dir="colo/sugar"/>
+    <gradient file="October_Sky" dir="colo/sugar"/>
+    <gradient file="Sandy_Scars_Aus" dir="colo/evad"/>
+    <gradient file="M_a_i_k_o" dir="colo/hana"/>
+    <gradient file="Raspberries_Creme" dir="colo/katiekat013"/>
+    <gradient file="so_close_to_you" dir="colo/lightningmccarl"/>
+    <gradient file="you_cheater" dir="colo/lightningmccarl"/>
+    <gradient file="Emo_Barbie_Playmate" dir="colo/rphnick"/>
+    <gradient file="To_My_1st_100_Loves" dir="colo/rphnick"/>
+    <gradient file="l_o_v_e" dir="colo/tvr"/>
+    <gradient file="cw1-003" dir="cw/1"/>
+    <gradient file="cw5-068" dir="cw/5"/>
+    <gradient file="red" dir="ds9"/>
+    <gradient file="German_flag_smooth" dir="ggr"/>
+    <gradient file="heat" dir="gist"/>
+    <gradient file="GMT_hot" dir="gmt"/>
+    <gradient file="red-pink" dir="jjg/neo10/base"/>
+    <gradient file="pink-red" dir="jjg/neo10/clth"/>
+    <gradient file="violent-pink-red" dir="jjg/neo10/clth"/>
+    <gradient file="red-candy" dir="jjg/neo10/food"/>
+    <gradient file="grayscale08" dir="ma/gray"/>
+    <gradient file="grayscale09" dir="ma/gray"/>
+    <gradient file="autumnrose" dir="rc"/>
+  </gradients>
+</selection>

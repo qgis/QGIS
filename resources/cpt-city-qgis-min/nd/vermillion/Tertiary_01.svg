@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="45px" viewBox="0 0 300 45">
+  <g>
+    <defs>
+      <linearGradient id="Vermillion Tertiary 01" gradientUnits="objectBoundingBox" spreadMethod="pad" x1="0%" x2="100%" y1="0%" y2="0%">
+        <stop offset="0.00%" stop-color="rgb(0,25,255)" stop-opacity="1.0000"/>
+        <stop offset="25.00%" stop-color="rgb(51,140,128)" stop-opacity="1.0000"/>
+        <stop offset="50.00%" stop-color="rgb(102,255,0)" stop-opacity="1.0000"/>
+        <stop offset="75.00%" stop-color="rgb(178,140,26)" stop-opacity="1.0000"/>
+        <stop offset="100.00%" stop-color="rgb(255,25,51)" stop-opacity="1.0000"/>
+      </linearGradient>
+    </defs>
+    <rect fill="url(#Vermillion Tertiary 01)" x="4" y="4" width="292" height="37" stroke="black" stroke-width="1"/>
+  </g>
+  <metadata>
+    <creator name="cptutils" version="1.46"/>
+    <created date="Wed Aug 15 23:35:12 2012"/>
+  </metadata>
+</svg>

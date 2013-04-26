@@ -17,31 +17,7 @@ class QgsContrastEnhancement
       UserDefinedEnhancement
     };
 
-    /** These are exactly the same as GDAL pixel data types
-     ** This was added so that the python bindings could be built,
-     ** which initially was a problem because GDALDataType was passed
-     ** around as an argument to numerous method, including the constructor.
-     **
-     ** It seems like there should be a better way to do this...
-     */
-    enum QgsRasterDataType
-    {
-      QGS_Unknown = 0,
-      /*! Eight bit unsigned integer */           QGS_Byte = 1,
-      /*! Sixteen bit unsigned integer */         QGS_UInt16 = 2,
-      /*! Sixteen bit signed integer */           QGS_Int16 = 3,
-      /*! Thirty two bit unsigned integer */      QGS_UInt32 = 4,
-      /*! Thirty two bit signed integer */        QGS_Int32 = 5,
-      /*! Thirty two bit floating point */        QGS_Float32 = 6,
-      /*! Sixty four bit floating point */        QGS_Float64 = 7,
-      /*! Complex Int16 */                        QGS_CInt16 = 8,
-      /*! Complex Int32 */                        QGS_CInt32 = 9,
-      /*! Complex Float32 */                      QGS_CFloat32 = 10,
-      /*! Complex Float64 */                      QGS_CFloat64 = 11,
-      QGS_TypeCount = 12          /* maximum type # + 1 */
-    };
-
-    QgsContrastEnhancement( QgsContrastEnhancement::QgsRasterDataType theDatatype = QGS_Byte );
+    QgsContrastEnhancement( QGis::DataType theDatatype = QGis::Byte );
     ~QgsContrastEnhancement();
 
     /*
@@ -50,10 +26,10 @@ class QgsContrastEnhancement
      *
      */
     /** \brief Helper function that returns the maximum possible value for a GDAL data type */
-    static double maximumValuePossible( QgsRasterDataType );
+    static double maximumValuePossible( QGis::DataType );
 
     /** \brief Helper function that returns the minimum possible value for a GDAL data type */
-    static double minimumValuePossible( QgsRasterDataType );
+    static double minimumValuePossible( QGis::DataType );
 
     /*
      *

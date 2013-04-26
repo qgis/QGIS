@@ -424,8 +424,8 @@ void QgsGml::endElement( const XML_Char* el )
     {
       //error
     }
-    unsigned char* wkb;
-    int wkbSize;
+    unsigned char* wkb = 0;
+    int wkbSize = 0;
     if ( getRingWKB( &wkb, &wkbSize, pointList ) != 0 )
     {
       //error

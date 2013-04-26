@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selection cadence="low">
+  <name short="bath">Bathymetry</name>
+  <synopsis>Palettes for bathymetry</synopsis>
+  <description>Palettes for bathymetry.</description>
+  <seealsocollects>
+    <collect dir="esri/hypsometry/bath">ESRI bathymetry</collect>
+  </seealsocollects>
+  <seealsoselects>
+    <select short="blues">the blues selection</select>
+  </seealsoselects>
+  <gradients>
+    <gradient dir="gmt" file="GMT_ocean"/>
+    <gradient dir="gmt" file="GMT_gebco"/>
+    <gradient dir="jjg/dem" file="gebco-shelf"/>
+    <gradient dir="jm/ad" file="ad-a"/>
+    <gradient dir="njgs" file="njbath"/>
+    <gradient dir="esri/hypsometry/bath" file="bath_110"/>
+    <gradient dir="esri/hypsometry/bath" file="bath_111"/>
+    <gradient dir="esri/hypsometry/bath" file="bath_112"/>
+    <gradient dir="tp" file="tpsfhm"/>
+    <gradient dir="xkcd" file="xkcd-bath"/>
+    <gradient dir="wkp/lilleskut" file="afrikakarte-bath"/>
+    <gradient dir="wkp/country" file="wiki-caucasus-bath"/>
+    <gradient dir="ibcso" file="ibcso"/>
+  </gradients>
+</selection>

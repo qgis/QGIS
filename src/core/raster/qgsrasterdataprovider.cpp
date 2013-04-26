@@ -271,12 +271,12 @@ QString QgsRasterDataProvider::metadata()
 }
 
 // Default implementation for values
-QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoint, IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
+QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent, int theWidth, int theHeight )
 {
   QgsDebugMsg( "Entered" );
   QMap<int, QVariant> results;
 
-  if ( theFormat != IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
+  if ( theFormat != QgsRaster::IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
   {
     QgsDebugMsg( "Format not supported" );
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
@@ -289,7 +289,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
     {
       results.insert( bandNo, QVariant() );
     }
-    return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
+    return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
   }
 
   QgsRectangle myExtent = theExtent;
@@ -333,7 +333,7 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPoint & thePoi
       results.insert( i, QVariant() );
     }
   }
-  return QgsRasterIdentifyResult( QgsRasterDataProvider::IdentifyFormatValue, results );
+  return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
 
 QString QgsRasterDataProvider::lastErrorFormat()
@@ -441,60 +441,60 @@ QgsRasterDataProvider* QgsRasterDataProvider::create( const QString &providerKey
   return createFn( uri, format, nBands, type, width, height, geoTransform, crs, createOptions );
 }
 
-QString QgsRasterDataProvider::identifyFormatName( IdentifyFormat format )
+QString QgsRasterDataProvider::identifyFormatName( QgsRaster::IdentifyFormat format )
 {
   switch ( format )
   {
-    case IdentifyFormatValue:
+    case QgsRaster::IdentifyFormatValue:
       return "Value";
-    case IdentifyFormatText:
+    case QgsRaster::IdentifyFormatText:
       return "Text";
-    case IdentifyFormatHtml:
+    case QgsRaster::IdentifyFormatHtml:
       return "Html";
-    case IdentifyFormatFeature:
+    case QgsRaster::IdentifyFormatFeature:
       return "Feature";
     default:
       return "Undefined";
   }
 }
 
-QString QgsRasterDataProvider::identifyFormatLabel( IdentifyFormat format )
+QString QgsRasterDataProvider::identifyFormatLabel( QgsRaster::IdentifyFormat format )
 {
   switch ( format )
   {
-    case IdentifyFormatValue:
+    case QgsRaster::IdentifyFormatValue:
       return tr( "Value" );
-    case IdentifyFormatText:
+    case QgsRaster::IdentifyFormatText:
       return ( "Text" );
-    case IdentifyFormatHtml:
+    case QgsRaster::IdentifyFormatHtml:
       return tr( "Html" );
-    case IdentifyFormatFeature:
+    case QgsRaster::IdentifyFormatFeature:
       return tr( "Feature" );
     default:
       return "Undefined";
   }
 }
 
-QgsRasterDataProvider::IdentifyFormat QgsRasterDataProvider::identifyFormatFromName( QString formatName )
+QgsRaster::IdentifyFormat QgsRasterDataProvider::identifyFormatFromName( QString formatName )
 {
-  if ( formatName == "Value" ) return IdentifyFormatValue;
-  if ( formatName == "Text" ) return IdentifyFormatText;
-  if ( formatName == "Html" ) return IdentifyFormatHtml;
-  if ( formatName == "Feature" ) return IdentifyFormatFeature;
-  return IdentifyFormatUndefined;
+  if ( formatName == "Value" ) return QgsRaster::IdentifyFormatValue;
+  if ( formatName == "Text" ) return QgsRaster::IdentifyFormatText;
+  if ( formatName == "Html" ) return QgsRaster::IdentifyFormatHtml;
+  if ( formatName == "Feature" ) return QgsRaster::IdentifyFormatFeature;
+  return QgsRaster::IdentifyFormatUndefined;
 }
 
-QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability( IdentifyFormat format )
+QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability( QgsRaster::IdentifyFormat format )
 {
   switch ( format )
   {
-    case IdentifyFormatValue:
+    case QgsRaster::IdentifyFormatValue:
       return IdentifyValue;
-    case IdentifyFormatText:
+    case QgsRaster::IdentifyFormatText:
       return IdentifyText;
-    case IdentifyFormatHtml:
+    case QgsRaster::IdentifyFormatHtml:
       return IdentifyHtml;
-    case IdentifyFormatFeature:
+    case QgsRaster::IdentifyFormatFeature:
       return IdentifyFeature;
     default:
       return NoCapabilities;

@@ -347,10 +347,20 @@ int main( int argc, char *argv[] )
   // but QgsApplication inherits from QApplication (GUI)
   // it is working, but maybe we should make QgsCoreApplication, which
   // could also be used by mapserver
-  // Don't use QgsApplication( int, char **, bool GUIenabled, QString) which is new
+  // Note (mkuhn,20.4.2013): Labeling does not work with QCoreApplication, because
+  // fontconfig needs some X11 dependencies which are initialized in QApplication (GUI)
+  // using it with QCoreApplication only crashes at the moment.
+  // Only use QgsApplication( int, char **, bool GUIenabled, QString) for newer versions
   // so that this program may be run with old libraries
   //QgsApplication myApp( argc, argv, false, configpath );
-  QCoreApplication myApp( argc, argv );
+
+  QCoreApplication *myApp;
+
+#if VERSION_INT >= 10900
+  myApp = new QgsApplication( argc, argv, false );
+#else
+  myApp = new QCoreApplication( argc, argv );
+#endif
 
   if ( myPrefixPath.isEmpty() )
   {
@@ -544,5 +554,6 @@ int main( int argc, char *argv[] )
   qbench->printLog();
 
   delete qbench;
+  delete myApp;
   QCoreApplication::exit( 0 );
 }

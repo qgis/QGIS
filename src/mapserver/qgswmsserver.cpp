@@ -1385,11 +1385,11 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
   // to guess correct source resolution
   if ( mMapRenderer->hasCrsTransformEnabled() && layer->dataProvider()->crs() != mMapRenderer->destinationCrs() )
   {
-    attributes = layer->dataProvider()->identify( *infoPoint, QgsRasterDataProvider::IdentifyFormatValue ).results();
+    attributes = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue ).results();
   }
   else
   {
-    attributes = layer->dataProvider()->identify( *infoPoint, QgsRasterDataProvider::IdentifyFormatValue, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() ).results();
+    attributes = layer->dataProvider()->identify( *infoPoint, QgsRaster::IdentifyFormatValue, mMapRenderer->extent(), mMapRenderer->outputSize().width(), mMapRenderer->outputSize().height() ).results();
   }
 
   for ( QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )

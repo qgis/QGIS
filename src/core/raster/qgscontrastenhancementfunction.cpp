@@ -18,7 +18,7 @@ email                : ersts@amnh.org
 
 #include "qgscontrastenhancementfunction.h"
 
-QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( QgsContrastEnhancement::QgsRasterDataType theDataType, double theMinimumValue, double theMaximumValue )
+QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( QGis::DataType theDataType, double theMinimumValue, double theMaximumValue )
 {
   mQgsRasterDataType = theDataType;
   mMaximumValue = theMaximumValue;
@@ -36,7 +36,7 @@ QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( const QgsContras
 
 int QgsContrastEnhancementFunction::enhance( double theValue )
 {
-  if ( mQgsRasterDataType == QgsContrastEnhancement::QGS_Byte )
+  if ( mQgsRasterDataType == QGis::Byte )
   {
     return static_cast<int>( theValue );
   }

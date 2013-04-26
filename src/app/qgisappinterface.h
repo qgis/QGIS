@@ -382,6 +382,19 @@ class QgisAppInterface : public QgisInterface
 
     virtual QDialog* getFeatureForm( QgsVectorLayer *l, QgsFeature &f );
 
+    /** This method is only needed when using a UI form with a custom widget plugin and calling
+     * openFeatureForm or getFeatureForm from Python (PyQt4) and you havn't used the info tool first.
+     * Python will crash bringing QGIS wtih it
+     * if the custom form is not loaded from a C++ method call.
+     *
+     * This method uses a QTimer to call QUiLoader in order to load the form via C++
+     * you only need to call this once after that you can call openFeatureForm/getFeatureForm
+     * like normal
+     *
+     * More information here: http://qt-project.org/forums/viewthread/27098/
+     */
+    virtual void preloadForm(QString uifile);
+
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
      * @returns list of layers in legend order, or empty list
@@ -395,6 +408,10 @@ class QgisAppInterface : public QgisInterface
   signals:
     void currentThemeChanged( QString );
 
+  private slots:
+
+    void cacheloadForm( QString uifile );
+
   private:
 
     /// QgisInterface aren't copied
@@ -405,6 +422,8 @@ class QgisAppInterface : public QgisInterface
 
     //! Pointer to the QgisApp object
     QgisApp *qgis;
+
+    QTimer *mTimer;
 
     //! Pointer to the LegendInterface object
     QgsAppLegendInterface legendIface;

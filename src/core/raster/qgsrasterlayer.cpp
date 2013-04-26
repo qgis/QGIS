@@ -707,7 +707,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
 
   // Only do this for the GDAL provider?
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
-  if ( mDataProvider->colorInterpretation( theBandNumber ) == QgsRasterDataProvider::PaletteIndex )
+  if ( mDataProvider->colorInterpretation( theBandNumber ) == QgsRaster::PaletteIndex )
   {
     QgsDebugMsg( "....found paletted image" );
     QgsColorRampShader myShader;
@@ -873,11 +873,11 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   {
     mRasterType = ColorLayer;
   }
-  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRasterDataProvider::PaletteIndex )
+  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::PaletteIndex )
   {
     mRasterType = Palette;
   }
-  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRasterDataProvider::ContinuousPalette )
+  else if ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::ContinuousPalette )
   {
     mRasterType = Palette;
   }
@@ -892,11 +892,11 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
     QgsDebugMsg( "Setting mDrawingStyle to SingleBandColorDataStyle " + QString::number( SingleBandColorDataStyle ) );
     setDrawingStyle( SingleBandColorDataStyle );
   }
-  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRasterDataProvider::PaletteIndex )
+  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRaster::PaletteIndex )
   {
     setDrawingStyle( PalettedColor ); //sensible default
   }
-  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRasterDataProvider::ContinuousPalette )
+  else if ( mRasterType == Palette && mDataProvider->colorInterpretation( 1 ) == QgsRaster::ContinuousPalette )
   {
     setDrawingStyle( SingleBandPseudoColor );
     // Load color table
@@ -925,7 +925,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   // Auto set alpha band
   for ( int bandNo = 1; bandNo <= mDataProvider->bandCount(); bandNo++ )
   {
-    if ( mDataProvider->colorInterpretation( bandNo ) == QgsRasterDataProvider::AlphaBand )
+    if ( mDataProvider->colorInterpretation( bandNo ) == QgsRaster::AlphaBand )
     {
       if ( mPipe.renderer() )
       {
@@ -953,23 +953,23 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
 
   // Set default identify format - use the richest format available
   int capabilities = mDataProvider->capabilities();
-  QgsRasterDataProvider::IdentifyFormat identifyFormat = QgsRasterDataProvider::IdentifyFormatUndefined;
+  QgsRaster::IdentifyFormat identifyFormat = QgsRaster::IdentifyFormatUndefined;
   if ( capabilities & QgsRasterInterface::IdentifyHtml )
   {
     // HTML is usually richest
-    identifyFormat = QgsRasterDataProvider::IdentifyFormatHtml;
+    identifyFormat = QgsRaster::IdentifyFormatHtml;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyFeature )
   {
-    identifyFormat = QgsRasterDataProvider::IdentifyFormatFeature;
+    identifyFormat = QgsRaster::IdentifyFormatFeature;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyText )
   {
-    identifyFormat = QgsRasterDataProvider::IdentifyFormatText;
+    identifyFormat = QgsRaster::IdentifyFormatText;
   }
   else if ( capabilities & QgsRasterInterface::IdentifyValue )
   {
-    identifyFormat = QgsRasterDataProvider::IdentifyFormatValue;
+    identifyFormat = QgsRaster::IdentifyFormatValue;
   }
   setCustomProperty( "identify/format", QgsRasterDataProvider::identifyFormatName( identifyFormat ) );
 
@@ -1002,7 +1002,7 @@ void QgsRasterLayer::closeDataProvider()
   mDataProvider = 0;
 }
 
-void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, ContrastEnhancementLimits theLimits, QgsRectangle theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
+void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRaster::ContrastEnhancementLimits theLimits, QgsRectangle theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
 {
   QgsDebugMsg( QString( "theAlgorithm = %1 theLimits = %2 theExtent.isEmpty() = %3" ).arg( theAlgorithm ).arg( theLimits ).arg( theExtent.isEmpty() ) );
   if ( !mPipe.renderer() || !mDataProvider )
@@ -1033,26 +1033,26 @@ void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::Co
     if ( myBand != -1 )
     {
       QGis::DataType myType = ( QGis::DataType )mDataProvider->dataType( myBand );
-      QgsContrastEnhancement* myEnhancement = new QgsContrastEnhancement(( QgsContrastEnhancement::QgsRasterDataType )myType );
+      QgsContrastEnhancement* myEnhancement = new QgsContrastEnhancement(( QGis::DataType )myType );
       myEnhancement->setContrastEnhancementAlgorithm( theAlgorithm, theGenerateLookupTableFlag );
 
       double myMin = std::numeric_limits<double>::quiet_NaN();
       double myMax = std::numeric_limits<double>::quiet_NaN();
 
-      if ( theLimits == ContrastEnhancementMinMax )
+      if ( theLimits == QgsRaster::ContrastEnhancementMinMax )
       {
         QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( myBand, QgsRasterBandStats::Min | QgsRasterBandStats::Max, theExtent, theSampleSize );
         myMin = myRasterBandStats.minimumValue;
         myMax = myRasterBandStats.maximumValue;
       }
-      else if ( theLimits == ContrastEnhancementStdDev )
+      else if ( theLimits == QgsRaster::ContrastEnhancementStdDev )
       {
         double myStdDev = 1; // make optional?
         QgsRasterBandStats myRasterBandStats = mDataProvider->bandStatistics( myBand, QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, theExtent, theSampleSize );
         myMin = myRasterBandStats.mean - ( myStdDev * myRasterBandStats.stdDev );
         myMax = myRasterBandStats.mean + ( myStdDev * myRasterBandStats.stdDev );
       }
-      else if ( theLimits == ContrastEnhancementCumulativeCut )
+      else if ( theLimits == QgsRaster::ContrastEnhancementCumulativeCut )
       {
         QSettings mySettings;
         double myLower = mySettings.value( "/Raster/cumulativeCutLower", QString::number( CUMULATIVE_CUT_LOWER ) ).toDouble();
@@ -1129,45 +1129,9 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   }
 
   QString myLimitsString = mySettings.value( "/Raster/defaultContrastEnhancementLimits", "CumulativeCut" ).toString();
-  ContrastEnhancementLimits myLimits = contrastEnhancementLimitsFromString( myLimitsString );
+  QgsRaster::ContrastEnhancementLimits myLimits = QgsRaster::contrastEnhancementLimitsFromString( myLimitsString );
 
   setContrastEnhancementAlgorithm( myAlgorithm, myLimits );
-}
-
-QString QgsRasterLayer::contrastEnhancementLimitsAsString( ContrastEnhancementLimits theLimits )
-{
-  switch ( theLimits )
-  {
-    case QgsRasterLayer::ContrastEnhancementMinMax:
-      return "MinMax";
-      break;
-    case QgsRasterLayer::ContrastEnhancementStdDev:
-      return "StdDev";
-      break;
-    case QgsRasterLayer::ContrastEnhancementCumulativeCut:
-      return "CumulativeCut";
-      break;
-    default:
-      break;
-  }
-  return "None";
-}
-
-QgsRasterLayer::ContrastEnhancementLimits QgsRasterLayer::contrastEnhancementLimitsFromString( QString theLimits )
-{
-  if ( theLimits == "MinMax" )
-  {
-    return ContrastEnhancementMinMax;
-  }
-  else if ( theLimits == "StdDev" )
-  {
-    return ContrastEnhancementStdDev;
-  }
-  else if ( theLimits == "CumulativeCut" )
-  {
-    return ContrastEnhancementCumulativeCut;
-  }
-  return ContrastEnhancementNone;
 }
 
 /**
