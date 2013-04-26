@@ -154,12 +154,14 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   if ( myChildren.size() > 0 )
   {
     QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
+    QWARN( QString( "has %1 items" ).arg( myChildren.size() ).toLocal8Bit().data() );
     foreach ( QgsDataItem* item, myChildren )
     {
       QgsDebugMsg( QString( "child name=%1" ).arg( item->name() ) );
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem*>( item );
       if ( layerItem )
       {
+        QWARN( QString( "child %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
         QgsDebugMsg( QString( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name() ).arg( layerItem->providerKey() ).arg( layerItem->path() ) );
         if ( myChildName == "" || myChildName == item->name() )
         {
@@ -175,6 +177,8 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
             {
               QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
             }
+            else
+              QWARN( QString( "Valid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
             if ( myChildName == "" )
             {
               if ( ! ok )

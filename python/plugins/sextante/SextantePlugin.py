@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from PyQt4 import QtGui
-from sextante.commander.parser import parse
-from sextante.commander.CommanderWindow import CommanderWindow
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,6 +29,8 @@ import inspect
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
+from PyQt4 import QtGui
+from sextante.commander.CommanderWindow import CommanderWindow
 from sextante.core.Sextante import Sextante
 from sextante.core.QGisLayers import QGisLayers
 from sextante.core.SextanteUtils import SextanteUtils
