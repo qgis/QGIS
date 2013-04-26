@@ -560,8 +560,6 @@ void QgisAppInterface::preloadForm( QString uifile )
 
 void QgisAppInterface::cacheloadForm( QString uifile )
 {
-    QUiLoader loader;
-
     QFile file( uifile );
 
     if ( file.open( QFile::ReadOnly ) )
@@ -572,6 +570,7 @@ void QgisAppInterface::cacheloadForm( QString uifile )
       loader.setWorkingDirectory( fi.dir() );
       QWidget *myWidget = loader.load( &file );
       file.close();
+      delete myWidget;
     }
 }
 
