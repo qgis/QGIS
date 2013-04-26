@@ -3307,7 +3307,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   result = conn->PQexec( checkQuery );
   if( PQntuples( result ) > 0 )
   {
-      sql = QObject::tr( "UPDATE %1 SET useAsDefault=%2, styleQML=XMLPARSE(DOCUMENT %3), styleSLD=XMLPARSE(DOCUMENT %4), description=%5, owner=%6, ui=XMLPARSE(DOCUMENT %7) WHERE f_table_catalog=%8 AND f_table_schema=%9 AND f_table_name=%10 AND f_geometry_column=%11 AND styleName=%12")
+      sql = QObject::tr( "UPDATE %1 SET useAsDefault=%2, styleQML=XMLPARSE(DOCUMENT %3), styleSLD=XMLPARSE(DOCUMENT %4), description=%5, owner=%6 WHERE f_table_catalog=%7 AND f_table_schema=%8 AND f_table_name=%9 AND f_geometry_column=%10 AND styleName=%11;")
               .arg( styleTableName )
               .arg( isdef )
               .arg( QgsPostgresConn::quotedValue( qmlStyle
@@ -3315,7 +3315,6 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
               .arg( QgsPostgresConn::quotedValue( sldStyle ) )
               .arg( QgsPostgresConn::quotedValue( desc ) )
               .arg( QgsPostgresConn::quotedValue( owner ) )
-              .arg( QgsPostgresConn::quotedValue( uiFileContent ) )
               .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
               .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
               .arg( QgsPostgresConn::quotedValue( f_table_name ) )
@@ -3401,7 +3400,7 @@ QGISEXTERN int listStyles( const QString& uri,  QVector<QString> &ids, QVector<Q
     f_geometry_column = dsUri.geometryColumn();
 
     // ORDER BY (CASE WHEN useAsDefault THEN 1 ELSE 2 END), update_time DESC;")
-    QString selectRelatedQuery = QObject::tr( "SELECT id, styleName, description FROM %1 WHERE f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5 AND useAsDefault=true;" )
+    QString selectRelatedQuery = QObject::tr( "SELECT id, styleName, description FROM %1 WHERE f_table_catalog=%2 AND f_table_schema=%3 AND f_table_name=%4 AND f_geometry_column=%5;" )
             .arg( styleTableName )
             .arg( QgsPostgresConn::quotedValue( f_table_catalog ) )
             .arg( QgsPostgresConn::quotedValue( f_table_schema ) )
