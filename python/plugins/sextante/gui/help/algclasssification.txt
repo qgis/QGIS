@@ -5,12 +5,89 @@ gdalogr:merge,USE_ORIGINAL_NAME,Raster/General tools
 gdalogr:nearblack,USE_ORIGINAL_NAME,Raster/Analysis
 gdalogr:ogr2ogr,Export vector layer,Vector/General tools
 gdalogr:ogrinfo,Vector layer information,Vector/Statistics
-gdalogr:pct2rgb,USE_ORIGINAL_NAME,Images/Image tools
+gdalogr:pct2rgb,PCT to RGB,Images/Image Manipulation
 gdalogr:proximity,USE_ORIGINAL_NAME,Raster/Analysis
-gdalogr:rgb2pct,USE_ORIGINAL_NAME,Images/Image tools
+gdalogr:rgb2pct,RGB to PCT,Images/Image Manipulation
 gdalogr:sieve,Remove small pixel clumps (nearest neighbour),Raster/Edition
 gdalogr:translateconvertformat,Export raster layer,Raster/General tools
 gdalogr:warpreproject,Reproject raster layer,Raster/General tools
+otb:bandmath,USE_ORIGINAL_NAME,Images/Miscellaneous
+otb:binarymorphologicaloperation,USE_ORIGINAL_NAME,Images/Image Filtering
+otb:bundletoperfectsensor,USE_ORIGINAL_NAME,Images/Geometry
+otb:cartographictogeographiccoordinatesconversion,USE_ORIGINAL_NAME,Images/Geometry
+otb:classificationregularization,USE_ORIGINAL_NAME,Images/Learning
+otb:colormapping,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:computeconfusionmatrix,USE_ORIGINAL_NAME,Images/Learning
+otb:computeimagessecondorderstatistics,USE_ORIGINAL_NAME,Images/Learning
+otb:computepolylinefeaturefromimage,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:concatenate,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
+otb:connectedcomponentsegmentation,USE_ORIGINAL_NAME,Images/Segmentation
+otb:convertsensorpointtogeographicpoint,USE_ORIGINAL_NAME,Images/Geometry
+otb:dimensionalityreductionapplication,USE_ORIGINAL_NAME,Images/Image Filtering
+otb:disparitymaptoelevationmap,USE_ORIGINAL_NAME,Images/Stereo
+otb:edgeextraction,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:edisonmeanshiftsegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
+otb:edisonmeanshiftsegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
+otb:extractroi,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:fineregistration,USE_ORIGINAL_NAME,Images/Stereo
+otb:fusionofclassifications,USE_ORIGINAL_NAME,Images/Learning
+otb:fuzzymodelestimation,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:grayscalemorphologicaloperation,USE_ORIGINAL_NAME,Images/Image Filtering
+otb:gridbasedimageresampling,USE_ORIGINAL_NAME,Images/Geometry
+otb:haralicktextureextraction,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:hoovercomparesegmentation,USE_ORIGINAL_NAME,Images/Segmentation
+otb:hyperspectraldataunmixing,USE_ORIGINAL_NAME,Images/Miscellaneous
+otb:imageconversion,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:imageenvelope,USE_ORIGINAL_NAME,Images/Geometry
+otb:imageresamplingwitharigidtransform,USE_ORIGINAL_NAME,Images/Geometry
+otb:imagescomparaison,USE_ORIGINAL_NAME,Images/Miscellaneous
+otb:imagesconcatenation,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:imagesvmclassification,USE_ORIGINAL_NAME,Images/Learning
+otb:imagetokmzexport,USE_ORIGINAL_NAME,Images/Miscellaneous
+otb:linesegmentdetection,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:localstatisticextraction,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:maximumautocorrelationfactordecomposition,USE_ORIGINAL_NAME,Images/Image Filtering
+otb:meanshiftfiltering,USE_ORIGINAL_NAME,Images/Image Filtering
+otb:meanshiftsegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
+otb:meanshiftsegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
+otb:morphologicalprofilesbasedsegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
+otb:morphologicalprofilesbasedsegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
+otb:multiresolutionpyramid,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:multivariatealterationdetector,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:obtainutmzonefromgeopoint,USE_ORIGINAL_NAME,Images/Miscellaneous
+otb:openstreetmaplayersimportationsapplications,USE_ORIGINAL_NAME,Images/Miscellaneous
+otb:opticalcalibration,USE_ORIGINAL_NAME,Images/Calibration
+otb:orthorectification,USE_ORIGINAL_NAME,Images/Geometry
+otb:pansharpening,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:pixelvalue,USE_ORIGINAL_NAME,Images/Miscellaneous
+otb:pixelwiseblockmatching,USE_ORIGINAL_NAME,Images/Stereo
+otb:pixelwiseblockmatching,USE_ORIGINAL_NAME,Images/Stereo
+otb:quicklook,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:radiometricindices,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:rasterization,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
+otb:readimageinformation,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:rescaleimage,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:sarradiometriccalibration,USE_ORIGINAL_NAME,Images/Calibration
+otb:sfstextureextraction,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:simpleconnectedcomponentssegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
+otb:simpleconnectedcomponentssegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
+otb:smoothing,USE_ORIGINAL_NAME,Images/Image Filtering
+otb:somclassification,USE_ORIGINAL_NAME,Images/Learning
+otb:splitimage,USE_ORIGINAL_NAME,Images/Image Manipulation
+otb:stereorectificationdeformationgridgenerator,USE_ORIGINAL_NAME,Images/Geometry
+otb:stereosensormodeltoelevationmap,USE_ORIGINAL_NAME,Images/Stereo
+otb:superimposesensor,USE_ORIGINAL_NAME,Images/Geometry
+otb:trainsvmclassifierfrommultipleimages,USE_ORIGINAL_NAME,Images/Learning
+otb:unsupervisedkmeansimageclassification,USE_ORIGINAL_NAME,Images/Learning
+otb:validatesvmimagesclassifier,USE_ORIGINAL_NAME,Images/Learning
+otb:vectordataextractroi,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
+otb:vectordatareprojection,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
+otb:vectordatasetfield,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
+otb:vectordatatransformation,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
+otb:vectordatavalidation,USE_ORIGINAL_NAME,Images/Feature Extraction
+otb:vertexcomponentanalysis,USE_ORIGINAL_NAME,Images/Miscellaneous
+otb:watershedsegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
+otb:watershedsegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
 qgis:addautoincrementalfield,USE_ORIGINAL_NAME,Vector/Table tools
 qgis:addfieldtoattributestable,USE_ORIGINAL_NAME,Vector/Table tools
 qgis:advancedpythonfieldcalculator,USE_ORIGINAL_NAME,Vector/Table tools
@@ -82,8 +159,8 @@ saga:aggregatepointobservations,USE_ORIGINAL_NAME,Vector/Points
 saga:aggregationindex,USE_ORIGINAL_NAME,Raster/Miscellaneous
 saga:analyticalhierarchyprocess,USE_ORIGINAL_NAME,Raster/Miscellaneous
 saga:analyticalhillshading,USE_ORIGINAL_NAME,Domain specific/Viewsheds\Lighting
-saga:bsplineapproximation,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:basicterrainanalysis,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
+saga:bsplineapproximation,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
 saga:burnstreamnetworkintodem,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:catchmentareaflowtracing,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:catchmentareamassfluxmethod,USE_ORIGINAL_NAME,Domain specific/Hydrology
@@ -223,8 +300,8 @@ saga:nearestneighbour,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
 saga:orderedweightedaveragingowa,USE_ORIGINAL_NAME,Raster/Analysis
 saga:ordinarykriging,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
 saga:ordinarykrigingglobal,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:overlandflowkinematicwaved8,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:overlandflowdistancetochannelnetwork,USE_ORIGINAL_NAME,Domain specific/Hydrology
+saga:overlandflowkinematicwaved8,USE_ORIGINAL_NAME,Domain specific/Hydrology
 saga:patching,USE_ORIGINAL_NAME,Raster/General tools
 saga:patternanalysis,USE_ORIGINAL_NAME,Raster/Analysis
 saga:pointsfilter,USE_ORIGINAL_NAME,Vector/Points
