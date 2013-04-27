@@ -426,14 +426,12 @@ class Repositories(QObject):
             "localdir"      : name,
             "read-only"     : False}
           qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().simplified()
-          if not qgisMinimumVersion: qgisMinimumVersion = "0"
-          # please use the tag below only if really needed! (for example if plugin development is abandoned)
+          if not qgisMinimumVersion: qgisMinimumVersion = "1"
           qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().simplified()
-          if not qgisMaximumVersion: qgisMaximumVersion = "2"
+          if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
           #if compatible, add the plugin to the list
           if not pluginNodes.item(i).firstChildElement("disabled").text().simplified().toUpper() in ["TRUE","YES"]:
            if compareVersions(QGIS_VER, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGIS_VER) < 2:
-            if QGIS_VER[0]==qgisMinimumVersion[0] or (qgisMinimumVersion!="0" and qgisMaximumVersion!="2"):   # to be deleted
               #add the plugin to the cache
               plugins.addFromRepository(plugin)
       # set state=2, even if the repo is empty
