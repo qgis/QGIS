@@ -356,6 +356,8 @@ class Repositories(QObject):
     self.mRepositories[key]["state"] = 1
     url = QUrl(self.mRepositories[key]["url"])
     path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:@/"))
+    v=str(QGis.QGIS_VERSION_INT)
+    path += "?qgis=%s" % ('.'.join([str(int(s)) for s in [v[0], v[1:3], v[3:5]]]))
     port = url.port()
     if port < 0:
       port = 80
