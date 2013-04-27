@@ -1,17 +1,17 @@
 
-<h3>color_hsla() function</h3>
-Returns a string representation of a color based on its hue, saturation, lightness and alpha (transparency) attributes
+<h3>color_hsva() function</h3>
+Returns a string representation of a color based on its hue, saturation, value and alpha (transparency) attributes
 
 <p><h4>Syntax</h4>
-     color_hsla(<i>hue, saturation, lightness, alpha</i>)</p>
+     color_hsva(<i>hue, saturation, value, alpha</i>)</p>
 
 <p><h4>Arguments</h4>
 <!-- List args for functions here-->
 <i>  hue</i> &rarr; the hue of the color, as an integer value from 0 to 360.<br>
 <i>  saturation</i> &rarr; the saturation percentage of the color as an integer value from 0 to 100.<br>
-<i>  lightness</i> &rarr; the lightness percentage of the color as an integer value from 0 to 100.<br>
+<i>  value</i> &rarr; the value percentage of the color as an integer from 0 to 100.<br>
 <i>  alpha</i> &rarr; the alpha component as an integer value from 0 (completely transparent) to 255 (opaque).<br>
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     color_hsla(100,50,70,200) &rarr; '166,217,140,200'</p>
+     color_hsva(40,100,100,200) &rarr; '255,170,0,200'</p>

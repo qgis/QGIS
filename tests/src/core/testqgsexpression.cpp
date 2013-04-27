@@ -321,6 +321,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color rgba" ) << "color_rgba(255,127,0,200)" << false << QVariant( "255,127,0,200" );
       QTest::newRow( "color hsl" ) << "color_hsl(100,50,70)" << false << QVariant( "#a6d98c" );
       QTest::newRow( "color hsla" ) << "color_hsla(100,50,70,200)" << false << QVariant( "166,217,140,200" );
+      QTest::newRow( "color hsv" ) << "color_hsv(40,100,100)" << false << QVariant( "#ffaa00" );
+      QTest::newRow( "color hsva" ) << "color_hsva(40,100,100,200)" << false << QVariant( "255,170,0,200" );
     }
 
     void evaluation()
