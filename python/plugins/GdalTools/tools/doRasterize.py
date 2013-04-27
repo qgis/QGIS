@@ -47,6 +47,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       # set the default QSpinBoxes and QProgressBar value
       self.widthSpin.setValue(3000)
       self.heightSpin.setValue(3000)
+      self.horizresSpin.setValue(1)
+      self.vertresSpin.setValue(1)
 
       self.lastEncoding = Utils.getLastUsedEncoding()
 
@@ -55,13 +57,16 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.attributeComboBox, SIGNAL("currentIndexChanged(int)")),
-          ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" ), self.resizeGroupBox, "1.8.0" ),
+          ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" )),
+          ( [self.horizresSpin, self.vertresSpin], SIGNAL( "valueChanged(double)" ))
         ]
       )
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
       self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillFieldsCombo)
+      self.connect(self.radioSetSize, SIGNAL("toggled(bool)"), self.someValueChanged)
+      self.connect(self.radioSetResolution, SIGNAL("toggled(bool)"), self.someValueChanged)
 
   def onLayersChanged(self):
       self.inSelector.setLayers( Utils.LayerRegistry.instance().getVectorLayers() )
@@ -101,24 +106,28 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.outSelector.setFilename(outputFile)
 
-      # required either -ts or -tr to create the output file
+      # required either -ts or -tr to create the output file 
       if gdalVersion >= "1.8.0":
         if not QFileInfo(outputFile).exists():
-          QMessageBox.information( self, self.tr( "Output size required" ), self.tr( "The output file doesn't exist. You must set up the output size to create it." ) )
-          self.resizeGroupBox.setChecked(True)
+          QMessageBox.information( self, self.tr( "Output size or resolution required" ), self.tr( "The output file doesn't exist. You must set up the output size or resolution to create it." ) )
+          self.radioSetSize.setChecked(True)
 
   def getArguments(self):
       arguments = QStringList()
       if self.attributeComboBox.currentIndex() >= 0:
         arguments << "-a"
         arguments << self.attributeComboBox.currentText()
-      if self.resizeGroupBox.isChecked():
+      if self.radioSetSize.isChecked():
         arguments << "-ts"
         arguments << str( self.widthSpin.value() )
         arguments << str( self.heightSpin.value() )
+      if self.radioSetResolution.isChecked():
+        arguments << "-tr"
+        arguments << str( self.horizresSpin.value() )
+        arguments << str( self.vertresSpin.value() )
       inputFn = self.getInputFileName()
       if not inputFn.isEmpty():
-        arguments << "-l"
+        arguments << "-l" 
         arguments << QFileInfo( inputFn ).baseName()
       arguments << inputFn
       arguments << self.getOutputFileName()
