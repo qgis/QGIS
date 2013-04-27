@@ -4,4 +4,4 @@ call "%OSGEO4W_ROOT%"\apps\grass\grass-@grassversion@\etc\env.bat
 @echo off
 path %PATH%;%OSGEO4W_ROOT%\apps\@package@\bin;%OSGEO4W_ROOT%\apps\grass\grass-@grassversion@\lib
 set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/@package@
-start "Quantum GIS" /B "%OSGEO4W_ROOT%"\bin\@package@.exe %*
+start "Quantum GIS" /B "%OSGEO4W_ROOT%"\bin\@package@-bin.exe %*
