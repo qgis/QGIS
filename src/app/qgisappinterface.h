@@ -80,22 +80,67 @@ class QgisAppInterface : public QgisInterface
 
     //! Add an icon to the plugins toolbar
     int addToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the plugins toolbar.
+     * To remove this widget again, call {@link removeToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the plugin toolbar
     void removeToolBarIcon( QAction *qAction );
     //! Add an icon to the Raster toolbar
     int addRasterToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the raster toolbar.
+     * To remove this widget again, call {@link removeRasterToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addRasterToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the Raster toolbar
     void removeRasterToolBarIcon( QAction *qAction );
     //! Add an icon to the Vector toolbar
     int addVectorToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the vector toolbar.
+     * To remove this widget again, call {@link removeVectorToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addVectorToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the Vector toolbar
     void removeVectorToolBarIcon( QAction *qAction );
     //! Add an icon to the Database toolbar
     int addDatabaseToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the database toolbar.
+     * To remove this widget again, call {@link removeDatabaseToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addDatabaseToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the Database toolbar
     void removeDatabaseToolBarIcon( QAction *qAction );
     //! Add an icon to the Web toolbar
     int addWebToolBarIcon( QAction *qAction );
+    /**
+     * Add a widget to the web toolbar.
+     * To remove this widget again, call {@link removeWebToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    QAction* addWebToolBarWidget( QWidget* widget );
     //! Remove an icon (action) from the Web toolbar
     void removeWebToolBarIcon( QAction *qAction );
 
