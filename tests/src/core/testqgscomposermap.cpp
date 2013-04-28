@@ -37,6 +37,8 @@ class TestQgsComposerMap: public QObject
     void render(); //test if rendering of the composition with composr map is correct
     void grid(); //test if grid and grid annotation works
     void overviewMap(); //test if overview map frame works
+    void overviewMapBlending(); //test if blend modes with overview map frame works
+    void overviewMapInvert(); //test if invert of overview map frame works
     void uniqueId(); //test if map id is adapted when doing copy paste
     void zebraStyle(); //test zebra map border style
 
@@ -132,6 +134,40 @@ void TestQgsComposerMap::overviewMap()
                                  "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_overview.png" ) );
   bool testResult = checker.testComposition();
   mComposition->removeComposerItem( overviewMap );
+  QVERIFY( testResult );
+}
+
+void TestQgsComposerMap::overviewMapBlending()
+{
+  QgsComposerMap* overviewMapBlend = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
+  overviewMapBlend->setFrameEnabled( true );
+  mComposition->addComposerMap( overviewMapBlend );
+  mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
+  overviewMapBlend->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  overviewMapBlend->setOverviewFrameMap( mComposerMap->id() );
+  overviewMapBlend->setOverviewBlendMode( QPainter::CompositionMode_Multiply );
+
+  QgsCompositionChecker checker( "Composer map overview blending", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_overview_blend.png" ) );
+  bool testResult = checker.testComposition();
+  mComposition->removeComposerItem( overviewMapBlend );
+  QVERIFY( testResult );
+}
+
+void TestQgsComposerMap::overviewMapInvert()
+{
+  QgsComposerMap* overviewMapInvert = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
+  overviewMapInvert->setFrameEnabled( true );
+  mComposition->addComposerMap( overviewMapInvert );
+  mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
+  overviewMapInvert->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  overviewMapInvert->setOverviewFrameMap( mComposerMap->id() );
+  overviewMapInvert->setOverviewInverted( true );
+
+  QgsCompositionChecker checker( "Composer map overview invert", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
+                                 "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_overview_invert.png" ) );
+  bool testResult = checker.testComposition();
+  mComposition->removeComposerItem( overviewMapInvert );
   QVERIFY( testResult );
 }
 
