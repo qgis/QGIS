@@ -154,14 +154,12 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   if ( myChildren.size() > 0 )
   {
     QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
-    QWARN( QString( "has %1 items" ).arg( myChildren.size() ).toLocal8Bit().data() );
     foreach ( QgsDataItem* item, myChildren )
     {
       QgsDebugMsg( QString( "child name=%1" ).arg( item->name() ) );
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem*>( item );
       if ( layerItem )
       {
-        QWARN( QString( "child %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
         QgsDebugMsg( QString( "child name=%1 provider=%2 path=%3" ).arg( layerItem->name() ).arg( layerItem->providerKey() ).arg( layerItem->path() ) );
         if ( myChildName == "" || myChildName == item->name() )
         {
@@ -177,8 +175,6 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
             {
               QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
             }
-            else
-              QWARN( QString( "Valid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
             if ( myChildName == "" )
             {
               if ( ! ok )
@@ -425,10 +421,10 @@ void TestZipLayer::testTarItemVector()
 
 void TestZipLayer::testZipItemAll()
 {
-  // test file contains invalid items (tmp1.tif, tmp1.txt and tmp1.xml)
   // test for all items inside zip, using zipSetting 3 (Full Scan) which will ignore invalid items
   // using zipSetting 2 (Basic Scan) would raise errors, because QgsZipItem would not test for valid items
   // and return child names of the invalid items
+  // test file does not contain invalid items (some of dash tests failed because of them)
   QSettings settings;
   settings.setValue( mSettingsKey, "full" );
   QVERIFY( "full" == settings.value( mSettingsKey ).toString() );
@@ -526,7 +522,7 @@ void TestZipLayer::testZipItemVRT()
   {
     settings.setValue( mSettingsKey, s );
     QVERIFY( s == settings.value( mSettingsKey ).toString() );
-    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat.vrt", "gdal" ) );
+    QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "landsat_b1.vrt", "gdal" ) );
     // this file is buggy with gdal svn - skip for now
     // QVERIFY( testZipItem( QDir::tempPath() + "/testzip.zip", "points.vrt", "ogr" ) );
   }
