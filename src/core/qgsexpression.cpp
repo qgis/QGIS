@@ -1103,6 +1103,50 @@ static QVariant fncColorHsva( const QVariantList &values, QgsFeature *, QgsExpre
   return QgsSymbolLayerV2Utils::encodeColor( color );
 }
 
+static QVariant fcnColorCmyk( const QVariantList &values, QgsFeature *, QgsExpression *parent )
+{
+  // Cyan ranges from 0 - 100
+  double cyan = getIntValue( values.at( 0 ), parent ) / 100.0;
+  // Magenta ranges from 0 - 100
+  double magenta = getIntValue( values.at( 1 ), parent ) / 100.0;
+  // Yellow ranges from 0 - 100
+  double yellow = getIntValue( values.at( 2 ), parent ) / 100.0;
+  // Black ranges from 0 - 100
+  double black = getIntValue( values.at( 3 ), parent ) / 100.0;
+
+  QColor color = QColor::fromCmykF( cyan, magenta, yellow, black );
+
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4' to color" ).arg( cyan ).arg( magenta ).arg( yellow ).arg( black ) );
+    color = QColor( 0, 0, 0 );
+  }
+
+  return color.name();
+}
+
+static QVariant fncColorCmyka( const QVariantList &values, QgsFeature *, QgsExpression *parent )
+{
+  // Cyan ranges from 0 - 100
+  double cyan = getIntValue( values.at( 0 ), parent ) / 100.0;
+  // Magenta ranges from 0 - 100
+  double magenta = getIntValue( values.at( 1 ), parent ) / 100.0;
+  // Yellow ranges from 0 - 100
+  double yellow = getIntValue( values.at( 2 ), parent ) / 100.0;
+  // Black ranges from 0 - 100
+  double black = getIntValue( values.at( 3 ), parent ) / 100.0;
+  // Alpha ranges from 0 - 255
+  double alpha = getIntValue( values.at( 4 ), parent ) / 255.0;
+
+  QColor color = QColor::fromCmykF( cyan, magenta, yellow, black, alpha );
+  if ( ! color.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Cannot convert '%1:%2:%3:%4:%5' to color" ).arg( cyan ).arg( magenta ).arg( yellow ).arg( black ).arg( alpha ) );
+    color = QColor( 0, 0, 0 );
+  }
+  return QgsSymbolLayerV2Utils::encodeColor( color );
+}
+
 static QVariant fcnSpecialColumn( const QVariantList& values, QgsFeature* /*f*/, QgsExpression* parent )
 {
   QString varName = getStringValue( values.at( 0 ), parent );
@@ -1159,6 +1203,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "format_number" << "format_date"
     << "color_rgb" << "color_rgba" << "ramp_color"
     << "color_hsl" << "color_hsla" << "color_hsv" << "color_hsva"
+    << "color_cymk" << "color_cymka"
     << "xat" << "yat" << "$area"
     << "$length" << "$perimeter" << "$x" << "$y"
     << "$rownum" << "$id" << "$scale" << "_specialcol_";
@@ -1227,6 +1272,8 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "color_hsla", 4, fncColorHsla, QObject::tr( "Color" ) )
     << new StaticFunction( "color_hsv", 3, fcnColorHsv, QObject::tr( "Color" ) )
     << new StaticFunction( "color_hsva", 4, fncColorHsva, QObject::tr( "Color" ) )
+    << new StaticFunction( "color_cmyk", 4, fcnColorCmyk, QObject::tr( "Color" ) )
+    << new StaticFunction( "color_cmyka", 5, fncColorCmyka, QObject::tr( "Color" ) )
     << new StaticFunction( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
     << new StaticFunction( "$area", 0, fcnGeomArea, QObject::tr( "Geometry" ), "", true )
