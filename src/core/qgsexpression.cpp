@@ -485,6 +485,21 @@ static QVariant fcnRegexpReplace( const QVariantList& values, QgsFeature* , QgsE
   }
   return QVariant( str.replace( re, after ) );
 }
+
+static QVariant fcnRegexpMatch( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  QString regexp = getStringValue( values.at( 1 ), parent );
+
+  QRegExp re( regexp );
+  if ( !re.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp ).arg( re.errorString() ) );
+    return QVariant();
+  }
+  return QVariant( str.contains( re ) ? 1 : 0 );
+}
+
 static QVariant fcnSubstr( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -1194,7 +1209,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "exp" << "ln" << "log10" << "log"
     << "round" << "toint" << "toreal" << "tostring"
     << "todatetime" << "todate" << "totime" << "tointerval"
-    << "coalesce" << "$now" << "age" << "year"
+    << "coalesce" << "regexp_match" << "$now" << "age" << "year"
     << "month" << "week" << "day" << "hour"
     << "minute" << "second" << "lower" << "upper"
     << "title" << "length" << "replace" << "regexp_replace"
@@ -1240,6 +1255,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "totime", 1, fcnToTime, QObject::tr( "Conversions" ) )
     << new StaticFunction( "tointerval", 1, fcnToInterval, QObject::tr( "Conversions" ) )
     << new StaticFunction( "coalesce", -1, fcnCoalesce, QObject::tr( "Conditionals" ) )
+    << new StaticFunction( "regexp_match", 2, fcnRegexpMatch, QObject::tr( "Conditionals" ) )
     << new StaticFunction( "$now", 0, fcnNow, QObject::tr( "Date and Time" ) )
     << new StaticFunction( "age", 2, fcnAge, QObject::tr( "Date and Time" ) )
     << new StaticFunction( "year", 1, fcnYear, QObject::tr( "Date and Time" ) )
