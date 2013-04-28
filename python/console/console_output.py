@@ -214,7 +214,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.shell.setFocus()
 
     def showEditor(self):
-        Ed = self.parent.widgetEditor
+        Ed = self.parent.splitterObj
         if not Ed.isVisible(): 
             Ed.show()
             self.parent.showEditorButton.setChecked(True)

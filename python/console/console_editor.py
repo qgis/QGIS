@@ -379,8 +379,7 @@ class Editor(QsciScintilla):
             self.parent.pc.callWidgetMessageBarEditor(msgText + str(e.args))
 
     def hideEditor(self):
-        self.parent.pc.widgetEditor.hide()
-        self.parent.pc.listClassMethod.hide()
+        self.parent.pc.splitterObj.hide()
         self.parent.pc.showEditorButton.setChecked(False)
 
     def commentEditorCode(self, commentCheck):
