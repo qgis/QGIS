@@ -305,7 +305,7 @@ void QgsHueSaturationFilter::processSaturation( int &r, int &g, int &b, int &h, 
       {
         // Raising the saturation. Use a saturation curve to prevent
         // clipping at maximum saturation with ugly results.
-        s = qMin(( int )( 255. * ( 1 - pow( 1 - ( s / 255. )  , mSaturationScale * 2 ) ) ), 255 );
+        s = qMin(( int )( 255. * ( 1 - pow( 1 - ( s / 255. )  , pow( mSaturationScale, 2 ) ) ) ), 255 );
       }
 
       // Saturation changed, so update rgb values
