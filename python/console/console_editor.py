@@ -82,9 +82,6 @@ class Editor(QsciScintilla):
         # Enable non-ascii chars for editor
         self.setUtf8(True)
 
-        #self.insertInitText()
-        self.setLexers()
-        
         # Set the default font
         font = QFont()
         font.setFamily('Courier')
@@ -102,7 +99,7 @@ class Editor(QsciScintilla):
         self.setMarginsBackgroundColor(QColor("#f9f9f9"))
         self.setCaretLineVisible(True)
         self.setCaretLineBackgroundColor(QColor("#fcf3ed"))
-        
+
         # Clickable margin 1 for showing markers
 #        self.setMarginSensitivity(1, True)
 #        self.connect(self,
@@ -172,6 +169,7 @@ class Editor(QsciScintilla):
         self.uncommentScut.activated.connect(self.parent.pc.uncommentCode)
         
     def settingsEditor(self):
+        # Set Python lexer
         self.setLexers()
         threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0]
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI').toString()
@@ -209,6 +207,9 @@ class Editor(QsciScintilla):
         from qgis.core import QgsApplication
 
         self.lexer = QsciLexerPython()
+        self.lexer.setIndentationWarning(QsciLexerPython.Inconsistent)
+        self.lexer.setFoldComments(True)
+        self.lexer.setFoldQuotes(True)
 
         loadFont = self.settings.value("pythonConsole/fontfamilytextEditor", "Monospace").toString()
         fontSize = self.settings.value("pythonConsole/fontsizeEditor", 10).toInt()[0]
