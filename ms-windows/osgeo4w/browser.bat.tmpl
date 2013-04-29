@@ -1,7 +1,7 @@
 @echo off
-call "~dp0\o4w_env.bat
+call "%~dp0\o4w_env.bat"
 call "%OSGEO4W_ROOT%"\apps\grass\grass-@grassversion@\etc\env.bat
 @echo off
 path %PATH%;%OSGEO4W_ROOT%\apps\@package@\bin;%OSGEO4W_ROOT%\apps\grass\grass-@grassversion@\lib
 set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/@package@
-start "Quantum GIS Browser" /B "%OSGEO4W_ROOT%"\bin\@package@-browser.exe %*
+start "Quantum GIS Browser" /B "%OSGEO4W_ROOT%"\bin\@package@-browser-bin.exe %*

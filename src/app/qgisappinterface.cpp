@@ -203,6 +203,11 @@ int QgisAppInterface::addToolBarIcon( QAction * qAction )
   return qgis->addPluginToolBarIcon( qAction );
 }
 
+QAction*QgisAppInterface::addToolBarWidget( QWidget* widget )
+{
+  return qgis->addPluginToolBarWidget( widget );
+}
+
 void QgisAppInterface::removeToolBarIcon( QAction *qAction )
 {
   qgis->removePluginToolBarIcon( qAction );
@@ -211,6 +216,11 @@ void QgisAppInterface::removeToolBarIcon( QAction *qAction )
 int QgisAppInterface::addRasterToolBarIcon( QAction * qAction )
 {
   return qgis->addRasterToolBarIcon( qAction );
+}
+
+QAction*QgisAppInterface::addRasterToolBarWidget( QWidget* widget )
+{
+  return qgis->addRasterToolBarWidget( widget );
 }
 
 void QgisAppInterface::removeRasterToolBarIcon( QAction *qAction )
@@ -223,6 +233,11 @@ int QgisAppInterface::addVectorToolBarIcon( QAction * qAction )
   return qgis->addVectorToolBarIcon( qAction );
 }
 
+QAction*QgisAppInterface::addVectorToolBarWidget(QWidget* widget)
+{
+  return qgis->addVectorToolBarWidget( widget );
+}
+
 void QgisAppInterface::removeVectorToolBarIcon( QAction *qAction )
 {
   qgis->removeVectorToolBarIcon( qAction );
@@ -233,6 +248,11 @@ int QgisAppInterface::addDatabaseToolBarIcon( QAction * qAction )
   return qgis->addDatabaseToolBarIcon( qAction );
 }
 
+QAction*QgisAppInterface::addDatabaseToolBarWidget(QWidget* widget)
+{
+  return qgis->addDatabaseToolBarWidget( widget );
+}
+
 void QgisAppInterface::removeDatabaseToolBarIcon( QAction *qAction )
 {
   qgis->removeDatabaseToolBarIcon( qAction );
@@ -241,6 +261,11 @@ void QgisAppInterface::removeDatabaseToolBarIcon( QAction *qAction )
 int QgisAppInterface::addWebToolBarIcon( QAction * qAction )
 {
   return qgis->addWebToolBarIcon( qAction );
+}
+
+QAction*QgisAppInterface::addWebToolBarWidget(QWidget* widget)
+{
+  return qgis->addWebToolBarWidget( widget );
 }
 
 void QgisAppInterface::removeWebToolBarIcon( QAction *qAction )

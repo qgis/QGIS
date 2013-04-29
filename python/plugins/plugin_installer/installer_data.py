@@ -356,6 +356,8 @@ class Repositories(QObject):
     self.mRepositories[key]["state"] = 1
     url = QUrl(self.mRepositories[key]["url"])
     path = QString(url.toPercentEncoding(url.path(), "!$&'()*+,;=:@/"))
+    v=str(QGis.QGIS_VERSION_INT)
+    path += "?qgis=%s" % ('.'.join([str(int(s)) for s in [v[0], v[1:3], v[3:5]]]))
     port = url.port()
     if port < 0:
       port = 80
@@ -426,14 +428,12 @@ class Repositories(QObject):
             "localdir"      : name,
             "read-only"     : False}
           qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().simplified()
-          if not qgisMinimumVersion: qgisMinimumVersion = "0"
-          # please use the tag below only if really needed! (for example if plugin development is abandoned)
+          if not qgisMinimumVersion: qgisMinimumVersion = "1"
           qgisMaximumVersion = pluginNodes.item(i).firstChildElement("qgis_maximum_version").text().simplified()
-          if not qgisMaximumVersion: qgisMaximumVersion = "2"
+          if not qgisMaximumVersion: qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
           #if compatible, add the plugin to the list
           if not pluginNodes.item(i).firstChildElement("disabled").text().simplified().toUpper() in ["TRUE","YES"]:
            if compareVersions(QGIS_VER, qgisMinimumVersion) < 2 and compareVersions(qgisMaximumVersion, QGIS_VER) < 2:
-            if QGIS_VER[0]==qgisMinimumVersion[0] or (qgisMinimumVersion!="0" and qgisMaximumVersion!="2"):   # to be deleted
               #add the plugin to the cache
               plugins.addFromRepository(plugin)
       # set state=2, even if the repo is empty
