@@ -2,11 +2,11 @@
 name=Plugin Installer
 description=Downloads and installs QGIS python plugins
 category=Plugins
-version=1.2.1
-qgisMinimumVersion=1.0
+version=1.3
+qgisMinimumVersion=1.9
 
 author=Borys Jurgiel
-email=borysiasty@aster.pl
+email=qgis@borysjurgiel.pl
 
 icon=plugin_installer.png
 

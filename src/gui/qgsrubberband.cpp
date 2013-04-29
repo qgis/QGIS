@@ -298,7 +298,6 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     case QGis::WKBMultiLineString:
     case QGis::WKBMultiLineString25D:
     {
-      mPoints.clear();
 
       QgsMultiPolyline mline = geom->asMultiPolyline();
       for ( int i = 0; i < mline.size(); ++i, ++idx )
@@ -347,7 +346,6 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     case QGis::WKBMultiPolygon:
     case QGis::WKBMultiPolygon25D:
     {
-      mPoints.clear();
 
       QgsMultiPolygon multipoly = geom->asMultiPolygon();
       for ( int i = 0; i < multipoly.size(); ++i, ++idx )

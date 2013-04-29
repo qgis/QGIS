@@ -159,7 +159,7 @@ class OTBAlgorithm(GeoAlgorithm):
 
         for out in self.outputs:
             commands.append(out.name)
-            commands.append(out.value)
+            commands.append('"' + out.value + '"')
         for roiInput, roiFile in self.roiRasters.items():
             startX, startY = float(self.roiValues[0]), float(self.roiValues[1])
             sizeX = float(self.roiValues[2]) - startX

@@ -116,8 +116,28 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Add an icon to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 
+    /**
+     * Add a widget to the plugins toolbar.
+     * To remove this widget again, call {@link removeToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addToolBarWidget( QWidget* widget ) = 0;
+
     //! Remove an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
+
+    /**
+     * Add a widget to the raster toolbar.
+     * To remove this widget again, call {@link removeRasterToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addRasterToolBarWidget( QWidget* widget ) = 0;
 
     //! Add an icon to the Raster toolbar
     //! @note added in 2.0
@@ -129,7 +149,18 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Add an icon to the Vector toolbar
     //! @note added in 2.0
+
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
+
+    /**
+     * Add a widget to the vector toolbar.
+     * To remove this widget again, call {@link removeVectorToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addVectorToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the Vector toolbar
     //! @note added in 2.0
@@ -139,6 +170,16 @@ class GUI_EXPORT QgisInterface : public QObject
     //! @note added in 2.0
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
 
+    /**
+     * Add a widget to the database toolbar.
+     * To remove this widget again, call {@link removeDatabaseToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addDatabaseToolBarWidget( QWidget* widget ) = 0;
+
     //! Remove an action (icon) from the Database toolbar
     //! @note added in 2.0
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
@@ -146,6 +187,16 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Add an icon to the Web toolbar
     //! @note added in 2.0
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
+
+    /**
+     * Add a widget to the web toolbar.
+     * To remove this widget again, call {@link removeWebToolBarIcon}
+     * with the returned QAction.
+     *
+     * @param widget widget to add. The toolbar will take ownership of this widget
+     * @return the QAction you can use to remove this widget from the toolbar
+     */
+    virtual QAction* addWebToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the Web toolbar
     //! @note added in 2.0

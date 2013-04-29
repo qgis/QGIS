@@ -39,7 +39,7 @@ class writeOut:
         self.style = style
 
     def write(self, m):
-        if self.style == "traceback":
+        if self.style == "_traceback":
             # Show errors in red
             pos = self.sO.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
             self.sO.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 31)
@@ -73,6 +73,8 @@ class ShellOutputScintilla(QsciScintilla):
         self.parent = parent
         self.shell = self.parent.shell
 
+        self.settings = QSettings()
+
         # Creates layout for message bar
         self.layout = QGridLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -88,7 +90,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.setUtf8(True)
 
         sys.stdout = writeOut(self, sys.stdout)
-        sys.stderr = writeOut(self, sys.stderr, "traceback")
+        sys.stderr = writeOut(self, sys.stderr, "_traceback")
 
         self.insertInitText()
         self.setLexers()
@@ -137,9 +139,8 @@ class ShellOutputScintilla(QsciScintilla):
     def setLexers(self):
         self.lexer = QsciLexerPython()
 
-        settings = QSettings()
-        loadFont = settings.value("pythonConsole/fontfamilytext", "Monospace").toString()
-        fontSize = settings.value("pythonConsole/fontsize", 10).toInt()[0]
+        loadFont = self.settings.value("pythonConsole/fontfamilytext", "Monospace").toString()
+        fontSize = self.settings.value("pythonConsole/fontsize", 10).toInt()[0]
         font = QFont(loadFont)
         font.setFixedPitch(True)
         font.setPointSize(fontSize)
@@ -165,6 +166,7 @@ class ShellOutputScintilla(QsciScintilla):
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
         iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
         iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
+        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
         hideToolBar = menu.addAction(iconHideTool,
                                      "Hide/Show Toolbar",
                                      self.hideToolBar)
@@ -187,6 +189,10 @@ class ShellOutputScintilla(QsciScintilla):
         selectAllAction = menu.addAction("Select All",
                                          self.selectAll,
                                          QKeySequence.SelectAll)
+        menu.addSeparator()
+        settingsDialog = menu.addAction(iconSettings,
+                                        "Settings",
+                                        self.parent.openSettings)
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)
@@ -208,7 +214,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.shell.setFocus()
 
     def showEditor(self):
-        Ed = self.parent.widgetEditor
+        Ed = self.parent.splitterObj
         if not Ed.isVisible(): 
             Ed.show()
             self.parent.showEditorButton.setChecked(True)
@@ -242,4 +248,4 @@ class ShellOutputScintilla(QsciScintilla):
 
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
-        self.infoBar.pushMessage('Console', text, QgsMessageBar.INFO, timeout)
+        self.infoBar.pushMessage(text, QgsMessageBar.INFO, timeout)
