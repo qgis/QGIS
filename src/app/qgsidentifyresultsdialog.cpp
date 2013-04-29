@@ -1163,7 +1163,7 @@ void QgsIdentifyResultsDialog::zoomToFeature()
   }
 
   // TODO: verify CRS for raster WMS features
-  QgsRectangle rect = mCanvas->mapRenderer()->layerExtentToOutputExtent( layer, feat.geometry()->boundingBox() );
+  QgsRectangle rect = mCanvas->mapRenderer()->layerToMapCoordinates( layer, feat.geometry()->boundingBox() );
 
   if ( rect.isEmpty() )
   {

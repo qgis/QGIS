@@ -185,7 +185,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
         if not ok or not self.vlayer.getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( ft ):
           return
 
-        rect = mc.mapRenderer().layerExtentToOutputExtent( self.vlayer, ft.geometry().boundingBox() )
+        rect = mc.mapRenderer().layerToMapCoordinates( self.vlayer, ft.geometry().boundingBox() )
         rect.scale( 1.05 )
 
       # Set the extent to our new rectangle
