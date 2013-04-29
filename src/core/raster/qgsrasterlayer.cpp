@@ -331,7 +331,6 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   }
 
   // clip raster extent to view extent
-  //QgsRectangle myRasterExtent = theViewExtent.intersect( &mLayerExtent );
   QgsRectangle myRasterExtent = myProjectedViewExtent.intersect( &myProjectedLayerExtent );
   if ( myRasterExtent.isEmpty() )
   {
@@ -761,7 +760,7 @@ QString QgsRasterLayer::providerType() const
 /**
  * @return the horizontal units per pixel as reported in the  GDAL geotramsform[1]
  */
-double QgsRasterLayer::rasterUnitsPerPixel()
+double QgsRasterLayer::rasterUnitsPerPixelX()
 {
 // We return one raster pixel per map unit pixel
 // One raster pixel can have several raster units...
@@ -769,10 +768,18 @@ double QgsRasterLayer::rasterUnitsPerPixel()
 // We can only use one of the mGeoTransform[], so go with the
 // horisontal one.
 
-  //return qAbs( mGeoTransform[1] );
   if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && mDataProvider->xSize() > 0 )
   {
     return mDataProvider->extent().width() / mDataProvider->xSize();
+  }
+  return 1;
+}
+
+double QgsRasterLayer::rasterUnitsPerPixelY()
+{
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && mDataProvider->xSize() > 0 )
+  {
+    return mDataProvider->extent().height() / mDataProvider->ySize();
   }
   return 1;
 }
@@ -1001,7 +1008,7 @@ void QgsRasterLayer::closeDataProvider()
   mDataProvider = 0;
 }
 
-void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRaster::ContrastEnhancementLimits theLimits, QgsRectangle theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
+void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRaster::ContrastEnhancementLimits theLimits, QgsRectangle theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
 {
   QgsDebugMsg( QString( "theAlgorithm = %1 theLimits = %2 theExtent.isEmpty() = %3" ).arg( theAlgorithm ).arg( theLimits ).arg( theExtent.isEmpty() ) );
   if ( !mPipe.renderer() || !mDataProvider )
@@ -1130,7 +1137,7 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   QString myLimitsString = mySettings.value( "/Raster/defaultContrastEnhancementLimits", "CumulativeCut" ).toString();
   QgsRaster::ContrastEnhancementLimits myLimits = QgsRaster::contrastEnhancementLimitsFromString( myLimitsString );
 
-  setContrastEnhancementAlgorithm( myAlgorithm, myLimits );
+  setContrastEnhancement( myAlgorithm, myLimits );
 }
 
 /**
@@ -1618,13 +1625,13 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
 
   for ( int bandNo = 1; bandNo <= mDataProvider->bandCount(); bandNo++ )
   {
-    if ( mDataProvider->userNoDataValue( bandNo ).isEmpty() ) continue;
+    if ( mDataProvider->userNoDataValues( bandNo ).isEmpty() ) continue;
 
     QDomElement noDataRangeList = document.createElement( "noDataList" );
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
 
-    foreach ( QgsRasterRange range, mDataProvider->userNoDataValue( bandNo ) )
+    foreach ( QgsRasterRange range, mDataProvider->userNoDataValues( bandNo ) )
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 

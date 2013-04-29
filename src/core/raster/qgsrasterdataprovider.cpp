@@ -205,7 +205,7 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
   }
 
   // apply user no data values
-  block->applyNoDataValues( userNoDataValue( theBandNo ) );
+  block->applyNoDataValues( userNoDataValues( theBandNo ) );
   return block;
 }
 
@@ -501,7 +501,7 @@ QgsRasterInterface::Capability QgsRasterDataProvider::identifyFormatToCapability
   }
 }
 
-bool QgsRasterDataProvider::userNoDataValueContains( int bandNo, double value ) const
+bool QgsRasterDataProvider::userNoDataValuesContains( int bandNo, double value ) const
 {
   QgsRasterRangeList rangeList = mUserNoDataValue.value( bandNo - 1 );
   return QgsRasterRange::contains( value, rangeList );

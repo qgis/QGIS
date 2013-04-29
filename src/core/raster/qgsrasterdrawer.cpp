@@ -46,17 +46,12 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
   //number of cols/rows in output pixels
   int nCols = 0;
   int nRows = 0;
-  //number of raster cols/rows with oversampling
-  //int nRasterCols = 0;
-  //int nRasterRows = 0;
   //shift to top left point for the raster part
   int topLeftCol = 0;
   int topLeftRow = 0;
 
   // We know that the output data type of last pipe filter is QImage data
-  //QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGrayBand );
 
-  //void* rasterData;
   QgsRasterBlock *block;
 
   // readNextRasterPart calcs and resets  nCols, nRows, topLeftCol, topLeftRow
@@ -68,11 +63,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
       QgsDebugMsg( "Cannot get block" );
       continue;
     }
-    //create image
-    //QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
 
-    // TODO: the exact format should be read from input
-    //QImage img(( uchar * ) rasterData, nCols, nRows, QImage::Format_ARGB32_Premultiplied );
     QImage img = block->image();
 
     drawImage( p, viewPort, img, topLeftCol, topLeftRow );

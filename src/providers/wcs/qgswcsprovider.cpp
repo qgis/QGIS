@@ -1701,7 +1701,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint & thePoint, Qgs
     // Apply no data and user no data
     if (( srcHasNoDataValue( i ) && useSrcNoDataValue( i ) &&
           ( qIsNaN( value ) || qgsDoubleNear( value, srcNoDataValue( i ) ) ) ) ||
-        ( QgsRasterRange::contains( value, userNoDataValue( i ) ) ) )
+        ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
     {
       results.insert( i, QVariant() );
     }
