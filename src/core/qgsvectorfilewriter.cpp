@@ -113,7 +113,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   {
     if ( layOptions.join( "" ).toUpper().indexOf( "ENCODING=" ) == -1 )
     {
-      layOptions.append( "ENCODING=" + fileEncoding );
+      layOptions.append( "ENCODING=" + convertCodecNameForEncodingOption( fileEncoding ) );
     }
 
     CPLSetConfigOption( "SHAPE_ENCODING", "" );
@@ -1021,6 +1021,23 @@ QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
     return "";
 
   return trLongName + " [OGR] (" + glob.toLower() + " " + glob.toUpper() + ")";
+}
+
+QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &codecName )
+{
+  if ( codecName == "System" )
+    return QString( "LDID/0" );
+
+  QRegExp re = QRegExp( QString( "(CP|windows-|ISO[ -])(.+)" ), Qt::CaseInsensitive );
+  if ( re.exactMatch( codecName ) )
+  {
+    QString c = re.cap( 2 ).replace( "-" , "" );
+    bool isNumber;
+    c.toInt( &isNumber );
+    if ( isNumber )
+      return c;
+  }
+  return codecName;
 }
 
 bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName, QString &trLongName, QString &glob, QString &ext )

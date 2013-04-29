@@ -1850,7 +1850,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   char **papszOptions = NULL;
   if ( driverName == "ESRI Shapefile" )
   {
-    papszOptions = CSLSetNameValue( papszOptions, "ENCODING", encoding.toLocal8Bit().data() );
+    papszOptions = CSLSetNameValue( papszOptions, "ENCODING", QgsVectorFileWriter::convertCodecNameForEncodingOption( encoding ).toLocal8Bit().data() );
     // OGR Shapefile fails to create fields if given encoding is not supported by its side
     // so disable encoding conversion of OGR Shapefile layer
     CPLSetConfigOption( "SHAPE_ENCODING", "" );
