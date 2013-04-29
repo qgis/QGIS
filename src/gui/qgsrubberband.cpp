@@ -484,8 +484,8 @@ void QgsRubberBand::updateRect()
     {
       return;
     }
-    QgsRectangle r( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY,
-                    it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
+    QgsRectangle r ( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
+                     it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p );
 
     for ( int i = 0; i < mPoints.size(); ++i )
     {
