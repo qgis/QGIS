@@ -4,9 +4,9 @@
 <svg version="1.1" id="svg644" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="579.997px" height="579.997px" viewBox="-235.433 -235.433 579.997 579.997"
 	 enable-background="new -235.433 -235.433 579.997 579.997" xml:space="preserve">
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M272.738,188.268l-50.579,37.794H82.964L7.483,1.672l170.512-1.391
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M272.738,188.268l-50.579,37.794H82.964L7.483,1.672l170.512-1.391
 	v-25.896l-249.285-1.433l78.75,253.11h-203.944l4.048,20.337l2.027,0.007c0.667,0.003,67.587,0.223,147.219,0.223
 	c0.017,0,0.005,0,0.021,0c273.485,0,277.928-2.416,279.59-3.326c7.721-4.229,65.217-47.296,67.66-49.128l5.509-4.128
 	L272.738,188.268z"/>
-<ellipse fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="-34.998" cy="-86.774" rx="45.167" ry="48.242"/>
+<ellipse fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" cx="-34.998" cy="-86.774" rx="45.167" ry="48.242"/>
 </svg>

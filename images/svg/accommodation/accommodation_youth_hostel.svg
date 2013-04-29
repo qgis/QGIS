@@ -56,7 +56,7 @@
 	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
 	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
 </g>
-<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M204.782,386.69h16.633c0.003,0,0.006,0,0.01,0
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M204.782,386.69h16.633c0.003,0,0.006,0,0.01,0
 	c1.017,0.042,1.85-0.82,1.85-1.84c0-0.413-0.136-0.795-0.366-1.102l-25.29-45.932h13.906c0.628,0,1.213-0.32,1.551-0.85
 	c0.338-0.53,0.383-1.195,0.118-1.765l-76.933-165.71c-0.323-0.696-1.041-1.115-1.784-1.062c-0.751-0.047-1.461,0.366-1.784,1.063
 	l-76.817,165.71c-0.264,0.569-0.219,1.234,0.119,1.764c0.338,0.529,0.923,0.85,1.551,0.85h13.791l-25.408,46.146

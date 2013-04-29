@@ -8,7 +8,7 @@
 	 xml:space="preserve">
 <sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="51.821779" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="g608" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1024" inkscape:pageopacity="0.0" inkscape:window-height="683">
 	</sodipodi:namedview>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M182.057,63.58c-21.412-18.028-54.73-30.601-99.955-37.714
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M182.057,63.58c-21.412-18.028-54.73-30.601-99.955-37.714
 	l-4.08-0.691V-98.239c14.383,0.854,29.148,2.933,44.303,6.249c20.409,4.466,42.123,11.25,65.135,20.347v-48.881
 	c-22.814-6.285-45.125-10.998-66.938-14.142c-14.339-2.067-28.504-3.44-42.5-4.148v-29.225H25.137v30.06
 	c-34.487,3.262-62.626,12.222-84.409,26.882c-27.814,18.859-41.721,44.662-41.721,77.416c0,28.285,10.106,50.368,30.316,66.246

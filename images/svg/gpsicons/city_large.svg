@@ -8,5 +8,5 @@
 	 xml:space="preserve">
 <sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="svg644" inkscape:window-y="108" inkscape:window-x="10" inkscape:pageshadow="2" inkscape:window-width="874" inkscape:pageopacity="0.0" inkscape:window-height="584">
 	</sodipodi:namedview>
-<ellipse fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" cx="54.43" cy="54.838" rx="216.926" ry="214.884"/>
+<ellipse fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" cx="54.43" cy="54.838" rx="216.926" ry="214.884"/>
 </svg>

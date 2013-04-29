@@ -4,9 +4,9 @@
 <svg version="1.1" id="svg644" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="579.997px" height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997"
 	 xml:space="preserve">
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M26.929,29.26v521.476h526.138V29.26H26.929z M524.422,522.091
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M26.929,29.26v521.476h526.138V29.26H26.929z M524.422,522.091
 	H55.575V57.906h468.848V522.091z"/>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="214.31,486.524 365.687,486.524 365.687,368.166 
+<polygon fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" points="214.31,486.524 365.687,486.524 365.687,368.166 
 	480.165,368.166 480.165,211.832 365.687,211.832 365.687,93.473 214.31,93.473 214.31,211.832 99.83,211.832 99.83,368.166 
 	214.31,368.166 "/>
 </svg>

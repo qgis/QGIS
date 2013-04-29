@@ -7,7 +7,7 @@
 	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
 <sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="svg644" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1014" inkscape:pageopacity="0.0" inkscape:window-height="679">
 	</sodipodi:namedview>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M290.001,138.466c-84.485,0-152.977,67.842-152.977,151.532
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M290.001,138.466c-84.485,0-152.977,67.842-152.977,151.532
 	c0,83.687,68.491,151.532,152.977,151.532c84.482,0,152.97-67.846,152.97-151.532C442.971,206.308,374.484,138.466,290.001,138.466z
 	"/>
 </svg>

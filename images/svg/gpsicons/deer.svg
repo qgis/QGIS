@@ -5,9 +5,9 @@
 	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="deer.svg" inkscape:version="0.43"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
 	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M132.746,290.713c-0.054-0.542-0.1-1.083-0.134-1.623
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M132.746,290.713c-0.054-0.542-0.1-1.083-0.134-1.623
 	C132.818,292.623,132.815,292.275,132.746,290.713z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M535.653,523.704c-4.89-7.799-11.77-14.093-18.49-17.542
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M535.653,523.704c-4.89-7.799-11.77-14.093-18.49-17.542
 	c-3.059-1.497-5.964-2.998-9.018-4.499c-2.752-1.497-5.811-2.398-9.018-2.994l-1.683-0.302c-1.223-0.451-2.445-1.353-3.059-2.398
 	c-1.069-1.65-1.985-3.296-2.901-5.1c-0.92-2.101-2.296-4.192-3.518-5.996c-1.679-2.398-3.055-4.648-4.431-7.195
 	c-3.979-7.493-7.493-15.293-10.245-23.232c-2.751-7.8-4.731-16.046-6.107-24.138c-0.158-1.502-0.465-2.85-0.767-4.347

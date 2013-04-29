@@ -4,9 +4,9 @@
 <svg version="1.1" id="svg602" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="579.997px" height="579.997px" viewBox="-235.433 -235.433 579.997 579.997"
 	 enable-background="new -235.433 -235.433 579.997 579.997" xml:space="preserve">
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M125.788-42.707v-62.611H-28.688v62.611h-58.462V-65.09h-48.975
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M125.788-42.707v-62.611H-28.688v62.611h-58.462V-65.09h-48.975
 	v22.383h-37.724v257.159h460.021V-42.707H125.788z M48.55,26.441c40.267,0,73.026,32.759,73.026,73.026s-32.76,73.026-73.026,73.026
 	s-73.026-32.76-73.026-73.026S8.284,26.441,48.55,26.441z M3.072-12.655v-65.911H94.03v65.911H3.072z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M48.55,148.282c26.865,0,48.722-21.854,48.722-48.717
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M48.55,148.282c26.865,0,48.722-21.854,48.722-48.717
 	S75.416,50.849,48.55,50.849c-26.864,0-48.719,21.854-48.719,48.716S21.687,148.282,48.55,148.282z"/>
 </svg>

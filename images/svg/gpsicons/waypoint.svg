@@ -7,5 +7,5 @@
 	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
 <sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="svg644" inkscape:window-y="108" inkscape:window-x="10" inkscape:pageshadow="2" inkscape:window-width="874" inkscape:pageopacity="0.0" inkscape:window-height="584">
 	</sodipodi:namedview>
-<rect x="122.431" y="124.665" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="335.134" height="330.667"/>
+<rect x="122.431" y="124.665" fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" width="335.134" height="330.667"/>
 </svg>

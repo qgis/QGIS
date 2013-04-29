@@ -7,7 +7,7 @@
 	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
 <sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="svg602" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1024" inkscape:pageopacity="0.0" inkscape:window-height="683">
 	</sodipodi:namedview>
-<polygon fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" points="422.766,349.508 477.212,349.508 395.634,231.935 
+<polygon fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" points="422.766,349.508 477.212,349.508 395.634,231.935 
 	437.237,231.935 289.818,19.217 142.58,232.116 184.001,232.116 102.604,349.69 157.05,349.69 71.493,473.414 234.83,473.414 
 	234.83,560.78 344.987,560.78 344.987,473.233 508.504,473.233 "/>
 </svg>

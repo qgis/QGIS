@@ -7,10 +7,10 @@
 	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
 <sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="g669" inkscape:window-y="60" inkscape:window-x="5" inkscape:pageshadow="2" inkscape:window-width="874" inkscape:pageopacity="0.0" inkscape:window-height="584">
 	</sodipodi:namedview>
-<rect id="rect693" x="157.748" y="273.439" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="316.255" height="234.997"/>
-<path id="path695" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M75.067,288.395l481.617,2.136L416.124,130.303h-206.7
+<rect id="rect693" x="157.748" y="273.439" fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" width="316.255" height="234.997"/>
+<path id="path695" fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M75.067,288.395l481.617,2.136L416.124,130.303h-206.7
 	L75.067,288.395z"/>
-<rect id="rect698" x="327.993" y="329.424" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.5136" width="115.758" height="179.012"/>
-<rect id="rect3055" x="197.158" y="330.34" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="88.37" height="81.756"/>
-<rect id="rect3057" x="311.279" y="87.369" fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" width="90.859" height="44.026"/>
+<rect id="rect698" x="327.993" y="329.424" fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="4.5136" width="115.758" height="179.012"/>
+<rect id="rect3055" x="197.158" y="330.34" fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" width="88.37" height="81.756"/>
+<rect id="rect3057" x="311.279" y="87.369" fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" width="90.859" height="44.026"/>
 </svg>

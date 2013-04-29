@@ -4,7 +4,7 @@
 <svg version="1.1" id="svg644" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="579.997px" height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997"
 	 xml:space="preserve">
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M493.03,419.592l-0.399,0.328
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M493.03,419.592l-0.399,0.328
 	c-10.239,8.396-15.304,13.916-19.001,17.947c-8.217,8.959-10.426,11.365-49.361,24.254c-44.644,8.766-76.78,14.518-118.552,15.818
 	V210.784h134.419v-34.252H305.716V164.17c17.839-7.012,30.586-25.576,30.586-47.383c0-27.82-20.748-50.373-46.35-50.373
 	c-25.598,0-46.351,22.553-46.351,50.373c0,21.809,12.753,40.375,30.593,47.383v12.361H139.776v34.252h134.419v267.492

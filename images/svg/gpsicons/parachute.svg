@@ -5,9 +5,9 @@
 	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="parachute.svg" inkscape:version="0.43"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
 	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
-<path id="path846" sodipodi:nodetypes="ccsc" opacity="0.25" fill="#FFFB3D" d="M486.968,249.016
+<path id="path846" sodipodi:nodetypes="ccsc" opacity="0.25" fill="param(fill) #000" d="M486.968,249.016
 	c0.256,0.463-394.516,0.303-393.939,0c0-106.551,88.186-192.93,196.97-192.93C398.78,56.086,486.968,142.465,486.968,249.016z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M502.655,259.913l-3.586-3.336c0.065-0.104,0.135-0.196,0.198-0.305
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M502.655,259.913l-3.586-3.336c0.065-0.104,0.135-0.196,0.198-0.305
 	l1.98-3.358v-3.897c0-114.255-94.766-207.208-211.249-207.208c-116.482,0-211.249,92.954-211.249,207.208v1.736l0.415,1.685
 	c0.262,1.062,0.778,2.588,1.738,4.162l-3.562,3.313l146.401,157.35v121.314h136.695V412.766L502.655,259.913z M218.33,263.55
 	l37.389,144.136h-2.63l0.97-0.902l-133.38-143.354c12.123,0.027,27.656,0.053,45.471,0.074

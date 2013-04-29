@@ -5,18 +5,18 @@
 	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="restroom.svg" inkscape:version="0.43"
 	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
 	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M161.272,129.737c23.107,0,41.906-18.799,41.906-41.904
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M161.272,129.737c23.107,0,41.906-18.799,41.906-41.904
 	c0-23.109-18.799-41.91-41.906-41.91c-23.108,0-41.908,18.8-41.908,41.91C119.364,110.938,138.164,129.737,161.272,129.737z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M238.204,133.672c-0.969,0-1.916,0.119-2.84,0.332
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M238.204,133.672c-0.969,0-1.916,0.119-2.84,0.332
 	c-1.269-0.215-2.57-0.332-3.9-0.332h-15.678H106.756H91.078c-1.329,0-2.631,0.117-3.899,0.332c-0.923-0.213-1.87-0.332-2.838-0.332
 	c-9.127,0-16.525,9.898-16.525,22.109v1.158v2.35v122.582c0,12.205,7.398,22.104,16.525,22.104c9.123,0,16.522-9.898,16.522-22.104
 	v-99.318h5.894v160.613v20.697v155.299c0,9.59,7.776,17.367,17.369,17.367h16.293c9.593,0,17.369-7.777,17.369-17.367V363.864h6.969
 	v155.299c0,9.59,7.777,17.367,17.367,17.367h16.295c9.59,0,17.367-7.777,17.367-17.367V363.864v-20.697V182.553h5.893v99.318
 	c0,12.205,7.399,22.104,16.525,22.104c9.127,0,16.523-9.898,16.523-22.104V159.29v-2.35v-1.158
 	C254.727,143.571,247.331,133.672,238.204,133.672z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M400.347,127.282c23.108,0,41.909-18.799,41.909-41.906
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M400.347,127.282c23.108,0,41.909-18.799,41.909-41.906
 	c0-23.109-18.801-41.909-41.909-41.909c-23.105,0-41.903,18.8-41.903,41.909C358.444,108.483,377.242,127.282,400.347,127.282z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M510.856,272.973l-34.084-119.129
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M510.856,272.973l-34.084-119.129
 	c-3.232-11.313-11.419-18.186-18.44-15.621c-1.484-0.297-3.019-0.455-4.59-0.455H346.09c-3.459,0-6.738,0.762-9.689,2.115
 	c-5.878,0.822-11.715,7.313-14.262,16.688l-32.381,119.076c-3.203,11.781-0.006,23.645,7.143,26.502
 	c7.151,2.859,15.543-4.375,18.749-16.156l27.08-99.594c1.098,0.16,2.219,0.246,3.36,0.246h7.302l-47.139,182.32

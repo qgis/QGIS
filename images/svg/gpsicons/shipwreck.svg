@@ -7,9 +7,9 @@
 	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
 <sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="g709" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1014" inkscape:pageopacity="0.0" inkscape:window-height="679">
 	</sodipodi:namedview>
-<path id="path759" sodipodi:nodetypes="ccscc" opacity="0.25" fill="#FFFB3D" d="M200.219,415.273l189.988-179.146
+<path id="path759" sodipodi:nodetypes="ccscc" opacity="0.25" fill="param(fill) #000" d="M200.219,415.273l189.988-179.146
 	c0,0,39.525,102.376,11.1,139.92c-1.923,2.542-45.411,40.047-45.411,40.047L200.219,415.273z"/>
-<path fill="#FFFB3D" stroke="#1EFF31" stroke-width="4.4444" d="M484.083,383.822l-50.021,0.337
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M484.083,383.822l-50.021,0.337
 	c11.641-23.316,12.918-55.805,3.945-98.751c-6.787-32.485-17.251-59.759-17.693-60.904l-17.301-44.811l-124.717,117.6
 	L166.548,172.399l-55.283,49.471l113.04,126.334l-39.917,37.638l-88.91,0.6l0.436,64.545l388.605-2.619L484.083,383.822z
 	 M374.826,298.609c7.024,33.62,4.365,50.992,1.491,56.732c-5.027,4.605-18.508,16.411-32.363,28.416l-62.916-0.332l93.143-87.827
