@@ -21,10 +21,10 @@ class QgsRasterNuller : QgsRasterInterface
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) / Factory /;
 
-    void setNoData( QList<QgsRasterNuller::NoData> noData );
+    void setNoData( int bandNo, QgsRasterRangeList noData );
 
-    QList<QgsRasterNuller::NoData> noData() const;
+    QgsRasterRangeList noData( int bandNo ) const;
 
     /** \brief Set output no data value. */
-    void setOutputNoData( double noData );
+    void setOutputNoDataValue( int bandNo, double noData );
 };

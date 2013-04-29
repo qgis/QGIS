@@ -4,16 +4,6 @@ class QgsRasterIterator
 #include <qgsrasteriterator.h>
 %End
   public:
-    //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates
-    struct RasterPartInfo
-    {
-      int currentCol;
-      int currentRow;
-      int nCols;
-      int nRows;
-      QgsRasterBlock *block;
-      QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
-    };
 
     QgsRasterIterator( QgsRasterInterface* input );
     ~QgsRasterIterator();

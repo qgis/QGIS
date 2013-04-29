@@ -189,10 +189,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       destNoDataValue = srcProvider->srcNoDataValue( bandNo );
       destHasNoDataValue = true;
     }
-    else if ( nuller && nuller->noData().size() > 0 )
+    else if ( nuller && nuller->noData( bandNo ).size() > 0 )
     {
       // Use one user defined no data value
-      destNoDataValue = nuller->noData().value( 0 ).min;
+      destNoDataValue = nuller->noData( bandNo ).value( 0 ).min();
       destHasNoDataValue = true;
     }
     else
@@ -232,7 +232,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     }
 
     if ( nuller && destHasNoDataValue )
-      nuller->setOutputNoData( destNoDataValue );
+    {
+      nuller->setOutputNoDataValue( bandNo, destNoDataValue );
+    }
 
     QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
     destDataTypeList.append( destDataType );

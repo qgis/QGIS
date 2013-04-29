@@ -18,7 +18,7 @@
 #include "ui_qgsrasterlayersaveasdialogbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsrasternuller.h"
+#include "qgsrasterrange.h"
 
 class QgsRasterLayer;
 class QgsRasterDataProvider;
@@ -70,7 +70,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsCoordinateReferenceSystem outputCrs();
     QStringList createOptions() const;
     QgsRectangle outputRectangle() const;
-    QList<QgsRasterNuller::NoData> noData() const;
+    QgsRasterRangeList noData() const;
 
     QList< int > pyramidsList() const;
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;

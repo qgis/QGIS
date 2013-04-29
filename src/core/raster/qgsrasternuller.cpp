@@ -32,7 +32,29 @@ QgsRasterInterface * QgsRasterNuller::clone() const
   QgsDebugMsg( "Entered" );
   QgsRasterNuller * nuller = new QgsRasterNuller( 0 );
   nuller->mNoData = mNoData;
+  nuller->mOutputNoData = mOutputNoData;
+  nuller->mHasOutputNoData = mHasOutputNoData;
   return nuller;
+}
+
+void QgsRasterNuller::setOutputNoDataValue( int bandNo, double noData )
+{
+  if ( bandNo > mOutputNoData.size() )
+  {
+    mOutputNoData.resize( bandNo );
+    mHasOutputNoData.resize( bandNo );
+  }
+  mOutputNoData[bandNo-1] = noData;
+  mHasOutputNoData[bandNo-1] = true;
+}
+
+void QgsRasterNuller::setNoData( int bandNo, QgsRasterRangeList noData )
+{
+  if ( bandNo > mNoData.size() )
+  {
+    mNoData.resize( bandNo );
+  }
+  mNoData[bandNo-1] = noData;
 }
 
 int QgsRasterNuller::bandCount() const
@@ -56,34 +78,51 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
     return outputBlock;
   }
 
-  //void * rasterData = mInput->block( bandNo, extent, width, height );
   QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height );
+  QgsRasterBlock *outputBlock = 0;
 
-  // Input may be without no data value
-  //double noDataValue = mInput->noDataValue( bandNo );
-  double noDataValue = mOutputNoData;
+  if ( mHasOutputNoData.value( bandNo - 1 ) || inputBlock->hasNoDataValue() )
+  {
+    double noDataValue;
+    if ( mHasOutputNoData.value( bandNo - 1 ) )
+    {
+      noDataValue = mOutputNoData.value( bandNo - 1 );
+    }
+    else
+    {
+      noDataValue = inputBlock->noDataValue();
+    }
+    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height, noDataValue );
+  }
+  else
+  {
+    outputBlock = new QgsRasterBlock( inputBlock->dataType(), width, height );
+  }
 
   for ( int i = 0; i < height; i++ )
   {
     for ( int j = 0; j < width; j++ )
     {
-      //int index = i * width + j;
-
-      //double value = readValue( rasterData, dataType, index );
       double value = inputBlock->value( i, j );
 
-      foreach ( NoData noData, mNoData )
+      bool isNoData = inputBlock->isNoData( i, j );
+      if ( QgsRasterRange::contains( value, mNoData.value( bandNo - 1 ) ) )
       {
-        if (( value >= noData.min && value <= noData.max ) ||
-            qgsDoubleNear( value, noData.min ) ||
-            qgsDoubleNear( value, noData.max ) )
-        {
-          inputBlock->setValue( i, j, noDataValue );
-        }
+        isNoData = true;
+      }
+      outputBlock->setValue( i, j, inputBlock->value( i, j ) );
+      if ( isNoData )
+      {
+        outputBlock->setIsNoData( i, j );
+      }
+      else
+      {
+        outputBlock->setValue( i, j, value );
       }
     }
   }
+  delete inputBlock;
 
-  return inputBlock;
+  return outputBlock;
 }
 

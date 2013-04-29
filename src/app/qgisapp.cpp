@@ -4295,7 +4295,10 @@ void QgisApp::saveAsRasterFile()
       }
 
       QgsRasterNuller *nuller = new QgsRasterNuller();
-      nuller->setNoData( d.noData() );
+      for ( int band = 1; band <= rasterLayer->dataProvider()->bandCount(); band ++ )
+      {
+        nuller->setNoData( band, d.noData() );
+      }
       if ( !pipe->insert( 1, nuller ) )
       {
         QgsDebugMsg( "Cannot set pipe nuller" );

@@ -41,7 +41,7 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
 
   // last pipe filter has only 1 band
   int bandNumber = 1;
-  mIterator->startRasterRead( bandNumber, viewPort->drawableAreaXDim, viewPort->drawableAreaYDim, viewPort->mDrawnExtent );
+  mIterator->startRasterRead( bandNumber, viewPort->mWidth, viewPort->mHeight, viewPort->mDrawnExtent );
 
   //number of cols/rows in output pixels
   int nCols = 0;
@@ -89,7 +89,7 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   }
 
   //top left position in device coords
-  QPoint tlPoint = QPoint( viewPort->topLeftPoint.x() + topLeftCol, viewPort->topLeftPoint.y() + topLeftRow );
+  QPoint tlPoint = QPoint( viewPort->mTopLeftPoint.x() + topLeftCol, viewPort->mTopLeftPoint.y() + topLeftRow );
   p->save();
   p->setRenderHint( QPainter::Antialiasing, false );
   p->drawImage( tlPoint, img );
