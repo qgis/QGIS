@@ -16,7 +16,7 @@
 #include "qgisinterface.h"
 #include "qgscontexthelp.h"
 #include "qgslogger.h"
-
+#include "qgsvectordataprovider.h"
 #include "qgsdelimitedtextprovider.h"
 #include "qgsdelimitedtextfile.h"
 
@@ -53,16 +53,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
   }
 
   cmbEncoding->clear();
-  QStringList codecs;
-  foreach ( QByteArray codec, QTextCodec::availableCodecs() )
-  {
-    codecs.append( codec );
-  }
-  codecs.sort();
-  foreach ( QString codec, codecs )
-  {
-    cmbEncoding->addItem( codec );
-  }
+  cmbEncoding->addItems( QgsVectorDataProvider::availableEncodings());
   cmbEncoding->setCurrentIndex( cmbEncoding->findText( "UTF-8" ) );
   loadSettings();
 
