@@ -389,32 +389,24 @@ class Editor(QsciScintilla):
         if self.hasSelectedText():
             startLine, _, endLine, _ = self.getSelection()
             for line in range(startLine, endLine + 1):
-                selCmd = self.text(line)
-                self.setSelection(line, 0, line, selCmd.length())
-                self.removeSelectedText()
                 if commentCheck:
-                    self.insert('#' + selCmd)
-                    self.setCursorPosition(endLine, selCmd.length())
+                    self.insertAt('#', line, 0)
                 else:
-                    if selCmd.startsWith('#'):
-                        self.insert(selCmd[1:])
-                    else:
-                        self.insert(selCmd)
-                    self.setCursorPosition(endLine, self.text(line).length() - 1)
+                    if not self.text(line).trimmed().startsWith('#'):
+                        continue
+                    self.setSelection(line, self.indentation(line), 
+                                      line, self.indentation(line) + 1)
+                    self.removeSelectedText()
         else:
             line, pos = self.getCursorPosition()
-            selCmd = self.text(line)
-            self.setSelection(line, 0, line, selCmd.length())
-            self.removeSelectedText()
             if commentCheck:
-                self.insert('#' + selCmd)
-                self.setCursorPosition(line, selCmd.length())
+                self.insertAt('#', line, 0)
             else:
-                if selCmd.startsWith('#'):
-                    self.insert(selCmd[1:])
-                else:
-                    self.insert(selCmd)
-                self.setCursorPosition(line, self.text(line).length() - 1)
+                if not self.text(line).trimmed().startsWith('#'):
+                    return
+                self.setSelection(line, self.indentation(line), 
+                                  line, self.indentation(line) + 1)
+                self.removeSelectedText()
         self.endUndoAction()
         
     def createTempFile(self):
