@@ -1391,13 +1391,14 @@ class TestQgsDelimitedTextProvider(TestCase):
         runTest(description,wanted,filename,requests,**params)
 
 
+
     def test_030_filter_rect_xy(self):
         description='Filter extents on XY layer'
         filename='testextpt.txt'
         params={'yField': 'y', 'delimiter': '|', 'type': 'csv', 'xField': 'x'}
         requests=[
             {'extents': [10, 30, 30, 50]}, 
-            {'exact': 1, 'extents': [10, 30, 30, 50]}, 
+            {'extents': [10, 30, 30, 50], 'exact': 1}, 
             {'extents': [110, 130, 130, 150]}]
         if rebuildTests:
             createTest(description,filename,requests,**params)
@@ -1449,7 +1450,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         params={'delimiter': '|', 'type': 'csv', 'wktField': 'wkt'}
         requests=[
             {'extents': [10, 30, 30, 50]}, 
-            {'exact': 1, 'extents': [10, 30, 30, 50]}, 
+            {'extents': [10, 30, 30, 50], 'exact': 1}, 
             {'extents': [110, 130, 130, 150]}]
         if rebuildTests:
             createTest(description,filename,requests,**params)
@@ -1567,6 +1568,7 @@ class TestQgsDelimitedTextProvider(TestCase):
         wanted['log']=[
             ]
         runTest(description,wanted,filename,requests,**params)
+
 
 
     def test_033_filter_attributes(self):
