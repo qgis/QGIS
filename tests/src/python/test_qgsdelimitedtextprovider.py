@@ -1692,6 +1692,49 @@ class TestQgsDelimitedTextProvider(TestCase):
             ]
         runTest(description,wanted,filename,requests,**params)
 
+    def test_034_substring_test(self):
+        description='CSV file parsing'
+        filename='test.csv'
+        params={'geomType': 'none', 'subset': 'id % 2 = 1', 'type': 'csv'}
+        requests=None
+        if rebuildTests:
+            createTest(description,filename,requests,**params)
+            assert False,"Set rebuildTests to False to run delimited text tests"
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&type=csv&subset=id%20%25%202%20%3D%201'
+        wanted['data']={
+            2L: {
+                'id': u'1',
+                'description': u'Basic unquoted record',
+                'data': u'Some data',
+                'info': u'Some info',
+                'field_5': u'',
+                '#fid': 2L,
+                '#geometry': 'None',
+                },
+            4L: {
+                'id': u'3',
+                'description': u'Escaped quotes',
+                'data': u'Quoted "citation" data',
+                'info': u'Unquoted',
+                'field_5': u'',
+                '#fid': 4L,
+                '#geometry': 'None',
+                },
+            9L: {
+                'id': u'5',
+                'description': u'Extra fields',
+                'data': u'data',
+                'info': u'info',
+                'field_5': u'message',
+                '#fid': 9L,
+                '#geometry': 'None',
+                },
+            }
+        wanted['log']=[
+            ]
+        runTest(description,wanted,filename,requests,**params)
+
 #END
 
 if __name__ == '__main__':
