@@ -325,21 +325,25 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mBarWidthLabel->show();
     mBarWidthSpinBox->show();
     mOrientationFrame->show();
+    mLinearlyScalingLabel->setText( tr( "Multiplicator for attribute values:" ) );
+    mAttributeBasedScalingOptions->hide();
   }
   else
   {
     mBarWidthLabel->hide();
     mBarWidthSpinBox->hide();
     mOrientationFrame->hide();
+    mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
+    mAttributeBasedScalingOptions->show();
   }
 
   if ( DIAGRAM_NAME_HISTOGRAM == diagramType || DIAGRAM_NAME_TEXT == diagramType )
   {
-    mDiagramPropertiesToolBox->setItemEnabled( 3, true );
+    mDiagramPropertiesTabWidget->setTabEnabled( 3, true );
   }
   else
   {
-    mDiagramPropertiesToolBox->setItemEnabled( 3, false );
+    mDiagramPropertiesTabWidget->setTabEnabled( 3, false );
   }
 
   if ( DIAGRAM_NAME_TEXT == diagramType || DIAGRAM_NAME_PIE == diagramType )
