@@ -78,6 +78,6 @@ class AutofillDialog(QtGui.QDialog):
         self.close()
 
     def cancelPressed(self):
-        self.mode == None
+        self.mode = None
         self.param = None
         self.close()
