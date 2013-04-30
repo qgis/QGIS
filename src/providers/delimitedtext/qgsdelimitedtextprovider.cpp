@@ -548,7 +548,7 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages )
     QgsMessageLog::logMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), tag );
     foreach ( QString message, messages )
     {
-      QgsMessageLog::logMessage( message );
+      QgsMessageLog::logMessage( message, tag );
     }
     if ( ! mInvalidLines.isEmpty() )
     {

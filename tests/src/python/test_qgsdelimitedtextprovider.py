@@ -150,7 +150,9 @@ def delimitedTextData( filename, requests, **params ):
         log=[]
         for msg in logger.messages():
             log.append(msg.replace(filepath,'file'))
-        return dict( fields=fields, data=data, log=log)
+        uri = unicode(layer.dataProvider().dataSourceUri())
+        uri = uri.replace(filepath,'file')
+        return dict( fields=fields, data=data, log=log, uri=uri)
 
 def createTest(  description, filename, requests, **params ):
     # Routine to write a new test for a file.  Need to check the output is right
@@ -174,7 +176,9 @@ def createTest(  description, filename, requests, **params ):
     prefix='        '
 
     # Dump the data for a layer - used to construct unit tests
-    print prefix+"wanted={"
+    print prefix+"wanted={}"
+    print prefix+"wanted['uri']="+repr(result['uri'])
+    print prefix+"wanted['data']={"
     for k in sorted(data.keys()):
         row = data[k]
         print prefix+"    {0}: {{".format(repr(k))
@@ -183,11 +187,11 @@ def createTest(  description, filename, requests, **params ):
         print prefix+"        },";
     print prefix+"    }";
 
-    print prefix+"log_wanted=["
+    print prefix+"wanted['log']=["
     for msg in log:
         print prefix+'    '+repr(msg)+','
     print prefix+'    ]'
-    print '        runTest(description,wanted,log_wanted,filename,requests,**params)'
+    print '        runTest(description,wanted,filename,requests,**params)'
     print
 
 
@@ -230,16 +234,21 @@ def recordDifference( record1, record2 ):
             return "Output contains extra field {0} is missing".format(k)
     return ''
 
-def runTest( name, wanted, log_wanted, file, requests, **params ):
+def runTest( name, wanted, file, requests, **params ):
     print "Running test:",name
 
     result = delimitedTextData( file, requests, **params )
     data = result['data']
     log = result['log']
-
     failures = []
-    for id in sorted(wanted.keys()):
-        wrec = wanted[id]
+    if result['uri'] != wanted['uri']:
+        msg = "Layer Uri ({0}) doesn't match expected ({1})".format(
+            result['uri'],wanted['uri'])
+        print '    '+msg
+        falures.append(msg)
+    wanted_data = wanted['data']
+    for id in sorted(wanted_data.keys()):
+        wrec = wanted_data[id]
         trec = data.get(id,{})
         description = wrec['description']
         difference = recordDifference(wrec,trec)
@@ -249,13 +258,12 @@ def runTest( name, wanted, log_wanted, file, requests, **params ):
             print '    {0}: {1}'.format(description,difference)
             failures.append(description+': '+difference)
     for id in sorted(data.keys()):
-        if id not in wanted:
+        if id not in wanted_data:
             msg= "Layer contains unexpected extra data with id: \"{0}\"".format(id)
             print '    '+msg
             failures.append(msg)
-            break
-    assert len(failures) == 0,"\n".join(failures)
     common=[]
+    log_wanted = wanted['log']
     for l in log:
         if l in log_wanted:
             common.append(l)
@@ -263,13 +271,17 @@ def runTest( name, wanted, log_wanted, file, requests, **params ):
             log_wanted.remove(l)
             log.remove(l)
     for l in log_wanted:
-        print '    Missing log message:',l
+        msg='Missing log message: '+l
+        print '    '+msg
+        failures.append(msg)
+        
     for l in log:
-        print '    Extra log message:',l
+        msg='Extra log message: '+l
+        print '    '+msg
+        failures.append(msg)
     if len(log)==0 and len(log_wanted)==0:
         print '    Message log correct: Passed'
-    assert len(log_wanted) == 0, "Missing log messages:\n"+"\n".join(log_wanted)
-    assert len(log) == 0, "Extra log messages:\n"+"\n".join(log)
+    assert len(failures) == 0,"\n".join(failures)
 
 class TestQgsDelimitedTextProvider(TestCase):
 
@@ -288,7 +300,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&type=csv'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Basic unquoted record',
@@ -344,9 +358,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_002a_field_naming(self):
@@ -357,7 +371,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&type=csv'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Generation of field names',
@@ -375,9 +391,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_002b_max_fields(self):
@@ -388,7 +404,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&maxFields=7&type=csv'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Generation of field names',
@@ -401,9 +419,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_003_load_whitespace(self):
@@ -414,7 +432,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&type=whitespace'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Simple_whitespace_file',
@@ -476,9 +496,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_004_quote_escape(self):
@@ -489,7 +509,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&quote="&delimiter=|&escape=\\'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Using pipe delimiter',
@@ -571,9 +593,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_005_multiple_quote(self):
@@ -584,7 +606,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&quote=\'"&type=csv&escape="\''
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Multiple quotes 1',
@@ -634,14 +658,15 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             u'Errors in file file',
+            u'3 records discarded due to invalid format',
             u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid record format at line 7',
             u'Invalid record format at line 8',
             u'Invalid record format at line 9',
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_005a_badly_formed_quotes(self):
@@ -652,7 +677,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&quote="&type=csv&escape="'
+        wanted['data']={
             4L: {
                 'id': u'3',
                 'description': u'Recovered after unclosed quore',
@@ -662,13 +689,14 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             u'Errors in file file',
+            u'2 records discarded due to invalid format',
             u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid record format at line 2',
             u'Invalid record format at line 5',
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_007_skip_lines(self):
@@ -679,7 +707,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&skipLines=2&type=csv&useHeader=no'
+        wanted['data']={
             3L: {
                 'id': u'3',
                 'description': u'Less data',
@@ -690,9 +720,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_008_read_coordinates(self):
@@ -703,7 +733,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?yField=geom_y&xField=geom_x&type=csv'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Basic point',
@@ -729,12 +761,13 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'POINT(13.0 23.0)',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             u'Errors in file file',
+            u'1 records discarded due to invalid geometry definitions',
             u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid X or Y fields at line 4',
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_009_read_wkt(self):
@@ -745,7 +778,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?delimiter=|&type=csv&wktField=geom_wkt'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Point wkt',
@@ -777,12 +812,14 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'POINT(10.0 20.0)',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             u'Errors in file file',
+            u'1 records discarded due to invalid geometry definitions',
+            u'7 records discarded due to incompatible geometry types',
             u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid WKT at line 8',
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_010_read_wkt_point(self):
@@ -793,7 +830,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=point&delimiter=|&type=csv&wktField=geom_wkt'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Point wkt',
@@ -825,12 +864,14 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'POINT(10.0 20.0)',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             u'Errors in file file',
+            u'1 records discarded due to invalid geometry definitions',
+            u'7 records discarded due to incompatible geometry types',
             u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid WKT at line 8',
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_011_read_wkt_line(self):
@@ -841,7 +882,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=line&delimiter=|&type=csv&wktField=geom_wkt'
+        wanted['data']={
             4L: {
                 'id': u'3',
                 'description': u'Linestring wkt',
@@ -873,12 +916,14 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             u'Errors in file file',
+            u'1 records discarded due to invalid geometry definitions',
+            u'7 records discarded due to incompatible geometry types',
             u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid WKT at line 8',
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_012_read_wkt_polygon(self):
@@ -889,7 +934,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=polygon&delimiter=|&type=csv&wktField=geom_wkt'
+        wanted['data']={
             6L: {
                 'id': u'5',
                 'description': u'Polygon wkt',
@@ -903,12 +950,14 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'MULTIPOLYGON(((10.0 10.0,10.0 20.0,20.0 20.0,20.0 10.0,10.0 10.0),(14.0 14.0,14.0 16.0,16.0 16.0,14.0 14.0)),((30.0 30.0,30.0 35.0,35.0 35.0,30.0 30.0)))',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             u'Errors in file file',
+            u'1 records discarded due to invalid geometry definitions',
+            u'10 records discarded due to incompatible geometry types',
             u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid WKT at line 8',
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_013_read_dms_xy(self):
@@ -919,7 +968,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?yField=lat&xField=lon&type=csv&xyDms=yes'
+        wanted['data']={
             3L: {
                 'id': u'1',
                 'description': u'Basic DMS string',
@@ -1073,8 +1124,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'POINT(1.08716667 4.91716667)',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             u'Errors in file file',
+            u'5 records discarded due to invalid geometry definitions',
             u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid X or Y fields at line 27',
             u'Invalid X or Y fields at line 28',
@@ -1082,7 +1134,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             u'Invalid X or Y fields at line 30',
             u'Invalid X or Y fields at line 31',
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_014_decimal_point(self):
@@ -1093,7 +1145,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?yField=geom_y&xField=geom_x&type=csv&delimiter=;&decimalPoint=,'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Comma as decimal point 1',
@@ -1115,9 +1169,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'POINT(12.0 25.003)',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_015_regular_expression_1(self):
@@ -1128,7 +1182,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&trimFields=Y&delimiter=RE(?:GEXP)?&type=regexp'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Basic regular expression test',
@@ -1146,9 +1202,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_016_regular_expression_2(self):
@@ -1159,7 +1215,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&trimFields=Y&delimiter=(RE)(GEXP)?&type=regexp'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'RE': u'RE',
@@ -1189,9 +1247,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_017_regular_expression_3(self):
@@ -1202,7 +1260,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&trimFields=Y&delimiter=^(.{5})(.{30})(.{5,})&type=regexp'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Anchored regexp',
@@ -1218,12 +1278,13 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             u'Errors in file file',
+            u'1 records discarded due to invalid format',
             u'The following lines were not loaded into QGIS due to errors:',
             u'Invalid record format at line 3',
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_017a_regular_expression_4(self):
@@ -1234,7 +1295,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&delimiter=x?&type=regexp'
+        wanted['data']={
             2L: {
                 'id': u'f',
                 'description': u'i',
@@ -1249,9 +1312,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_017a_regular_expression_5(self):
@@ -1262,7 +1325,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&delimiter=\\b&type=regexp'
+        wanted['data']={
             2L: {
                 'id': u'fi',
                 'description': u'..',
@@ -1273,9 +1338,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_018_utf8_encoded_file(self):
@@ -1286,7 +1351,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&delimiter=|&type=csv&encoding=utf-8'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Correctly read UTF8 encoding',
@@ -1295,9 +1362,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_019_latin1_encoded_file(self):
@@ -1308,7 +1375,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&delimiter=|&type=csv&encoding=latin1'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Correctly read latin1 encoding',
@@ -1317,9 +1386,10 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
+
 
     def test_030_filter_rect_xy(self):
         description='Filter extents on XY layer'
@@ -1332,7 +1402,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?yField=y&delimiter=|&type=csv&xField=x'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Inside',
@@ -1366,9 +1438,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'POINT(25.0 45.0)',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_031_filter_rect_wkt(self):
@@ -1382,7 +1454,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?delimiter=|&type=csv&wktField=wkt'
+        wanted['data']={
             2L: {
                 'id': u'1',
                 'description': u'Inside',
@@ -1432,9 +1506,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
 
 
     def test_032_filter_fid(self):
@@ -1450,7 +1524,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&type=csv'
+        wanted['data']={
             3L: {
                 'id': u'2',
                 'description': u'Quoted field',
@@ -1488,9 +1564,10 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
+        runTest(description,wanted,filename,requests,**params)
+
 
     def test_033_filter_attributes(self):
         description='Filter on attributes'
@@ -1506,7 +1583,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         if rebuildTests:
             createTest(description,filename,requests,**params)
             assert False,"Set rebuildTests to False to run delimited text tests"
-        wanted={
+        wanted={}
+        wanted['uri']=u'file://file?geomType=none&type=csv'
+        wanted['data']={
             2L: {
                 'id': u'',
                 'description': u'Basic unquoted record',
@@ -1607,10 +1686,9 @@ class TestQgsDelimitedTextProvider(TestCase):
                 '#geometry': 'None',
                 },
             }
-        log_wanted=[
+        wanted['log']=[
             ]
-        runTest(description,wanted,log_wanted,filename,requests,**params)
-
+        runTest(description,wanted,filename,requests,**params)
 
 #END
 
