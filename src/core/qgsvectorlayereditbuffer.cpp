@@ -99,16 +99,7 @@ bool QgsVectorLayerEditBuffer::addFeature( QgsFeature& f )
   {
     return false;
   }
-  int layerFieldJoinCount=0;
-  for ( int i = 0; i < L->mUpdatedFields.count(); ++i )
-  {
-      if ( L->mUpdatedFields.fieldOrigin(i)==QgsFields::OriginJoin )
-    {
-        layerFieldJoinCount++;
-    }
-  }
-  int layerFieldCount = L->dataProvider()->fields().count() + layerFieldJoinCount + mAddedAttributes.count() - mDeletedAttributeIds.count();int layerFieldCount = L->dataProvider()->fields().count() + mAddedAttributes.count() - mDeletedAttributeIds.count();
-  if ( layerFieldCount != f.attributes().count() )
+  if ( L->mUpdatedFields.count() != f.attributes().count() )
     return false;
 
   // TODO: check correct geometry type
