@@ -123,6 +123,9 @@ class CORE_EXPORT QgsVectorFileWriter
     /**Creates a filter for an OGR driver key*/
     static QString filterForDriver( const QString& driverName );
 
+    /**Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile*/
+    static QString convertCodecNameForEncodingOption( const QString &codecName );
+
     /** checks whether there were any errors in constructor */
     WriterError hasError();
 

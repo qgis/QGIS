@@ -174,7 +174,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual void setUserNoDataValue( int bandNo, QgsRasterRangeList noData );
 
     /** Get list of user no data value ranges */
-    virtual  QgsRasterRangeList userNoDataValue( int bandNo ) const { return mUserNoDataValue.value( bandNo -1 ); }
+    virtual  QgsRasterRangeList userNoDataValues( int bandNo ) const { return mUserNoDataValue.value( bandNo -1 ); }
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const
     { Q_UNUSED( bandNo ); return QList<QgsColorRampShader::ColorRampItem>(); }
@@ -313,7 +313,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual bool setNoDataValue( int bandNo, double noDataValue ) { Q_UNUSED( bandNo ); Q_UNUSED( noDataValue ); return false; }
 
     /** Returns the formats supported by create() */
-    virtual QStringList createFormats() const { return QStringList(); }
+    // TODO: this should be static and call C functions in provider library
+    //static QStringList createFormats();
 
     /** Remove dataset*/
     virtual bool remove() { return false; }
@@ -357,7 +358,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); }
 
     /** Returns true if user no data contains value */
-    bool userNoDataValueContains( int bandNo, double value ) const;
+    bool userNoDataValuesContains( int bandNo, double value ) const;
 
     static QStringList cStringList2Q_( char ** stringList );
 

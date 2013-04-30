@@ -139,7 +139,10 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
 
   // Nuller currently is not really used
   QgsRasterNuller *nuller = new QgsRasterNuller();
-  //nuller->setNoData( ... );
+  for ( int band = 1; band <= provider->bandCount(); band++ )
+  {
+    //nuller->setNoData( ... );
+  }
   if ( !pipe->insert( 1, nuller ) )
   {
     logError( "Cannot set pipe nuller" );

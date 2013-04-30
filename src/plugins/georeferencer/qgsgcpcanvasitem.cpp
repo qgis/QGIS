@@ -198,7 +198,7 @@ double QgsGCPCanvasItem::residualToScreenFactor() const
         QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( mapLayer );
         if ( rasterLayer )
         {
-          mapUnitsPerRasterPixel = rasterLayer->rasterUnitsPerPixel();
+          mapUnitsPerRasterPixel = rasterLayer->rasterUnitsPerPixelX();
         }
       }
     }

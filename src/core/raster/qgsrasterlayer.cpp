@@ -331,7 +331,6 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   }
 
   // clip raster extent to view extent
-  //QgsRectangle myRasterExtent = theViewExtent.intersect( &mLayerExtent );
   QgsRectangle myRasterExtent = myProjectedViewExtent.intersect( &myProjectedLayerExtent );
   if ( myRasterExtent.isEmpty() )
   {
@@ -367,8 +366,8 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
-  myRasterViewPort->topLeftPoint = theQgsMapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
-  myRasterViewPort->bottomRightPoint = theQgsMapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
+  myRasterViewPort->mTopLeftPoint = theQgsMapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
+  myRasterViewPort->mBottomRightPoint = theQgsMapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
 
   // align to output device grid, i.e. floor/ceil to integers
   // TODO: this should only be done if paint device is raster - screen, image
@@ -378,22 +377,22 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   // the provider anyway
   if ( true )
   {
-    myRasterViewPort->topLeftPoint.setX( floor( myRasterViewPort->topLeftPoint.x() ) );
-    myRasterViewPort->topLeftPoint.setY( floor( myRasterViewPort->topLeftPoint.y() ) );
-    myRasterViewPort->bottomRightPoint.setX( ceil( myRasterViewPort->bottomRightPoint.x() ) );
-    myRasterViewPort->bottomRightPoint.setY( ceil( myRasterViewPort->bottomRightPoint.y() ) );
+    myRasterViewPort->mTopLeftPoint.setX( floor( myRasterViewPort->mTopLeftPoint.x() ) );
+    myRasterViewPort->mTopLeftPoint.setY( floor( myRasterViewPort->mTopLeftPoint.y() ) );
+    myRasterViewPort->mBottomRightPoint.setX( ceil( myRasterViewPort->mBottomRightPoint.x() ) );
+    myRasterViewPort->mBottomRightPoint.setY( ceil( myRasterViewPort->mBottomRightPoint.y() ) );
     // recalc myRasterExtent to aligned values
     myRasterExtent.set(
-      theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->topLeftPoint.x(),
-                                          myRasterViewPort->bottomRightPoint.y() ),
-      theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->bottomRightPoint.x(),
-                                          myRasterViewPort->topLeftPoint.y() )
+      theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->mTopLeftPoint.x(),
+                                          myRasterViewPort->mBottomRightPoint.y() ),
+      theQgsMapToPixel.toMapCoordinatesF( myRasterViewPort->mBottomRightPoint.x(),
+                                          myRasterViewPort->mTopLeftPoint.y() )
     );
 
   }
 
-  myRasterViewPort->drawableAreaXDim = static_cast<int>( qAbs(( myRasterExtent.width() / theQgsMapToPixel.mapUnitsPerPixel() ) ) );
-  myRasterViewPort->drawableAreaYDim = static_cast<int>( qAbs(( myRasterExtent.height() / theQgsMapToPixel.mapUnitsPerPixel() ) ) );
+  myRasterViewPort->mWidth = static_cast<int>( qAbs(( myRasterExtent.width() / theQgsMapToPixel.mapUnitsPerPixel() ) ) );
+  myRasterViewPort->mHeight = static_cast<int>( qAbs(( myRasterExtent.height() / theQgsMapToPixel.mapUnitsPerPixel() ) ) );
 
   //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is becasue
   //theQgsMapToPixel.mapUnitsPerPixel() is less then 1,
@@ -407,20 +406,19 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   QgsDebugMsgLevel( QString( "myRasterExtent.yMinimum() = %1" ).arg( myRasterExtent.yMinimum() ), 3 );
   QgsDebugMsgLevel( QString( "myRasterExtent.yMaximum() = %1" ).arg( myRasterExtent.yMaximum() ), 3 );
 
-  QgsDebugMsgLevel( QString( "topLeftPoint.x() = %1" ).arg( myRasterViewPort->topLeftPoint.x() ), 3 );
-  QgsDebugMsgLevel( QString( "bottomRightPoint.x() = %1" ).arg( myRasterViewPort->bottomRightPoint.x() ), 3 );
-  QgsDebugMsgLevel( QString( "topLeftPoint.y() = %1" ).arg( myRasterViewPort->topLeftPoint.y() ), 3 );
-  QgsDebugMsgLevel( QString( "bottomRightPoint.y() = %1" ).arg( myRasterViewPort->bottomRightPoint.y() ), 3 );
+  QgsDebugMsgLevel( QString( "mTopLeftPoint.x() = %1" ).arg( myRasterViewPort->mTopLeftPoint.x() ), 3 );
+  QgsDebugMsgLevel( QString( "mBottomRightPoint.x() = %1" ).arg( myRasterViewPort->mBottomRightPoint.x() ), 3 );
+  QgsDebugMsgLevel( QString( "mTopLeftPoint.y() = %1" ).arg( myRasterViewPort->mTopLeftPoint.y() ), 3 );
+  QgsDebugMsgLevel( QString( "mBottomRightPoint.y() = %1" ).arg( myRasterViewPort->mBottomRightPoint.y() ), 3 );
 
-  QgsDebugMsgLevel( QString( "drawableAreaXDim = %1" ).arg( myRasterViewPort->drawableAreaXDim ), 3 );
-  QgsDebugMsgLevel( QString( "drawableAreaYDim = %1" ).arg( myRasterViewPort->drawableAreaYDim ), 3 );
+  QgsDebugMsgLevel( QString( "mWidth = %1" ).arg( myRasterViewPort->mWidth ), 3 );
+  QgsDebugMsgLevel( QString( "mHeight = %1" ).arg( myRasterViewPort->mHeight ), 3 );
 
   // /\/\/\ - added to handle zoomed-in rasters
 
   mLastViewPort = *myRasterViewPort;
 
-  // Provider mode: See if a provider key is specified, and if so use the provider instead
-
+  // TODO: is it necessary? Probably WMS only?
   mDataProvider->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
 
   draw( theQPainter, myRasterViewPort, &theQgsMapToPixel );
@@ -762,7 +760,7 @@ QString QgsRasterLayer::providerType() const
 /**
  * @return the horizontal units per pixel as reported in the  GDAL geotramsform[1]
  */
-double QgsRasterLayer::rasterUnitsPerPixel()
+double QgsRasterLayer::rasterUnitsPerPixelX()
 {
 // We return one raster pixel per map unit pixel
 // One raster pixel can have several raster units...
@@ -770,10 +768,18 @@ double QgsRasterLayer::rasterUnitsPerPixel()
 // We can only use one of the mGeoTransform[], so go with the
 // horisontal one.
 
-  //return qAbs( mGeoTransform[1] );
   if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && mDataProvider->xSize() > 0 )
   {
     return mDataProvider->extent().width() / mDataProvider->xSize();
+  }
+  return 1;
+}
+
+double QgsRasterLayer::rasterUnitsPerPixelY()
+{
+  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && mDataProvider->xSize() > 0 )
+  {
+    return mDataProvider->extent().height() / mDataProvider->ySize();
   }
   return 1;
 }
@@ -785,8 +791,8 @@ void QgsRasterLayer::init()
   setDrawingStyle( QgsRasterLayer::UndefinedDrawingStyle );
 
   //Initialize the last view port structure, should really be a class
-  mLastViewPort.drawableAreaXDim = 0;
-  mLastViewPort.drawableAreaYDim = 0;
+  mLastViewPort.mWidth = 0;
+  mLastViewPort.mHeight = 0;
 }
 
 void QgsRasterLayer::setDataProvider( QString const & provider )
@@ -1002,7 +1008,7 @@ void QgsRasterLayer::closeDataProvider()
   mDataProvider = 0;
 }
 
-void QgsRasterLayer::setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRaster::ContrastEnhancementLimits theLimits, QgsRectangle theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
+void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm, QgsRaster::ContrastEnhancementLimits theLimits, QgsRectangle theExtent, int theSampleSize, bool theGenerateLookupTableFlag )
 {
   QgsDebugMsg( QString( "theAlgorithm = %1 theLimits = %2 theExtent.isEmpty() = %3" ).arg( theAlgorithm ).arg( theLimits ).arg( theExtent.isEmpty() ) );
   if ( !mPipe.renderer() || !mDataProvider )
@@ -1131,7 +1137,7 @@ void QgsRasterLayer::setDefaultContrastEnhancement()
   QString myLimitsString = mySettings.value( "/Raster/defaultContrastEnhancementLimits", "CumulativeCut" ).toString();
   QgsRaster::ContrastEnhancementLimits myLimits = QgsRaster::contrastEnhancementLimitsFromString( myLimitsString );
 
-  setContrastEnhancementAlgorithm( myAlgorithm, myLimits );
+  setContrastEnhancement( myAlgorithm, myLimits );
 }
 
 /**
@@ -1266,10 +1272,10 @@ QPixmap QgsRasterLayer::previewAsPixmap( QSize size, QColor bgColor )
   double myPixelWidth = myExtent.width() / myMapUnitsPerPixel;
   double myPixelHeight = myExtent.height() / myMapUnitsPerPixel;
 
-  myRasterViewPort->topLeftPoint = QgsPoint( myX, myY );
-  myRasterViewPort->bottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
-  myRasterViewPort->drawableAreaXDim = myQPixmap.width();
-  myRasterViewPort->drawableAreaYDim = myQPixmap.height();
+  myRasterViewPort->mTopLeftPoint = QgsPoint( myX, myY );
+  myRasterViewPort->mBottomRightPoint = QgsPoint( myPixelWidth, myPixelHeight );
+  myRasterViewPort->mWidth = myQPixmap.width();
+  myRasterViewPort->mHeight = myQPixmap.height();
 
   myRasterViewPort->mDrawnExtent = myExtent;
   myRasterViewPort->mSrcCRS = QgsCoordinateReferenceSystem(); // will be invalid
@@ -1619,13 +1625,13 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
 
   for ( int bandNo = 1; bandNo <= mDataProvider->bandCount(); bandNo++ )
   {
-    if ( mDataProvider->userNoDataValue( bandNo ).isEmpty() ) continue;
+    if ( mDataProvider->userNoDataValues( bandNo ).isEmpty() ) continue;
 
     QDomElement noDataRangeList = document.createElement( "noDataList" );
     noDataRangeList.setAttribute( "bandNo", bandNo );
     noDataRangeList.setAttribute( "useSrcNoData", mDataProvider->useSrcNoDataValue( bandNo ) );
 
-    foreach ( QgsRasterRange range, mDataProvider->userNoDataValue( bandNo ) )
+    foreach ( QgsRasterRange range, mDataProvider->userNoDataValues( bandNo ) )
     {
       QDomElement noDataRange =  document.createElement( "noDataRange" );
 

@@ -47,7 +47,6 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &theStatistics,
 {
   QgsDebugMsg( QString( "theBandNo = %1 theSampleSize = %2" ).arg( theBandNo ).arg( theSampleSize ) );
 
-  theStatistics.bandName = generateBandName( theBandNo );
   theStatistics.bandNumber = theBandNo;
   theStatistics.statsGathered = theStats;
 

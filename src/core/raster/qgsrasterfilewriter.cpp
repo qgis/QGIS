@@ -46,13 +46,11 @@ QgsRasterFileWriter::~QgsRasterFileWriter()
 
 }
 
-//QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( QgsRasterIterator* iter, int nCols, int nRows, QgsRectangle outputExtent,
 QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeRaster( const QgsRasterPipe* pipe, int nCols, int nRows, QgsRectangle outputExtent,
     const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog )
 {
   QgsDebugMsg( "Entered" );
 
-  //if ( !iter )
   if ( !pipe )
   {
     return SourceProviderError;
@@ -127,15 +125,12 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     return SourceProviderError;
   }
 
-  //const QgsRasterInterface* iface = iter->input();
   const QgsRasterInterface* iface = pipe->last();
   if ( !iface )
   {
     return SourceProviderError;
   }
 
-  //const QgsRasterDataProvider* srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
-  //QgsRasterDataProvider* srcProvider = dynamic_cast<QgsRasterDataProvider*>( iface->srcInput() );
   QgsRasterDataProvider* srcProvider = const_cast<QgsRasterDataProvider*>( dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() ) );
   if ( !srcProvider )
   {
@@ -179,7 +174,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     bool destHasNoDataValue = false;
     double destNoDataValue = std::numeric_limits<double>::quiet_NaN();
     QGis::DataType destDataType = srcProvider->srcDataType( bandNo );
-    //QGis::DataType destDataType = srcProvider->dataType( bandNo );
     // TODO: verify what happens/should happen if srcNoDataValue is disabled by setUseSrcNoDataValue
     QgsDebugMsg( QString( "srcHasNoDataValue = %1 srcNoDataValue = %2" ).arg( srcHasNoDataValue ).arg( srcProvider->srcNoDataValue( bandNo ) ) );
     if ( srcHasNoDataValue )
@@ -189,10 +183,10 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       destNoDataValue = srcProvider->srcNoDataValue( bandNo );
       destHasNoDataValue = true;
     }
-    else if ( nuller && nuller->noData().size() > 0 )
+    else if ( nuller && nuller->noData( bandNo ).size() > 0 )
     {
       // Use one user defined no data value
-      destNoDataValue = nuller->noData().value( 0 ).min;
+      destNoDataValue = nuller->noData( bandNo ).value( 0 ).min();
       destHasNoDataValue = true;
     }
     else
@@ -232,7 +226,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
     }
 
     if ( nuller && destHasNoDataValue )
-      nuller->setOutputNoData( destNoDataValue );
+    {
+      nuller->setOutputNoDataValue( bandNo, destNoDataValue );
+    }
 
     QgsDebugMsg( QString( "bandNo = %1 destDataType = %2 destHasNoDataValue = %3 destNoDataValue = %4" ).arg( bandNo ).arg( destDataType ).arg( destHasNoDataValue ).arg( destNoDataValue ) );
     destDataTypeList.append( destDataType );
@@ -328,8 +324,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   for ( int i = 1; i <= nBands; ++i )
   {
     iter->startRasterRead( i, nCols, nRows, outputExtent );
-    // TODO: no need to alloc memory, change to readBlock() returning the allocated block
-    //blockList.push_back( qgsMalloc( dataTypeSize * mMaxTileWidth * mMaxTileHeight ) );
     blockList.push_back( 0 );
     if ( destProvider ) // no tiles
     {
@@ -358,7 +352,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
       if ( !iter->readNextRasterPart( i, iterCols, iterRows, &( blockList[i - 1] ), iterLeft, iterTop ) )
       {
         // No more parts, create VRT and return
-        //delete destProvider;
         if ( mTiledMode )
         {
           QString vrtFilePath( mOutputUrl + "/" + vrtFileName() );
@@ -416,7 +409,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
 
     if ( mTiledMode ) //write to file
     {
-      //delete destProvider;
       QgsRasterDataProvider* partDestProvider = createPartProvider( outputExtent,
           nCols, iterCols, iterRows,
           iterLeft, iterTop, mOutputUrl,
@@ -471,7 +463,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   iter->setMaximumTileWidth( mMaxTileWidth );
   iter->setMaximumTileHeight( mMaxTileHeight );
 
-  //void* data = qgsMalloc( QgsRasterBlock::typeSize( inputDataType ) * mMaxTileWidth * mMaxTileHeight );
   void* redData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
   void* greenData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
   void* blueData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
@@ -488,7 +479,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
 
   destProvider = initOutput( nCols, nRows, crs, geoTransform, 4, QGis::Byte );
 
-  //iter->select( outputExtent, outputMapUnitsPerPixel );
   iter->startRasterRead( 1, nCols, nRows, outputExtent );
 
   int nParts = 0;
@@ -699,7 +689,6 @@ void QgsRasterFileWriter::buildPyramids( const QString& filename )
 {
   QgsDebugMsg( "filename = " + filename );
   // open new dataProvider so we can build pyramids with it
-  //QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, filename );
   QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, filename );
   if ( !destProvider )
   {
@@ -883,14 +872,6 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
   QgsRectangle mapRect( mapLeft, mapBottom, mapRight, mapTop );
 
   QString outputFile = outputUrl + "/" + partFileName( fileIndex );
-#if 0
-  //QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, outputFile );
-  QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, outputFile );
-  if ( !destProvider )
-  {
-    return 0;
-  }
-#endif
 
   //geotransform
   double geoTransform[6];
@@ -902,14 +883,6 @@ QgsRasterDataProvider* QgsRasterFileWriter::createPartProvider( const QgsRectang
   geoTransform[5] = -mup;
 
   // perhaps we need a separate createOptions for tiles ?
-#if 0
-  if ( !destProvider->create( mOutputFormat, nBands, type, iterCols, iterRows, geoTransform,
-                              crs ) )
-  {
-    delete destProvider;
-    return 0;
-  }
-#endif
 
   QgsRasterDataProvider* destProvider = QgsRasterDataProvider::create( mOutputProviderKey, outputFile, mOutputFormat, nBands, type, iterCols, iterRows, geoTransform, crs, mCreateOptions ) ;
 
@@ -935,23 +908,12 @@ QgsRasterDataProvider* QgsRasterFileWriter::initOutput( int nCols, int nRows, co
       mCreateOptions << "COPY_SRC_OVERVIEWS=YES";
 #endif
 
-    //QgsRasterDataProvider* destProvider = QgsRasterLayer::loadProvider( mOutputProviderKey, mOutputUrl );
-    //QgsRasterDataProvider* destProvider = ( QgsRasterDataProvider* ) QgsProviderRegistry::instance()->provider( mOutputProviderKey, mOutputUrl );
     QgsRasterDataProvider* destProvider = QgsRasterDataProvider::create( mOutputProviderKey, mOutputUrl, mOutputFormat, nBands, type, nCols, nRows, geoTransform, crs, mCreateOptions ) ;
 
     if ( !destProvider )
     {
       QgsDebugMsg( "No provider created" );
     }
-
-#if 0
-    if ( !destProvider->create( mOutputFormat, nBands, type, nCols, nRows, geoTransform,
-                                crs, mCreateOptions ) )
-    {
-      delete destProvider;
-      return 0;
-    }
-#endif
 
     return destProvider;
   }

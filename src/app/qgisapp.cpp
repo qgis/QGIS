@@ -4295,7 +4295,10 @@ void QgisApp::saveAsRasterFile()
       }
 
       QgsRasterNuller *nuller = new QgsRasterNuller();
-      nuller->setNoData( d.noData() );
+      for ( int band = 1; band <= rasterLayer->dataProvider()->bandCount(); band ++ )
+      {
+        nuller->setNoData( band, d.noData() );
+      }
       if ( !pipe->insert( 1, nuller ) )
       {
         QgsDebugMsg( "Cannot set pipe nuller" );
@@ -6488,7 +6491,7 @@ void QgisApp::histogramStretch( bool visibleAreaOnly, QgsRaster::ContrastEnhance
   QgsRectangle myRectangle;
   if ( visibleAreaOnly ) myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( myRasterLayer, mMapCanvas->extent() );
 
-  myRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
+  myRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, theLimits, myRectangle );
 
   myRasterLayer->setCacheImage( NULL );
   mMapCanvas->refresh();

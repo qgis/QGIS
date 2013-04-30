@@ -2716,7 +2716,7 @@ void QgsLegend::legendLayerZoomNative()
   QgsRasterLayer *layer =  qobject_cast<QgsRasterLayer *>( currentLayer->layer() );
   if ( layer )
   {
-    QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixel() ) );
+    QgsDebugMsg( "Raster units per pixel  : " + QString::number( layer->rasterUnitsPerPixelX() ) );
     QgsDebugMsg( "MapUnitsPerPixel before : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
 
     layer->setCacheImage( NULL );
@@ -2732,11 +2732,11 @@ void QgsLegend::legendLayerZoomNative()
       p2 = ct.transform( p2 );
       double width = sqrt( p1.sqrDist( p2 ) ); // width of reprojected pixel
       // This is not perfect of course, we use the resolution in just one direction
-      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixel() / width ) );
+      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixelX() / width ) );
     }
     else
     {
-      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixel() / mMapCanvas->mapUnitsPerPixel() ) );
+      mMapCanvas->zoomByFactor( qAbs( layer->rasterUnitsPerPixelX() / mMapCanvas->mapUnitsPerPixel() ) );
     }
     mMapCanvas->refresh();
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
@@ -2757,7 +2757,7 @@ void QgsLegend::legendLayerStretchUsingCurrentExtent()
 
     QgsRectangle myRectangle;
     myRectangle = mMapCanvas->mapRenderer()->outputExtentToLayerExtent( layer, mMapCanvas->extent() );
-    layer->setContrastEnhancementAlgorithm( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
+    layer->setContrastEnhancement( contrastEnhancementAlgorithm, QgsRaster::ContrastEnhancementMinMax, myRectangle );
 
     layer->setCacheImage( NULL );
     refreshLayerSymbology( layer->id() );

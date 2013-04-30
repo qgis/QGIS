@@ -152,19 +152,44 @@ class QgsMapRenderer : QObject
     QSize outputSize();
     QSizeF outputSizeF();
 
-    //! transform extent in layer's CRS to extent in output CRS
+     /**
+     * @brief transform bounding box from layer's CRS to output CRS
+     * @see layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect ) if you want to transform a rectangle
+     * @return a bounding box (aligned rectangle) containing the transformed extent
+     */
     QgsRectangle layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent );
 
-    //! transform extent in output CRS to extent in layer's CRS
+    /**
+     * @brief transform bounding box from output CRS to layer's CRS
+     * @see mapToLayerCoordinates( QgsMapLayer* theLayer,QgsRectangle rect ) if you want to transform a rectangle
+     * @return a bounding box (aligned rectangle) containing the transformed extent
+     */
     QgsRectangle outputExtentToLayerExtent( QgsMapLayer* theLayer, QgsRectangle extent );
 
-    //! transform coordinates from layer's CRS to output CRS
+    /**
+     * @brief transform point coordinates from layer's CRS to output CRS
+     * @return the transformed point
+     */
     QgsPoint layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint point );
 
-    //! transform coordinates from output CRS to layer's CRS
+    /**
+     * @brief transform rectangle from layer's CRS to output CRS
+     * @see layerExtentToOutputExtent() if you want to transform a bounding box
+     * @return the transformed rectangle
+     */
+    QgsRectangle layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect );
+
+    /**
+     * @brief transform point coordinates from output CRS to layer's CRS
+     * @return the transformed point
+     */
     QgsPoint mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point );
 
-    //! transform rect's coordinates from output CRS to layer's CRS
+    /**
+     * @brief transform rectangle from output CRS to layer's CRS
+     * @see outputExtentToLayerExtent() if you want to transform a bounding box
+     * @return the transformed rectangle
+     */
     QgsRectangle mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRectangle rect );
 
     //! sets whether to use projections for this layer set

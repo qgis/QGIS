@@ -4270,9 +4270,11 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
         QMap<QgsFeatureId, QgsFeature* > features = gml.featuresMap();
         QgsDebugMsg( QString( "%1 features read" ).arg( features.size() ) );
         QgsFeatureStore featureStore( fields, crs() );
-        featureStore.params().insert( "sublayer", *layers );
-        featureStore.params().insert( "featureType", featureTypeName );
-        featureStore.params().insert( "getFeatureInfoUrl", requestUrl.toString() );
+        QMap<QString, QVariant> params;
+        params.insert( "sublayer", *layers );
+        params.insert( "featureType", featureTypeName );
+        params.insert( "getFeatureInfoUrl", requestUrl.toString() );
+        featureStore.setParams( params );
         foreach ( QgsFeatureId id, features.keys() )
         {
           QgsFeature * feature = features.value( id );
