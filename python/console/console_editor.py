@@ -345,18 +345,13 @@ class Editor(QsciScintilla):
         else:
             listObj.show()
             self.parent.pc.objectListButton.setChecked(True)
-    
+
     def codepad(self):
         import urllib2, urllib
         listText = self.selectedText().split('\n')
         getCmd = []
         for strLine in listText:
-            if strLine != "":
-            #if s[0:3] in (">>>", "..."):
-                # filter for special command (_save,_clear) and comment
-                if strLine[4] != "_" and strLine[:2] != "##":
-                    strLine.replace(">>> ", "").replace("... ", "")
-                    getCmd.append(unicode(strLine))
+            getCmd.append(unicode(strLine))
         pasteText= u"\n".join(getCmd)
         url = 'http://codepad.org'
         values = {'lang' : 'Python',
