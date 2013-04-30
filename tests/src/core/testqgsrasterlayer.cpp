@@ -152,7 +152,7 @@ void TestQgsRasterLayer::cleanupTestCase()
 void TestQgsRasterLayer::isValid()
 {
   QVERIFY( mpRasterLayer->isValid() );
-  mpRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
+  mpRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
   mpMapRenderer->setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster" ) );
 }
@@ -290,7 +290,7 @@ void TestQgsRasterLayer::colorRamp4()
 
 void TestQgsRasterLayer::landsatBasic()
 {
-  mpLandsatRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
+  mpLandsatRasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
   QStringList myLayers;
   myLayers << mpLandsatRasterLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
@@ -446,7 +446,7 @@ void TestQgsRasterLayer::transparency()
   QVERIFY( mpFloat32RasterLayer->isValid() );
   QgsSingleBandGrayRenderer* renderer = new QgsSingleBandGrayRenderer( mpRasterLayer->dataProvider(), 1 );
   mpFloat32RasterLayer->setRenderer( renderer );
-  mpFloat32RasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
+  mpFloat32RasterLayer->setContrastEnhancement( QgsContrastEnhancement::StretchToMinimumMaximum, QgsRaster::ContrastEnhancementMinMax );
 
   qDebug( "contrastEnhancement.minimumValue = %.17g", renderer->contrastEnhancement()->minimumValue() );
   qDebug( "contrastEnhancement.maximumValue = %.17g", renderer->contrastEnhancement()->maximumValue() );

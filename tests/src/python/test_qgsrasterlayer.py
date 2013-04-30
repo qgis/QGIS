@@ -89,7 +89,7 @@ class TestQgsRasterLayer(TestCase):
 
         renderer = QgsSingleBandGrayRenderer(myRasterLayer.dataProvider(), 1)
         myRasterLayer.setRenderer(renderer)
-        myRasterLayer.setContrastEnhancementAlgorithm(
+        myRasterLayer.setContrastEnhancement(
             QgsContrastEnhancement.StretchToMinimumMaximum,
             QgsRaster.ContrastEnhancementMinMax)
 

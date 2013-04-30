@@ -19,6 +19,7 @@
 #define QGSRASTERNULLER_H
 
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterrange.h"
 #include "qgsrasterinterface.h"
 
 #include <QList>
@@ -46,17 +47,19 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
     QgsRasterBlock* block( int bandNo, const QgsRectangle &extent, int width, int height );
 
-    void setNoData( QList<QgsRasterNuller::NoData> noData ) { mNoData = noData; }
+    void setNoData( int bandNo, QgsRasterRangeList noData );
 
-    QList<QgsRasterNuller::NoData> noData() const { return mNoData; }
+    QgsRasterRangeList noData( int bandNo ) const { return mNoData.value( bandNo -1 ); }
 
     /** \brief Set output no data value. */
-    void setOutputNoData( double noData ) { mOutputNoData = noData; }
+    void setOutputNoDataValue( int bandNo, double noData );
 
   private:
-    QList<QgsRasterNuller::NoData> mNoData;
-    // no data to be set in output
-    double mOutputNoData;
+    // no data indext from 0
+    QVector< QgsRasterRangeList > mNoData;
+    // no data to be set in output, indexed form 0
+    QVector<double> mOutputNoData;
+    QVector<bool> mHasOutputNoData;
 };
 
 #endif // QGSRASTERNULLER_H

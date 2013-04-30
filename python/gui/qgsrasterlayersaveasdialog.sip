@@ -46,7 +46,7 @@ class QgsRasterLayerSaveAsDialog : QDialog
     QgsCoordinateReferenceSystem outputCrs();
     QStringList createOptions() const;
     QgsRectangle outputRectangle() const;
-    QList<QgsRasterNuller::NoData> noData() const;
+    QgsRasterRangeList noData() const;
 
     QList< int > pyramidsList() const;
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;

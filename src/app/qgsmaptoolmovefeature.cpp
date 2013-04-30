@@ -112,14 +112,14 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
     mMovedFeatures.clear();
     mMovedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
-    mRubberBand = createRubberBand();
+    mRubberBand = createRubberBand( vlayer->geometryType() );
     mRubberBand->setToGeometry( cf.geometry(), vlayer );
   }
   else
   {
     mMovedFeatures = vlayer->selectedFeaturesIds();
 
-    mRubberBand = createRubberBand();
+    mRubberBand = createRubberBand( vlayer->geometryType() );
     for ( int i = 0; i < vlayer->selectedFeatureCount(); i++ )
     {
       mRubberBand->addGeometry( vlayer->selectedFeatures()[i].geometry(), vlayer );

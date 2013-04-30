@@ -30,16 +30,6 @@ struct QgsRasterViewPort;
 class CORE_EXPORT QgsRasterIterator
 {
   public:
-    //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates
-    struct RasterPartInfo
-    {
-      int currentCol;
-      int currentRow;
-      int nCols;
-      int nRows;
-      QgsRasterBlock *block;
-      QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
-    };
 
     QgsRasterIterator( QgsRasterInterface* input );
     ~QgsRasterIterator();
@@ -52,7 +42,8 @@ class CORE_EXPORT QgsRasterIterator
      */
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent );
 
-    /**Fetches next part of raster data
+    /**Fetches next part of raster data, caller takes ownership of the block and
+       caller should delete the block.
        @param bandNumber band to read
        @param nCols number of columns on output device
        @param nRows number of rows on output device
@@ -76,6 +67,16 @@ class CORE_EXPORT QgsRasterIterator
     int maximumTileHeight() const { return mMaximumTileHeight; }
 
   private:
+    //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates
+    struct RasterPartInfo
+    {
+      int currentCol;
+      int currentRow;
+      int nCols;
+      int nRows;
+      QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
+    };
+
     QgsRasterInterface* mInput;
     QMap<int, RasterPartInfo> mRasterPartInfos;
     QgsRectangle mExtent;

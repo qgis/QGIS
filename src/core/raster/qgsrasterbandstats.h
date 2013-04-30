@@ -48,7 +48,6 @@ class CORE_EXPORT QgsRasterBandStats
 
     QgsRasterBandStats()
     {
-      bandName = "";
       statsGathered = None;
       minimumValue = std::numeric_limits<double>::max();
       maximumValue = std::numeric_limits<double>::min();
@@ -73,19 +72,14 @@ class CORE_EXPORT QgsRasterBandStats
     }
 
     /** \brief The name of the band that these stats belong to. */
-    QString bandName;
+    //QString bandName;
 
     /** \brief The gdal band number (starts at 1)*/
     int bandNumber;
 
-    /** Color table
-      * @note not available in python bindings
-      */
-    QList<QgsColorRampShader::ColorRampItem> colorTable;
-
-    /** \brief The number of cells in the band. Equivalent to height x width.
-     * TODO: check if NO_DATA are excluded!*/
-    int elementCount;
+    /** \brief The number of not no data cells in the band. */
+    // TODO: check if no data are excluded in stats calculation
+    size_t elementCount;
 
     /** \brief The maximum cell value in the raster band. NO_DATA values
      * are ignored. This does not use the gdal GetMaximmum function. */

@@ -57,8 +57,11 @@ class CORE_EXPORT QgsFeatureStore
     /** Get features list reference */
     QgsFeatureList& features() { return mFeatures; }
 
+    /** Set map of optional parameters */
+    void setParams( const QMap<QString, QVariant> &theParams ) { mParams = theParams; }
+
     /** Get map of optional parameters */
-    QMap<QString, QVariant>& params() { return mParams; }
+    QMap<QString, QVariant> params() const { return mParams; }
 
   private:
     QgsFields mFields;

@@ -797,18 +797,17 @@ void QgsRasterLayerSaveAsDialog::adjustNoDataCellWidth( int row, int column )
   lineEdit->setFixedWidth( width );
 }
 
-QList<QgsRasterNuller::NoData> QgsRasterLayerSaveAsDialog::noData() const
+QgsRasterRangeList QgsRasterLayerSaveAsDialog::noData() const
 {
-  QList<QgsRasterNuller::NoData> noDataList;
+  QgsRasterRangeList noDataList;
   if ( ! mNoDataGroupBox->isChecked() )
     return noDataList;
 
   for ( int r = 0 ; r < mNoDataTableWidget->rowCount(); r++ )
   {
-    QgsRasterNuller::NoData noData;
-    noData.min = noDataCellValue( r, 0 );
-    noData.max = noDataCellValue( r, 1 );
+    QgsRasterRange noData( noDataCellValue( r, 0 ), noDataCellValue( r, 1 ) );
     noDataList.append( noData );
+
   }
   return noDataList;
 }
