@@ -258,6 +258,7 @@ class Editor(QsciScintilla):
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
+        iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.png")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
         iconNewEditor = QgsApplication.getThemeIcon("console/iconTabEditorConsole.png")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
@@ -275,7 +276,7 @@ class Editor(QsciScintilla):
         runSelected = menu.addAction(iconRun,
                                    "Enter selected",
                                    self.runSelectedCode, 'Ctrl+E')
-        runScript = menu.addAction(iconRun,
+        runScript = menu.addAction(iconRunScript,
                                    "Run Script",
                                    self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
@@ -431,7 +432,13 @@ class Editor(QsciScintilla):
         if dir not in sys.path:
             sys.path.append(dir)
         try:
-            p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            ## set creationflags for runnning command without shell window
+            if sys.platform.startswith('win'):
+                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE, 
+                                     stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
+            else:
+                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE, 
+                                     stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             out, _traceback = p.communicate()
 
             ## Fix interrupted system call on OSX
