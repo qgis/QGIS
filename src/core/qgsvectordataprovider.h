@@ -328,24 +328,18 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     QStringList errors();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     /**
      * It returns false by default.
      * Must be implemented by providers that support saving and loading styles to db returning true
      */
     virtual bool isSaveAndLoadStyleToDBSupported() { return false; }
 
-=======
   signals:
     /** Is emitted, when editing has started */
     void editingStarted();
 
     /** Is emitted, when editing stopped */
     void editingStopped();
->>>>>>> f3842775a5147b7a8da1639a4bec667a769b7fac
-=======
->>>>>>> 009ba1b995536ad9936991524ccd0f53a1a5b558
 
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
