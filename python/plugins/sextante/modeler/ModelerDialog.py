@@ -155,7 +155,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             dlg.exec_()
 
     def save(self):
-        if 
         self.saveModel(False)
 
     def saveAs(self):
