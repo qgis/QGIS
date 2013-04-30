@@ -328,6 +328,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     QStringList errors();
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> 8a6cba64ec5ef59a35d60403c495bf1075514216
     /**
      * It returns false by default.
      * Must be implemented by providers that support saving and loading styles to db returning true
@@ -340,6 +345,12 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /** Is emitted, when editing stopped */
     void editingStopped();
+<<<<<<< HEAD
+=======
+>>>>>>> f3842775a5147b7a8da1639a4bec667a769b7fac
+=======
+>>>>>>> 009ba1b995536ad9936991524ccd0f53a1a5b558
+>>>>>>> 8a6cba64ec5ef59a35d60403c495bf1075514216
 
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
