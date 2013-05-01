@@ -96,7 +96,6 @@ class CORE_EXPORT QgsRasterFileWriter
 
   private:
     QgsRasterFileWriter(); //forbidden
-    //WriterError writeDataRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
     WriterError writeDataRaster( const QgsRasterPipe* pipe, QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
                                  const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
 
@@ -115,7 +114,10 @@ class CORE_EXPORT QgsRasterFileWriter
     WriterError writeImageRaster( QgsRasterIterator* iter, int nCols, int nRows, const QgsRectangle& outputExtent,
                                   const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
 
-    //initialize vrt member variables
+    /** \brief Initialize vrt member variables
+     *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  @param destNoDataValueList no data value, indexed from 0
+     */
     void createVRT( int xSize, int ySize, const QgsCoordinateReferenceSystem& crs, double* geoTransform, QGis::DataType type, QList<bool> destHasNoDataValueList, QList<double> destNoDataValueList );
     //write vrt document to disk
     bool writeVRT( const QString& file );
@@ -123,15 +125,16 @@ class CORE_EXPORT QgsRasterFileWriter
     void addToVRT( const QString& filename, int band, int xSize, int ySize, int xOffset, int yOffset );
     void buildPyramids( const QString& filename );
 
-    //static int pyramidsProgress( double dfComplete, const char *pszMessage, void* pData );
-
     /**Create provider and datasource for a part image (vrt mode)*/
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
         const QString& outputUrl, int fileIndex, int nBands, QGis::DataType type,
         const QgsCoordinateReferenceSystem& crs );
 
-    /**Init VRT (for tiled mode) or create global output provider (single-file mode)*/
+    /** \brie Init VRT (for tiled mode) or create global output provider (single-file mode)
+     *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
+     *  @param destNoDataValueList no data value, indexed from 0
+     */
     QgsRasterDataProvider* initOutput( int nCols, int nRows,
                                        const QgsCoordinateReferenceSystem& crs, double* geoTransform, int nBands,
                                        QGis::DataType type,

@@ -155,14 +155,14 @@ void QgsMapToolRotateFeature::canvasPressEvent( QMouseEvent * e )
     mRotatedFeatures.clear();
     mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
-    mRubberBand = createRubberBand();
+    mRubberBand = createRubberBand( vlayer->geometryType() );
     mRubberBand->setToGeometry( cf.geometry(), vlayer );
   }
   else
   {
     mRotatedFeatures = vlayer->selectedFeaturesIds();
 
-    mRubberBand = createRubberBand();
+    mRubberBand = createRubberBand( vlayer->geometryType() );
     for ( int i = 0; i < vlayer->selectedFeatureCount(); i++ )
     {
       mRubberBand->addGeometry( vlayer->selectedFeatures()[i].geometry(), vlayer );

@@ -877,8 +877,7 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
-      QgsDebugMsg( QString( "Transform error caught: %1" ).arg( cse.what() ) );
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ) );
     }
   }
   else
@@ -886,6 +885,26 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
     // leave point without transformation
   }
   return point;
+}
+
+QgsRectangle QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsRectangle rect )
+{
+  if ( hasCrsTransformEnabled() )
+  {
+    try
+    {
+      rect = tr( theLayer )->transform( rect, QgsCoordinateTransform::ForwardTransform );
+    }
+    catch ( QgsCsException &cse )
+    {
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ) );
+    }
+  }
+  else
+  {
+    // leave point without transformation
+  }
+  return rect;
 }
 
 QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint point )
@@ -898,8 +917,7 @@ QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
-      QgsDebugMsg( QString( "Transform error caught: %1" ).arg( cse.what() ) );
-      throw cse; //let client classes know there was a transformation error
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ) );
     }
   }
   else
@@ -919,8 +937,7 @@ QgsRectangle QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsRe
     }
     catch ( QgsCsException &cse )
     {
-      QgsDebugMsg( QString( "Transform error caught: %1" ).arg( cse.what() ) );
-      throw cse; //let client classes know there was a transformation error
+      QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( cse.what() ) );
     }
   }
   return rect;

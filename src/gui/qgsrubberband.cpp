@@ -484,16 +484,17 @@ void QgsRubberBand::updateRect()
     {
       return;
     }
-    QgsRectangle r( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY,
-                    it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
+    qreal s = ( mIconSize - 1 ) / 2;
+    qreal p = mWidth;
+
+    QgsRectangle r ( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
+                     it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p );
 
     for ( int i = 0; i < mPoints.size(); ++i )
     {
       QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin();
       for ( ; it != mPoints.at( i ).constEnd(); ++it )
       {
-        qreal s = ( mIconSize - 1 ) / 2;
-        qreal p = mWidth;
         QgsRectangle rect = QgsRectangle( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
                                           it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p );
         r.combineExtentWith( &rect );
