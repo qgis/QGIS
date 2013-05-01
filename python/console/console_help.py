@@ -38,7 +38,7 @@ class HelpDialog(QDialog, Ui_Help):
         self.setMaximumSize(530, 300)
 
         qgisDataDir = QgsApplication.pkgDataPath()
-        listFile = os.listdir(qgisDataDir + "/python/console/console_help/i18n")
+        listFile = os.listdir(qgisDataDir + "/python/console/help/i18n")
         localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
         locale = "en_US"
         for i in listFile:
@@ -46,7 +46,7 @@ class HelpDialog(QDialog, Ui_Help):
             if localeFullName in (lang[0:2], lang):
                 locale = lang
 
-        filename = qgisDataDir + "/python/console/console_help/help.htm? \
+        filename = qgisDataDir + "/python/console/help/help.htm? \
                                                 lang=" + locale \
                                                 + "&pkgDir=" + qgisDataDir
 
