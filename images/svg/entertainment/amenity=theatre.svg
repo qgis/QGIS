@@ -1,207 +1,47 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="amenity=theatre.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=restaurant.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="33.0625"
-     inkscape:cx="8"
-     inkscape:cy="7.8968815"
-     inkscape:current-layer="layer3"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="740"
-     inkscape:window-x="-5"
-     inkscape:window-y="-3" />
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>amenity=theatre</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:#ffb922;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer3"
-     inkscape:label="top">
-    <g
-       id="g3511"
-       transform="translate(-5.1115311,-4.4461247)">
-      <path
-         transform="translate(2.6918714,0.6351607)"
-         sodipodi:type="arc"
-         style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.80000001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path3499"
-         sodipodi:cx="7.9848771"
-         sodipodi:cy="9.2854443"
-         sodipodi:rx="4.0226841"
-         sodipodi:ry="4.0226841"
-         d="M 12.007561,9.2854443 A 4.0226841,4.0226841 0 1 1 3.962193,9.2854443 A 4.0226841,4.0226841 0 1 1 12.007561,9.2854443 z" />
-      <path
-         sodipodi:type="arc"
-         style="fill:none;fill-opacity:1;stroke:#ffb922;stroke-width:0.80000001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path3501"
-         sodipodi:cx="7.0018902"
-         sodipodi:cy="7.8185253"
-         sodipodi:rx="1.2249527"
-         sodipodi:ry="1.2249527"
-         d="M 8.2268429,7.8185253 A 1.2249527,1.2249527 0 1 1 5.7771776,7.7942736"
-         sodipodi:start="0"
-         sodipodi:end="3.161392"
-         sodipodi:open="true"
-         transform="translate(2.026465,0.1209834)" />
-      <path
-         transform="translate(5.3232514,0.1209834)"
-         sodipodi:open="true"
-         sodipodi:end="3.161392"
-         sodipodi:start="0"
-         d="M 8.2268429,7.8185253 A 1.2249527,1.2249527 0 1 1 5.7771776,7.7942736"
-         sodipodi:ry="1.2249527"
-         sodipodi:rx="1.2249527"
-         sodipodi:cy="7.8185253"
-         sodipodi:cx="7.0018902"
-         id="path3503"
-         style="fill:none;fill-opacity:1;stroke:#ffb922;stroke-width:0.80000001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         sodipodi:type="arc" />
-      <path
-         sodipodi:type="arc"
-         style="fill:none;fill-opacity:1;stroke:#ffb922;stroke-width:0.74385601;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path3505"
-         sodipodi:cx="7.0018902"
-         sodipodi:cy="7.8185253"
-         sodipodi:rx="1.2249527"
-         sodipodi:ry="1.2249527"
-         d="M 8.2268429,7.8185253 A 1.2249527,1.2249527 0 1 1 5.7771776,7.7942736"
-         sodipodi:start="0"
-         sodipodi:end="3.161392"
-         sodipodi:open="true"
-         transform="matrix(1.7238416,0,0,-1.265394,-1.3631559,22.227759)" />
-    </g>
-    <g
-       id="g3491"
-       transform="translate(2.5708885,1.20983)"
-       style="fill:#ffb922;fill-opacity:1">
-      <path
-         d="M 12.007561,9.2854443 A 4.0226841,4.0226841 0 1 1 3.962193,9.2854443 A 4.0226841,4.0226841 0 1 1 12.007561,9.2854443 z"
-         sodipodi:ry="4.0226841"
-         sodipodi:rx="4.0226841"
-         sodipodi:cy="9.2854443"
-         sodipodi:cx="7.9848771"
-         id="path3483"
-         style="opacity:1;fill:#ffb922;fill-opacity:1;stroke:#ffffff;stroke-width:0.80000001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         sodipodi:type="arc" />
-      <path
-         transform="matrix(1,0,0,-1,-0.6654064,16.323574)"
-         sodipodi:open="true"
-         sodipodi:end="3.161392"
-         sodipodi:start="0"
-         d="M 8.2268429,7.8185253 A 1.2249527,1.2249527 0 1 1 5.7771776,7.7942736"
-         sodipodi:ry="1.2249527"
-         sodipodi:rx="1.2249527"
-         sodipodi:cy="7.8185253"
-         sodipodi:cx="7.0018902"
-         id="path3485"
-         style="opacity:1;fill:#ffb922;fill-opacity:1;stroke:#ffffff;stroke-width:0.80000001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         sodipodi:type="arc" />
-      <path
-         sodipodi:type="arc"
-         style="opacity:1;fill:#ffb922;fill-opacity:1;stroke:#ffffff;stroke-width:0.80000001;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path3487"
-         sodipodi:cx="7.0018902"
-         sodipodi:cy="7.8185253"
-         sodipodi:rx="1.2249527"
-         sodipodi:ry="1.2249527"
-         d="M 8.2268429,7.8185253 A 1.2249527,1.2249527 0 1 1 5.7771776,7.7942736"
-         sodipodi:start="0"
-         sodipodi:end="3.161392"
-         sodipodi:open="true"
-         transform="matrix(1,0,0,-1,2.63138,16.323574)" />
-      <path
-         transform="matrix(1.7238416,0,0,1.265394,-4.0550273,0.2862085)"
-         sodipodi:open="true"
-         sodipodi:end="3.161392"
-         sodipodi:start="0"
-         d="M 8.2268429,7.8185253 A 1.2249527,1.2249527 0 1 1 5.7771776,7.7942736"
-         sodipodi:ry="1.2249527"
-         sodipodi:rx="1.2249527"
-         sodipodi:cy="7.8185253"
-         sodipodi:cx="7.0018902"
-         id="path3489"
-         style="opacity:1;fill:#ffb922;fill-opacity:1;stroke:#ffffff;stroke-width:0.74385601;stroke-linecap:round;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         sodipodi:type="arc" />
-    </g>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=restaurant.png" inkscape:export-xdpi="90" inkscape:export-ydpi="90" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="amenity=theatre.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="580.457px" viewBox="0 0 579.997 580.457" enable-background="new 0 0 579.997 580.457" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="true" inkscape:cy="7.8968815" inkscape:cx="8" inkscape:zoom="33.0625" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer3" inkscape:window-y="-3" inkscape:window-x="-5" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="740" inkscape:window-width="1280">
+	</sodipodi:namedview>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M381.612,219.51c-7.474,0.002-14.866,0.523-22.143,1.527
+	c1.091-7.585,1.657-15.297,1.653-23.098v-0.111c-0.039-88.146-71.771-159.859-159.977-159.859
+	c-88.174,0.041-159.878,71.807-159.84,159.971v0.111c0.039,88.127,71.742,159.824,159.84,159.824h0.13
+	c7.467,0,14.851-0.526,22.12-1.53c-1.09,7.591-1.648,15.311-1.645,23.116v0.111c0.039,88.146,71.756,159.859,159.869,159.859h0.071
+	c42.728-0.02,82.885-16.67,113.074-46.885c30.188-30.213,46.802-70.377,46.783-113.086v-0.105
+	C541.55,291.217,469.832,219.51,381.612,219.51z M202.067,125.434c0-7.987,6.476-14.463,14.463-14.463s14.463,6.476,14.463,14.463
+	v0.865c0,16.449,13.383,29.832,29.832,29.832c16.439,0,29.813-13.383,29.813-29.832c0-7.987,6.476-14.463,14.463-14.463
+	s14.463,6.476,14.463,14.463c0,32.398-26.351,58.758-58.739,58.758c-32.398,0-58.758-26.359-58.758-58.758V125.434z M82.865,126.299
+	v-0.865c0-7.987,6.476-14.463,14.463-14.463s14.463,6.476,14.463,14.463v0.865c0,16.449,13.383,29.832,29.832,29.832
+	c16.439,0,29.813-13.383,29.813-29.832c0-7.987,6.476-14.463,14.463-14.463s14.463,6.476,14.463,14.463
+	c0,32.398-26.351,58.758-58.739,58.758C109.225,185.057,82.865,158.697,82.865,126.299z M202.318,242.6
+	c-34.1,0-62.908,19.511-62.908,42.605c0,0.153-0.002,0.306,0.003,0.458c0.373,7.418-5.339,13.722-12.756,14.095
+	c-0.229,0.012-0.458,0.018-0.686,0.018c-7.117,0-13.06-5.596-13.421-12.784c-0.029-0.593-0.035-1.189-0.035-1.786
+	c0-19.361,9.891-37.285,27.851-50.472c16.712-12.271,38.714-19.028,61.952-19.028c23.23,0,45.227,6.758,61.938,19.028
+	c7.624,5.6,13.792,12.054,18.367,19.108c-4.895,3.876-9.6,8.053-14.08,12.536c-2.116,2.117-4.158,4.288-6.14,6.501
+	C254.385,255.571,230.113,242.6,202.318,242.6z M512.624,379.468c0.017,34.989-13.593,67.888-38.318,92.635
+	c-24.729,24.75-57.624,38.389-92.626,38.403l-0.059,14.463v-14.462c-72.171,0-130.912-58.743-130.943-130.94v-0.111
+	c-0.016-34.987,13.595-67.885,38.325-92.631c24.73-24.748,57.622-38.382,92.678-38.39c72.202,0,130.943,58.731,130.943,130.921
+	V379.468z"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M322.05,321.418c16.459,0,29.85,13.383,29.85,29.832
+	c0,7.987,6.476,14.463,14.463,14.463s14.463-6.476,14.463-14.463c0-32.398-26.367-58.758-58.775-58.758
+	c-32.39,0-58.74,26.359-58.74,58.758v0.883c0,7.987,6.476,14.463,14.463,14.463s14.463-6.476,14.463-14.463v-0.883
+	C292.235,334.801,305.609,321.418,322.05,321.418z"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M382.477,351.25c0,0.386,0.015,0.773,0.039,1.213
+	c0.176,7.835,6.582,14.133,14.459,14.133c7.987,0,14.463-6.476,14.463-14.463c0-0.39-0.014-0.761-0.034-1.151
+	c0.145-16.326,13.479-29.563,29.849-29.563c16.459,0,29.85,13.383,29.85,29.832c0,7.987,6.476,14.463,14.463,14.463
+	s14.463-6.476,14.463-14.463c0-32.398-26.367-58.758-58.775-58.758S382.477,318.852,382.477,351.25z"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M459.083,398.357c-7.427,0-13.447,6.021-13.447,13.447
+	c0,23.085-28.801,42.588-62.891,42.588s-62.89-19.503-62.89-42.588v-1.096c0-7.427-6.021-13.447-13.447-13.447
+	s-13.447,6.021-13.447,13.447v1.096c0,19.366,9.891,37.29,27.851,50.471c16.705,12.26,38.7,19.012,61.934,19.012
+	s45.229-6.752,61.935-19.012c17.96-13.181,27.851-31.104,27.851-50.471C472.53,404.378,466.51,398.357,459.083,398.357z"/>
 </svg>

@@ -1,51 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg602"
-   xml:space="preserve"
-   sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docname="parking.svg"
-   sodipodi:docbase="/usr/share/qgis/svg/custom"><metadata
-   id="metadata19"><rdf:RDF><cc:Work
-       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-   id="defs17" /><sodipodi:namedview
-   inkscape:window-height="683"
-   inkscape:window-width="1024"
-   inkscape:pageshadow="2"
-   inkscape:pageopacity="0.0"
-   borderopacity="1.0"
-   bordercolor="#666666"
-   pagecolor="#ffffff"
-   id="base"
-   inkscape:zoom="3.6927131"
-   inkscape:cx="54.566925"
-   inkscape:cy="45.999853"
-   inkscape:window-x="0"
-   inkscape:window-y="36"
-   inkscape:current-layer="g1306" /><g
-   id="g1306"><rect
-   y="2.6589799"
-   x="2.4186919"
-   height="104.08669"
-   width="104.29646"
-   id="rect1334"
-   style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.47390604;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-<path
-   style="font-size:97.80973053px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-   d="M 41.425789,27.614267 L 41.425789,54.406874 L 53.556488,54.406874 C 58.045766,54.40691 61.516225,53.244784 63.967876,50.920492 C 66.419443,48.59628 67.645247,45.285016 67.645292,40.986691 C 67.645247,36.720305 66.419443,33.424961 63.967876,31.100649 C 61.516225,28.776457 58.045766,27.61433 53.556488,27.614267 L 41.425789,27.614267 M 31.778541,19.68633 L 53.556488,19.68633 C 61.548064,19.686401 67.581569,21.501228 71.65702,25.130817 C 75.764211,28.728698 77.817831,34.013984 77.817886,40.986691 C 77.817831,48.023176 75.764211,53.340301 71.65702,56.938083 C 67.581569,60.535932 61.548064,62.33484 53.556488,62.334811 L 41.425789,62.334811 L 41.425789,90.990005 L 31.778541,90.990005 L 31.778541,19.68633"
-   id="text1319" /></g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/custom" sodipodi:version="0.32" sodipodi:docname="parking.svg" inkscape:version="0.43"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<sodipodi:namedview  inkscape:cy="45.999853" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="g1306" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1024" inkscape:pageopacity="0.0" inkscape:window-height="683">
+	</sodipodi:namedview>
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M19.55,20.073v539.85h540.896V20.073H19.55z M538.199,537.675
+	h-496.4V42.321h496.4V537.675z"/>
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M224.65,327.951h60.325c39.736,0,69.742-8.945,90.008-26.835
+	c20.426-17.891,30.639-44.331,30.639-79.322c0-34.674-10.213-60.958-30.639-78.849c-20.266-18.051-50.271-27.074-90.008-27.074
+	h-108.3v354.582h47.975V327.951z M224.65,155.294h60.325c22.321,0,39.58,5.778,51.77,17.336
+	c12.194,11.559,18.289,27.945,18.289,49.163c0,21.375-6.095,37.84-18.289,49.397c-12.189,11.559-29.448,17.337-51.77,17.337H224.65
+	V155.294z"/>
 </svg>

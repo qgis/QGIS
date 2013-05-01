@@ -1,9 +1,11 @@
 
-SET (SVG_DIRS 
+SET (SVG_DIRS
  accommodation
  amenity
- biology
- biology  
+ arrows
+ backgrounds
+ components
+ crosses
  emergency
  entertainment
  food
@@ -13,7 +15,6 @@ SET (SVG_DIRS
  icon
  landmark
  money
- north_arrows
  religion
  services
  shopping
@@ -21,6 +22,7 @@ SET (SVG_DIRS
  symbol
  tourist
  transport
+ wind_roses
 )
   
 

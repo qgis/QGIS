@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="s:\Data\FacilityIcons" inkscape:version="0.46" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="amenity_post_office.svg" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
+	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  id="perspective3265" sodipodi:type="inkscape:persp3d" inkscape:vp_x="0 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_z="580 : 290 : 1" inkscape:persp3d-origin="290 : 193.33333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  borderopacity="1.0" gridtolerance="10.0" objecttolerance="10.0" guidetolerance="10.0" bordercolor="#666666" pagecolor="#ffffff" inkscape:zoom="0.92167712" inkscape:cx="215.15635" inkscape:cy="367.99332" showgrid="false" id="base" inkscape:window-width="1048" inkscape:window-height="947" inkscape:pageshadow="2" inkscape:pageopacity="0.0" inkscape:window-x="91" inkscape:window-y="25" inkscape:current-layer="svg2">
+	</sodipodi:namedview>
+<g id="layer3" transform="matrix(48.14969,0,0,48.14969,-536.27327,-33.306752)" inkscape:label="Layout" display="none">
+	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
+	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
+</g>
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M521.488,260.782L521.488,260.782L319.217,58.512
+	c-16.137-16.136-42.298-16.136-58.435,0L58.512,260.782c-16.136,16.137-16.136,42.298,0,58.435l202.271,202.271
+	c16.136,16.137,42.297,16.137,58.434,0l202.271-202.271C537.623,303.08,537.625,276.919,521.488,260.782z"/>
+</svg>

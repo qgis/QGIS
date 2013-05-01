@@ -1,50 +1,26 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg602"
-   xml:space="preserve"
-   sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docname="restaurant.svg"
-   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
-     id="metadata9"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs7" /><sodipodi:namedview
-     inkscape:window-height="683"
-     inkscape:window-width="1024"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="3.6927131"
-     inkscape:cx="54.566925"
-     inkscape:cy="54.566925"
-     inkscape:window-x="0"
-     inkscape:window-y="36"
-     inkscape:current-layer="svg602" /><g
-     transform="matrix(1.152545,0,0,1.141886,0.819363,-3.406292)"
-     style="font-size:12px;stroke:#000000"
-     id="g763"><path
-       d="M 29.41794,11.63438 C 30.35184,16.67746 30.7254,27.0438 33.90067,27.0438 C 36.88916,26.95041 36.5156,16.77086 37.82306,11.63439 C 37.82306,11.63439 40.90494,26.76363 40.90494,32.92738 C 40.90494,39.09114 33.06015,46.09541 33.06015,52.53934 C 33.06015,58.98327 34.018469,62.862645 34.018469,72.388455 C 34.018469,81.914265 32.589904,92.88394 29.652891,92.88394 C 26.715878,92.88394 25.287324,81.67711 25.287324,72.1513 C 25.287324,62.62549 25.77572,58.98327 25.77572,52.53934 C 25.77572,46.09541 17.93093,39.09114 17.93093,32.92738 C 17.93093,26.76363 21.01281,11.63439 21.01281,11.63439 C 22.32027,16.77086 21.94671,26.95041 24.9352,27.0438 C 28.11047,27.0438 27.64352,17.2378 29.41793,11.63438"
-       style="fill-rule:evenodd"
-       id="path761"
-       sodipodi:nodetypes="cccssszsssccc" /><path
-       d="M 70.04271,93.44428 C 73.8717,93.53767 73.53445,76.54064 73.16088,65.98754 C 72.9741,58.88988 73.31137,51.79222 72.56425,44.69456 C 72.37746,32.64721 72.19068,20.59987 72.0039,8.552523 C 67.42778,8.926086 61.766634,7.4244787 59.84767,26.804374 C 60.31463,36.215857 61.4508,42.54658 64.71946,47.2161 C 64.06573,53.66003 64.686143,60.815414 64.872923,67.259344 C 64.924067,81.505039 66.77406,94.00462 70.04271,93.44428 z "
-       style="fill-rule:evenodd;stroke-width:1"
-       id="path762"
-       sodipodi:nodetypes="cccccccc" /></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="restaurant.svg" inkscape:version="0.43"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="svg602" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1024" inkscape:pageopacity="0.0" inkscape:window-height="683">
+	</sodipodi:namedview>
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M232.579,71.326c-2.586,10.068-4.073,23.513-5.511,36.514
+	c-2.61,23.602-5.569,50.353-14.917,50.643c-12.017,0-16.714-36.309-20.144-62.82c-1.155-8.929-2.246-17.362-3.519-24.171L186,71.956
+	l-2.411-0.771c-3.806,11.907-5.843,26.804-7.813,41.209c-3.098,22.658-6.302,46.088-15.848,46.089
+	c-9.426-0.291-12.385-27.041-14.995-50.642c-1.438-13.002-2.925-26.446-5.512-36.516l-4.93,0.12
+	c-0.736,3.581-18.03,88.099-18.03,123.57c0,18.31,11.618,37.836,22.854,56.719c11.262,18.926,22.907,38.496,22.907,56.631
+	c0,16.751-0.59,30.486-1.214,45.029c-0.766,17.836-1.633,38.051-1.633,68.315c0,29.445,2.313,58.973,6.349,81.011
+	c5.094,27.817,12.174,41.34,21.646,41.34c9.351,0,16.634-13.677,21.646-40.649c4.036-21.716,6.351-50.997,6.351-80.337
+	c0-30.312-1.705-50.969-3.21-69.194c-1.224-14.817-2.38-28.813-2.38-45.515c0-18.135,11.646-37.705,22.907-56.631
+	c11.235-18.883,22.854-38.409,22.854-56.719c0-35.472-17.294-119.989-18.03-123.57L232.579,71.326z"/>
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M443.7,386.017c-0.354-13.346-0.386-26.931-0.416-40.069
+	c-0.063-27.208-0.127-55.34-3.063-83.077c-1.092-69.589-2.185-139.179-3.271-208.765l-0.042-2.7l-2.692,0.217
+	c-2.192,0.177-4.399,0.278-6.737,0.386c-12.732,0.584-27.163,1.247-39.458,15.364c-13.557,15.566-22.399,45.661-27.031,92.004
+	l-0.019,0.189l0.01,0.189c2.515,50.214,8.313,89.633,28.335,118.523c-2.772,28.047-1.429,58.166-0.128,87.305
+	c0.432,9.683,0.84,18.829,1.104,27.859c0.147,41.13,2.9,78.9,7.75,106.354c5.658,32.032,13.415,47.604,23.713,47.606
+	c0.001,0,0.002,0,0.003,0c0.465,0,0.938-0.035,1.407-0.103c2.863,0,5.474-1.2,7.758-3.567
+	C446.653,527.431,446.014,450.872,443.7,386.017z"/>
+</svg>

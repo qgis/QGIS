@@ -1,246 +1,56 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   width="580"
-   height="580"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="waste_bin.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
-  <defs
-     id="defs22">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 290 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="580 : 290 : 1"
-       inkscape:persp3d-origin="290 : 193.33333 : 1"
-       id="perspective24" />
-    <marker
-       viewBox="0 0 10 10"
-       refY="5"
-       refX="10"
-       orient="auto"
-       markerWidth="4"
-       markerUnits="strokeWidth"
-       markerHeight="3"
-       id="ArrowStart">
-      <path
-         id="path3568"
-         d="M 10 0 L 0 5 L 10 10 z" />
-    </marker>
-    <marker
-       viewBox="0 0 10 10"
-       refY="5"
-       refX="0"
-       orient="auto"
-       markerWidth="4"
-       markerUnits="strokeWidth"
-       markerHeight="3"
-       id="ArrowEnd">
-      <path
-         id="path3565"
-         d="M 0 0 L 10 5 L 0 10 z" />
-    </marker>
-    <inkscape:perspective
-       id="perspective2683"
-       inkscape:persp3d-origin="306.082 : 204.39034 : 1"
-       inkscape:vp_z="612.164 : 306.58551 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 306.58551 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <marker
-       viewBox="0 0 10 10"
-       refY="5"
-       refX="10"
-       orient="auto"
-       markerWidth="4"
-       markerUnits="strokeWidth"
-       markerHeight="3"
-       id="marker2959">
-      <path
-         id="path2626"
-         d="M 10 0 L 0 5 L 10 10 z" />
-    </marker>
-    <marker
-       viewBox="0 0 10 10"
-       refY="5"
-       refX="0"
-       orient="auto"
-       markerWidth="4"
-       markerUnits="strokeWidth"
-       markerHeight="3"
-       id="marker2956">
-      <path
-         id="path2623"
-         d="M 0 0 L 10 5 L 0 10 z" />
-    </marker>
-    <inkscape:perspective
-       id="perspective2953"
-       inkscape:persp3d-origin="306.082 : 204.39034 : 1"
-       inkscape:vp_z="612.164 : 306.58551 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 306.58551 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <marker
-       viewBox="0 0 10 10"
-       refY="5"
-       refX="10"
-       orient="auto"
-       markerWidth="4"
-       markerUnits="strokeWidth"
-       markerHeight="3"
-       id="marker3077">
-      <path
-         id="path3298"
-         d="M 10 0 L 0 5 L 10 10 z" />
-    </marker>
-    <marker
-       viewBox="0 0 10 10"
-       refY="5"
-       refX="0"
-       orient="auto"
-       markerWidth="4"
-       markerUnits="strokeWidth"
-       markerHeight="3"
-       id="marker3074">
-      <path
-         id="path3295"
-         d="M 0 0 L 10 5 L 0 10 z" />
-    </marker>
-    <inkscape:perspective
-       id="perspective3071"
-       inkscape:persp3d-origin="180.936 : 163.92867 : 1"
-       inkscape:vp_z="361.87201 : 245.89301 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 245.89301 : 1"
-       sodipodi:type="inkscape:persp3d" />
-  </defs>
-  <metadata
-     id="metadata10">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-			  <cc:license
-           rdf:resource="http://web.resource.org/cc/PublicDomain" />
-        <dc:language>en</dc:language>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="1005"
-     inkscape:window-width="1280"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     showgrid="false"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="615.26172"
-     inkscape:cy="415.25176"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4"
-     inkscape:current-layer="svg2" />
-  <g
-     id="g1327">
-    <path
-       d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.598,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.84 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.627,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z"
-       style="fill:#111111;stroke:#eeeeee;stroke-width:3.40799999"
-       id="path1329" />
-  </g>
-  <g
-     id="g2319"
-     transform="translate(879.29125,36.805119)">
-    <path
-       id="path2323"
-       style="fill:#ffffff;stroke:none"
-       d="" />
-  </g>
-  <g
-     id="g2325"
-     transform="translate(879.29125,36.805119)">
-    <path
-       id="path2329"
-       style="fill:#ffffff;stroke:none"
-       d="" />
-  </g>
-  <g
-     id="g3300"
-     transform="translate(106.14938,44.19308)"
-     style="fill:#ffffff">
-    <g
-       id="g3302"
-       style="fill:#ffffff">
-      <path
-         style="fill:#ffffff;stroke:none"
-         id="path3304"
-         d="M 268.409,81.671 C 290.959,81.671 309.243,63.387 309.243,40.836 C 309.243,18.284 290.959,0 268.409,0 C 245.857,0 227.575,18.284 227.575,40.836 C 227.575,63.387 245.857,81.671 268.409,81.671 z" />
-      <path
-         style="fill:#ffffff;stroke:none"
-         id="path3306"
-         d="M 215.941,156.723 L 216.191,468.473 C 216.191,499.657 262.049,499.372 262.049,467.759 L 262.076,286.393 L 271.002,286.307 L 270.974,467.674 C 270.974,499.286 317.367,500.085 317.367,468.473 L 317.394,155.416 L 325.452,155.416 L 325.452,267.211 C 325.452,294.049 361.872,294.049 361.872,267.691 L 361.872,145.393 C 361.872,112.517 337.403,93.156 311.524,93.156 L 238.913,93.156 C 221.691,93.156 209.191,99.973 198.691,114.973 L 161.941,168.527 L 98.171,168.527 C 72.547,168.527 73.985,204.867 97.691,204.867 L 171.191,204.867 C 176.942,204.867 183.941,202.723 187.964,196.719 L 215.941,156.723 z" />
-    </g>
-    <g
-       id="g3308"
-       style="fill:#ffffff">
-      <g
-         id="g3310"
-         style="fill:#ffffff">
-        <g
-           id="g3312"
-           style="fill:#ffffff">
-          <path
-             style="fill:#ffffff;stroke:none"
-             id="path3314"
-             d="M 96.123,347.927 L 96.123,318.064 L 66.26,318.064 L 66.26,347.927 L 96.123,347.927 z" />
-          <path
-             style="fill:#ffffff;stroke:none"
-             id="path3316" />
-        </g>
-        <g
-           id="g3318"
-           style="fill:#ffffff">
-          <path
-             style="fill:#ffffff;stroke:none"
-             id="path3320"
-             d="M 112.332,281.652 L 90.581,259.9 L 68.831,281.652 L 90.581,303.401 L 112.332,281.652 z" />
-          <path
-             style="fill:#ffffff;stroke:none"
-             id="path3322" />
-        </g>
-        <g
-           id="g3324"
-           style="fill:#ffffff">
-          <path
-             style="fill:#ffffff;stroke:none"
-             id="path3326"
-             d="M 92.042,240.571 L 70.29,218.822 L 48.539,240.571 L 70.29,262.323 L 92.042,240.571 z" />
-          <path
-             style="fill:#ffffff;stroke:none"
-             id="path3328" />
-        </g>
-      </g>
-      <path
-         style="fill:#ffffff;stroke:none"
-         id="path3330"
-         d="M 137.191,491.561 L 175.967,285.4 L 146.795,285.4 L 112.811,462.847 L 62.428,462.847 L 29.172,285.473 L 0,285.473 L 38.048,491.561 L 137.191,491.561 z" />
-    </g>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="waste_bin.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
+	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective24" inkscape:persp3d-origin="290 : 193.33333 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="612.164 : 306.58551 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 306.58551 : 1" sodipodi:type="inkscape:persp3d" id="perspective2683" inkscape:persp3d-origin="306.082 : 204.39034 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="612.164 : 306.58551 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 306.58551 : 1" sodipodi:type="inkscape:persp3d" id="perspective2953" inkscape:persp3d-origin="306.082 : 204.39034 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="361.87201 : 245.89301 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 245.89301 : 1" sodipodi:type="inkscape:persp3d" id="perspective3071" inkscape:persp3d-origin="180.936 : 163.92867 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="false" inkscape:cy="415.25176" inkscape:cx="615.26172" inkscape:zoom="0.70710678" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="1005" inkscape:window-width="1280">
+	</sodipodi:namedview>
+<g id="g3302">
+	<path id="path3304" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M374.559,125.864
+		c22.55,0,40.834-18.284,40.834-40.835c0-22.552-18.284-40.836-40.834-40.836c-22.552,0-40.834,18.284-40.834,40.836
+		C333.725,107.58,352.007,125.864,374.559,125.864z"/>
+	<path id="path3306" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M322.091,200.916
+		l0.25,311.75c0,31.184,45.857,30.899,45.857-0.714l0.027-181.366l8.926-0.086l-0.028,181.367c0,31.612,46.394,32.411,46.394,0.799
+		l0.026-313.057h8.059v111.795c0,26.838,36.42,26.838,36.42,0.479V189.586c0-32.876-24.469-52.237-50.349-52.237h-72.61
+		c-17.222,0-29.722,6.817-40.222,21.817l-36.75,53.554h-63.77c-25.624,0-24.186,36.34-0.48,36.34h73.5
+		c5.751,0,12.75-2.144,16.773-8.148L322.091,200.916z"/>
+</g>
+<g id="g3308">
+	<g id="g3310">
+		<g id="g3312">
+			<path id="path3314" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M202.272,392.12v-29.863
+				h-29.863v29.863H202.272z"/>
+			<path id="path3316" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M106.149,44.193"/>
+		</g>
+		<g id="g3318">
+			<path id="path3320" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M218.481,325.846
+				l-21.751-21.753l-21.75,21.753l21.75,21.748L218.481,325.846z"/>
+			<path id="path3322" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M106.149,44.193"/>
+		</g>
+		<g id="g3324">
+			<path id="path3326" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M198.191,284.764
+				l-21.752-21.749l-21.751,21.749l21.751,21.751L198.191,284.764z"/>
+			<path id="path3328" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M106.149,44.193"/>
+		</g>
+	</g>
+	<path id="path3330" fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" stroke-miterlimit="10" d="M243.34,535.754
+		l38.776-206.161h-29.172L218.96,507.04h-50.383l-33.256-177.374h-29.172l38.048,206.088H243.34z"/>
+</g>
 </svg>

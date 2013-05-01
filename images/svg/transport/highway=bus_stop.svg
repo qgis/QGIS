@@ -1,181 +1,30 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="highway=bus_stop.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/highway=bus_stop.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="31.875"
-     inkscape:cx="-4.6431372"
-     inkscape:cy="8"
-     inkscape:current-layer="layer2"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="0" />
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>highway=bus_stop</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:#6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="top">
-    <g
-       id="g4105"
-       transform="matrix(1.1315789,0,0,1.1315789,-1.0526321,-1.6561405)">
-      <rect
-         rx="1"
-         y="2.5725491"
-         x="2.9176469"
-         height="10.227451"
-         width="10.164707"
-         id="rect4085"
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         rx="0.87621158"
-         y="4.5176473"
-         x="3.7019606"
-         height="4.4862747"
-         width="8.5960789"
-         id="rect4087"
-         style="fill:#6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         rx="0.37425038"
-         y="3.0117648"
-         x="5.6470585"
-         height="1.1294118"
-         width="4.7058825"
-         id="rect4089"
-         style="fill:#6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         rx="0.29543731"
-         y="10.101961"
-         x="5.2392159"
-         height="0.53333336"
-         width="5.5215688"
-         id="rect4091"
-         style="fill:#6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         style="fill:#6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect4095"
-         width="5.5215688"
-         height="0.53333336"
-         x="5.2392159"
-         y="10.82354"
-         rx="0.29543731" />
-      <rect
-         rx="0.59215689"
-         y="12.047059"
-         x="4.2352943"
-         height="2.4470589"
-         width="1.3176471"
-         id="rect4097"
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect4099"
-         width="1.3176471"
-         height="2.4470589"
-         x="10.400001"
-         y="12.047059"
-         rx="0.59215689" />
-      <path
-         transform="translate(0.1019604,-0.1568627)"
-         d="M 4.8784316,10.870588 A 0.64313728,0.64313728 0 1 1 3.5921571,10.870588 A 0.64313728,0.64313728 0 1 1 4.8784316,10.870588 z"
-         sodipodi:ry="0.64313728"
-         sodipodi:rx="0.64313728"
-         sodipodi:cy="10.870588"
-         sodipodi:cx="4.2352943"
-         id="path4101"
-         style="fill:#6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         sodipodi:type="arc" />
-      <path
-         sodipodi:type="arc"
-         style="fill:#6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="path4103"
-         sodipodi:cx="4.2352943"
-         sodipodi:cy="10.870588"
-         sodipodi:rx="0.64313728"
-         sodipodi:ry="0.64313728"
-         d="M 4.8784316,10.870588 A 0.64313728,0.64313728 0 1 1 3.5921571,10.870588 A 0.64313728,0.64313728 0 1 1 4.8784316,10.870588 z"
-         transform="translate(7.419605,-0.1568627)" />
-    </g>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/highway=bus_stop.png" inkscape:export-ydpi="90" inkscape:export-xdpi="90" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="highway=bus_stop.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="-4.6431372" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer2" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="723">
+	</sodipodi:namedview>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M454.681,45.215H121.798c-22.52,0-40.764,18.262-40.764,40.781
+	V421.43c0,22.52,18.244,40.781,40.764,40.781h12.949v44.932c0,13.336,10.819,24.139,24.155,24.139h5.437
+	c13.336,0,24.138-10.803,24.138-24.139v-44.932h197.626v44.932c0,13.336,10.802,24.139,24.138,24.139h5.454
+	c13.3,0,24.138-10.803,24.138-24.139v-44.932h14.849c22.52,0,40.781-18.262,40.781-40.781V85.996
+	C495.462,63.477,477.2,45.215,454.681,45.215z M192.312,78.377c0-8.428,6.826-15.254,15.254-15.254h161.365
+	c8.41,0,15.236,6.826,15.236,15.254v15.535c0,8.428-6.826,15.254-15.236,15.254H207.565c-8.428,0-15.254-6.826-15.254-15.254V78.377
+	z M112.685,377.129c0-14.461,11.753-26.178,26.231-26.178c14.479,0,26.214,11.717,26.214,26.178c0,14.496-11.734,26.25-26.214,26.25
+	C124.438,403.379,112.685,391.625,112.685,377.129z M187.737,381.633h201.004c6.686,0,12.069,4.855,12.069,10.873
+	s-5.384,10.873-12.069,10.873H187.737c-6.667,0-12.051-4.855-12.051-10.873S181.07,381.633,187.737,381.633z M175.687,363.055
+	c0-5.982,5.384-10.838,12.051-10.838h201.004c6.686,0,12.069,4.855,12.069,10.838c0,6.053-5.384,10.908-12.069,10.908H187.737
+	C181.07,373.963,175.687,369.107,175.687,363.055z M437.264,403.379c-14.462,0-26.214-11.754-26.214-26.25
+	c0-14.461,11.752-26.178,26.214-26.178c14.461,0,26.214,11.717,26.214,26.178C463.478,391.625,451.725,403.379,437.264,403.379z
+	 M463.478,271.711c0,19.738-15.975,35.748-35.715,35.748H148.733c-19.722,0-35.732-16.01-35.732-35.748V160.238
+	c0-19.721,16.011-35.713,35.732-35.713h279.029c19.74,0,35.715,15.992,35.715,35.713V271.711z"/>
 </svg>

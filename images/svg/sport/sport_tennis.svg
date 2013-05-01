@@ -1,53 +1,16 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   version="1.0"
-   width="580"
-   height="580"
-   id="svg2">
-  <metadata
-     id="metadata2975">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-			  <cc:license
-           rdf:resource="http://web.resource.org/cc/PublicDomain" />
-        <dc:language>en</dc:language>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs4" />
-  <g
-     id="layer1">
-    <g
-       id="g2450">
-			<g
-   id="g1327">
-				<path
-   d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.6,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.842 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z "
-   style="fill:#111;stroke:#eee;stroke-width:3.40799999"
-   id="path1329" />
-
-			</g>
-
-			<circle
-   cx="171.591"
-   cy="397.92999"
-   r="50.546001"
-   style="fill:white;"
-   id="circle2441" />
- 
-			<path
-   d="M 285.113,104.116 C 231.611,50.615 157.245,39.652 111.872,83.61 C 62.435,131.506 78.876,203.349 132.378,256.851 C 174.279,298.752 224.279,320.122 269.467,301.948 C 288.072,308.314 319.572,321.276 349.999,343.891 C 348.983,348.69 350.33,353.887 354.057,357.614 L 444.567,448.124 C 450.424,453.982 459.922,453.982 465.78,448.125 L 476.386,437.519 C 482.243,431.661 482.243,422.164 476.386,416.305 L 385.876,325.796 C 382.149,322.069 376.953,320.724 372.154,321.738 C 349.445,291.183 336.47,259.552 330.132,240.977 C 347.794,196.069 326.855,145.859 285.113,104.116 z M 343.999,315.739 C 324.142,304.885 305.302,296.181 288.65,289.31 C 293.758,285.077 298.807,280.499 303.782,275.524 C 308.758,270.549 313.332,265.491 317.558,260.365 C 324.434,277.023 333.14,295.871 343.999,315.739 z "
-   style="fill:white;"
-   id="path2443" />
-
-		</g>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="sport_jetski.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
+	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="201.591" cy="427.93" r="50.546"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M506.386,446.305l-90.51-90.509
+	c-3.727-3.728-8.923-5.071-13.722-4.058c-22.709-30.555-35.685-62.187-42.022-80.761c17.662-44.908-3.276-95.118-45.019-136.861
+	c-53.502-53.501-127.868-64.464-173.241-20.506c-49.437,47.896-32.996,119.739,20.506,173.242
+	c41.901,41.9,91.901,63.271,137.089,45.097c18.605,6.366,50.105,19.327,80.532,41.942c-1.016,4.799,0.331,9.996,4.058,13.724
+	l90.511,90.51c5.856,5.858,15.354,5.858,21.213,0.001l10.605-10.606C512.243,461.661,512.243,452.164,506.386,446.305z
+	 M318.65,319.311c5.107-4.233,10.156-8.812,15.132-13.787c4.976-4.975,9.55-10.032,13.775-15.158
+	c6.876,16.658,15.582,35.506,26.441,55.374C354.142,334.885,335.302,326.182,318.65,319.311z"/>
 </svg>
