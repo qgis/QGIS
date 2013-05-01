@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 /* This code takes ideas from WarpBuilder in Geotools.
- * Thank you to Ing. Andrea Aime, Ing. Simone Giannecchini and GeoSolutions S.A.S.
+ * Thank to Ing. Andrea Aime, Ing. Simone Giannecchini and GeoSolutions S.A.S.
  * See : http://geo-solutions.blogspot.com/2011/01/developers-corner-improving.html
  */
 
@@ -57,7 +57,9 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
       QgsRectangle theExtent
     );
     QgsRasterProjector();
-    // * copy constructor to avoid synthesized which fails on copy of QgsCoordinateTransform (QObject child) in Python bindings
+    /** \brief Copy constructor */
+    // To avoid synthesized which fails on copy of QgsCoordinateTransform
+    // (QObject child) in Python bindings
     QgsRasterProjector( const QgsRasterProjector &projector );
 
     /** \brief The destructor */
@@ -86,6 +88,9 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
       mMaxSrcXRes = theMaxSrcXRes; mMaxSrcYRes = theMaxSrcYRes;
     }
 
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height );
+
+  private:
     /** get source extent */
     QgsRectangle srcExtent() { return mSrcExtent; }
 
@@ -101,10 +106,6 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     int dstRows() const { return mDestRows; }
     int dstCols() const { return mDestCols; }
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height );
-
-
-  private:
     /** \brief get destination point for _current_ destination position */
     void destPointOnCPMatrix( int theRow, int theCol, double *theX, double *theY );
 

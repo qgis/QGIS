@@ -312,6 +312,16 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol );
     QgsFillSymbolV2* overviewFrameMapSymbol() { return mOverviewFrameMapSymbol; }
 
+    /** Returns the overview's blending mode */
+    QPainter::CompositionMode overviewBlendMode() const {return mOverviewBlendMode;}
+    /** Sets the overview's blending mode*/
+    void setOverviewBlendMode( QPainter::CompositionMode blendMode );
+
+    /** Returns true if the overview frame is inverted */
+    bool overviewInverted() const {return mOverviewInverted;}
+    /** Sets the overview's inversion mode*/
+    void setOverviewInverted( bool inverted );
+
     void setGridLineSymbol( QgsLineSymbolV2* symbol );
     QgsLineSymbolV2* gridLineSymbol() { return mGridLineSymbol; }
 
@@ -380,6 +390,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Drawing style for overview farme*/
     QgsFillSymbolV2* mOverviewFrameMapSymbol;
     QgsLineSymbolV2* mGridLineSymbol;
+    /**Blend mode for overview*/
+    QPainter::CompositionMode mOverviewBlendMode;
+    bool mOverviewInverted;
 
     /**Establishes signal/slot connection for update in case of layer change*/
     void connectUpdateSlot();

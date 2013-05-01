@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+import sys
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -179,8 +180,20 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 self.alg.descriptionFile = filename
         if filename:
             text = self.alg.serialize()
-            fout = codecs.open(filename, "w", encoding='utf-8')
-            #fout = open(filename, "w")
+            try:
+                fout = codecs.open(filename, "w", encoding='utf-8')
+            except:
+                if saveAs:
+                    QMessageBox.warning(self,
+                                    self.tr("I/O error"),
+                                    self.tr("Unable to save edits. Reason:\n %1").arg(unicode(sys.exc_info()[1]))
+                                   )
+                else:
+                    QMessageBox.warning(self,
+                                    self.tr("Can't save model"),
+                                    self.tr("This model can't be saved in its original location\n(probably you do not have permission to do it).\nPlease, use the 'Save as...' option.")
+                                   )
+                return
             fout.write(text)
             fout.close()
             self.update = True

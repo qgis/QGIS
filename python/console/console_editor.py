@@ -82,9 +82,6 @@ class Editor(QsciScintilla):
         # Enable non-ascii chars for editor
         self.setUtf8(True)
 
-        #self.insertInitText()
-        self.setLexers()
-        
         # Set the default font
         font = QFont()
         font.setFamily('Courier')
@@ -102,7 +99,7 @@ class Editor(QsciScintilla):
         self.setMarginsBackgroundColor(QColor("#f9f9f9"))
         self.setCaretLineVisible(True)
         self.setCaretLineBackgroundColor(QColor("#fcf3ed"))
-        
+
         # Clickable margin 1 for showing markers
 #        self.setMarginSensitivity(1, True)
 #        self.connect(self,
@@ -172,6 +169,7 @@ class Editor(QsciScintilla):
         self.uncommentScut.activated.connect(self.parent.pc.uncommentCode)
         
     def settingsEditor(self):
+        # Set Python lexer
         self.setLexers()
         threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0]
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI').toString()
@@ -209,6 +207,9 @@ class Editor(QsciScintilla):
         from qgis.core import QgsApplication
 
         self.lexer = QsciLexerPython()
+        self.lexer.setIndentationWarning(QsciLexerPython.Inconsistent)
+        self.lexer.setFoldComments(True)
+        self.lexer.setFoldQuotes(True)
 
         loadFont = self.settings.value("pythonConsole/fontfamilytextEditor", "Monospace").toString()
         fontSize = self.settings.value("pythonConsole/fontsizeEditor", 10).toInt()[0]
@@ -257,6 +258,7 @@ class Editor(QsciScintilla):
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
+        iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.png")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
         iconNewEditor = QgsApplication.getThemeIcon("console/iconTabEditorConsole.png")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
@@ -274,7 +276,7 @@ class Editor(QsciScintilla):
         runSelected = menu.addAction(iconRun,
                                    "Enter selected",
                                    self.runSelectedCode, 'Ctrl+E')
-        runScript = menu.addAction(iconRun,
+        runScript = menu.addAction(iconRunScript,
                                    "Run Script",
                                    self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
@@ -343,18 +345,13 @@ class Editor(QsciScintilla):
         else:
             listObj.show()
             self.parent.pc.objectListButton.setChecked(True)
-    
+
     def codepad(self):
         import urllib2, urllib
         listText = self.selectedText().split('\n')
         getCmd = []
         for strLine in listText:
-            if strLine != "":
-            #if s[0:3] in (">>>", "..."):
-                # filter for special command (_save,_clear) and comment
-                if strLine[4] != "_" and strLine[:2] != "##":
-                    strLine.replace(">>> ", "").replace("... ", "")
-                    getCmd.append(unicode(strLine))
+            getCmd.append(unicode(strLine))
         pasteText= u"\n".join(getCmd)
         url = 'http://codepad.org'
         values = {'lang' : 'Python',
@@ -387,32 +384,24 @@ class Editor(QsciScintilla):
         if self.hasSelectedText():
             startLine, _, endLine, _ = self.getSelection()
             for line in range(startLine, endLine + 1):
-                selCmd = self.text(line)
-                self.setSelection(line, 0, line, selCmd.length())
-                self.removeSelectedText()
                 if commentCheck:
-                    self.insert('#' + selCmd)
-                    self.setCursorPosition(endLine, selCmd.length())
+                    self.insertAt('#', line, 0)
                 else:
-                    if selCmd.startsWith('#'):
-                        self.insert(selCmd[1:])
-                    else:
-                        self.insert(selCmd)
-                    self.setCursorPosition(endLine, self.text(line).length() - 1)
+                    if not self.text(line).trimmed().startsWith('#'):
+                        continue
+                    self.setSelection(line, self.indentation(line), 
+                                      line, self.indentation(line) + 1)
+                    self.removeSelectedText()
         else:
             line, pos = self.getCursorPosition()
-            selCmd = self.text(line)
-            self.setSelection(line, 0, line, selCmd.length())
-            self.removeSelectedText()
             if commentCheck:
-                self.insert('#' + selCmd)
-                self.setCursorPosition(line, selCmd.length())
+                self.insertAt('#', line, 0)
             else:
-                if selCmd.startsWith('#'):
-                    self.insert(selCmd[1:])
-                else:
-                    self.insert(selCmd)
-                self.setCursorPosition(line, self.text(line).length() - 1)
+                if not self.text(line).trimmed().startsWith('#'):
+                    return
+                self.setSelection(line, self.indentation(line), 
+                                  line, self.indentation(line) + 1)
+                self.removeSelectedText()
         self.endUndoAction()
         
     def createTempFile(self):
@@ -430,7 +419,13 @@ class Editor(QsciScintilla):
         if dir not in sys.path:
             sys.path.append(dir)
         try:
-            p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            ## set creationflags for runnning command without shell window
+            if sys.platform.startswith('win'):
+                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE, 
+                                     stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
+            else:
+                p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE, 
+                                     stderr=subprocess.PIPE, stdout=subprocess.PIPE)
             out, _traceback = p.communicate()
 
             ## Fix interrupted system call on OSX

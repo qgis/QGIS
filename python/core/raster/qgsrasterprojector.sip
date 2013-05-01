@@ -50,21 +50,6 @@ class QgsRasterProjector : QgsRasterInterface
     /** \brief set maximum source resolution */
     void setMaxSrcRes( double theMaxSrcXRes, double theMaxSrcYRes );
 
-    /** get source extent */
-    QgsRectangle srcExtent();
-
-    /** get/set source width/height */
-    int srcRows();
-    int srcCols();
-    void setSrcRows( int theRows );
-    void setSrcCols( int theCols );
-
-    /** \brief Get source row and column indexes for current source extent and resolution */
-    void srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol );
-
-    int dstRows() const;
-    int dstCols() const;
-
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
 };
 

@@ -325,21 +325,29 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mBarWidthLabel->show();
     mBarWidthSpinBox->show();
     mOrientationFrame->show();
+    mFixedSizeCheckBox->setChecked( false );
+    mFixedSizeCheckBox->setVisible( false );
+    mDiagramSizeSpinBox->setVisible( false );
+    mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, such as the following value matches the specified size." ) );
   }
   else
   {
     mBarWidthLabel->hide();
     mBarWidthSpinBox->hide();
     mOrientationFrame->hide();
+    mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
+    mAttributeBasedScalingOptions->show();
+    mFixedSizeCheckBox->setVisible( true );
+    mDiagramSizeSpinBox->setVisible( true );
   }
 
   if ( DIAGRAM_NAME_HISTOGRAM == diagramType || DIAGRAM_NAME_TEXT == diagramType )
   {
-    mDiagramPropertiesToolBox->setItemEnabled( 3, true );
+    mDiagramPropertiesTabWidget->setTabEnabled( 3, true );
   }
   else
   {
-    mDiagramPropertiesToolBox->setItemEnabled( 3, false );
+    mDiagramPropertiesTabWidget->setTabEnabled( 3, false );
   }
 
   if ( DIAGRAM_NAME_TEXT == diagramType || DIAGRAM_NAME_PIE == diagramType )
@@ -465,23 +473,33 @@ void QgsDiagramProperties::apply()
   }
   else
   {
+    QgsDiagram* diagram = 0;
+    int index = mDiagramTypeComboBox->currentIndex();
+    QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
+
     if ( 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
     {
       QMessageBox::warning( this, tr( "No attributes added." ),
                             tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ), QMessageBox::Ok );
     }
 
-    bool scaleAttributeValueIsNumeric;
-    mValueLineEdit->text().toDouble( &scaleAttributeValueIsNumeric );
-    if ( !mFixedSizeCheckBox->isChecked() && !scaleAttributeValueIsNumeric )
+    bool scaleAttributeValueOk = false;
+    if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
+    {
+      // We don't need a scale attribute, the field is used as a multiplicator
+      scaleAttributeValueOk = true;
+    }
+    else
+    {
+      // Check if a (usable) scale attribute value is inserted
+      mValueLineEdit->text().toDouble( &scaleAttributeValueOk );
+    }
+    if ( !mFixedSizeCheckBox->isChecked() && !scaleAttributeValueOk )
     {
       QMessageBox::warning( this, tr( "No attribute value specified" ),
                             tr( "You did not specify a maximum value for the diagram size. Please specify the attribute and a reference value as a base for scaling in the Tab Diagram / Size." ), QMessageBox::Ok );
     }
 
-    QgsDiagram* diagram = 0;
-    int index = mDiagramTypeComboBox->currentIndex();
-    QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
     if ( diagramType == DIAGRAM_NAME_TEXT )
     {
       diagram = new QgsTextDiagram();

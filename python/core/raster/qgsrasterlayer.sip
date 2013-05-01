@@ -190,7 +190,8 @@ class QgsRasterLayer : QgsMapLayer
     QString providerType() const;
 
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
-    double rasterUnitsPerPixel();
+    double rasterUnitsPerPixelX();
+    double rasterUnitsPerPixelY();
 
     /** \brief Mutator for contrast enhancement algorithm
      *  @param theAlgorithm Contrast enhancement algorithm
@@ -200,7 +201,7 @@ class QgsRasterLayer : QgsMapLayer
      *  @param theGenerateLookupTableFlag Generate llokup table. */
 
 
-    void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
+    void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
                                           QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax,
                                           QgsRectangle theExtent = QgsRectangle(),
                                           int theSampleSize = QgsRasterLayer::SAMPLE_SIZE,

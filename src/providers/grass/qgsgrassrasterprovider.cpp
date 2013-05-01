@@ -463,7 +463,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint & thePo
   }
 
   // Apply user no data
-  QgsRasterRangeList myNoDataRangeList = userNoDataValue( 1 );
+  QgsRasterRangeList myNoDataRangeList = userNoDataValues( 1 );
   if ( QgsRasterRange::contains( value, myNoDataRangeList ) )
   {
     return noDataResult;

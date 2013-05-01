@@ -1506,7 +1506,10 @@
                   <item>
                    <widget class="QCheckBox" name="cbxIgnoreShapeEncoding">
                     <property name="text">
-                     <string>Ignore shapefile encoding</string>
+                     <string>Ignore shapefile encoding declaration</string>
+                    </property>
+                    <property name="toolTip">
+                     <string>Disable OGR on-the-fly conversion from declared encoding to UTF-8</string>
                     </property>
                    </widget>
                   </item>

@@ -645,7 +645,7 @@ void QgsRasterLayerProperties::sync()
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
 
-  QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValue( 1 );
+  QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
   QgsDebugMsg( QString( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
   if ( noDataRangeList.size() > 0 )
   {
