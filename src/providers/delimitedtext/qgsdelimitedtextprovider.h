@@ -31,7 +31,6 @@ class QTextStream;
 class QgsDelimitedTextFeatureIterator;
 class QgsDelimitedTextFile;
 
-
 /**
 \class QgsDelimitedTextProvider
 \brief Data provider for delimited text files.
@@ -175,10 +174,22 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void reportErrors( QStringList messages = QStringList() );
     void resetStream();
     bool recordIsEmpty( QStringList &record );
+    bool nextFeature( QgsFeature& feature, QgsDelimitedTextFile *file, const QgsFeatureRequest& request );
+    QgsGeometry* loadGeometryWkt( const QStringList& tokens, const QgsFeatureRequest& request);
+    QgsGeometry* loadGeometryXY( const QStringList& tokens, const QgsFeatureRequest& request );
+    bool boundsCheck( const QgsPoint &pt, const QgsFeatureRequest& request );
+    bool boundsCheck( QgsGeometry *geom, const QgsFeatureRequest& request );
+    void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
+    void resetDataSummary();
+
 
     QgsGeometry *geomFromWkt( QString &sWkt );
     bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );
     double dmsStringToDouble( const QString &sX, bool *xOk );
+
+
+    QString mUri;
+
     //! Text file
     QgsDelimitedTextFile *mFile;
 

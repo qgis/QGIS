@@ -322,6 +322,7 @@ class QgsDelimitedTextFile
     bool mTrimFields;
     int mSkipLines;
     int mMaxFields;
+    int mMaxNameLength;
 
     // Parameters used by parsers
     QRegExp mDelimRegexp;

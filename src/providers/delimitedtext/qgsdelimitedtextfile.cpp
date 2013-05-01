@@ -43,6 +43,7 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mTrimFields( false ),
     mSkipLines( 0 ),
     mMaxFields( 0 ),
+    mMaxNameLength( 200 ),  // Don't want field names to be too unweildy!
     mLineNumber( 0 ),
     mRecordLineNumber( 0 ),
     mMaxFieldCount( 0 )
@@ -377,6 +378,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     bool nameOk = true;
     int fieldNo = mFieldNames.size() + 1;
     name = name.trimmed();
+    if( name.length() > mMaxNameLength ) name=name.mid(0,mMaxNameLength );
 
     // If the name is invalid then reset it to default name
     if ( InvalidFieldRegexp.exactMatch( name ) )
