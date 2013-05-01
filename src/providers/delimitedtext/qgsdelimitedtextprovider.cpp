@@ -716,6 +716,9 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature, QgsDelimitedTex
 
     QgsGeometry *geom = 0;
 
+    // Note: Always need to load geometry even if request has NoGeometry set
+    // and subset string doesn't need geometry, as only by loading geometry
+    // do we know that this is a valid record in the data set.
     if ( mWktFieldIndex >= 0 )
     {
       geom = loadGeometryWkt( tokens, request );
