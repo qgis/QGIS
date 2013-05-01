@@ -151,9 +151,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *   check for a match in entities that have the same ellps and proj entries so
      *   that it doesn't munch yer cpu so much.
      *
-     * @note If the srs was not matched, we will create a new entry on the users tbl_srs
-     *    for this srs.
-     *
      * @param theProjString A proj4 format string
      * @return bool TRUE if success else false
      */
@@ -350,6 +347,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note added in 1.8
      */
     static int syncDb();
+    
+    
+    /*! Save the proj4-string as a custom CRS
+     * @returns bool true if success else false
+     */
+    bool saveAsUserCRS( QString name );
 
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they wont create
@@ -446,9 +449,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();
-
-    //! Save the proj4-string as a custom CRS
-    bool saveAsUserCRS();
 
     //! Helper for getting number of user CRS already in db
     long getRecordCount();
