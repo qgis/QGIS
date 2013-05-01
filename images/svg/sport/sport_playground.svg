@@ -1,187 +1,47 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   width="580"
-   height="580"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.47 r22583"
-   sodipodi:docname="tourist_wreck.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
-  <metadata
-     id="metadata2975">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://web.resource.org/cc/PublicDomain" />
-        <dc:language>en</dc:language>
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="947"
-     inkscape:window-width="1048"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="0.92167712"
-     inkscape:cx="371.8384"
-     inkscape:cy="248.00285"
-     inkscape:window-x="91"
-     inkscape:window-y="25"
-     inkscape:current-layer="svg2"
-     showgrid="false"
-     inkscape:window-maximized="0" />
-  <defs
-     id="defs4">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 290 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="580 : 290 : 1"
-       inkscape:persp3d-origin="290 : 193.33333 : 1"
-       id="perspective2441" />
-    <inkscape:perspective
-       id="perspective3452"
-       inkscape:persp3d-origin="30 : 20 : 1"
-       inkscape:vp_z="60 : 30 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 30 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <symbol
-       viewBox="244.5 110 489 219.9"
-       id="symbol-university">
-      <path
-         id="path4460"
-         d="M79,43l57,119c0,0,21-96,104-96s124,106,124,106l43-133l82-17L0,17L79,43z" />
-      <path
-         id="path4462"
-         d="M94,176l-21,39"
-         stroke-width="20"
-         stroke="#000000"
-         fill="none" />
-      <path
-         id="path4464"
-         d="M300,19c0,10.5-22.6,19-50.5,19S199,29.5,199,19s22.6-19,50.5-19S300,8.5,300,19z" />
-      <path
-         id="path4466"
-         d="M112,216l-16-38L64,88c0,0-9-8-4-35s16-24,16-24"
-         stroke-width="20"
-         stroke="#000000"
-         ill="none" />
-    </symbol>
-    <inkscape:perspective
-       id="perspective4471"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective4668"
-       inkscape:persp3d-origin="6 : 4 : 1"
-       inkscape:vp_z="12 : 6 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 6 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective19376"
-       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
-       inkscape:vp_z="1 : 0.5 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 0.5 : 1"
-       sodipodi:type="inkscape:persp3d" />
-    <inkscape:perspective
-       id="perspective19418"
-       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
-       inkscape:vp_z="1 : 0.5 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 0.5 : 1"
-       sodipodi:type="inkscape:persp3d" />
-  </defs>
-  <g
-     id="g1327">
-    <path
-       d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z "
-       style="fill:#111;stroke:#eee;stroke-width:3.40799999"
-       id="path1329" />
-  </g>
-  <g
-     id="layer3"
-     inkscape:label="Layout"
-     style="display:none;stroke:#757575;stroke-opacity:1"
-     transform="matrix(48.14969,0,0,48.14969,-536.27327,-33.306752)">
-    <rect
-       style="fill:none;stroke:#757575;stroke-width:0.10000000000000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
-       id="rect4134"
-       width="10"
-       height="10"
-       x="1"
-       y="1" />
-    <rect
-       style="fill:none;stroke:#757575;stroke-width:0.10000000000000001;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;display:inline"
-       id="rect4136"
-       width="8"
-       height="8"
-       x="2"
-       y="2" />
-  </g>
-  <g
-     id="g19464"
-     transform="matrix(2.1079872,0,0,2.1079872,-1166.5541,-218.12622)">
-    <circle
-       transform="matrix(34.373825,0,0,34.373825,-4356.2756,-5455.4235)"
-       style="fill:#ffffff"
-       sodipodi:ry="0.79400003"
-       sodipodi:rx="0.79400003"
-       sodipodi:cy="165.66299"
-       sodipodi:cx="144.19701"
-       d="M 144.99101,165.66299 C 144.99101,166.10151 144.63552,166.45699 144.19701,166.45699 C 143.75849,166.45699 143.40301,166.10151 143.40301,165.66299 C 143.40301,165.22448 143.75849,164.86899 144.19701,164.86899 C 144.63552,164.86899 144.99101,165.22448 144.99101,165.66299 z"
-       cx="144.19701"
-       cy="165.66299"
-       r="0.79400003"
-       id="circle1803" />
-    <g
-       transform="matrix(34.373825,0,0,34.373825,-4356.2756,-5455.4235)"
-       id="g1805">
-      <path
-         style="fill:#ffffff"
-         d="M 148.649,167.822 C 148.686,167.797 148.735,167.804 148.762,167.84 L 148.908,168.043 C 148.933,168.078 148.926,168.129 148.89,168.156 L 147.812,168.939 C 147.777,168.964 147.726,168.957 147.699,168.921 L 147.553,168.718 C 147.528,168.683 147.535,168.632 147.571,168.605 L 148.649,167.822 z"
-         id="path1807" />
-    </g>
-    <polygon
-       transform="matrix(34.373825,0,0,34.373825,-4356.2756,-5455.4235)"
-       style="fill:#ffffff"
-       points="147.206,166.98 147.431,166.812 147.003,166.062 146.778,166.226 "
-       id="polygon1809" />
-    <polygon
-       transform="matrix(34.373825,0,0,34.373825,-4356.2756,-5455.4235)"
-       style="fill:#ffffff"
-       points="146.206,165.226 146.433,165.06 144.77,162.14 144.451,162.142 "
-       id="polygon1811" />
-    <path
-       style="fill:#ffffff"
-       d="M 731.01613,271.42761 C 734.24727,269.09019 737.92526,267.26838 742.15325,267.26838 L 795.26081,267.33713 C 805.60733,267.33713 813.92579,275.72434 813.92579,286.00212 C 813.92579,296.34864 805.60733,304.6671 795.26081,304.6671 L 750.95294,304.59836 L 694.37363,344.54074 C 674.43681,358.909 662.33722,343.13141 662.33722,343.13141 L 617.92624,298.68606 C 610.46712,289.74886 612.08269,272.76819 621.01989,265.24033 L 682.48029,221.48245 C 688.59883,216.39512 697.63914,217.18572 702.82959,223.23551 C 707.91692,229.35405 707.12632,238.46312 701.00778,243.58482 L 661.64975,272.39008 L 689.90503,300.336 L 731.01613,271.42761 z"
-       id="path1813" />
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="tourist_wreck.svg" inkscape:version="0.47 r22583" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
+	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
+<sodipodi:namedview  showgrid="false" inkscape:cy="248.00285" inkscape:cx="371.8384" inkscape:zoom="0.92167712" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:window-maximized="0" inkscape:current-layer="svg2" inkscape:window-y="25" inkscape:window-x="91" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1048" inkscape:window-height="947">
+	</sodipodi:namedview>
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective2441" inkscape:persp3d-origin="290 : 193.33333 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="60 : 30 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 30 : 1" sodipodi:type="inkscape:persp3d" id="perspective3452" inkscape:persp3d-origin="30 : 20 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d" id="perspective4471" inkscape:persp3d-origin="372.04724 : 350.78739 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="12 : 6 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 6 : 1" sodipodi:type="inkscape:persp3d" id="perspective4668" inkscape:persp3d-origin="6 : 4 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective19376" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="1 : 0.5 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 0.5 : 1" sodipodi:type="inkscape:persp3d" id="perspective19418" inkscape:persp3d-origin="0.5 : 0.33333333 : 1">
+		</inkscape:perspective>
+</defs>
+<g id="layer3" transform="matrix(48.14969,0,0,48.14969,-536.27327,-33.306752)" inkscape:label="Layout" display="none">
+	<rect id="rect4134" x="1" y="1" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="10" height="10"/>
+	<rect id="rect4136" x="2" y="2" display="inline" fill="none" stroke="#757575" stroke-width="0.1" width="8" height="8"/>
+</g>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="98.928" cy="285.783" r="57.534"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M429.705,443.527c-1.956-2.607-5.506-3.115-8.188-1.304
+	l-78.111,56.735c-2.608,1.957-3.116,5.652-1.305,8.188l10.58,14.71c1.956,2.607,5.65,3.115,8.188,1.304l78.111-56.735
+	c2.608-1.957,3.115-5.652,1.305-8.188L429.705,443.527z"/>
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="285.945,326.578 316.958,381.212 333.262,369.039 
+	302.25,314.694 "/>
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="260.947,242.09 140.447,30.508 117.333,30.653 
+	244.498,254.118 "/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M509.846,345.417l-111.95-0.146c-8.913,0-16.666,3.841-23.477,8.768
+	l-86.662,60.939l-59.562-58.91l82.966-60.721c12.898-10.797,14.564-29.999,3.841-42.896c-10.941-12.753-29.999-14.419-42.896-3.695
+	l-129.558,92.241c-18.839,15.868-22.245,51.663-6.521,70.503l93.618,93.69c0,0,25.506,33.259,67.532,2.971l119.269-84.198
+	l93.4,0.146c21.81,0,39.346-17.536,39.346-39.346C549.191,363.098,531.655,345.417,509.846,345.417z"/>
 </svg>

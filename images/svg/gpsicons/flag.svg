@@ -1,30 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
-"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg644"
-   xml:space="preserve"><g
-   transform="matrix(0.163635,0,0,0.177595,1.999169,-29.98818)"
-   style="font-size:12;stroke:#000000;"
-   id="g686"><ellipse
-   cx="252.500031"
-   cy="699.862122"
-   rx="70.0000076"
-   ry="35"
-   transform="translate(-5,-7.500031)"
-   style="fill-rule:evenodd;stroke-width:1.25;"
-   id="path685" /><path
-   d="M 240 694.8621 C 240 222.3621 240 224.8621 240 224.8621 L 257.5 224.8621 L 257.5 694.8621 L 240 694.8621 z "
-   style="fill-rule:evenodd;"
-   id="path681" /><path
-   d="M 266.5505 224.862 L 465.0002 394.862 L 265 392.3247 L 266.5505 224.862 z "
-   style="fill-rule:evenodd;stroke-width:0.793355;"
-   id="path682" /></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="svg644" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="579.997px" height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997"
+	 xml:space="preserve">
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M231.846,472.572V31.806h-22.18v440.557
+	c-34.016,2.649-59.419,18.767-59.419,38.871c0,22.021,30.456,39.271,69.337,39.271c38.877,0,69.332-17.25,69.332-39.271
+	C288.917,491.595,264.674,475.764,231.846,472.572z"/>
+<polygon fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" points="235.243,29.492 233.723,207.628 429.749,210.329 "/>
+</svg>

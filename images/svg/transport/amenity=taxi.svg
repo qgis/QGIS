@@ -1,217 +1,38 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="amenity=taxi.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/highway=bus_stop.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="31.875"
-     inkscape:cx="8"
-     inkscape:cy="8"
-     inkscape:current-layer="layer2"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="0" />
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>amenity=taxi</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="top">
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.01996793;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3295"
-       width="9.4753695"
-       height="6.8078747"
-       x="3.2625606"
-       y="2.980377"
-       rx="1.613757" />
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.02502141;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3297"
-       width="4.8728876"
-       height="4.6662021"
-       x="5.5625"
-       y="0.95529795"
-       rx="1.2520604" />
-    <rect
-       style="fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4087"
-       width="8"
-       height="5.170692"
-       x="4"
-       y="3.6755421"
-       rx="0.97977364" />
-    <text
-       xml:space="preserve"
-       style="font-size:1.81044257px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans Bold"
-       x="6.3120561"
-       y="2.7528749"
-       id="text3309"
-       sodipodi:linespacing="125%"
-       transform="scale(0.9312284,1.0738504)"><tspan
-         sodipodi:role="line"
-         id="tspan3311"
-         x="6.3120561"
-         y="2.7528749">TAXI</tspan></text>
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4085"
-       width="11.502168"
-       height="5.7065015"
-       x="2.2489154"
-       y="7.1215682"
-       rx="1.1315789" />
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4097"
-       width="1.4910216"
-       height="2.7690403"
-       x="3.7399375"
-       y="11.976057"
-       rx="0.67007226" />
-    <rect
-       rx="0.67007226"
-       y="11.976057"
-       x="10.715789"
-       height="2.7690403"
-       width="1.4910216"
-       id="rect4099"
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       transform="matrix(1.5949935,0,0,1.5949935,5.0824999,-8.5731933)"
-       d="M 4.8784316,10.870588 A 0.64313728,0.64313728 0 1 1 3.5921571,10.870588 A 0.64313728,0.64313728 0 1 1 4.8784316,10.870588 z"
-       sodipodi:ry="0.64313728"
-       sodipodi:rx="0.64313728"
-       sodipodi:cy="10.870588"
-       sodipodi:cx="4.2352943"
-       id="path4103"
-       style="fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       sodipodi:type="arc" />
-    <path
-       sodipodi:type="arc"
-       style="fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path4101"
-       sodipodi:cx="4.2352943"
-       sodipodi:cy="10.870588"
-       sodipodi:rx="0.64313728"
-       sodipodi:ry="0.64313728"
-       d="M 4.8784316,10.870588 A 0.64313728,0.64313728 0 1 1 3.5921571,10.870588 A 0.64313728,0.64313728 0 1 1 4.8784316,10.870588 z"
-       transform="matrix(1.546213,0,0,1.546213,-2.4266868,-8.0742933)" />
-    <g
-       id="g3303"
-       transform="matrix(0.6384778,0,0,1,2.8921775,0)">
-      <rect
-         rx="0.33431062"
-         y="9.7468262"
-         x="4.8759542"
-         height="0.60350877"
-         width="6.2480907"
-         id="rect4091"
-         style="fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <rect
-         style="fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect4095"
-         width="6.2480907"
-         height="0.60350877"
-         x="4.8759542"
-         y="10.591549"
-         rx="0.33431062" />
-      <rect
-         style="fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect3299"
-         width="6.2480907"
-         height="0.60350877"
-         x="4.8759542"
-         y="8.0573788"
-         rx="0.33431062" />
-      <rect
-         rx="0.33431062"
-         y="8.9021015"
-         x="4.8759542"
-         height="0.60350877"
-         width="6.2480907"
-         id="rect3301"
-         style="fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/highway=bus_stop.png" inkscape:export-ydpi="90" inkscape:export-xdpi="90" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="amenity=taxi.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="8" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer2" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="723">
+	</sodipodi:namedview>
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="268.552,65.148 264.398,86.197 272.734,86.197 "/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M461.92,258.642v-91.913c0-32.093-26.118-58.202-58.221-58.202
+	h-24.985V80.113c0-25.109-20.343-45.453-45.435-45.453h-85.978c-25.092,0-45.435,20.344-45.435,45.453v28.413h-24.896
+	c-32.094,0-58.203,26.109-58.203,58.202v91.908c-20.847,1.969-37.148,19.506-37.148,40.869v124.961
+	c0,22.682,18.375,41.076,41.057,41.076h13.042v45.256c0,13.432,10.898,24.313,24.33,24.313h5.476
+	c13.432,0,24.312-10.881,24.312-24.313v-45.256h199.051v45.256c0,13.432,10.88,24.313,24.312,24.313h5.493
+	c13.396,0,24.313-10.881,24.313-24.313v-45.256h14.955c22.682,0,41.075-18.395,41.075-41.076V299.506
+	C499.033,278.161,482.743,260.634,461.92,258.642z M328.959,98.324h8.873V64.804h-8.873v-8.957h26.559v8.957h-8.873v33.521h8.873
+	v8.957h-26.559V98.324z M288.149,55.847h9.112l8.126,16.364l8.155-16.364h9.112l-12.667,25.321l13.025,26.113h-9.112l-8.514-17.019
+	l-8.484,17.019h-9.112l13.085-26.113L288.149,55.847z M263.174,55.847h10.785l12.039,51.435h-8.813l-2.749-12.712h-11.801
+	l-2.688,12.712h-8.813L263.174,55.847z M216.001,55.847h31.459v8.889h-11.323v42.546h-8.813V64.735h-11.323V55.847z
+	 M145.163,168.943c0-19.635,15.912-35.547,35.564-35.547h21.14h176.847h21.193c19.669,0,35.582,15.912,35.582,35.547v89.504H145.163
+	V168.943z M113.497,316.977c0-19.953,16.161-36.113,36.096-36.113c19.936,0,36.078,16.16,36.078,36.113
+	c0,19.918-16.143,36.078-36.078,36.078C129.658,353.055,113.497,336.895,113.497,316.977z M354.969,406.287H225.684
+	c-4.271,0-7.744-4.891-7.744-10.951s3.473-10.951,7.744-10.951h129.285c4.253,0,7.727,4.891,7.727,10.951
+	S359.222,406.287,354.969,406.287z M354.969,375.631H225.684c-4.271,0-7.744-4.926-7.744-10.951c0-6.061,3.473-10.951,7.744-10.951
+	h129.285c4.253,0,7.727,4.891,7.727,10.951C362.695,370.705,359.222,375.631,354.969,375.631z M354.969,344.975H225.684
+	c-4.271,0-7.744-4.891-7.744-10.951s3.473-10.951,7.744-10.951h129.285c4.253,0,7.727,4.891,7.727,10.951
+	S359.222,344.975,354.969,344.975z M354.969,314.318H225.684c-4.271,0-7.744-4.926-7.744-10.951c0-6.059,3.473-10.949,7.744-10.949
+	h129.285c4.253,0,7.727,4.891,7.727,10.949C362.695,309.393,359.222,314.318,354.969,314.318z M429.606,355.324
+	c-20.556,0-37.213-16.658-37.213-37.213c0-20.572,16.657-37.248,37.213-37.248c20.555,0,37.212,16.676,37.212,37.248
+	C466.818,338.666,450.161,355.324,429.606,355.324z"/>
 </svg>

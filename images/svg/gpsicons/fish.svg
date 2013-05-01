@@ -1,52 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg644"
-   xml:space="preserve"
-   sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docname="fishing_area.svg"
-   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
-     id="metadata7"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs5" /><sodipodi:namedview
-     inkscape:window-height="679"
-     inkscape:window-width="1014"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="3.6927131"
-     inkscape:cx="54.566925"
-     inkscape:cy="54.566925"
-     inkscape:window-x="0"
-     inkscape:window-y="36"
-     inkscape:current-layer="svg644" /><path
-     d="M 9.7090762,55.039746 C 9.7090762,54.722296 25.740779,76.88916 48.014929,76.889095 C 70.289079,76.88903 81.832485,66.562641 85.133994,64.247068 L 100.22433,74.666815 L 100.22433,32.975445 L 84.86319,44.329272 C 81.429162,42.03992 75.658802,30.241087 48.014929,31.174005 C 23.045179,31.808905 9.9928302,55.674776 9.7090762,55.039746 z "
-     style="font-size:12px;fill:#7f7f7f;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none"
-     id="path738"
-     sodipodi:nodetypes="czcccccc" /><path
-     sodipodi:type="arc"
-     style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path2181"
-     sodipodi:cx="49.827862"
-     sodipodi:cy="67.700897"
-     sodipodi:rx="22.205894"
-     sodipodi:ry="22.205894"
-     d="M 72.033756 67.700897 A 22.205894 22.205894 0 1 1  27.621967,67.700897 A 22.205894 22.205894 0 1 1  72.033756 67.700897 z"
-     transform="matrix(0.158537,0,0,0.158537,22.43047,37.74078)" /></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg644" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="fishing_area.svg" inkscape:version="0.43"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="54.566925" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="svg644" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1014" inkscape:pageopacity="0.0" inkscape:window-height="679">
+	</sodipodi:namedview>
+<path id="path738" sodipodi:nodetypes="czcccccc" fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M48.741,308.752
+	c0-1.601,80.855,110.199,193.197,110.199s170.559-52.08,187.207-63.763l76.11,52.553V197.473l-77.471,57.262
+	c-17.322-11.545-46.426-71.053-185.847-66.35C116.002,191.589,50.17,311.955,48.741,308.752z"/>
+<path id="path2181" sodipodi:type="arc" sodipodi:ry="22.205894" sodipodi:cy="67.700897" sodipodi:cx="49.827862" sodipodi:rx="22.205894" fill="param(outline) #FFF" d="
+	M170.499,275.637c0.003,9.807-7.941,17.761-17.748,17.764c-9.807,0.005-17.758-7.942-17.763-17.748c0-0.006,0-0.01,0-0.016
+	c-0.005-9.804,7.941-17.758,17.748-17.76c9.806-0.006,17.758,7.941,17.763,17.748C170.499,275.63,170.499,275.632,170.499,275.637z"
+	/>
+</svg>

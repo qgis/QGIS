@@ -1,138 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16px"
-   height="16px"
-   id="svg3427"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="tourism=hotel.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=atm.png"
-   inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
-  <defs
-     id="defs3429">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 8 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="16 : 8 : 1"
-       inkscape:persp3d-origin="8 : 5.3333333 : 1"
-       id="perspective3435" />
-  </defs>
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="31.875"
-     inkscape:cx="8"
-     inkscape:cy="8"
-     inkscape:current-layer="layer5"
-     showgrid="true"
-     inkscape:grid-bbox="true"
-     inkscape:document-units="px"
-     inkscape:window-width="1280"
-     inkscape:window-height="723"
-     inkscape:window-x="0"
-     inkscape:window-y="0" />
-  <metadata
-     id="metadata3432">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
-        <dc:title>tourism=hotel</dc:title>
-        <dc:creator>
-          <cc:Agent>
-            <dc:title>Matt Amos</dc:title>
-          </cc:Agent>
-        </dc:creator>
-        <dc:rights>
-          <cc:Agent>
-            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
-          </cc:Agent>
-        </dc:rights>
-      </cc:Work>
-      <cc:License
-         rdf:about="http://creativecommons.org/licenses/publicdomain/">
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Reproduction" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#Distribution" />
-        <cc:permits
-           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
-      </cc:License>
-    </rdf:RDF>
-  </metadata>
-  <g
-     id="layer1"
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     sodipodi:insensitive="true">
-    <rect
-       style="fill:#60de4e;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect3946"
-       width="16"
-       height="16"
-       x="0"
-       y="0"
-       rx="4" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer5"
-     inkscape:label="top">
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect6312"
-       width="2"
-       height="8"
-       x="2"
-       y="4" />
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect6314"
-       width="11"
-       height="2"
-       x="3"
-       y="7" />
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect6316"
-       width="2"
-       height="4"
-       x="12"
-       y="8" />
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect6318"
-       width="2.164706"
-       height="4.3726845"
-       x="4.1098042"
-       y="4.5724139"
-       ry="2.1134641" />
-    <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect6320"
-       width="7.654902"
-       height="4.2980394"
-       x="6.337255"
-       y="4.6156864"
-       ry="2.1490195" />
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg3427" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/amenity=atm.png" inkscape:export-ydpi="90" inkscape:export-xdpi="90" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docname="tourism=hotel.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="16 : 8 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 8 : 1" sodipodi:type="inkscape:persp3d" id="perspective3435" inkscape:persp3d-origin="8 : 5.3333333 : 1">
+		</inkscape:perspective>
+</defs>
+<sodipodi:namedview  showgrid="true" inkscape:cy="8" inkscape:cx="8" inkscape:zoom="31.875" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" id="base" inkscape:document-units="px" inkscape:grid-bbox="true" inkscape:current-layer="layer5" inkscape:window-y="0" inkscape:window-x="0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="723">
+	</sodipodi:namedview>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M507.161,253.961c0.306-2.806,0.475-5.652,0.475-8.539
+	c0-43.064-34.934-77.963-77.945-77.963H307.884c-43.065,0-77.963,34.898-77.963,77.963c0,2.887,0.169,5.733,0.475,8.539H227.5
+	c0.082-2.019,0.136-4.054,0.136-6.113v-5.277c0-42.357-17.573-76.688-39.257-76.688c-21.7,0-39.273,34.33-39.273,76.688v5.277
+	c0,2.06,0.054,4.095,0.136,6.113h-4.122v-108.84H72.56v290.238h72.56V326.52h290.24v108.84h72.561V326.52V290.24v-36.279H507.161z"
+	/>
 </svg>

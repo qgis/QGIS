@@ -1,121 +1,32 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   width="580"
-   height="580"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="shopping_convinience.svg"
-   sodipodi:docbase="s:\Data\FacilityIcons"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
-  <metadata
-     id="metadata2975">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <cc:license
-           rdf:resource="http://web.resource.org/cc/PublicDomain" />
-        <dc:language>en</dc:language>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="783"
-     inkscape:window-width="1103"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="0.46083856"
-     inkscape:cx="318.83568"
-     inkscape:cy="319.23647"
-     inkscape:window-x="91"
-     inkscape:window-y="88"
-     inkscape:current-layer="svg2"
-     showgrid="false" />
-  <defs
-     id="defs4">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 290 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="580 : 290 : 1"
-       inkscape:persp3d-origin="290 : 193.33333 : 1"
-       id="perspective2441" />
-    <inkscape:perspective
-       id="perspective2466"
-       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
-       inkscape:vp_z="744.09448 : 526.18109 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_x="0 : 526.18109 : 1"
-       sodipodi:type="inkscape:persp3d" />
-  </defs>
-  <g
-     id="g1327">
-    <path
-       d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z "
-       style="fill:#111;stroke:#eee;stroke-width:3.40799999"
-       id="path1329" />
-  </g>
-  <g
-     id="g10747"
-     transform="translate(32,66)">
-    <path
-       sodipodi:nodetypes="ccccc"
-       id="path3264"
-       d="M 477.06925,164.57688 L 48.196494,164.57688 L 97.86424,376.40271 L 427.39502,374.94461 L 477.06925,164.57688 z"
-       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:28.1733551;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       sodipodi:nodetypes="cc"
-       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.7822361;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 128.06871,165.73536 L 128.06871,363.20709"
-       id="path3268" />
-    <path
-       id="path3280"
-       d="M 86.424707,243.00115 L 445.19209,243.00115"
-       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.7822361;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       sodipodi:nodetypes="cc" />
-    <path
-       sodipodi:nodetypes="cc"
-       id="path3318"
-       d="M 215.1525,165.73536 L 215.1525,363.25095"
-       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.7822361;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       sodipodi:nodetypes="cc"
-       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.7822361;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 306.2363,165.73536 L 306.2363,372.15933"
-       id="path3320" />
-    <path
-       sodipodi:nodetypes="cc"
-       id="path3322"
-       d="M 395.3201,165.73536 L 395.3201,373.5219"
-       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.7822361;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-    <path
-       sodipodi:nodetypes="cc"
-       style="fill:none;fill-rule:evenodd;stroke:#ffffff;stroke-width:18.7822361;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 104.24147,322.08495 L 427.37533,322.08495"
-       id="path3324" />
-  </g>
-  <path
-     style="fill:#ffffff;fill-rule:evenodd;stroke:#ffffff;stroke-width:20;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="M 287.11282,222.95322 L 340.84305,78.558998 L 356.51268,84.389791 L 302.02568,230.81774 L 287.11282,222.95322 z"
-     id="path10756"
-     sodipodi:nodetypes="ccccc" />
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="shopping_convinience.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
+	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
+<sodipodi:namedview  showgrid="false" inkscape:cy="319.23647" inkscape:cx="318.83568" inkscape:zoom="0.46083856" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="88" inkscape:window-x="91" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1103" inkscape:window-height="783">
+	</sodipodi:namedview>
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective2441" inkscape:persp3d-origin="290 : 193.33333 : 1">
+		</inkscape:perspective>
+	
+		<inkscape:perspective  inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d" id="perspective2466" inkscape:persp3d-origin="372.04724 : 350.78739 : 1">
+		</inkscape:perspective>
+</defs>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M520.115,221.835c-2.672-3.376-6.74-5.345-11.046-5.345H318.026
+	l47.858-128.614c0.925-2.485,0.824-5.237-0.279-7.648s-3.12-4.286-5.605-5.211l-15.67-5.831c-5.173-1.925-10.933,0.708-12.859,5.885
+	l-52.623,141.419H80.196c-4.302,0-8.367,1.965-11.04,5.336c-2.672,3.371-3.657,7.778-2.675,11.966l49.668,211.825
+	c1.494,6.371,7.176,10.871,13.714,10.871c0.021,0,0.042,0,0.063,0l329.531-1.458c6.509-0.029,12.151-4.515,13.647-10.85
+	l49.674-210.367C523.769,229.624,522.787,225.211,520.115,221.835z M328.846,244.664v54.946h-72.302v-54.946H328.846z
+	 M328.846,318.392v60.303h-72.302v-60.303H328.846z M237.761,299.61H169.46v-54.946h68.301V299.61z M237.761,318.392v60.303H169.46
+	v-60.303H237.761z M237.761,397.476v30.363l-68.301,0.302v-30.665H237.761z M256.543,397.476h72.302v29.96l-72.302,0.32V397.476z
+	 M347.627,397.476h70.303v29.565l-70.303,0.312V397.476z M347.627,378.694v-60.303h70.303v60.303H347.627z M347.627,299.61v-54.946
+	h70.303v54.946H347.627z M150.678,244.664v54.946h-32.253c-2.715,0-5.154,1.159-6.869,3.002l-13.587-57.948H150.678z
+	 M115.112,317.779c1.032,0.39,2.145,0.612,3.313,0.612h32.253v60.303h-14.437c-2.417,0-4.614,0.921-6.278,2.421L115.112,317.779z
+	 M133.716,397.122c0.805,0.225,1.649,0.354,2.525,0.354h14.437v30.748l-9.659,0.043L133.716,397.122z M436.711,426.958v-29.482
+	h18.475l-6.949,29.432L436.711,426.958z M459.618,378.707c-0.082-0.003-0.161-0.013-0.243-0.013h-22.664v-60.303h37.148
+	L459.618,378.707z M478.278,299.678c-0.356-0.041-0.718-0.067-1.086-0.067h-40.481v-54.946h54.558L478.278,299.678z"/>
 </svg>
