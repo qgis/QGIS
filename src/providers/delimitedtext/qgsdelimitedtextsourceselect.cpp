@@ -30,7 +30,7 @@
 #include <QTextCodec>
 #include <QUrl>
 
-const int MAX_SAMPLE_LENGTH=200;
+const int MAX_SAMPLE_LENGTH = 200;
 
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl, bool embedded ):
     QDialog( parent, fl ),
@@ -53,7 +53,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
   }
 
   cmbEncoding->clear();
-  cmbEncoding->addItems( QgsVectorDataProvider::availableEncodings());
+  cmbEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
   cmbEncoding->setCurrentIndex( cmbEncoding->findText( "UTF-8" ) );
   loadSettings();
 
@@ -420,7 +420,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
       QString value = i < nv ? values[i] : "";
-      if( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid(0,MAX_SAMPLE_LENGTH)+"...";
+      if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "...";
       QTableWidgetItem *item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
       if ( ! value.isEmpty() )
@@ -685,9 +685,9 @@ bool QgsDelimitedTextSourceSelect::validate()
   else if ( tblSample->rowCount() == 0 )
   {
     message = tr( "No data found in file" );
-    if( mBadRowCount > 0 )
+    if ( mBadRowCount > 0 )
     {
-      message = message + " (" + tr("%1 badly formatted records discarded").arg(mBadRowCount)+")";
+      message = message + " (" + tr( "%1 badly formatted records discarded" ).arg( mBadRowCount ) + ")";
     }
   }
   else if ( geomTypeXY->isChecked() && ( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() ) )
@@ -705,9 +705,9 @@ bool QgsDelimitedTextSourceSelect::validate()
   else
   {
     enabled = true;
-    if( mBadRowCount > 0 )
+    if ( mBadRowCount > 0 )
     {
-      message = tr("%1 badly formatted records discarded from sample data").arg(mBadRowCount);
+      message = tr( "%1 badly formatted records discarded from sample data" ).arg( mBadRowCount );
     }
 
   }

@@ -54,13 +54,13 @@ class SextantePlugin:
         Sextante.setInterface(iface)
         Sextante.setPlugin(self)
 
-    def initGui(self):        
+    def initGui(self):
         self.commander = None
         self.toolbox = SextanteToolbox(self.iface)
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
         Sextante.addAlgListListener(self.toolbox)
-        
+
         self.menu = QMenu(self.iface.mainWindow())
         self.menu.setTitle(QCoreApplication.translate("SEXTANTE", "Analysis"))
 
@@ -101,7 +101,7 @@ class SextantePlugin:
             self.iface.mainWindow())
         self.commanderAction.triggered.connect(self.openCommander)
         self.menu.addAction(self.commanderAction)
-        self.iface.registerMainWindowAction(self.commanderAction, "Ctrl+Alt+M")              
+        self.iface.registerMainWindowAction(self.commanderAction, "Ctrl+Alt+M")
 
     def unload(self):
         self.toolbox.setVisible(False)
@@ -110,18 +110,18 @@ class SextantePlugin:
         folder = SextanteUtils.tempFolder()
         if QDir(folder).exists():
             shutil.rmtree(folder, True)
-            
+
         self.iface.unregisterMainWindowAction(self.commanderAction)
-        
-    def openCommander(self):                        
+
+    def openCommander(self):
         if self.commander is None:
             self.commander = CommanderWindow(self.iface.mainWindow(), self.iface.mapCanvas())
             Sextante.addAlgListListener(self.commander)
         self.commander.prepareGui()
-        self.commander.show()        
+        self.commander.show()
         #dlg.exec_()
-        
-                
+
+
     def openToolbox(self):
         if self.toolbox.isVisible():
             self.toolbox.hide()

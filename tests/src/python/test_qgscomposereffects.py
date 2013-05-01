@@ -45,7 +45,7 @@ class TestQgsComposerEffects(TestCase):
         self.mMapRenderer = QgsMapRenderer()
         self.mComposition = QgsComposition(self.mMapRenderer)
         self.mComposition.setPaperSize(297, 210)
-        
+
         self.mComposerRect1 = QgsComposerShape(20, 20, 150, 100, self.mComposition)
         self.mComposerRect1.setShapeType(QgsComposerShape.Rectangle)
         self.mComposerRect1.setBackgroundColor(QColor.fromRgb(255, 150, 0))
@@ -54,11 +54,11 @@ class TestQgsComposerEffects(TestCase):
         self.mComposerRect2 = QgsComposerShape(50, 50, 150, 100, self.mComposition)
         self.mComposerRect2.setShapeType(QgsComposerShape.Rectangle)
         self.mComposerRect2.setBackgroundColor(QColor.fromRgb(0, 100, 150))
-        self.mComposition.addComposerShape(self.mComposerRect2)     
+        self.mComposition.addComposerShape(self.mComposerRect2)
 
     def testBlendModes(self):
         """Test that blend modes work for composer items."""
-        
+
         self.mComposerRect2.setBlendMode(QPainter.CompositionMode_Multiply)
 
         checker = QgsCompositionChecker()
@@ -74,7 +74,7 @@ class TestQgsComposerEffects(TestCase):
 
     def testTransparency(self):
         """Test that transparency works for composer items."""
-        
+
         self.mComposerRect2.setTransparency( 50 )
 
         checker = QgsCompositionChecker()

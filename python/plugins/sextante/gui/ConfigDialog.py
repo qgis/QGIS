@@ -50,8 +50,8 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
         self.fillTree()
         self.tree.itemClicked.connect(self.edit)
         self.tree.itemDoubleClicked.connect(self.edit)
-        
-    def edit(self, item, column):        
+
+    def edit(self, item, column):
         if column > 0:
            self.tree.editItem(item, column)
 
@@ -76,10 +76,10 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
             self.tree.addTopLevelItem(groupItem)
             if text != "":
                 groupItem.setExpanded(True)
-                
+
         providersItem = QTreeWidgetItem()
         providersItem.setText(0, "Providers")
-        icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")        
+        icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/alg.png")
         providersItem.setIcon(0, icon)
         for group in settings.keys():
             if group in priorityKeys:
@@ -94,11 +94,11 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
                 if text =="" or text.lower() in setting.description.lower():
                     settingItem = TreeSettingItem(setting, icon)
                     self.items[setting]=settingItem
-                    groupItem.addChild(settingItem)        
+                    groupItem.addChild(settingItem)
             if text != "":
                 groupItem.setExpanded(True)
             providersItem.addChild(groupItem)
-        self.tree.addTopLevelItem(providersItem)                
+        self.tree.addTopLevelItem(providersItem)
 
         self.tree.sortItems(0, Qt.AscendingOrder)
         self.tree.setColumnWidth(0, 400)
@@ -131,7 +131,7 @@ class TreeSettingItem(QTreeWidgetItem):
     def __init__(self, setting, icon):
         QTreeWidgetItem.__init__(self)
         self.setting = setting
-        self.setText(0, setting.description)        
+        self.setText(0, setting.description)
         if isinstance(setting.value,bool):
             if setting.value:
                 self.setCheckState(1, Qt.Checked)

@@ -61,7 +61,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mWktHasZM( false )
     , mWktHasPrefix( false )
     , mXyDms( false )
-    , mSubsetString("")
+    , mSubsetString( "" )
     , mSubsetExpression( 0 )
     , mMaxInvalidLines( 50 )
     , mShowInvalidLines( true )
@@ -125,9 +125,9 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   QgsDebugMsg( "xField is: " + xField );
   QgsDebugMsg( "yField is: " + yField );
 
-  if( url.hasQueryItem( "subset" ))
+  if ( url.hasQueryItem( "subset" ) )
   {
-    subset = url.queryItemValue("subset");
+    subset = url.queryItemValue( "subset" );
     QgsDebugMsg( "subset is: " + subset );
   }
 
@@ -401,7 +401,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   reportErrors( warnings );
   mValid = mGeometryType != QGis::UnknownGeometry;
 
-  if( ! subset.isEmpty())
+  if ( ! subset.isEmpty() )
   {
     setSubsetString( subset );
   }
@@ -511,7 +511,7 @@ QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
     mFile = 0;
   }
 
-  if( mSubsetExpression )
+  if ( mSubsetExpression )
   {
     delete mSubsetExpression;
     mSubsetExpression = 0;
@@ -616,52 +616,52 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
   // If there is a new subset string then encode it..
 
   QgsExpression *expression = 0;
-  if( ! subset.isEmpty() )
+  if ( ! subset.isEmpty() )
   {
 
     expression = new QgsExpression( subset );
     QString error;
-    if( expression->hasParserError())
+    if ( expression->hasParserError() )
     {
       error = expression->parserErrorString();
     }
     else
     {
       expression->prepare( fields() );
-      if( expression->hasEvalError() )
+      if ( expression->hasEvalError() )
       {
         error = expression->evalErrorString();
       }
     }
-    if( ! error.isEmpty() )
+    if ( ! error.isEmpty() )
     {
       valid = false;
       delete expression;
       expression = 0;
       QString tag( "DelimitedText" );
-      QgsMessageLog::logMessage( tr( "Invalid subset string %1 for %2" ).arg(subset).arg( mFile->fileName() ), tag );
+      QgsMessageLog::logMessage( tr( "Invalid subset string %1 for %2" ).arg( subset ).arg( mFile->fileName() ), tag );
     }
   }
 
 
   // if the expression is valid, then reset the subset string and data source Uri
 
-  if( valid )
+  if ( valid )
   {
 
-    if( mSubsetExpression ) delete mSubsetExpression;
+    if ( mSubsetExpression ) delete mSubsetExpression;
     mSubsetString = subset;
     mSubsetExpression = expression;
 
     // Encode the subset string into the data source URI.
 
     QUrl url = QUrl::fromEncoded( dataSourceUri().toAscii() );
-    if( url.hasQueryItem("subset")) url.removeAllQueryItems("subset");
-    if( ! subset.isEmpty()) url.addQueryItem("subset",subset);
+    if ( url.hasQueryItem( "subset" ) ) url.removeAllQueryItems( "subset" );
+    if ( ! subset.isEmpty() ) url.addQueryItem( "subset", subset );
     setDataSourceUri( QString::fromAscii( url.toEncoded() ) );
 
     // Update the feature count and extents if requested
-    if( updateFeatureCount )
+    if ( updateFeatureCount )
     {
       resetDataSummary();
     }
@@ -672,22 +672,22 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
 
 void QgsDelimitedTextProvider::resetDataSummary()
 {
-  QgsFeatureIterator fi = getFeatures(QgsFeatureRequest());
+  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest() );
   mNumberFeatures = 0;
   mExtent = QgsRectangle();
   QgsFeature f;
-  while( fi.nextFeature(f))
+  while ( fi.nextFeature( f ) )
   {
-    if( mGeometryType != QGis::NoGeometry )
+    if ( mGeometryType != QGis::NoGeometry )
     {
-      if( mNumberFeatures == 0 )
+      if ( mNumberFeatures == 0 )
       {
         mExtent = f.geometry()->boundingBox();
       }
       else
       {
-        QgsRectangle bbox( f.geometry()->boundingBox());
-        mExtent.combineExtentWith( &bbox);
+        QgsRectangle bbox( f.geometry()->boundingBox() );
+        mExtent.combineExtentWith( &bbox );
       }
     }
     mNumberFeatures++;
@@ -708,7 +708,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature, QgsDelimitedTex
     if ( status != QgsDelimitedTextFile::RecordOk ) continue;
 
     int fid = file->recordLineNumber();
-    if( request.filterType() == QgsFeatureRequest::FilterFid && fid != request.filterFid()) continue;
+    if ( request.filterType() == QgsFeatureRequest::FilterFid && fid != request.filterFid() ) continue;
     if ( recordIsEmpty( tokens ) ) continue;
 
     while ( tokens.size() < mFieldCount )
@@ -725,7 +725,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature, QgsDelimitedTex
     }
     else if ( mXFieldIndex >= 0 && mYFieldIndex >= 0 )
     {
-      geom = loadGeometryXY( tokens,request );
+      geom = loadGeometryXY( tokens, request );
     }
 
     if ( !geom && mWkbType != QGis::WKBNoGeometry )
@@ -767,11 +767,11 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature, QgsDelimitedTex
     // Are we using a subset expression, if so try and evaluate
     // and accept result if passes.
 
-    if( mSubsetExpression )
+    if ( mSubsetExpression )
     {
       QVariant isOk = mSubsetExpression->evaluate( &feature );
-      if( mSubsetExpression->hasEvalError() ) continue;
-      if( ! isOk.toBool() ) continue;
+      if ( mSubsetExpression->hasEvalError() ) continue;
+      if ( ! isOk.toBool() ) continue;
     }
 
     // We have a good line, so return
@@ -848,9 +848,9 @@ bool QgsDelimitedTextProvider::boundsCheck( QgsGeometry *geom, const QgsFeatureR
 
 void QgsDelimitedTextProvider::fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens )
 {
-  if( fieldIdx < 0 || fieldIdx >= attributeColumns.count()) return;
+  if ( fieldIdx < 0 || fieldIdx >= attributeColumns.count() ) return;
   int column = attributeColumns[fieldIdx];
-  if( column < 0 || column >= tokens.count()) return;
+  if ( column < 0 || column >= tokens.count() ) return;
   const QString &value = tokens[column];
   QVariant val;
   switch ( attributeFields[fieldIdx].type() )

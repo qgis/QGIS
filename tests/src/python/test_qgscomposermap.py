@@ -151,7 +151,7 @@ class TestQgsComposerMap(TestCase):
                                   myPngPath)
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult == True, myMessage
-        
+
     def testOverviewMapInvert(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
         overviewMap.setFrameEnabled(True)
@@ -176,7 +176,7 @@ class TestQgsComposerMap(TestCase):
                                   myPngPath)
         self.mComposition.removeComposerItem(overviewMap)
         assert myTestResult == True, myMessage
-        
+
     # Fails because addItemsFromXML has been commented out in sip
     @expectedFailure
     def testuniqueId(self):

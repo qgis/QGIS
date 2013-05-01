@@ -219,7 +219,7 @@ void TestVectorLayerCache::testSubsetRequest()
   mVectorLayerCache->featureAtId( 16, f );
   QVariant a = f.attribute( 3 );
 
-  QgsFeatureIterator itSubset = mVectorLayerCache->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( requiredFields, fields) );
+  QgsFeatureIterator itSubset = mVectorLayerCache->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( requiredFields, fields ) );
   while ( itSubset.nextFeature( f ) ) {}
   itSubset.close();
 

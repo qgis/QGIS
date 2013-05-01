@@ -131,7 +131,7 @@ class CORE_EXPORT QgsRasterFileWriter
         const QString& outputUrl, int fileIndex, int nBands, QGis::DataType type,
         const QgsCoordinateReferenceSystem& crs );
 
-    /** \brie Init VRT (for tiled mode) or create global output provider (single-file mode)
+    /** \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
      *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
      *  @param destNoDataValueList no data value, indexed from 0
      */

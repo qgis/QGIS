@@ -56,7 +56,7 @@ class UnthreadedAlgorithmExecutor:
         settings = QSettings()
         systemEncoding = settings.value( "/UI/encoding", "System" ).toString()
         layerfile = alg.getParameterValue(paramToIter)
-        layer = QGisLayers.getObjectFromUri(layerfile, False)        
+        layer = QGisLayers.getObjectFromUri(layerfile, False)
         feat = QgsFeature()
         filelist = []
         outputs = {}

@@ -274,7 +274,7 @@ def runTest( name, wanted, file, requests, **params ):
         msg='Missing log message: '+l
         print '    '+msg
         failures.append(msg)
-        
+
     for l in log:
         msg='Extra log message: '+l
         print '    '+msg
@@ -1397,8 +1397,8 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='testextpt.txt'
         params={'yField': 'y', 'delimiter': '|', 'type': 'csv', 'xField': 'x'}
         requests=[
-            {'extents': [10, 30, 30, 50]}, 
-            {'extents': [10, 30, 30, 50], 'exact': 1}, 
+            {'extents': [10, 30, 30, 50]},
+            {'extents': [10, 30, 30, 50], 'exact': 1},
             {'extents': [110, 130, 130, 150]}]
         if rebuildTests:
             createTest(description,filename,requests,**params)
@@ -1449,8 +1449,8 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='testextw.txt'
         params={'delimiter': '|', 'type': 'csv', 'wktField': 'wkt'}
         requests=[
-            {'extents': [10, 30, 30, 50]}, 
-            {'extents': [10, 30, 30, 50], 'exact': 1}, 
+            {'extents': [10, 30, 30, 50]},
+            {'extents': [10, 30, 30, 50], 'exact': 1},
             {'extents': [110, 130, 130, 150]}]
         if rebuildTests:
             createTest(description,filename,requests,**params)
@@ -1517,10 +1517,10 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='test.csv'
         params={'geomType': 'none', 'type': 'csv'}
         requests=[
-            {'fid': 3}, 
-            {'fid': 9}, 
-            {'fid': 5}, 
-            {'fid': 7}, 
+            {'fid': 3},
+            {'fid': 9},
+            {'fid': 5},
+            {'fid': 7},
             {'fid': 3}]
         if rebuildTests:
             createTest(description,filename,requests,**params)
@@ -1576,11 +1576,11 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='test.csv'
         params={'geomType': 'none', 'type': 'csv'}
         requests=[
-            {'attributes': [1, 3]}, 
-            {'fid': 9}, 
-            {'attributes': [1, 3], 'fid': 9}, 
-            {'attributes': [3, 1], 'fid': 9}, 
-            {'attributes': [1, 3, 7], 'fid': 9}, 
+            {'attributes': [1, 3]},
+            {'fid': 9},
+            {'attributes': [1, 3], 'fid': 9},
+            {'attributes': [3, 1], 'fid': 9},
+            {'attributes': [1, 3, 7], 'fid': 9},
             {'attributes': [], 'fid': 9}]
         if rebuildTests:
             createTest(description,filename,requests,**params)

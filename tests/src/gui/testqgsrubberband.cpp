@@ -61,7 +61,7 @@ void TestQgsRubberband::initTestCase()
   QString myPolygonFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolygonFileInfo( myPolygonFileName );
   mPolygonLayer = new QgsVectorLayer( myPolygonFileInfo.filePath(),
-                                     myPolygonFileInfo.completeBaseName(), "ogr" );
+                                      myPolygonFileInfo.completeBaseName(), "ogr" );
 
   mCanvas = new QgsMapCanvas();
   mRubberband = 0;

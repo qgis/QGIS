@@ -197,7 +197,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void resetStream();
     bool recordIsEmpty( QStringList &record );
     bool nextFeature( QgsFeature& feature, QgsDelimitedTextFile *file, const QgsFeatureRequest& request );
-    QgsGeometry* loadGeometryWkt( const QStringList& tokens, const QgsFeatureRequest& request);
+    QgsGeometry* loadGeometryWkt( const QStringList& tokens, const QgsFeatureRequest& request );
     QgsGeometry* loadGeometryXY( const QStringList& tokens, const QgsFeatureRequest& request );
     bool boundsCheck( const QgsPoint &pt, const QgsFeatureRequest& request );
     bool boundsCheck( QgsGeometry *geom, const QgsFeatureRequest& request );

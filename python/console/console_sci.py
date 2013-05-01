@@ -160,7 +160,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def setLexers(self):
         self.lexer = QsciLexerPython()
-        
+
         loadFont = self.settings.value("pythonConsole/fontfamilytext", "Monospace").toString()
         fontSize = self.settings.value("pythonConsole/fontsize", 10).toInt()[0]
 
@@ -514,7 +514,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             more = self.runsource(src, "<input>")
             if not more:
                 self.buffer = []
-            ## prevents to commands with more lines to break the console 
+            ## prevents to commands with more lines to break the console
             ## in the case they have a eol different from '\n'
             self.setText('')
             self.move_cursor_to_end()

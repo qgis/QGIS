@@ -157,7 +157,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * @param  fid The feature id to look for
      * @return True if this id is in the cache
      */
-    bool isFidCached(const QgsFeatureId fid );
+    bool isFidCached( const QgsFeatureId fid );
 
     /**
      * Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features

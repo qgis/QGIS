@@ -128,7 +128,7 @@ class ShellOutputScintilla(QsciScintilla):
         self.selectAllShortcut.activated.connect(self.selectAll)
 
     def insertInitText(self):
-        txtInit = QCoreApplication.translate("PythonConsole", 
+        txtInit = QCoreApplication.translate("PythonConsole",
                                              "Python %1 on %2\n"
                                              "## Type help(iface) for more info and list of methods.\n").arg(sys.version,  socket.gethostname())
         initText = self.setText(txtInit)
@@ -215,7 +215,7 @@ class ShellOutputScintilla(QsciScintilla):
 
     def showEditor(self):
         Ed = self.parent.splitterObj
-        if not Ed.isVisible(): 
+        if not Ed.isVisible():
             Ed.show()
             self.parent.showEditorButton.setChecked(True)
         self.shell.setFocus()

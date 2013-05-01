@@ -72,9 +72,9 @@ class SagaUtils:
                     testfolder = "/usr/local/bin"
                     if os.path.exists(os.path.join(testfolder, "saga_cmd")):
                         folder = testfolder
-            elif SextanteUtils.isWindows():                
-                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))                
-                testfolder = os.path.join(testfolder,  "saga")                
+            elif SextanteUtils.isWindows():
+                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
+                testfolder = os.path.join(testfolder,  "saga")
                 if os.path.exists(os.path.join(testfolder, "saga_cmd.exe")):
                     folder = testfolder
         return folder

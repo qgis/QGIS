@@ -128,7 +128,7 @@ class AlgorithmExecutor(QThread):
                 SextantePostprocessing.handleAlgorithmResults(self.algorithm, self.progress, False)
                 self.iterated.emit(i)
                 i += 1
-            self.algExecuted.emit()                
+            self.algExecuted.emit()
         except BaseException, e:
             self.error.emit(str(e))
             print "Error iterating " + str(e)

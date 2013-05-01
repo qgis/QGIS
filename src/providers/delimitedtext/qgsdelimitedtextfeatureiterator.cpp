@@ -49,8 +49,8 @@ bool QgsDelimitedTextFeatureIterator::nextFeature( QgsFeature& feature )
   if ( mClosed )
     return false;
 
-  bool gotFeature =  P->nextFeature(feature,P->mFile,mRequest);
-  if( ! gotFeature ) close();
+  bool gotFeature =  P->nextFeature( feature, P->mFile, mRequest );
+  if ( ! gotFeature ) close();
   return gotFeature;
 }
 

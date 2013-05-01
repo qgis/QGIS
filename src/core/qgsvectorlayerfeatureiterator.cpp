@@ -43,7 +43,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
     for ( int i = 0; i < subset.count(); ++i )
     {
       int attrIndex = subset[i];
-      if( attrIndex < 0 || attrIndex >= nPendingFields ) continue;
+      if ( attrIndex < 0 || attrIndex >= nPendingFields ) continue;
       if ( L->pendingFields().fieldOrigin( attrIndex ) == QgsFields::OriginProvider )
         providerSubset << L->pendingFields().fieldOriginIndex( attrIndex );
     }

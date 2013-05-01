@@ -86,7 +86,7 @@ class ModelerScene(QtGui.QGraphicsScene):
                 if output.name == aap.param:
                     items.append((self.algItems[start], idx))
                     break
-                idx += 1            
+                idx += 1
 
         return items
 
@@ -116,7 +116,7 @@ class ModelerScene(QtGui.QGraphicsScene):
         for alg in model.algs:
             params = model.algParameters[iAlg]
             idx = 0
-            for parameter in alg.parameters: 
+            for parameter in alg.parameters:
                 param = params[parameter.name]
                 if param:
                     sourceItems = self.getItemsFromAAP(param, isinstance(alg.getParameterFromName(parameter.name), ParameterMultipleInput))

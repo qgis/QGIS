@@ -47,9 +47,9 @@ from sextante.modeler.Providers import Providers
 from sextante.ui.ui_DlgModeler import Ui_DlgModeler
 
 class ModelerDialog(QDialog, Ui_DlgModeler):
-    
+
     USE_CATEGORIES = "/SextanteQGIS/UseCategories"
-    
+
     def __init__(self, alg=None):
         QDialog.__init__(self)
 
@@ -272,7 +272,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
     def fillAlgorithmTree(self):
         settings = QSettings()
-        useCategories = settings.value(self.USE_CATEGORIES).toBool()  
+        useCategories = settings.value(self.USE_CATEGORIES).toBool()
         if useCategories:
             self.fillAlgorithmTreeUsingCategories()
         else:

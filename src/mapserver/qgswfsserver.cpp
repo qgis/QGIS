@@ -820,13 +820,13 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         if ( layer->wkbType() != QGis::WKBNoGeometry )
         {
           req.setFilterRect( searchRect )
-            .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+          .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
         }
         QgsFeatureIterator fit = layer->getFeatures( req );
         QgsExpression *mFilter = new QgsExpression( expFilter );
         if ( mFilter->hasParserError() )
         {
-          throw QgsMapServiceException( "RequestNotWellFormed",QString( "Expression filter error message: %1." ).arg( mFilter->parserErrorString() ) );
+          throw QgsMapServiceException( "RequestNotWellFormed", QString( "Expression filter error message: %1." ).arg( mFilter->parserErrorString() ) );
         }
         if ( mFilter )
         {
@@ -934,7 +934,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             if ( layer->wkbType() != QGis::WKBNoGeometry )
             {
               req.setFilterRect( searchRect )
-                .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+              .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
             }
             QgsFeatureIterator fit = layer->getFeatures( req );
             while ( fit.nextFeature( feature ) && featureCounter < maxFeat )
@@ -965,7 +965,7 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         if ( layer->wkbType() != QGis::WKBNoGeometry )
         {
           req.setFilterRect( searchRect )
-            .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
+          .setFlags( QgsFeatureRequest::ExactIntersect | ( mWithGeom ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) );
         }
         QgsFeatureIterator fit = layer->getFeatures( req );
         while ( fit.nextFeature( feature ) && featureCounter < maxFeat )

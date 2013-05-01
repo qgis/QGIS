@@ -134,16 +134,16 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString theDefinition
       if ( reCrsStr.cap( 1 ).toLower() == "proj4" )
       {
         result = createFromProj4( reCrsStr.cap( 2 ) );
-        //TODO: createFromProj4 used to save to the user database any new CRS 
+        //TODO: createFromProj4 used to save to the user database any new CRS
         // this behavior was changed in order to separate creation and saving.
-        // Not sure if it necessary to save it here, should be checked by someone 
+        // Not sure if it necessary to save it here, should be checked by someone
         // familiar with the code (should also give a more descriptive name to the generated CRS)
-        if( srsid() == 0 )
+        if ( srsid() == 0 )
         {
           QString myName = QString( " * %1 (%2)" )
-              .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
-              .arg( toProj4() );
-          saveAsUserCRS(myName);
+                           .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                           .arg( toProj4() );
+          saveAsUserCRS( myName );
         }
       }
       else
@@ -471,16 +471,16 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
 
     createFromProj4( proj4src );
   }
-  //TODO: createFromProj4 used to save to the user database any new CRS 
+  //TODO: createFromProj4 used to save to the user database any new CRS
   // this behavior was changed in order to separate creation and saving.
-  // Not sure if it necessary to save it here, should be checked by someone 
+  // Not sure if it necessary to save it here, should be checked by someone
   // familiar with the code (should also give a more descriptive name to the generated CRS)
-  if( mSrsId == 0 )
+  if ( mSrsId == 0 )
   {
     QString myName = QString( " * %1 (%2)" )
-        .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
-        .arg( toProj4() );
-    saveAsUserCRS(myName);
+                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                     .arg( toProj4() );
+    saveAsUserCRS( myName );
   }
 
   CPLFree( proj4src );
@@ -1212,16 +1212,16 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
         //@TODO this srs needs to be validated!!!
         mIsValidFlag = true; //shamelessly hard coded for now
       }
-      //TODO: createFromProj4 used to save to the user database any new CRS 
+      //TODO: createFromProj4 used to save to the user database any new CRS
       // this behavior was changed in order to separate creation and saving.
-      // Not sure if it necessary to save it here, should be checked by someone 
+      // Not sure if it necessary to save it here, should be checked by someone
       // familiar with the code (should also give a more descriptive name to the generated CRS)
-      if( mSrsId == 0 )
+      if ( mSrsId == 0 )
       {
         QString myName = QString( " * %1 (%2)" )
-            .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
-            .arg( toProj4() );
-        saveAsUserCRS(myName);
+                         .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                         .arg( toProj4() );
+        saveAsUserCRS( myName );
       }
 
     }
@@ -1420,7 +1420,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCRS(QString name)
+bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
 {
   if ( ! mIsValidFlag )
   {

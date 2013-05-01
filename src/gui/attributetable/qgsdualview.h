@@ -136,8 +136,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void columnBoxInit();
 
-    virtual void hideEvent(QHideEvent *);
-    virtual void focusOutEvent(QFocusEvent *);
+    virtual void hideEvent( QHideEvent * );
+    virtual void focusOutEvent( QFocusEvent * );
 
   public slots:
     /**

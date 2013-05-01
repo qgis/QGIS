@@ -378,7 +378,7 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     bool nameOk = true;
     int fieldNo = mFieldNames.size() + 1;
     name = name.trimmed();
-    if( name.length() > mMaxNameLength ) name=name.mid(0,mMaxNameLength );
+    if ( name.length() > mMaxNameLength ) name = name.mid( 0, mMaxNameLength );
 
     // If the name is invalid then reset it to default name
     if ( InvalidFieldRegexp.exactMatch( name ) )

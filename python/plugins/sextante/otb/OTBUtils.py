@@ -77,17 +77,17 @@ class OTBUtils:
                 else:
                     testfolder = "/usr/local/lib/otb/applications"
                     if os.path.exists(testfolder):
-                        folder = testfolder                    
+                        folder = testfolder
             elif SextanteUtils.isWindows():
-                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))                
+                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
                 testfolder = os.path.join(testfolder,  "orfeotoolbox")
-                testfolder = os.path.join(testfolder,  "applications")                
+                testfolder = os.path.join(testfolder,  "applications")
                 if os.path.exists(testfolder):
                     folder = testfolder
             else:
                 testfolder = "/usr/lib/otb/applications"
                 if os.path.exists(testfolder):
-                    folder = testfolder                                                        
+                    folder = testfolder
         return folder
 
     @staticmethod

@@ -78,12 +78,12 @@ class TestZipLayer: public QObject
     void testZipItemAll();
     void testTarItemAll();
     // test that styles are loaded from .qml files outside zip files
-  #if 0
+#if 0
     // TODO - find a simple way to test vector style loading
     void testZipItemVectorTransparency();
     void testTarItemVectorTransparency();
     void testGzipItemVectorTransparency();
-  #endif
+#endif
     void testZipItemRasterTransparency();
     void testTarItemRasterTransparency();
     void testGzipItemRasterTransparency();
@@ -235,7 +235,7 @@ int TestZipLayer::getLayerTransparency( QString myFileName, QString myProviderKe
       QgsRasterLayer* layer = dynamic_cast<QgsRasterLayer*>( myLayer );
       if ( layer && layer->renderer() )
       {
-        myTransparency = ceil(layer->renderer()->opacity() * 255);
+        myTransparency = ceil( layer->renderer()->opacity() * 255 );
       }
     }
   }

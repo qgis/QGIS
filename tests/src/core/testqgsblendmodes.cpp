@@ -51,8 +51,8 @@ class TestQgsBlendModes: public QObject
     QgsMapRenderer * mpMapRenderer;
     QgsMapLayer * mpPointsLayer;
     QgsMapLayer * mpPolysLayer;
-    QgsRasterLayer* mRasterLayer1;       
-    QgsRasterLayer* mRasterLayer2;           
+    QgsRasterLayer* mRasterLayer1;
+    QgsRasterLayer* mRasterLayer2;
     QString mTestDataDir;
 };
 
@@ -84,20 +84,20 @@ void TestQgsBlendModes::initTestCase()
                                      myPolyFileInfo.completeBaseName(), "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer );
-    
+
   //create two raster layers
   QFileInfo rasterFileInfo( mTestDataDir +  "landsat.tif" );
   mRasterLayer1 = new QgsRasterLayer( rasterFileInfo.filePath(),
-                                     rasterFileInfo.completeBaseName() );
+                                      rasterFileInfo.completeBaseName() );
   mRasterLayer2 = new QgsRasterLayer( rasterFileInfo.filePath(),
-                                     rasterFileInfo.completeBaseName() );                                     
+                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 2, 3, 4 );
   mRasterLayer1->setRenderer( rasterRenderer );
-  mRasterLayer2->setRenderer( rasterRenderer );  
+  mRasterLayer2->setRenderer( rasterRenderer );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mRasterLayer1 );
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mRasterLayer2);
+    QList<QgsMapLayer *>() << mRasterLayer2 );
 
   mpMapRenderer = new QgsMapRenderer();
 }
@@ -113,7 +113,7 @@ void TestQgsBlendModes::vectorBlending()
   myLayers << mpPointsLayer->id();
   myLayers << mpPolysLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
-  
+
   //Set blending modes for both layers
   mpPointsLayer->setBlendMode( QPainter::CompositionMode_Overlay );
   mpPolysLayer->setBlendMode( QPainter::CompositionMode_Multiply );
@@ -126,10 +126,10 @@ void TestQgsBlendModes::rasterBlending()
   //Add two raster layers to map renderer
   QStringList myLayers;
   myLayers << mRasterLayer1->id();
-  myLayers << mRasterLayer2->id();  
+  myLayers << mRasterLayer2->id();
   mpMapRenderer->setLayerSet( myLayers );
   mpMapRenderer->setExtent( mRasterLayer1->extent() );
-  
+
   // set blending mode for top layer
   mRasterLayer1->setBlendMode( QPainter::CompositionMode_Plus );
   QVERIFY( imageCheck( "raster_blendmodes" ) );

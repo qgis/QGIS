@@ -55,7 +55,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const 
   {
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
-      mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
+      mScaleFactor = (( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
       size.scale( s.barWidth * attributes.size(), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
       break;
 
