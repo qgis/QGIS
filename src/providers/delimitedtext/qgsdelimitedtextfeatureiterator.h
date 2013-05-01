@@ -37,14 +37,6 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIterator
 
   protected:
     QgsDelimitedTextProvider* P;
-
-    QgsGeometry* loadGeometryWkt( const QStringList& tokens );
-    QgsGeometry* loadGeometryXY( const QStringList& tokens );
-
-    bool boundsCheck( const QgsPoint &pt );
-    bool boundsCheck( QgsGeometry *geom );
-
-    void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
 };
 
 
