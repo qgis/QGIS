@@ -398,7 +398,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   QString bkSubsetString = subsetString;
   if ( !subsetString.isEmpty() )
   {
-    subsetString.append( " AND " );
+    subsetString.insert(0,"(").append(") AND ");
   }
 
   QString joinFieldName;
@@ -407,7 +407,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   else
     joinFieldName = joinInfo->joinFieldName;
 
-  subsetString.append( "\"" + joinFieldName + "\"" + " = " + "\"" + joinValue.toString() + "\"" );
+  subsetString.append( "\"" + joinFieldName + "\"" + " = " + "\'" + joinValue.toString().replace("'","''") + "\'" );
   joinLayer->dataProvider()->setSubsetString( subsetString, false );
 
   // select (no geometry)
