@@ -613,8 +613,8 @@ class PythonConsoleWidget(QWidget):
     def callWidgetMessageBar(self, text):
         self.shellOut.widgetMessageBar(iface, text)
 
-    def callWidgetMessageBarEditor(self, text):
-        self.tabEditorWidget.widgetMessageBar(iface, text)
+    def callWidgetMessageBarEditor(self, text, level, timed):
+        self.tabEditorWidget.widgetMessageBar(iface, text, level, timed)
 
     def updateTabListScript(self, script, action=None): 
         if script != '':
