@@ -73,9 +73,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         # Current line visible with special background color
         self.setCaretWidth(2)
 
-        # Set Python lexer
-        self.setLexers()
-
         self.settingsShell()
 
         # Don't want to see the horizontal scrollbar at all
@@ -110,6 +107,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                      self.completion_list_selected)
 
     def settingsShell(self):
+        # Set Python lexer
         self.setLexers()
         threshold = self.settings.value("pythonConsole/autoCompThreshold", 2).toInt()[0]
         self.setAutoCompletionThreshold(threshold)

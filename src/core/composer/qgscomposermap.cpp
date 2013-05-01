@@ -40,7 +40,7 @@
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ),
-    mOverviewFrameMapId( -1 ), mGridEnabled( false ), mGridStyle( Solid ),
+    mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ), mTopGridAnnotationPosition( OutsideMapFrame ),
     mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
@@ -82,7 +82,8 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 }
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
-    : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ), mGridEnabled( false ), mGridStyle( Solid ),
+    : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ),
+    mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ),
     mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ), mTopGridAnnotationPosition( OutsideMapFrame ),
     mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
@@ -283,7 +284,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     //Qt 4.4.0 and 4.4.1 have problems with recursive paintings
     //QgsComposerMap::cache() and QgsComposerMap::update() need to be called by
     //client functions
-    
+
     //Background color is already included in cached image, so no need to draw
 
     QgsRectangle requestRectangle;
@@ -682,9 +683,19 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   //overview map frame
   QDomElement overviewFrameElem = doc.createElement( "overviewFrame" );
   overviewFrameElem.setAttribute( "overviewFrameMap", mOverviewFrameMapId );
+  overviewFrameElem.setAttribute( "overviewBlendMode", QgsMapRenderer::getBlendModeEnum( mOverviewBlendMode ) );
+  if ( mOverviewInverted )
+  {
+    overviewFrameElem.setAttribute( "overviewInverted", "true" );
+  }
+  else
+  {
+    overviewFrameElem.setAttribute( "overviewInverted", "false" );
+  }
   QDomElement overviewFrameStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mOverviewFrameMapSymbol, doc );
   overviewFrameElem.appendChild( overviewFrameStyleElem );
   composerMapElem.appendChild( overviewFrameElem );
+
 
   //extent
   QDomElement extentElem = doc.createElement( "Extent" );
@@ -779,6 +790,18 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
   if ( !overviewFrameElem.isNull() )
   {
     setOverviewFrameMap( overviewFrameElem.attribute( "overviewFrameMap", "-1" ).toInt() );
+    setOverviewBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) overviewFrameElem.attribute( "overviewBlendMode", "0" ).toUInt() ) );
+
+    QString overviewInvertedFlag = overviewFrameElem.attribute( "overviewInverted" );
+    if ( overviewInvertedFlag.compare( "true", Qt::CaseInsensitive ) == 0 )
+    {
+      setOverviewInverted( true );
+    }
+    else
+    {
+      setOverviewInverted( false );
+    }
+
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
     if ( !overviewFrameSymbolElem.isNull() )
     {
@@ -1699,6 +1722,18 @@ void QgsComposerMap::setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol )
   mOverviewFrameMapSymbol = symbol;
 }
 
+void QgsComposerMap::setOverviewBlendMode( QPainter::CompositionMode blendMode )
+{
+  mOverviewBlendMode = blendMode;
+  update();
+}
+
+void QgsComposerMap::setOverviewInverted( bool inverted )
+{
+  mOverviewInverted = inverted;
+  update();
+}
+
 void QgsComposerMap::setGridLineSymbol( QgsLineSymbolV2* symbol )
 {
   delete mGridLineSymbol;
@@ -2043,17 +2078,38 @@ void QgsComposerMap::drawOverviewMapExtent( QPainter* p )
     context.setRasterScaleFactor( mComposition->printResolution() / 25.4 );
   }
 
-  QPolygonF polygon;
+  p->save();
+  p->setCompositionMode( mOverviewBlendMode );
+  mOverviewFrameMapSymbol->startRender( context );
+
+  //construct a polygon corresponding to the intersecting map extent
+  QPolygonF intersectPolygon;
   double x = ( intersectRect.xMinimum() - thisExtent.xMinimum() ) / thisExtent.width() * rect().width();
   double y = ( thisExtent.yMaximum() - intersectRect.yMaximum() ) / thisExtent.height() * rect().height();
   double width = intersectRect.width() / thisExtent.width() * rect().width();
   double height = intersectRect.height() / thisExtent.height() * rect().height();
-  polygon << QPointF( x, y ) << QPointF( x + width, y ) << QPointF( x + width, y + height ) << QPointF( x, y + height ) << QPointF( x, y );
+  intersectPolygon << QPointF( x, y ) << QPointF( x + width, y ) << QPointF( x + width, y + height ) << QPointF( x, y + height ) << QPointF( x, y );
 
   QList<QPolygonF> rings; //empty list
-  mOverviewFrameMapSymbol->startRender( context );
-  mOverviewFrameMapSymbol->renderPolygon( polygon, &rings, 0, context );
+  if ( !mOverviewInverted )
+  {
+    //Render the intersecting map extent
+    mOverviewFrameMapSymbol->renderPolygon( intersectPolygon, &rings, 0, context );;
+  }
+  else
+  {
+    //We are inverting the overview frame (ie, shading outside the intersecting extent)
+    //Construct a polygon corresponding to the overview map extent
+    QPolygonF outerPolygon;
+    outerPolygon << QPointF( 0, 0 ) << QPointF( rect().width(), 0 ) << QPointF( rect().width(), rect().height() ) << QPointF( 0, rect().height() ) << QPointF( 0, 0 );
+
+    //Intersecting extent is an inner ring for the shaded area
+    rings.append( intersectPolygon );
+    mOverviewFrameMapSymbol->renderPolygon( outerPolygon, &rings, 0, context );
+  }
+
   mOverviewFrameMapSymbol->stopRender( context );
+  p->restore();
 }
 
 void QgsComposerMap::createDefaultOverviewFrameSymbol()

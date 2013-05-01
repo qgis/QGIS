@@ -228,23 +228,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     static QMap<QString, QString> supportedMimes();
 
-    /** Creates a new dataset with mDataSourceURI
-        @return true in case of success*/
-    /*
-    bool create( const QString& format, int nBands,
-                 QGis::DataType type,
-                 int width, int height, double* geoTransform,
-                 const QgsCoordinateReferenceSystem& crs,
-                 QStringList createOptions = QStringList() );
-    */
-
     /**Writes into the provider datasource*/
     bool write( void* data, int band, int width, int height, int xOffset, int yOffset );
 
     bool setNoDataValue( int bandNo, double noDataValue );
-
-    /**Returns the formats supported by create()*/
-    QStringList createFormats() const;
 
     /**Remove dataset*/
     bool remove();

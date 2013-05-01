@@ -278,6 +278,18 @@ class QgsComposerMap : QgsComposerItem
     void setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol /Transfer/ );
     QgsFillSymbolV2* overviewFrameMapSymbol();
 
+     /* Returns the blending mode for the overview frame
+    @note added in version 1.9*/
+    const QPainter::CompositionMode overviewBlendMode() const;
+    /* Sets the blending mode for the overview frame 
+    @note added in version 1.9*/    
+    void setOverviewBlendMode( const QPainter::CompositionMode blendMode );
+    
+    /**Sets flag if overview frame should be inverted
+    @note this function was added in version 1.9*/
+    void setOverviewInverted( bool inverted );
+    bool overviewInverted() const;        
+
     /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();

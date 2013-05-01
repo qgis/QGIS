@@ -82,7 +82,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual void setUserNoDataValue( int bandNo, QgsRasterRangeList noData );
 
     /** Get list of user no data value ranges */
-    virtual  QgsRasterRangeList userNoDataValue( int bandNo ) const;
+    virtual  QgsRasterRangeList userNoDataValues( int bandNo ) const;
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const;
 
@@ -180,9 +180,6 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      *  @param noDataValue no data value
      */
     virtual bool setNoDataValue( int bandNo, double noDataValue );
-
-    /**Returns the formats supported by create()*/
-    virtual QStringList createFormats() const;
 
     /** Remove dataset*/
     virtual bool remove();

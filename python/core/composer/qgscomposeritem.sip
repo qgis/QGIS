@@ -305,6 +305,16 @@ class QgsComposerItem: QObject, QGraphicsRectItem
       @note there is not setter since one can't manually set the id*/
     QString uuid() const;
     
+    /** Gets the background color for this item
+     * @note introduced in 2.0
+     */
+    const QColor backgroundColor() const;
+
+    /** Sets the background color for this item
+     * @note introduced in 2.0
+     */
+    void setBackgroundColor( const QColor& backgroundColor );    
+    
     /* Returns the current blending mode for the composer item
         @note added in version 1.9*/
     const QPainter::CompositionMode blendMode() const;

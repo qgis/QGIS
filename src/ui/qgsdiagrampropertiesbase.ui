@@ -39,8 +39,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>752</width>
-           <height>613</height>
+           <width>743</width>
+           <height>644</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="scrollAreaLayout">
@@ -118,17 +118,12 @@
            <layout class="QHBoxLayout" name="appearanceLayout"/>
           </item>
           <item>
-           <widget class="QToolBox" name="mDiagramPropertiesToolBox">
-            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage1">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>713</width>
-               <height>394</height>
-              </rect>
-             </property>
-             <attribute name="label">
+           <widget class="QTabWidget" name="mDiagramPropertiesTabWidget">
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="mDiagramPropertiesTabWidgetPage1">
+             <attribute name="title">
               <string>Appearance</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_8">
@@ -315,16 +310,8 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage2">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>715</width>
-               <height>278</height>
-              </rect>
-             </property>
-             <attribute name="label">
+            <widget class="QWidget" name="mDiagramPropertiesTabWidgetPage2">
+             <attribute name="title">
               <string>Size</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_7">
@@ -393,6 +380,9 @@
                  <enum>QFrame::Plain</enum>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_3">
+                 <property name="margin">
+                  <number>0</number>
+                 </property>
                  <item>
                   <widget class="QLabel" name="mLinearlyScalingLabel">
                    <property name="text">
@@ -406,31 +396,40 @@
                  <item>
                   <layout class="QHBoxLayout" name="mLinearlyScalingLayout">
                    <item>
-                    <widget class="QLabel" name="mSizeAttributeLabel">
-                     <property name="text">
-                      <string>Attribute</string>
-                     </property>
+                    <widget class="QWidget" name="mAttributeBasedScalingOptions" native="true">
+                     <layout class="QHBoxLayout" name="horizontalLayout_2">
+                      <property name="margin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QLabel" name="mSizeAttributeLabel">
+                        <property name="text">
+                         <string>Attribute</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QComboBox" name="mSizeAttributeComboBox">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="mFindMaximumValueButton">
+                        <property name="text">
+                         <string>Find maximum value</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLineEdit" name="mValueLineEdit"/>
+                      </item>
+                     </layout>
                     </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="mSizeAttributeComboBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="mFindMaximumValueButton">
-                     <property name="text">
-                      <string>Find maximum value</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="mValueLineEdit"/>
                    </item>
                    <item>
                     <widget class="QLabel" name="mSizeLabel">
@@ -445,7 +444,7 @@
                       <number>10000000</number>
                      </property>
                      <property name="value">
-                      <number>100</number>
+                      <number>50</number>
                      </property>
                     </widget>
                    </item>
@@ -504,16 +503,8 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage3">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>713</width>
-               <height>271</height>
-              </rect>
-             </property>
-             <attribute name="label">
+            <widget class="QWidget" name="mDiagramPropertiesTabWidgetPage3">
+             <attribute name="title">
               <string>Position</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_2">
@@ -666,16 +657,8 @@
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="mDiagramPropertiesToolBoxPage4">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>728</width>
-               <height>166</height>
-              </rect>
-             </property>
-             <attribute name="label">
+            <widget class="QWidget" name="mDiagramPropertiesTabOptions">
+             <attribute name="title">
               <string>Options</string>
              </attribute>
              <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -980,12 +963,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>75</x>
-     <y>118</y>
+     <x>48</x>
+     <y>122</y>
     </hint>
     <hint type="destinationlabel">
-     <x>158</x>
-     <y>118</y>
+     <x>78</x>
+     <y>122</y>
     </hint>
    </hints>
   </connection>
@@ -996,12 +979,12 @@
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>75</x>
-     <y>118</y>
+     <x>48</x>
+     <y>122</y>
     </hint>
     <hint type="destinationlabel">
-     <x>390</x>
-     <y>222</y>
+     <x>77</x>
+     <y>132</y>
     </hint>
    </hints>
   </connection>

@@ -273,6 +273,7 @@ bool QgsRasterBlock::hasNoData() const
 
 bool QgsRasterBlock::isNoDataValue( double value, double noDataValue )
 {
+  // TODO: optimize no data value test by memcmp()
   // More precise would be qIsNaN(value) && qIsNaN(noDataValue(bandNo)), but probably
   // not important and slower
   if ( qIsNaN( value ) ||
@@ -360,7 +361,7 @@ bool QgsRasterBlock::setValue( int row, int column, double value )
 
 bool QgsRasterBlock::setColor( int row, int column, QRgb color )
 {
-  return setColor(( size_t )row*column, color );
+  return setColor(( size_t )row*mWidth + column, color );
 }
 
 bool QgsRasterBlock::setColor( size_t index, QRgb color )
@@ -385,7 +386,7 @@ bool QgsRasterBlock::setColor( size_t index, QRgb color )
 
 bool QgsRasterBlock::setIsNoData( int row, int column )
 {
-  return setIsNoData(( size_t )row*column );
+  return setIsNoData(( size_t )row*mWidth + column );
 }
 
 bool QgsRasterBlock::setIsNoData( size_t index )
