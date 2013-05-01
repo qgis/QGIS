@@ -30,7 +30,7 @@ class QTextStream;
 
 class QgsDelimitedTextFeatureIterator;
 class QgsDelimitedTextFile;
-
+class QgsExpression;
 
 /**
 \class QgsDelimitedTextProvider
@@ -143,7 +143,28 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool isValid();
 
     virtual QgsCoordinateReferenceSystem crs();
+    /**
+     * Set the subset string used to create a subset of features in
+     * the layer.
+     */
+    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true );
 
+    /**
+     * provider supports setting of subset strings
+
+     */
+    virtual bool supportsSubsetString() { return true; }
+
+    /**
+     * Returns the subset definition string (typically sql) currently in
+     * use by the layer and used by the provider to limit the feature set.
+     * Must be overridden in the dataprovider, otherwise returns a null
+     * QString.
+     */
+    virtual QString subsetString()
+    {
+      return mSubsetString;
+    }
     /* new functions */
 
     /**
@@ -175,10 +196,22 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void reportErrors( QStringList messages = QStringList() );
     void resetStream();
     bool recordIsEmpty( QStringList &record );
+    bool nextFeature( QgsFeature& feature, QgsDelimitedTextFile *file, const QgsFeatureRequest& request );
+    QgsGeometry* loadGeometryWkt( const QStringList& tokens, const QgsFeatureRequest& request);
+    QgsGeometry* loadGeometryXY( const QStringList& tokens, const QgsFeatureRequest& request );
+    bool boundsCheck( const QgsPoint &pt, const QgsFeatureRequest& request );
+    bool boundsCheck( QgsGeometry *geom, const QgsFeatureRequest& request );
+    void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
+    void resetDataSummary();
+
 
     QgsGeometry *geomFromWkt( QString &sWkt );
     bool pointFromXY( QString &sX, QString &sY, QgsPoint &point );
     double dmsStringToDouble( const QString &sX, bool *xOk );
+
+
+    QString mUri;
+
     //! Text file
     QgsDelimitedTextFile *mFile;
 
@@ -211,6 +244,9 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     int mSkipLines;
     QString mDecimalPoint;
     bool mXyDms;
+
+    QString mSubsetString;
+    QgsExpression *mSubsetExpression;
 
     //! Storage for any lines in the file that couldn't be loaded
     int mMaxInvalidLines;

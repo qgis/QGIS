@@ -366,6 +366,10 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *   geomType can also be set to none, in which case the layer is loaded without
  *   geometries.
  *
+ * - subset=expression
+ *
+ *   Defines an expression that will identify a subset of records to display
+ *
  * - crs=crsstring
  *
  *   Defines the coordinate reference system used for the layer.  This can be

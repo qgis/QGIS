@@ -16,7 +16,7 @@
 #include "qgisinterface.h"
 #include "qgscontexthelp.h"
 #include "qgslogger.h"
-
+#include "qgsvectordataprovider.h"
 #include "qgsdelimitedtextprovider.h"
 #include "qgsdelimitedtextfile.h"
 
@@ -30,10 +30,13 @@
 #include <QTextCodec>
 #include <QUrl>
 
+const int MAX_SAMPLE_LENGTH=200;
+
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl, bool embedded ):
     QDialog( parent, fl ),
     mFile( new QgsDelimitedTextFile() ),
     mExampleRowCount( 20 ),
+    mBadRowCount( 0 ),
     mPluginKey( "/Plugin-DelimitedText" ),
     mLastFileType( "" )
 {
@@ -50,16 +53,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget * parent, Qt
   }
 
   cmbEncoding->clear();
-  QStringList codecs;
-  foreach ( QByteArray codec, QTextCodec::availableCodecs() )
-  {
-    codecs.append( codec );
-  }
-  codecs.sort();
-  foreach ( QString codec, codecs )
-  {
-    cmbEncoding->addItem( codec );
-  }
+  cmbEncoding->addItems( QgsVectorDataProvider::availableEncodings());
   cmbEncoding->setCurrentIndex( cmbEncoding->findText( "UTF-8" ) );
   loadSettings();
 
@@ -392,6 +386,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   QList<bool> isValidWkt;
   QList<bool> isEmpty;
   int counter = 0;
+  mBadRowCount = 0;
   QStringList values;
   QRegExp wktre( "^\\s*(?:MULTI)?(?:POINT|LINESTRING|POLYGON)\\s*Z?\\s*M?\\(", Qt::CaseInsensitive );
 
@@ -399,7 +394,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
   {
     QgsDelimitedTextFile::Status status = mFile->nextRecord( values );
     if ( status == QgsDelimitedTextFile::RecordEOF ) break;
-    if ( status != QgsDelimitedTextFile::RecordOk ) continue;
+    if ( status != QgsDelimitedTextFile::RecordOk ) { mBadRowCount++; continue; }
     counter++;
 
     // Look at count of non-blank fields
@@ -425,6 +420,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
       QString value = i < nv ? values[i] : "";
+      if( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid(0,MAX_SAMPLE_LENGTH)+"...";
       QTableWidgetItem *item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
       if ( ! value.isEmpty() )
@@ -689,6 +685,10 @@ bool QgsDelimitedTextSourceSelect::validate()
   else if ( tblSample->rowCount() == 0 )
   {
     message = tr( "No data found in file" );
+    if( mBadRowCount > 0 )
+    {
+      message = message + " (" + tr("%1 badly formatted records discarded").arg(mBadRowCount)+")";
+    }
   }
   else if ( geomTypeXY->isChecked() && ( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() ) )
   {
@@ -705,6 +705,11 @@ bool QgsDelimitedTextSourceSelect::validate()
   else
   {
     enabled = true;
+    if( mBadRowCount > 0 )
+    {
+      message = tr("%1 badly formatted records discarded from sample data").arg(mBadRowCount);
+    }
+
   }
   lblStatus->setText( message );
   return enabled;
