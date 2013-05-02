@@ -832,7 +832,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
   int sectionLimit = layer->listStylesInDatabase( ids, names, descriptions, errorMsg );
   if ( !errorMsg.isNull() )
   {
-    QMessageBox::warning( this, tr( "Error occured retrievning styles from database " ), errorMsg );
+    QMessageBox::warning( this, tr( "Error occured retrieving styles from database" ), errorMsg );
     return;
   }
 
@@ -846,7 +846,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     QString qmlStyle = layer->getStyleFromDatabase( selectedStyleId, errorMsg );
     if ( !errorMsg.isNull() )
     {
-      QMessageBox::warning( this, tr( "Error occured retrievning styles from database " ), errorMsg );
+      QMessageBox::warning( this, tr( "Error occured retrieving styles from database" ), errorMsg );
       return;
     }
     if ( layer->applyNamedStyle( qmlStyle, errorMsg ) )
@@ -855,8 +855,8 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     }
     else
     {
-      QMessageBox::warning( this, tr( "Error occured retrievning styles from database " ),
-                            tr( "The style retriev is not a valid named style. Error message: %1" )
+      QMessageBox::warning( this, tr( "Error occured retrieving styles from database" ),
+                            tr( "The style retrieved is not a valid named style. Error message: %1" )
                             .arg( errorMsg ) );
     }
 
