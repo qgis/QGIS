@@ -51,6 +51,7 @@ class QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVec
     {
       QML = 0,
       SLD,
+      DB,
     };
 
     QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
@@ -134,9 +135,16 @@ class QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVec
     /** save the style based on selected format from the menu */
     void saveStyleAsMenuTriggered( QAction * );
 
+    /** called when is possible to choice if load the style from filesystem or from db */
+    void loadStyleMenuTriggered( QAction * );
+
+
   protected:
 
     void saveStyleAs( StyleType styleType );
+
+    /** when provider supports, it will list all the styles relative the layer in a dialog */
+    void showListOfStylesFromDatabase();
 
     void updateSymbologyPage();
 
@@ -145,6 +153,7 @@ class QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVec
     bool mMetadataFilled;
 
     QMenu *mSaveAsMenu;
+    QMenu *mLoadStyleMenu;
 
     /**Renderer dialog which is shown*/
     QDialog* mRendererDialog;

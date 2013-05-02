@@ -276,6 +276,24 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml );
 
+    //TODO edit infos
+    /**
+     * Export the properties of this layer as named style in a QDomDocument
+     * @param doc the target QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of writeSymbology
+     */
+    virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg );
+
+
+    /**
+     * Export the properties of this layer as SLD style in a QDomDocument
+     * @param doc the target QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of writeSymbology
+     */
+    virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg );
+
     /** Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
      * record in the users style table in their personal qgis.db)
