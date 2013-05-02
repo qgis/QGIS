@@ -1423,7 +1423,7 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem, 
 
   if ( layer )
   {
-    layer->readXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
+    layer->readLayerXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
     layer->setLayerName( layerName( elem ) );
     if ( useCache )
     {
