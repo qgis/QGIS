@@ -26,14 +26,14 @@ class QgsLoadStyleFromDBDialog: public QDialog, private Ui::QgsLoadStyleFromDBDi
   public:
     explicit QgsLoadStyleFromDBDialog( QWidget *parent = 0 );
 
-    void initializeLists( QVector<QString> ids, QVector<QString> names, QVector<QString> descriptions, int sectionLimit);
+    void initializeLists( QVector<QString> ids, QVector<QString> names, QVector<QString> descriptions, int sectionLimit );
     QString getSelectedStyleId();
 
-  public slots:    
+  public slots:
     void cellSelectedRelatedTable( int r );
     void cellSelectedOthersTable( int r );
 
-private:
+  private:
 
 };
 

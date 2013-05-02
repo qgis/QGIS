@@ -714,15 +714,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @return the number of styles related to current layer
      */
     virtual int listStylesInDatabase( QVector<QString> &ids, QVector<QString> &names,
-                                       QVector<QString> &descriptions, QString &msgError );
+                                      QVector<QString> &descriptions, QString &msgError );
 
     /**
      * Will return the named style corresponding to style id provided
      */
     virtual QString getStyleFromDatabase( QString styleId, QString &msgError );
 
-    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag, bool loadFromLocalDb=false );
-    virtual bool applyNamedStyle(QString namedStyle , QString errorMsg);
+    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag, bool loadFromLocalDb = false );
+    virtual bool applyNamedStyle( QString namedStyle , QString errorMsg );
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element

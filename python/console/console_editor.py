@@ -170,7 +170,7 @@ class Editor(QsciScintilla):
         self.uncommentScut.setContext(Qt.WidgetShortcut)
         self.uncommentScut.activated.connect(self.parent.pc.uncommentCode)
         self.modificationChanged.connect(self.parent.modified)
-        
+
     def settingsEditor(self):
         # Set Python lexer
         self.setLexers()
@@ -559,12 +559,12 @@ class Editor(QsciScintilla):
             QApplication.restoreOverrideCursor()
             self.setModified(True)
             self.endUndoAction()
-            
+
             self.parent.tw.listObject(self.parent.tw.currentWidget())
             self.mtime = os.stat(pathfile).st_mtime
             msgText = QCoreApplication.translate('PythonConsole', 'The file <b>"%1"</b> has been changed and reloaded').arg(pathfile)
             self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
-            
+
         QsciScintilla.focusInEvent(self, e)
 
 class EditorTab(QWidget):
@@ -582,7 +582,7 @@ class EditorTab(QWidget):
             self.path = filename
             if os.path.exists(filename):
                 self.loadFile(filename, False)
-        
+
         # Creates layout for message bar
         self.layout = QGridLayout(self.newEditor)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -600,7 +600,7 @@ class EditorTab(QWidget):
 
         self.keyFilter = KeyFilter(parent, self)
         self.setEventFilter(self.keyFilter)
-        
+
     def loadFile(self, filename, modified):
         try:
             fn = open(unicode(filename), "rb")

@@ -18,73 +18,74 @@
 QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent ) :
     QDialog( parent )
 {
-    setupUi( this );
-    setWindowTitle( "Save style in database" );
-    mDescriptionEdit->setTabChangesFocus( true );
-    setTabOrder( mNameEdit, mDescriptionEdit );
-    setTabOrder( mDescriptionEdit, mUseAsDefault );
-    setTabOrder( mUseAsDefault, buttonBox );
+  setupUi( this );
+  setWindowTitle( "Save style in database" );
+  mDescriptionEdit->setTabChangesFocus( true );
+  setTabOrder( mNameEdit, mDescriptionEdit );
+  setTabOrder( mDescriptionEdit, mUseAsDefault );
+  setTabOrder( mUseAsDefault, buttonBox );
 
 }
 QString QgsSaveStyleToDbDialog::getName()
 {
-    return mNameEdit->text();
+  return mNameEdit->text();
 }
 QString QgsSaveStyleToDbDialog::getDescription()
 {
-    return mDescriptionEdit->toPlainText();
+  return mDescriptionEdit->toPlainText();
 }
 bool QgsSaveStyleToDbDialog::isDefault()
 {
-    return mUseAsDefault->isChecked();
+  return mUseAsDefault->isChecked();
 }
 QString QgsSaveStyleToDbDialog::getUIFileContent()
 {
-    return mUIFileContent;
+  return mUIFileContent;
 }
 
 void QgsSaveStyleToDbDialog::accept()
 {
-    if( getName().isEmpty() ){
-        QMessageBox::information( this, tr( "Save style in database" ), tr( "A name is mandatory" ) );
-        return;
-    }
-    QDialog::accept();
+  if ( getName().isEmpty() )
+  {
+    QMessageBox::information( this, tr( "Save style in database" ), tr( "A name is mandatory" ) );
+    return;
+  }
+  QDialog::accept();
 }
 
 void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
 {
-    QSettings myQSettings;  // where we keep last used filter in persistent state
-    QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
+  QSettings myQSettings;  // where we keep last used filter in persistent state
+  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
 
-    QString myFileName = QFileDialog::getOpenFileName( this, tr( "Attach Qt Creator UI file" ), myLastUsedDir,    tr( "Qt Creator UI file .ui" ) + " (*.ui)" );
-    if ( myFileName.isNull() )
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Attach Qt Creator UI file" ), myLastUsedDir,    tr( "Qt Creator UI file .ui" ) + " (*.ui)" );
+  if ( myFileName.isNull() )
+  {
+    return;
+  }
+
+
+  QFileInfo myFI( myFileName );
+
+  QFile uiFile( myFI.filePath() );
+
+  QString myPath = myFI.path();
+  myQSettings.setValue( "style/lastStyleDir", myPath );
+
+  if ( uiFile.open( QIODevice::ReadOnly ) )
+  {
+    QString content( uiFile.readAll() );
+    QDomDocument doc;
+
+    if ( !doc.setContent( content ) || doc.documentElement().tagName().compare( "ui" ) )
     {
+      QMessageBox::warning( this, tr( "Wrong file" ),
+                            tr( "The selected file does not appear to be a valid Qt Creator UI file." ) );
       return;
     }
-
-
-    QFileInfo myFI( myFileName );
-
-    QFile uiFile( myFI.filePath() );
-
-    QString myPath = myFI.path();
-    myQSettings.setValue( "style/lastStyleDir", myPath );
-
-    if(uiFile.open( QIODevice::ReadOnly ) )
-    {
-        QString content( uiFile.readAll() );
-        QDomDocument doc;
-
-        if( !doc.setContent(content) || doc.documentElement().tagName().compare( "ui" ) )
-        {
-            QMessageBox::warning(this, tr( "Wrong file" ),
-                                 tr( "The selected file does not appear to be a valid Qt Creator UI file."));
-            return;
-        }
-        mUIFileContent = content;
-        mFileNameLabel->setText( myFI.fileName() );
-    }
+    mUIFileContent = content;
+    mFileNameLabel->setText( myFI.fileName() );
+  }
 
 }
 
