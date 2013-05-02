@@ -908,7 +908,7 @@ class mmqgisx_hub_lines_algorithm(GeoAlgorithm):
 			spokey = spokepoint.geometry().boundingBox().center().y()
 			spokeid = unicode(spokepoint.attributes()[spokeindex].toString())
 			progress.setPercentage(float(i) / len(spokepoints) * 100)
-			# Scan hub points to find first matching hub			
+			# Scan hub points to find first matching hub
 			hubpoints = QGisLayers.features(hublayer)
 			for hubpoint in hubpoints:
 				hubid = unicode(hubpoint.attributes()[hubindex].toString())

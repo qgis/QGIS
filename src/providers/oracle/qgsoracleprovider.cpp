@@ -337,7 +337,7 @@ QString QgsOracleProvider::pkParamWhereClause() const
         int idx = mPrimaryKeyAttrs[i];
         const QgsField &fld = field( idx );
 
-        whereClause += delim + QString( "%3%1=?" ).arg( mConnection->fieldExpression( fld ) );
+        whereClause += delim + QString( "%1=?" ).arg( mConnection->fieldExpression( fld ) );
         delim = " AND ";
       }
     }

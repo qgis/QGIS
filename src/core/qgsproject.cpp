@@ -686,7 +686,7 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     QDomElement element = node.toElement();
 
     QString name = node.namedItem( "layername" ).toElement().text();
-    if( !name.isNull() )
+    if ( !name.isNull() )
       emit loadingLayer( tr( "Loading layer %1" ).arg( name ) );
 
     if ( element.attribute( "embedded" ) == "1" )
@@ -748,8 +748,10 @@ bool QgsProject::addLayer( const QDomElement& layerElem, QList<QDomNode>& broken
   Q_CHECK_PTR( mapLayer );
 
   // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readXML( layerElem ) && mapLayer->isValid() )
+  if ( mapLayer->readLayerXML( layerElem ) && mapLayer->isValid() )
   {
+    emit readMapLayer( mapLayer, layerElem );
+
     QList<QgsMapLayer *> myLayers;
     myLayers << mapLayer;
     QgsMapLayerRegistry::instance()->addMapLayers( myLayers );
@@ -1002,7 +1004,14 @@ bool QgsProject::write()
       QHash< QString, QPair< QString, bool> >::const_iterator emIt = mEmbeddedLayers.find( ml->id() );
       if ( emIt == mEmbeddedLayers.constEnd() )
       {
-        ml->writeXML( projectLayersNode, *doc );
+        // general layer metadata
+        QDomElement maplayerElem = doc->createElement( "maplayer" );
+
+        ml->writeLayerXML( maplayerElem, *doc );
+
+        emit writeMapLayer( ml, maplayerElem, *doc );
+
+        projectLayersNode.appendChild( maplayerElem );
       }
       else //layer defined in an external project file
       {

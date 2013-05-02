@@ -203,7 +203,7 @@ int QgisAppInterface::addToolBarIcon( QAction * qAction )
   return qgis->addPluginToolBarIcon( qAction );
 }
 
-QAction*QgisAppInterface::addToolBarWidget( QWidget* widget )
+QAction *QgisAppInterface::addToolBarWidget( QWidget* widget )
 {
   return qgis->addPluginToolBarWidget( widget );
 }
@@ -218,7 +218,7 @@ int QgisAppInterface::addRasterToolBarIcon( QAction * qAction )
   return qgis->addRasterToolBarIcon( qAction );
 }
 
-QAction*QgisAppInterface::addRasterToolBarWidget( QWidget* widget )
+QAction *QgisAppInterface::addRasterToolBarWidget( QWidget* widget )
 {
   return qgis->addRasterToolBarWidget( widget );
 }
@@ -233,7 +233,7 @@ int QgisAppInterface::addVectorToolBarIcon( QAction * qAction )
   return qgis->addVectorToolBarIcon( qAction );
 }
 
-QAction*QgisAppInterface::addVectorToolBarWidget(QWidget* widget)
+QAction *QgisAppInterface::addVectorToolBarWidget( QWidget* widget )
 {
   return qgis->addVectorToolBarWidget( widget );
 }
@@ -248,7 +248,7 @@ int QgisAppInterface::addDatabaseToolBarIcon( QAction * qAction )
   return qgis->addDatabaseToolBarIcon( qAction );
 }
 
-QAction*QgisAppInterface::addDatabaseToolBarWidget(QWidget* widget)
+QAction *QgisAppInterface::addDatabaseToolBarWidget( QWidget* widget )
 {
   return qgis->addDatabaseToolBarWidget( widget );
 }
@@ -263,7 +263,7 @@ int QgisAppInterface::addWebToolBarIcon( QAction * qAction )
   return qgis->addWebToolBarIcon( qAction );
 }
 
-QAction*QgisAppInterface::addWebToolBarWidget(QWidget* widget)
+QAction *QgisAppInterface::addWebToolBarWidget( QWidget* widget )
 {
   return qgis->addWebToolBarWidget( widget );
 }
@@ -571,32 +571,32 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
 
 void QgisAppInterface::preloadForm( QString uifile )
 {
-    QSignalMapper* signalMapper = new QSignalMapper ( this );
-    mTimer = new QTimer(this);
+  QSignalMapper* signalMapper = new QSignalMapper( this );
+  mTimer = new QTimer( this );
 
-    connect( mTimer ,SIGNAL( timeout() ), signalMapper,SLOT( map() ) );
-    connect( signalMapper, SIGNAL( mapped(QString) ), mTimer, SLOT( stop() ) );
-    connect( signalMapper, SIGNAL( mapped(QString) ), this, SLOT( cacheloadForm( QString ) ) );
+  connect( mTimer , SIGNAL( timeout() ), signalMapper, SLOT( map() ) );
+  connect( signalMapper, SIGNAL( mapped( QString ) ), mTimer, SLOT( stop() ) );
+  connect( signalMapper, SIGNAL( mapped( QString ) ), this, SLOT( cacheloadForm( QString ) ) );
 
-    signalMapper->setMapping( mTimer, uifile );
+  signalMapper->setMapping( mTimer, uifile );
 
-    mTimer->start(0);
+  mTimer->start( 0 );
 }
 
 void QgisAppInterface::cacheloadForm( QString uifile )
 {
-    QFile file( uifile );
+  QFile file( uifile );
 
-    if ( file.open( QFile::ReadOnly ) )
-    {
-      QUiLoader loader;
+  if ( file.open( QFile::ReadOnly ) )
+  {
+    QUiLoader loader;
 
-      QFileInfo fi( uifile );
-      loader.setWorkingDirectory( fi.dir() );
-      QWidget *myWidget = loader.load( &file );
-      file.close();
-      delete myWidget;
-    }
+    QFileInfo fi( uifile );
+    loader.setWorkingDirectory( fi.dir() );
+    QWidget *myWidget = loader.load( &file );
+    file.close();
+    delete myWidget;
+  }
 }
 
 QDialog* QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeature &f )

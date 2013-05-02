@@ -35,22 +35,22 @@ import os
 import imp
 
 ITEMHEIGHT = 30
-OFFSET = 20 
+OFFSET = 20
 HEIGHT = 60
 
 class CommanderWindow(QtGui.QDialog):
-    def __init__(self, parent, canvas): 
+    def __init__(self, parent, canvas):
         self.canvas = canvas
-        QtGui.QDialog.__init__(self, parent, Qt.FramelessWindowHint)    
+        QtGui.QDialog.__init__(self, parent, Qt.FramelessWindowHint)
         #self.setModal(True)
-        self.commands = imp.load_source("commands", self.commandsFile())                    
-        self.initGui()                            
-        
-    def commandsFolder(self):        
+        self.commands = imp.load_source("commands", self.commandsFile())
+        self.initGui()
+
+    def commandsFolder(self):
         folder = unicode(os.path.join(SextanteUtils.userFolder(), "commander"))
         mkdir(folder)
         return os.path.abspath(folder)
-    
+
     def commandsFile(self):
         f = os.path.join(self.commandsFolder(), "commands.py")
         if not os.path.exists(f):
@@ -60,18 +60,18 @@ class CommanderWindow(QtGui.QDialog):
             out.write("def removeall():\n")
             out.write("\tmapreg = QgsMapLayerRegistry.instance()\n")
             out.write("\tmapreg.removeAllMapLayers()\n\n")
-            out.write("def load(*args):\n")    
+            out.write("def load(*args):\n")
             out.write("\tsextante.load(args[0])\n")
             out.close()
-        return f 
-    
+        return f
+
     def algsListHasChanged(self):
         self.fillCombo()
-                
-    def initGui(self):        
-        self.combo= ExtendedComboBox()   
-        self.fillCombo()             
-       
+
+    def initGui(self):
+        self.combo= ExtendedComboBox()
+        self.fillCombo()
+
         self.combo.setEditable(True)
         self.label = QtGui.QLabel("Enter command:")
         self.errorLabel = QtGui.QLabel("Enter command:")
@@ -90,19 +90,19 @@ class CommanderWindow(QtGui.QDialog):
         self.setLayout(self.vlayout)
         self.combo.lineEdit().returnPressed.connect(self.run)
         self.prepareGui()
-        
+
     def fillCombo(self):
         self.combo.clear()
         #add algorithms
         for providerName in Sextante.algs.keys():
-            provider = Sextante.algs[providerName]            
-            algs = provider.values()            
+            provider = Sextante.algs[providerName]
+            algs = provider.values()
             for alg in algs:
-                self.combo.addItem("SEXTANTE algorithm: " + alg.name)        
+                self.combo.addItem("SEXTANTE algorithm: " + alg.name)
         #add functions
         for command in dir(self.commands):
             if isinstance(self.commands.__dict__.get(command), types.FunctionType):
-                self.combo.addItem("Command: " + command);    
+                self.combo.addItem("Command: " + command);
         #add menu entries
         menuActions = []
         actions = Sextante.getInterface().mainWindow().menuBar().actions()
@@ -110,22 +110,22 @@ class CommanderWindow(QtGui.QDialog):
             menuActions.extend(self.getActions(action))
         for action in menuActions:
             self.combo.addItem("Menu action: " + unicode(action.text()))
-        
-        
+
+
     def prepareGui(self):
         self.combo.setEditText("")
         self.combo.setMaximumSize(QtCore.QSize(self.canvas.rect().width()  - 2 * OFFSET, ITEMHEIGHT))
-        self.combo.view().setStyleSheet("min-height: 150px")        
-        self.combo.setFocus(Qt.OtherFocusReason)  
+        self.combo.view().setStyleSheet("min-height: 150px")
+        self.combo.setFocus(Qt.OtherFocusReason)
         self.label.setMaximumSize(self.combo.maximumSize())
-        self.label.setVisible(False)        
-        self.adjustSize()            
+        self.label.setVisible(False)
+        self.adjustSize()
         pt = self.canvas.rect().topLeft()
         absolutePt = self.canvas.mapToGlobal(pt)
         self.move(absolutePt)
         self.resize(self.canvas.rect().width(), HEIGHT)
         self.setStyleSheet("CommanderWindow { background-color: #e7f5fe; border: 1px solid #b9cfe4; }")
-        
+
 
     def getActions(self, action):
         menuActions = []
@@ -133,16 +133,16 @@ class CommanderWindow(QtGui.QDialog):
         if menu is None:
             menuActions.append(action)
             return menuActions
-        else:            
+        else:
             actions = menu.actions()
             for subaction in actions:
                 if subaction.menu() is not None:
                     menuActions.extend(self.getActions(subaction))
                 elif not subaction.isSeparator():
                     menuActions.append(subaction)
-        
+
         return menuActions
-            
+
     def run(self):
         s = unicode(self.combo.currentText())
         if s.startswith("SEXTANTE algorithm: "):
@@ -150,16 +150,16 @@ class CommanderWindow(QtGui.QDialog):
             alg = Sextante.getAlgorithmFromFullName(algName)
             if alg is not None:
                 self.close()
-                self.runAlgorithm(alg)                
+                self.runAlgorithm(alg)
         elif s.startswith("Command: "):
-            command = s[len("Command: "):]            
+            command = s[len("Command: "):]
             try:
                 self.runCommand(command)
                 self.close()
             except Exception, e:
-                self.label.setVisible(True)                
-                self.label.setText("Error:" +  unicode(e) )                
-                      
+                self.label.setVisible(True)
+                self.label.setText("Error:" +  unicode(e) )
+
         elif s.startswith("Menu action: "):
             actionName = s[len("Menu action: "):]
             menuActions = []
@@ -169,39 +169,39 @@ class CommanderWindow(QtGui.QDialog):
             for action in menuActions:
                 if action.text() == actionName:
                     self.close()
-                    action.trigger()                                        
-                    return                                 
+                    action.trigger()
+                    return
         else:
             try:
                 self.runCommand(s)
                 self.close()
             except Exception, e:
-                self.label.setVisible(True)                
+                self.label.setVisible(True)
                 self.label.setText("Error:" +  unicode(e) )
-                          
+
     def runCommand(self, command):
         tokens = command.split(" ")
         if len(tokens) == 1:
             method = self.commands.__dict__.get(command)
             if method is not None:
-                method()  
+                method()
             else:
                 raise Exception("Wrong command")
         else:
             method = self.commands.__dict__.get(tokens[0])
             if method is not None:
-                method(*tokens[1:])  
+                method(*tokens[1:])
             else:
                 raise Exception("Wrong command")
-            
-        
-        
-    def runAlgorithm(self, alg):  
+
+
+
+    def runAlgorithm(self, alg):
         alg = alg.getCopy()
         message = alg.checkBeforeOpeningParametersDialog()
         if message:
             dlg = MissingDependencyDialog(message)
-            dlg.exec_()                
+            dlg.exec_()
             return
         dlg = alg.getCustomParametersDialog()
         if not dlg:
@@ -217,7 +217,7 @@ class CommanderWindow(QtGui.QDialog):
                 pass
             canvas.setMapTool(prevMapTool)
 
-        
+
 class ExtendedComboBox(QComboBox):
     def __init__(self, parent=None):
         super(ExtendedComboBox, self).__init__(parent)

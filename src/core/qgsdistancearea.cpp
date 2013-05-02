@@ -212,6 +212,18 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   QString proj4 = "+proj=longlat +ellps=" + ellipsoid + " +no_defs";
   QgsCoordinateReferenceSystem destCRS;
   destCRS.createFromProj4( proj4 );
+  //TODO: createFromProj4 used to save to the user database any new CRS
+  // this behavior was changed in order to separate creation and saving.
+  // Not sure if it necessary to save it here, should be checked by someone
+  // familiar with the code (should also give a more descriptive name to the generated CRS)
+  if ( destCRS.srsid() == 0 )
+  {
+    QString myName = QString( " * %1 (%2)" )
+                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                     .arg( destCRS.toProj4() );
+    destCRS.saveAsUserCRS( myName );
+  }
+  //
 
   // set transformation from project CRS to ellipsoid coordinates
   mCoordTransform->setDestCRS( destCRS );

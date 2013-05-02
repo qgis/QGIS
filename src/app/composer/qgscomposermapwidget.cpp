@@ -299,6 +299,10 @@ void QgsComposerMapWidget::updateGuiElements()
     //overview frame
     int overviewMapFrameId = mComposerMap->overviewFrameMapId();
     mOverviewFrameMapComboBox->setCurrentIndex( mOverviewFrameMapComboBox->findData( overviewMapFrameId ) );
+    //overview frame blending mode
+    mOverviewBlendModeComboBox->setBlendMode( mComposerMap->overviewBlendMode() );
+    //overview inverted
+    mOverviewInvertCheckbox->setChecked( mComposerMap->overviewInverted() );
 
     //grid
     if ( mComposerMap->gridEnabled() )
@@ -437,6 +441,8 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mFrameWidthSpinBox->blockSignals( b );
   mOverviewFrameMapComboBox->blockSignals( b );
   mOverviewFrameStyleButton->blockSignals( b );
+  mOverviewBlendModeComboBox->blockSignals( b );
+  mOverviewInvertCheckbox->blockSignals( b );
 }
 
 void QgsComposerMapWidget::on_mUpdatePreviewButton_clicked()
@@ -556,6 +562,23 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   if ( d.exec() == QDialog::Accepted )
   {
     updateOverviewSymbolMarker();
+  }
+}
+
+void QgsComposerMapWidget::on_mOverviewBlendModeComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  if ( mComposerMap )
+  {
+    mComposerMap->setOverviewBlendMode( mOverviewBlendModeComboBox->blendMode() );
+  }
+
+}
+void QgsComposerMapWidget::on_mOverviewInvertCheckbox_toggled( bool state )
+{
+  if ( mComposerMap )
+  {
+    mComposerMap->setOverviewInverted( state );
   }
 }
 

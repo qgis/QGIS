@@ -316,39 +316,39 @@ void QgsProjectParser::describeFeatureType( const QString& aTypeName, QDomElemen
         QGis::WkbType wkbType = layer->wkbType();
         if ( wkbType != QGis::WKBNoGeometry )
         {
-        switch ( wkbType )
-        {
-          case QGis::WKBPoint25D:
-          case QGis::WKBPoint:
-            geomElem.setAttribute( "type", "gml:PointPropertyType" );
-            break;
-          case QGis::WKBLineString25D:
-          case QGis::WKBLineString:
-            geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
-            break;
-          case QGis::WKBPolygon25D:
-          case QGis::WKBPolygon:
-            geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
-            break;
-          case QGis::WKBMultiPoint25D:
-          case QGis::WKBMultiPoint:
-            geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
-            break;
-          case QGis::WKBMultiLineString25D:
-          case QGis::WKBMultiLineString:
-            geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
-            break;
-          case QGis::WKBMultiPolygon25D:
-          case QGis::WKBMultiPolygon:
-            geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
-            break;
-          default:
-            geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
-            break;
-        }
-        geomElem.setAttribute( "minOccurs", "0" );
-        geomElem.setAttribute( "maxOccurs", "1" );
-        sequenceElem.appendChild( geomElem );
+          switch ( wkbType )
+          {
+            case QGis::WKBPoint25D:
+            case QGis::WKBPoint:
+              geomElem.setAttribute( "type", "gml:PointPropertyType" );
+              break;
+            case QGis::WKBLineString25D:
+            case QGis::WKBLineString:
+              geomElem.setAttribute( "type", "gml:LineStringPropertyType" );
+              break;
+            case QGis::WKBPolygon25D:
+            case QGis::WKBPolygon:
+              geomElem.setAttribute( "type", "gml:PolygonPropertyType" );
+              break;
+            case QGis::WKBMultiPoint25D:
+            case QGis::WKBMultiPoint:
+              geomElem.setAttribute( "type", "gml:MultiPointPropertyType" );
+              break;
+            case QGis::WKBMultiLineString25D:
+            case QGis::WKBMultiLineString:
+              geomElem.setAttribute( "type", "gml:MultiLineStringPropertyType" );
+              break;
+            case QGis::WKBMultiPolygon25D:
+            case QGis::WKBMultiPolygon:
+              geomElem.setAttribute( "type", "gml:MultiPolygonPropertyType" );
+              break;
+            default:
+              geomElem.setAttribute( "type", "gml:GeometryPropertyType" );
+              break;
+          }
+          geomElem.setAttribute( "minOccurs", "0" );
+          geomElem.setAttribute( "maxOccurs", "1" );
+          sequenceElem.appendChild( geomElem );
         }
 
         const QgsFields& fields = provider->fields();

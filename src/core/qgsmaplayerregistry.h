@@ -70,7 +70,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * @note As a side-effect QgsProject is made dirty.
      * @note Added in QGIS 1.8
      */
-    QList<QgsMapLayer *> addMapLayers(QList<QgsMapLayer *> theMapLayers,
+    QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
                                        bool addToLegend = true );
 
     /**
@@ -109,7 +109,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *
      * @note As a side-effect QgsProject is made dirty.
      */
-    void removeMapLayers(QStringList theLayerIds );
+    void removeMapLayers( QStringList theLayerIds );
 
     /**
      * @brief

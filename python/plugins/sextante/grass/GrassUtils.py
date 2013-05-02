@@ -75,10 +75,10 @@ class GrassUtils:
 
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_FOLDER)
         if folder == None:
-            if SextanteUtils.isWindows():                    
-                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))                                
+            if SextanteUtils.isWindows():
+                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
                 testfolder = os.path.join(testfolder,  "grass")
-                if os.path.isdir(testfolder):                                                                
+                if os.path.isdir(testfolder):
                     for subfolder in os.listdir(testfolder):
                         if subfolder.startswith("grass"):
                             folder = os.path.join(testfolder, subfolder)
@@ -94,8 +94,8 @@ class GrassUtils:
     def grassWinShell():
         folder = SextanteConfig.getSetting(GrassUtils.GRASS_WIN_SHELL)
         if folder == None:
-            folder = os.path.dirname(str(QgsApplication.prefixPath()))                
-            folder = os.path.join(folder,  "msys")            
+            folder = os.path.dirname(str(QgsApplication.prefixPath()))
+            folder = os.path.join(folder,  "msys")
         return folder
 
     @staticmethod

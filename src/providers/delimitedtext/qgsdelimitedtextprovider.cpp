@@ -29,6 +29,7 @@
 
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
+#include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
@@ -60,6 +61,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mWktHasZM( false )
     , mWktHasPrefix( false )
     , mXyDms( false )
+    , mSubsetString( "" )
+    , mSubsetExpression( 0 )
     , mMaxInvalidLines( 50 )
     , mShowInvalidLines( true )
     , mCrs()
@@ -77,6 +80,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   QString wktField;
   QString xField;
   QString yField;
+  QString subset;
 
   if ( url.hasQueryItem( "geomType" ) )
   {
@@ -120,6 +124,12 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   QgsDebugMsg( "wktField is: " + wktField );
   QgsDebugMsg( "xField is: " + xField );
   QgsDebugMsg( "yField is: " + yField );
+
+  if ( url.hasQueryItem( "subset" ) )
+  {
+    subset = url.queryItemValue( "subset" );
+    QgsDebugMsg( "subset is: " + subset );
+  }
 
   if ( url.hasQueryItem( "quiet" ) ) mShowInvalidLines = false;
 
@@ -390,6 +400,11 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
 
   reportErrors( warnings );
   mValid = mGeometryType != QGis::UnknownGeometry;
+
+  if ( ! subset.isEmpty() )
+  {
+    setSubsetString( subset );
+  }
 }
 
 
@@ -495,6 +510,12 @@ QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
     delete mFile;
     mFile = 0;
   }
+
+  if ( mSubsetExpression )
+  {
+    delete mSubsetExpression;
+    mSubsetExpression = 0;
+  }
 }
 
 
@@ -548,7 +569,7 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages )
     QgsMessageLog::logMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), tag );
     foreach ( QString message, messages )
     {
-      QgsMessageLog::logMessage( message );
+      QgsMessageLog::logMessage( message, tag );
     }
     if ( ! mInvalidLines.isEmpty() )
     {
@@ -558,7 +579,6 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages )
       if ( mNExtraInvalidLines > 0 )
         QgsMessageLog::logMessage( tr( "There are %1 additional errors in the file" ).arg( mNExtraInvalidLines ), tag );
     }
-
 
     // Display errors in a dialog...
     if ( mShowInvalidLines )
@@ -586,7 +606,281 @@ void QgsDelimitedTextProvider::reportErrors( QStringList messages )
   }
 }
 
+//
 
+bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatureCount )
+{
+
+  bool valid = true;
+
+  // If there is a new subset string then encode it..
+
+  QgsExpression *expression = 0;
+  if ( ! subset.isEmpty() )
+  {
+
+    expression = new QgsExpression( subset );
+    QString error;
+    if ( expression->hasParserError() )
+    {
+      error = expression->parserErrorString();
+    }
+    else
+    {
+      expression->prepare( fields() );
+      if ( expression->hasEvalError() )
+      {
+        error = expression->evalErrorString();
+      }
+    }
+    if ( ! error.isEmpty() )
+    {
+      valid = false;
+      delete expression;
+      expression = 0;
+      QString tag( "DelimitedText" );
+      QgsMessageLog::logMessage( tr( "Invalid subset string %1 for %2" ).arg( subset ).arg( mFile->fileName() ), tag );
+    }
+  }
+
+
+  // if the expression is valid, then reset the subset string and data source Uri
+
+  if ( valid )
+  {
+
+    if ( mSubsetExpression ) delete mSubsetExpression;
+    mSubsetString = subset;
+    mSubsetExpression = expression;
+
+    // Encode the subset string into the data source URI.
+
+    QUrl url = QUrl::fromEncoded( dataSourceUri().toAscii() );
+    if ( url.hasQueryItem( "subset" ) ) url.removeAllQueryItems( "subset" );
+    if ( ! subset.isEmpty() ) url.addQueryItem( "subset", subset );
+    setDataSourceUri( QString::fromAscii( url.toEncoded() ) );
+
+    // Update the feature count and extents if requested
+    if ( updateFeatureCount )
+    {
+      resetDataSummary();
+    }
+  }
+
+  return valid;
+}
+
+void QgsDelimitedTextProvider::resetDataSummary()
+{
+  QgsFeatureIterator fi = getFeatures( QgsFeatureRequest() );
+  mNumberFeatures = 0;
+  mExtent = QgsRectangle();
+  QgsFeature f;
+  while ( fi.nextFeature( f ) )
+  {
+    if ( mGeometryType != QGis::NoGeometry )
+    {
+      if ( mNumberFeatures == 0 )
+      {
+        mExtent = f.geometry()->boundingBox();
+      }
+      else
+      {
+        QgsRectangle bbox( f.geometry()->boundingBox() );
+        mExtent.combineExtentWith( &bbox );
+      }
+    }
+    mNumberFeatures++;
+  }
+}
+
+
+bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature, QgsDelimitedTextFile *file, const QgsFeatureRequest& request )
+{
+  QStringList tokens;
+  while ( true )
+  {
+    // before we do anything else, assume that there's something wrong with
+    // the feature
+    feature.setValid( false );
+    QgsDelimitedTextFile::Status status = file->nextRecord( tokens );
+    if ( status == QgsDelimitedTextFile::RecordEOF ) break;
+    if ( status != QgsDelimitedTextFile::RecordOk ) continue;
+
+    int fid = file->recordLineNumber();
+    if ( request.filterType() == QgsFeatureRequest::FilterFid && fid != request.filterFid() ) continue;
+    if ( recordIsEmpty( tokens ) ) continue;
+
+    while ( tokens.size() < mFieldCount )
+      tokens.append( QString::null );
+
+    QgsGeometry *geom = 0;
+
+    // Note: Always need to load geometry even if request has NoGeometry set
+    // and subset string doesn't need geometry, as only by loading geometry
+    // do we know that this is a valid record in the data set.
+    if ( mWktFieldIndex >= 0 )
+    {
+      geom = loadGeometryWkt( tokens, request );
+    }
+    else if ( mXFieldIndex >= 0 && mYFieldIndex >= 0 )
+    {
+      geom = loadGeometryXY( tokens, request );
+    }
+
+    if ( !geom && mWkbType != QGis::WKBNoGeometry )
+    {
+      // Already dealt with invalid lines in provider - no need to repeat
+      // removed code (CC 2013-04-13) ...
+      //    mInvalidLines << line;
+      // In any case it may be a valid line that is excluded because of
+      // bounds check...
+      continue;
+    }
+
+    // At this point the current feature values are valid
+
+    feature.setValid( true );
+    feature.setFields( &attributeFields ); // allow name-based attribute lookups
+    feature.setFeatureId( fid );
+    feature.initAttributes( attributeFields.count() );
+
+    if ( geom )
+      feature.setGeometry( geom );
+
+    // If we have subset expression, then ened attributes
+    if ( ! mSubsetExpression && request.flags() & QgsFeatureRequest::SubsetOfAttributes )
+    {
+      const QgsAttributeList& attrs = request.subsetOfAttributes();
+      for ( QgsAttributeList::const_iterator i = attrs.begin(); i != attrs.end(); ++i )
+      {
+        int fieldIdx = *i;
+        fetchAttribute( feature, fieldIdx, tokens );
+      }
+    }
+    else
+    {
+      for ( int idx = 0; idx < attributeFields.count(); ++idx )
+        fetchAttribute( feature, idx, tokens );
+    }
+
+    // Are we using a subset expression, if so try and evaluate
+    // and accept result if passes.
+
+    if ( mSubsetExpression )
+    {
+      QVariant isOk = mSubsetExpression->evaluate( &feature );
+      if ( mSubsetExpression->hasEvalError() ) continue;
+      if ( ! isOk.toBool() ) continue;
+    }
+
+    // We have a good line, so return
+    return true;
+
+  } // !mStream->atEnd()
+
+  return false;
+}
+
+
+QgsGeometry* QgsDelimitedTextProvider::loadGeometryWkt( const QStringList& tokens, const QgsFeatureRequest& request )
+{
+  QgsGeometry* geom = 0;
+  QString sWkt = tokens[mWktFieldIndex];
+
+  geom = geomFromWkt( sWkt );
+
+  if ( geom && geom->type() != mGeometryType )
+  {
+    delete geom;
+    geom = 0;
+  }
+  if ( geom && !boundsCheck( geom, request ) )
+  {
+    delete geom;
+    geom = 0;
+  }
+  return geom;
+}
+
+
+QgsGeometry* QgsDelimitedTextProvider::loadGeometryXY( const QStringList& tokens, const QgsFeatureRequest& request )
+{
+  QString sX = tokens[mXFieldIndex];
+  QString sY = tokens[mYFieldIndex];
+  QgsPoint pt;
+  bool ok = pointFromXY( sX, sY, pt );
+
+  if ( ok && boundsCheck( pt, request ) )
+  {
+    return QgsGeometry::fromPoint( pt );
+  }
+  return 0;
+}
+
+/**
+ * Check to see if the point is within the selection rectangle
+ */
+bool QgsDelimitedTextProvider::boundsCheck( const QgsPoint &pt, const QgsFeatureRequest& request )
+{
+  // no selection rectangle or geometry => always in the bounds
+  if ( request.filterType() != QgsFeatureRequest::FilterRect || ( request.flags() & QgsFeatureRequest::NoGeometry ) )
+    return true;
+
+  return request.filterRect().contains( pt );
+}
+
+/**
+ * Check to see if the geometry is within the selection rectangle
+ */
+bool QgsDelimitedTextProvider::boundsCheck( QgsGeometry *geom, const QgsFeatureRequest& request )
+{
+  // no selection rectangle or geometry => always in the bounds
+  if ( request.filterType() != QgsFeatureRequest::FilterRect || ( request.flags() & QgsFeatureRequest::NoGeometry ) )
+    return true;
+
+  if ( request.flags() & QgsFeatureRequest::ExactIntersect )
+    return geom->intersects( request.filterRect() );
+  else
+    return geom->boundingBox().intersects( request.filterRect() );
+}
+
+
+void QgsDelimitedTextProvider::fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens )
+{
+  if ( fieldIdx < 0 || fieldIdx >= attributeColumns.count() ) return;
+  int column = attributeColumns[fieldIdx];
+  if ( column < 0 || column >= tokens.count() ) return;
+  const QString &value = tokens[column];
+  QVariant val;
+  switch ( attributeFields[fieldIdx].type() )
+  {
+    case QVariant::Int:
+      if ( value.isEmpty() )
+        val = QVariant( attributeFields[fieldIdx].type() );
+      else
+        val = QVariant( value );
+      break;
+    case QVariant::Double:
+      if ( value.isEmpty() )
+      {
+        val = QVariant( attributeFields[fieldIdx].type() );
+      }
+      else if ( mDecimalPoint.isEmpty() )
+      {
+        val = QVariant( value.toDouble() );
+      }
+      else
+      {
+        val = QVariant( QString( value ).replace( mDecimalPoint, "." ).toDouble() );
+      }
+      break;
+    default:
+      val = QVariant( value );
+      break;
+  }
+  feature.setAttribute( fieldIdx, val );
+}
 
 // Return the extent of the layer
 QgsRectangle QgsDelimitedTextProvider::extent()

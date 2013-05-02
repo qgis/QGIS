@@ -205,11 +205,30 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
   SymbologyList itemList;
   QList< QPair< QString, QColor > > rasterItemList = layer->legendSymbologyItems();
   QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
+#if QT_VERSION >= 0x40700
+  itemList.reserve( rasterItemList.size() );
+#endif
+  // Paletted raster may have many colors, for example UInt16 may have 65536 colors
+  // and it is very slow, so we limit max count
+  QSize iconSize = treeWidget()->iconSize();
+  int count = 0;
+  int max_count = 1000;
   for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
   {
-    QPixmap itemPixmap( treeWidget()->iconSize() );
+    QPixmap itemPixmap( iconSize );
     itemPixmap.fill( itemIt->second );
+    // This is very slow, not clear why, it should not be, probably realloc,
+    // but it seems to be non linear
     itemList.append( qMakePair( itemIt->first, itemPixmap ) );
+    count++;
+    if ( count == max_count )
+    {
+      itemPixmap = QPixmap( iconSize );
+      itemPixmap.fill( Qt::transparent );
+      QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
+      itemList.append( qMakePair( label, itemPixmap ) );
+      break;
+    }
   }
   changeSymbologySettings( layer, itemList );
 }

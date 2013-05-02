@@ -134,6 +134,17 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString theDefinition
       if ( reCrsStr.cap( 1 ).toLower() == "proj4" )
       {
         result = createFromProj4( reCrsStr.cap( 2 ) );
+        //TODO: createFromProj4 used to save to the user database any new CRS
+        // this behavior was changed in order to separate creation and saving.
+        // Not sure if it necessary to save it here, should be checked by someone
+        // familiar with the code (should also give a more descriptive name to the generated CRS)
+        if ( srsid() == 0 )
+        {
+          QString myName = QString( " * %1 (%2)" )
+                           .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                           .arg( toProj4() );
+          saveAsUserCRS( myName );
+        }
       }
       else
       {
@@ -460,6 +471,17 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
 
     createFromProj4( proj4src );
   }
+  //TODO: createFromProj4 used to save to the user database any new CRS
+  // this behavior was changed in order to separate creation and saving.
+  // Not sure if it necessary to save it here, should be checked by someone
+  // familiar with the code (should also give a more descriptive name to the generated CRS)
+  if ( mSrsId == 0 )
+  {
+    QString myName = QString( " * %1 (%2)" )
+                     .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                     .arg( toProj4() );
+    saveAsUserCRS( myName );
+  }
 
   CPLFree( proj4src );
 
@@ -641,46 +663,6 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   {
     QgsDebugMsg( "Projection is not found in databases." );
     setProj4String( myProj4String );
-
-    // Is the SRS is valid now, we know it's a decent +proj string that can be entered into the srs.db
-    if ( mIsValidFlag )
-    {
-      // but the proj.4 parsed string might already be in our database
-      myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( toProj4() ) + " order by deprecated" );
-      if ( myRecord.empty() )
-      {
-        // It's not, so try to add it
-        QgsDebugMsg( "Projection appears to be valid. Save to database!" );
-        mIsValidFlag = saveAsUserCRS();
-
-        if ( mIsValidFlag )
-        {
-          // but validate that it's there afterwards
-          myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( toProj4() ) + " order by deprecated" );
-        }
-      }
-
-      if ( !myRecord.empty() )
-      {
-        // take the srid from the record
-        mySrsId = myRecord["srs_id"].toLong();
-        QgsDebugMsg( "proj4string match search for srsid returned srsid: " + QString::number( mySrsId ) );
-        if ( mySrsId > 0 )
-        {
-          createFromSrsId( mySrsId );
-        }
-        else
-        {
-          QgsDebugMsg( QString( "invalid srid %1 found" ).arg( mySrsId ) );
-          mIsValidFlag = false;
-        }
-      }
-      else
-      {
-        QgsDebugMsg( "Couldn't find newly added proj string?" );
-        mIsValidFlag = false;
-      }
-    }
   }
 
   return mIsValidFlag;
@@ -1230,6 +1212,18 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
         //@TODO this srs needs to be validated!!!
         mIsValidFlag = true; //shamelessly hard coded for now
       }
+      //TODO: createFromProj4 used to save to the user database any new CRS
+      // this behavior was changed in order to separate creation and saving.
+      // Not sure if it necessary to save it here, should be checked by someone
+      // familiar with the code (should also give a more descriptive name to the generated CRS)
+      if ( mSrsId == 0 )
+      {
+        QString myName = QString( " * %1 (%2)" )
+                         .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                         .arg( toProj4() );
+        saveAsUserCRS( myName );
+      }
+
     }
   }
   else
@@ -1426,7 +1420,7 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCRS()
+bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
 {
   if ( ! mIsValidFlag )
   {
@@ -1435,9 +1429,6 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   }
 
   QString mySql;
-  QString myName = QString( " * %1 (%2)" )
-                   .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
-                   .arg( toProj4() );
 
   //if this is the first record we need to ensure that its srs_id is 10000. For
   //any rec after that sqlite3 will take care of the autonumering
@@ -1447,7 +1438,7 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   {
     mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
             + QString::number( USER_CRS_START_ID )
-            + "," + quotedValue( myName )
+            + "," + quotedValue( name )
             + "," + quotedValue( projectionAcronym() )
             + "," + quotedValue( ellipsoidAcronym() )
             + "," + quotedValue( toProj4() )
@@ -1456,7 +1447,7 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   else
   {
     mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
-            + quotedValue( myName )
+            + quotedValue( name )
             + "," + quotedValue( projectionAcronym() )
             + "," + quotedValue( ellipsoidAcronym() )
             + "," + quotedValue( toProj4() )

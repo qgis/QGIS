@@ -38,9 +38,12 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayer* la
     // prepare list of attributes to match provider fields
     QgsAttributeList providerSubset;
     QgsAttributeList subset = mProviderRequest.subsetOfAttributes();
+    const QgsFields &pendingFields = L->pendingFields();
+    int nPendingFields = pendingFields.count();
     for ( int i = 0; i < subset.count(); ++i )
     {
       int attrIndex = subset[i];
+      if ( attrIndex < 0 || attrIndex >= nPendingFields ) continue;
       if ( L->pendingFields().fieldOrigin( attrIndex ) == QgsFields::OriginProvider )
         providerSubset << L->pendingFields().fieldOriginIndex( attrIndex );
     }

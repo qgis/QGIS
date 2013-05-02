@@ -109,22 +109,22 @@ class PythonConsoleWidget(QWidget):
         self.splitter.addWidget(self.shellOut)
         self.splitter.addWidget(self.shell)
         #self.splitterEditor.addWidget(self.tabEditorWidget)
-        
+
         self.splitterObj = QSplitter(self.splitterEditor)
         self.splitterObj.setHandleWidth(3)
         self.splitterObj.setOrientation(Qt.Horizontal)
         #self.splitterObj.setSizes([0, 0])
         #self.splitterObj.setStretchFactor(0, 1)
-        
+
         self.widgetEditor = QWidget(self.splitterObj)
-        
+
         self.listClassMethod = QTreeWidget(self.splitterObj)
         self.listClassMethod.setColumnCount(2)
         self.listClassMethod.setHeaderLabels(['Object', 'Line'])
         self.listClassMethod.setColumnHidden(1, True)
         self.listClassMethod.setAlternatingRowColors(True)
 
-        
+
         #self.splitterEditor.addWidget(self.widgetEditor)
         #self.splitterObj.addWidget(self.listClassMethod)
         #self.splitterObj.addWidget(self.widgetEditor)
@@ -528,7 +528,7 @@ class PythonConsoleWidget(QWidget):
 #               if line != "\n":
 #                   listScriptFile.append(line)
 #           self.shell.insertTextFromFile(listScriptFile)
-#    
+#
 #           lastDirPath = QFileInfo(scriptFile).path()
 #           settings.setValue("pythonConsole/lastDirPath", QVariant(scriptFile))
 #
@@ -538,7 +538,7 @@ class PythonConsoleWidget(QWidget):
 #        scriptFile.setDefaultSuffix(".py")
 #        fName = scriptFile.getSaveFileName(
 #                        self, "Save file", QString(), "Script file (*.py)")
-#    
+#
 #        if fName.isEmpty() == False:
 #            filename = str(fName)
 #            if not filename.endswith(".py"):
@@ -613,10 +613,10 @@ class PythonConsoleWidget(QWidget):
     def callWidgetMessageBar(self, text):
         self.shellOut.widgetMessageBar(iface, text)
 
-    def callWidgetMessageBarEditor(self, text):
-        self.tabEditorWidget.widgetMessageBar(iface, text)
+    def callWidgetMessageBarEditor(self, text, level, timed):
+        self.tabEditorWidget.widgetMessageBar(iface, text, level, timed)
 
-    def updateTabListScript(self, script, action=None): 
+    def updateTabListScript(self, script, action=None):
         if script != '':
             settings = QSettings()
             if script == 'empty':

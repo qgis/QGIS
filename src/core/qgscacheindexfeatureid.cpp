@@ -25,7 +25,7 @@ QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache* cachedVecto
 
 }
 
-void QgsCacheIndexFeatureId::flushFeature(const QgsFeatureId fid)
+void QgsCacheIndexFeatureId::flushFeature( const QgsFeatureId fid )
 {
   Q_UNUSED( fid )
 }
@@ -42,7 +42,7 @@ void QgsCacheIndexFeatureId::requestCompleted( QgsFeatureRequest featureRequest,
 
 bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest )
 {
-  if( featureRequest.filterType() == QgsFeatureRequest::FilterFid )
+  if ( featureRequest.filterType() == QgsFeatureRequest::FilterFid )
   {
     if ( C->isFidCached( featureRequest.filterFid() ) )
     {

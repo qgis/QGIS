@@ -106,7 +106,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.outSelector.setFilename(outputFile)
 
-      # required either -ts or -tr to create the output file 
+      # required either -ts or -tr to create the output file
       if gdalVersion >= "1.8.0":
         if not QFileInfo(outputFile).exists():
           QMessageBox.information( self, self.tr( "Output size or resolution required" ), self.tr( "The output file doesn't exist. You must set up the output size or resolution to create it." ) )
@@ -127,7 +127,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments << str( self.vertresSpin.value() )
       inputFn = self.getInputFileName()
       if not inputFn.isEmpty():
-        arguments << "-l" 
+        arguments << "-l"
         arguments << QFileInfo( inputFn ).baseName()
       arguments << inputFn
       arguments << self.getOutputFileName()

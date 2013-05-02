@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg1" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" sodipodi:docbase="." sodipodi:docname="airplane.svg" inkscape:version="0.37cvs040123.1035" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
+<sodipodi:namedview  snaptogrid="false" snaptoguides="false" showgrid="false" inkscape:cy="439.978232" inkscape:cx="373.894829" inkscape:zoom="0.61399147" borderopacity="1.0" bordercolor="#666666" pagecolor="#ffffff" id="base" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:window-width="1024" inkscape:pageshadow="2" inkscape:window-height="721" inkscape:pageopacity="0.0">
+	</sodipodi:namedview>
+<rdf:RDF  id="RDF596">
+	<ns:Work  rdf:about="">
+		<dc:title>SVG Road Signs</dc:title>
+		<dc:rights>
+			<ns:Agent>
+				<dc:title>John Cliff</dc:title>
+			</ns:Agent>
+		</dc:rights>
+		<dc:type  rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+		<ns:license  rdf:resource="http://web.resource.org/cc/PublicDomain"></ns:license>
+	</ns:Work>
+	<ns:License  rdf:about="http://web.resource.org/cc/PublicDomain">
+		<ns:permits  rdf:resource="http://web.resource.org/cc/Reproduction"></ns:permits>
+		<ns:permits  rdf:resource="http://web.resource.org/cc/Distribution"></ns:permits>
+		<ns:permits  rdf:resource="http://web.resource.org/cc/DerivativeWorks"></ns:permits>
+	</ns:License>
+</rdf:RDF>
+<polygon fill="param(fill) #FFF" stroke="param(outline) #F00" stroke-width="param(outline-width) 25" points="288.653,59.382 29.639,520.615 550.358,519.107 "/>
+</svg>

@@ -270,6 +270,8 @@ The following options can be added
        <li><tt>xField=fieldname</tt> specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)</li>
        <li><tt>yField=fieldname</tt> specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)</li>
        <li><tt>geomType=(auto|point|line|polygon|none)</tt> specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.</li>
+       <li><tt>subset=expression</tt> specifies an expression used to identify a subset of the records that will be 
+       used.</li>
        <li><tt>crs=...</tt> specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &quot;EPSG:4167&quot;).  If this is not 
        specified then a dialog box may request this information from the user
        when the layer is loaded (depending on QGIS CRS settings).</li>

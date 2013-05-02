@@ -77,7 +77,7 @@ class Dissolve(GeoAlgorithm):
                         tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
                         outFeat.setGeometry( tmpOutGeom )
                     except:
-                        raise GeoAlgorithmExecutionException("Geometry exception while dissolving")                        
+                        raise GeoAlgorithmExecutionException("Geometry exception while dissolving")
                     outFeat.setAttributes( attrs )
                     writer.addFeature( outFeat )
         else:
@@ -99,14 +99,14 @@ class Dissolve(GeoAlgorithm):
                             outFeat.setGeometry( tmpInGeom )
                             first = False
                             attrs = inFeat.attributes()
-                        else:                        
+                        else:
                             tmpInGeom = QgsGeometry( inFeat.geometry() )
-                            tmpOutGeom = QgsGeometry( outFeat.geometry() )  
-                            try:                      
+                            tmpOutGeom = QgsGeometry( outFeat.geometry() )
+                            try:
                                 tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
                                 outFeat.setGeometry( tmpOutGeom )
                             except:
-                                raise GeoAlgorithmExecutionException("Geometry exception while dissolving")                                                       
+                                raise GeoAlgorithmExecutionException("Geometry exception while dissolving")
                 if add:
                     outFeat.setAttributes( attrs )
                     writer.addFeature( outFeat )

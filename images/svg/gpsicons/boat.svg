@@ -1,35 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
-"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg644"
-   xml:space="preserve"><g
-   transform="matrix(0.170478,0,0,0.205567,-8.858937,-53.59854)"
-   style="font-size:12;"
-   id="g660"><path
-   d="M 613.4154 514.9608 L 613.4154 378.8427 L 93.69169 380.6105 C 93.69169 380.6105 136.1181 509.6575 289.9139 513.193 C 613.4154 518.4963 613.4154 518.4963 613.4154 514.9608 z "
-   transform="translate(-16.86172,72.2083)"
-   style="fill:#a5a2a5;fill-rule:evenodd;stroke:#000000;stroke-width:5.6945;"
-   id="path730" /><rect
-   width="67.1751709"
-   height="104.298279"
-   x="616.950989"
-   y="348.790619"
-   transform="translate(-16.86172,72.2083)"
-   style="fill-rule:evenodd;"
-   id="rect732" /><rect
-   width="12.3743896"
-   height="114.904907"
-   x="624.021973"
-   y="444.250031"
-   transform="translate(-16.86172,72.2083)"
-   style="fill-rule:evenodd;"
-   id="rect733" /></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" id="svg644" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="579.997px" height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997"
+	 xml:space="preserve">
+<path id="path730" opacity="0.25" fill="param(fill) #000" d="M483.295,384.897V246.554l-438.057,1.798c0,0,35.76,131.157,165.389,134.749
+	C483.295,388.49,483.295,388.49,483.295,384.897z"/>
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M542.895,216.01h-56.621v16.455L26.83,234.35l4.827,17.705
+	c0.395,1.445,9.959,35.813,36.438,70.817c35.566,47.017,84.719,72.709,142.143,74.3l0.111,0.003
+	c149.483,2.954,217.709,4.303,248.182,4.303c0.003,0,0.004,0,0.006,0c12.717,0,19.548-0.225,23.573-0.776
+	c4.646-0.636,7.875-2.249,10.127-4.221v33.333h10.43v-107.8h40.229V216.01z M469.218,373.244c-2.724,0.049-6.213,0.08-10.683,0.08
+	c-0.001,0-0.004,0-0.005,0c-30.191,0-98.315-1.347-247.569-4.296c-48.933-1.37-89.252-22.362-119.844-62.394
+	c-12.384-16.204-20.667-32.481-25.742-44.288l403.843-1.657V373.244z"/>
+</svg>

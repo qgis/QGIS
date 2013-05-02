@@ -1,60 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   version="1.0"
-   width="580"
-   height="580"
-   id="svg2">
-  <metadata
-     id="metadata2975">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-			  <cc:license
-           rdf:resource="http://web.resource.org/cc/PublicDomain" />
-        <dc:language>en</dc:language>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <defs
-     id="defs4" />
-  <g
-     id="layer1">
-    <g
-       id="g2055">
-			<g
-   id="g1327">
-				<path
-   d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,86.804 L 1.704,536.927 C 1.704,557.771 22.6,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.843 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z "
-   style="fill:#111;stroke:#eee;stroke-width:3.40799999"
-   id="path1329" />
-
-			</g>
-
-			<path
-   d="M 408.008,407.921 L 319.044,304.937 C 318.023,303.313 307.017,285.506 307.017,272.021 C 307.017,258.017 318.675,231.921 318.901,231.417 C 319.098,231.245 319.304,231.089 319.496,230.908 L 394.441,159.297 C 402.412,151.735 402.744,139.143 395.182,131.172 L 393.661,129.57 C 386.099,121.599 373.507,121.266 365.536,128.828 L 295.171,196.062 C 293.81,195.712 292.422,195.525 291.017,195.525 L 262.829,195.525 L 207.783,119.705 C 201.431,110.74 189.014,108.62 180.049,114.971 L 178.247,116.248 C 169.281,122.599 167.162,135.016 173.513,143.982 L 231.021,223.192 L 231.021,317.442 L 185.746,443.963 C 182.044,454.307 187.43,465.695 197.774,469.397 L 199.854,470.141 C 210.199,473.843 221.586,468.456 225.288,458.113 L 269.338,335.015 L 289.531,335.015 L 376.227,435.374 C 383.409,443.688 395.973,444.605 404.287,437.423 L 405.959,435.979 C 414.272,428.8 415.189,416.234 408.008,407.921 z "
-   style="fill:white;"
-   id="path2044" />
-
-			<circle
-   cx="290.267"
-   cy="286.271"
-   r="245.23801"
-   style="fill:none;stroke:white;stroke-width:20"
-   id="circle2046" />
- 
-			<circle
-   cx="285.427"
-   cy="143.92999"
-   r="35"
-   style="fill:white;"
-   id="circle2048" />
- 
-		</g>
-  </g>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="sport_jetski.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
+	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M319.044,304.938c-1.021-1.625-12.027-19.432-12.027-32.917
+	c0-14.004,11.658-40.1,11.885-40.604c0.196-0.172,0.402-0.328,0.595-0.509l74.945-71.611c7.971-7.562,8.303-20.154,0.74-28.125
+	l-1.521-1.602c-7.563-7.971-20.154-8.304-28.125-0.742l-70.365,67.234c-1.36-0.35-2.749-0.537-4.153-0.537h-28.188l-55.046-75.82
+	c-6.352-8.965-18.769-11.085-27.734-4.734l-1.802,1.277c-8.966,6.351-11.085,18.768-4.734,27.734l57.508,79.21v94.25
+	l-45.275,126.521c-3.702,10.344,1.684,21.732,12.028,25.435l2.08,0.743c10.345,3.702,21.732-1.685,25.434-12.027l44.05-123.098
+	h20.193l86.695,100.358c7.183,8.314,19.746,9.23,28.061,2.049l1.672-1.443c8.313-7.18,9.229-19.745,2.049-28.059L319.044,304.938z"
+	/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M470.747,105.791c-48.208-48.208-112.304-74.757-180.48-74.757
+	c-68.177,0-132.272,26.549-180.48,74.757c-48.208,48.208-74.758,112.304-74.758,180.48c0,68.176,26.549,132.272,74.758,180.48
+	c48.208,48.208,112.304,74.758,180.48,74.758c68.176,0,132.272-26.55,180.48-74.758s74.758-112.304,74.758-180.48
+	C545.505,218.094,518.955,153.999,470.747,105.791z M290.267,521.509c-129.711,0-235.238-105.527-235.238-235.238
+	S160.556,51.033,290.267,51.033c129.71,0,235.238,105.527,235.238,235.238S419.978,521.509,290.267,521.509z"/>
+<circle fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" cx="285.427" cy="143.93" r="35"/>
 </svg>

@@ -1,52 +1,22 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   x="0"
-   y="0"
-   width="109.13385"
-   height="109.13385"
-   id="svg602"
-   xml:space="preserve"
-   sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docname="bank2.svg"
-   sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols"><metadata
-     id="metadata9"><rdf:RDF><cc:Work
-         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
-     id="defs7" /><sodipodi:namedview
-     inkscape:window-height="683"
-     inkscape:window-width="1024"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="3.6927131"
-     inkscape:cx="51.821779"
-     inkscape:cy="54.566925"
-     inkscape:window-x="0"
-     inkscape:window-y="36"
-     inkscape:current-layer="g608" /><g
-     transform="translate(0.189977,-3.814697e-6)"
-     style="font-size:12;"
-     id="g608"><rect
-       width="9.9748564"
-       height="90.601692"
-       x="50.491112"
-       y="7.3704515"
-       style="fill-rule:evenodd;stroke:#000000"
-       id="rect607" /><path
-       transform="matrix(10.6304,0,0,8.787395,262.8975,-280.6682)"
-       style=""
-       d="M -16.859375,33.843802 L -16.859375,34.998099 C -17.3086,34.783263 -17.732427,34.623107 -18.130859,34.517631 C -18.529302,34.41217 -18.914067,34.359435 -19.285156,34.359427 C -19.929691,34.359435 -20.427737,34.484435 -20.779297,34.734427 C -21.126955,34.984435 -21.300783,35.339903 -21.300781,35.800834 C -21.300783,36.187559 -21.185549,36.480527 -20.955078,36.67974 C -20.720706,36.875058 -20.2793,37.033261 -19.630859,37.154349 L -18.916016,37.300834 C -18.033208,37.468807 -17.382818,37.765682 -16.964844,38.191459 C -16.542975,38.613337 -16.332038,39.179743 -16.332031,39.890677 C -16.332038,40.738335 -16.617194,41.380913 -17.1875,41.818412 C -17.753912,42.255912 -18.585942,42.474662 -19.683594,42.474662 C -20.097659,42.474662 -20.539065,42.427787 -21.007812,42.334037 C -21.472658,42.240287 -21.955079,42.101615 -22.455078,41.918021 L -22.455078,40.699271 C -21.974611,40.968804 -21.503908,41.171929 -21.042969,41.308646 C -20.582034,41.445366 -20.128909,41.513725 -19.683594,41.513724 C -19.007817,41.513725 -18.486333,41.380913 -18.119141,41.115287 C -17.751959,40.849663 -17.568365,40.470757 -17.568359,39.978568 C -17.568365,39.548883 -17.701177,39.212946 -17.966797,38.970756 C -18.228521,38.728572 -18.660161,38.546931 -19.261719,38.425834 L -19.982422,38.285209 C -20.865237,38.109432 -21.503908,37.834041 -21.898438,37.459037 C -22.29297,37.084042 -22.490235,36.562558 -22.490234,35.894584 C -22.490235,35.121153 -22.218751,34.511779 -21.675781,34.066459 C -21.128908,33.621155 -20.376956,33.398499 -19.419922,33.39849 C -19.00977,33.398499 -18.591802,33.435608 -18.166016,33.509818 C -17.74024,33.584046 -17.304693,33.695374 -16.859375,33.843802"
-       id="flowRoot1308" /></g></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="bank2.svg" inkscape:version="0.43"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
+	 height="579.997px" viewBox="-235.433 -235.433 579.997 579.997" enable-background="new -235.433 -235.433 579.997 579.997"
+	 xml:space="preserve">
+<sodipodi:namedview  inkscape:cy="54.566925" inkscape:cx="51.821779" borderopacity="1.0" pagecolor="#ffffff" bordercolor="#666666" inkscape:zoom="3.6927131" id="base" inkscape:current-layer="g608" inkscape:window-y="36" inkscape:window-x="0" inkscape:pageshadow="2" inkscape:window-width="1024" inkscape:pageopacity="0.0" inkscape:window-height="683">
+	</sodipodi:namedview>
+<path fill="param(fill) #000" stroke="param(outline) #FFF" stroke-width="param(outline-width) 0" d="M182.057,63.58c-21.412-18.028-54.73-30.601-99.955-37.714
+	l-4.08-0.691V-98.239c14.383,0.854,29.148,2.933,44.303,6.249c20.409,4.466,42.123,11.25,65.135,20.347v-48.881
+	c-22.814-6.285-45.125-10.998-66.938-14.142c-14.339-2.067-28.504-3.44-42.5-4.148v-29.225H25.137v30.06
+	c-34.487,3.262-62.626,12.222-84.409,26.882c-27.814,18.859-41.721,44.662-41.721,77.416c0,28.285,10.106,50.368,30.316,66.246
+	c19.858,15.604,51.803,27.132,95.814,34.588v136.536c-17.109-1.105-34.44-3.809-51.992-8.111
+	c-23.612-5.788-47.723-14.391-72.338-25.803v51.61c25.615,7.774,50.328,13.647,74.14,17.619c17.475,2.887,34.199,4.709,50.19,5.494
+	v28.883h52.885v-29.783c39.14-3.186,70.016-11.994,92.628-26.43c29.215-18.532,43.822-45.742,43.822-81.63
+	C214.472,105.43,203.667,81.448,182.057,63.58z M-22.352-0.433C-34.159-8.871-40.06-21.276-40.06-37.653
+	c0-19.518,8.903-34.57,26.713-45.158C-3-88.892,9.837-93.217,25.137-95.805V16.059C2.847,11.518-12.983,6.02-22.352-0.433z
+	 M122.922,187.389c-11.833,7.077-26.805,11.926-44.9,14.551V76.072c23.786,5.006,41.37,11.836,52.707,20.511
+	c13.605,10.255,20.41,24.48,20.41,42.674C151.139,160.099,141.737,176.142,122.922,187.389z"/>
+</svg>

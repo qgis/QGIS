@@ -64,7 +64,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.tableWidget.setEnabled(value)
         self.addAPIpath.setEnabled(value)
         self.removeAPIpath.setEnabled(value)
-        
+
     def autoCompletionOptions(self):
         if self.autoCompleteEnabled.isChecked():
             self.enableDisableAutoCompleteOptions(True)
@@ -144,32 +144,32 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/fontfamilyindex", QVariant(fontFamilyIndex))
         fontFamilyText = self.fontComboBox.currentText()
         settings.setValue("pythonConsole/fontfamilytext", QVariant(fontFamilyText))
-        
+
         fontFamilyIndexEditor = self.fontComboBoxEditor.currentIndex()
         settings.setValue("pythonConsole/fontfamilyindexEditor", QVariant(fontFamilyIndexEditor))
         fontFamilyTextEditor = self.fontComboBoxEditor.currentText()
         settings.setValue("pythonConsole/fontfamilytextEditor", QVariant(fontFamilyTextEditor))
-        
+
         fontSize = self.spinBox.value()
         fontSizeEditor = self.spinBoxEditor.value()
-        
+
         for i in range(0, self.tableWidget.rowCount()):
             text = self.tableWidget.item(i, 1).text()
             self.listPath.append(text)
         settings.setValue("pythonConsole/fontsize", QVariant(fontSize))
         settings.setValue("pythonConsole/fontsizeEditor", QVariant(fontSizeEditor))
         settings.setValue("pythonConsole/userAPI", QVariant(self.listPath))
-        
+
         settings.setValue("pythonConsole/autoCompThreshold", QVariant(self.autoCompThreshold.value()))
         settings.setValue("pythonConsole/autoCompThresholdEditor", QVariant(self.autoCompThresholdEditor.value()))
-        
+
         if self.autoCompFromAPIEditor.isChecked():
             settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromAPI'))
         elif self.autoCompFromDocEditor.isChecked():
             settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromDoc'))
         elif self.autoCompFromDocAPIEditor.isChecked():
             settings.setValue("pythonConsole/autoCompleteSourceEditor", QVariant('fromDocAPI'))
-            
+
         if self.autoCompFromAPI.isChecked():
             settings.setValue("pythonConsole/autoCompleteSource", QVariant('fromAPI'))
         elif self.autoCompFromDoc.isChecked():
@@ -198,20 +198,20 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self.tableWidget.horizontalHeader().show()
             self.tableWidget.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
         self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False).toBool())
-        
+
         self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2).toInt()[0])
         self.autoCompThresholdEditor.setValue(settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0])
-        
+
         self.autoCompleteEnabledEditor.setChecked(settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool())
         self.autoCompleteEnabled.setChecked(settings.value("pythonConsole/autoCompleteEnabled", True).toBool())
-        
+
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSource") == 'fromAPI':
             self.autoCompFromAPI.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSource") == 'fromDocAPI':
             self.autoCompFromDocAPI.setChecked(True)
-            
+
         if settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromDoc':
             self.autoCompFromDocEditor.setChecked(True)
         elif settings.value("pythonConsole/autoCompleteSourceEditor") == 'fromAPI':

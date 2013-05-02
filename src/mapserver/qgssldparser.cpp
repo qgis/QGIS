@@ -1524,6 +1524,18 @@ void QgsSLDParser::setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml
     {
       QgsCoordinateReferenceSystem srs;
       srs.createFromProj4( projString );
+      //TODO: createFromProj4 used to save to the user database any new CRS
+      // this behavior was changed in order to separate creation and saving.
+      // Not sure if it necessary to save it here, should be checked by someone
+      // familiar with the code (should also give a more descriptive name to the generated CRS)
+      if ( srs.srsid() == 0 )
+      {
+        QString myName = QString( " * %1 (%2)" )
+                         .arg( QObject::tr( "Generated CRS", "A CRS automatically generated from layer info get this prefix for description" ) )
+                         .arg( srs.toProj4() );
+        srs.saveAsUserCRS( myName );
+      }
+
       ml->setCrs( srs );
     }
   }

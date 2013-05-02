@@ -1,87 +1,30 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.0"
-   width="580"
-   height="580"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.46"
-   sodipodi:docname="sport_golf.svg"
-   sodipodi:docbase="s:\Data\FacilityIcons"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
-  <metadata
-     id="metadata2975">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-			  <cc:license
-           rdf:resource="http://web.resource.org/cc/PublicDomain" />
-        <dc:language>en</dc:language>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <sodipodi:namedview
-     inkscape:window-height="1005"
-     inkscape:window-width="1280"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     guidetolerance="10.0"
-     gridtolerance="10.0"
-     objecttolerance="10.0"
-     borderopacity="1.0"
-     bordercolor="#666666"
-     pagecolor="#ffffff"
-     id="base"
-     inkscape:zoom="0.65172414"
-     inkscape:cx="290"
-     inkscape:cy="290.7672"
-     inkscape:window-x="-4"
-     inkscape:window-y="-4"
-     inkscape:current-layer="svg2"
-     showgrid="false" />
-  <defs
-     id="defs4">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 290 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="580 : 290 : 1"
-       inkscape:persp3d-origin="290 : 193.33333 : 1"
-       id="perspective10" />
-  </defs>
-  <g
-     id="g1327">
-    <path
-       d="M 66.275,1.768 C 24.94,1.768 1.704,23.139 1.704,66.804 L 1.704,516.927 C 1.704,557.771 22.599,579.156 63.896,579.156 L 515.92,579.156 C 557.227,579.156 578.149,558.841 578.149,516.927 L 578.149,66.804 C 578.149,24.203 557.227,1.768 514.628,1.768 C 514.624,1.768 66.133,1.625 66.275,1.768 z "
-       style="fill:#111;stroke:#eee;stroke-width:3.40799999"
-       id="path1329" />
-  </g>
-  <rect
-     style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:20.94757652;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="rect2996"
-     width="11.793165"
-     height="467.50745"
-     x="73.346817"
-     y="56.246273" />
-  <path
-     style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 77.95768,51.756614 L 257.39682,118.5291 L 78.29184,191.43915 L 77.95768,51.756614 z"
-     id="path2998"
-     sodipodi:nodetypes="cccc" />
-  <path
-     transform="matrix(4.0375831,0,0,4.0375831,-822.63179,-683.71826)"
-     style="font-size:40px;font-style:normal;font-weight:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-     d="M 299.66943,208.31152 C 299.66936,205.71883 298.73333,203.53402 296.86133,201.75708 C 294.98919,199.98031 292.75677,199.09188 290.16406,199.0918 C 287.57416,199.09188 285.36664,199.98031 283.5415,201.75708 C 281.71625,203.53402 280.80366,205.71883 280.80371,208.31152 C 280.80366,210.90144 281.71625,213.08479 283.5415,214.86157 C 285.36664,216.63849 287.57416,217.52692 290.16406,217.52686 C 292.75677,217.52692 294.98919,216.63849 296.86133,214.86157 C 298.73333,213.08479 299.66936,210.90144 299.66943,208.31152 L 299.66943,208.31152 z M 274.90186,304.21338 C 276.91743,304.21336 278.54926,303.25389 279.79736,301.33496 L 306.86768,260.58008 L 308.30908,266.19629 L 304.2793,296.7251 C 304.08586,298.26024 304.42131,299.6284 305.28564,300.82959 C 306.14982,302.03074 307.34953,302.77488 308.88477,303.06201 C 310.42277,303.3491 311.83927,303.03709 313.13428,302.12598 C 314.42911,301.21483 315.17325,299.99022 315.3667,298.45215 L 319.5415,267.20703 C 319.63809,266.14943 319.54288,265.04494 319.25586,263.89355 L 310.03613,227.17285 L 334.0874,222.85303 C 335.33534,222.66266 336.34315,222.0152 337.11084,220.91064 C 337.87831,219.80622 338.16542,218.62995 337.97217,217.38184 C 337.68495,216.13386 336.96571,215.07771 335.81445,214.21338 L 280.51807,177.78271 L 275.47754,185.12598 C 274.22945,186.85459 274.51802,188.34287 276.34326,189.59082 C 278.0688,190.6456 279.55561,190.35703 280.80371,188.7251 L 283.68652,184.40527 L 328.61182,213.92773 L 291.89551,220.55029 C 290.55072,220.83747 289.4704,221.53327 288.65454,222.6377 C 287.83856,223.74225 287.6225,224.91852 288.00635,226.1665 L 295.92529,257.12598 L 270.00635,295.86377 C 269.52584,296.72508 269.2856,297.63622 269.28564,298.59717 C 269.2856,300.13231 269.83785,301.45213 270.94238,302.55664 C 272.04683,303.66111 273.36665,304.21336 274.90186,304.21338 L 274.90186,304.21338 z"
-     id="flowRoot2383" />
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1"
+	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" inkscape:output_extension="org.inkscape.output.svg.inkscape" sodipodi:docbase="s:\Data\FacilityIcons" sodipodi:docname="sport_golf.svg" inkscape:version="0.46" sodipodi:version="0.32"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
+	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
+<sodipodi:namedview  showgrid="false" inkscape:cy="290.7672" inkscape:cx="290" inkscape:zoom="0.65172414" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-width="1280" inkscape:window-height="1005">
+	</sodipodi:namedview>
+<defs>
+	
+	
+		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective10" inkscape:persp3d-origin="290 : 193.33333 : 1">
+		</inkscape:perspective>
+</defs>
+<polygon fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" points="95.614,58.327 95.614,45.772 62.873,45.772 62.873,534.228 
+	95.614,534.228 95.614,184.388 257.397,118.529 "/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M375.971,183.803c7.559-7.174,11.338-15.989,11.338-26.446
+	c0-10.468-3.779-19.29-11.338-26.464c-7.56-7.174-16.572-10.761-27.041-10.761c-10.457,0-19.37,3.587-26.739,10.761
+	c-7.369,7.175-11.054,15.996-11.054,26.464c0,10.457,3.685,19.272,11.054,26.446c7.369,7.174,16.282,10.761,26.739,10.761
+	C359.398,194.564,368.411,190.978,375.971,183.803z"/>
+<path fill="param(fill) #FFF" stroke="param(outline) #000" stroke-width="param(outline-width) 1" d="M541.959,193.979c-1.16-5.039-4.063-9.303-8.712-12.793
+	L309.983,34.094l-20.352,29.649c-5.04,6.979-3.875,12.988,3.495,18.027c6.967,4.259,12.97,3.094,18.01-3.496l11.64-17.441
+	l181.39,119.199l-148.245,26.739c-5.43,1.159-9.792,3.969-13.086,8.428c-3.295,4.46-4.167,9.209-2.617,14.248l31.974,125.001
+	l-104.65,156.407c-1.94,3.478-2.91,7.156-2.91,11.036c0,6.198,2.229,11.527,6.689,15.986c4.459,4.46,9.789,6.689,15.987,6.689
+	c8.138,0,14.727-3.874,19.766-11.622l109.299-164.551l5.819,22.676l-16.271,123.263c-0.781,6.198,0.573,11.722,4.063,16.572
+	c3.489,4.85,8.333,7.854,14.531,9.014c6.21,1.159,11.93-0.101,17.158-3.779c5.228-3.679,8.232-8.623,9.014-14.834l16.856-126.154
+	c0.39-4.27,0.005-8.729-1.153-13.379l-37.226-148.263l97.108-17.441c5.039-0.769,9.108-3.383,12.208-7.843
+	C541.58,203.768,542.739,199.018,541.959,193.979z"/>
 </svg>

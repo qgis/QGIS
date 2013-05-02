@@ -107,14 +107,14 @@ class Sextante:
     @staticmethod
     def setInterface(iface):
         Sextante.iface = iface
-        
+
     @staticmethod
     def setPlugin(iface):
-        Sextante.plugin = iface      
-        
+        Sextante.plugin = iface
+
     @staticmethod
     def getPlugin():
-        return Sextante.plugin 
+        return Sextante.plugin
 
     @staticmethod
     def initialize():
@@ -239,7 +239,7 @@ class Sextante:
             if name in provider:
                 return provider[name]
         return None
-            
+
     @staticmethod
     def getAlgorithmFromFullName(name):
         for provider in Sextante.algs.values():

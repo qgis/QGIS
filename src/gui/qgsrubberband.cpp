@@ -163,7 +163,7 @@ void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geomet
     {
       index = mPoints[geometryIndex].size() + index;
     }
-    mPoints[geometryIndex].removeAt(index);
+    mPoints[geometryIndex].removeAt( index );
   }
 
   if ( doUpdate )
@@ -175,7 +175,7 @@ void QgsRubberBand::removePoint( int index, bool doUpdate/* = true*/, int geomet
 
 void QgsRubberBand::removeLastPoint( int geometryIndex )
 {
-  removePoint(-1, true, geometryIndex);
+  removePoint( -1, true, geometryIndex );
 }
 
 /*!
@@ -487,8 +487,8 @@ void QgsRubberBand::updateRect()
     qreal s = ( mIconSize - 1 ) / 2;
     qreal p = mWidth;
 
-    QgsRectangle r ( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
-                     it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p );
+    QgsRectangle r( it->x() + mTranslationOffsetX - s - p, it->y() + mTranslationOffsetY - s - p,
+                    it->x() + mTranslationOffsetX + s + p, it->y() + mTranslationOffsetY + s + p );
 
     for ( int i = 0; i < mPoints.size(); ++i )
     {

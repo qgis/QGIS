@@ -337,6 +337,26 @@ class CORE_EXPORT QgsProject : public QObject
     //! emitted when project is being written
     void writeProject( QDomDocument & );
 
+    /**
+     * Emitted, after the basic initialisation of a layer from the project
+     * file is done. You can use this signal to read additional information
+     * from the project file.
+     *
+     * @param mapLayer  The map layer which is being initialized
+     * @param layerNode The layer node from the project file
+     */
+    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerNode );
+
+    /**
+     * Emitted, when a layer is being saved. You can use this method to save
+     * additional information to the layer.
+     *
+     * @param mapLayer  The map layer which is being initialized
+     * @param layerNode The layer node from the project file
+     * @param doc The document
+     */
+    void writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem,  QDomDocument& doc );
+
     //! emitted when the project file has been written and closed
     void projectSaved();
 

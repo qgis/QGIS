@@ -438,7 +438,7 @@ class QgisAppInterface : public QgisInterface
      *
      * More information here: http://qt-project.org/forums/viewthread/27098/
      */
-    virtual void preloadForm(QString uifile);
+    virtual void preloadForm( QString uifile );
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified

@@ -47,7 +47,7 @@ QgsDualView::QgsDualView( QWidget* parent )
   connect( mActionExpressionPreview, SIGNAL( triggered() ), SLOT( previewExpressionBuilder() ) );
   connect( mPreviewActionMapper, SIGNAL( mapped( QObject* ) ), SLOT( previewColumnChanged( QObject* ) ) );
   connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SLOT( previewExpressionChanged( QString ) ) );
-  connect( this, SIGNAL( currentChanged(int) ), this, SLOT( saveEditChanges() ) );
+  connect( this, SIGNAL( currentChanged( int ) ), this, SLOT( saveEditChanges() ) );
 }
 
 QgsDualView::~QgsDualView()
@@ -62,7 +62,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QgsDista
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
   connect( layer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
-  connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( editingToggled() )  );
+  connect( layer, SIGNAL( beforeCommitChanges() ), this, SLOT( editingToggled() ) );
 
   initLayerCache( layer );
   initModels( mapCanvas );
