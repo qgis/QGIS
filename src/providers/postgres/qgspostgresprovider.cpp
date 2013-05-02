@@ -3253,7 +3253,7 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                         ",styleSLD xml"
                         ",useAsDefault boolean"
                         ",description text"
-                        ",ownervarchar(30)"
+                        ",owner varchar(30)"
                         ",ui xml"
                         ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
                         ")" );
@@ -3275,8 +3275,9 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
 
   QString sql = QString( "INSERT INTO layer_styles("
                          "f_table_catalog,f_table_schema,f_table_name,f_geometry_column,styleName,styleQML,styleSLD,useAsDefault,description,owner%11"
-                         ") VALUES("
-                         "%1,%2,%3,%4,%5,XMLPARSE( DOCUMENT %6),XMLPARSE(DOCUMENT %7),%8,%9,%10%12)" )
+                         ") VALUES ("
+                         "%1,%2,%3,%4,%5,XMLPARSE(DOCUMENT %6),XMLPARSE(DOCUMENT %7),%8,%9,%10%12"
+                         ")" )
                 .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
@@ -3298,7 +3299,6 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                 " AND f_geometry_column=%4"
                                 " AND styleName=%5" )
                        .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                        .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
@@ -3322,8 +3322,8 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
           .arg( QgsPostgresConn::quotedValue( qmlStyle ) )
           .arg( QgsPostgresConn::quotedValue( sldStyle ) )
           .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
-          .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
+          .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
@@ -3339,9 +3339,9 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
                                         " AND f_table_name=%3"
                                         " AND f_geometry_column=%4" )
                                .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
-                               .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
                                .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
-                               .arg( QgsPostgresConn::quotedValue( dsUri.table() ) );
+                               .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                               .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
     sql = QString( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql ).arg( sql );
   }
 

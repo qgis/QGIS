@@ -3744,7 +3744,7 @@ int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, 
   if ( !listStylesExternalMethod )
   {
     delete myLib;
-    msgError = QObject::tr( "Provider %1 has no listStyles method" ).arg( mProviderKey );
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey ).arg( "listStyles" );
     return -1;
   }
 
@@ -3765,7 +3765,7 @@ QString QgsVectorLayer::getStyleFromDatabase( QString styleId, QString &msgError
   if ( !getStyleByIdMethod )
   {
     delete myLib;
-    msgError = QObject::tr( "Provider %1 has no getStyleById method" ).arg( mProviderKey );
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey ).arg( "getStyleById" );
     return QObject::tr( "" );
   }
 
@@ -3790,7 +3790,7 @@ void QgsVectorLayer::saveStyleToDatabase( QString name, QString description,
   if ( !saveStyleExternalMethod )
   {
     delete myLib;
-    msgError = QObject::tr( "Provider %1 has no saveStyle method" ).arg( mProviderKey );
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey ).arg( "saveStyle" );
     return;
   }
 

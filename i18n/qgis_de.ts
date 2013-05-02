@@ -8361,28 +8361,16 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3747"/>
-        <source>Provider %1 has no listStyles method</source>
-        <translation>Datenlieferant %1 hat keine Methode listStyles</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3768"/>
-        <source>Provider %1 has no getStyleById method</source>
-        <translation>Datenlieferant %1 hat keine Methode getStyleById</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3793"/>
-        <source>Provider %1 has no saveStyle method</source>
-        <translation>Datenlieferant %1 hat keine Methode saveStyle</translation>
+        <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
+        <source>Provider %1 has no %2 method</source>
+        <translation>Datenlieferant %1 hat keine Methode %2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3845"/>
         <source>Loaded from Provider</source>
         <translation>Aus Datenlieferanten geladen</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsvectorlayerimport.cpp" line="73"/>
-        <source>Provider %1 has no createEmptyLayer method</source>
-        <translation>Datenlieferant %1 kann keine leeren Layer erzeugen</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="104"/>
