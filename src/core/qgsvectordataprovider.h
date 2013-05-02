@@ -329,6 +329,20 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     QStringList errors();
 
 
+    /**
+     * It returns false by default.
+     * Must be implemented by providers that support saving and loading styles to db returning true
+     */
+    virtual bool isSaveAndLoadStyleToDBSupported() { return false; }
+
+  signals:
+    /** Is emitted, when editing has started */
+    void editingStarted();
+
+    /** Is emitted, when editing stopped */
+    void editingStopped();
+
+
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
 
