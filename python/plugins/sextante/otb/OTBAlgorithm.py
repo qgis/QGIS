@@ -28,10 +28,8 @@ from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from sextante.core.GeoAlgorithm import GeoAlgorithm
-from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.parameters.ParameterRaster import ParameterRaster
-from sextante.outputs.OutputRaster import OutputRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterSelection import ParameterSelection
@@ -87,11 +85,10 @@ class OTBAlgorithm(GeoAlgorithm):
                 line = line.strip("\n").strip()
                 if line.startswith("Parameter"):
                     param = ParameterFactory.getFromString(line)
-
                     # Hack for initializing the elevation parameters from Sextante configuration
-                    if param.name == "-elev.dem.path":
+                    if param.name == "-elev.dem.path" or param.name == "-elev.dem":
                         param.default = OTBUtils.otbSRTMPath()
-                    if param.name == "-elev.dem.geoid":
+                    elif param.name == "-elev.dem.geoid" or param.name == "-elev.geoid":
                         param.default = OTBUtils.otbGeoidPath()
                     self.addParameter(param)
                 elif line.startswith("*Parameter"):
