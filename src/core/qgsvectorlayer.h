@@ -22,7 +22,6 @@
 #include <QSet>
 #include <QList>
 #include <QStringList>
-#include <QVector>
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
@@ -713,8 +712,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param msgError
      * @return the number of styles related to current layer
      */
-    virtual int listStylesInDatabase( QVector<QString> &ids, QVector<QString> &names,
-                                      QVector<QString> &descriptions, QString &msgError );
+    virtual int listStylesInDatabase( QStringList &ids, QStringList &names,
+                                      QStringList &descriptions, QString &msgError );
 
     /**
      * Will return the named style corresponding to style id provided

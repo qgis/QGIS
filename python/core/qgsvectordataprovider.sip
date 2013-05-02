@@ -269,6 +269,12 @@ class QgsVectorDataProvider : QgsDataProvider
     QStringList errors();
 
 
+    /**
+     * It returns false by default.
+     * Must be implemented by providers that support saving and loading styles to db returning true
+     */
+    virtual bool isSaveAndLoadStyleToDBSupported();
+
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
 

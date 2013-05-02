@@ -96,9 +96,9 @@ typedef QString loadStyle_t(
 
 typedef int listStyles_t(
   const QString& uri,
-  QVector<QString> &ids,
-  QVector<QString> &names,
-  QVector<QString> &descriptions,
+  QStringList &ids,
+  QStringList &names,
+  QStringList &descriptions,
   QString& errCause
 );
 
@@ -3730,7 +3730,7 @@ QDomElement QgsAttributeEditorField::toDomElement( QDomDocument& doc ) const
   return elem;
 }
 
-int QgsVectorLayer::listStylesInDatabase( QVector<QString> &ids, QVector<QString> &names, QVector<QString> &descriptions, QString &msgError )
+int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
 {
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
   QLibrary *myLib = pReg->providerLibrary( mProviderKey );

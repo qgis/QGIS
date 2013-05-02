@@ -146,7 +146,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   if ( layer->dataProvider()->isSaveAndLoadStyleToDBSupported() )
   {
     //for loading
-    mLoadStyleMenu =  new QMenu();
+    mLoadStyleMenu = new QMenu();
     mLoadStyleMenu->addAction( tr( "Load from file" ) );
     mLoadStyleMenu->addAction( tr( "Load from database" ) );
     pbnLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
@@ -297,7 +297,7 @@ void QgsVectorLayerProperties::insertExpression()
   dlg.setWindowTitle( tr( "Insert expression" ) );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    QString expression =  dlg.expressionBuilder()->expressionText();
+    QString expression = dlg.expressionBuilder()->expressionText();
     //Only add the expression if the user has entered some text.
     if ( !expression.isEmpty() )
     {
@@ -754,7 +754,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
     }
     else
     {
-      format =  tr( "QGIS Layer Style File" ) + " (*.qml)";
+      format = tr( "QGIS Layer Style File" ) + " (*.qml)";
       extension = ".qml";
     }
 
@@ -826,7 +826,7 @@ void QgsVectorLayerProperties::loadStyleMenuTriggered( QAction *action )
 void QgsVectorLayerProperties::showListOfStylesFromDatabase()
 {
   QString errorMsg;
-  QVector<QString> ids, names, descriptions;
+  QStringList ids, names, descriptions;
 
   //get the list of styles in the db
   int sectionLimit = layer->listStylesInDatabase( ids, names, descriptions, errorMsg );

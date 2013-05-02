@@ -335,14 +335,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     virtual bool isSaveAndLoadStyleToDBSupported() { return false; }
 
-  signals:
-    /** Is emitted, when editing has started */
-    void editingStarted();
-
-    /** Is emitted, when editing stopped */
-    void editingStopped();
-
-
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
 

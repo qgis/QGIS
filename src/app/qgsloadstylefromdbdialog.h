@@ -10,23 +10,21 @@
 #ifndef QGSLOADFILEFROMDBDIALOG_H
 #define QGSLOADFILEFROMDBDIALOG_H
 
-#include <QVector>
-
 #include "ui_qgsloadstylefromdbdialog.h"
 #include "qgisgui.h"
 #include "qgsfield.h"
 
-class QgsLoadStyleFromDBDialog: public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout
+class QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadStyleFromDBDialogLayout
 {
     QString mSelectedStyleId;
     int mSectionLimit;
-    QVector<QString> mIds, mNames, mDescriptions;
+    QStringList mIds, mNames, mDescriptions;
     QString qmlStyle;
     Q_OBJECT
   public:
     explicit QgsLoadStyleFromDBDialog( QWidget *parent = 0 );
 
-    void initializeLists( QVector<QString> ids, QVector<QString> names, QVector<QString> descriptions, int sectionLimit );
+    void initializeLists( QStringList ids, QStringList names, QStringList descriptions, int sectionLimit );
     QString getSelectedStyleId();
 
   public slots:

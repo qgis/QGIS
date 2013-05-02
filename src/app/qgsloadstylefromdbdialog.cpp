@@ -46,8 +46,7 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
 
 }
 
-void QgsLoadStyleFromDBDialog::initializeLists( QVector<QString> ids, QVector<QString> names,
-    QVector<QString> descriptions, int sectionLimit )
+void QgsLoadStyleFromDBDialog::initializeLists( QStringList ids, QStringList names, QStringList descriptions, int sectionLimit )
 {
   mIds = ids;
   mNames = names;
