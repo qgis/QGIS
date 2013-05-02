@@ -1683,7 +1683,7 @@ void QgsOracleProvider::appendGeomParam( QgsGeometry *geom, QSqlQuery &qry ) con
 
   if ( !g.isNull )
   {
-    ptr.ucPtr++;  // skip endianess
+    ptr.ucPtr++;  // skip endianness
 
     g.eleminfo.clear();
     g.ordinates.clear();
@@ -1717,7 +1717,7 @@ void QgsOracleProvider::appendGeomParam( QgsGeometry *geom, QSqlQuery &qry ) con
         {
           g.gtype = SDO_GTYPE( dim, gtMultiLine );
           nLines = *ptr.iPtr++;
-          ptr.ucPtr++; // Skip endianess of first linestring
+          ptr.ucPtr++; // Skip endianness of first linestring
           ptr.iPtr++;  // Skip type of first linestring
         }
 
@@ -1734,7 +1734,7 @@ void QgsOracleProvider::appendGeomParam( QgsGeometry *geom, QSqlQuery &qry ) con
             iOrdinate  += dim;
           }
 
-          ptr.ucPtr++; // Skip endianess of next linestring
+          ptr.ucPtr++; // Skip endianness of next linestring
           ptr.iPtr++;  // Skip type of next linestring
         }
       }
@@ -1753,7 +1753,7 @@ void QgsOracleProvider::appendGeomParam( QgsGeometry *geom, QSqlQuery &qry ) con
           g.gtype = SDO_GTYPE( dim, gtMultiPolygon );
           nPolygons = *ptr.iPtr++;
 
-          ptr.ucPtr++; // Skip endianess of first polygon
+          ptr.ucPtr++; // Skip endianness of first polygon
           ptr.iPtr++;  // Skip type of first polygon
         }
 
@@ -1774,7 +1774,7 @@ void QgsOracleProvider::appendGeomParam( QgsGeometry *geom, QSqlQuery &qry ) con
             }
           }
 
-          ptr.ucPtr++; // Skip endianess of next polygon
+          ptr.ucPtr++; // Skip endianness of next polygon
           ptr.iPtr++;  // Skip type of next polygon
         }
       }
@@ -1791,7 +1791,7 @@ void QgsOracleProvider::appendGeomParam( QgsGeometry *geom, QSqlQuery &qry ) con
 
         for ( int i = 0; i < n; i++ )
         {
-          ptr.ucPtr++; // Skip endianess of point
+          ptr.ucPtr++; // Skip endianness of point
           ptr.iPtr++;  // Skip type of point
 
           g.ordinates << *ptr.dPtr++;

@@ -12877,13 +12877,6 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <translation>Konnte nicht in das Verzeichnis schreiben</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="694"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1013"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1181"/>
-        <source>The given output directory is not writeable. Cancelling.</source>
-        <translation>Im Ausgabeverzeichnis konnte nicht geschriebene werden.  Breche ab.</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="732"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="841"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1039"/>
@@ -12977,6 +12970,13 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <location filename="../src/app/composer/qgscomposer.cpp" line="186"/>
         <source>Print Composers</source>
         <translation>Druckzusammenstellungen</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="694"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1013"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1181"/>
+        <source>The given output directory is not writable. Cancelling.</source>
+        <translation>Im Ausgabeverzeichnis konnte nicht geschrieben werden.  Breche ab.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="963"/>
@@ -43411,7 +43411,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="51"/>
-        <source>Continous</source>
+        <source>Continuous</source>
         <translation>Fortlaufend</translation>
     </message>
     <message>

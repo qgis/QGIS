@@ -1284,7 +1284,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Is emitted, when editing on this layer has started*/
     void editingStarted();
 
-    /** Is emitted, when edited changes succesfully have been written to the data provider */
+    /** Is emitted, when edited changes successfully have been written to the data provider */
     void editingStopped();
 
     /** Is emitted, before changes are commited to the data provider */

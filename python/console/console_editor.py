@@ -448,7 +448,7 @@ class Editor(QsciScintilla):
         if dir not in sys.path:
             sys.path.append(dir)
         try:
-            ## set creationflags for runnning command without shell window
+            ## set creationflags for running command without shell window
             if sys.platform.startswith('win'):
                 p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)

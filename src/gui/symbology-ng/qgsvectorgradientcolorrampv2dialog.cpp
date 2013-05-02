@@ -48,7 +48,7 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
   // fill type combobox
   cboType->blockSignals( true );
   cboType->addItem( tr( "Discrete" ) );
-  cboType->addItem( tr( "Continous" ) );
+  cboType->addItem( tr( "Continuous" ) );
   if ( mRamp->isDiscrete() )
     cboType->setCurrentIndex( 0 );
   else

@@ -1715,7 +1715,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   {
 
     QString attributeName = fields[i].name();
-    //skip attribute if is explicitely excluded from WFS publication
+    //skip attribute if is explicitly excluded from WFS publication
     if ( excludedAttributes.contains( attributeName ) )
     {
       continue;
@@ -1773,7 +1773,7 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   {
 
     QString attributeName = fields[i].name();
-    //skip attribute if is explicitely excluded from WFS publication
+    //skip attribute if is explicitly excluded from WFS publication
     if ( excludedAttributes.contains( attributeName ) )
     {
       continue;

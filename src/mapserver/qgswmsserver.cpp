@@ -1309,7 +1309,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     featureAttributes = feature.attributes();
     for ( int i = 0; i < featureAttributes.count(); ++i )
     {
-      //skip attribute if it is explicitely excluded from WMS publication
+      //skip attribute if it is explicitly excluded from WMS publication
       if ( excludedAttributes.contains( fields[i].name() ) )
       {
         continue;
