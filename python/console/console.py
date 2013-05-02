@@ -473,8 +473,8 @@ class PythonConsoleWidget(QWidget):
         self.layoutEditor.setMargin(0)
         self.layoutEditor.setSpacing(0)
         self.layoutEditor.addWidget(self.widgetButtonEditor, 0, 0, 2, 1)
-        self.layoutEditor.addWidget(self.tabEditorWidget, 1, 1, 1, 1)
-        self.layoutEditor.addWidget(self.widgetFind, 0, 1, 1, 1)
+        self.layoutEditor.addWidget(self.tabEditorWidget, 0, 1, 1, 1)
+        self.layoutEditor.addWidget(self.widgetFind, 1, 1, 1, 1)
 
         self.toolBarLayout = QGridLayout(self.widgetButton)
         self.toolBarLayout.setMargin(0)
@@ -523,15 +523,11 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.currentWidget().newEditor.findText()
 
     def _findNext(self, fromPrev=False):
-        if not fromPrev:
-            self._findText()
-            self.tabEditorWidget.currentWidget().newEditor.findNext()
-        else:
-            self.tabEditorWidget.currentWidget().newEditor.findNext()
+        self.tabEditorWidget.currentWidget().newEditor.findText()
 
     def _findPrev(self):
         self.tabEditorWidget.currentWidget().newEditor.findText(True)
-        self._findNext(True)
+        self.tabEditorWidget.currentWidget().newEditor.findNext()
 
     def _textFindChanged(self):
         if not self.lineEditFind.text().isEmpty():

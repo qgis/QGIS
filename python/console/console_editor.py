@@ -344,11 +344,11 @@ class Editor(QsciScintilla):
         if QApplication.clipboard().text() != "":
             pasteAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
-        
+
     def findText(self, direction=False):
         line, index = self.getCursorPosition()
         text = self.parent.pc.lineEditFind.text()
-        if text:
+        if not text.isEmpty():
             if direction:
                 self.findFirst(text, 1, 0, line, index, forward=False)
             else:
@@ -730,7 +730,7 @@ class EditorTabWidget(QTabWidget):
 
         self.setMovable(True)
         #self.setTabsClosable(True)
-        self.setTabPosition(QTabWidget.South)
+        self.setTabPosition(QTabWidget.North)
 
         # Menu button list tabs
         self.fileTabMenu = QMenu(self)
