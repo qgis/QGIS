@@ -147,13 +147,14 @@ class Editor(QsciScintilla):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T')+ ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D')+ ctrl)
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Z')+ ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Y')+ ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl+shift)
 
         ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCS = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
         self.newShortcutCS.setContext(Qt.WidgetShortcut)
+        self.redoScut = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Z), self)
+        self.redoScut.setContext(Qt.WidgetShortcut)
+        self.redoScut.activated.connect(self.redo)
         self.newShortcutCS.activated.connect(self.autoCompleteKeyBinding)
         self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runScut.setContext(Qt.WidgetShortcut)
@@ -266,6 +267,7 @@ class Editor(QsciScintilla):
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
         iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.png")
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
+        iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         hideEditorAction = menu.addAction("Hide Editor",
                                      self.hideEditor)
         menu.addSeparator()
@@ -283,7 +285,11 @@ class Editor(QsciScintilla):
                                    self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
         undoAction = menu.addAction("Undo", self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction("Redo", self.redo, QKeySequence.Redo)
+        redoAction = menu.addAction("Redo", self.redo, 'Ctrl+Shift+Z')
+        menu.addSeparator()
+        findAction = menu.addAction(iconFind,
+                                    "Find Text",
+                                    self.showFindWidget)
         menu.addSeparator()
         cutAction = menu.addAction("Cut",
                                     self.cut,
@@ -338,6 +344,18 @@ class Editor(QsciScintilla):
         if QApplication.clipboard().text() != "":
             pasteAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
+        
+    def findText(self, direction=False):
+        line, index = self.getCursorPosition()
+        text = self.parent.pc.lineEditFind.text()
+        if text:
+            if direction:
+                self.findFirst(text, 1, 0, line, index, forward=False)
+            else:
+                if not self.findFirst(text, 1, 0, line, index):
+                    msgText = QCoreApplication.translate('PythonConsole',
+                                                         '<b>"%1"</b> was not found.').arg(text)
+                    self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
 
     def objectListEditor(self):
         listObj = self.parent.pc.listClassMethod
@@ -380,6 +398,15 @@ class Editor(QsciScintilla):
     def hideEditor(self):
         self.parent.pc.splitterObj.hide()
         self.parent.pc.showEditorButton.setChecked(False)
+
+    def showFindWidget(self):
+        wF = self.parent.pc.widgetFind
+        if wF.isVisible():
+            wF.hide()
+            self.parent.pc.findTextButton.setChecked(False)
+        else:
+            wF.show()
+            self.parent.pc.findTextButton.setChecked(True)
 
     def commentEditorCode(self, commentCheck):
         self.beginUndoAction()
@@ -553,7 +580,7 @@ class EditorTab(QWidget):
         self.newEditor = Editor(self)
         if filename:
             self.path = filename
-            if os.path.exists(filename)
+            if os.path.exists(filename):
                 self.loadFile(filename, False)
         
         # Creates layout for message bar

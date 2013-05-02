@@ -28,6 +28,7 @@ from console_editor import EditorTabWidget
 from console_help import HelpDialog
 from console_settings import optionsDialog
 from qgis.core import QgsApplication
+from qgis.gui import QgsFilterLineEdit
 
 import sys
 import os
@@ -242,6 +243,16 @@ class PythonConsoleWidget(QWidget):
         self.objectListButton.setIconVisibleInMenu(True)
         self.objectListButton.setToolTip(objList)
         self.objectListButton.setText(objList)
+        ## Action for Find text
+        findText = QCoreApplication.translate("PythonConsole", "Find text")
+        self.findTextButton = QAction(parent)
+        self.findTextButton.setCheckable(True)
+        self.findTextButton.setEnabled(True)
+        self.findTextButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png"))
+        self.findTextButton.setMenuRole(QAction.PreferencesRole)
+        self.findTextButton.setIconVisibleInMenu(True)
+        self.findTextButton.setToolTip(findText)
+        self.findTextButton.setText(findText)
 
         ##----------------Toolbar Console-------------------------------------
 
@@ -377,6 +388,8 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.saveFileButton)
         self.toolBarEditor.addAction(self.saveAsFileButton)
         self.toolBarEditor.addSeparator()
+        self.toolBarEditor.addAction(self.findTextButton)
+        self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.cutEditorButton)
         self.toolBarEditor.addAction(self.copyEditorButton)
         self.toolBarEditor.addAction(self.pasteEditorButton)
@@ -387,6 +400,34 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addAction(self.objectListButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.runScriptEditorButton)
+
+        ## Layout for the find widget
+        self.widgetFind = QWidget(self)
+        self.layoutFind = QGridLayout(self.widgetFind)
+        self.layoutFind.setContentsMargins(0, 0, 0, 0)
+        self.lineEditFind = QgsFilterLineEdit()
+        self.lineEditFind.setPlaceholderText('Enter text to find...')
+        self.findNextButton = QToolButton()
+        self.findNextButton.setEnabled(False)
+        toolTipfindNext = QCoreApplication.translate("PythonConsole",
+                                                     "Find Next")
+        self.findNextButton.setToolTip(toolTipfindNext)
+        self.findNextButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchNextEditorConsole.png"))
+        self.findNextButton.setIconSize(QSize(24, 24))
+        self.findNextButton.setAutoRaise(True)
+        self.findPrevButton = QToolButton()
+        self.findPrevButton.setEnabled(False)
+        toolTipfindPrev = QCoreApplication.translate("PythonConsole",
+                                                     "Find Previous")
+        self.findPrevButton.setToolTip(toolTipfindPrev)
+        self.findPrevButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchPrevEditorConsole.png"))
+        self.findPrevButton.setIconSize(QSize(24, 24))
+        self.findPrevButton.setAutoRaise(True)
+        self.layoutFind.addWidget(self.lineEditFind, 0, 1, 1, 1)
+        self.layoutFind.addWidget(self.findNextButton, 0, 3, 1, 1)
+        self.layoutFind.addWidget(self.findPrevButton, 0, 2, 1, 1)
+
+        self.widgetFind.hide()
 
         ## Menu Import Class
         self.classMenu = QMenu(self)
@@ -431,8 +472,9 @@ class PythonConsoleWidget(QWidget):
         self.layoutEditor = QGridLayout(self.widgetEditor)
         self.layoutEditor.setMargin(0)
         self.layoutEditor.setSpacing(0)
-        self.layoutEditor.addWidget(self.widgetButtonEditor, 0, 0, 1, 1)
-        self.layoutEditor.addWidget(self.tabEditorWidget, 0, 1, 1, 1)
+        self.layoutEditor.addWidget(self.widgetButtonEditor, 0, 0, 2, 1)
+        self.layoutEditor.addWidget(self.tabEditorWidget, 1, 1, 1, 1)
+        self.layoutEditor.addWidget(self.widgetFind, 0, 1, 1, 1)
 
         self.toolBarLayout = QGridLayout(self.widgetButton)
         self.toolBarLayout.setMargin(0)
@@ -449,6 +491,7 @@ class PythonConsoleWidget(QWidget):
 
         ##------------ Signal -------------------------------
 
+        self.findTextButton.toggled.connect(self.findTextEditor)
         self.objectListButton.toggled.connect(self.toggleObjectListWidget)
         self.commentEditorButton.triggered.connect(self.commentCode)
         self.uncommentEditorButton.triggered.connect(self.uncommentCode)
@@ -471,6 +514,32 @@ class PythonConsoleWidget(QWidget):
                      self.prefChanged)
         self.connect(self.listClassMethod, SIGNAL('itemClicked(QTreeWidgetItem*, int)'),
                      self.onClickGoToLine)
+        self.lineEditFind.returnPressed.connect(self._findText)
+        self.findNextButton.clicked.connect(self._findNext)
+        self.findPrevButton.clicked.connect(self._findPrev)
+        self.lineEditFind.textChanged.connect(self._textFindChanged)
+
+    def _findText(self):
+        self.tabEditorWidget.currentWidget().newEditor.findText()
+
+    def _findNext(self, fromPrev=False):
+        if not fromPrev:
+            self._findText()
+            self.tabEditorWidget.currentWidget().newEditor.findNext()
+        else:
+            self.tabEditorWidget.currentWidget().newEditor.findNext()
+
+    def _findPrev(self):
+        self.tabEditorWidget.currentWidget().newEditor.findText(True)
+        self._findNext(True)
+
+    def _textFindChanged(self):
+        if not self.lineEditFind.text().isEmpty():
+            self.findNextButton.setEnabled(True)
+            self.findPrevButton.setEnabled(True)
+        else:
+            self.findNextButton.setEnabled(False)
+            self.findPrevButton.setEnabled(False)
 
     def onClickGoToLine(self, item, column):
         linenr = int(item.text(1))
@@ -497,6 +566,9 @@ class PythonConsoleWidget(QWidget):
 
     def toggleObjectListWidget(self, checked):
         self.listClassMethod.show() if checked else self.listClassMethod.hide()
+
+    def findTextEditor(self, checked):
+        self.widgetFind.show() if checked else self.widgetFind.hide()
 
     def pasteEditor(self):
         self.tabEditorWidget.currentWidget().newEditor.paste()
