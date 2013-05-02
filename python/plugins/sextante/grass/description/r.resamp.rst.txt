@@ -5,4 +5,5 @@ ParameterRaster|input|Raster layer|False
 ParameterNumber|ew_res|Desired east-west resolution|0.0|None|1
 ParameterNumber|ns_res|Desired north-south resolution|0.0|None|1
 ParameterBoolean|-t|Use dnorm independent tension|False
+ParameterBoolean|-a_r.region|Align region to resolution (default = align to bounds) in r.region|False
 OutputRaster|elev|Output layer
