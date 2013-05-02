@@ -5,5 +5,5 @@ ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 ParameterSelection|TARGET|Target Grid|[0] user defined
 ParameterNumber|LEVEL|Resolution|None|None|1.0
 Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
-ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
+ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
 OutputRaster|USER_GRID|Grid

@@ -2,7 +2,7 @@ Random Field
 grid_calculus
 ParameterNumber|NX|Width (Cells)|None|None|100
 ParameterNumber|NY|Height (Cells)|None|None|100
-ParameterNumber|CELLSIZE|Cellsize|None|None|1.0
+ParameterNumber|CELLSIZE|Cellsize|None|None|100.0
 ParameterNumber|XMIN|West|None|None|0.0
 ParameterNumber|YMIN|South|None|None|0.0
 ParameterSelection|METHOD|Method|[0] Uniform;[1] Gaussian

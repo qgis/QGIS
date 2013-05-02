@@ -8,5 +8,5 @@ ParameterNumber|NPMAX|Maximal Number of Points|None|None|20
 ParameterNumber|NPPC|Points per Square|None|None|5
 ParameterNumber|K|Tolerance|None|None|140.0
 Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
-ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
+ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
 OutputRaster|USER_GRID|Grid

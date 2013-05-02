@@ -7,5 +7,5 @@ ParameterNumber|REGUL|Regularisation|None|None|0.0
 ParameterSelection|LEVEL|Neighbourhood|[0] immediate;[1] level 1;[2] level 2
 ParameterBoolean|FRAME          |Add Frame|True
 Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
-ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
+ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
 OutputRaster|USER_GRID|Grid

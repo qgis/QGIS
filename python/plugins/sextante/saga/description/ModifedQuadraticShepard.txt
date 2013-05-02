@@ -9,5 +9,5 @@ ParameterNumber|USER_XMIN|Left|None|None|0.0
 ParameterNumber|USER_XMAX|Right|None|None|0.0
 ParameterNumber|USER_YMIN|Bottom|None|None|0.0
 ParameterNumber|USER_YMAX|Top|None|None|0.0
-ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
+ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
 OutputRaster|USER_GRID|Grid

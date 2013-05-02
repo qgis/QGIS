@@ -7,5 +7,5 @@ ParameterNumber|EPSILON|Threshold Error|None|None|0.0001
 ParameterNumber|LEVEL_MAX|Maximum Level|None|None|11.0
 ParameterSelection|DATATYPE|Data Type|[0] same as input grid;[1] floating point
 Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
-ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
+ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
 OutputRaster|USER_GRID|Grid
