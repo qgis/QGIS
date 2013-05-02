@@ -156,7 +156,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
                         this, SLOT( loadStyleMenuTriggered( QAction * ) ) ) ;
 
       //for saving
-      mSaveAsMenu->addAction( tr( "Save on database (%1)" ).arg( layer->providerType() ) );
+      mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( layer->providerType() ) );
   }
 
   QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ),
