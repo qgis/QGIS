@@ -17,16 +17,17 @@
     <name>ConfigDialog</name>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>検索...</translation>
     </message>
     <message>
         <source>Wrong value</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な値</translation>
     </message>
     <message>
         <source>Wrong parameter value:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>不正なパラメータ 値:
+%1</translation>
     </message>
 </context>
 <context>
@@ -56,12 +57,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>選択されたCRSの座標(緯度,経度または東,北)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>マップキャンバスが参照する座標系の座標(緯度,経度または東,北)</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -97,27 +98,27 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="14"/>
         <source>Add geometry column</source>
-        <translation type="unfinished">ジオメトリカラムの追加</translation>
+        <translation>ジオメトリカラムの追加</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="20"/>
         <source>Name</source>
-        <translation type="unfinished">名称</translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="37"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="86"/>
         <source>Dimensions</source>
-        <translation type="unfinished">次元</translation>
+        <translation>次元</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgAddGeometryColumn.ui" line="119"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
 </context>
 <context>
@@ -125,22 +126,22 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="14"/>
         <source>Add constraint</source>
-        <translation type="unfinished">制約を追加する</translation>
+        <translation>制約を追加する</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished">カラム</translation>
+        <translation>カラム</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="37"/>
         <source>Primary key</source>
-        <translation type="unfinished">主キー</translation>
+        <translation>主キー</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateConstraint.ui" line="47"/>
         <source>Unique</source>
-        <translation type="unfinished">ユニーク</translation>
+        <translation>ユニーク</translation>
     </message>
 </context>
 <context>
@@ -148,17 +149,17 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="14"/>
         <source>Create index</source>
-        <translation type="unfinished">インデックス作成</translation>
+        <translation>インデックス作成</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="20"/>
         <source>Column</source>
-        <translation type="unfinished">カラム</translation>
+        <translation>カラム</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateIndex.ui" line="30"/>
         <source>Name</source>
-        <translation type="unfinished">名称</translation>
+        <translation>名称</translation>
     </message>
 </context>
 <context>
@@ -166,63 +167,63 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="14"/>
         <source>Create Table</source>
-        <translation type="unfinished">テーブル作成</translation>
+        <translation>テーブル作成</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="22"/>
         <source>Schema</source>
-        <translation type="unfinished">スキーマ</translation>
+        <translation>スキーマ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="35"/>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="171"/>
         <source>Name</source>
-        <translation type="unfinished">名称</translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="56"/>
         <source>Add field</source>
-        <translation type="unfinished">フィールド追加</translation>
+        <translation>フィールド追加</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="63"/>
         <source>Delete field</source>
-        <translation type="unfinished">フィールド削除</translation>
+        <translation>フィールド削除</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="83"/>
         <source>Up</source>
-        <translation type="unfinished">アップ</translation>
+        <translation>アップ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="90"/>
         <source>Down</source>
-        <translation type="unfinished">ダウン</translation>
+        <translation>ダウン</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="104"/>
         <source>Primary key</source>
-        <translation type="unfinished">主キー</translation>
+        <translation>主キー</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="125"/>
         <source>Create geometry column</source>
-        <translation type="unfinished">ジオメトリカラムの作成</translation>
+        <translation>ジオメトリカラムの作成</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="188"/>
         <source>Dimensions</source>
-        <translation type="unfinished">次元</translation>
+        <translation>次元</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="221"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgCreateTable.ui" line="238"/>
         <source>Create spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>空間インデックスの作成</translation>
     </message>
 </context>
 <context>
@@ -230,22 +231,22 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="14"/>
         <source>Database Error</source>
-        <translation type="unfinished">データベースエラー</translation>
+        <translation>データベースエラー</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="30"/>
         <source>An error occured:</source>
-        <translation type="unfinished">エラーが発生しました</translation>
+        <translation>エラーが発生しました:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="54"/>
         <source>An error occured when executing a query:</source>
-        <translation type="unfinished">クエリ実行中にエラーが発生しました:</translation>
+        <translation>クエリ実行中にエラーが発生しました:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgDbError.ui" line="71"/>
         <source>Query:</source>
-        <translation type="unfinished">クエリ:</translation>
+        <translation>クエリ:</translation>
     </message>
 </context>
 <context>
@@ -253,57 +254,57 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="14"/>
         <source>Export to vector file</source>
-        <translation type="unfinished"></translation>
+        <translation>ベクタファイルに出力する</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="26"/>
         <source>Output file</source>
-        <translation type="unfinished">出力ファイル</translation>
+        <translation>出力ファイル</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="40"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="47"/>
         <source>Action</source>
-        <translation type="unfinished">アクション</translation>
+        <translation>アクション</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="53"/>
         <source>Create new file</source>
-        <translation type="unfinished"></translation>
+        <translation>新規ファイルの作成</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="81"/>
         <source>Drop existing one</source>
-        <translation type="unfinished">既存のものの削除</translation>
+        <translation>既存のものを削除する</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="93"/>
         <source>Append data to file</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルにデータを追加する</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="103"/>
         <source>Options</source>
-        <translation type="unfinished">オプション</translation>
+        <translation>オプション</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="111"/>
         <source>Source SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>変換前SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="144"/>
         <source>Target SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>変換後SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="163"/>
         <source>Encoding</source>
-        <translation type="unfinished">エンコーディング</translation>
+        <translation>エンコーディング</translation>
     </message>
 </context>
 <context>
@@ -311,32 +312,32 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="14"/>
         <source>Field properties</source>
-        <translation type="unfinished">フィールドプロパティ</translation>
+        <translation>フィールドプロパティ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="22"/>
         <source>Name</source>
-        <translation type="unfinished">名称</translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="36"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="53"/>
         <source>Can be NULL</source>
-        <translation type="unfinished">NULL値を許容する</translation>
+        <translation>NULL値を許容する</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="70"/>
         <source>Default value</source>
-        <translation type="unfinished">既定値</translation>
+        <translation>既定値</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgFieldProperties.ui" line="84"/>
         <source>Length</source>
-        <translation type="unfinished">長さ</translation>
+        <translation>長さ</translation>
     </message>
 </context>
 <context>
@@ -344,97 +345,97 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="14"/>
         <source>Import vector layer</source>
-        <translation type="unfinished">ベクタレイヤーのインポート</translation>
+        <translation>ベクタレイヤーのインポート</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="29"/>
         <source>Input</source>
-        <translation type="unfinished">入力</translation>
+        <translation>入力</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="36"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="81"/>
         <source>Update options</source>
-        <translation type="unfinished"></translation>
+        <translation>アップデートオプション</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="93"/>
         <source>Output table</source>
-        <translation type="unfinished">出力テーブル</translation>
+        <translation>出力テーブル</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="99"/>
         <source>Schema</source>
-        <translation type="unfinished">スキーマ</translation>
+        <translation>スキーマ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="116"/>
         <source>Table</source>
-        <translation type="unfinished">テーブル</translation>
+        <translation>テーブル</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="146"/>
         <source>Action</source>
-        <translation type="unfinished">アクション</translation>
+        <translation>アクション</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="152"/>
         <source>Create new table</source>
-        <translation type="unfinished">新テーブルの作成</translation>
+        <translation>新テーブルの作成</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="180"/>
         <source>Drop existing one</source>
-        <translation type="unfinished">既存のものの削除</translation>
+        <translation>既存のものを削除する</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="192"/>
         <source>Append data to table</source>
-        <translation type="unfinished"></translation>
+        <translation>データをテーブルに追加する</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="202"/>
         <source>Options</source>
-        <translation type="unfinished">オプション</translation>
+        <translation>オプション</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="208"/>
         <source>Primary key</source>
-        <translation type="unfinished">主キー</translation>
+        <translation>主キー</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="222"/>
         <source>Geometry column</source>
-        <translation type="unfinished">ジオメトリカラム</translation>
+        <translation>ジオメトリカラム</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="238"/>
         <source>Source SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>変換前SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="268"/>
         <source>Target SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>変換後SRID</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="284"/>
         <source>Encoding</source>
-        <translation type="unfinished">エンコーディング</translation>
+        <translation>エンコーディング</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="301"/>
         <source>Create single-part geometries instead of multi-part</source>
-        <translation type="unfinished">マルチパートの代わりにシングルパートジオメトリを作る</translation>
+        <translation>マルチパートの代わりにシングルパートジオメトリを作る</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="308"/>
         <source>Create spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>空間インデックスを作成する</translation>
     </message>
 </context>
 <context>
@@ -442,81 +443,81 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="14"/>
         <source>SQL window</source>
-        <translation type="unfinished">SQLウィンドウ</translation>
+        <translation>SQLウィンドウ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="27"/>
         <source>SQL query:</source>
-        <translation type="unfinished">SQLクエリ:</translation>
+        <translation>SQLクエリ:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="53"/>
         <source>&amp;Execute (F5)</source>
-        <translation type="unfinished">実行(F5)(&amp;E)</translation>
+        <translation>実行(F5)(&amp;E)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="56"/>
         <source>F5</source>
-        <translation type="unfinished">F5</translation>
+        <translation>F5</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="83"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">(&amp;C)クリア</translation>
+        <translation>(&amp;C)クリア</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="96"/>
         <source>Result:</source>
-        <translation type="unfinished">結果:</translation>
+        <translation>結果:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="136"/>
         <source>Load as new layer</source>
-        <translation type="unfinished">新レイヤとしてロードする</translation>
+        <translation>新レイヤとしてロードする</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="156"/>
         <source>Column with unique 
 integer values</source>
-        <translation type="unfinished">整数のユニークな
+        <translation>整数のユニークな
 値で構成されるカラム</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="180"/>
         <source>Geometry column</source>
-        <translation type="unfinished">ジオメトリカラム</translation>
+        <translation>ジオメトリカラム</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="222"/>
         <source>Retrieve 
 columns</source>
-        <translation type="unfinished">カラムを
+        <translation>カラムを
 読み出す</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="234"/>
         <source>Layer name (prefix)</source>
-        <translation type="unfinished">レイヤ名(接頭辞)</translation>
+        <translation>レイヤ名(接頭辞)</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="257"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="267"/>
         <source>Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>ベクタ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="277"/>
         <source>Raster</source>
-        <translation type="unfinished">ラスタ</translation>
+        <translation>ラスタ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="303"/>
         <source>Load now!</source>
-        <translation type="unfinished">今ロードする!</translation>
+        <translation>今ロードする!</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgSqlWindow.ui" line="315"/>
@@ -534,82 +535,82 @@ columns</source>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="14"/>
         <source>Table properties</source>
-        <translation type="unfinished">テーブルプロパティ</translation>
+        <translation>テーブルプロパティ</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="24"/>
         <source>Columns</source>
-        <translation type="unfinished">カラム</translation>
+        <translation>カラム</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="30"/>
         <source>Table columns:</source>
-        <translation type="unfinished">テーブルカラム;</translation>
+        <translation>テーブルカラム:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="46"/>
         <source>Add column</source>
-        <translation type="unfinished">カラムの追加</translation>
+        <translation>カラムの追加</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="53"/>
         <source>Add geometry column</source>
-        <translation type="unfinished">ジオメトリカラムの追加</translation>
+        <translation>ジオメトリカラムの追加</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="60"/>
         <source>Edit column</source>
-        <translation type="unfinished">カラムの編集</translation>
+        <translation>カラムの編集</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="80"/>
         <source>Delete column</source>
-        <translation type="unfinished">カラムを削除</translation>
+        <translation>カラムを削除</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="90"/>
         <source>Constraints</source>
-        <translation type="unfinished">制約</translation>
+        <translation>制約</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="96"/>
         <source>Primary, foreign keys, unique and check constraints:</source>
-        <translation type="unfinished">プライマリ,外部キー,ユニーク,チェック制約:</translation>
+        <translation>プライマリ,外部キー,ユニーク,チェック制約:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="112"/>
         <source>Add primary key / unique</source>
-        <translation type="unfinished">主キー/ユニークキーの追加</translation>
+        <translation>主キー/ユニークキーの追加</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="132"/>
         <source>Delete constraint</source>
-        <translation type="unfinished">制約の削除</translation>
+        <translation>制約の削除</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="142"/>
         <source>Indexes</source>
-        <translation type="unfinished">インデックス</translation>
+        <translation>インデックス</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="148"/>
         <source>Indexes defined for this table:</source>
-        <translation type="unfinished">このテーブル用に定義されているインデックス</translation>
+        <translation>このテーブル用に定義されているインデックス:</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="164"/>
         <source>Add index</source>
-        <translation type="unfinished">インデックスの追加</translation>
+        <translation>インデックスの追加</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="171"/>
         <source>Add spatial index</source>
-        <translation type="unfinished">空間インデックスの追加</translation>
+        <translation>空間インデックスの追加</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgTableProperties.ui" line="191"/>
         <source>Delete index</source>
-        <translation type="unfinished">インデックスの削除</translation>
+        <translation>インデックスの削除</translation>
     </message>
 </context>
 <context>
@@ -621,17 +622,17 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="14"/>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>微細ポリゴンを除去する</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="20"/>
         <source>common boundary</source>
-        <translation type="unfinished"></translation>
+        <translation>共通境界線</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="27"/>
         <source>Merge selection with the neighbouring polygon with the largest</source>
-        <translation type="unfinished"></translation>
+        <translation>選択を近隣の最大ポリゴンに結合する</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="43"/>
@@ -658,12 +659,12 @@ columns</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="100"/>
         <source>Selected features:</source>
-        <translation type="unfinished"></translation>
+        <translation>選択された地物:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmEliminate.ui" line="107"/>
         <source>area</source>
-        <translation type="unfinished">面積</translation>
+        <translation>面積</translation>
     </message>
     <message>
         <source>OGR Converter</source>
@@ -1452,7 +1453,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="120"/>
         <source>Save errors location</source>
-        <translation type="unfinished"></translation>
+        <translation>エラーの位置を保存する</translation>
     </message>
     <message>
         <source>OGR Layer Converter</source>
@@ -1690,7 +1691,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation type="unfinished"></translation>
+        <translation>指定されたジオメトリタイプのshapefileがありません.利用可能なジオメトリタイプを選択して下さい.</translation>
     </message>
     <message>
         <source>Sum Line Lengths In Polyons</source>
@@ -1722,46 +1723,48 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Selected features: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>選択された地物: %1</translation>
     </message>
     <message>
         <source>Eliminate</source>
-        <translation type="unfinished"></translation>
+        <translation>除去</translation>
     </message>
     <message>
         <source>No selection in input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>入力レイヤに選択がありません</translation>
     </message>
     <message>
         <source>Commit error:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>コミットエラー:
+  %1</translation>
     </message>
     <message>
         <source>Error creating output file</source>
-        <translation type="unfinished"></translation>
+        <translation>出力ファイル作成中にエラーが発生しました</translation>
     </message>
     <message>
         <source>Could not delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>地物を削除できません</translation>
     </message>
     <message>
         <source>Could not replace geometry of feature with id %1</source>
-        <translation type="unfinished"></translation>
+        <translation>id %1 のジオメトリの地物を置き換えできませんでした</translation>
     </message>
     <message>
         <source>Could not eliminate features with these ids:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>以下のidの地物を除去できませんでした:
+%1</translation>
     </message>
     <message>
         <source>Could not add features</source>
-        <translation type="unfinished"></translation>
+        <translation>地物を追加できませんでした</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1</source>
-        <translation type="unfinished">出力shapefileを作成しました
+        <translation>出力shapefileを作成しました
 %1</translation>
     </message>
     <message>
@@ -2223,22 +2226,22 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="14"/>
         <source>SEXTANTE options</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTEオプション</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="26"/>
         <source>Enter setting name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルタリストの設定名称を入力してください</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="37"/>
         <source>Setting</source>
-        <translation type="unfinished"></translation>
+        <translation>設定</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgConfig.ui" line="42"/>
         <source>Value</source>
-        <translation type="unfinished">値</translation>
+        <translation>値</translation>
     </message>
 </context>
 <context>
@@ -2413,22 +2416,22 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="14"/>
         <source>Help editor</source>
-        <translation type="unfinished"></translation>
+        <translation>ヘルプエディタ</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="31"/>
         <source>about:blank</source>
-        <translation type="unfinished">アバウト:空白</translation>
+        <translation>アバウト:空白</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="47"/>
         <source>Select element to edit</source>
-        <translation type="unfinished"></translation>
+        <translation>編集要素を選択して下さい</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHelpEdition.ui" line="82"/>
         <source>Element description</source>
-        <translation type="unfinished"></translation>
+        <translation>要素の説明</translation>
     </message>
 </context>
 <context>
@@ -2436,7 +2439,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/sextante/ui/DlgHistory.ui" line="14"/>
         <source>History and log</source>
-        <translation type="unfinished"></translation>
+        <translation>ヒストリとログ</translation>
     </message>
 </context>
 <context>
@@ -2507,32 +2510,32 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="14"/>
         <source>SEXTANTE modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTEモデラー</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="40"/>
         <source>Inputs</source>
-        <translation type="unfinished"></translation>
+        <translation>入力</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="68"/>
         <source>Algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>アルゴリズム</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="80"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished"></translation>
+        <translation>リストをフィルタするためのアルゴリズム名を入力してください</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="110"/>
         <source>Enter model name here</source>
-        <translation type="unfinished"></translation>
+        <translation>ここにモデル名を入力してください</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgModeler.ui" line="117"/>
         <source>Enter group name here</source>
-        <translation type="unfinished"></translation>
+        <translation>ここにグループ名を入力してください</translation>
     </message>
 </context>
 <context>
@@ -2540,12 +2543,12 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/sextante/ui/DlgResults.ui" line="14"/>
         <source>Results</source>
-        <translation type="unfinished"></translation>
+        <translation>結果</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/DlgResults.ui" line="53"/>
         <source>about:blank</source>
-        <translation type="unfinished">アバウト:空白</translation>
+        <translation>アバウト:空白</translation>
     </message>
 </context>
 <context>
@@ -2823,24 +2826,26 @@ geometry column - column with unique integer values</source>
     <name>EditRScriptDialog</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>I/Oエラー</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>編集結果を保存できませんでした.理由:
+%1</translation>
     </message>
 </context>
 <context>
     <name>EditScriptDialog</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>I/Oエラー</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>編集結果を保存できませんでした.理由:
+%1</translation>
     </message>
 </context>
 <context>
@@ -3528,11 +3533,11 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Output size or resolution required</source>
-        <translation type="unfinished"></translation>
+        <translation>出力サイズまたは解像度の指定が必要です</translation>
     </message>
     <message>
         <source>The output file doesn&apos;t exist. You must set up the output size or resolution to create it.</source>
-        <translation type="unfinished"></translation>
+        <translation>出力ファイルは存在しません.それを作成するためには出力サイズまたは解像度を指定する必要があります.</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -3733,17 +3738,24 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="unfinished"></translation>
+        <translation>コロンで区切られた(LinuxとMac)または
+セミコロンで区切られた(Windows)パスのリストはバイナリと
+python実行モジュール用です.
+
+MacOSユーザは通常これを以下のように設定する必要があります
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</translation>
     </message>
     <message>
         <source>A list of colon-separated (Linux and MacOS) or
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="unfinished"></translation>
+        <translation>コロンで区切られた(LinuxとMac)または
+セミコロンで区切られた(Windows)パスのリストはpythonモジュール用です.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="unfinished"></translation>
+        <translation>ツールダイアログのヘルプボタンをクリックすると
+便利なことにオンラインヘルプの代わりにローカルのGDAL文書を開きます.</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
@@ -4318,7 +4330,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="145"/>
         <source>Mode Options</source>
-        <translation type="unfinished"></translation>
+        <translation>モードオプション</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="164"/>
@@ -4423,7 +4435,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="64"/>
         <source>old</source>
-        <translation type="unfinished"></translation>
+        <translation>古い</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="173"/>
@@ -4448,7 +4460,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="196"/>
         <source>cubic</source>
-        <translation type="unfinished"></translation>
+        <translation>キュービック</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="201"/>
@@ -4468,7 +4480,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="220"/>
         <source>new</source>
-        <translation type="unfinished"></translation>
+        <translation>新しい</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="70"/>
@@ -4706,27 +4718,27 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="76"/>
         <source>Keep existing raster size and resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>既存ラスタのサイズと解像度を保持する</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="86"/>
         <source>Raster size in pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>ピクセル単位のラスタサイズ</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="157"/>
         <source>Raster resolution in map units per pixel</source>
-        <translation type="unfinished"></translation>
+        <translation>地図の単位ピクセルでのラスタ解像度</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="185"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>水平</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="211"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直</translation>
     </message>
     <message>
         <source>New size (required if output file doens&apos;t exist)</source>
@@ -5467,7 +5479,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="195"/>
         <source>Unload Globe</source>
-        <translation type="unfinished"></translation>
+        <translation>地球儀のアンロード</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="198"/>
@@ -5482,7 +5494,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="200"/>
         <source>Unload globe</source>
-        <translation type="unfinished"></translation>
+        <translation>地球儀のアンロード</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="211"/>
@@ -5614,17 +5626,17 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="29"/>
         <source>Input point layer</source>
-        <translation type="unfinished">ポイントレイヤを入力する</translation>
+        <translation>入力ポイントレイヤ</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="39"/>
         <source>Output raster</source>
-        <translation type="unfinished"></translation>
+        <translation>出力ラスタ</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="62"/>
         <source>Output format</source>
-        <translation type="unfinished">出力形式</translation>
+        <translation>出力形式</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="79"/>
@@ -5651,37 +5663,37 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="140"/>
         <source>Cell size X</source>
-        <translation type="unfinished"></translation>
+        <translation>セルサイズ X</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="160"/>
         <source>Cell size Y</source>
-        <translation type="unfinished"></translation>
+        <translation>セルサイズY</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="186"/>
         <source>Use radius from field</source>
-        <translation type="unfinished"></translation>
+        <translation>半径にフィールド値を使う</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="217"/>
         <source>Use weight from field</source>
-        <translation type="unfinished"></translation>
+        <translation>重みにフィールド値を使う</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="234"/>
         <source>0.0</source>
-        <translation type="unfinished">0.0</translation>
+        <translation>0.0</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="241"/>
         <source>Decay ratio</source>
-        <translation type="unfinished"></translation>
+        <translation>減衰比</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="249"/>
         <source>Quartic (biweight)</source>
-        <translation type="unfinished"></translation>
+        <translation>四次（バイウェイト）</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="254"/>
@@ -5753,34 +5765,34 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../python/console/console_help.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">ダイアログ</translation>
+        <translation>ダイアログ</translation>
     </message>
     <message>
         <location filename="../python/console/console_help.ui" line="39"/>
         <source>about:blank</source>
-        <translation type="unfinished">アバウト:空白</translation>
+        <translation>アバウト:空白</translation>
     </message>
 </context>
 <context>
     <name>HelpEditionDialog</name>
     <message>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>出力</translation>
     </message>
 </context>
 <context>
     <name>HistoryDialog</name>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">クリア</translation>
+        <translation>クリア</translation>
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation type="unfinished"></translation>
+        <translation>ヒストリとログのクリア</translation>
     </message>
     <message>
         <source>Create test</source>
-        <translation type="unfinished"></translation>
+        <translation>テストの作成</translation>
     </message>
 </context>
 <context>
@@ -5788,17 +5800,17 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">フォーム</translation>
+        <translation>フォーム</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="28"/>
         <source>Symbol layer type</source>
-        <translation type="unfinished">シンボルレイヤタイプ</translation>
+        <translation>シンボルレイヤタイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_layerproperties.ui" line="51"/>
         <source>This layer doesn&apos;t have any editable properties</source>
-        <translation type="unfinished"></translation>
+        <translation>このレイヤには編集可能なプロパティはありません</translation>
     </message>
 </context>
 <context>
@@ -5828,7 +5840,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="68"/>
         <source>New From Template</source>
-        <translation type="unfinished"></translation>
+        <translation>テンプレートを使った新規作成</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="88"/>
@@ -5868,12 +5880,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="54"/>
         <source>P&amp;roject</source>
-        <translation type="unfinished"></translation>
+        <translation>プロジェクト(&amp;ｒ)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="58"/>
         <source>&amp;Open Recent</source>
-        <translation type="unfinished"></translation>
+        <translation>最近利用したものを開く(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="111"/>
@@ -5893,12 +5905,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="230"/>
         <source>Vect&amp;or</source>
-        <translation type="unfinished">ベクタ(&amp;t)</translation>
+        <translation>ベクタ(&amp;o)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="234"/>
         <source>&amp;OpenStreetMap</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="255"/>
@@ -6024,7 +6036,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="556"/>
         <source>Exit QGIS</source>
-        <translation type="unfinished">QGISを終了</translation>
+        <translation>QGISを終了する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="634"/>
@@ -6079,7 +6091,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1119"/>
         <source>Layer Labeling Options</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤラベリングオプション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1185"/>
@@ -6089,7 +6101,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1221"/>
         <source>Add Oracle Spatial Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle Spatial レイヤの追加...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1257"/>
@@ -6100,105 +6112,105 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <location filename="../src/ui/qgisapp.ui" line="1873"/>
         <location filename="../src/ui/qgisapp.ui" line="1876"/>
         <source>Duplicate Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤを複製する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1888"/>
         <source>SVG annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>SVGアノテーション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1897"/>
         <location filename="../src/ui/qgisapp.ui" line="1900"/>
         <source>Save for All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>全レイヤを保存する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1912"/>
         <location filename="../src/ui/qgisapp.ui" line="1915"/>
         <source>Rollback for All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>全レイヤをロールバックする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1927"/>
         <location filename="../src/ui/qgisapp.ui" line="1930"/>
         <source>Cancel for All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>全レイヤ編集キャンセル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1942"/>
         <location filename="../src/ui/qgisapp.ui" line="1945"/>
         <source>Rollback for Selected Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>選択レイヤのロールバック</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1957"/>
         <location filename="../src/ui/qgisapp.ui" line="1960"/>
         <source>Current Edits</source>
-        <translation type="unfinished"></translation>
+        <translation>カレント編集</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1972"/>
         <location filename="../src/ui/qgisapp.ui" line="1975"/>
         <source>Cancel for Selected Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>選択レイヤの編集キャンセル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1987"/>
         <location filename="../src/ui/qgisapp.ui" line="1990"/>
         <source>Save Layer Edits</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ編集の保存</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2002"/>
         <location filename="../src/ui/qgisapp.ui" line="2005"/>
         <source>Rotate Feature(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>地物の回転</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2010"/>
         <source>&amp;Download data</source>
-        <translation type="unfinished"></translation>
+        <translation>データダウンロード(&amp;D)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2015"/>
         <source>&amp;Import topology from XML</source>
-        <translation type="unfinished"></translation>
+        <translation>XMLからトポロジーインポート(&amp;I)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2020"/>
         <source>&amp;Export topology to SpatiaLite</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatiaLiteへのトポロジーエキスポート(&amp;E)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2029"/>
         <source>Increase brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>明るさ増大</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2038"/>
         <source>Decrease brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>明るさ減少</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2047"/>
         <source>Increase contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>コントラスト増大</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2056"/>
         <source>Decrease contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>コントラスト減少</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2065"/>
         <source>Select By Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>条件選択</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2068"/>
         <source>Select features using an expression</source>
-        <translation type="unfinished"></translation>
+        <translation>条件を使った地物選択</translation>
     </message>
     <message>
         <source>Save Edits</source>
@@ -6223,7 +6235,8 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <location filename="../src/ui/qgisapp.ui" line="1537"/>
         <source>Rotate Label
 Ctl (Cmd) increments by 15 deg.</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルの回転
+Ctl(Cmd)15度増加.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1615"/>
@@ -6259,17 +6272,17 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1747"/>
         <source>Add WCS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>WCSレイヤの追加...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1756"/>
         <source>&amp;Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>グリッド(&amp;G)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1759"/>
         <source>Grid</source>
-        <translation type="unfinished">グリッド</translation>
+        <translation>グリッド</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1774"/>
@@ -6294,7 +6307,7 @@ Acts on all editable layers</source>
         <location filename="../src/ui/qgisapp.ui" line="1804"/>
         <location filename="../src/ui/qgisapp.ui" line="1807"/>
         <source>New Blank Project</source>
-        <translation type="unfinished"></translation>
+        <translation>新しいブランクプロジェクト</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1816"/>
@@ -6319,7 +6332,7 @@ Acts on all editable layers</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1843"/>
         <source>Show/Hide Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルの表示/非表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1846"/>
@@ -6333,7 +6346,7 @@ Acts on currently active editable layer</source>
         <location filename="../src/ui/qgisapp.ui" line="1861"/>
         <location filename="../src/ui/qgisapp.ui" line="1864"/>
         <source>Html Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Htmlアノテーション</translation>
     </message>
     <message>
         <source>Composer manager...</source>
@@ -6942,27 +6955,27 @@ Acts on currently active editable layer</source>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="478"/>
         <source>&amp;New</source>
-        <translation type="unfinished">新規 (&amp;N)</translation>
+        <translation>新規 (&amp;N)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="490"/>
         <source>&amp;Open...</source>
-        <translation type="unfinished"></translation>
+        <translation>開く(&amp;O)...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="502"/>
         <source>&amp;Save</source>
-        <translation type="unfinished">保存(&amp;S)</translation>
+        <translation>保存(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="514"/>
         <source>Save &amp;As...</source>
-        <translation type="unfinished"></translation>
+        <translation>名前をつけて保存(&amp;A)...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1269"/>
         <source>Save for Selected Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>選択レイヤの保存</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1338"/>
@@ -7127,111 +7140,115 @@ Acts on currently active editable layer</source>
     <name>ModelerDialog</name>
     <message>
         <source>Edit model help</source>
-        <translation type="unfinished"></translation>
+        <translation>モデル編集ヘルプ</translation>
     </message>
     <message>
         <source>Run</source>
-        <translation type="unfinished">実行</translation>
+        <translation>実行</translation>
     </message>
     <message>
         <source>Execute current model</source>
-        <translation type="unfinished"></translation>
+        <translation>カレントモデルの実行</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation type="unfinished">開く</translation>
+        <translation>開く</translation>
     </message>
     <message>
         <source>Open existing model</source>
-        <translation type="unfinished"></translation>
+        <translation>既存モデルを開く</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">保存</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <source>Save current model</source>
-        <translation type="unfinished"></translation>
+        <translation>カレントモデルの保存</translation>
     </message>
     <message>
         <source>Save as ...</source>
-        <translation type="unfinished"></translation>
+        <translation>名前をつけて保存...</translation>
     </message>
     <message>
         <source>Save current model as</source>
-        <translation type="unfinished"></translation>
+        <translation>カレントモデルを名前をつけて保存</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished"></translation>
+        <translation>検索...</translation>
     </message>
     <message>
         <source>Empty model</source>
-        <translation type="unfinished"></translation>
+        <translation>中身が無いモデル</translation>
     </message>
     <message>
         <source>Model doesn&apos;t contains any algorithms and/or parameters and can&apos;t be executed</source>
-        <translation type="unfinished"></translation>
+        <translation>モデルにはアルゴリズムと/またはパラメータパラメータが無いので実行できません</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">警告</translation>
+        <translation>警告</translation>
     </message>
     <message>
         <source>Please enter group and model names before saving</source>
-        <translation type="unfinished"></translation>
+        <translation>保存する前にグループとモデルの名前を入力して下さい</translation>
     </message>
     <message>
         <source>Save Model</source>
-        <translation type="unfinished"></translation>
+        <translation>モデルの保存</translation>
     </message>
     <message>
         <source>SEXTANTE models (*.model)</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTEモデル (*.model)</translation>
     </message>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished"></translation>
+        <translation>I/Oエラー</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished"></translation>
+        <translation>編集結果を保存できませんでした.理由:
+%1</translation>
     </message>
     <message>
         <source>Can&apos;t save model</source>
-        <translation type="unfinished"></translation>
+        <translation>モデルを保存できません</translation>
     </message>
     <message>
         <source>This model can&apos;t be saved in its original location
 (probably you do not have permission to do it).
 Please, use the &apos;Save as...&apos; option.</source>
-        <translation type="unfinished"></translation>
+        <translation>このモデルはオリジナルの場所に保存できませんでした
+(多分その場所への保存権限が無いのでしょう).
+ &apos;名前をつけて保存...&apos; オプションを使って下さい.</translation>
     </message>
     <message>
         <source>Model saved</source>
-        <translation type="unfinished"></translation>
+        <translation>モデルが保存されました</translation>
     </message>
     <message>
         <source>Model was correctly saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>モデルは正しく保存されました.</translation>
     </message>
     <message>
         <source>Open Model</source>
-        <translation type="unfinished"></translation>
+        <translation>モデルを開く</translation>
     </message>
     <message>
         <source>Could not open model</source>
-        <translation type="unfinished"></translation>
+        <translation>モデルを開けませんでした</translation>
     </message>
     <message>
         <source>The selected model could not be loaded.
 Wrong line: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>指定モデルはロードできませんでした.
+不正な行: %1</translation>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">パラメータ</translation>
+        <translation>パラメータ</translation>
     </message>
 </context>
 <context>
@@ -8142,7 +8159,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>Python</name>
     <message>
         <source>Python</source>
-        <translation type="unfinished">Python</translation>
+        <translation>Python</translation>
     </message>
     <message>
         <source>An error has occured while executing Python code:</source>
@@ -8189,79 +8206,79 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>PythonConsole</name>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">ファイルを開く</translation>
+        <translation>ファイルを開く</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">保存</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <source>Save As..</source>
-        <translation type="unfinished"></translation>
+        <translation>名前をつけて保存..</translation>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>カット</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">コピー</translation>
+        <translation>コピー</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>貼り付け</translation>
     </message>
     <message>
         <source>Run script</source>
-        <translation type="unfinished"></translation>
+        <translation>スクリプト実行</translation>
     </message>
     <message>
         <source>Comment code</source>
-        <translation type="unfinished"></translation>
+        <translation>コードのコメント</translation>
     </message>
     <message>
         <source>Uncomment code</source>
-        <translation type="unfinished"></translation>
+        <translation>コードのアンコメント</translation>
     </message>
     <message>
         <source>Object browser</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクトブラウザ</translation>
     </message>
     <message>
         <source>Show editor</source>
-        <translation type="unfinished"></translation>
+        <translation>エディタの表示</translation>
     </message>
     <message>
         <source>Clear console</source>
-        <translation type="unfinished"></translation>
+        <translation>コンソールのクリア</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished">設定</translation>
+        <translation>設定</translation>
     </message>
     <message>
         <source>Import Class</source>
-        <translation type="unfinished"></translation>
+        <translation>クラスのインポート</translation>
     </message>
     <message>
         <source>Import Sextante class</source>
-        <translation type="unfinished"></translation>
+        <translation>Sextanteクラスのインポート</translation>
     </message>
     <message>
         <source>Import PyQt.QtCore class</source>
-        <translation type="unfinished"></translation>
+        <translation>PyQt.QtCoreクラスのインポート</translation>
     </message>
     <message>
         <source>Import PyQt.QtGui class</source>
-        <translation type="unfinished"></translation>
+        <translation>PyQt.QtGuiクラスのインポート</translation>
     </message>
     <message>
         <source>Run command</source>
-        <translation type="unfinished"></translation>
+        <translation>コマンドの実行</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished">ヘルプ</translation>
+        <translation>ヘルプ</translation>
     </message>
     <message>
         <source>Python Console</source>
@@ -8298,12 +8315,12 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
     <message>
         <location filename="../src/core/qgis.cpp" line="80"/>
         <source>meters</source>
-        <translation type="unfinished">メーター</translation>
+        <translation>メーター</translation>
     </message>
     <message>
         <location filename="../src/core/qgis.cpp" line="81"/>
         <source>feet</source>
-        <translation type="unfinished">フィート</translation>
+        <translation>フィート</translation>
     </message>
     <message>
         <location filename="../src/core/qgis.cpp" line="82"/>
@@ -8311,12 +8328,12 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
         <location filename="../src/core/qgis.cpp" line="85"/>
         <location filename="../src/core/qgis.cpp" line="86"/>
         <source>degrees</source>
-        <translation type="unfinished">度</translation>
+        <translation>度</translation>
     </message>
     <message>
         <location filename="../src/core/qgis.cpp" line="83"/>
         <source>&lt;unknown&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;不明&gt;</translation>
     </message>
 </context>
 <context>
@@ -11623,39 +11640,39 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5635"/>
         <source>rollback</source>
-        <translation type="unfinished"></translation>
+        <translation>ロールバック</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5635"/>
         <source>cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5671"/>
         <source>Save</source>
-        <translation type="unfinished">保存</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5671"/>
         <location filename="../src/app/qgisapp.cpp" line="5703"/>
         <location filename="../src/app/qgisapp.cpp" line="5735"/>
         <source>all</source>
-        <translation type="unfinished"></translation>
+        <translation>全て</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5703"/>
         <source>Rollback</source>
-        <translation type="unfinished"></translation>
+        <translation>ロールバック</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5735"/>
         <source>Cancel</source>
-        <translation type="unfinished">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5751"/>
         <source>Current edits</source>
-        <translation type="unfinished"></translation>
+        <translation>カレント編集</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5752"/>
@@ -11665,23 +11682,23 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6024"/>
         <source>copy</source>
-        <translation type="unfinished"></translation>
+        <translation>コピー</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6028"/>
         <source>Plugin layer</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグインレイヤ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6040"/>
         <source>Memory layer</source>
-        <translation type="unfinished"></translation>
+        <translation>メモリレイヤ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6060"/>
         <location filename="../src/app/qgisapp.cpp" line="6070"/>
         <source>Duplicate layer: </source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤを複製する:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6061"/>
@@ -11767,17 +11784,17 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="540"/>
         <source>Browser</source>
-        <translation type="unfinished">ブラウザ</translation>
+        <translation>ブラウザ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="545"/>
         <source>Browser (2)</source>
-        <translation type="unfinished"></translation>
+        <translation>ブラウザ(2)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1042"/>
         <source>Current Edits</source>
-        <translation type="unfinished"></translation>
+        <translation>カレント編集</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2925"/>
@@ -12505,12 +12522,12 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2412"/>
         <source>PROJ.4 Version</source>
-        <translation type="unfinished"></translation>
+        <translation>PROJ 4バージョン</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2414"/>
         <source>QScintilla2 Version</source>
-        <translation type="unfinished"></translation>
+        <translation>QScintilla2 バージョン</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2417"/>
@@ -12520,12 +12537,12 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2624"/>
         <source>Select zip layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2638"/>
         <source>Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>ベクタ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2977"/>
@@ -14862,7 +14879,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="213"/>
         <source>Essen (Germany), Developer meeting 2012</source>
-        <translation type="unfinished"></translation>
+        <translation>Essen (Germany), デベロッパーミーティング 2012</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="254"/>
@@ -15081,7 +15098,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsaddtaborgroup.cpp" line="53"/>
         <source>Add tab or group for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>%1へのタブまたはグループの追加</translation>
     </message>
 </context>
 <context>
@@ -15089,27 +15106,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddtaborgroupbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">ダイアログ</translation>
+        <translation>ダイアログ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddtaborgroupbase.ui" line="32"/>
         <source>Create category</source>
-        <translation type="unfinished"></translation>
+        <translation>カテゴリの作成</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddtaborgroupbase.ui" line="42"/>
         <source>as</source>
-        <translation type="unfinished"></translation>
+        <translation>を</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddtaborgroupbase.ui" line="49"/>
         <source>a tab</source>
-        <translation type="unfinished"></translation>
+        <translation>タブとみなす</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddtaborgroupbase.ui" line="62"/>
         <source>a group in container</source>
-        <translation type="unfinished"></translation>
+        <translation>コンテナ内グループとみなす</translation>
     </message>
 </context>
 <context>
@@ -15122,7 +15139,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsannotationwidget.cpp" line="48"/>
         <source>Select background color</source>
-        <translation type="unfinished">背景色の選択</translation>
+        <translation>背景色の選択</translation>
     </message>
 </context>
 <context>
