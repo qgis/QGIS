@@ -2079,7 +2079,7 @@ void QgsComposer::showBlendModePrintingWarning()
 {
   if ( ! mComposition->printAsRaster() )
   {
-    QgsMessageViewer* m = new QgsMessageViewer( this );
+    QgsMessageViewer* m = new QgsMessageViewer( this, QgisGui::ModalDialogFlags, false );
     m->setWindowTitle( tr( "Project contains blend modes" ) );
     m->setMessage( tr( "Blend modes are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
     m->setCheckBoxText( tr( "Print as raster" ) );
@@ -2087,7 +2087,6 @@ void QgsComposer::showBlendModePrintingWarning()
     m->setCheckBoxVisible( true );
     m->showMessage( true );
 
-    // TODO - fix this - checkBoxState is never true
     // also need to make sure composer print as raster checkbox is updated
     if ( m->checkBoxState() == Qt::Checked )
     {
@@ -2095,8 +2094,10 @@ void QgsComposer::showBlendModePrintingWarning()
     }
     else
     {
-      mComposition->setPrintAsRaster( true );
+      mComposition->setPrintAsRaster( false );
     }
+
+    delete m;
   }
 }
 
