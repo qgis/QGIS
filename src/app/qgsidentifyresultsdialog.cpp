@@ -54,15 +54,12 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QWebVi
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-  page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  // page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  page()->setLinkDelegationPolicy( QWebPage::DontDelegateLinks );
   settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
 #ifdef QGISDEBUG
   settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
-  connect( this->page()->mainFrame(), SIGNAL( contentsSizeChanged( const QSize & ) ),
-           this, SLOT( handleContentsSizeChanged( const QSize & ) ) );
-  connect( this->page(), SIGNAL( loadFinished( bool ) ) ,
-           this, SLOT( loadFinished( bool ) ) );
 }
 
 void QgsIdentifyResultsWebView::print( void )
@@ -78,14 +75,14 @@ void QgsIdentifyResultsWebView::print( void )
 void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
 {
   QMenu *menu = page()->createStandardContextMenu();
-  if ( menu )
-  {
-    QAction *action = new QAction( tr( "Print" ), this );
-    connect( action, SIGNAL( triggered() ), this, SLOT( print() ) );
-    menu->addAction( action );
-    menu->exec( e->globalPos() );
-    delete menu;
-  }
+  if ( !menu )
+    return;
+
+  QAction *action = new QAction( tr( "Print" ), this );
+  connect( action, SIGNAL( triggered() ), this, SLOT( print() ) );
+  menu->addAction( action );
+  menu->exec( e->globalPos() );
+  delete menu;
 }
 
 // QgsIdentifyResultsWebView size:
@@ -104,7 +101,7 @@ void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
 // 2) contentsSize() is 0,0 until a page is loaded. If there are no external
 //    resources (like images) used, contentsSize() is available immediately
 //    after setHtml(), otherwise the contentSize() is 0,0 until the page is
-//    loaded and contentsSizeChanged () is emited.
+//    loaded and contentsSizeChanged () is emitted.
 //
 // 3) If QgsIdentifyResultsWebView is resized (on page load) after it was inserted into
 //    QTreeWidget, the row does not reflect that change automaticaly and
@@ -118,7 +115,7 @@ void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
 // (image) the layout gets somehow confused - wrong positions, overlapped (Qt
 // bug?) until next QTreeWidget resize.
 
-// TODO(?): if the results dialog is resized to smaller heigh, existing
+// TODO(?): if the results dialog is resized to smaller height, existing
 // QgsIdentifyResultsWebView are not (and must not be!) resized and scrolling becomes a bit
 // unpleasant until next identify. AFAIK it could only be solved using
 // QItemDelegate.
@@ -126,7 +123,7 @@ void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
 // size hint according to content
 QSize QgsIdentifyResultsWebView::sizeHint() const
 {
-  QSize s = this->page()->mainFrame()->contentsSize();
+  QSize s = page()->mainFrame()->contentsSize();
   QgsDebugMsg( QString( "content size: %1 x %2" ).arg( s.width() ).arg( s.height() ) );
   int height = s.height();
 
@@ -142,15 +139,17 @@ QSize QgsIdentifyResultsWebView::sizeHint() const
     QWidget *widget = qobject_cast<QWidget *>( parent() );
     if ( widget )
     {
-      int max = widget->size().height()  * 0.9;
+      int max = widget->size().height() * 0.9;
       QgsDebugMsg( QString( "parent widget height = %1 max height = %2" ).arg( widget->size().height() ).arg( max ) );
-      if ( height > max ) height = max;
+      if ( height > max )
+        height = max;
     }
     else
     {
       QgsDebugMsg( "parent not available" ) ;
     }
   }
+
   s = QSize( size().width(), height );
   QgsDebugMsg( QString( "size: %1 x %2" ).arg( s.width() ).arg( s.height() ) );
   return s;
@@ -190,20 +189,22 @@ QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeW
   mWebView = new QgsIdentifyResultsWebView( treeWidget );
   mWebView->hide();
   setText( 0, tr( "Loading..." ) );
-  connect( mWebView, SIGNAL( loadFinished( bool ) ) ,
-           this, SLOT( loadFinished( bool ) ) );
+  connect( mWebView->page(), SIGNAL( loadFinished( bool ) ), this, SLOT( loadFinished( bool ) ) );
 }
 
 void QgsIdentifyResultsWebViewItem::loadFinished( bool ok )
 {
-  Q_UNUSED( ok );
   QgsDebugMsg( "Entered" );
+  Q_UNUSED( ok );
 
   mWebView->show();
   treeWidget()->setItemWidget( this, 0, mWebView );
 
   // Span columns to save some space, must be after setItemWidget() to take efect.
   setFirstColumnSpanned( true );
+
+  disconnect( mWebView->page(), SIGNAL( loadFinished( bool ) ), this, SLOT( loadFinished( bool ) ) );
+
 }
 
 // Tree hierarchy
@@ -283,13 +284,13 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
     delete mActionPopup;
 }
 
-QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *layer )
+QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *object )
 {
   for ( int i = 0; i < lstResults->topLevelItemCount(); i++ )
   {
     QTreeWidgetItem *item = lstResults->topLevelItem( i );
 
-    if ( item->data( 0, Qt::UserRole ).value<QObject*>() == layer )
+    if ( item->data( 0, Qt::UserRole ).value<QObject *>() == object )
       return item;
   }
 
@@ -457,10 +458,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     << QgsRaster::IdentifyFormatValue;
     foreach ( QgsRaster::IdentifyFormat f, formats )
     {
-      if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) ) continue;
+      if ( !( QgsRasterDataProvider::identifyFormatToCapability( f ) & capabilities ) )
+        continue;
       formatCombo->addItem( QgsRasterDataProvider::identifyFormatLabel( f ), f );
-      formatCombo->setItemData( formatCombo->count() - 1, qVariantFromValue(( void * )layer ), Qt::UserRole + 1 );
-      if ( currentFormat == f ) formatCombo->setCurrentIndex( formatCombo->count() - 1 );
+      formatCombo->setItemData( formatCombo->count() - 1, qVariantFromValue( qobject_cast<QObject *>( layer ) ), Qt::UserRole + 1 );
+      if ( currentFormat == f )
+        formatCombo->setCurrentIndex( formatCombo->count() - 1 );
     }
 
     if ( formatCombo->count() > 1 )
@@ -469,8 +472,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
       QTreeWidgetItem *formatItem = new QTreeWidgetItem( QStringList() << tr( "Format" ) );
       layItem->addChild( formatItem );
       lstResults->setItemWidget( formatItem, 1, formatCombo );
-      connect( formatCombo, SIGNAL( currentIndexChanged( int ) ),
-               this, SLOT( formatChanged( int ) ) );
+      connect( formatCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( formatChanged( int ) ) );
     }
     else
     {
@@ -511,7 +513,6 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
     featItem->addChild( attrItem ); // before setHtml()!
     attrItem->setHtml( attributes.begin().value() );
-    connect( attrItem->webView(), SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
   }
   else
   {
@@ -676,7 +677,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent* event )
   mActionPopup = new QMenu();
 
   int idx = -1;
-  //QTreeWidgetItem *featItem = featureItem( item );
+  // QTreeWidgetItem *featItem = featureItem( item );
   QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( item ) );
   if ( featItem )
   {
@@ -883,10 +884,11 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
   else
   {
     // top level layer item, return feature item if only one
-
-    //if ( item->childCount() > 1 )
-    //  return 0;
-    //featItem = item->child( 0 );
+#if 0
+    if ( item->childCount() > 1 )
+      return 0;
+    featItem = item->child( 0 );
+#endif
 
     int count = 0;
 
@@ -896,10 +898,13 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
       if ( fi )
       {
         count++;
-        if ( !featItem ) featItem = fi;
+        if ( !featItem )
+          featItem = fi;
       }
     }
-    if ( count != 1 ) return 0;
+
+    if ( count != 1 )
+      return 0;
   }
 
   return featItem;
@@ -1124,7 +1129,8 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( mHighlights.contains( featItem ) )
     return;
 
-  if ( !featItem->feature().geometry() || featItem->feature().geometry()->wkbType() == QGis::WKBUnknown ) return;
+  if ( !featItem->feature().geometry() || featItem->feature().geometry()->wkbType() == QGis::WKBUnknown )
+    return;
 
   QgsHighlight *h = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
   if ( h )
@@ -1144,9 +1150,7 @@ void QgsIdentifyResultsDialog::zoomToFeature()
   QgsVectorLayer *vlayer = vectorLayer( item );
   QgsRasterLayer *rlayer = rasterLayer( item );
   if ( !vlayer && !rlayer )
-  {
     return;
-  }
 
   layer = vlayer ? ( QgsMapLayer * )vlayer : ( QgsMapLayer * )rlayer;
 
@@ -1305,12 +1309,14 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
   else if ( rlayer )
   {
     QTreeWidgetItem *featItem = featureItem( lstResults->currentItem() );
-    if ( !featItem ) return;
+    if ( !featItem )
+      return;
 
     for ( int i = 0; i < featItem->childCount(); i++ )
     {
       QTreeWidgetItem *item = featItem->child( i );
-      if ( item->childCount() > 0 ) continue;
+      if ( item->childCount() > 0 )
+        continue;
       text += QString( "%1: %2\n" ).arg( item->data( 0, Qt::DisplayRole ).toString() ).arg( item->data( 1, Qt::DisplayRole ).toString() );
     }
   }
@@ -1324,31 +1330,25 @@ void QgsIdentifyResultsDialog::copyGetFeatureInfoUrl()
   QClipboard *clipboard = QApplication::clipboard();
   QTreeWidgetItem *item = lstResults->currentItem();
   QTreeWidgetItem *layItem = layerItem( item );
-  if ( !layItem ) { return; }
+  if ( !layItem )
+    return;
   clipboard->setText( layItem->data( 0, GetFeatureInfoUrlRole ).toString() );
-}
-
-void QgsIdentifyResultsDialog::openUrl( const QUrl &url )
-{
-  if ( !QDesktopServices::openUrl( url ) )
-  {
-    QMessageBox::warning( this, tr( "Could not open url" ), tr( "Could not open URL '%1'" ).arg( url.toString() ) );
-  }
 }
 
 void QgsIdentifyResultsDialog::printCurrentItem()
 {
   QTreeWidgetItem *item = lstResults->currentItem();
-  if ( !item ) { return; }
+  if ( !item )
+    return;
 
   // There should only be one HTML item / result
   QgsIdentifyResultsWebViewItem *wv = 0;
-  for ( int i = 0; i < item->childCount(); i++ )
+  for ( int i = 0; i < item->childCount() && !wv; i++ )
   {
     wv = dynamic_cast<QgsIdentifyResultsWebViewItem*>( item->child( i ) );
-    if ( wv != 0 ) { break; }
   }
-  if ( wv == 0 )
+
+  if ( !wv )
   {
     QMessageBox::warning( this, tr( "Cannot not print" ), tr( "Cannot print this item" ) );
     return;
@@ -1395,27 +1395,33 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
     QgsDebugMsg( "sender is not QComboBox" );
     return;
   }
+
   QgsRaster::IdentifyFormat format = ( QgsRaster::IdentifyFormat ) combo->itemData( index, Qt::UserRole ).toInt();
   QgsDebugMsg( QString( "format = %1" ).arg( format ) );
-  QgsRasterLayer *layer = ( QgsRasterLayer * )combo->itemData( index, Qt::UserRole + 1 ).value<void *>();
+  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( combo->itemData( index, Qt::UserRole + 1 ).value<QObject *>() );
   if ( !layer )
   {
     QgsDebugMsg( "cannot get raster layer" );
     return;
   }
+
   // Store selected identify format in layer
   layer->setCustomProperty( "identify/format", QgsRasterDataProvider::identifyFormatName( format ) );
 
   // remove all childs of that layer from results, except the first (format)
-  QTreeWidgetItem *layItem = layerItem(( QObject * )layer );
+  QTreeWidgetItem *layItem = layerItem( layer );
   if ( !layItem )
   {
     QgsDebugMsg( "cannot get layer item" );
     return;
   }
+
   for ( int i = layItem->childCount() - 1; i > 0; i-- )
   {
-    layItem->removeChild( layItem->child( i ) );
+    QTreeWidgetItem *child = layItem->child( i );
+    QgsDebugMsg( QString( "remove %1:0x%2" ).arg( i ).arg(( qint64 ) child, 0, 16 ) );
+    layItem->removeChild( child );
+    QgsDebugMsg( QString( "removed %1:0x%2" ).arg( i ).arg(( qint64 ) child, 0, 16 ) );
   }
 
   // let know QgsMapToolIdentify that format changed
