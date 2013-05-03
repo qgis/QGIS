@@ -3814,6 +3814,10 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString description,
 
 
 
+QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
+{
+    return loadNamedStyle( theURI, theResultFlag, false );
+}
 
 QString QgsVectorLayer::loadNamedStyle( const QString theURI, bool &theResultFlag , bool loadFromLocalDB )
 {

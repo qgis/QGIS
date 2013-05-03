@@ -721,7 +721,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual QString getStyleFromDatabase( QString styleId, QString &msgError );
 
-    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag, bool loadFromLocalDb=false );
+    /**
+     * Load a named style from file/local db/datasource db
+     * @param theURI the URI of the style or the URI of the layer
+     * @param theResultFlag will be set to true if a named style is correctly loaded
+     * @param loadFromLocalDb if true forces to load from local db instead of datasource one
+     */
+    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag, bool loadFromLocalDb );
+
+    /**
+     * Calls loadNamedStyle( theURI, theResultFlag, false );
+     * Retained for backward compatibility
+     */
+    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag );
+
     virtual bool applyNamedStyle(QString namedStyle , QString errorMsg);
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
