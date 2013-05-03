@@ -490,8 +490,10 @@ void QgsDiagramProperties::apply()
 
     if ( 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
     {
-      QMessageBox::warning( this, tr( "No attributes added." ),
-                            tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ), QMessageBox::Ok );
+      QgisApp::instance()->messageBar()->pushMessage(
+        tr( "Diagrams: No attributes added." ),
+        tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ),
+        QgsMessageBar::WARNING );
     }
 
     bool scaleAttributeValueOk = false;
@@ -522,10 +524,10 @@ void QgsDiagramProperties::apply()
       if ( maxVal != DBL_MIN )
       {
         QgisApp::instance()->messageBar()->pushMessage(
-              tr( "Interpolation value" ),
-              tr( "You did not specify an interpolation value. A default value of %1 has been set." ).arg( QString::number( maxVal ) ),
-              QgsMessageBar::INFO,
-              5 );
+          tr( "Interpolation value" ),
+          tr( "You did not specify an interpolation value. A default value of %1 has been set." ).arg( QString::number( maxVal ) ),
+          QgsMessageBar::INFO,
+          5 );
 
         mValueLineEdit->setText( QString::number( maxVal ) );
       }
