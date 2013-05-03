@@ -27,6 +27,7 @@
 #include "qgsrendercontext.h"
 #include "qgsscalecalculator.h"
 #include "qgsvectorlayer.h"
+#include "qgspallabeling.h"
 
 #include "qgslabel.h"
 #include "qgslabelattributes.h"
@@ -624,6 +625,53 @@ bool QgsComposerMap::containsWMSLayer() const
       }
     }
   }
+  return false;
+}
+
+bool QgsComposerMap::containsBlendModes() const
+{
+  if ( !mMapRenderer )
+  {
+    return false;
+  }
+
+  QStringList layers = mMapRenderer->layerSet();
+
+  //Also need to check PAL labeling for blend modes
+  QgsPalLabeling* lbl = dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() );
+
+  QStringList::const_iterator layer_it = layers.constBegin();
+  QgsMapLayer* currentLayer = 0;
+
+  for ( ; layer_it != layers.constEnd(); ++layer_it )
+  {
+    currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *layer_it );
+    if ( currentLayer )
+    {
+      if ( currentLayer->blendMode() != QPainter::CompositionMode_SourceOver )
+      {
+        return true;
+      }
+      // if vector layer and has labels, check label blend modes
+      QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
+      if ( currentVectorLayer )
+      {
+        if ( lbl->willUseLayer( currentVectorLayer ) )
+        {
+          // Check all label blending properties
+          QgsPalLayerSettings& layerSettings = lbl->layer( currentVectorLayer->id() );
+          if (( layerSettings.blendMode != QPainter::CompositionMode_SourceOver ) ||
+              ( layerSettings.bufferSize != 0 && layerSettings.bufferBlendMode != QPainter::CompositionMode_SourceOver ) ||
+              ( layerSettings.shadowDraw && layerSettings.shadowBlendMode != QPainter::CompositionMode_SourceOver ) ||
+              ( layerSettings.shapeDraw && layerSettings.shapeBlendMode != QPainter::CompositionMode_SourceOver ) )
+          {
+            return true;
+          }
+        }
+      }
+    }
+  }
+
   return false;
 }
 

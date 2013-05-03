@@ -631,6 +631,11 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     showWMSPrintingWarning();
   }
 
+  if ( containsBlendModes() )
+  {
+    showBlendModePrintingWarning();
+  }
+
   bool hasAnAtlas = mComposition->atlasComposition().enabled();
   bool atlasOnASingleFile = hasAnAtlas && mComposition->atlasComposition().singleFile();
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
@@ -803,6 +808,11 @@ void QgsComposer::on_mActionPrint_triggered()
   if ( containsWMSLayer() )
   {
     showWMSPrintingWarning();
+  }
+
+  if ( containsBlendModes() )
+  {
+    showBlendModePrintingWarning();
   }
 
   //orientation and page size are already set to QPrinter in the page setup dialog
@@ -2010,6 +2020,42 @@ bool QgsComposer::containsWMSLayer() const
   return false;
 }
 
+bool QgsComposer::containsBlendModes() const
+{
+  // Check if composer contains any blend modes
+  QMap<QgsComposerItem*, QWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
+  QgsComposerItem* currentItem = 0;
+  QgsComposerMap* currentMap = 0;
+
+  for ( ; item_it != mItemWidgetMap.constEnd(); ++item_it )
+  {
+    currentItem = item_it.key();
+    // Check composer item's blend mode
+    if ( currentItem->blendMode() != QPainter::CompositionMode_SourceOver )
+    {
+      return true;
+    }
+    // If item is a composer map, check if it contains any blended layers
+    currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
+    if ( currentMap )
+    {
+      if ( currentMap->containsBlendModes() )
+      {
+        return true;
+      }
+      if ( currentMap->overviewFrameMapId() != -1 )
+      {
+        // map contains an overview, check its blend mode
+        if ( currentMap->overviewBlendMode() != QPainter::CompositionMode_SourceOver )
+        {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
 void QgsComposer::showWMSPrintingWarning()
 {
   QString myQSettingsLabel = "/UI/displayComposerWMSWarning";
@@ -2026,6 +2072,31 @@ void QgsComposer::showWMSPrintingWarning()
     m->setCheckBoxVisible( true );
     m->setCheckBoxQSettingsLabel( myQSettingsLabel );
     m->exec();
+  }
+}
+
+void QgsComposer::showBlendModePrintingWarning()
+{
+  if ( ! mComposition->printAsRaster() )
+  {
+    QgsMessageViewer* m = new QgsMessageViewer( this );
+    m->setWindowTitle( tr( "Project contains blend modes" ) );
+    m->setMessage( tr( "Blend modes are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
+    m->setCheckBoxText( tr( "Print as raster" ) );
+    m->setCheckBoxState( Qt::Checked );
+    m->setCheckBoxVisible( true );
+    m->showMessage( true );
+
+    // TODO - fix this - checkBoxState is never true
+    // also need to make sure composer print as raster checkbox is updated
+    if ( m->checkBoxState() == Qt::Checked )
+    {
+      mComposition->setPrintAsRaster( true );
+    }
+    else
+    {
+      mComposition->setPrintAsRaster( true );
+    }
   }
 }
 
