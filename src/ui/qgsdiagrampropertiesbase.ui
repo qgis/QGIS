@@ -40,7 +40,7 @@
            <x>0</x>
            <y>0</y>
            <width>743</width>
-           <height>644</height>
+           <height>761</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="scrollAreaLayout">
@@ -120,7 +120,7 @@
           <item>
            <widget class="QTabWidget" name="mDiagramPropertiesTabWidget">
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="mDiagramPropertiesTabWidgetPage1">
              <attribute name="title">
@@ -426,7 +426,12 @@
                        </widget>
                       </item>
                       <item>
-                       <widget class="QLineEdit" name="mValueLineEdit"/>
+                       <widget class="QLineEdit" name="mValueLineEdit">
+                        <property name="toolTip">
+                         <string>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the choosen &quot;Size unit&quot;.
+Leave empty to automatically apply the maximum value.</string>
+                        </property>
+                       </widget>
                       </item>
                      </layout>
                     </widget>

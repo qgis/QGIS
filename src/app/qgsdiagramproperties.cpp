@@ -22,15 +22,17 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsdiagramproperties.h"
-#include "qgslabelengineconfigdialog.h"
-#include "qgsvectorlayerproperties.h"
 #include "qgsdiagramrendererv2.h"
+#include "qgslabelengineconfigdialog.h"
+#include "qgsmessagebar.h"
+#include "qgsvectorlayerproperties.h"
 #include "qgsvectordataprovider.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QList>
 #include <QMessageBox>
+#include <QSettings>
 
 QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent )
     : QWidget( parent )
@@ -43,6 +45,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   }
 
   setupUi( this );
+
+  int tabIdx = QSettings().value( "/Windows/VectorLayerProperties/diagram/tab", 0 ).toInt();
+
+  mDiagramPropertiesTabWidget->setCurrentIndex( tabIdx );
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Background color" ) );
   mBackgroundColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
@@ -142,7 +148,9 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
     mDiagramSizeSpinBox->setValue( 30 );
     mBarWidthSpinBox->setValue( 5 );
-    mVisibilityGroupBox->setChecked( false );
+    mVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
+    mMaximumDiagramScaleLineEdit->setText( QString::number( layer->maximumScale() ) );
+    mMinimumDiagramScaleLineEdit->setText( QString::number( layer->minimumScale() ) );
 
     switch ( layerType )
     {
@@ -467,6 +475,9 @@ void QgsDiagramProperties::on_mEngineSettingsButton_clicked()
 
 void QgsDiagramProperties::apply()
 {
+  QSettings().setValue( "/Windows/VectorLayerProperties/diagram/tab",
+                        mDiagramPropertiesTabWidget->currentIndex() );
+
   if ( !mDisplayDiagramsGroupBox->isChecked() )
   {
     mLayer->setDiagramRenderer( 0 );
@@ -484,20 +495,40 @@ void QgsDiagramProperties::apply()
     }
 
     bool scaleAttributeValueOk = false;
-    if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
-    {
-      // We don't need a scale attribute, the field is used as a multiplicator
-      scaleAttributeValueOk = true;
-    }
-    else
-    {
-      // Check if a (usable) scale attribute value is inserted
-      mValueLineEdit->text().toDouble( &scaleAttributeValueOk );
-    }
+    // Check if a (usable) scale attribute value is inserted
+    mValueLineEdit->text().toDouble( &scaleAttributeValueOk );
+
     if ( !mFixedSizeCheckBox->isChecked() && !scaleAttributeValueOk )
     {
-      QMessageBox::warning( this, tr( "No attribute value specified" ),
-                            tr( "You did not specify a maximum value for the diagram size. Please specify the attribute and a reference value as a base for scaling in the Tab Diagram / Size." ), QMessageBox::Ok );
+      double maxVal = DBL_MIN;
+      QgsVectorDataProvider* provider = mLayer->dataProvider();
+
+      if ( provider )
+      {
+        if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
+        {
+          // Find maximum value
+          for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
+          {
+            maxVal = qMax( maxVal, provider->maximumValue( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toInt() ).toDouble() );
+          }
+        }
+        else
+        {
+          maxVal = provider->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toDouble();
+        }
+      }
+
+      if ( maxVal != DBL_MIN )
+      {
+        QgisApp::instance()->messageBar()->pushMessage(
+              tr( "Interpolation value" ),
+              tr( "You did not specify an interpolation value. A default value of %1 has been set." ).arg( QString::number( maxVal ) ),
+              QgsMessageBar::INFO,
+              5 );
+
+        mValueLineEdit->setText( QString::number( maxVal ) );
+      }
     }
 
     if ( diagramType == DIAGRAM_NAME_TEXT )
