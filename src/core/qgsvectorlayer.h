@@ -1267,7 +1267,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
   signals:
 
     /**
-     * This signal is emited when selection was changed
+     * This signal is emitted when selection was changed
      *
      * @param selected        Newly selected feature ids
      * @param deselected      Ids of all features which have previously been selected but are not any more
@@ -1275,7 +1275,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void selectionChanged( const QgsFeatureIds selected, const QgsFeatureIds deselected, const bool clearAndSelect );
 
-    /** This signal is emited when selection was changed */
+    /** This signal is emitted when selection was changed */
     void selectionChanged();
 
     /** This signal is emitted when modifications has been done on layer */

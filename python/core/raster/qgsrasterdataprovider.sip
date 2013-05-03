@@ -199,7 +199,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
 
    signals:
     /** Emit a signal to notify of the progress event.
-      * Emited theProgress is in percents (0.0-100.0) */
+      * Emitted theProgress is in percents (0.0-100.0) */
     void progress( int theType, double theProgress, QString theMessage );
     void progressUpdate( int theProgress );
 

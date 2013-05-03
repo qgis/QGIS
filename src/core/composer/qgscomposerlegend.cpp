@@ -380,7 +380,7 @@ QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendI
   double labelX = point.x() + qMax(( double ) symbolSize.width(), labelXOffset );
 
   // Vertical alignment of label with symbol:
-  // a) label height < symbol heigh: label centerd with symbol
+  // a) label height < symbol height: label centerd with symbol
   // b) label height > symbol height: label starts at top and runs under symbol
 
   labelSize.rheight() = lines.count() * textHeight + ( lines.count() - 1 ) * mlineSpacing;

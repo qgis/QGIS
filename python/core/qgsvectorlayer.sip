@@ -859,7 +859,7 @@ class QgsVectorLayer : QgsMapLayer
 
   signals:
 
-    /** This signal is emited when selection was changed */
+    /** This signal is emitted when selection was changed */
     void selectionChanged();
 
     /** This signal is emitted when modifications has been done on layer */

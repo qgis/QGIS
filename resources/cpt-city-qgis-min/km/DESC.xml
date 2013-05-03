@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <description>
   <dir>km</dir>
-  <name>Diverging colour-maps by Kenneth Moreland</name>
+  <name>Diverging color-maps by Kenneth Moreland</name>
   <full>
     The color map derived here is an all-around good performer: it
     works well for low and high frequency data, orders the data, is

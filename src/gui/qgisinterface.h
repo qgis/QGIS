@@ -541,7 +541,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual int messageTimeout() = 0;
 
   signals:
-    /** Emited whenever current (selected) layer changes.
+    /** Emitted whenever current (selected) layer changes.
      *  The pointer to layer can be null if no layer is selected
      */
     void currentLayerChanged( QgsMapLayer * layer );

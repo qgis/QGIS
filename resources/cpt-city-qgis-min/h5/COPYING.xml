@@ -34,7 +34,7 @@
   <src>
     <format>ASCII table</format>
     <link href="http://ab-initio.mit.edu/wiki/index.php/H5utils">H5utils homepage</link>
-    <link href="http://ab-initio.mit.edu/wiki/index.php/Color_tables_in_h5topng">Colour tables page</link>
+    <link href="http://ab-initio.mit.edu/wiki/index.php/Color_tables_in_h5topng">Color tables page</link>
   </src>
   <distribute>
     <qgis distribute="yes" license="otherok"/>

@@ -83,7 +83,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     void on_pbtnRunQuery_clicked( );
 
   signals:
-    /** \brief signal emited by the drawNewVectorLayer slot */
+    /** \brief signal emitted by the drawNewVectorLayer slot */
     void drawVectorLayer( QString, QString, QString );
 };
 
