@@ -49,7 +49,7 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
                 f = open(helpfile, "rb")
                 self.descriptions = pickle.load(f)
         self.currentName = self.ALG_DESC
-
+        self.text.setText(self.descriptions[self.ALG_DESC])
         self.tree.itemClicked.connect(self.changeItem)
 
         self.fillTree()
