@@ -55,14 +55,14 @@ class QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectio
     bool saveCRS( QgsCoordinateReferenceSystem myParameters, QString myName, QString myId, bool newEntry );
     void insertProjection( QString myProjectionAcronym );
     
-    //These two QMap store the value as it is on the database when loading
-    QMap <QString, QgsCoordinateReferenceSystem> existingCRSparameters;
+    //These two QMap store the values as they are on the database when loading
+    QMap <QString, QString> existingCRSparameters;
     QMap <QString, QString> existingCRSnames;
    
     //These three vectors store the value updated with the current modifications
     std::vector<QString> customCRSnames;
     std::vector<QString> customCRSids;
-    std::vector<QgsCoordinateReferenceSystem> customCRSparameters;
+    std::vector<QString> customCRSparameters;
 
     //vector saving the CRS to be deleted
     std::vector<QString> deletedCRSs; 

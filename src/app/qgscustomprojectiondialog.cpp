@@ -65,7 +65,7 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WFlag
   if( !customCRSnames.empty() )
   {
     leName->setText( customCRSnames[0] );
-    teParameters->setPlainText( customCRSparameters[0].toProj4() );
+    teParameters->setPlainText( customCRSparameters[0] );
     leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
   }
   
@@ -113,7 +113,7 @@ void QgsCustomProjectionDialog::populateList()
       
       crs.createFromProj4( parameters );
       existingCRSnames[id] = name;
-      existingCRSparameters[id] = crs;
+      existingCRSparameters[id] = crs.toProj4();
 
       newItem = new QTreeWidgetItem( leNameList, QStringList(  ) );
       newItem->setText( QGIS_CRS_NAME_COLUMN, name );
@@ -241,6 +241,7 @@ bool QgsCustomProjectionDialog::saveCRS(QgsCoordinateReferenceSystem myCRS, QStr
   int return_id;
   QString myProjectionAcronym  = myCRS.projectionAcronym();
   QString myEllipsoidAcronym   =  myCRS.ellipsoidAcronym(); 
+  QgsDebugMsg( QString("Saving a CRS:%1, %2, %3").arg(myName).arg(myCRS.toProj4()).arg(newEntry) );
   if( newEntry )
   {
     return_id=myCRS.saveAsUserCRS(myName);
@@ -287,7 +288,7 @@ bool QgsCustomProjectionDialog::saveCRS(QgsCoordinateReferenceSystem myCRS, QStr
     if(myResult != SQLITE_OK)
       return false;
   }
-  existingCRSparameters[myId] = myCRS;
+  existingCRSparameters[myId] = myCRS.toProj4();
   existingCRSnames[myId] = myName;
   
   // If we have a projection acronym not in the user db previously, add it.
@@ -312,7 +313,7 @@ void QgsCustomProjectionDialog::on_pbnAdd_clicked()
   newItem->setText( QGIS_CRS_PARAMETERS_COLUMN, parameters.toProj4());
   customCRSnames.push_back( name );
   customCRSids.push_back ( id);
-  customCRSparameters.push_back( parameters );
+  customCRSparameters.push_back( parameters.toProj4() );
   leNameList->setCurrentItem( newItem );
 }
 
@@ -342,7 +343,7 @@ void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetIte
   {
     previousIndex = leNameList->indexOfTopLevelItem( previous );
     customCRSnames[previousIndex] = leName->text();
-    customCRSparameters[previousIndex].createFromProj4( teParameters->toPlainText() );
+    customCRSparameters[previousIndex] = teParameters->toPlainText();
     previous->setText( QGIS_CRS_NAME_COLUMN, leName->text() );
     previous->setText( QGIS_CRS_PARAMETERS_COLUMN, teParameters->toPlainText() );
   }
@@ -376,7 +377,7 @@ void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
       on_pbnAdd_clicked();
     }
     teParameters->setPlainText( srs.toProj4() );
-    customCRSparameters[leNameList->currentIndex().row()].createFromProj4( srs.toProj4() );
+    customCRSparameters[leNameList->currentIndex().row()] = srs.toProj4();
     leNameList->currentItem()->setText( QGIS_CRS_PARAMETERS_COLUMN, srs.toProj4() );
     
   }
@@ -391,15 +392,17 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
   if(i != -1)
   {
     customCRSnames[i] = leName->text();
-    customCRSparameters[i].createFromProj4( teParameters->toPlainText() );
+    customCRSparameters[i] = teParameters->toPlainText();
   }
   
   QgsDebugMsg( "We save the modified CRS." );
 
   //Check if all CRS are valid:
+  QgsCoordinateReferenceSystem CRS;
   for( size_t i = 0; i < customCRSids.size(); ++i )
   {
-    if( customCRSparameters[i].isValid()==false )
+    CRS.createFromProj4(customCRSparameters[i]);
+    if( CRS.isValid()==false )
     {
       QMessageBox::information( this, tr( "QGIS Custom Projection" ),
                                 tr( "The proj4 definition of '%1' is not valid." ).arg(customCRSnames[i]) );
@@ -407,19 +410,20 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
     }
   }
   //Modify the CRS changed:
-  bool save_success;
+  bool save_success=true;
   for( size_t i = 0; i < customCRSids.size(); ++i )
   {
+    CRS.createFromProj4(customCRSparameters[i]);
     //Test if we just added this CRS (if it has no existing ID)
     if( customCRSids[i] == "" )
     {
-      save_success = save_success && saveCRS( customCRSparameters[i],customCRSnames[i], "", true);
+      save_success = save_success && saveCRS( CRS,customCRSnames[i], "", true);
     }
     else
     {
-      if ( existingCRSnames[customCRSids[i]]!=customCRSnames[i] || existingCRSparameters[customCRSids[i]].toProj4() != customCRSparameters[i].toProj4() )
+      if ( existingCRSnames[customCRSids[i]]!=customCRSnames[i] || existingCRSparameters[customCRSids[i]] != customCRSparameters[i] )
       {
-        save_success = save_success && saveCRS(customCRSparameters[i], customCRSnames[i], customCRSids[i], false );
+        save_success = save_success && saveCRS(CRS, customCRSnames[i], customCRSids[i], false );
       }
     }
     if( ! save_success )
@@ -433,7 +437,7 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
     save_success=save_success && deleteCRS( deletedCRSs[i] );
     if( ! save_success )
     {
-      QgsDebugMsg( QString( "Problem for layer %1" ).arg( customCRSparameters[i].toProj4() ));
+      QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( customCRSparameters[i] ));
     }
   }
   if( save_success )
