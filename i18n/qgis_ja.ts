@@ -22649,126 +22649,126 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">ダイアログ</translation>
+        <translation>ダイアログ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="34"/>
         <source>Enable grid</source>
-        <translation type="unfinished"></translation>
+        <translation>グリッドを有効にする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="44"/>
         <source>Interval X</source>
-        <translation type="unfinished">X間隔</translation>
+        <translation>X間隔</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="54"/>
         <source>Interval Y</source>
-        <translation type="unfinished">Y間隔</translation>
+        <translation>Y間隔</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="74"/>
         <source>Grid type</source>
-        <translation type="unfinished"></translation>
+        <translation>グリッドタイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="84"/>
         <source>Line symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>ラインシンボル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="148"/>
         <source>Draw annotation</source>
-        <translation type="unfinished">注記を描画する</translation>
+        <translation>注記を描画する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="169"/>
         <source>Annotation direction</source>
-        <translation type="unfinished">注記方向</translation>
+        <translation>注記方向</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="182"/>
         <source>Font...</source>
-        <translation type="unfinished">フォント...</translation>
+        <translation>フォント...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="189"/>
         <source>Distance to map frame</source>
-        <translation type="unfinished">地図フレームへの距離</translation>
+        <translation>地図フレームとの距離</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="202"/>
         <source>Coordinate precision</source>
-        <translation type="unfinished">座標精度</translation>
+        <translation>座標精度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="218"/>
         <source>Marker symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>マーカーシンボル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="254"/>
         <source>Offset X</source>
-        <translation type="unfinished">Xオフセット</translation>
+        <translation>Xオフセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="264"/>
         <source>Offset Y</source>
-        <translation type="unfinished">Yオフセット</translation>
+        <translation>Yオフセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="274"/>
         <source>Update Interval / Offset from</source>
-        <translation type="unfinished"></translation>
+        <translation>間隔の更新/オフセットの起点</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="280"/>
         <source>Canvas Extents</source>
-        <translation type="unfinished"></translation>
+        <translation>キャンバスの領域</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationgriddialog.ui" line="287"/>
         <source>Active Raster Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>アクティブラスタレイヤ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="45"/>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="122"/>
         <source>Line</source>
-        <translation type="unfinished">ライン</translation>
+        <translation>ライン</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="47"/>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="118"/>
         <source>Marker</source>
-        <translation type="unfinished">マーカー</translation>
+        <translation>マーカー</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="53"/>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="137"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>水平</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="55"/>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="141"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>垂直</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="57"/>
         <source>Horizontal and vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>水平と垂直</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="59"/>
         <source>Boundary direction</source>
-        <translation type="unfinished">境界線の方向</translation>
+        <translation>境界線の方向</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdecorationgriddialog.cpp" line="145"/>
         <source>Horizontal and Vertical</source>
-        <translation type="unfinished">横と縦</translation>
+        <translation>水平と垂直</translation>
     </message>
 </context>
 <context>
@@ -23090,12 +23090,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="124"/>
         <source>Delimited Text</source>
-        <translation type="unfinished"></translation>
+        <translation>区切り文字</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="124"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>プロバイダから区切り文字選択ダイアログを取得できません.</translation>
     </message>
     <message>
         <source>&amp;Delimited text</source>
@@ -23392,12 +23392,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="113"/>
         <source>No layer name</source>
-        <translation type="unfinished">レイヤ名がありません</translation>
+        <translation>レイヤ名がありません</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="113"/>
         <source>Please enter a layer name before adding the layer to the map</source>
-        <translation type="unfinished">レイヤを地図に追加する前にレイヤ名を入力してください</translation>
+        <translation>レイヤを地図に追加する前にレイヤ名を入力してください</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="121"/>
@@ -23432,12 +23432,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="609"/>
         <source>Choose a delimited text file to open</source>
-        <translation type="unfinished">デリミティッドテキストファイルを開く</translation>
+        <translation>デリミティッドテキストファイルを開く</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="611"/>
         <source>Text files</source>
-        <translation type="unfinished">テキストファイル</translation>
+        <translation>テキストファイル</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="651"/>
@@ -23501,7 +23501,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="612"/>
         <source>All files</source>
-        <translation type="unfinished">全ファイル</translation>
+        <translation>全ファイル</translation>
     </message>
 </context>
 <context>
@@ -23702,7 +23702,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="635"/>
         <source>Polygon</source>
-        <translation type="unfinished">ポリゴン</translation>
+        <translation>ポリゴン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="663"/>
@@ -23719,37 +23719,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="704"/>
         <source>File Name</source>
-        <translation type="unfinished">ファイル名</translation>
+        <translation>ファイル名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="714"/>
         <source>Full path to the delimited text file</source>
-        <translation type="unfinished">デリミティッドテキストファイルへのフルパス</translation>
+        <translation>デリミティッドテキストファイルへのフルパス</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="717"/>
         <source>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</source>
-        <translation type="unfinished">デリミティッドテキストファイルへのフルパス。ファイル中のフィールドを正しく処理するために、ファイル名を入力する前にデリミタを決定します。入力ファイルを選択するためにこのフィールドの右のブラウズボタンを使用してください。</translation>
+        <translation>デリミティッドテキストファイルへのフルパス。ファイル中のフィールドを正しく処理するために、ファイル名を入力する前にデリミタを決定します。入力ファイルを選択するためにこのフィールドの右のブラウズボタンを使用してください。</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="765"/>
         <source>Layer name</source>
-        <translation type="unfinished">レイヤ名</translation>
+        <translation>レイヤ名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="772"/>
         <source>Name to display in the map legend</source>
-        <translation type="unfinished">地図凡例中の名称</translation>
+        <translation>地図凡例中の名称</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="775"/>
         <source>Name displayed in the map legend</source>
-        <translation type="unfinished">地図凡例中の名称</translation>
+        <translation>地図凡例中の名称</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="782"/>
         <source>Encoding</source>
-        <translation type="unfinished">エンコーディング</translation>
+        <translation>エンコーディング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="789"/>
@@ -23836,22 +23836,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="736"/>
         <source>Browse to find the delimited text file to be processed</source>
-        <translation type="unfinished">処理するデリミティッドテキストファイルを探す</translation>
+        <translation>処理するデリミティッドテキストファイルを探す</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="739"/>
         <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
-        <translation type="unfinished">デリミティッドテキストファイルの場所を探すために使用します。このボタンは、&lt;i&gt;デリミタ&lt;/i&gt;ボックスに入力されるまで使用できません。ファイル選択後、デリミティッドテキストファイルからX と Y フィールドドロップダウンボックスに値が挿入されます。</translation>
+        <translation>デリミティッドテキストファイルの場所を探すために使用します。このボタンは、&lt;i&gt;デリミタ&lt;/i&gt;ボックスに入力されるまで使用できません。ファイル選択後、デリミティッドテキストファイルからX と Y フィールドドロップダウンボックスに値が挿入されます。</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="742"/>
         <source>Browse...</source>
-        <translation type="unfinished">参照...</translation>
+        <translation>参照...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="80"/>
         <source>Selected delimiters</source>
-        <translation type="unfinished">選択されたデリミタ</translation>
+        <translation>選択されたデリミタ</translation>
     </message>
     <message>
         <source>The delimiter is a regular expression</source>
@@ -23860,7 +23860,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="64"/>
         <source>Regular expression</source>
-        <translation type="unfinished">正規表現</translation>
+        <translation>正規表現</translation>
     </message>
     <message>
         <source>The delimiter is taken as is</source>
@@ -23873,27 +23873,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="151"/>
         <source>Tab</source>
-        <translation type="unfinished">タブ</translation>
+        <translation>タブ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="170"/>
         <source>Space</source>
-        <translation type="unfinished">空白</translation>
+        <translation>空白</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="135"/>
         <source>Comma</source>
-        <translation type="unfinished">カンマ</translation>
+        <translation>カンマ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="205"/>
         <source>Semicolon</source>
-        <translation type="unfinished">セミコロン</translation>
+        <translation>セミコロン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="189"/>
         <source>Colon</source>
-        <translation type="unfinished">コロン</translation>
+        <translation>コロン</translation>
     </message>
     <message>
         <source>Delimiter to use when splitting fields in the text file. The delimiter can be more than one character.</source>
@@ -23918,14 +23918,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="431"/>
         <source>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p align=&quot;right&quot;&gt;X フィールド&lt;/p&gt;</translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;X フィールド&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="453"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="456"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="459"/>
         <source>Name of the field containing x values</source>
-        <translation type="unfinished">x 値を含むフィールドの名前</translation>
+        <translation>x 値を含むフィールドの名前</translation>
     </message>
     <message>
         <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
@@ -23934,14 +23934,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="472"/>
         <source>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</source>
-        <translation type="unfinished">&lt;p align=&quot;right&quot;&gt;Y フィールド&lt;/p&gt;</translation>
+        <translation>&lt;p align=&quot;right&quot;&gt;Y フィールド&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="494"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="497"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="500"/>
         <source>Name of the field containing y values</source>
-        <translation type="unfinished">y 値を含むフィールドの名前</translation>
+        <translation>y 値を含むフィールドの名前</translation>
     </message>
     <message>
         <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
@@ -24035,77 +24035,77 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsdiagramproperties.cpp" line="56"/>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="141"/>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="57"/>
         <source>Map units</source>
-        <translation type="unfinished">地図上の単位</translation>
+        <translation>地図上の単位</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="70"/>
         <source>Around Point</source>
-        <translation type="unfinished"></translation>
+        <translation>点の周り</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="71"/>
         <source>Over Point</source>
-        <translation type="unfinished"></translation>
+        <translation>点の上</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="76"/>
         <source>Line</source>
-        <translation type="unfinished">ライン</translation>
+        <translation>ライン</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="77"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>水平</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="82"/>
         <source>Free</source>
-        <translation type="unfinished">フリー</translation>
+        <translation>フリー</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="87"/>
         <source>On line</source>
-        <translation type="unfinished">線上</translation>
+        <translation>線上</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="88"/>
         <source>Above line</source>
-        <translation type="unfinished">ラインの上</translation>
+        <translation>ラインの上</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="89"/>
         <source>Below Line</source>
-        <translation type="unfinished">ラインの下</translation>
+        <translation>ラインの下</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="90"/>
         <source>Map orientation</source>
-        <translation type="unfinished">地図の方向</translation>
+        <translation>地図の方向</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="99"/>
         <source>Pie chart</source>
-        <translation type="unfinished">パイチャート</translation>
+        <translation>パイチャート</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="101"/>
         <source>Text diagram</source>
-        <translation type="unfinished">テキストダイアグラム</translation>
+        <translation>テキストダイアグラム</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="103"/>
         <source>Histogram</source>
-        <translation type="unfinished">ヒストグラム</translation>
+        <translation>ヒストグラム</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="105"/>
         <source>Height</source>
-        <translation type="unfinished">高さ</translation>
+        <translation>高さ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="106"/>
@@ -24116,7 +24116,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="108"/>
         <source>Area</source>
-        <translation type="unfinished">領域</translation>
+        <translation>領域</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="109"/>
@@ -24127,7 +24127,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsdiagramproperties.cpp" line="111"/>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="112"/>
         <source>None</source>
-        <translation type="unfinished">なし</translation>
+        <translation>なし</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="114"/>
@@ -24137,7 +24137,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="115"/>
         <source>Right</source>
-        <translation type="unfinished">右</translation>
+        <translation>右</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="116"/>
@@ -24147,7 +24147,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="117"/>
         <source>Left</source>
-        <translation type="unfinished">左</translation>
+        <translation>左</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="293"/>
@@ -24167,17 +24167,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="395"/>
         <source>Transparency: %1%</source>
-        <translation type="unfinished">透過率 %1%</translation>
+        <translation>透過率 %1%</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="47"/>
         <source>Background color</source>
-        <translation type="unfinished">背景色</translation>
+        <translation>背景色</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="49"/>
         <source>Pen color</source>
-        <translation type="unfinished">ペンの色</translation>
+        <translation>ペンの色</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="331"/>
@@ -54237,37 +54237,37 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="152"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="923"/>
         <source>Display</source>
-        <translation type="unfinished">ディスプレイ</translation>
+        <translation>ディスプレイ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="281"/>
         <source>Layer info</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ情報</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="330"/>
         <source>Data source encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>データソースエンコーディング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="359"/>
         <source>Coordinate reference system</source>
-        <translation type="unfinished">空間参照システム</translation>
+        <translation>空間参照システム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="392"/>
         <source>Specify...</source>
-        <translation type="unfinished">指定...</translation>
+        <translation>指定...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="403"/>
         <source>Create spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>空間インデックスの作成</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="410"/>
         <source>Update extents</source>
-        <translation type="unfinished"></translation>
+        <translation>領域の更新</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="469"/>
@@ -54292,42 +54292,42 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="974"/>
         <source>Inserts an expression into the action</source>
-        <translation type="unfinished">アクションに式を挿入する</translation>
+        <translation>アクションに式を挿入する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="977"/>
         <source>Insert expression...</source>
-        <translation type="unfinished">式の挿入...</translation>
+        <translation>式の挿入...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1003"/>
         <source>The valid attribute names for this layer</source>
-        <translation type="unfinished">このレイヤに有効な属性名</translation>
+        <translation>このレイヤに有効な属性名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1019"/>
         <source>Inserts the selected field into the action</source>
-        <translation type="unfinished">アクションに選択フィールドを挿入する</translation>
+        <translation>アクションに選択フィールドを挿入する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1022"/>
         <source>Insert field</source>
-        <translation type="unfinished">フィールドを挿入</translation>
+        <translation>フィールドを挿入</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1040"/>
         <source>HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1064"/>
         <source>Field</source>
-        <translation type="unfinished">フィールド</translation>
+        <translation>フィールド</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="292"/>
         <source>Layer name</source>
-        <translation type="unfinished">レイヤ名</translation>
+        <translation>レイヤ名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="302"/>
@@ -54399,12 +54399,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1365"/>
         <source>Description</source>
-        <translation type="unfinished">記述</translation>
+        <translation>記述</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1416"/>
         <source>Properties</source>
-        <translation type="unfinished">プロパティ</translation>
+        <translation>プロパティ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1488"/>
@@ -54480,7 +54480,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="442"/>
         <source>Scale dependent visibility</source>
-        <translation type="unfinished">縮尺に応じた表示設定</translation>
+        <translation>縮尺に応じた表示設定</translation>
     </message>
     <message>
         <source>Background color</source>
@@ -54516,7 +54516,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="486"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="493"/>
         <source>Current</source>
-        <translation type="unfinished">現在の設定</translation>
+        <translation>現在の設定</translation>
     </message>
     <message>
         <source>Provider-specific options</source>
@@ -54665,17 +54665,17 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="67"/>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="213"/>
         <source>No symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボロジ無し</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="68"/>
         <source>Feature symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>地物シンボロジ</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="69"/>
         <source>Symbol layer symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボルレイヤシンボロジ</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="123"/>
@@ -54724,7 +54724,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="57"/>
         <source>Symbology export</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボロジエキスポート</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="100"/>
@@ -54760,12 +54760,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="175"/>
         <source>1:</source>
-        <translation type="unfinished">1:</translation>
+        <translation>1:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="188"/>
         <source>Scale</source>
-        <translation type="unfinished">縮尺</translation>
+        <translation>縮尺</translation>
     </message>
 </context>
 <context>
@@ -54820,12 +54820,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="90"/>
         <source>Edit...</source>
-        <translation type="unfinished">編集...</translation>
+        <translation>編集...</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="94"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
 </context>
 <context>
@@ -54833,7 +54833,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wcs/qgswcsdataitems.cpp" line="251"/>
         <source>New Connection...</source>
-        <translation type="unfinished"></translation>
+        <translation>新規コネクション...</translation>
     </message>
 </context>
 <context>
@@ -54841,12 +54841,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wcs/qgswcssourceselect.cpp" line="182"/>
         <source>Select a layer</source>
-        <translation type="unfinished">レイヤ選択</translation>
+        <translation>レイヤ選択</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcssourceselect.cpp" line="188"/>
         <source>No CRS selected</source>
-        <translation type="unfinished">CRSが選択されていません</translation>
+        <translation>CRSが選択されていません</translation>
     </message>
 </context>
 <context>
@@ -54971,17 +54971,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="52"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">追加(&amp;A)</translation>
+        <translation>追加(&amp;A)</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="55"/>
         <source>&amp;Build query</source>
-        <translation type="unfinished">クエリ作成(&amp;B)</translation>
+        <translation>クエリ作成(&amp;B)</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="56"/>
         <source>Build query</source>
-        <translation type="unfinished">クエリ作成</translation>
+        <translation>クエリ作成</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="203"/>
@@ -55081,7 +55081,7 @@ Features</source>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="83"/>
         <source>Filter:</source>
-        <translation type="unfinished">フィルター:</translation>
+        <translation>フィルター:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="96"/>
@@ -55117,7 +55117,7 @@ Features</source>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="216"/>
         <source>Use title for layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>タイトルをレイヤ名として使う</translation>
     </message>
     <message>
         <source>Only request features overlapping the current view extent</source>
@@ -55504,7 +55504,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="272"/>
         <source>10</source>
-        <translation type="unfinished">10</translation>
+        <translation>10</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="283"/>
@@ -55564,7 +55564,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="382"/>
         <source>Tileset</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="387"/>
@@ -55856,12 +55856,12 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1156"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished">%2バイト中%1バイトの地図がダウンロードされました.</translation>
+        <translation>%2バイト中%1バイトの地図がダウンロードされました.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1179"/>
         <source>Dom Exception</source>
-        <translation type="unfinished">Dom例外</translation>
+        <translation>Dom例外</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1181"/>
@@ -55875,7 +55875,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1229"/>
         <source>Request contains a format not offered by the server.</source>
-        <translation type="unfinished">リクエストにはサーバーで提供されない形式が含まれています.</translation>
+        <translation>リクエストにはサーバーで提供されない形式が含まれています.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1230"/>
@@ -55885,12 +55885,12 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1231"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
-        <translation type="unfinished">GetCapabilities リクエスト内の(オプションの) UpdateSequence パラメータが、サービスメタデータ内の現在の値と同一です。</translation>
+        <translation>GetCapabilities リクエスト内の(オプションの) UpdateSequence パラメータが、サービスメタデータ内の現在の値と同一です。</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1232"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
-        <translation type="unfinished">GetCapabilities リクエスト内の(オプションの) UpdateSequence パラメータが、サービスメタデータ内の現在の値より大きくなっています。</translation>
+        <translation>GetCapabilities リクエスト内の(オプションの) UpdateSequence パラメータが、サービスメタデータ内の現在の値より大きくなっています。</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1234"/>
@@ -55935,7 +55935,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1282"/>
         <source>composed error message &apos;%1&apos;.</source>
-        <translation type="unfinished">構成されたエラーメッセージ &apos;%1&apos;</translation>
+        <translation>構成されたエラーメッセージ &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1426"/>
@@ -55946,13 +55946,13 @@ Response was:
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1457"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1540"/>
         <source>Property</source>
-        <translation type="unfinished">プロパティ</translation>
+        <translation>プロパティ</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1460"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1543"/>
         <source>Value</source>
-        <translation type="unfinished">値</translation>
+        <translation>値</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1463"/>
@@ -55963,51 +55963,51 @@ Response was:
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1464"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1547"/>
         <source>Title</source>
-        <translation type="unfinished">タイトル</translation>
+        <translation>タイトル</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1465"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1548"/>
         <source>Abstract</source>
-        <translation type="unfinished">要約</translation>
+        <translation>要約</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1468"/>
         <source>Fixed Width</source>
-        <translation type="unfinished">固定幅</translation>
+        <translation>固定幅</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1469"/>
         <source>Fixed Height</source>
-        <translation type="unfinished">固定高さ</translation>
+        <translation>固定高さ</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1470"/>
         <source>Native CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>ネイティブCRS</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1471"/>
         <source>Native Bounding Box</source>
-        <translation type="unfinished"></translation>
+        <translation>ネイティブ表示範囲</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1474"/>
         <source>WGS 84 Bounding Box</source>
-        <translation type="unfinished">WGS 84 表示範囲</translation>
+        <translation>WGS 84 表示範囲</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1482"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1487"/>
         <source>Available in CRS</source>
-        <translation type="unfinished">利用可能なCRS</translation>
+        <translation>利用可能なCRS</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1487"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1497"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>(さらに %n )</numerusform>
         </translation>
     </message>
@@ -56015,88 +56015,88 @@ Response was:
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1492"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1497"/>
         <source>Available in format</source>
-        <translation type="unfinished"></translation>
+        <translation>利用可能形式</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1515"/>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1570"/>
         <source>Coverages</source>
-        <translation type="unfinished"></translation>
+        <translation>カバレッジ</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1522"/>
         <source>Cache Stats</source>
-        <translation type="unfinished">キャッシュの状態</translation>
+        <translation>キャッシュの状態</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1531"/>
         <source>Server Properties</source>
-        <translation type="unfinished">サーバプロパティ</translation>
+        <translation>サーバプロパティ</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1551"/>
         <source>Keywords</source>
-        <translation type="unfinished">キーワード</translation>
+        <translation>キーワード</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1552"/>
         <source>Online Resource</source>
-        <translation type="unfinished">オンラインリソース</translation>
+        <translation>オンラインリソース</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1553"/>
         <source>Contact Person</source>
-        <translation type="unfinished">窓口</translation>
+        <translation>連絡窓口</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1557"/>
         <source>Fees</source>
-        <translation type="unfinished">料金</translation>
+        <translation>料金</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1558"/>
         <source>Access Constraints</source>
-        <translation type="unfinished">アクセス制限</translation>
+        <translation>アクセス制限</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1559"/>
         <source>Image Formats</source>
-        <translation type="unfinished">画像フォーマット</translation>
+        <translation>画像フォーマット</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1560"/>
         <source>GetCapabilitiesUrl</source>
-        <translation type="unfinished">GetCapabilitiesURL（WMS機能問い合わせ）</translation>
+        <translation>GetCapabilitiesURL（WMS機能問い合わせ）</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1562"/>
         <source>Get Coverage Url</source>
-        <translation type="unfinished"></translation>
+        <translation>Get Coverage Url</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1562"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
-        <translation type="unfinished">&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(通知があったが無視されました)&lt;/font&gt;</translation>
+        <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(通知があったが無視されました)&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1584"/>
         <source>And %1 more coverages</source>
-        <translation type="unfinished"></translation>
+        <translation>さらに %1 のカバレッジがあります</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1611"/>
         <source>Format not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>形式がサポートされていません</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1671"/>
         <source>Read data error</source>
-        <translation type="unfinished"></translation>
+        <translation>データ読み込みエラー</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1698"/>
         <source>RasterIO error: </source>
-        <translation type="unfinished"></translation>
+        <translation>ラスタIO　エラー:</translation>
     </message>
 </context>
 <context>
@@ -56217,7 +56217,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3562"/>
         <source>Tile Layer Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルレイヤプロパティ</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3593"/>
@@ -56889,28 +56889,28 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">ダイアログ</translation>
+        <translation>ダイアログ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="21"/>
         <source>Dimension</source>
-        <translation type="unfinished"></translation>
+        <translation>次元</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="26"/>
         <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="41"/>
         <source>Value</source>
-        <translation type="unfinished">値</translation>
+        <translation>値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="31"/>
         <source>Abstract</source>
-        <translation type="unfinished">要約</translation>
+        <translation>要約</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmtsdimensionsbase.ui" line="36"/>
         <source>Default</source>
-        <translation type="unfinished">既定</translation>
+        <translation>既定</translation>
     </message>
 </context>
 <context>
@@ -57668,7 +57668,7 @@ SQL Anywhere エラーコード%1
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="65"/>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルタの設定(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="72"/>
@@ -57956,19 +57956,19 @@ SQL Anywhereエラーコード %2
     <message>
         <location filename="../python/console/console_settings.ui" line="23"/>
         <source>Console</source>
-        <translation type="unfinished">コンソール</translation>
+        <translation>コンソール</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="31"/>
         <location filename="../python/console/console_settings.ui" line="200"/>
         <source>Font</source>
-        <translation type="unfinished">フォント</translation>
+        <translation>フォント</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="51"/>
         <location filename="../python/console/console_settings.ui" line="220"/>
         <source>Size</source>
-        <translation type="unfinished">大きさ</translation>
+        <translation>大きさ</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="85"/>
@@ -58027,17 +58027,17 @@ SQL Anywhereエラーコード %2
     <message>
         <location filename="../python/console/console_settings.ui" line="185"/>
         <source>Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>エディタ</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="191"/>
         <source>Auto-save script before running</source>
-        <translation type="unfinished"></translation>
+        <translation>実行前にスクリプトを自動保存する</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="354"/>
         <source>API</source>
-        <translation type="unfinished"></translation>
+        <translation>API</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -58223,17 +58223,17 @@ about SEXTANTE</source>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="69"/>
         <source>TopologyChecker</source>
-        <translation type="unfinished"></translation>
+        <translation>トポロジチェッカー</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="77"/>
         <source>Topology Checker for vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ベクタレイヤ用トポロジチェッカー</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="82"/>
         <source>&amp;Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation>トポロジチェッカー(&amp;T)</translation>
     </message>
 </context>
 <context>
@@ -58282,7 +58282,7 @@ about SEXTANTE</source>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">出力shapefileを指定してください</translation>
+        <translation>出力shapefileを指定してください</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -58290,7 +58290,7 @@ about SEXTANTE</source>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="unfinished">ジオメトリ</translation>
+        <translation>ジオメトリ</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -58298,7 +58298,7 @@ about SEXTANTE</source>
 %2
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">以下の出力shapefileが作成されました:
+        <translation>以下の出力shapefileが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか
 %2
@@ -58307,7 +58307,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="unfinished">出力shapefileローディング中のエラー
+        <translation>出力shapefileローディング中のエラー
 %1</translation>
     </message>
     <message>
@@ -58428,17 +58428,17 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="34"/>
         <source>Colors</source>
-        <translation type="unfinished">色</translation>
+        <translation>色</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="49"/>
         <source>Fill</source>
-        <translation type="unfinished">塗りつぶし</translation>
+        <translation>塗りつぶし</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="81"/>
         <source>Border</source>
-        <translation type="unfinished">境界線</translation>
+        <translation>境界線</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="122"/>
@@ -58451,7 +58451,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="246"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="309"/>
         <source>Millimeter</source>
-        <translation type="unfinished">マイルメーター</translation>
+        <translation>マイルメーター</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="153"/>
@@ -58459,7 +58459,7 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="251"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="314"/>
         <source>Map unit</source>
-        <translation type="unfinished">地図上の単位</translation>
+        <translation>地図上の単位</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="163"/>
@@ -58474,12 +58474,12 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="267"/>
         <source>Data defined properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>データで定義されたプロパティ...</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="324"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished">オフセットX Y</translation>
+        <translation>オフセットX Y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="204"/>
@@ -59314,54 +59314,54 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="14"/>
         <source>Topology Checker</source>
-        <translation type="unfinished"></translation>
+        <translation>トポロジチェッカー</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="25"/>
         <source>Validate All</source>
-        <translation type="unfinished"></translation>
+        <translation>全てを検証する</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="32"/>
         <source>Validate Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>検証する領域</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="41"/>
         <source>Toggle Error Markers</source>
-        <translation type="unfinished"></translation>
+        <translation>エラーマーカーの切り替え</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="51"/>
         <source>Topology not checked yet</source>
-        <translation type="unfinished"></translation>
+        <translation>トポロジはまだチェックされていません</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="60"/>
         <source>Configure</source>
-        <translation type="unfinished"></translation>
+        <translation>設定</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="68"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="212"/>
         <source>Select automatic fix</source>
-        <translation type="unfinished"></translation>
+        <translation>自動修正の選択</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.ui" line="76"/>
         <source>Fix!</source>
-        <translation type="unfinished"></translation>
+        <translation>修正!</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="172"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="191"/>
         <source>No errors were found</source>
-        <translation type="unfinished"></translation>
+        <translation>エラーはありません</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="219"/>
         <source>Invalid first layer</source>
-        <translation type="unfinished"></translation>
+        <translation>最初のレイヤが不正です</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="219"/>
@@ -59371,18 +59371,18 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../src/plugins/topology/checkDock.cpp" line="281"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="336"/>
         <source>Topology plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>トポロジプラグイン</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="229"/>
         <source>Invalid first geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>最初のジオメトリが不正です</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="230"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="263"/>
         <source>Topology test</source>
-        <translation type="unfinished"></translation>
+        <translation>トポロジテスト</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="230"/>
@@ -59390,48 +59390,50 @@ Would you like to add the new layer to the TOC?</source>
         <source>Feature not found in the layer.
 The layer has probably changed.
 Run topology check again.</source>
-        <translation type="unfinished"></translation>
+        <translation>指定レイヤに地物がありません.
+レイヤは多分変更されました.
+トポロジチェックを再度実行して下さい.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="253"/>
         <source>Invalid second layer</source>
-        <translation type="unfinished"></translation>
+        <translation>2個目のレイヤが不正です</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="262"/>
         <source>Invalid second geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>2個目のジオメトリが不正です</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="281"/>
         <source>Invalid conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>不正なコンフリクト</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="317"/>
         <location filename="../src/plugins/topology/checkDock.cpp" line="401"/>
         <source>%1 errors were found</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 エラーがありました</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="321"/>
         <source>Topology fix error</source>
-        <translation type="unfinished"></translation>
+        <translation>トポロジ修正エラー</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="321"/>
         <source>Fixing failed!</source>
-        <translation type="unfinished"></translation>
+        <translation>修正に失敗しました!</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="336"/>
         <source>Layer %1 not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation>レジストリにレイヤ %1 がありません.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/checkDock.cpp" line="346"/>
         <source>Abort</source>
-        <translation type="unfinished">取り消し</translation>
+        <translation>取り消し</translation>
     </message>
 </context>
 <context>
@@ -60432,7 +60434,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Eliminate sliver polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>微細ポリゴンの除去</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
@@ -60543,11 +60545,11 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Point x ordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>ポイント x座標</translation>
     </message>
     <message>
         <source>Point y ordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>ポイント ｙ座標</translation>
     </message>
     <message>
         <source>Point x coordinate</source>
@@ -61141,7 +61143,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
         <source>Create random raster</source>
-        <translation type="unfinished"></translation>
+        <translation>ランダムラスタの作成</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
@@ -62870,59 +62872,59 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="14"/>
         <source>Topology Rule Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>トポロジルールの設定</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="22"/>
         <source>Current Rules</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のルール</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="30"/>
         <source>Rule</source>
-        <translation type="unfinished">ルール</translation>
+        <translation>ルール</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="35"/>
         <source>Layer #1</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ #1</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="40"/>
         <source>Layer #2</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ #2</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="45"/>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="109"/>
         <source>Tolerance</source>
-        <translation type="unfinished">許容範囲</translation>
+        <translation>許容範囲</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="50"/>
         <source>Layer1ID</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ1ID</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="55"/>
         <source>Layer2ID</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ2ID</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="69"/>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="88"/>
         <source>No layer</source>
-        <translation type="unfinished">レイヤがありません</translation>
+        <translation>レイヤがありません</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="123"/>
         <source>Add New Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>新ルールの追加</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/rulesDialog.ui" line="130"/>
         <source>Delete Rule</source>
-        <translation type="unfinished"></translation>
+        <translation>ルールの削除</translation>
     </message>
 </context>
 <context>
