@@ -464,19 +464,18 @@ class PythonConsoleWidget(QWidget):
         self.layoutFind = QGridLayout(self.widgetFind)
         self.layoutFind.setContentsMargins(0, 0, 0, 0)
         self.lineEditFind = QgsFilterLineEdit()
-        self.lineEditFind.setPlaceholderText('Enter text to find...')
+        placeHolderTxt = QCoreApplication.translate("PythonConsole", "Enter text to find...")
+        self.lineEditFind.setPlaceholderText(placeHolderTxt)
         self.findNextButton = QToolButton()
         self.findNextButton.setEnabled(False)
-        toolTipfindNext = QCoreApplication.translate("PythonConsole",
-                                                     "Find Next")
+        toolTipfindNext = QCoreApplication.translate("PythonConsole", "Find Next")
         self.findNextButton.setToolTip(toolTipfindNext)
         self.findNextButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchNextEditorConsole.png"))
         self.findNextButton.setIconSize(QSize(24, 24))
         self.findNextButton.setAutoRaise(True)
         self.findPrevButton = QToolButton()
         self.findPrevButton.setEnabled(False)
-        toolTipfindPrev = QCoreApplication.translate("PythonConsole",
-                                                     "Find Previous")
+        toolTipfindPrev = QCoreApplication.translate("PythonConsole", "Find Previous")
         self.findPrevButton.setToolTip(toolTipfindPrev)
         self.findPrevButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchPrevEditorConsole.png"))
         self.findPrevButton.setIconSize(QSize(24, 24))
@@ -628,8 +627,9 @@ class PythonConsoleWidget(QWidget):
     def openScriptFile(self):
         settings = QSettings()
         lastDirPath = settings.value("pythonConsole/lastDirPath").toString()
+        openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
         filename = QFileDialog.getOpenFileName(
-                        self, "Open File", lastDirPath, "Script file (*.py)")
+                        self, openFileTr, lastDirPath, "Script file (*.py)")
         if not filename.isEmpty():
             for i in range(self.tabEditorWidget.count()):
                 tabWidget = self.tabEditorWidget.widget(i)
@@ -650,15 +650,18 @@ class PythonConsoleWidget(QWidget):
         try:
             tabWidget.save()
         except (IOError, OSError), e:
-            QMessageBox.warning(self, "Save Error",
-                    "Failed to save %s: %s" % (tabWidget.path, e))
+            errTr = QCoreApplication.translate("PythonConsole", "Save Error")
+            msgErrTr = QCoreApplication.translate("PythonConsole", 
+                                                  "Failed to save %1: %2").arg(tabWidget.path, e)
+            QMessageBox.warning(self, errTr, msgErrTr)
 
     def saveAsScriptFile(self):
         tabWidget = self.tabEditorWidget.currentWidget()
         if tabWidget is None:
             return
+        saveAsFileTr = QCoreApplication.translate("PythonConsole", "Save File As")
         filename = QFileDialog.getSaveFileName(self,
-                        "Save File As",
+                        saveAsFileTr,
                         tabWidget.path, "Script file (*.py)")
         if not filename.isEmpty():
             #print tabWidget.path

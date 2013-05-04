@@ -472,23 +472,30 @@ class Editor(QsciScintilla):
                             pass
                         else:
                             raise e
+            tmpFileTr = QCoreApplication.translate('PythonConsole', ' [Temporary file saved in ')
             if tmp:
-                name = name + ' [Temporary file saved in ' + dir + ']'
+                name = name + tmpFileTr + dir + ']'
             if _traceback:
+                msgTraceTr = QCoreApplication.translate('PythonConsole', '## Script error: %1').arg(name)
                 print "## %s" % datetime.datetime.now()
-                print "## Script error: %s" % name
+                print msgTraceTr
                 sys.stderr.write(_traceback)
                 p.stderr.close()
             else:
+                msgSuccessTr = QCoreApplication.translate('PythonConsole',
+                                                          '## Script executed successfully: %1').arg(name)
                 print "## %s" % datetime.datetime.now()
-                print "## Script executed successfully: %s" % name
+                print msgSuccessTr
                 sys.stdout.write(out)
                 p.stdout.close()
             del p
             if tmp:
                 os.remove(filename)
         except IOError, error:
-            print 'Cannot execute file %s. Error: %s' % (filename, error.strerror)
+            IOErrorTr = QCoreApplication.translate('PythonConsole',
+                                                   'Cannot execute file %1. Error: %2') \
+                                                   .arg(filename, error.strerror)
+            print IOErrorTr
         except:
             s = traceback.format_exc()
             print '## Error: '
@@ -535,7 +542,8 @@ class Editor(QsciScintilla):
 
     def goToLine(self, objName, linenr):
         self.SendScintilla(QsciScintilla.SCI_GOTOLINE, linenr-1)
-        self.SendScintilla(QsciScintilla.SCI_SETTARGETSTART, self.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS))
+        self.SendScintilla(QsciScintilla.SCI_SETTARGETSTART,
+                           self.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS))
         self.SendScintilla(QsciScintilla.SCI_SETTARGETEND, len(self.text()))
         pos = self.SendScintilla(QsciScintilla.SCI_SEARCHINTARGET, len(objName), objName)
         index = pos - self.SendScintilla(QsciScintilla.SCI_GETCURRENTPOS)
@@ -557,7 +565,10 @@ class Editor(QsciScintilla):
             try:
                 file = open(pathfile, "r").readlines()
             except IOError, error:
-                print 'The file %s could not be opened. Error: %s' % (pathfile, error.strerror)
+                IOErrorTr = QCoreApplication.translate('PythonConsole',
+                                                       'The file %1 could not be opened. Error: %2') \
+                                                       .arg(pathfile, error.strerro)
+                print IOErrorTr
             for line in reversed(file):
                 self.insert(line)
             QApplication.restoreOverrideCursor()
@@ -566,7 +577,9 @@ class Editor(QsciScintilla):
 
             self.parent.tw.listObject(self.parent.tw.currentWidget())
             self.mtime = os.stat(pathfile).st_mtime
-            msgText = QCoreApplication.translate('PythonConsole', 'The file <b>"%1"</b> has been changed and reloaded').arg(pathfile)
+            msgText = QCoreApplication.translate('PythonConsole',
+                                                 'The file <b>"%1"</b> has been changed and reloaded') \
+                                                 .arg(pathfile)
             self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
 
         QsciScintilla.focusInEvent(self, e)
@@ -609,7 +622,10 @@ class EditorTab(QWidget):
         try:
             fn = open(unicode(filename), "rb")
         except IOError, error:
-            print 'The file <b>%s</b> could not be opened. Error: %s' % (filename, error.strerror)
+            IOErrorTr = QCoreApplication.translate('PythonConsole',
+                                                   'The file <b>%1</b> could not be opened. Error: %2') \
+                                                    .arg(filename, error.strerror)
+            print IOErrorTr
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         txt = fn.read()
         fn.close()
@@ -621,8 +637,10 @@ class EditorTab(QWidget):
 
     def save(self):
         if self.path is None:
+            saveTr = QCoreApplication.translate('PythonConsole',
+                                                'Python Console: Save file')
             self.path = str(QFileDialog().getSaveFileName(self,
-                                                          "Python Console: Save file",
+                                                          saveTr,
                                                           "*.py",
                                                           "Script file (*.py)"))
             # If the user didn't select a file, abort the save operation
@@ -743,7 +761,9 @@ class EditorTabWidget(QTabWidget):
         self.connect(self.fileTabMenu, SIGNAL("triggered(QAction*)"),
                      self.showFileTabMenuTriggered)
         self.fileTabButton = QToolButton()
-        self.fileTabButton.setToolTip('List all tabs')
+        txtToolTipMenuFile = QCoreApplication.translate("PythonConsole",
+                                                        "List all tabs")
+        self.fileTabButton.setToolTip(txtToolTipMenuFile)
         self.fileTabButton.setIcon(QgsApplication.getThemeIcon("console/iconFileTabsMenuConsole.png"))
         self.fileTabButton.setIconSize(QSize(24, 24))
         self.fileTabButton.setAutoRaise(True)
@@ -756,7 +776,9 @@ class EditorTabWidget(QTabWidget):
 
         # Open button
         self.newTabButton = QToolButton()
-        self.newTabButton.setToolTip('New Tab')
+        txtToolTipNewTab = QCoreApplication.translate("PythonConsole",
+                                                      "New Tab")
+        self.newTabButton.setToolTip(txtToolTipNewTab)
         self.newTabButton.setAutoRaise(True)
         self.newTabButton.setIcon(QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.png"))
         self.newTabButton.setIconSize(QSize(24, 24))
@@ -813,10 +835,13 @@ class EditorTabWidget(QTabWidget):
         if tab2index:
             tab = self.indexOf(tab)
         if self.widget(tab).newEditor.isModified():
-            res = QMessageBox.question( self, 'Python Console: Save File',
-                             'The file <b>"%s"</b> has been modified, save changes ?'
-                             % self.tabText(tab),
-                             QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel )
+            txtSaveOnRemove = QCoreApplication.translate("PythonConsole",
+                                                         "Python Console: Save File")
+            txtMsgSaveOnRemove = QCoreApplication.translate("PythonConsole",
+                                                            "The file <b>'%1'</b> has been modified, save changes ?").arg(self.tabText(tab))
+            res = QMessageBox.question( self, txtSaveOnRemove,
+                                        txtMsgSaveOnRemove,
+                                        QMessageBox.Save | QMessageBox.Discard | QMessageBox.Cancel )
             if res == QMessageBox.Save:
                 self.widget(tab).save()
             elif res == QMessageBox.Cancel:
@@ -856,8 +881,11 @@ class EditorTabWidget(QTabWidget):
                     tabName = pathFile.split('/')[-1]
                     self.newTabEditor(tabName, pathFile)
                 else:
+                    errOnRestore = QCoreApplication.translate("PythonConsole",
+                                                              "Unable to restore the file: \n%1\n") \
+                                                              .arg(pathFile)
                     print  '## Error: '
-                    s = 'Unable to restore the file: \n%s\n' % pathFile
+                    s = errOnRestore
                     sys.stderr.write(s)
                     self.parent.updateTabListScript(pathFile)
         if self.count() < 1:
