@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>281</width>
-    <height>160</height>
+    <height>197</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,7 +44,7 @@
    <item row="2" column="1">
     <widget class="QComboBox" name="mTargetFieldComboBox"/>
    </item>
-   <item row="5" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -65,6 +65,13 @@
     <widget class="QCheckBox" name="mCacheInMemoryCheckBox">
      <property name="text">
       <string>Cache join layer in virtual memory</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QCheckBox" name="mUseOriginalNamesCheckBox">
+     <property name="text">
+      <string>Use original names for joined fields</string>
      </property>
     </widget>
    </item>

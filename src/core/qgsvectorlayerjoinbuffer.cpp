@@ -105,7 +105,14 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
       if ( joinFields[idx].name() != joinFieldName )
       {
         QgsField f = joinFields[idx];
-        f.setName( joinLayer->name() + "_" + f.name() );
+        if ( !joinIt->originalNames )
+        {
+          f.setName( joinLayer->name() + "_" + f.name() );
+        }
+        else
+        {
+          f.setName( f.name() );
+        }
         fields.append( f, QgsFields::OriginJoin, idx + ( joinIdx*1000 ) );
       }
     }

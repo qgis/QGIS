@@ -941,6 +941,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
     info.joinLayerId = d.joinedLayerId();
     info.joinFieldName = d.joinFieldName();
     info.memoryCache = d.cacheInMemory();
+    info.originalNames = d.useOriginalNames();
     if ( layer )
     {
       //create attribute index if possible

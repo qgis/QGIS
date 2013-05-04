@@ -38,11 +38,14 @@ class APP_EXPORT QgsAddJoinDialog: public QDialog, private Ui::QgsAddJoinDialogB
     QString targetFieldName() const;
     /**True if joined layer should be cached in virtual memory*/
     bool cacheInMemory() const;
+    /**True if joined fields should use original names without prefix*/
+    bool useOriginalNames() const;
     /**Returns true if user wants to create an attribute index on the join field*/
     bool createAttributeIndex() const;
 
   private slots:
     void on_mJoinLayerComboBox_currentIndexChanged( int index );
+    void on_mUseOriginalNamesCheckBox_stateChanged( int state );
 
   private:
     /**Target layer*/

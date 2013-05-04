@@ -129,6 +129,8 @@ struct CORE_EXPORT QgsVectorJoinInfo
   QString joinFieldName;
   /**True if the join is cached in virtual memory*/
   bool memoryCache;
+  /**True if joined field names have no prefix (original names used)*/
+  bool originalNames;
   /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     @note not available in python bindings
     */
