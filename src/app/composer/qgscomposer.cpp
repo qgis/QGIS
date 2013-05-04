@@ -330,6 +330,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
   connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
+  connect( this, SIGNAL( printAsRasterChanged( bool ) ), compositionWidget, SLOT( setPrintAsRasterCheckBox( bool ) ) );
   mGeneralDock->setWidget( compositionWidget );
 
   //undo widget
@@ -1818,6 +1819,7 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   //create compositionwidget
   QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
   QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
+  QObject::connect( this, SIGNAL( printAsRasterChanged( bool ) ), compositionWidget, SLOT( setPrintAsRasterCheckBox( bool ) ) );
   mGeneralDock->setWidget( compositionWidget );
 
   //read and restore all the items
@@ -2087,14 +2089,16 @@ void QgsComposer::showBlendModePrintingWarning()
     m->setCheckBoxVisible( true );
     m->showMessage( true );
 
-    // also need to make sure composer print as raster checkbox is updated
     if ( m->checkBoxState() == Qt::Checked )
     {
       mComposition->setPrintAsRaster( true );
+      //make sure print as raster checkbox is updated
+      emit printAsRasterChanged( true );
     }
     else
     {
       mComposition->setPrintAsRaster( false );
+      emit printAsRasterChanged( false );
     }
 
     delete m;

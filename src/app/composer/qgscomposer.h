@@ -397,6 +397,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! @note added in 1.9
     QMenu* mHelpMenu;
 
+  signals:
+    void printAsRasterChanged( bool state );
+
   private slots:
 
     //! Populate Print Composers menu from main app's
