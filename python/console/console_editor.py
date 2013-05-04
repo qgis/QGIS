@@ -348,14 +348,18 @@ class Editor(QsciScintilla):
     def findText(self, direction=False):
         line, index = self.getCursorPosition()
         text = self.parent.pc.lineEditFind.text()
+        msgText = False
         if not text.isEmpty():
             if direction:
-                self.findFirst(text, 1, 0, line, index, forward=False)
+                if not self.findFirst(text, 1, 0, line, index, forward=False):
+                    msgText = True
             else:
                 if not self.findFirst(text, 1, 0, line, index):
-                    msgText = QCoreApplication.translate('PythonConsole',
-                                                         '<b>"%1"</b> was not found.').arg(text)
-                    self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
+                    msgText = True
+            if msgText:
+                msgText = QCoreApplication.translate('PythonConsole',
+                                                     '<b>"%1"</b> was not found.').arg(text)
+                self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
 
     def objectListEditor(self):
         listObj = self.parent.pc.listClassMethod
@@ -733,12 +737,12 @@ class EditorTabWidget(QTabWidget):
         self.setTabPosition(QTabWidget.North)
 
         # Menu button list tabs
-        self.fileTabMenu = QMenu(self)
+        self.fileTabMenu = QMenu()
         self.connect(self.fileTabMenu, SIGNAL("aboutToShow()"),
                      self.showFileTabMenu)
         self.connect(self.fileTabMenu, SIGNAL("triggered(QAction*)"),
                      self.showFileTabMenuTriggered)
-        self.fileTabButton = QToolButton(self)
+        self.fileTabButton = QToolButton()
         self.fileTabButton.setToolTip('List all tabs')
         self.fileTabButton.setIcon(QgsApplication.getThemeIcon("console/iconFileTabsMenuConsole.png"))
         self.fileTabButton.setIconSize(QSize(24, 24))
@@ -751,7 +755,7 @@ class EditorTabWidget(QTabWidget):
         self.connect(self, SIGNAL('currentChanged(int)'), self.changeLastDirPath)
 
         # Open button
-        self.newTabButton = QToolButton(self)
+        self.newTabButton = QToolButton()
         self.newTabButton.setToolTip('New Tab')
         self.newTabButton.setAutoRaise(True)
         self.newTabButton.setIcon(QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.png"))
