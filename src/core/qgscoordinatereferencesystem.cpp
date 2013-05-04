@@ -663,6 +663,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   if ( !mIsValidFlag )
   {
     QgsDebugMsg( "Projection is not found in databases." );
+    //setProj4String will set mIsValidFlag to true if there is no issue
     setProj4String( myProj4String );
   }
 

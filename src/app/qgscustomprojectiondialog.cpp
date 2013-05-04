@@ -395,6 +395,17 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
   }
   
   QgsDebugMsg( "We save the modified CRS." );
+
+  //Check if all CRS are valid:
+  for( size_t i = 0; i < customCRSids.size(); ++i )
+  {
+    if( customCRSparameters[i].isValid()==false )
+    {
+      QMessageBox::information( this, tr( "QGIS Custom Projection" ),
+                                tr( "The proj4 definition of '%1' is not valid." ).arg(customCRSnames[i]) );
+      return;
+    }
+  }
   //Modify the CRS changed:
   bool save_success;
   for( size_t i = 0; i < customCRSids.size(); ++i )
@@ -403,21 +414,17 @@ void QgsCustomProjectionDialog::on_buttonBox_accepted()
     if( customCRSids[i] == "" )
     {
       save_success = save_success && saveCRS( customCRSparameters[i],customCRSnames[i], "", true);
-      if( ! save_success )
-      {
-	QgsDebugMsg( QString( "Problem for layer %1" ).arg( customCRSparameters[i].toProj4() ));
-      }
     }
     else
     {
       if ( existingCRSnames[customCRSids[i]]!=customCRSnames[i] || existingCRSparameters[customCRSids[i]].toProj4() != customCRSparameters[i].toProj4() )
       {
-	save_success = save_success && saveCRS(customCRSparameters[i], customCRSnames[i], customCRSids[i], false );
-	if( ! save_success )
-	{
-	  QgsDebugMsg( QString( "Problem for layer %1" ).arg( customCRSparameters[i].toProj4() ));
-	}
+        save_success = save_success && saveCRS(customCRSparameters[i], customCRSnames[i], customCRSids[i], false );
       }
+    }
+    if( ! save_success )
+    {
+      QgsDebugMsg( QString( "Error when saving CRS '%1'" ).arg( customCRSnames[i] ));
     }
   }
   QgsDebugMsg( "We remove the deleted CRS." );
