@@ -752,6 +752,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         {
           case QgsVectorLayer::FileName:
           case QgsVectorLayer::Photo:
+          case QgsVectorLayer::Calendar:
             pb = new QPushButton( tr( "..." ), myWidget );
             break;
 

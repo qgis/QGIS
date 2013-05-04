@@ -687,11 +687,11 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     {
       return;
     }
-    // test directory (if it exists and is writeable)
+    // test directory (if it exists and is writable)
     if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
       QMessageBox::warning( 0, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writeable. Cancelling." ),
+                            tr( "The given output directory is not writable. Cancelling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;
@@ -1006,11 +1006,11 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     {
       return;
     }
-    // test directory (if it exists and is writeable)
+    // test directory (if it exists and is writable)
     if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
     {
       QMessageBox::warning( 0, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writeable. Cancelling." ),
+                            tr( "The given output directory is not writable. Cancelling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;
@@ -1174,11 +1174,11 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     {
       return;
     }
-    // test directory (if it exists and is writeable)
+    // test directory (if it exists and is writable)
     if ( !QDir( outputDir ).exists() || !QFileInfo( outputDir ).isWritable() )
     {
       QMessageBox::warning( 0, tr( "Unable to write into the directory" ),
-                            tr( "The given output directory is not writeable. Cancelling." ),
+                            tr( "The given output directory is not writable. Cancelling." ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       return;

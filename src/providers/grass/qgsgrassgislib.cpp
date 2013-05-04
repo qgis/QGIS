@@ -310,10 +310,10 @@ int GRASS_LIB_EXPORT G_parser( int argc, char **argv )
 
   if ( ret == 0 ) // parsed OK
   {
-    // It would be useful to determin region from input raster layers if no one
-    // is given by environment variable but there seems to be no way to get
-    // access to module options. Everything is in static variables in parser.c
-    // and there are no access functions to them.
+    // It would be useful to determine the region from input raster layers if
+    // no one is given by environment variable but there seems to be no way to
+    // get access to module options. Everything is in static variables in
+    // parser.c and there are no access functions to them.
   }
   return ret;
 }

@@ -149,7 +149,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 
     QgsBrowserModel* mModel;
     QString mFilter; //filter string provided
-    QVector<QRegExp> mREList; //list of filters, seperated by "|"
+    QVector<QRegExp> mREList; //list of filters, separated by "|"
     QRegExp::PatternSyntax mPatternSyntax;
 
     bool filterAcceptsString( const QString & value ) const

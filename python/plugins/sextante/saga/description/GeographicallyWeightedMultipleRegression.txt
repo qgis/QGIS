@@ -14,7 +14,7 @@ ParameterSelection|NPOINTS|Number of Points|[0] maximum number of observations;[
 ParameterNumber|MAXPOINTS|Maximum Number of Observations|None|None|10
 ParameterNumber|MINPOINTS|Minimum Number of Observations|None|None|4
 Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
-ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
+ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
 OutputRaster|USER_QUALITY|Quality
 OutputRaster|USER_INTERCEPT|Intercept
 OutputRaster|GRID_QUALITY|Quality

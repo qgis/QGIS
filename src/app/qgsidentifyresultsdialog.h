@@ -128,7 +128,7 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
 
-    // Emited when raster identify format of a layer changed
+    // Emitted when raster identify format of a layer changed
     void formatChanged( QgsRasterLayer *layer );
 
     void copyToClipboard( QgsFeatureStore& featureStore );
@@ -182,7 +182,6 @@ class QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBa
 
     void formatChanged( int index );
 
-    void openUrl( const QUrl &url );
     void printCurrentItem();
 
   private:

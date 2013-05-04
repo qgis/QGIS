@@ -9,5 +9,5 @@ ParameterSelection|MODE|Search Mode|[0] all directions;[1] quadrants
 ParameterSelection|SELECT|Points Selection|[0] all points in search radius;[1] maximum number of points
 ParameterNumber|MAXPOINTS|Maximum Number of Points|None|None|10
 Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
-ParameterNumber|USER_SIZE|Cellsize|None|None|1.0
+ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
 OutputRaster|USER_GRID|Grid

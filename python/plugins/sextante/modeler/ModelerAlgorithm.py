@@ -78,7 +78,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
         #algorithms that each algorithm depends on.
         #This is just a list of dependencies not set by outputs and inputs
-        #but explicitely entered instead, meaning that an algorithm must ''wait''
+        #but explicitly entered instead, meaning that an algorithm must ''wait''
         #for another to finish
         #Each entry is a list with algorithm indexes
         self.dependencies = []

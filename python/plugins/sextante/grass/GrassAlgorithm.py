@@ -56,10 +56,14 @@ from sextante.parameters.ParameterString import ParameterString
 
 class GrassAlgorithm(GeoAlgorithm):
 
+    GRASS_OUTPUT_TYPE_PARAMETER = "GRASS_OUTPUT_TYPE_PARAMETER" 
     GRASS_MIN_AREA_PARAMETER = "GRASS_MIN_AREA_PARAMETER"
     GRASS_SNAP_TOLERANCE_PARAMETER = "GRASS_SNAP_TOLERANCE_PARAMETER"
     GRASS_REGION_EXTENT_PARAMETER = "GRASS_REGION_PARAMETER"
     GRASS_REGION_CELLSIZE_PARAMETER = "GRASS_REGION_CELLSIZE_PARAMETER"
+    GRASS_REGION_ALIGN_TO_RESOLUTION = "-a_r.region"
+    
+    OUTPUT_TYPES = ["auto", "point", "line", "area"]
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
@@ -113,7 +117,8 @@ class GrassAlgorithm(GeoAlgorithm):
         line = lines.readline().strip("\n").strip()
         self.group = line
         hasRasterOutput = False
-        hasVectorOutput = False
+        hasVectorInput = False
+        vectorOutputs = 0
         while line != "":
             try:
                 line = line.strip("\n").strip()
@@ -121,9 +126,9 @@ class GrassAlgorithm(GeoAlgorithm):
                     parameter = ParameterFactory.getFromString(line);
                     self.addParameter(parameter)
                     if isinstance(parameter, ParameterVector):
-                       hasVectorOutput = True
+                        hasVectorInput = True
                     if isinstance(parameter, ParameterMultipleInput) and parameter.datatype < 3:
-                       hasVectorOutput = True
+                        hasVectorInput = True
                 elif line.startswith("*Parameter"):
                     param = ParameterFactory.getFromString(line[1:])
                     param.isAdvanced = True
@@ -133,6 +138,8 @@ class GrassAlgorithm(GeoAlgorithm):
                     self.addOutput(output);
                     if isinstance(output, OutputRaster):
                         hasRasterOutput = True
+                    elif isinstance(output, OutputVector):
+                        vectorOutputs += 1
                 line = lines.readline().strip("\n").strip()
             except Exception,e:
                 SextanteLog.addToLog(SextanteLog.LOG_ERROR, "Could not open GRASS algorithm: " + self.descriptionFile + "\n" + line)
@@ -142,15 +149,19 @@ class GrassAlgorithm(GeoAlgorithm):
         self.addParameter(ParameterExtent(self.GRASS_REGION_EXTENT_PARAMETER, "GRASS region extent"))
         if hasRasterOutput:
             self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER, "GRASS region cellsize (leave 0 for default)", 0, None, 0.0))
-        if hasVectorOutput:
+        if hasVectorInput:
             param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER, "v.in.ogr snap tolerance (-1 = no snap)", -1, None, -1.0)
             param.isAdvanced = True
             self.addParameter(param)
             param = ParameterNumber(self.GRASS_MIN_AREA_PARAMETER, "v.in.ogr min area", 0, None, 0.0001)
             param.isAdvanced = True
             self.addParameter(param)
-
-
+        if vectorOutputs == 1:            
+            param = ParameterSelection(self.GRASS_OUTPUT_TYPE_PARAMETER, "v.out.ogr output type", self.OUTPUT_TYPES)
+            param.isAdvanced = True
+            self.addParameter(param)
+            
+            
     def getDefaultCellsize(self):
         cellsize = 0
         for param in self.parameters:
@@ -251,7 +262,9 @@ class GrassAlgorithm(GeoAlgorithm):
             command +=" res=" + str(cellsize);
         else:
             command +=" res=" + str(self.getDefaultCellsize())
-
+        alignToResolution = self.getParameterValue(self.GRASS_REGION_ALIGN_TO_RESOLUTION)
+        if alignToResolution:
+            command +=" -a"
         commands.append(command)
 
         #2: set parameters and outputs
@@ -260,7 +273,8 @@ class GrassAlgorithm(GeoAlgorithm):
             if param.value == None or param.value == "":
                 continue
             if (param.name == self.GRASS_REGION_CELLSIZE_PARAMETER or param.name == self.GRASS_REGION_EXTENT_PARAMETER
-                    or param.name == self.GRASS_MIN_AREA_PARAMETER or param.name == self.GRASS_SNAP_TOLERANCE_PARAMETER):
+                    or param.name == self.GRASS_MIN_AREA_PARAMETER or param.name == self.GRASS_SNAP_TOLERANCE_PARAMETER
+                    or param.name == self.GRASS_OUTPUT_TYPE_PARAMETER or param.name == self.GRASS_REGION_ALIGN_TO_RESOLUTION):
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
@@ -321,11 +335,13 @@ class GrassAlgorithm(GeoAlgorithm):
 
             if isinstance(out, OutputVector):
                 filename = out.value
-                command = "v.out.ogr -ce input=" + out.name + uniqueSufix
+                command = "v.out.ogr -e input=" + out.name + uniqueSufix
                 command += " dsn=\"" + os.path.dirname(out.value) + "\""
                 command += " format=ESRI_Shapefile"
                 command += " olayer=" + os.path.basename(out.value)[:-4]
-                command += " type=auto"
+                typeidx = self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER);
+                outtype =  "auto" if typeidx is None else self.OUTPUT_TYPES[typeidx]                 
+                command += " type=" + outtype
                 commands.append(command)
                 outputCommands.append(command)
 

@@ -6,4 +6,3 @@ ParameterSelection|tool|Cleaning tool|break;snap;rmdangle;chdangle;rmbridge;chbr
 ParameterNumber|thresh|Threshold|None|None|0.0
 OutputVector|output|Cleaned vector layer
 OutputVector|error|Errors layer
-

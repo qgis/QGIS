@@ -147,13 +147,14 @@ class Editor(QsciScintilla):
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T')+ ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D')+ ctrl)
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Z')+ ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('Y')+ ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L')+ ctrl+shift)
 
         ## New QShortcut = ctrl+space/ctrl+alt+space for Autocomplete
         self.newShortcutCS = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_Space), self)
         self.newShortcutCS.setContext(Qt.WidgetShortcut)
+        self.redoScut = QShortcut(QKeySequence(Qt.CTRL + Qt.SHIFT + Qt.Key_Z), self)
+        self.redoScut.setContext(Qt.WidgetShortcut)
+        self.redoScut.activated.connect(self.redo)
         self.newShortcutCS.activated.connect(self.autoCompleteKeyBinding)
         self.runScut = QShortcut(QKeySequence(Qt.CTRL + Qt.Key_E), self)
         self.runScut.setContext(Qt.WidgetShortcut)
@@ -169,7 +170,7 @@ class Editor(QsciScintilla):
         self.uncommentScut.setContext(Qt.WidgetShortcut)
         self.uncommentScut.activated.connect(self.parent.pc.uncommentCode)
         self.modificationChanged.connect(self.parent.modified)
-        
+
     def settingsEditor(self):
         # Set Python lexer
         self.setLexers()
@@ -266,6 +267,7 @@ class Editor(QsciScintilla):
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
         iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.png")
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
+        iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         hideEditorAction = menu.addAction("Hide Editor",
                                      self.hideEditor)
         menu.addSeparator()
@@ -283,7 +285,11 @@ class Editor(QsciScintilla):
                                    self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
         undoAction = menu.addAction("Undo", self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction("Redo", self.redo, QKeySequence.Redo)
+        redoAction = menu.addAction("Redo", self.redo, 'Ctrl+Shift+Z')
+        menu.addSeparator()
+        findAction = menu.addAction(iconFind,
+                                    "Find Text",
+                                    self.showFindWidget)
         menu.addSeparator()
         cutAction = menu.addAction("Cut",
                                     self.cut,
@@ -338,6 +344,18 @@ class Editor(QsciScintilla):
         if QApplication.clipboard().text() != "":
             pasteAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
+        
+    def findText(self, direction=False):
+        line, index = self.getCursorPosition()
+        text = self.parent.pc.lineEditFind.text()
+        if text:
+            if direction:
+                self.findFirst(text, 1, 0, line, index, forward=False)
+            else:
+                if not self.findFirst(text, 1, 0, line, index):
+                    msgText = QCoreApplication.translate('PythonConsole',
+                                                         '<b>"%1"</b> was not found.').arg(text)
+                    self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
 
     def objectListEditor(self):
         listObj = self.parent.pc.listClassMethod
@@ -381,6 +399,15 @@ class Editor(QsciScintilla):
         self.parent.pc.splitterObj.hide()
         self.parent.pc.showEditorButton.setChecked(False)
 
+    def showFindWidget(self):
+        wF = self.parent.pc.widgetFind
+        if wF.isVisible():
+            wF.hide()
+            self.parent.pc.findTextButton.setChecked(False)
+        else:
+            wF.show()
+            self.parent.pc.findTextButton.setChecked(True)
+
     def commentEditorCode(self, commentCheck):
         self.beginUndoAction()
         if self.hasSelectedText():
@@ -421,7 +448,7 @@ class Editor(QsciScintilla):
         if dir not in sys.path:
             sys.path.append(dir)
         try:
-            ## set creationflags for runnning command without shell window
+            ## set creationflags for running command without shell window
             if sys.platform.startswith('win'):
                 p = subprocess.Popen(['python', str(filename)], shell=False, stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE, stdout=subprocess.PIPE, creationflags=0x08000000)
@@ -532,12 +559,12 @@ class Editor(QsciScintilla):
             QApplication.restoreOverrideCursor()
             self.setModified(True)
             self.endUndoAction()
-            
+
             self.parent.tw.listObject(self.parent.tw.currentWidget())
             self.mtime = os.stat(pathfile).st_mtime
             msgText = QCoreApplication.translate('PythonConsole', 'The file <b>"%1"</b> has been changed and reloaded').arg(pathfile)
             self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
-            
+
         QsciScintilla.focusInEvent(self, e)
 
 class EditorTab(QWidget):
@@ -553,9 +580,9 @@ class EditorTab(QWidget):
         self.newEditor = Editor(self)
         if filename:
             self.path = filename
-            if os.path.exists(filename)
+            if os.path.exists(filename):
                 self.loadFile(filename, False)
-        
+
         # Creates layout for message bar
         self.layout = QGridLayout(self.newEditor)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -573,7 +600,7 @@ class EditorTab(QWidget):
 
         self.keyFilter = KeyFilter(parent, self)
         self.setEventFilter(self.keyFilter)
-        
+
     def loadFile(self, filename, modified):
         try:
             fn = open(unicode(filename), "rb")

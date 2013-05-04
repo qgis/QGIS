@@ -164,7 +164,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setExpressionState( bool state );
 
   signals:
-    /** Emited when the user changes the expression in the widget.
+    /** Emitted when the user changes the expression in the widget.
       * Users of this widget should connect to this signal to decide if to let the user
       * continue.
       * @param isValid Is true if the expression the user has typed is valid.

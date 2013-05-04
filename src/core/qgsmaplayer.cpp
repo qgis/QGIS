@@ -39,6 +39,7 @@
 #include "qgsprojectfiletransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgsproviderregistry.h"
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
@@ -839,25 +840,16 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   return "";
 }
 
-QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
+void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg )
 {
-  return saveNamedStyle( styleURI(), theResultFlag );
-}
-
-QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag )
-{
-  QString myErrorMessage;
-
   QDomImplementation DomImplementation;
-  QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocumentType documentType = DomImplementation.createDocumentType( "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
   QDomDocument myDocument( documentType );
+
   QDomElement myRootNode = myDocument.createElement( "qgis" );
   myRootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
   myDocument.appendChild( myRootNode );
 
-  // use scale dependent visibility flag
   myRootNode.setAttribute( "hasScaleBasedVisibilityFlag", hasScaleBasedVisibility() ? 1 : 0 );
   myRootNode.setAttribute( "minimumScale", QString::number( minimumScale() ) );
   myRootNode.setAttribute( "maximumScale", QString::number( maximumScale() ) );
@@ -870,13 +862,24 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   myRootNode.appendChild( transparencyLevelIntElement );
 #endif
 
-  // now append layer node to map layer node
-
-  QString errorMsg;
   if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
   {
-    return tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+    errorMsg = QObject::tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+    return;
   }
+  doc = myDocument;
+}
+
+QString QgsMapLayer::saveDefaultStyle( bool & theResultFlag )
+{
+  return saveNamedStyle( styleURI(), theResultFlag );
+}
+
+QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag )
+{
+  QString myErrorMessage;
+  QDomDocument myDocument;
+  exportNamedStyle( myDocument, myErrorMessage );
 
   // check if the uri is a file or ends with .qml,
   // which indicates that it should become one
@@ -1009,7 +1012,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
   return myErrorMessage;
 }
 
-QString QgsMapLayer::saveSldStyle( const QString theURI, bool & theResultFlag )
+void QgsMapLayer::exportSldStyle( QDomDocument &doc, QString &errorMsg )
 {
   QDomDocument myDocument = QDomDocument();
 
@@ -1030,19 +1033,34 @@ QString QgsMapLayer::saveSldStyle( const QString theURI, bool & theResultFlag )
   QDomElement namedLayerNode = myDocument.createElement( "NamedLayer" );
   root.appendChild( namedLayerNode );
 
-  QString errorMsg;
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
   if ( !vlayer )
   {
-    theResultFlag = false;
-    return tr( "Could not save symbology because:\n%1" ).arg( "Non-vector layers not supported yet" );
+    errorMsg = tr( "Could not save symbology because:\n%1" )
+               .arg( "Non-vector layers not supported yet" );
+    return;
   }
 
   if ( !vlayer->writeSld( namedLayerNode, myDocument, errorMsg ) )
   {
-    theResultFlag = false;
-    return tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+    errorMsg = tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
+    return;
   }
+
+  doc = myDocument;
+}
+
+QString QgsMapLayer::saveSldStyle( const QString theURI, bool & theResultFlag )
+{
+  QString errorMsg;
+  QDomDocument myDocument;
+  exportSldStyle( myDocument, errorMsg );
+  if ( !errorMsg.isNull() )
+  {
+    theResultFlag = false;
+    return errorMsg;
+  }
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( this );
 
   // check if the uri is a file or ends with .sld,
   // which indicates that it should become one

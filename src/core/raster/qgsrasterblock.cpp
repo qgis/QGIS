@@ -75,6 +75,7 @@ QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int th
 
 QgsRasterBlock::~QgsRasterBlock()
 {
+  QgsDebugMsg( QString( "mData = %1" ).arg(( ulong )mData ) );
   qgsFree( mData );
   delete mImage;
   qgsFree( mNoDataBitmap );
@@ -474,10 +475,10 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
   int bottom = theExceptRect.bottom();
   int left = theExceptRect.left();
   int right = theExceptRect.right();
-  if ( top < 0 ) top = 0;
-  if ( left < 0 ) left = 0;
-  if ( bottom >= mHeight ) bottom = mHeight - 1;
-  if ( right >= mWidth ) right = mWidth - 1;
+  top = qMin( qMax( top, 0 ), mHeight - 1 );
+  left = qMin( qMax( left, 0 ), mWidth - 1 );
+  bottom = qMax( 0, qMin( bottom, mHeight - 1 ) );
+  right = qMax( 0, qMin( right, mWidth - 1 ) );
 
   QgsDebugMsg( "Entered" );
   if ( typeIsNumeric( mDataType ) )
@@ -511,12 +512,12 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
       // middle
       for ( int r = top; r <= bottom; r++ )
       {
-        size_t i = r * mWidth;
+        size_t i = ( size_t )r * mWidth;
         // middle left
         memcpy(( char* )mData + i*dataTypeSize, nodataRow, dataTypeSize*left );
         // middle right
         i += right + 1;
-        int w = mWidth - right;
+        int w = mWidth - right - 1;
         memcpy(( char* )mData + i*dataTypeSize, nodataRow, dataTypeSize*w );
       }
       delete [] nodataRow;

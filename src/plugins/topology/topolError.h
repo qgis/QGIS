@@ -135,7 +135,7 @@ class TopolError
      */
     virtual QList<FeatureLayer> featurePairs() { return mFeaturePairs; }
     /**
-     * Returns the names of posible fixes
+     * Returns the names of possible fixes
      */
     virtual QStringList fixNames() { return mFixMap.keys(); }
 };

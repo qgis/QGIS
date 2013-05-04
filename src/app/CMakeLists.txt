@@ -42,6 +42,8 @@ SET(QGIS_APP_SRCS
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelpreview.cpp
+  qgsloadstylefromdbdialog.cpp
+  qgssavestyletodbdialog.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdvertex.cpp
@@ -195,6 +197,8 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
   qgslabelpropertydialog.h
+  qgsloadstylefromdbdialog.h
+  qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
 
   qgsmaptooladdfeature.h
