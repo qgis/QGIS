@@ -27177,32 +27177,32 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="292"/>
         <source>Dimensions</source>
-        <translation type="unfinished">次元</translation>
+        <translation>次元</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="329"/>
         <source>Origin</source>
-        <translation type="unfinished"></translation>
+        <translation>原点</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="338"/>
         <source>Pixel Size</source>
-        <translation type="unfinished"></translation>
+        <translation>ピクセルの大きさ</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="886"/>
         <source>Format not supported</source>
-        <translation type="unfinished">形式がサポートされていません</translation>
+        <translation>形式がサポートされていません</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="959"/>
         <source>Cannot read data</source>
-        <translation type="unfinished"></translation>
+        <translation>データを読めません</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2333"/>
         <source>Cannot get GDAL raster band: %1</source>
-        <translation type="unfinished">GDALラスタバンド %1 を取得できません</translation>
+        <translation>GDALラスタバンド %1 を取得できません</translation>
     </message>
     <message>
         <source>Cubic</source>
@@ -27724,7 +27724,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1136"/>
         <source>None</source>
-        <translation type="unfinished">なし</translation>
+        <translation>なし</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1137"/>
@@ -31648,7 +31648,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="91"/>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="111"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="57"/>
@@ -35725,7 +35725,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/qgsmessagebar.cpp" line="78"/>
         <source>Close</source>
-        <translation type="unfinished">閉じる</translation>
+        <translation>閉じる</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmessagebar.cpp" line="373"/>
@@ -36321,7 +36321,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="50"/>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="51"/>
         <source>Not set</source>
-        <translation type="unfinished">設定しない</translation>
+        <translation>設定しない</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="54"/>
@@ -36346,17 +36346,17 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="279"/>
         <source>Red</source>
-        <translation type="unfinished">赤</translation>
+        <translation>赤</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="280"/>
         <source>Green</source>
-        <translation type="unfinished">緑</translation>
+        <translation>緑</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="281"/>
         <source>Blue</source>
-        <translation type="unfinished">青</translation>
+        <translation>青</translation>
     </message>
 </context>
 <context>
@@ -36417,7 +36417,7 @@ enhancement</source>
     <message>
         <location filename="../src/core/qgsnetworkaccessmanager.cpp" line="152"/>
         <source>Network</source>
-        <translation type="unfinished">ネットワーク</translation>
+        <translation>ネットワーク</translation>
     </message>
 </context>
 <context>
@@ -38489,12 +38489,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/templates/qgsoptionsdialog_template.ui" line="126"/>
         <source>Section</source>
-        <translation type="unfinished"></translation>
+        <translation>セクション</translation>
     </message>
     <message>
         <location filename="../src/ui/templates/qgsoptionsdialog_template.ui" line="157"/>
         <source>GroupBox</source>
-        <translation type="unfinished"></translation>
+        <translation>グループボックス</translation>
     </message>
 </context>
 <context>
@@ -38609,12 +38609,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="883"/>
         <source>QGis files</source>
-        <translation type="unfinished">QGisファイル</translation>
+        <translation>QGisファイル</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1456"/>
         <source>Overwrite</source>
-        <translation type="unfinished">上書き</translation>
+        <translation>上書き</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1457"/>
@@ -40149,7 +40149,7 @@ Missing some of the .ui template objects:
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="103"/>
         <source>Connection to database failed</source>
-        <translation type="unfinished">データベースへの接続に失敗しました</translation>
+        <translation>データベースへの接続に失敗しました</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="103"/>
@@ -40161,7 +40161,7 @@ Missing some of the .ui template objects:
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="376"/>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="400"/>
         <source>Oracle</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="163"/>
@@ -40182,12 +40182,12 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="233"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
-        <translation type="unfinished">データベース接続は成功しました.しかしアクセス可能なテーブルを特定できません.</translation>
+        <translation>データベース接続は成功しました.しかしアクセス可能なテーブルを特定できません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="244"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
-        <translation type="unfinished">データベースから空間情報が利用できるテーブルリストが取得できません</translation>
+        <translation>データベースから空間情報が利用できるテーブルリストが取得できません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="373"/>
@@ -40202,42 +40202,42 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="510"/>
         <source>Point</source>
-        <translation type="unfinished">点</translation>
+        <translation>点</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="514"/>
         <source>Multipoint</source>
-        <translation type="unfinished">マルチポイント</translation>
+        <translation>マルチポイント</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="518"/>
         <source>Line</source>
-        <translation type="unfinished">ライン</translation>
+        <translation>ライン</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="522"/>
         <source>Multiline</source>
-        <translation type="unfinished">マルチライン</translation>
+        <translation>マルチライン</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="526"/>
         <source>Polygon</source>
-        <translation type="unfinished">ポリゴン</translation>
+        <translation>ポリゴン</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="530"/>
         <source>Multipolygon</source>
-        <translation type="unfinished">マルチポリゴン</translation>
+        <translation>マルチポリゴン</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="533"/>
         <source>No Geometry</source>
-        <translation type="unfinished">ジオメトリ無し</translation>
+        <translation>ジオメトリ無し</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="536"/>
         <source>Unknown Geometry</source>
-        <translation type="unfinished">不明なジオメトリ</translation>
+        <translation>不明なジオメトリ</translation>
     </message>
 </context>
 <context>
@@ -40245,27 +40245,27 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="160"/>
         <source>Edit...</source>
-        <translation type="unfinished">編集...</translation>
+        <translation>編集...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="164"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="168"/>
         <source>Refresh</source>
-        <translation type="unfinished">再読み込み</translation>
+        <translation>再読み込み</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="209"/>
         <source>Copying features...</source>
-        <translation type="unfinished"></translation>
+        <translation>地物のコピー中...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="209"/>
         <source>Abort</source>
-        <translation type="unfinished">取り消し</translation>
+        <translation>取り消し</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="210"/>
@@ -40311,12 +40311,12 @@ error:%2
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="309"/>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="313"/>
         <source>Delete layer</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ削除</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="313"/>
         <source>Layer deleted successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ削除が成功しました.</translation>
     </message>
 </context>
 <context>
@@ -40524,7 +40524,7 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="144"/>
         <source>Whole number</source>
-        <translation type="unfinished">整数値</translation>
+        <translation>整数値</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="145"/>
@@ -40534,27 +40534,27 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="146"/>
         <source>Decimal number (numeric)</source>
-        <translation type="unfinished">小数点付き数値(numeric)</translation>
+        <translation>小数点付き数値(numeric)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="147"/>
         <source>Decimal number (decimal)</source>
-        <translation type="unfinished">小数点付き数値(decimal)</translation>
+        <translation>小数点付き数値(decimal)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="150"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished">小数点付き数値(real)</translation>
+        <translation>小数点付き数値(real)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="151"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished">小数点付き数値(double)</translation>
+        <translation>小数点付き数値(double)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="154"/>
         <source>Text, fixed length (char)</source>
-        <translation type="unfinished">固定長テキスト(char)</translation>
+        <translation>固定長テキスト(char)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="155"/>
@@ -40685,7 +40685,7 @@ SQL: %3</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="806"/>
         <source>The custom query is not a select query.</source>
-        <translation type="unfinished">カスタムクエリはselectクエリではありません.</translation>
+        <translation>カスタムクエリはselectクエリではありません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="830"/>
@@ -40699,7 +40699,7 @@ SQL: %3</source>
 The error message from the database was:
 %1.
 SQL: %2</source>
-        <translation type="unfinished">検索を実行できません.
+        <translation>検索を実行できません.
 データベースのエラーメッセージは以下のとおりです
 %1.
 SQL %2</translation>
@@ -40712,22 +40712,22 @@ SQL %2</translation>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="928"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
-        <translation type="unfinished">プライマリキーフィールド &apos;%1&apos;はviewにとってユニークではありません</translation>
+        <translation>プライマリキーフィールド &apos;%1&apos;はviewにとってユニークではありません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="933"/>
         <source>Key field &apos;%1&apos; for view not found.</source>
-        <translation type="unfinished">Viewのキーフィールド&apos;%1&apos;がみつかりません.</translation>
+        <translation>Viewのキーフィールド&apos;%1&apos;がみつかりません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="938"/>
         <source>No key field for view given.</source>
-        <translation type="unfinished">viewにキーフィールドがありません.</translation>
+        <translation>viewにキーフィールドがありません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="957"/>
         <source>No key field for query given.</source>
-        <translation type="unfinished">クエリにキーフィールドがありません.</translation>
+        <translation>クエリにキーフィールドがありません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="1141"/>
@@ -40885,17 +40885,17 @@ SQL: %3</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2148"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
-        <translation type="unfinished">内容が無いカラム%2 の %1ジオメトリタイプとsridが定義されていません.</translation>
+        <translation>内容が無いカラム%2 の %1ジオメトリタイプとsridが定義されていません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2175"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
-        <translation type="unfinished">%2の%1の地物タイプまたはsridは判明しないかリクエストされていません.</translation>
+        <translation>%2の%1の地物タイプまたはsridは判明しないかリクエストされていません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2203"/>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
-        <translation type="unfinished">2D+layer (%1; %2)では編集と追加は禁止されています</translation>
+        <translation>2D+layer (%1; %2)では編集と追加は禁止されています</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2230"/>
@@ -41049,82 +41049,82 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="149"/>
         <source>Add Oracle Table(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracleテーブルの追加</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="152"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">追加(&amp;A)</translation>
+        <translation>追加(&amp;A)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="155"/>
         <source>&amp;Build query</source>
-        <translation type="unfinished">クエリ作成(&amp;B)</translation>
+        <translation>クエリ作成(&amp;B)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="156"/>
         <source>Build query</source>
-        <translation type="unfinished">クエリ作成</translation>
+        <translation>クエリ作成</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="170"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="324"/>
         <source>Wildcard</source>
-        <translation type="unfinished">ワイルドカード</translation>
+        <translation>ワイルドカード</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="171"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="328"/>
         <source>RegExp</source>
-        <translation type="unfinished">正規表現</translation>
+        <translation>正規表現</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="173"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="336"/>
         <source>All</source>
-        <translation type="unfinished">全ての</translation>
+        <translation>全ての</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="174"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="340"/>
         <source>Owner</source>
-        <translation type="unfinished">所有者</translation>
+        <translation>所有者</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="175"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="344"/>
         <source>Table</source>
-        <translation type="unfinished">テーブル</translation>
+        <translation>テーブル</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="176"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="348"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="177"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="352"/>
         <source>Geometry column</source>
-        <translation type="unfinished">ジオメトリカラム</translation>
+        <translation>ジオメトリカラム</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="178"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="356"/>
         <source>Primary key column</source>
-        <translation type="unfinished">プライマリキーカラム</translation>
+        <translation>プライマリキーカラム</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="179"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="360"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="180"/>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="364"/>
         <source>Sql</source>
-        <translation type="unfinished">Sql</translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="237"/>
@@ -41134,7 +41134,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="239"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">削除を確認</translation>
+        <translation>削除を確認</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="256"/>
@@ -41144,27 +41144,27 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="257"/>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished">XMLファイル(*.xml *XML)</translation>
+        <translation>XMLファイル(*.xml *XML)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="434"/>
         <source>Select Table</source>
-        <translation type="unfinished">テーブルを選択</translation>
+        <translation>テーブルを選択</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="434"/>
         <source>You must select a table in order to add a layer.</source>
-        <translation type="unfinished">レイヤを追加するにはテーブルを選択してください。</translation>
+        <translation>レイヤを追加するにはテーブルを選択してください。</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="476"/>
         <source>Stop</source>
-        <translation type="unfinished">停止</translation>
+        <translation>停止</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="501"/>
         <source>Connect</source>
-        <translation type="unfinished">接続</translation>
+        <translation>接続</translation>
     </message>
 </context>
 <context>
@@ -41172,7 +41172,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="118"/>
         <source>Select...</source>
-        <translation type="unfinished">選択...</translation>
+        <translation>選択...</translation>
     </message>
 </context>
 <context>
@@ -41180,58 +41180,58 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="27"/>
         <source>Owner</source>
-        <translation type="unfinished">所有者</translation>
+        <translation>所有者</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="28"/>
         <source>Table</source>
-        <translation type="unfinished">テーブル</translation>
+        <translation>テーブル</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="29"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="30"/>
         <source>Geometry column</source>
-        <translation type="unfinished">ジオメトリカラム</translation>
+        <translation>ジオメトリカラム</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="31"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="32"/>
         <source>Primary key column</source>
-        <translation type="unfinished">プライマリキーカラム</translation>
+        <translation>プライマリキーカラム</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="33"/>
         <source>Select at id</source>
-        <translation type="unfinished"></translation>
+        <translation>idによる選択</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="34"/>
         <source>Sql</source>
-        <translation type="unfinished">Sql</translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="80"/>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="96"/>
         <source>Select...</source>
-        <translation type="unfinished">選択...</translation>
+        <translation>選択...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="92"/>
         <source>Enter...</source>
-        <translation type="unfinished">入力...</translation>
+        <translation>入力...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracletablemodel.cpp" line="108"/>
         <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished">属性テーブルをメモリ中に保持するために&apos;地物へのIDによる高速アクセス&apos;機能を無効にします(例:重要なviewを利用する場合:).</translation>
+        <translation>属性テーブルをメモリ中に保持するために&apos;地物へのIDによる高速アクセス&apos;機能を無効にします(例:重要なviewを利用する場合:).</translation>
     </message>
 </context>
 <context>
@@ -51680,7 +51680,7 @@ Quantum GISでは32bit以下の整数をリレーションのユニーク値と�
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="284"/>
         <source>SQLAnywhere</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLAnywhere</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="870"/>
@@ -52505,7 +52505,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="404"/>
         <source>Invalid Selection!</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な選択!</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="404"/>
@@ -52756,7 +52756,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/providers/wms/qgstilescalewidget.cpp" line="142"/>
         <source>Tile scale</source>
-        <translation type="unfinished">タイルスケール</translation>
+        <translation>タイルスケール</translation>
     </message>
 </context>
 <context>
@@ -53376,7 +53376,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="50"/>
         <source>Discrete</source>
-        <translation type="unfinished">離散的</translation>
+        <translation>離散的</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="51"/>
@@ -53435,12 +53435,12 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="74"/>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="88"/>
         <source>Change...</source>
-        <translation type="unfinished">変更...</translation>
+        <translation>変更...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="81"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="103"/>
@@ -53450,7 +53450,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="127"/>
         <source>Offset (%)</source>
-        <translation type="unfinished"></translation>
+        <translation>オフセット(%)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="135"/>
@@ -53465,7 +53465,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="176"/>
         <source>Information</source>
-        <translation type="unfinished">情報</translation>
+        <translation>情報</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="122"/>
@@ -53618,12 +53618,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="1043"/>
         <source>Updating feature count for layer %1</source>
-        <translation type="unfinished">レイヤの地物の数を更新中です %1</translation>
+        <translation>レイヤの地物の数を更新中です %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="1043"/>
         <source>Abort</source>
-        <translation type="unfinished">取り消し</translation>
+        <translation>取り消し</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2537"/>
@@ -53703,12 +53703,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3433"/>
         <source>General</source>
-        <translation type="unfinished">一般情報</translation>
+        <translation>一般情報</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3439"/>
         <source>Layer comment</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤコメント</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3446"/>
@@ -53743,7 +53743,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3503"/>
         <source>Extents</source>
-        <translation type="unfinished">領域</translation>
+        <translation>領域</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3507"/>
@@ -53816,7 +53816,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="258"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>成功: %n 属性を削除しました.</numerusform>
         </translation>
     </message>
@@ -53824,15 +53824,15 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="267"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>エラー: %n 属性は削除されませんでした</numerusform>
+        <translation>
+            <numerusform>エラー: %n 属性は削除されませんでした.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="279"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>成功: %n 属性を追加しました.</numerusform>
         </translation>
     </message>
@@ -53840,7 +53840,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="288"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>エラー: %n 属性が追加されませんでした</numerusform>
         </translation>
     </message>
@@ -53858,7 +53858,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="329"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>成功: %n 属性の値を変更しました.</numerusform>
         </translation>
     </message>
@@ -53866,15 +53866,15 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="337"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>エラー: %n 属性の値変更は反映されませんでした</numerusform>
+        <translation>
+            <numerusform>エラー: %n 属性の値変更は反映されませんでした.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="349"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>成功: %n 地物が削除しました.</numerusform>
         </translation>
     </message>
@@ -53882,15 +53882,15 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="363"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>エラー: %n 地物が削除されませんでした</numerusform>
+        <translation>
+            <numerusform>エラー: %n 地物が削除されませんでした.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="380"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>成功: %n 地物を追加しました.</numerusform>
         </translation>
     </message>
@@ -53898,15 +53898,15 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="398"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation type="unfinished">
-            <numerusform>エラー: %n 地物が追加されませんでした</numerusform>
+        <translation>
+            <numerusform>エラー: %n 地物が追加されませんでした.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="404"/>
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>エラー: %n の地物が追加できませんでした - プロバイダが地物の追加をサポートしていません.</numerusform>
         </translation>
     </message>
@@ -53914,7 +53914,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="417"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>成功: %n ジオメトリを変更しました.</numerusform>
         </translation>
     </message>
@@ -53922,15 +53922,15 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="425"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>エラー: %n ジオメトリは変更されませんでした</numerusform>
+        <translation>
+            <numerusform>エラー: %n ジオメトリは変更されませんでした.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayereditbuffer.cpp" line="434"/>
         <source>
   Provider errors:</source>
-        <translation type="unfinished">
+        <translation>
   プロバイダエラー:</translation>
     </message>
 </context>
@@ -54085,7 +54085,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="297"/>
         <source>Insert expression</source>
-        <translation type="unfinished">式の挿入</translation>
+        <translation>式の挿入</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="330"/>
@@ -54201,7 +54201,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="150"/>
         <source>Load from file</source>
-        <translation type="unfinished">ファイルからのロード</translation>
+        <translation>ファイルからのロード</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="151"/>
@@ -54222,7 +54222,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="563"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="620"/>
         <source>Cancel</source>
-        <translation type="unfinished">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="564"/>
