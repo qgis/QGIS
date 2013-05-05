@@ -142,11 +142,13 @@ void Heatmap::run()
 
     float* line = ( float * ) CPLMalloc( sizeof( float ) * columns );
     for ( int i = 0; i < columns ; i++ )
+    {
       line[i] = NO_DATA;
+    }
     // Write the empty raster
     for ( int i = 0; i < rows ; i++ )
     {
-      poBand->RasterIO( GF_Write, 0, 0, columns, 1, line, columns, 1, GDT_Float32, 0, 0 );
+      poBand->RasterIO( GF_Write, 0, i, columns, 1, line, columns, 1, GDT_Float32, 0, 0 );
     }
 
     CPLFree( line );
