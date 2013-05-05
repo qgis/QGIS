@@ -1,5 +1,5 @@
 /***************************************************************************
-      qgsdelimitedtextparser.h  -  File for delimited text file
+      qgsdelimitedtextfile.h  -  File for delimited text file
                              -------------------
     begin                : 2004-02-27
     copyright            : (C) 2013 by Chris Crook
@@ -15,6 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSDELIMITEDTEXTFILE_H
+#define QGSDELIMITEDTEXTFILE_H
+
 #include <QStringList>
 #include <QRegExp>
 #include <QUrl>
@@ -22,6 +25,7 @@
 class QgsFeature;
 class QgsField;
 class QFile;
+class QFileSystemWatcher;
 class QTextStream;
 
 
@@ -66,8 +70,10 @@ class QTextStream;
 // on an abstract base class in order to facilitate changing the type of the parser easily
 // eg in the provider dialog
 
-class QgsDelimitedTextFile
+class QgsDelimitedTextFile : public QObject
 {
+
+    Q_OBJECT
 
   public:
 
@@ -84,7 +90,7 @@ class QgsDelimitedTextFile
     {
       DelimTypeWhitespace,
       DelimTypeCSV,
-      DelimTypeRegexp,
+      DelimTypeRegexp
     };
 
     QgsDelimitedTextFile( QString url = QString() );
@@ -238,11 +244,22 @@ class QgsDelimitedTextFile
     /** Return the line number of the start of the last record read
      *  @return linenumber  The line number of the start of the record
      */
-    int recordLineNumber()
+    int recordId()
     {
       return mRecordLineNumber;
     }
 
+    /** Set the index of the next record to return.
+     *  @param  nextRecordId The id to set the next record to
+     *  @return valid  True if the next record can be located
+     */
+    bool setNextRecordId( long nextRecordId );
+
+    /** Number record number of records visited. After scanning the file
+     *  serves as a record count.
+     *  @return maxRecordNumber The maximum record number
+     */
+    long recordCount() { return mMaxRecordNumber; }
     /** Reset the file to reread from the beginning
      */
     Status reset();
@@ -272,6 +289,22 @@ class QgsDelimitedTextFile
      */
     static QString decodeChars( QString string );
 
+    /** Set to use or not use a QFileWatcher to notify of changes to the file
+     * @param useWatcher True to use a watcher, false otherwise
+     */
+
+    void setUseWatcher( bool useWatcher );
+
+  signals:
+    /** Signal sent when the file is updated by another process
+     */
+    void fileUpdated();
+
+  public slots:
+    /** Slot used by watcher to notify of file updates
+     */
+    void updateFile();
+
   private:
 
     /** Open the file
@@ -290,9 +323,9 @@ class QgsDelimitedTextFile
     void resetDefinition();
 
     /** Parse reqular expression delimited fields */
-    Status parseRegexp( QStringList &fields );
+    Status parseRegexp( QString &buffer, QStringList &fields );
     /** Parse quote delimited fields, where quote and escape are different */
-    Status parseQuoted( QStringList &fields );
+    Status parseQuoted( QString &buffer, QStringList &fields );
 
     /** Return the next line from the data file.  If skipBlank is true then
      * blank lines will be skipped - this is for compatibility with previous
@@ -300,19 +333,24 @@ class QgsDelimitedTextFile
      */
     Status nextLine( QString &buffer, bool skipBlank = false );
 
+    /** Set the next line to read from the file.
+     */
+    bool setNextLineNumber( long nextLineNumber );
+
     /** Utility routine to add a field to a record, accounting for trimming
      *  and discarding, and maximum field count
      */
-
     void appendField( QStringList &record, QString field, bool quoted = false );
 
     // Pointer to the currently selected parser
-    Status( QgsDelimitedTextFile::*mParser )( QStringList &fields );
+    Status( QgsDelimitedTextFile::*mParser )( QString &buffer, QStringList &fields );
 
     QString mFileName;
     QString mEncoding;
     QFile *mFile;
     QTextStream *mStream;
+    bool mUseWatcher;
+    QFileSystemWatcher *mWatcher;
 
     // Parameters common to parsers
     bool mDefinitionValid;
@@ -333,7 +371,14 @@ class QgsDelimitedTextFile
 
     // Information extracted from file
     QStringList mFieldNames;
-    int mLineNumber;
-    int mRecordLineNumber;
+    long mLineNumber;
+    long mRecordLineNumber;
+    long mRecordNumber;
+    QStringList mCurrentRecord;
+    bool mHoldCurrentRecord;
+    // Maximum number of record (ie maximum record number visited)
+    long mMaxRecordNumber;
     int mMaxFieldCount;
 };
+
+#endif

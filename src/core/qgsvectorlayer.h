@@ -375,6 +375,10 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *   Defines the coordinate reference system used for the layer.  This can be
  *   any string accepted by QgsCoordinateReferenceSystem::createFromString()
  *
+ * -useWatcher=(yes|no)
+ *
+ *   Defines whether the file will be monitored for changes
+ *
  * - quiet
  *
  *   Errors encountered loading the file will not be reported in a user dialog if
