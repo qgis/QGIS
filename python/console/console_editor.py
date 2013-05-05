@@ -263,19 +263,19 @@ class Editor(QsciScintilla):
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
         iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.png")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
-        iconNewEditor = QgsApplication.getThemeIcon("console/iconTabEditorConsole.png")
+        #iconNewEditor = QgsApplication.getThemeIcon("console/iconTabEditorConsole.png")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
         iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.png")
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
         iconFind = QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png")
         hideEditorAction = menu.addAction("Hide Editor",
                                      self.hideEditor)
-        menu.addSeparator()
-        newTabAction = menu.addAction(iconNewEditor,
-                                    "New Tab",
-                                    self.parent.newTab, 'Ctrl+T')
-        closeTabAction = menu.addAction("Close Tab",
-                                    self.parent.close, 'Ctrl+W')
+#         menu.addSeparator()
+#         newTabAction = menu.addAction(iconNewEditor,
+#                                     "New Tab",
+#                                     self.parent.newTab, 'Ctrl+T')
+#         closeTabAction = menu.addAction("Close Tab",
+#                                     self.parent.close, 'Ctrl+W')
         menu.addSeparator()
         runSelected = menu.addAction(iconRun,
                                    "Enter selected",
@@ -325,11 +325,11 @@ class Editor(QsciScintilla):
         runSelected.setEnabled(False)
         copyAction.setEnabled(False)
         selectAllAction.setEnabled(False)
-        closeTabAction.setEnabled(False)
+#         closeTabAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
-        if self.parent.tw.count() > 1:
-            closeTabAction.setEnabled(True)
+#         if self.parent.tw.count() > 1:
+#             closeTabAction.setEnabled(True)
         if self.hasSelectedText():
             runSelected.setEnabled(True)
             copyAction.setEnabled(True)
@@ -637,11 +637,12 @@ class EditorTab(QWidget):
 
     def save(self):
         if self.path is None:
+            index = self.tw.currentIndex()
             saveTr = QCoreApplication.translate('PythonConsole',
                                                 'Python Console: Save file')
             self.path = str(QFileDialog().getSaveFileName(self,
                                                           saveTr,
-                                                          "*.py",
+                                                          self.tw.tabText(index) + '.py',
                                                           "Script file (*.py)"))
             # If the user didn't select a file, abort the save operation
             if len(self.path) == 0:
@@ -688,6 +689,7 @@ class EditorTabWidget(QTabWidget):
         QTabWidget.__init__(self, parent=None)
         self.parent = parent
 
+        self.idx = -1
         # Layout for top frame (restore tabs)
         self.layoutTopFrame = QGridLayout(self)
         self.layoutTopFrame.setContentsMargins(0, 0, 0, 0)
@@ -777,13 +779,56 @@ class EditorTabWidget(QTabWidget):
         # Open button
         self.newTabButton = QToolButton()
         txtToolTipNewTab = QCoreApplication.translate("PythonConsole",
-                                                      "New Tab")
+                                                      "New Editor")
         self.newTabButton.setToolTip(txtToolTipNewTab)
         self.newTabButton.setAutoRaise(True)
         self.newTabButton.setIcon(QgsApplication.getThemeIcon("console/iconNewTabEditorConsole.png"))
         self.newTabButton.setIconSize(QSize(24, 24))
         self.setCornerWidget(self.newTabButton, Qt.TopLeftCorner)
         self.connect(self.newTabButton, SIGNAL('clicked()'), self.newTabEditor)
+        
+    def contextMenuEvent(self, e):
+        tabBar = self.tabBar()
+        self.idx = tabBar.tabAt(e.pos())
+        cW = self.currentWidget()
+        menu = QMenu(self)
+        menu.addSeparator()
+        newTabAction = menu.addAction("New Editor",
+                                        self.newTabEditor)
+        menu.addSeparator()
+        closeTabAction = menu.addAction("Close Tab",
+                                        cW.close)
+        closeAllTabAction = menu.addAction("Close All",
+                                        self.closeAll)
+        closeOthersTabAction = menu.addAction("Close Others",
+                                        self.closeOthers)
+        menu.addSeparator()
+        saveAction = menu.addAction("Save",
+                                        cW.save)
+        saveAsAction = menu.addAction("Save As",
+                                        self.parent.saveAsScriptFile)
+        closeTabAction.setEnabled(False)
+        closeAllTabAction.setEnabled(False)
+        closeOthersTabAction.setEnabled(False)
+        if self.count() > 1:
+            closeTabAction.setEnabled(True)
+            closeAllTabAction.setEnabled(True)
+            closeOthersTabAction.setEnabled(True)
+        action = menu.exec_(self.mapToGlobal(e.pos()))
+        
+    def closeOthers(self):
+        idx = self.idx
+        countTab = self.count()
+        for i in range(countTab - 1, idx, -1) + range(idx - 1, -1, -1):
+            self._removeTab(i)
+
+    def closeAll(self):
+        countTab = self.count()
+        cI = self.currentIndex()
+        for i in range(countTab - 1, 0, -1):
+            self._removeTab(i)
+        self.newTabEditor(tabName='Untitled-0')
+        self._removeTab(0)
 
     def enableToolBarEditor(self, enable):
         if self.topFrame.isVisible():
@@ -850,7 +895,8 @@ class EditorTabWidget(QTabWidget):
                 self.parent.updateTabListScript(self.widget(tab).path)
                 self.removeTab(tab)
         else:
-            if self.widget(tab).path in self.restoreTabList:
+            if self.widget(tab).path is not None or \
+                self.widget(tab).path in self.restoreTabList:
                 self.parent.updateTabListScript(self.widget(tab).path)
             if self.count() <= 2:
                 self.setTabsClosable(False)
@@ -875,19 +921,18 @@ class EditorTabWidget(QTabWidget):
 
     def restoreTabs(self):
         for script in self.restoreTabList:
-            if script != '':
-                pathFile = unicode(script.toString())
-                if os.path.exists(pathFile):
-                    tabName = pathFile.split('/')[-1]
-                    self.newTabEditor(tabName, pathFile)
-                else:
-                    errOnRestore = QCoreApplication.translate("PythonConsole",
-                                                              "Unable to restore the file: \n%1\n") \
-                                                              .arg(pathFile)
-                    print  '## Error: '
-                    s = errOnRestore
-                    sys.stderr.write(s)
-                    self.parent.updateTabListScript(pathFile)
+            pathFile = unicode(script.toString())
+            if os.path.exists(pathFile):
+                tabName = pathFile.split('/')[-1]
+                self.newTabEditor(tabName, pathFile)
+            else:
+                errOnRestore = QCoreApplication.translate("PythonConsole",
+                                                          "Unable to restore the file: \n%1\n") \
+                                                          .arg(pathFile)
+                print  '## Error: '
+                s = errOnRestore
+                sys.stderr.write(s)
+                self.parent.updateTabListScript(pathFile)
         if self.count() < 1:
             self.newTabEditor(filename=None)
         self.topFrame.close()

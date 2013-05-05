@@ -657,12 +657,17 @@ class PythonConsoleWidget(QWidget):
 
     def saveAsScriptFile(self):
         tabWidget = self.tabEditorWidget.currentWidget()
+        index = self.tabEditorWidget.currentIndex()
         if tabWidget is None:
             return
+        if tabWidget.path is None:
+            pathFileName = self.tabEditorWidget.tabText(index) + '.py'
+        else:
+            pathFileName = tabWidget.path
         saveAsFileTr = QCoreApplication.translate("PythonConsole", "Save File As")
         filename = QFileDialog.getSaveFileName(self,
                         saveAsFileTr,
-                        tabWidget.path, "Script file (*.py)")
+                        pathFileName, "Script file (*.py)")
         if not filename.isEmpty():
             #print tabWidget.path
             self.tabListScript.remove(unicode(tabWidget.path))
@@ -688,17 +693,16 @@ class PythonConsoleWidget(QWidget):
         self.tabEditorWidget.widgetMessageBar(iface, text, level, timed)
 
     def updateTabListScript(self, script, action=None):
-        if script != '':
-            settings = QSettings()
-            if script == 'empty':
-                self.tabListScript = []
-            if script is not None and not action and script != 'empty':
-                self.tabListScript.remove(script)
-            if action:
-                if script not in self.tabListScript:
-                    self.tabListScript.append(script)
-            settings.setValue("pythonConsole/tabScripts",
-                                   QVariant(self.tabListScript))
+        settings = QSettings()
+        if script == 'empty':
+            self.tabListScript = []
+        if script is not None and not action and script != 'empty':
+            self.tabListScript.remove(script)
+        if action:
+            if script not in self.tabListScript:
+                self.tabListScript.append(script)
+        settings.setValue("pythonConsole/tabScripts",
+                               QVariant(self.tabListScript))
 
     def saveSettingsConsole(self):
         settings = QSettings()
