@@ -198,11 +198,11 @@ class Dialog(QDialog, Ui_Dialog):
         add = 85.00 / provider1.featureCount()
         fit1 = provider1.getFeatures()
         # store features in lists to prevent ogriterator closing
-        geomIdList = []
+        featList = []
         while fit1.nextFeature(inFeat):
-            geomIdList.append(inFeat)
+            featList.append(inFeat)
             inFeat = QgsFeature()
-        for feat in geomIdList:		
+        for feat in featList:		
             inID = feat.attributes()[index1].toString()
             inGeom = feat.geometry()
             
@@ -234,11 +234,11 @@ class Dialog(QDialog, Ui_Dialog):
         add = 85.00 / provider1.featureCount()
         fit1 = provider1.getFeatures()
         # store features in lists to prevent ogriterator closing
-        geomIdList = []
+        featList = []
         while fit1.nextFeature(inFeat):
-            geomIdList.append(inFeat)
+            featList.append(inFeat)
             inFeat = QgsFeature()
-        for feat in geomIdList:
+        for feat in featList:
             inID = feat.attributes()[index1].toString()
             inGeom = feat.geometry()            
             featList = sindex.nearestNeighbor(inGeom.asPoint(), nearest)
