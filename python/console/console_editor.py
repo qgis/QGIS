@@ -790,31 +790,32 @@ class EditorTabWidget(QTabWidget):
     def contextMenuEvent(self, e):
         tabBar = self.tabBar()
         self.idx = tabBar.tabAt(e.pos())
-        cW = self.currentWidget()
-        menu = QMenu(self)
-        menu.addSeparator()
-        newTabAction = menu.addAction("New Editor",
-                                        self.newTabEditor)
-        menu.addSeparator()
-        closeTabAction = menu.addAction("Close Tab",
-                                        cW.close)
-        closeAllTabAction = menu.addAction("Close All",
-                                        self.closeAll)
-        closeOthersTabAction = menu.addAction("Close Others",
-                                        self.closeOthers)
-        menu.addSeparator()
-        saveAction = menu.addAction("Save",
-                                        cW.save)
-        saveAsAction = menu.addAction("Save As",
-                                        self.parent.saveAsScriptFile)
-        closeTabAction.setEnabled(False)
-        closeAllTabAction.setEnabled(False)
-        closeOthersTabAction.setEnabled(False)
-        if self.count() > 1:
-            closeTabAction.setEnabled(True)
-            closeAllTabAction.setEnabled(True)
-            closeOthersTabAction.setEnabled(True)
-        action = menu.exec_(self.mapToGlobal(e.pos()))
+        if self.widget(self.idx):
+            cW = self.currentWidget()
+            menu = QMenu(self)
+            menu.addSeparator()
+            newTabAction = menu.addAction("New Editor",
+                                            self.newTabEditor)
+            menu.addSeparator()
+            closeTabAction = menu.addAction("Close Tab",
+                                            cW.close)
+            closeAllTabAction = menu.addAction("Close All",
+                                            self.closeAll)
+            closeOthersTabAction = menu.addAction("Close Others",
+                                            self.closeOthers)
+            menu.addSeparator()
+            saveAction = menu.addAction("Save",
+                                            cW.save)
+            saveAsAction = menu.addAction("Save As",
+                                            self.parent.saveAsScriptFile)
+            closeTabAction.setEnabled(False)
+            closeAllTabAction.setEnabled(False)
+            closeOthersTabAction.setEnabled(False)
+            if self.count() > 1:
+                closeTabAction.setEnabled(True)
+                closeAllTabAction.setEnabled(True)
+                closeOthersTabAction.setEnabled(True)
+            action = menu.exec_(self.mapToGlobal(e.pos()))
 
     def closeOthers(self):
         idx = self.idx
