@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 """
 /***************************************************************************
-Python Conosle for QGIS
+Python Console for QGIS
                              -------------------
 begin                : 2012-09-10
 copyright            : (C) 2012 by Salvatore Larosa
@@ -651,7 +651,7 @@ class PythonConsoleWidget(QWidget):
             tabWidget.save()
         except (IOError, OSError), e:
             errTr = QCoreApplication.translate("PythonConsole", "Save Error")
-            msgErrTr = QCoreApplication.translate("PythonConsole", 
+            msgErrTr = QCoreApplication.translate("PythonConsole",
                                                   "Failed to save %1: %2").arg(tabWidget.path, e)
             QMessageBox.warning(self, errTr, msgErrTr)
 

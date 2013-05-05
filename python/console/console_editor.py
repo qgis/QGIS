@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 """
 /***************************************************************************
-Python Conosle for QGIS
+Python Console for QGIS
                              -------------------
 begin                : 2012-09-10
 copyright            : (C) 2012 by Salvatore Larosa
@@ -786,7 +786,7 @@ class EditorTabWidget(QTabWidget):
         self.newTabButton.setIconSize(QSize(24, 24))
         self.setCornerWidget(self.newTabButton, Qt.TopLeftCorner)
         self.connect(self.newTabButton, SIGNAL('clicked()'), self.newTabEditor)
-        
+
     def contextMenuEvent(self, e):
         tabBar = self.tabBar()
         self.idx = tabBar.tabAt(e.pos())
@@ -815,7 +815,7 @@ class EditorTabWidget(QTabWidget):
             closeAllTabAction.setEnabled(True)
             closeOthersTabAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
-        
+
     def closeOthers(self):
         idx = self.idx
         countTab = self.count()
