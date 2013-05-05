@@ -953,6 +953,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
       addJoinToTreeWidget( info );
       pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                    !layer->isEditable() && layer->vectorJoins().size() < 1 );
+      mFieldsPropertiesDialog->init();
     }
   }
 }
@@ -995,6 +996,7 @@ void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
   mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
   pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                !layer->isEditable() && layer->vectorJoins().size() < 1 );
+  mFieldsPropertiesDialog->init();
 }
 
 

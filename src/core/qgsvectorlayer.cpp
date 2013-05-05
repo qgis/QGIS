@@ -2199,10 +2199,14 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
 
     for ( QMap<QString, EditType>::const_iterator it = mEditTypes.begin(); it != mEditTypes.end(); ++it )
     {
+      if ( fieldNameIndex( it.key() ) == -1 )
+        continue;
+
       QDomElement editTypeElement = doc.createElement( "edittype" );
       editTypeElement.setAttribute( "name", it.key() );
       editTypeElement.setAttribute( "type", it.value() );
-      editTypeElement.setAttribute( "editable", mFieldEditables[ it.key()] ? 1 : 0 );
+      if ( mFieldEditables.contains( it.key() ) )
+        editTypeElement.setAttribute( "editable", mFieldEditables[ it.key() ] ? 1 : 0 );
       editTypeElement.setAttribute( "labelontop", mLabelOnTop[ it.key()] ? 1 : 0 );
 
       switch (( EditType ) it.value() )
@@ -3218,6 +3222,16 @@ void QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
 {
   mJoinBuffer->addJoin( joinInfo );
   updateFields();
+
+  // since joined fields are not targets for editing, disable editing of them
+  for ( int i = 0; i < mUpdatedFields.count(); i++ )
+  {
+    if ( mUpdatedFields.fieldOrigin( i ) == QgsFields::OriginJoin )
+    {
+      setEditType( i, LineEdit );
+      setFieldEditable( i, false );
+    }
+  }
 }
 
 void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
