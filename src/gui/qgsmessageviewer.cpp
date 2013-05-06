@@ -18,12 +18,14 @@
 #include "qgsmessageviewer.h"
 #include <QSettings>
 
-QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WFlags fl )
+QgsMessageViewer::QgsMessageViewer( QWidget *parent, Qt::WFlags fl, bool deleteOnClose )
     : QDialog( parent, fl )
 {
   setupUi( this );
-  setAttribute( Qt::WA_DeleteOnClose );
-
+  if ( deleteOnClose )
+  {
+    setAttribute( Qt::WA_DeleteOnClose );
+  }
   // Default state for the checkbox
   setCheckBoxVisible( false );
   setCheckBoxState( Qt::Unchecked );
