@@ -29,7 +29,6 @@ class QgsMapRenderer;
 class QgsRectangle;
 class QgsCoordinateTransform;
 class QgsLabelSearchTree;
-class QgsDiagramLayerSettings;
 
 #include <QString>
 #include <QFont>
@@ -53,6 +52,7 @@ class QgsFeature;
 #include "qgsrectangle.h"
 #include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
 #include "qgsexpression.h"
+#include "qgsdiagramrendererv2.h"
 
 class QgsPalGeometry;
 class QgsVectorLayer;

@@ -73,6 +73,7 @@
 #include "qgsdiagramrendererv2.h"
 #include "qgsstylev2.h"
 #include "qgssymbologyv2conversion.h"
+#include "qgspallabeling.h"
 
 #ifdef TESTPROVIDERLIB
 #include <dlfcn.h>

@@ -20,14 +20,18 @@
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
+#include <QDomDocument>
+
 #include "qgsfeature.h"
-#include "qgspallabeling.h"
 
 class QgsDiagram;
 class QgsDiagramRendererV2;
 class QgsFeature;
 class QgsRenderContext;
 class QDomElement;
+class QgsPalGeometry;
+class QgsCoordinateTransform;
+class QgsMapToPixel;
 namespace pal { class Layer; }
 
 class CORE_EXPORT QgsDiagramLayerSettings
