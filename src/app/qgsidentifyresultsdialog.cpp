@@ -57,6 +57,7 @@ QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QWebVi
   // page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   page()->setLinkDelegationPolicy( QWebPage::DontDelegateLinks );
   settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
+  settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
 #ifdef QGISDEBUG
   settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
 #endif
@@ -83,6 +84,28 @@ void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
   menu->addAction( action );
   menu->exec( e->globalPos() );
   delete menu;
+}
+
+QWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType type )
+{
+  QDialog *d = new QDialog( this );
+  QLayout *l = new QVBoxLayout( d );
+
+  QWebView *wv = new QWebView( d );
+  l->addWidget( wv );
+
+  wv->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
+  wv->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
+  wv->settings()->setAttribute( QWebSettings::LocalContentCanAccessRemoteUrls, true );
+  wv->settings()->setAttribute( QWebSettings::JavascriptCanOpenWindows, true );
+#ifdef QGISDEBUG
+  wv->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+#endif
+
+  d->setModal( type != QWebPage::WebBrowserWindow );
+  d->show();
+
+  return wv;
 }
 
 // QgsIdentifyResultsWebView size:
