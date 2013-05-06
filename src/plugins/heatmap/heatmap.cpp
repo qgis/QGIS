@@ -203,8 +203,9 @@ void Heatmap::run()
     int totalFeatures = inputLayer->featureCount();
     int counter = 0;
 
-    QProgressDialog p( "Creating Heatmap ... ", "Abort", 0, totalFeatures );
+    QProgressDialog p( tr( "Creating heatmap" ), tr( "Abort" ), 0, totalFeatures, mQGisIface->mainWindow() );
     p.setWindowModality( Qt::WindowModal );
+    p.show();
 
     QgsFeature myFeature;
 
@@ -224,7 +225,8 @@ void Heatmap::run()
       QgsPoint myPoint;
       myPoint = myPointGeometry->asPoint();
       // avoiding any empty points or out of extent points
-      if (( myPoint.x() < myBBox.xMinimum() ) || ( myPoint.y() < myBBox.yMinimum() ) )
+      if (( myPoint.x() < myBBox.xMinimum() ) || ( myPoint.y() < myBBox.yMinimum() )
+          || ( myPoint.x() > myBBox.xMaximum() ) || ( myPoint.y() > myBBox.yMaximum() ) )
       {
         continue;
       }
