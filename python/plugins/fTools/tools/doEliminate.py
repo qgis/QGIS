@@ -163,15 +163,13 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                 if inLayer.getFeatures( QgsFeatureRequest().setFilterFid( fid2Eliminate ).setSubsetOfAttributes([]) ).nextFeature( feat ):
                     geom2Eliminate = feat.geometry()
                     bbox = geom2Eliminate.boundingBox()
-                    outLayer.select(bbox, False) # make a new selection
+                    fit = outLayer.getFeatures( QgsFeatureRequest().setFilterRect( bbox ) )
                     mergeWithFid = None
                     mergeWithGeom = None
                     max = 0
-
-                    for selFid in outLayer.selectedFeaturesIds():
-                        selFeat = QgsFeature()
-
-                        if outLayer.getFeatures( QgsFeatureRequest().setFilterFid( selFid ).setSubsetOfAttributes([]) ).nextFeature( selFeat ):
+                    
+                    selFeat = QgsFeature()
+                    while fit.nextFeature(selFeat):
                             selGeom = selFeat.geometry()
 
                             if geom2Eliminate.intersects(selGeom): # we have a candidate
@@ -188,7 +186,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
 
                                 if selValue > max:
                                     max = selValue
-                                    mergeWithFid = selFid
+                                    mergeWithFid = selFeat.id()
                                     mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
 
                     if mergeWithFid != None: # a successful candidate
@@ -213,8 +211,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             # end for fid2Eliminate
 
             # deselect features that are already eliminated in inLayer
-            for aFid in fidsToDeselect:
-                inLayer.deselect(aFid, False)
+            inLayer.deselect(fidsToDeselect)
 
         #end while
 
