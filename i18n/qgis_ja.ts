@@ -57640,31 +57640,31 @@ Tried URL: %1</source>
     <name>SEXTANTE</name>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished">解析手法</translation>
+        <translation>解析手法</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SEXTANTE ツールボックス</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE modeler</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SEXTANTE モデラー</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE history and log</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SEXTANTE 履歴とログ</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE options and configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SEXTANTE オプションと設定</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE results viewer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SEXTANTE 結果表示</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE commander</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;SEXTANTE コマンダー</translation>
     </message>
 </context>
 <context>
@@ -58146,12 +58146,12 @@ SQL Anywhereエラーコード %2
     <name>SaveAsPythonScriptAction</name>
     <message>
         <source>I/O error</source>
-        <translation type="unfinished">I/Oエラー</translation>
+        <translation>I/Oエラー</translation>
     </message>
     <message>
         <source>Unable to save edits. Reason:
  %1</source>
-        <translation type="unfinished">編集結果を保存できませんでした.理由:
+        <translation>編集結果を保存できませんでした.理由:
 %1</translation>
     </message>
 </context>
@@ -58268,55 +58268,56 @@ SQL Anywhereエラーコード %2
         <location filename="../python/console/console_settings.ui" line="85"/>
         <location filename="../python/console/console_settings.ui" line="254"/>
         <source>Autocompletion</source>
-        <translation type="unfinished"></translation>
+        <translation>自動入力補完</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="96"/>
         <location filename="../python/console/console_settings.ui" line="265"/>
         <source>Autocompletion enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>自動入力補完 ON</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="121"/>
         <location filename="../python/console/console_settings.ui" line="290"/>
         <source>Threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>補完開始文字数</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="144"/>
         <location filename="../python/console/console_settings.ui" line="313"/>
         <source>Get autocompletion from current document</source>
-        <translation type="unfinished"></translation>
+        <translation>自動入力補完を現在のドキュメントから行う</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="147"/>
         <location filename="../python/console/console_settings.ui" line="316"/>
         <source>from Document</source>
-        <translation type="unfinished"></translation>
+        <translation>ドキュメントから</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="154"/>
         <location filename="../python/console/console_settings.ui" line="323"/>
         <source>Get autocompletion from installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>自動入力補完をインストールされたAPIから行う</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="157"/>
         <location filename="../python/console/console_settings.ui" line="326"/>
         <source>from API files</source>
-        <translation type="unfinished"></translation>
+        <translation>APIから</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="167"/>
         <location filename="../python/console/console_settings.ui" line="336"/>
         <source>Get autocompletion from current document and installed APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>自動入力補完を現在のドキュメント、インストールされたAPIから行う</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="170"/>
         <location filename="../python/console/console_settings.ui" line="339"/>
         <source>from Doc and API</source>
-        <translation type="unfinished"></translation>
+        <translation>ドキュメントと
+APIから</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="185"/>
@@ -58340,7 +58341,7 @@ SQL Anywhereエラーコード %2
     <message>
         <location filename="../python/console/console_settings.ui" line="360"/>
         <source>Using preloaded API file</source>
-        <translation type="unfinished"></translation>
+        <translation>プリロードされたAPIファイルを使用</translation>
     </message>
 </context>
 <context>
@@ -58348,34 +58349,35 @@ SQL Anywhereエラーコード %2
     <message>
         <location filename="../python/plugins/sextante/ui/SextanteToolbox.ui" line="14"/>
         <source>SEXTANTE Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTE ツールボックス</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/SextanteToolbox.ui" line="27"/>
         <source>Click here to learn more
 about SEXTANTE</source>
-        <translation type="unfinished"></translation>
+        <translation>SEXTANTEの詳細は
+ここをクリック</translation>
     </message>
     <message>
         <location filename="../python/plugins/sextante/ui/SextanteToolbox.ui" line="35"/>
         <source>Enter algorithm name to filter list</source>
-        <translation type="unfinished">リストをフィルタするためのアルゴリズム名を入力してください</translation>
+        <translation>リストをフィルタするためのアルゴリズム名を入力してください</translation>
     </message>
     <message>
         <source>Search...</source>
-        <translation type="unfinished">検索...</translation>
+        <translation>検索...</translation>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>実行</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
-        <translation type="unfinished"></translation>
+        <translation>バッチプロセスとして実行</translation>
     </message>
     <message>
         <source>Edit rendering styles for outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>出力のためのレンダリングスタイルを編集</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -58383,7 +58385,7 @@ about SEXTANTE</source>
     </message>
     <message>
         <source>Recently used algorithms</source>
-        <translation type="unfinished"></translation>
+        <translation>最近使用したアルゴリズム</translation>
     </message>
 </context>
 <context>
