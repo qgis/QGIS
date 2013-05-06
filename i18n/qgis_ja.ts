@@ -56018,7 +56018,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="136"/>
         <source>Cannot describe coverage</source>
-        <translation type="unfinished"></translation>
+        <translation>カバレッジを説明できません</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="583"/>
@@ -56044,7 +56044,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="144"/>
         <source>Coverage not found</source>
-        <translation type="unfinished"></translation>
+        <translation>カバレッジが見つかりません</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="201"/>
@@ -56059,7 +56059,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="583"/>
         <source>Received coverage has wrong extent %1 (expected %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>受信したカバレッジの領域が不正です %1 (期待されたのは %2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="602"/>
@@ -56074,7 +56074,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="633"/>
         <source>Received coverage has wrong size %1 x %2 (expected %3 x %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>受信したカバレッジのサイズが不正です %1 x %2 (期待されたのは %3 x %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="798"/>
@@ -56084,67 +56084,67 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="865"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>マップリクエストエラー (ステータス: %1; 理由: %2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="896"/>
         <source>Map request error:&lt;br&gt;Title: %1&lt;br&gt;Error: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;)</source>
-        <translation type="unfinished"></translation>
+        <translation>マップリクエストエラー&lt;br&gt;タイトル: %1&lt;br&gt;エラー: %2&lt;br&gt;URL: &lt;a href=&apos;%3&apos;&gt;%3&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="922"/>
         <source>Cannot parse multipart response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>マルチパートの応答を解析できません: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="954"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>マップリクエストエラー (タイトル: %1; Error: %2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="902"/>
         <source>Map request error (Status: %1; Response: %2; URL:%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>マップリクエストエラー (ステータス: %1; レスポンス: %2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="931"/>
         <source>Expected 2 parts, %1 received</source>
-        <translation type="unfinished"></translation>
+        <translation>2パートを期待しましたが%1が受信されました</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="940"/>
         <source>More than 2 parts (%1) received</source>
-        <translation type="unfinished"></translation>
+        <translation>2より多く(%1)のパートが受信されました</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="960"/>
         <source>Map request error (Response: %1; URL:%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>マップリクエストエラー (レスポンス: %1; URL: %2)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="980"/>
         <source>Content-Transfer-Encoding %1 not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Content-Transfer-Encoding %1 はサポートされていません</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1000"/>
         <source>No data received</source>
-        <translation type="unfinished"></translation>
+        <translation>受信されたデータはありません</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1024"/>
         <source>Cannot create memory file</source>
-        <translation type="unfinished"></translation>
+        <translation>メモリファイルを作成できません</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1073"/>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>マップリクエストに失敗 [エラー:%1 URL:%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1077"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished"></translation>
+        <translation>100より多くのリクエストエラーはログされません.</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1156"/>
@@ -56163,7 +56163,10 @@ Response was:
 Response was:
 
 %5</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 でWCSサービス例外を取得できません: %2 行 %3 列 %4
+
+レスポンスは以下のとおりです.
+%5</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="1229"/>
@@ -56629,7 +56632,7 @@ Response was:
 Response was:
 
 %5</source>
-        <translation>%1 %2でWMSサービスエクセプションを取得できませんでした.行 %3 カラム %4
+        <translation>%1 でWMSサービス例外を取得できませんでした: %2 行 %3 列 %4
 
 レスポンスは以下のとおりです.
 %5</translation>
