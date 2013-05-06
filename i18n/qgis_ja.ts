@@ -15253,7 +15253,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="36"/>
         <source>Background color</source>
-        <translation type="unfinished">背景色</translation>
+        <translation>背景色</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="43"/>
@@ -15359,7 +15359,7 @@ SVG サーチパス:	%7
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="59"/>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="146"/>
         <source>Map %1</source>
-        <translation type="unfinished">地図 %1</translation>
+        <translation>地図 %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="254"/>
@@ -15392,7 +15392,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="128"/>
         <source>Composer map</source>
-        <translation type="unfinished">コンポーザマップ</translation>
+        <translation>コンポーザマップ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="142"/>
@@ -15402,7 +15402,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="162"/>
         <source>Visibility</source>
-        <translation type="unfinished">可視性</translation>
+        <translation>可視性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="177"/>
@@ -15429,7 +15429,7 @@ SVG サーチパス:	%7
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="274"/>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="380"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="244"/>
@@ -15829,7 +15829,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="760"/>
         <source>&lt;</source>
-        <translation type="unfinished">&lt;</translation>
+        <translation>&lt;</translation>
     </message>
 </context>
 <context>
@@ -16431,7 +16431,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/gui/attributetable/qgsattributetableview.cpp" line="220"/>
         <source>Select All</source>
-        <translation type="unfinished">全部を選択する</translation>
+        <translation>全部を選択する</translation>
     </message>
 </context>
 <context>
@@ -25505,120 +25505,120 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="201"/>
         <source>Label</source>
-        <translation type="unfinished">ラベル</translation>
+        <translation>ラベル</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="285"/>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="286"/>
         <source>Name</source>
-        <translation type="unfinished">名称</translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="287"/>
         <source>Type</source>
-        <translation type="unfinished">タイプ</translation>
+        <translation>タイプ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="288"/>
         <source>Length</source>
-        <translation type="unfinished">長さ</translation>
+        <translation>長さ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="289"/>
         <source>Precision</source>
-        <translation type="unfinished">精度</translation>
+        <translation>精度</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="290"/>
         <source>Comment</source>
-        <translation type="unfinished">コメント</translation>
+        <translation>コメント</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="291"/>
         <source>Edit widget</source>
-        <translation type="unfinished">ウィジェットの編集</translation>
+        <translation>ウィジェットの編集</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
         <source>Alias</source>
-        <translation type="unfinished">別名</translation>
+        <translation>別名</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="551"/>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="611"/>
         <source>Name conflict</source>
-        <translation type="unfinished">名前の衝突</translation>
+        <translation>名前の衝突</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="551"/>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="611"/>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
-        <translation type="unfinished">属性は追加されませんでした。指定された名前はテーブル内に既に存在しています。</translation>
+        <translation>属性は追加されませんでした。指定された名前はテーブル内に既に存在しています。</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="563"/>
         <source>Added attribute</source>
-        <translation type="unfinished">追加された属性</translation>
+        <translation>追加された属性</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="588"/>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="632"/>
         <source>Deleted attribute</source>
-        <translation type="unfinished">削除された属性</translation>
+        <translation>削除された属性</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="705"/>
         <source>Line edit</source>
-        <translation type="unfinished">行編集</translation>
+        <translation>行編集</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="706"/>
         <source>Unique values</source>
-        <translation type="unfinished">ユニーク値</translation>
+        <translation>ユニーク値</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="707"/>
         <source>Unique values editable</source>
-        <translation type="unfinished">ユニーク値編集可能</translation>
+        <translation>ユニーク値編集可能</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="708"/>
         <source>Classification</source>
-        <translation type="unfinished">分類</translation>
+        <translation>分類</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="709"/>
         <source>Value map</source>
-        <translation type="unfinished">バリューマップ</translation>
+        <translation>バリューマップ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="710"/>
         <source>Edit range</source>
-        <translation type="unfinished">編集レンジ</translation>
+        <translation>編集レンジ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="711"/>
         <source>Slider range</source>
-        <translation type="unfinished">スライダーレンジ</translation>
+        <translation>スライダーレンジ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
         <source>Dial range</source>
-        <translation type="unfinished">ダイアル範囲</translation>
+        <translation>ダイアル範囲</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
         <source>File name</source>
-        <translation type="unfinished">ファイル名</translation>
+        <translation>ファイル名</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
         <source>Enumeration</source>
-        <translation type="unfinished">列挙</translation>
+        <translation>列挙</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
@@ -25628,37 +25628,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="716"/>
         <source>Hidden</source>
-        <translation type="unfinished">非表示</translation>
+        <translation>非表示</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="717"/>
         <source>Checkbox</source>
-        <translation type="unfinished">チェックボックス</translation>
+        <translation>チェックボックス</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="718"/>
         <source>Text edit</source>
-        <translation type="unfinished">テキスト編集</translation>
+        <translation>テキスト編集</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="719"/>
         <source>Calendar</source>
-        <translation type="unfinished">カレンダー</translation>
+        <translation>カレンダー</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="720"/>
         <source>Value relation</source>
-        <translation type="unfinished">値のリレーション</translation>
+        <translation>値のリレーション</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="721"/>
         <source>UUID generator</source>
-        <translation type="unfinished">UUIDジェネレータ</translation>
+        <translation>UUIDジェネレータ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="722"/>
         <source>Photo</source>
-        <translation type="unfinished"></translation>
+        <translation>写真</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="723"/>
@@ -25668,17 +25668,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="724"/>
         <source>Color</source>
-        <translation type="unfinished">色</translation>
+        <translation>色</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="765"/>
         <source>Select edit form</source>
-        <translation type="unfinished">編集フォームを選ぶ</translation>
+        <translation>編集フォームを選ぶ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="765"/>
         <source>UI file</source>
-        <translation type="unfinished">UIファイル</translation>
+        <translation>UIファイル</translation>
     </message>
 </context>
 <context>
@@ -25686,83 +25686,83 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="17"/>
         <source>Field calculator</source>
-        <translation type="unfinished">フィールド計算機</translation>
+        <translation>フィールド計算機</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="20"/>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="49"/>
         <source>Click to toggle table editing</source>
-        <translation type="unfinished">クリックするとテーブル編集切り替え</translation>
+        <translation>クリックするとテーブル編集切り替え</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="46"/>
         <source>Toggle editing mode</source>
-        <translation type="unfinished">編集モード切替</translation>
+        <translation>編集モード切替</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="68"/>
         <source>New column</source>
-        <translation type="unfinished">新規カラムを追加</translation>
+        <translation>新規カラムを追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="78"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished">Ctrl+N</translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="85"/>
         <source>Delete column</source>
-        <translation type="unfinished">カラムを削除</translation>
+        <translation>カラムを削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="95"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished">Ctrl+X</translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="125"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="134"/>
         <source>Edit UI</source>
-        <translation type="unfinished">編集UI</translation>
+        <translation>編集UI</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="192"/>
         <source>+</source>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="203"/>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="214"/>
         <source>&gt;</source>
-        <translation type="unfinished">&gt;</translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="225"/>
         <source>^</source>
-        <translation type="unfinished">^</translation>
+        <translation>^</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="236"/>
         <source>v</source>
-        <translation type="unfinished">v</translation>
+        <translation>v</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="292"/>
         <source>Autogenerate</source>
-        <translation type="unfinished"></translation>
+        <translation>自動生成</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="297"/>
         <source>Drag and drop designer</source>
-        <translation type="unfinished"></translation>
+        <translation>ドラッグアンドドロップデザイナ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="302"/>
@@ -25772,7 +25772,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="310"/>
         <source>Attribute editor layout:</source>
-        <translation type="unfinished"></translation>
+        <translation>属性エディタレイアウト:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="320"/>
@@ -25793,7 +25793,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="334"/>
         <source>Python Init function</source>
-        <translation type="unfinished"></translation>
+        <translation>Python初期化関数</translation>
     </message>
 </context>
 <context>
@@ -25818,7 +25818,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="14"/>
         <source>Form annotation</source>
-        <translation type="unfinished">注記フォーム</translation>
+        <translation>注記フォーム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="25"/>
@@ -27729,7 +27729,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1137"/>
         <source>Coordinate of image(column/line)</source>
-        <translation type="unfinished"></translation>
+        <translation>イメージ内の座標(列/行)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1515"/>
@@ -28319,17 +28319,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="149"/>
         <source>Symbol</source>
-        <translation type="unfinished">シンボル</translation>
+        <translation>シンボル</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="149"/>
         <source>Value</source>
-        <translation type="unfinished">値</translation>
+        <translation>値</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="149"/>
         <source>Label</source>
-        <translation type="unfinished">ラベル</translation>
+        <translation>ラベル</translation>
     </message>
 </context>
 <context>
@@ -28386,7 +28386,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="51"/>
         <source>Change...</source>
-        <translation type="unfinished">変更...</translation>
+        <translation>変更...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="58"/>
@@ -28416,12 +28416,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="201"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="208"/>
         <source>Delete all</source>
-        <translation type="unfinished">全削除</translation>
+        <translation>全削除</translation>
     </message>
     <message>
         <source>Quantile</source>
@@ -29916,13 +29916,13 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2926"/>
         <source>%1 (band %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(バンド%2)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3005"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3044"/>
         <source>Cannot get provider</source>
-        <translation type="unfinished"></translation>
+        <translation>プロバイダを取得できません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3158"/>
@@ -29940,17 +29940,17 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2311"/>
         <source>Browse</source>
-        <translation type="unfinished">ブラウズ</translation>
+        <translation>ブラウズ</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2329"/>
         <source>Output file</source>
-        <translation type="unfinished">出力ファイル</translation>
+        <translation>出力ファイル</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2329"/>
         <source>GeoTIFF</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoTIFF</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2428"/>
@@ -30056,7 +30056,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="462"/>
         <source>Region</source>
-        <translation type="unfinished">領域</translation>
+        <translation>領域</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="464"/>
@@ -30807,12 +30807,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="68"/>
         <source>Groups not yet supported</source>
-        <translation type="unfinished">グループはまだサポートしていません</translation>
+        <translation>グループはまだサポートしていません</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="439"/>
         <source>Format not supported</source>
-        <translation type="unfinished">形式がサポートされていません</translation>
+        <translation>形式がサポートされていません</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="456"/>
@@ -31145,27 +31145,27 @@ or change the following values</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="124"/>
         <source>GRASS Direct Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>GRASSダイレクトツール</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="137"/>
         <source>Modules Tree</source>
-        <translation type="unfinished">モジュールツリー</translation>
+        <translation>モジュールツリー</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="138"/>
         <source>Modules List</source>
-        <translation type="unfinished">モジュールリスト</translation>
+        <translation>モジュールリスト</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="164"/>
         <source>Direct Modules Tree</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイレクトモジュールツリー</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="165"/>
         <source>Direct Modules List</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイレクトモジュールリスト</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="282"/>
@@ -31229,12 +31229,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="85"/>
         <source>Direct Modules Tree</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイレクトモジュールツリー</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="110"/>
         <source>Direct Modules List</source>
-        <translation type="unfinished"></translation>
+        <translation>ダイレクトモジュールリスト</translation>
     </message>
 </context>
 <context>
@@ -31456,12 +31456,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="37"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location filename="../src/app/qgshtmlannotationdialog.cpp" line="76"/>
         <source>html</source>
-        <translation type="unfinished"></translation>
+        <translation>html</translation>
     </message>
 </context>
 <context>
@@ -31676,67 +31676,67 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="248"/>
         <source>Identify Results</source>
-        <translation type="unfinished">地物情報</translation>
+        <translation>地物情報</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="256"/>
         <source>Feature</source>
-        <translation type="unfinished">地物</translation>
+        <translation>地物</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="257"/>
         <source>Value</source>
-        <translation type="unfinished">値</translation>
+        <translation>値</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="387"/>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="527"/>
         <source>(Derived)</source>
-        <translation type="unfinished">（継承している属性）</translation>
+        <translation>（継承している属性）</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="399"/>
         <source>(Actions)</source>
-        <translation type="unfinished">(アクション)</translation>
+        <translation>(アクション)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="405"/>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="568"/>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="688"/>
         <source>Edit feature form</source>
-        <translation type="unfinished">地物編集フォーム</translation>
+        <translation>地物編集フォーム</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="405"/>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="568"/>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="688"/>
         <source>View feature form</source>
-        <translation type="unfinished">地物フォームを見る</translation>
+        <translation>地物フォームを見る</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="472"/>
         <source>Format</source>
-        <translation type="unfinished">形式</translation>
+        <translation>形式</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="694"/>
         <source>Zoom to feature</source>
-        <translation type="unfinished">地物にズームする</translation>
+        <translation>地物にズームする</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="695"/>
         <source>Copy feature</source>
-        <translation type="unfinished"></translation>
+        <translation>地物のコピー</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="698"/>
         <source>Copy attribute value</source>
-        <translation type="unfinished">属性値をコピーする</translation>
+        <translation>属性値をコピーする</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="699"/>
         <source>Copy feature attributes</source>
-        <translation type="unfinished">地物の属性値をコピーする</translation>
+        <translation>地物の属性値をコピーする</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="712"/>
@@ -31746,22 +31746,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="720"/>
         <source>Clear results</source>
-        <translation type="unfinished">結果をクリアする</translation>
+        <translation>結果をクリアする</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="721"/>
         <source>Clear highlights</source>
-        <translation type="unfinished">ハイライトをクリアする</translation>
+        <translation>ハイライトをクリアする</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="722"/>
         <source>Highlight all</source>
-        <translation type="unfinished">すべてをハイライトする</translation>
+        <translation>すべてをハイライトする</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="723"/>
         <source>Highlight layer</source>
-        <translation type="unfinished">レイヤをハイライトする</translation>
+        <translation>レイヤをハイライトする</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="724"/>
@@ -31771,17 +31771,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="726"/>
         <source>Expand all</source>
-        <translation type="unfinished">すべて展開する</translation>
+        <translation>すべて展開する</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="727"/>
         <source>Collapse all</source>
-        <translation type="unfinished">すべて折りたたむ</translation>
+        <translation>すべて折りたたむ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1202"/>
         <source>Attribute changes</source>
-        <translation type="unfinished">属性が変更された</translation>
+        <translation>属性が変更された</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1353"/>
@@ -31799,7 +31799,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="81"/>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation>印刷</translation>
     </message>
 </context>
 <context>
@@ -31807,7 +31807,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="191"/>
         <source>Loading...</source>
-        <translation type="unfinished"></translation>
+        <translation>ロード中...</translation>
     </message>
 </context>
 <context>
@@ -31996,7 +31996,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="314"/>
         <source>Add result to project</source>
-        <translation type="unfinished">結果をプロジェクトに追加する</translation>
+        <translation>結果をプロジェクトに追加する</translation>
     </message>
 </context>
 <context>
@@ -32410,27 +32410,27 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="90"/>
         <source>Display</source>
-        <translation type="unfinished">ディスプレイ</translation>
+        <translation>ディスプレイ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="148"/>
         <source>Show label</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベル表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="130"/>
         <source>Max </source>
-        <translation type="unfinished"></translation>
+        <translation>最大</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="114"/>
         <source>Min </source>
-        <translation type="unfinished"></translation>
+        <translation>最小</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="104"/>
         <source>Scale-based</source>
-        <translation type="unfinished"></translation>
+        <translation>スケール依存</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="155"/>
@@ -32440,7 +32440,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="158"/>
         <source>Always show (exceptions above)</source>
-        <translation type="unfinished"></translation>
+        <translation>常時表示(上記を無視)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="168"/>
@@ -32700,7 +32700,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2978"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3692"/>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2903"/>
@@ -32920,17 +32920,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="96"/>
         <source>Expression</source>
-        <translation type="unfinished">式</translation>
+        <translation>式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="286"/>
         <source>Sample text</source>
-        <translation type="unfinished">サンプルテキスト</translation>
+        <translation>サンプルテキスト</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="305"/>
         <source>Reset sample text</source>
-        <translation type="unfinished"></translation>
+        <translation>サンプルテキストのリセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="347"/>
@@ -32971,7 +32971,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="554"/>
         <source>Alignment</source>
-        <translation type="unfinished">配置</translation>
+        <translation>配置</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="570"/>
@@ -32982,18 +32982,18 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="574"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3776"/>
         <source>Left</source>
-        <translation type="unfinished">左</translation>
+        <translation>左</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="579"/>
         <source>Center</source>
-        <translation type="unfinished">中央</translation>
+        <translation>中央</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="584"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3738"/>
         <source>Right</source>
-        <translation type="unfinished">右</translation>
+        <translation>右</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1170"/>
@@ -33036,12 +33036,12 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2983"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3697"/>
         <source>map units</source>
-        <translation type="unfinished">地図上の単位</translation>
+        <translation>地図上の単位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1137"/>
         <source>Style</source>
-        <translation type="unfinished">スタイル</translation>
+        <translation>スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="744"/>
@@ -33050,7 +33050,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2397"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4432"/>
         <source>Transparency</source>
-        <translation type="unfinished">透過性</translation>
+        <translation>透過性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="788"/>
@@ -33167,7 +33167,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3426"/>
         <source>Above line</source>
-        <translation type="unfinished">ラインの上</translation>
+        <translation>ラインの上</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3436"/>
@@ -33220,7 +33220,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1732"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1745"/>
         <source>&lt;</source>
-        <translation type="unfinished">&lt;</translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1407"/>
@@ -33231,7 +33231,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1426"/>
         <source>&gt;</source>
-        <translation type="unfinished">&gt;</translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1484"/>
@@ -33251,7 +33251,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1514"/>
         <source>Reverse direction</source>
-        <translation type="unfinished">逆方向</translation>
+        <translation>逆方向</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1652"/>
@@ -33287,7 +33287,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1929"/>
         <source>Offset</source>
-        <translation type="unfinished">オフセット</translation>
+        <translation>オフセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3714"/>
@@ -33301,13 +33301,13 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2166"/>
         <source>Scale</source>
-        <translation type="unfinished">縮尺</translation>
+        <translation>縮尺</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1906"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2282"/>
         <source>Background</source>
-        <translation type="unfinished">背景</translation>
+        <translation>背景</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1875"/>
@@ -33322,7 +33322,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1896"/>
         <source>Text</source>
-        <translation type="unfinished">テキスト</translation>
+        <translation>テキスト</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabelingguibase.ui" line="1969"/>
@@ -33332,7 +33332,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1982"/>
         <source>@</source>
-        <translation type="unfinished">@</translation>
+        <translation>@</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2037"/>
@@ -33357,7 +33357,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2430"/>
         <source>Fill</source>
-        <translation type="unfinished">塗りつぶし</translation>
+        <translation>塗りつぶし</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2437"/>
@@ -33383,22 +33383,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2690"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished">オフセットX Y</translation>
+        <translation>オフセットX Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2790"/>
         <source>Rectangle</source>
-        <translation type="unfinished">四角形</translation>
+        <translation>四角形</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2795"/>
         <source>Square</source>
-        <translation type="unfinished">角型</translation>
+        <translation>角型</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2800"/>
         <source>Ellipse</source>
-        <translation type="unfinished">楕円</translation>
+        <translation>楕円</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2805"/>
@@ -33413,7 +33413,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2833"/>
         <source>Shape</source>
-        <translation type="unfinished">図形</translation>
+        <translation>図形</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2847"/>
@@ -33433,7 +33433,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2948"/>
         <source>Border width</source>
-        <translation type="unfinished">ボーダー太さ</translation>
+        <translation>ボーダー太さ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2991"/>
@@ -33443,7 +33443,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3019"/>
         <source>Border</source>
-        <translation type="unfinished">境界線</translation>
+        <translation>境界線</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3572"/>
@@ -33463,37 +33463,37 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3745"/>
         <source>Above Right</source>
-        <translation type="unfinished">右上</translation>
+        <translation>右上</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3752"/>
         <source>Above Left</source>
-        <translation type="unfinished">左上</translation>
+        <translation>左上</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3759"/>
         <source>Over</source>
-        <translation type="unfinished">真上</translation>
+        <translation>真上</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3769"/>
         <source>Above</source>
-        <translation type="unfinished">上</translation>
+        <translation>上</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3783"/>
         <source>Below Left</source>
-        <translation type="unfinished">左下</translation>
+        <translation>左下</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3790"/>
         <source>Below</source>
-        <translation type="unfinished">下</translation>
+        <translation>下</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3797"/>
         <source>Below Right</source>
-        <translation type="unfinished">右下</translation>
+        <translation>右下</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3989"/>
@@ -33508,7 +33508,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4017"/>
         <source>never</source>
-        <translation type="unfinished">一度も無い</translation>
+        <translation>一度も無い</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4033"/>
@@ -33518,7 +33518,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4046"/>
         <source>always</source>
-        <translation type="unfinished">いつも</translation>
+        <translation>いつも</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4063"/>
@@ -33651,7 +33651,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgslayerpropertieswidget.cpp" line="125"/>
         <source>Outline: %1</source>
-        <translation type="unfinished">アウトライン:%1</translation>
+        <translation>アウトライン:%1</translation>
     </message>
 </context>
 <context>
@@ -33968,7 +33968,7 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="20"/>
         <source>Add column</source>
-        <translation type="unfinished">カラムの追加</translation>
+        <translation>カラムの追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="31"/>
@@ -33983,12 +33983,12 @@ not displayed</source>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="76"/>
         <source>Cancel</source>
-        <translation type="unfinished">キャンセル</translation>
+        <translation>キャンセル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsloadstylefromdbdialog.ui" line="89"/>
         <source>Load Style</source>
-        <translation type="unfinished">スタイルのロード</translation>
+        <translation>スタイルのロード</translation>
     </message>
 </context>
 <context>
@@ -36084,12 +36084,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="138"/>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished">フィルタの設定(&amp;S)</translation>
+        <translation>フィルタの設定(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="139"/>
         <source>Set Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルタの設定</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlsourceselect.cpp" line="153"/>
@@ -36364,7 +36364,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">フォーム</translation>
+        <translation>フォーム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="134"/>
@@ -36382,17 +36382,17 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="235"/>
         <source>Red band</source>
-        <translation type="unfinished">Redバンド</translation>
+        <translation>Redバンド</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="149"/>
         <source>Green band</source>
-        <translation type="unfinished">Greenバンド</translation>
+        <translation>Greenバンド</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="142"/>
         <source>Blue band</source>
-        <translation type="unfinished">Blueバンド</translation>
+        <translation>Blueバンド</translation>
     </message>
     <message>
         <source>Min</source>
@@ -37266,37 +37266,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmdownloaddialog.ui" line="14"/>
         <source>Download OpenStreetMap data</source>
-        <translation type="unfinished">OpenStreetMap データをダウンロードする</translation>
+        <translation>OpenStreetMap データをダウンロードする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmdownloaddialog.ui" line="20"/>
         <source>Extent</source>
-        <translation type="unfinished">範囲</translation>
+        <translation>範囲</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmdownloaddialog.ui" line="26"/>
         <source>From map canvas</source>
-        <translation type="unfinished">マップキャンバスより</translation>
+        <translation>マップキャンバスより</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmdownloaddialog.ui" line="38"/>
         <source>From layer</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤから</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmdownloaddialog.ui" line="50"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>マニュアル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmdownloaddialog.ui" line="128"/>
         <source>Output file</source>
-        <translation type="unfinished">出力ファイル</translation>
+        <translation>出力ファイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmdownloaddialog.ui" line="137"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="135"/>
@@ -37306,7 +37306,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="149"/>
         <source>Download error</source>
-        <translation type="unfinished"></translation>
+        <translation>ダウンロードエラー</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="161"/>
