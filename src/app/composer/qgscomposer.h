@@ -309,8 +309,14 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! True if a composer map contains a WMS layer
     bool containsWMSLayer() const;
 
+    //! True if a composer contains blend modes
+    bool containsBlendModes() const;
+
     //! Displays a warning because of possible min/max size in WMS
     void showWMSPrintingWarning();
+
+    //! Displays a warning because of incompatibility between blend modes and QPrinter
+    void showBlendModePrintingWarning();
 
     //! Changes elements that are not suitable for this project
     void cleanupAfterTemplateRead();
@@ -390,6 +396,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Help menu as mirror of main app's (on Mac)
     //! @note added in 1.9
     QMenu* mHelpMenu;
+
+  signals:
+    void printAsRasterChanged( bool state );
 
   private slots:
 

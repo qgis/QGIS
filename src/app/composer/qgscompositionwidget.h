@@ -62,6 +62,8 @@ class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
 
     /**Sets GUI elements to width/height from composition*/
     void displayCompositionWidthHeight();
+    /**Sets Print as raster checkbox value*/
+    void setPrintAsRasterCheckBox( bool state );
 
   private:
     QgsComposition* mComposition;
