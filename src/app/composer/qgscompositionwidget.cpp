@@ -377,6 +377,13 @@ void QgsCompositionWidget::displayCompositionWidthHeight()
   }
 }
 
+void QgsCompositionWidget::setPrintAsRasterCheckBox( bool state )
+{
+  mPrintAsRasterGroupCheckBox->blockSignals( true );
+  mPrintAsRasterGroupCheckBox->setChecked( state );
+  mPrintAsRasterGroupCheckBox->blockSignals( false );
+}
+
 void QgsCompositionWidget::displaySnapingSettings()
 {
   if ( !mComposition )

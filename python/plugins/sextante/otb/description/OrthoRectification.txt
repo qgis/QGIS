@@ -18,9 +18,9 @@ ParameterNumber|-outputs.spacingy|Pixel Size Y|None|None|0.0
 ParameterBoolean|-outputs.isotropic|Force isotropic spacing by default|True
 ParameterNumber|-outputs.default|Default pixel value|None|None|0.0
 ParameterSelection|-elev|Elevation management|dem;average|1
-ParameterFile|-elev.dem.path|DEM directory|
-ParameterFile|-elev.dem.geoid|Geoid File||
-ParameterNumber|-elev.average.value|Average Elevation|None|None|0.0
+ParameterString|-elev.dem|DEM directory|
+ParameterFile|-elev.geoid|Geoid File|
+ParameterNumber|-elev.default|Average Elevation|None|None|0.0
 ParameterSelection|-interpolator|Interpolation|nn;linear;bco|0
 ParameterNumber|-interpolator.bco.radius|Radius for bicubic interpolation|None|None|2
 ParameterNumber|-opt.rpc|RPC modeling (points per axis)|None|None|10

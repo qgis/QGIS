@@ -41,7 +41,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
-        #self.actions.append(CreateNewScriptAction())
+        self.actions.append(CreateNewScriptAction())
         self.contextMenuActions = [EditScriptAction(), DeleteScriptAction()]
 
     def initializeSettings(self):

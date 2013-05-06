@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -93,7 +92,8 @@ class ModelerAlgorithm(GeoAlgorithm):
 
         #position of items in canvas
         self.algPos = []
-        self.paramPos = []
+        self.paramPos = []        
+        self.outputPos = [] #same structure as algOutputs
 
         #deactivated algorithms that should not be executed
         self.deactivated = []
@@ -106,6 +106,7 @@ class ModelerAlgorithm(GeoAlgorithm):
     def openModel(self, filename):
         self.algPos = []
         self.paramPos = []
+        self.outputOutputs = []
         self.algs = []
         self.algParameters = []
         self.algOutputs = []
@@ -153,7 +154,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 try:
                                     dependencies.append(int(index))
                                 except:
-                                    pass #a quick fix fwhile I figure out how to solve problems when parsing this
+                                    pass #a quick fix while I figure out how to solve problems when parsing this
                         for param in alg.parameters:
                             line = lines.readline().strip("\n").strip("\r")
                             if line==str(None):
@@ -161,10 +162,19 @@ class ModelerAlgorithm(GeoAlgorithm):
                             else:
                                 tokens = line.split("|")
                                 algParams[param.name] = AlgorithmAndParameter(int(tokens[0]), tokens[1])
+                        outputPos = {}                        
                         for out in alg.outputs:
                             line = lines.readline().strip("\n").strip("\r")
                             if str(None)!=line:
-                                algOutputs[out.name] = line
+                                if "|" in line:
+                                    tokens = line.split("|")
+                                    name = tokens[0]
+                                    tokens = tokens[1].split(",")
+                                    outputPos[out.name] = QtCore.QPointF(float(tokens[0]), float(tokens[1]))                                    
+                                else:
+                                    name = line
+                                    outputPos[out.name] = None
+                                algOutputs[out.name] = name
                                 #we add the output to the algorithm, with a name indicating where it comes from
                                 #that guarantees that the name is unique
                                 output = copy.deepcopy(out)
@@ -173,6 +183,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 self.addOutput(output)
                             else:
                                 algOutputs[out.name] = None
+                        self.outputPos.append(outputPos)                                 
                         self.algOutputs.append(algOutputs)
                         self.algParameters.append(algParams)
                         self.dependencies.append(dependencies)
@@ -201,7 +212,15 @@ class ModelerAlgorithm(GeoAlgorithm):
         self.dependencies.append(dependencies)
         for value in valuesMap.keys():
             self.paramValues[value] = valuesMap[value]
-        self.algPos.append(self.getPositionForAlgorithmItem())
+        algPos = self.getPositionForAlgorithmItem()
+        self.algPos.append(algPos)
+        pos = {}
+        i = 0
+        from sextante.modeler.ModelerGraphicItem import ModelerGraphicItem
+        for out in outputsMap:            
+            pos[out] = algPos + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH, i * ModelerGraphicItem.BOX_HEIGHT)
+            i+=1 
+        self.outputPos.append(pos)
 
     def updateAlgorithm(self, algIndex, parametersMap, valuesMap, outputsMap, dependencies):
         self.algParameters[algIndex] = parametersMap
@@ -210,6 +229,14 @@ class ModelerAlgorithm(GeoAlgorithm):
         for value in valuesMap.keys():
             self.paramValues[value] = valuesMap[value]
         self.updateModelerView()
+        algPos = self.algPos[algIndex]        
+        pos = {}
+        i = 0
+        from sextante.modeler.ModelerGraphicItem import ModelerGraphicItem
+        for out in outputsMap:
+            pos[out] = algPos + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH, i * ModelerGraphicItem.BOX_HEIGHT)
+            i+=1 
+        self.outputPos[algIndex] = pos
 
 
     def removeAlgorithm(self, index):
@@ -225,6 +252,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         del self.algParameters[index]
         del self.algOutputs[index]
         del self.algPos[index]
+        del self.outputPos[index]        
 
         i = -1
         for paramValues in self.algParameters:
@@ -395,14 +423,21 @@ class ModelerAlgorithm(GeoAlgorithm):
                     s+=value.serialize() + "\n"
                 else:
                     s+=str(None) + "\n"
-            for out in alg.outputs:
-                s+=unicode(self.algOutputs[i][out.name]) + "\n"
+            for out in alg.outputs:                 
+                value = self.algOutputs[i][out.name]
+                s+=unicode(value)
+                if value is not None:
+                    pt = self.outputPos[i][out.name]
+                    s +=  "|" + str(pt.x()) + "," + str(pt.y())
+                s += "\n"
+                
         return s
 
 
-    def setPositions(self, paramPos,algPos):
+    def setPositions(self, paramPos, algPos, outputPos):
         self.paramPos = paramPos
         self.algPos = algPos
+        self.outputPos = outputPos
 
 
     def prepareAlgorithm(self, alg, iAlg):
