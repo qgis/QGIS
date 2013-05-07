@@ -25340,7 +25340,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsfieldcalculator.cpp" line="61"/>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="72"/>
         <source>Not available for layer</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤにはできません</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="104"/>
@@ -25669,7 +25669,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
         <source>Immutable</source>
-        <translation type="unfinished"></translation>
+        <translation>変わらない</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="716"/>
@@ -25709,7 +25709,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="723"/>
         <source>Web view</source>
-        <translation type="unfinished"></translation>
+        <translation>ウェブ表示</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldsproperties.cpp" line="724"/>
@@ -27927,7 +27927,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="169"/>
         <source>toolBar</source>
-        <translation type="unfinished">ツールバー</translation>
+        <translation>ツールバー</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="182"/>
@@ -28103,12 +28103,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="369"/>
         <source>Local histogram stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>ヒストグラムを表示領域の値で引きのばす</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="374"/>
         <source>Full histogram stretch</source>
-        <translation type="unfinished">全ヒストグラムを拡大</translation>
+        <translation>ヒストグラムをデータセット全域の値で引きのばす</translation>
     </message>
 </context>
 <context>
@@ -28310,12 +28310,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/core/qgsgml.cpp" line="89"/>
         <source>Loading GML data
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>GMLデータロード中 %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgml.cpp" line="89"/>
         <source>Abort</source>
-        <translation type="unfinished">取り消し</translation>
+        <translation>取り消し</translation>
     </message>
 </context>
 <context>
@@ -28457,7 +28457,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="122"/>
         <source>Quantile (Equal Count)</source>
-        <translation type="unfinished"></translation>
+        <translation>分位（等量）</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="201"/>
