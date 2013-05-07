@@ -5545,12 +5545,12 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="206"/>
         <source>Creating heatmap</source>
-        <translation type="unfinished"></translation>
+        <translation>ヒートマップの作成中</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="206"/>
         <source>Abort</source>
-        <translation type="unfinished">取り消し</translation>
+        <translation>中断</translation>
     </message>
     <message>
         <source>Point layer error</source>
@@ -6297,7 +6297,7 @@ Ctl(Cmd)15度増加.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1774"/>
         <source>Pin/Unpin Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルのピン/アンピン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1777"/>
@@ -6311,7 +6311,7 @@ Acts on all editable layers</source>
         <location filename="../src/ui/qgisapp.ui" line="1792"/>
         <location filename="../src/ui/qgisapp.ui" line="1795"/>
         <source>Highlight Pinned Labels</source>
-        <translation type="unfinished"></translation>
+        <translation>ピンされたラベルをハイライトする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1804"/>
@@ -8256,7 +8256,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Find text</source>
-        <translation type="unfinished"></translation>
+        <translation>テキスト検索</translation>
     </message>
     <message>
         <source>Show editor</source>
@@ -8296,31 +8296,31 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Enter text to find...</source>
-        <translation type="unfinished"></translation>
+        <translation>検索テキストの入力...</translation>
     </message>
     <message>
         <source>Find Next</source>
-        <translation type="unfinished"></translation>
+        <translation>次の検索</translation>
     </message>
     <message>
         <source>Find Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>前の検索</translation>
     </message>
     <message>
         <source>Open File</source>
-        <translation type="unfinished">ファイルを開く</translation>
+        <translation>ファイルを開く</translation>
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="unfinished"></translation>
+        <translation>エラーの保存</translation>
     </message>
     <message>
         <source>Failed to save %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>保存に失敗しました %1: %2</translation>
     </message>
     <message>
         <source>Save File As</source>
-        <translation type="unfinished"></translation>
+        <translation>名前をつけて保存</translation>
     </message>
     <message>
         <source>Python Console</source>
@@ -8384,27 +8384,27 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3278"/>
         <source>Unable to initialize</source>
         <comment>QOCISpatialDriver</comment>
-        <translation type="unfinished"></translation>
+        <translation>初期化できません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3448"/>
         <source>Unable to logon</source>
-        <translation type="unfinished"></translation>
+        <translation>ログオンできません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3527"/>
         <source>Unable to begin transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>トランザクションを開始できません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3549"/>
         <source>Unable to commit transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>トランザクションをコミットできません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3571"/>
         <source>Unable to rollback transaction</source>
-        <translation type="unfinished"></translation>
+        <translation>トランザクションをロールバックできません</translation>
     </message>
 </context>
 <context>
@@ -8414,42 +8414,42 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="2037"/>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="2053"/>
         <source>Unable to bind column for batch execute</source>
-        <translation type="unfinished"></translation>
+        <translation>バッチ処理用にカラムをバインドできません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="2069"/>
         <source>Unable to execute batch statement</source>
-        <translation type="unfinished"></translation>
+        <translation>バッチコマンド文を実行できません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3011"/>
         <source>Unable to goto next</source>
-        <translation type="unfinished"></translation>
+        <translation>次を実行できません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3093"/>
         <source>Unable to alloc statement</source>
-        <translation type="unfinished"></translation>
+        <translation>ステートメントを割り当てられません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3109"/>
         <source>Unable to prepare statement</source>
-        <translation type="unfinished"></translation>
+        <translation>ステートメントを準備できません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3138"/>
         <source>Unable to get statement type</source>
-        <translation type="unfinished"></translation>
+        <translation>ステートメントタイプを取得できません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3164"/>
         <source>Unable to bind value</source>
-        <translation type="unfinished"></translation>
+        <translation>値を割り当てられません</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/ocispatial/qsql_ocispatial.cpp" line="3177"/>
         <source>Unable to execute statement</source>
-        <translation type="unfinished"></translation>
+        <translation>ステートメントを実行できません</translation>
     </message>
 </context>
 <context>
@@ -9306,7 +9306,8 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/app/qgspluginregistry.cpp" line="253"/>
         <source>Plugin &quot;%1&quot; is not compatible with this version of Quantum GIS.
 It will be disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>プラグイン &quot;%1&quot;はこのバージョンのQuantum GISでは互換性がありません.
+これは無効になります.</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="268"/>
@@ -9600,7 +9601,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1746"/>
         <source>Imported from GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>GDALからのインポート</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="37"/>
@@ -9906,12 +9907,12 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1139"/>
         <source>Mapinfo TAB</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapinfo TAB</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1147"/>
         <source>Mapinfo MIF</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapinfo MIF</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1168"/>
@@ -9925,7 +9926,7 @@ Error(%2): %3</source>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="186"/>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="295"/>
         <source>SpatiaLite</source>
-        <translation type="unfinished">SpatiaLite</translation>
+        <translation>SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1204"/>
@@ -41389,22 +41390,22 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">フォーム</translation>
+        <translation>フォーム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui" line="28"/>
         <source>Band</source>
-        <translation type="unfinished">バンド</translation>
+        <translation>バンド</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui" line="47"/>
         <source>Value</source>
-        <translation type="unfinished">値</translation>
+        <translation>値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspalettedrendererwidgetbase.ui" line="52"/>
         <source>Color</source>
-        <translation type="unfinished">色</translation>
+        <translation>色</translation>
     </message>
 </context>
 <context>
@@ -41856,12 +41857,12 @@ Extended error information:
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="135"/>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished">フィルタの設定(&amp;S)</translation>
+        <translation>フィルタの設定(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="136"/>
         <source>Set Filter</source>
-        <translation type="unfinished">フィルタの設定</translation>
+        <translation>フィルタの設定</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="151"/>
@@ -42145,22 +42146,22 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="29"/>
         <source>Column</source>
-        <translation type="unfinished">カラム</translation>
+        <translation>カラム</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="30"/>
         <source>Data Type</source>
-        <translation type="unfinished"></translation>
+        <translation>データタイプ</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="31"/>
         <source>Spatial Type</source>
-        <translation type="unfinished"></translation>
+        <translation>空間データタイプ</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="33"/>
         <source>Primary Key</source>
-        <translation type="unfinished"></translation>
+        <translation>主キー</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="249"/>
@@ -42564,7 +42565,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="208"/>
         <source>State</source>
-        <translation type="unfinished">状態</translation>
+        <translation>状態</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="213"/>
@@ -43231,22 +43232,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1720"/>
         <source>Horizontal distance</source>
-        <translation type="unfinished">水平距離</translation>
+        <translation>水平距離</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1721"/>
         <source>Vertical distance</source>
-        <translation type="unfinished">垂直距離</translation>
+        <translation>垂直距離</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1722"/>
         <source>Horizontal displacement</source>
-        <translation type="unfinished">水平方向配置</translation>
+        <translation>水平方向配置</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="1723"/>
         <source>Vertical displacement</source>
-        <translation type="unfinished">垂直方向配置</translation>
+        <translation>垂直方向配置</translation>
     </message>
 </context>
 <context>
@@ -43443,17 +43444,17 @@ SQL:%2
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1365"/>
         <source>None</source>
-        <translation type="unfinished">なし</translation>
+        <translation>なし</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1367"/>
         <source>Geometry</source>
-        <translation type="unfinished">ジオメトリ</translation>
+        <translation>ジオメトリ</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1369"/>
         <source>Geography</source>
-        <translation type="unfinished"></translation>
+        <translation>ジオグラフィ</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1371"/>
@@ -43497,18 +43498,18 @@ SQL:%2
     <message>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="112"/>
         <source>feature %1 not found</source>
-        <translation type="unfinished">地物 %1 は見つかりません</translation>
+        <translation>地物 %1 は見つかりません</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="112"/>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="118"/>
         <source>PostGIS</source>
-        <translation type="unfinished">PostGIS</translation>
+        <translation>PostGIS</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="118"/>
         <source>found %1 features instead of just one.</source>
-        <translation type="unfinished">1個ではなく%1 の地物がみつかりました</translation>
+        <translation>1個ではなく%1 の地物がみつかりました.</translation>
     </message>
 </context>
 <context>
@@ -43617,7 +43618,7 @@ SQL %3</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="131"/>
         <source>invalid PostgreSQL topology layer</source>
-        <translation type="unfinished"></translation>
+        <translation>不正なPostgreSQLトポロジレイヤ</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="160"/>
@@ -43709,7 +43710,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="173"/>
         <source>Date</source>
-        <translation type="unfinished">日付</translation>
+        <translation>日付</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="773"/>
@@ -43972,7 +43973,7 @@ SQL:%2
     <message>
         <location filename="../src/core/qgsproject.cpp" line="690"/>
         <source>Loading layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ %1のロード中</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="802"/>
@@ -44046,12 +44047,12 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="110"/>
         <source>Select project file</source>
-        <translation type="unfinished">プロジェクトファイルの選択</translation>
+        <translation>プロジェクトファイルの選択</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="112"/>
         <source>QGis files</source>
-        <translation type="unfinished">QGisファイル</translation>
+        <translation>QGisファイル</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
@@ -44069,17 +44070,17 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/ui/qgsprojectlayergroupdialogbase.ui" line="14"/>
         <source>Select layers and groups to embed</source>
-        <translation type="unfinished">埋め込みを行うレイヤやグループを選択する</translation>
+        <translation>埋め込みを行うレイヤやグループを選択する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectlayergroupdialogbase.ui" line="22"/>
         <source>Project file</source>
-        <translation type="unfinished">プロジェクトファイル</translation>
+        <translation>プロジェクトファイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectlayergroupdialogbase.ui" line="32"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -44203,7 +44204,7 @@ Proceed?</source>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1109"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1135"/>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished">XMLファイル(*.xml *XML)</translation>
+        <translation>XMLファイル(*.xml *XML)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1134"/>
@@ -44338,27 +44339,27 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="904"/>
         <source>Defaut styles</source>
-        <translation type="unfinished"></translation>
+        <translation>既定スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="935"/>
         <source>Default symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>既定シンボル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1161"/>
         <source>Transparency</source>
-        <translation type="unfinished">透過性</translation>
+        <translation>透過性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1196"/>
         <source> %</source>
-        <translation type="unfinished"></translation>
+        <translation> %</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1313"/>
         <source>Service capabilitities</source>
-        <translation type="unfinished"></translation>
+        <translation>サービス機能</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1393"/>
@@ -44455,37 +44456,37 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1089"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1136"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1079"/>
         <source>Marker</source>
-        <translation type="unfinished">マーカー</translation>
+        <translation>マーカー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="958"/>
         <source>Line</source>
-        <translation type="unfinished">ライン</translation>
+        <translation>ライン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1100"/>
         <source>Fill</source>
-        <translation type="unfinished">塗りつぶし</translation>
+        <translation>塗りつぶし</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1040"/>
         <source>Color Ramp</source>
-        <translation type="unfinished">色ランプ</translation>
+        <translation>色ランプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1233"/>
         <source>Style Manager</source>
-        <translation type="unfinished">スタイルマネージャ</translation>
+        <translation>スタイルマネージャ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1150"/>
         <source>Options</source>
-        <translation type="unfinished">オプション</translation>
+        <translation>オプション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1221"/>
@@ -44518,12 +44519,12 @@ Proceed?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="148"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1900"/>
         <source>Macros</source>
-        <translation type="unfinished"></translation>
+        <translation>マクロ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1422"/>
         <source>Fees</source>
-        <translation type="unfinished">料金</translation>
+        <translation>料金</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1432"/>
