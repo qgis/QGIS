@@ -494,7 +494,7 @@ class Editor(QsciScintilla):
         except IOError, error:
             IOErrorTr = QCoreApplication.translate('PythonConsole',
                                                    'Cannot execute file %1. Error: %2') \
-                                                   .arg(filename, error.strerror)
+                                                   .arg(filename).arg(error.strerror)
             print IOErrorTr
         except:
             s = traceback.format_exc()
@@ -555,7 +555,12 @@ class Editor(QsciScintilla):
     def focusInEvent(self, e):
         pathfile = self.parent.path
         if pathfile:
-            if not os.path.exists(pathfile): return
+            if not os.path.exists(pathfile):
+                msgText = QCoreApplication.translate('PythonConsole',
+                                                     'The file <b>"%1"</b> has been deleted or is not accessible') \
+                                                     .arg(pathfile)
+                self.parent.pc.callWidgetMessageBarEditor(msgText, 2, False)
+                return
         if pathfile and self.mtime != os.stat(pathfile).st_mtime:
             self.beginUndoAction()
             self.selectAll()
@@ -567,7 +572,7 @@ class Editor(QsciScintilla):
             except IOError, error:
                 IOErrorTr = QCoreApplication.translate('PythonConsole',
                                                        'The file %1 could not be opened. Error: %2') \
-                                                       .arg(pathfile, error.strerro)
+                                                       .arg(pathfile).arg(error.strerror)
                 print IOErrorTr
             for line in reversed(file):
                 self.insert(line)
@@ -581,7 +586,6 @@ class Editor(QsciScintilla):
                                                  'The file <b>"%1"</b> has been changed and reloaded') \
                                                  .arg(pathfile)
             self.parent.pc.callWidgetMessageBarEditor(msgText, 1, False)
-
         QsciScintilla.focusInEvent(self, e)
 
 class EditorTab(QWidget):
@@ -624,7 +628,7 @@ class EditorTab(QWidget):
         except IOError, error:
             IOErrorTr = QCoreApplication.translate('PythonConsole',
                                                    'The file <b>%1</b> could not be opened. Error: %2') \
-                                                    .arg(filename, error.strerror)
+                                                    .arg(filename).arg(error.strerror)
             print IOErrorTr
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         txt = fn.read()
@@ -753,7 +757,7 @@ class EditorTabWidget(QTabWidget):
             self.setDocumentMode(True)
 
         self.setMovable(True)
-        #self.setTabsClosable(True)
+        self.setTabsClosable(True)
         self.setTabPosition(QTabWidget.North)
 
         # Menu button list tabs
@@ -840,11 +844,11 @@ class EditorTabWidget(QTabWidget):
         nr = self.count()
         if not tabName:
             tabName = QCoreApplication.translate('PythonConsole', 'Untitled-%1').arg(nr)
-        if self.count() < 1:
-            self.setTabsClosable(False)
-        else:
-            if not self.tabsClosable():
-                self.setTabsClosable(True)
+#         if self.count() < 1:
+#             self.setTabsClosable(False)
+#         else:
+#             if not self.tabsClosable():
+#                 self.setTabsClosable(True)
         self.tab = EditorTab(self, self.parent, filename)
         self.iconTab = QgsApplication.getThemeIcon('console/iconTabEditorConsole.png')
         self.addTab(self.tab, self.iconTab, tabName)
@@ -899,9 +903,10 @@ class EditorTabWidget(QTabWidget):
             if self.widget(tab).path is not None or \
                 self.widget(tab).path in self.restoreTabList:
                 self.parent.updateTabListScript(self.widget(tab).path)
-            if self.count() <= 2:
-                self.setTabsClosable(False)
+            if self.count() <= 1:
+#                 self.setTabsClosable(False)
                 self.removeTab(tab)
+                self.newTabEditor()
             else:
                 self.removeTab(tab)
         self.currentWidget().newEditor.setFocus(Qt.TabFocusReason)
@@ -963,69 +968,68 @@ class EditorTabWidget(QTabWidget):
             tabWidget = self.widget(self.indexOf(tab))
         else:
             tabWidget = self.widget(tab)
-        if tabWidget.path:
-            pathFile, file = os.path.split(unicode(tabWidget.path))
-            module, ext = os.path.splitext(file)
-            found = False
-            if pathFile not in sys.path:
-                sys.path.append(pathFile)
-                found = True
-            try:
-                reload(pyclbr)
-                dictObject = {}
-                superClassName = []
-                readModule = pyclbr.readmodule(module)
-                readModuleFunction = pyclbr.readmodule_ex(module)
-                for name, class_data in sorted(readModule.items(), key=lambda x:x[1].lineno):
-                    if os.path.normpath(str(class_data.file)) == os.path.normpath(str(tabWidget.path)):
-                        for superClass in class_data.super:
-                            if superClass == 'object':
-                                continue
-                            if isinstance(superClass, basestring):
-                                superClassName.append(superClass)
+        if tabWidget:
+            if tabWidget.path:
+                pathFile, file = os.path.split(unicode(tabWidget.path))
+                module, ext = os.path.splitext(file)
+                found = False
+                if pathFile not in sys.path:
+                    sys.path.append(pathFile)
+                    found = True
+                try:
+                    reload(pyclbr)
+                    dictObject = {}
+                    superClassName = []
+                    readModule = pyclbr.readmodule(module)
+                    readModuleFunction = pyclbr.readmodule_ex(module)
+                    for name, class_data in sorted(readModule.items(), key=lambda x:x[1].lineno):
+                        if os.path.normpath(str(class_data.file)) == os.path.normpath(str(tabWidget.path)):
+                            for superClass in class_data.super:
+                                if superClass == 'object':
+                                    continue
+                                if isinstance(superClass, basestring):
+                                    superClassName.append(superClass)
+                                else:
+                                    superClassName.append(superClass.name)
+                            classItem = QTreeWidgetItem()
+                            if superClassName:
+                                for i in superClassName: super = i
+                                classItem.setText(0, name + ' [' + super + ']')
+                                classItem.setToolTip(0, name + ' [' + super + ']')
                             else:
-                                superClassName.append(superClass.name)
-                        classItem = QTreeWidgetItem()
-                        if superClassName:
-                            for i in superClassName: super = i
-                            classItem.setText(0, name + ' [' + super + ']')
-                            classItem.setToolTip(0, name + ' [' + super + ']')
-                        else:
-                            classItem.setText(0, name)
-                            classItem.setToolTip(0, name)
-                        classItem.setText(1, str(class_data.lineno))
-                        iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png")
-                        classItem.setIcon(0, iconClass)
-                        dictObject[name] = class_data.lineno
-                        for meth, lineno in sorted(class_data.methods.items(), key=itemgetter(1)):
-                            methodItem = QTreeWidgetItem()
-                            methodItem.setText(0, meth + ' ')
-                            methodItem.setText(1, str(lineno))
-                            methodItem.setToolTip(0, meth)
-                            iconMeth = QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png")
-                            methodItem.setIcon(0, iconMeth)
-                            classItem.addChild(methodItem)
-                            dictObject[meth] = lineno
-#                        if found:
-#                            sys.path.remove(os.path.split(unicode(str(class_data.file)))[0])
-                        self.parent.listClassMethod.addTopLevelItem(classItem)
-                for func_name, data in sorted(readModuleFunction.items(), key=lambda x:x[1].lineno):
-                    if isinstance(data, pyclbr.Function) and \
-                        os.path.normpath(str(data.file)) == os.path.normpath(str(tabWidget.path)):
-                        funcItem = QTreeWidgetItem()
-                        funcItem.setText(0, func_name + ' ')
-                        funcItem.setText(1, str(data.lineno))
-                        funcItem.setToolTip(0, func_name)
-                        iconFunc = QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png")
-                        funcItem.setIcon(0, iconFunc)
-                        dictObject[func_name] = data.lineno
-                        self.parent.listClassMethod.addTopLevelItem(funcItem)
-                if found:
-                    sys.path.remove(pathFile)
-            except:
-                s = traceback.format_exc()
-                print '## Error: '
-                sys.stderr.write(s)
+                                classItem.setText(0, name)
+                                classItem.setToolTip(0, name)
+                            classItem.setText(1, str(class_data.lineno))
+                            iconClass = QgsApplication.getThemeIcon("console/iconClassTreeWidgetConsole.png")
+                            classItem.setIcon(0, iconClass)
+                            dictObject[name] = class_data.lineno
+                            for meth, lineno in sorted(class_data.methods.items(), key=itemgetter(1)):
+                                methodItem = QTreeWidgetItem()
+                                methodItem.setText(0, meth + ' ')
+                                methodItem.setText(1, str(lineno))
+                                methodItem.setToolTip(0, meth)
+                                iconMeth = QgsApplication.getThemeIcon("console/iconMethodTreeWidgetConsole.png")
+                                methodItem.setIcon(0, iconMeth)
+                                classItem.addChild(methodItem)
+                                dictObject[meth] = lineno
+                            self.parent.listClassMethod.addTopLevelItem(classItem)
+                    for func_name, data in sorted(readModuleFunction.items(), key=lambda x:x[1].lineno):
+                        if isinstance(data, pyclbr.Function) and \
+                            os.path.normpath(str(data.file)) == os.path.normpath(str(tabWidget.path)):
+                            funcItem = QTreeWidgetItem()
+                            funcItem.setText(0, func_name + ' ')
+                            funcItem.setText(1, str(data.lineno))
+                            funcItem.setToolTip(0, func_name)
+                            iconFunc = QgsApplication.getThemeIcon("console/iconFunctionTreeWidgetConsole.png")
+                            funcItem.setIcon(0, iconFunc)
+                            dictObject[func_name] = data.lineno
+                            self.parent.listClassMethod.addTopLevelItem(funcItem)
+                    if found:
+                        sys.path.remove(pathFile)
+                except:
+                    s = traceback.format_exc()
+                    print '## Error: '
+                    sys.stderr.write(s)
 
     def refreshSettingsEditor(self):
         countTab = self.count()
@@ -1034,7 +1038,8 @@ class EditorTabWidget(QTabWidget):
 
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)
-        self.settings.setValue("pythonConsole/lastDirPath", QVariant(tabWidget.path))
+        if tabWidget:
+            self.settings.setValue("pythonConsole/lastDirPath", QVariant(tabWidget.path))
 
     def widgetMessageBar(self, iface, text, level, timed=True):
         messageLevel = [QgsMessageBar.INFO, QgsMessageBar.WARNING, QgsMessageBar.CRITICAL]
