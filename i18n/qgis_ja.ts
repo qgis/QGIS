@@ -51340,14 +51340,14 @@ p, li { white-space: pre-wrap; }
         <source>%1
 Invalid table name.</source>
         <translation>%1
-テーブル名が不正。</translation>
+テーブル名が不正です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="553"/>
         <source>%1
 No fields detected.</source>
         <translation>%1
-フィールドが見つかりません</translation>
+フィールドが見つかりません.</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="578"/>
@@ -52569,32 +52569,32 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="50"/>
         <source>Symbol layers</source>
-        <translation type="unfinished">シンボルレイヤ群</translation>
+        <translation>シンボルレイヤ群</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="81"/>
         <source>Add symbol layer</source>
-        <translation type="unfinished">シンボルレイヤの追加</translation>
+        <translation>シンボルレイヤの追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="94"/>
         <source>Remove symbol layer</source>
-        <translation type="unfinished">シンボルレイヤの削除</translation>
+        <translation>シンボルレイヤの削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="107"/>
         <source>Lock layer&apos;s color</source>
-        <translation type="unfinished">レイヤカラーのロック</translation>
+        <translation>レイヤカラーのロック</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="123"/>
         <source>Move up</source>
-        <translation type="unfinished">上に移動</translation>
+        <translation>上に移動</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="136"/>
         <source>Move down</source>
-        <translation type="unfinished">下に移動</translation>
+        <translation>下に移動</translation>
     </message>
     <message>
         <source>Change...</source>
@@ -52678,32 +52678,32 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="223"/>
         <source>Symbol name</source>
-        <translation type="unfinished">シンボルの名前</translation>
+        <translation>シンボルの名前</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="224"/>
         <source>Please enter name for the symbol:</source>
-        <translation type="unfinished">シンボルの名前を入力して下さい:</translation>
+        <translation>シンボルの名前を入力して下さい:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="224"/>
         <source>New symbol</source>
-        <translation type="unfinished">新規シンボル</translation>
+        <translation>新規シンボル</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="231"/>
         <source>Save symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボルの保存</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="232"/>
         <source>Symbol with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished">%1という名前のシンボルはすでに存在します.上書きしますか?</translation>
+        <translation>%1という名前のシンボルはすでに存在します.上書きしますか?</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolslistwidget.cpp" line="275"/>
         <source>Transparency %1%</source>
-        <translation type="unfinished">透過率 %1%</translation>
+        <translation>透過率 %1%</translation>
     </message>
 </context>
 <context>
@@ -55418,7 +55418,7 @@ Features</source>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="96"/>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="99"/>
         <source>Display WFS FeatureTypes containing this word in the title, name or abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>タイトルか要約にこの単語を含むWFS地物タイプを表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="122"/>
@@ -56095,7 +56095,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="201"/>
         <source>Cannot calculate extent</source>
-        <translation>領域が計算できません</translation>
+        <translation>領域を計算できません</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="259"/>
@@ -56145,7 +56145,7 @@ Response was:
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="954"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation>マップリクエストエラー (タイトル: %1; Error: %2; URL: %3)</translation>
+        <translation>マップリクエストエラー (タイトル:%1; エラー:%2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wcs/qgswcsprovider.cpp" line="902"/>
@@ -56580,7 +56580,7 @@ Response was:
     </message>
     <message>
         <source>number of layers and styles don&apos;t match</source>
-        <translation type="obsolete">レイヤとスタイルが合致しない数</translation>
+        <translation type="obsolete">レイヤとスタイルの数が一致しません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="374"/>
@@ -56759,7 +56759,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3703"/>
         <source>GetMapUrl</source>
-        <translation>GetMapURL(WMS地図取得）</translation>
+        <translation>GetMapURL</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3706"/>
@@ -56770,57 +56770,57 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3719"/>
         <source>GetTileUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>GetTileURL</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3728"/>
         <source>Tile templates</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルテンプレート</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3740"/>
         <source>FeatureInfo templates</source>
-        <translation type="unfinished"></translation>
+        <translation>FeatureInfoテンプレート</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3802"/>
         <source>WMTS</source>
-        <translation type="unfinished"></translation>
+        <translation>WMTS</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3806"/>
         <source>WMS-C</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS-C</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3833"/>
         <source>Available Styles</source>
-        <translation type="unfinished"></translation>
+        <translation>利用可能なスタイル</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3860"/>
         <source>Available Tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>利用可能なタイルセット</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3931"/>
         <source>Format not supported</source>
-        <translation type="unfinished">形式がサポートされていません</translation>
+        <translation>サポートされていない形式です</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4112"/>
         <source>Get feature info request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>GetFeatureInfoリクエストエラー (タイトル:%1; エラー:%2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4216"/>
         <source>GML schema is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>GMLスキーマが不正です</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4222"/>
         <source>GML is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>GMLが不正です</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="4337"/>
@@ -56877,98 +56877,98 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="120"/>
         <source>Cannot parse URI</source>
-        <translation type="unfinished"></translation>
+        <translation>URIを解析できません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="126"/>
         <source>Cannot calculate extent</source>
-        <translation type="unfinished">領域が計算できません</translation>
+        <translation>領域を計算できません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="213"/>
         <source>Cannot set CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>CRSを設定できません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="374"/>
         <source>Number of layers and styles don&apos;t match</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤとスタイルの数が一致しません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="455"/>
         <source>Number of tile layers must be one</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルレイヤの数は1でなければなりません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="467"/>
         <source>Tile layer not found</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルレイヤが見つかりません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="523"/>
         <source>Tile layer or tile matrix set not found</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルレイヤまたはタイル行列セットが見つかりません</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="978"/>
         <source>Getting tiles.</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルを取得しています.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1144"/>
         <source>Tile request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルリクエストエラー (タイトル:%1; エラー:%2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1150"/>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルリクエストエラー (ステータス:%1; Content-Type:%2; 長さ:%3; URL: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1203"/>
         <source>Returned image is flawed [Content-Type:%1; URL: %2]</source>
-        <translation type="unfinished"></translation>
+        <translation>返されたイメージは壊れていました [Content-Type:%1; URL: %2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1226"/>
         <source>Tile request failed [error:%1 url:%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルリクエストに失敗 [エラー:%1 URL:%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1230"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1336"/>
         <source>Not logging more than 100 request errors.</source>
-        <translation type="unfinished">100より多くのリクエストエラーはログされません.</translation>
+        <translation>100より多くのリクエストエラーはログされません.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1266"/>
         <source>Map request error (Status: %1; Reason phrase: %2; URL:%3)</source>
-        <translation type="unfinished">マップリクエストエラー (ステータス: %1; 理由: %2; URL: %3)</translation>
+        <translation>マップリクエストエラー (ステータス: %1; 理由: %2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1290"/>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>返されたイメージは壊れていました [Content-Type:%1; URL: %2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1299"/>
         <source>Map request error (Title:%1; Error:%2; URL: %3)</source>
-        <translation type="unfinished">マップリクエストエラー (タイトル: %1; Error: %2; URL: %3)</translation>
+        <translation>マップリクエストエラー (タイトル:%1; エラー:%2; URL: %3)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1332"/>
         <source>Map request failed [error:%1 url:%2]</source>
-        <translation type="unfinished">マップリクエストに失敗 [エラー:%1 URL:%2]</translation>
+        <translation>マップリクエストに失敗 [エラー:%1 URL:%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1470"/>
         <source>Redirect loop detected: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>リダイレクトループが検出されました: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3089"/>
         <source>Service Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>サービス例外</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3400"/>
@@ -57035,7 +57035,7 @@ Response was:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1305"/>
         <source>Map request error (Status: %1; Response: %2; Content-Type: %3; URL:%4)</source>
-        <translation type="unfinished"></translation>
+        <translation>マップリクエストエラー (ステータス: %1; レスポンス: %2; Content-Type: %3; URL: %4)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3877"/>
@@ -57208,7 +57208,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3687"/>
         <source>Tile Layer Count</source>
-        <translation type="unfinished"></translation>
+        <translation>タイルレイヤ数</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="3787"/>
@@ -60104,12 +60104,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="202"/>
         <source>Password to access the database.</source>
-        <translation>データベースにアクセスするためのパスワード</translation>
+        <translation>データベースにアクセスするためのパスワード.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="212"/>
         <source>Enter the name of the database.</source>
-        <translation>データベースの名前を入力してください</translation>
+        <translation>データベースの名前を入力してください.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="232"/>
@@ -60119,7 +60119,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="239"/>
         <source>Enter the port through which the database must be accessed if a MYSQL database is used.</source>
-        <translation>MYSQLを利用する場合はデータベースをアクセスするためのポートを入力してください</translation>
+        <translation>MYSQLを利用する場合はデータベースをアクセスするためのポートを入力してください.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="249"/>
@@ -60134,12 +60134,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="262"/>
         <source>User name to access the database.</source>
-        <translation>データベースにアクセスするためのユーザー名</translation>
+        <translation>データベースにアクセスするためのユーザー名.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="269"/>
         <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
-        <translation>データベースのタイプをドロップダウンメニューから選択してください</translation>
+        <translation>データベースのタイプをドロップダウンメニューから選択してください.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="289"/>
@@ -60179,12 +60179,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="388"/>
         <source>Enter the query you want to run in this window.</source>
-        <translation>実行したいクエリをこのウィンドウで入力してください</translation>
+        <translation>実行したいクエリをこのウィンドウで入力してください.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="435"/>
         <source>A window for status messages to be displayed.</source>
-        <translation>ステータスメッセージが表示されるウィンドウ</translation>
+        <translation>ステータスメッセージが表示されるウィンドウ.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="458"/>
@@ -60202,17 +60202,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="45"/>
         <source>The name of the field that contains the Y coordinate of the points.</source>
-        <translation>点のY座標が格納されているフィールドの名前</translation>
+        <translation>点のY座標が格納されているフィールドの名前.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="58"/>
         <source>The name of the field that contains the X coordinate of the points.</source>
-        <translation>点のY座標が格納されているフィールドの名前</translation>
+        <translation>点のY座標が格納されているフィールドの名前.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="68"/>
         <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
-        <translation>QGISで作成され表示される新レイヤの名前を入力してください</translation>
+        <translation>QGISで作成され表示される新レイヤの名前を入力してください.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="75"/>
@@ -60320,7 +60320,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="63"/>
         <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
-        <translation>前ボタンを使うとディスプレイに表示しきれない写真がある場合に前の写真を表示できます</translation>
+        <translation>前ボタンを使うとディスプレイに表示しきれない写真がある場合に前の写真を表示できます.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="66"/>
@@ -60330,7 +60330,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="82"/>
         <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
-        <translation>次ボタンを使うとディスプレイに表示しきれない写真がある場合に次の写真を表示できます</translation>
+        <translation>次ボタンを使うとディスプレイに表示しきれない写真がある場合に次の写真を表示できます.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="85"/>
@@ -60355,7 +60355,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="134"/>
         <source>Display area for the image.</source>
-        <translation>イメージを表示するエリア</translation>
+        <translation>イメージを表示するエリア.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="165"/>
@@ -60391,7 +60391,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="273"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="395"/>
         <source>Resets the values on this line to the default setting.</source>
-        <translation>この行の値をデフォルト設定に戻します</translation>
+        <translation>この行の値をデフォルト設定に戻します.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="347"/>
@@ -60629,7 +60629,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="51"/>
         <source>Zoom in to see more detail.</source>
-        <translation>さらに細部を見るため拡大する</translation>
+        <translation>さらに細部を見るため拡大する.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="52"/>
@@ -60639,7 +60639,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="53"/>
         <source>Zoom out to see more area.</source>
-        <translation>さらに広いエリアを見るため縮小する</translation>
+        <translation>さらに広いエリアを見るため縮小する.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="54"/>
@@ -60649,7 +60649,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="55"/>
         <source>Zoom to display the entire image.</source>
-        <translation>全イメージを表示するためズームする</translation>
+        <translation>全イメージを表示するためズームする.</translation>
     </message>
 </context>
 <context>
