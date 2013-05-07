@@ -1593,9 +1593,8 @@ void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2
 //////////////
 
 
-QgsCentroidFillSymbolLayerV2::QgsCentroidFillSymbolLayerV2()
+QgsCentroidFillSymbolLayerV2::QgsCentroidFillSymbolLayerV2(): mMarker( NULL )
 {
-  mMarker = NULL;
   setSubSymbol( new QgsMarkerSymbolV2() );
 }
 
@@ -1604,8 +1603,9 @@ QgsCentroidFillSymbolLayerV2::~QgsCentroidFillSymbolLayerV2()
   delete mMarker;
 }
 
-QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2::create( const QgsStringMap& /*properties*/ )
+QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2::create( const QgsStringMap& properties )
 {
+  Q_UNUSED( properties );
   return new QgsCentroidFillSymbolLayerV2();
 }
 
@@ -1623,8 +1623,6 @@ void QgsCentroidFillSymbolLayerV2::setColor( const QColor& color )
 void QgsCentroidFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mMarker->setAlpha( context.alpha() );
-  mMarker->setOutputUnit( context.outputUnit() );
-
   mMarker->startRender( context.renderContext() );
 }
 
@@ -1711,4 +1709,13 @@ bool QgsCentroidFillSymbolLayerV2::setSubSymbol( QgsSymbolV2* symbol )
   mMarker = static_cast<QgsMarkerSymbolV2*>( symbol );
   mColor = mMarker->color();
   return true;
+}
+
+QgsSymbolV2::OutputUnit QgsCentroidFillSymbolLayerV2::outputUnit() const
+{
+  if ( mMarker )
+  {
+    return mMarker->outputUnit();
+  }
+  return QgsSymbolV2::Mixed; //mOutputUnit;
 }
