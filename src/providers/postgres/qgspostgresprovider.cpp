@@ -23,6 +23,7 @@
 #include <qgsmessagelog.h>
 #include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
+#include <QMessageBox>
 
 #include "qgsvectorlayerimport.h"
 #include "qgsprovidercountcalcevent.h"
@@ -3307,6 +3308,15 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   result = conn->PQexec( checkQuery );
   if( PQntuples( result ) > 0 )
   {
+
+      QString message = QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" ).arg( name );
+      QMessageBox* duplicateMessageBox = new QMessageBox( QMessageBox::Question, "Save style in database", message, QMessageBox::Yes|QMessageBox::No );
+
+      if( duplicateMessageBox->exec() == QMessageBox::No ){
+          errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
+          return false;
+      }
+
       sql = QObject::tr( "UPDATE %1 SET useAsDefault=%2, styleQML=XMLPARSE(DOCUMENT %3), styleSLD=XMLPARSE(DOCUMENT %4), description=%5, owner=%6 WHERE f_table_catalog=%7 AND f_table_schema=%8 AND f_table_name=%9 AND f_geometry_column=%10 AND styleName=%11;")
               .arg( styleTableName )
               .arg( isdef )

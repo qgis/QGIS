@@ -728,6 +728,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
              apply();
 
              layer->saveStyleToDatabase( styleName, styleDesc, isDefault, uiFileContent, msgError );
+
              if( !msgError.isNull() )
              {
                  QMessageBox::warning( this, infoWindowTitle, msgError );
@@ -736,6 +737,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
              {
                  QMessageBox::information( this, infoWindowTitle, tr( "Style saved" ) );
              }
+
          }
          else
          {

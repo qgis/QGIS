@@ -32,6 +32,7 @@
 #include <QString>
 #include <QDomNode>
 #include <QVector>
+#include <QMessageBox>
 
 #include "qgsvectorlayer.h"
 
@@ -3808,8 +3809,8 @@ void QgsVectorLayer::saveStyleToDatabase(QString name, QString description,
         }
         sldStyle = sldDocument.toString();
 
-        saveStyleExternalMethod(mDataSource, qmlStyle, sldStyle, name,
-                                description, uiFileContent, useAsDefault, msgError);
+        saveStyleExternalMethod( mDataSource, qmlStyle, sldStyle, name,
+                                description, uiFileContent, useAsDefault, msgError );
 }
 
 
