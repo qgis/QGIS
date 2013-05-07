@@ -18,10 +18,7 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 
-#ifdef QGISDEBUG
 #include "qgsmessagelog.h"
-#include <QObject>
-#endif
 
 /** \class QgsFeature
  * \brief Encapsulates a spatial feature with attributes
