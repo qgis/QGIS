@@ -63,6 +63,68 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QMap< QString, QPa
   }
 }
 
+QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vl )
+{
+  setupUi( this );
+
+  QgsFields attributeFields;
+  if ( mVectorLayer )
+  {
+    attributeFields = mVectorLayer->pendingFields();
+  }
+
+  mTableWidget->setRowCount( entries.size() );
+
+  int i = 0;
+  QList< DataDefinedSymbolEntry >::const_iterator entryIt = entries.constBegin();
+  for ( ; entryIt != entries.constEnd(); ++entryIt )
+  {
+    //check box
+    QCheckBox* cb = new QCheckBox( this );
+    cb->setChecked( !entryIt->initialValue.isEmpty() );
+    mTableWidget->setCellWidget( i, 0, cb );
+    mTableWidget->setColumnWidth( 0, cb->width() );
+
+
+    //property name
+    QTableWidgetItem* propertyItem = new QTableWidgetItem( entryIt->title );
+    propertyItem->setData( Qt::UserRole, entryIt->property );
+    mTableWidget->setItem( i, 1, propertyItem );
+
+    //attribute list
+    QString expressionString = entryIt->initialValue;
+    QComboBox* attributeComboBox = new QComboBox( this );
+    attributeComboBox->addItem( QString() );
+    for ( int j = 0; j < attributeFields.count(); ++j )
+    {
+      attributeComboBox->addItem( attributeFields.at( j ).name() );
+    }
+
+    int attrComboIndex = comboIndexForExpressionString( expressionString, attributeComboBox );
+    if ( attrComboIndex >= 0 )
+    {
+      attributeComboBox->setCurrentIndex( attrComboIndex );
+    }
+    else
+    {
+      attributeComboBox->setItemText( 0, expressionString );
+    }
+
+    mTableWidget->setCellWidget( i, 2, attributeComboBox );
+
+    //expression button
+    QPushButton* expressionButton = new QPushButton( "...", this );
+    QObject::connect( expressionButton, SIGNAL( clicked() ), this, SLOT( expressionButtonClicked() ) );
+    mTableWidget->setCellWidget( i, 3, expressionButton );
+
+    //help text
+    QTableWidgetItem* helpItem = new QTableWidgetItem( entryIt->helpText );
+    mTableWidget->setItem( i, 4, helpItem );
+
+    ++i;
+  }
+}
+
 QgsDataDefinedSymbolDialog::~QgsDataDefinedSymbolDialog()
 {
 

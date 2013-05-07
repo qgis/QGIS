@@ -196,7 +196,7 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
     return;
   }
 
-  QMap<QString, QPair< QString, QString> > dataDefinedProperties;
+  /*QMap<QString, QPair< QString, QString> > dataDefinedProperties;
   dataDefinedProperties.insert( "color", qMakePair( tr( "Color" ), mLayer->dataDefinedPropertyString( "color" ) ) );
   dataDefinedProperties.insert( "width", qMakePair( tr( "Pen width" ), mLayer->dataDefinedPropertyString( "width" ) ) );
   dataDefinedProperties.insert( "offset", qMakePair( tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ) ) );
@@ -204,7 +204,17 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
   dataDefinedProperties.insert( "joinstyle", qMakePair( tr( "Join style" ), mLayer->dataDefinedPropertyString( "joinstyle" ) ) );
   dataDefinedProperties.insert( "capstyle", qMakePair( tr( "Cap style" ), mLayer->dataDefinedPropertyString( "capstyle" ) ) );
 
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );*/
+
+  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Color" ), mLayer->dataDefinedPropertyString( "color" ), tr( "'<red>,<green>,<blue>,<alpha>'" ) );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width", tr( "Pen width" ), mLayer->dataDefinedPropertyString( "width" ), tr( "double" ) );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset", tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ), tr( "double" ) );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "customdash", tr( "Dash pattern" ), mLayer->dataDefinedPropertyString( "customdash" ), "" );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "joinstyle", tr( "Join style" ), mLayer->dataDefinedPropertyString( "joinstyle" ), "" );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "capstyle", tr( "Cap style" ),  mLayer->dataDefinedPropertyString( "capstyle" ), "" );
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+
   if ( d.exec() == QDialog::Accepted )
   {
     //empty all existing properties first

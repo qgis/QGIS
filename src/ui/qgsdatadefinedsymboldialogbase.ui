@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>406</width>
-    <height>282</height>
+    <width>409</width>
+    <height>299</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -85,6 +85,11 @@
      <column>
       <property name="text">
        <string>Expression</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Help</string>
       </property>
      </column>
     </widget>
