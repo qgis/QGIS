@@ -171,7 +171,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
 
   //wms:GetMap
   elem = doc.createElement( "GetMap"/*wms:GetMap*/ );
-  appendFormats( doc, elem, QStringList() << "image/jpeg" << "image/png" << "image/png; mode=8bit" << "image/png; mode=1bit" );
+  appendFormats( doc, elem, QStringList() << "jpg" << "jpeg" << "image/jpg" << "image/jpeg" << "image/png" << "image/png; mode=8bit" << "image/png; mode=1bit" );
   elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
   requestElement.appendChild( elem );
 
@@ -183,7 +183,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
 
   //wms:GetLegendGraphic
   elem = doc.createElement( "GetLegendGraphic"/*wms:GetLegendGraphic*/ );
-  appendFormats( doc, elem, QStringList() << "jpeg" << "image/jpeg" << "image/png" );
+  appendFormats( doc, elem, QStringList() << "jpg" << "jpeg" << "image/jpeg" << "image/png" );
   elem.appendChild( dcpTypeElement.cloneNode().toElement() ); // this is the same as for 'GetCapabilities'
   requestElement.appendChild( elem );
 
@@ -1004,6 +1004,7 @@ QImage* QgsWMSServer::createImage( int width, int height ) const
   QString format = mParameterMap.value( "FORMAT" );
   bool jpeg = format.compare( "jpg", Qt::CaseInsensitive ) == 0
               || format.compare( "jpeg", Qt::CaseInsensitive ) == 0
+              || format.compare( "image/jpg", Qt::CaseInsensitive ) == 0
               || format.compare( "image/jpeg", Qt::CaseInsensitive ) == 0;
 
   //transparent parameter

@@ -75,7 +75,7 @@ QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
   {
     return "image/png";
   }
-  else if ( format.compare( "jpg", Qt::CaseInsensitive ) == 0 )
+  else if ( format.compare( "jpg", Qt::CaseInsensitive ) == 0 || format.compare( "jpeg", Qt::CaseInsensitive ) )
   {
     return "image/jpeg";
   }
@@ -99,7 +99,7 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
     bool png8Bit = ( mFormat.compare( "image/png; mode=8bit", Qt::CaseInsensitive ) == 0 );
     bool png1Bit = ( mFormat.compare( "image/png; mode=1bit", Qt::CaseInsensitive ) == 0 );
     bool isBase64 = mFormatString.endsWith( ";base64", Qt::CaseInsensitive );
-    if ( mFormat != "PNG" && mFormat != "JPG" && !png8Bit && !png1Bit )
+    if ( mFormat != "PNG" && mFormat != "JPG" && mFormat != "JPEG" && !png8Bit && !png1Bit )
     {
       QgsDebugMsg( "service exception - incorrect image format requested..." );
       sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormat + "' is not supported in the GetMap request" ) );
@@ -430,8 +430,8 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       {
         formatString = "PNG";
       }
-      else if ( formatString.contains( "image/jpeg", Qt::CaseInsensitive ) || formatString.contains( "image/jpg", Qt::CaseInsensitive )
-                || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
+      else if ( formatString.contains( "image/jpeg", Qt::CaseInsensitive ) || formatString.contains( "image/jpg", Qt::CaseInsensitive ) || formatString.contains( "image/jpeg", Qt::CaseInsensitive )
+                || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 || formatString.compare( "jpeg", Qt::CaseInsensitive ) == 0 )
       {
         formatString = "JPG";
       }
