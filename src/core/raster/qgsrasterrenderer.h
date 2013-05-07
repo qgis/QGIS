@@ -29,7 +29,7 @@ class QPainter;
 class QgsRasterTransparency;
 
 /** \ingroup core
-  * Raster renderer pipe that applies colours to a raster.
+  * Raster renderer pipe that applies colors to a raster.
   */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {

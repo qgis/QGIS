@@ -913,7 +913,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         continue;
     }
 
-    OGRFieldDefnH fielddefn = OGR_Fld_Create( TO8( iter->name() ), type );
+    OGRFieldDefnH fielddefn = OGR_Fld_Create( mEncoding->fromUnicode( iter->name() ).constData(), type );
     OGR_Fld_SetWidth( fielddefn, iter->length() );
     OGR_Fld_SetPrecision( fielddefn, iter->precision() );
 
@@ -1893,7 +1893,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       if ( precision < 0 )
         precision = 3;
 
-      field = OGR_Fld_Create( TO8( it->first ), OFTReal );
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTReal );
       OGR_Fld_SetWidth( field, width );
       OGR_Fld_SetPrecision( field, precision );
     }
@@ -1902,7 +1902,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       if ( width < 0 || width > 10 )
         width = 10;
 
-      field = OGR_Fld_Create( TO8( it->first ), OFTInteger );
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTInteger );
       // limit to 10.  otherwise OGR sets it to 11 and recognizes as OFTDouble later
       OGR_Fld_SetWidth( field, width );
     }
@@ -1911,16 +1911,16 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       if ( width < 0 || width > 255 )
         width = 255;
 
-      field = OGR_Fld_Create( TO8( it->first ), OFTString );
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTString );
       OGR_Fld_SetWidth( field, width );
     }
     else if ( fields[0] == "Date" )
     {
-      field = OGR_Fld_Create( TO8( it->first ), OFTDate );
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTDate );
     }
     else if ( fields[0] == "DateTime" )
     {
-      field = OGR_Fld_Create( TO8( it->first ), OFTDateTime );
+      field = OGR_Fld_Create( codec->fromUnicode( it->first ).constData(), OFTDateTime );
     }
     else
     {

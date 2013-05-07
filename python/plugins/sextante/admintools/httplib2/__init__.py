@@ -287,7 +287,7 @@ def _parse_cache_control(headers):
 # Whether to use a strict mode to parse WWW-Authenticate headers
 # Might lead to bad results in case of ill-formed header value,
 # so disabled by default, falling back to relaxed parsing.
-# Set to true to turn on, usefull for testing servers.
+# Set to true to turn on, useful for testing servers.
 USE_WWW_AUTH_STRICT_PARSING = 0
 
 # In regex below:

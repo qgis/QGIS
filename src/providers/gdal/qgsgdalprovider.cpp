@@ -2117,7 +2117,7 @@ bool QgsGdalProvider::hasStatistics( int theBandNo,
   if ( !( theStats & QgsRasterBandStats::StdDev ) ) pdfStdDev = NULL;
 
   // try to fetch the cached stats (bForce=FALSE)
-  // Unfortunately GDALGetRasterStatistics() does not work as expected acording to
+  // Unfortunately GDALGetRasterStatistics() does not work as expected according to
   // API doc, if bApproxOK=false and bForce=false/true and exact statistics
   // (from all raster pixels) are not available/cached, it should return CE_Warning.
   // Instead, it is giving estimated (from sample) cached statistics and it returns CE_None.

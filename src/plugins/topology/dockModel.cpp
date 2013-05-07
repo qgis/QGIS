@@ -81,7 +81,7 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
       break;
     case 1:
       if ( !mErrorlist[row]->featurePairs().first().layer )
-        val = QString( "Unkown" );
+        val = QString( "Unknown" );
       else
         val = mErrorlist[row]->featurePairs().first().layer->name();
       break;

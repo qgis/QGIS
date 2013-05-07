@@ -78,7 +78,7 @@ void QgsVectorLayerEditBuffer::updateChangedAttributes( QgsFeature &f )
     attrs.remove( mDeletedAttributeIds[idx] );
   }
 
-  // adjust size to accomodate added attributes
+  // adjust size to accommodate added attributes
   attrs.resize( attrs.count() + mAddedAttributes.count() );
 
   // update changed attributes

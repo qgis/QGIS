@@ -2710,7 +2710,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
            this, SLOT( updateQgisLayers() ) );
-  // layersWillBeRemoved is emited AFTER the layer was removed from registry
+  // layersWillBeRemoved is emitted AFTER the layer was removed from registry
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
            this, SLOT( updateQgisLayers() ) );
 
@@ -3348,7 +3348,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ),
            this, SLOT( updateQgisLayers() ) );
-  // layersWillBeRemoved is emited after the layer was removed from registry
+  // layersWillBeRemoved is emitted after the layer was removed from registry
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ),
            this, SLOT( updateQgisLayers() ) );
 

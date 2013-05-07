@@ -76,7 +76,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     // remove and delete child item, signals to browser are emitted
     virtual void deleteChildItem( QgsDataItem * child );
 
-    // remove child item but don't delete it, signals to browser are emited
+    // remove child item but don't delete it, signals to browser are emitted
     // returns pointer to the removed item or null if no such item was found
     virtual QgsDataItem * removeChildItem( QgsDataItem * child );
 

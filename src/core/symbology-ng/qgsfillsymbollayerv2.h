@@ -380,6 +380,9 @@ class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QgsSymbolV2* subSymbol();
     bool setSubSymbol( QgsSymbolV2* symbol );
 
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) { Q_UNUSED( unit ); }
+    QgsSymbolV2::OutputUnit outputUnit() const;
+
   protected:
     QgsMarkerSymbolV2* mMarker;
 };

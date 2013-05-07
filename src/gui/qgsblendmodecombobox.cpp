@@ -34,7 +34,7 @@ QgsBlendModeComboBox::~QgsBlendModeComboBox()
 }
 
 /* Returns a QStringList of the translated blend modes
-* "-" is used to indicate the position of a seperator in the list
+* "-" is used to indicate the position of a separator in the list
 * This list is designed to emulate GIMP's layer modes, where
 * blending modes are grouped by their effect (lightening, darkening, etc)
 */
@@ -80,12 +80,12 @@ void QgsBlendModeComboBox::updateModes()
   {
     if ( *blendModeIt == "-" )
     {
-      // Add seperator
+      // Add separator
       insertSeparator( index );
     }
     else
     {
-      // Not a seperator, so store indexes for translation
+      // Not a separator, so store indexes for translation
       // between blend modes and combo box item index
       addItem( *blendModeIt );
       mListIndexToBlendMode[ index ] = blendModeIndex;

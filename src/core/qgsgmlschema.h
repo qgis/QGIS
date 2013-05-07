@@ -156,7 +156,7 @@ class CORE_EXPORT QgsGmlSchema: public QObject
     /** Find GML base type for complex type of given name
      * @param element input element
      * @param name complex type name
-     * @return name of GML base type without NS, e.g. AbstractFeatureType or empty string if not pased on GML type
+     * @return name of GML base type without NS, e.g. AbstractFeatureType or empty string if not passed on GML type
      */
     QString xsdComplexTypeGmlBaseType( const QDomElement &element, const QString & name );
 

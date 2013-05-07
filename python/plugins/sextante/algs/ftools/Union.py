@@ -160,14 +160,13 @@ class   Union(GeoAlgorithm):
             diff_geom = QgsGeometry( geom )
             atMap = [None] * length
             atMap.extend(inFeatA.attributes())
-            #atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
             intersects = indexB.intersects( geom.boundingBox() )
 
             if len(intersects) < 1:
                 try:
-                    outFeat.setGeometry( geom )
-                    outFeat.setAttributes( atMap )
-                    writer.addFeature( outFeat )
+                    outFeat.setGeometry(geom)
+                    outFeat.setAttributes(atMap)
+                    writer.addFeature(outFeat)
                 except Exception, err:
                     raise GeoAlgorithmExecutionException("Feature exception while computing union")
             else:
@@ -192,7 +191,7 @@ class   Union(GeoAlgorithm):
             if add:
                 try:
                     outFeat.setGeometry( diff_geom )
-                    outFeat.setAttributes( atMapB )
+                    outFeat.setAttributes(atMap)
                     writer.addFeature( outFeat )
                 except Exception, err:
                     raise err

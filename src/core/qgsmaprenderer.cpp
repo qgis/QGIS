@@ -511,7 +511,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
         }
       }
 
-      // If we are drawing with an alternative blending mode then we need to render to a seperate image
+      // If we are drawing with an alternative blending mode then we need to render to a separate image
       // before compositing this on the map. This effectively flattens the layer and prevents
       // blending occuring between objects on the layer
       // (this is not required for raster layers or when layer caching is enabled, since that has the same effect)

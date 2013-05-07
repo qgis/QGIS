@@ -388,7 +388,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     else return false;
   }
 
-  // We can only use context (extent, width, heigh) if layer is not reprojected,
+  // We can only use context (extent, width, height) if layer is not reprojected,
   // otherwise we don't know source resolution (size).
   if ( mCanvas->hasCrsTransformEnabled() && dprovider->crs() != mCanvas->mapRenderer()->destinationCrs() )
   {

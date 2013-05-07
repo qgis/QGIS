@@ -119,10 +119,10 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     // refresh - refresh populated item, emit signals to model
     virtual void addChildItem( QgsCptCityDataItem * child, bool refresh = false );
 
-    // remove and delete child item, signals to browser are emited
+    // remove and delete child item, signals to browser are emitted
     virtual void deleteChildItem( QgsCptCityDataItem * child );
 
-    // remove child item but don't delete it, signals to browser are emited
+    // remove child item but don't delete it, signals to browser are emitted
     // returns pointer to the removed item or null if no such item was found
     virtual QgsCptCityDataItem * removeChildItem( QgsCptCityDataItem * child );
 

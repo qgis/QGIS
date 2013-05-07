@@ -713,8 +713,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param msgError
      * @return the number of styles related to current layer
      */
-    virtual int listStylesInDatabase( QVector<QString> &ids, QVector<QString> &names,
-                                       QVector<QString> &descriptions, QString &msgError );
+    virtual int listStylesInDatabase( QStringList &ids, QStringList &names,
+                                      QStringList &descriptions, QString &msgError );
 
     /**
      * Will return the named style corresponding to style id provided
@@ -1281,7 +1281,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
   signals:
 
     /**
-     * This signal is emited when selection was changed
+     * This signal is emitted when selection was changed
      *
      * @param selected        Newly selected feature ids
      * @param deselected      Ids of all features which have previously been selected but are not any more
@@ -1289,7 +1289,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void selectionChanged( const QgsFeatureIds selected, const QgsFeatureIds deselected, const bool clearAndSelect );
 
-    /** This signal is emited when selection was changed */
+    /** This signal is emitted when selection was changed */
     void selectionChanged();
 
     /** This signal is emitted when modifications has been done on layer */
@@ -1298,7 +1298,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Is emitted, when editing on this layer has started*/
     void editingStarted();
 
-    /** Is emitted, when edited changes succesfully have been written to the data provider */
+    /** Is emitted, when edited changes successfully have been written to the data provider */
     void editingStopped();
 
     /** Is emitted, before changes are commited to the data provider */

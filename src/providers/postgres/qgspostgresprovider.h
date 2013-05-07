@@ -167,7 +167,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * It returns true. Saving style to db is supported by this provider
      */
-    virtual bool isSaveAndLoadStyleToDBSupported(){ return true; }
+    virtual bool isSaveAndLoadStyleToDBSupported() { return true; }
 
     QgsAttributeList attributeIndexes();
 

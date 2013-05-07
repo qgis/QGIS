@@ -18,10 +18,7 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 
-#ifdef QGISDEBUG
 #include "qgsmessagelog.h"
-#include <QObject>
-#endif
 
 /** \class QgsFeature
  * \brief Encapsulates a spatial feature with attributes
@@ -184,13 +181,11 @@ void QgsFeature::initAttributes( int fieldCount )
 
 bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
-#ifdef QGISDEBUG
   if ( idx < 0 || idx >= mAttributes.size() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2[" ).arg( idx ).arg( mAttributes.size() ), QString::null, QgsMessageLog::WARNING );
     return false;
   }
-#endif
 
   mAttributes[idx] = value;
   return true;

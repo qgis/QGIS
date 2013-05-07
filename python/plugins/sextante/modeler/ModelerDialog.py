@@ -167,7 +167,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                                 self.tr("Please enter group and model names before saving")
                                )
             return
-        self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
+        self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions(), self.scene.getOutputPositions())
         self.alg.name = unicode(self.textName.text())
         self.alg.group = unicode(self.textGroup.text())
         if self.alg.descriptionFile != None and not saveAs:
@@ -240,7 +240,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             dlg = ModelerParameterDefinitionDialog(self.alg, paramType)
             dlg.exec_()
             if dlg.param != None:
-                self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
+                self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions(), self.scene.getOutputPositions())
                 self.alg.addParameter(dlg.param)
                 self.repaintModel()
                 self.view.ensureVisible(self.scene.getLastParameterItem())
@@ -265,7 +265,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 dlg = ModelerParametersDialog(alg, self.alg)
             dlg.exec_()
             if dlg.params != None:
-                self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions())
+                self.alg.setPositions(self.scene.getParameterPositions(), self.scene.getAlgorithmPositions(), self.scene.getOutputPositions())
                 self.alg.addAlgorithm(alg, dlg.params, dlg.values, dlg.outputs, dlg.dependencies)
                 self.repaintModel()
                 self.view.ensureVisible(self.scene.getLastAlgorithmItem())

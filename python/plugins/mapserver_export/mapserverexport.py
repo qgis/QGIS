@@ -185,7 +185,7 @@ class MapServerExport:
     settings = QSettings()
     # mapfile name
     settings.setValue("/MapserverExport/mapfileName", QVariant(self.dlg.ui.txtMapFilePath.text()))
-    # map width and heigth
+    # map width and height
     settings.setValue("/MapserverExport/mapWidth", QVariant(self.dlg.ui.txtMapWidth.text()))
     settings.setValue("/MapserverExport/mapHeight", QVariant(self.dlg.ui.txtMapHeight.text()))
     # mapserver url

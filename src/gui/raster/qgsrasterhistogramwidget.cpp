@@ -25,6 +25,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QPainter>
+#include <QSettings>
 
 // QWT Charting widget
 #include <qwt_global.h>
@@ -55,13 +56,22 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
   mRendererWidget = 0;
   mRendererName = "singlebandgray";
 
+  mHistoMin = 0;
+  mHistoMax = 0;
+
   mHistoPicker = NULL;
   mHistoZoomer = NULL;
   mHistoMarkerMin = NULL;
   mHistoMarkerMax = NULL;
-  mHistoShowMarkers = false;
-  mHistoLoadApplyAll = false;
+
+  QSettings settings;
+  mHistoShowMarkers = settings.value( "/Raster/histogram/showMarkers", false ).toBool();
+  // mHistoLoadApplyAll = settings.value( "/Raster/histogram/loadApplyAll", false ).toBool();
+  mHistoZoomToMinMax = settings.value( "/Raster/histogram/zoomToMinMax", false ).toBool();
+  mHistoUpdateStyleToMinMax = settings.value( "/Raster/histogram/updateStyleToMinMax", true ).toBool();
+  // mHistoShowBands = (HistoShowBands) settings.value( "/Raster/histogram/showBands", (int) ShowAll ).toInt();
   mHistoShowBands = ShowAll;
+
   if ( true )
   {
     //band selector
@@ -91,17 +101,35 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     QActionGroup* group;
     QAction* action;
 
-    // various actions / prefs
+    // min/max options
+    group = new QActionGroup( this );
+    group->setExclusive( false );
+    connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
+    action = new QAction( tr( "Min/Max options" ), group );
+    action->setSeparator( true );
+    menu->addAction( action );
+    action = new QAction( tr( "Always show min/max markers" ), group );
+    action->setData( QVariant( "Show markers" ) );
+    action->setCheckable( true );
+    action->setChecked( mHistoShowMarkers );
+    menu->addAction( action );
+    action = new QAction( tr( "Zoom to min/max" ), group );
+    action->setData( QVariant( "Zoom min_max" ) );
+    action->setCheckable( true );
+    action->setChecked( mHistoZoomToMinMax );
+    menu->addAction( action );
+    action = new QAction( tr( "Update style to min/max" ), group );
+    action->setData( QVariant( "Update min_max" ) );
+    action->setCheckable( true );
+    action->setChecked( mHistoUpdateStyleToMinMax );
+    menu->addAction( action );
+
+    // visibility options
     group = new QActionGroup( this );
     group->setExclusive( false );
     connect( group, SIGNAL( triggered( QAction* ) ), this, SLOT( histoActionTriggered( QAction* ) ) );
     action = new QAction( tr( "Visibility" ), group );
     action->setSeparator( true );
-    menu->addAction( action );
-    action = new QAction( tr( "Show min/max markers" ), group );
-    action->setData( QVariant( "Show markers" ) );
-    action->setCheckable( true );
-    action->setChecked( mHistoShowMarkers );
     menu->addAction( action );
     group = new QActionGroup( this );
     group->setExclusive( true ); // these options are exclusive
@@ -122,6 +150,11 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     action->setChecked( mHistoShowBands == ShowSelected );
     menu->addAction( action );
 
+    // actions
+    action = new QAction( tr( "Actions" ), group );
+    action->setSeparator( true );
+    menu->addAction( action );
+
     // load actions
     group = new QActionGroup( this );
     group->setExclusive( false );
@@ -130,8 +163,9 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
     action->setData( QVariant( "Load reset" ) );
     menu->addAction( action );
 
-    // Load min/max needs 3 params (method, extent, accuracy), cannot put it in single item
+    // these actions have been disabled for api cleanup, restore them eventually
 #if 0
+    // Load min/max needs 3 params (method, extent, accuracy), cannot put it in single item
     action = new QAction( tr( "Load min/max" ), group );
     action->setSeparator( true );
     menu->addAction( action );
@@ -158,7 +192,6 @@ QgsRasterHistogramWidget::QgsRasterHistogramWidget( QgsRasterLayer* lyr, QWidget
 #endif
 
     //others
-    menu->addSeparator( );
     action = new QAction( tr( "Recompute Histogram" ), group );
     action->setData( QVariant( "Compute histogram" ) );
     menu->addAction( action );
@@ -611,19 +644,10 @@ void QgsRasterHistogramWidget::on_cboHistoBand_currentIndexChanged( int index )
   btnHistoMin->setEnabled( true );
   btnHistoMax->setEnabled( true );
 
-  int theBandNo = index + 1;
-  // TODO - there are 2 definitions of raster data type that should be unified
-  // QgsRasterDataProvider::DataType and QGis::DataType
-  // TODO - fix gdal provider: changes data type when nodata value is not found
-  // this prevents us from getting proper min and max values here
-  // minStr = QString::number( QgsContrastEnhancement::minimumValuePossible( ( QGis::DataType )
-  //                                                                         mRasterLayer->dataProvider()->dataType( theBandNo ) ) );
-  // maxStr = QString::number( QgsContrastEnhancement::maximumValuePossible( ( QGis::DataType )
-  //                                                                         mRasterLayer->dataProvider()->dataType( theBandNo ) ) );
-
-  QPair< QString, QString > myMinMax = rendererMinMax( theBandNo );
+  QPair< QString, QString > myMinMax = rendererMinMax( index + 1 );
   leHistoMin->setText( myMinMax.first );
   leHistoMax->setText( myMinMax.second );
+
   applyHistoMin();
   applyHistoMax();
 }
@@ -647,41 +671,63 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
   if ( actionName == "Show markers" )
   {
     mHistoShowMarkers = actionFlag;
+    QSettings settings;
+    settings.setValue( "/Raster/histogram/showMarkers", mHistoShowMarkers );
     updateHistoMarkers();
+    return;
+  }
+  else if ( actionName == "Zoom min_max" )
+  {
+    mHistoZoomToMinMax = actionFlag;
+    QSettings settings;
+    settings.setValue( "/Raster/histogram/zoomToMinMax", mHistoZoomToMinMax );
+    return;
+  }
+  else if ( actionName == "Update min_max" )
+  {
+    mHistoUpdateStyleToMinMax = actionFlag;
+    QSettings settings;
+    settings.setValue( "/Raster/histogram/updateStyleToMinMax", mHistoUpdateStyleToMinMax );
     return;
   }
   else if ( actionName == "Show all" )
   {
     mHistoShowBands = ShowAll;
+    // settings.setValue( "/Raster/histogram/showBands", (int)mHistoShowBands );
     refreshHistogram();
     return;
   }
   else if ( actionName == "Show selected" )
   {
     mHistoShowBands = ShowSelected;
+    // settings.setValue( "/Raster/histogram/showBands", (int)mHistoShowBands );
     refreshHistogram();
     return;
   }
   else if ( actionName == "Show RGB" )
   {
     mHistoShowBands = ShowRGB;
+    // settings.setValue( "/Raster/histogram/showBands", (int)mHistoShowBands );
     refreshHistogram();
     return;
   }
+#if 0
   else if ( actionName == "Load apply all" )
   {
     mHistoLoadApplyAll = actionFlag;
+    settings.setValue( "/Raster/histogram/loadApplyAll", mHistoLoadApplyAll );
     return;
   }
+#endif
   // Load actions
   // TODO - separate calculations from rendererwidget so we can do them without
   else if ( actionName.left( 5 ) == "Load " && mRendererWidget )
   {
     QVector<int> myBands;
+    bool ok = false;
+
 #if 0
     double minMaxValues[2];
-#endif
-    bool ok = false;
 
     // find which band(s) need updating (all or current)
     if ( mHistoLoadApplyAll )
@@ -693,6 +739,8 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
           myBands << i;
       }
     }
+#endif
+
     // add current band to the end
     myBands << cboHistoBand->currentIndex() + 1;
 
@@ -782,13 +830,26 @@ void QgsRasterHistogramWidget::applyHistoMin( )
 
   int theBandNo = cboHistoBand->currentIndex() + 1;
   QList< int > mySelectedBands = rendererSelectedBands();
+  QString min;
   for ( int i = 0; i <= mySelectedBands.size(); i++ )
   {
     if ( theBandNo == mRendererWidget->selectedBand( i ) )
-      mRendererWidget->setMin( leHistoMin->text(), i );
+    {
+      min = leHistoMin->text();
+      if ( mHistoUpdateStyleToMinMax )
+        mRendererWidget->setMin( min, i );
+    }
   }
 
   updateHistoMarkers();
+
+  if ( ! min.isEmpty() && mHistoZoomToMinMax && mHistoZoomer )
+  {
+    QRectF rect = mHistoZoomer->zoomRect();
+    rect.setLeft( min.toDouble() );
+    mHistoZoomer->zoom( rect );
+  }
+
 }
 
 void QgsRasterHistogramWidget::applyHistoMax( )
@@ -798,13 +859,25 @@ void QgsRasterHistogramWidget::applyHistoMax( )
 
   int theBandNo = cboHistoBand->currentIndex() + 1;
   QList< int > mySelectedBands = rendererSelectedBands();
+  QString max;
   for ( int i = 0; i <= mySelectedBands.size(); i++ )
   {
     if ( theBandNo == mRendererWidget->selectedBand( i ) )
-      mRendererWidget->setMax( leHistoMax->text(), i );
+    {
+      max = leHistoMax->text();
+      if ( mHistoUpdateStyleToMinMax )
+        mRendererWidget->setMax( max, i );
+    }
   }
 
   updateHistoMarkers();
+
+  if ( ! max.isEmpty() && mHistoZoomToMinMax && mHistoZoomer )
+  {
+    QRectF rect = mHistoZoomer->zoomRect();
+    rect.setRight( max.toDouble() );
+    mHistoZoomer->zoom( rect );
+  }
 }
 
 void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
@@ -822,6 +895,7 @@ void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
       mHistoZoomer->setEnabled( ! btnHistoMax->isChecked() );
     mHistoPicker->setEnabled( btnHistoMin->isChecked() );
   }
+  updateHistoMarkers();
 }
 
 void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
@@ -839,6 +913,7 @@ void QgsRasterHistogramWidget::on_btnHistoMax_toggled()
       mHistoZoomer->setEnabled( ! btnHistoMax->isChecked() );
     mHistoPicker->setEnabled( btnHistoMax->isChecked() );
   }
+  updateHistoMarkers();
 }
 
 // local function used by histoPickerSelected(), to get a rounded picked value
@@ -891,7 +966,7 @@ void QgsRasterHistogramWidget::histoPickerSelected( const QPointF & pos )
       applyHistoMin();
       btnHistoMin->setChecked( false );
     }
-    else if ( btnHistoMax->isChecked() )
+    else // if ( btnHistoMax->isChecked() )
     {
       leHistoMax->setText( findClosestTickVal( pos.x(), scale ) );
       applyHistoMax();
@@ -919,8 +994,8 @@ void QgsRasterHistogramWidget::updateHistoMarkers( )
   int theBandNo = cboHistoBand->currentIndex() + 1;
   QList< int > mySelectedBands = histoSelectedBands();
 
-  if ( ! mHistoShowMarkers ||
-       ( ! mySelectedBands.isEmpty() && ! mySelectedBands.contains( theBandNo ) ) )
+  if (( ! mHistoShowMarkers && ! btnHistoMin->isChecked() && ! btnHistoMax->isChecked() ) ||
+      ( ! mySelectedBands.isEmpty() && ! mySelectedBands.contains( theBandNo ) ) )
   {
     mHistoMarkerMin->hide();
     mHistoMarkerMax->hide();
@@ -1023,6 +1098,23 @@ QPair< QString, QString > QgsRasterHistogramWidget::rendererMinMax( int theBandN
       }
     }
   }
+
+  // TODO - there are 2 definitions of raster data type that should be unified
+  // QgsRasterDataProvider::DataType and QGis::DataType
+  // TODO - fix gdal provider: changes data type when nodata value is not found
+  // this prevents us from getting proper min and max values here
+  // minStr = QString::number( QgsContrastEnhancement::minimumValuePossible( ( QGis::DataType )
+  //                                                                         mRasterLayer->dataProvider()->dataType( theBandNo ) ) );
+  // maxStr = QString::number( QgsContrastEnhancement::maximumValuePossible( ( QGis::DataType )
+  //                                                                         mRasterLayer->dataProvider()->dataType( theBandNo ) ) );
+
+  // if we get an empty result, fill with default value (histo min/max)
+  if ( myMinMax.first.isEmpty() )
+    myMinMax.first = QString::number( mHistoMin );
+  if ( myMinMax.second.isEmpty() )
+    myMinMax.second = QString::number( mHistoMax );
+
+  QgsDebugMsg( QString( "bandNo %1 got min/max [%2] [%3]" ).arg( theBandNo ).arg( myMinMax.first ).arg( myMinMax.second ) );
 
   return myMinMax;
 }
