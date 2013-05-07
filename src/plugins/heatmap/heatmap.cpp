@@ -204,7 +204,7 @@ void Heatmap::run()
     int counter = 0;
 
     QProgressDialog p( tr( "Creating heatmap" ), tr( "Abort" ), 0, totalFeatures, mQGisIface->mainWindow() );
-    p.setWindowModality( Qt::WindowModal );
+    p.setWindowModality( Qt::ApplicationModal );
     p.show();
 
     QgsFeature myFeature;
@@ -213,6 +213,7 @@ void Heatmap::run()
     {
       counter++;
       p.setValue( counter );
+      QApplication::processEvents();
       if ( p.wasCanceled() )
       {
         QMessageBox::information( 0, tr( "Heatmap generation aborted" ), tr( "QGIS will now load the partially-computed raster." ) );
