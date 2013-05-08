@@ -1,32 +1,52 @@
 <h1>Heatmap Plugin Help</h1>
-<p>The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap) raster of an input point vector layer. The density is calculated based on the number of points in a location, with larger numbers of clustered points resulting in a larger raster values.</p>
+<p>The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
+raster of an input point vector layer.  The density is calculated based on the
+number of points in a location, with larger numbers of clustered points resulting
+in larger values. Heatmaps allow easy identification of "hotspots" and
+clustering of points.</p>
 
 <h2>Dialog Parameters</h2>
 
-<h3>Input Point Vector</h3>
+<h3>Input point layer</h3>
 <p>The input is always a vector layer of point type. All the point vector layers that are currently loaded in the canvas are shown in the drop-down list. Click the dropdown button and select the desired layer.</p>
 
-<h3>Output Raster</h3>
+<h3>Output raster</h3>
 <p>The output raster location and filename can be set by clicking the <label>...</label> button next to the output raster textbox.<br/>
 <b>Note:</b> The file format is automatically added depending upon the output format selected, if not explicitly given.</p>
 
-<h3>Output Format</h3>
+<h3>Output format</h3>
 <p>All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.<br/>
-<b>Note:</b> GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use an other formats if you know GDAL supports it completely.</p>
+<b>Note:</b> GeoTiff and ERDAS Imagine .img formats are recommended. Some formats make the application crash. Kindly stick to the recommended formats until the crash issue is resolved or use other formats if you know GDAL supports it completely.</p>
 
-<h3>Heatmap Point Attributes</h3>
-<h4>Radius (bandwidth)</h4>
-<p>The buffer radius specifies the distance around a point at which the influence of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details.</p>
+<h3>Radius (bandwidth)</h3>
+<p>Used to specify the heatmap search radius (or kernel bandwidth) in meters or map units. The radius specifies the distance around a point at which the influence
+  of the point will be felt. Larger values result in greater smoothing, but smaller values may show finer details and variation in point density.</p>
 
+<h3>Advanced Options</h3>
+
+<h4>Rows and Columns</h4>
+<p>Used to change the dimensions of the output raster file. These values are also linked to the <b>Cell size X</b> and <b>Cell size Y</b> values. 
+Increasing the number of rows or colums will decrease the cell size and increase the file size of the output file. The values in Rows and Columns
+are also linked, so doubling the number of rows will automatically double the number of columns and the cell sizes will also be halved. The geographical area of the output raster will remain the same!</p>
+
+<h4>Cell size X and Y</h4>
+<p>Control the geographic size of each pixel in the output raster. Changing these values will also change the number of Rows and Columns in the output
+  raster.</p>
+  
 <h4>Kernel shape</h4>
-<p>The kernel shape parameter controls the rate at which the influence of a point decreases as the distance from the point increases. A number of standard kernel functions are available, which are described in detail on <a href="http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use">Wikipedia</a>.
-</p>
-<h4>Use radius from field</h4>
-<p>Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.</p>
-<h4>Use weight from field</h4>
-<p>Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.</p>
+<p>The kernel shape controls the rate at which the influence of a point decreases as the distance from the point increases. Different kernels decay at
+different rates, so a triweight kernel gives features greater weight for distances closer to the point then the Epanechnikov kernel does. Consequently,
+triweight results in "sharper" hotspots, and Epanechnikov results in "smoother" hotspots. A number of standard kernel functions are available in QGIS,
+which are described and illustrated on <a href="http://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use">Wikipedia</a>.</p>
+
 <h4>Decay ratio</h4>
 <p>For triangular kernels, the decay ratio defines amount of influence that applies to the outermost pixels in the buffer radius. A value of 0 reflects a standard triangular kernel, where the influences drops to zero as the distance from the pixel to the point approaches the specified radius. In contrast, a value of 1 indicates that no falloff occurs as the distance from the point increases.</p>
+
+<h4>Use radius from field</h4>
+<p>Optionally, the value in a specified field can be used to control the kernel radius for each point in the input layer.</p>
+
+<h4>Use weight from field</h4>
+<p>Optionally, a attribute containing weights for points can be used to weight some points in the input layer more than others.</p>
 
 <h2>Further Details</h2>
 <p>Contact the author through aruntheguy at gmail dot com</p>
