@@ -160,7 +160,7 @@ class PythonConsoleWidget(QWidget):
         saveFileBt = QCoreApplication.translate("PythonConsole", "Save")
         self.saveFileButton = QAction(self)
         self.saveFileButton.setCheckable(False)
-        self.saveFileButton.setEnabled(True)
+        self.saveFileButton.setEnabled(False)
         self.saveFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveConsole.png"))
         self.saveFileButton.setMenuRole(QAction.PreferencesRole)
         self.saveFileButton.setIconVisibleInMenu(True)
@@ -537,6 +537,11 @@ class PythonConsoleWidget(QWidget):
             self.findPrevButton.setEnabled(False)
 
     def onClickGoToLine(self, item, column):
+        if item.text(1) == 'syntaxError':
+            check = self.tabEditorWidget.currentWidget().newEditor.syntaxCheck()
+            if check:
+                self.tabEditorWidget.currentWidget().save()
+            return
         linenr = int(item.text(1))
         itemName = str(item.text(0))
         charPos = itemName.find(' ')
