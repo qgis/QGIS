@@ -53,10 +53,19 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
     QgsComposerLegendStyle::Style style() const { return mStyle; }
     void setStyle( QgsComposerLegendStyle::Style style ) { mStyle = style; }
 
+    // Get text defined by user
+    virtual QString userText() const { return mUserText; }
+    // Set text defined by user
+    virtual void  setUserText( const QString & text ) { mUserText = text; }
+
+
   protected:
     void writeXMLChildren( QDomElement& elem, QDomDocument& doc ) const;
 
     QgsComposerLegendStyle::Style mStyle;
+
+    // User defined text
+    QString mUserText;
 };
 
 

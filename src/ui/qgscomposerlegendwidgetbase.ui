@@ -54,7 +54,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-118</y>
+        <y>0</y>
         <width>369</width>
         <height>1088</height>
        </rect>
@@ -142,16 +142,12 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QToolButton" name="mAddGroupButton">
-              <property name="text">
-               <string>Add group</string>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QToolButton" name="mUpdatePushButton">
+              <property name="toolTip">
+               <string>Update legend. User defined labels are preserved.</string>
+              </property>
               <property name="text">
-               <string>Update</string>
+               <string>Update item</string>
               </property>
               <property name="iconSize">
                <size>
@@ -163,8 +159,11 @@
             </item>
             <item>
              <widget class="QToolButton" name="mUpdateAllPushButton">
+              <property name="toolTip">
+               <string>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</string>
+              </property>
               <property name="text">
-               <string>All</string>
+               <string>Update all</string>
               </property>
              </widget>
             </item>
@@ -244,6 +243,20 @@
                 <width>20</width>
                 <height>20</height>
                </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QToolButton" name="mAddGroupToolButton">
+              <property name="toolTip">
+               <string>Add group</string>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionAddGroup.png</normaloff>:/images/themes/default/mActionAddGroup.png</iconset>
               </property>
              </widget>
             </item>

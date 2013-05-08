@@ -121,6 +121,7 @@
         <file>themes/default/mActionAddArrow.png</file>
         <file>themes/default/mActionAddBasicShape.png</file>
         <file>themes/default/mActionAddGPSLayer.png</file>
+        <file>themes/default/mActionAddGroup.png</file>
         <file>themes/default/mActionAddHtml.png</file>
         <file>themes/default/mActionAddImage.png</file>
         <file>themes/default/mActionAddLayer.png</file>

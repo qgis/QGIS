@@ -716,7 +716,7 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
     return;
   }
 
-  QStandardItem* currentItem = itemModel->itemFromIndex( currentIndex );
+  QgsComposerLegendItem* currentItem = dynamic_cast<QgsComposerLegendItem *>( itemModel->itemFromIndex( currentIndex ) );
   if ( !currentItem )
   {
     return;
@@ -725,7 +725,8 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
   QgsComposerLegendItemDialog itemDialog( currentItem );
   if ( itemDialog.exec() == QDialog::Accepted )
   {
-    currentItem->setText( itemDialog.itemText() );
+    currentItem->setUserText( itemDialog.itemText() );
+    mLegend->model()->updateItemText( currentItem );
   }
 
   mLegend->beginCommand( tr( "Legend item edited" ) );
@@ -822,7 +823,7 @@ void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()
   updateLegend();
 }
 
-void QgsComposerLegendWidget::on_mAddGroupButton_clicked()
+void QgsComposerLegendWidget::on_mAddGroupToolButton_clicked()
 {
   if ( mLegend && mLegend->model() )
   {
