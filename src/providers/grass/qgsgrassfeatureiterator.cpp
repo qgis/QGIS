@@ -234,7 +234,7 @@ bool QgsGrassFeatureIterator::rewind()
 
 bool QgsGrassFeatureIterator::close()
 {
-  if ( !mClosed )
+  if ( mClosed )
     return false;
 
   // finalization

@@ -72,6 +72,10 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     void updateRasterClassificationItem( QStandardItem* classificationItem )
     { Q_UNUSED( classificationItem ); }
 
+    /** Update single item text using item userText and other properties like showFeatureCount */
+    void updateItemText( QStandardItem* item );
+
+
     bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const;
     bool readXML( const QDomElement& legendModelElem, const QDomDocument& doc );
 
@@ -105,6 +109,11 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     /**Adds item of raster layer
      @return 0 in case of success*/
     int addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* rlayer );
+
+    void updateLayerItemText( QStandardItem* layerItem );
+    void updateSymbolV2ItemText( QStandardItem* symbolItem );
+    void updateRasterSymbolItemText( QStandardItem* symbolItem );
+
 
   protected:
     QStringList mLayerIds;

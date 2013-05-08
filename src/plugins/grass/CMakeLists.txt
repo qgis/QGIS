@@ -11,6 +11,9 @@ ELSE (WIN32)
   ADD_DEFINITIONS(-DHAVE_POSIX_OPENPT)
 ENDIF (WIN32)
 
+# GRASS Direct disabled in 2.0
+#ADD_DEFINITIONS("-DGRASS_DIRECT")
+
 ########################################################
 # Files
 

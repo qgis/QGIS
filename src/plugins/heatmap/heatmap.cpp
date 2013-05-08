@@ -204,7 +204,7 @@ void Heatmap::run()
     int counter = 0;
 
     QProgressDialog p( tr( "Creating heatmap" ), tr( "Abort" ), 0, totalFeatures, mQGisIface->mainWindow() );
-    p.setWindowModality( Qt::WindowModal );
+    p.setWindowModality( Qt::ApplicationModal );
     p.show();
 
     QgsFeature myFeature;
@@ -213,6 +213,7 @@ void Heatmap::run()
     {
       counter++;
       p.setValue( counter );
+      QApplication::processEvents();
       if ( p.wasCanceled() )
       {
         QMessageBox::information( 0, tr( "Heatmap generation aborted" ), tr( "QGIS will now load the partially-computed raster." ) );
@@ -411,10 +412,18 @@ double Heatmap::triangularKernel( double distance, int bandwidth )
   // Normalizing constant. In this case it's calculated a little different
   // due to the inclusion of the non-standard "decay" parameter
 
-  double k = 3. / (( 1. + 2. * mDecay ) * M_PI * pow(( double )bandwidth, 2 ) );
+  if ( mDecay >= 0 )
+  {
+    double k = 3. / (( 1. + 2. * mDecay ) * M_PI * pow(( double )bandwidth, 2 ) );
 
-  // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
-  return k * ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+    // Derived from Wand and Jones (1995), p. 175 (with addition of decay parameter)
+    return k * ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+  }
+  else
+  {
+    // Non-standard or mathematically valid negative decay ("coolmap")
+    return ( 1. - ( 1. - mDecay ) * ( distance / ( double )bandwidth ) );
+  }
 }
 
 // Unload the plugin by cleaning up the GUI

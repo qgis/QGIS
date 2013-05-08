@@ -127,7 +127,7 @@
         <item row="0" column="0">
          <widget class="QLabel" name="rowLabel">
           <property name="text">
-           <string>Row</string>
+           <string>Rows</string>
           </property>
           <property name="buddy">
            <cstring>rowLineEdit</cstring>
@@ -147,7 +147,7 @@
         <item row="0" column="2">
          <widget class="QLabel" name="columnLabel">
           <property name="text">
-           <string>Column</string>
+           <string>Columns</string>
           </property>
           <property name="buddy">
            <cstring>columnLineEdit</cstring>

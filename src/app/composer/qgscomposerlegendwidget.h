@@ -82,7 +82,7 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mCountToolButton_clicked( bool checked );
     void on_mUpdatePushButton_clicked();
     void on_mUpdateAllPushButton_clicked();
-    void on_mAddGroupButton_clicked();
+    void on_mAddGroupToolButton_clicked();
 
     void selectedChanged( const QModelIndex & current, const QModelIndex & previous );
 

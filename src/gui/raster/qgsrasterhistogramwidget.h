@@ -112,7 +112,9 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     double mHistoMax;
     QVector<QColor> mHistoColors;
     bool mHistoShowMarkers;
-    bool mHistoLoadApplyAll;
+    bool mHistoZoomToMinMax;
+    bool mHistoUpdateStyleToMinMax;
+    /* bool mHistoLoadApplyAll; */
     HistoShowBands mHistoShowBands;
     /** \brief Returns a list of selected bands in the histogram widget- or empty if there is no selection restriction. */
     QList< int > histoSelectedBands();

@@ -211,16 +211,23 @@ void QgsEllipseSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
     return;
   }
 
-  QMap<QString, QPair< QString, QString> > dataDefinedProperties;
-  dataDefinedProperties.insert( "width", qMakePair( tr( "Symbol width" ), mLayer->dataDefinedPropertyString( "width" ) ) );
-  dataDefinedProperties.insert( "height", qMakePair( tr( "Symbol height" ), mLayer->dataDefinedPropertyString( "height" ) ) );
-  dataDefinedProperties.insert( "rotation", qMakePair( tr( "Rotation" ), mLayer->dataDefinedPropertyString( "rotation" ) ) );
-  dataDefinedProperties.insert( "outline_width", qMakePair( tr( "Outline width" ), mLayer->dataDefinedPropertyString( "outline_width" ) ) );
-  dataDefinedProperties.insert( "fill_color", qMakePair( tr( "Fill color" ), mLayer->dataDefinedPropertyString( "fill_color" ) ) );
-  dataDefinedProperties.insert( "outline_color", qMakePair( tr( "Border color" ), mLayer->dataDefinedPropertyString( "outline_color" ) ) );
-  dataDefinedProperties.insert( "symbol_name", qMakePair( tr( "Symbol name" ), mLayer->dataDefinedPropertyString( "symbol_name" ) ) );
-  dataDefinedProperties.insert( "offset", qMakePair( tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ) ) );
-
+  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width", tr( "Symbol width" ), mLayer->dataDefinedPropertyString( "width" ),
+      QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "height", tr( "Symbol height" ), mLayer->dataDefinedPropertyString( "height" ),
+      QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "rotation", tr( "Rotation" ), mLayer->dataDefinedPropertyString( "rotation" ),
+      QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline_width", tr( "Outline width" ), mLayer->dataDefinedPropertyString( "outline_width" ),
+      QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "fill_color", tr( "Fill color" ), mLayer->dataDefinedPropertyString( "fill_color" ),
+      QgsDataDefinedSymbolDialog::colorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline_color", tr( "Border color" ), mLayer->dataDefinedPropertyString( "outline_color" ),
+      QgsDataDefinedSymbolDialog::colorHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "symbol_name", tr( "Symbol name" ), mLayer->dataDefinedPropertyString( "symbol_name" ),
+      "'circle'|'rectangle'|'cross'|'triangle'" );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset", tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ),
+      QgsDataDefinedSymbolDialog::offsetHelpText() );
   QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
   if ( d.exec() == QDialog::Accepted )
   {

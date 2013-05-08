@@ -56,6 +56,7 @@ class QgsIdentifyResultsWebView : public QWebView
     void print( void );
   protected:
     void contextMenuEvent( QContextMenuEvent* );
+    QWebView *createWindow( QWebPage::WebWindowType type );
 };
 
 class QgsIdentifyResultsFeatureItem: public QTreeWidgetItem

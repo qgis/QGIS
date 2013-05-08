@@ -264,8 +264,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>785</width>
-                <height>755</height>
+                <width>792</width>
+                <height>774</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -283,72 +283,89 @@
                  <property name="syncGroup" stdset="0">
                   <string notr="true">vectorgeneral</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_4">
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_2">
-                    <item>
-                     <widget class="QLabel" name="textLabel3">
-                      <property name="text">
-                       <string>Layer name</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="mLayerOrigNameLineEdit"/>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="label_2">
-                      <property name="text">
-                       <string>displayed as</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLineEdit" name="txtDisplayName">
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                 <layout class="QGridLayout" name="gridLayout">
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="textLabel3">
+                    <property name="text">
+                     <string>Layer name</string>
+                    </property>
+                   </widget>
                   </item>
-                  <item>
+                  <item row="5" column="0">
                    <widget class="QFrame" name="mDataSourceEncodingFrame">
                     <layout class="QHBoxLayout" name="horizontalLayout_4">
                      <property name="margin">
                       <number>0</number>
                      </property>
-                     <item>
-                      <widget class="QLabel" name="label_3">
-                       <property name="sizePolicy">
-                        <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text">
-                        <string>Data source encoding</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QComboBox" name="cboProviderEncoding"/>
-                     </item>
-                     <item>
-                      <spacer name="horizontalSpacer_2">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>0</width>
-                         <height>20</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
                     </layout>
                    </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="mLayerOrigNameLineEdit"/>
+                  </item>
+                  <item row="1" column="3">
+                   <widget class="QLineEdit" name="txtDisplayName">
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QLabel" name="label_2">
+                    <property name="text">
+                     <string>displayed as</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="lblLayerSource">
+                    <property name="text">
+                     <string>Layer source</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1" colspan="3">
+                   <widget class="QLineEdit" name="txtLayerSource">
+                    <property name="enabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0" colspan="4">
+                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <item>
+                     <widget class="QLabel" name="label_3">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="text">
+                       <string>Data source encoding</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="cboProviderEncoding"/>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_2">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>0</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -451,11 +468,11 @@
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="_5">
-                  <property name="verticalSpacing">
-                   <number>6</number>
-                  </property>
                   <property name="margin">
                    <number>11</number>
+                  </property>
+                  <property name="verticalSpacing">
+                   <number>6</number>
                   </property>
                   <item row="0" column="4">
                    <widget class="QLabel" name="textLabel1_2_2_2">
@@ -689,8 +706,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>949</width>
-                <height>776</height>
+                <width>84</width>
+                <height>16</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -750,8 +767,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>949</width>
-                <height>776</height>
+                <width>84</width>
+                <height>16</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -805,8 +822,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>949</width>
-                <height>776</height>
+                <width>133</width>
+                <height>37</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -882,8 +899,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>949</width>
-                <height>776</height>
+                <width>84</width>
+                <height>16</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -937,8 +954,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>949</width>
-                <height>776</height>
+                <width>473</width>
+                <height>186</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1111,8 +1128,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>949</width>
-                <height>776</height>
+                <width>84</width>
+                <height>16</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1172,8 +1189,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>949</width>
-                <height>776</height>
+                <width>134</width>
+                <height>155</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1287,8 +1304,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>949</width>
-                <height>776</height>
+                <width>84</width>
+                <height>16</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_24">
@@ -1348,8 +1365,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>949</width>
-                <height>776</height>
+                <width>186</width>
+                <height>249</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">

@@ -179,7 +179,7 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
 
 bool QgsRasterTransparency::isEmpty( ) const
 {
-  return mTransparentSingleValuePixelList.isEmpty();
+  return mTransparentSingleValuePixelList.isEmpty() && mTransparentThreeValuePixelList.isEmpty();
 }
 
 void QgsRasterTransparency::writeXML( QDomDocument& doc, QDomElement& parentElem ) const

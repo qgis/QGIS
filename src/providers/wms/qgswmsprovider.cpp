@@ -2036,12 +2036,16 @@ void QgsWmsProvider::parseHttp( QDomElement const & e, QgsWmsHttpProperty& httpP
     QDomElement e1 = n1.toElement(); // try to convert the node to an element.
     if ( !e1.isNull() )
     {
-      if ( e1.tagName() == "Get" )
+      QString tagName = e1.tagName();
+      if ( tagName.startsWith( "wms:" ) )
+        tagName = tagName.mid( 4 );
+
+      if ( tagName == "Get" )
       {
         QgsDebugMsg( "      Get." );
         parseGet( e1, httpProperty.get );
       }
-      else if ( e1.tagName() == "Post" )
+      else if ( tagName == "Post" )
       {
         QgsDebugMsg( "      Post." );
         parsePost( e1, httpProperty.post );

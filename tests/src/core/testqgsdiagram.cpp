@@ -41,6 +41,7 @@
 #include <qgsrendererv2.h>
 //qgis test includes
 #include "qgsrenderchecker.h"
+#include "qgspallabeling.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.

@@ -98,7 +98,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Band</string>
+             <string>Set min/max style for</string>
             </property>
            </widget>
           </item>

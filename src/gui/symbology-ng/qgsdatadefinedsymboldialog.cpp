@@ -5,8 +5,7 @@
 #include <QComboBox>
 #include <QPushButton>
 
-QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QMap< QString, QPair< QString, QString > >& properties, const QgsVectorLayer* vl,
-    QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vl )
+QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vl )
 {
   setupUi( this );
 
@@ -16,26 +15,26 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QMap< QString, QPa
     attributeFields = mVectorLayer->pendingFields();
   }
 
-  mTableWidget->setRowCount( properties.size() );
+  mTableWidget->setRowCount( entries.size() );
 
   int i = 0;
-  QMap< QString, QPair< QString, QString > >::const_iterator it = properties.constBegin();
-  for ( ; it != properties.constEnd(); ++it )
+  QList< DataDefinedSymbolEntry >::const_iterator entryIt = entries.constBegin();
+  for ( ; entryIt != entries.constEnd(); ++entryIt )
   {
     //check box
     QCheckBox* cb = new QCheckBox( this );
-    cb->setChecked( !it.value().second.isEmpty() );
+    cb->setChecked( !entryIt->initialValue.isEmpty() );
     mTableWidget->setCellWidget( i, 0, cb );
     mTableWidget->setColumnWidth( 0, cb->width() );
 
 
     //property name
-    QTableWidgetItem* propertyItem = new QTableWidgetItem( it.value().first );
-    propertyItem->setData( Qt::UserRole, it.key() );
+    QTableWidgetItem* propertyItem = new QTableWidgetItem( entryIt->title );
+    propertyItem->setData( Qt::UserRole, entryIt->property );
     mTableWidget->setItem( i, 1, propertyItem );
 
     //attribute list
-    QString expressionString = it.value().second;
+    QString expressionString = entryIt->initialValue;
     QComboBox* attributeComboBox = new QComboBox( this );
     attributeComboBox->addItem( QString() );
     for ( int j = 0; j < attributeFields.count(); ++j )
@@ -59,6 +58,11 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QMap< QString, QPa
     QPushButton* expressionButton = new QPushButton( "...", this );
     QObject::connect( expressionButton, SIGNAL( clicked() ), this, SLOT( expressionButtonClicked() ) );
     mTableWidget->setCellWidget( i, 3, expressionButton );
+
+    //help text
+    QTableWidgetItem* helpItem = new QTableWidgetItem( entryIt->helpText );
+    mTableWidget->setItem( i, 4, helpItem );
+
     ++i;
   }
 }
@@ -157,4 +161,24 @@ int QgsDataDefinedSymbolDialog::comboIndexForExpressionString( const QString& ex
     comboIndex = cb->findText( attributeString );
   }
   return comboIndex;
+}
+
+QString QgsDataDefinedSymbolDialog::doubleHelpText()
+{
+  return tr( "double" );
+}
+
+QString QgsDataDefinedSymbolDialog::colorHelpText()
+{
+  return tr( "'<red>,<green>,<blue>,<alpha>'" );
+}
+
+QString QgsDataDefinedSymbolDialog::offsetHelpText()
+{
+  return "<x>,<y>";
+}
+
+QString QgsDataDefinedSymbolDialog::fileNameHelpText()
+{
+  return tr( "'<filename>'" );
 }

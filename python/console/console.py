@@ -652,7 +652,7 @@ class PythonConsoleWidget(QWidget):
         except (IOError, OSError), e:
             errTr = QCoreApplication.translate("PythonConsole", "Save Error")
             msgErrTr = QCoreApplication.translate("PythonConsole",
-                                                  "Failed to save %1: %2").arg(tabWidget.path, e)
+                                                  "Failed to save %1: %2").arg(tabWidget.path).arg(e)
             QMessageBox.warning(self, errTr, msgErrTr)
 
     def saveAsScriptFile(self):

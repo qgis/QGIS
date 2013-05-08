@@ -82,12 +82,6 @@
           <iconset resource="../../images/images.qrc">
            <normaloff>:/images/themes/default/mActionArrowDown.png</normaloff>:/images/themes/default/mActionArrowDown.png</iconset>
          </property>
-         <property name="iconSize">
-          <size>
-           <width>16</width>
-           <height>16</height>
-          </size>
-         </property>
         </widget>
        </item>
        <item>

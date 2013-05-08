@@ -370,7 +370,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
     lstTilesets->clearContents();
     lstTilesets->setRowCount( rows );
-    lstTilesets->setSortingEnabled( true );
+    lstTilesets->setSortingEnabled( false );
 
     int row = 0;
     foreach ( const QgsWmtsTileLayer &l, mTileLayers )
@@ -383,7 +383,6 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
           {
             QTableWidgetItem *item = new QTableWidgetItem( l.identifier );
             item->setData( Qt::UserRole + 0, l.identifier );
-
             item->setData( Qt::UserRole + 1, format );
             item->setData( Qt::UserRole + 2, style.identifier );
             item->setData( Qt::UserRole + 3, setLink.tileMatrixSet );
@@ -416,6 +415,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
     }
 
     lstTilesets->resizeColumnsToContents();
+    lstTilesets->setSortingEnabled( true );
     lstTilesets->sortByColumn( 0, Qt::AscendingOrder );
   }
 

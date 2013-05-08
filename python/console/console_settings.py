@@ -118,10 +118,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         apiNameItem = QTableWidgetItem(apiName)
         self.tableWidget.setItem(count, 0, apiNameItem)
         self.tableWidget.setItem(count, 1, pathItem)
-        self.tableWidget.setHorizontalHeaderLabels([self.tr("API"), self.tr("PATH")])
-        self.tableWidget.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
-        self.tableWidget.horizontalHeader().show()
-        self.tableWidget.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
 
     def removeAPI(self):
         listItemSel = self.tableWidget.selectionModel().selectedRows()
@@ -193,10 +189,6 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             apiName = pathSplit[-1][0:-4]
             self.tableWidget.setItem(i, 0, QTableWidgetItem(apiName))
             self.tableWidget.setItem(i, 1, QTableWidgetItem(itemTable[i]))
-            self.tableWidget.setHorizontalHeaderLabels([self.tr("API"), self.tr("PATH")])
-            self.tableWidget.horizontalHeader().setResizeMode(0, QHeaderView.ResizeToContents)
-            self.tableWidget.horizontalHeader().show()
-            self.tableWidget.horizontalHeader().setResizeMode(1, QHeaderView.Stretch)
         self.autoSaveScript.setChecked(settings.value("pythonConsole/autoSaveScript", False).toBool())
 
         self.autoCompThreshold.setValue(settings.value("pythonConsole/autoCompThreshold", 2).toInt()[0])

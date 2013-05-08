@@ -329,7 +329,7 @@ int main( int argc, char * argv[] )
         continue;
       }
 
-      if ( request.toLower() == QString( "GetCapabilities" ).toLower() )
+      if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0  )
       {
         QDomDocument capabilitiesDocument;
         try
@@ -349,7 +349,7 @@ int main( int argc, char * argv[] )
         delete theServer;
         continue;
       }
-      else if ( request.toLower() == QString( "DescribeFeatureType" ).toLower() )
+      else if ( request.compare( "DescribeFeatureType", Qt::CaseInsensitive ) == 0 )
       {
         QDomDocument describeDocument;
         try
@@ -369,7 +369,7 @@ int main( int argc, char * argv[] )
         delete theServer;
         continue;
       }
-      else if ( request.toLower() == QString( "GetFeature" ).toLower() )
+      else if ( request.compare( "GetFeature", Qt::CaseInsensitive ) == 0 )
       {
         //output format for GetFeature
         QString outputFormat = parameterMap.value( "OUTPUTFORMAT" );
@@ -396,7 +396,7 @@ int main( int argc, char * argv[] )
           continue;
         }
       }
-      else if ( request.toLower() == QString( "Transaction" ).toLower() )
+      else if ( request.compare( "Transaction", Qt::CaseInsensitive ) == 0 )
       {
         QDomDocument transactionDocument;
         try
@@ -446,13 +446,13 @@ int main( int argc, char * argv[] )
     }
 
     QString version = parameterMap.value( "VERSION", "1.3.0" );
-    bool getProjectSettings = ( request.toLower() == QString( "GetProjectSettings" ).toLower() );
+    bool getProjectSettings = ( request.compare( "GetProjectSettings", Qt::CaseInsensitive ) == 0 );
     if ( getProjectSettings )
     {
       version = "1.3.0"; //getProjectSettings extends WMS 1.3.0 capabilities
     }
 
-    if ( request.toLower() == QString( "GetCapabilities" ).toLower() || getProjectSettings )
+    if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 || getProjectSettings )
     {
       const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, getProjectSettings ? "projectSettings" : version );
       if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
@@ -486,7 +486,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request.toLower() == QString( "GetMap" ).toLower() )
+    else if ( request.compare( "GetMap", Qt::CaseInsensitive ) == 0 )
     {
       QImage* result = 0;
       try
@@ -518,7 +518,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request.toLower() == QString( "GetFeatureInfo" ).toLower() )
+    else if ( request.compare( "GetFeatureInfo", Qt::CaseInsensitive ) == 0 )
     {
       QDomDocument featureInfoDoc;
       try
@@ -544,7 +544,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request.toLower() == QString( "GetStyles" ).toLower() || request.toLower() == QString( "GetStyle" ).toLower() ) // GetStyle for compatibility with earlier QGIS versions
+    else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 || request.compare( "GetStyle", Qt::CaseInsensitive ) == 0 ) // GetStyle for compatibility with earlier QGIS versions
     {
       try
       {
@@ -560,7 +560,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request.toLower() == QString( "GetLegendGraphic" ).toLower() || request.toLower() == QString( "GetLegendGraphics" ).toLower() ) // GetLegendGraphics for compatibility with earlier QGIS versions
+    else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 || request.compare( "GetLegendGraphics", Qt::CaseInsensitive ) == 0 ) // GetLegendGraphics for compatibility with earlier QGIS versions
     {
       QImage* result = 0;
       try
@@ -589,7 +589,7 @@ int main( int argc, char * argv[] )
       continue;
 
     }
-    else if ( request.toLower() == QString( "GetPrint" ).toLower() )
+    else if ( request.compare( "GetPrint", Qt::CaseInsensitive ) == 0 )
     {
       QByteArray* printOutput = 0;
       try

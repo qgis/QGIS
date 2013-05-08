@@ -105,6 +105,7 @@ void QgsComposerSymbolV2Item::writeXML( QDomElement& elem, QDomDocument& doc ) c
     vectorClassElem.appendChild( symbolsElem );
   }
   vectorClassElem.setAttribute( "text", text() );
+  vectorClassElem.setAttribute( "userText", userText() );
   elem.appendChild( vectorClassElem );
 }
 
@@ -116,6 +117,7 @@ void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem, bool xServer
   }
 
   setText( itemElem.attribute( "text", "" ) );
+  setUserText( itemElem.attribute( "userText", "" ) );
   QDomElement symbolsElem = itemElem.firstChildElement( "symbols" );
   if ( !symbolsElem.isNull() )
   {
@@ -174,6 +176,7 @@ void QgsComposerRasterSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc
   QDomElement rasterClassElem = doc.createElement( "RasterClassificationItem" );
   rasterClassElem.setAttribute( "layerId", mLayerID );
   rasterClassElem.setAttribute( "text", text() );
+  rasterClassElem.setAttribute( "userText", userText() );
   rasterClassElem.setAttribute( "color", mColor.name() );
   elem.appendChild( rasterClassElem );
 }
@@ -185,6 +188,7 @@ void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem, bool xSe
     return;
   }
   setText( itemElem.attribute( "text", "" ) );
+  setUserText( itemElem.attribute( "userText", "" ) );
   setLayerID( itemElem.attribute( "layerId", "" ) );
   setColor( QColor( itemElem.attribute( "color" ) ) );
 
@@ -225,6 +229,7 @@ void QgsComposerLayerItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
   QDomElement layerItemElem = doc.createElement( "LayerItem" );
   layerItemElem.setAttribute( "layerId", mLayerID );
   layerItemElem.setAttribute( "text", text() );
+  layerItemElem.setAttribute( "userText", userText() );
   layerItemElem.setAttribute( "showFeatureCount", showFeatureCount() );
   layerItemElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
   writeXMLChildren( layerItemElem, doc );
@@ -238,6 +243,7 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem, bool xServerAva
     return;
   }
   setText( itemElem.attribute( "text", "" ) );
+  setUserText( itemElem.attribute( "userText", "" ) );
   setLayerID( itemElem.attribute( "layerId", "" ) );
   setShowFeatureCount( itemElem.attribute( "showFeatureCount", "" ) == "1" ? true : false );
   setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( "style", "subgroup" ) ) );
@@ -327,7 +333,9 @@ QStandardItem* QgsComposerGroupItem::clone() const
 void QgsComposerGroupItem::writeXML( QDomElement& elem, QDomDocument& doc ) const
 {
   QDomElement layerGroupElem = doc.createElement( "GroupItem" );
+  // text is always user text, but for forward compatibility for now write both
   layerGroupElem.setAttribute( "text", text() );
+  layerGroupElem.setAttribute( "userText", userText() );
   layerGroupElem.setAttribute( "style", QgsComposerLegendStyle::styleName( mStyle ) );
   writeXMLChildren( layerGroupElem, doc );
   elem.appendChild( layerGroupElem );
@@ -339,7 +347,14 @@ void QgsComposerGroupItem::readXML( const QDomElement& itemElem, bool xServerAva
   {
     return;
   }
-  setText( itemElem.attribute( "text", "" ) );
+  // text is always user text but for backward compatibility we read also text
+  QString userText = itemElem.attribute( "userText", "" );
+  if ( userText.isEmpty() )
+  {
+    userText = itemElem.attribute( "text", "" );
+  }
+  setText( userText );
+  setUserText( userText );
 
   setStyle( QgsComposerLegendStyle::styleFromName( itemElem.attribute( "style", "group" ) ) );
 
