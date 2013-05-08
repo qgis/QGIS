@@ -129,6 +129,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   }
   mNoDataValue = myInternalNoDataValue;
   mSrcHasNoDataValue.append( true );
+  mSrcNoDataValue.append( mNoDataValue );
   mUseSrcNoDataValue.append( true );
   QgsDebugMsg( QString( "myInternalNoDataValue = %1" ).arg( myInternalNoDataValue ) );
 
