@@ -221,7 +221,11 @@ void QgsGrassPlugin::mapsetChanged()
 {
   if ( !QgsGrass::activeMode() )
   {
+#ifdef GRASS_DIRECT
     mOpenToolsAction->setEnabled( true );
+#else
+    mOpenToolsAction->setEnabled( false );
+#endif
     mRegionAction->setEnabled( false );
     mEditRegionAction->setEnabled( false );
     mRegionBand->reset();
