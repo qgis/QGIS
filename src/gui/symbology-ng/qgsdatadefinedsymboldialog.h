@@ -24,10 +24,15 @@ class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsData
       QString helpText;
     };
 
-    QgsDataDefinedSymbolDialog( const QMap< QString, QPair< QString, QString > >& properties, const QgsVectorLayer* vl, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsDataDefinedSymbolDialog();
     QMap< QString, QString > dataDefinedProperties() const;
+
+    //common help texts
+    static QString doubleHelpText();
+    static QString colorHelpText();
+    static QString offsetHelpText();
+    static QString fileNameHelpText();
 
   private slots:
     void expressionButtonClicked();
