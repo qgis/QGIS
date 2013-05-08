@@ -358,7 +358,7 @@ void QgsGeorefPluginGui::generateGDALScript()
       {
         gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCompressionMethod, mUseZeroForTrans, order,
                           mUserResX, mUserResY );
-        showGDALScript( 2, translateCommand.toAscii().data(), gdalwarpCommand.toAscii().data() );
+        showGDALScript( QStringList() << translateCommand << gdalwarpCommand );
         break;
       }
     }
@@ -1761,17 +1761,9 @@ void QgsGeorefPluginGui::updateTransformParamLabel()
 }
 
 // Gdal script
-void QgsGeorefPluginGui::showGDALScript( int argNum... )
+void QgsGeorefPluginGui::showGDALScript( const QStringList& commands )
 {
-  QString script;
-  va_list vl;
-  va_start( vl, argNum );
-  while ( argNum-- )
-  {
-    script.append( va_arg( vl, char * ) );
-    script.append( "\n" );
-  }
-  va_end( vl );
+  QString script = commands.join( "\n" ) + "\n";
 
   // create window to show gdal script
   QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
