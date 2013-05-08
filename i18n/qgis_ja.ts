@@ -11619,37 +11619,37 @@ SQL: %1</translation>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="292"/>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="300"/>
         <source>Unable to fetch row</source>
-        <translation type="unfinished"></translation>
+        <translation>行を取得できません</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="230"/>
         <source>No query</source>
-        <translation type="unfinished"></translation>
+        <translation>クエリがありません</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="365"/>
         <source>Unable to execute statement</source>
-        <translation type="unfinished"></translation>
+        <translation>ステートメントを実行できません</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="370"/>
         <source>Unable to execute multiple statements at a time</source>
-        <translation type="unfinished"></translation>
+        <translation>一度に複数のステートメントを実行できません</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="390"/>
         <source>Unable to reset statement</source>
-        <translation type="unfinished"></translation>
+        <translation>ステートメントをリセットできません</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="435"/>
         <source>Unable to bind parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>パラメータをバインドできません</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qspatialite/qsql_spatialite.cpp" line="442"/>
         <source>Parameter count mismatch</source>
-        <translation type="unfinished"></translation>
+        <translation>パラメータの数が合いません</translation>
     </message>
 </context>
 <context>
@@ -11771,7 +11771,10 @@ SQL: %1</translation>
 
 Errors: %3
 </source>
-        <translation type="unfinished"></translation>
+        <translation>%1をレイヤ%2に変換できません
+
+エラー %3
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5635"/>
@@ -11813,7 +11816,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5752"/>
         <source>%1 current changes for %2 layer(s)?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 カレントへの変更は %2 レイヤ用ですか?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6024"/>
@@ -11839,12 +11842,12 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6061"/>
         <source>%1 (duplication resulted in invalid layer)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(複製の結果は不正なレイヤ内にあります)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6071"/>
         <source>%1 (%2type unsupported)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1(型%2はサポートされていません)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6261"/>
@@ -12596,7 +12599,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1509"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の地図座標(緯度,経度　または東北)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2173"/>
@@ -14200,7 +14203,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2999"/>
         <source>Oracle</source>
-        <translation type="unfinished">Oracle</translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2999"/>
@@ -14220,7 +14223,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3043"/>
         <source>WCS</source>
-        <translation type="unfinished">WCS</translation>
+        <translation>WCS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3043"/>
@@ -14353,7 +14356,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4196"/>
         <source>Layer labeling settings</source>
-        <translation type="unfinished">レイヤラベリング設定</translation>
+        <translation>レイヤラベリング設定</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4352"/>
@@ -14410,17 +14413,17 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4645"/>
         <source>Composer title</source>
-        <translation type="unfinished"></translation>
+        <translation>コンポーザタイトル</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4660"/>
         <source>Title can not be empty!</source>
-        <translation type="unfinished"></translation>
+        <translation>タイトルは空白にできません!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4671"/>
         <source>Title already exists!</source>
-        <translation type="unfinished"></translation>
+        <translation>タイトルはすでに存在します!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4688"/>
@@ -14431,7 +14434,7 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4731"/>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation>コピー</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4954"/>
@@ -14636,7 +14639,7 @@ Error: %1</source>
         <location filename="../src/app/qgisapp.cpp" line="8434"/>
         <location filename="../src/app/qgisapp.cpp" line="8454"/>
         <source>Raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ラスタレイヤ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8612"/>
@@ -15408,12 +15411,12 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="254"/>
         <source>Expression based filename</source>
-        <translation type="unfinished"></translation>
+        <translation>式に基づくファイル名</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsatlascompositionwidget.cpp" line="388"/>
         <source>Expression based filter</source>
-        <translation type="unfinished"></translation>
+        <translation>式に基づくフィルタ</translation>
     </message>
 </context>
 <context>
@@ -15498,7 +15501,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="317"/>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="330"/>
@@ -15508,7 +15511,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="343"/>
         <source>Output</source>
-        <translation type="unfinished">出力</translation>
+        <translation>出力</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="358"/>
@@ -16224,7 +16227,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="145"/>
         <source>Select features using an expression</source>
-        <translation type="unfinished">条件を使った地物選択</translation>
+        <translation>条件を使った地物選択</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="345"/>
@@ -16244,7 +16247,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="449"/>
         <source>Filter</source>
-        <translation type="unfinished">フィルター</translation>
+        <translation>フィルター</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="472"/>
@@ -16255,7 +16258,7 @@ SVG サーチパス:	%7
         <location filename="../src/ui/qgsattributetabledialog.ui" line="475"/>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="600"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>適用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="500"/>
@@ -16280,17 +16283,17 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="551"/>
         <source>Ctrl+F</source>
-        <translation type="unfinished">Ctrl+F</translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="560"/>
         <source>Show All Features</source>
-        <translation type="unfinished"></translation>
+        <translation>全ての地物を表示する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="569"/>
         <source>Show Selected Features</source>
-        <translation type="unfinished"></translation>
+        <translation>選択した地物を表示する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="592"/>
@@ -16602,7 +16605,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="101"/>
         <source>Photo</source>
-        <translation type="unfinished">写真</translation>
+        <translation>写真</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="106"/>
@@ -16612,7 +16615,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="111"/>
         <source>Color</source>
-        <translation type="unfinished">色</translation>
+        <translation>色</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="142"/>
@@ -16647,7 +16650,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="633"/>
         <source>Date format</source>
-        <translation type="unfinished"></translation>
+        <translation>データ形式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="640"/>
@@ -16667,7 +16670,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="726"/>
         <source>Allow multiple selections</source>
-        <translation type="unfinished"></translation>
+        <translation>複数選択を許す</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="733"/>
@@ -16682,17 +16685,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="759"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="794"/>
         <source>Height</source>
-        <translation type="unfinished">高さ</translation>
+        <translation>高さ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="814"/>
         <source>Width</source>
-        <translation type="unfinished">幅</translation>
+        <translation>幅</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="841"/>
@@ -16831,7 +16834,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="43"/>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>通常</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="45"/>
@@ -16851,7 +16854,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="48"/>
         <source>Addition</source>
-        <translation type="unfinished">加算</translation>
+        <translation>加算</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="50"/>
@@ -16871,7 +16874,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="54"/>
         <source>Overlay</source>
-        <translation type="unfinished">オーバーレイ</translation>
+        <translation>オーバーレイ</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="55"/>
@@ -16886,7 +16889,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="58"/>
         <source>Difference</source>
-        <translation type="unfinished">差分</translation>
+        <translation>差分</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsblendmodecombobox.cpp" line="59"/>
@@ -17249,23 +17252,23 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="14"/>
         <source>Browser</source>
-        <translation type="unfinished">ブラウザ</translation>
+        <translation>ブラウザ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="54"/>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="57"/>
         <source>Refresh</source>
-        <translation type="unfinished">再読み込み</translation>
+        <translation>再読み込み</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="74"/>
         <source>Add Selected Layers</source>
-        <translation type="unfinished">選択されたレイヤの追加</translation>
+        <translation>選択されたレイヤの追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="77"/>
         <source>Add</source>
-        <translation type="unfinished">追加</translation>
+        <translation>追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="94"/>
@@ -17276,7 +17279,7 @@ Database:%2</source>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="97"/>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="120"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="117"/>
@@ -17286,7 +17289,7 @@ Database:%2</source>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="191"/>
         <source>Options</source>
-        <translation type="unfinished">オプション</translation>
+        <translation>オプション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsbrowserdockwidgetbase.ui" line="220"/>
