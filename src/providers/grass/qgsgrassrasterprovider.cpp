@@ -128,6 +128,8 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     myInternalNoDataValue = std::numeric_limits<float>::quiet_NaN();
   }
   mNoDataValue = myInternalNoDataValue;
+  mSrcHasNoDataValue.append( true );
+  mUseSrcNoDataValue.append( true );
   QgsDebugMsg( QString( "myInternalNoDataValue = %1" ).arg( myInternalNoDataValue ) );
 
   // TODO: refresh mRows and mCols if raster was rewritten
