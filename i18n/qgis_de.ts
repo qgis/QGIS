@@ -2103,6 +2103,14 @@ Geometriespate - Spalte mit eindeutigen ganzahligen Werden</translation>
         <translation>Erweiterungs-Fehler</translation>
     </message>
     <message>
+        <source>Unable to load %1 plugin. 
+The required &quot;%2&quot; module is missing. 
+Install it and try again.</source>
+        <translation>Konnte Erweiterung %1 nicht laden. 
+Das erforderliche Modul &quot;%2&quot; fehlt. 
+Bitte installieren und erneut versuchen.</translation>
+    </message>
+    <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
         <translation>Dies GdalTools-Version erfordert mindestens QGIS-Version 1.0.0
@@ -2784,6 +2792,31 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="168"/>
         <source>GDAL driver path</source>
         <translation>GDAL-Treiberpfad</translation>
+    </message>
+    <message>
+        <source>A list of colon-separated (Linux and MacOS) or
+semicolon-separated (Windows) paths to both binaries
+and python executables.
+
+MacOS users usually need to set it to something like
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
+        <translation>Eine mit Doppelpunkten (Linux und MacOS) oder Semikola (Windows)
+getrennte Liste von Verzeichnissen zu den Programmdateien.
+
+MacOS-Benutzer setzen es normalerweise auf etwas wie
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</translation>
+    </message>
+    <message>
+        <source>A list of colon-separated (Linux and MacOS) or
+semicolon-separated (Windows) paths to python modules.</source>
+        <translation>Eine durch Doppelpunkte (Linux und MacOS) oder Semikola (Windows)
+getrennte Liste von Verzeichnissen zu den Python-Modulen.</translation>
+    </message>
+    <message>
+        <source>Useful to open local GDAL documentation instead of online help
+when pressing on the tool dialog&apos;s Help button.</source>
+        <translation>Nützlich um durch Klicken auf den Hilfe-Knopf des Werkzeugs
+die lokale GDAL-Dokumentation statt der Online-Hilfe zu öffnen.</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
@@ -8361,7 +8394,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <translation>Datenlieferant %1 hat keine Methode %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3846"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3850"/>
         <source>Loaded from Provider</source>
         <translation>Aus Datenlieferanten geladen</translation>
     </message>
@@ -8394,10 +8427,10 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2384"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2872"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2851"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3175"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3238"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3367"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2853"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3177"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3240"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3378"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="140"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="5132"/>
         <source>Connection to database failed</source>
@@ -8410,7 +8443,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2583"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2974"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2976"/>
         <source>Creation of data source %1 failed: 
 %2</source>
         <translation>Erzeugung der Datenquelle %1 gescheitert: 
@@ -8418,7 +8451,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2617"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2992"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2994"/>
         <source>Loading of the layer %1 failed</source>
         <translation>Laden des Layers %1 gescheitert</translation>
     </message>
@@ -8454,53 +8487,68 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3190"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3218"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3192"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3220"/>
         <source>Unable to delete layer %1: 
 %2</source>
         <translation>Konnte Ebene %1 nicht löschen: 
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3262"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3264"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
         <translation>Kann den Layerstil nicht speicher. Es ist nicht möglich die Zieltabelle in der Datenbank anzulegen.  Dies kann mit den Tabellenberechtigungen (Benutzer=%1) zusammenhängen. Wenden Sie sich bitte an den Datenbankadministrator</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3352"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3312"/>
+        <source>Save style in database</source>
+        <translation>Stil in Datenbank speichern</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3313"/>
+        <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
+        <translation>Ein Stil &quot;%1&quot; für diesen Layer ist bereits in der Datenbank vorhanden. Soll er überschrieben werden?</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3317"/>
+        <source>Operation aborted. No changes were made in the database</source>
+        <translation>Vorgang abgebrochen. Es wurden keine Datenbankänderungen vorgenommen</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3363"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
         <translation>Kann den Layerstil nicht speicher. Es ist nicht möglich Datensätze in die Stiltabelle einzufügen.  Dies kann mit den Tabellenberechtigungen (Benutzer=%1) zusammenhängen. Wenden Sie sich bitte an den Datenbankadministrator.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3397"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3462"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3408"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3472"/>
         <source>Connection to database failed using username: %1</source>
         <translation>Verbindung zur Datenbank mit Benutzername %1 fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3416"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3441"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3470"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3426"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3451"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3480"/>
         <source>Error executing query: %1</source>
         <translation>Fehler bei Abfrageausfühung: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3417"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3427"/>
         <source>Error executing the select query for related styles. The query was logged</source>
         <translation>Fehler beim Abfragen von zusammenhängenden Stilen.  Die Abfragen wurde protokolliert</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3442"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3452"/>
         <source>Error executing the select query for unrelated styles. The query was logged</source>
         <translation>Fehler beim Abfragen von unzusammenhängenden Stilen.  Die Abfragen wurde protokolliert</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3471"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3481"/>
         <source>Error executing the select query. The query was logged</source>
         <translation>Fehler bei Abfrage.  Die Abfrage wurde protokolliert</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3481"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3491"/>
         <source>Consistency error in table &apos;%1&apos;. Style id should be unique</source>
         <translation>Konsistenzfehler in Tabelle &apos;%1&apos;. Stilkennung sollte eindeutig sein</translation>
     </message>
@@ -8512,14 +8560,14 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1709"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2696"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3028"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3030"/>
         <source>Unsupported type for field %1</source>
         <translation>Nicht unterstützter Typ für Feld %1</translation>
     </message>
     <message>
         <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1723"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2715"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3048"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3050"/>
         <source>Creation of fields failed</source>
         <translation>Erzeugung der Felder gescheitert</translation>
     </message>
@@ -8963,7 +9011,7 @@ SQL: %1</translation>
         <translation>Fehler beim Binden der Parameter</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="718"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="717"/>
         <source>Save style to DB (%1)</source>
         <translation>Stil in DB speichern (%1)</translation>
     </message>
@@ -35679,7 +35727,7 @@ Ergebnis: %3 (%4)</translation>
 <context>
     <name>QgsPostgresProvider</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="804"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="806"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -35690,7 +35738,7 @@ Der Error den die Datenbank lieferte war:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="862"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="864"/>
         <source>Unable to determine table access privileges for the %1 relation.
 The error message from the database was:
 %2.
@@ -35701,130 +35749,130 @@ Der Fehler der Datenbank war:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="157"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="159"/>
         <source>Whole number (smallint - 16bit)</source>
         <translation>Kleine Ganzzahl (16bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="122"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="124"/>
         <source>invalid PostgreSQL layer</source>
         <translation>Ungültiger PostgreSQL-Layer</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="122"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="131"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="343"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="536"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="694"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="754"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="773"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="779"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="807"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="818"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="866"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="916"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="945"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1022"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1045"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1050"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1055"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1060"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1113"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1430"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2440"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="124"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="133"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="345"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="538"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="696"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="756"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="775"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="781"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="809"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="820"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="868"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="918"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="947"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1024"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1047"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1052"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1057"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1062"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1115"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1432"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2442"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="160"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="162"/>
         <source>Decimal number (numeric)</source>
         <translation>Dezimalzahl (numeric)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="161"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="163"/>
         <source>Decimal number (decimal)</source>
         <translation>Dezimalzahl (decimal)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="164"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="166"/>
         <source>Decimal number (real)</source>
         <translation>Dezimalzahl (real)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="165"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="167"/>
         <source>Decimal number (double)</source>
         <translation>Dezimalzahl (double)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="168"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="170"/>
         <source>Text, fixed length (char)</source>
         <translation>Text, feste Länge (char)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1022"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1024"/>
         <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation>Die Tabelle hat keine Spalten, die sich als Schlüssels eignen. Quantum GIS benötigt einen Primärschlüssel, einen PostgreSQL OID oder CTID für Tabellen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1060"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1062"/>
         <source>Unexpected relation type &apos;%1&apos;.</source>
         <translation>Unerwarteter Relationstyp &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2440"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2442"/>
         <source>result of extents query invalid: %1</source>
         <translation>Ergebnis der Ausmaßabfrage ungültig: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2742"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2744"/>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
         <translation>Ändern und Hinzufügen auf 2D+-Layern abgeschaltet (%1; %2)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="131"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="133"/>
         <source>invalid PostgreSQL topology layer</source>
         <translation>Ungültiger PostgreSQL-Topologielayer</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="173"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="175"/>
         <source>Date</source>
         <translation>Datum</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="343"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="345"/>
         <source>Read attempt on an invalid postgresql data source</source>
         <translation>Leseversuch auf eine ungültige PostgreSQL-Datenquelle</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="536"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="538"/>
         <source>FAILURE: Field %1 not found.</source>
         <translation>FEHLER: Feld %1 nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="691"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="745"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="693"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="747"/>
         <source>unexpected formatted field type &apos;%1&apos; for field %2</source>
         <translation>Unerwarteter formatierter Feldtyp &apos;%1&apos; für Feld %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="754"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="756"/>
         <source>Field %1 ignored, because of unsupported type %2</source>
         <translation>Feld %1 ignoriert, weil von nicht unterstütztem Typ %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="773"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="775"/>
         <source>Field %1 ignored, because of unsupported type type %2</source>
         <translation>Feld %1 mit nicht unterstützten Datentyp-Art %2 ignoriert</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="779"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="781"/>
         <source>Duplicate field %1 found
 </source>
         <translation>Doppelter Feldname %1 gefunden
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="818"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="820"/>
         <source>PostgreSQL is still in recovery after a database crash
 (or you are connected to a (read-only) slave).
 Write accesses will be denied.</source>
@@ -35833,12 +35881,12 @@ Write accesses will be denied.</source>
 Schreibzugriffe werden verweigert.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="916"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="918"/>
         <source>The custom query is not a select query.</source>
         <translation>Die Benutzerabfrage ist keine SELECT-Abfrage.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="943"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="945"/>
         <source>Unable to execute the query.
 The error message from the database was:
 %1.
@@ -35849,87 +35897,87 @@ Dei Fehlermeldung der Datenbank war:
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1045"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1047"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
         <translation>Primärschlüsselfeld &apos;%1&apos; der Sicht ist nicht eindeutig.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1050"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1052"/>
         <source>Key field &apos;%1&apos; for view not found.</source>
         <translation>Schlüsselfeld &apos;%1&apos; der Sicht nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1055"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1057"/>
         <source>No key field for view given.</source>
         <translation>Kein Schlüsselfeld für Ansicht angegeben.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1113"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1115"/>
         <source>No key field for query given.</source>
         <translation>Kein Schlüsselfeld für Abfrage gegeben.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1426"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1428"/>
         <source>Could not find topology of layer %1.%2.%3</source>
         <translation>Konnte Topologie des Layers %1.%2.%3 nicht finden</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1752"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1754"/>
         <source>PostGIS error while adding features: %1</source>
         <translation>PostGIS-Fehler beim Attributhinzufügen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1809"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1811"/>
         <source>PostGIS error while deleting features: %1</source>
         <translation>PostGIS-Fehler beim Objektlöschen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1872"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1874"/>
         <source>PostGIS error while adding attributes: %1</source>
         <translation>PostGIS-Fehler beim Attributhinzufügen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1919"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1921"/>
         <source>PostGIS error while deleting attributes: %1</source>
         <translation>PostGIS-Fehler beim Attributlöschen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2024"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2026"/>
         <source>PostGIS error while changing attributes: %1</source>
         <translation>PostGIS-Fehler beim Attributändern: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2226"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2228"/>
         <source>PostGIS error while changing geometry values: %1</source>
         <translation>PostGIS-Fehler beim Geometrieändern: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2677"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2679"/>
         <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
         <translation>Geometrietyp und SRID für leere Spalte %1 in %2 undefiniert.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2714"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2716"/>
         <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation>Objekttyp oder SRID für %1 aus %2 konnte nicht festgestellt werden und wurde nicht festgelegt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="158"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="160"/>
         <source>Whole number (integer - 32bit)</source>
         <translation>Ganzzahl (32bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="159"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="161"/>
         <source>Whole number (integer - 64bit)</source>
         <translation>Ganzzahl (64bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="169"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="171"/>
         <source>Text, limited variable length (varchar)</source>
         <translation>Text, begrenzte variable Länge (varchar)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="170"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="172"/>
         <source>Text, unlimited length (text)</source>
         <translation>Text, unbegrenzte Länge (text)</translation>
     </message>
@@ -36257,6 +36305,7 @@ Fortfahren?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="121"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="124"/>
+        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="904"/>
         <source>Default styles</source>
         <translation>Vorgabestile</translation>
     </message>
@@ -36402,11 +36451,6 @@ Fortfahren?</translation>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="859"/>
         <source>Project layers</source>
         <translation>Projektlayer</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="904"/>
-        <source>Defaut styles</source>
-        <translation>Vorgabestile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="935"/>
@@ -39873,8 +39917,12 @@ standard deviation ×</source>
     </message>
     <message>
         <location filename="../src/ui/qgssavetodbdialog.ui" line="97"/>
-        <source>Optionally pick an input form for attribute editing (QT Creator UI format), it will be stored on the db</source>
+        <source>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</source>
         <translation>Optional kann eine UI-Datei zur Attributbearbeitung gewählt, die in der Datenbank gespeichert wird</translation>
+    </message>
+    <message>
+        <source>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored on the database</source>
+        <translation type="obsolete">Optional kann eine UI-Datei zur Attributbearbeitung gewählt, die in der Datenbank gespeichert wird</translation>
     </message>
 </context>
 <context>
@@ -43671,7 +43719,7 @@ p, li { white-space: pre-wrap; }
         <translation>Attributfeldinformationen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3858"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3862"/>
         <source>Error: qgis element could not be found</source>
         <translation>Fehler: Element qgis wurde nicht gefunden</translation>
     </message>
@@ -43858,7 +43906,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsVectorLayerProperties</name>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="264"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="350"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="349"/>
         <source>Stop editing mode to enable this.</source>
         <translation>Bearbeitungsmodus beenden, um dies zu aktivieren.</translation>
     </message>
@@ -43868,37 +43916,37 @@ p, li { white-space: pre-wrap; }
         <translation>Ausdruck einfügen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="514"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="519"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="513"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="518"/>
         <source>Spatial Index</source>
         <translation>Räumlicher Index</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="514"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="513"/>
         <source>Creation of spatial index successful</source>
         <translation>Räumlichen Indexes erfolgreich erstellt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="519"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="518"/>
         <source>Creation of spatial index failed</source>
         <translation>Erstellung des räumlichen Indexes schlug fehl</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="656"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="655"/>
         <source>Load layer properties from style file</source>
         <translation>Layereigenschaften aus Stildatei laden</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="142"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="657"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="758"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="656"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="759"/>
         <source>QGIS Layer Style File</source>
         <translation>QGIS-Layerstildatei</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="143"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="657"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="753"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="656"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="754"/>
         <source>SLD File</source>
         <translation>SLD-Datei</translation>
     </message>
@@ -43914,49 +43962,49 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="159"/>
-        <source>Save on database (%1)</source>
+        <source>Save in database (%1)</source>
         <translation>In Datenbank speichern (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="562"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="561"/>
         <source>Load default style from: </source>
         <translation>Vorgabestil laden aus: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="564"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="621"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="563"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="620"/>
         <source>Cancel</source>
         <translation>Abbruch</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="565"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="622"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="564"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="621"/>
         <source>Local database</source>
         <translation>Lokale Datenbank</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="566"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="623"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="565"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="622"/>
         <source>Datasource database</source>
         <translation>Datenquellendatenbank</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="580"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="579"/>
         <source>Loaded from Provider</source>
         <translation>Aus Datenlieferanten geladen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="583"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="582"/>
         <source>No default style was found for this layer</source>
         <translation>Kein Vorgabestil für diesen Layer gefunden</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="619"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="618"/>
         <source>Save default style to: </source>
         <translation>Vorgabestil speichern in: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="683"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="682"/>
         <source>Load Style</source>
         <translation>Stil laden</translation>
     </message>
@@ -43966,42 +44014,42 @@ p, li { white-space: pre-wrap; }
         <translation>Stil gespeichert</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="762"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="763"/>
         <source>Save layer properties as style file</source>
         <translation>Layereigenschaften als Stildatei speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="836"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="850"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="859"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="837"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="851"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="860"/>
         <source>Error occured retrieving styles from database</source>
         <translation>Fehler beim Laden des Stil aus der Datenbank</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="860"/>
-        <source>The style retrieved is not a valid named style. Error message: %1</source>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="861"/>
+        <source>The retrieved style is not a valid named style. Error message: %1</source>
         <translation>Der geladene Stil ist kein gültiger benannter Stil.  Fehlermeldung: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="979"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="980"/>
         <source>Save Style</source>
         <translation>Stil speichern</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="578"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="582"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="608"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="646"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="577"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="581"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="607"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="645"/>
         <source>Default Style</source>
         <translation>Vorgabestil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="798"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="799"/>
         <source>Saved Style</source>
         <translation>Gespeicherter Stil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="331"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="330"/>
         <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
         <translation>Dieser Knopf öffnet die Abfrageerstellung und ermöglicht, statt aller Objekte, eine Untermenge der Objekte auf dem Kartenfenster darzustellen</translation>
     </message>
@@ -44011,7 +44059,7 @@ p, li { white-space: pre-wrap; }
         <translation>Layereigenschaften - %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="334"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="333"/>
         <source>The query used to limit the features in the layer is shown here. To enter or modify the query, click on the Query Builder button</source>
         <translation>Die Abfrage zur Begrenzung der Anzahl der Objekte wird hier angezeigt. Klicken Sie auf auf &apos;Abfrageerstellung&apos;, um eine Abfrage einzugeben oder zu ändern</translation>
     </message>

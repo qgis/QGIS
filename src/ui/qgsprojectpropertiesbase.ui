@@ -901,7 +901,7 @@
               <string notr="true">font-weight:bold;</string>
              </property>
              <property name="text">
-              <string>Defaut styles</string>
+              <string>Default styles</string>
              </property>
             </widget>
            </item>

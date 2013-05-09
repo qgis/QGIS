@@ -94,7 +94,7 @@
    <item row="2" column="0" rowspan="2" colspan="2">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Optionally pick an input form for attribute editing (QT Creator UI format), it will be stored in the db</string>
+      <string>Optionally pick an input form for attribute editing (QT Designer UI format), it will be stored in the database</string>
      </property>
      <property name="textFormat">
       <enum>Qt::PlainText</enum>
