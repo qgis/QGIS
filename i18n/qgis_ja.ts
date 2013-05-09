@@ -5673,7 +5673,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="130"/>
         <source>Rows</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ロウ</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="140"/>
@@ -12602,7 +12602,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1505"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">現在地の座標を表示する. マウスを動かすと表示は更新されます. キャンバスの中心を指定の座標にすることも可能です. 指定可能なフォーマットは緯度・経度または直交座標（東向方向・北方向）です</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1509"/>
@@ -12613,7 +12613,8 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="2173"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">プライベートのQGIS DBの表示の更新に失敗しました
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2314"/>
@@ -12739,7 +12740,7 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="6528"/>
         <location filename="../src/app/qgisapp.cpp" line="6537"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輝度やコントラストの変更にはラスターレイヤを選択する必要があります.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7498"/>
@@ -14216,7 +14217,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2999"/>
         <source>Cannot get Oracle select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oracleが取得出来ませんプロバイダを選択して下さい.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3022"/>
