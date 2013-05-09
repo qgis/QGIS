@@ -112,7 +112,7 @@
       <item row="8" column="0" colspan="3">
        <widget class="QCheckBox" name="cb_geometryColumnsOnly">
         <property name="toolTip">
-         <string>Restrict the displayed tables to those that are in the geometry_columns table</string>
+         <string>Restrict the displayed tables to those that are in the all_sdo_geom_metadata table</string>
         </property>
         <property name="whatsThis">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -125,10 +125,10 @@
       <item row="9" column="0" colspan="3">
        <widget class="QCheckBox" name="cb_userTablesOnly">
         <property name="toolTip">
-         <string>Restrict the search to the public schema for spatial tables not in the geometry_columns table</string>
+         <string>When searching for spatial tables restrict the search to tables that are owned by the user.</string>
         </property>
         <property name="whatsThis">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owner by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owned by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Only look for user's tables</string>
