@@ -36552,7 +36552,7 @@ enhancement</source>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="33"/>
         <source>Create a new %1 connection</source>
-        <translation type="unfinished"></translation>
+        <translation>新しい %1 コネクションの作成</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="70"/>
@@ -37367,17 +37367,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="46"/>
         <source>No query has been specified.</source>
-        <translation type="unfinished"></translation>
+        <translation>クエリが指定されていません.</translation>
     </message>
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="52"/>
         <source>There is already a pending request for data.</source>
-        <translation type="unfinished"></translation>
+        <translation>保留中のデータリクエストがあります.</translation>
     </message>
     <message>
         <location filename="../src/analysis/openstreetmap/qgsosmdownload.cpp" line="58"/>
         <source>Cannot open output file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>出力ファイルをオープンできません %1</translation>
     </message>
 </context>
 <context>
@@ -37420,7 +37420,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="135"/>
         <source>OpenStreetMap files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap ファイル (*.osm)</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="149"/>
@@ -37432,23 +37432,24 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="177"/>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="181"/>
         <source>OpenStreetMap download</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap ダウンロード</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="162"/>
         <source>Would you like to abort download?</source>
-        <translation type="unfinished"></translation>
+        <translation>ダウンロードを中止しますか?</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="177"/>
         <source>Download failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ダウンロード失敗.
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmdownloaddialog.cpp" line="181"/>
         <source>Download has been successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>ダウンロードが成功しました.</translation>
     </message>
 </context>
 <context>
@@ -37456,99 +37457,101 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="14"/>
         <source>Export OpenStreetMap topology to SpatiaLite</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMapトポロジをSpatialiteにエキスポートする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="20"/>
         <source>Input DB file</source>
-        <translation type="unfinished"></translation>
+        <translation>入力DBファイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="29"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="39"/>
         <source>Export type</source>
-        <translation type="unfinished"></translation>
+        <translation>エキスポートタイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="45"/>
         <source>Points (nodes)</source>
-        <translation type="unfinished"></translation>
+        <translation>点(nodes)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="55"/>
         <source>Polylines (open ways)</source>
-        <translation type="unfinished"></translation>
+        <translation>ポリライン(open ways)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="62"/>
         <source>Polygons (closed ways)</source>
-        <translation type="unfinished"></translation>
+        <translation>ポリゴン(closed ways)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="72"/>
         <source>Output layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>出力レイヤ名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="84"/>
         <source>Exported tags</source>
-        <translation type="unfinished"></translation>
+        <translation>出力されたタグ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="92"/>
         <source>Load from DB</source>
-        <translation type="unfinished"></translation>
+        <translation>DBからのロード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="124"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation type="unfinished">終了時にキャンバスにロードします(&amp;L)</translation>
+        <translation>終了時にキャンバスにロードします(&amp;L)</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="45"/>
         <source>Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>タグ</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="45"/>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>カウント</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="60"/>
         <source>SQLite databases (*.db)</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite データベース (*.db)</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="89"/>
         <source>Unable to open database:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>データベースを開けません
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="171"/>
         <source>OpenStreetMap export</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMapエキスポート</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="171"/>
         <source>Export has been successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>エキスポートが成功しました.</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="175"/>
         <source>OpenStreetMap import</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMapインポート</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="175"/>
         <source>Failed to export OSM data:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>OSMデータエキスポートに失敗しました.
+%1</translation>
     </message>
 </context>
 <context>
@@ -37556,66 +37559,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="14"/>
         <source>OpenStreetMap Import</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMapインポート</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="20"/>
         <source>Input XML file (.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>入力XMLファイル(.osm)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="29"/>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="48"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="39"/>
         <source>Output SpatiaLite DB file</source>
-        <translation type="unfinished"></translation>
+        <translation>出力SpatiaLite DBファイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="58"/>
         <source>Create connection (SpatiaLite) after import</source>
-        <translation type="unfinished"></translation>
+        <translation>インポート後に接続(SpatiaLite)を作成する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmimportdialog.ui" line="67"/>
         <source>Connection name</source>
-        <translation type="unfinished"></translation>
+        <translation>接続名称</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="51"/>
         <source>OpenStreetMap files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMap ファイル (*.osm)</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="64"/>
         <source>SQLite databases (*.db)</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite データベース (*.db)</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="88"/>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="108"/>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="119"/>
         <source>OpenStreetMap import</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenStreetMapインポート</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="88"/>
         <source>Output database file exists already. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>出力データベースファイルはすでに存在します.上書きしますか?</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="108"/>
         <source>Failed to import OSM data:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>OSMデータのインポートに失敗しました.
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmimportdialog.cpp" line="119"/>
         <source>Import has been successful.</source>
-        <translation type="unfinished"></translation>
+        <translation>インポートが成功しました.</translation>
     </message>
 </context>
 <context>
@@ -37623,12 +37627,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsowsconnection.cpp" line="88"/>
         <source>WMS Password for %1</source>
-        <translation type="unfinished">%1のWMSパスワード</translation>
+        <translation>%1のWMSパスワード</translation>
     </message>
     <message>
         <location filename="../src/core/qgsowsconnection.cpp" line="88"/>
         <source>Password</source>
-        <translation type="unfinished">パスワード</translation>
+        <translation>パスワード</translation>
     </message>
 </context>
 <context>
@@ -37636,12 +37640,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/ows/qgsowsdataitems.cpp" line="113"/>
         <source>Edit...</source>
-        <translation type="unfinished">編集...</translation>
+        <translation>編集...</translation>
     </message>
     <message>
         <location filename="../src/providers/ows/qgsowsdataitems.cpp" line="117"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
 </context>
 <context>
@@ -37649,17 +37653,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="72"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">追加(&amp;A)</translation>
+        <translation>追加(&amp;A)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="73"/>
         <source>Add selected layers to map</source>
-        <translation type="unfinished">選択されたレイヤを地図に追加する</translation>
+        <translation>選択されたレイヤを地図に追加する</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="82"/>
         <source>Always cache</source>
-        <translation type="unfinished"></translation>
+        <translation>常にキャッシュする</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="83"/>
@@ -37684,66 +37688,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="286"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">削除を確認</translation>
+        <translation>削除を確認</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="304"/>
         <source>Load connections</source>
-        <translation type="unfinished"></translation>
+        <translation>接続をロードする</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="305"/>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished">XMLファイル(*.xml *XML)</translation>
+        <translation>XMLファイル(*.xml *XML)</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/gui/qgsowssourceselect.cpp" line="434"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>空間参照システム(%n個利用可能）</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="471"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">空間参照システム</translation>
+        <translation>空間参照システム</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="570"/>
         <source>Could not understand the response:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>反応を解釈できません.
+%1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="621"/>
         <source>WMS proxies</source>
-        <translation type="unfinished">WMS プロキシ</translation>
+        <translation>WMS プロキシ</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="621"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="unfinished">サーバリストに WMS サーバが追加されました。Web プロキシ経由でインターネットに接続している場合には、QGIS のオプションダイアログでプロキシ設定する必要がある点に注意してください。</translation>
+        <translation>サーバリストに WMS サーバが追加されました。Web プロキシ経由でインターネットに接続している場合には、QGIS のオプションダイアログでプロキシ設定する必要がある点に注意してください。</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="702"/>
         <source>parse error at row %1, column %2: %3</source>
-        <translation type="unfinished">解析エラー 行%1 カラム %2 %3</translation>
+        <translation>解析エラー 行%1 カラム %2 %3</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="707"/>
         <source>network error: %1</source>
-        <translation type="unfinished">ネットワークエラー: %1</translation>
+        <translation>ネットワークエラー: %1</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="730"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished">%1コネクションは存在しています。上書きしますか？</translation>
+        <translation>%1コネクションは存在しています.上書きしますか?</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsowssourceselect.cpp" line="731"/>
         <source>Confirm Overwrite</source>
-        <translation type="unfinished">上書き確認</translation>
+        <translation>上書き確認</translation>
     </message>
 </context>
 <context>
@@ -37751,94 +37756,94 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="14"/>
         <source>Add Layer(s) from a Server</source>
-        <translation type="unfinished">サーバからレイヤを追加</translation>
+        <translation>サーバからレイヤを追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="43"/>
         <source>Ready</source>
-        <translation type="unfinished">準備</translation>
+        <translation>準備</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="60"/>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="461"/>
         <source>Layers</source>
-        <translation type="unfinished">レイヤ</translation>
+        <translation>レイヤ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="74"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished">接続(&amp;C)</translation>
+        <translation>接続(&amp;C)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="81"/>
         <source>&amp;New</source>
-        <translation type="unfinished">新規 (&amp;N)</translation>
+        <translation>新規 (&amp;N)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="91"/>
         <source>Edit</source>
-        <translation type="unfinished">編集</translation>
+        <translation>編集</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="101"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="121"/>
         <source>Load connections from file</source>
-        <translation type="unfinished">接続情報をファイルからロードする</translation>
+        <translation>接続情報をファイルからロードする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="124"/>
         <source>Load</source>
-        <translation type="unfinished">読み込み</translation>
+        <translation>読み込み</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="131"/>
         <source>Save connections to file</source>
-        <translation type="unfinished">接続情報をファイルに保存する</translation>
+        <translation>接続情報をファイルに保存する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="134"/>
         <source>Save</source>
-        <translation type="unfinished">保存</translation>
+        <translation>保存</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="141"/>
         <source>Adds a few example WMS servers</source>
-        <translation type="unfinished">WMS サーバのサンプルを追加</translation>
+        <translation>WMS サーバのサンプルを追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="147"/>
         <source>Add default servers</source>
-        <translation type="unfinished">既定のサーバを追加</translation>
+        <translation>既定のサーバを追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="169"/>
         <source>ID</source>
-        <translation type="unfinished">ID</translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="174"/>
         <source>Name</source>
-        <translation type="unfinished">名称</translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="179"/>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="525"/>
         <source>Title</source>
-        <translation type="unfinished">タイトル</translation>
+        <translation>タイトル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="184"/>
         <source>Abstract</source>
-        <translation type="unfinished">要約</translation>
+        <translation>要約</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="198"/>
         <source>Time</source>
-        <translation type="unfinished">時間</translation>
+        <translation>時間</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
@@ -37847,48 +37852,48 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="227"/>
         <source>Coordinate Reference System:</source>
-        <translation type="unfinished"></translation>
+        <translation>空間参照システム:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="240"/>
         <source>Selected Coordinate Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>選択された空間参照システム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="253"/>
         <source>Change ...</source>
-        <translation type="unfinished">変更 ...</translation>
+        <translation>変更 ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="269"/>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="476"/>
         <source>Format</source>
-        <translation type="unfinished">形式</translation>
+        <translation>形式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="289"/>
         <source>Options</source>
-        <translation type="unfinished">オプション</translation>
+        <translation>オプション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="295"/>
         <source>Layer name</source>
-        <translation type="unfinished">レイヤ名</translation>
+        <translation>レイヤ名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="311"/>
         <source>Tile size</source>
-        <translation type="unfinished">タイルサイズ</translation>
+        <translation>タイルサイズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="324"/>
         <source>Feature limit for GetFeatureInfo</source>
-        <translation type="unfinished">GetFeatureInfoの地物制限</translation>
+        <translation>GetFeatureInfoの地物制限</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="346"/>
         <source>Cache</source>
-        <translation type="unfinished">キャッシュ</translation>
+        <translation>キャッシュ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="359"/>
@@ -37907,82 +37912,82 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="379"/>
         <source>Layer Order</source>
-        <translation type="unfinished">レイヤ順序</translation>
+        <translation>レイヤ順序</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="385"/>
         <source>Move selected layer UP</source>
-        <translation type="unfinished">選択されたレイヤを上に移動する</translation>
+        <translation>選択されたレイヤを上に移動する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="388"/>
         <source>Up</source>
-        <translation type="unfinished">アップ</translation>
+        <translation>アップ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="395"/>
         <source>Move selected layer DOWN</source>
-        <translation type="unfinished">選択されたレイヤを下に移動する</translation>
+        <translation>選択されたレイヤを下に移動する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="398"/>
         <source>Down</source>
-        <translation type="unfinished">ダウン</translation>
+        <translation>ダウン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="422"/>
         <source>Layer</source>
-        <translation type="unfinished">レイヤ</translation>
+        <translation>レイヤ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="427"/>
         <source>Style</source>
-        <translation type="unfinished">スタイル</translation>
+        <translation>スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="436"/>
         <source>Tilesets</source>
-        <translation type="unfinished">タイルセット</translation>
+        <translation>タイルセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="466"/>
         <source>Styles</source>
-        <translation type="unfinished">スタイル</translation>
+        <translation>スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="471"/>
         <source>Size</source>
-        <translation type="unfinished">大きさ</translation>
+        <translation>大きさ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="481"/>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation>CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="490"/>
         <source>Server Search</source>
-        <translation type="unfinished">サーバー検索</translation>
+        <translation>サーバー検索</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="499"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>検索</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="530"/>
         <source>Description</source>
-        <translation type="unfinished">記述</translation>
+        <translation>説明</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="535"/>
         <source>URL</source>
-        <translation type="unfinished">URL</translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="543"/>
         <source>Add selected row to WMS list</source>
-        <translation type="unfinished">選択行をWMSリストに追加する</translation>
+        <translation>選択行をWMSリストに追加する</translation>
     </message>
 </context>
 <context>
@@ -38097,47 +38102,47 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="104"/>
         <source>Converting to offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>オフラインプロジェクトに変換中</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="116"/>
         <source>Synchronizing to remote layers</source>
-        <translation type="unfinished"></translation>
+        <translation>リモートレイヤの同期中</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="165"/>
         <source>%v / %m features copied</source>
-        <translation type="unfinished">%v　/ %mの地物をコピーしました</translation>
+        <translation>%v　/ %mの地物をコピーしました</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="168"/>
         <source>%v / %m features processed</source>
-        <translation type="unfinished">%v　/ %mの地物を処理しました</translation>
+        <translation>%v　/ %mの地物を処理しました</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="171"/>
         <source>%v / %m fields added</source>
-        <translation type="unfinished">%v　/ %mのフィールドが追加されました</translation>
+        <translation>%v　/ %mのフィールドが追加されました</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="174"/>
         <source>%v / %m features added</source>
-        <translation type="unfinished">%v　/ %mの地物が追加されました</translation>
+        <translation>%v　/ %mの地物が追加されました</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="177"/>
         <source>%v / %m features removed</source>
-        <translation type="unfinished">%v　/ %mの地物が削除されました</translation>
+        <translation>%v　/ %mの地物が削除されました</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="180"/>
         <source>%v / %m feature updates</source>
-        <translation type="unfinished">%v　/ %mの地物が更新されます</translation>
+        <translation>%v　/ %mの地物が更新されます</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="183"/>
         <source>%v / %m feature geometry updates</source>
-        <translation type="unfinished">%v　/ %mの地物ジオメトリが更新されます</translation>
+        <translation>%v　/ %mの地物ジオメトリが更新されます</translation>
     </message>
 </context>
 <context>
@@ -38283,12 +38288,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="350"/>
         <source>Date</source>
-        <translation type="unfinished">日付</translation>
+        <translation>日付</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="351"/>
         <source>Date &amp; Time</source>
-        <translation type="unfinished"></translation>
+        <translation>日付と時間</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="396"/>
@@ -38298,7 +38303,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="496"/>
         <source>Unknown</source>
-        <translation type="unfinished">不明</translation>
+        <translation>不明</translation>
     </message>
     <message>
         <source>Read attempt on an invalid OGR data source</source>
@@ -38603,7 +38608,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/templates/qgsoptionsdialog_template.ui" line="20"/>
         <source>Options Dialog Template</source>
-        <translation type="unfinished"></translation>
+        <translation>オプションダイアログテンプレート</translation>
     </message>
     <message>
         <location filename="../src/ui/templates/qgsoptionsdialog_template.ui" line="126"/>
@@ -38768,13 +38773,13 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1839"/>
         <source>Load scales</source>
-        <translation type="unfinished"></translation>
+        <translation>ロードスケール</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1840"/>
         <location filename="../src/app/qgsoptions.cpp" line="1866"/>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished">XMLファイル(*.xml *XML)</translation>
+        <translation>XMLファイル(*.xml *XML)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1865"/>
@@ -39081,7 +39086,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3454"/>
         <source>Coordinate Reference System (CRS)</source>
-        <translation type="unfinished">空間参照システム(CRS)</translation>
+        <translation>空間参照システム(CRS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3479"/>
