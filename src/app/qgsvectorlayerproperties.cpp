@@ -155,8 +155,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     QObject::connect( mLoadStyleMenu, SIGNAL( triggered( QAction * ) ),
                       this, SLOT( loadStyleMenuTriggered( QAction * ) ) ) ;
 
-    //for saving
-    mSaveAsMenu->addAction( tr( "Save on database (%1)" ).arg( layer->providerType() ) );
+      //for saving
+      mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( layer->providerType() ) );
   }
 
   QObject::connect( mSaveAsMenu, SIGNAL( triggered( QAction * ) ),
@@ -595,7 +595,6 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
   }
 
   QString myMessage = layer->loadNamedStyle( layer->styleURI(), defaultLoadedFlag, true );
-//  QString myMessage = layer->loadDefaultStyle( defaultLoadedFlag );
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
