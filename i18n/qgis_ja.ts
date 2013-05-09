@@ -12613,7 +12613,8 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="2173"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation type="unfinished">プライベートのQGIS DB%1の表示の更新に失敗しました</translation>
+        <translation type="unfinished">プライベートのQGIS DBの表示の更新に失敗しました
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2314"/>
