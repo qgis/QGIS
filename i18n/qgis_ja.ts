@@ -52319,7 +52319,8 @@ Kindly select a group or smart group you might want to delete.</source>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="998"/>
         <source>New group could not be created.
 There was a problem with your symbol database.</source>
-        <translation type="unfinished"></translation>
+        <translation>新グループは作成できませんでした.
+シンボルデータベースに問題があります.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1109"/>
@@ -52329,22 +52330,22 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1110"/>
         <source>There was a problem with the Symbols database while regrouping.</source>
-        <translation type="unfinished"></translation>
+        <translation>再グループ中にシンボルデータベースに問題が発生しました.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1339"/>
         <source>You have not selected a Smart Group. Kindly select a Smart Group to edit.</source>
-        <translation type="unfinished"></translation>
+        <translation>スマートグループを選択していません.編集するスマートグループを選択して下さい.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1357"/>
         <source>Database Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>データベースエラー!</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="1358"/>
         <source>There was some error while editing the smart group.</source>
-        <translation type="unfinished"></translation>
+        <translation>スマートグループ編集中にいくつかのエラーが発生しました.</translation>
     </message>
     <message>
         <source>Color ramp name</source>
@@ -52575,17 +52576,17 @@ There was a problem with your symbol database.</source>
         <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="241"/>
         <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="271"/>
         <source>Error, file does not exist or is not readable</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー,ファイルが存在しないか読み込みできません</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="267"/>
         <source>Invalid file url</source>
-        <translation type="unfinished"></translation>
+        <translation>不正なURL</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssvgselectorwidget.cpp" line="267"/>
         <source>Error, file URL is invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー,ファイルURLが不正です</translation>
     </message>
 </context>
 <context>
@@ -52659,7 +52660,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbolv2selectordialog.cpp" line="404"/>
         <source>Kindly select a symbol to add layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤに追加するシンボルを選択して下さい.</translation>
     </message>
 </context>
 <context>
@@ -54682,7 +54683,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="323"/>
         <source>Layer source</source>
-        <translation type="unfinished">レイヤソース</translation>
+        <translation>レイヤソース</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="348"/>
@@ -54722,12 +54723,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="614"/>
         <source>Feature subset</source>
-        <translation type="unfinished"></translation>
+        <translation>地物サブセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="971"/>
         <source>Map Tip display text</source>
-        <translation type="unfinished"></translation>
+        <translation>マップチップ表示テキスト</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="991"/>
@@ -54772,7 +54773,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="316"/>
         <source>displayed as</source>
-        <translation type="unfinished"></translation>
+        <translation>表示名称</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="173"/>
@@ -55045,7 +55046,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="128"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="808"/>
         <source>Labels (deprecated)</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベル (廃止予定)</translation>
     </message>
     <message>
         <source>New column</source>
@@ -58462,28 +58463,28 @@ SQL Anywhereエラーコード %2
         <location filename="../python/console/console_settings.ui" line="193"/>
         <location filename="../python/console/console_settings.ui" line="362"/>
         <source>from APIs files</source>
-        <translation type="unfinished"></translation>
+        <translation>APIファイルから</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="206"/>
         <location filename="../python/console/console_settings.ui" line="375"/>
         <source>from Doc and APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>文書とAPIから</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="396"/>
         <source>Using preloaded APIs file</source>
-        <translation type="unfinished"></translation>
+        <translation>事前のロードされたAPIファイルを利用している</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="515"/>
         <source>APIs</source>
-        <translation type="unfinished"></translation>
+        <translation>API</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="520"/>
         <source>Path</source>
-        <translation type="unfinished">パス</translation>
+        <translation>パス</translation>
     </message>
     <message>
         <source>from API files</source>
