@@ -12739,7 +12739,7 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="6528"/>
         <location filename="../src/app/qgisapp.cpp" line="6537"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輝度やコントラストの変更にはラスターレイヤを選択する必要があります.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7498"/>
@@ -14216,7 +14216,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2999"/>
         <source>Cannot get Oracle select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oracleが取得出来ませんプロバイダを選択して下さい.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3022"/>
