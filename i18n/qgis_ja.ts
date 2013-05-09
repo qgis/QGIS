@@ -12620,7 +12620,7 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="2314"/>
         <location filename="../src/app/qgisapp.cpp" line="3387"/>
         <source>&lt; Blank &gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt; 空白 &gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2378"/>
@@ -14237,7 +14237,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3043"/>
         <source>Cannot get WCS select dialog from provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>プロバイダからWCS選択ダイアログを取得出来ません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3070"/>
@@ -14252,47 +14252,47 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3257"/>
         <source>Default failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>デフォルトテンプレートのオープンに失敗しました.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3261"/>
         <source>Default not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>デフォルトテンプレートが見つかりません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3263"/>
         <source>Open Template Project</source>
-        <translation type="unfinished"></translation>
+        <translation>テンプレートプロジェクトを開きます</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3288"/>
         <source>Auto-open Project</source>
-        <translation type="unfinished"></translation>
+        <translation>自動的にプロジェクトを開く</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3321"/>
         <source>Failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>オープンに失敗しました %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3344"/>
         <source>Not valid project file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>不正なプロジェクトファイルです %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3357"/>
         <source>Project failed to open: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>プロジェクトのオープンに失敗しました %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3364"/>
         <source>Default template has been reopened: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>デフォルトテンプレートが再度開かれました %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3371"/>
         <source>File not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルが見つかりません %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3440"/>
@@ -14315,27 +14315,27 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3503"/>
         <source>Loading project: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>プロジェクトをロード: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3562"/>
         <source>Security warning</source>
-        <translation type="unfinished"></translation>
+        <translation>セキュリティ警告</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3563"/>
         <source>project macros have been disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>プロジェクトマクロが無効になりました.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3568"/>
         <source>Enable macros</source>
-        <translation type="unfinished"></translation>
+        <translation>マクロを有効にする</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3597"/>
         <source>Project loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>プロジェクトが読み込まれました</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3688"/>
@@ -14355,12 +14355,12 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4186"/>
         <source>Labeling Options</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベリングオプション</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4187"/>
         <source>Please select a vector layer first</source>
-        <translation type="unfinished"></translation>
+        <translation>まずベクタレイヤーを選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4196"/>
@@ -14370,7 +14370,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4352"/>
         <source>Cannot write raster error code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ラスタファイルに書き込むことができません エラーコード %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4443"/>
@@ -14412,12 +14412,12 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4628"/>
         <source>Create unique print composer title</source>
-        <translation type="unfinished"></translation>
+        <translation>独自のコンポーザタイトルを作成してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4631"/>
         <source>(title generated if left empty)</source>
-        <translation type="unfinished"></translation>
+        <translation>（空欄にするとタイトルを自動生成します）</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4645"/>
@@ -14597,12 +14597,12 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6797"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
-        <translation type="unfinished"></translation>
+        <translation>未保存のエディットモードレイヤーがあります これらは保存されません！</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6822"/>
         <source>Do you want to save the current project?%1</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のプロジェクトを保存しますか？ %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7430"/>
@@ -14641,7 +14641,7 @@ Error: %1</source>
         <location filename="../src/app/qgisapp.cpp" line="8258"/>
         <location filename="../src/app/qgisapp.cpp" line="8433"/>
         <source>Error adding valid layer to map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>正常なレイヤーをマップキャンバスに追加時にエラー</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8259"/>
@@ -15354,7 +15354,16 @@ Default Theme Path:	%7
 SVG Search Paths:	%8
 User DB Path:	%9
 </source>
-        <translation type="unfinished"></translation>
+        <translation>アプリケーションの状態：
+QGIS_PREFIX_PATH 環境変数			%1
+プレフィックス		%2
+プラグインパス		%3
+パッケージデータパス	%4
+アクティブテーマ名	%5
+アクティブテーマパス	%6
+デフォルトテーマパス	%7
+SVG検索パス	%8
+ユーザデータベースパス	%9</translation>
     </message>
     <message>
         <source>Application state:
@@ -15391,22 +15400,22 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="111"/>
         <source>Filename parsing error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル名解析エラー： %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="127"/>
         <source>Feature filter parser error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>要素フィルタパーサーエラー： %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="143"/>
         <source>Feature filter eval error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>要素フィルタ評価エラー： %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgsatlascomposition.cpp" line="235"/>
         <source>Filename eval error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル名評価エラー： %1</translation>
     </message>
 </context>
 <context>
