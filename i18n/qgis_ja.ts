@@ -35602,17 +35602,17 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="705"/>
         <source>Interval</source>
-        <translation type="unfinished">間隔</translation>
+        <translation>間隔</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="707"/>
         <source>Line offset</source>
-        <translation type="unfinished">ラインオフセット</translation>
+        <translation>ラインオフセット</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="709"/>
         <source>Placement</source>
-        <translation type="unfinished">配置</translation>
+        <translation>配置</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollayerv2widget.cpp" line="710"/>
@@ -35848,7 +35848,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/qgsmessagebar.cpp" line="72"/>
         <source>Close all</source>
-        <translation type="unfinished"></translation>
+        <translation>全てを閉じる</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmessagebar.cpp" line="78"/>
@@ -35858,7 +35858,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/qgsmessagebar.cpp" line="373"/>
         <source>more</source>
-        <translation type="unfinished"></translation>
+        <translation>さらに</translation>
     </message>
 </context>
 <context>
@@ -36459,7 +36459,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="55"/>
         <source>Stretch to MinMax</source>
-        <translation type="unfinished"></translation>
+        <translation>最大 最小に伸長する</translation>
     </message>
     <message>
         <location filename="../src/gui/raster/qgsmultibandcolorrendererwidget.cpp" line="56"/>
@@ -36498,14 +36498,15 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="134"/>
         <source>Contrast
 enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation>コントラスト
+強調</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="212"/>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="242"/>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="249"/>
         <source>Min/max</source>
-        <translation type="unfinished"></translation>
+        <translation>最小/最大</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmultibandcolorrendererwidgetbase.ui" line="235"/>
