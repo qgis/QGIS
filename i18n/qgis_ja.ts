@@ -21536,17 +21536,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="131"/>
         <source>Arch D (24x36 in)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Arch D (24x36 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="132"/>
         <source>Arch E (36x48 in)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Arch E (36x48 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="133"/>
         <source>Arch E1 (30x42 in)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Arch E1 (30x42 インチ)</translation>
     </message>
     <message>
         <source>Legal (8.5x14 inches)</source>
@@ -21581,7 +21581,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="83"/>
         <source>Presets</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">プリセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="103"/>
@@ -31762,7 +31762,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="43"/>
         <source>Expand tree.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ツリーを展開する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="46"/>
@@ -31776,22 +31776,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="57"/>
         <source>Collapse tree.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ツリーを折りたたむ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="71"/>
         <source>New results will be expanded by default.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新しい結果はデフォルトで開かれます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="88"/>
         <source>Copy selected feature to clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選択された地物をクリップボードにコピー.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="108"/>
         <source>Print selected HTML response.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選択されたHTMLを印刷.</translation>
     </message>
 </context>
 <context>
@@ -31864,7 +31864,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="735"/>
         <source>Copy GetFeatureInfo request URL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GetFeatureInfoリクエストURLをコピーする</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="743"/>
@@ -31889,7 +31889,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="747"/>
         <source>Layer properties...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">レイヤプロパティ...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="749"/>
@@ -31909,12 +31909,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1376"/>
         <source>Cannot not print</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">印刷できません</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="1376"/>
         <source>Cannot print this item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">これは印刷できません</translation>
     </message>
 </context>
 <context>
@@ -32498,7 +32498,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="74"/>
         <source>Expression result</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">式の結果</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="113"/>
