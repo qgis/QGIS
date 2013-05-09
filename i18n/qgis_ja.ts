@@ -40659,7 +40659,7 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="145"/>
         <source>Whole big number</source>
-        <translation type="unfinished"></translation>
+        <translation>広範囲の整数値</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="146"/>
@@ -40689,17 +40689,17 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="155"/>
         <source>Text, limited variable length (varchar2)</source>
-        <translation type="unfinished"></translation>
+        <translation>上限付き可変長テキスト(varchar2)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="156"/>
         <source>Text, unlimited length (long)</source>
-        <translation type="unfinished"></translation>
+        <translation>上限無し可変長テキスト(long)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="490"/>
         <source>FAILURE: Field %1 not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: フィールド%1が見つかりません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="490"/>
@@ -40749,52 +40749,52 @@ error:%2
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2755"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2764"/>
         <source>Oracle</source>
-        <translation type="unfinished">Oracle</translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="501"/>
         <source>Read attempt on an invalid oracle data source</source>
-        <translation type="unfinished"></translation>
+        <translation>不正なOracleデータソースを読もうとしました</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="550"/>
         <source>Loading comment for table %1.%2 failed [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>テーブル%1.%2のコメントのロードに失敗しました [%3]</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="571"/>
         <source>Loading comment for columns of table %1.%2 failed [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>テーブル%1.%2のカラムコメントのロードに失敗しました [%3]</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="625"/>
         <source>Other spatial field %1.%2.%3 ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>他の空間フィールド%1.%2.%3は無視されました</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="639"/>
         <source>Loading field types for table %1.%2 failed [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>テーブル%1.%2のフィールドタイプのロードに失敗しました [%3]</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="661"/>
         <source>Invalid spatial index %1 on column %2.%3.%4 found - expect poor performance.</source>
-        <translation type="unfinished"></translation>
+        <translation>カラム%2.%3.%4の空間インデックス%1が不正です - 低いパフォーマンスが予想されます.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="676"/>
         <source>No spatial index on column %1.%2.%3 found - expect poor performance.</source>
-        <translation type="unfinished"></translation>
+        <translation>カラム%1.%2.%3に空間インデックスが見つかりません - 低いパフォーマンスが予想されます.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="685"/>
         <source>Probing for spatial index on column %1.%2.%3 failed [%4]</source>
-        <translation type="unfinished"></translation>
+        <translation>カラム%1.%2.%3の空間インデックスの検査に失敗しました [%4]</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="701"/>
         <source>Retrieving fields from &apos;%1&apos; failed [%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos;からフィールドを取得するのに失敗しました [%2]</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="782"/>
