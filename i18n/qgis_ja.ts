@@ -36544,7 +36544,7 @@ enhancement</source>
     <message>
         <location filename="../src/core/qgsnetworkreplyparser.cpp" line="58"/>
         <source>Cannot find boundary in multipart content type</source>
-        <translation type="unfinished"></translation>
+        <translation>マルチパートコンテントタイプの境界がみつかりません</translation>
     </message>
 </context>
 <context>
