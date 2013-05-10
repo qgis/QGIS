@@ -6558,7 +6558,11 @@ void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 void QgisApp::helpContents()
 {
   // We should really ship the HTML version of the docs local too.
-  openURL( "http://docs.qgis.org/2.0/html/en/docs/user_manual/index.html", false );
+  openURL( QString( "http://docs.qgis.org/%1.%2/html/%3/docs/user_manual/" )
+           .arg( QGis::QGIS_VERSION_INT / 10000 )
+           .arg( QGis::QGIS_VERSION_INT / 100 % 100 )
+           .arg( tr( "en", "documentation language" ) ),
+           false );
 }
 
 void QgisApp::apiDocumentation()
@@ -6575,7 +6579,7 @@ void QgisApp::apiDocumentation()
 
 void QgisApp::supportProviders()
 {
-  openURL( "http://www.qgis.org/en/commercial-support.html", false );
+  openURL( tr( "http://www.qgis.org/en/commercial-support.html" ), false );
 }
 
 void QgisApp::helpQgisHomePage()
