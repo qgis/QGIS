@@ -43,6 +43,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
         self.parent = parent
 
+        self.opening = ['(', '{', '[', "'", '"']
+        self.closing = [')', '}', ']', "'", '"']
+
         self.settings = QSettings()
 
         # Enable non-ascii chars for editor
@@ -69,6 +72,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         # Brace matching: enable for a brace immediately before or after
         # the current position
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
+        self.setMatchedBraceBackgroundColor(QColor("#c6c6c6"))
 
         # Current line visible with special background color
         self.setCaretWidth(2)
@@ -387,6 +391,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             self.showNext()
         ## TODO: press event for auto-completion file directory
         else:
+            t = unicode(e.text())
+            ## Close bracket automatically
+            if t in self.opening:
+                i = self.opening.index(t)
+                self.insert(self.closing[i])
             QsciScintilla.keyPressEvent(self, e)
 
     def contextMenuEvent(self, e):

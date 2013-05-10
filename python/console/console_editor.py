@@ -78,6 +78,9 @@ class Editor(QsciScintilla):
         self.parent = parent
         ## recent modification time
         self.mtime = 0
+        self.opening = ['(', '{', '[', "'", '"']
+        self.closing = [')', '}', ']', "'", '"']
+
         self.settings = QSettings()
 
         # Enable non-ascii chars for editor
@@ -114,10 +117,13 @@ class Editor(QsciScintilla):
         self.setMinimumHeight(120)
         #self.setMinimumWidth(300)
 
+        self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
+        self.setMatchedBraceBackgroundColor(QColor("#c6c6c6"))
+
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
         self.setFoldMarginColors(QColor("#f4f4f4"),QColor("#f4f4f4"))
-        #self.setWrapMode(QsciScintilla.WrapCharacter)
+        #self.setWrapMode(QsciScintilla.WrapWord)
 
         ## Edge Mode
         self.setEdgeMode(QsciScintilla.EdgeLine)
@@ -127,6 +133,7 @@ class Editor(QsciScintilla):
         #self.setWrapMode(QsciScintilla.WrapCharacter)
         self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)
         #self.SendScintilla(QsciScintilla.SCI_SETHSCROLLBAR, 0)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
         self.settingsEditor()
 
@@ -551,6 +558,14 @@ class Editor(QsciScintilla):
         self.setSelection(linenr - 1, index, linenr - 1, index + len(objName))
         self.ensureLineVisible(linenr)
         self.setFocus()
+
+    def keyPressEvent(self, e):
+        t = unicode(e.text())
+        ## Close bracket automatically
+        if t in self.opening:
+            i = self.opening.index(t)
+            self.insert(self.closing[i])
+        QsciScintilla.keyPressEvent(self, e)
 
     def focusInEvent(self, e):
         pathfile = self.parent.path
