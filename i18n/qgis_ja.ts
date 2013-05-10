@@ -17902,12 +17902,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2085"/>
         <source>Project contains blend modes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">プロジェクトはブレンドモードを含んでいます</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2086"/>
         <source>Blend modes are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">このプロジェクトではブレンドモードが有効なためベクターとしての印刷ができません. ラスターとしての印刷が推奨されます.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2087"/>
@@ -18262,7 +18262,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="76"/>
         <source>Paper Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ペーパーナビゲーション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="91"/>
@@ -19223,7 +19223,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="238"/>
         <source>Legend split layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">凡例によるレイヤの分割</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="250"/>
