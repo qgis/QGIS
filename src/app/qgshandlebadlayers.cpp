@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgsproviderregistry.h"
+#include "qgsmessagebar.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -37,7 +38,18 @@ void QgsHandleBadLayersHandler::handleBadLayers( QList<QDomNode> layers, QDomDoc
 {
   QApplication::setOverrideCursor( Qt::ArrowCursor );
   QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers, projectDom );
-  dialog->exec();
+
+  if ( dialog->layerCount() < layers.size() )
+    QgisApp::instance()->messageBar()->pushMessage(
+      tr( "Handle Bad layers" ),
+      tr( "%1 of %2 bad layers were not not fixable." )
+      .arg( layers.size() - dialog->layerCount() )
+      .arg( layers.size() ),
+      QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
+
+  if ( dialog->layerCount() > 0 )
+    dialog->exec();
+
   delete dialog;
   QApplication::restoreOverrideCursor();
 }
@@ -356,4 +368,9 @@ void QgsHandleBadLayers::rejected()
   }
 
   QDialog::reject();
+}
+
+int QgsHandleBadLayers::layerCount()
+{
+  return mLayerList->rowCount();
 }
