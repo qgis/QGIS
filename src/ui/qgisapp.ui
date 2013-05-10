@@ -200,6 +200,7 @@
     </property>
     <addaction name="mActionHelpContents"/>
     <addaction name="mActionHelpAPI"/>
+    <addaction name="mActionNeedSupport"/>
     <addaction name="separator"/>
     <addaction name="mActionQgisHomePage"/>
     <addaction name="mActionCheckQgisVersion"/>
@@ -2066,6 +2067,11 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Select features using an expression</string>
+   </property>
+  </action>
+  <action name="mActionNeedSupport">
+   <property name="text">
+    <string>Need Support?</string>
    </property>
   </action>
  </widget>

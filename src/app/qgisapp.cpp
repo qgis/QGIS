@@ -1075,6 +1075,7 @@ void QgisApp::createActions()
 
   connect( mActionHelpContents, SIGNAL( triggered() ), this, SLOT( helpContents() ) );
   connect( mActionHelpAPI, SIGNAL( triggered() ), this, SLOT( apiDocumentation() ) );
+  connect( mActionNeedSupport, SIGNAL( triggered() ), this, SLOT( supportProviders() ) );
   connect( mActionQgisHomePage, SIGNAL( triggered() ), this, SLOT( helpQgisHomePage() ) );
   connect( mActionCheckQgisVersion, SIGNAL( triggered() ), this, SLOT( checkQgisVersion() ) );
   connect( mActionAbout, SIGNAL( triggered() ), this, SLOT( about() ) );
@@ -6556,7 +6557,8 @@ void QgisApp::adjustBrightnessContrast( int delta, bool updateBrightness )
 
 void QgisApp::helpContents()
 {
-  openURL( "index.html" );
+  // We should really ship the HTML version of the docs local too.
+  openURL( "http://docs.qgis.org/2.0/html/en/docs/user_manual/index.html", false );
 }
 
 void QgisApp::apiDocumentation()
@@ -6569,6 +6571,11 @@ void QgisApp::apiDocumentation()
   {
     openURL( "http://qgis.org/api/", false );
   }
+}
+
+void QgisApp::supportProviders()
+{
+  openURL( "http://www.qgis.org/en/commercial-support.html", false );
 }
 
 void QgisApp::helpQgisHomePage()
