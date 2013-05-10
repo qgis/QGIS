@@ -2286,7 +2286,10 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
         }
 
         // paint the text
-        painter->setCompositionMode( tmpLyr.blendMode );
+        if ( context.useAdvancedEffects() )
+        {
+          painter->setCompositionMode( tmpLyr.blendMode );
+        }
 //        painter->setPen( Qt::NoPen );
 //        painter->setBrush( tmpLyr.textColor );
 //        painter->drawPath( path );
@@ -2350,7 +2353,10 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
   }
 
   p->save();
-  p->setCompositionMode( tmpLyr.bufferBlendMode );
+  if ( context.useAdvancedEffects() )
+  {
+    p->setCompositionMode( tmpLyr.bufferBlendMode );
+  }
 //  p->setPen( pen );
 //  p->setBrush( tmpColor );
 //  p->drawPath( path );
@@ -2512,7 +2518,10 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
                                          ( 100.0 - ( double )( tmpLyr.shapeTransparency ) ) / 100.0 );
 
     p->save();
-    p->setCompositionMode( tmpLyr.shapeBlendMode );
+    if ( context.useAdvancedEffects() )
+    {
+      p->setCompositionMode( tmpLyr.shapeBlendMode );
+    }
     p->translate( component.center().x(), component.center().y() );
     p->rotate( component.rotation() );
     double xoff = tmpLyr.scaleToPixelContext( tmpLyr.shapeOffset.x(), context, tmpLyr.shapeOffsetUnits );
@@ -2642,7 +2651,10 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
     }
 
     p->setOpacity(( 100.0 - ( double )( tmpLyr.shapeTransparency ) ) / 100.0 );
-    p->setCompositionMode( tmpLyr.shapeBlendMode );
+    if ( context.useAdvancedEffects() )
+    {
+      p->setCompositionMode( tmpLyr.shapeBlendMode );
+    }
 
     // scale for any print output or image saving @ specific dpi
     p->scale( component.dpiRatio(), component.dpiRatio() );
@@ -2744,7 +2756,10 @@ void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
 
   p->save();
   p->setRenderHints( QPainter::Antialiasing | QPainter::SmoothPixmapTransform );
-  p->setCompositionMode( tmpLyr.shadowBlendMode );
+  if ( context.useAdvancedEffects() )
+  {
+    p->setCompositionMode( tmpLyr.shadowBlendMode );
+  }
   p->setOpacity(( 100.0 - ( double )( tmpLyr.shadowTransparency ) ) / 100.0 );
 
   double scale = ( double )tmpLyr.shadowScale / 100.0;

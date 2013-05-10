@@ -182,6 +182,13 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     bool printAsRaster() const {return mPrintAsRaster;}
     void setPrintAsRaster( bool enabled ) { mPrintAsRaster = enabled; }
 
+    /**Returns true if a composition should use advanced effects such as blend modes
+      @note added in 1.9*/
+    bool useAdvancedEffects() const {return mUseAdvancedEffects;}
+    /**Used to enable or disable advanced effects such as blend modes in a composition
+      @note: added in version 1.9*/
+    void setUseAdvancedEffects( bool effectsEnabled );
+
     double selectionTolerance() const { return mSelectionTolerance; }
     void setSelectionTolerance( double tol );
 
@@ -374,6 +381,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     /**Flag if map should be printed as a raster (via QImage). False by default*/
     bool mPrintAsRaster;
+
+    /**Flag if advanced visual effects such as blend modes should be used. True by default*/
+    bool mUseAdvancedEffects;
 
     /**Distance tolerance for item selection (in mm)*/
     double mSelectionTolerance;

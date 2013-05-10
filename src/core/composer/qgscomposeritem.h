@@ -221,6 +221,15 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /** Sets the item's transparency */
     void setTransparency( int transparency );
 
+    /** Returns true if effects (eg blend modes) are enabled for the item
+     * @note introduced in 2.0
+    */
+    bool effectsEnabled() const {return mEffectsEnabled;}
+    /** Sets whether effects (eg blend modes) are enabled for the item
+     * @note introduced in 2.0
+    */
+    void setEffectsEnabled( bool effectsEnabled );
+
     /**Composite operations for item groups do nothing per default*/
     virtual void addItem( QgsComposerItem* item ) { Q_UNUSED( item ); }
     virtual void removeItems() {}
@@ -337,7 +346,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Composition blend mode for item*/
     QPainter::CompositionMode mBlendMode;
-
+    bool mEffectsEnabled;
     QgsComposerEffect *mEffect;
 
     /**Item transparency*/
