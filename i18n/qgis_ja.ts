@@ -46804,17 +46804,17 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1748"/>
         <source>Overview format</source>
-        <translation type="unfinished">オーバービュー形式</translation>
+        <translation>オーバービュー形式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1730"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>外部</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1647"/>
         <source>Resolutions</source>
-        <translation type="unfinished">解像度</translation>
+        <translation>解像度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1679"/>
@@ -46828,12 +46828,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1735"/>
         <source>Internal (if possible)</source>
-        <translation type="unfinished">内部（可能であれば)</translation>
+        <translation>内部（可能であれば)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1740"/>
         <source>External (Erdas Imagine)</source>
-        <translation type="unfinished"></translation>
+        <translation>外部(Erdas Imagine)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="133"/>
@@ -46910,7 +46910,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="100"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="669"/>
         <source>Style</source>
-        <translation type="unfinished">スタイル</translation>
+        <translation>スタイル</translation>
     </message>
     <message>
         <source>Three band color</source>
@@ -47016,7 +47016,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="414"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="421"/>
         <source>Current</source>
-        <translation type="unfinished">現在の設定</translation>
+        <translation>現在の設定</translation>
     </message>
     <message>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
@@ -47120,7 +47120,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="229"/>
         <source>Layer info</source>
-        <translation type="unfinished">レイヤ情報</translation>
+        <translation>レイヤ情報</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="238"/>
@@ -47130,7 +47130,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="252"/>
         <source>Layer name</source>
-        <translation type="unfinished">レイヤ名</translation>
+        <translation>レイヤ名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="391"/>
@@ -47160,12 +47160,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1863"/>
         <source>Description</source>
-        <translation type="unfinished">記述</translation>
+        <translation>記述</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1914"/>
         <source>Properties</source>
-        <translation type="unfinished">プロパティ</translation>
+        <translation>プロパティ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="706"/>
@@ -47175,17 +47175,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="794"/>
         <source>Color rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>カラーレンダリング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="809"/>
         <source>Saturation</source>
-        <translation type="unfinished">彩度</translation>
+        <translation>彩度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="817"/>
         <source>Off</source>
-        <translation type="unfinished">オフ</translation>
+        <translation>オフ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="822"/>
@@ -47205,12 +47205,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="840"/>
         <source>Hue</source>
-        <translation type="unfinished">色相</translation>
+        <translation>色相</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="872"/>
         <source>Blending mode</source>
-        <translation type="unfinished">混合モード</translation>
+        <translation>混合モード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="879"/>
@@ -47225,7 +47225,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="974"/>
         <source>Grayscale</source>
-        <translation type="unfinished">原色グレースケール</translation>
+        <translation>原色グレースケール</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="999"/>
@@ -47240,17 +47240,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1045"/>
         <source>%</source>
-        <translation type="unfinished">%</translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1073"/>
         <source>Reset all color rendering options to default</source>
-        <translation type="unfinished"></translation>
+        <translation>すべてのカラーレンダリングオプションをデフォルトにリセットする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1076"/>
         <source>Reset</source>
-        <translation type="unfinished">リセット</translation>
+        <translation>リセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1111"/>
@@ -47265,7 +47265,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1131"/>
         <source>Oversampling</source>
-        <translation type="unfinished"></translation>
+        <translation>オーバーサンプリング</translation>
     </message>
     <message>
         <source>Add Values from display</source>
@@ -47337,22 +47337,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="744"/>
         <source>Render type</source>
-        <translation type="unfinished"></translation>
+        <translation>レンダータイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1093"/>
         <source>Resampling</source>
-        <translation type="unfinished"></translation>
+        <translation>リサンプリング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1315"/>
         <source>Use original source no data value.</source>
-        <translation type="unfinished"></translation>
+        <translation>オリジナルソースのデータ無し値を使う.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1318"/>
         <source>No data value:</source>
-        <translation type="unfinished"></translation>
+        <translation>データ無しの値:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1331"/>
@@ -47368,12 +47368,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1345"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1355"/>
         <source>Additional user defined no data value.</source>
-        <translation type="unfinished"></translation>
+        <translation>追加のユーザ定義データ無し値.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1348"/>
         <source>Additional no data value</source>
-        <translation type="unfinished"></translation>
+        <translation>追加のデータ無し値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="347"/>
@@ -47634,7 +47634,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="45"/>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>より</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="46"/>
@@ -47644,7 +47644,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="164"/>
         <source>Select output directory</source>
-        <translation type="unfinished"></translation>
+        <translation>出力ディレクトリの選択</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="177"/>
@@ -47654,12 +47654,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="178"/>
         <source>The directory %1 contains files which will be overwritten: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>指定ディレクトリ %1 にはファイルが存在します,それらは上書きされます:%2</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="198"/>
         <source>Select output file</source>
-        <translation type="unfinished"></translation>
+        <translation>出力ファイルの指定</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="198"/>
@@ -47670,43 +47670,43 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="440"/>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="469"/>
         <source>layer</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="443"/>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="475"/>
         <source>user defined</source>
-        <translation type="unfinished"></translation>
+        <translation>ユーザ定義</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="448"/>
         <source>Resolution (current: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>解像度(カレント:%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="472"/>
         <source>map view</source>
-        <translation type="unfinished"></translation>
+        <translation>マップビュー</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="480"/>
         <source>Extent (current: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>領域(カレント %1)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="553"/>
         <source>Layer (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ(%1,%2)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="556"/>
         <source>Project (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>プロジェクト(%1,%2)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="559"/>
         <source>Selected (%1, %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>選択(%1,%2)</translation>
     </message>
 </context>
 <context>
@@ -47949,7 +47949,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="23"/>
         <source>Load min/max values</source>
-        <translation type="unfinished"></translation>
+        <translation>最小値/最大値のロード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="52"/>
@@ -47964,7 +47964,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="90"/>
         <source>Min / max</source>
-        <translation type="unfinished"></translation>
+        <translation>最小/最大</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="155"/>
@@ -47984,7 +47984,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="181"/>
         <source>Accuracy</source>
-        <translation type="unfinished"></translation>
+        <translation>精度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="197"/>
@@ -48006,7 +48006,8 @@ count cut</source>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="114"/>
         <source>Mean +/-
 standard deviation ×</source>
-        <translation type="unfinished"></translation>
+        <translation>平均 +/-
+標準偏差 X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterminmaxwidgetbase.ui" line="224"/>
@@ -48092,7 +48093,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="197"/>
         <source>Estimated</source>
-        <translation type="unfinished"></translation>
+        <translation>推定された</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="201"/>
@@ -48102,12 +48103,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="208"/>
         <source>min / max</source>
-        <translation type="unfinished"></translation>
+        <translation>最小/最大</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterrenderer.cpp" line="219"/>
         <source> of </source>
-        <translation type="unfinished"></translation>
+        <translation>の</translation>
     </message>
 </context>
 <context>
@@ -63472,12 +63473,12 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="276"/>
         <source>First geometry invalid in line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>ラインテストで最初のジオメトリが不正です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="282"/>
         <source>Failed to import first geometry into GEOS in line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>ラインテストで最初のジオメトリをGEOSにインポートに失敗しました.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="408"/>
@@ -63532,17 +63533,17 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1553"/>
         <source>Missing geometry in multipart check.</source>
-        <translation type="unfinished"></translation>
+        <translation>マルチパートチェックでジオメトリの欠損がありました.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1672"/>
         <source>First layer not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation>最初のレイヤがレジストリに見つかりません.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1678"/>
         <source>Second layer not found in registry.</source>
-        <translation type="unfinished"></translation>
+        <translation>2個目のレイヤがレジストリに見つかりません.</translation>
     </message>
 </context>
 <context>
