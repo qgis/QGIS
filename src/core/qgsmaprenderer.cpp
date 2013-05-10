@@ -397,9 +397,12 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
                  .arg( ml->blendMode() )
                );
 
-    // Set the QPainter composition mode so that this layer is rendered using
-    // the desired blending mode
-    mypContextPainter->setCompositionMode( ml->blendMode() );
+    if ( mRenderContext.useAdvancedEffects() )
+    {
+      // Set the QPainter composition mode so that this layer is rendered using
+      // the desired blending mode
+      mypContextPainter->setCompositionMode( ml->blendMode() );
+    }
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() <= mScale && mScale < ml->maximumScale() ) || mOverview )
     {
@@ -515,7 +518,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       // before compositing this on the map. This effectively flattens the layer and prevents
       // blending occuring between objects on the layer
       // (this is not required for raster layers or when layer caching is enabled, since that has the same effect)
-      if (( ml->blendMode()  != QPainter::CompositionMode_SourceOver ) &&
+      if (( mRenderContext.useAdvancedEffects() ) && ( ml->blendMode()  != QPainter::CompositionMode_SourceOver ) &&
           ( ml->type() != QgsMapLayer::RasterLayer ) &&
           ( split || !mySettings.value( "/qgis/enable_render_caching", false ).toBool() ) )
       {
@@ -581,7 +584,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       }
 
       // If we flattened this layer for alternate blend modes, composite it now
-      if (( ml->blendMode()  != QPainter::CompositionMode_SourceOver ) &&
+      if (( mRenderContext.useAdvancedEffects() ) && ( ml->blendMode()  != QPainter::CompositionMode_SourceOver ) &&
           ( ml->type() != QgsMapLayer::RasterLayer ) &&
           ( split || !mySettings.value( "/qgis/enable_render_caching", false ).toBool() ) )
       {

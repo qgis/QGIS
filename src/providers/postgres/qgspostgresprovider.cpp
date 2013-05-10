@@ -24,6 +24,8 @@
 #include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
 
+#include <QMessageBox>
+
 #include "qgsvectorlayerimport.h"
 #include "qgsprovidercountcalcevent.h"
 #include "qgsproviderextentcalcevent.h"
@@ -3307,6 +3309,15 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   res = conn->PQexec( checkQuery );
   if ( res.PQntuples() > 0 )
   {
+    if ( QMessageBox::question( 0, QObject::tr( "Save style in database" ),
+                                QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
+                                .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
+                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+    {
+      errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
+      return false;
+    }
+
     sql = QString( "UPDATE layer_styles"
                    " SET useAsDefault=%1"
                    ",styleQML=XMLPARSE(DOCUMENT %2)"
@@ -3398,7 +3409,6 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
     return -1;
   }
 
-  // ORDER BY (CASE WHEN useAsDefault THEN 1 ELSE 2 END), update_time DESC;")
   QString selectRelatedQuery = QString( "SELECT id,styleName,description"
                                         " FROM layer_styles"
                                         " WHERE f_table_catalog=%1"

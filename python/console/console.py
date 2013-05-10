@@ -167,7 +167,7 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton.setToolTip(saveFileBt)
         self.saveFileButton.setText(saveFileBt)
         ## Action for Save File As
-        saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As..")
+        saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As...")
         self.saveAsFileButton = QAction(self)
         self.saveAsFileButton.setCheckable(False)
         self.saveAsFileButton.setEnabled(True)

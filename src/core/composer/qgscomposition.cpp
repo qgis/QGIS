@@ -47,10 +47,25 @@
 #include <QDir>
 
 
-QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
-    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
-    mSnapToGrid( false ), mSnapGridResolution( 10.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ), mAlignmentSnapTolerance( 2 ),
-    mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ), mAtlasComposition( this )
+QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer )
+    : QGraphicsScene( 0 ),
+    mMapRenderer( mapRenderer ),
+    mPlotStyle( QgsComposition::Preview ),
+    mPageWidth( 297 ),
+    mPageHeight( 210 ),
+    mSpaceBetweenPages( 10 ),
+    mPrintAsRaster( false ),
+    mUseAdvancedEffects( true ),
+    mSelectionTolerance( 0.0 ),
+    mSnapToGrid( false ),
+    mSnapGridResolution( 10.0 ),
+    mSnapGridOffsetX( 0.0 ),
+    mSnapGridOffsetY( 0.0 ),
+    mAlignmentSnap( true ),
+    mAlignmentSnapTolerance( 2 ),
+    mActiveItemCommand( 0 ),
+    mActiveMultiFrameCommand( 0 ),
+    mAtlasComposition( this )
 {
   setBackgroundBrush( Qt::gray );
   addPaperItem();
@@ -59,10 +74,25 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ) :
   loadSettings();
 }
 
-QgsComposition::QgsComposition():
-    QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ),  mPageWidth( 297 ), mPageHeight( 210 ), mSpaceBetweenPages( 10 ), mPrintAsRaster( false ),
-    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 10.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mAlignmentSnap( true ),
-    mAlignmentSnapTolerance( 2 ), mActiveItemCommand( 0 ), mActiveMultiFrameCommand( 0 ), mAtlasComposition( this )
+QgsComposition::QgsComposition()
+    : QGraphicsScene( 0 ),
+    mMapRenderer( 0 ),
+    mPlotStyle( QgsComposition::Preview ),
+    mPageWidth( 297 ),
+    mPageHeight( 210 ),
+    mSpaceBetweenPages( 10 ),
+    mPrintAsRaster( false ),
+    mUseAdvancedEffects( true ),
+    mSelectionTolerance( 0.0 ),
+    mSnapToGrid( false ),
+    mSnapGridResolution( 10.0 ),
+    mSnapGridOffsetX( 0.0 ),
+    mSnapGridOffsetY( 0.0 ),
+    mAlignmentSnap( true ),
+    mAlignmentSnapTolerance( 2 ),
+    mActiveItemCommand( 0 ),
+    mActiveMultiFrameCommand( 0 ),
+    mAtlasComposition( this )
 {
   loadSettings();
 
@@ -316,6 +346,24 @@ const QgsComposerItem* QgsComposition::getComposerItemByUuid( QString theUuid ) 
   }
 
   return 0;
+}
+
+
+void QgsComposition::setUseAdvancedEffects( bool effectsEnabled )
+{
+  mUseAdvancedEffects = effectsEnabled;
+
+  //toggle effects for all composer items
+  QList<QGraphicsItem*> itemList = items();
+  QList<QGraphicsItem*>::const_iterator itemIt = itemList.constBegin();
+  for ( ; itemIt != itemList.constEnd(); ++itemIt )
+  {
+    QgsComposerItem* composerItem = dynamic_cast<QgsComposerItem*>( *itemIt );
+    if ( composerItem )
+    {
+      composerItem->setEffectsEnabled( effectsEnabled );
+    }
+  }
 }
 
 int QgsComposition::pixelFontSize( double pointSize ) const
