@@ -687,6 +687,7 @@ class EditorTab(QWidget):
         self.tw.setTabTitle(self, fN)
         self.tw.setTabToolTip(self.tw.currentIndex(), path)
         self.newEditor.setModified(False)
+        self.pc.saveFileButton.setEnabled(False)
         self.newEditor.mtime = os.stat(path).st_mtime
         self.pc.updateTabListScript(path, action='append')
         self.tw.listObject(self)
@@ -792,8 +793,7 @@ class EditorTabWidget(QTabWidget):
         self.fileTabButton.setMenu(self.fileTabMenu)
         self.setCornerWidget(self.fileTabButton, Qt.TopRightCorner)
         self.connect(self, SIGNAL("tabCloseRequested(int)"), self._removeTab)
-        self.connect(self, SIGNAL('currentChanged(int)'), self.listObject)
-        self.connect(self, SIGNAL('currentChanged(int)'), self.changeLastDirPath)
+        self.connect(self, SIGNAL('currentChanged(int)'), self._currentWidgetChanged)
 
         # Open button
         self.newTabButton = QToolButton()
@@ -805,6 +805,11 @@ class EditorTabWidget(QTabWidget):
         self.newTabButton.setIconSize(QSize(24, 24))
         self.setCornerWidget(self.newTabButton, Qt.TopLeftCorner)
         self.connect(self.newTabButton, SIGNAL('clicked()'), self.newTabEditor)
+
+    def _currentWidgetChanged(self, tab):
+        self.listObject(tab)
+        self.changeLastDirPath(tab)
+        self.enableSaveIfModified(tab)
 
     def contextMenuEvent(self, e):
         tabBar = self.tabBar()
@@ -830,10 +835,13 @@ class EditorTabWidget(QTabWidget):
             closeTabAction.setEnabled(False)
             closeAllTabAction.setEnabled(False)
             closeOthersTabAction.setEnabled(False)
+            saveAction.setEnabled(False)
             if self.count() > 1:
                 closeTabAction.setEnabled(True)
                 closeAllTabAction.setEnabled(True)
                 closeOthersTabAction.setEnabled(True)
+            if self.widget(self.idx).newEditor.isModified():
+                saveAction.setEnabled(True)
             action = menu.exec_(self.mapToGlobal(e.pos()))
 
     def closeOthers(self):
@@ -849,6 +857,9 @@ class EditorTabWidget(QTabWidget):
             self._removeTab(i)
         self.newTabEditor(tabName='Untitled-0')
         self._removeTab(0)
+
+    def enableSaveIfModified(self, tab):
+        self.parent.saveFileButton.setEnabled(self.widget(tab).newEditor.isModified())
 
     def enableToolBarEditor(self, enable):
         if self.topFrame.isVisible():
@@ -872,11 +883,13 @@ class EditorTabWidget(QTabWidget):
             self.setTabToolTip(self.currentIndex(), unicode(filename))
         else:
             self.setTabToolTip(self.currentIndex(), tabName)
+        self.parent.saveFileButton.setEnabled(False)
 
     def tabModified(self, tab, modified):
         index = self.indexOf(tab)
         color = Qt.darkGray if modified else Qt.black
         self.tabBar().setTabTextColor(index, color)
+        self.parent.saveFileButton.setEnabled(modified)
 
     def closeTab(self, tab):
         # Check if file has been saved
