@@ -38755,7 +38755,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1457"/>
         <source>If Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">未定義の場合</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1458"/>
@@ -38796,7 +38796,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1865"/>
         <source>Save scales</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">スケールを保存</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1896"/>
@@ -38836,23 +38836,23 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="310"/>
         <source>Show features visible on map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">地図上に地物を表示</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="535"/>
         <location filename="../src/app/qgsoptions.cpp" line="536"/>
         <source>Cumulative pixel count cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">累積ピクセル数のカット</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="537"/>
         <source>Minimum / maximum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">最小 / 最大</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="538"/>
         <source>Mean +/- standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">平均 +/- 標準偏差</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="641"/>
@@ -38906,27 +38906,27 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/app/qgsoptions.cpp" line="824"/>
         <location filename="../src/app/qgsoptions.cpp" line="828"/>
         <source>Save default project</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">既定のプロジェクトを保存</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="813"/>
         <source>You must set a default project</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">既定のプロジェクトを指定しなければなりません</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="824"/>
         <source>Current project saved as default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">現在のプロジェクトが既定のプロジェクトとして保存されました</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="828"/>
         <source>Error saving current project as default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">現在のプロジェクトを既定のプロジェクトとして保存できませんでした</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="844"/>
         <source>Choose a directory to store project template files</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">プロジェクトテンプレートを保存するディレクトリを選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="555"/>
@@ -38936,12 +38936,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1391"/>
         <source>Create Options - %1 Driver</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">作成オプション - %1 ドライバ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1393"/>
         <source>Create Options - pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">作成オプション - ピラミッド</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="1522"/>
@@ -39088,12 +39088,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1509"/>
         <source>Ignore shapefile encoding declaration</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">シェイプファイルのエンコーディングを無視する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1512"/>
         <source>Disable OGR on-the-fly conversion from declared encoding to UTF-8</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">既定のエンコーディングからUTF-8へのOGRオンザイフライ変換を無効にする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3454"/>
@@ -39103,22 +39103,22 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3479"/>
         <source>CRS for new layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新しいレイヤの投影座標系</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3542"/>
         <source>When a new layer is created, or when a layer is loaded that has no CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">投影座標系の無い新しいレイヤが作成または読み込まれた場合</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3568"/>
         <source>Default CRS for new projects</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新プロジェクトの既定の投影座標系</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3587"/>
         <source>Automatically enable &apos;on the fly&apos; reprojection if layers have different CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">もしレイヤが異なる投影座標系をもつ場合、自動で &apos;オンザフライ&apos; 投影変換を有効にする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3669"/>
@@ -39519,7 +39519,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3584"/>
         <source>Automatically enable &apos;on the fly&apos; reprojection if CRS of a new added layer differ from CRS of layer(s) already present. CRS of present layer(s) will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">もし読み込まれたレイヤが既存のレイヤと異なる投影座標系をもつ場合、自動で既存のレイヤの投影座標系への &apos;オンザフライ&apos; 投影変換を有効にする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3604"/>
@@ -39630,33 +39630,33 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="100"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="898"/>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">システム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="109"/>
         <source>Data Sources</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">データソース</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="112"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1234"/>
         <source>Data sources</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">データソース</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="133"/>
         <source>Canvas &amp; Legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">キャンバス &amp; 凡例</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="136"/>
         <source>Canvas and legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">キャンバスと凡例</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="145"/>
         <source>Map Tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">マップツールズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="488"/>
