@@ -181,7 +181,7 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
   }
   if ( url.hasQueryItem( "skipEmptyFields" ) )
   {
-    mDiscardEmptyFields = ! url.queryItemValue( "useHeader" ).toUpper().startsWith( 'N' );;
+    mDiscardEmptyFields = ! url.queryItemValue( "skipEmptyFields" ).toUpper().startsWith( 'N' );;
   }
   if ( url.hasQueryItem( "trimFields" ) )
   {
