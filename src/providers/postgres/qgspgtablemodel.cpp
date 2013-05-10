@@ -208,7 +208,7 @@ void QgsPgTableModel::setGeometryTypesForTable( QgsPostgresLayerProperty layerPr
 {
   QStringList typeList = layerProperty.type.split( ",", QString::SkipEmptyParts );
   QStringList sridList = layerProperty.srid.split( ",", QString::SkipEmptyParts );
-  Q_ASSERT( typeList.size() == sridList.size() );
+  Q_ASSERT( typeList.size() == sridList.size() || ( typeList.size() == 0 && sridList.size() == 1 ) );
 
   //find schema item and table item
   QStandardItem* schemaItem;
@@ -241,42 +241,29 @@ void QgsPgTableModel::setGeometryTypesForTable( QgsPostgresLayerProperty layerPr
     {
       row[ dbtmSrid ]->setText( layerProperty.srid );
 
-      if ( typeList.isEmpty() )
-      {
-        row[ dbtmType ]->setText( tr( "Select..." ) );
-        row[ dbtmType ]->setFlags( row[ dbtmType ]->flags() | Qt::ItemIsEditable );
+      row[ dbtmType ]->setText( tr( "Select..." ) );
+      row[ dbtmType ]->setFlags( row[ dbtmType ]->flags() | Qt::ItemIsEditable );
 
+      if ( sridList.isEmpty() )
+      {
         row[ dbtmSrid ]->setText( tr( "Enter..." ) );
         row[ dbtmSrid ]->setFlags( row[ dbtmSrid ]->flags() | Qt::ItemIsEditable );
-
-        foreach ( QStandardItem *item, row )
-        {
-          item->setFlags( item->flags() | Qt::ItemIsEnabled );
-        }
       }
       else
       {
-        // update existing row
-        QGis::WkbType wkbType = QgsPostgresConn::wkbTypeFromPostgis( typeList.at( 0 ) );
-
-        row[ dbtmType ]->setIcon( iconForWkbType( wkbType ) );
-        row[ dbtmType ]->setText( QgsPostgresConn::displayStringForWkbType( wkbType ) );
-        row[ dbtmType ]->setData( false, Qt::UserRole + 1 );
-        row[ dbtmType ]->setData( wkbType, Qt::UserRole + 2 );
-
         row[ dbtmSrid ]->setText( sridList.at( 0 ) );
+      }
 
-        foreach ( QStandardItem *item, row )
-        {
-          item->setFlags( item->flags() | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
-        }
+      foreach ( QStandardItem *item, row )
+      {
+        item->setFlags( item->flags() | Qt::ItemIsEnabled );
+      }
 
-        for ( int j = 1; j < typeList.size(); j++ )
-        {
-          layerProperty.type = typeList[j];
-          layerProperty.srid = sridList[j];
-          addTableEntry( layerProperty );
-        }
+      for ( int j = 0; j < typeList.size(); j++ )
+      {
+        layerProperty.type = typeList[j];
+        layerProperty.srid = sridList[j];
+        addTableEntry( layerProperty );
       }
     }
   }

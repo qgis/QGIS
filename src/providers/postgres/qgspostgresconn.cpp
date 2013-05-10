@@ -1137,7 +1137,8 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
     QStringList types;
     QStringList srids;
 
-    for ( int i = 0; i < gresult.PQntuples(); i++ )
+    int nTuples = gresult.PQntuples();
+    for ( int i = 0; i < nTuples; i++ )
     {
       QString type = gresult.PQgetvalue( i, 0 );
       QString srid = gresult.PQgetvalue( i, 1 );
@@ -1149,7 +1150,14 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
     }
 
     type = types.join( "," );
-    srid = srids.join( "," );
+    if ( nTuples > 0 )
+    {
+      srid = srids.join( "," );
+    }
+    else
+    {
+      srid = layerProperty.srid;
+    }
   }
 
   QgsDebugMsg( QString( "type:%1 srid:%2" ).arg( type ).arg( srid ) );
