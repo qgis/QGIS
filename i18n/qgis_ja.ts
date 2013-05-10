@@ -21017,17 +21017,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="14"/>
         <source>Attribute Table</source>
-        <translation type="unfinished">属性テーブル</translation>
+        <translation>属性テーブル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="35"/>
         <source>Attribute table</source>
-        <translation type="unfinished">属性テーブル</translation>
+        <translation>属性テーブル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="57"/>
         <source>Main properties</source>
-        <translation type="unfinished">メインプロパティ</translation>
+        <translation>メインプロパティ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="114"/>
@@ -21047,17 +21047,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="177"/>
         <source>Stroke width</source>
-        <translation type="unfinished">線幅</translation>
+        <translation>線幅</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="193"/>
         <source>Color...</source>
-        <translation type="unfinished">色...</translation>
+        <translation>色...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="203"/>
         <source>Fonts</source>
-        <translation type="unfinished">フォント</translation>
+        <translation>フォント</translation>
     </message>
     <message>
         <source>Grid stroke width</source>
@@ -21189,12 +21189,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="345"/>
         <source>Html item added</source>
-        <translation type="unfinished">HTMLが追加されました</translation>
+        <translation>HTMLアイテムが追加されました</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="350"/>
         <source>Html frame added</source>
-        <translation type="unfinished">HTMLフレームの追加</translation>
+        <translation>HTMLフレームが追加されました</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="569"/>
@@ -21202,7 +21202,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/gui/qgscomposerview.cpp" line="587"/>
         <location filename="../src/gui/qgscomposerview.cpp" line="596"/>
         <source>Item moved</source>
-        <translation type="unfinished">アイテムが移動されました</translation>
+        <translation>アイテムが移動されました</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="209"/>
@@ -21295,7 +21295,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1707"/>
         <source>Frame deleted</source>
-        <translation type="unfinished">フレームが削除されました</translation>
+        <translation>フレームが削除されました</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1714"/>
@@ -21305,7 +21305,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="1731"/>
         <source>Multiframe removed</source>
-        <translation type="unfinished">マルチフレームが削除されました</translation>
+        <translation>マルチフレームが削除されました</translation>
     </message>
 </context>
 <context>
@@ -21491,62 +21491,62 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="122"/>
         <source>Legal (8.5x14 in)</source>
-        <translation type="unfinished">Legal (8.5x14 インチ)</translation>
+        <translation>Legal (8.5x14 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="123"/>
         <source>ANSI A (Letter; 8.5x11 in)</source>
-        <translation type="unfinished">ANSI A (Letter; 8.5x11 インチ)</translation>
+        <translation>ANSI A (Letter; 8.5x11 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="124"/>
         <source>ANSI B (Tabloid; 11x17 in)</source>
-        <translation type="unfinished">ANSI B (タブロイド; 11x17 インチ)</translation>
+        <translation>ANSI B (タブロイド; 11x17 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="125"/>
         <source>ANSI C (17x22 in)</source>
-        <translation type="unfinished">ANSI C (17x22 インチ)</translation>
+        <translation>ANSI C (17x22 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="126"/>
         <source>ANSI D (22x34 in)</source>
-        <translation type="unfinished">ANSI D (22x34 インチ)</translation>
+        <translation>ANSI D (22x34 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="127"/>
         <source>ANSI E (34x44 in)</source>
-        <translation type="unfinished">ANSI E (34x44 インチ)</translation>
+        <translation>ANSI E (34x44 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="128"/>
         <source>Arch A (9x12 in)</source>
-        <translation type="unfinished">Arch A (9x12 インチ)</translation>
+        <translation>Arch A (9x12 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="129"/>
         <source>Arch B (12x18 in)</source>
-        <translation type="unfinished">Arch B (12x18 インチ)</translation>
+        <translation>Arch B (12x18 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="130"/>
         <source>Arch C (18x24 in)</source>
-        <translation type="unfinished">Arch C (18x24 インチ)</translation>
+        <translation>Arch C (18x24 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="131"/>
         <source>Arch D (24x36 in)</source>
-        <translation type="unfinished">Arch D (24x36 インチ)</translation>
+        <translation>Arch D (24x36 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="132"/>
         <source>Arch E (36x48 in)</source>
-        <translation type="unfinished">Arch E (36x48 インチ)</translation>
+        <translation>Arch E (36x48 インチ)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="133"/>
         <source>Arch E1 (30x42 in)</source>
-        <translation type="unfinished">Arch E1 (30x42 インチ)</translation>
+        <translation>Arch E1 (30x42 インチ)</translation>
     </message>
     <message>
         <source>Legal (8.5x14 inches)</source>
@@ -21581,17 +21581,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="83"/>
         <source>Presets</source>
-        <translation type="unfinished">プリセット</translation>
+        <translation>プリセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="103"/>
         <source>Width</source>
-        <translation type="unfinished">幅</translation>
+        <translation>幅</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="132"/>
         <source>Height</source>
-        <translation type="unfinished">高さ</translation>
+        <translation>高さ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="203"/>
@@ -21601,12 +21601,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="256"/>
         <source>Resolution</source>
-        <translation type="unfinished">解像度</translation>
+        <translation>解像度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="303"/>
         <source>Spacing</source>
-        <translation type="unfinished">グリッド幅</translation>
+        <translation>グリッド幅</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="316"/>
@@ -21614,52 +21614,52 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="412"/>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="460"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="329"/>
         <source>Grid offset</source>
-        <translation type="unfinished">グリッドオフセット</translation>
+        <translation>グリッドオフセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="341"/>
         <source>x: </source>
-        <translation type="unfinished">x </translation>
+        <translation>x:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="351"/>
         <source>y: </source>
-        <translation type="unfinished">y </translation>
+        <translation>y:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="363"/>
         <source>Pen width</source>
-        <translation type="unfinished">ペンの太さ</translation>
+        <translation>ペンの太さ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="399"/>
         <source>Selection tolerance</source>
-        <translation type="unfinished">選択許容値</translation>
+        <translation>選択許容値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="419"/>
         <source>Color...</source>
-        <translation type="unfinished">色...</translation>
+        <translation>色...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="429"/>
         <source>Snap to alignments</source>
-        <translation type="unfinished">配置にスナップする</translation>
+        <translation>配置にスナップする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="450"/>
         <source>Tolerance</source>
-        <translation type="unfinished">許容範囲</translation>
+        <translation>許容範囲</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="161"/>
         <source>Units</source>
-        <translation type="unfinished">単位</translation>
+        <translation>単位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="59"/>
@@ -21690,7 +21690,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="184"/>
         <source>Number of pages</source>
-        <translation type="unfinished">ページ番号</translation>
+        <translation>ページ番号</translation>
     </message>
     <message>
         <source>Spacing </source>
