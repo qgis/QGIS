@@ -45,7 +45,7 @@ void QgsOracleColumnTypeThread::run()
 
   mStopped = false;
 
-  QgsDebugMsg( "retrieving supported layers - connection " + mName );
+  emit progressMessage( tr( "Retrieving tables of %1..." ).arg( mName ) );
   QVector<QgsOracleLayerProperty> layerProperties;
   if ( !conn->supportedLayers( layerProperties,
                                QgsOracleConn::geometryColumnsOnly( mName ),
@@ -56,10 +56,16 @@ void QgsOracleColumnTypeThread::run()
     return;
   }
 
+  int i = 0;
   foreach ( QgsOracleLayerProperty layerProperty, layerProperties )
   {
     if ( !mStopped )
     {
+      emit progress( i++, layerProperties.size() );
+      emit progressMessage( tr( "Scanning column %1.%2.%3..." )
+                            .arg( layerProperty.ownerName )
+                            .arg( layerProperty.tableName )
+                            .arg( layerProperty.geometryColName ) );
       conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
     }
 
@@ -72,6 +78,9 @@ void QgsOracleColumnTypeThread::run()
     // Now tell the layer list dialog box...
     emit setLayerType( layerProperty );
   }
+
+  emit progress( 0, 0 );
+  emit progressMessage( tr( "Table retrieval finished." ) );
 
   conn->disconnect();
 }

@@ -48,10 +48,13 @@ void QgsGeomColumnTypeThread::run()
 
   mStopped = false;
 
+  int i = 0;
   foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
   {
     if ( !mStopped )
     {
+      emit progress( i++, layerProperties.size() );
+      emit progressMessage( tr( "Scanning PostgreSQL column %1.%2.%3..." ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ).arg( layerProperty.geometryColName ) );
       mConn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
     }
 

@@ -2863,16 +2863,20 @@ void QgisApp::addDatabaseLayer()
   QgsDebugMsg( "about to addRasterLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *pgs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "postgres" ), this ) );
-  if ( !pgs )
+  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "postgres", this ) );
+  if ( !dbs )
   {
     QMessageBox::warning( this, tr( "PostgreSQL" ), tr( "Cannot get PostgreSQL select dialog from provider." ) );
     return;
   }
-  connect( pgs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
-  pgs->exec();
-  delete pgs;
+  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  connect( dbs, SIGNAL( progress( int, int ) ),
+           this, SLOT( showProgress( int, int ) ) );
+  connect( dbs, SIGNAL( progressMessage( QString ) ),
+           this, SLOT( showStatusMessage( QString ) ) );
+  dbs->exec();
+  delete dbs;
 #endif
 } // QgisApp::addDatabaseLayer()
 
@@ -2951,14 +2955,14 @@ void QgisApp::addSpatiaLiteLayer()
   }
 
   // show the SpatiaLite dialog
-  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "spatialite" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "spatialite", this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "SpatiaLite" ), tr( "Cannot get SpatiaLite select dialog from provider." ) );
     return;
   }
-  connect( dbs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
 } // QgisApp::addSpatiaLiteLayer()
@@ -2972,14 +2976,14 @@ void QgisApp::addMssqlLayer()
   }
 
   // show the MSSQL dialog
-  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "mssql" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "mssql", this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "MSSQL" ), tr( "Cannot get MSSQL select dialog from provider." ) );
     return;
   }
-  connect( dbs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
   dbs->exec();
   delete dbs;
 #endif
@@ -2994,14 +2998,18 @@ void QgisApp::addOracleLayer()
   }
 
   // show the Oracle dialog
-  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "oracle" ), this ) );
+  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "oracle", this ) );
   if ( !dbs )
   {
     QMessageBox::warning( this, tr( "Oracle" ), tr( "Cannot get Oracle select dialog from provider." ) );
     return;
   }
-  connect( dbs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
-           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  connect( dbs, SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this, SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  connect( dbs, SIGNAL( progress( int, int ) ),
+           this, SLOT( showProgress( int, int ) ) );
+  connect( dbs, SIGNAL( progressMessage( QString ) ),
+           this, SLOT( showStatusMessage( QString ) ) );
   dbs->exec();
   delete dbs;
 #endif
@@ -3023,8 +3031,8 @@ void QgisApp::addWmsLayer()
     QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
     return;
   }
-  connect( wmss , SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
-           this , SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+  connect( wmss, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
+           this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
   wmss->exec();
   delete wmss;
 }
@@ -3044,8 +3052,8 @@ void QgisApp::addWcsLayer()
     QMessageBox::warning( this, tr( "WCS" ), tr( "Cannot get WCS select dialog from provider." ) );
     return;
   }
-  connect( wcss , SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
-           this , SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+  connect( wcss, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
+           this, SLOT( addRasterLayer( QString const &, QString const &, QString const & ) ) );
   wcss->exec();
   delete wcss;
 }
@@ -3071,8 +3079,8 @@ void QgisApp::addWfsLayer()
     QMessageBox::warning( this, tr( "WFS" ), tr( "Cannot get WFS select dialog from provider." ) );
     return;
   }
-  connect( wfss , SIGNAL( addWfsLayer( QString, QString ) ),
-           this , SLOT( addWfsLayer( QString, QString ) ) );
+  connect( wfss, SIGNAL( addWfsLayer( QString, QString ) ),
+           this, SLOT( addWfsLayer( QString, QString ) ) );
 
   //re-enable wfs with extent setting: pass canvas info to source select
   wfss->setProperty( "MapExtent", mMapCanvas->extent().toString() );

@@ -447,6 +447,8 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     bool dontResolveType = QgsPostgresConn::dontResolveType( cmbConnections->currentText() );
     bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
 
+    emit progressMessage( tr( "Retrieving tables from %1..." ).arg( cmbConnections->currentText() ) );
+
     QVector<QgsPostgresLayerProperty> layers;
     if ( conn->supportedLayers( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
     {
@@ -526,6 +528,9 @@ void QgsPgSourceSelect::finishList()
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmSchema, Qt::AscendingOrder );
 
+  emit progress( 0, 0 );
+  emit progressMessage( tr( "Table retrieval finished." ) );
+
   if ( mTablesTreeView->model()->rowCount() == 0 )
     QMessageBox::information( this,
                               tr( "Postgres/PostGIS Provider" ),
@@ -599,6 +604,10 @@ void QgsPgSourceSelect::addSearchGeometryColumn( QgsPostgresLayerProperty layerP
                mColumnTypeThread, SLOT( addGeometryColumn( QgsPostgresLayerProperty ) ) );
       connect( mColumnTypeThread, SIGNAL( finished() ),
                this, SLOT( columnThreadFinished() ) );
+      connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
+               this, SIGNAL( progress( int, int ) ) );
+      connect( mColumnTypeThread, SIGNAL( progressMessage( QString ) ),
+               this, SIGNAL( progressMessage( QString ) ) );
     }
   }
 

@@ -36,6 +36,8 @@ class QgsOracleColumnTypeThread : public QThread
 
   signals:
     void setLayerType( QgsOracleLayerProperty layerProperty );
+    void progress( int, int );
+    void progressMessage( QString );
 
   public slots:
     void stop();

@@ -202,11 +202,11 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WFlags fl, bo
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
-  restoreGeometry( settings.value( "/Windows/PgSourceSelect/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( "/Windows/OracleSourceSelect/geometry" ).toByteArray() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QString( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( QString( "/Windows/OracleSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   //hide the search options by default
@@ -472,6 +472,10 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
            this, SLOT( setLayerType( QgsOracleLayerProperty ) ) );
   connect( mColumnTypeThread, SIGNAL( finished() ),
            this, SLOT( columnThreadFinished() ) );
+  connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
+           this, SIGNAL( progress( int, int ) ) );
+  connect( mColumnTypeThread, SIGNAL( progressMessage( QString ) ),
+           this, SIGNAL( progressMessage( QString ) ) );
 
   btnConnect->setText( tr( "Stop" ) );
   mColumnTypeThread->start();

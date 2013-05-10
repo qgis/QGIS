@@ -188,13 +188,14 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
 
   sql = QString( "SELECT %1,c.table_name,c.column_name,%2,t.table_name AS isview"
                  " FROM %3_%4 c"
-                 " LEFT OUTER JOIN %3_tables t ON c.table_name=t.table_name%5%6" )
+                 " LEFT OUTER JOIN %3_tables t ON c.table_name=t.table_name%5"
+                 " WHERE %6" )
         .arg( owner )
         .arg( geometryColumnsOnly ? "c.srid" : "NULL AS srid" )
         .arg( prefix )
         .arg( geometryColumnsOnly ? "sdo_geom_metadata" : "tab_columns" )
         .arg( userTablesOnly ? "" : " AND c.owner=t.owner" )
-        .arg( geometryColumnsOnly ? "" : " WHERE c.data_type='SDO_GEOMETRY'" );
+        .arg( geometryColumnsOnly ? "NOT t.dropped" : "c.data_type='SDO_GEOMETRY'" );
 
   if ( allowGeometrylessTables )
   {
