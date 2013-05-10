@@ -656,18 +656,6 @@ void QgsComposerMapWidget::on_mOffsetYSpinBox_editingFinished()
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mLineWidthSpinBox_valueChanged( double d )
-{
-  if ( !mComposerMap )
-  {
-    return;
-  }
-  mComposerMap->beginCommand( tr( "Grid pen changed" ) );
-  mComposerMap->setGridPenWidth( d );
-  mComposerMap->update();
-  mComposerMap->endCommand();
-}
-
 void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
 {
   if ( !mComposerMap )
