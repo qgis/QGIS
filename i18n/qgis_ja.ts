@@ -41004,7 +41004,10 @@ SQL: %2</translation>
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1のSRIDを取得できません.
+データベースのエラーメッセージは以下のとおりです
+%2.
+SQL: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2089"/>
@@ -41012,13 +41015,17 @@ SQL: %3</source>
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1のSRIDが特定できません.
+データベースのエラーメッセージは以下のとおりです
+%2.
+SQL: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2110"/>
         <source>%1 has no valid geometry types.
 SQL: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1には有効なジオメトリタイプがありません.
+SQL: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2117"/>
@@ -41026,7 +41033,10 @@ SQL: %2</source>
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1のジオメトリタイプを特定できません.
+データベースのエラーメッセージは以下のとおりです
+%2.
+SQL: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2148"/>
@@ -41048,48 +41058,57 @@ SQL: %3</source>
         <source>Could not update metadata for %1.%2.
 SQL:%1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>要修正</translatorcomment>
+        <translation type="unfinished">%1.%2のメタデータを更新できません.
+SQL: %1
+エラー: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2252"/>
         <source>Could not insert metadata for %1.%2.
 SQL:%3
 Error: %4</source>
-        <translation type="unfinished"></translation>
+        <translation>%1.%2にメタデータを追加できません.
+SQL: %3
+エラー: %4</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2282"/>
         <source>Creation spatial index failed.
 SQL:%1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>空間インデックスの作成に失敗しました.
+SQL: %1
+エラー: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2295"/>
         <source>Rebuild of spatial index failed.
 SQL:%1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>空間インデックスの再構築に失敗しました.
+SQL: %1
+エラー: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2452"/>
         <source>Could not determine table existence.</source>
-        <translation type="unfinished"></translation>
+        <translation>テーブルの存在が判明しません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2464"/>
         <source>Table %1 could not be dropped.</source>
-        <translation type="unfinished"></translation>
+        <translation>テーブル%1を削除できませんでした.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2469"/>
         <source>Table %1 already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>テーブル%1はすでに存在します.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2488"/>
         <source>Table creation failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>テーブルの作成に失敗しました.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2519"/>
