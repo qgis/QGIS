@@ -22108,7 +22108,7 @@ failed with error: %3
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="293"/>
         <source>All Ramps (%1)</source>
-        <translation type="unfinished">全階調 (%1)</translation>
+        <translation>全階調 (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="86"/>
@@ -22128,12 +22128,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="354"/>
         <source>%1 directory details</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ディレクトリの詳細</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="358"/>
         <source>%1 gradient details</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 グラデーションの詳細</translation>
     </message>
 </context>
 <context>
@@ -22141,7 +22141,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="20"/>
         <source>cpt-city color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>cpt-cityカラー階調</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="185"/>
@@ -22177,7 +22177,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="417"/>
         <source>Source</source>
-        <translation type="unfinished">変換元データ</translation>
+        <translation>変換元データ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="460"/>
@@ -22187,7 +22187,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="493"/>
         <source>Save as standard gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>標準階調で保存</translation>
     </message>
 </context>
 <context>
@@ -22582,12 +22582,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="173"/>
         <source>&apos;&lt;red&gt;,&lt;green&gt;,&lt;blue&gt;,&lt;alpha&gt;&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;&lt;赤&gt;,&lt;緑&gt;,&lt;青&gt;,&lt;アルファ&gt;&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsdatadefinedsymboldialog.cpp" line="183"/>
         <source>&apos;&lt;filename&gt;&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;&lt;ファイル名&gt;&apos;</translation>
     </message>
 </context>
 <context>
@@ -22778,7 +22778,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt;&quot;&gt;© QGIS 2013&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt;&quot;&gt;© QGIS 2013&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdecorationcopyrightdialog.ui" line="56"/>
@@ -23590,13 +23594,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="576"/>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="595"/>
         <source>The following lines were not loaded into QGIS due to errors:</source>
-        <translation type="unfinished"></translation>
+        <translation>エラーのため以下の行はQGISに読み込まれませんでした</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="580"/>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="599"/>
         <source>There are %1 additional errors in the file</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 個のエラーがあります</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="587"/>
@@ -23606,7 +23610,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="642"/>
         <source>Invalid subset string %1 for %2</source>
-        <translation type="unfinished"></translation>
+        <translation>不正なサブセット文字列 %1 が%2 内にあります</translation>
     </message>
 </context>
 <context>
@@ -23629,27 +23633,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="115"/>
         <source>Please one or more characters to use as the delimiter, or choose a different delimiter type</source>
-        <translation type="unfinished"></translation>
+        <translation>1文字以上の文字をデリミタとして指定するか他のデリミタ型を選択してください</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="125"/>
         <source>Invalid regular expression</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な正規表現です</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="125"/>
         <source>Please enter a valid regular expression as the delimiter, or choose a different delimiter type</source>
-        <translation type="unfinished"></translation>
+        <translation>正しい正規表現をデリミタとして指定するか他のデリミタ型を選択してください</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="132"/>
         <source>Invalid delimited text file</source>
-        <translation type="unfinished">不正なデリミティッドテキストファイル</translation>
+        <translation>不正なデリミティッドテキストファイル</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="132"/>
         <source>Please enter a valid file and delimiter</source>
-        <translation type="unfinished"></translation>
+        <translation>正しいファイル名とデリミタを入力してください</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="605"/>
@@ -23664,17 +23668,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="647"/>
         <source>Please select an input file</source>
-        <translation type="unfinished"></translation>
+        <translation>入力ファイルを選択してください</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="651"/>
         <source>File %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 というファイルは存在しません</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="655"/>
         <source>Please enter a layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ名を入力してください</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="659"/>
