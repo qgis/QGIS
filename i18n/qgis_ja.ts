@@ -24497,12 +24497,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="189"/>
         <source>Transparency 0%</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">透過率 0%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="239"/>
         <source>Start Angle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">開始角度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="251"/>
@@ -24580,7 +24580,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="474"/>
         <source>Increase size of small diagrams</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">小さい図を拡大する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="483"/>
@@ -24670,17 +24670,17 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="792"/>
         <source>Available attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">利用可能な属性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="894"/>
         <source>Assigned attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">属性の割り当て</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="901"/>
         <source>Drag and drop to reorder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">並び替えにはドラッグアンドドロップをしてください</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="934"/>
@@ -24839,12 +24839,12 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="295"/>
         <source>Expression based preview</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">式に基づくプレビュー</translation>
     </message>
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="315"/>
         <source>Could not set preview column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">プレビューカラムを設定できません</translation>
     </message>
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="316"/>
@@ -25125,7 +25125,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgserrordialogbase.ui" line="90"/>
         <source>Details &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">詳細 &gt;&gt;</translation>
     </message>
 </context>
 <context>
@@ -25389,12 +25389,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="72"/>
         <source>Remove from selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">フレーム選択を解除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsexpressionselectiondialogbase.ui" line="77"/>
         <source>Select within selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選択されたものから選択</translation>
     </message>
 </context>
 <context>
@@ -33123,7 +33123,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1170"/>
         <source>Available typeface styles</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">利用可能な書体スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1195"/>
@@ -33237,42 +33237,42 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3181"/>
         <source>Parallel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">並行</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3191"/>
         <source>Curved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">曲がって</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3198"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">水平</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3209"/>
         <source>Offset from centroid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">中心からのオフセット</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3219"/>
         <source>Around centroid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">中心点の周り</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3226"/>
         <source>Horizontal (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">水平（ゆっくり）</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3233"/>
         <source>Free (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">フリー（ゆっくり）</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3240"/>
         <source>Using perimeter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">周辺の利用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3290"/>
@@ -33282,12 +33282,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3306"/>
         <source>visible polygon</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">可視ポリゴン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3322"/>
         <source>whole polygon</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ポリゴン全体</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3426"/>
@@ -33302,7 +33302,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3443"/>
         <source>Below line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ラインの下</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3663"/>
@@ -33312,13 +33312,13 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="180"/>
         <source>Text/Buffer sample</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">テキスト/バッファサンプル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="672"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="2481"/>
         <source>Pen join style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ペン継ぎ目スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="708"/>
@@ -33331,12 +33331,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1325"/>
         <source>Line direction symbols</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線方向シンボル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1354"/>
         <source>Symbol(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">シンボル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1385"/>
@@ -33351,7 +33351,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1407"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1588"/>
         <source> Label </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> ラベル </translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1426"/>
@@ -33361,17 +33361,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1484"/>
         <source>left/right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">左/右</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1500"/>
         <source>above</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">上</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1507"/>
         <source>below</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">下</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1514"/>
@@ -52284,22 +52284,22 @@ Overwrite?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="503"/>
         <source>Please enter a name for new color ramp:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新しいカラー階調の名前を入力して下さい:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="513"/>
         <source>Save Color Ramp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">カラー階調を保存</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="514"/>
         <source>Cannot save color ramp without name. Enter a name.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">カラー階調は名前無しでは保存できません.名前を入力して下さい.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="518"/>
         <source>Save color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">カラー階調を保存</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="519"/>
