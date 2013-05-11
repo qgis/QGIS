@@ -241,7 +241,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     virtual bool equal( const QgsDataItem *other );
 
-    virtual QWidget * paramWidget();
+    virtual QWidget *paramWidget();
 
     /* static QVector<QgsDataProvider*> mProviders; */
     //! @note not available via python bindings
@@ -289,6 +289,9 @@ class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
     ~QgsFavouritesItem();
 
     QVector<QgsDataItem*> createChildren();
+
+    void addDirectory( QString favIcon );
+    void removeDirectory( QgsDirectoryItem *item );
 
     static const QIcon &iconFavourites();
 };

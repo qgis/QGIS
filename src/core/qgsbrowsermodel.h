@@ -92,19 +92,24 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
   public slots:
     // Reload the whole model
     void reload();
-
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
 
-  protected:
+    void addFavouriteDirectory( QString favDir );
+    void removeFavourite( const QModelIndex &index );
 
+    void updateProjectHome();
+
+  protected:
     // populates the model
     void addRootItems();
     void removeRootItems();
 
     QVector<QgsDataItem*> mRootItems;
+    QgsFavouritesItem *mFavourites;
+    QgsDirectoryItem *mProjectHome;
 };
 
 #endif // QGSBROWSERMODEL_H
