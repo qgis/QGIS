@@ -72,7 +72,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         field = self.getParameterValue(self.FIELD)
         method = self.getParameterValue(self.METHOD)
 
-        layer.removeSelection(True)
+        layer.removeSelection()
         index = layer.fieldNameIndex(field)
 
         unique = utils.getUniqueValues(layer, index)

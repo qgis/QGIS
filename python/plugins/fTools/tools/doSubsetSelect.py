@@ -81,8 +81,9 @@ class Dialog(QDialog, Ui_Dialog):
 
     def compute(self, inVect, inField, value, perc, progressBar):
         mlayer = ftools_utils.getMapLayerByName(inVect)
-        mlayer.removeSelection(True)
+        mlayer.removeSelection()
         vlayer = ftools_utils.getVectorLayerByName(inVect)
+        vprovider = vlayer.dataProvider()
         index = vprovider.fieldNameIndex(inField)
         #unique = []
         #vprovider.uniqueValues(index, unique)
@@ -93,7 +94,7 @@ class Dialog(QDialog, Ui_Dialog):
         nElement = 0
         self.progressBar.setValue(0)
         self.progressBar.setRange(0, nFeat)
-	fit = vprovider.getFeatures()
+        fit = vprovider.getFeatures()
         if not len(unique) == mlayer.featureCount():
             for i in unique:
                 fit.rewind()
