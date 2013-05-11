@@ -468,6 +468,18 @@ static QVariant fcnMin( const QVariantList& values, QgsFeature* , QgsExpression 
   return QVariant( minVal );
 }
 
+static QVariant fcnFloor( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( floor( x ) );
+}
+
+static QVariant fcnCeil( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( ceil( x ) );
+}
+
 static QVariant fcnToInt( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   return QVariant( getIntValue( values.at( 0 ), parent ) );
@@ -1291,6 +1303,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "asin" << "acos" << "atan" << "atan2"
     << "exp" << "ln" << "log10" << "log"
     << "round" << "rand" << "randf" << "max" << "min"
+    << "floor" << "ceil"
     << "toint" << "toreal" << "tostring"
     << "todatetime" << "todate" << "totime" << "tointerval"
     << "coalesce" << "regexp_match" << "$now" << "age" << "year"
@@ -1334,6 +1347,8 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "randf", 2, fcnRndF, QObject::tr( "Math" ) )
     << new StaticFunction( "max", -1, fcnMax, QObject::tr( "Math" ) )
     << new StaticFunction( "min", -1, fcnMin, QObject::tr( "Math" ) )
+    << new StaticFunction( "floor", 1, fcnFloor, QObject::tr( "Math" ) )
+    << new StaticFunction( "ceil", 1, fcnCeil, QObject::tr( "Math" ) )
     << new StaticFunction( "$pi", 0, fcnPi, QObject::tr( "Math" ) )
     << new StaticFunction( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
     << new StaticFunction( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
