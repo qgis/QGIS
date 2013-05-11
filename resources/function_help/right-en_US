@@ -7,7 +7,7 @@ Returns a substring that contains the <i>n</i> rightmost characters of the strin
 <h4>Arguments</h4>
 <code>string</code> - is string. The string.
 <br>
-<code>length</code> - is int. The numbder of characters from the right to return.
+<code>length</code> - is int. The number of characters from the right to return.
 
 <h4>Example</h4>
 <!-- Show example of function.-->
