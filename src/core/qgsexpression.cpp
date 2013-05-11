@@ -521,6 +521,31 @@ static QVariant fcnRegexpMatch( const QVariantList& values, QgsFeature* , QgsExp
   return QVariant( str.contains( re ) ? 1 : 0 );
 }
 
+static QVariant fcnRegexpSubstr( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  QString regexp = getStringValue( values.at( 1 ), parent );
+
+  QRegExp re( regexp );
+  if ( !re.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp ).arg( re.errorString() ) );
+    return QVariant();
+  }
+
+  // extract substring
+  re.indexIn( str );
+  if ( re.captureCount() > 0 )
+  {
+    // return first capture
+    return QVariant( re.capturedTexts()[0] );
+  }
+  else
+  {
+    return QVariant( "" );
+  }
+}
+
 static QVariant fcnSubstr( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -1233,7 +1258,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "coalesce" << "regexp_match" << "$now" << "age" << "year"
     << "month" << "week" << "day" << "hour"
     << "minute" << "second" << "lower" << "upper"
-    << "title" << "length" << "replace" << "regexp_replace"
+    << "title" << "length" << "replace" << "regexp_replace" << "regexp_substr"
     << "substr" << "concat" << "strpos" << "left"
     << "right" << "rpad" << "lpad"
     << "format_number" << "format_date"
@@ -1294,6 +1319,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "length", 1, fcnLength, QObject::tr( "String" ) )
     << new StaticFunction( "replace", 3, fcnReplace, QObject::tr( "String" ) )
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
+    << new StaticFunction( "regexp_substr", 2, fcnRegexpSubstr, QObject::tr( "String" ) )
     << new StaticFunction( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
     << new StaticFunction( "concat", -1, fcnConcat, QObject::tr( "String" ) )
     << new StaticFunction( "strpos", 2, fcnStrpos, QObject::tr( "String" ) )
