@@ -410,6 +410,27 @@ static QVariant fcnLog( const QVariantList& values, QgsFeature* , QgsExpression*
     return QVariant();
   return QVariant( log( x ) / log( b ) );
 }
+static QVariant fcnRndF( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double min = getDoubleValue( values.at( 0 ), parent );
+  double max = getDoubleValue( values.at( 1 ), parent );
+  if ( max < min )
+    return QVariant();
+
+  // Return a random double in the range [min, max] (inclusive)
+  double f = ( double )rand() / RAND_MAX;
+  return QVariant( min + f * ( max - min ) ) ;
+}
+static QVariant fcnRnd( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  int min = getIntValue( values.at( 0 ), parent );
+  int max = getIntValue( values.at( 1 ), parent );
+  if ( max < min )
+    return QVariant();
+
+  // Return a random integer in the range [min, max] (inclusive)
+  return QVariant( min + ( rand() % ( int )( max - min + 1 ) ) );
+}
 static QVariant fcnToInt( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   return QVariant( getIntValue( values.at( 0 ), parent ) );
@@ -1207,7 +1228,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "sqrt" << "cos" << "sin" << "tan"
     << "asin" << "acos" << "atan" << "atan2"
     << "exp" << "ln" << "log10" << "log"
-    << "round" << "toint" << "toreal" << "tostring"
+    << "round" << "rand" << "randf" << "toint" << "toreal" << "tostring"
     << "todatetime" << "todate" << "totime" << "tointerval"
     << "coalesce" << "regexp_match" << "$now" << "age" << "year"
     << "month" << "week" << "day" << "hour"
@@ -1246,6 +1267,8 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
     << new StaticFunction( "log", 2, fcnLog, QObject::tr( "Math" ) )
     << new StaticFunction( "round", -1, fcnRound, QObject::tr( "Math" ) )
+    << new StaticFunction( "rand", 2, fcnRnd, QObject::tr( "Math" ) )
+    << new StaticFunction( "randf", 2, fcnRndF, QObject::tr( "Math" ) )
     << new StaticFunction( "$pi", 0, fcnPi, QObject::tr( "Math" ) )
     << new StaticFunction( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
     << new StaticFunction( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )

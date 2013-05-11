@@ -454,6 +454,40 @@ class TestQgsExpression: public QObject
       QCOMPARE( v.toInt(), 200 );
     }
 
+    void eval_rand()
+    {
+      QgsExpression exp1( "rand(1,10)" );
+      QVariant v1 = exp1.evaluate();
+      QCOMPARE( v1.toInt() <= 10, true );
+      QCOMPARE( v1.toInt() >= 1, true );
+
+      QgsExpression exp2( "rand(-5,-5)" );
+      QVariant v2 = exp2.evaluate();
+      QCOMPARE( v2.toInt(), -5 );
+
+      // Invalid expression since max<min
+      QgsExpression exp3( "rand(10,1)" );
+      QVariant v3 = exp3.evaluate();
+      QCOMPARE( v3.type(),  QVariant::Invalid );
+    }
+
+    void eval_randf()
+    {
+      QgsExpression exp1( "randf(1.5,9.5)" );
+      QVariant v1 = exp1.evaluate();
+      QCOMPARE( v1.toDouble() <= 9.5, true );
+      QCOMPARE( v1.toDouble() >= 1.5, true );
+
+      QgsExpression exp2( "randf(-0.0005,-0.0005)" );
+      QVariant v2 = exp2.evaluate();
+      QCOMPARE( v2.toDouble(), -0.0005 );
+
+      // Invalid expression since max<min
+      QgsExpression exp3( "randf(9.3333,1.784)" );
+      QVariant v3 = exp3.evaluate();
+      QCOMPARE( v3.type(),  QVariant::Invalid );
+    }
+
     void referenced_columns()
     {
       QSet<QString> expectedCols;
