@@ -733,7 +733,8 @@ class EditorTab(QWidget):
         if overwrite:
             os.remove(temp_path)
         fN = path.split('/')[-1]
-        self.tw.setTabTitle(self, fN)
+        if not self.newEditor.isReadOnly():
+            self.tw.setTabTitle(self, fN)
         self.tw.setTabToolTip(self.tw.currentIndex(), path)
         self.newEditor.setModified(False)
         self.pc.saveFileButton.setEnabled(False)
@@ -979,8 +980,8 @@ class EditorTabWidget(QTabWidget):
                 return
             else:
                 self.parent.updateTabListScript(self.widget(tab).path)
-                if self.count() <= 1:
-                    self.removeTab(tab)
+                self.removeTab(tab)
+                if self.count() <= 1: 
                     self.newTabEditor()
         else:
             if self.widget(tab).path is not None or \

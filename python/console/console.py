@@ -537,9 +537,10 @@ class PythonConsoleWidget(QWidget):
             self.findPrevButton.setEnabled(False)
 
     def onClickGoToLine(self, item, column):
+        tabEditor = self.tabEditorWidget.currentWidget().newEditor
         if item.text(1) == 'syntaxError':
-            check = self.tabEditorWidget.currentWidget().newEditor.syntaxCheck()
-            if check:
+            check = self.tabEditorWidget.currentWidget().newEditor.syntaxCheck(fromContextMenu=False)
+            if check and not tabEditor.isReadOnly():
                 self.tabEditorWidget.currentWidget().save()
             return
         linenr = int(item.text(1))
@@ -549,7 +550,7 @@ class PythonConsoleWidget(QWidget):
             objName = itemName[0:charPos]
         else:
             objName = itemName
-        self.tabEditorWidget.currentWidget().newEditor.goToLine(objName, linenr)
+        tabEditor.goToLine(objName, linenr)
 
     def sextante(self):
        self.shell.commandConsole('sextante')
