@@ -375,9 +375,19 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *   Defines the coordinate reference system used for the layer.  This can be
  *   any string accepted by QgsCoordinateReferenceSystem::createFromString()
  *
+ * -subsetIndex=(yes|no)
+ *
+ *   Determines whether the provider generates an index to improve the efficiency
+ *   of subsets.  The default is yes
+ *
+ * -spatialIndex=(yes|no)
+ *
+ *   Determines whether the provider generates a spatial index.  The default is no.
+ *
  * -useWatcher=(yes|no)
  *
- *   Defines whether the file will be monitored for changes
+ *   Defines whether the file will be monitored for changes. The default is
+ *   to monitor for changes.
  *
  * - quiet
  *
