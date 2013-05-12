@@ -294,6 +294,9 @@ int main( int argc, char *argv[] )
   SetUnhandledExceptionFilter( qgisCrashDump );
 #endif
 
+  // initialize random number seed
+  srand( time( NULL ) );
+
   /////////////////////////////////////////////////////////////////
   // Command line options 'behaviour' flag setup
   ////////////////////////////////////////////////////////////////

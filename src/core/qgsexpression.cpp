@@ -347,6 +347,13 @@ static QVariant fcnSqrt( const QVariantList& values, QgsFeature* /*f*/, QgsExpre
   double x = getDoubleValue( values.at( 0 ), parent );
   return QVariant( sqrt( x ) );
 }
+
+static QVariant fcnAbs( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  double val = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( fabs( val ) );
+}
+
 static QVariant fcnSin( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   double x = getDoubleValue( values.at( 0 ), parent );
@@ -410,6 +417,102 @@ static QVariant fcnLog( const QVariantList& values, QgsFeature* , QgsExpression*
     return QVariant();
   return QVariant( log( x ) / log( b ) );
 }
+static QVariant fcnRndF( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double min = getDoubleValue( values.at( 0 ), parent );
+  double max = getDoubleValue( values.at( 1 ), parent );
+  if ( max < min )
+    return QVariant();
+
+  // Return a random double in the range [min, max] (inclusive)
+  double f = ( double )rand() / RAND_MAX;
+  return QVariant( min + f * ( max - min ) ) ;
+}
+static QVariant fcnRnd( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  int min = getIntValue( values.at( 0 ), parent );
+  int max = getIntValue( values.at( 1 ), parent );
+  if ( max < min )
+    return QVariant();
+
+  // Return a random integer in the range [min, max] (inclusive)
+  return QVariant( min + ( rand() % ( int )( max - min + 1 ) ) );
+}
+
+static QVariant fcnLinearScale( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double val = getDoubleValue( values.at( 0 ), parent );
+  double domain_min = getDoubleValue( values.at( 1 ), parent );
+  double domain_max = getDoubleValue( values.at( 2 ), parent );
+  double range_min = getDoubleValue( values.at( 3 ), parent );
+  double range_max = getDoubleValue( values.at( 4 ), parent );
+
+  // outside of domain?
+  if ( val >= domain_max )
+  {
+    return range_max;
+  }
+  else if ( val <= domain_min )
+  {
+    return range_min;
+  }
+
+  // calculate linear scale
+  double m = ( range_max - range_min ) / ( domain_max - domain_min );
+  double c = range_min - ( domain_min * m );
+
+  // Return linearly scaled value
+  return QVariant( m * val + c );
+}
+
+static QVariant fcnMax( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  //initially set max as first value
+  double maxVal = getDoubleValue( values.at( 0 ), parent );
+
+  //check against all other values
+  for ( int i = 1; i < values.length(); ++i )
+  {
+    double testVal = getDoubleValue( values[i], parent );
+    if ( testVal > maxVal )
+    {
+      maxVal = testVal;
+    }
+  }
+
+  return QVariant( maxVal );
+}
+
+static QVariant fcnMin( const QVariantList& values, QgsFeature* , QgsExpression *parent )
+{
+  //initially set min as first value
+  double minVal = getDoubleValue( values.at( 0 ), parent );
+
+  //check against all other values
+  for ( int i = 1; i < values.length(); ++i )
+  {
+    double testVal = getDoubleValue( values[i], parent );
+    if ( testVal < minVal )
+    {
+      minVal = testVal;
+    }
+  }
+
+  return QVariant( minVal );
+}
+
+static QVariant fcnFloor( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( floor( x ) );
+}
+
+static QVariant fcnCeil( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( ceil( x ) );
+}
+
 static QVariant fcnToInt( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   return QVariant( getIntValue( values.at( 0 ), parent ) );
@@ -459,6 +562,13 @@ static QVariant fcnTitle( const QVariantList& values, QgsFeature* , QgsExpressio
   }
   return QVariant( elems.join( " " ) );
 }
+
+static QVariant fcnTrim( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  return QVariant( str.trimmed() );
+}
+
 static QVariant fcnLength( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -498,6 +608,31 @@ static QVariant fcnRegexpMatch( const QVariantList& values, QgsFeature* , QgsExp
     return QVariant();
   }
   return QVariant( str.contains( re ) ? 1 : 0 );
+}
+
+static QVariant fcnRegexpSubstr( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  QString regexp = getStringValue( values.at( 1 ), parent );
+
+  QRegExp re( regexp );
+  if ( !re.isValid() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Invalid regular expression '%1': %2" ).arg( regexp ).arg( re.errorString() ) );
+    return QVariant();
+  }
+
+  // extract substring
+  re.indexIn( str );
+  if ( re.captureCount() > 0 )
+  {
+    // return first capture
+    return QVariant( re.capturedTexts()[0] );
+  }
+  else
+  {
+    return QVariant( "" );
+  }
 }
 
 static QVariant fcnSubstr( const QVariantList& values, QgsFeature* , QgsExpression* parent )
@@ -1204,15 +1339,18 @@ const QStringList &QgsExpression::BuiltinFunctions()
   if ( gmBuiltinFunctions.isEmpty() )
   {
     gmBuiltinFunctions
-    << "sqrt" << "cos" << "sin" << "tan"
+    << "abs" << "sqrt" << "cos" << "sin" << "tan"
     << "asin" << "acos" << "atan" << "atan2"
     << "exp" << "ln" << "log10" << "log"
-    << "round" << "toint" << "toreal" << "tostring"
+    << "round" << "rand" << "randf" << "max" << "min"
+    << "scale_linear" << "floor" << "ceil"
+    << "toint" << "toreal" << "tostring"
     << "todatetime" << "todate" << "totime" << "tointerval"
     << "coalesce" << "regexp_match" << "$now" << "age" << "year"
     << "month" << "week" << "day" << "hour"
     << "minute" << "second" << "lower" << "upper"
-    << "title" << "length" << "replace" << "regexp_replace"
+    << "title" << "length" << "replace" << "trim"
+    << "regexp_replace" << "regexp_substr"
     << "substr" << "concat" << "strpos" << "left"
     << "right" << "rpad" << "lpad"
     << "format_number" << "format_date"
@@ -1234,6 +1372,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
   {
     gmFunctions
     << new StaticFunction( "sqrt", 1, fcnSqrt, QObject::tr( "Math" ) )
+    << new StaticFunction( "abs", 1, fcnAbs, QObject::tr( "Math" ) )
     << new StaticFunction( "cos", 1, fcnCos, QObject::tr( "Math" ) )
     << new StaticFunction( "sin", 1, fcnSin, QObject::tr( "Math" ) )
     << new StaticFunction( "tan", 1, fcnTan, QObject::tr( "Math" ) )
@@ -1246,6 +1385,13 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
     << new StaticFunction( "log", 2, fcnLog, QObject::tr( "Math" ) )
     << new StaticFunction( "round", -1, fcnRound, QObject::tr( "Math" ) )
+    << new StaticFunction( "rand", 2, fcnRnd, QObject::tr( "Math" ) )
+    << new StaticFunction( "randf", 2, fcnRndF, QObject::tr( "Math" ) )
+    << new StaticFunction( "max", -1, fcnMax, QObject::tr( "Math" ) )
+    << new StaticFunction( "min", -1, fcnMin, QObject::tr( "Math" ) )
+    << new StaticFunction( "scale_linear", 5, fcnLinearScale, QObject::tr( "Math" ) )
+    << new StaticFunction( "floor", 1, fcnFloor, QObject::tr( "Math" ) )
+    << new StaticFunction( "ceil", 1, fcnCeil, QObject::tr( "Math" ) )
     << new StaticFunction( "$pi", 0, fcnPi, QObject::tr( "Math" ) )
     << new StaticFunction( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
     << new StaticFunction( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
@@ -1268,9 +1414,11 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "lower", 1, fcnLower, QObject::tr( "String" ) )
     << new StaticFunction( "upper", 1, fcnUpper, QObject::tr( "String" ) )
     << new StaticFunction( "title", 1, fcnTitle, QObject::tr( "String" ) )
+    << new StaticFunction( "trim", 1, fcnTrim, QObject::tr( "String" ) )
     << new StaticFunction( "length", 1, fcnLength, QObject::tr( "String" ) )
     << new StaticFunction( "replace", 3, fcnReplace, QObject::tr( "String" ) )
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
+    << new StaticFunction( "regexp_substr", 2, fcnRegexpSubstr, QObject::tr( "String" ) )
     << new StaticFunction( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
     << new StaticFunction( "concat", -1, fcnConcat, QObject::tr( "String" ) )
     << new StaticFunction( "strpos", 2, fcnStrpos, QObject::tr( "String" ) )

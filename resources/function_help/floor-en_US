@@ -1,0 +1,14 @@
+<h3>Function floor()</h3>
+Rounds a number downwards.
+
+<h4>Syntax</h4>
+<code>floor(value)</code><br>
+
+<h4>Arguments</h4>
+<code>value</code> - a number.
+<br>
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>floor(4.9) &rarr; 4</code><br>
+<code>floor(-4.9) &rarr; -5</code><br>

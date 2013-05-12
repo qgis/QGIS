@@ -229,6 +229,9 @@ class TestQgsExpression: public QObject
 
       // math functions
       QTest::newRow( "sqrt" ) << "sqrt(16)" << false << QVariant( 4. );
+      QTest::newRow( "abs(0.1)" ) << "abs(0.1)" << false << QVariant( 0.1 );
+      QTest::newRow( "abs(0)" ) << "abs(0)" << false << QVariant( 0. );
+      QTest::newRow( "abs(-0.1)" ) << "abs(-0.1)" << false << QVariant( 0.1 );
       QTest::newRow( "invalid sqrt value" ) << "sqrt('a')" << true << QVariant();
       QTest::newRow( "sin 0" ) << "sin(0)" << false << QVariant( 0. );
       QTest::newRow( "cos 0" ) << "cos(0)" << false << QVariant( 1. );
@@ -253,6 +256,20 @@ class TestQgsExpression: public QObject
       QTest::newRow( "round(1234.554,2) - round down" ) << "round(1234.554,2)" << false << QVariant( 1234.55 );
       QTest::newRow( "round(1234.6) - round up to int" ) << "round(1234.6)" << false << QVariant( 1235 );
       QTest::newRow( "round(1234.6) - round down to int" ) << "round(1234.4)" << false << QVariant( 1234 );
+      QTest::newRow( "max(1)" ) << "max(1)" << false << QVariant( 1. );
+      QTest::newRow( "max(1,3.5,-2.1)" ) << "max(1,3.5,-2.1)" << false << QVariant( 3.5 );
+      QTest::newRow( "min(-1.5)" ) << "min(-1.5)" << false << QVariant( -1.5 );
+      QTest::newRow( "min(-16.6,3.5,-2.1)" ) << "min(-16.6,3.5,-2.1)" << false << QVariant( -16.6 );
+      QTest::newRow( "floor(4.9)" ) << "floor(4.9)" << false << QVariant( 4. );
+      QTest::newRow( "floor(-4.9)" ) << "floor(-4.9)" << false << QVariant( -5. );
+      QTest::newRow( "ceil(4.9)" ) << "ceil(4.9)" << false << QVariant( 5. );
+      QTest::newRow( "ceil(-4.9)" ) << "ceil(-4.9)" << false << QVariant( -4. );
+      QTest::newRow( "scale_linear(0.5,0,1,0,1)" ) << "scale_linear(0.5,0,1,0,1)" << false << QVariant( 0.5 );
+      QTest::newRow( "scale_linear(0,0,10,100,200)" ) << "scale_linear(0,0,10,100,200)" << false << QVariant( 100. );
+      QTest::newRow( "scale_linear(5,0,10,100,200)" ) << "scale_linear(5,0,10,100,200)" << false << QVariant( 150. );
+      QTest::newRow( "scale_linear(10,0,10,100,200)" ) << "scale_linear(10,0,10,100,200)" << false << QVariant( 200. );
+      QTest::newRow( "scale_linear(-1,0,10,100,200)" ) << "scale_linear(-1,0,10,100,200)" << false << QVariant( 100. );
+      QTest::newRow( "scale_linear(11,0,10,100,200)" ) << "scale_linear(11,0,10,100,200)" << false << QVariant( 200. );
 
       // cast functions
       QTest::newRow( "double to int" ) << "toint(3.2)" << false << QVariant( 3 );
@@ -274,6 +291,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr outside" ) << "substr('HeLLo', -5,2)" << false << QVariant( "" );
+      QTest::newRow( "regexp_substr" ) << "regexp_substr('abc123','(\\\\d+)')" << false << QVariant( "123" );
+      QTest::newRow( "regexp_substr invalid" ) << "regexp_substr('abc123','([[[')" << true << QVariant();
       QTest::newRow( "strpos" ) << "strpos('Hello World','World')" << false << QVariant( 6 );
       QTest::newRow( "strpos outside" ) << "strpos('Hello World','blah')" << false << QVariant( -1 );
       QTest::newRow( "left" ) << "left('Hello World',5)" << false << QVariant( "Hello" );
@@ -283,6 +302,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "lpad" ) << "lpad('Hello', 10, 'x')" << false << QVariant( "Helloxxxxx" );
       QTest::newRow( "lpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
       QTest::newRow( "title" ) << "title(' HeLlO   WORLD ')" << false << QVariant( " Hello   World " );
+      QTest::newRow( "trim" ) << "trim('   Test String ')" << false << QVariant( "Test String" );
+      QTest::newRow( "trim empty string" ) << "trim('')" << false << QVariant( "" );
       QTest::newRow( "format" ) << "format('%1 %2 %3 %1', 'One', 'Two', 'Three')" << false << QVariant( "One Two Three One" );
 
       // implicit conversions
@@ -452,6 +473,40 @@ class TestQgsExpression: public QObject
       QgsExpression exp( "$id * 2" );
       QVariant v = exp.evaluate( &f );
       QCOMPARE( v.toInt(), 200 );
+    }
+
+    void eval_rand()
+    {
+      QgsExpression exp1( "rand(1,10)" );
+      QVariant v1 = exp1.evaluate();
+      QCOMPARE( v1.toInt() <= 10, true );
+      QCOMPARE( v1.toInt() >= 1, true );
+
+      QgsExpression exp2( "rand(-5,-5)" );
+      QVariant v2 = exp2.evaluate();
+      QCOMPARE( v2.toInt(), -5 );
+
+      // Invalid expression since max<min
+      QgsExpression exp3( "rand(10,1)" );
+      QVariant v3 = exp3.evaluate();
+      QCOMPARE( v3.type(),  QVariant::Invalid );
+    }
+
+    void eval_randf()
+    {
+      QgsExpression exp1( "randf(1.5,9.5)" );
+      QVariant v1 = exp1.evaluate();
+      QCOMPARE( v1.toDouble() <= 9.5, true );
+      QCOMPARE( v1.toDouble() >= 1.5, true );
+
+      QgsExpression exp2( "randf(-0.0005,-0.0005)" );
+      QVariant v2 = exp2.evaluate();
+      QCOMPARE( v2.toDouble(), -0.0005 );
+
+      // Invalid expression since max<min
+      QgsExpression exp3( "randf(9.3333,1.784)" );
+      QVariant v3 = exp3.evaluate();
+      QCOMPARE( v3.type(),  QVariant::Invalid );
     }
 
     void referenced_columns()
