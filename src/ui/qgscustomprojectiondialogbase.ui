@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>474</width>
-    <height>548</height>
+    <width>542</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,41 @@
       <string>Define</string>
      </property>
      <layout class="QGridLayout">
-      <item row="0" column="0" colspan="2">
+      <item row="2" column="0" colspan="4">
+       <widget class="QTreeWidget" name="leNameList">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="sortingEnabled">
+         <bool>false</bool>
+        </property>
+        <attribute name="headerShowSortIndicator" stdset="0">
+         <bool>false</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Parameters</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="4">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</string>
@@ -35,118 +69,83 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="textLabel1">
-        <property name="text">
-         <string>Name</string>
+      <item row="5" column="3">
+       <widget class="QPlainTextEdit" name="teParameters">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="buddy">
-         <cstring>leName</cstring>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>70</height>
+         </size>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="4" column="3">
        <widget class="QLineEdit" name="leName"/>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="textLabel3_2">
+      <item row="4" column="2">
+       <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Parameters</string>
-        </property>
-        <property name="buddy">
-         <cstring>leParameters</cstring>
+         <string>Name:</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="leParameters"/>
+      <item row="5" column="2">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Parameters:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pbnCopyCRS">
+          <property name="text">
+           <string>Copy
+ existing CRS</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="3" column="1">
-       <layout class="QHBoxLayout">
+      <item row="3" column="1" colspan="3">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="spacing">
+         <number>6</number>
+        </property>
         <item>
-         <widget class="QToolButton" name="pbnFirst">
+         <widget class="QPushButton" name="pbnAdd">
           <property name="text">
-           <string>|&lt;</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../images/themes/default/mIconFirst.png</normaloff>../../images/themes/default/mIconFirst.png</iconset>
+           <string>Add new CRS</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="pbnPrevious">
-          <property name="text">
-           <string>&lt;</string>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../images/themes/default/mIconPrevious.png</normaloff>../../images/themes/default/mIconPrevious.png</iconset>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
           </property>
-         </widget>
+         </spacer>
         </item>
         <item>
-         <widget class="QLabel" name="lblRecordNo">
+         <widget class="QPushButton" name="pbnRemove">
           <property name="text">
-           <string>1 of 1</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="pbnNext">
-          <property name="text">
-           <string>&gt;</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../images/themes/default/mIconNext.png</normaloff>../../images/themes/default/mIconNext.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="pbnLast">
-          <property name="text">
-           <string>&gt;|</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../images/themes/default/mIconLast.png</normaloff>../../images/themes/default/mIconLast.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="pbnNew">
-          <property name="text">
-           <string>*</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../images/themes/default/mIconNew.png</normaloff>../../images/themes/default/mIconNew.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="pbnSave">
-          <property name="text">
-           <string>S</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="pbnDelete">
-          <property name="text">
-           <string>X</string>
-          </property>
-          <property name="icon">
-           <iconset>
-            <normaloff>../../images/themes/default/mIconDelete.png</normaloff>../../images/themes/default/mIconDelete.png</iconset>
+           <string>Remove</string>
           </property>
          </widget>
         </item>
@@ -155,12 +154,29 @@
      </layout>
     </widget>
    </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Test</string>
      </property>
      <layout class="QGridLayout">
+      <item row="3" column="0">
+       <widget class="QLabel" name="textLabel2_2_2">
+        <property name="text">
+         <string>East</string>
+        </property>
+        <property name="buddy">
+         <cstring>eastWGS84</cstring>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0" colspan="3">
        <widget class="QLabel" name="label_2">
         <property name="text">
@@ -171,34 +187,21 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="textLabel3_2_2">
-        <property name="text">
-         <string>Parameters</string>
-        </property>
-        <property name="buddy">
-         <cstring>leTestParameters</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QLineEdit" name="leTestParameters"/>
-      </item>
-      <item row="2" column="1">
+      <item row="1" column="1">
        <widget class="QLabel" name="textLabel1_3">
         <property name="text">
          <string>Geographic / WGS84</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
+      <item row="1" column="2">
        <widget class="QLabel" name="textLabel2_3">
         <property name="text">
          <string>Destination CRS        </string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="textLabel2_2">
         <property name="text">
          <string>North</string>
@@ -208,14 +211,14 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="2" column="1">
        <widget class="QLineEdit" name="northWGS84">
         <property name="enabled">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="2" column="2">
        <widget class="QLabel" name="projectedX">
         <property name="enabled">
          <bool>true</bool>
@@ -228,20 +231,10 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="textLabel2_2_2">
-        <property name="text">
-         <string>East</string>
-        </property>
-        <property name="buddy">
-         <cstring>eastWGS84</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
+      <item row="3" column="1">
        <widget class="QLineEdit" name="eastWGS84"/>
       </item>
-      <item row="4" column="2">
+      <item row="3" column="2">
        <widget class="QLabel" name="projectedY">
         <property name="enabled">
          <bool>true</bool>
@@ -257,7 +250,7 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="3">
+      <item row="4" column="0" colspan="3">
        <widget class="QPushButton" name="pbnCalculate">
         <property name="text">
          <string>Calculate</string>
@@ -267,27 +260,10 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>leName</tabstop>
-  <tabstop>leParameters</tabstop>
-  <tabstop>pbnFirst</tabstop>
-  <tabstop>pbnPrevious</tabstop>
-  <tabstop>pbnNext</tabstop>
-  <tabstop>pbnLast</tabstop>
-  <tabstop>pbnNew</tabstop>
-  <tabstop>pbnSave</tabstop>
-  <tabstop>pbnDelete</tabstop>
-  <tabstop>leTestParameters</tabstop>
   <tabstop>northWGS84</tabstop>
   <tabstop>eastWGS84</tabstop>
   <tabstop>pbnCalculate</tabstop>
@@ -297,17 +273,17 @@
  <connections>
   <connection>
    <sender>buttonBox</sender>
-   <signal>accepted()</signal>
+   <signal>rejected()</signal>
    <receiver>QgsCustomProjectionDialogBase</receiver>
-   <slot>accept()</slot>
+   <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>436</x>
-     <y>522</y>
+     <x>270</x>
+     <y>590</y>
     </hint>
     <hint type="destinationlabel">
-     <x>471</x>
-     <y>501</y>
+     <x>270</x>
+     <y>306</y>
     </hint>
    </hints>
   </connection>

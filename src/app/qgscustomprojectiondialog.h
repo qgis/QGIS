@@ -20,6 +20,7 @@
 
 #include "ui_qgscustomprojectiondialogbase.h"
 #include "qgscontexthelp.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QDir;
 
@@ -34,45 +35,41 @@ class QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectio
   public:
     QgsCustomProjectionDialog( QWidget *parent = 0, Qt::WFlags fl = 0 );
     ~QgsCustomProjectionDialog();
-    //a recursive function to make a directory and its ancestors
+
   public slots:
     void on_pbnCalculate_clicked();
-    void on_pbnDelete_clicked();
-    //
-    // Database navigation controles
-    //
-    long getRecordCount();
-    void on_pbnFirst_clicked();
-    void on_pbnPrevious_clicked();
-    void on_pbnNext_clicked();
-    void on_pbnLast_clicked();
-    void on_pbnNew_clicked();
-    void on_pbnSave_clicked();
+    void on_pbnAdd_clicked();
+    void on_pbnRemove_clicked();
+    void on_pbnCopyCRS_clicked();
+    void on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-
-    //
-    // Control population
-    //
-    /* These two methods will be deprecated
-    void getProjList();
-    void getEllipsoidList();
-    */
-    QString getProjectionFamilyName( QString theProjectionFamilyAcronym );
-    QString getEllipsoidName( QString theEllipsoidAcronym );
-    QString getProjectionFamilyAcronym( QString theProjectionFamilyName );
-    QString getEllipsoidAcronym( QString theEllipsoidName );
+    void on_buttonBox_accepted();
+    
   private:
-    QString getProjFromParameters();
-    QString getEllipseFromParameters();
-
-    QString mCurrentRecordId;
-    long mCurrentRecordLong;
-    //the record previous to starting an insert operation
-    //so that we can return to it if the record insert is aborted
-    long mLastRecordLong;
-    long mRecordCountLong;
+   
+    //helper functions
+    void populateList();
     QString quotedValue( QString value );
+    bool deleteCRS( QString id );
+    bool saveCRS( QgsCoordinateReferenceSystem myParameters, QString myName, QString myId, bool newEntry );
+    void insertProjection( QString myProjectionAcronym );
+    
+    //These two QMap store the values as they are on the database when loading
+    QMap <QString, QString> existingCRSparameters;
+    QMap <QString, QString> existingCRSnames;
+   
+    //These three vectors store the value updated with the current modifications
+    std::vector<QString> customCRSnames;
+    std::vector<QString> customCRSids;
+    std::vector<QString> customCRSparameters;
+
+    //vector saving the CRS to be deleted
+    std::vector<QString> deletedCRSs; 
+
+    //Columns in the tree widget
+    enum columns { QGIS_CRS_NAME_COLUMN, QGIS_CRS_ID_COLUMN, QGIS_CRS_PARAMETERS_COLUMN };
 };
+
 
 #endif
