@@ -1520,6 +1520,13 @@
                     </property>
                    </widget>
                   </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbxAddOracleDC">
+                    <property name="text">
+                     <string>Add Oracle layers with double click and select in extended mode</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>

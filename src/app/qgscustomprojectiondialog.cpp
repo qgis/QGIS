@@ -23,6 +23,7 @@
 #include "qgisapp.h" //<--theme icons
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsgenericprojectionselector.h"
 
 //qt includes
 #include <QFileInfo>
@@ -49,13 +50,8 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WFlag
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/CustomProjection/geometry" ).toByteArray() );
 
-  pbnFirst->setIcon( QgsApplication::getThemeIcon( "mIconFirst.png" ) );
-  pbnPrevious->setIcon( QgsApplication::getThemeIcon( "mIconPrevious.png" ) );
-  pbnNext->setIcon( QgsApplication::getThemeIcon( "mIconNext.png" ) );
-  pbnLast->setIcon( QgsApplication::getThemeIcon( "mIconLast.png" ) );
-  pbnNew->setIcon( QgsApplication::getThemeIcon( "mIconNew.png" ) );
-  pbnSave->setIcon( QgsApplication::getThemeIcon( "mActionFileSave.png" ) );
-  pbnDelete->setIcon( QgsApplication::getThemeIcon( "mIconDelete.png" ) );
+  pbnAdd->setIcon( QgsApplication::getThemeIcon( "mIconNew.png" ) );
+  pbnRemove->setIcon( QgsApplication::getThemeIcon( "mIconDelete.png" ) );
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
@@ -65,28 +61,16 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WFlag
     QgsDebugMsg( "The qgis.db does not exist" );
   }
 
-  //
-  // Setup member vars
-  //
-  mCurrentRecordId = "";
-
-  //
-  // Set up databound controls
-  //
-
-  // deprecated methods
-  //getProjList();
-  //getEllipsoidList();
-  mRecordCountLong = getRecordCount();
-  if ( mRecordCountLong > 0 )
-    on_pbnFirst_clicked();
-  else
-    on_pbnNew_clicked();
-  //automatically go to insert mode if there are not recs yet
-  if ( mRecordCountLong < 1 )
+  populateList();
+  if( !customCRSnames.empty() )
   {
-    on_pbnNew_clicked();
+    leName->setText( customCRSnames[0] );
+    teParameters->setPlainText( customCRSparameters[0] );
+    leNameList->setCurrentItem( leNameList->topLevelItem( 0 ) );
   }
+  
+  leNameList->hideColumn(QGIS_CRS_ID_COLUMN);
+  
 }
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
@@ -95,229 +79,10 @@ QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
   settings.setValue( "/Windows/CustomProjection/geometry", saveGeometry() );
 }
 
-void QgsCustomProjectionDialog::on_pbnDelete_clicked()
+
+void QgsCustomProjectionDialog::populateList()
 {
-
-  if ( QMessageBox::Ok != QMessageBox::warning(
-         this,
-         tr( "Delete Projection Definition?" ),
-         tr( "Deleting a projection definition is not reversable. Do you want to delete it?" ),
-         QMessageBox::Ok | QMessageBox::Cancel ) )
-  {
-    return ;
-  }
-
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName;
-  //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "delete from tbl_srs where srs_id=" + quotedValue( mCurrentRecordId );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  QgsDebugMsg( QString( "Query to delete current:%1" ).arg( mySql ) );
-  if ( myResult == SQLITE_OK )
-  {
-    sqlite3_step( myPreparedStatement );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  //move to an appropriate rec now this one is gone
-  --mRecordCountLong;
-  if ( mRecordCountLong < 1 )
-  {
-    on_pbnNew_clicked();
-  }
-  else if ( mCurrentRecordLong == 1 )
-  {
-    on_pbnFirst_clicked();
-  }
-  else if ( mCurrentRecordLong > mRecordCountLong )
-  {
-    on_pbnLast_clicked();
-  }
-  else
-  {
-    mCurrentRecordLong = mCurrentRecordLong - 2;
-    on_pbnNext_clicked();
-  }
-  return ;
-}
-
-long QgsCustomProjectionDialog::getRecordCount()
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  long          myRecordCount = 0;
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select count(*) from tbl_srs";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      QString myRecordCountString = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      myRecordCount = myRecordCountString.toLong();
-    }
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myRecordCount;
-
-}
-
-QString QgsCustomProjectionDialog::getProjectionFamilyName( QString theProjectionFamilyAcronym )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName;
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
-  }
-  // Set up the query to retrieve the projection information needed to populate the PROJECTION list
-  QString mySql = "select name from tbl_projection where acronym=" + quotedValue( theProjectionFamilyAcronym );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
-
-}
-QString QgsCustomProjectionDialog::getEllipsoidName( QString theEllipsoidAcronym )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName;
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select name from tbl_ellipsoid where acronym=" + quotedValue( theEllipsoidAcronym );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
-
-}
-QString QgsCustomProjectionDialog::getProjectionFamilyAcronym( QString theProjectionFamilyName )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName;
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
-  }
-  // Set up the query to retrieve the projection information needed to populate the PROJECTION list
-  QString mySql = "select acronym from tbl_projection where name=" + quotedValue( theProjectionFamilyName );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
-
-}
-QString QgsCustomProjectionDialog::getEllipsoidAcronym( QString theEllipsoidName )
-{
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  QString       myName;
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
-  }
-  // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
-  QString mySql = "select acronym from tbl_ellipsoid where name=" + quotedValue( theEllipsoidName );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      myName = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-  }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-  return myName;
-
-}
-
-void QgsCustomProjectionDialog::on_pbnFirst_clicked()
-{
-  QgsDebugMsg( "entered." );
+  //Setup connection to the existing custom CRS database:
   sqlite3      *myDatabase;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
@@ -331,436 +96,60 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
     //     database if it does not exist.
     Q_ASSERT( myResult == SQLITE_OK );
   }
-
-  QString mySql = "select * from tbl_srs order by srs_id limit 1";
-  QgsDebugMsg( QString( "Query to move first:%1" ).arg( mySql ) );
+  QString mySql = "select srs_id,description,parameters from tbl_srs";
+  QgsDebugMsg( QString( "Query to populate existing list:%1" ).arg( mySql ) );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    QTreeWidgetItem *newItem;
+    QString id, name, parameters;
+    QgsCoordinateReferenceSystem crs;
+    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
-      mCurrentRecordId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      leName->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) ) );
-      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) ) );
-      mCurrentRecordLong = 1;
-      lblRecordNo->setText( tr( "%1 of %2" ).arg( mCurrentRecordLong ).arg( mRecordCountLong ) );
+      id= QString::fromUtf8( ( char* ) sqlite3_column_text( myPreparedStatement, 0 ) );
+      name= QString::fromUtf8( ( char* ) sqlite3_column_text( myPreparedStatement, 1 ) );
+      parameters= QString::fromUtf8( ( char* ) sqlite3_column_text( myPreparedStatement, 2 ) );
+      
+      crs.createFromProj4( parameters );
+      existingCRSnames[id] = name;
+      existingCRSparameters[id] = crs.toProj4();
+
+      newItem = new QTreeWidgetItem( leNameList, QStringList(  ) );
+      newItem->setText( QGIS_CRS_NAME_COLUMN, name );
+      newItem->setText( QGIS_CRS_ID_COLUMN, id );
+      newItem->setText( QGIS_CRS_PARAMETERS_COLUMN, crs.toProj4() );
     }
   }
   else
   {
-    QgsDebugMsg( QString( "pbnFirst query failed: %1" ).arg( mySql ) );
-
+    QgsDebugMsg( QString( "Populate list query failed: %1" ).arg( mySql ) );
   }
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
-
-  //enable nav buttons as appropriate
-  pbnFirst->setEnabled( false );
-  pbnPrevious->setEnabled( false );
-  //automatically go to insert mode if there are not recs yet
-  if ( mRecordCountLong < 1 )
+  
+  leNameList->sortByColumn( QGIS_CRS_NAME_COLUMN,Qt::AscendingOrder );
+  
+  QTreeWidgetItemIterator it( leNameList );
+  while( *it )
   {
-    on_pbnNew_clicked();
-    pbnDelete->setEnabled( false );
-  }
-  else if ( mCurrentRecordLong == mRecordCountLong )
-  {
-    pbnNext->setEnabled( false );
-    pbnLast->setEnabled( false );
-    pbnDelete->setEnabled( true );
-  }
-  else
-  {
-    pbnNext->setEnabled( true );
-    pbnLast->setEnabled( true );
-    pbnDelete->setEnabled( true );
+    QString id = ( *it )->text( QGIS_CRS_ID_COLUMN );
+    customCRSids.push_back( id );
+    customCRSnames.push_back( existingCRSnames[id] );
+    customCRSparameters.push_back( existingCRSparameters[id] );
+    it++;
   }
 }
 
-
-void QgsCustomProjectionDialog::on_pbnPrevious_clicked()
+bool  QgsCustomProjectionDialog::deleteCRS( QString id )
 {
-  QgsDebugMsg( "entered." );
-  if ( mCurrentRecordLong <= 1 )
-  {
-    return;
-  }
   sqlite3      *myDatabase;
   const char   *myTail;
   sqlite3_stmt *myPreparedStatement;
   int           myResult;
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
-  }
-
-  QString mySql = "select * from tbl_srs where srs_id < " + mCurrentRecordId + " order by srs_id desc limit 1";
-  QgsDebugMsg( QString( "Query to move previous:%1" ).arg( mySql ) );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      mCurrentRecordId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      leName->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) ) );
-      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) ) ),
-      --mCurrentRecordLong;
-      lblRecordNo->setText( tr( "%1 of %2" ).arg( mCurrentRecordLong ).arg( mRecordCountLong ) );
-    }
-  }
-  else
-  {
-    QgsDebugMsg( QString( "pbnPrevious query failed: %1" ).arg( mySql ) );
-
-  }
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-
-  //enable nav buttons as appropriate
-  if ( mCurrentRecordLong <= 1 )
-  {
-    pbnFirst->setEnabled( false );
-    pbnPrevious->setEnabled( false );
-  }
-  else
-  {
-    pbnFirst->setEnabled( true );
-    pbnPrevious->setEnabled( true );
-  }
-  if ( mCurrentRecordLong == mRecordCountLong )
-  {
-    pbnNext->setEnabled( false );
-    pbnLast->setEnabled( false );
-  }
-  else
-  {
-    pbnNext->setEnabled( true );
-    pbnLast->setEnabled( true );
-  }
-
-}
-
-
-void QgsCustomProjectionDialog::on_pbnNext_clicked()
-{
-  QgsDebugMsg( "entered." );
-  if ( mCurrentRecordLong >= mRecordCountLong )
-  {
-    return;
-  }
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
-  }
-
-  QString mySql = "select * from tbl_srs where srs_id > " + mCurrentRecordId + " order by srs_id asc limit 1";
-  QgsDebugMsg( QString( "Query to move next:%1" ).arg( mySql ) );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      mCurrentRecordId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      leName->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) ) );
-      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) ) );
-      ++mCurrentRecordLong;
-      lblRecordNo->setText( tr( "%1 of %2" ).arg( mCurrentRecordLong ).arg( mRecordCountLong ) );
-    }
-  }
-  else
-  {
-    QgsDebugMsg( QString( "pbnNext query failed: %1" ).arg( mySql ) );
-
-  }
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-
-  //enable nav buttons as appropriate
-  if ( mCurrentRecordLong == mRecordCountLong )
-  {
-    pbnNext->setEnabled( false );
-    pbnLast->setEnabled( false );
-  }
-  else
-  {
-    pbnNext->setEnabled( true );
-    pbnLast->setEnabled( true );
-  }
-  if ( mRecordCountLong <= 1 )
-  {
-    pbnFirst->setEnabled( false );
-    pbnPrevious->setEnabled( false );
-  }
-  else
-  {
-    pbnFirst->setEnabled( true );
-    pbnPrevious->setEnabled( true );
-  }
-
-}
-
-
-void QgsCustomProjectionDialog::on_pbnLast_clicked()
-{
-  QgsDebugMsg( "entered." );
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
-  if ( myResult != SQLITE_OK )
-  {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    Q_ASSERT( myResult == SQLITE_OK );
-  }
-
-  QString mySql = "select * from tbl_srs order by srs_id desc limit 1";
-  QgsDebugMsg( QString( "Query to move last:%1" ).arg( mySql ) );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-    {
-      mCurrentRecordId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      leName->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 1 ) ) );
-      //QString myProjectionFamilyId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,2));
-      //cboProjectionFamily->setCurrentText(getProjectionFamilyName(myProjectionFamilyId));
-      //QString myEllipsoidId = QString::fromUtf8((char *)sqlite3_column_text(myPreparedStatement,3));
-      //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
-      leParameters->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) ) );
-      mCurrentRecordLong = mRecordCountLong;
-      lblRecordNo->setText( tr( "%1 of %2" ).arg( mCurrentRecordLong ).arg( mRecordCountLong ) );
-    }
-  }
-  else
-  {
-    QgsDebugMsg( QString( "pbnLast query failed: %1" ).arg( mySql ) );
-
-  }
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-
-  //enable nav buttons as appropriate
-  pbnNext->setEnabled( false );
-  pbnLast->setEnabled( false );
-  if ( mRecordCountLong <= 1 )
-  {
-    pbnFirst->setEnabled( false );
-    pbnPrevious->setEnabled( false );
-  }
-  else
-  {
-    pbnFirst->setEnabled( true );
-    pbnPrevious->setEnabled( true );
-  }
-}
-
-
-void QgsCustomProjectionDialog::on_pbnNew_clicked()
-{
-  if ( pbnNew->text() == tr( "Abort" ) )
-  {
-    //if we get here, user has aborted add record
-    pbnNew->setIcon( QgsApplication::getThemeIcon( "mIconNew.png" ) );
-    //next line needed for new/abort logic
-    pbnNew->setText( tr( "New" ) );
-    //get back to the last used record before insert was pressed
-    if ( mCurrentRecordId.isEmpty() )
-    {
-      on_pbnFirst_clicked();
-    }
-    else
-    {
-      mCurrentRecordLong = mLastRecordLong;
-      on_pbnNext_clicked();
-    }
-  }
-  else
-  {
-    //if we get here user has elected to add new record
-    pbnFirst->setEnabled( false );
-    pbnPrevious->setEnabled( false );
-    pbnNext->setEnabled( false );
-    pbnLast->setEnabled( false );
-    pbnDelete->setEnabled( false );
-    pbnNew->setIcon( QgsApplication::getThemeIcon( "mIconNew.png" ) );
-    //next line needed for new/abort logic
-    pbnNew->setText( tr( "Abort" ) );
-    //clear the controls
-    leName->setText( "" );
-    leParameters->setText( "" );
-    //cboProjectionFamily->setCurrentItem(0);
-    //cboEllipsoid->setCurrentItem(0);
-    lblRecordNo->setText( tr( "* of %1" ).arg( mRecordCountLong ) );
-    //remember the rec we are on in case the user aborts
-    mLastRecordLong = mCurrentRecordLong;
-    mCurrentRecordId = "";
-  }
-
-}
-
-
-void QgsCustomProjectionDialog::on_pbnSave_clicked()
-{
-  QgsDebugMsg( "entered." );
-
-  QString myName = leName->text();
-  QString myParameters = leParameters->text();
-  if ( myName.isEmpty() )
-  {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid." )
-                              + tr( " Please give the projection a name before pressing save." ) );
-    return;
-  }
-  if ( myParameters.isEmpty() )
-  {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid." )
-                              + tr( " Please add the parameters before pressing save." ) );
-    return;
-  }
-
-
-  //
-  // Now make sure parameters have proj and ellipse
-  //
-
-  QString myProjectionAcronym  =  getProjFromParameters();
-  QString myEllipsoidAcronym   =  getEllipseFromParameters();
-
-  if ( myProjectionAcronym.isNull() )
-  {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid." )
-                              + tr( " Please add a proj= clause before pressing save." ) );
-    return;
-  }
-
-#if 0
-  /** I am commenting this check out for now because of ticket #1146
-   * In 1.0.0 we should consider doing more sophisticated checks or just
-   * removing this commented block entirely. It is possible to set the
-   * parameters for the earths figure in ways other than using ellps (which
-   * is a convenience function in proj). For example the radius and flattenning
-   * can be specified and various other parameter permutations. See the proj
-   * manual section entitled 'Specifying the Earths Figure' for more details.
-   * Tim Sutton */
-  if ( myEllipsoidAcronym.isNull() )
-  {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.", "COMMENTED OUT" ) );
-    return;
-  }
-#endif
-
-  //
-  // We must check the prj def is valid!
-  // NOTE :  the test below may be bogus as the processes abpve emsired there
-  // is always at least a projection and ellpsoid - which proj will parse as acceptible
-  //
-
-  projPJ myProj = pj_init_plus( leParameters->text().toLocal8Bit().data() );
-
-  if ( myProj == NULL )
-  {
-    QMessageBox::information( this, tr( "QGIS Custom Projection" ),
-                              tr( "This proj4 projection definition is not valid." )
-                              + tr( " Please correct before pressing save." ) );
-    pj_free( myProj );
-    return;
-
-  }
-  pj_free( myProj );
-
-
-  /** TODO Check the projection is not a duplicate ! */
-
-
-  //CREATE TABLE tbl_srs (
-  //srs_id integer primary key,
-  //description varchar(255) NOT NULL,
-  //projection_acronym varchar(20) NOT NULL default '',
-  //ellipsoid_acronym varchar(20) NOT NULL default '',
-  //parameters varchar(80) NOT NULL default ''
-  //);
-
-  QString mySql;
-  //insert a record if mode is enabled
-  if ( pbnNew->text() == tr( "Abort" ) )
-  {
-    //if this is the first record we need to ensure that its srs_id is 10000. For
-    //any rec after that sqlite3 will take care of the autonumering
-    //this was done to support sqlite 3.0 as it does not yet support
-    //the autoinc related system tables.
-    if ( getRecordCount() == 0 )
-    {
-      mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
-              + QString::number( USER_CRS_START_ID )
-              + "," + quotedValue( myName )
-              + "," + quotedValue( myProjectionAcronym )
-              + "," + quotedValue( myEllipsoidAcronym )
-              + "," + quotedValue( myParameters )
-              + ",0)"; // <-- is_geo shamelessly hard coded for now
-    }
-    else
-    {
-      mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
-              + quotedValue( myName )
-              + "," + quotedValue( myProjectionAcronym )
-              + "," + quotedValue( myEllipsoidAcronym )
-              + "," + quotedValue( myParameters )
-              + ",0)"; // <-- is_geo shamelessly hard coded for now
-    }
-  }
-  else //user is updating an existing record
-  {
-    mySql = "update tbl_srs set description="
-            + quotedValue( myName )
-            + ",projection_acronym=" + quotedValue( myProjectionAcronym )
-            + ",ellipsoid_acronym=" + quotedValue( myEllipsoidAcronym )
-            + ",parameters=" + quotedValue( myParameters )
-            + ",is_geo=0" // <--shamelessly hard coded for now
-            + " where srs_id=" + quotedValue( mCurrentRecordId )
-            ;
-  }
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
+  
+  QString mySql = "delete from tbl_srs where srs_id=" + quotedValue( id );
+  QgsDebugMsg( mySql );
   //check the db is available
   myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8(), &myDatabase );
   if ( myResult != SQLITE_OK )
@@ -775,28 +164,34 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
   // XXX Need to free memory from the error msg if one is set
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "update or insert failed in custom projection dialog: %1 [%2]" ).arg( mySql ).arg( sqlite3_errmsg( myDatabase ) ) );
+    QgsDebugMsg( QString( "failed to remove CRS from database in custom projection dialog: %1 [%2]" ).arg( mySql ).arg( sqlite3_errmsg( myDatabase ) ) );
   }
-  //reinstate button if we were doing an insert
-  else if ( pbnNew->text() == tr( "Abort" ) )
-  {
-    pbnNew->setText( tr( "New" ) );
-    //get to the newly inserted record
-    ++mRecordCountLong;
-    mCurrentRecordLong = mRecordCountLong - 1;
-    on_pbnLast_clicked();
-  }
+  sqlite3_close( myDatabase );
+  return myResult == SQLITE_OK;
+}
 
-  sqlite3_finalize( myPreparedStatement );
-
-  // If we have a projection acronym not in the user db previously, add it.
-  // This is a must, or else we can't select it from the vw_srs table.
-  // Actually, add it always and let the SQL PRIMARY KEY remove duplicates.
-
-  //check the db is available
+void  QgsCustomProjectionDialog::insertProjection(QString myProjectionAcronym)
+{
+  sqlite3      *myDatabase;
+  sqlite3_stmt *myPreparedStatement;
   sqlite3      *srsDatabase;
+  QString mySql;
+  const char   *myTail;
+  //check the db is available
+  int           myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8(), &myDatabase );
+  if ( myResult != SQLITE_OK )
+  {
+    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ) ).arg( QgsApplication::qgisUserDbFilePath() ) );
+    // XXX This will likely never happen since on open, sqlite creates the
+    //     database if it does not exist.
+    Q_ASSERT( myResult == SQLITE_OK );
+  }
   int srsResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8(), &srsDatabase );
-  if ( myResult == SQLITE_OK )
+  if ( myResult != SQLITE_OK )
+  {
+    QgsDebugMsg( QString( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDbFilePath() ).arg( sqlite3_errmsg( srsDatabase ) ) );
+  }
+  else
   {
     // Set up the query to retrieve the projection information needed to populate the PROJECTION list
     QString srsSql = "select acronym,name,notes,parameters from tbl_projection where acronym=" + quotedValue( myProjectionAcronym );
@@ -836,15 +231,219 @@ void QgsCustomProjectionDialog::on_pbnSave_clicked()
 
     sqlite3_close( srsDatabase );
   }
-  else
-  {
-    QgsDebugMsg( QString( "Can't open database %1 [%2]" ).arg( QgsApplication::srsDbFilePath() ).arg( sqlite3_errmsg( srsDatabase ) ) );
-  }
-
   // close sqlite3 db
   sqlite3_close( myDatabase );
+}
 
-  pbnDelete->setEnabled( true );
+bool QgsCustomProjectionDialog::saveCRS(QgsCoordinateReferenceSystem myCRS, QString myName, QString myId, bool newEntry)
+{
+  QString mySql;
+  int return_id;
+  QString myProjectionAcronym  = myCRS.projectionAcronym();
+  QString myEllipsoidAcronym   =  myCRS.ellipsoidAcronym(); 
+  QgsDebugMsg( QString("Saving a CRS:%1, %2, %3").arg(myName).arg(myCRS.toProj4()).arg(newEntry) );
+  if( newEntry )
+  {
+    return_id=myCRS.saveAsUserCRS(myName);
+    if(return_id==-1)
+      return false;
+    else
+      myId = QString::number(return_id);
+  }
+  else
+  {
+    mySql = "update tbl_srs set description="
+          + quotedValue( myName )
+          + ",projection_acronym=" + quotedValue( myProjectionAcronym )
+          + ",ellipsoid_acronym=" + quotedValue( myEllipsoidAcronym )
+          + ",parameters=" + quotedValue( myCRS.toProj4() )
+          + ",is_geo=0" // <--shamelessly hard coded for now
+          + " where srs_id=" + quotedValue( myId )
+          ;
+    QgsDebugMsg( mySql );
+    sqlite3      *myDatabase;
+    const char   *myTail;
+    sqlite3_stmt *myPreparedStatement;
+    int           myResult;
+    //check if the db is available
+    myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8(), &myDatabase );
+    if ( myResult != SQLITE_OK )
+    {
+      QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ) ).arg( QgsApplication::qgisUserDbFilePath() ) );
+      // XXX This will likely never happen since on open, sqlite creates the
+      //     database if it does not exist.
+      Q_ASSERT( myResult == SQLITE_OK );
+    }
+    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+    sqlite3_step( myPreparedStatement );
+    // XXX Need to free memory from the error msg if one is set
+    if ( myResult != SQLITE_OK )
+    {
+      QgsDebugMsg( QString( "failed to write to database in custom projection dialog: %1 [%2]" ).arg( mySql ).arg( sqlite3_errmsg( myDatabase ) ) );
+    }
+
+    sqlite3_finalize( myPreparedStatement );
+    // close sqlite3 db
+    sqlite3_close( myDatabase );
+    if(myResult != SQLITE_OK)
+      return false;
+  }
+  existingCRSparameters[myId] = myCRS.toProj4();
+  existingCRSnames[myId] = myName;
+  
+  // If we have a projection acronym not in the user db previously, add it.
+  // This is a must, or else we can't select it from the vw_srs table.
+  // Actually, add it always and let the SQL PRIMARY KEY remove duplicates.
+  insertProjection( myProjectionAcronym );
+  
+  return true;
+}
+
+
+void QgsCustomProjectionDialog::on_pbnAdd_clicked()
+{
+  QString name = tr( "new CRS" );
+  QString id = "";
+  QgsCoordinateReferenceSystem parameters;
+  
+  QTreeWidgetItem* newItem = new QTreeWidgetItem( leNameList, QStringList(  ) );
+
+  newItem->setText( QGIS_CRS_NAME_COLUMN, name );
+  newItem->setText( QGIS_CRS_ID_COLUMN, id );
+  newItem->setText( QGIS_CRS_PARAMETERS_COLUMN, parameters.toProj4());
+  customCRSnames.push_back( name );
+  customCRSids.push_back ( id);
+  customCRSparameters.push_back( parameters.toProj4() );
+  leNameList->setCurrentItem( newItem );
+}
+
+void QgsCustomProjectionDialog::on_pbnRemove_clicked()
+{
+  int i = leNameList->currentIndex().row();
+  if( i == -1 )
+  {
+    return;
+  }
+  QTreeWidgetItem* item = leNameList->takeTopLevelItem( i );
+  delete item;
+  if( customCRSids[i] != "" )
+  {
+    deletedCRSs.push_back( customCRSids[i] );
+  }
+  customCRSids.erase( customCRSids.begin() + i );
+  customCRSnames.erase( customCRSnames.begin() + i );
+  customCRSparameters.erase( customCRSparameters.begin() + i );
+}
+
+void QgsCustomProjectionDialog::on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * previous )
+{
+  //Store the modifications made to the current element before moving on
+  int currentIndex, previousIndex;
+  if( previous )
+  {
+    previousIndex = leNameList->indexOfTopLevelItem( previous );
+    customCRSnames[previousIndex] = leName->text();
+    customCRSparameters[previousIndex] = teParameters->toPlainText();
+    previous->setText( QGIS_CRS_NAME_COLUMN, leName->text() );
+    previous->setText( QGIS_CRS_PARAMETERS_COLUMN, teParameters->toPlainText() );
+  }
+  if( current )
+  {
+    currentIndex = leNameList->indexOfTopLevelItem( current );
+    leName->setText( customCRSnames[currentIndex] );
+    teParameters->setPlainText( current->text( QGIS_CRS_PARAMETERS_COLUMN ) );
+  }
+  else
+  {
+    //Can happen that current is null, for example if we just deleted the last element
+    leName->setText( "" );
+    teParameters->setPlainText( "" );
+    return;  
+  }
+  return;
+}
+
+void QgsCustomProjectionDialog::on_pbnCopyCRS_clicked()
+{  
+  QgsDebugMsg( "Entered" );
+  QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
+  if ( mySelector->exec() )
+  {
+    QgsCoordinateReferenceSystem srs;
+    QString id = mySelector->selectedAuthId();
+    srs.createFromOgcWmsCrs( id );
+    if (leNameList->topLevelItemCount() == 0 )
+    {
+      on_pbnAdd_clicked();
+    }
+    teParameters->setPlainText( srs.toProj4() );
+    customCRSparameters[leNameList->currentIndex().row()] = srs.toProj4();
+    leNameList->currentItem()->setText( QGIS_CRS_PARAMETERS_COLUMN, srs.toProj4() );
+    
+  }
+  delete mySelector;
+}
+
+void QgsCustomProjectionDialog::on_buttonBox_accepted()
+{
+  QgsDebugMsg( "Entered" );
+  //Update the current CRS:
+  int i = leNameList->currentIndex().row();
+  if(i != -1)
+  {
+    customCRSnames[i] = leName->text();
+    customCRSparameters[i] = teParameters->toPlainText();
+  }
+  
+  QgsDebugMsg( "We save the modified CRS." );
+
+  //Check if all CRS are valid:
+  QgsCoordinateReferenceSystem CRS;
+  for( size_t i = 0; i < customCRSids.size(); ++i )
+  {
+    CRS.createFromProj4(customCRSparameters[i]);
+    if( CRS.isValid()==false )
+    {
+      QMessageBox::information( this, tr( "QGIS Custom Projection" ),
+                                tr( "The proj4 definition of '%1' is not valid." ).arg(customCRSnames[i]) );
+      return;
+    }
+  }
+  //Modify the CRS changed:
+  bool save_success=true;
+  for( size_t i = 0; i < customCRSids.size(); ++i )
+  {
+    CRS.createFromProj4(customCRSparameters[i]);
+    //Test if we just added this CRS (if it has no existing ID)
+    if( customCRSids[i] == "" )
+    {
+      save_success = save_success && saveCRS( CRS,customCRSnames[i], "", true);
+    }
+    else
+    {
+      if ( existingCRSnames[customCRSids[i]]!=customCRSnames[i] || existingCRSparameters[customCRSids[i]] != customCRSparameters[i] )
+      {
+        save_success = save_success && saveCRS(CRS, customCRSnames[i], customCRSids[i], false );
+      }
+    }
+    if( ! save_success )
+    {
+      QgsDebugMsg( QString( "Error when saving CRS '%1'" ).arg( customCRSnames[i] ));
+    }
+  }
+  QgsDebugMsg( "We remove the deleted CRS." );
+  for( size_t i = 0; i < deletedCRSs.size(); ++i )
+  {
+    save_success=save_success && deleteCRS( deletedCRSs[i] );
+    if( ! save_success )
+    {
+      QgsDebugMsg( QString( "Problem for layer '%1'" ).arg( customCRSparameters[i] ));
+    }
+  }
+  if( save_success )
+  {
+    accept();
+  }
 }
 
 void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
@@ -856,9 +455,9 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   // We must check the prj def is valid!
   //
 
-  projPJ myProj = pj_init_plus( leTestParameters->text().toLocal8Bit().data() );
+  projPJ myProj = pj_init_plus( teParameters->toPlainText().toLocal8Bit().data() );
 
-  QgsDebugMsg( QString( "My proj: %1" ).arg( leTestParameters->text() ) );
+  QgsDebugMsg( QString( "My proj: %1" ).arg( teParameters->toPlainText() ) );
 
   if ( myProj == NULL )
   {
@@ -922,46 +521,6 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
 
 }
 
-
-QString QgsCustomProjectionDialog::getProjFromParameters()
-{
-  QgsDebugMsg( "entered." );
-  QString myProj4String = leParameters->text();
-  QRegExp myProjRegExp( "\\+proj=[a-zA-Z]*" );
-  int myStart = 0;
-  myStart = myProjRegExp.indexIn( myProj4String, myStart );
-  if ( myStart == -1 )
-  {
-    QgsDebugMsg( "proj string supplied has no +proj argument!" );
-    return NULL;
-  }
-  else
-  {
-    int myLength = myProjRegExp.matchedLength();
-    QString myProjectionAcronym = myProj4String.mid( myStart + ( PROJ_PREFIX_LEN ), myLength - ( PROJ_PREFIX_LEN ) );//+1 for space
-    return myProjectionAcronym;
-  }
-}
-
-QString QgsCustomProjectionDialog::getEllipseFromParameters()
-{
-  QgsDebugMsg( "entered." );
-  QString myProj4String = leParameters->text();
-  QRegExp myEllipseRegExp( "\\+ellps=[a-zA-Z0-9\\-_]*" );
-  int myStart = 0;
-  myStart = myEllipseRegExp.indexIn( myProj4String, myStart );
-  if ( myStart == -1 )
-  {
-    QgsDebugMsg( "proj string supplied has no +ellps!" );
-    return NULL;
-  }
-  else //match was found
-  {
-    int myLength = myEllipseRegExp.matchedLength();
-    QString myEllipsoidAcronym = myProj4String.mid( myStart + ( ELLPS_PREFIX_LEN ), myLength - ( ELLPS_PREFIX_LEN ) );
-    return myEllipsoidAcronym;
-  }
-}
 
 QString QgsCustomProjectionDialog::quotedValue( QString value )
 {

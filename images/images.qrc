@@ -102,6 +102,7 @@
         <file>themes/default/console/iconSearchEditorConsole.png</file>
         <file>themes/default/console/iconSearchNextEditorConsole.png</file>
         <file>themes/default/console/iconSearchPrevEditorConsole.png</file>
+        <file>themes/default/console/iconSyntaxErrorConsole.png</file>
         <file>themes/default/extents.png</file>
         <file>themes/default/favourites.png</file>
         <file>themes/default/geographic.png</file>

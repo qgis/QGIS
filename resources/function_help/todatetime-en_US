@@ -1,0 +1,13 @@
+<h3>todatetime() function</h3>
+Convert a string into Qt data time type.
+
+<h4>Syntax</h4>
+<code>todatetime('string')</code><br>
+
+<h4>Arguments</h4>
+<code>string</code> - is string in Qt date time format.
+<br>
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>todatetime('2012-05-04 12:50:00') &rarr; 2012-05-04T12:50:00</code><br>

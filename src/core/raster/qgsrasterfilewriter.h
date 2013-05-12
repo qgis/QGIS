@@ -115,6 +115,11 @@ class CORE_EXPORT QgsRasterFileWriter
                                   const QgsCoordinateReferenceSystem& crs, QProgressDialog* progressDialog = 0 );
 
     /** \brief Initialize vrt member variables
+     *  @param xSize width of vrt
+     *  @param ySize height of vrt
+     *  @param crs coordinate system of vrt
+     *  @param geoTransform optional array of transformation matrix values
+     *  @param type datatype of vrt
      *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
      *  @param destNoDataValueList no data value, indexed from 0
      */
@@ -132,6 +137,12 @@ class CORE_EXPORT QgsRasterFileWriter
         const QgsCoordinateReferenceSystem& crs );
 
     /** \brief Init VRT (for tiled mode) or create global output provider (single-file mode)
+     *  @param nCols number of tile columns
+     *  @param nRows number of tile rows
+     *  @param crs coordinate system of vrt
+     *  @param geoTransform optional array of transformation matrix values
+     *  @param nBands number of bands
+     *  @param type datatype of vrt
      *  @param destHasNoDataValueList true if destination has no data value, indexed from 0
      *  @param destNoDataValueList no data value, indexed from 0
      */

@@ -36,6 +36,8 @@ class QgsGeomColumnTypeThread : public QThread
 
   signals:
     void setLayerType( QgsPostgresLayerProperty layerProperty );
+    void progress( int, int );
+    void progressMessage( QString );
 
   public slots:
     void addGeometryColumn( QgsPostgresLayerProperty layerProperty );
