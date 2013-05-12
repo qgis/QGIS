@@ -10,6 +10,7 @@ SET (DTEXT_SRCS
 )
 
 SET (DTEXT_MOC_HDRS
+  qgsdelimitedtextfile.h
   qgsdelimitedtextprovider.h
   qgsdelimitedtextsourceselect.h
 )
