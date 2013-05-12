@@ -2136,7 +2136,7 @@ bool QgsOracleProvider::getGeometryDetails()
       delim = " AND ";
     }
 
-    mConnection->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
+    mConnection->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, false );
 
     Q_ASSERT( layerProperty.types.size() == layerProperty.srids.size() );
 

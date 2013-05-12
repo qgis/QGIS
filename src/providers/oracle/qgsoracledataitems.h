@@ -16,6 +16,7 @@
 #define QGSORACLEDATAITEMS_H
 
 #include <QSqlDatabase>
+#include <QMainWindow>
 
 #include "qgsdataitem.h"
 
@@ -43,6 +44,8 @@ class QgsOracleRootItem : public QgsDataCollectionItem
     virtual QWidget * paramWidget();
 
     virtual QList<QAction*> actions();
+
+    static QMainWindow *sMainWindow;
 
   public slots:
     void connectionsChanged();

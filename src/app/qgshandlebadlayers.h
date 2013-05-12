@@ -46,6 +46,8 @@ class QgsHandleBadLayers
     QgsHandleBadLayers( const QList<QDomNode> &layers, const QDomDocument &dom );
     ~QgsHandleBadLayers();
 
+    int layerCount();
+
   private slots:
     void selectionChanged();
     void browseClicked();

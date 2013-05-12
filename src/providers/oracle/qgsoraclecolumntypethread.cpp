@@ -20,10 +20,11 @@ email                : jef at norbit dot de
 
 #include <QMetaType>
 
-QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata )
+QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata, bool allowGeometrylessTables )
     : QThread()
     , mName( name )
     , mUseEstimatedMetadata( useEstimatedMetadata )
+    , mAllowGeometrylessTables( allowGeometrylessTables )
 {
   qRegisterMetaType<QgsOracleLayerProperty>( "QgsOracleLayerProperty" );
 }
@@ -45,22 +46,28 @@ void QgsOracleColumnTypeThread::run()
 
   mStopped = false;
 
-  QgsDebugMsg( "retrieving supported layers - connection " + mName );
+  emit progressMessage( tr( "Retrieving tables of %1..." ).arg( mName ) );
   QVector<QgsOracleLayerProperty> layerProperties;
   if ( !conn->supportedLayers( layerProperties,
                                QgsOracleConn::geometryColumnsOnly( mName ),
                                QgsOracleConn::userTablesOnly( mName ),
-                               QgsOracleConn::allowGeometrylessTables( mName ) ) ||
+                               mAllowGeometrylessTables ) ||
        layerProperties.isEmpty() )
   {
     return;
   }
 
+  int i = 0;
   foreach ( QgsOracleLayerProperty layerProperty, layerProperties )
   {
     if ( !mStopped )
     {
-      conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
+      emit progress( i++, layerProperties.size() );
+      emit progressMessage( tr( "Scanning column %1.%2.%3..." )
+                            .arg( layerProperty.ownerName )
+                            .arg( layerProperty.tableName )
+                            .arg( layerProperty.geometryColName ) );
+      conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, QgsOracleConn::onlyExistingTypes( mName ) );
     }
 
     if ( mStopped )
@@ -72,6 +79,9 @@ void QgsOracleColumnTypeThread::run()
     // Now tell the layer list dialog box...
     emit setLayerType( layerProperty );
   }
+
+  emit progress( 0, 0 );
+  emit progressMessage( tr( "Table retrieval finished." ) );
 
   conn->disconnect();
 }

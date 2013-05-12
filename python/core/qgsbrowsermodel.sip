@@ -54,9 +54,6 @@ class QgsBrowserModel : QAbstractItemModel
 
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
-    // Reload the whole model
-    void reload();
-
     // Refresh item specified by path
     void refresh( QString path );
 
@@ -68,14 +65,23 @@ class QgsBrowserModel : QAbstractItemModel
 
     void connectItem( QgsDataItem *item );
 
+    bool canFetchMore( const QModelIndex & parent ) const;
+    void fetchMore( const QModelIndex & parent );
+
   public slots:
+    // Reload the whole model
+    void reload();
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
 
-  protected:
+    void addFavouriteDirectory( QString favDir );
+    void removeFavourite( const QModelIndex &index );
 
+    void updateProjectHome();
+
+  protected:
     // populates the model
     void addRootItems();
     void removeRootItems();

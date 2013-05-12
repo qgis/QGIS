@@ -41,23 +41,7 @@ QgsOracleTableModel::~QgsOracleTableModel()
 
 void QgsOracleTableModel::addTableEntry( QgsOracleLayerProperty layerProperty )
 {
-#ifdef QGISDEBUG
-  QString typeString;
-  foreach ( QGis::WkbType type, layerProperty.types )
-  {
-    if ( !typeString.isEmpty() )
-      typeString += "|";
-    typeString += QString::number( type );
-  }
-  QString sridString;
-  foreach ( int srid, layerProperty.srids )
-  {
-    if ( !sridString.isEmpty() )
-      sridString += "|";
-    sridString += QString::number( srid );
-  }
   QgsDebugMsg( layerProperty.toString() );
-#endif
 
   if ( layerProperty.isView && layerProperty.pkCols.isEmpty() )
   {
@@ -70,8 +54,8 @@ void QgsOracleTableModel::addTableEntry( QgsOracleLayerProperty layerProperty )
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {
-    QGis::WkbType wkbType = layerProperty.at( i ).types[0];
-    int srid = layerProperty.at( i ).srids[0];
+    QGis::WkbType wkbType = layerProperty.types[ i ];
+    int srid = layerProperty.srids[ i ];
 
     QStandardItem *ownerNameItem = new QStandardItem( layerProperty.ownerName );
 

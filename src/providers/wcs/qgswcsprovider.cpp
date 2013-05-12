@@ -556,7 +556,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     // It may happen (Geoserver) that if requested BBOX is larger than coverage
     // extent, the returned data cover intersection of requested BBOX and coverage
     // extent scaled to requested WIDTH/HEIGHT => check extent
-    // Unfortunately if received raster does not hac CRS, the extent is raster size
+    // Unfortunately if the received raster does not have a CRS, the extent is the raster size
     // and in that case it cannot be used to verify extent
     QgsCoordinateReferenceSystem cacheCrs;
     if ( !cacheCrs.createFromWkt( GDALGetProjectionRef( mCachedGdalDataset ) ) &&

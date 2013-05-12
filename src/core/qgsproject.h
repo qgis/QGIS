@@ -136,7 +136,7 @@ class CORE_EXPORT QgsProject : public QObject
      */
     //@{
     bool read( const QFileInfo & file );
-    bool read( );
+    bool read();
     //@}
 
 
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsProject : public QObject
      */
     //@{
     bool write( const QFileInfo & file );
-    bool write( );
+    bool write();
     //@}
 
 
@@ -307,12 +307,12 @@ class CORE_EXPORT QgsProject : public QObject
     void setTopologicalEditing( bool enabled );
 
     /**Convenience function to query topological editing status
-        @note added in version 1.9*/
+      @note added in version 1.9*/
     bool topologicalEditing() const;
 
     /** Return project's home path
-    @return home path of project (or QString::null if not set)
-        @note added in version 2.0 */
+      @return home path of project (or QString::null if not set)
+      @note added in version 2.0 */
     QString homePath() const;
 
   protected:
@@ -330,7 +330,6 @@ class CORE_EXPORT QgsProject : public QObject
     bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
   signals:
-
     //! emitted when project is being read
     void readProject( const QDomDocument & );
 
@@ -345,17 +344,17 @@ class CORE_EXPORT QgsProject : public QObject
      * @param mapLayer  The map layer which is being initialized
      * @param layerNode The layer node from the project file
      */
-    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerNode );
+    void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
 
     /**
      * Emitted, when a layer is being saved. You can use this method to save
      * additional information to the layer.
      *
      * @param mapLayer  The map layer which is being initialized
-     * @param layerNode The layer node from the project file
+     * @param layerElem The layer element from the project file
      * @param doc The document
      */
-    void writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem,  QDomDocument& doc );
+    void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
 
     //! emitted when the project file has been written and closed
     void projectSaved();

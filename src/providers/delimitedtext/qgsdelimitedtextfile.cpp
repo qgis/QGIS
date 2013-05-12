@@ -22,6 +22,7 @@
 #include <QFile>
 #include <QDataStream>
 #include <QTextStream>
+#include <QFileSystemWatcher>
 #include <QTextCodec>
 #include <QStringList>
 #include <QRegExp>
@@ -37,6 +38,8 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mEncoding( "UTF-8" ),
     mFile( 0 ),
     mStream( 0 ),
+    mUseWatcher( true ),
+    mWatcher( 0 ),
     mDefinitionValid( false ),
     mUseHeader( true ),
     mDiscardEmptyFields( false ),
@@ -44,8 +47,11 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mSkipLines( 0 ),
     mMaxFields( 0 ),
     mMaxNameLength( 200 ),  // Don't want field names to be too unweildy!
-    mLineNumber( 0 ),
-    mRecordLineNumber( 0 ),
+    mLineNumber( -1 ),
+    mRecordLineNumber( -1 ),
+    mRecordNumber( -1 ),
+    mHoldCurrentRecord( false ),
+    mMaxRecordNumber( -1 ),
     mMaxFieldCount( 0 )
 {
   // The default type is CSV
@@ -71,6 +77,11 @@ void QgsDelimitedTextFile::close()
     delete mFile;
     mFile = 0;
   }
+  if ( mWatcher )
+  {
+    delete mWatcher;
+    mWatcher = 0;
+  }
 }
 
 bool QgsDelimitedTextFile::open()
@@ -92,8 +103,23 @@ bool QgsDelimitedTextFile::open()
       QTextCodec *codec =  QTextCodec::codecForName( mEncoding.toAscii() );
       mStream->setCodec( codec );
     }
+    mMaxRecordNumber = -1;
+    mHoldCurrentRecord = false;
+    if ( mWatcher ) delete mWatcher;
+    if( mUseWatcher )
+    {
+      mWatcher = new QFileSystemWatcher( this );
+      mWatcher->addPath( mFileName );
+      connect( mWatcher, SIGNAL( fileChanged( QString ) ), this, SLOT( updateFile() ) );
+    }
   }
   return true;
+}
+
+void QgsDelimitedTextFile::updateFile()
+{
+  close();
+  emit( fileUpdated() );
 }
 
 // Clear information based on current definition of file
@@ -124,6 +150,12 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
   if ( url.hasQueryItem( "encoding" ) )
   {
     mEncoding = url.queryItemValue( "encoding" );
+  }
+
+  //
+  if ( url.hasQueryItem( "useWatcher" ) )
+  {
+    mUseWatcher = ! url.queryItemValue( "useWatcher" ).toUpper().startsWith( 'N' );;
   }
 
   // The default type is csv, to be consistent with the
@@ -181,7 +213,7 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
   }
   if ( url.hasQueryItem( "skipEmptyFields" ) )
   {
-    mDiscardEmptyFields = ! url.queryItemValue( "useHeader" ).toUpper().startsWith( 'N' );;
+    mDiscardEmptyFields = ! url.queryItemValue( "skipEmptyFields" ).toUpper().startsWith( 'N' );
   }
   if ( url.hasQueryItem( "trimFields" ) )
   {
@@ -231,6 +263,9 @@ QUrl QgsDelimitedTextFile::url()
   {
     url.addQueryItem( "encoding", mEncoding );
   }
+
+  if( ! mUseWatcher ) url.addQueryItem( "useWatcher", "no");
+
   url.addQueryItem( "type", type() );
   if ( mType == DelimTypeRegexp )
   {
@@ -275,6 +310,12 @@ void QgsDelimitedTextFile::setEncoding( QString encoding )
 {
   resetDefinition();
   mEncoding = encoding;
+}
+
+void QgsDelimitedTextFile::setUseWatcher(bool useWatcher)
+{
+  resetDefinition();
+  mUseWatcher = useWatcher;
 }
 
 QString QgsDelimitedTextFile::type()
@@ -372,7 +413,7 @@ void QgsDelimitedTextFile::setDiscardEmptyFields( bool discardEmptyFields )
 
 void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
 {
-  mFieldNames.empty();
+  mFieldNames.clear();
   foreach ( QString name, names )
   {
     bool nameOk = true;
@@ -455,9 +496,47 @@ int QgsDelimitedTextFile::fieldIndex( QString name )
 
 }
 
+bool QgsDelimitedTextFile::setNextRecordId(long nextRecordId )
+{
+  mHoldCurrentRecord = nextRecordId == mRecordLineNumber;
+  if( mHoldCurrentRecord ) return true;
+  return setNextLineNumber( nextRecordId );
+}
+
 QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList &record )
 {
-  return ( this->*mParser )( record );
+
+  record.clear();
+  Status status = RecordOk;
+
+  if( mHoldCurrentRecord )
+  {
+    mHoldCurrentRecord = false;
+  }
+  else
+  {
+    // Invalidate the record line number, in get EOF
+    mRecordLineNumber = -1;
+
+    // Find the first non-blank line to read
+    QString buffer;
+    status = nextLine( buffer, true );
+    if ( status != RecordOk ) return status;
+
+    mCurrentRecord.clear();
+    mRecordLineNumber = mLineNumber;
+    if ( mRecordNumber >= 0 )
+    {
+      mRecordNumber++;
+      if ( mRecordNumber > mMaxRecordNumber ) mMaxRecordNumber = mRecordNumber;
+    }
+    status = (this->*mParser )( buffer, mCurrentRecord );
+  }
+  if( status == RecordOk )
+  {
+    record.append(mCurrentRecord);
+  }
+  return status;
 }
 
 
@@ -469,7 +548,8 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
   // Reset the file pointer
   mStream->seek( 0 );
   mLineNumber = 0;
-  mRecordLineNumber = 0;
+  mRecordNumber = -1;
+  mRecordLineNumber = -1;
 
   // Skip header lines
   for ( int i = mSkipLines; i-- > 0; )
@@ -478,14 +558,15 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
     mLineNumber++;
   }
   // Read the column names
+  Status result = RecordOk;
   if ( mUseHeader )
   {
     QStringList names;
-    QgsDelimitedTextFile::Status result = nextRecord( names );
+    result = nextRecord( names );
     setFieldNames( names );
-    return result;
   }
-  return RecordOk;
+  if( result == RecordOk ) mRecordNumber = 0;
+  return result;
 }
 
 QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bool skipBlank )
@@ -509,6 +590,24 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
   return RecordEOF;
 }
 
+bool QgsDelimitedTextFile::setNextLineNumber( long nextLineNumber )
+{
+  if ( ! mStream ) return false;
+  if ( mLineNumber > nextLineNumber-1 )
+  {
+    mRecordNumber = -1;
+    mStream->seek(0);
+    mLineNumber = 0;
+  }
+  QString buffer;
+  while( mLineNumber < nextLineNumber-1 )
+  {
+    if( nextLine(buffer,false) != RecordOk ) return false;
+  }
+  return true;
+
+}
+
 void QgsDelimitedTextFile::appendField( QStringList &record, QString field, bool quoted )
 {
   if ( mMaxFields > 0 && record.size() >= mMaxFields ) return;
@@ -522,16 +621,14 @@ void QgsDelimitedTextFile::appendField( QStringList &record, QString field, bool
     if ( !( mDiscardEmptyFields && field.isEmpty() ) ) record.append( field );
   }
   // Keep track of maximum number of non-empty fields in a record
-  if ( record.size() > mMaxFieldCount && ! field.isEmpty() ) mMaxFieldCount = record.size();
+  if ( record.size() > mMaxFieldCount && ! field.isEmpty() )
+  {
+    mMaxFieldCount = record.size();
+  }
 }
 
-QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QStringList &fields )
+QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QString &buffer, QStringList &fields )
 {
-  fields.clear();
-  QString buffer;
-  Status status = nextLine( buffer, true );
-  if ( status != RecordOk ) return status;
-  mRecordLineNumber = mLineNumber;
 
   // If match is anchored, then only interested in records which actually match
   // and extract capture groups
@@ -586,16 +683,9 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseRegexp( QStringList &fie
   return RecordOk;
 }
 
-QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QStringList &fields )
+QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer, QStringList &fields )
 {
-  fields.clear();
-
-  // Find the first non-blank line to read
-  QString buffer;
-  Status status = nextLine( buffer, true );
-  if ( status != RecordOk ) return status;
-  mRecordLineNumber = mLineNumber;
-
+  Status status = RecordOk;
   QString field;        // String in which to accumulate next field
   bool escaped = false; // Next char is escaped
   bool quoted = false;  // In quotes

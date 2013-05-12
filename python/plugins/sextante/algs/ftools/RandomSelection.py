@@ -72,7 +72,7 @@ class RandomSelection(GeoAlgorithm):
         featureCount = layer.featureCount()
         value = int(self.getParameterValue(self.NUMBER))
 
-        layer.removeSelection(True)
+        layer.removeSelection()
 
         if method == 0:
             if value > featureCount:

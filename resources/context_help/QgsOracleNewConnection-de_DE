@@ -1,0 +1,46 @@
+<h3>Neue Oracle-Verbindung erstellen</h3>
+In diesem Dialog kann eine Verbindung zu einer Oracle-Datenbank eingestellt werden.
+<p>
+<ul>
+<li> <label>Name</label> Ein Name um die Verbindung zu identifizieren.
+
+<li> <label>Database</label> SID oder SERVICE_NAME der Oracle-Instanz
+
+<li> <label>Host</label> Name oder IP-Adresse des Computers, der den Datenbankserver beherbergt.
+
+<li> <label>Port</label> IP-Port des Datenbankservers
+
+<li> <label>Benutzername</label> Datenbankbenutzername.
+<li> <label>Passwort</label> Datenbankpasswort.
+
+<li> <label>Benutzername speichern</label> Legt fest, dass der Benutzername in
+der Verbindungseinstellungen gespeichert werden soll.
+
+<li> <label>Passwort speichern</label> Legt fest, dass das Passwort in den
+Verbindungseinstellungen gespeichert werden soll.  <font color="red">Passworte
+werden dann im <strong>Klartext</strong> in der Systemkonfiguration und
+Projektdateien gespeichert!</font>
+
+<li> <label>Nur in der Metadatentabelle suchen</label> Schr&auml;nkt die
+angezeigten Tabelle auf die in der Sicht all_sdo_geom_metadata enthaltenen ein.
+Dies kann  die anf&auml;ngliche Anzeige der r&auml;umlichen Tabellen beschlgen.
+
+<li> <label>Nur Tabellen des Benutzers ber&uuml;cksichtigen</label> Bei der
+Suche nach r&auml;umlichen Tabellen nur die ber&uuml;cksichtigen, die dem
+angemeldeten Benutzer geh&ouml;ren.
+
+<li> <label>Auch geometrielose Tabelle anzeigen</label>  Legt fest das auch
+Tabellen ohne Geometrie angezeigt werden sollen.
+
+<li> <label>Tabellenstatistiken nutzen</label> Wenn ein Layer geladen wird,
+werden verschiedene Metadaten f&uuml; die Oracle-Tabelle ben&ouml;tigt.  Dies
+umfa&szlig;t die Zeilenanzahl, Geometrietyp und die r&auml;umliche
+Ausma&szlig;e der Geometriespalte.  Wenn die Tabelle viele Zeilen enth&auml;lt
+kann die Bestimmung dieser Daten zeitaufwendig sein.  Durch die Aktivierung
+diese Option werden folgende schnelle Tabellenoperation vorgenommen: Die
+Zeilenanzahl wird &uuml;ber all_tables.num_rows bestimmt.  Die
+Tabellenausma&szlig;e werden mit SDO_TUNE.EXTENTS_OF bestimmt auch wennn ein
+Layerfilter gesetzt ist. Der Geometrietype wird aus den ersten 100 nicht-leeren
+Geometriezeilen bestimmt.
+
+</ul>

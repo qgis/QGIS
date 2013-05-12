@@ -418,6 +418,10 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
     lstTilesets->setSortingEnabled( true );
     lstTilesets->sortByColumn( 0, Qt::AscendingOrder );
   }
+  else
+  {
+	lstTilesets->setRowCount( 0 );
+  }
 
   // If we got some layers, let the user add them to the map
   if ( lstLayers->topLevelItemCount() == 1 )
@@ -890,7 +894,7 @@ void QgsWMSSourceSelect::updateButtons()
     //   disable tilesets, when layer are selected or no tilesets available
     lstLayers->setEnabled( true );
     tabServers->setTabEnabled( tabServers->indexOf( tabLayerOrder ), mLayerOrderTreeWidget->topLevelItemCount() > 0 );
-    tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ),  mLayerOrderTreeWidget->topLevelItemCount() == 0  && lstTilesets->rowCount() );
+    tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ),  mLayerOrderTreeWidget->topLevelItemCount() == 0  && lstTilesets->rowCount() > 0 );
     btnGrpImageEncoding->setEnabled( true );
   }
 

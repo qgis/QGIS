@@ -190,7 +190,7 @@ void QgsDataItem::populate()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QVector<QgsDataItem*> children = createChildren( );
+  QVector<QgsDataItem*> children = createChildren();
   foreach ( QgsDataItem *child, children )
   {
     // initialization, do not refresh! That would result in infinite loop (beginInsertItems->rowCount->populate)
@@ -301,7 +301,7 @@ void QgsDataItem::refresh()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QVector<QgsDataItem*> items = createChildren( );
+  QVector<QgsDataItem*> items = createChildren();
 
   // Remove no more present items
   QVector<QgsDataItem*> remove;
@@ -448,7 +448,7 @@ QgsDirectoryItem::~QgsDirectoryItem()
 {
 }
 
-QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
+QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
 {
   QVector<QgsDataItem*> children;
   QDir dir( mPath );
@@ -692,17 +692,16 @@ QgsFavouritesItem::~QgsFavouritesItem()
 {
 }
 
-QVector<QgsDataItem*> QgsFavouritesItem::createChildren( )
+QVector<QgsDataItem*> QgsFavouritesItem::createChildren()
 {
   QVector<QgsDataItem*> children;
-  QgsDataItem* item;
 
   QSettings settings;
   QStringList favDirs = settings.value( "/browser/favourites", QVariant() ).toStringList();
 
   foreach ( QString favDir, favDirs )
   {
-    item = new QgsDirectoryItem( this, favDir, favDir );
+    QgsDataItem *item = new QgsDirectoryItem( this, favDir, favDir );
     if ( item )
     {
       children.append( item );
@@ -710,6 +709,29 @@ QVector<QgsDataItem*> QgsFavouritesItem::createChildren( )
   }
 
   return children;
+}
+
+void QgsFavouritesItem::addDirectory( QString favDir )
+{
+  QSettings settings;
+  QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
+  favDirs.append( favDir );
+  settings.setValue( "/browser/favourites", favDirs );
+
+  addChildItem( new QgsDirectoryItem( this, favDir, favDir ), true );
+}
+
+void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
+{
+  if ( !item )
+    return;
+
+  QSettings settings;
+  QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
+  favDirs.removeAll( item->path() );
+  settings.setValue( "/browser/favourites", favDirs );
+
+  deleteChildItem( item );
 }
 
 //-----------------------------------------------------------------------
@@ -849,7 +871,7 @@ char **VSIReadDirRecursive1( const char *pszPath )
   return papszOFiles;
 }
 
-QVector<QgsDataItem*> QgsZipItem::createChildren( )
+QVector<QgsDataItem*> QgsZipItem::createChildren()
 {
   QVector<QgsDataItem*> children;
   QString tmpPath;

@@ -28,9 +28,13 @@
 
 #include <QSettings>
 
-QgsBrowserModel::QgsBrowserModel( QObject *parent ) :
-    QAbstractItemModel( parent )
+QgsBrowserModel::QgsBrowserModel( QObject *parent )
+    : QAbstractItemModel( parent )
+    , mFavourites( 0 )
+    , mProjectHome( 0 )
 {
+  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
+  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
   addRootItems();
 }
 
@@ -39,20 +43,35 @@ QgsBrowserModel::~QgsBrowserModel()
   removeRootItems();
 }
 
-void QgsBrowserModel::addRootItems()
+void QgsBrowserModel::updateProjectHome()
 {
-  QgsDirectoryItem *item;
-
+  int idx = mRootItems.indexOf( mProjectHome );
   QString home = QgsProject::instance()->homePath();
 
-  if ( !home.isNull() )
+  delete mProjectHome;
+
+  mProjectHome = home.isNull() ? 0 : new QgsDirectoryItem( NULL, tr( "Project home" ), home );
+  if ( mProjectHome )
   {
-    item = new QgsDirectoryItem( NULL, tr( "Project home" ), home );
-    mRootItems << item;
+    connectItem( mProjectHome );
+    if ( idx < 0 )
+      mRootItems.insert( 0, mProjectHome );
+    else
+      mRootItems.replace( idx, mProjectHome );
   }
+  else if ( idx >= 0 )
+  {
+    mRootItems.remove( idx );
+  }
+  emit layoutChanged();
+}
+
+void QgsBrowserModel::addRootItems()
+{
+  updateProjectHome();
 
   // give the home directory a prominent second place
-  item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
+  QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
@@ -60,11 +79,11 @@ void QgsBrowserModel::addRootItems()
   mRootItems << item;
 
   // add favourite directories
-  QgsFavouritesItem *favitem = new QgsFavouritesItem( NULL, tr( "Favourites" ) );
-  if ( favitem )
+  mFavourites = new QgsFavouritesItem( NULL, tr( "Favourites" ) );
+  if ( mFavourites )
   {
-    connectItem( favitem );
-    mRootItems << favitem;
+    connectItem( mFavourites );
+    mRootItems << mFavourites ;
   }
 
   // add drives
@@ -107,7 +126,7 @@ void QgsBrowserModel::addRootItems()
       continue;
     }
 
-    dataItem_t * dataItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
+    dataItem_t *dataItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
     if ( !dataItem )
     {
       QgsDebugMsg( library->fileName() + " does not have dataItem" );
@@ -425,4 +444,19 @@ void QgsBrowserModel::fetchMore( const QModelIndex & parent )
   if ( item )
     item->populate();
   QgsDebugMsg( "path = " + item->path() );
+}
+
+void QgsBrowserModel::addFavouriteDirectory( QString favDir )
+{
+  Q_ASSERT( mFavourites );
+  mFavourites->addDirectory( favDir );
+}
+
+void QgsBrowserModel::removeFavourite( const QModelIndex &index )
+{
+  QgsDirectoryItem *item = dynamic_cast<QgsDirectoryItem *>( dataItem( index ) );
+  if ( !item )
+    return;
+
+  mFavourites->removeDirectory( item );
 }

@@ -1,0 +1,13 @@
+<h3>max() function</h3>
+Returns the largest value in a set of values.
+
+<h4>Syntax</h4>
+     max(<i>value<i>[,<i>value</i>...])
+
+<h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  value</i> &rarr; a number.<br>
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+     max(2,10.2,5.5) &rarr; 10.2

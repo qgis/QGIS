@@ -56,6 +56,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
+    , mEffectsEnabled( true )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
     , mId( "" )
@@ -78,6 +79,7 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
     , mBlendMode( QPainter::CompositionMode_SourceOver )
+    , mEffectsEnabled( true )
     , mTransparency( 0 )
     , mLastUsedPositionMode( UpperLeft )
     , mId( "" )
@@ -107,7 +109,6 @@ void QgsComposerItem::init( bool manageZValue )
   // Setup composer effect
   mEffect = new QgsComposerEffect();
   setGraphicsEffect( mEffect );
-
 }
 
 QgsComposerItem::~QgsComposerItem()
@@ -904,6 +905,13 @@ void QgsComposerItem::setTransparency( int transparency )
   mTransparency = transparency;
   // Set the QGraphicItem's opacity
   setOpacity( 1. - ( transparency / 100. ) );
+}
+
+void QgsComposerItem::setEffectsEnabled( bool effectsEnabled )
+{
+  //enable or disable the QgsComposerEffect applied to this item
+  mEffectsEnabled = effectsEnabled;
+  mEffect->setEnabled( effectsEnabled );
 }
 
 void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )

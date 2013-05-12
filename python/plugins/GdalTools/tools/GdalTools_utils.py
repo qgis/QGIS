@@ -41,6 +41,7 @@ from osgeo.gdalconst import *
 import os
 # to know the os
 import platform
+import sys
 
 # Escapes arguments and return them joined in a string
 def escapeAndJoin(strList):
@@ -849,8 +850,8 @@ def setMacOSXDefaultEnvironment():
   qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app
 
   # path to the GDAL framework when installed as external framework
-  # TODO adjust this for gdal 1.10
-  gdal_bin_path = u"/Library/Frameworks/GDAL.framework/Versions/%s/Programs" % str(GdalConfig.version())[:3]
+  gdal_versionsplit = str(GdalConfig.version()).split('.')
+  gdal_base_path = u"/Library/Frameworks/GDAL.framework/Versions/%s.%s" % (gdal_versionsplit[0], gdal_versionsplit[1])
 
   if os.path.exists( qgis_standalone_gdal_path ):  # qgis standalone
     # GDAL executables are in the QGis bin folder
@@ -859,11 +860,18 @@ def setMacOSXDefaultEnvironment():
     # GDAL pymods are in the QGis python folder
     if getGdalPymodPath().isEmpty():
       setGdalPymodPath( qgis_python )
+    # GDAL help is in the framework folder
+    if getHelpPath().isEmpty():
+      setHelpPath( u"%s/Resources/doc" % qgis_standalone_gdal_path )
 
-  elif os.path.exists( gdal_bin_path ):
-    # GDAL executables are in the GDAL framework Programs folder
+  elif os.path.exists( gdal_base_path ):
+    # all GDAL parts are in the GDAL framework folder
     if getGdalBinPath().isEmpty():
-      setGdalBinPath( gdal_bin_path )
+      setGdalBinPath( u"%s/Programs" % gdal_base_path )
+    if getGdalPymodPath().isEmpty():
+      setGdalPymodPath( u"%s/Python/%s.%s/site-packages" % (gdal_base_path, sys.version_info[0], sys.version_info[1]) )
+    if getHelpPath().isEmpty():
+      setHelpPath( u"%s/Resources/doc" % gdal_base_path )
 
 
 # setup the MacOSX path to both GDAL executables and python modules

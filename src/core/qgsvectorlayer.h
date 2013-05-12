@@ -375,6 +375,20 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *   Defines the coordinate reference system used for the layer.  This can be
  *   any string accepted by QgsCoordinateReferenceSystem::createFromString()
  *
+ * -subsetIndex=(yes|no)
+ *
+ *   Determines whether the provider generates an index to improve the efficiency
+ *   of subsets.  The default is yes
+ *
+ * -spatialIndex=(yes|no)
+ *
+ *   Determines whether the provider generates a spatial index.  The default is no.
+ *
+ * -useWatcher=(yes|no)
+ *
+ *   Defines whether the file will be monitored for changes. The default is
+ *   to monitor for changes.
+ *
  * - quiet
  *
  *   Errors encountered loading the file will not be reported in a user dialog if
@@ -706,9 +720,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**
      * Lists all the style in db split into related to the layer and not related to
-     * @param ids the QVector in which will be stored the style db ids
-     * @param names the QVector in which will be stored the style names
-     * @param descriptions the QVector in which will be stored the style descriptions
+     * @param ids the list in which will be stored the style db ids
+     * @param names the list in which will be stored the style names
+     * @param descriptions the list in which will be stored the style descriptions
      * @param msgError
      * @return the number of styles related to current layer
      */
@@ -720,7 +734,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual QString getStyleFromDatabase( QString styleId, QString &msgError );
 
-    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag, bool loadFromLocalDb = false );
+    /**
+     * Load a named style from file/local db/datasource db
+     * @param theURI the URI of the style or the URI of the layer
+     * @param theResultFlag will be set to true if a named style is correctly loaded
+     * @param loadFromLocalDb if true forces to load from local db instead of datasource one
+     */
+    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag, bool loadFromLocalDb );
+
+    /**
+     * Calls loadNamedStyle( theURI, theResultFlag, false );
+     * Retained for backward compatibility
+     */
+    virtual QString loadNamedStyle( const QString theURI, bool &theResultFlag );
+
     virtual bool applyNamedStyle( QString namedStyle , QString errorMsg );
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.

@@ -6,7 +6,7 @@ This function takes two arguments.
 <code>log(base, value)</code><br>
 
 <h4>Arguments</h4>
-<code>base</code> - any positive number.
+<code>base</code> - any positive number.<br>
 <code>value</code> - any positive number.
 <br>
 

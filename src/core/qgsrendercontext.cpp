@@ -23,6 +23,7 @@ QgsRenderContext::QgsRenderContext()
     mCoordTransform( 0 ),
     mDrawEditingInformation( true ),
     mForceVectorOutput( false ),
+    mUseAdvancedEffects( true ),
     mRenderingStopped( false ),
     mScaleFactor( 1.0 ),
     mRasterScaleFactor( 1.0 ),

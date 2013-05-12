@@ -1,0 +1,16 @@
+<h3>rand() function</h3>
+Returns a random integer within the range specified by the minimum and 
+maximum argument (inclusive).
+<br>
+This function takes two arguments.
+<h4>Syntax</h4>
+<code>rand(min, max)</code><br>
+
+<h4>Arguments</h4>
+<code>min</code> - an integer representing the smallest possible random number desired.<br>
+<code>max</code> - an integer representing the largest possible random number desired.
+<br>
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<code>rand(1, 10) &rarr; 8</code><br>

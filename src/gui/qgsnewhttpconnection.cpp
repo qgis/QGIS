@@ -154,6 +154,11 @@ void QgsNewHttpConnection::accept()
     url.removeEncodedQueryItem( params["FORMAT"].first );
   }
 
+  if( url.encodedPath().isEmpty() )
+  {
+    url.setEncodedPath( "/" );
+  }
+
   settings.setValue( key + "/url", url.toString() );
   if ( mBaseKey == "/Qgis/connections-wms/" || mBaseKey == "/Qgis/connections-wcs/" )
   {

@@ -851,6 +851,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void helpContents();
     //! Open the API documentation in a browser
     void apiDocumentation();
+    //! Open the QGIS support page
+    void supportProviders();
     //! Open the QGIS homepage in users browser
     void helpQgisHomePage();
     //! Open a url in the users configured browser

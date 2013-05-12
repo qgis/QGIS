@@ -182,7 +182,7 @@ or are duplicated.
 </p>
 <p>
 In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record.  This is the line number in the source file on which
+feature id to each record which is the line number in the source file on which
 the record starts.  
 </p>
 <p>
@@ -275,7 +275,10 @@ The following options can be added
        <li><tt>crs=...</tt> specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &quot;EPSG:4167&quot;).  If this is not 
        specified then a dialog box may request this information from the user
        when the layer is loaded (depending on QGIS CRS settings).</li>
-       <li><tt>quiet=(yes|no)</tt> specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.</li>
+       <li><tt>subsetIndex=(yes|no)</tt> specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.  This option is not available from the GUI.</li>
+       <li><tt>spatialIndex=(yes|no)</tt> specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. </li>
+       <li><tt>useWatcher=(yes|no)</tt> specifies whether the provider should use a file system watcher to monitor for changes to the file.  This option is not available from the GUI</li>
+       <li><tt>quiet=(yes|no)</tt> specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI</li>
 </ul>
 
 

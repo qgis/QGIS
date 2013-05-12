@@ -59,6 +59,13 @@ class CORE_EXPORT QgsRenderContext
 
     bool forceVectorOutput() const {return mForceVectorOutput;}
 
+    /**Returns true if advanced effects such as blend modes such be used
+      @note added in 1.9*/
+    bool useAdvancedEffects() const {return mUseAdvancedEffects;}
+    /**Used to enable or disable advanced effects such as blend modes
+      @note: added in version 1.9*/
+    void setUseAdvancedEffects( bool enabled ) { mUseAdvancedEffects = enabled; }
+
     bool drawEditingInformation() const {return mDrawEditingInformation;}
 
     double rendererScale() const {return mRendererScale;}
@@ -103,6 +110,9 @@ class CORE_EXPORT QgsRenderContext
 
     /**If true then no rendered vector elements should be cached as image*/
     bool mForceVectorOutput;
+
+    /**Flag if advanced visual effects such as blend modes should be used. True by default*/
+    bool mUseAdvancedEffects;
 
     QgsMapToPixel mMapToPixel;
 

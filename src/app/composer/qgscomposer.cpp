@@ -637,6 +637,18 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     showBlendModePrintingWarning();
   }
 
+  // If we are not printing as raster, temporarily disable advanced effects
+  // as QPrinter does not support composition modes and can result
+  // in items missing from the output
+  if ( mComposition->printAsRaster() )
+  {
+    mComposition->setUseAdvancedEffects( true );
+  }
+  else
+  {
+    mComposition->setUseAdvancedEffects( false );
+  }
+
   bool hasAnAtlas = mComposition->atlasComposition().enabled();
   bool atlasOnASingleFile = hasAnAtlas && mComposition->atlasComposition().singleFile();
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
@@ -795,6 +807,11 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     mComposition->exportAsPDF( outputFileName );
   }
 
+  if ( ! mComposition->useAdvancedEffects() )
+  {
+    //Switch advanced effects back on
+    mComposition->setUseAdvancedEffects( true );
+  }
   mView->setPaintingEnabled( true );
   QApplication::restoreOverrideCursor();
 }
@@ -814,6 +831,18 @@ void QgsComposer::on_mActionPrint_triggered()
   if ( containsBlendModes() )
   {
     showBlendModePrintingWarning();
+  }
+
+  // If we are not printing as raster, temporarily disable advanced effects
+  // as QPrinter does not support composition modes and can result
+  // in items missing from the output
+  if ( mComposition->printAsRaster() )
+  {
+    mComposition->setUseAdvancedEffects( true );
+  }
+  else
+  {
+    mComposition->setUseAdvancedEffects( false );
   }
 
   //orientation and page size are already set to QPrinter in the page setup dialog
@@ -887,6 +916,11 @@ void QgsComposer::on_mActionPrint_triggered()
     painter.end();
   }
 
+  if ( ! mComposition->useAdvancedEffects() )
+  {
+    //Switch advanced effects back on
+    mComposition->setUseAdvancedEffects( true );
+  }
   mView->setPaintingEnabled( true );
   QApplication::restoreOverrideCursor();
 }
