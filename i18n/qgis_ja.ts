@@ -40318,7 +40318,8 @@ Missing some of the .ui template objects:
         <source>SQL:%1
 error:%2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>SQL:%1
+エラー:%2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="213"/>
@@ -40326,7 +40327,9 @@ error:%2
 SQL:%1
 error:%2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>利用可能なテーブルの検索に失敗しました.
+SQL:%1
+エラー:%2</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="233"/>
@@ -40341,12 +40344,12 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="373"/>
         <source>Unsupported geometry type %1 in %2.%3.%4 ignored</source>
-        <translation type="unfinished"></translation>
+        <translation>%2.%3.%4のサポートされていないジオメトリタイプ%1は無視されました</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="398"/>
         <source>View %1.%2 doesn&apos;t have integer columns for use as keys.</source>
-        <translation type="unfinished"></translation>
+        <translation>ビュー%1.%2にはキーとして使う整数値のカラムがありません.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracleconn.cpp" line="510"/>
@@ -40450,7 +40453,7 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="272"/>
         <source>Import was successful.</source>
-        <translation type="unfinished">インポートは成功しました.</translation>
+        <translation>インポートは成功しました.</translation>
     </message>
 </context>
 <context>
@@ -40479,7 +40482,7 @@ error:%2
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="89"/>
         <source>WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>警告: あなたはパスワードの保存を選択しました. これは平文でプロジェクトファイルに保存されUnix系システムではあなたのホームディレクトリに置かれ、Windowsではユーザプロファイルに保存されます.それを望まない場合はキャンセルボタンを押してください.</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="100"/>
@@ -40489,25 +40492,25 @@ error:%2
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="101"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>既存の接続%1を上書きしますか?</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="144"/>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="153"/>
         <source>Test connection</source>
-        <translation type="unfinished">テスト接続</translation>
+        <translation>テスト接続</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="145"/>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished">%1 への接続に成功しました</translation>
+        <translation>%1 への接続に成功しました</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclenewconnection.cpp" line="154"/>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="unfinished">接続失敗 - 設定を確認して再度実行してください.
+        <translation>接続失敗 - 設定を確認して再度実行してください.
 
 </translation>
     </message>
@@ -40517,57 +40520,57 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="20"/>
         <source>Create a New Oracle connection</source>
-        <translation type="unfinished"></translation>
+        <translation>新規Oracle接続の作成</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="45"/>
         <source>Connection Information</source>
-        <translation type="unfinished">接続情報</translation>
+        <translation>接続情報</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="54"/>
         <source>Password</source>
-        <translation type="unfinished">パスワード</translation>
+        <translation>パスワード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="71"/>
         <source>Save Username</source>
-        <translation type="unfinished">ユーザ名の保存</translation>
+        <translation>ユーザ名の保存</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="78"/>
         <source>Username</source>
-        <translation type="unfinished">ユーザ名</translation>
+        <translation>ユーザ名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="88"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">新規接続の名称</translation>
+        <translation>新規接続の名称</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="95"/>
         <source>Database</source>
-        <translation type="unfinished">データベース</translation>
+        <translation>データベース</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="105"/>
         <source>Name</source>
-        <translation type="unfinished">名称</translation>
+        <translation>名称</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="115"/>
         <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
-        <translation type="unfinished">ジオメトリカラムが存在するテーブルの表示を制限します</translation>
+        <translation>geometry_columnsテーブルにあるテーブルのみ表示する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="118"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;all_sdo_geom_metadataビューにあるテーブルのみ表示します. これによって空間テーブルの初期表示を高速化できます.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="121"/>
         <source>Only look in meta data table</source>
-        <translation type="unfinished"></translation>
+        <translation>メタデータテーブルのみ参照する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="128"/>
@@ -40577,47 +40580,47 @@ error:%2
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="131"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owner by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;空間テーブルの検索をユーザが所有するテーブルに制限します.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="134"/>
         <source>Only look for user&apos;s tables</source>
-        <translation type="unfinished"></translation>
+        <translation>ユーザのテーブルのみ参照する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="141"/>
         <source>Also list tables with no geometry</source>
-        <translation type="unfinished">ジオメトリを持たないテーブルもリストする</translation>
+        <translation>ジオメトリを持たないテーブルもリストする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="151"/>
         <source>Port</source>
-        <translation type="unfinished">ポート</translation>
+        <translation>ポート</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="161"/>
         <source>1521</source>
-        <translation type="unfinished">1521</translation>
+        <translation>1521</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="168"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>接続テスト(&amp;T)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="175"/>
         <source>Save Password</source>
-        <translation type="unfinished">パスワード保存</translation>
+        <translation>パスワード保存</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="185"/>
         <source>Host</source>
-        <translation type="unfinished">ホスト</translation>
+        <translation>ホスト</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="198"/>
         <source>Use estimated table statistics for the layer metadata.</source>
-        <translation type="unfinished">レイヤメタデータの推定されたテーブル統計値を利用する.</translation>
+        <translation type="unfinished">レイヤメタデータに推定されたテーブル統計値を利用する.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="201"/>
@@ -41226,7 +41229,7 @@ Error: %2</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="209"/>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
-        <translation>%1への接続が失敗しました。接続パラメータを確認してください。またGDAL　GeoRasterプラグインがインストールされているかどうか確かめてください</translation>
+        <translation>%1への接続が失敗しました。接続パラメータを確認してください。またGDAL GeoRasterプラグインがインストールされているかどうか確かめてください。</translation>
     </message>
 </context>
 <context>
@@ -41314,7 +41317,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="237"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="239"/>
@@ -41324,7 +41327,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="256"/>
         <source>Load connections</source>
-        <translation type="unfinished">コネクションのロード</translation>
+        <translation>接続をロードする</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="257"/>
