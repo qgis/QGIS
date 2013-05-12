@@ -20,10 +20,11 @@ email                : jef at norbit dot de
 
 #include <QMetaType>
 
-QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata )
+QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata, bool allowGeometrylessTables )
     : QThread()
     , mName( name )
     , mUseEstimatedMetadata( useEstimatedMetadata )
+    , mAllowGeometrylessTables( allowGeometrylessTables )
 {
   qRegisterMetaType<QgsOracleLayerProperty>( "QgsOracleLayerProperty" );
 }
@@ -50,7 +51,7 @@ void QgsOracleColumnTypeThread::run()
   if ( !conn->supportedLayers( layerProperties,
                                QgsOracleConn::geometryColumnsOnly( mName ),
                                QgsOracleConn::userTablesOnly( mName ),
-                               QgsOracleConn::allowGeometrylessTables( mName ) ) ||
+                               mAllowGeometrylessTables ) ||
        layerProperties.isEmpty() )
   {
     return;
@@ -66,7 +67,7 @@ void QgsOracleColumnTypeThread::run()
                             .arg( layerProperty.ownerName )
                             .arg( layerProperty.tableName )
                             .arg( layerProperty.geometryColName ) );
-      conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
+      conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, QgsOracleConn::onlyExistingTypes( mName ) );
     }
 
     if ( mStopped )

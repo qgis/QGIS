@@ -17,7 +17,6 @@ email                : jef at norbit dot de
  ***************************************************************************/
 
 #include "qgsoraclesourceselect.h"
-#include "qgsoraclecolumntypethread.h"
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
@@ -28,6 +27,7 @@ email                : jef at norbit dot de
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgsoraclecolumntypethread.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -139,7 +139,6 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WFlags fl, bo
 {
   setupUi( this );
 
-
   if ( mEmbeddedMode )
   {
     buttonBox->button( QDialogButtonBox::Close )->hide();
@@ -152,8 +151,8 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WFlags fl, bo
   mAddButton = new QPushButton( tr( "&Add" ) );
   mAddButton->setEnabled( false );
 
-  mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
-  mBuildQueryButton->setToolTip( tr( "Build query" ) );
+  mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
+  mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
   if ( !mManagerMode )
@@ -190,7 +189,6 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WFlags fl, bo
   mTablesTreeView->setSortingEnabled( true );
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( mTablesTreeDelegate );
-
 
   QSettings settings;
   mTablesTreeView->setSelectionMode( settings.value( "/qgis/addOracleDC", false ).toBool() ?
@@ -466,7 +464,9 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
   mIsConnected = true;
   mTablesTreeDelegate->setConn( QgsOracleConn::connectDb( uri.connectionInfo() ) );
 
-  mColumnTypeThread = new QgsOracleColumnTypeThread( cmbConnections->currentText(), mUseEstimatedMetadata );
+  mColumnTypeThread = new QgsOracleColumnTypeThread( cmbConnections->currentText(),
+      mUseEstimatedMetadata,
+      cbxAllowGeometrylessTables->isChecked() );
 
   connect( mColumnTypeThread, SIGNAL( setLayerType( QgsOracleLayerProperty ) ),
            this, SLOT( setLayerType( QgsOracleLayerProperty ) ) );
@@ -495,7 +495,6 @@ void QgsOracleSourceSelect::finishList()
 
   mTablesTreeView->sortByColumn( QgsOracleTableModel::dbtmTable, Qt::AscendingOrder );
   mTablesTreeView->sortByColumn( QgsOracleTableModel::dbtmOwner, Qt::AscendingOrder );
-
 }
 
 void QgsOracleSourceSelect::columnThreadFinished()
