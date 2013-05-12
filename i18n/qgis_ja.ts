@@ -5858,7 +5858,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="68"/>
         <source>New From Template</source>
-        <translation>テンプレートを使った新規作成</translation>
+        <translation>テンプレートをもとに新規作成</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="88"/>
@@ -5903,7 +5903,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="58"/>
         <source>&amp;Open Recent</source>
-        <translation>最近利用したものを開く(&amp;O)</translation>
+        <translation>最近使用したプロジェクト(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="111"/>
@@ -6637,7 +6637,7 @@ Shift+クリックで非表示
     <message>
         <location filename="../src/ui/qgisapp.ui" line="987"/>
         <source>Zoom to Selection</source>
-        <translation>選択部分のズーム</translation>
+        <translation>選択部分にズーム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="990"/>
@@ -6879,7 +6879,7 @@ Shift+クリックで非表示
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1599"/>
         <source>Customization...</source>
-        <translation>カスタマイゼーション...</translation>
+        <translation>カスタマイズ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1604"/>
