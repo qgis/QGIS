@@ -80,7 +80,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation>クリックするとマウストラッキングが開始。キャンバスクリックで終了。</translation>
+        <translation>クリックするとマウストラッキングが開始。キャンバスクリックで終了</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
@@ -8559,17 +8559,17 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="33"/>
         <source>Fit to a linear transform requires at least 2 points.</source>
-        <translation>ライナー変換を行う場合2点以上の指定が必要です</translation>
+        <translation>ライナー変換を行う場合2点以上の指定が必要です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="74"/>
         <source>Fit to a Helmert transform requires at least 2 points.</source>
-        <translation>ヘルマート変換を行う場合2点以上の指定が必要です</translation>
+        <translation>ヘルマート変換を行う場合2点以上の指定が必要です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="129"/>
         <source>Fit to an affine transform requires at least 4 points.</source>
-        <translation>アフィン変換を行う場合4点以上の指定が必要です</translation>
+        <translation>アフィン変換を行う場合4点以上の指定が必要です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="232"/>
@@ -8603,7 +8603,7 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
         <source>QGIS couldn&apos;t find your GRASS installation.
 Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>QGISはあなたのGRASSのインストール場所を見つけることができません。
-あなたのGRASSのインストール場所をパス（GISBASE)に指定してください。</translation>
+あなたのGRASSのインストール場所をパス（GISBASE)に指定しますか?</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="174"/>
@@ -8613,7 +8613,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="191"/>
         <source>GRASS data won&apos;t be available if GISBASE is not specified.</source>
-        <translation>GISBASEが指定されていないとGRASSデータは利用できません</translation>
+        <translation>GISBASEが指定されていないとGRASSデータは利用できません.</translation>
     </message>
     <message>
         <source>CopyrightLabel</source>
@@ -9113,12 +9113,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="448"/>
         <source>GISBASE is not set.</source>
-        <translation>GISBASEが設定されていません</translation>
+        <translation>GISBASEが設定されていません.</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="485"/>
         <source>Mapset is already in use.</source>
-        <translation>Mapsetは使用中です</translation>
+        <translation>Mapsetは使用中です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="75"/>
@@ -9192,7 +9192,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="92"/>
         <source>Couldn&apos;t load SIP module.</source>
-        <translation>SIPモジュールをロードできませんでした</translation>
+        <translation>SIPモジュールをロードできませんでした.</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="92"/>
@@ -9200,7 +9200,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="107"/>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="115"/>
         <source>Python support will be disabled.</source>
-        <translation>Pythonのサポートが無効になります</translation>
+        <translation>Pythonのサポートが無効になります.</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="100"/>
@@ -9235,7 +9235,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="190"/>
         <source>An error occured during execution of following code:</source>
-        <translation>以下のコード実行中にエラーが発生しました</translation>
+        <translation>以下のコード実行中にエラーが発生しました:</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="51"/>
@@ -9271,7 +9271,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/analysis/interpolation/qgsgridfilewriter.cpp" line="66"/>
         <source>Interpolating...</source>
-        <translation>変換中</translation>
+        <translation>変換中...</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="25"/>
@@ -9364,7 +9364,7 @@ It will be disabled.</source>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
         <translation>プラグインロード時にエラーが発生しました。以下の診断情報はQGISの開発者が問題を解決するための助けになります。
-%1</translation>
+%1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="362"/>
@@ -9391,7 +9391,7 @@ It will be disabled.</source>
         <source>No QGIS data provider plugins found in:
 %1
 </source>
-        <translation>%1にはQGISデータプロバイダプラグインはありません。</translation>
+        <translation>%1にはQGISデータプロバイダプラグインはありません</translation>
     </message>
     <message>
         <source>Referenced column wasn&apos;t found: %1</source>
@@ -9411,7 +9411,7 @@ It will be disabled.</source>
     <message>
         <location filename="../src/providers/gpx/gpsdata.cpp" line="375"/>
         <source>Couldn&apos;t open the data source: %1</source>
-        <translation>%1のデータソースを開けませんでした。</translation>
+        <translation>%1のデータソースを開けませんでした</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/gpsdata.cpp" line="398"/>
@@ -9436,7 +9436,7 @@ It will be disabled.</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="510"/>
         <source>Cannot create temporary directory %1</source>
-        <translation>%1に作業用ディレクトリを作成できません。</translation>
+        <translation>%1に作業用ディレクトリを作成できません</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="526"/>
@@ -9456,7 +9456,7 @@ It will be disabled.</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="815"/>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation>マップセット%2内のベクタ%1を開けません.</translation>
+        <translation>マップセット%2内のベクタ%1を開けません</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1198"/>
@@ -9571,7 +9571,7 @@ It will be disabled.</source>
     <message>
         <location filename="../src/analysis/interpolation/qgstininterpolator.cpp" line="99"/>
         <source>Building triangulation...</source>
-        <translation>三角網の作成</translation>
+        <translation>三角網の作成...</translation>
     </message>
     <message>
         <location filename="../src/analysis/interpolation/qgstininterpolator.cpp" line="146"/>
@@ -10560,7 +10560,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="667"/>
         <source>Cannot open GDAL MEM dataset %1: %2</source>
-        <translation>GDAL　MEMデータセット%1をオープンできません</translation>
+        <translation>GDAL MEMデータセット%1をオープンできません: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="734"/>
@@ -11295,7 +11295,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="678"/>
         <source>Building Pyramids...</source>
-        <translation>ピラミッドを構築中</translation>
+        <translation>ピラミッドを構築中...</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterfilewriter.cpp" line="721"/>
@@ -12695,7 +12695,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2977"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
-        <translation>MSSQLセレクトダイアログをプロバイダから取得できません</translation>
+        <translation>MSSQLセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4499"/>
@@ -14187,7 +14187,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2868"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
-        <translation>PostgreSQLセレクトダイアログをプロバイダから取得できません</translation>
+        <translation>PostgreSQLセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2924"/>
@@ -14202,7 +14202,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2956"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
-        <translation>SpatiaLiteセレクトダイアログをプロバイダから取得できません</translation>
+        <translation>SpatiaLiteセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2977"/>
@@ -14227,7 +14227,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3022"/>
         <source>Cannot get WMS select dialog from provider.</source>
-        <translation>WMSセレクトダイアログをプロバイダから取得できません</translation>
+        <translation>WMSセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3043"/>
@@ -14247,17 +14247,17 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3070"/>
         <source>Cannot get WFS select dialog from provider.</source>
-        <translation>WFSセレクトダイアログをプロバイダから取得できません</translation>
+        <translation>WFSセレクトダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3257"/>
         <source>Default failed to open: %1</source>
-        <translation>デフォルトテンプレートのオープンに失敗しました.</translation>
+        <translation>デフォルトテンプレートのオープンに失敗しました: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3261"/>
         <source>Default not found: %1</source>
-        <translation>デフォルトテンプレートが見つかりません.</translation>
+        <translation>デフォルトテンプレートが見つかりません: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3263"/>
@@ -14455,7 +14455,7 @@ Error: %1</source>
         <location filename="../src/app/qgisapp.cpp" line="4955"/>
         <location filename="../src/app/qgisapp.cpp" line="5017"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation>アクティブレイヤがありません。レイヤリストでレイヤを選択してください。</translation>
+        <translation>アクティブレイヤがありません。レイヤリストでレイヤを選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4963"/>
@@ -14467,7 +14467,7 @@ Error: %1</source>
         <location filename="../src/app/qgisapp.cpp" line="4963"/>
         <location filename="../src/app/qgisapp.cpp" line="5023"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation>地物結合ツールはベクタレイヤでのみ利用できます。レイヤリストでベクタレイヤを選択してください。</translation>
+        <translation>地物結合ツールはベクタレイヤでのみ利用できます。レイヤリストでベクタレイヤを選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4969"/>
@@ -14480,7 +14480,7 @@ Error: %1</source>
         <location filename="../src/app/qgisapp.cpp" line="5043"/>
         <location filename="../src/app/qgisapp.cpp" line="5080"/>
         <source>The merge tool requires at least two selected features</source>
-        <translation>結合ツールを利用するためには少なくとも２個の地物を選択する必要があります。</translation>
+        <translation>結合ツールを利用するためには少なくとも2個の地物を選択する必要があります</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4991"/>
@@ -15563,7 +15563,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="230"/>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
-        <translation>属性アクションを作成するためには名前と実行するアクションを設定しなければいけません</translation>
+        <translation>属性アクションを作成するためには名前と実行するアクションを設定しなければいけません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="337"/>
@@ -15924,7 +15924,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="76"/>
         <source>Select data from attributes in selected layer.</source>
-        <translation>選択されたレイヤから選択されたデータ</translation>
+        <translation>選択されたレイヤの属性からデータを選択して下さい.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="93"/>
@@ -16260,7 +16260,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="446"/>
         <source>The filter defines, which features are currently shown in the list or on the table</source>
-        <translation type="unfinished"></translation>
+        <translation>フィルタはリストまたはテーブルに表示される地物を定義します</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="449"/>
@@ -16532,12 +16532,12 @@ Error was:%2</source>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="405"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="426"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
-        <translation>この値の現在の最小値は %1 現在の最大値は %2 です</translation>
+        <translation>この値の現在の最小値は %1 現在の最大値は %2 です.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="431"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
-        <translation>属性は整数や実数の型ではないのでレンジは利用できません</translation>
+        <translation>属性は整数や実数の型ではないのでレンジは利用できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="578"/>
@@ -16643,7 +16643,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="166"/>
         <source>Displays combo box containing values of attribute used for classification.</source>
-        <translation>分類に利用するための属性値が保持されたコンボボックスを表示する</translation>
+        <translation>分類に利用するための属性値が保持されたコンボボックスを表示する.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="195"/>
