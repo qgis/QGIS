@@ -15,9 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSDELIMITEDTEXTPROVIDER_H
+#define QGSDELIMITEDTEXTPROVIDER_H
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdelimitedtextfile.h"
 
 #include <QStringList>
 
@@ -29,8 +32,8 @@ class QFile;
 class QTextStream;
 
 class QgsDelimitedTextFeatureIterator;
-class QgsDelimitedTextFile;
 class QgsExpression;
+class QgsSpatialIndex;
 
 /**
 \class QgsDelimitedTextProvider
@@ -47,7 +50,8 @@ class QgsExpression;
 * Example uri = "/home/foo/delim.txt?delimiter=|"*
 *
 * For detailed information on the uri format see the QGSVectorLayer
-* documentation.
+* documentation.  Note that the interpretation of the URI is split
+* between QgsDelimitedTextFile and QgsDelimitedTextProvider.
 *
 
 */
@@ -63,6 +67,13 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
       */
     static QRegExp WktPrefixRegexp;
     static QRegExp CrdDmsRegexp;
+
+    enum GeomRepresentationType
+    {
+      GeomNone,
+      GeomAsXy,
+      GeomAsWkt
+    };
 
     QgsDelimitedTextProvider( QString uri = QString() );
 
@@ -102,6 +113,10 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     virtual int capabilities() const;
 
+    /** Creates a spatial index on the data
+     *  @return indexCreated  Returns true if a spatial index is created
+     */
+    virtual bool createSpatialIndex();
 
     /* Implementation of functions from QgsDataProvider */
 
@@ -186,23 +201,30 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     */
     bool boundsCheck( QgsGeometry *geom );
 
+  private slots:
+
+    void onFileUpdated();
+
   private:
 
     static QRegExp WktZMRegexp;
     static QRegExp WktCrdRegexp;
 
+    void scanFile( bool buildIndexes );
+    void rescanFile();
+    void resetCachedSubset();
+    void resetIndexes();
     void clearInvalidLines();
     void recordInvalidLine( QString message );
-    void reportErrors( QStringList messages = QStringList() );
+    void reportErrors( QStringList messages = QStringList(), bool showDialog = true );
     void resetStream();
     bool recordIsEmpty( QStringList &record );
-    bool nextFeature( QgsFeature& feature, QgsDelimitedTextFile *file, const QgsFeatureRequest& request );
-    QgsGeometry* loadGeometryWkt( const QStringList& tokens, const QgsFeatureRequest& request );
-    QgsGeometry* loadGeometryXY( const QStringList& tokens, const QgsFeatureRequest& request );
-    bool boundsCheck( const QgsPoint &pt, const QgsFeatureRequest& request );
-    bool boundsCheck( QgsGeometry *geom, const QgsFeatureRequest& request );
+    bool nextFeature( QgsFeature& feature, QgsDelimitedTextFile *file, QgsDelimitedTextFeatureIterator *iterator );
+    QgsGeometry* loadGeometryWkt( const QStringList& tokens,  QgsDelimitedTextFeatureIterator *iterator );
+    QgsGeometry* loadGeometryXY( const QStringList& tokens,  QgsDelimitedTextFeatureIterator *iterator );
     void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
-    void resetDataSummary();
+    void setUriParameter( QString parameter, QString value );
+    bool setNextFeatureId( qint64 fid ) { return mFile->setNextRecordId( (long) fid ); }
 
 
     QgsGeometry *geomFromWkt( QString &sWkt );
@@ -216,10 +238,15 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QgsDelimitedTextFile *mFile;
 
     // Fields
+    GeomRepresentationType mGeomRep;
     QList<int> attributeColumns;
     QgsFields attributeFields;
 
     int mFieldCount;  // Note: this includes field count for wkt field
+    QString mWktFieldName;
+    QString mXFieldName;
+    QString mYFieldName;
+
     int mXFieldIndex;
     int mYFieldIndex;
     int mWktFieldIndex;
@@ -246,7 +273,12 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool mXyDms;
 
     QString mSubsetString;
+    QString mCachedSubsetString;
     QgsExpression *mSubsetExpression;
+    bool mBuildSubsetIndex;
+    QList<quintptr> mSubsetIndex;
+    bool mUseSubsetIndex;
+    bool mCachedUseSubsetIndex;
 
     //! Storage for any lines in the file that couldn't be loaded
     int mMaxInvalidLines;
@@ -270,6 +302,14 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QGis::WkbType mWkbType;
     QGis::GeometryType mGeometryType;
 
+    // Spatial index
+    bool mBuildSpatialIndex;
+    bool mUseSpatialIndex;
+    bool mCachedUseSpatialIndex;
+    QgsSpatialIndex *mSpatialIndex;
+
     friend class QgsDelimitedTextFeatureIterator;
     QgsDelimitedTextFeatureIterator* mActiveIterator;
 };
+
+#endif
