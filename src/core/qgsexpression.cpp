@@ -536,6 +536,13 @@ static QVariant fcnTitle( const QVariantList& values, QgsFeature* , QgsExpressio
   }
   return QVariant( elems.join( " " ) );
 }
+
+static QVariant fcnTrim( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  QString str = getStringValue( values.at( 0 ), parent );
+  return QVariant( str.trimmed() );
+}
+
 static QVariant fcnLength( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   QString str = getStringValue( values.at( 0 ), parent );
@@ -1316,7 +1323,8 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "coalesce" << "regexp_match" << "$now" << "age" << "year"
     << "month" << "week" << "day" << "hour"
     << "minute" << "second" << "lower" << "upper"
-    << "title" << "length" << "replace" << "regexp_replace" << "regexp_substr"
+    << "title" << "length" << "replace" << "trim"
+    << "regexp_replace" << "regexp_substr"
     << "substr" << "concat" << "strpos" << "left"
     << "right" << "rpad" << "lpad"
     << "format_number" << "format_date"
@@ -1379,6 +1387,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "lower", 1, fcnLower, QObject::tr( "String" ) )
     << new StaticFunction( "upper", 1, fcnUpper, QObject::tr( "String" ) )
     << new StaticFunction( "title", 1, fcnTitle, QObject::tr( "String" ) )
+    << new StaticFunction( "trim", 1, fcnTrim, QObject::tr( "String" ) )
     << new StaticFunction( "length", 1, fcnLength, QObject::tr( "String" ) )
     << new StaticFunction( "replace", 3, fcnReplace, QObject::tr( "String" ) )
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
