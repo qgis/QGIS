@@ -439,6 +439,32 @@ static QVariant fcnRnd( const QVariantList& values, QgsFeature* , QgsExpression*
   return QVariant( min + ( rand() % ( int )( max - min + 1 ) ) );
 }
 
+static QVariant fcnLinearScale( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double val = getDoubleValue( values.at( 0 ), parent );
+  double domain_min = getDoubleValue( values.at( 1 ), parent );
+  double domain_max = getDoubleValue( values.at( 2 ), parent );
+  double range_min = getDoubleValue( values.at( 3 ), parent );
+  double range_max = getDoubleValue( values.at( 4 ), parent );
+
+  // outside of domain?
+  if ( val >= domain_max )
+  {
+    return range_max;
+  }
+  else if ( val <= domain_min )
+  {
+    return range_min;
+  }
+
+  // calculate linear scale
+  double m = ( range_max - range_min ) / ( domain_max - domain_min );
+  double c = range_min - ( domain_min * m );
+
+  // Return linearly scaled value
+  return QVariant( m * val + c );
+}
+
 static QVariant fcnMax( const QVariantList& values, QgsFeature* , QgsExpression *parent )
 {
   //initially set max as first value
@@ -1317,7 +1343,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "asin" << "acos" << "atan" << "atan2"
     << "exp" << "ln" << "log10" << "log"
     << "round" << "rand" << "randf" << "max" << "min"
-    << "floor" << "ceil"
+    << "scale_linear" << "floor" << "ceil"
     << "toint" << "toreal" << "tostring"
     << "todatetime" << "todate" << "totime" << "tointerval"
     << "coalesce" << "regexp_match" << "$now" << "age" << "year"
@@ -1363,6 +1389,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "randf", 2, fcnRndF, QObject::tr( "Math" ) )
     << new StaticFunction( "max", -1, fcnMax, QObject::tr( "Math" ) )
     << new StaticFunction( "min", -1, fcnMin, QObject::tr( "Math" ) )
+    << new StaticFunction( "scale_linear", 5, fcnLinearScale, QObject::tr( "Math" ) )
     << new StaticFunction( "floor", 1, fcnFloor, QObject::tr( "Math" ) )
     << new StaticFunction( "ceil", 1, fcnCeil, QObject::tr( "Math" ) )
     << new StaticFunction( "$pi", 0, fcnPi, QObject::tr( "Math" ) )
