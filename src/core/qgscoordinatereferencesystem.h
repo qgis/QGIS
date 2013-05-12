@@ -134,7 +134,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * in the parameters member. The reason for this is so that we
      * can easily present the user with 'natural language' representation
      * of the projection and ellipsoid by looking them up in the srs.bs sqlite
-     * database. Also having the ellpse and proj elements stripped out
+     * database. Also having the ellipse and proj elements stripped out
      * is helpful to speed up globbing queries (see below).
      *
      * We try to match the proj string to and srsid using the following logic:
@@ -444,7 +444,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     long    mSRID;
     //!If available the authority identifier for this srs
     QString mAuthId;
-    //! Wehter this srs is properly defined and valid
+    //! Wheter this srs is properly defined and valid
     bool mIsValidFlag;
 
     //! Work out the projection units and set the appropriate local variable
