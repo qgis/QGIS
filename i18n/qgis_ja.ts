@@ -19382,7 +19382,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="396"/>
         <source>Subgroup Font...</source>
-        <translation>サブグループフォント</translation>
+        <translation>サブグループフォント...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="403"/>
@@ -22298,12 +22298,12 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="646"/>
         <source> Please give the projection a name before pressing save.</source>
-        <translation>saveボタンを押す前に投影法の名前を入力してください</translation>
+        <translation>保存ボタンを押す前に投影法の名前を入力してください.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="653"/>
         <source> Please add the parameters before pressing save.</source>
-        <translation>saveボタンを押す前にパラメータを追加してください</translation>
+        <translation>保存ボタンを押す前にパラメータを追加してください.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="669"/>
@@ -22319,7 +22319,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="702"/>
         <source> Please correct before pressing save.</source>
-        <translation>saveボタンを押す前に修正してください</translation>
+        <translation>保存ボタンを押す前に修正してください.</translation>
     </message>
 </context>
 <context>
@@ -23594,7 +23594,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="576"/>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="595"/>
         <source>The following lines were not loaded into QGIS due to errors:</source>
-        <translation>エラーのため以下の行はQGISに読み込まれませんでした</translation>
+        <translation>エラーのため以下の行はQGISに読み込まれませんでした:</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="580"/>
@@ -23818,7 +23818,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="244"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="247"/>
         <source>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</source>
-        <translation>テキスト内のフィールド区切りに使用するデリミタ. デリミタには1文字以上を指定できます. カンマ、タブ、スペース、コロン、セミコロンオプションと同時に使用できます</translation>
+        <translation>テキスト内のフィールド区切りに使用するデリミタ. デリミタには1文字以上を指定できます. カンマ、タブ、スペース、コロン、セミコロンオプションと同時に使用できます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="257"/>
@@ -24388,7 +24388,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="301"/>
         <source>Unknown diagram type.</source>
-        <translation>不明な図のタイプ</translation>
+        <translation>不明な図のタイプ.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="302"/>
@@ -24855,7 +24855,9 @@ Leave empty to automatically apply the maximum value.</source>
         <source>Could not set column &apos;%1&apos; as preview column.
 Parser error:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>プレビューカラムにカラム&apos;%1&apos;を設定できません.
+構文解析エラー:
+%2</translation>
     </message>
     <message>
         <location filename="../src/gui/attributetable/qgsdualview.cpp" line="357"/>
@@ -25446,7 +25448,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="130"/>
         <source>Could not add the new field to the provider.</source>
-        <translation>プロバイダーに新規フィールドを追加できません</translation>
+        <translation>プロバイダーに新規フィールドを追加できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="198"/>
@@ -26191,7 +26193,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="439"/>
         <source>Connected to GPS device.</source>
-        <translation>接続されたGPSデバイス</translation>
+        <translation>GPSデバイスに接続されました.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="463"/>
@@ -26211,7 +26213,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="489"/>
         <source>Disconnected from GPS device.</source>
-        <translation>GPSデバイスから切断されました</translation>
+        <translation>GPSデバイスから切断されました.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="651"/>
@@ -26942,7 +26944,7 @@ gray = no data
         <source>Could not import data from %1!
 
 </source>
-        <translation>%1からデータインポートできませんでした</translation>
+        <translation>%1からデータインポートできませんでした!</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="292"/>
@@ -26982,7 +26984,8 @@ gray = no data
         <source>Error while uploading data to GPS!
 
 </source>
-        <translation>GPSにデータアップロード中にエラーが発生しました
+        <translation>GPSにデータアップロード中にエラーが発生しました!
+
 </translation>
     </message>
     <message>
@@ -26995,7 +26998,7 @@ gray = no data
         <source>Could not convert data from %1!
 
 </source>
-        <translation>%1からデータをコンバートできません
+        <translation>%1からデータをコンバートできません!
 </translation>
     </message>
     <message>
@@ -27024,7 +27027,7 @@ gray = no data
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
         <translation>選択したファイルを読めません
-正しいファイルを再選択してください</translation>
+正しいファイルを再選択してください.</translation>
     </message>
     <message>
         <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
@@ -27038,7 +27041,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="509"/>
         <source>This device does not support uploading of %1.</source>
-        <translation>このデバイスは%1のアップロードをサポートしていません</translation>
+        <translation>このデバイスは%1のアップロードをサポートしていません.</translation>
     </message>
 </context>
 <context>
@@ -30846,7 +30849,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="352"/>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation>マップセット%2内のベクタ%1を開けません.</translation>
+        <translation>マップセット%2内のベクタ%1を開けません</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="456"/>
@@ -30939,7 +30942,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="59"/>
         <source>cellhd file %1 does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>cellhsファイル%1は存在しません</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="68"/>
@@ -31495,7 +31498,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="131"/>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this form.&lt;/h3&gt;The help file for %1 was not found for your language&lt;br&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation>&lt;h3&gt;Oops! QGIS はこのフォームのヘルプを見つけられません.&lt;/h3&gt;あなたの言語ではヘルプファイル%1が見つかりません&lt;br&gt;もしあなたが作成したいならQGIS開発チームに連絡をください。</translation>
+        <translation>&lt;h3&gt;Oops! QGIS はこのフォームのヘルプを見つけられません.&lt;/h3&gt;あなたの言語ではヘルプファイル%1が見つかりません&lt;br&gt;もしあなたが作成したいならQGIS開発チームに連絡をください</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="202"/>
@@ -31545,7 +31548,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="39"/>
         <source>&amp;Home</source>
-        <translation>ホーム</translation>
+        <translation>ホーム(&amp;H)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="42"/>
@@ -31555,7 +31558,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="52"/>
         <source>&amp;Forward</source>
-        <translation>進む</translation>
+        <translation>進む(&amp;F)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="55"/>
@@ -31565,7 +31568,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="65"/>
         <source>&amp;Back</source>
-        <translation>戻る</translation>
+        <translation>戻る(&amp;B)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="68"/>
@@ -31575,7 +31578,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="78"/>
         <source>&amp;Close</source>
-        <translation>閉じる</translation>
+        <translation>閉じる(&amp;C)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="81"/>
@@ -31621,7 +31624,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="323"/>
         <source>Received %1 of %2 bytes</source>
-        <translation>受信済 %1 bytes 全体 % bytes</translation>
+        <translation>%2バイト中%1バイトを受信しました</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="327"/>
@@ -31669,8 +31672,8 @@ at line %2 column %3</source>
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
         <translation>
-            <numerusform>ネットワークは%n秒反応しません
-これはあなたのネットワーク接続の問題かWMSサーバーの問題でしょう</numerusform>
+            <numerusform>ネットワークは%n秒間反応がないのでタイムアウトしました.
+これはあなたのネットワーク接続の問題かWMSサーバーの問題でしょう.</numerusform>
         </translation>
     </message>
 </context>
