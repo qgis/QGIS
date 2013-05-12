@@ -522,8 +522,8 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
         // NOTE: Spatialite provider ignores position of geometry column
         // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
         int column = 0;
-        QgsAttributes newAttrs;
         QgsAttributes attrs = f.attributes();
+        QgsAttributes newAttrs(attrs.count());
         for ( int it = 0; it < attrs.count(); ++it )
         {
           newAttrs[column++] = attrs[it];
