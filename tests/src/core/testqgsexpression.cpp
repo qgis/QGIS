@@ -229,6 +229,9 @@ class TestQgsExpression: public QObject
 
       // math functions
       QTest::newRow( "sqrt" ) << "sqrt(16)" << false << QVariant( 4. );
+      QTest::newRow( "abs(0.1)" ) << "abs(0.1)" << false << QVariant( 0.1 );
+      QTest::newRow( "abs(0)" ) << "abs(0)" << false << QVariant( 0. );
+      QTest::newRow( "abs(-0.1)" ) << "abs(-0.1)" << false << QVariant( 0.1 );
       QTest::newRow( "invalid sqrt value" ) << "sqrt('a')" << true << QVariant();
       QTest::newRow( "sin 0" ) << "sin(0)" << false << QVariant( 0. );
       QTest::newRow( "cos 0" ) << "cos(0)" << false << QVariant( 1. );

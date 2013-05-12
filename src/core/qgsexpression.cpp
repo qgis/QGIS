@@ -347,6 +347,13 @@ static QVariant fcnSqrt( const QVariantList& values, QgsFeature* /*f*/, QgsExpre
   double x = getDoubleValue( values.at( 0 ), parent );
   return QVariant( sqrt( x ) );
 }
+
+static QVariant fcnAbs( const QVariantList& values, QgsFeature*, QgsExpression* parent )
+{
+  double val = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( fabs( val ) );
+}
+
 static QVariant fcnSin( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   double x = getDoubleValue( values.at( 0 ), parent );
@@ -1299,7 +1306,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
   if ( gmBuiltinFunctions.isEmpty() )
   {
     gmBuiltinFunctions
-    << "sqrt" << "cos" << "sin" << "tan"
+    << "abs" << "sqrt" << "cos" << "sin" << "tan"
     << "asin" << "acos" << "atan" << "atan2"
     << "exp" << "ln" << "log10" << "log"
     << "round" << "rand" << "randf" << "max" << "min"
@@ -1331,6 +1338,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
   {
     gmFunctions
     << new StaticFunction( "sqrt", 1, fcnSqrt, QObject::tr( "Math" ) )
+    << new StaticFunction( "abs", 1, fcnAbs, QObject::tr( "Math" ) )
     << new StaticFunction( "cos", 1, fcnCos, QObject::tr( "Math" ) )
     << new StaticFunction( "sin", 1, fcnSin, QObject::tr( "Math" ) )
     << new StaticFunction( "tan", 1, fcnTan, QObject::tr( "Math" ) )
