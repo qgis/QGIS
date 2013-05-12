@@ -44206,7 +44206,7 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
         <source>It is not possible to embed layers / groups from the current project.</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のプロジェクトからレイヤ/グループを埋め込むことはできません.</translation>
     </message>
 </context>
 <context>
@@ -44278,12 +44278,12 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="810"/>
         <source>Measure tool (CRS transformation: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>計測ツール (CRS変換: %1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="811"/>
         <source>Canvas units (CRS transformation: %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>キャンバス単位 (CRS変換: %1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="820"/>
@@ -45097,7 +45097,7 @@ Because of this the projection selector will not work...</source>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
         <translation>
-            <numerusform>where節は%n行を返しました</numerusform>
+            <numerusform>where節は%n行を返しました.</numerusform>
         </translation>
     </message>
     <message>
@@ -48632,7 +48632,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="69"/>
         <source>This renderer doesn&apos;t implement a graphical interface.</source>
-        <translation>このレンダラにはグラフィックインターフェースが実装されていません</translation>
+        <translation>このレンダラにはグラフィックインターフェースが実装されていません.</translation>
     </message>
 </context>
 <context>
@@ -48905,7 +48905,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="304"/>
         <source>Parent rule %1 must have a symbol for this operation.</source>
-        <translation>親ルール%1はこの操作ではシンボルが必要です</translation>
+        <translation>親ルール%1はこの操作ではシンボルが必要です.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="311"/>
@@ -49047,7 +49047,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="277"/>
         <source>Create database...</source>
-        <translation>データベースの作成</translation>
+        <translation>データベースの作成...</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="311"/>
@@ -49083,7 +49083,7 @@ standard deviation ×</source>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="331"/>
         <source>Failed to create the database:
 </source>
-        <translation>データベース作成に失敗しました.
+        <translation>データベース作成に失敗しました:
 </translation>
     </message>
 </context>
@@ -50555,7 +50555,10 @@ SQL: %1</translation>
 
 This could take a long time (depending on the DB size),
 but implies better performance thereafter.</source>
-        <translation type="unfinished"></translation>
+        <translation>データベース%1の内部統計を更新してもいいですか?
+
+これには長い時間がかかるかもしれません(DBのサイズによります).
+しかしその後はパフォーマンスがよくなります.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="151"/>
