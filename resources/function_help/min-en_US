@@ -1,0 +1,13 @@
+<h3>min() function</h3>
+Returns the smallest value in a set of values.
+
+<h4>Syntax</h4>
+     min(<i>value<i>[,<i>value</i>...])
+
+<h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  value</i> &rarr; a number.<br>
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+     min(20.5,10,6.2) &rarr; 6.2
