@@ -23693,7 +23693,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="671"/>
         <source>^.. expression needs capture groups</source>
-        <translation type="unfinished"></translation>
+        <translation>^.. 式にはキャプチャグループが必要です</translation>
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextsourceselect.cpp" line="682"/>
@@ -23848,7 +23848,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="293"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="296"/>
         <source>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</source>
-        <translation type="unfinished"></translation>
+        <translation>エスケープ文字はそれに続く文字を普通の文字として扱うように強制します (つまりデリミタやクォート、改行とみなさない).  もしエスケープ文字がクォート文字と同じ場合はクォートに囲まれた部分しかエスケープしません</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="344"/>
@@ -24038,7 +24038,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="955"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="958"/>
         <source>Trim leading and trailing spaces from fields</source>
-        <translation type="unfinished"></translation>
+        <translation>フィールドの前と後にあるスペースを削除します</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="961"/>
@@ -24388,17 +24388,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="301"/>
         <source>Unknown diagram type.</source>
-        <translation>不明な図のタイプ.</translation>
+        <translation>不明な図表のタイプ.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="302"/>
         <source>The diagram type &apos;%1&apos; is unknown. A default type is selected for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 の図表タイプは不明なため既定のタイプが選択されます.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="346"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation>スケールは0と以下の属性値/図表サイズの間の値をとります:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="403"/>
@@ -24418,7 +24418,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="528"/>
         <source>You did not specify an interpolation value. A default value of %1 has been set.</source>
-        <translation type="unfinished"></translation>
+        <translation>内挿値が設定されませんでした. 既定の値 %1 が設定されます.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="53"/>
@@ -25906,7 +25906,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="302"/>
         <source>Provide ui-file</source>
-        <translation type="unfinished"></translation>
+        <translation>ui-ファイルを提供する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="310"/>
@@ -33227,7 +33227,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="887"/>
         <source>Capitalization style of text</source>
-        <translation type="unfinished"></translation>
+        <translation>テキストの単語の先頭を大文字にする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="695"/>
@@ -39757,7 +39757,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="816"/>
         <source>Enable macros</source>
-        <translation type="unfinished"></translation>
+        <translation>マクロを有効にする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="830"/>
@@ -39808,7 +39808,7 @@ Always network: always load from network and do not check if the cache has a val
         <location filename="../src/ui/qgsoptionsbase.ui" line="974"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1068"/>
         <source>Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>変数</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="979"/>
@@ -40032,7 +40032,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1802"/>
         <source>Multi band color (byte / band) </source>
-        <translation type="unfinished">マルチバンドカラー (1バイト / バンド)</translation>
+        <translation>マルチバンドカラー (1バイト / バンド)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1834"/>
@@ -40578,7 +40578,7 @@ SQL:%1
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="128"/>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
-        <translation type="unfinished">ジオメトリカラムテーブルが無い空間テーブルの公開スキーマ検索を制限します</translation>
+        <translation>ジオメトリカラムテーブルが無い空間テーブルの公開スキーマ検索を制限します</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="131"/>
@@ -40623,7 +40623,7 @@ SQL:%1
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="198"/>
         <source>Use estimated table statistics for the layer metadata.</source>
-        <translation type="unfinished">レイヤメタデータに推定されたテーブル統計値を利用する.</translation>
+        <translation>レイヤメタデータに推定されたテーブル統計値を利用する.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="201"/>
@@ -40633,7 +40633,7 @@ SQL:%1
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="204"/>
         <source>Use estimated table metadata</source>
-        <translation type="unfinished">メタデータの推定されたテーブルを利用する</translation>
+        <translation>メタデータの推定されたテーブルを利用する</translation>
     </message>
 </context>
 <context>
@@ -40641,12 +40641,12 @@ SQL:%1
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="362"/>
         <source>%1 as %2 in %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%3内の%1を %2 とする</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoracledataitems.cpp" line="389"/>
         <source>as geometryless table</source>
-        <translation type="unfinished"></translation>
+        <translation>ジオメトリの無いテーブルとして</translation>
     </message>
 </context>
 <context>
@@ -41078,7 +41078,7 @@ SQL: %3</translation>
 SQL:%1
 Error: %2</source>
         <translatorcomment>要修正</translatorcomment>
-        <translation type="unfinished">%1.%2のメタデータを更新できません.
+        <translation>%1.%2のメタデータを更新できません.
 SQL: %1
 エラー: %2</translation>
     </message>
@@ -44204,7 +44204,7 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
         <source>Recursive embedding not possible</source>
-        <translation type="unfinished">再帰的な埋め込みはできません</translation>
+        <translation>再帰的な埋め込みはできません</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectlayergroupdialog.cpp" line="143"/>
@@ -44292,13 +44292,13 @@ Try to find missing layers?</source>
         <location filename="../src/app/qgsprojectproperties.cpp" line="820"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="821"/>
         <source>OFF</source>
-        <translation type="unfinished">オフ</translation>
+        <translation>オフ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="831"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="832"/>
         <source>ON</source>
-        <translation type="unfinished">オン</translation>
+        <translation>オン</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="951"/>
@@ -44320,32 +44320,32 @@ Proceed?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1005"/>
         <source>Select print composer</source>
-        <translation type="unfinished">プリントコンポーザーを選択</translation>
+        <translation>プリントコンポーザーを選択</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1005"/>
         <source>Composer Title</source>
-        <translation type="unfinished">コンポーザタイトル</translation>
+        <translation>コンポーザタイトル</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1027"/>
         <source>Select restricted layers and groups</source>
-        <translation type="unfinished"></translation>
+        <translation>制限レイヤとグループを選択する</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1083"/>
         <source>Enter scale</source>
-        <translation type="unfinished">スケールの入力</translation>
+        <translation>縮尺を入力</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1084"/>
         <source>Scale denominator</source>
-        <translation type="unfinished">縮尺分母</translation>
+        <translation>縮尺分母</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1108"/>
         <source>Load scales</source>
-        <translation type="unfinished">ロードスケール</translation>
+        <translation>縮尺を読み込む</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1109"/>
@@ -44356,18 +44356,18 @@ Proceed?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1134"/>
         <source>Save scales</source>
-        <translation type="unfinished">スケールを保存</translation>
+        <translation>縮尺を保存</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1335"/>
         <source>Parameters :</source>
-        <translation type="unfinished">パラメータ :</translation>
+        <translation>パラメータ :</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1439"/>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1440"/>
         <source>Parameters:</source>
-        <translation type="unfinished">パラメータ:</translation>
+        <translation>パラメータ:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1452"/>
@@ -44381,12 +44381,12 @@ Proceed?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1283"/>
         <source>Select a valid symbol</source>
-        <translation type="unfinished">正しいシンボルを選択</translation>
+        <translation>正しいシンボルを選択</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1289"/>
         <source>Invalid symbol : </source>
-        <translation type="unfinished">不正なシンボル :</translation>
+        <translation>不正なシンボル :</translation>
     </message>
 </context>
 <context>
@@ -44591,7 +44591,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="647"/>
         <source>Project scales</source>
-        <translation type="unfinished">プロジェクトスケール</translation>
+        <translation>プロジェクト縮尺</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="667"/>
@@ -44638,7 +44638,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1221"/>
         <source>Assign random colors to symbols</source>
-        <translation type="unfinished">ランダムな色をシンボルに設定する</translation>
+        <translation>ランダムな色をシンボルに設定する</translation>
     </message>
     <message>
         <source>Opacity</source>
@@ -44676,37 +44676,37 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1432"/>
         <source>Access constraints</source>
-        <translation type="unfinished">アクセス制限</translation>
+        <translation>アクセス制限</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1442"/>
         <source>Keyword list</source>
-        <translation type="unfinished">キーワードリスト</translation>
+        <translation>キーワードリスト</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1452"/>
         <source>WMS capabilitities</source>
-        <translation type="unfinished">WMSケイパビリティ</translation>
+        <translation>WMSケイパビリティ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1468"/>
         <source>Exclude layers</source>
-        <translation type="unfinished">レイヤの除外</translation>
+        <translation>レイヤの除外</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1529"/>
         <source>Advertised URL</source>
-        <translation type="unfinished">公開URL</translation>
+        <translation>公開URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1543"/>
         <source>Width</source>
-        <translation type="unfinished">幅</translation>
+        <translation>幅</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1572"/>
         <source>Height</source>
-        <translation type="unfinished">高さ</translation>
+        <translation>高さ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1579"/>
@@ -44716,52 +44716,52 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1588"/>
         <source>Advertised extent</source>
-        <translation type="unfinished">公開領域</translation>
+        <translation>公開領域</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1697"/>
         <source>CRS restrictions</source>
-        <translation type="unfinished">投影座標系の制限</translation>
+        <translation>CRS制限</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1744"/>
         <source>Exclude composers</source>
-        <translation type="unfinished">コンポーザーの除外</translation>
+        <translation>コンポーザーの除外</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1812"/>
         <source>WFS capabilitities</source>
-        <translation type="unfinished">WFSケイパビリティ</translation>
+        <translation>WFSケイパビリティ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1838"/>
         <source>Update</source>
-        <translation type="unfinished">更新</translation>
+        <translation>更新</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1843"/>
         <source>Insert</source>
-        <translation type="unfinished">挿入</translation>
+        <translation>挿入</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1848"/>
         <source>Delete</source>
-        <translation type="unfinished">削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1856"/>
         <source>Unselect all</source>
-        <translation type="unfinished">全選択解除</translation>
+        <translation>全選択解除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1863"/>
         <source>Select all</source>
-        <translation type="unfinished">全てを選択する</translation>
+        <translation>全てを選択する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1931"/>
         <source>Python macros</source>
-        <translation type="unfinished">Pythonマクロ</translation>
+        <translation>Pythonマクロ</translation>
     </message>
     <message>
         <source>Avoid intersections of new polygons...</source>
@@ -44776,7 +44776,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="859"/>
         <source>Project layers</source>
-        <translation type="unfinished">プロジェクトのレイヤ</translation>
+        <translation>プロジェクトのレイヤ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="869"/>
@@ -44803,30 +44803,30 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="97"/>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation>CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="100"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">空間参照システム</translation>
+        <translation>空間参照システム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="109"/>
         <source>Identify layers</source>
-        <translation type="unfinished">レイヤ情報</translation>
+        <translation>レイヤ情報</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="121"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="124"/>
         <source>Default styles</source>
-        <translation type="unfinished">既定のスタイル</translation>
+        <translation>既定のスタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="133"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="136"/>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1282"/>
         <source>OWS server</source>
-        <translation type="unfinished">OWS Server</translation>
+        <translation>OWSサーバ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="258"/>
@@ -44846,24 +44846,24 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="403"/>
         <source>Measure tool</source>
-        <translation type="unfinished">計測ツール</translation>
+        <translation>計測ツール</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="412"/>
         <source>Ellipsoid
 (for distance calculations)</source>
-        <translation type="unfinished">楕円体
+        <translation>楕円体
 (距離計測に使用)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="420"/>
         <source>Semi-major</source>
-        <translation type="unfinished">長軸</translation>
+        <translation>長軸</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="433"/>
         <source>Semi-minor</source>
-        <translation type="unfinished">短軸</translation>
+        <translation>短軸</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="452"/>
@@ -44873,22 +44873,22 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="455"/>
         <source>Canvas units</source>
-        <translation type="unfinished">キャンバス単位</translation>
+        <translation>キャンバス単位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="485"/>
         <source>Degree</source>
-        <translation type="unfinished">度</translation>
+        <translation>度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="524"/>
         <source>Degree display</source>
-        <translation type="unfinished">度表示</translation>
+        <translation>経緯度表記</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="537"/>
         <source>Degrees, Minutes</source>
-        <translation type="unfinished">度, 分</translation>
+        <translation>度, 分</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="580"/>
@@ -45221,7 +45221,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="134"/>
         <source>Use unfiltered layer</source>
-        <translation type="unfinished">フィルターされないレイヤも使用</translation>
+        <translation>フィルターされないレイヤも使用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="144"/>
@@ -45701,7 +45701,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="270"/>
         <source>For details on pyramids options please see the following pages</source>
-        <translation type="unfinished"></translation>
+        <translation>ピラミッドオプションの詳細については以下のページを見てください</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="274"/>
@@ -46188,12 +46188,12 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="822"/>
         <source>Cannot instantiate the &apos;%1&apos; data provider</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; データプロバイダが挙げられません</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="832"/>
         <source>Provider is not valid (provider: %1, URI: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>プロバイダが不正です (プロバイダ: %1, URI: %2</translation>
     </message>
     <message>
         <source>Failed to load provider %1 (Reason: %2)</source>
@@ -47242,17 +47242,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="822"/>
         <source>By lightness</source>
-        <translation type="unfinished"></translation>
+        <translation>明度を使用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="827"/>
         <source>By luminosity</source>
-        <translation type="unfinished"></translation>
+        <translation>彩度を使用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="832"/>
         <source>By average</source>
-        <translation type="unfinished"></translation>
+        <translation>平均を使用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="840"/>
@@ -47409,12 +47409,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1331"/>
         <source>Original data source no data value, if exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>オリジナルデータソースのNoデータ (ある場合)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1334"/>
         <source>&lt;src no data value&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;src NOデータ値&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1345"/>
@@ -52358,7 +52358,8 @@ Overwrite?</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="519"/>
         <source>Color ramp with name &apos;%1&apos; already exists. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1という名前のカラー階調はすでに存在します.
+上書きしますか?</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="889"/>
@@ -63496,7 +63497,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="232"/>
         <source>Invalid second geometry.</source>
-        <translation>2個目のジオメトリが不正です</translation>
+        <translation>第2ジオメトリが不正です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="232"/>
@@ -63526,54 +63527,54 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="235"/>
         <source>Invalid first geometry.</source>
-        <translation>最初のジオメトリが不正です</translation>
+        <translation>第1ジオメトリが不正です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="276"/>
         <source>First geometry invalid in line test.</source>
-        <translation>ラインテストで最初のジオメトリが不正です.</translation>
+        <translation>ラインテストで第1ジオメトリが不正です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="282"/>
         <source>Failed to import first geometry into GEOS in line test.</source>
-        <translation>ラインテストで最初のジオメトリをGEOSにインポートに失敗しました.</translation>
+        <translation>ラインテストで第1ジオメトリをGEOSにインポートに失敗しました.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="408"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="531"/>
         <source>Invalid second geometry in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>ぶら下がりラインテストによると第2ジオメトリが不正です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="414"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="537"/>
         <source>Failed to import second geometry into GEOS in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>ぶら下がりラインテストによって第2ジオメトリのGEOSへのインポートに失敗しました.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="543"/>
         <source>Skipping invalid second geometry of feature %1 in dangling line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>ぶら下がりラインテストによって不正とされた地物 %1 の第2ジオメトリはスキップします.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="767"/>
         <source>Skipping invalid first geometry in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>擬似ラインテストによって不正とされた第1ジオメトリはスキップします.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="773"/>
         <source>Failed to import first geometry into GEOS in pseudo line test.</source>
-        <translation type="unfinished"></translation>
+        <translation>擬似ラインテストによって第1ジオメトリのGEOSへのインポートに失敗しました.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="868"/>
         <source>Invalid geometry in validity test.</source>
-        <translation type="unfinished"></translation>
+        <translation>検証テストによるとジオメトリは不正です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="939"/>
         <source>Invalid geometry in covering test.</source>
-        <translation type="unfinished"></translation>
+        <translation>カバーテストによるとジオメトリは不正です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1173"/>
@@ -63586,7 +63587,7 @@ Plugin will not be enabled.</source>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1438"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1512"/>
         <source>No second geometry missing or GEOS import failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>第2ジオメトリの欠落が無いあるいはGEOSインポートに失敗しました</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1553"/>
