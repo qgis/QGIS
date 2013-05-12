@@ -34,6 +34,12 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     QgsCredentialDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsCredentialDialog();
 
+  signals:
+    void credentialsRequested( QString, QString *, QString *, QString, bool * );
+
+  private slots:
+    void requestCredentials( QString, QString *, QString *, QString, bool * );
+
   protected:
     virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null );
 };

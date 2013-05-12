@@ -16,13 +16,19 @@
  ***************************************************************************/
 
 #include "qgscredentialdialog.h"
+#include "qgslogger.h"
+
 #include <QSettings>
+#include <QThread>
 
 QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
   setInstance( this );
+  connect( this, SIGNAL( credentialsRequested( QString, QString *, QString *, QString, bool * ) ),
+           this, SLOT( requestCredentials( QString, QString *, QString *, QString, bool * ) ),
+           Qt::BlockingQueuedConnection );
 }
 
 QgsCredentialDialog::~QgsCredentialDialog()
@@ -31,26 +37,40 @@ QgsCredentialDialog::~QgsCredentialDialog()
 
 bool QgsCredentialDialog::request( QString realm, QString &username, QString &password, QString message )
 {
+  bool ok;
+  if ( qApp->thread() != QThread::currentThread() )
+  {
+    QgsDebugMsg( "emitting signal" );
+    emit credentialsRequested( realm, &username, &password, message, &ok );
+    QgsDebugMsg( QString( "signal returned %1 (username=%2, password=%3)" ).arg( ok ? "true" : "false" ).arg( username ).arg( password ) );
+  }
+  else
+  {
+    requestCredentials( realm, &username, &password, message, &ok );
+  }
+  return ok;
+}
+
+void QgsCredentialDialog::requestCredentials( QString realm, QString *username, QString *password, QString message, bool *ok )
+{
+  QgsDebugMsg( "Entering." );
   labelRealm->setText( realm );
-  leUsername->setText( username );
-  lePassword->setText( password );
+  leUsername->setText( *username );
+  lePassword->setText( *password );
   labelMessage->setText( message );
   labelMessage->setHidden( message.isEmpty() );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
-  int res = exec();
+  QgsDebugMsg( "exec()" );
+  *ok = exec() == QDialog::Accepted;
+  QgsDebugMsg( QString( "exec(): %1" ).arg( ok ? "true" : "false" ) );
 
   QApplication::restoreOverrideCursor();
 
-  if ( res == QDialog::Accepted )
+  if ( *ok )
   {
-    username = leUsername->text();
-    password = lePassword->text();
-    return true;
-  }
-  else
-  {
-    return false;
+    *username = leUsername->text();
+    *password = lePassword->text();
   }
 }
