@@ -41447,17 +41447,17 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="233"/>
         <source>Copying features...</source>
-        <translation type="unfinished">地物のコピー中...</translation>
+        <translation>地物のコピー中...</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="233"/>
         <source>Abort</source>
-        <translation type="unfinished">取り消し</translation>
+        <translation>取り消し</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="234"/>
         <source>Import layer</source>
-        <translation type="unfinished">レイヤのインポート</translation>
+        <translation>レイヤのインポート</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="245"/>
@@ -41837,18 +41837,18 @@ Extended error information:
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="196"/>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="281"/>
         <source>Restrict the displayed tables to those that are in the layer registries.</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤレジストリにあるテーブルのみ表示する.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="199"/>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="284"/>
         <source>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤレジストリ(geometry_columns, geography_columns, topology.layer)に見つかったテーブルのみ表示します.これによって空間テーブルの初期表示を高速化できます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="202"/>
         <source>Only look in the layer registries</source>
-        <translation type="unfinished">レイヤレジストリの参照のみを行う</translation>
+        <translation>レイヤレジストリのみ参照する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="250"/>
@@ -41884,7 +41884,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="287"/>
         <source>Don&apos;t resolve type of unrestricted columns (GEOMETRY)</source>
-        <translation type="unfinished"></translation>
+        <translation>制限のないカラムのタイプ(GEOMETRY)を解決しない</translation>
     </message>
     <message>
         <source>Allow geometryless tables</source>
@@ -42100,13 +42100,15 @@ Extended error information:
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="510"/>
         <source>Could not open the Postgres/PostGIS Provider.
 Check message log for possible errors.</source>
-        <translation type="unfinished"></translation>
+        <translation>Postgres/PostGISプロバイダを開けませんでした.
+メッセージログでエラーをチェックして下さい.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="532"/>
         <source>No accessible tables or views found.
 Check the message log for possible errors.</source>
-        <translation type="unfinished"></translation>
+        <translation>アクセスできるテーブルまたはビューがありません.
+メッセージログでエラーをチェックして下さい.</translation>
     </message>
     <message>
         <source>Could not open the Postgres/PostGIS Provider</source>
@@ -42536,7 +42538,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>Experimental plugin. Use at own risk</source>
-        <translation type="unfinished">実験的プラグインです. 自己責任でご使用ください</translation>
+        <translation>実験的プラグインです. 自己責任でご使用ください</translation>
     </message>
     <message>
         <source> - %d plugins available</source>
@@ -43440,7 +43442,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="223"/>
         <source>Your database has no working PostGIS support.</source>
-        <translation>あなたのデータベースではPostGISのサポートは動きません</translation>
+        <translation>あなたのデータベースはPostGISサポートが有効ではありません.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="240"/>
@@ -43541,27 +43543,27 @@ SQL:%2
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="853"/>
         <source>resetting bad connection.</source>
-        <translation>不正な接続をリセットしています</translation>
+        <translation>不正な接続をリセットしています.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="859"/>
         <source>retry after reset succeeded.</source>
-        <translation>リセットが成功した後にリトライする</translation>
+        <translation>リセットが成功した後にリトライする.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="864"/>
         <source>retry after reset failed again.</source>
-        <translation>リセットが失敗した後に再度リトライする</translation>
+        <translation>リセットが失敗した後に再度リトライする.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="870"/>
         <source>connection still bad after reset.</source>
-        <translation>リセット後も接続が不正</translation>
+        <translation>リセット後も接続が不正.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="875"/>
         <source>bad connection, not retrying.</source>
-        <translation>不正な接続.リトライしない</translation>
+        <translation>不正な接続.リトライしない.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1327"/>
@@ -43601,18 +43603,18 @@ SQL:%2
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1371"/>
         <source>TopoGeometry</source>
-        <translation type="unfinished">トポジオメトリ</translation>
+        <translation>トポジオメトリ</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1527"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1537"/>
         <source>Query could not be canceled [%1]</source>
-        <translation type="unfinished">クエリがキャンセルできません [%1]</translation>
+        <translation>クエリがキャンセルできません [%1]</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1527"/>
         <source>PQgetCancel failed</source>
-        <translation type="unfinished">PQgetCancelに失敗しました</translation>
+        <translation>PQgetCancelに失敗しました</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1331"/>
@@ -43817,7 +43819,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="536"/>
         <source>FAILURE: Field %1 not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー: フィールド%1が見つかりません.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="691"/>
@@ -43838,12 +43840,12 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1022"/>
         <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
-        <translation>このテーブルはキーとして適切なカラムがありません.Quantum GISではPostgreSQLのoidやctidのようなプライマリキーが必要です</translation>
+        <translation>このテーブルはキーとして適切なカラムがありません.Quantum GISではPostgreSQLのoidやctidのようなプライマリキーが必要です.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1045"/>
         <source>Primary key field &apos;%1&apos; for view not unique.</source>
-        <translation>プライマリキーフィールド &apos;%1&apos;はviewにとってユニークではありません</translation>
+        <translation>ビューのプライマリキーフィールド &apos;%1&apos;はユニークではありません.</translation>
     </message>
     <message>
         <source>Type &apos;%1&apos; of primary key field &apos;%2&apos; for view invalid.</source>
@@ -43857,7 +43859,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="773"/>
         <source>Field %1 ignored, because of unsupported type type %2</source>
-        <translation type="unfinished"></translation>
+        <translation>フィールド%1は無視されました.なぜならば%2タイプはサポートされていないからです</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1050"/>
@@ -43872,7 +43874,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1060"/>
         <source>Unexpected relation type &apos;%1&apos;.</source>
-        <translation>予期せぬリレーションタイプ &apos;%1&apos;</translation>
+        <translation>予期せぬリレーションタイプ &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1113"/>
@@ -43882,7 +43884,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1426"/>
         <source>Could not find topology of layer %1.%2.%3</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ%1.%2.%3のトポロジが見つかりません</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1752"/>
@@ -44145,7 +44147,7 @@ SQL:%2
     <message>
         <location filename="../src/core/qgsproject.cpp" line="947"/>
         <source>Unable to save to file %1</source>
-        <translation>ファイル%1に保存できません。</translation>
+        <translation>ファイル%1に保存できません</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="956"/>
@@ -49473,7 +49475,7 @@ standard deviation ×</source>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
         <translation>
-            <numerusform>%nの地物がマッチしました</numerusform>
+            <numerusform>%nの地物がマッチしました.</numerusform>
         </translation>
     </message>
     <message>
@@ -49554,7 +49556,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="195"/>
         <source>Validation started.</source>
-        <translation>検証開始</translation>
+        <translation>検証開始.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/nodetool/qgsselectedfeature.cpp" line="225"/>
@@ -55021,12 +55023,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="480"/>
         <source>Minimum scale, i.e. maximum scale denominator. This limit is exclusive, that means the layer will not be displayed on this scale.</source>
-        <translation>最小の縮尺(最大の縮尺分母). この値は含まれません. つまりこのスケールではレイヤは表示されません.</translation>
+        <translation>最小の縮尺(すなわち最大の縮尺分母). この値は含まれません. つまりこのスケールではレイヤは表示されません.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="533"/>
         <source>Maximum scale, i.e. minimum scale denominator. This limit is inclusive, that means the layer will be displayed on this scale.</source>
-        <translation>最大の縮尺(最小の縮尺分母). この値は含まれます. つまりこのスケールではレイヤは表示されます.</translation>
+        <translation>最大の縮尺(すなわち最小の縮尺分母). この値は含まれます. つまりこのスケールではレイヤは表示されます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="503"/>
