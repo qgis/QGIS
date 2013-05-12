@@ -17237,7 +17237,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="324"/>
         <source>Fast scan this dir.</source>
-        <translation type="unfinished"></translation>
+        <translation>このディレクトリを高速スキャンする.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="337"/>
@@ -17247,7 +17247,7 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="374"/>
         <source>Add directory to favourites</source>
-        <translation type="unfinished"></translation>
+        <translation>ディレクトリをお気に入りに追加する</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbrowserdockwidget.cpp" line="529"/>
@@ -17783,7 +17783,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="655"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1148"/>
         <source>Choose a file name to save the map as</source>
-        <translation>地図を保存するファイル名を指定して下さい。</translation>
+        <translation>地図を保存するファイル名を指定して下さい</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="172"/>
@@ -17862,7 +17862,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1122"/>
         <source>&lt;p&gt;The SVG export function in QGIS has several problems due to bugs and deficiencies in the </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;QGISのSVG出力機能はQt4のSVGコードのバグや欠陥に起因するいくつかの問題があります</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1181"/>
@@ -17945,12 +17945,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2070"/>
         <source>Project contains WMS layers</source>
-        <translation>プロジェクトにはWMSレイヤが含まれます。</translation>
+        <translation>プロジェクトにはWMSレイヤが含まれます</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="2071"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation>いくつかのWMSサーバー（たとえばUMN　mapserver)ではWIDTHとHEIGHTパラメータの制限があります。このようなサーバーのレイヤを印刷する場合この制限を超えることがあります。この場合、このWMSレイヤは印刷されません。</translation>
+        <translation>いくつかのWMSサーバー(たとえばUMN mapserver)ではWIDTHとHEIGHTパラメータの制限があります。このようなサーバーのレイヤを印刷する場合この制限を超えることがあります。この場合、このWMSレイヤは印刷されません</translation>
     </message>
     <message>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
@@ -17963,7 +17963,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1124"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation>Qt4のsvgコードでは特に地図のバウンディングボックスでレイヤがクリップされない問題があります&lt;/P&gt;</translation>
+        <translation>.特に地図のバウンディングボックスでレイヤがクリップされない問題があります.&lt;/P&gt;</translation>
     </message>
     <message>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
@@ -18326,7 +18326,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="240"/>
         <source>Export as PDF...</source>
-        <translation>PDFとして出力する</translation>
+        <translation>PDFとしてエクスポート...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="249"/>
@@ -19342,7 +19342,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="147"/>
         <source>Update legend. User defined labels are preserved.</source>
-        <translation type="unfinished"></translation>
+        <translation>凡例を更新します.ユーザ定義ラベルは保持されます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="150"/>
@@ -19352,7 +19352,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="163"/>
         <source>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</source>
-        <translation type="unfinished"></translation>
+        <translation>すべての凡例を更新します.レイヤはメインアプリケーション凡例に応じて追加/削除されます.ユーザ定義ラベルは削除されます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="166"/>
@@ -19412,7 +19412,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="472"/>
         <source>Allow to split layer items into multiple columns.</source>
-        <translation>レイヤの複数列に分割を許可する</translation>
+        <translation>レイヤの複数列に分割を許可する.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="475"/>
@@ -19442,7 +19442,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="564"/>
         <source>Space above text using group style.</source>
-        <translation type="unfinished"></translation>
+        <translation>グループスタイルを使ってテキストの上に間隔を置きます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="567"/>
@@ -19452,7 +19452,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="587"/>
         <source>Space above text using subgroup style.</source>
-        <translation type="unfinished"></translation>
+        <translation>サブグループスタイルを使ってテキストの上に間隔を置きます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="590"/>
@@ -19462,7 +19462,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="610"/>
         <source>Space above symbol and symbol label.</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボルやシンボルラベルの上に間隔を置きます.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="613"/>
@@ -19472,7 +19472,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="633"/>
         <source>Space between symbol icon and symbol label (symbol label left margin).</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボルアイコンとシンボルラベルに間隔を置きます(シンボルラベル左側マージン).</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="636"/>
@@ -20738,7 +20738,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="420"/>
         <source>Stroke color...</source>
-        <translation>線の色</translation>
+        <translation>線の色...</translation>
     </message>
     <message>
         <source>Height </source>
@@ -21769,7 +21769,7 @@ Should the existing classes be deleted before classification?</source>
         <source>Cannot write file %1:
 %2.</source>
         <translation>ファイル%1に書き込めません
-%2</translation>
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="153"/>
@@ -21789,7 +21789,7 @@ Should the existing classes be deleted before classification?</source>
         <source>Cannot read file %1:
 %2.</source>
         <translation>ファイル%1を読み込めません
-%2</translation>
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="178"/>
@@ -21801,7 +21801,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="189"/>
         <source>The file is not an shortcuts exchange file.</source>
-        <translation>指定ファイルはショートカットエクスチェンジファイルではありません</translation>
+        <translation>指定ファイルはショートカットエクスチェンジファイルではありません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="209"/>
