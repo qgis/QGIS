@@ -389,11 +389,13 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                    .arg( relkind ) );
 
       layerProperty.pkCols.clear();
-      layerProperty.type = type;
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
       layerProperty.geometryColType = columnType;
+      layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
+      layerProperty.srids = QList<int>() << srid.toInt();
+      layerProperty.sql = "";
 
       if ( relkind == "v" )
       {
@@ -404,9 +406,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
           continue;
         }
       }
-
-      layerProperty.srid = srid;
-      layerProperty.sql = "";
 
       mLayersSupported << layerProperty;
       nColumns++;
@@ -493,7 +492,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
-      layerProperty.type = QString::null;
+      layerProperty.types.clear();
+      layerProperty.srids.clear();
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
@@ -530,7 +530,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       nColumns++;
     }
   }
-
 
   if ( allowGeometrylessTables )
   {
@@ -570,13 +569,13 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
-      layerProperty.type = QString::null;
+      layerProperty.types = QList<QGis::WkbType>() << QGis::WKBUnknown;
+      layerProperty.srids = QList<int>() << 0;
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString::null;
       layerProperty.geometryColType = sctNone;
       layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
-      layerProperty.srid = "";
       layerProperty.sql = "";
 
       mLayersSupported << layerProperty;
@@ -1095,66 +1094,56 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
     table = layerProperty.tableName;
   }
 
-
-  // our estimatation ignores that a where clause might restrict the feature type or srid
-  if ( useEstimatedMetadata )
+  if ( !layerProperty.geometryColName.isEmpty() )
   {
-    table = QString( "(SELECT %1 FROM %2 WHERE %1 IS NOT NULL%3 LIMIT %4) AS t" )
-            .arg( quotedIdentifier( layerProperty.geometryColName ) )
-            .arg( table )
-            .arg( layerProperty.sql.isEmpty() ? "" : QString( " AND (%1)" ).arg( layerProperty.sql ) )
-            .arg( sGeomTypeSelectLimit );
-  }
-  else if ( !layerProperty.sql.isEmpty() )
-  {
-    table += QString( " WHERE %1" ).arg( layerProperty.sql );
-  }
-
-  QString query = QString( "SELECT DISTINCT"
-                           " CASE"
-                           " WHEN %1 THEN 'POINT'"
-                           " WHEN %2 THEN 'LINESTRING'"
-                           " WHEN %3 THEN 'POLYGON'"
-                           " END,"
-                           " %4(%5%6)"
-                           " FROM %7" )
-                  .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPoint, layerProperty.geometryColType == sctGeography ) )
-                  .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBLineString, layerProperty.geometryColType == sctGeography ) )
-                  .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPolygon, layerProperty.geometryColType == sctGeography ) )
-                  .arg( majorVersion() < 2 ? "srid" : "st_srid" )
-                  .arg( quotedIdentifier( layerProperty.geometryColName ) )
-                  .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" )
-                  .arg( table );
-
-  QgsDebugMsg( "Retrieving geometry types: " + query );
-
-  QgsPostgresResult gresult = PQexec( query );
-
-  QString type;
-  QString srid;
-  if ( gresult.PQresultStatus() == PGRES_TUPLES_OK )
-  {
-    QStringList types;
-    QStringList srids;
-
-    for ( int i = 0; i < gresult.PQntuples(); i++ )
+    // our estimatation ignores that a where clause might restrict the feature type or srid
+    if ( useEstimatedMetadata )
     {
-      QString type = gresult.PQgetvalue( i, 0 );
-      QString srid = gresult.PQgetvalue( i, 1 );
-      if ( type.isEmpty() )
-        continue;
-
-      types << type;
-      srids << srid;
+      table = QString( "(SELECT %1 FROM %2 WHERE %1 IS NOT NULL%3 LIMIT %4) AS t" )
+              .arg( quotedIdentifier( layerProperty.geometryColName ) )
+              .arg( table )
+              .arg( layerProperty.sql.isEmpty() ? "" : QString( " AND (%1)" ).arg( layerProperty.sql ) )
+              .arg( sGeomTypeSelectLimit );
+    }
+    else if ( !layerProperty.sql.isEmpty() )
+    {
+      table += QString( " WHERE %1" ).arg( layerProperty.sql );
     }
 
-    type = types.join( "," );
-    srid = srids.join( "," );
-  }
+    QString query = QString( "SELECT DISTINCT"
+                             " CASE"
+                             " WHEN %1 THEN 'POINT'"
+                             " WHEN %2 THEN 'LINESTRING'"
+                             " WHEN %3 THEN 'POLYGON'"
+                             " END,"
+                             " %4(%5%6)"
+                             " FROM %7" )
+                    .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPoint, layerProperty.geometryColType == sctGeography ) )
+                    .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBLineString, layerProperty.geometryColType == sctGeography ) )
+                    .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::WKBPolygon, layerProperty.geometryColType == sctGeography ) )
+                    .arg( majorVersion() < 2 ? "srid" : "st_srid" )
+                    .arg( quotedIdentifier( layerProperty.geometryColName ) )
+                    .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" )
+                    .arg( table );
 
-  QgsDebugMsg( QString( "type:%1 srid:%2" ).arg( type ).arg( srid ) );
-  layerProperty.type = type;
-  layerProperty.srid = srid;
+    QgsDebugMsg( "Retrieving geometry types: " + query );
+
+    QgsPostgresResult gresult = PQexec( query );
+
+    if ( gresult.PQresultStatus() == PGRES_TUPLES_OK )
+    {
+      for ( int i = 0; i < gresult.PQntuples(); i++ )
+      {
+        QString type = gresult.PQgetvalue( i, 0 );
+        QString srid = gresult.PQgetvalue( i, 1 );
+        if ( type.isEmpty() )
+          continue;
+
+        layerProperty.types << QgsPostgresConn::wkbTypeFromPostgis( type );
+        layerProperty.srids << srid.toInt();
+      }
+    }
+  }
 }
 
 void QgsPostgresConn::postgisWkbType( QGis::WkbType wkbType, QString &geometryType, int &dim )

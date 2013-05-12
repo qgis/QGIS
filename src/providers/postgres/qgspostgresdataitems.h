@@ -15,6 +15,8 @@
 #ifndef QGSPOSTGRESDATAITEMS_H
 #define QGSPOSTGRESDATAITEMS_H
 
+#include <QMainWindow>
+
 #include "qgsdataitem.h"
 
 #include "qgspostgresconn.h"
@@ -40,6 +42,8 @@ class QgsPGRootItem : public QgsDataCollectionItem
 
     virtual QList<QAction*> actions();
 
+    static QMainWindow *sMainWindow;
+
   public slots:
     void connectionsChanged();
     void newConnection();
@@ -59,8 +63,6 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     virtual bool acceptDrop() { return true; }
     virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
 
-    QgsPostgresConn *connection() const { return mConn; }
-
     void refresh();
 
   signals:
@@ -69,8 +71,12 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
   public slots:
     void editConnection();
     void deleteConnection();
+    void refreshConnection();
 
     void setLayerType( QgsPostgresLayerProperty layerProperty );
+
+    void threadStarted();
+    void threadFinished();
 
   private:
     void stop();

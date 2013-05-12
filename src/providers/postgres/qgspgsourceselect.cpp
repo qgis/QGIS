@@ -120,13 +120,17 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool manag
     : QDialog( parent, fl )
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( NULL )
+    , mColumnTypeThread( 0 )
 {
   setupUi( this );
 
   if ( mEmbeddedMode )
   {
     buttonBox->button( QDialogButtonBox::Close )->hide();
+  }
+  else
+  {
+    setWindowTitle( tr( "Add PostGIS Table(s)" ) );
   }
 
   mAddButton = new QPushButton( tr( "&Add" ) );
@@ -352,7 +356,7 @@ void QgsPgSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QStrin
 void QgsPgSourceSelect::setLayerType( QgsPostgresLayerProperty layerProperty )
 {
   QgsDebugMsg( "entering." );
-  mTableModel.setGeometryTypesForTable( layerProperty );
+  mTableModel.addTableEntry( layerProperty );
 }
 
 QgsPgSourceSelect::~QgsPgSourceSelect()
@@ -437,80 +441,21 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   mConnInfo = uri.connectionInfo();
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
 
-  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), true );
-  if ( conn )
-  {
-    QApplication::setOverrideCursor( Qt::WaitCursor );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
 
-    bool searchPublicOnly = QgsPostgresConn::publicSchemaOnly( cmbConnections->currentText() );
-    bool searchGeometryColumnsOnly = QgsPostgresConn::geometryColumnsOnly( cmbConnections->currentText() );
-    bool dontResolveType = QgsPostgresConn::dontResolveType( cmbConnections->currentText() );
-    bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
+  mColumnTypeThread = new QgsGeomColumnTypeThread( cmbConnections->currentText(), mUseEstimatedMetadata, cbxAllowGeometrylessTables->isChecked() );
 
-    emit progressMessage( tr( "Retrieving tables from %1..." ).arg( cmbConnections->currentText() ) );
+  connect( mColumnTypeThread, SIGNAL( setLayerType( QgsPostgresLayerProperty ) ),
+           this, SLOT( setLayerType( QgsPostgresLayerProperty ) ) );
+  connect( mColumnTypeThread, SIGNAL( finished() ),
+           this, SLOT( columnThreadFinished() ) );
+  connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
+           this, SIGNAL( progress( int, int ) ) );
+  connect( mColumnTypeThread, SIGNAL( progressMessage( QString ) ),
+           this, SIGNAL( progressMessage( QString ) ) );
 
-    QVector<QgsPostgresLayerProperty> layers;
-    if ( conn->supportedLayers( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
-    {
-      // Add the supported layers to the table
-      foreach ( QgsPostgresLayerProperty layer, layers )
-      {
-        QString type = layer.type;
-        QString srid = layer.srid;
-        if ( !layer.geometryColName.isNull() )
-        {
-          if ( QgsPostgresConn::wkbTypeFromPostgis( type ) == QGis::WKBUnknown || srid.isEmpty() )
-          {
-            if ( dontResolveType )
-            {
-              QgsDebugMsg( QString( "skipping column %1.%2 without type constraint" ).arg( layer.schemaName ).arg( layer.tableName ) );
-              continue;
-            }
-
-            addSearchGeometryColumn( layer );
-            type = "";
-            srid = "";
-          }
-        }
-        QgsDebugMsg( QString( "adding table %1.%2" ).arg( layer.schemaName ).arg( layer.tableName ) );
-
-        layer.type = type;
-        layer.srid = srid;
-        mTableModel.addTableEntry( layer );
-      }
-
-      if ( mColumnTypeThread )
-      {
-        btnConnect->setText( tr( "Stop" ) );
-        mColumnTypeThread->start();
-      }
-    }
-
-    //if we have only one schema item, expand it by default
-    int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
-    if ( numTopLevelItems < 2 || mTableModel.tableCount() < 20 )
-    {
-      //expand all the toplevel items
-      for ( int i = 0; i < numTopLevelItems; ++i )
-      {
-        mTablesTreeView->expand( mProxyModel.mapFromSource( mTableModel.indexFromItem( mTableModel.invisibleRootItem()->child( i ) ) ) );
-      }
-    }
-
-    conn->disconnect();
-
-    if ( !mColumnTypeThread )
-    {
-      finishList();
-    }
-  }
-  else
-  {
-    // Let user know we couldn't initialise the Postgres/PostGIS provider
-    QMessageBox::warning( this,
-                          tr( "Postgres/PostGIS Provider" ),
-                          tr( "Could not open the Postgres/PostGIS Provider.\nCheck message log for possible errors." ) );
-  }
+  btnConnect->setText( tr( "Stop" ) );
+  mColumnTypeThread->start();
 }
 
 void QgsPgSourceSelect::finishList()
@@ -527,15 +472,6 @@ void QgsPgSourceSelect::finishList()
 
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmSchema, Qt::AscendingOrder );
-
-  emit progress( 0, 0 );
-  emit progressMessage( tr( "Table retrieval finished." ) );
-
-  if ( mTablesTreeView->model()->rowCount() == 0 )
-    QMessageBox::information( this,
-                              tr( "Postgres/PostGIS Provider" ),
-                              tr( "No accessible tables or views found.\nCheck the message log for possible errors." ) );
-
 }
 
 void QgsPgSourceSelect::columnThreadFinished()
@@ -568,8 +504,14 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsPgTableModel::dbtmTable ) )->text();
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, "postgres" );
+  QString uri = mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata );
+  if ( uri.isNull() )
+  {
+    QgsDebugMsg( "no uri" );
+    return;
+  }
 
+  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, "postgres" );
   if ( !vlayer->isValid() )
   {
     delete vlayer;
@@ -585,33 +527,6 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
 
   delete gb;
   delete vlayer;
-}
-
-void QgsPgSourceSelect::addSearchGeometryColumn( QgsPostgresLayerProperty layerProperty )
-{
-  // store the column details and do the query in a thread
-  if ( !mColumnTypeThread )
-  {
-    QgsPostgresConn *conn = QgsPostgresConn::connectDb( mConnInfo, true /* readonly */ );
-    if ( conn )
-    {
-
-      mColumnTypeThread = new QgsGeomColumnTypeThread( conn, mUseEstimatedMetadata );
-
-      connect( mColumnTypeThread, SIGNAL( setLayerType( QgsPostgresLayerProperty ) ),
-               this, SLOT( setLayerType( QgsPostgresLayerProperty ) ) );
-      connect( this, SIGNAL( addGeometryColumn( QgsPostgresLayerProperty ) ),
-               mColumnTypeThread, SLOT( addGeometryColumn( QgsPostgresLayerProperty ) ) );
-      connect( mColumnTypeThread, SIGNAL( finished() ),
-               this, SLOT( columnThreadFinished() ) );
-      connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
-               this, SIGNAL( progress( int, int ) ) );
-      connect( mColumnTypeThread, SIGNAL( progressMessage( QString ) ),
-               this, SIGNAL( progressMessage( QString ) ) );
-    }
-  }
-
-  emit addGeometryColumn( layerProperty );
 }
 
 QString QgsPgSourceSelect::fullDescription( QString schema, QString table, QString column, QString type )

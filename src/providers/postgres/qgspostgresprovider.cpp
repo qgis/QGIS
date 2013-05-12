@@ -2666,12 +2666,9 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     mConnectionRO->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
 
-    QStringList typeList = layerProperty.type.split( ",", QString::SkipEmptyParts );
-    QStringList sridList = layerProperty.srid.split( ",", QString::SkipEmptyParts );
-    Q_ASSERT( typeList.size() == sridList.size() );
     mSpatialColType = layerProperty.geometryColType;
 
-    if ( typeList.size() == 0 )
+    if ( layerProperty.size() == 0 )
     {
       // no data - so take what's requested
       if ( mRequestedGeomType == QGis::WKBUnknown || mRequestedSrid.isEmpty() )
@@ -2685,23 +2682,23 @@ bool QgsPostgresProvider::getGeometryDetails()
     else
     {
       int i;
-      for ( i = 0; i < typeList.size(); i++ )
+      for ( i = 0; i < layerProperty.size(); i++ )
       {
-        QGis::WkbType wkbType = QgsPostgresConn::wkbTypeFromPostgis( typeList.at( i ) );
+        QGis::WkbType wkbType = layerProperty.types[ i ];
 
         if (( wkbType != QGis::WKBUnknown && ( mRequestedGeomType == QGis::WKBUnknown || mRequestedGeomType == wkbType ) ) &&
-            ( mRequestedSrid.isEmpty() || sridList.at( i ) == mRequestedSrid ) )
+            ( mRequestedSrid.isEmpty() || layerProperty.srids[ i ] == mRequestedSrid.toInt() ) )
           break;
       }
 
       // requested type && srid is available
-      if ( i < typeList.size() )
+      if ( i < layerProperty.size() )
       {
-        if ( typeList.size() == 1 )
+        if ( layerProperty.size() == 1 )
         {
           // only what we requested is available
-          detectedType = typeList.at( 0 );
-          detectedSrid = sridList.at( 0 );
+          detectedType = layerProperty.types[ 0 ];
+          detectedSrid = layerProperty.srids[ 0 ];
         }
         else
         {
