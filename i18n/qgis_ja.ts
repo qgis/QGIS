@@ -52240,7 +52240,7 @@ Overwrite?</source>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="61"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="63"/>
         <source>Type here to filter symbols ...</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボルをフィルタするためにここに入力して下さい...</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="194"/>
@@ -52261,7 +52261,7 @@ Overwrite?</source>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="421"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="467"/>
         <source>cpt-city</source>
-        <translation type="unfinished"></translation>
+        <translation>cpt-city</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="340"/>
@@ -52358,7 +52358,8 @@ Overwrite?</source>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="890"/>
         <source>The parent group you have selected is not user editable.
 Kindly select a user defined group.</source>
-        <translation type="unfinished"></translation>
+        <translation>選択された親グループはユーザが編集できません.
+ユーザ定義グループを選択して下さい.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="899"/>
@@ -52369,7 +52370,8 @@ Kindly select a user defined group.</source>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="900"/>
         <source>Creation of nested smart groups are not allowed
 Select the &apos;Smart Group&apos; to create a new group.</source>
-        <translation type="unfinished"></translation>
+        <translation>ネストされたスマートグループを作成することはできません.
+新しいグループを作成するにはスマートグループを選択して下さい.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="951"/>
@@ -52380,7 +52382,8 @@ Select the &apos;Smart Group&apos; to create a new group.</source>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="952"/>
         <source>Cannot delete system defined categories.
 Kindly select a group or smart group you might want to delete.</source>
-        <translation type="unfinished"></translation>
+        <translation>システム定義カテゴリを削除することはできません.
+削除したいグループまたはスマートグループを選択して下さい.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="997"/>
