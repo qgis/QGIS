@@ -34083,7 +34083,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="228"/>
         <source>following %1 items
 not displayed</source>
-        <translation type="unfinished"></translation>
+        <translation>以下の %1個もアイテムが\n表示されませんでした</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="342"/>
@@ -39877,7 +39877,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="800"/>
         <source>Prompt to save project and data source changes when required</source>
-        <translation type="unfinished"></translation>
+        <translation>必要な場合プロジェクト保存のプロンプトを表示してデータソースを変更する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="816"/>
@@ -39944,32 +39944,32 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1019"/>
         <source>Current environment variables (read-only - bold indicates modified at startup)</source>
-        <translation type="unfinished"></translation>
+        <translation>現状の環境変数(リードオンリィ - 開始時に変更されたものは太字強調)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1081"/>
         <source>Show only QGIS-specific variables</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS特有の変数のみを表示する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1091"/>
         <source>Use custom variables (restart required - include separators)</source>
-        <translation type="unfinished"></translation>
+        <translation>カスタム変数の利用(再起動が必要 - 区切り文字を含む)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1265"/>
         <source>Feature attributes and table</source>
-        <translation type="unfinished"></translation>
+        <translation>地物属性とテーブル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1406"/>
         <source>Data source handling</source>
-        <translation type="unfinished"></translation>
+        <translation>データソースの操作</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1478"/>
         <source>Prompt for raster sublayers when opening</source>
-        <translation type="unfinished"></translation>
+        <translation>ラスタサブレイヤを開くときにプロンプトを表示する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1526"/>
@@ -40029,7 +40029,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2308"/>
         <source>Display classification attribute names</source>
-        <translation type="unfinished"></translation>
+        <translation>分類の属性名称を表示する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2315"/>
@@ -40039,12 +40039,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2322"/>
         <source>Create raster icons (may be slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>ラスタアイコンの作成(多分遅い)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2335"/>
         <source>Legend item styles</source>
-        <translation type="unfinished"></translation>
+        <translation>凡例アイテムスタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2354"/>
@@ -41425,12 +41425,12 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="154"/>
         <source>&amp;Set Filter</source>
-        <translation type="unfinished">フィルタの設定(&amp;S)</translation>
+        <translation>フィルタの設定(&amp;S)</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="155"/>
         <source>Set Filter</source>
-        <translation type="unfinished">フィルタの設定</translation>
+        <translation>フィルタの設定</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclesourceselect.cpp" line="169"/>
@@ -41623,7 +41623,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="163"/>
         <source>Refresh</source>
-        <translation type="unfinished">再読み込み</translation>
+        <translation>再読み込み</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="203"/>
@@ -42180,7 +42180,7 @@ Extended error information:
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="133"/>
         <source>Add PostGIS Table(s)</source>
-        <translation type="unfinished">PostGIS テーブルを追加</translation>
+        <translation>PostGIS テーブルを追加</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="139"/>
