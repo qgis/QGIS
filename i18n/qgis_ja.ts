@@ -6233,11 +6233,9 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2074"/>
         <source>Need Support?</source>
-<<<<<<< HEAD
-        <translation>サポートが必要ですか?</translation>
-=======
+
         <translation>サポートが必要ですか？</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <source>Save Edits</source>
@@ -8253,11 +8251,9 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Save As...</source>
-<<<<<<< HEAD
-        <translation>名前をつけて保存...</translation>
-=======
+
         <translation>名前を付けて保存...</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <source>Cut</source>
@@ -11127,20 +11123,18 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3310"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
-<<<<<<< HEAD
+
         <translation>このレイヤの&quot;%1&quot;という名前のスタイルはデータベースに存在します.上書きしますか?</translation>
-=======
-        <translation>このレイヤに対するスタイル%1はすでに存在しています. 置き換えますか？</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
+
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3314"/>
         <source>Operation aborted. No changes were made in the database</source>
-<<<<<<< HEAD
+
         <translation>操作は中断されました.データベースに変更は加えられませんでした</translation>
-=======
-        <translation>操作は中断されました. データベースは変更されませんでした</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
+
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3360"/>
@@ -12796,22 +12790,19 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="6575"/>
         <source>en</source>
         <comment>documentation language</comment>
-<<<<<<< HEAD
-        <translatorcomment>まだ日本語WEBページは無い</translatorcomment>
-        <translation>en</translation>
-=======
+
+
+
         <translatorcomment>ドキュメントの言語</translatorcomment>
         <translation>ja</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6593"/>
         <source>http://www.qgis.org/en/commercial-support.html</source>
-<<<<<<< HEAD
-        <translation>http://www.qgis.org/en/commercial-support.html</translation>
-=======
+
         <translation>http://www.qgis.org/ja/commercial-support.html</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7520"/>
@@ -22328,11 +22319,9 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="305"/>
         <source>new CRS</source>
-<<<<<<< HEAD
-        <translation>新しいCRS</translation>
-=======
+
         <translation>新規CRS</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="407"/>
@@ -22345,11 +22334,9 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="408"/>
         <source>The proj4 definition of &apos;%1&apos; is not valid.</source>
-<<<<<<< HEAD
-        <translation>&apos;%1&apos;のproj4定義は正しくありません.</translation>
-=======
+
         <translation>proj4定義 &apos;%1&apos; が不正です</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="465"/>
@@ -22497,22 +22484,17 @@ and current file is [%3]</source>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="113"/>
         <source>Copy
  existing CRS</source>
-<<<<<<< HEAD
-        <translation>既存CRSを
-コピーする</translation>
-=======
+
         <translation>既存のCRS
 を複製</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="128"/>
         <source>Add new CRS</source>
-<<<<<<< HEAD
-        <translation>新CRSの追加</translation>
-=======
+
         <translation>新規CRSを追加</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="148"/>
@@ -23656,11 +23638,9 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="234"/>
         <source>File cannot be opened or delimiter parameters are not valid</source>
-<<<<<<< HEAD
-        <translation>ファイルが開けません またはパラメータが不正です</translation>
-=======
+
         <translation>ファイルが開けないか, デリミタの指定が不正です</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="249"/>
@@ -23670,11 +23650,9 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="896"/>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="900"/>
         <source>%0 field %1 is not defined in delimited text file</source>
-<<<<<<< HEAD
-        <translation>デリミテッドテキストファイルで%0フィールド%1が定義されていません</translation>
-=======
+
         <translation>%0 フィールド %1 はデリミティッドテキストファイル内に定義されていません</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="301"/>
@@ -23742,11 +23720,9 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="957"/>
         <source>The file has been updated by another application - reloading</source>
-<<<<<<< HEAD
-        <translation>指定ファイルは別アプリケーションで更新されています - 再ロードしてください</translation>
-=======
+
         <translation>ファイルが他のアプリケーションによって更新されました - リロードします</translation>
->>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
+
     </message>
 </context>
 <context>
