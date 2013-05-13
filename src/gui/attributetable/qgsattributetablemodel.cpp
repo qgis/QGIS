@@ -58,13 +58,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
 
 QgsAttributeTableModel::~QgsAttributeTableModel()
 {
-  const QMap<QString, QVariant> *item;
-  foreach ( item, mValueMaps )
-  {
-    delete item;
-  }
-
-  mValueMaps.clear();
+  qDeleteAll( mValueMaps );
 }
 
 bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
@@ -201,7 +195,7 @@ void QgsAttributeTableModel::loadAttributes()
         continue;
 
       case QgsVectorLayer::ValueMap:
-        mValueMaps.insert( idx, &layer()->valueMap( idx ) );
+        mValueMaps.insert( idx, new QMap< QString, QVariant >( layer()->valueMap( idx ) ) );
         break;
 
       case QgsVectorLayer::ValueRelation:
