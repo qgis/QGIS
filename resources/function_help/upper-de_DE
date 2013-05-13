@@ -1,12 +1,12 @@
 <h3>Funktion upper()</h3>
-Wandelt eine Zeichenkette in Großbuchstaben.
+Wandelt eine Zeichenkette in Gro&szlig;buchstaben.
 
 <p><h4>Syntax</h4>
      upper(<i>zeichenkette</i>)</p>
 
 <p><h4>Argumente</h4>
 <!-- List args for functions here-->
-<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die Zeichenkette, die in Großbuchstaben umzuwandeln ist.</p>
+<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die Zeichenkette, die in Gro&szlig;buchstaben umzuwandeln ist.</p>
 
 <p><h4>Beispiel</h4>
 <!-- Show example of function.-->

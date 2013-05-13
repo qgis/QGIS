@@ -8,7 +8,7 @@ Transforms a given value from an input domain to an output range using linear in
 <!-- List args for functions here-->
 <i>  val</i> &rarr; is a value in the input domain. The function will return a corresponding scaled value in the output range.<br>
 <i>  domain_min, domain_max</i> &rarr; specify the input domain, the smallest and largest values the input <i>val</i> should take.<br>
-<i>  range_min, range_max</i> &rarr; sepcify the output range, the smallest and largest values which should be output by the function.<br>
+<i>  range_min, range_max</i> &rarr; specify the output range, the smallest and largest values which should be output by the function.<br>
 
 <h4>Example</h4>
 <!-- Show example of function.-->

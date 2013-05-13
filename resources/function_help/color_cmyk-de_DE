@@ -1,0 +1,14 @@
+<h3>Funktion color_cmyk()</h3>
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Cyan-, Magenta- Gelb- und Schwarzanteil zur&uuml;ck.
+
+<p><h4>Syntax</h4>
+     color_cmyk(<i>cyan, magenta, gelb, schwarz</i>)</p>
+
+<p><h4>Argumente</h4>
+<i>  cyan</i> &rarr; Der Cyan-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.<br>
+<i>  magenta</i> &rarr; Der Magenta-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.<br>
+<i>  gelb</i> &rarr; Der Gelb-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.<br>
+<i>  schwarz</i> &rarr; Der Schwarz-Anteil der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.<br>
+
+<p><h4>Beispiel</h4>
+     color_cmyk(100,50,0,10) &rarr; '#0073e6'</p>

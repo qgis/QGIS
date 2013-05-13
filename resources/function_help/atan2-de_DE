@@ -1,6 +1,6 @@
 <h3>Funktion atan2()</h3>
-Gibt den Arcustangens von y/x unter Berücksichtung der Vorzeichen der beiden
-Argumente zurück, um den den Quadranten des Ergebnisses zu bestimmen.
+Gibt den Arcustangens von y/x unter Ber&uuml;cksichtung der Vorzeichen der beiden
+Argumente zur&uuml;ck, um den den Quadranten des Ergebnisses zu bestimmen.
 
 <p><h4>Syntax</h4>
      atan2(<i>dy</i>, <i>dx</i>)</p>

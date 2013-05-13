@@ -6,7 +6,7 @@ Diese Funktion kann beliebig viele Argumente haben.
 <code>coalesce(ausdruck1, ausdruck2...)</code><br>
 
 <h4>Argumente</h4>
-<code>ausdruck</code> - ein gültige Ausdruck jeden Typs
+<code>ausdruck</code> - ein g&uuml;ltige Ausdruck jeden Typs
 <br>
 
 <h4>Beispiel</h4>

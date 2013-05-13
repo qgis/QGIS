@@ -1,0 +1,13 @@
+<h3>Funktion ceil()</h3>
+Rundet eine Zahl auf.
+
+<h4>Syntax</h4>
+<code>ceil(wert)</code><br>
+
+<h4>Argumente</h4>
+<code>wert</code> - eine Zahl.
+<br>
+
+<h4>Beispiel</h4>
+<code>ceil(4.9) &rarr; 5</code><br>
+<code>ceil(-4.9) &rarr; -4</code><br>

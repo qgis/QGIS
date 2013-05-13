@@ -1,5 +1,5 @@
 <h3>Funktion $x</h3>
-Liefert die X-Koordinate des aktuellen Punkts zurück.
+Liefert die X-Koordinate des aktuellen Punkts zur&uuml;ck.
 
 <h4>Syntax</h4>
 <pre>$x</pre>

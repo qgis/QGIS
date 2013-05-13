@@ -1,6 +1,5 @@
 <h3>Funktion exp()</h3>
-Gibt die Exponentialfunktion eines Wert zurück.
-
+Gibt die Exponentialfunktion eines Wert zur&uuml;ck.
 
 <p><h4>Syntax</h4>
      exp(<i>zahl</i>)</p>

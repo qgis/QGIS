@@ -7,7 +7,7 @@ Ergibt ersten <i>n</i> Zeichen von links.
 <h4>Argumente</h4>
 <code>zeichenkette</code> - ist eine Zeichenkette. Die Zeichenkette.
 <br>
-<code>laenge</code> - ist eine Zahl. Die Anzahl der zurückzugebenden Zeichen.
+<code>laenge</code> - ist eine Zahl. Die Anzahl der zur&uuml;ckzugebenden Zeichen.
 
 <h4>Beispiel</h4>
 <!-- Show example of function.-->

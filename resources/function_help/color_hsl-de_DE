@@ -1,0 +1,13 @@
+<h3>Funktion color_hsl()</h3>
+Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&auml;ttigung und Helligkeit zur&uuml;ck.
+
+<p><h4>Syntax</h4>
+     color_hsl(<i>farbton, s&auml;ttigung, helligkeit</i>)</p>
+
+<p><h4>Argumente</h4>
+<i>  farbton</i> &rarr; Der Farbton der Farbe, als ganzzahliger Wert zwischen 0 und 360.<br>
+<i>  s&auml;ttigung</i> &rarr; Der S&auml;ttigung der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.<br>
+<i>  helligkeit</i> &rarr; Die Helligkeit der Farbe, als ganzzahliger Prozentsatz zwischen 0 und 100.<br>
+
+<p><h4>Beispiel</h4>
+     color_hsl(100,50,70) &rarr; '#a6d98c'</p>

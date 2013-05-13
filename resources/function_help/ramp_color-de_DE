@@ -1,0 +1,19 @@
+<h3>Funktion ramp_color()</h3>
+Gibt eine Farbe als Zeichenkette zur&uuml;ck, die eine Farbe aus einem Farbverlauf darstellt.
+
+<p><h4>Syntax</h4>
+     ramp_color(<i>verlaufname,wert</i>)</p>
+
+<p><h4>Argumente</h4>
+<!-- List args for functions here-->
+<i>  verlaufname</i> &rarr; der Name des Farbverlaufs als Zeichenkette, z.B. 'Spectral'.<br>
+<i>  wert</i> &rarr; die Position im Farbverlauf als Flie&szlig;kommazahl zwischen 0 und 1.<br>
+
+<p><h4>Beispiel</h4>
+<!-- Show example of function.-->
+     ramp_color('Spectral',0.3) &rarr; '#fdbe73'</p>
+
+<p><h4>Bemerkung:</h4>
+Die Farbverl&auml;ufe k&ouml;nnen sich zwischen verschiedenen QGIS-Installationen
+unterscheiden.  Diese Funktion kann daher unterschiedliche Ergebnisse liefern.
+</p>

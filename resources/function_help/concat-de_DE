@@ -1,5 +1,5 @@
 <h3>Funktion concat()</h3>
-Fügt Zeichenketten zu einer zusammen.
+F&uuml;gt Zeichenketten zu einer zusammen.
 
 <p><h4>Syntax</h4>
      substr(<i>zeichenkette<i>[, <i>zeichenkette</i>...])</p>

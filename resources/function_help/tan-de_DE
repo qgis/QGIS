@@ -1,12 +1,12 @@
 <h3>Funktion tan()</h3>
-Gibt den Tangens eines Winkel zurück.
+Gibt den Tangens eines Winkel zur&uuml;ck.
 
 
 <p><h4>Syntax</h4>
      tan(<i>winkel</i>)</p>
 
 <p><h4>Argumente</h4>
-<i>winkel</i> &rarr; Winkel im Bogenmaß.</p>
+<i>winkel</i> &rarr; Winkel im Bogenma&szlig;.</p>
 
 <p><h4>Beispiel</h4>
      tan(1.0) &rarr; 1.5574077246549</p>

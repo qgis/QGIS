@@ -1,6 +1,6 @@
 <h3>CASE Ausdruck</h3>
-Ist ein bedingter Ausdruck mit dem mehrere Ausdrücken ausgewertet und ein
-Ergebnis zurückgegeben werden kann.
+Ist ein bedingter Ausdruck mit dem mehrere Ausdr&uuml;cken ausgewertet und ein
+Ergebnis zur&uuml;ckgegeben werden kann.
 
 <h4>Syntax</h4>
 <pre>
@@ -15,8 +15,8 @@ Ergebnis zurückgegeben werden kann.
 <h4>Argumente</h4>
 <!-- List args for functions here-->
 <i>  WHEN bedingung</i> - Der Bedingungsausdruck. <br>
-<i>  THEN ergebnis</i> - Wenn die <i>bedingung</i> True ergibt, wird der Ausdruck <i>ergebnis</i> ausgewertet und zurückgegeben. <br>
-<i>  ELSE ergebnis</i> - Wenn keine der Bedingungen erfüllt ist, wird der Ausdruck <i>ergebnis</i> ausgewertet und zurückgegeben. <br>
+<i>  THEN ergebnis</i> - Wenn die <i>bedingung</i> True ergibt, wird der Ausdruck <i>ergebnis</i> ausgewertet und zur&uuml;ckgegeben. <br>
+<i>  ELSE ergebnis</i> - Wenn keine der Bedingungen erf&uuml;llt ist, wird der Ausdruck <i>ergebnis</i> ausgewertet und zur&uuml;ckgegeben. <br>
 
 <h4>Beispiel</h4>
 <!-- Show example of function.-->

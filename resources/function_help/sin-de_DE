@@ -1,12 +1,12 @@
 <h3>Funktion sin()</h3>
-Gibt den Sinus eines Winkels zurück.
+Gibt den Sinus eines Winkels zur&uuml;ck.
 
 
 <p><h4>Syntax</h4>
      sin(<i>winkel</i>)</p>
 
 <p><h4>Argumente</h4>
-<i>winkel</i> &rarr; Winkel im Bogenmaß.</p>
+<i>winkel</i> &rarr; Winkel im Bogenma&szlig;.</p>
 
 <p><h4>Beispiel</h4>
      sin(1.571) &rarr; 0.999999682931835</p>

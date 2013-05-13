@@ -1,4 +1,4 @@
-<h3>rand() function</h3>
+<h3>randf() function</h3>
 Returns a random float within the range specified by the minimum and 
 maximum argument (inclusive).
 <br>

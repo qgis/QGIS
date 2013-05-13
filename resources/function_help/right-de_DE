@@ -7,7 +7,7 @@ Ergibt letzten <i>n</i> Zeichen von rechts.
 <h4>Argumente</h4>
 <code>string</code> - ist string. Die Zeichenkette.
 <br>
-<code>laenge</code> - ist int. Die Anzahl der von rechts zurückzugebenden Zeichen von rechts.
+<code>laenge</code> - ist int. Die Anzahl der von rechts zur&uuml;ckzugebenden Zeichen von rechts.
 
 <h4>Beispiel</h4>
 <!-- Show example of function.-->
