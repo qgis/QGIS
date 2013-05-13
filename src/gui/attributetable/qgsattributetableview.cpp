@@ -120,11 +120,16 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel* filterModel 
   QTableView::setModel( filterModel );
 
   delete mFeatureSelectionModel;
-  mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, mFilterModel->layer(), mFilterModel );
-  setSelectionModel( mFeatureSelectionModel );
-  mTableDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
-  connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
-  connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
+  mFeatureSelectionModel = NULL;
+
+  if ( filterModel )
+  {
+    mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, mFilterModel->layer(), mFilterModel );
+    setSelectionModel( mFeatureSelectionModel );
+    mTableDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
+    connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
+    connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
+  }
 }
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *e )
