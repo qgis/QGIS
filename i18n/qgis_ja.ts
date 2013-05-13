@@ -24516,12 +24516,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="339"/>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation type="unfinished"></translation>
+        <translation>バーの長さは以下の値が指定のサイズに合うように調整されます</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="495"/>
         <source>You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams.</source>
-        <translation type="unfinished"></translation>
+        <translation>図表レイヤに属性が追加されませんでした. 図表上に表示または非表示するために属性を指定してください.</translation>
     </message>
 </context>
 <context>
@@ -24635,7 +24635,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="389"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation>スケールは0と以下の属性値/図表サイズの間の値をとります:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="407"/>
@@ -24652,7 +24652,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="431"/>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the choosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation type="unfinished"></translation>
+        <translation>ここに入力した属性の値と&quot;大きさ&quot;および&quot;サイズの単位&quot;の値が対応します.
+最大値を自動設定する場合は空白のままにしてください.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="459"/>
@@ -24662,7 +24663,7 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="471"/>
         <source>Will scale diagrams with a size smaller than the minimum size to the minimum size</source>
-        <translation type="unfinished"></translation>
+        <translation>最小サイズ以下の場合、最小サイズに図表を拡大します</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="474"/>
@@ -33342,7 +33343,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabelingguibase.ui" line="929"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="964"/>
         <source>Space in pixels or map units, relative to size unit choice</source>
-        <translation type="unfinished"></translation>
+        <translation>ピクセルまたは地図単位の間隔, 指定した単位からの相対値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="951"/>
@@ -33828,12 +33829,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4292"/>
         <source>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルエンジンから取得した角度で描画し、非表示の際には角度を保持したくない場合はチェックを外してください</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4298"/>
         <source>Preserve existing rotation values during label pin/unpin operations</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルの設定操作の間、回転角を保持する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4324"/>
@@ -38061,7 +38062,16 @@ Prefer network: default value; load from the network if the cached entry is olde
 
 Always network: always load from network and do not check if the cache has a valid entry (similar to the &quot;Reload&quot; feature in browsers)
 </source>
-        <translation type="unfinished"></translation>
+        <translation>キャッシュ設定
+
+常時キャッシュ: キャッシュが古くても常にキャッシュを読み込みます
+
+キャッシュ優先: キャッシュがある場合はなるべく読み込みます, ない場合はネットワークより取得. ありえる状態をキャッシュから読み込むのに注意してください
+
+ネットワーク優先: 既定; ネットワーク上の情報よりキャッシュが古い場合はネットワークを使用します
+
+常時ネットワーク: 常にネットワークから読み込みます、キャッシュが正しい場合はチェックしないでください (ブラウザの&quot;更新&quot;ボタンに似ています)
+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="379"/>
@@ -40095,7 +40105,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3218"/>
         <source>Miter limit</source>
-        <translation type="unfinished"></translation>
+        <translation>継ぎ目制限</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3225"/>
@@ -40105,7 +40115,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3242"/>
         <source>Quadrant segments</source>
-        <translation type="unfinished"></translation>
+        <translation>四分セグメント</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3346"/>
@@ -40178,7 +40188,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1912"/>
         <source>Cumulative pixel count cut limits</source>
-        <translation type="unfinished"></translation>
+        <translation>累積ピクセル数のカット制限</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1926"/>
