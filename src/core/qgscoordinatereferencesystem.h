@@ -444,7 +444,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     long    mSRID;
     //!If available the authority identifier for this srs
     QString mAuthId;
-    //! Wheter this srs is properly defined and valid
+    //! Whether this srs is properly defined and valid
     bool mIsValidFlag;
 
     //! Work out the projection units and set the appropriate local variable

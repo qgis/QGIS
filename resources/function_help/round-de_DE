@@ -14,7 +14,7 @@ Dies Funktion kann ein oder zwei Argumente haben.
 <h4>Beispiel</h4>
 <!-- Show example of function.-->
 <code>round(1234.567, 2) &rarr; 1234.57</code><br>
-Um zur nächsten ganzen Zahl zu runden: <code>round(zahl)</code><br>
+Um zur n&auml;chsten ganzen Zahl zu runden: <code>round(zahl)</code><br>
 <code>round(1234.567) &rarr; 1235</code><br>
 
 

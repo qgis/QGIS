@@ -225,6 +225,11 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     void progress( int i, bool& cancel );
 
     /**
+     * When filling the cache, this signal gets emitted once the cache is fully initialized.
+     */
+    void finished();
+
+    /**
      * @brief Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
      * signal is being emitted, but before the local reference to it has been set to NULL. So call to
      * @link layer() @endlink will still return a valid pointer for cleanup purpose.

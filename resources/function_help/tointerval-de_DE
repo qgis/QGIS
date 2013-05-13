@@ -1,0 +1,13 @@
+<h3>Funktion tointerval()</h3>
+Wandelt eine Zeichenkette in einen Interval-Typ.  Kann verwendet werden um Tagen, Stunden, Monaten etc von Daten abzuziehen.
+
+<h4>Syntax</h4>
+<code>tointerval('zeichenkette')</code><br>
+
+<h4>Argumente</h4>
+<code>zeichenkette</code> - eine Zeichenkette. Format {n} Tage {n} Stunden {n} Monate
+<br>
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>todatetime('2012-05-05 12:00:00') - tointerval('1 day 2 hours') &rarr; 2012-05-04T10:00:00</code><br>

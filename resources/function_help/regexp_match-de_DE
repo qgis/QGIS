@@ -1,0 +1,14 @@
+<h3>Funktion regexp_match()</h3>
+Gibt 1 zur&uuml;ck, wenn irgendein Teil der Zeichenkette dem gegebenen regul&auml;ren Ausdruck entspricht.
+
+<p><h4>Syntax</h4>
+     regexp_match(<i>zeichenkette,regex</i>)</p>
+
+<p><h4>Argumente</h4>
+<!-- List args for functions here-->
+<i>  zeichenkette</i> &rarr; eine Zeichenkette.  Die Zeichenkette, die mit dem regul&auml;ren Ausdruck verglichen werden soll.<br>
+<i>  regex</i> &rarr; eine Zeichenkette.  Der regul&auml;re Ausdruch mit dem verglichen werden. Backslash-Zeichen m&uuml;ssen doppelt ausgenommen werden (z.B. "\\s" f&uuml;r ein Leerzeichen).<br>
+
+<p><h4>Beispiel</h4>
+<!-- Show example of function.-->
+     regexp_match('QGIS ROCKT','\\sROCKT') &rarr; 1</p>

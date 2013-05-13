@@ -406,7 +406,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         pasteAction.setEnabled(False)
         if self.hasSelectedText():
             copyAction.setEnabled(True)
-        if QApplication.clipboard().text() != "":
+        if QApplication.clipboard().text():
             pasteAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
 

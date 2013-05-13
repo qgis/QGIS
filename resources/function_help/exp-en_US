@@ -6,7 +6,7 @@ Returns exponential of an value.
      exp(<i>real</i>)</p>
 
 <p><h4>Arguments</h4>
-<i>real</i> -> number.</p>
+<i>real</i> &rarr; number.</p>
 
 <p><h4>Example</h4>
-     exp(1.0) -> 2.71828182845905</p>
+     exp(1.0) &rarr; 2.71828182845905</p>

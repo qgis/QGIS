@@ -1,6 +1,6 @@
 <h3>Funktion format_number()</h3>
-Liefert eine mit dem lokalen Tausendertrenner versehene Zahl zurück und
-beschränkt die Zahl auch auf die angegebene Anzahl von Nachkommastellen.
+Liefert eine mit dem lokalen Tausendertrenner versehene Zahl zur&uuml;ck und
+beschr&auml;nkt die Zahl auch auf die angegebene Anzahl von Nachkommastellen.
 <h4>Syntax</h4>
 <code>format_number(zahl,nachkommastellen)</code><br>
 

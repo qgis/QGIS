@@ -618,14 +618,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     // Restoring of plugins can be disabled with --noplugins command line option
     // because some plugins may cause QGIS to crash during startup
     QgsPluginRegistry::instance()->restoreSessionPlugins( QgsApplication::pluginPath() );
-  }
 
-  // Also restore plugins from user specified plugin directories - added for 1.7
-  QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
-  if ( !myPaths.isEmpty() )
-  {
-    QStringList myPathList = myPaths.split( "|" );
-    QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
+    // Also restore plugins from user specified plugin directories - added for 1.7
+    QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
+    if ( !myPaths.isEmpty() )
+    {
+        QStringList myPathList = myPaths.split( "|" );
+        QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
+    }
   }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
@@ -2540,14 +2540,14 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
       else
       {
         QString msg = tr( "%1 doesn't have any layers" ).arg( src );
-        QMessageBox::critical( this, tr( "Invalid Data Source" ), msg );
+        messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
         delete layer;
       }
     }
     else
     {
       QString msg = tr( "%1 is not a valid or recognized data source" ).arg( src );
-      QMessageBox::critical( this, tr( "Invalid Data Source" ), msg );
+      messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
 
       // since the layer is bad, stomp on it
       delete layer;

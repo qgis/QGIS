@@ -1,0 +1,15 @@
+<h3>Funktion randf()</h3>
+Gibt eine zuf&auml;llige Flie&szlig;kommazahl in den gegebenen Grenzen zur&uuml;ck (inklusiv).
+<br>
+Diese Funktion hat zwei Argumente.
+<h4>Syntax</h4>
+<code>randf(min, max)</code><br>
+
+<h4>Argumente</h4>
+<code>min</code> - eine Flie&szlig;kommazahl, die die minimale Zufallszahl angibt.<br>
+<code>max</code> - eine Flie&szlig;kommazahl, die die maximale Zufallszahl angibt.<br>
+<br>
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>randf(1, 10) &rarr; 4.59258286403147</code><br>

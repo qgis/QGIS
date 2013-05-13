@@ -166,6 +166,8 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   setupUi( this );
   setupEditTypes();
 
+  mSplitter->restoreState( QSettings().value( "/Windows/VectorLayerProperties/FieldsProperties/SplitState" ).toByteArray() );
+
   // Init as hidden by default, it will be enabled if project is set to
   mAttributeEditorOptionsWidget->setVisible( false );
 
@@ -204,6 +206,11 @@ QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent
   leEditFormInit->setText( layer->editFormInit() );
 
   updateButtons();
+}
+
+QgsFieldsProperties::~QgsFieldsProperties()
+{
+  QSettings().setValue( "/Windows/VectorLayerProperties/FieldsProperties/SplitState", mSplitter->saveState() );
 }
 
 void QgsFieldsProperties::init()

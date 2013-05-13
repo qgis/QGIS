@@ -539,7 +539,7 @@ class PythonConsoleWidget(QWidget):
     def onClickGoToLine(self, item, column):
         tabEditor = self.tabEditorWidget.currentWidget().newEditor
         if item.text(1) == 'syntaxError':
-            check = self.tabEditorWidget.currentWidget().newEditor.syntaxCheck(fromContextMenu=False)
+            check = tabEditor.syntaxCheck(fromContextMenu=False)
             if check and not tabEditor.isReadOnly():
                 self.tabEditorWidget.currentWidget().save()
             return
@@ -589,47 +589,6 @@ class PythonConsoleWidget(QWidget):
     def uncommentCode(self):
         self.tabEditorWidget.currentWidget().newEditor.commentEditorCode(False)
 
-#    def openScriptFile(self):
-#       settings = QSettings()
-#       lastDirPath = settings.value("pythonConsole/lastDirPath").toString()
-#       scriptFile = QFileDialog.getOpenFileName(
-#                       self, "Open File", lastDirPath, "Script file (*.py)")
-#       if scriptFile.isEmpty() == False:
-#           oF = open(scriptFile, 'r')
-#           listScriptFile = []
-#           for line in oF:
-#               if line != "\n":
-#                   listScriptFile.append(line)
-#           self.shell.insertTextFromFile(listScriptFile)
-#
-#           lastDirPath = QFileInfo(scriptFile).path()
-#           settings.setValue("pythonConsole/lastDirPath", QVariant(scriptFile))
-#
-#
-#    def saveScriptFile(self):
-#        scriptFile = QFileDialog()
-#        scriptFile.setDefaultSuffix(".py")
-#        fName = scriptFile.getSaveFileName(
-#                        self, "Save file", QString(), "Script file (*.py)")
-#
-#        if fName.isEmpty() == False:
-#            filename = str(fName)
-#            if not filename.endswith(".py"):
-#                fName += ".py"
-#            sF = open(fName,'w')
-#            listText = self.shellOut.getTextFromEditor()
-#            is_first_line = True
-#            for s in listText:
-#                if s[0:3] in (">>>", "..."):
-#                    s.replace(">>> ", "").replace("... ", "")
-#                    if is_first_line:
-#                        is_first_line = False
-#                    else:
-#                        sF.write('\n')
-#                    sF.write(s)
-#            sF.close()
-#            self.callWidgetMessageBar('Script was correctly saved.')
-
     def openScriptFile(self):
         settings = QSettings()
         lastDirPath = settings.value("pythonConsole/lastDirPath").toString()
@@ -648,18 +607,18 @@ class PythonConsoleWidget(QWidget):
 
         lastDirPath = QFileInfo(filename).path()
         settings.setValue("pythonConsole/lastDirPath", QVariant(filename))
-        self.tabListScript.append(filename)
-        self.updateTabListScript(script=None)
+        self.updateTabListScript(filename, action='append')
 
     def saveScriptFile(self):
         tabWidget = self.tabEditorWidget.currentWidget()
         try:
             tabWidget.save()
-        except (IOError, OSError), e:
+        except (IOError, OSError), error:
             errTr = QCoreApplication.translate("PythonConsole", "Save Error")
-            msgErrTr = QCoreApplication.translate("PythonConsole",
-                                                  "Failed to save %1: %2").arg(tabWidget.path).arg(e)
-            QMessageBox.warning(self, errTr, msgErrTr)
+            msgText = QCoreApplication.translate('PythonConsole',
+                                                 'The file <b>%1</b> could not be saved. Error: %2') \
+                                                 .arg(unicode(tabWidget.path)).arg(error.strerror)
+            self.callWidgetMessageBarEditor(msgText, 2, False)
 
     def saveAsScriptFile(self):
         tabWidget = self.tabEditorWidget.currentWidget()
@@ -668,17 +627,31 @@ class PythonConsoleWidget(QWidget):
             return
         if tabWidget.path is None:
             pathFileName = self.tabEditorWidget.tabText(index) + '.py'
+            fileNone = True
         else:
             pathFileName = tabWidget.path
+            fileNone = False
         saveAsFileTr = QCoreApplication.translate("PythonConsole", "Save File As")
         filename = QFileDialog.getSaveFileName(self,
                         saveAsFileTr,
                         pathFileName, "Script file (*.py)")
         if not filename.isEmpty():
-            #print tabWidget.path
-            self.tabListScript.remove(unicode(tabWidget.path))
-            tabWidget.path = filename
-            self.saveScriptFile()
+            try:
+                tabWidget.save(filename)
+            except (IOError, OSError), error:
+                errTr = QCoreApplication.translate("PythonConsole", "Save Error")
+                msgText = QCoreApplication.translate('PythonConsole',
+                                                     'The file <b>%1</b> could not be saved. Error: %2') \
+                                                     .arg(unicode(tabWidget.path)).arg(error.strerror)
+                self.callWidgetMessageBarEditor(msgText, 2, False)
+                if fileNone:
+                    tabWidget.path = None
+                else:
+                    tabWidget.path = pathFileName
+                return
+
+            if not fileNone:
+                self.updateTabListScript(pathFileName, action='remove')
 
     def openHelp(self):
         self.helpDlg.show()
@@ -700,13 +673,13 @@ class PythonConsoleWidget(QWidget):
 
     def updateTabListScript(self, script, action=None):
         settings = QSettings()
-        if script == 'empty':
-            self.tabListScript = []
-        if script is not None and not action and script != 'empty':
+        if action == 'remove':
             self.tabListScript.remove(script)
-        if action:
+        elif action == 'append':
             if script not in self.tabListScript:
                 self.tabListScript.append(script)
+        else:
+            self.tabListScript = []
         settings.setValue("pythonConsole/tabScripts",
                                QVariant(self.tabListScript))
 

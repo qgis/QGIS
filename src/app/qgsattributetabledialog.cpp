@@ -558,6 +558,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   }
 
   setFilterExpression( str );
+  updateTitle();
 }
 
 void QgsAttributeTableDialog::filterQueryAccepted()

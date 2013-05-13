@@ -1,0 +1,17 @@
+<h3>Funktion scale_linear()</h3>
+Formt einen gegebenen Wert aus einem Ausgangsbereich mittels linearer Interpolation in einen Ausgabebereich um.
+
+<p><h4>Syntax</h4>
+     scale_linear(<i>wert</i>,<i>quelle_min</i>,<i>quelle_max</i>,<i>ziel_min</i>,<i>ziel_max</i>)</p>
+
+<p><h4>Argumente</h4>
+<!-- List args for functions here-->
+<i>  wert</i> &rarr; ein Wert im Ausgangsbereich. Die Funktion gibt den korrespondierenden skalierten Wert im Ausgabebereich zur&uuml;ck.<br>
+<i>  quelle_min, quelle_max</i> &rarr; legt den Ausgangsbereich fest - denn kleinsten und gr&ouml;&szlig;ten Wert in dem sich <i>wert</i> bewegt.<br>
+<i>  ziel_min, ziel_max</i> &rarr; legt den Ausgabebereich fest - denn kleinsten und gr&ouml;&szlig;ten Wert in dem sich das Funktionergebnis bewegt.<br>
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+     scale_linear(5,0,10,0,100) &rarr; 50<br>
+     scale_linear(0.2,0,1,0,360) &rarr; 72 <i>(z.B. um einen Wert zwischen 0 und 1 auf eine Winkel zwischen 0 und 360 skalieren)</i><br>
+     scale_linear(1500,1000,10000,9,20) &rarr; 10.22 <i>(z.B. um eine Bev&ouml;lkerungszahl zwischen 1000 und 10000 auf eine Schriftgr&ouml;&szlig;e zwischen 9 und 20 zu skalieren)</i><br>

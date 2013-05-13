@@ -8,7 +8,7 @@ aus einem <code>Intervall</code>
 
 <h4>Argumente</h4>
 <code>date</code> - ist datetime oder time. Das Datum dessen Sekunden bestimmt werden sollen.<br>
-<code>Intervall</code> - ist Interval. Ergib die Intervalllänge in Sekunden.
+<code>Intervall</code> - ist Interval. Ergib die Intervalll&auml;nge in Sekunden.
 
 <h4>Beispiele</h4>
 <!-- Show example of function.-->

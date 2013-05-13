@@ -1,12 +1,12 @@
 <h3>Funktion asin()</h3>
-Gibt den Arcussinus eines Werts im Bogenmaß zurück.
+Gibt den Arcussinus eines Werts im Bogenma&szlig; zur&uuml;ck.
 
 
 <p><h4>Syntax</h4>
      asin(<i>wert</i>)</p>
 
 <p><h4>Argumente</h4>
-<i>wert</i> -> Sinus des Werts.</p>
+<i>wert</i> &rarr; Sinus des Werts.</p>
 
 <p><h4>Beispiel</h4>
-     asin(1.0) -> 1.5707963267949</p>
+     asin(1.0) &rarr; 1.5707963267949</p>

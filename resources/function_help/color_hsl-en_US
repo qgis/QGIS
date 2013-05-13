@@ -1,4 +1,3 @@
-
 <h3>color_hsl() function</h3>
 Returns a string representation of a color based on its hue, saturation, and lightness attributes
 

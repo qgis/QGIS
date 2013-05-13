@@ -502,8 +502,6 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   int srcBottom = ySize() - 1;
   int srcRight = xSize() - 1;
 
-  QTime time;
-  time.start();
   // Note: original approach for xRes < srcXRes || yRes < qAbs( srcYRes ) was to avoid
   // second resampling and read with GDALRasterIO to another temporary data block
   // extended to fit src grid. The problem was that with src resolution much bigger
@@ -595,9 +593,6 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     return;
   }
 
-  QgsDebugMsg( QString( "GDALRasterIO time (ms): %1" ).arg( time.elapsed() ) );
-  time.start();
-
   double tmpXRes = srcWidth * srcXRes / tmpWidth;
   double tmpYRes = srcHeight * srcYRes / tmpHeight; // negative
 
@@ -609,25 +604,30 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     char *srcRowBlock = tmpBlock + dataSize * tmpRow * tmpWidth;
     char *dstRowBlock = ( char * )theBlock + dataSize * ( top + row ) * thePixelWidth;
 
-    double x = myRasterExtent.xMinimum() + 0.5 * xRes; // cell center
+    double x = ( myRasterExtent.xMinimum() + 0.5 * xRes - tmpXMin ) / tmpXRes; // cell center
+    double increment = xRes / tmpXRes;
+
     char* dst = dstRowBlock + dataSize * left;
-    char* src = 0;
+    char* src = srcRowBlock;
     int tmpCol = 0;
+    int lastCol = 0;
     for ( int col = 0; col < width; ++col )
     {
       // floor() is quite slow! Use just cast to int.
-      tmpCol = static_cast<int>(( x - tmpXMin ) / tmpXRes ) ;
-      src = srcRowBlock + dataSize * tmpCol;
+      tmpCol = static_cast<int>( x ) ;
+      if ( tmpCol > lastCol )
+      {
+        src += ( tmpCol - lastCol ) * dataSize;
+        lastCol = tmpCol;
+      }
       memcpy( dst, src, dataSize );
       dst += dataSize;
-      x += xRes;
+      x += increment;
     }
     y -= yRes;
   }
 
   qgsFree( tmpBlock );
-  QgsDebugMsg( QString( "resample time (ms): %1" ).arg( time.elapsed() ) );
-
   return;
 }
 

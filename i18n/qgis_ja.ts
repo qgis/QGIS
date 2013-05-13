@@ -10945,12 +10945,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <translation>日時型および時間型には /, *, or % 演算子は使用出来ません</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2172"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2173"/>
         <source>[unsupported type;%1; value:%2]</source>
         <translation>[サポートされていない　タイプ;%1; 値:%2]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2197"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2198"/>
         <source>Column &apos;%1&apos; not found</source>
         <translation>カラム&apos;%1&apos;が見つかりません</translation>
     </message>
@@ -15389,7 +15389,7 @@ p, li { white-space: pre-wrap; }
         <translation>不明な例外が発生しました</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="598"/>
+        <location filename="../src/core/qgsapplication.cpp" line="600"/>
         <source>Application state:
 QGIS_PREFIX_PATH env var:		%1
 Prefix:		%2
@@ -15434,7 +15434,7 @@ SVG サーチパス:	%7
 ユーザDBパス:	%8</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="615"/>
+        <location filename="../src/core/qgsapplication.cpp" line="617"/>
         <source>
 		</source>
         <comment>match indentation of application state</comment>
@@ -16103,12 +16103,12 @@ SVG サーチパス:	%7
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="581"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="582"/>
         <source>Parsing error</source>
         <translation>構文解析エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="587"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="588"/>
         <source>Evaluation error</source>
         <translation>評価エラー</translation>
     </message>
@@ -16164,7 +16164,7 @@ SVG サーチパス:	%7
         <translation>属性エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsattributetabledialog.cpp" line="624"/>
+        <location filename="../src/app/qgsattributetabledialog.cpp" line="625"/>
         <source>Error filtering</source>
         <translation>エラーフィルター</translation>
     </message>
@@ -16525,7 +16525,7 @@ SVG サーチパス:	%7
         <translation type="obsolete">属性が変更されました</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="441"/>
+        <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="435"/>
         <source>feature id</source>
         <translation>地物id</translation>
     </message>
@@ -16541,7 +16541,7 @@ SVG サーチパス:	%7
         <translation type="obsolete">フォームのオープン</translation>
     </message>
     <message>
-        <location filename="../src/gui/attributetable/qgsattributetableview.cpp" line="220"/>
+        <location filename="../src/gui/attributetable/qgsattributetableview.cpp" line="225"/>
         <source>Select All</source>
         <translation>全部を選択する</translation>
     </message>
@@ -21959,33 +21959,33 @@ Should the existing classes be deleted before classification?</source>
         <translation type="obsolete">変換先の空間参照系(CRS)が不正です</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="552"/>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="558"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="557"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="563"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="550"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="555"/>
         <source>The source spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>元の空間参照システム(CRS)が正しくありません.座標は再投影されませんでした,CRSは%1です</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="557"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="562"/>
         <source>The destination spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>変換先の空間参照システム(CRS)が正しくありません.座標は再投影されませんでした,CRSは%1です</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="587"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="592"/>
         <source>inverse transform</source>
         <translation>逆変換</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="594"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="599"/>
         <source>forward transform</source>
         <translation>順変換</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="614"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="619"/>
         <source>%1 of
 %2PROJ.4: %3 +to %4
 Error: %5</source>
@@ -24650,9 +24650,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsdiagrampropertiesbase.ui" line="431"/>
+        <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the chosen &quot;Size unit&quot;.
+Leave empty to automatically apply the maximum value.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the choosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation>ここに入力した属性の値と&quot;大きさ&quot;および&quot;サイズの単位&quot;の値が対応します.
+        <translation type="obsolete">ここに入力した属性の値と&quot;大きさ&quot;および&quot;サイズの単位&quot;の値が対応します.
 最大値を自動設定する場合は空白のままにしてください.</translation>
     </message>
     <message>
@@ -25726,180 +25731,180 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsFieldsProperties</name>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="201"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="203"/>
         <source>Label</source>
         <translation>ラベル</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="285"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="292"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="286"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="293"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="287"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
         <source>Type</source>
         <translation>タイプ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="288"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="295"/>
         <source>Length</source>
         <translation>長さ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="289"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="296"/>
         <source>Precision</source>
         <translation>精度</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="290"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="297"/>
         <source>Comment</source>
         <translation>コメント</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="291"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="298"/>
         <source>Edit widget</source>
         <translation>ウィジェットの編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="294"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="301"/>
         <source>Alias</source>
         <translation>別名</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="551"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="611"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="558"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="618"/>
         <source>Name conflict</source>
         <translation>名前の衝突</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="551"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="611"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="558"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="618"/>
         <source>The attribute could not be inserted. The name already exists in the table.</source>
         <translation>属性は追加されませんでした。指定された名前はテーブル内に既に存在しています。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="563"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="570"/>
         <source>Added attribute</source>
         <translation>追加された属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="588"/>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="632"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="595"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="639"/>
         <source>Deleted attribute</source>
         <translation>削除された属性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="705"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
         <source>Line edit</source>
         <translation>行編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="706"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
         <source>Unique values</source>
         <translation>ユニーク値</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="707"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
         <source>Unique values editable</source>
         <translation>ユニーク値編集可能</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="708"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
         <source>Classification</source>
         <translation>分類</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="709"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="716"/>
         <source>Value map</source>
         <translation>バリューマップ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="710"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="717"/>
         <source>Edit range</source>
         <translation>編集レンジ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="711"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="718"/>
         <source>Slider range</source>
         <translation>スライダーレンジ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="712"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="719"/>
         <source>Dial range</source>
         <translation>ダイアル範囲</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="713"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="720"/>
         <source>File name</source>
         <translation>ファイル名</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="714"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="721"/>
         <source>Enumeration</source>
         <translation>列挙</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="715"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="722"/>
         <source>Immutable</source>
         <translation>変わらない</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="716"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="723"/>
         <source>Hidden</source>
         <translation>非表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="717"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="724"/>
         <source>Checkbox</source>
         <translation>チェックボックス</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="718"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="725"/>
         <source>Text edit</source>
         <translation>テキスト編集</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="719"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="726"/>
         <source>Calendar</source>
         <translation>カレンダー</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="720"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="727"/>
         <source>Value relation</source>
         <translation>値のリレーション</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="721"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="728"/>
         <source>UUID generator</source>
         <translation>UUIDジェネレータ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="722"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="729"/>
         <source>Photo</source>
         <translation>写真</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="723"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="730"/>
         <source>Web view</source>
         <translation>ウェブ表示</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="724"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="731"/>
         <source>Color</source>
         <translation>色</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="765"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="772"/>
         <source>Select edit form</source>
         <translation>編集フォームを選ぶ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsfieldsproperties.cpp" line="765"/>
+        <location filename="../src/app/qgsfieldsproperties.cpp" line="772"/>
         <source>UI file</source>
         <translation>UIファイル</translation>
     </message>
@@ -25907,98 +25912,98 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsFieldsPropertiesBase</name>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="17"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="40"/>
         <source>Field calculator</source>
         <translation>フィールド計算機</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="20"/>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="49"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="43"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="135"/>
         <source>Click to toggle table editing</source>
         <translation>クリックするとテーブル編集切り替え</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="46"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="132"/>
         <source>Toggle editing mode</source>
         <translation>編集モード切替</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="68"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="23"/>
         <source>New column</source>
         <translation>新規カラムを追加</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="78"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="33"/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="85"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="56"/>
         <source>Delete column</source>
         <translation>カラムを削除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="95"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="66"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="125"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="182"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="134"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="191"/>
         <source>Edit UI</source>
         <translation>編集UI</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="192"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="255"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="203"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="266"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="214"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="277"/>
         <source>&gt;</source>
         <translation>&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="225"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="288"/>
         <source>^</source>
         <translation>^</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="236"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="299"/>
         <source>v</source>
         <translation>v</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="292"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="93"/>
         <source>Autogenerate</source>
         <translation>自動生成</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="297"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="98"/>
         <source>Drag and drop designer</source>
         <translation>ドラッグアンドドロップデザイナ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="302"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="103"/>
         <source>Provide ui-file</source>
         <translation>ui-ファイルを提供する</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="310"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="151"/>
         <source>Attribute editor layout:</source>
         <translation>属性エディタレイアウト:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="320"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="111"/>
         <source>QGIS forms can have a Python function that is called when the form is opened.  
 Use this function to add extra logic to your forms.
 
@@ -26025,7 +26030,7 @@ Python初期化関数内で次のように参照します: MyForms.open
 MyForms.pyはPYTHONPATH環境変数, qgis/pythonディレクトリ, もしくはプロジェクトフォルダ内に配置する必要があります.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="334"/>
+        <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="125"/>
         <source>Python Init function</source>
         <translation>Python初期化関数</translation>
     </message>
@@ -40809,7 +40814,7 @@ SQL:%1
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="54"/>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="214"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;レイヤが設定される時に多くのメタデータがOracleテーブルのために必要です.そこにはテーブルの行数やジオメトリタイプやジオメトリカラムの空間の領域が含まれます.もしテーブルがとても多くの行を持つような場合このメタデータを算出するのに多くの時間を使います.&lt;/p&gt;&lt;p&gt;テーブルメタデータの高速処理オプションをアクティベートすることによって以下のことができます:&lt;/p&gt;&lt;p&gt;1) 行のカウントを all_tables.num_rowsから取得する.&lt;/p&gt;&lt;p&gt;2) テーブルの領域は常に SDO_TUNE.EXTENTS_OF関数で取得され,レイヤフィルタが適用されている場合も同様の処理を行う.&lt;/p&gt;&lt;p&gt;3) テーブルジオメトリは最初の100個のnullでないジオメトリによって決定されます.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;レイヤが設定される時に多くのメタデータがOracleテーブルのために必要です.そこにはテーブルの行数やジオメトリタイプやジオメトリカラムの空間の領域が含まれます.もしテーブルがとても多くの行を持つような場合このメタデータを算出するのに多くの時間を使います.&lt;/p&gt;&lt;p&gt;テーブルメタデータの高速処理オプションをアクティベートすることによって以下のことができます:&lt;/p&gt;&lt;p&gt;1) 行のカウントを all_tables.num_rowsから取得する.&lt;/p&gt;&lt;p&gt;2) テーブルの領域は常に SDO_TUNE.EXTENTS_OF関数で取得され,レイヤフィルタが適用されている場合も同様の処理を行う.&lt;/p&gt;&lt;p&gt;3) テーブルジオメトリは最初の100個のnullでないジオメトリによって決定されます.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="57"/>

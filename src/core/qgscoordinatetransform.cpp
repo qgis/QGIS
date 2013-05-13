@@ -321,6 +321,11 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
 
 void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirection direction ) const
 {
+  if ( mShortCircuit || !mInitialisedFlag )
+  {
+    return;
+  }
+
   //create x, y arrays
   int nVertices = poly.size();
 

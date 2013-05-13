@@ -1,7 +1,7 @@
 <h3>Funktion $scale</h3>
-Liefert den aktuellen Maßstab der Kartenanzeige.
+Liefert den aktuellen Ma&szlig;stab der Kartenanzeige.
 <br>
-Hinweis: Die Funktion ist nur in einigen Zusammenhängen verfügbar und sonst 0.
+Hinweis: Die Funktion ist nur in einigen Zusammenh&auml;ngen verf&uuml;gbar und sonst 0.
 <h4>Syntax</h4>
 <code>$scale</code><br>
 

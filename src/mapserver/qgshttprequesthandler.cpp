@@ -571,17 +571,17 @@ void QgsHttpRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage&
   int width = image.width();
   int height = image.height();
 
-  QRgb currentColor;
+  const QRgb* currentScanLine = 0;
   QHash<QRgb, int>::iterator colorIt;
   for ( int i = 0; i < height; ++i )
   {
+    currentScanLine = ( const QRgb* )( image.scanLine( i ) );
     for ( int j = 0; j < width; ++j )
     {
-      currentColor = image.pixel( j, i );
-      colorIt = colors.find( currentColor );
+      colorIt = colors.find( currentScanLine[j] );
       if ( colorIt == colors.end() )
       {
-        colors.insert( currentColor, 1 );
+        colors.insert( currentScanLine[j], 1 );
       }
       else
       {
