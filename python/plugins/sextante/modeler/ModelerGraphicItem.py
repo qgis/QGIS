@@ -238,14 +238,14 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8, self.pixmap)
 
     def getLinkPointForParameter(self, paramIndex):
-        offsetX = 30
+        offsetX = 25
         if self.inputFolded:
             paramIndex = -1
-            offsetX = 22
+            offsetX = 17
         font = QtGui.QFont("Verdana", 8)
         fm = QtGui.QFontMetricsF(font)  
         if isinstance(self.element, GeoAlgorithm): 
-            h = (fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0
+            h = (fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 2
             h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
         else:
             h = 0
@@ -264,7 +264,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             fm = QtGui.QFontMetricsF(font)                     
             w = fm.width(QtCore.QString(text))
             h = (fm.height() * 1.2) * (outputIndex + 3 + numParams) - fm.height() / 2.0
-            y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0                         
+            y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0  + 2                       
             x = -(ModelerGraphicItem.BOX_WIDTH)/2 + 33 + w + 5 if not self.outputFolded else 10
             return  QtCore.QPointF(x, y)
         else:
