@@ -33961,7 +33961,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="860"/>
         <source>&amp;Group Selected</source>
-        <translation>選択されたグループ(&amp;G)</translation>
+        <translation>選択されたレイヤをグループにする(&amp;G)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="868"/>
@@ -33976,7 +33976,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="875"/>
         <source>&amp;Add New Group</source>
-        <translation>新規グループ追加8&amp;A)</translation>
+        <translation>新規グループ追加(&amp;A)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="876"/>
@@ -34123,7 +34123,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="380"/>
         <source>&amp;Open Attribute Table</source>
-        <translation>属性テーブルを開(&amp;O)</translation>
+        <translation>属性テーブルを開く(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="410"/>
@@ -39974,17 +39974,17 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1526"/>
         <source>Add Oracle layers with double click and select in extended mode</source>
-        <translation type="unfinished"></translation>
+        <translation>ダブルクリックしてOracleレイヤを追加して拡張モードで選択する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1594"/>
         <source>Better graphics performance at the cost of loosing the possibility to cancel rendering and incremental feature drawing</source>
-        <translation type="unfinished"></translation>
+        <translation>良好なグラフィックパフォーマンスはレンダリングのキャンセル機能の除去とインクメンタルな地物描画で実現しています</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1597"/>
         <source>Enable back buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>バックバッファの有効化</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2008"/>
@@ -39994,7 +39994,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2014"/>
         <source>Show these events in the Log Message panel (under Rendering tab)</source>
-        <translation type="unfinished"></translation>
+        <translation>それらのイベントはログメッセージパネルをみてください(レンダリングタブの下)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2039"/>
@@ -40009,7 +40009,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2103"/>
         <source>Default map appearance (overridden by project properties)</source>
-        <translation type="unfinished"></translation>
+        <translation>デフォルトの地図外観(プロジェクトプロパティを上書きします)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2207"/>
@@ -40084,12 +40084,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3120"/>
         <source>Open snapping options in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>ドックウィンドウ内のすなっぴん具オプションを開く(QGIS再起動が必要)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3209"/>
         <source>Curve offset tool</source>
-        <translation type="unfinished"></translation>
+        <translation>カーブオフセットツール</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3218"/>
@@ -40172,7 +40172,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1880"/>
         <source>Limits (minimum/maximum)</source>
-        <translation type="unfinished"></translation>
+        <translation>制限(最小/最大)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1912"/>
@@ -40187,7 +40187,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1969"/>
         <source>Standard deviation multiplier</source>
-        <translation type="unfinished"></translation>
+        <translation>標準偏差の乗数</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2458"/>
@@ -40247,7 +40247,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3807"/>
         <source>Default expiration period for WMS-C/WMTS tiles (hours)</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS-C/WMTSタイルのデフォルト有効期間(時間)</translation>
     </message>
     <message>
         <source>Default Coordinate Reference System</source>
