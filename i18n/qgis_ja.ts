@@ -6233,7 +6233,11 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2074"/>
         <source>Need Support?</source>
+<<<<<<< HEAD
         <translation>サポートが必要ですか?</translation>
+=======
+        <translation>サポートが必要ですか？</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <source>Save Edits</source>
@@ -8249,7 +8253,11 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Save As...</source>
+<<<<<<< HEAD
         <translation>名前をつけて保存...</translation>
+=======
+        <translation>名前を付けて保存...</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <source>Cut</source>
@@ -11119,12 +11127,20 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3310"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
+<<<<<<< HEAD
         <translation>このレイヤの&quot;%1&quot;という名前のスタイルはデータベースに存在します.上書きしますか?</translation>
+=======
+        <translation>このレイヤに対するスタイル%1はすでに存在しています. 置き換えますか？</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3314"/>
         <source>Operation aborted. No changes were made in the database</source>
+<<<<<<< HEAD
         <translation>操作は中断されました.データベースに変更は加えられませんでした</translation>
+=======
+        <translation>操作は中断されました. データベースは変更されませんでした</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3360"/>
@@ -12780,13 +12796,22 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="6575"/>
         <source>en</source>
         <comment>documentation language</comment>
+<<<<<<< HEAD
         <translatorcomment>まだ日本語WEBページは無い</translatorcomment>
         <translation>en</translation>
+=======
+        <translatorcomment>ドキュメントの言語</translatorcomment>
+        <translation>ja</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6593"/>
         <source>http://www.qgis.org/en/commercial-support.html</source>
+<<<<<<< HEAD
         <translation>http://www.qgis.org/en/commercial-support.html</translation>
+=======
+        <translation>http://www.qgis.org/ja/commercial-support.html</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7520"/>
@@ -17534,7 +17559,7 @@ Database:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="599"/>
         <source>Classification would yield %1 entries which might not be expected. Continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>%1エントリの分類が発生します. 続けますか?</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="617"/>
@@ -22168,7 +22193,17 @@ You can install the entire cpt-city archive or a selection for QGIS.
 
 This file can be found at [%2]
 and current file is [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>エラー - cpt-city gradientファイルが見つかりません.
+
+これらをインストールする方法は以下の２通りです:
+
+1) &quot;Color Ramp Manager&quot; Pythonプラグインをインストールし （プラグインマネージャで実験的プラグインのインストールを有効にする必要があります）, プラグインを用いて最新のcpt-cityパッケージをダウンロードして下さい.
+これによりcpt-city全体または一部をQGISにインストールすることができます.
+
+2) 完全なアーカイブをダウンロードし（SVGフォーマット）, QGISの設定ディレクトリに展開してください [%1].
+
+ファイルは[%2]にあります
+現在のファイルは[%3]です</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscptcitycolorrampv2dialog.cpp" line="354"/>
@@ -22293,7 +22328,11 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="305"/>
         <source>new CRS</source>
+<<<<<<< HEAD
         <translation>新しいCRS</translation>
+=======
+        <translation>新規CRS</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="407"/>
@@ -22306,7 +22345,11 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="408"/>
         <source>The proj4 definition of &apos;%1&apos; is not valid.</source>
+<<<<<<< HEAD
         <translation>&apos;%1&apos;のproj4定義は正しくありません.</translation>
+=======
+        <translation>proj4定義 &apos;%1&apos; が不正です</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="465"/>
@@ -22454,13 +22497,22 @@ and current file is [%3]</source>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="113"/>
         <source>Copy
  existing CRS</source>
+<<<<<<< HEAD
         <translation>既存CRSを
 コピーする</translation>
+=======
+        <translation>既存のCRS
+を複製</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="128"/>
         <source>Add new CRS</source>
+<<<<<<< HEAD
         <translation>新CRSの追加</translation>
+=======
+        <translation>新規CRSを追加</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="148"/>
@@ -23604,7 +23656,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="234"/>
         <source>File cannot be opened or delimiter parameters are not valid</source>
+<<<<<<< HEAD
         <translation>ファイルが開けません またはパラメータが不正です</translation>
+=======
+        <translation>ファイルが開けないか, デリミタの指定が不正です</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="249"/>
@@ -23614,7 +23670,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="896"/>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="900"/>
         <source>%0 field %1 is not defined in delimited text file</source>
+<<<<<<< HEAD
         <translation>デリミテッドテキストファイルで%0フィールド%1が定義されていません</translation>
+=======
+        <translation>%0 フィールド %1 はデリミティッドテキストファイル内に定義されていません</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="301"/>
@@ -23682,7 +23742,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="957"/>
         <source>The file has been updated by another application - reloading</source>
+<<<<<<< HEAD
         <translation>指定ファイルは別アプリケーションで更新されています - 再ロードしてください</translation>
+=======
+        <translation>ファイルが他のアプリケーションによって更新されました - リロードします</translation>
+>>>>>>> b0b847197c2ca34f32602cde92a83007eecacc6f
     </message>
 </context>
 <context>
@@ -25999,7 +26063,18 @@ An example is (in module MyForms.py):
 Reference in Python Init Function like so: MyForms.open
 
 MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGISフォームはフォームが開かれた時に呼び出されるPython関数を持つことができます.
+フォームの拡張ロジックを追加するのに使用してください.
+
+例：（MyForms.py内):
+
+          def open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget,&quot;MyLineEdit&quot;)
+
+Python初期化関数内で次のように参照します: MyForms.open
+
+MyForms.pyはPYTHONPATH環境変数, qgis/pythonディレクトリ, もしくはプロジェクトフォルダ内に配置する必要があります.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="334"/>
@@ -27476,17 +27551,17 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/providers/postgres/qgscolumntypethread.cpp" line="56"/>
         <source>Retrieving tables of %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>%1のテーブルを読込中...</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgscolumntypethread.cpp" line="73"/>
         <source>Scanning column %1.%2.%3...</source>
-        <translation type="unfinished"></translation>
+        <translation>カラム %1 %2 %3をスキャン中...</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgscolumntypethread.cpp" line="103"/>
         <source>Table retrieval finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>テーブル読み込み完了.</translation>
     </message>
 </context>
 <context>
@@ -30333,7 +30408,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1119"/>
         <source>The layer CRS (defined in QGIS) and data source CRS differ. We are not yet able to pass the layer CRS to GRASS module. Please set correct data source CRS or change layer CRS to data source CRS.</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤのCRS（QGIS上で定義）とデータソースのCRSが異なります. レイヤのCRSをGRASSモジュールに渡すことができません. データソースのCRSを訂正するか, レイヤのCRSをデータソースのCRSに変更してください.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1139"/>
@@ -31588,12 +31663,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="44"/>
         <source>Handle Bad layers</source>
-        <translation type="unfinished"></translation>
+        <translation>不正なレイヤのハンドル</translation>
     </message>
     <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="45"/>
         <source>%1 of %2 bad layers were not not fixable.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 / %2 の不正なレイヤは修正出来ませんでした.</translation>
     </message>
 </context>
 <context>
@@ -32758,12 +32833,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="952"/>
         <source> @ %1 pts (using map units, BUFFER IN MILLIMETERS)</source>
-        <translation type="unfinished"></translation>
+        <translation> @ %1 pts （地図単位, ミリメートル単位バッファ）</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="971"/>
         <source> (BUFFER NOT SHOWN, in map units)</source>
-        <translation type="unfinished"></translation>
+        <translation> （バッファは地図単位で表示されません）</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="1019"/>
