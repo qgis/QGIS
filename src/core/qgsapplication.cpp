@@ -94,7 +94,7 @@ void QgsApplication::init( QString customConfigPath )
   // check if QGIS is run from build directory (not the install directory)
   QFile f;
   // "/../../.." is for Mac bundled app in build directory
-  foreach ( QString path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
+  foreach ( QString path, QStringList() << "" << "/.." << "/bin" << "/../../.." << "/../../bin" )
   {
     f.setFileName( prefixPath + path + "/path.txt" );
     if ( f.exists() )
@@ -319,10 +319,12 @@ const QString QgsApplication::pluginPath()
 {
   return ABISYM( mPluginPath );
 }
+
 const QString QgsApplication::pkgDataPath()
 {
   return ABISYM( mPkgDataPath );
 }
+
 const QString QgsApplication::defaultThemePath()
 {
   return ":/images/themes/default/";
