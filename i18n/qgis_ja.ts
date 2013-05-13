@@ -12786,7 +12786,8 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6593"/>
         <source>http://www.qgis.org/en/commercial-support.html</source>
-        <translation>http://www.qgis.org/ja/commercial-support.html</translation>
+        <translatorcomment>日本語ページはまだない(2013/05/13).準備ができ次第URLを変更しましょう</translatorcomment>
+        <translation>http://www.qgis.org/en/commercial-support.html</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7520"/>
