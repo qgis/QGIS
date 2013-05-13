@@ -618,14 +618,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     // Restoring of plugins can be disabled with --noplugins command line option
     // because some plugins may cause QGIS to crash during startup
     QgsPluginRegistry::instance()->restoreSessionPlugins( QgsApplication::pluginPath() );
-  }
 
-  // Also restore plugins from user specified plugin directories - added for 1.7
-  QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
-  if ( !myPaths.isEmpty() )
-  {
-    QStringList myPathList = myPaths.split( "|" );
-    QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
+    // Also restore plugins from user specified plugin directories - added for 1.7
+    QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
+    if ( !myPaths.isEmpty() )
+    {
+        QStringList myPathList = myPaths.split( "|" );
+        QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
+    }
   }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
