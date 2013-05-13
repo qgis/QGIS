@@ -134,14 +134,16 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     };
     typedef QList<GeometryChange> GeometryChanges;
     GeometryChanges sqlQueryGeometryChanges( sqlite3* db, const QString& sql );
+    void listenStartStopEdits( QgsVectorLayer* vLayer );
 
   private slots:
-    void layerAdded( QgsMapLayer* layer );
     void committedAttributesAdded( const QString& qgisLayerId, const QList<QgsField>& addedAttributes );
     void committedFeaturesAdded( const QString& qgisLayerId, const QgsFeatureList& addedFeatures );
     void committedFeaturesRemoved( const QString& qgisLayerId, const QgsFeatureIds& deletedFeatureIds );
     void committedAttributeValuesChanges( const QString& qgisLayerId, const QgsChangedAttributesMap& changedAttrsMap );
     void committedGeometriesChanges( const QString& qgisLayerId, const QgsGeometryMap& changedGeometries );
+    void startListenFeatureChanges();
+    void stopListenFeatureChanges();
 };
 
 #endif // QGS_OFFLINE_EDITING_H
