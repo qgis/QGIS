@@ -36736,7 +36736,8 @@ enhancement</source>
         <location filename="../src/gui/qgsnewhttpconnection.cpp" line="129"/>
         <source>WARNING: You have entered a password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
 Note: giving the password is optional. It will be requested interactivly, when needed.</source>
-        <translation type="unfinished"></translation>
+        <translation>警告: あなたはパスワードを入力しました.これは平文でプロジェクトファイルに保存されUnix系システムではあなたのホームディレクトリに置かれ、Windowsではユーザプロファイルに保存されます.それを望まない場合はキャンセルボタンを押してください.
+注: パスワードの保存はオプションです.必要なときに対話的に要求されるでしょう.</translation>
     </message>
 </context>
 <context>
@@ -40423,7 +40424,10 @@ Always network: always load from network and do not check if the cache has a val
 
 Missing some of the .ui template objects:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>オプションダイアログを初期化できませんでした.
+
+いくつかの.uiテンプレートオブジェクトがありません:
+</translation>
     </message>
 </context>
 <context>
@@ -40431,17 +40435,17 @@ Missing some of the .ui template objects:
     <message>
         <location filename="../src/providers/oracle/qgsoraclecolumntypethread.cpp" line="49"/>
         <source>Retrieving tables of %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>%1のテーブルを読込中...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclecolumntypethread.cpp" line="66"/>
         <source>Scanning column %1.%2.%3...</source>
-        <translation type="unfinished"></translation>
+        <translation>カラム %1.%2.%3をスキャン中...</translation>
     </message>
     <message>
         <location filename="../src/providers/oracle/qgsoraclecolumntypethread.cpp" line="84"/>
         <source>Table retrieval finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>テーブル読み込み完了.</translation>
     </message>
 </context>
 <context>
@@ -40726,7 +40730,7 @@ SQL:%1
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="217"/>
         <source>Only existing geometry types</source>
-        <translation type="unfinished"></translation>
+        <translation>存在するジオメトリタイプのみ</translation>
     </message>
     <message>
         <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
@@ -41692,7 +41696,7 @@ Error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="408"/>
         <source>New Connection...</source>
-        <translation>新しい接続</translation>
+        <translation>新しい接続...</translation>
     </message>
 </context>
 <context>
@@ -44550,7 +44554,7 @@ Proceed?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="1452"/>
         <source>Can only use ellipsoidal calculations when CRS transformation is enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS変換が有効なときは楕円体計算のみ利用できます</translation>
     </message>
     <message>
         <source>Transparency %1%</source>
@@ -44888,7 +44892,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1579"/>
         <source>Maximums for GetMap request</source>
-        <translation type="unfinished"></translation>
+        <translation>GetMapリクエストの最大サイズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="1588"/>
@@ -45046,7 +45050,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="452"/>
         <source>Used when CRS transformation is turned off</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS変換がオフのときに使われます</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="455"/>
@@ -45859,7 +45863,11 @@ p, li { white-space: pre-wrap; }
 %2
 
 Click on help button to get valid creation options for this format.</source>
-        <translation type="unfinished"></translation>
+        <translation>不正な %1:
+
+%2
+
+この形式の正しい作成オプションを知るにはヘルプボタンをクリックして下さい.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsrasterformatsaveoptionswidget.cpp" line="378"/>
@@ -48909,7 +48917,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="663"/>
         <source>&lt;li&gt;&lt;nobr&gt;%1 features also in rule %2&lt;/nobr&gt;&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;nobr&gt;%1個の地物も同じくルール%2です&lt;/nobr&gt;&lt;/li&gt;</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="705"/>
@@ -63769,7 +63777,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1173"/>
         <source>Second geometry missing.</source>
-        <translation>2個目のジオメトリが見つかりません</translation>
+        <translation>2個目のジオメトリが見つかりません.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1262"/>
@@ -63777,7 +63785,7 @@ Plugin will not be enabled.</source>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1438"/>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1512"/>
         <source>No second geometry missing or GEOS import failed.</source>
-        <translation>第2ジオメトリの欠落が無いあるいはGEOSインポートに失敗しました</translation>
+        <translation>第2ジオメトリの欠落が無いあるいはGEOSインポートに失敗しました.</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolTest.cpp" line="1553"/>
