@@ -51,6 +51,7 @@ extern "C"
 
 QgsOfflineEditing::QgsOfflineEditing()
 {
+   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerAdded( QgsMapLayer* ) ) );
 }
 
 QgsOfflineEditing::~QgsOfflineEditing()
@@ -558,7 +559,6 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
           emit progressUpdated( featureCount++ );
         }
         sqlExec( db, "COMMIT" );
-        listenStartStopEdits( newLayer );
       }
       else
       {
@@ -1219,8 +1219,15 @@ void QgsOfflineEditing::stopListenFeatureChanges()
            this, SLOT( committedGeometriesChanges( const QString&, const QgsGeometryMap& ) ) );
 }
 
-void QgsOfflineEditing::listenStartStopEdits( QgsVectorLayer *vLayer )
+void QgsOfflineEditing::layerAdded( QgsMapLayer* layer )
 {
-  connect( vLayer, SIGNAL( editingStarted() ), this, SLOT( startListenFeatureChanges() ) );
-  connect( vLayer, SIGNAL( editingStopped() ), this, SLOT( stopListenFeatureChanges() ) );
+  // detect offline layer
+  if ( layer->customProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, false ).toBool() )
+  {
+    QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer *>( layer );
+    connect( vLayer, SIGNAL( editingStarted() ), this, SLOT( startListenFeatureChanges() ) );
+    connect( vLayer, SIGNAL( editingStopped() ), this, SLOT( stopListenFeatureChanges() ) );
+  }
 }
+
+
