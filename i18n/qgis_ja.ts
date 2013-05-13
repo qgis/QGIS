@@ -22510,13 +22510,13 @@ and current file is [%3]</source>
         <location filename="../src/app/qgscustomization.cpp" line="221"/>
         <location filename="../src/app/qgscustomization.cpp" line="240"/>
         <source>Choose a customization INI file</source>
-        <translation>カスタマイゼーションINIファイルを選択する</translation>
+        <translation>カスタマイズINIファイルを選択する</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomization.cpp" line="222"/>
         <location filename="../src/app/qgscustomization.cpp" line="241"/>
         <source>Customization files (*.ini)</source>
-        <translation>カスタマイゼーションファイル(*.ini)</translation>
+        <translation>カスタマイズファイル(*.ini)</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomization.cpp" line="327"/>
@@ -22529,7 +22529,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="14"/>
         <source>Customization</source>
-        <translation>カスタマイゼーション</translation>
+        <translation>カスタマイズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomizationdialogbase.ui" line="21"/>
@@ -31904,7 +31904,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="43"/>
         <source>Expand tree.</source>
-        <translation>ツリーを展開する</translation>
+        <translation>ツリーを展開する.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="46"/>
@@ -31918,7 +31918,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="57"/>
         <source>Collapse tree.</source>
-        <translation>ツリーを折りたたむ</translation>
+        <translation>ツリーを折りたたむ.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="71"/>
@@ -34570,7 +34570,7 @@ not displayed</source>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="1107"/>
         <source>ERROR: Failed to created SLD style file as %1. Check file permissions and retry.</source>
-        <translation>エラー SLDスタイルファイルを%1として作成できません.ファイルのパーミッションをチェックしてリトライしてください</translation>
+        <translation>エラー: SLDスタイルファイルを%1として作成できません.ファイルのパーミッションをチェックしてリトライしてください.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="1133"/>
@@ -34837,7 +34837,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="66"/>
         <source>Error. Could not add part.</source>
-        <translation>エラー.部分の追加ができません</translation>
+        <translation>エラー. 部分の追加ができません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="85"/>
@@ -34868,12 +34868,12 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="180"/>
         <source>New polygon ring not disjoint with existing polygons.</source>
-        <translation>新しいポリゴンリングは既存ポリゴンを解体できません</translation>
+        <translation>新しいポリゴンリングは既存ポリゴンを解体できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="188"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
-        <translation>いくつかの地物がインストールされています。島を追加するために単一の地物のみを選択してください</translation>
+        <translation>いくつかの地物が選択されています。島を追加するために単一の地物のみを選択してください.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="192"/>
@@ -34999,7 +34999,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="103"/>
         <source>This isn&apos;t a multipart geometry.</source>
-        <translation>これはマルチパートジオメトリではありません</translation>
+        <translation>これはマルチパートジオメトリではありません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="111"/>
@@ -35009,7 +35009,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="118"/>
         <source>Couldn&apos;t remove the selected part.</source>
-        <translation>選択された部分は削除できません</translation>
+        <translation>選択された部分は削除できません.</translation>
     </message>
 </context>
 <context>
@@ -35076,7 +35076,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolfeatureaction.cpp" line="90"/>
         <source>No features at this position found.</source>
-        <translation>この位置には地物は存在しません</translation>
+        <translation>この位置には地物は存在しません.</translation>
     </message>
 </context>
 <context>
@@ -35189,7 +35189,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolidentifyaction.cpp" line="123"/>
         <source>No features at this position found.</source>
-        <translation>この位置には地物は存在しません</translation>
+        <translation>この位置には地物は存在しません.</translation>
     </message>
 </context>
 <context>
@@ -35345,7 +35345,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="99"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation>クリックした地点に点が無い地物を検出しました。地物の近くをクリックするか検索許容値を拡大してください。許容値は設定-&gt;オプション-&gt;デジタイジング-&gt;頂点編集用検索範囲で設定できます。</translation>
+        <translation>クリックした地点に点が無い地物を検出しました。地物の近くをクリックするか検索許容値を拡大してください。許容値は設定-&gt;オプション-&gt;デジタイジング-&gt;頂点編集用検索範囲で設定できます</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="113"/>
@@ -35411,7 +35411,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="296"/>
         <source>Multipart features are not supported for simplification.</source>
-        <translation>マルチパート地物は簡素化をサポートしていません</translation>
+        <translation>マルチパート地物は簡素化をサポートしていません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="313"/>
@@ -35685,7 +35685,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="84"/>
         <source>If checked, only the layer information will be processed</source>
-        <translation>チェックされている場合レイヤ情報だけ処理されます。</translation>
+        <translation>チェックされている場合レイヤ情報だけ処理されます</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="281"/>
@@ -35695,7 +35695,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="116"/>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
-        <translation>マップフに接頭辞をつけてスケールバーと凡例のGIFファイル名称はこのマップファイルを使ってつくられました。</translation>
+        <translation>マップフに接頭辞をつけてスケールバーと凡例のGIFファイル名称はこのマップファイルを使ってつくられました</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="37"/>
@@ -35713,7 +35713,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="77"/>
         <source>Save As...</source>
-        <translation>名前をつけて保存する</translation>
+        <translation>名前をつけて保存する...</translation>
     </message>
     <message>
         <source>meters</source>
@@ -36014,7 +36014,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/gui/qgsmessagelogviewer.cpp" line="59"/>
         <source>No messages.</source>
-        <translation>メッセージ無し</translation>
+        <translation>メッセージ無し.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmessagelogviewer.cpp" line="111"/>
@@ -38327,7 +38327,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="129"/>
         <source>Converting to offline project.</source>
-        <translation>オフラインプロジェクトに変換します</translation>
+        <translation>オフラインプロジェクトに変換します.</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="130"/>
@@ -38641,7 +38641,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="304"/>
         <source>No database selected.</source>
-        <translation>データベースが選択されていません</translation>
+        <translation>データベースが選択されていません.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="323"/>
@@ -38656,17 +38656,17 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="347"/>
         <source>No protocol URI entered.</source>
-        <translation>プロトコルURIが入力されていません</translation>
+        <translation>プロトコルURIが入力されていません.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="359"/>
         <source>No layers selected.</source>
-        <translation>レイヤが選択されていません</translation>
+        <translation>レイヤが選択されていません.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="371"/>
         <source>No directory selected.</source>
-        <translation>ディレクトリが選択されていません</translation>
+        <translation>ディレクトリが選択されていません.</translation>
     </message>
 </context>
 <context>
