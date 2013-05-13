@@ -6233,9 +6233,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2074"/>
         <source>Need Support?</source>
-
         <translation>サポートが必要ですか？</translation>
-
     </message>
     <message>
         <source>Save Edits</source>
@@ -8251,9 +8249,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Save As...</source>
-
         <translation>名前を付けて保存...</translation>
-
     </message>
     <message>
         <source>Cut</source>
@@ -11123,18 +11119,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3310"/>
         <source>A style named &quot;%1&quot; already exists in the database for this layer. Do you want to overwrite it?</source>
-
         <translation>このレイヤの&quot;%1&quot;という名前のスタイルはデータベースに存在します.上書きしますか?</translation>
-
-
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3314"/>
         <source>Operation aborted. No changes were made in the database</source>
-
         <translation>操作は中断されました.データベースに変更は加えられませんでした</translation>
-
-
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3360"/>
@@ -12790,19 +12780,13 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="6575"/>
         <source>en</source>
         <comment>documentation language</comment>
-
-
-
         <translatorcomment>ドキュメントの言語</translatorcomment>
         <translation>ja</translation>
-
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6593"/>
         <source>http://www.qgis.org/en/commercial-support.html</source>
-
         <translation>http://www.qgis.org/ja/commercial-support.html</translation>
-
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="7520"/>
@@ -22319,9 +22303,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="305"/>
         <source>new CRS</source>
-
         <translation>新規CRS</translation>
-
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="407"/>
@@ -22334,9 +22316,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="408"/>
         <source>The proj4 definition of &apos;%1&apos; is not valid.</source>
-
         <translation>proj4定義 &apos;%1&apos; が不正です</translation>
-
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="465"/>
@@ -22484,17 +22464,13 @@ and current file is [%3]</source>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="113"/>
         <source>Copy
  existing CRS</source>
-
         <translation>既存のCRS
 を複製</translation>
-
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="128"/>
         <source>Add new CRS</source>
-
         <translation>新規CRSを追加</translation>
-
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="148"/>
@@ -23638,9 +23614,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="234"/>
         <source>File cannot be opened or delimiter parameters are not valid</source>
-
         <translation>ファイルが開けないか, デリミタの指定が不正です</translation>
-
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="249"/>
@@ -23650,9 +23624,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="896"/>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="900"/>
         <source>%0 field %1 is not defined in delimited text file</source>
-
         <translation>%0 フィールド %1 はデリミティッドテキストファイル内に定義されていません</translation>
-
     </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="301"/>
@@ -23720,9 +23692,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="957"/>
         <source>The file has been updated by another application - reloading</source>
-
         <translation>ファイルが他のアプリケーションによって更新されました - リロードします</translation>
-
     </message>
 </context>
 <context>
@@ -33555,7 +33525,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1676"/>
         <source>Labels will not show if larger than this on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルがスクリーン上でこれより大きい場合表示されない</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1679"/>
@@ -33566,7 +33536,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1704"/>
         <source>Labels will not show if smaller than this on screen</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルがスクリーン上でこれより小さい場合表示されない</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1777"/>
@@ -33611,7 +33581,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1891"/>
         <source>Lowest label component</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルの最低コンポーネント</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1896"/>
@@ -33752,7 +33722,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3639"/>
         <source>Maximum angle between curved characters</source>
-        <translation type="unfinished"></translation>
+        <translation>曲がった文字間の最大角度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3745"/>
@@ -33792,12 +33762,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="3989"/>
         <source>Show all labels for this layer (including colliding labels)</source>
-        <translation type="unfinished"></translation>
+        <translation>このレイヤの全ラベル表示（衝突するラベルも含む）</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4004"/>
         <source>Show upside-down labels</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルを縦書きで表示する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4017"/>
@@ -33817,17 +33787,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4063"/>
         <source>Limit number of features to be labeled to</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベル表示される地物数の上限</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4079"/>
         <source>Number of features sent to labeling engine, though not all may be labeled</source>
-        <translation type="unfinished"></translation>
+        <translation>ラベルエンジンに送られる地物の数だが全部が表示されるわけではない</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4116"/>
         <source>Use label background size in collision calculations</source>
-        <translation type="unfinished"></translation>
+        <translation>バックグラウンドの衝突計算で利用するラベルサイズ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="4200"/>
@@ -34418,7 +34388,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="282"/>
         <source>The file is not an WCS connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>指定ファイルはWCSコネクションエクスチェンジファイルではありません.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="291"/>
@@ -34436,12 +34406,12 @@ not displayed</source>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="308"/>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="866"/>
         <source>The file is not an Oracle connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>指定ファイルはOracleコネクションエクスチェンジファイルではありません.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="518"/>
         <source>The file is not an %1 connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>指定ファイルは%1コネクションエクスチェンジファイルではありません.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="545"/>
@@ -34484,7 +34454,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="446"/>
         <source>, sender &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>, センダー &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="448"/>
@@ -34767,7 +34737,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="274"/>
         <source>The feature cannot be added because it&apos;s geometry is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>指定地物は追加できませんでした,何故ならジオメトリが空白だからです</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="278"/>
