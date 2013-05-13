@@ -512,7 +512,7 @@ class TestQgsDelimitedTextProvider(TestCase):
     def test_028_substring_test(self):
         # CSV file parsing
         filename='test.csv'
-        params={'geomType': 'none', 'subset': 'id % 2 = 1', 'type': 'csv'}
+        params={'geomType': 'none', 'subset': 'id % 2 = 1', 'type': 'csv' }
         requests=None
         runTest(filename,requests,**params)
 
@@ -532,7 +532,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             QCoreApplication.instance().processEvents()
         def deletefile( layer ):
             os.remove(filename)
-        params={'geomType': 'none', 'type': 'csv' }
+        params={'geomType': 'none', 'type': 'csv', 'watchFile' : 'yes' }
         requests=[
             {'fid': 3}, 
             {},

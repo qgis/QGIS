@@ -38,7 +38,7 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mEncoding( "UTF-8" ),
     mFile( 0 ),
     mStream( 0 ),
-    mUseWatcher( true ),
+    mUseWatcher( false ),
     mWatcher( 0 ),
     mDefinitionValid( false ),
     mUseHeader( true ),
@@ -153,9 +153,9 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
   }
 
   //
-  if ( url.hasQueryItem( "useWatcher" ) )
+  if ( url.hasQueryItem( "watchFile" ) )
   {
-    mUseWatcher = ! url.queryItemValue( "useWatcher" ).toUpper().startsWith( 'N' );;
+    mUseWatcher = ! url.queryItemValue( "watchFile" ).toUpper().startsWith( 'N' );;
   }
 
   // The default type is csv, to be consistent with the
@@ -264,7 +264,7 @@ QUrl QgsDelimitedTextFile::url()
     url.addQueryItem( "encoding", mEncoding );
   }
 
-  if( ! mUseWatcher ) url.addQueryItem( "useWatcher", "no");
+  if( mUseWatcher ) url.addQueryItem( "watchFile", "yes");
 
   url.addQueryItem( "type", type() );
   if ( mType == DelimTypeRegexp )

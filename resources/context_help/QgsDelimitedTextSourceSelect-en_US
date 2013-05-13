@@ -103,6 +103,19 @@ It is safer to use an explicit coding if the QGIS project needs to be portable.
     &quot;Point&quot; includes POINT and MULTIPOINT WKT types, &quot;Line&quot; includes LINESTRING and
     MULTLINESTRING WKT types, and &quot;Polygon&quot; includes POLYGON and MULTIPOLYGON WKT types.
 </ul>
+<h5>Layer settings</h5>
+<p>Layer settings control the way the layer is managed in QGIS.  The options available are:</p>
+<ul>
+<li>Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
+This option may be useful for files larger than a few megabytes in size.</li>
+<li>Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
+from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created when a subset is defined.</li>
+<li>Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
+reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
+extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
+application will change the file. </li>
+</ul>
 
 <h4><a name="csv">How the delimiter, quote, and escape characters work</a></h4>
 <p>Records are split into fields using three character sets: 
@@ -275,9 +288,9 @@ The following options can be added
        <li><tt>crs=...</tt> specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &quot;EPSG:4167&quot;).  If this is not 
        specified then a dialog box may request this information from the user
        when the layer is loaded (depending on QGIS CRS settings).</li>
-       <li><tt>subsetIndex=(yes|no)</tt> specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.  This option is not available from the GUI.</li>
+       <li><tt>subsetIndex=(yes|no)</tt> specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.</li>
        <li><tt>spatialIndex=(yes|no)</tt> specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. </li>
-       <li><tt>useWatcher=(yes|no)</tt> specifies whether the provider should use a file system watcher to monitor for changes to the file.  This option is not available from the GUI</li>
+       <li><tt>watchFile=(yes|no)</tt> specifies whether the provider should use a file system watcher to monitor for changes to the file.</li>
        <li><tt>quiet=(yes|no)</tt> specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI</li>
 </ul>
 
