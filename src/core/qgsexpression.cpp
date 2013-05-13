@@ -1936,10 +1936,11 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
         bool matches;
         if ( mOp == boLike || mOp == boILike || mOp == boNotLike || mOp == boNotILike ) // change from LIKE syntax to regexp
         {
+          QString esc_regexp = QRegExp::escape( regexp );
           // XXX escape % and _  ???
-          regexp.replace( "%", ".*" );
-          regexp.replace( "_", "." );
-          matches = QRegExp( regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
+          esc_regexp.replace( "%", ".*" );
+          esc_regexp.replace( "_", "." );
+          matches = QRegExp( esc_regexp, mOp == boLike || mOp == boNotLike ? Qt::CaseSensitive : Qt::CaseInsensitive ).exactMatch( str );
         }
         else
         {
