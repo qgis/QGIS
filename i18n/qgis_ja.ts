@@ -40135,7 +40135,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3426"/>
         <source>ext</source>
-        <translation type="unfinished"></translation>
+        <translation>ext</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3431"/>
@@ -40145,7 +40145,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3436"/>
         <source>Description</source>
-        <translation>記述</translation>
+        <translation>説明</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3368"/>
@@ -40725,7 +40725,7 @@ SQL:%1
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="128"/>
         <source>Restrict the displayed tables to those that are in the all_sdo_geom_metadata table</source>
-        <translation type="unfinished"></translation>
+        <translation>all_sdo_geom_metadataテーブルにあるテーブルのみ表示する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="141"/>
@@ -40809,7 +40809,7 @@ SQL:%1
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="54"/>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="214"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;レイヤが設定される時に多くのメタデータがOracleテーブルのために必要です.そこにはテーブルの行数やジオメトリタイプやジオメトリカラムの空間の領域が含まれます.もしテーブルがとても多くの行を持つような場合このメタデータを算出するのに多くの時間を使います.&lt;/p&gt;&lt;p&gt;テーブルメタデータの高速処理オプションをアクティベートすることによって以下のことができます:&lt;/p&gt;&lt;p&gt;1) 行のカウントを all_tables.num_rowsから取得する.&lt;/p&gt;&lt;p&gt;2) テーブルの領域は常に SDO_TUNE.EXTENTS_OF関数で取得され,レイヤフィルタが適用されている場合も同様の処理を行う.&lt;/p&gt;&lt;p&gt;3) テーブルジオメトリは最初の100個のnullでないジオメトリによって決定されます.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="57"/>
