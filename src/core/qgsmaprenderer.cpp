@@ -523,7 +523,8 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
         if (( vl->blendMode() != QPainter::CompositionMode_SourceOver && ( split || !mySettings.value( "/qgis/enable_render_caching", false ).toBool() ) )
-            || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver ) )
+            || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+            || ( vl->layerTransparency() != 0 ) )
 
         {
           flattenedLayer = true;
@@ -595,6 +596,17 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       // If we flattened this layer for alternate blend modes, composite it now
       if ( flattenedLayer )
       {
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+        if ( vl->layerTransparency() != 0 )
+        {
+          // a layer transparency has been set, so update the alpha for the flattened layer
+          // by combining it with the layer transparency
+          QColor transparentFillColor = QColor( 0, 0, 0, 255 - ( 255 * vl->layerTransparency() / 100 ) );
+          // use destination in composition mode to merge source's alpha with destination
+          mRenderContext.painter()->setCompositionMode( QPainter::CompositionMode_DestinationIn );
+          mRenderContext.painter()->fillRect( mypFlattenedImage->rect(), transparentFillColor );
+        }
+
         delete mRenderContext.painter();
         mRenderContext.setPainter( mypContextPainter );
         mypContextPainter->save();

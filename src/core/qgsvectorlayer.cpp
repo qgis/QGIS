@@ -123,6 +123,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mLabel( 0 )
     , mLabelOn( false )
     , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
+    , mLayerTransparency( 0 )
     , mVertexMarkerOnlyForSelection( false )
     , mCache( new QgsGeometryCache( this ) )
     , mEditBuffer( 0 )
@@ -1767,6 +1768,14 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       QDomElement e = featureBlendModeNode.toElement();
       setFeatureBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) e.text().toInt() ) );
     }
+    
+    // get and set the layer transparency if it exists
+    QDomNode layerTransparencyNode = node.namedItem( "layerTransparency" );
+    if ( !layerTransparencyNode.isNull() )
+    {
+      QDomElement e = layerTransparencyNode.toElement();
+      setLayerTransparency( e.text().toInt() );
+    }    
 
     // use scale dependent visibility flag
     QDomElement e = node.toElement();
@@ -2098,6 +2107,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     QDomText featureBlendModeText = doc.createTextNode( QString::number( QgsMapRenderer::getBlendModeEnum( featureBlendMode() ) ) );
     featureBlendModeElem.appendChild( featureBlendModeText );
     node.appendChild( featureBlendModeElem );
+
+    // add the layer transparency
+    QDomElement layerTransparencyElem  = doc.createElement( "layerTransparency" );
+    QDomText layerTransparencyText = doc.createTextNode( QString::number( layerTransparency() ) );
+    layerTransparencyElem.appendChild( layerTransparencyText );
+    node.appendChild( layerTransparencyElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
@@ -3365,6 +3380,18 @@ void QgsVectorLayer::setFeatureBlendMode( const QPainter::CompositionMode featur
 QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
 {
   return mFeatureBlendMode;
+}
+
+/** Write transparency for layer */
+void QgsVectorLayer::setLayerTransparency( int layerTransparency )
+{
+  mLayerTransparency = layerTransparency;
+}
+
+/** Read transparency for layer */
+int QgsVectorLayer::layerTransparency() const
+{
+  return mLayerTransparency;
 }
 
 void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer )

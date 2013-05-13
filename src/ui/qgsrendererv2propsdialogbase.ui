@@ -24,19 +24,57 @@
      </property>
      <property name="saveCollapsedState" stdset="0">
       <bool>true</bool>
-     </property>     
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="lblLayerBlend">
-        <property name="text">
-         <string>Layer blending mode</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox"/>
-      </item>
-     </layout>
+     </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="1" colspan="3">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QSlider" name="mLayerTransparencySlider">
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="mLayerTransparencySpnBx">
+            <property name="maximum">
+             <number>100</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="lblTransparency">
+          <property name="text">
+           <string>Layer transparency</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QgsBlendModeComboBox" name="mFeatureBlendComboBox"/>
+        </item>
+        <item row="1" column="2">
+         <widget class="QLabel" name="lblFeatureBlend">
+          <property name="text">
+           <string>Feature blending mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="lblLayerBlend">
+          <property name="text">
+           <string>Layer blending mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox"/>
+        </item>
+       </layout>
     </widget>
    </item>
    <item>
@@ -56,16 +94,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="lblFeatureBlend">
-       <property name="text">
-        <string>Feature blending mode</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsBlendModeComboBox" name="mFeatureBlendComboBox"/>
      </item>
     </layout>
    </item>
@@ -119,7 +147,7 @@
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>  
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>

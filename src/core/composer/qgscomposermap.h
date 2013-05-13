@@ -183,8 +183,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**True if composer map renders a WMS layer*/
     bool containsWMSLayer() const;
 
-    /**True if composer map contains layers with blend modes*/
-    bool containsBlendModes() const;
+    /**True if composer map contains layers with blend modes or flattened layers for vectors */
+    bool containsAdvancedEffects() const;
 
     /** stores state in Dom node
      * @param elem is Dom element corresponding to 'Composer' tag

@@ -1234,6 +1234,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 2.0
      */
     QPainter::CompositionMode featureBlendMode() const;
+    
+    /* Set the transparency for the vector layer
+     * @note added in 2.0
+     */
+    void setLayerTransparency( int layerTransparency );
+    /* Returns the current transparency for the vector layer
+     * @note added in 2.0
+     */
+    int layerTransparency() const;    
 
   public slots:
     /**
@@ -1491,6 +1500,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Blend mode for features */
     QPainter::CompositionMode mFeatureBlendMode;
+    
+    /** Layer transparency */
+    int mLayerTransparency;
 
     /**The current type of editing marker*/
     QgsVectorLayer::VertexMarkerType mCurrentVertexMarkerType;

@@ -631,8 +631,9 @@ bool QgsComposerMap::containsWMSLayer() const
   return false;
 }
 
-bool QgsComposerMap::containsBlendModes() const
+bool QgsComposerMap::containsAdvancedEffects() const
 {
+  // check if map contains advanced effects like blend modes, or flattened layers for transparency
   if ( !mMapRenderer )
   {
     return false;
@@ -659,6 +660,10 @@ bool QgsComposerMap::containsBlendModes() const
       QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( currentVectorLayer )
       {
+        if ( currentVectorLayer->layerTransparency() != 0 )
+        {
+          return true;
+        }
         if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
         {
           return true;
