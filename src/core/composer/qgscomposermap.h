@@ -328,6 +328,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setGridLineSymbol( QgsLineSymbolV2* symbol );
     QgsLineSymbolV2* gridLineSymbol() { return mGridLineSymbol; }
 
+    /** Returns the grid's blending mode */
+    QPainter::CompositionMode gridBlendMode() const {return mGridBlendMode;}
+    /** Sets the grid's blending mode*/
+    void setGridBlendMode( QPainter::CompositionMode blendMode );
+
     /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
     void assignFreeId();
@@ -421,6 +426,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     int mGridAnnotationPrecision;
     /**True if coordinate values should be drawn*/
     bool mShowGridAnnotation;
+    /**Blend mode for grid*/
+    QPainter::CompositionMode mGridBlendMode;
 
     /**Annotation position for left map side (inside / outside / not shown)*/
     GridAnnotationPosition mLeftGridAnnotationPosition;

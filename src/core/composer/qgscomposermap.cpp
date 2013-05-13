@@ -43,9 +43,10 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ),
     mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ),
-    mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ), mTopGridAnnotationPosition( OutsideMapFrame ),
-    mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
-    mTopGridAnnotationDirection( Horizontal ), mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ),
+    mGridBlendMode( QPainter::CompositionMode_SourceOver ), mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
+    mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ),
+    mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
+    mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ),  mGridFrameWidth( 2.0 ),
     mCrossLength( 3 ), mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mComposition = composition;
@@ -86,9 +87,10 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ),
     mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mGridEnabled( false ), mGridStyle( Solid ),
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ),
-    mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ), mTopGridAnnotationPosition( OutsideMapFrame ),
-    mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ),
-    mTopGridAnnotationDirection( Horizontal ), mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mCrossLength( 3 ),
+    mGridBlendMode( QPainter::CompositionMode_SourceOver ), mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
+    mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ),
+    mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
+    mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mCrossLength( 3 ),
     mMapCanvas( 0 ), mDrawCanvasItems( true )
 {
   mOverviewFrameMapSymbol = 0;
@@ -792,6 +794,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   gridElem.setAttribute( "crossLength",  QString::number( mCrossLength ) );
   gridElem.setAttribute( "gridFrameStyle", mGridFrameStyle );
   gridElem.setAttribute( "gridFrameWidth", QString::number( mGridFrameWidth ) );
+  gridElem.setAttribute( "gridBlendMode", QgsMapRenderer::getBlendModeEnum( mGridBlendMode ) );
   QDomElement gridLineStyleElem = QgsSymbolLayerV2Utils::saveSymbol( QString(), mGridLineSymbol, doc );
   gridElem.appendChild( gridLineStyleElem );
 
@@ -938,6 +941,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mCrossLength = gridElem.attribute( "crossLength", "3" ).toDouble();
     mGridFrameStyle = ( QgsComposerMap::GridFrameStyle )gridElem.attribute( "gridFrameStyle", "0" ).toInt();
     mGridFrameWidth = gridElem.attribute( "gridFrameWidth", "2.0" ).toDouble();
+    setGridBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) gridElem.attribute( "gridBlendMode", "0" ).toUInt() ) );
 
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
     delete mGridLineSymbol;
@@ -1035,6 +1039,10 @@ void QgsComposerMap::drawGrid( QPainter* p )
   QRectF thisPaintRect = QRectF( 0, 0, QGraphicsRectItem::rect().width(), QGraphicsRectItem::rect().height() );
   p->setClipRect( thisPaintRect );
 
+  // set the blend mode for drawing grid lines
+  p->save();
+  p->setCompositionMode( mGridBlendMode );
+
   //simpler approach: draw vertical lines first, then horizontal ones
   if ( mGridStyle == QgsComposerMap::Solid )
   {
@@ -1095,6 +1103,8 @@ void QgsComposerMap::drawGrid( QPainter* p )
       drawGridLine( QLineF( hIt->second.p2(), crossEnd1 ), p );
     }
   }
+  // reset composition mode
+  p->restore();
 
   p->setClipRect( thisPaintRect , Qt::NoClip );
 
@@ -1107,6 +1117,7 @@ void QgsComposerMap::drawGrid( QPainter* p )
   {
     drawCoordinateAnnotations( p, horizontalLines, verticalLines );
   }
+
 }
 
 void QgsComposerMap::drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines )
@@ -1595,6 +1606,12 @@ QPen QgsComposerMap::gridPen() const
     p.setCapStyle( Qt::FlatCap );
   }
   return p;
+}
+
+void QgsComposerMap::setGridBlendMode( QPainter::CompositionMode blendMode )
+{
+  mGridBlendMode = blendMode;
+  update();
 }
 
 QRectF QgsComposerMap::boundingRect() const

@@ -343,6 +343,9 @@ void QgsComposerMapWidget::updateGuiElements()
       mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findText( tr( "No frame" ) ) );
     }
 
+    //grid blend mode
+    mGridBlendComboBox->setBlendMode( mComposerMap->gridBlendMode() );
+
     //grid annotation format
     QgsComposerMap::GridAnnotationFormat gf = mComposerMap->gridAnnotationFormat();
     mAnnotationFormatComboBox->setCurrentIndex(( int )gf );
@@ -423,6 +426,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mSetToMapCanvasExtentButton->blockSignals( b );
   mUpdatePreviewButton->blockSignals( b );
   mGridLineStyleButton->blockSignals( b );
+  mGridBlendComboBox->blockSignals( b );
   mDrawAnnotationCheckableGroupBox->blockSignals( b );
   mAnnotationFontButton->blockSignals( b );
   mAnnotationFormatComboBox->blockSignals( b );
@@ -703,6 +707,16 @@ void QgsComposerMapWidget::on_mCrossWidthSpinBox_valueChanged( double d )
   mComposerMap->setCrossLength( d );
   mComposerMap->update();
   mComposerMap->endCommand();
+}
+
+void QgsComposerMapWidget::on_mGridBlendComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  if ( mComposerMap )
+  {
+    mComposerMap->setGridBlendMode( mGridBlendComboBox->blendMode() );
+  }
+
 }
 
 void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
