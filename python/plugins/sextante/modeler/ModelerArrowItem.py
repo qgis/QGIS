@@ -60,54 +60,12 @@ class ModelerArrowItem(QtGui.QGraphicsPathItem):
                 QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
         self.setZValue(0)
         
-
-
-    def contains_point(self, x, y, epsilon):
-        p = (x, y)
-        min_distance = float(0x7fffffff)
-        t = 0.0
-        while t < 1.0:
-            point = self.path.pointAtPercent(t)
-            spline_point = (point.x(), point.y())
-            print p, spline_point
-            distance = self.distance(p, spline_point)
-            if distance < min_distance:
-                min_distance = distance
-            t += 0.1
-        print min_distance, epsilon
-        return (min_distance <= epsilon)
-
-    #===========================================================================
-    # def boundingRect(self):
-    #    return self.path.boundingRect()
-    #===========================================================================
-
-
-    def distance(self, p0, p1):
-        a = p1[0] - p0[0]
-        b = p1[1] - p0[1]
-        return math.sqrt(a * a + b * b)
     
     def startItem(self):
         return self.myStartItem
 
     def endItem(self):
         return self.myEndItem
-
-    def boundingRect(self):
-        #this is a quick fix to avoid arrows not being drawn
-        return QtCore.QRectF(0, 0, 4000,4000)
-
-#===============================================================================
-#    def shape(self):
-#        path = super(ModelerArrowItem, self).shape()
-#        path.addPolygon(self.arrowHead)
-#        return path
-# 
-#    def updatePosition(self):
-#        line = QtCore.QLineF(self.mapFromItem(self.myStartItem, 0, 0), self.mapFromItem(self.myEndItem, 0, 0))
-#        self.setLine(line)
-#===============================================================================
 
     def paint(self, painter, option, widget=None):
         startItem = self.myStartItem
