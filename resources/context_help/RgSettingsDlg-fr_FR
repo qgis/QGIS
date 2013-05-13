@@ -1,4 +1,4 @@
-﻿<h3>Paramètres du plugin Graphes Routiers</h3>
+<h3>Paramètres du plugin Graphes Routiers</h3>
 <p>Graphes Routiers est une extension pour QGIS écrite en C++ qui calcule le chemin le chemin le plus court entre 2 points sur n'importe quelle polyligne et trace ce chemin au-dessus du réseau routier.
 </p>
 <p>

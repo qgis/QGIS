@@ -18,10 +18,11 @@
  ***************************************************************************/
 #ifndef QGSCONTEXTHELP_H
 #define QGSCONTEXTHELP_H
+
 #include <QObject>
+#include <QHash>
 
 class QProcess;
-class QTcpSocket;
 
 #ifdef Q_OS_MACX
 #define QGSCONTEXTHELP_REUSE 1
@@ -47,27 +48,23 @@ class CORE_EXPORT QgsContextHelp : public QObject
     static void run( QString context );
 
   private slots:
-    void readPort();
     void processExited();
 
   private:
     //! Constructor
-    QgsContextHelp( QString context );
+    QgsContextHelp();
     //! Destructor
     ~QgsContextHelp();
 
-    QProcess *start( QString context );
+    QProcess *start();
     void showContext( QString context );
 
     static QgsContextHelp *gContextHelp; // Singleton instance
     QProcess *mProcess;
-#ifdef QGSCONTEXTHELP_REUSE
-    // Communications socket when reusing existing process
-    QTcpSocket *mSocket;
-#else
-    // Replacement process when terminating and restarting
-    QProcess *mNextProcess;
-#endif
+
+    static QHash<QString, QString> gContextHelpTexts;
+
+    void init();
 };
 
 #endif //QGSCONTEXTHELP_H

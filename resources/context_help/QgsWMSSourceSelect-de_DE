@@ -1,5 +1,5 @@
-<h3>Layer eines Servers hinzuf&uuml;gen</h3>
-Wenn Sie zu Ihrem WMS-Server die Zugriffs-URL kennen, eine brauchbare Verbindung dazu haben und er HTTP als Datentransportmechanismus versteht, k&ouml;nnen Sie WMS-Layer einfach hinzuf&uuml;gen.<p>
+<h3>Layer eines Servers hinzufügen</h3>
+Wenn Sie zu Ihrem WMS-Server die Zugriffs-URL kennen, eine brauchbare Verbindung dazu haben und er HTTP als Datentransportmechanismus versteht, können Sie WMS-Layer einfach hinzufügen.<p>
 QGIS als WMS-Client versteht derzeit Server mit WMS 1.1, 1.1.1 und 1.3.
 <p>
 <a href="#serv">Server</a><br/>
@@ -10,28 +10,28 @@ QGIS als WMS-Client versteht derzeit Server mit WMS 1.1, 1.1.1 und 1.3.
 <a name="serv">
 <h4>Server</h4>
 </a>
-Um einen neuen WMS-Server unter <label>Server</label> hinzuf&uuml;gen, w&auml;hlen Sie <label>Neu</label>.  Dann geben sie die Verbindungsparameter Ihres gew&uuml;nschten WMS-Server ein.<p>
-Zum Ausprobieren k&ouml;nnen Sie mit dem Knopf <label>Vorgegebene Server erg&auml;nzen</label> einige Server hinzuf&uuml;gen.  Dies f&uuml;gt Ihnen mindestens drei WMS-Server hinzu.<p>
-Sobald eine neue WMS-Serververbindung erstellt wurde, wird sie f&uuml;r zuk&uuml;nftige QGIS-Sitzungen gespeichert.
+Um einen neuen WMS-Server unter <label>Server</label> hinzufügen, wählen Sie <label>Neu</label>.  Dann geben sie die Verbindungsparameter Ihres gewünschten WMS-Server ein.<p>
+Zum Ausprobieren können Sie mit dem Knopf <label>Vorgegebene Server ergänzen</label> einige Server hinzufügen.  Dies fügt Ihnen mindestens drei WMS-Server hinzu.<p>
+Sobald eine neue WMS-Serververbindung erstellt wurde, wird sie für zukünftige QGIS-Sitzungen gespeichert.
 
 <a name="load">
 <h5>WMS-Layer laden</h5>
 </a>
-&Uuml;ber den Knopf <label>Verbinden</label> erfragen Sie die angebotenen M&ouml;glichkeiten des gew&auml;hlten Servers. Diese umfassen Bildkodierung, Layer, Layerstile und Projektionen.<br/>
-W&auml;hrend Sie Daten vom WMS-Server beziehen, wird der Fortschritt unten links im Dialog angezeigt.<p>
-Die <label>Bildkodierung</label> zeigt nun die Liste die Formate an, die sowohl Server als auch Client unterst&uuml;tzen.<br/>
+Über den Knopf <label>Verbinden</label> erfragen Sie die angebotenen Möglichkeiten des gewählten Servers. Diese umfassen Bildkodierung, Layer, Layerstile und Projektionen.<br/>
+Während Sie Daten vom WMS-Server beziehen, wird der Fortschritt unten links im Dialog angezeigt.<p>
+Die <label>Bildkodierung</label> zeigt nun die Liste die Formate an, die sowohl Server als auch Client unterstützen.<br/>
 Treffen Sie eine Ihren Anforderung entsprechende Auswahl.<p>
-Sie k&ouml;nnen gleichzeitig mehrere Layer w&auml;hlen, die dann auf Serverseite zusammengestellt und in einem St&uuml;ck an QGIS &uuml;bermittelt werden.<p>
-Jeder WMS-Layer kann, abh&auml;ngig der M&ouml;glichkeiten des WMS-Servers, in mehreren KBS angezeigt werden. Um ein KBS zu w&auml;hlen, klicken Sie auf <label>&Auml;ndern...</label>
+Sie können gleichzeitig mehrere Layer wählen, die dann auf Serverseite zusammengestellt und in einem Stück an QGIS übermittelt werden.<p>
+Jeder WMS-Layer kann, abhängig der Möglichkeiten des WMS-Servers, in mehreren KBS angezeigt werden. Um ein KBS zu wählen, klicken Sie auf <label>Ändern...</label>
 
 <a name="lay">
 <h4>Layerreihenfolge</h4>
 </a>
-Unter diesem Reiter k&ouml;nnen Sie die Reihenfolge der geladenen WMS-Layer &auml;ndern.
+Unter diesem Reiter können Sie die Reihenfolge der geladenen WMS-Layer ändern.
 
 <a name="search">
 <h4>Serversuche</h4>
 </a>
-Unter diesem Reiter k&ouml;nnen Sie nach WMS-Servern suchen.  Sie k&ouml;nnen einen Suchbegriff in einem Textfeld angeben, nachdem dann &uuml;ber den Knopf <label>Suche</label> gesucht wird.<p>
-Um das Ergebnis anzuzeigen, w&auml;hlen Sie einen Eintrag und klicken auf <label>Gew&auml;hlte Zeile der WMS-Liste hinzuf&uuml;gen</label> und wechseln wieder zum Reiter <label>Server</label>.<p>
-Sie k&ouml;nnen dann die Layerliste mit einem Klick auf den Knopf <label>Verbinden</label> erfragen.
+Unter diesem Reiter können Sie nach WMS-Servern suchen.  Sie können einen Suchbegriff in einem Textfeld angeben, nachdem dann über den Knopf <label>Suche</label> gesucht wird.<p>
+Um das Ergebnis anzuzeigen, wählen Sie einen Eintrag und klicken auf <label>Gewählte Zeile der WMS-Liste hinzufügen</label> und wechseln wieder zum Reiter <label>Server</label>.<p>
+Sie können dann die Layerliste mit einem Klick auf den Knopf <label>Verbinden</label> erfragen.

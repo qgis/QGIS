@@ -19,7 +19,8 @@
 #include <QLocale>
 #include <QSettings>
 #include <QTranslator>
-#include "qgshelpserver.h"
+#include <QLibraryInfo>
+
 #include "qgshelpviewer.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -39,7 +40,7 @@ int main( int argc, char ** argv )
 
   if ( argc == 2 )
   {
-    context = argv[1];
+    myTranslationCode = argv[1];
   }
 
   if ( !QgsApplication::isRunningFromBuildDir() )
@@ -67,17 +68,6 @@ int main( int argc, char ** argv )
   }
   QgsDebugMsg( QString( "Setting translation to %1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ) );
 
-  /* Translation file for Qt.
-   * The strings from the QMenuBar context section are used by Qt/Mac to shift
-   * the About, Preferences and Quit items to the Mac Application menu.
-   * These items must be translated identically in both qt_ and qgis_ files.
-   */
-  QTranslator qttor( 0 );
-  if ( qttor.load( QString( "qt_" ) + myTranslationCode, i18nPath ) )
-  {
-    a.installTranslator( &qttor );
-  }
-
   /* Translation file for QGIS.
    */
   QTranslator qgistor( 0 );
@@ -86,20 +76,17 @@ int main( int argc, char ** argv )
     a.installTranslator( &qgistor );
   }
 
-  QgsHelpViewer w( context );
-  w.show();
+  /* Translation file for Qt.
+   * The strings from the QMenuBar context section are used by Qt/Mac to shift
+   * the About, Preferences and Quit items to the Mac Application menu.
+   * These items must be translated identically in both qt_ and qgis_ files.
+   */
+  QTranslator qttor( 0 );
+  if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+  {
+    a.installTranslator( &qttor );
+  }
 
-  a.connect( &a, SIGNAL( lastWindowClosed() ), &a, SLOT( quit() ) );
-
-  // Create socket for client to send context requests to.
-  // This allows an existing viewer to be reused rather then creating
-  // an additional viewer if one is already running.
-  QgsHelpContextServer *helpServer = new QgsHelpContextServer();
-  // Make port number available to client
-  std::cout << helpServer->serverPort() << std::endl;
-  // Pass context request from socket to viewer widget
-  QObject::connect( helpServer, SIGNAL( setContext( const QString& ) ),
-                    &w, SLOT( setContext( const QString& ) ) );
-
-  return a.exec();
+  QgsHelpViewer w;
+  a.exec();
 }

@@ -2352,3 +2352,30 @@ bool QgsExpression::NodeCondition::needsGeometry() const
 
   return false;
 }
+
+QString QgsExpression::helptext( QString name )
+{
+  QgsExpression::initFunctionHelp();
+  return gFunctionHelpTexts.value( name, QObject::tr( "function help for %1 missing" ).arg( name ) );
+}
+
+QHash<QString, QString> QgsExpression::gGroups;
+
+QString QgsExpression::group( QString name )
+{
+  if ( gGroups.isEmpty() )
+  {
+    gGroups.insert( "Operators", QObject::tr( "Operators" ) );
+    gGroups.insert( "Conditionals", QObject::tr( "Conditionals" ) );
+    gGroups.insert( "Fields and Values", QObject::tr( "Fields and Values" ) );
+    gGroups.insert( "Math", QObject::tr( "Math" ) );
+    gGroups.insert( "Conversions", QObject::tr( "Conversions" ) );
+    gGroups.insert( "Date and Time", QObject::tr( "Date and Time" ) );
+    gGroups.insert( "String", QObject::tr( "String" ) );
+    gGroups.insert( "Color", QObject::tr( "Color" ) );
+    gGroups.insert( "Geometry", QObject::tr( "Geometry" ) );
+    gGroups.insert( "Record", QObject::tr( "Record" ) );
+  }
+
+  return gGroups.value( name, QObject::tr( "Missing group %1" ).arg( name ) );
+}
