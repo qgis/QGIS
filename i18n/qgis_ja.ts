@@ -22317,7 +22317,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="408"/>
         <source>The proj4 definition of &apos;%1&apos; is not valid.</source>
-        <translation>proj4定義 &apos;%1&apos; が不正です</translation>
+        <translation>proj4定義 &apos;%1&apos; が不正です.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="465"/>
@@ -23931,7 +23931,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="293"/>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="296"/>
         <source>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</source>
-        <translation>エスケープ文字はそれに続く文字を普通の文字として扱うように強制します (つまりデリミタやクォート、改行とみなさない).  もしエスケープ文字がクォート文字と同じ場合はクォートに囲まれた部分しかエスケープしません</translation>
+        <translation>エスケープ文字はそれに続く文字を普通の文字として扱うように強制します (つまりデリミタやクォート、改行とみなさない).  もしエスケープ文字がクォート文字と同じ場合はクォートに囲まれた部分しかエスケープしません.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdelimitedtextsourceselectbase.ui" line="344"/>
@@ -31054,7 +31054,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="59"/>
         <source>cellhd file %1 does not exist</source>
-        <translation>cellhsファイル%1は存在しません</translation>
+        <translation>cellhdファイル%1は存在しません</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="68"/>
@@ -34467,14 +34467,14 @@ not displayed</source>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation>%１は描画できませんでした、なぜなら
+        <translation>%1は描画できませんでした、なぜなら
 %2</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="1494"/>
         <source>Could not draw %1 because:
 %2</source>
-        <translation>%１は描画できませんでした、なぜなら
+        <translation>%1は描画できませんでした、なぜなら
 %2</translation>
     </message>
 </context>
@@ -34608,7 +34608,7 @@ not displayed</source>
         <location filename="../src/core/qgsmaplayer.cpp" line="910"/>
         <location filename="../src/core/qgsmaplayer.cpp" line="1088"/>
         <source>The directory containing your dataset needs to be writable!</source>
-        <translation>データセットがおいてあるディレクトリは書き込み許可が必要です</translation>
+        <translation>データセットのあるディレクトリは書き込み許可が必要です!</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="924"/>
@@ -34619,7 +34619,7 @@ not displayed</source>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="929"/>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
-        <translation>エラー デフォルトスタイルファイルを%1として作成できません。ファイルのパーミッションをチェックしてリトライしてください</translation>
+        <translation>エラー デフォルトスタイルファイルを%1として作成できません。ファイルのパーミッションをチェックしてリトライしてください.</translation>
     </message>
 </context>
 <context>
@@ -34660,7 +34660,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="68"/>
         <source>The data provider for this layer does not support the addition of features.</source>
-        <translation>このレイヤのデータプロバイダーでは地物を追加できない</translation>
+        <translation>このレイヤのデータプロバイダーでは地物を追加できません.</translation>
     </message>
     <message>
         <source>Layer not editable</source>
@@ -34723,7 +34723,7 @@ not displayed</source>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="217"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="236"/>
         <source>Cannot add feature. Unknown WKB type</source>
-        <translation>地物を追加できません。不明なWKBタイプです。</translation>
+        <translation>地物を追加できません。不明なWKBタイプです</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="258"/>
@@ -35800,22 +35800,22 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="222"/>
         <source>Project CRS transformation is turned off.</source>
-        <translation>プロジェクトのCRS変換は無効になっています</translation>
+        <translation>プロジェクトのCRS変換は無効になっています.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="223"/>
         <source>Canvas units setting is taken from project properties setting (%1).</source>
-        <translation>キャンバス単位の設定はプロジェクトプロパティから取得されています (%1)</translation>
+        <translation>キャンバス単位の設定はプロジェクトプロパティから取得されています (%1).</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="224"/>
         <source>Ellipsoidal calculation is not possible, as project CRS is undefined.</source>
-        <translation>プロジェクトのCRSが定義されていないため楕円体計算ができません</translation>
+        <translation>プロジェクトのCRSが定義されていないため楕円体計算ができません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="230"/>
         <source>Project CRS transformation is turned on and ellipsoidal calculation is selected.</source>
-        <translation>プロジェクトのCRS変換が有効になり楕円体計算が選択されます</translation>
+        <translation>プロジェクトのCRS変換が有効になり楕円体計算が選択されます.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="231"/>
@@ -35825,12 +35825,12 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="235"/>
         <source>Project CRS transformation is turned on but ellipsoidal calculation is not selected.</source>
-        <translation>プロジェクトのCRS変換が有効になりましたが楕円体計算は選択されていません</translation>
+        <translation>プロジェクトのCRS変換が有効になりましたが楕円体計算は選択されていません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="236"/>
         <source>The canvas units setting is taken from the project CRS (%1).</source>
-        <translation>キャンバス単位の設定はプロジェクトのCRSから取得されています (%1)</translation>
+        <translation>キャンバス単位の設定はプロジェクトのCRSから取得されています (%1).</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="242"/>
