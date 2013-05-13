@@ -215,7 +215,7 @@ class QgsErrorItem : QgsDataItem
 
 // ---------
 
-class QgsDirectoryParamWidget : public QTreeWidget
+class QgsDirectoryParamWidget : QTreeWidget
 {
 %TypeHeaderCode
 #include <qgsdataitem.h>
