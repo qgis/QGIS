@@ -6,7 +6,7 @@ Returns arcuscosinus of a value in radians.
      acos(<i>real</i>)</p>
 
 <p><h4>Arguments</h4>
-<i>real</i> -> cos of an angle.</p>
+<i>real</i> &rarr; cos of an angle.</p>
 
 <p><h4>Example</h4>
-     acos(0.5) -> 1.0471975511966</p>
+     acos(0.5) &rarr; 1.0471975511966</p>

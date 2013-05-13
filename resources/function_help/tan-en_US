@@ -6,7 +6,7 @@ Returns tangent of an angle.
      tan(<i>real</i>)</p>
 
 <p><h4>Arguments</h4>
-<i>real</i> -> angle in radians.</p>
+<i>real</i> &rarr; angle in radians.</p>
 
 <p><h4>Example</h4>
-     tan(1.0) -> 1.5574077246549</p>
+     tan(1.0) &rarr; 1.5574077246549</p>

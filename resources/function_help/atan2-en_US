@@ -8,8 +8,8 @@ arguments to determine the quadrant of the result
      atan2(<i>real</i>, <i>real</i>)</p>
 
 <p><h4>Arguments</h4>
-<i>real</i> -> y coordinate difference<br>
-<i>real</i> -> x coordinate difference</p>
+<i>real</i> &rarr; y coordinate difference<br>
+<i>real</i> &rarr; x coordinate difference</p>
 
 <p><h4>Example</h4>
-     atan2(1.0, 1.732) -> 0.523611477769969</p>
+     atan2(1.0, 1.732) &rarr; 0.523611477769969</p>

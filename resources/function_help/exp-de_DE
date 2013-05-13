@@ -6,7 +6,7 @@ Gibt die Exponentialfunktion eines Wert zurück.
      exp(<i>zahl</i>)</p>
 
 <p><h4>Argumente</h4>
-<i>zahl</i> -> Zahl.</p>
+<i>zahl</i> &rarr; Zahl.</p>
 
 <p><h4>Beispiel</h4>
-     exp(1.0) -> 2.71828182845905</p>
+     exp(1.0) &rarr; 2.71828182845905</p>

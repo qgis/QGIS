@@ -6,7 +6,7 @@ Gibt den Cosinus eines Winkels zurück.
      cos(<i>winkel</i>)</p>
 
 <p><h4>Argumente</h4>
-<i>winkel</i> -> Winkel im Bogenmaß.</p>
+<i>winkel</i> &rarr; Winkel im Bogenmaß.</p>
 
 <p><h4>Beispiel</h4>
-     cos(1.571) -> 0.000796326710733263</p>
+     cos(1.571) &rarr; 0.000796326710733263</p>

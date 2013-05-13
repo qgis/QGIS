@@ -6,8 +6,8 @@ Argumente zurück, um den den Quadranten des Ergebnisses zu bestimmen.
      atan2(<i>dy</i>, <i>dx</i>)</p>
 
 <p><h4>Argumente</h4>
-<i>dy</i> -> y Ordinatendifferenz<br>
-<i>dx</i> -> x Ordinatendifferenz</p>
+<i>dy</i> &rarr; y Ordinatendifferenz<br>
+<i>dx</i> &rarr; x Ordinatendifferenz</p>
 
 <p><h4>Beispiel</h4>
-     atan2(1.0, 1.732) -> 0.523611477769969</p>
+     atan2(1.0, 1.732) &rarr; 0.523611477769969</p>

@@ -6,7 +6,7 @@ Gibt den Arcuscosinus eines Werts im Bogenmaß zurück.
      acos(<i>wert</i>)</p>
 
 <p><h4>Argumente</h4>
-<i>wert</i> -> Cosinus eines Winkels.</p>
+<i>wert</i> &rarr; Cosinus eines Winkels.</p>
 
 <p><h4>Beispiel</h4>
-     acos(0.5) -> 1.0471975511966</p>
+     acos(0.5) &rarr; 1.0471975511966</p>

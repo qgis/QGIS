@@ -6,8 +6,8 @@ Wandelt eine Zeichenkette in eine ganze Zahl um.  Bricht ab, wenn die Zeichenket
 
 <p><h4>Argumente</h4>
 <!-- List args for functions here-->
-<i>  zeichenkette</i> -> ist eine Zeichenkette.  Die in eine ganze Zahl umzuwandelnde Zeichenkette.</p>
+<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die in eine ganze Zahl umzuwandelnde Zeichenkette.</p>
 
 <p><h4>Beispiel</h4>
 <!-- Show example of function.-->
-     toint('123') -> 123</p>
+     toint('123') &rarr; 123</p>

@@ -6,8 +6,8 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 
 <p><h4>Arguments</h4>
 <!-- List args for functions here-->
-<i>  string</i> -> is string.  The String to convert to real number.</p>
+<i>  string</i> &rarr; is string.  The String to convert to real number.</p>
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     toreal('123.45') -> 123.45</p>
+     toreal('123.45') &rarr; 123.45</p>

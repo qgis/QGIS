@@ -6,7 +6,7 @@ Gibt den Tangens eines Winkel zurück.
      tan(<i>winkel</i>)</p>
 
 <p><h4>Argumente</h4>
-<i>winkel</i> -> Winkel im Bogenmaß.</p>
+<i>winkel</i> &rarr; Winkel im Bogenmaß.</p>
 
 <p><h4>Beispiel</h4>
-     tan(1.0) -> 1.5574077246549</p>
+     tan(1.0) &rarr; 1.5574077246549</p>
