@@ -2540,14 +2540,14 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
       else
       {
         QString msg = tr( "%1 doesn't have any layers" ).arg( src );
-        QMessageBox::critical( this, tr( "Invalid Data Source" ), msg );
+        messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
         delete layer;
       }
     }
     else
     {
       QString msg = tr( "%1 is not a valid or recognized data source" ).arg( src );
-      QMessageBox::critical( this, tr( "Invalid Data Source" ), msg );
+      messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
 
       // since the layer is bad, stomp on it
       delete layer;
