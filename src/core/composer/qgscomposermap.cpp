@@ -42,8 +42,9 @@
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ),
     mOverviewFrameMapId( -1 ), mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mGridEnabled( false ), mGridStyle( Solid ),
-    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ),
-    mGridBlendMode( QPainter::CompositionMode_SourceOver ), mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
+    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
+    mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver ),
+    mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
     mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ),
     mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
     mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ),  mGridFrameWidth( 2.0 ),
@@ -86,8 +87,9 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mOverviewFrameMapId( -1 ),
     mOverviewBlendMode( QPainter::CompositionMode_SourceOver ), mOverviewInverted( false ), mGridEnabled( false ), mGridStyle( Solid ),
-    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ),
-    mGridBlendMode( QPainter::CompositionMode_SourceOver ), mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
+    mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationFontColor( QColor( 0, 0, 0 ) ),
+    mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), mGridBlendMode( QPainter::CompositionMode_SourceOver ),
+    mLeftGridAnnotationPosition( OutsideMapFrame ), mRightGridAnnotationPosition( OutsideMapFrame ),
     mTopGridAnnotationPosition( OutsideMapFrame ), mBottomGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ),
     mLeftGridAnnotationDirection( Horizontal ), mRightGridAnnotationDirection( Horizontal ), mTopGridAnnotationDirection( Horizontal ),
     mBottomGridAnnotationDirection( Horizontal ), mGridFrameStyle( NoGridFrame ), mGridFrameWidth( 2.0 ), mCrossLength( 3 ),
@@ -813,6 +815,12 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   annotationElem.setAttribute( "frameDistance",  QString::number( mAnnotationFrameDistance ) );
   annotationElem.setAttribute( "font", mGridAnnotationFont.toString() );
   annotationElem.setAttribute( "precision", mGridAnnotationPrecision );
+  //annotation font color
+  QDomElement annotationFontColorElem = doc.createElement( "fontColor" );
+  annotationFontColorElem.setAttribute( "red", mGridAnnotationFontColor.red() );
+  annotationFontColorElem.setAttribute( "green", mGridAnnotationFontColor.green() );
+  annotationFontColorElem.setAttribute( "blue", mGridAnnotationFontColor.blue() );
+  annotationElem.appendChild( annotationFontColorElem );
 
   gridElem.appendChild( annotationElem );
   composerMapElem.appendChild( gridElem );
@@ -975,6 +983,22 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
       mBottomGridAnnotationDirection = QgsComposerMap::GridAnnotationDirection( annotationElem.attribute( "bottomDirection", "0" ).toInt() );
       mAnnotationFrameDistance = annotationElem.attribute( "frameDistance", "0" ).toDouble();
       mGridAnnotationFont.fromString( annotationElem.attribute( "font", "" ) );
+
+      //annotation font color
+      QDomNodeList annotationFontColorList = annotationElem.elementsByTagName( "fontColor" );
+      if ( annotationFontColorList.size() > 0 )
+      {
+        QDomElement fontColorElem = annotationFontColorList.at( 0 ).toElement();
+        int red = fontColorElem.attribute( "red", "0" ).toInt();
+        int green = fontColorElem.attribute( "green", "0" ).toInt();
+        int blue = fontColorElem.attribute( "blue", "0" ).toInt();
+        mGridAnnotationFontColor = QColor( red, green, blue );
+      }
+      else
+      {
+        mGridAnnotationFontColor = QColor( 0, 0, 0 );
+      }
+
       mGridAnnotationPrecision = annotationElem.attribute( "precision", "3" ).toInt();
     }
   }
@@ -1398,7 +1422,7 @@ void QgsComposerMap::drawAnnotation( QPainter* p, const QPointF& pos, int rotati
   p->save();
   p->translate( pos );
   p->rotate( rotation );
-  p->setPen( QColor( 0, 0, 0 ) );
+  p->setPen( QPen( QColor( mGridAnnotationFontColor ) ) );
   drawText( p, 0, 0, annotationText, mGridAnnotationFont );
   p->restore();
 }

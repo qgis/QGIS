@@ -56,7 +56,7 @@
         <x>0</x>
         <y>-202</y>
         <width>440</width>
-        <height>1347</height>
+        <height>1380</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -593,7 +593,7 @@
                </property>
               </widget>
              </item>
-             <item row="10" column="0">
+             <item row="11" column="0">
               <widget class="QLabel" name="mDistanceToFrameLabel">
                <property name="text">
                 <string>Distance to map frame</string>
@@ -606,10 +606,10 @@
                </property>
               </widget>
              </item>
-             <item row="10" column="1">
+             <item row="11" column="1">
               <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox"/>
              </item>
-             <item row="11" column="0">
+             <item row="12" column="0">
               <widget class="QLabel" name="mCoordinatePrecisionLabel">
                <property name="text">
                 <string>Coordinate precision</string>
@@ -622,8 +622,15 @@
                </property>
               </widget>
              </item>
-             <item row="11" column="1">
+             <item row="12" column="1">
               <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+             </item>
+             <item row="10" column="1">
+              <widget class="QgsColorButton" name="mAnnotationFontColorButton">
+               <property name="text">
+                <string>Font color...</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -712,6 +719,11 @@
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>  
  </customwidgets>
  <resources/>
  <connections/>

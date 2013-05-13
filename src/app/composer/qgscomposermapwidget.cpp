@@ -362,6 +362,10 @@ void QgsComposerMapWidget::updateGuiElements()
     initAnnotationDirectionBox( mAnnotationDirectionComboBoxTop, mComposerMap->gridAnnotationDirection( QgsComposerMap::Top ) );
     initAnnotationDirectionBox( mAnnotationDirectionComboBoxBottom, mComposerMap->gridAnnotationDirection( QgsComposerMap::Bottom ) );
 
+    mAnnotationFontColorButton->setColor( mComposerMap->annotationFontColor() );
+    mAnnotationFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+    mAnnotationFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
+
     mDistanceToMapFrameSpinBox->setValue( mComposerMap->annotationFrameDistance() );
 
     if ( mComposerMap->showGridAnnotation() )
@@ -440,6 +444,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAnnotationDirectionComboBoxTop->blockSignals( b );
   mAnnotationDirectionComboBoxBottom->blockSignals( b );
   mCoordinatePrecisionSpinBox->blockSignals( b );
+  mAnnotationFontColorButton->blockSignals( b );
   mDrawCanvasItemsCheckBox->blockSignals( b );
   mFrameStyleComboBox->blockSignals( b );
   mFrameWidthSpinBox->blockSignals( b );
@@ -741,6 +746,18 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
     mComposerMap->update();
     mComposerMap->endCommand();
   }
+}
+
+void QgsComposerMapWidget::on_mAnnotationFontColorButton_colorChanged( const QColor& newFontColor )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+  mComposerMap->beginCommand( tr( "Label font changed" ) );
+  mComposerMap->setAnnotationFontColor( newFontColor );
+  mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mDistanceToMapFrameSpinBox_valueChanged( double d )

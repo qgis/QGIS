@@ -62,6 +62,7 @@ class QgsComposerMapWidget: public QWidget, private Ui::QgsComposerMapWidgetBase
     void on_mCrossWidthSpinBox_valueChanged( double d );
     void on_mGridBlendComboBox_currentIndexChanged( int index );
     void on_mAnnotationFontButton_clicked();
+    void on_mAnnotationFontColorButton_colorChanged( const QColor& newFontColor );
     void on_mDistanceToMapFrameSpinBox_valueChanged( double d );
 
     void on_mAnnotationFormatComboBox_currentIndexChanged( int index );

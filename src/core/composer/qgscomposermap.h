@@ -246,6 +246,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setGridAnnotationFont( const QFont& f ) { mGridAnnotationFont = f; }
     QFont gridAnnotationFont() const { return mGridAnnotationFont; }
 
+    /**Sets font color for grid annotations
+        @note: this function was added in version 2.0*/
+    void setAnnotationFontColor( const QColor& c ) {mGridAnnotationFontColor = c;}
+    /**Get font color for grid annotations
+        @note: this function was added in version 2.0*/
+    QColor annotationFontColor() const {return mGridAnnotationFontColor;}
+
     /**Sets coordinate precision for grid annotations
     @note this function was added in version 1.4*/
     void setGridAnnotationPrecision( int p ) {mGridAnnotationPrecision = p;}
@@ -422,6 +429,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mGridOffsetY;
     /**Font for grid line annotation*/
     QFont mGridAnnotationFont;
+    /**Font color for grid line annotation*/
+    QColor mGridAnnotationFontColor;
     /**Digits after the dot*/
     int mGridAnnotationPrecision;
     /**True if coordinate values should be drawn*/
