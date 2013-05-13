@@ -15,6 +15,31 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
+     <property name="title">
+      <string>Layer rendering</string>
+     </property>
+     <property name="collapsed" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="saveCollapsedState" stdset="0">
+      <bool>true</bool>
+     </property>     
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="lblLayerBlend">
+        <property name="text">
+         <string>Layer blending mode</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QComboBox" name="cboRenderers"/>
@@ -33,14 +58,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="lblFeatureBlend">
        <property name="text">
-        <string>Blending mode</string>
+        <string>Feature blending mode</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsBlendModeComboBox" name="mBlendModeComboBox"/>
+      <widget class="QgsBlendModeComboBox" name="mFeatureBlendComboBox"/>
      </item>
     </layout>
    </item>
@@ -89,6 +114,12 @@
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>  
  </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>

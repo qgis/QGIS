@@ -518,20 +518,29 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       // before compositing this on the map. This effectively flattens the layer and prevents
       // blending occuring between objects on the layer
       // (this is not required for raster layers or when layer caching is enabled, since that has the same effect)
-      if (( mRenderContext.useAdvancedEffects() ) && ( ml->blendMode()  != QPainter::CompositionMode_SourceOver ) &&
-          ( ml->type() != QgsMapLayer::RasterLayer ) &&
-          ( split || !mySettings.value( "/qgis/enable_render_caching", false ).toBool() ) )
+      bool flattenedLayer = false;
+      if (( mRenderContext.useAdvancedEffects() ) && ( ml->type() == QgsMapLayer::VectorLayer ) )
       {
-        mypFlattenedImage = new QImage( mRenderContext.painter()->device()->width(),
-                                        mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
-        mypFlattenedImage->fill( 0 );
-        QPainter * mypPainter = new QPainter( mypFlattenedImage );
-        if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
+        if (( vl->blendMode() != QPainter::CompositionMode_SourceOver && ( split || !mySettings.value( "/qgis/enable_render_caching", false ).toBool() ) )
+            || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver ) )
+
         {
-          mypPainter->setRenderHint( QPainter::Antialiasing );
+          flattenedLayer = true;
+          mypFlattenedImage = new QImage( mRenderContext.painter()->device()->width(),
+                                          mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
+          mypFlattenedImage->fill( 0 );
+          QPainter * mypPainter = new QPainter( mypFlattenedImage );
+          if ( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() )
+          {
+            mypPainter->setRenderHint( QPainter::Antialiasing );
+          }
+          mypPainter->scale( rasterScaleFactor,  rasterScaleFactor );
+          mRenderContext.setPainter( mypPainter );
+
+          // set the painter to the feature blend mode
+          mypPainter->setCompositionMode( vl->featureBlendMode() );
         }
-        mypPainter->scale( rasterScaleFactor,  rasterScaleFactor );
-        mRenderContext.setPainter( mypPainter );
       }
 
       if ( scaleRaster )
@@ -584,9 +593,7 @@ void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
       }
 
       // If we flattened this layer for alternate blend modes, composite it now
-      if (( mRenderContext.useAdvancedEffects() ) && ( ml->blendMode()  != QPainter::CompositionMode_SourceOver ) &&
-          ( ml->type() != QgsMapLayer::RasterLayer ) &&
-          ( split || !mySettings.value( "/qgis/enable_render_caching", false ).toBool() ) )
+      if ( flattenedLayer )
       {
         delete mRenderContext.painter();
         mRenderContext.setPainter( mypContextPainter );

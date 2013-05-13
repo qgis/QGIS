@@ -122,6 +122,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mRendererV2( NULL )
     , mLabel( 0 )
     , mLabelOn( false )
+    , mFeatureBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal feature blending
     , mVertexMarkerOnlyForSelection( false )
     , mCache( new QgsGeometryCache( this ) )
     , mEditBuffer( 0 )
@@ -1759,6 +1760,14 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) e.text().toInt() ) );
     }
 
+    // get and set the feature blend mode if it exists
+    QDomNode featureBlendModeNode = node.namedItem( "featureBlendMode" );
+    if ( !featureBlendModeNode.isNull() )
+    {
+      QDomElement e = featureBlendModeNode.toElement();
+      setFeatureBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) e.text().toInt() ) );
+    }
+
     // use scale dependent visibility flag
     QDomElement e = node.toElement();
     mLabel->setScaleBasedVisibility( e.attribute( "scaleBasedLabelVisibilityFlag", "0" ) == "1" );
@@ -2083,6 +2092,12 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     QDomText blendModeText = doc.createTextNode( QString::number( QgsMapRenderer::getBlendModeEnum( blendMode() ) ) );
     blendModeElem.appendChild( blendModeText );
     node.appendChild( blendModeElem );
+
+    // add the feature blend mode field
+    QDomElement featureBlendModeElem  = doc.createElement( "featureBlendMode" );
+    QDomText featureBlendModeText = doc.createTextNode( QString::number( QgsMapRenderer::getBlendModeEnum( featureBlendMode() ) ) );
+    featureBlendModeElem.appendChild( featureBlendModeText );
+    node.appendChild( featureBlendModeElem );
 
     // add the display field
     QDomElement dField  = doc.createElement( "displayfield" );
@@ -3338,6 +3353,18 @@ QVariant QgsVectorLayer::maximumValue( int index )
 
   Q_ASSERT_X( false, "QgsVectorLayer::maximumValue()", "Unknown source of the field!" );
   return QVariant();
+}
+
+/** Write blend mode for features */
+void QgsVectorLayer::setFeatureBlendMode( const QPainter::CompositionMode featureBlendMode )
+{
+  mFeatureBlendMode = featureBlendMode;
+}
+
+/** Read blend mode for layer */
+QPainter::CompositionMode QgsVectorLayer::featureBlendMode() const
+{
+  return mFeatureBlendMode;
 }
 
 void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer )

@@ -655,10 +655,15 @@ bool QgsComposerMap::containsBlendModes() const
       {
         return true;
       }
-      // if vector layer and has labels, check label blend modes
+      // if vector layer, check labels and feature blend mode
       QgsVectorLayer* currentVectorLayer = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( currentVectorLayer )
       {
+        if ( currentVectorLayer->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+        {
+          return true;
+        }
+        // check label blend modes
         if ( lbl->willUseLayer( currentVectorLayer ) )
         {
           // Check all label blending properties

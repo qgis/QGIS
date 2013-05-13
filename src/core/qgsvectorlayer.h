@@ -1226,6 +1226,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in 1.7*/
     QVariant maximumValue( int index );
 
+    /* Set the blending mode used for rendering each feature
+     * @note added in 2.0
+     */
+    void setFeatureBlendMode( const QPainter::CompositionMode blendMode );
+    /* Returns the current blending mode for features
+     * @note added in 2.0
+     */
+    QPainter::CompositionMode featureBlendMode() const;
+
   public slots:
     /**
      * Select feature by its ID
@@ -1479,6 +1488,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Display labels */
     bool mLabelOn;
+
+    /** Blend mode for features */
+    QPainter::CompositionMode mFeatureBlendMode;
 
     /**The current type of editing marker*/
     QgsVectorLayer::VertexMarkerType mCurrentVertexMarkerType;
