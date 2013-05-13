@@ -215,10 +215,11 @@ class QgsErrorItem : QgsDataItem
 
 // ---------
 
-class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
+class QgsDirectoryParamWidget : public QTreeWidget
 {
-    Q_OBJECT
-
+%TypeHeaderCode
+#include <qgsdataitem.h>
+%End
   public:
     QgsDirectoryParamWidget( QString path, QWidget* parent = NULL );
 
