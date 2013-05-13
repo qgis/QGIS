@@ -3038,7 +3038,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
-        <translation>DEM(テリアンモデル)</translation>
+        <translation>DEM(地形モデル)</translation>
     </message>
     <message>
         <source>Plugin error</source>
@@ -4265,7 +4265,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="20"/>
         <source>DEM (Terrain models)</source>
-        <translation>DEM(テリアンモデル)</translation>
+        <translation>DEM(地形モデル)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="31"/>
@@ -8568,7 +8568,7 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="33"/>
         <source>Fit to a linear transform requires at least 2 points.</source>
-        <translation>ライナー変換を行う場合2点以上の指定が必要です.</translation>
+        <translation>リニア変換を行う場合2点以上の指定が必要です.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="74"/>
@@ -9730,7 +9730,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsgeometryvalidator.cpp" line="67"/>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
-        <translation>セグメント %1 リング %2　ポリゴン %3  が交差   セグメント %4　リング %5　ポリゴン %6　%7 のうち</translation>
+        <translation>ポリゴン%3のリング%2のセグメント%1はポリゴン%6のリング%5のセグメント%4と点%7で交差します</translation>
     </message>
     <message>
         <source>stopping validation after more than 100 errors</source>
@@ -12647,7 +12647,7 @@ Errors: %3
         <location filename="../src/app/qgisapp.cpp" line="2174"/>
         <source>Update of view in private qgis.db failed.
 %1</source>
-        <translation>プライベートのQGIS DBの表示の更新に失敗しました
+        <translation>プライベートのqgis.dbのビューの更新に失敗しました
 %1</translation>
     </message>
     <message>
@@ -24491,7 +24491,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="494"/>
         <source>Diagrams: No attributes added.</source>
-        <translation>図: 属性テーブルが追加されませんでした</translation>
+        <translation>図: 属性テーブルが追加されませんでした.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdiagramproperties.cpp" line="527"/>
@@ -39398,7 +39398,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1271"/>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
-        <translation>ドックウィンドウで属性テーブルを開く(QGISのリスタートが必要)</translation>
+        <translation>ドックウィンドウで属性テーブルを開く(QGISの再起動が必要)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1519"/>
@@ -39665,7 +39665,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3611"/>
         <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
-        <translation>&apos;オンザフライ&apos;再投影をデフォルトを有効にする(&amp;f)</translation>
+        <translation>&apos;オンザフライ&apos;再投影をデフォルトで有効にする(&amp;f)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3499"/>
@@ -42534,7 +42534,7 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
     </message>
     <message>
         <source>The Plugin Installer has been updated. Please restart QGIS prior to using it</source>
-        <translation>プラグインインストーラがアップデートされました.これを利用するためにQGISをリスタートして下さい</translation>
+        <translation>プラグインインストーラがアップデートされました.これを利用するためにQGISを再起動して下さい</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
@@ -42781,7 +42781,7 @@ Now you need to enable it in Plugin Manager.</source>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
         <translation>Pythonプラグインが再インストールされました。
-これをリロードするためにQuantum GISをリスタートさせる必要があります。</translation>
+これをリロードするためにQuantum GISを再起動させる必要があります。</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
@@ -49017,7 +49017,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="117"/>
         <source>Count features</source>
-        <translation>津物カウント</translation>
+        <translation>地物カウント</translation>
     </message>
     <message>
         <source>Rule grouping</source>
