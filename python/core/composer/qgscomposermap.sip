@@ -208,6 +208,11 @@ class QgsComposerMap : QgsComposerItem
     @note this function was added in version 1.4*/
     void setGridAnnotationFont( const QFont& f );
     QFont gridAnnotationFont() const;
+    
+    /**Sets font color for grid annotations
+    @note this function was added in version 2.0*/
+    void setAnnotationFontColor( const QColor& c );
+    QColor annotationFontColor() const;     
 
     /**Sets coordinate precision for grid annotations
     @note this function was added in version 1.4*/
@@ -242,6 +247,13 @@ class QgsComposerMap : QgsComposerItem
         @note: this function was added in version 1.9*/
     void setGridFrameWidth( double w );
     double gridFrameWidth() const;
+    
+    /** Returns the grid's blending mode
+     @note added in version 2.0*/
+    const QPainter::CompositionMode gridBlendMode() const;
+    /** Sets the grid's blending mode
+     @note added in version 2.0*/    
+    void setGridBlendMode( const QPainter::CompositionMode blendMode );     
 
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/
