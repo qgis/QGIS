@@ -122,7 +122,8 @@ class PythonConsoleWidget(QWidget):
 
         self.listClassMethod = QTreeWidget(self.splitterObj)
         self.listClassMethod.setColumnCount(2)
-        self.listClassMethod.setHeaderLabels(['Object', 'Line'])
+        objInspLabel = QCoreApplication.translate("PythonConsole", "Object Inspector")
+        self.listClassMethod.setHeaderLabels([objInspLabel, ''])
         self.listClassMethod.setColumnHidden(1, True)
         self.listClassMethod.setAlternatingRowColors(True)
 
@@ -237,7 +238,7 @@ class PythonConsoleWidget(QWidget):
         self.uncommentEditorButton.setToolTip(uncommentEditorBt)
         self.uncommentEditorButton.setText(uncommentEditorBt)
         ## Action for Object browser
-        objList = QCoreApplication.translate("PythonConsole", "Object browser")
+        objList = QCoreApplication.translate("PythonConsole", "Object Inspector")
         self.objectListButton = QAction(self)
         self.objectListButton.setCheckable(True)
         self.objectListButton.setEnabled(True)

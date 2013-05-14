@@ -186,6 +186,7 @@ class Editor(QsciScintilla):
         threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0]
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI').toString()
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool()
+
         self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
@@ -693,6 +694,7 @@ class EditorTab(QWidget):
         self.setEventFilter(self.keyFilter)
 
     def loadFile(self, filename, modified):
+        self.newEditor.lastModified = QFileInfo(filename).lastModified()
         fn = open(unicode(filename), "rb")
         txt = fn.read()
         fn.close()
@@ -702,7 +704,6 @@ class EditorTab(QWidget):
             self.newEditor.setReadOnly(self.readOnly)
         QApplication.restoreOverrideCursor()
         self.newEditor.setModified(modified)
-        self.newEditor.lastModified = QFileInfo(filename).lastModified()
         self.newEditor.recolor()
 
     def save(self, fileName=None):
@@ -869,7 +870,9 @@ class EditorTabWidget(QTabWidget):
         self.connect(self.newTabButton, SIGNAL('clicked()'), self.newTabEditor)
 
     def _currentWidgetChanged(self, tab):
-        self.listObject(tab)
+        if self.settings.value("pythonConsole/enableObjectInsp",
+                               False).toBool():
+            self.listObject(tab)
         self.changeLastDirPath(tab)
         self.enableSaveIfModified(tab)
 
@@ -1021,6 +1024,7 @@ class EditorTabWidget(QTabWidget):
             self.parent.updateTabListScript(currWidget.path, action='remove')
 
     def restoreTabs(self):
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         for script in self.restoreTabList:
             pathFile = unicode(script.toString())
             if os.path.exists(pathFile):
@@ -1034,6 +1038,7 @@ class EditorTabWidget(QTabWidget):
                 s = errOnRestore
                 sys.stderr.write(s)
                 self.parent.updateTabListScript(pathFile, action='remove')
+        QApplication.restoreOverrideCursor()
         if self.count() < 1:
             self.newTabEditor(filename=None)
         self.topFrame.close()
@@ -1074,11 +1079,11 @@ class EditorTabWidget(QTabWidget):
                 try:
                     reload(pyclbr)
                     dictObject = {}
-                    superClassName = []
                     readModule = pyclbr.readmodule(module)
                     readModuleFunction = pyclbr.readmodule_ex(module)
                     for name, class_data in sorted(readModule.items(), key=lambda x:x[1].lineno):
                         if os.path.normpath(str(class_data.file)) == os.path.normpath(str(tabWidget.path)):
+                            superClassName = []
                             for superClass in class_data.super:
                                 if superClass == 'object':
                                     continue
@@ -1088,7 +1093,7 @@ class EditorTabWidget(QTabWidget):
                                     superClassName.append(superClass.name)
                             classItem = QTreeWidgetItem()
                             if superClassName:
-                                for i in superClassName: super = i
+                                super = ', '.join([i for i in superClassName])
                                 classItem.setText(0, name + ' [' + super + ']')
                                 classItem.setToolTip(0, name + ' [' + super + ']')
                             else:
@@ -1128,15 +1133,27 @@ class EditorTabWidget(QTabWidget):
                     iconWarning = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
                     msgItem.setIcon(0, iconWarning)
                     self.parent.listClassMethod.addTopLevelItem(msgItem)
-                    #s = traceback.format_exc()
-                    #print '## Error: '
-                    #sys.stderr.write(s)
-                    #pass
+#                     s = traceback.format_exc()
+#                     print '## Error: '
+#                     sys.stderr.write(s)
+#                     pass
 
     def refreshSettingsEditor(self):
         countTab = self.count()
         for i in range(countTab):
             self.widget(i).newEditor.settingsEditor()
+
+        objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
+                                                  False).toBool()
+        listObj = self.parent.objectListButton
+        listObj.setChecked(objInspectorEnabled)
+        listObj.setEnabled(objInspectorEnabled)
+        if objInspectorEnabled:
+            cW = self.currentWidget()
+            if cW:
+                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+                self.listObject(cW)
+                QApplication.restoreOverrideCursor()
 
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)
