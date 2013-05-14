@@ -87,7 +87,7 @@ checkDock::checkDock( QgisInterface* qIface, QWidget* parent )
   connect( mValidateAllButton, SIGNAL( clicked() ), this, SLOT( validateAll() ) );
   //connect( mValidateSelectedButton, SIGNAL( clicked() ), this, SLOT( validateSelected() ) );
   connect( mValidateExtentButton, SIGNAL( clicked() ), this, SLOT( validateExtent() ) );
-  connect( mToggleRubberbands, SIGNAL( clicked() ), this, SLOT( toggleErrorMarkers() ) );
+  connect( mToggleRubberband, SIGNAL( clicked() ), this, SLOT( toggleErrorMarker() ) );
 
   connect( mFixButton, SIGNAL( clicked() ), this, SLOT( fix() ) );
   connect( mErrorTableView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( errorListClicked( const QModelIndex & ) ) );
@@ -380,6 +380,7 @@ void checkDock::runTests( ValidateType type )
     mErrorList << errors;
   }
   mMarkersVisible = true;
+  mToggleRubberband->setChecked( true );
   mErrorListModel->resetModel();
 }
 
@@ -406,6 +407,7 @@ void checkDock::validate( ValidateType type )
   clearVertexMarkers();
 
   mErrorTableView->resizeColumnsToContents();
+  mToggleRubberband->setChecked( true );
 }
 
 void checkDock::validateExtent()
@@ -423,21 +425,19 @@ void checkDock::validateSelected()
   validate( ValidateSelected );
 }
 
-void checkDock::toggleErrorMarkers()
+void checkDock::toggleErrorMarker()
 {
-  QList<QgsRubberBand*>::const_iterator it;
-  for ( it = mRbErrorMarkers.begin(); it != mRbErrorMarkers.end(); ++it )
-  {
-    QgsRubberBand* rb = *it;
-    if ( mMarkersVisible == true )
+    QList<QgsRubberBand*>::const_iterator it;
+    for ( it = mRbErrorMarkers.begin(); it != mRbErrorMarkers.end(); ++it )
     {
-      rb->hide();
+      QgsRubberBand* rb = *it;
+        if ( mToggleRubberband->isChecked() )
+        {
+            rb->show();
+        }
+        else
+        {
+            rb->hide();
+        }
     }
-    else
-    {
-      rb->show();
-    }
-  }
-  mMarkersVisible = !mMarkersVisible;
-
 }
