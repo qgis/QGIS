@@ -104,6 +104,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
   cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
   cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
+  cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
 
   // read the current browser and set it
   QSettings settings;

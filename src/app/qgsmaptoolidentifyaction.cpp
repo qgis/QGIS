@@ -90,10 +90,50 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QMouseEvent *e )
   }
 
   resultsDialog()->clear();
-
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
-  QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y() );
+
+  QList<IdentifyResult> results;
+  QSettings settings;
+  IdentifyMode mode = static_cast<IdentifyMode>( settings.value( "/Map/identifyMode", 0 ).toInt() );
+  if ( mode == LayerSelection )
+  {
+    QMap< QgsMapLayer*, QList<IdentifyResult> > layerIdResults;
+
+    QList<QgsMapLayer*> canvasLayers = mCanvas->layers();
+    QList<QgsMapLayer*>::iterator it = canvasLayers.begin();
+    for ( ; it != canvasLayers.end(); ++it )
+    {
+      QList<IdentifyResult> idResult = QgsMapToolIdentify::identify( e->x(), e->y(), QList<QgsMapLayer*>() << *it );
+      if ( !idResult.isEmpty() )
+      {
+        layerIdResults.insert( *it, idResult );
+      }
+    }
+
+    //show QMenu with available layers
+    QMenu layerSelectionMenu;
+    QMap< QgsMapLayer*, QList<IdentifyResult> >::const_iterator resultIt = layerIdResults.constBegin();
+    for ( ; resultIt != layerIdResults.constEnd(); ++resultIt )
+    {
+      QAction* action = new QAction( resultIt.key()->name(), 0 );
+      action->setData( resultIt.key()->id() );
+      //QObject::connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+      layerSelectionMenu.addAction( action );
+    }
+
+    QAction* selectedAction = layerSelectionMenu.exec( e->globalPos() );
+    if ( selectedAction )
+    {
+      QgsMapLayer* selectedLayer = QgsMapLayerRegistry::instance()->mapLayer( selectedAction->data().toString() );
+      results = layerIdResults[ selectedLayer ];
+    }
+  }
+  else
+  {
+    results = QgsMapToolIdentify::identify( e->x(), e->y() );
+  }
+
   disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
