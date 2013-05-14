@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>629</width>
-    <height>551</height>
+    <width>666</width>
+    <height>478</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,658 +27,8 @@
   <property name="whatsThis">
    <string/>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
-   <item row="1" column="0">
-    <widget class="QFrame" name="frame_select_delimiters">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0">
-      <property name="margin">
-       <number>3</number>
-      </property>
-      <item row="3" column="0">
-       <widget class="QRadioButton" name="delimiterRegexp">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Each line in the  file is split using a regular expression to define the end of each field</string>
-        </property>
-        <property name="statusTip">
-         <string>Each line in the  file is split using a regular expression to define the end of each field</string>
-        </property>
-        <property name="whatsThis">
-         <string>Each line in the  file is split using a regular expression to define the end of each field</string>
-        </property>
-        <property name="text">
-         <string>Regular expression</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QRadioButton" name="delimiterChars">
-        <property name="toolTip">
-         <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
-        </property>
-        <property name="statusTip">
-         <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
-        </property>
-        <property name="whatsThis">
-         <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
-        </property>
-        <property name="text">
-         <string>Selected delimiters</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QRadioButton" name="delimiterCSV">
-        <property name="toolTip">
-         <string>The file a comma separated value file, fields delimited by commas and quoted by &quot;</string>
-        </property>
-        <property name="statusTip">
-         <string>The file a comma separated value file, fields delimited by commas and quoted by &quot;</string>
-        </property>
-        <property name="whatsThis">
-         <string>The file a comma separated value file, fields delimited by commas and quoted by &quot;</string>
-        </property>
-        <property name="text">
-         <string>CSV (comma separated values) format</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QFrame" name="frameDelimiterCharacters">
-        <property name="frameShape">
-         <enum>QFrame::Box</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Sunken</enum>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="margin">
-          <number>2</number>
-         </property>
-         <item>
-          <layout class="QHBoxLayout" name="layoutDelimChars">
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QCheckBox" name="cbxDelimComma">
-             <property name="toolTip">
-              <string>Comma character is one of the delimiters</string>
-             </property>
-             <property name="statusTip">
-              <string>Comma character is one of the delimiters</string>
-             </property>
-             <property name="whatsThis">
-              <string>Comma character is one of the delimiters</string>
-             </property>
-             <property name="text">
-              <string>Comma</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="cbxDelimTab">
-             <property name="toolTip">
-              <string>Tab character is one of the delimiters</string>
-             </property>
-             <property name="statusTip">
-              <string>Tab character is one of the delimiters</string>
-             </property>
-             <property name="whatsThis">
-              <string>Tab character is one of the delimiters</string>
-             </property>
-             <property name="text">
-              <string>Tab</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="cbxDelimSpace">
-             <property name="toolTip">
-              <string>Space character is one of the delimiters</string>
-             </property>
-             <property name="statusTip">
-              <string>Space character is one of the delimiters</string>
-             </property>
-             <property name="whatsThis">
-              <string>Space character is one of the delimiters</string>
-             </property>
-             <property name="text">
-              <string>Space</string>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="cbxDelimColon">
-             <property name="toolTip">
-              <string>Colon character is one of the delimiters</string>
-             </property>
-             <property name="statusTip">
-              <string>Colon character is one of the delimiters</string>
-             </property>
-             <property name="whatsThis">
-              <string>Colon character is one of the delimiters</string>
-             </property>
-             <property name="text">
-              <string>Colon</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="cbxDelimSemicolon">
-             <property name="toolTip">
-              <string>Semicolon character is one of the delimiters</string>
-             </property>
-             <property name="statusTip">
-              <string>Semicolon character is one of the delimiters</string>
-             </property>
-             <property name="whatsThis">
-              <string>Semicolon character is one of the delimiters</string>
-             </property>
-             <property name="text">
-              <string>Semicolon</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="layoutDelimOther">
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="labelDelimOther">
-             <property name="text">
-              <string>Other delimiters</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="txtDelimiterOther">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>32767</width>
-               <height>32767</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
-             </property>
-             <property name="statusTip">
-              <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
-             </property>
-             <property name="whatsThis">
-              <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
-             </property>
-             <property name="maxLength">
-              <number>10</number>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="labelQuote">
-             <property name="text">
-              <string>Quote</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="txtQuoteChars">
-             <property name="toolTip">
-              <string>The quote character(s) enclose fields which may include delimiters and new lines</string>
-             </property>
-             <property name="statusTip">
-              <string>The quote character(s) enclose fields which may include delimiters and new lines</string>
-             </property>
-             <property name="whatsThis">
-              <string>The quote character(s) enclose fields which may include delimiters and new lines</string>
-             </property>
-             <property name="text">
-              <string>&quot;</string>
-             </property>
-             <property name="maxLength">
-              <number>10</number>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="labelEscape">
-             <property name="text">
-              <string>Escape</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="txtEscapeChars">
-             <property name="toolTip">
-              <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
-             </property>
-             <property name="statusTip">
-              <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
-             </property>
-             <property name="whatsThis">
-              <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
-             </property>
-             <property name="text">
-              <string>&quot;</string>
-             </property>
-             <property name="maxLength">
-              <number>10</number>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="hspacer1">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_8">
-        <item>
-         <widget class="QLineEdit" name="txtDelimiterRegexp">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>32767</width>
-            <height>32767</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Regular expression used to split each line into fields</string>
-          </property>
-          <property name="statusTip">
-           <string>Regular expression used to split each line into fields</string>
-          </property>
-          <property name="whatsThis">
-           <string>Regular expression used to split each line into fields</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="lblRegexpError">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(255, 0, 0);</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="labelFileFormat">
-        <property name="text">
-         <string>File format </string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QFrame" name="frmGeometry">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::Box</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Sunken</enum>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <property name="spacing">
-       <number>4</number>
-      </property>
-      <property name="margin">
-       <number>3</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>Geometry definition</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QRadioButton" name="geomTypeXY">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="toolTip">
-           <string>Geometry is a point defined by X and Y coordinate fields</string>
-          </property>
-          <property name="statusTip">
-           <string>Geometry is a point defined by X and Y coordinate fields</string>
-          </property>
-          <property name="whatsThis">
-           <string>Geometry is a point defined by X and Y coordinate fields</string>
-          </property>
-          <property name="text">
-           <string>Point coordinates</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="textLabelx">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cmbXField">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Name of the field containing x values</string>
-          </property>
-          <property name="statusTip">
-           <string>Name of the field containing x values</string>
-          </property>
-          <property name="whatsThis">
-           <string>Name of the field containing x values</string>
-          </property>
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="textLabely">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cmbYField">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Name of the field containing y values</string>
-          </property>
-          <property name="statusTip">
-           <string>Name of the field containing y values</string>
-          </property>
-          <property name="whatsThis">
-           <string>Name of the field containing y values</string>
-          </property>
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbxXyDms">
-          <property name="toolTip">
-           <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
-          </property>
-          <property name="statusTip">
-           <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
-          </property>
-          <property name="whatsThis">
-           <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
-          </property>
-          <property name="text">
-           <string>DMS coordinates</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="hspacer4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QRadioButton" name="geomTypeWKT">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="toolTip">
-           <string>Geometry is read as a well known text string from the selected fields</string>
-          </property>
-          <property name="statusTip">
-           <string>Geometry is read as a well known text string from the selected fields</string>
-          </property>
-          <property name="whatsThis">
-           <string>Geometry is read as a well known text string from the selected fields</string>
-          </property>
-          <property name="text">
-           <string>Well known text (WKT) </string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Geometry field</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cmbWktField">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Name of the field containing well known text value</string>
-          </property>
-          <property name="statusTip">
-           <string>Name of the field containing well known text value</string>
-          </property>
-          <property name="whatsThis">
-           <string>Name of the field containing well known text value</string>
-          </property>
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>Geometry type</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cmbGeometryType">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <item>
-           <property name="text">
-            <string>Detect</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Point</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Line</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Polygon</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <spacer name="hspacer5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>177</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_9">
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QRadioButton" name="geomTypeNone">
-          <property name="toolTip">
-           <string>The file contains only attribute information - it will not be displayed on the map</string>
-          </property>
-          <property name="statusTip">
-           <string>The file contains only attribute information - it will not be displayed on the map</string>
-          </property>
-          <property name="whatsThis">
-           <string>The file contains only attribute information - it will not be displayed on the map</string>
-          </property>
-          <property name="text">
-           <string>No geometry (attribute only table)</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,0,1,0,0">
+   <item>
     <widget class="QWidget" name="widget_3" native="true">
      <property name="acceptDrops">
       <bool>true</bool>
@@ -804,54 +154,268 @@
      </layout>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QFrame" name="gridFrame_2">
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="spacing">
-       <number>3</number>
-      </property>
-      <property name="margin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QTableWidget" name="tblSample"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="lblStatus">
-     <property name="text">
-      <string>Sample data</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <layout class="QGridLayout" name="gridLayout">
-     <property name="leftMargin">
-      <number>3</number>
-     </property>
-     <property name="topMargin">
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <property name="bottomMargin">
       <number>0</number>
      </property>
-     <item row="0" column="0">
+     <item row="5" column="1">
+      <widget class="QStackedWidget" name="swGeomType">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="swpGeomXY">
+        <layout class="QVBoxLayout" name="verticalLayout_8">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="textLabelx">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>&lt;p align=&quot;right&quot;&gt;X field&lt;/p&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="cmbXField">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Name of the field containing x values</string>
+             </property>
+             <property name="statusTip">
+              <string>Name of the field containing x values</string>
+             </property>
+             <property name="whatsThis">
+              <string>Name of the field containing x values</string>
+             </property>
+             <property name="editable">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="textLabely">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>&lt;p align=&quot;right&quot;&gt;Y field&lt;/p&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="cmbYField">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Name of the field containing y values</string>
+             </property>
+             <property name="statusTip">
+              <string>Name of the field containing y values</string>
+             </property>
+             <property name="whatsThis">
+              <string>Name of the field containing y values</string>
+             </property>
+             <property name="editable">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="cbxXyDms">
+             <property name="toolTip">
+              <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
+             </property>
+             <property name="statusTip">
+              <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
+             </property>
+             <property name="whatsThis">
+              <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
+             </property>
+             <property name="text">
+              <string>DMS coordinates</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="hspacer4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="swpGeomWKT">
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Geometry field</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="cmbWktField">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Name of the field containing well known text value</string>
+             </property>
+             <property name="statusTip">
+              <string>Name of the field containing well known text value</string>
+             </property>
+             <property name="whatsThis">
+              <string>Name of the field containing well known text value</string>
+             </property>
+             <property name="editable">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Geometry type</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="cmbGeometryType">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <item>
+              <property name="text">
+               <string>Detect</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Point</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Line</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Polygon</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <spacer name="hspacer5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="swpGeomNone"/>
+      </widget>
+     </item>
+     <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Record options</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Field options</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="labelFileFormat">
+       <property name="text">
+        <string>File format </string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <property name="rightMargin">
         <number>9</number>
@@ -929,22 +493,211 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
         </spacer>
        </item>
       </layout>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_10">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QRadioButton" name="delimiterCSV">
+         <property name="toolTip">
+          <string>The file a comma separated value file, fields delimited by commas and quoted by &quot;</string>
+         </property>
+         <property name="statusTip">
+          <string>The file a comma separated value file, fields delimited by commas and quoted by &quot;</string>
+         </property>
+         <property name="whatsThis">
+          <string>The file a comma separated value file, fields delimited by commas and quoted by &quot;</string>
+         </property>
+         <property name="text">
+          <string>CSV (comma separated values)</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="delimiterChars">
+         <property name="toolTip">
+          <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
+         </property>
+         <property name="statusTip">
+          <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
+         </property>
+         <property name="whatsThis">
+          <string>Fields are defined by the specified delimiter, quote, and escape characters</string>
+         </property>
+         <property name="text">
+          <string>Custom delimiters</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="delimiterRegexp">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Each line in the  file is split using a regular expression to define the end of each field</string>
+         </property>
+         <property name="statusTip">
+          <string>Each line in the  file is split using a regular expression to define the end of each field</string>
+         </property>
+         <property name="whatsThis">
+          <string>Each line in the  file is split using a regular expression to define the end of each field</string>
+         </property>
+         <property name="text">
+          <string>Regular expression delimiter</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="6" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QCheckBox" name="cbxSpatialIndex">
+         <property name="toolTip">
+          <string>Use a spatial index to improve performance of displaying and spatially selecting features</string>
+         </property>
+         <property name="statusTip">
+          <string>Use a spatial index to improve performance of displaying and spatially selecting features</string>
+         </property>
+         <property name="whatsThis">
+          <string>Use a spatial index to improve performance of displaying and spatially selecting features</string>
+         </property>
+         <property name="text">
+          <string>Use spatial index</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cbxSubsetIndex">
+         <property name="statusTip">
+          <string>Use an index to improve performance of subset queries (set in layer properties)</string>
+         </property>
+         <property name="whatsThis">
+          <string>Use an index to improve performance of subset queries (set in layer properties)</string>
+         </property>
+         <property name="accessibleName">
+          <string>Use an index to improve performance of subset queries (set in layer properties)</string>
+         </property>
+         <property name="text">
+          <string>Use subset index</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="cbxWatchFile">
+         <property name="toolTip">
+          <string>Watch for changes to the file by other applications while QGIS is running</string>
+         </property>
+         <property name="statusTip">
+          <string>Watch for changes to the file by other applications while QGIS is running</string>
+         </property>
+         <property name="whatsThis">
+          <string>Watch for changes to the file by other applications while QGIS is running</string>
+         </property>
+         <property name="text">
+          <string>Watch file</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_8">
        <property name="text">
-        <string>Field options</string>
+        <string>Geometry definition</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
+     <item row="4" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_11">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QRadioButton" name="geomTypeXY">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string>Geometry is a point defined by X and Y coordinate fields</string>
+         </property>
+         <property name="statusTip">
+          <string>Geometry is a point defined by X and Y coordinate fields</string>
+         </property>
+         <property name="whatsThis">
+          <string>Geometry is a point defined by X and Y coordinate fields</string>
+         </property>
+         <property name="text">
+          <string>Point coordinates</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="geomTypeWKT">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="toolTip">
+          <string>Geometry is read as a well known text string from the selected fields</string>
+         </property>
+         <property name="statusTip">
+          <string>Geometry is read as a well known text string from the selected fields</string>
+         </property>
+         <property name="whatsThis">
+          <string>Geometry is read as a well known text string from the selected fields</string>
+         </property>
+         <property name="text">
+          <string>Well known text (WKT) </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="geomTypeNone">
+         <property name="toolTip">
+          <string>The file contains only attribute information - it will not be displayed on the map</string>
+         </property>
+         <property name="statusTip">
+          <string>The file contains only attribute information - it will not be displayed on the map</string>
+         </property>
+         <property name="whatsThis">
+          <string>The file contains only attribute information - it will not be displayed on the map</string>
+         </property>
+         <property name="text">
+          <string>No geometry (attribute only table)</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QCheckBox" name="cbxTrimFields">
@@ -1004,15 +757,348 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>0</width>
+           <height>0</height>
           </size>
          </property>
         </spacer>
        </item>
       </layout>
      </item>
+     <item row="1" column="1">
+      <widget class="QStackedWidget" name="swFileFormat">
+       <property name="currentIndex">
+        <number>2</number>
+       </property>
+       <widget class="QWidget" name="swpCSVOptions">
+        <layout class="QVBoxLayout" name="verticalLayout_4"/>
+       </widget>
+       <widget class="QWidget" name="swpDelimOptions">
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QFrame" name="frameDelimiterCharacters">
+           <property name="frameShape">
+            <enum>QFrame::Box</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Sunken</enum>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="margin">
+             <number>2</number>
+            </property>
+            <item>
+             <layout class="QHBoxLayout" name="layoutDelimChars">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QCheckBox" name="cbxDelimComma">
+                <property name="toolTip">
+                 <string>Comma character is one of the delimiters</string>
+                </property>
+                <property name="statusTip">
+                 <string>Comma character is one of the delimiters</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Comma character is one of the delimiters</string>
+                </property>
+                <property name="text">
+                 <string>Comma</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cbxDelimTab">
+                <property name="toolTip">
+                 <string>Tab character is one of the delimiters</string>
+                </property>
+                <property name="statusTip">
+                 <string>Tab character is one of the delimiters</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Tab character is one of the delimiters</string>
+                </property>
+                <property name="text">
+                 <string>Tab</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cbxDelimSpace">
+                <property name="toolTip">
+                 <string>Space character is one of the delimiters</string>
+                </property>
+                <property name="statusTip">
+                 <string>Space character is one of the delimiters</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Space character is one of the delimiters</string>
+                </property>
+                <property name="text">
+                 <string>Space</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cbxDelimColon">
+                <property name="toolTip">
+                 <string>Colon character is one of the delimiters</string>
+                </property>
+                <property name="statusTip">
+                 <string>Colon character is one of the delimiters</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Colon character is one of the delimiters</string>
+                </property>
+                <property name="text">
+                 <string>Colon</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="cbxDelimSemicolon">
+                <property name="toolTip">
+                 <string>Semicolon character is one of the delimiters</string>
+                </property>
+                <property name="statusTip">
+                 <string>Semicolon character is one of the delimiters</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Semicolon character is one of the delimiters</string>
+                </property>
+                <property name="text">
+                 <string>Semicolon</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="layoutDelimOther">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="labelDelimOther">
+                <property name="text">
+                 <string>Other delimiters</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="txtDelimiterOther">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>32767</width>
+                  <height>32767</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                </property>
+                <property name="statusTip">
+                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Delimiters to use when splitting fields in the text file. The delimiter can be more than one character.  These characters are used in addition to the comma, tab, space, colon, and semicolon options.</string>
+                </property>
+                <property name="maxLength">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelQuote">
+                <property name="text">
+                 <string>Quote</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="txtQuoteChars">
+                <property name="toolTip">
+                 <string>The quote character(s) enclose fields which may include delimiters and new lines</string>
+                </property>
+                <property name="statusTip">
+                 <string>The quote character(s) enclose fields which may include delimiters and new lines</string>
+                </property>
+                <property name="whatsThis">
+                 <string>The quote character(s) enclose fields which may include delimiters and new lines</string>
+                </property>
+                <property name="text">
+                 <string>&quot;</string>
+                </property>
+                <property name="maxLength">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="labelEscape">
+                <property name="text">
+                 <string>Escape</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="txtEscapeChars">
+                <property name="toolTip">
+                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
+                </property>
+                <property name="statusTip">
+                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
+                </property>
+                <property name="whatsThis">
+                 <string>The escape character(s) force the next character to be treated as a normal character (that is not a delimiter, quote, or new line character).  If the escape character is the same as a quote character, it only escapes itself and only within quotes.</string>
+                </property>
+                <property name="text">
+                 <string>&quot;</string>
+                </property>
+                <property name="maxLength">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="hspacer1">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="swpRegexpOptions">
+        <layout class="QVBoxLayout" name="verticalLayout_9">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,1">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>Expression</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="txtDelimiterRegexp">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>32767</width>
+               <height>32767</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Regular expression used to split each line into fields</string>
+             </property>
+             <property name="statusTip">
+              <string>Regular expression used to split each line into fields</string>
+             </property>
+             <property name="whatsThis">
+              <string>Regular expression used to split each line into fields</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblRegexpError">
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 0, 0);</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Layer settings</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QFrame" name="gridFrame_2">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="margin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QTableWidget" name="tblSample"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="lblStatus">
+     <property name="text">
+      <string>Sample data</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -1024,6 +1110,7 @@
   <tabstop>cmbEncoding</tabstop>
   <tabstop>delimiterCSV</tabstop>
   <tabstop>delimiterChars</tabstop>
+  <tabstop>delimiterRegexp</tabstop>
   <tabstop>cbxDelimComma</tabstop>
   <tabstop>cbxDelimTab</tabstop>
   <tabstop>cbxDelimSpace</tabstop>
@@ -1032,7 +1119,6 @@
   <tabstop>txtDelimiterOther</tabstop>
   <tabstop>txtQuoteChars</tabstop>
   <tabstop>txtEscapeChars</tabstop>
-  <tabstop>delimiterRegexp</tabstop>
   <tabstop>txtDelimiterRegexp</tabstop>
   <tabstop>rowCounter</tabstop>
   <tabstop>cbxUseHeader</tabstop>
@@ -1040,175 +1126,34 @@
   <tabstop>cbxSkipEmptyFields</tabstop>
   <tabstop>cbxPointIsComma</tabstop>
   <tabstop>geomTypeXY</tabstop>
+  <tabstop>geomTypeWKT</tabstop>
+  <tabstop>geomTypeNone</tabstop>
   <tabstop>cmbXField</tabstop>
   <tabstop>cmbYField</tabstop>
   <tabstop>cbxXyDms</tabstop>
-  <tabstop>geomTypeWKT</tabstop>
   <tabstop>cmbWktField</tabstop>
   <tabstop>cmbGeometryType</tabstop>
-  <tabstop>geomTypeNone</tabstop>
+  <tabstop>cbxSpatialIndex</tabstop>
+  <tabstop>cbxSubsetIndex</tabstop>
+  <tabstop>cbxWatchFile</tabstop>
   <tabstop>tblSample</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>delimiterRegexp</sender>
+   <sender>geomTypeNone</sender>
    <signal>toggled(bool)</signal>
-   <receiver>txtDelimiterRegexp</receiver>
-   <slot>setEnabled(bool)</slot>
+   <receiver>cbxSpatialIndex</receiver>
+   <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>141</x>
-     <y>217</y>
+     <x>496</x>
+     <y>253</y>
     </hint>
     <hint type="destinationlabel">
-     <x>382</x>
-     <y>216</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>geomTypeXY</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>cmbXField</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>107</x>
-     <y>338</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>310</x>
-     <y>340</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>geomTypeXY</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>cmbYField</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>107</x>
-     <y>338</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>478</x>
-     <y>340</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>geomTypeWKT</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>cmbWktField</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>109</x>
-     <y>369</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>353</x>
-     <y>371</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>delimiterChars</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>frameDelimiterCharacters</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>89</x>
-     <y>155</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>181</x>
-     <y>146</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>geomTypeWKT</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>cmbGeometryType</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>73</x>
-     <y>369</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>521</x>
-     <y>371</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>geomTypeXY</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>textLabelx</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>66</x>
-     <y>338</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>184</x>
-     <y>340</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>geomTypeXY</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>textLabely</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>338</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>352</x>
-     <y>340</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>geomTypeWKT</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>72</x>
-     <y>369</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>442</x>
-     <y>371</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>geomTypeXY</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>cbxXyDms</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>54</x>
-     <y>338</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>608</x>
-     <y>338</y>
+     <x>255</x>
+     <y>317</y>
     </hint>
    </hints>
   </connection>
