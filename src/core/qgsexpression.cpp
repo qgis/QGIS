@@ -442,27 +442,67 @@ static QVariant fcnRnd( const QVariantList& values, QgsFeature* , QgsExpression*
 static QVariant fcnLinearScale( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   double val = getDoubleValue( values.at( 0 ), parent );
-  double domain_min = getDoubleValue( values.at( 1 ), parent );
-  double domain_max = getDoubleValue( values.at( 2 ), parent );
-  double range_min = getDoubleValue( values.at( 3 ), parent );
-  double range_max = getDoubleValue( values.at( 4 ), parent );
+  double domainMin = getDoubleValue( values.at( 1 ), parent );
+  double domainMax = getDoubleValue( values.at( 2 ), parent );
+  double rangeMin = getDoubleValue( values.at( 3 ), parent );
+  double rangeMax = getDoubleValue( values.at( 4 ), parent );
+
+  if ( domainMin >= domainMax )
+  {
+    parent->setEvalErrorString( QObject::tr( "Domain max must be greater than domain min" ) );
+    return QVariant();
+  }
 
   // outside of domain?
-  if ( val >= domain_max )
+  if ( val >= domainMax )
   {
-    return range_max;
+    return rangeMax;
   }
-  else if ( val <= domain_min )
+  else if ( val <= domainMin )
   {
-    return range_min;
+    return rangeMin;
   }
 
   // calculate linear scale
-  double m = ( range_max - range_min ) / ( domain_max - domain_min );
-  double c = range_min - ( domain_min * m );
+  double m = ( rangeMax - rangeMin ) / ( domainMax - domainMin );
+  double c = rangeMin - ( domainMin * m );
 
   // Return linearly scaled value
   return QVariant( m * val + c );
+}
+
+static QVariant fcnExpScale( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double val = getDoubleValue( values.at( 0 ), parent );
+  double domainMin = getDoubleValue( values.at( 1 ), parent );
+  double domainMax = getDoubleValue( values.at( 2 ), parent );
+  double rangeMin = getDoubleValue( values.at( 3 ), parent );
+  double rangeMax = getDoubleValue( values.at( 4 ), parent );
+  double exponent = getDoubleValue( values.at( 5 ), parent );
+
+  if ( domainMin >= domainMax )
+  {
+    parent->setEvalErrorString( QObject::tr( "Domain max must be greater than domain min" ) );
+    return QVariant();
+  }
+  if ( exponent <= 0 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Exponent must be greater than 0" ) );
+    return QVariant();
+  }
+
+  // outside of domain?
+  if ( val >= domainMax )
+  {
+    return rangeMax;
+  }
+  else if ( val <= domainMin )
+  {
+    return rangeMin;
+  }
+
+  // Return exponentially scaled value
+  return QVariant((( rangeMax - rangeMin ) / pow( domainMax - domainMin, exponent ) ) * pow( val - domainMin, exponent ) + rangeMin );
 }
 
 static QVariant fcnMax( const QVariantList& values, QgsFeature* , QgsExpression *parent )
@@ -499,6 +539,27 @@ static QVariant fcnMin( const QVariantList& values, QgsFeature* , QgsExpression 
   }
 
   return QVariant( minVal );
+}
+
+static QVariant fcnClamp( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double minValue = getDoubleValue( values.at( 0 ), parent );
+  double testValue = getDoubleValue( values.at( 1 ), parent );
+  double maxValue = getDoubleValue( values.at( 2 ), parent );
+
+  // force testValue to sit inside the range specified by the min and max value
+  if ( testValue <= minValue )
+  {
+    return QVariant( minValue );
+  }
+  else if ( testValue >= maxValue )
+  {
+    return QVariant( maxValue );
+  }
+  else
+  {
+    return QVariant( testValue );
+  }
 }
 
 static QVariant fcnFloor( const QVariantList& values, QgsFeature* , QgsExpression* parent )
@@ -1342,8 +1403,8 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "abs" << "sqrt" << "cos" << "sin" << "tan"
     << "asin" << "acos" << "atan" << "atan2"
     << "exp" << "ln" << "log10" << "log"
-    << "round" << "rand" << "randf" << "max" << "min"
-    << "scale_linear" << "floor" << "ceil"
+    << "round" << "rand" << "randf" << "max" << "min" << "clamp"
+    << "scale_linear" << "scale_exp" << "floor" << "ceil"
     << "toint" << "toreal" << "tostring"
     << "todatetime" << "todate" << "totime" << "tointerval"
     << "coalesce" << "regexp_match" << "$now" << "age" << "year"
@@ -1389,7 +1450,9 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "randf", 2, fcnRndF, QObject::tr( "Math" ) )
     << new StaticFunction( "max", -1, fcnMax, QObject::tr( "Math" ) )
     << new StaticFunction( "min", -1, fcnMin, QObject::tr( "Math" ) )
+    << new StaticFunction( "clamp", 3, fcnClamp, QObject::tr( "Math" ) )
     << new StaticFunction( "scale_linear", 5, fcnLinearScale, QObject::tr( "Math" ) )
+    << new StaticFunction( "scale_exp", 6, fcnExpScale, QObject::tr( "Math" ) )
     << new StaticFunction( "floor", 1, fcnFloor, QObject::tr( "Math" ) )
     << new StaticFunction( "ceil", 1, fcnCeil, QObject::tr( "Math" ) )
     << new StaticFunction( "$pi", 0, fcnPi, QObject::tr( "Math" ) )

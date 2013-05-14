@@ -1,0 +1,28 @@
+<h3>scale_exp() function</h3>
+Transforms a given value from an input domain to an output range using an exponential curve. This function can be used to ease values in or out 
+of the specified output range.   
+
+<p><h4>Syntax</h4>
+     scale_exp(<i>val</i>,<i>domain_min</i>,<i>domain_max</i>,<i>range_min</i>,<i>range_max</i>,<i>exponent</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  val</i> &rarr; is a value in the input domain. The function will return a corresponding scaled value in the output range.<br>
+<i>  domain_min, domain_max</i> &rarr; specify the input domain, the smallest and largest values the input <i>val</i> should take.<br>
+<i>  range_min, range_max</i> &rarr; specify the output range, the smallest and largest values which should be output by the function.<br>
+<i>  exponent</i> &rarr; a positive value (greater than 0), which dictates the way input values are mapped to the output range. Large exponents will cause the output values to 'ease in', starting slowly before
+accelerating as the input values approach the domain maximum. Smaller exponents (less than 1) will cause output values to 'ease out', where the mapping starts quickly but slows as it approaches the domain maximum.<br>
+
+<h4>Example</h4>
+<!-- Show example of function.-->
+<b>Easing in, using an exponent of 2:</b><br>
+     scale_exp(5,0,10,0,100,2) &rarr; 25<br>
+     scale_exp(7.5,0,10,0,100,2) &rarr; 56.25<br>
+     scale_exp(9.5,0,10,0,100,2) &rarr; 90.25<br>               
+     <br>
+<b>Easing out, using an exponent of 0.5:</b><br>          
+     scale_exp(3,0,10,0,100,0.5) &rarr; 54.772<br>
+     scale_exp(6,0,10,0,100,0.5) &rarr; 77.459<br>
+     scale_exp(9,0,10,0,100,0.5) &rarr; 94.868<br>          
+     
+     
