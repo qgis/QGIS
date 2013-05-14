@@ -553,6 +553,7 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
                 ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) );
   geomTypeXY->setChecked( isXY );
   geomTypeWKT->setChecked( ! isXY );
+  swGeomType->setCurrentIndex( bgGeomType->checkedId() );
 
   if ( haveFields )
   {
