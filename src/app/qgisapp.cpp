@@ -980,6 +980,7 @@ void QgisApp::createActions()
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
+  connect( mActionAddDelimitedText, SIGNAL( triggered()), this, SLOT(addDelimitedTextLayer()));
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
   connect( mActionSaveLayerEdits, SIGNAL( triggered() ), this, SLOT( saveActiveLayerEdits() ) );
@@ -2969,6 +2970,31 @@ void QgisApp::addSpatiaLiteLayer()
   dbs->exec();
   delete dbs;
 } // QgisApp::addSpatiaLiteLayer()
+
+void QgisApp::addDelimitedTextLayer()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  // show the Delimited text dialog
+  QDialog *dts = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "delimitedtext", this ) );
+  if ( !dts )
+  {
+    QMessageBox::warning( this, tr( "DelimitedText" ), tr( "Cannot get Delimited Text select dialog from provider." ) );
+    return;
+  }
+  connect( dts, SIGNAL( addVectorLayer( QString, QString, QString ) ),
+           this, SLOT( addSelectedVectorLayer( QString, QString, QString ) ) );
+  dts->exec();
+  delete dts;
+} // QgisApp::addDelimitedTextLayer()
+
+void QgisApp::addSelectedVectorLayer( QString uri, QString layerName, QString provider )
+{
+  addVectorLayer( uri, layerName, provider );
+} // QgisApp:addSelectedVectorLayer
 
 void QgisApp::addMssqlLayer()
 {
