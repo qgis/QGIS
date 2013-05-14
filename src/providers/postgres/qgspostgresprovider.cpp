@@ -2640,8 +2640,13 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
   }
 
-  if ( QgsPostgresConn::wkbTypeFromPostgis( detectedType ) == QGis::WKBUnknown )
+  mDetectedGeomType = QgsPostgresConn::wkbTypeFromPostgis( detectedType );
+  mDetectedSrid     = detectedSrid;
+
+  if ( mDetectedGeomType == QGis::WKBUnknown )
   {
+    mDetectedSrid = "";
+
     QgsPostgresLayerProperty layerProperty;
     if ( !mIsQuery )
     {
@@ -2675,9 +2680,6 @@ bool QgsPostgresProvider::getGeometryDetails()
       {
         QgsMessageLog::logMessage( tr( "Geometry type and srid for empty column %1 of %2 undefined." ).arg( mGeometryColumn ).arg( mQuery ) );
       }
-
-      detectedType = "";
-      detectedSrid = "";
     }
     else
     {
@@ -2697,28 +2699,17 @@ bool QgsPostgresProvider::getGeometryDetails()
         if ( layerProperty.size() == 1 )
         {
           // only what we requested is available
-          detectedType = layerProperty.types[ 0 ];
-          detectedSrid = layerProperty.srids[ 0 ];
-        }
-        else
-        {
-          // we need to filter
-          detectedType = "";
-          detectedSrid = "";
+          mDetectedGeomType = layerProperty.types[ 0 ];
+          mDetectedSrid     = QString::number( layerProperty.srids[ 0 ] );
         }
       }
       else
       {
         // geometry type undetermined or not unrequested
         QgsMessageLog::logMessage( tr( "Feature type or srid for %1 of %2 could not be determined or was not requested." ).arg( mGeometryColumn ).arg( mQuery ) );
-        detectedType = "";
-        detectedSrid = "";
       }
     }
   }
-
-  mDetectedGeomType = QgsPostgresConn::wkbTypeFromPostgis( detectedType );
-  mDetectedSrid     = detectedSrid;
 
   QgsDebugMsg( QString( "Detected SRID is %1" ).arg( mDetectedSrid ) );
   QgsDebugMsg( QString( "Requested SRID is %1" ).arg( mRequestedSrid ) );
