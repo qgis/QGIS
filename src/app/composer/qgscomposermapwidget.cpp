@@ -343,6 +343,9 @@ void QgsComposerMapWidget::updateGuiElements()
       mFrameStyleComboBox->setCurrentIndex( mFrameStyleComboBox->findText( tr( "No frame" ) ) );
     }
 
+    //grid blend mode
+    mGridBlendComboBox->setBlendMode( mComposerMap->gridBlendMode() );
+
     //grid annotation format
     QgsComposerMap::GridAnnotationFormat gf = mComposerMap->gridAnnotationFormat();
     mAnnotationFormatComboBox->setCurrentIndex(( int )gf );
@@ -358,6 +361,10 @@ void QgsComposerMapWidget::updateGuiElements()
     initAnnotationDirectionBox( mAnnotationDirectionComboBoxRight, mComposerMap->gridAnnotationDirection( QgsComposerMap::Right ) );
     initAnnotationDirectionBox( mAnnotationDirectionComboBoxTop, mComposerMap->gridAnnotationDirection( QgsComposerMap::Top ) );
     initAnnotationDirectionBox( mAnnotationDirectionComboBoxBottom, mComposerMap->gridAnnotationDirection( QgsComposerMap::Bottom ) );
+
+    mAnnotationFontColorButton->setColor( mComposerMap->annotationFontColor() );
+    mAnnotationFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
+    mAnnotationFontColorButton->setColorDialogOptions( QColorDialog::ShowAlphaChannel );
 
     mDistanceToMapFrameSpinBox->setValue( mComposerMap->annotationFrameDistance() );
 
@@ -423,6 +430,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mSetToMapCanvasExtentButton->blockSignals( b );
   mUpdatePreviewButton->blockSignals( b );
   mGridLineStyleButton->blockSignals( b );
+  mGridBlendComboBox->blockSignals( b );
   mDrawAnnotationCheckableGroupBox->blockSignals( b );
   mAnnotationFontButton->blockSignals( b );
   mAnnotationFormatComboBox->blockSignals( b );
@@ -436,6 +444,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAnnotationDirectionComboBoxTop->blockSignals( b );
   mAnnotationDirectionComboBoxBottom->blockSignals( b );
   mCoordinatePrecisionSpinBox->blockSignals( b );
+  mAnnotationFontColorButton->blockSignals( b );
   mDrawCanvasItemsCheckBox->blockSignals( b );
   mFrameStyleComboBox->blockSignals( b );
   mFrameWidthSpinBox->blockSignals( b );
@@ -705,6 +714,16 @@ void QgsComposerMapWidget::on_mCrossWidthSpinBox_valueChanged( double d )
   mComposerMap->endCommand();
 }
 
+void QgsComposerMapWidget::on_mGridBlendComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+  if ( mComposerMap )
+  {
+    mComposerMap->setGridBlendMode( mGridBlendComboBox->blendMode() );
+  }
+
+}
+
 void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
 {
   if ( !mComposerMap )
@@ -727,6 +746,18 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
     mComposerMap->update();
     mComposerMap->endCommand();
   }
+}
+
+void QgsComposerMapWidget::on_mAnnotationFontColorButton_colorChanged( const QColor& newFontColor )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+  mComposerMap->beginCommand( tr( "Label font changed" ) );
+  mComposerMap->setAnnotationFontColor( newFontColor );
+  mComposerMap->update();
+  mComposerMap->endCommand();
 }
 
 void QgsComposerMapWidget::on_mDistanceToMapFrameSpinBox_valueChanged( double d )

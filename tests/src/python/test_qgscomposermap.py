@@ -16,7 +16,8 @@ import os
 from PyQt4.QtCore import (QStringList,
                           QFileInfo)
 from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import QPainter
+from PyQt4.QtGui import (QPainter,
+                          QColor)
 
 from qgis.core import (QgsComposerMap,
                        QgsRectangle,
@@ -76,6 +77,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.setGridIntervalY(2000)
         self.mComposerMap.setShowGridAnnotation(True)
         self.mComposerMap.setGridPenWidth(0.5)
+        self.mComposerMap.setGridPenColor(QColor(0,255,0))
         self.mComposerMap.setGridAnnotationPrecision(0)
         self.mComposerMap.setGridAnnotationPosition(QgsComposerMap.Disabled,
                                                     QgsComposerMap.Left)
@@ -91,6 +93,8 @@ class TestQgsComposerMap(TestCase):
                                                      QgsComposerMap.Right)
         self.mComposerMap.setGridAnnotationDirection(QgsComposerMap.Horizontal,
                                                      QgsComposerMap.Bottom)
+        self.mComposerMap.setAnnotationFontColor(QColor(255,0,0,150))
+        self.mComposerMap.setGridBlendMode(QPainter.CompositionMode_Overlay)
         checker = QgsCompositionChecker()
         myPath = os.path.join(TEST_DATA_DIR,
                               'control_images',
