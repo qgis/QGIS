@@ -1,0 +1,12 @@
+<h3>$id function</h3>
+Returns the feature id of the current row.
+
+<h4>Syntax</h4>
+<pre>$id</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre>$id &rarr; 42</pre>
+
