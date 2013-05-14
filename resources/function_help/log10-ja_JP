@@ -1,15 +1,15 @@
-<h3>log10() function</h3>
+<h3>log10() 関数</h3>
 Returns the value of the base 10 logarithm of the passed expression.
 <br>
 This function takes one argument.
-<h4>Syntax</h4>
+<h4>構文</h4>
 <code>log10(value)</code><br>
 
-<h4>Arguments</h4>
+<h4>引数</h4>
 <code>value</code> - any positive number.
 <br>
 
-<h4>Example</h4>
+<h4>サンプル</h4>
 <!-- Show example of function.-->
 <code>log10(1) &rarr; 0</code><br>
 <code>log10(100) &rarr; 2</code><br>

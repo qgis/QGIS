@@ -2,14 +2,14 @@
 Returns the value of the natural logarithm of the passed expression.
 <br>
 This function takes one argument.
-<h4>Syntax</h4>
+<h4>構文</h4>
 <code>ln(value)</code><br>
 
-<h4>Arguments</h4>
+<h4>引数</h4>
 <code>value</code> - any positive number.
 <br>
 
-<h4>Example</h4>
+<h4>サンプル</h4>
 <!-- Show example of function.-->
 <code>ln(1) &rarr; 0</code><br>
 <code>ln(2.7182818284590452354) &rarr; 1</code><br>

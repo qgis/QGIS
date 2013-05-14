@@ -1,12 +1,12 @@
-<h3>$area function</h3>
+<h3>$area 関数</h3>
 Returns the area size of the current feature.
 
-<h4>Syntax</h4>
+<h4>構文</h4>
 <pre>$area</pre>
 
-<h4>Arguments</h4>
+<h4>引数</h4>
 None
 
-<h4>Example</h4>
+<h4>サンプル</h4>
 <pre>$area &rarr; 42</pre>
 

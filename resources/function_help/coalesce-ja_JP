@@ -1,15 +1,15 @@
-<h3>coalesce() function</h3>
+<h3>coalesce() 関数</h3>
 Returns the first non-NULL value from the expression list.
 <br>
 This function can take any number of arguments.
-<h4>Syntax</h4>
+<h4>構文</h4>
 <code>coalesce(expression1, expression2 ...)</code><br>
 
-<h4>Arguments</h4>
+<h4>引数</h4>
 <code>expression</code> - any valid expression or value, irregardless of type.
 <br>
 
-<h4>Example</h4>
+<h4>サンプル</h4>
 <!-- Show example of function.-->
 <code>coalesce(NULL, 2) &rarr; 2</code><br>
 <code>coalesce(NULL, 2, 3) &rarr; 2</code><br>

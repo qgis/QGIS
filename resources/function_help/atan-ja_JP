@@ -1,12 +1,12 @@
-<h3>atan() function</h3>
+<h3>atan() 関数</h3>
 Returns arcustanget of a value in radians.
 
 
-<p><h4>Syntax</h4>
+<p><h4>構文</h4>
      atan(<i>real</i>)</p>
 
-<p><h4>Arguments</h4>
+<p><h4>引数</h4>
 <i>real</i> &rarr; tan of an angle.</p>
 
-<p><h4>Example</h4>
+<p><h4>サンプル</h4>
      atan(0.5) &rarr; 0.463647609000806</p>

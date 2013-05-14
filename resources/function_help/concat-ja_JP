@@ -1,13 +1,13 @@
-<h3>concat() function</h3>
+<h3>concat() 関数</h3>
 Concatenates several strings to one.
 
-<h4>Syntax</h4>
+<h4>構文</h4>
      concat(<i>string<i>[,<i>string</i>...])
 
-<h4>Arguments</h4>
+<h4>引数</h4>
 <!-- List args for functions here-->
 <i>  string</i> &rarr; is string.  a string.<br>
 
-<h4>Example</h4>
+<h4>サンプル</h4>
 <!-- Show example of function.-->
      concat('a','b','c','d','e') &rarr; 'abcde'

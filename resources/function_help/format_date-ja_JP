@@ -1,10 +1,10 @@
-<h3>format_date() function</h3>
+<h3>format_date() 関数</h3>
 Format a date type or string into a custom string format. Uses Qt data time format strings.  See <a href='http://qt-project.org/doc/qt-4.8/qdatetime.html#toString'>QDateTime::toString</a>
 
-<h4>Syntax</h4>
+<h4>構文</h4>
 <code>format_date('string', 'format_string')</code><br>
 
-<h4>Arguments</h4>
+<h4>引数</h4>
 <code>string</code> - is string. Date/Time/DateTime string.
 <br>
 <code>format_string</code> - is string. String template used to format the string.
@@ -169,6 +169,6 @@ Format a date type or string into a custom string format. Uses Qt data time form
 
 <br>
 
-<h4>Example</h4>
+<h4>サンプル</h4>
 <!-- Show example of function.-->
 <code>format_date('2012-05-15','dd.mm.yyyy') &rarr; 15.05.2012</code><br>

@@ -1,11 +1,11 @@
-<h3>$scale function</h3>
+<h3>$scale 関数</h3>
 Returns the current scale of the map canvas.
 <br>
 Note: This function is only available in some contexts and will be 0 otherwise. 
-<h4>Syntax</h4>
+<h4>構文</h4>
 <code>$scale</code><br>
 
-<h4>Example</h4>
+<h4>サンプル</h4>
 <!-- Show example of function.-->
 <code>$scale &rarr; 10000</code><br>
 

@@ -1,12 +1,12 @@
-<h3>$numfeatures function</h3>
+<h3>$numfeatures 関数</h3>
 In atlas generation, returns the total number of features within the coverage layer.
 
-<h4>Syntax</h4>
+<h4>構文</h4>
 <pre>$numfeatures</pre>
 
-<h4>Arguments</h4>
+<h4>引数</h4>
 None
 
-<h4>Example</h4>
+<h4>サンプル</h4>
 <pre>$numfeatures &rarr; 42</pre>
 

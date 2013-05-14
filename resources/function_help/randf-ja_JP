@@ -1,16 +1,16 @@
-<h3>randf() function</h3>
+<h3>randf() 関数</h3>
 Returns a random float within the range specified by the minimum and 
 maximum argument (inclusive).
 <br>
 This function takes two arguments.
-<h4>Syntax</h4>
+<h4>構文</h4>
 <code>randf(min, max)</code><br>
 
-<h4>Arguments</h4>
+<h4>引数</h4>
 <code>min</code> - a float representing the smallest possible random number desired.<br>
 <code>max</code> - a float representing the largest possible random number desired.
 <br>
 
-<h4>Example</h4>
+<h4>サンプル</h4>
 <!-- Show example of function.-->
 <code>randf(1, 10) &rarr; 4.59258286403147</code><br>
