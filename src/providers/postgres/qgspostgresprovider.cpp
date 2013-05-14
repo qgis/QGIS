@@ -3389,7 +3389,7 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
                            .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                            .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
 
-  QgsPostgresResult result = conn->PQexec( selectQmlQuery );
+  QgsPostgresResult result = conn->PQexec( selectQmlQuery, false );
 
   return result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : "";
 }
