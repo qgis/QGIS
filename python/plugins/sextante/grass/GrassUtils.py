@@ -328,7 +328,7 @@ class GrassUtils:
 
         try:
             from sextante import runalg
-            result = runalg("grass:v.voronoi", points(),False,False,"270778.60198,270855.745301,4458921.97814,4458983.8488",-1,0.0001,None)
+            result = runalg("grass:v.voronoi", points(),False,False,"270778.60198,270855.745301,4458921.97814,4458983.8488",-1,0.0001, 0, None)
             if not os.path.exists(result['output']):
                 return "It seems that GRASS is not correctly installed and configured in your system.\nPlease install it before running GRASS algorithms."
         except:
