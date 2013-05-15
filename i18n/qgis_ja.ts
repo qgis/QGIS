@@ -12063,12 +12063,12 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2392"/>
         <source>Compiled against GDAL/OGR</source>
-        <translation>コンパイルされているGDAL/OGRとは異なるバージョン</translation>
+        <translation>コンパイル時のGDAL/OGRバージョン</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2393"/>
         <source>Running against GDAL/OGR</source>
-        <translation>実行しているGDAL/OGRとは異なるバージョン</translation>
+        <translation>実行中のGDAL/OGRバージョン</translation>
     </message>
     <message>
         <source>QGIS Project Read Error</source>
@@ -12669,12 +12669,12 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2387"/>
         <source>Compiled against Qt</source>
-        <translation>コンパイル　Qt</translation>
+        <translation>コンパイル時のQtバージョン</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2388"/>
         <source>Running against Qt</source>
-        <translation>実行中 Qt</translation>
+        <translation>実行中のQtバージョン</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2397"/>
@@ -43135,12 +43135,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="586"/>
         <source>Show all plugins except those marked as experimental</source>
-        <translation>期限切れマークがついていない全てのプラグインを表示する</translation>
+        <translation>実験的とマークされていない全てのプラグインを表示する</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="599"/>
         <source>Show all plugins, even those marked as experimental</source>
-        <translation>期限切れマークがついているプラグインも含めて全てのプラグインを表示する</translation>
+        <translation>実験的とマークされているプラグインも含めて全てのプラグインを表示する</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="618"/>
