@@ -273,7 +273,7 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
     }
     else
     {
-        color = QColorDialog::getColor( item->data( 0, StopColorRole ).value<QColor>(), this, tr("Edit Stop Color"), QColorDialog::ShowAlphaChannel );
+      color = QColorDialog::getColor( item->data( 0, StopColorRole ).value<QColor>(), this, tr( "Edit Stop Color" ), QColorDialog::ShowAlphaChannel );
     }
     if ( !color.isValid() )
       return;
@@ -320,7 +320,7 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
 // but not needed at this time because of the other Qt bug
 // FIXME need to also check max QT_VERSION when Qt bug(s) fixed
 #ifndef Q_WS_MAC
-  QColor color = QColorDialog::getColor( QColor(), this, tr("Add Color Stop"), QColorDialog::ShowAlphaChannel );
+  QColor color = QColorDialog::getColor( QColor(), this, tr( "Add Color Stop" ), QColorDialog::ShowAlphaChannel );
 
   if ( !color.isValid() )
     return;
@@ -351,7 +351,7 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
   lst << "." << QString(( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
 
 #ifdef Q_WS_MAC
-  QColor color = QColorDialog::getColor( QColor(), this, tr("Add Color Stop"), QColorDialog::ShowAlphaChannel );
+  QColor color = QColorDialog::getColor( QColor(), this, tr( "Add Color Stop" ), QColorDialog::ShowAlphaChannel );
 
   if ( !color.isValid() )
     return;

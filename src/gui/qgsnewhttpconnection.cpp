@@ -154,7 +154,7 @@ void QgsNewHttpConnection::accept()
     url.removeEncodedQueryItem( params["FORMAT"].first );
   }
 
-  if( url.encodedPath().isEmpty() )
+  if ( url.encodedPath().isEmpty() )
   {
     url.setEncodedPath( "/" );
   }

@@ -38,7 +38,7 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mEncoding( "UTF-8" ),
     mFile( 0 ),
     mStream( 0 ),
-    mUseWatcher( false ),
+    mUseWatcher( true ),
     mWatcher( 0 ),
     mDefinitionValid( false ),
     mUseHeader( true ),
@@ -106,7 +106,7 @@ bool QgsDelimitedTextFile::open()
     mMaxRecordNumber = -1;
     mHoldCurrentRecord = false;
     if ( mWatcher ) delete mWatcher;
-    if( mUseWatcher )
+    if ( mUseWatcher )
     {
       mWatcher = new QFileSystemWatcher( this );
       mWatcher->addPath( mFileName );
@@ -153,9 +153,9 @@ bool QgsDelimitedTextFile::setFromUrl( QUrl &url )
   }
 
   //
-  if ( url.hasQueryItem( "watchFile" ) )
+  if ( url.hasQueryItem( "useWatcher" ) )
   {
-    mUseWatcher = ! url.queryItemValue( "watchFile" ).toUpper().startsWith( 'N' );;
+    mUseWatcher = ! url.queryItemValue( "useWatcher" ).toUpper().startsWith( 'N' );;
   }
 
   // The default type is csv, to be consistent with the
@@ -264,7 +264,10 @@ QUrl QgsDelimitedTextFile::url()
     url.addQueryItem( "encoding", mEncoding );
   }
 
-  if( mUseWatcher ) url.addQueryItem( "watchFile", "yes");
+  if ( !mUseWatcher )
+  {
+    url.addQueryItem( "useWatcher", "no" );
+  }
 
   url.addQueryItem( "type", type() );
   if ( mType == DelimTypeRegexp )
@@ -312,7 +315,7 @@ void QgsDelimitedTextFile::setEncoding( QString encoding )
   mEncoding = encoding;
 }
 
-void QgsDelimitedTextFile::setUseWatcher(bool useWatcher)
+void QgsDelimitedTextFile::setUseWatcher( bool useWatcher )
 {
   resetDefinition();
   mUseWatcher = useWatcher;
@@ -496,10 +499,10 @@ int QgsDelimitedTextFile::fieldIndex( QString name )
 
 }
 
-bool QgsDelimitedTextFile::setNextRecordId(long nextRecordId )
+bool QgsDelimitedTextFile::setNextRecordId( long nextRecordId )
 {
   mHoldCurrentRecord = nextRecordId == mRecordLineNumber;
-  if( mHoldCurrentRecord ) return true;
+  if ( mHoldCurrentRecord ) return true;
   return setNextLineNumber( nextRecordId );
 }
 
@@ -509,7 +512,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList &reco
   record.clear();
   Status status = RecordOk;
 
-  if( mHoldCurrentRecord )
+  if ( mHoldCurrentRecord )
   {
     mHoldCurrentRecord = false;
   }
@@ -530,11 +533,11 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextRecord( QStringList &reco
       mRecordNumber++;
       if ( mRecordNumber > mMaxRecordNumber ) mMaxRecordNumber = mRecordNumber;
     }
-    status = (this->*mParser )( buffer, mCurrentRecord );
+    status = ( this->*mParser )( buffer, mCurrentRecord );
   }
-  if( status == RecordOk )
+  if ( status == RecordOk )
   {
-    record.append(mCurrentRecord);
+    record.append( mCurrentRecord );
   }
   return status;
 }
@@ -565,7 +568,7 @@ QgsDelimitedTextFile::Status  QgsDelimitedTextFile::reset()
     result = nextRecord( names );
     setFieldNames( names );
   }
-  if( result == RecordOk ) mRecordNumber = 0;
+  if ( result == RecordOk ) mRecordNumber = 0;
   return result;
 }
 
@@ -593,16 +596,16 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
 bool QgsDelimitedTextFile::setNextLineNumber( long nextLineNumber )
 {
   if ( ! mStream ) return false;
-  if ( mLineNumber > nextLineNumber-1 )
+  if ( mLineNumber > nextLineNumber - 1 )
   {
     mRecordNumber = -1;
-    mStream->seek(0);
+    mStream->seek( 0 );
     mLineNumber = 0;
   }
   QString buffer;
-  while( mLineNumber < nextLineNumber-1 )
+  while ( mLineNumber < nextLineNumber - 1 )
   {
-    if( nextLine(buffer,false) != RecordOk ) return false;
+    if ( nextLine( buffer, false ) != RecordOk ) return false;
   }
   return true;
 

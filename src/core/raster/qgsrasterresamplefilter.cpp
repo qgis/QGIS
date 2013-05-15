@@ -164,7 +164,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   // Do no oversampling if no resampler for zoomed in / zoomed out (nearest neighbour)
   // We do mZoomedInResampler if oversampling == 1 (otherwise for example reprojected
   // zoom in rasters are never resampled because projector limits resolution.
-  if (( (oversampling < 1.0 || qgsDoubleNear( oversampling, 1.0) ) && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
+  if ((( oversampling < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
   {
     QgsDebugMsg( "No oversampling." );
     return mInput->block( bandNumber, extent, width, height );
@@ -198,7 +198,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
 
   QImage dstImg = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
 
-  if ( mZoomedInResampler && (oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0) ) )
+  if ( mZoomedInResampler && ( oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) )
   {
     QgsDebugMsg( "zoomed in resampling" );
     mZoomedInResampler->resample( img, dstImg );

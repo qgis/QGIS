@@ -176,7 +176,7 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
 
 def printWanted( testname, result ):
     # Routine to export the result as a function definition
-    print 
+    print
     print "def {0}():".format(testname)
     data=result['data']
     log=result['log']
@@ -470,8 +470,8 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='testextpt.txt'
         params={'yField': 'y', 'delimiter': '|', 'type': 'csv', 'xField': 'x'}
         requests=[
-            {'extents': [10, 30, 30, 50]}, 
-            {'extents': [10, 30, 30, 50], 'exact': 1}, 
+            {'extents': [10, 30, 30, 50]},
+            {'extents': [10, 30, 30, 50], 'exact': 1},
             {'extents': [110, 130, 130, 150]}]
         runTest(filename,requests,**params)
 
@@ -480,8 +480,8 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='testextw.txt'
         params={'delimiter': '|', 'type': 'csv', 'wktField': 'wkt'}
         requests=[
-            {'extents': [10, 30, 30, 50]}, 
-            {'extents': [10, 30, 30, 50], 'exact': 1}, 
+            {'extents': [10, 30, 30, 50]},
+            {'extents': [10, 30, 30, 50], 'exact': 1},
             {'extents': [110, 130, 130, 150]}]
         runTest(filename,requests,**params)
 
@@ -490,9 +490,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='test.csv'
         params={'geomType': 'none', 'type': 'csv'}
         requests=[
-            {'fid': 3}, 
-            {'fid': 9}, 
-            {'fid': 20}, 
+            {'fid': 3},
+            {'fid': 9},
+            {'fid': 20},
             {'fid': 3}]
         runTest(filename,requests,**params)
 
@@ -501,11 +501,11 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='test.csv'
         params={'geomType': 'none', 'type': 'csv'}
         requests=[
-            {'attributes': [1, 3]}, 
-            {'fid': 9}, 
-            {'attributes': [1, 3], 'fid': 9}, 
-            {'attributes': [3, 1], 'fid': 9}, 
-            {'attributes': [1, 3, 7], 'fid': 9}, 
+            {'attributes': [1, 3]},
+            {'fid': 9},
+            {'attributes': [1, 3], 'fid': 9},
+            {'attributes': [3, 1], 'fid': 9},
+            {'attributes': [1, 3, 7], 'fid': 9},
             {'attributes': [], 'fid': 9}]
         runTest(filename,requests,**params)
 
@@ -534,20 +534,20 @@ class TestQgsDelimitedTextProvider(TestCase):
             os.remove(filename)
         params={'geomType': 'none', 'type': 'csv', 'watchFile' : 'yes' }
         requests=[
-            {'fid': 3}, 
+            {'fid': 3},
             {},
-            {'fid': 7}, 
+            {'fid': 7},
             updatefile1,
-            {'fid': 3}, 
-            {'fid': 4}, 
+            {'fid': 3},
+            {'fid': 4},
             {},
-            {'fid': 7}, 
+            {'fid': 7},
             updatefile2,
-            {'fid': 2}, 
+            {'fid': 2},
             {},
-            {'fid': 7}, 
+            {'fid': 7},
             deletefile,
-            {'fid': 2}, 
+            {'fid': 2},
             {},
             ]
         runTest(filename,requests,**params)
@@ -557,8 +557,8 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='testextpt.txt'
         params={'yField': 'y', 'delimiter': '|', 'type': 'csv', 'xField': 'x', 'spatialIndex': 'Y' }
         requests=[
-            {'extents': [10, 30, 30, 50]}, 
-            {'extents': [10, 30, 30, 50], 'exact': 1}, 
+            {'extents': [10, 30, 30, 50]},
+            {'extents': [10, 30, 30, 50], 'exact': 1},
             {'extents': [110, 130, 130, 150]},
             {},
             {'extents': [-1000, -1000, 1000, 1000]}
@@ -570,8 +570,8 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='testextw.txt'
         params={'delimiter': '|', 'type': 'csv', 'wktField': 'wkt', 'spatialIndex': 'Y' }
         requests=[
-            {'extents': [10, 30, 30, 50]}, 
-            {'extents': [10, 30, 30, 50], 'exact': 1}, 
+            {'extents': [10, 30, 30, 50]},
+            {'extents': [10, 30, 30, 50], 'exact': 1},
             {'extents': [110, 130, 130, 150]},
             {},
             {'extents': [-1000, -1000, 1000, 1000]}
@@ -583,11 +583,11 @@ class TestQgsDelimitedTextProvider(TestCase):
         filename='testextw.txt'
         params={'delimiter': '|', 'type': 'csv', 'wktField': 'wkt' }
         requests=[
-            {'extents': [10, 30, 30, 50]}, 
+            {'extents': [10, 30, 30, 50]},
             {},
             lambda layer: layer.dataProvider().createSpatialIndex(),
-            {'extents': [10, 30, 30, 50]}, 
-            {'extents': [10, 30, 30, 50], 'exact': 1}, 
+            {'extents': [10, 30, 30, 50]},
+            {'extents': [10, 30, 30, 50], 'exact': 1},
             {'extents': [110, 130, 130, 150]},
             {},
             {'extents': [-1000, -1000, 1000, 1000]}

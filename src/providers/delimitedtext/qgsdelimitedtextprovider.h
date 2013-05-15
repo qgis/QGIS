@@ -224,7 +224,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QgsGeometry* loadGeometryXY( const QStringList& tokens,  QgsDelimitedTextFeatureIterator *iterator );
     void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
     void setUriParameter( QString parameter, QString value );
-    bool setNextFeatureId( qint64 fid ) { return mFile->setNextRecordId( (long) fid ); }
+    bool setNextFeatureId( qint64 fid ) { return mFile->setNextRecordId(( long ) fid ); }
 
 
     QgsGeometry *geomFromWkt( QString &sWkt );

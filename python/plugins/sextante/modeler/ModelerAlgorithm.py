@@ -92,7 +92,7 @@ class ModelerAlgorithm(GeoAlgorithm):
 
         #position of items in canvas
         self.algPos = []
-        self.paramPos = []        
+        self.paramPos = []
         self.outputPos = [] #same structure as algOutputs
 
         #deactivated algorithms that should not be executed
@@ -162,7 +162,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                             else:
                                 tokens = line.split("|")
                                 algParams[param.name] = AlgorithmAndParameter(int(tokens[0]), tokens[1])
-                        outputPos = {}                        
+                        outputPos = {}
                         for out in alg.outputs:
                             line = lines.readline().strip("\n").strip("\r")
                             if str(None)!=line:
@@ -170,7 +170,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                                     tokens = line.split("|")
                                     name = tokens[0]
                                     tokens = tokens[1].split(",")
-                                    outputPos[out.name] = QtCore.QPointF(float(tokens[0]), float(tokens[1]))                                    
+                                    outputPos[out.name] = QtCore.QPointF(float(tokens[0]), float(tokens[1]))
                                 else:
                                     name = line
                                     outputPos[out.name] = None
@@ -183,7 +183,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                                 self.addOutput(output)
                             else:
                                 algOutputs[out.name] = None
-                        self.outputPos.append(outputPos)                                 
+                        self.outputPos.append(outputPos)
                         self.algOutputs.append(algOutputs)
                         self.algParameters.append(algParams)
                         self.dependencies.append(dependencies)
@@ -217,9 +217,9 @@ class ModelerAlgorithm(GeoAlgorithm):
         pos = {}
         i = 0
         from sextante.modeler.ModelerGraphicItem import ModelerGraphicItem
-        for out in outputsMap:            
+        for out in outputsMap:
             pos[out] = algPos + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH, i * ModelerGraphicItem.BOX_HEIGHT)
-            i+=1 
+            i+=1
         self.outputPos.append(pos)
 
     def updateAlgorithm(self, algIndex, parametersMap, valuesMap, outputsMap, dependencies):
@@ -229,13 +229,13 @@ class ModelerAlgorithm(GeoAlgorithm):
         for value in valuesMap.keys():
             self.paramValues[value] = valuesMap[value]
         self.updateModelerView()
-        algPos = self.algPos[algIndex]        
+        algPos = self.algPos[algIndex]
         pos = {}
         i = 0
         from sextante.modeler.ModelerGraphicItem import ModelerGraphicItem
         for out in outputsMap:
             pos[out] = algPos + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH, i * ModelerGraphicItem.BOX_HEIGHT)
-            i+=1 
+            i+=1
         self.outputPos[algIndex] = pos
 
 
@@ -252,7 +252,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         del self.algParameters[index]
         del self.algOutputs[index]
         del self.algPos[index]
-        del self.outputPos[index]        
+        del self.outputPos[index]
 
         i = -1
         for paramValues in self.algParameters:
@@ -423,14 +423,14 @@ class ModelerAlgorithm(GeoAlgorithm):
                     s+=value.serialize() + "\n"
                 else:
                     s+=str(None) + "\n"
-            for out in alg.outputs:                 
+            for out in alg.outputs:
                 value = self.algOutputs[i][out.name]
                 s+=unicode(value)
                 if value is not None:
                     pt = self.outputPos[i][out.name]
                     s +=  "|" + str(pt.x()) + "," + str(pt.y())
                 s += "\n"
-                
+
         return s
 
 
