@@ -131,7 +131,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
   addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers, version, fullProjectSettings );
 
   parentElement.appendChild( layerParentElem );
-  combineExtentAndCrsOfGroupChildren( layerParentElem, doc );
+  combineExtentAndCrsOfGroupChildren( layerParentElem, doc, true );
 }
 
 void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
@@ -696,7 +696,7 @@ QString QgsProjectParser::editTypeString( QgsVectorLayer::EditType type )
   }
 }
 
-void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc ) const
+void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc, bool considerMapExtent ) const
 {
   QgsRectangle combinedBBox;
   QSet<QString> combinedCRSSet;
@@ -744,6 +744,14 @@ void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupEle
   appendCRSElementsToLayer( groupElem, doc, combinedCRSSet.toList() );
 
   const QgsCoordinateReferenceSystem& groupCRS = projectCRS();
+  if ( considerMapExtent )
+  {
+    QgsRectangle mapRect = mapRectangle();
+    if ( !mapRect.isEmpty() )
+    {
+      combinedBBox = mapRect;
+    }
+  }
   appendLayerBoundingBoxes( groupElem, doc, combinedBBox, groupCRS );
 }
 
@@ -953,7 +961,7 @@ int QgsProjectParser::layersAndStyles( QStringList& layers, QStringList& styles 
 }
 
 QDomDocument QgsProjectParser::getStyle( const QString& styleName, const QString& layerName ) const
-{ 
+{
   QDomDocument myDocument = QDomDocument();
 
   QDomNode header = myDocument.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" );
