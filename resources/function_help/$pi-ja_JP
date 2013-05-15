@@ -5,7 +5,7 @@ Returns pi as value for calculations
 <pre>$pi</pre>
 
 <h4>引数</h4>
-None
+なし
 
 <h4>サンプル</h4>
 <pre>$pi &rarr; 3.14159265358979</pre>

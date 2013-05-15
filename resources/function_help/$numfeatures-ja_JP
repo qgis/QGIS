@@ -5,7 +5,7 @@ In atlas generation, returns the total number of features within the coverage la
 <pre>$numfeatures</pre>
 
 <h4>引数</h4>
-None
+なし
 
 <h4>サンプル</h4>
 <pre>$numfeatures &rarr; 42</pre>

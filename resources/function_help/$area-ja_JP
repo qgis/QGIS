@@ -5,7 +5,7 @@ Returns the area size of the current feature.
 <pre>$area</pre>
 
 <h4>引数</h4>
-None
+なし
 
 <h4>サンプル</h4>
 <pre>$area &rarr; 42</pre>
