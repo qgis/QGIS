@@ -266,7 +266,6 @@ class Editor(QsciScintilla):
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
         iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.png")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
-        #iconNewEditor = QgsApplication.getThemeIcon("console/iconTabEditorConsole.png")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
         iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.png")
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
@@ -274,12 +273,6 @@ class Editor(QsciScintilla):
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
         hideEditorAction = menu.addAction("Hide Editor",
                                      self.hideEditor)
-#         menu.addSeparator()
-#         newTabAction = menu.addAction(iconNewEditor,
-#                                     "New Tab",
-#                                     self.parent.newTab, 'Ctrl+T')
-#         closeTabAction = menu.addAction("Close Tab",
-#                                     self.parent.close, 'Ctrl+W')
         menu.addSeparator()
         syntaxCheck = menu.addAction(iconSyntaxCk, "Check Syntax",
                                      self.syntaxCheck, 'Ctrl+4')
@@ -333,11 +326,8 @@ class Editor(QsciScintilla):
         runSelected.setEnabled(False)
         copyAction.setEnabled(False)
         selectAllAction.setEnabled(False)
-#         closeTabAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
-#         if self.parent.tw.count() > 1:
-#             closeTabAction.setEnabled(True)
         if self.hasSelectedText():
             runSelected.setEnabled(True)
             copyAction.setEnabled(True)
@@ -622,7 +612,7 @@ class Editor(QsciScintilla):
     def focusInEvent(self, e):
         pathfile = self.parent.path
         if pathfile:
-            if not os.path.exists(pathfile):
+            if not QFileInfo(pathfile).exists():
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      'The file <b>"%1"</b> has been deleted or is not accessible') \
                                                      .arg(unicode(pathfile))
@@ -672,7 +662,7 @@ class EditorTab(QWidget):
         self.newEditor = Editor(self)
         if filename:
             self.path = filename
-            if os.path.exists(filename):
+            if QFileInfo(filename).exists():
                 self.loadFile(filename, False)
 
         # Creates layout for message bar
@@ -726,7 +716,7 @@ class EditorTab(QWidget):
             self.pc.callWidgetMessageBarEditor(msgText, 0, True)
         # Rename the original file, if it exists
         path = unicode(self.path)
-        overwrite = os.path.exists(path)
+        overwrite = QFileInfo(path).exists()
         if overwrite:
             try:
                 permis = os.stat(path).st_mode
@@ -736,7 +726,7 @@ class EditorTab(QWidget):
                 raise
 
             temp_path = path + "~"
-            if os.path.exists(temp_path):
+            if QFileInfo(temp_path).exists():
                 os.remove(temp_path)
             os.rename(path, temp_path)
         # Save the new contents
@@ -1024,10 +1014,9 @@ class EditorTabWidget(QTabWidget):
             self.parent.updateTabListScript(currWidget.path, action='remove')
 
     def restoreTabs(self):
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         for script in self.restoreTabList:
             pathFile = unicode(script.toString())
-            if os.path.exists(pathFile):
+            if QFileInfo(pathFile).exists():
                 tabName = pathFile.split('/')[-1]
                 self.newTabEditor(tabName, pathFile)
             else:
@@ -1038,7 +1027,6 @@ class EditorTabWidget(QTabWidget):
                 s = errOnRestore
                 sys.stderr.write(s)
                 self.parent.updateTabListScript(pathFile, action='remove')
-        QApplication.restoreOverrideCursor()
         if self.count() < 1:
             self.newTabEditor(filename=None)
         self.topFrame.close()
