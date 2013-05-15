@@ -7913,8 +7913,17 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
     QgsVectorDataProvider* dprovider = vlayer->dataProvider();
+    bool isEditable = vlayer->isEditable();
     bool layerHasSelection = vlayer->selectedFeatureCount() != 0;
     bool layerHasActions = vlayer->actions()->size() > 0;
+
+    bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+    bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
+    bool canAddAttributes = dprovider->capabilities() & QgsVectorDataProvider::AddAttributes;
+    bool canDeleteAttributes = dprovider->capabilities() & QgsVectorDataProvider::DeleteAttributes;
+    bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
+    bool canSupportEditing = dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities;
+    bool canChangeGeometry = dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries;
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
@@ -7932,7 +7941,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionCopyFeatures->setEnabled( layerHasSelection );
     mActionFeatureAction->setEnabled( layerHasActions );
 
-    if ( !vlayer->isEditable() && mMapCanvas->mapTool()
+    if ( !isEditable && mMapCanvas->mapTool()
          && mMapCanvas->mapTool()->isEditTool() && !mSaveRollbackInProgress )
     {
       mMapCanvas->setMapTool( mNonEditMapTool );
@@ -7940,56 +7949,34 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     if ( dprovider )
     {
-      mActionLayerSubsetString->setEnabled( dprovider->supportsSubsetString() && !vlayer->isEditable() );
+      mActionLayerSubsetString->setEnabled( dprovider->supportsSubsetString() && !isEditable );
+
+      mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->isReadOnly() );
+      mActionToggleEditing->setChecked( canSupportEditing && isEditable );
+      mActionSaveLayerEdits->setEnabled( canSupportEditing && isEditable && vlayer->isModified() );
+      mUndoWidget->dockContents()->setEnabled( canSupportEditing && isEditable );
+      mActionUndo->setEnabled( canSupportEditing );
+      mActionRedo->setEnabled( canSupportEditing );
 
       //start editing/stop editing
-      if ( dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
+      if ( canSupportEditing )
       {
-        mActionToggleEditing->setEnabled( !vlayer->isReadOnly() );
-        mActionToggleEditing->setChecked( vlayer->isEditable() );
-        mActionSaveLayerEdits->setEnabled( vlayer->isEditable() && vlayer->isModified() );
-        mUndoWidget->dockContents()->setEnabled( vlayer->isEditable() );
         updateUndoActions();
       }
-      else
-      {
-        mActionToggleEditing->setEnabled( false );
-        mActionToggleEditing->setChecked( false );
-        mActionSaveLayerEdits->setEnabled( false );
-        mUndoWidget->dockContents()->setEnabled( false );
-        mActionUndo->setEnabled( false );
-        mActionRedo->setEnabled( false );
-      }
 
-      if ( dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
-      {
-        mActionPasteFeatures->setEnabled( vlayer->isEditable() && !clipboard()->empty() );
-        mActionAddFeature->setEnabled( vlayer->isEditable() );
-      }
-      else
-      {
-        mActionPasteFeatures->setEnabled( false );
-        mActionAddFeature->setEnabled( false );
-      }
+      mActionPasteFeatures->setEnabled( canAddAttributes && isEditable && !clipboard()->empty() );
+      mActionAddFeature->setEnabled( canAddAttributes && isEditable );
 
       //does provider allow deleting of features?
-      if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures )
-      {
-        mActionDeleteSelected->setEnabled( layerHasSelection );
-        mActionCutFeatures->setEnabled( layerHasSelection );
-      }
-      else
-      {
-        mActionDeleteSelected->setEnabled( false );
-        mActionCutFeatures->setEnabled( false );
-      }
+      mActionDeleteSelected->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );
+      mActionCutFeatures->setEnabled( isEditable && canDeleteFeatures && layerHasSelection );
 
       //merge tool needs editable layer and provider with the capability of adding and deleting features
-      if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues )
+      if ( isEditable && canChangeAttributes )
       {
         mActionMergeFeatures->setEnabled( layerHasSelection &&
-                                          dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures &&
-                                          dprovider->capabilities() & QgsVectorDataProvider::AddFeatures );
+                                          canDeleteFeatures &&
+                                          canAddAttributes );
 
         mActionMergeFeatureAttributes->setEnabled( layerHasSelection );
       }
@@ -8000,23 +7987,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
 
       // moving enabled if geometry changes are supported
-      if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
-      {
-        mActionAddPart->setEnabled( true );
-        mActionDeletePart->setEnabled( true );
-        mActionMoveFeature->setEnabled( true );
-        mActionRotateFeature->setEnabled( true );
-        mActionNodeTool->setEnabled( true );
-      }
-      else
-      {
-        mActionAddPart->setEnabled( false );
-        mActionDeletePart->setEnabled( false );
-        mActionMoveFeature->setEnabled( false );
-        mActionRotateFeature->setEnabled( false );
-        mActionOffsetCurve->setEnabled( false );
-        mActionNodeTool->setEnabled( false );
-      }
+      mActionAddPart->setEnabled( isEditable && canChangeGeometry );
+      mActionDeletePart->setEnabled( isEditable && canChangeGeometry );
+      mActionMoveFeature->setEnabled( isEditable && canChangeGeometry );
+      mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
+      mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
+
+      mActionOffsetCurve->setEnabled( false );
 
       if ( vlayer->geometryType() == QGis::Point )
       {
@@ -8029,7 +8006,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionDeleteRing->setEnabled( false );
         mActionRotatePointSymbols->setEnabled( false );
 
-        if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues )
+        if ( isEditable && canChangeAttributes )
         {
           if ( QgsMapToolRotatePointSymbols::layerIsRotatable( vlayer ) )
           {
@@ -8042,19 +8019,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCaptureLine.png" ) );
 
-        if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
-        {
-          mActionReshapeFeatures->setEnabled( true );
-          mActionSplitFeatures->setEnabled( true );
-          mActionSimplifyFeature->setEnabled( true );
-          mActionOffsetCurve->setEnabled( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
-        }
-        else
-        {
-          mActionReshapeFeatures->setEnabled( false );
-          mActionSplitFeatures->setEnabled( false );
-          mActionSimplifyFeature->setEnabled( false );
-        }
+        mActionReshapeFeatures->setEnabled( isEditable && canAddFeatures );
+        mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
+        mActionSimplifyFeature->setEnabled( isEditable && canAddFeatures );
+        mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
 
         mActionAddRing->setEnabled( false );
         mActionDeleteRing->setEnabled( false );
@@ -8063,31 +8031,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       {
         mActionAddFeature->setIcon( QgsApplication::getThemeIcon( "/mActionCapturePolygon.png" ) );
 
-        if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::AddFeatures )
-        {
-          mActionAddRing->setEnabled( true );
-          mActionReshapeFeatures->setEnabled( true );
-          mActionSplitFeatures->setEnabled( true );
-          mActionSimplifyFeature->setEnabled( true );
-          mActionDeleteRing->setEnabled( true );
-        }
-        else
-        {
-          mActionAddRing->setEnabled( false );
-          mActionReshapeFeatures->setEnabled( false );
-          mActionSplitFeatures->setEnabled( false );
-          mActionSimplifyFeature->setEnabled( false );
-          mActionDeleteRing->setEnabled( false );
-        }
+        mActionAddRing->setEnabled( isEditable && canAddFeatures );
+        mActionReshapeFeatures->setEnabled( isEditable && canAddFeatures );
+        mActionSplitFeatures->setEnabled( isEditable && canAddFeatures );
+        mActionSimplifyFeature->setEnabled( isEditable && canAddFeatures );
+        mActionDeleteRing->setEnabled( isEditable && canAddFeatures );
       }
 
-      bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-      bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
-      bool canAddAttributes = dprovider->capabilities() & QgsVectorDataProvider::AddAttributes;
-      bool canDeleteAttributes = dprovider->capabilities() & QgsVectorDataProvider::DeleteAttributes;
-      bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
-
-      mActionOpenFieldCalc->setEnabled(( canChangeAttributes || canAddAttributes ) && vlayer->isEditable() );
+      mActionOpenFieldCalc->setEnabled(( canChangeAttributes || canAddAttributes ) && isEditable );
 
       return;
     }
