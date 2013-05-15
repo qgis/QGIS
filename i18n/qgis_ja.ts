@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="ja">
 <context>
@@ -6198,7 +6198,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2021"/>
         <source>&amp;Export topology to SpatiaLite</source>
-        <translation>SpatiaLiteへのトポロジーエキスポート(&amp;E)</translation>
+        <translation>SpatiaLiteへのトポロジーエクスポート(&amp;E)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2030"/>
@@ -12896,7 +12896,7 @@ Errors: %3
     </message>
     <message>
         <source>Export legend groups and layers with legendinterface and use this information to display groups in the composer legend.</source>
-        <translation type="obsolete">凡例グループとレイヤを凡例インターフェースでエキスポートできます.この情報をコンポーザの凡例として表示に使えます.</translation>
+        <translation type="obsolete">凡例グループとレイヤを凡例インターフェースでエクスポートできます.この情報をコンポーザの凡例として表示に使えます.</translation>
     </message>
     <message>
         <source>Show selected feature count in status bar </source>
@@ -13959,7 +13959,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <source>Export and import of styles (symbology-ng).</source>
-        <translation type="obsolete">スタイルのインポートとエキスポート機能（新しいシンボロジ）.</translation>
+        <translation type="obsolete">スタイルのインポートとエクスポート機能（新しいシンボロジ）.</translation>
     </message>
     <message>
         <source>Labels for rules in rule-based renderers.</source>
@@ -14427,7 +14427,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4456"/>
         <source>Export to vector file has been completed</source>
-        <translation>ベクタファイルへのエキスポートが完了しました</translation>
+        <translation>ベクタファイルへのエクスポートが完了しました</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4462"/>
@@ -14438,7 +14438,7 @@ QWT Version: %1.</source>
         <location filename="../src/app/qgisapp.cpp" line="4463"/>
         <source>Export to vector file failed.
 Error: %1</source>
-        <translation>ベクタファイルへのエキスポートが失敗しました.
+        <translation>ベクタファイルへのエクスポートが失敗しました.
 エラー:%1</translation>
     </message>
     <message>
@@ -17726,7 +17726,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
-        <translation type="obsolete">%1x%2ピクセルのイメージ作成に失敗しました  エキスポートが中断しました.</translation>
+        <translation type="obsolete">%1x%2ピクセルのイメージ作成に失敗しました  エクスポートが中断しました.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1151"/>
@@ -18368,7 +18368,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="231"/>
         <source>Export as image</source>
-        <translation>イメージとしてエキスポート</translation>
+        <translation>イメージとしてエクスポート</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="240"/>
@@ -34317,7 +34317,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="53"/>
         <source>Export</source>
-        <translation>エキスポート</translation>
+        <translation>エクスポート</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmanageconnectionsdialog.cpp" line="71"/>
@@ -37617,7 +37617,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="14"/>
         <source>Export OpenStreetMap topology to SpatiaLite</source>
-        <translation>OpenStreetMapトポロジをSpatialiteにエキスポートする</translation>
+        <translation>OpenStreetMapトポロジをSpatialiteにエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="20"/>
@@ -37632,7 +37632,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="39"/>
         <source>Export type</source>
-        <translation>エキスポートタイプ</translation>
+        <translation>エクスポートタイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsosmexportdialog.ui" line="45"/>
@@ -37694,12 +37694,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="171"/>
         <source>OpenStreetMap export</source>
-        <translation>OpenStreetMapエキスポート</translation>
+        <translation>OpenStreetMapエクスポート</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="171"/>
         <source>Export has been successful.</source>
-        <translation>エキスポートが成功しました.</translation>
+        <translation>エクスポートが成功しました.</translation>
     </message>
     <message>
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="175"/>
@@ -37710,7 +37710,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/openstreetmap/qgsosmexportdialog.cpp" line="175"/>
         <source>Failed to export OSM data:
 %1</source>
-        <translation>OSMデータエキスポートに失敗しました.
+        <translation>OSMデータエクスポートに失敗しました.
 %1</translation>
     </message>
 </context>
@@ -48385,12 +48385,12 @@ standard deviation ×</source>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="215"/>
         <source>Export Frequency distribution as csv</source>
-        <translation>度数分布をcsvでエキスポートする</translation>
+        <translation>度数分布をcsvでエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="228"/>
         <source>Export Colors and elevations as xml</source>
-        <translation>色と標高をxmlとしてエキスポートする</translation>
+        <translation>色と標高をxmlとしてエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="262"/>
@@ -48521,7 +48521,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="133"/>
         <source>Export distribution...</source>
-        <translation>分布のエキスポート...</translation>
+        <translation>分布のエクスポート...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="153"/>
@@ -48561,7 +48561,7 @@ standard deviation ×</source>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="200"/>
         <source>Export colors...</source>
-        <translation>色のエキスポート...</translation>
+        <translation>色のエクスポート...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="207"/>
@@ -52249,12 +52249,12 @@ Updates to geometry values will be disabled, and query performance may be poor b
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="83"/>
         <source>Export style(s)</source>
-        <translation>エキスポートスタイル</translation>
+        <translation>エクスポートスタイル</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="93"/>
         <source>Export</source>
-        <translation>エキスポート</translation>
+        <translation>エクスポート</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2exportimportdialog.cpp" line="110"/>
@@ -52381,7 +52381,7 @@ Overwrite?</source>
     <message>
         <location filename="../src/ui/qgsstylev2exportimportdialogbase.ui" line="14"/>
         <source>Styles import/export</source>
-        <translation>スタイルインポート/エキスポート</translation>
+        <translation>スタイルインポート/エクスポート</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2exportimportdialogbase.ui" line="22"/>
@@ -52401,7 +52401,7 @@ Overwrite?</source>
     <message>
         <location filename="../src/ui/qgsstylev2exportimportdialogbase.ui" line="65"/>
         <source>Select symbols to export</source>
-        <translation>エキスポートするシンボルの選択</translation>
+        <translation>エクスポートするシンボルの選択</translation>
     </message>
 </context>
 <context>
@@ -52736,7 +52736,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Export...</source>
-        <translation type="obsolete">エキスポート...</translation>
+        <translation type="obsolete">エクスポート...</translation>
     </message>
     <message>
         <source>Import...</source>
@@ -55470,7 +55470,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="57"/>
         <source>Symbology export</source>
-        <translation>シンボロジエキスポート</translation>
+        <translation>シンボロジエクスポート</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="100"/>
@@ -57987,7 +57987,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="120"/>
         <source>Export</source>
-        <translation>エキスポート</translation>
+        <translation>エクスポート</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/shortestpathwidget.cpp" line="125"/>
@@ -60322,7 +60322,7 @@ For support send a mail to scala@itc.cnr.it
 * 入力 DXF ファイルは変換する DXFファイルのパスです
 * 出力Shp ファイルには作成するshapeの名前です
 * Shp出力ファイルタイプは出力するシェープファイルのタイプを指定して下さい
-* エキスポートテキストチェックボックス: ここがチェックされているとその他にshpポイントレイヤが作成されます。そのレイヤのdbfはdxfファイルの&quot;TEXT&quot;フィールドとそのテキスト文字列で構成されます
+* エクスポートテキストチェックボックス: ここがチェックされているとその他にshpポイントレイヤが作成されます。そのレイヤのdbfはdxfファイルの&quot;TEXT&quot;フィールドとそのテキスト文字列で構成されます
 
 ---
 開発者 Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
@@ -62183,31 +62183,31 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Export</source>
-        <translation type="obsolete">エキスポート</translation>
+        <translation type="obsolete">エクスポート</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
-        <translation>3 GRASS ラスタ (R,G,B)を現在の領域の解像度でPPM画像にエキスポートします</translation>
+        <translation>3 GRASS ラスタ (R,G,B)を現在の領域の解像度でPPM画像にエクスポートします</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
         <source>Export from GRASS</source>
-        <translation>GRASSからエキスポートします</translation>
+        <translation>GRASSからエクスポートします</translation>
     </message>
     <message>
         <source>Export raster</source>
-        <translation type="obsolete">ラスタをエキスポートする</translation>
+        <translation type="obsolete">ラスタをエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
         <source>Export raster as non-georeferenced PNG image format</source>
-        <translation>ラスタを空間参照情報が無いPNG画像形式でエキスポートする</translation>
+        <translation>ラスタを空間参照情報が無いPNG画像形式でエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
         <source>Export raster from GRASS</source>
-        <translation>GRASSにラスタをエキスポートします</translation>
+        <translation>GRASSにラスタをエクスポートします</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
@@ -62217,67 +62217,67 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
         <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
-        <translation>現在の領域の現在の解像度のラスタを8/24ビットのTIFF画像でエキスポートする</translation>
+        <translation>現在の領域の現在の解像度のラスタを8/24ビットのTIFF画像でエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
         <source>Export raster to ASCII text file</source>
-        <translation>ラスタをASCIIテキストファイルでエキスポートする</translation>
+        <translation>ラスタをASCIIテキストファイルでエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
         <source>Export raster to ESRI ARCGRID</source>
-        <translation>ラスタをESRI ARCGRIDでエキスポートする</translation>
+        <translation>ラスタをESRI ARCGRIDでエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
         <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
-        <translation>ラスタからGRIDATB.FOR マップファイル(TOPMODEL)をエキスポートします</translation>
+        <translation>ラスタからGRIDATB.FOR マップファイル(TOPMODEL)をエクスポートします</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
         <source>Export raster to Geo TIFF</source>
-        <translation>ラスタをGeo TIFFでエキスポートする</translation>
+        <translation>ラスタをGeo TIFFでエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
         <source>Export raster to POVRAY height-field file</source>
-        <translation>ラスタをPOVRAY高さフィールドファイルでエキスポートする</translation>
+        <translation>ラスタをPOVRAY高さフィールドファイルでエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
         <source>Export raster to PPM image at the resolution of the current region</source>
-        <translation>現在の領域の現在の解像度のラスタをPPM画像でエキスポートする</translation>
+        <translation>現在の領域の現在の解像度のラスタをPPM画像でエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
         <source>Export raster to VTK-ASCII</source>
-        <translation>ラスタをVTK－ASCII形式でエキスポートする</translation>
+        <translation>ラスタをVTK－ASCII形式でエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
         <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
-        <translation>ラスタをバーチャルリアリティモデリングランゲージ（VRML)にエキスポートする</translation>
+        <translation>ラスタをバーチャルリアリティモデリングランゲージ（VRML)にエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
         <source>Export raster to binary MAT-File</source>
-        <translation>ラスタをバイナリMAT-Fileにエキスポートする</translation>
+        <translation>ラスタをバイナリMAT-Fileにエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
         <source>Export raster to binary array</source>
-        <translation>ラスタをバイナリ配列にエキスポートする</translation>
+        <translation>ラスタをバイナリ配列にエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
         <source>Export raster to text file as x,y,z values based on cell centers</source>
-        <translation>ラスタをセルに中心の値のx,y,zが記述されたテキストファイルにエキスポートする</translation>
+        <translation>ラスタをセルに中心の値のx,y,zが記述されたテキストファイルにエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
         <source>Export raster to various formats (GDAL library)</source>
-        <translation>ラスタを様々な形式（GDAL library)にエキスポートする</translation>
+        <translation>ラスタを様々な形式（GDAL library)にエクスポートする</translation>
     </message>
     <message>
         <source>Export vector</source>
@@ -62355,36 +62355,36 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
         <source>Export vector to DXF</source>
-        <translation>ベクタをDXFでエキスポートする</translation>
+        <translation>ベクタをDXFでエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
         <source>Export vector to GML</source>
-        <translation>ベクタをGMLでエキスポートする</translation>
+        <translation>ベクタをGMLでエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
         <source>Export vector to Mapinfo</source>
-        <translation>ベクタをMapInfo形式でエキスポートする</translation>
+        <translation>ベクタをMapInfo形式でエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
         <source>Export vector to POV-Ray</source>
-        <translation>ベクタをPOV-Ray形式でエキスポートする</translation>
+        <translation>ベクタをPOV-Ray形式でエクスポートする</translation>
     </message>
     <message>
         <source>Export vector to PostGIS</source>
-        <translation type="obsolete">ベクタをPostGISにエキスポートする</translation>
+        <translation type="obsolete">ベクタをPostGISにエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
         <source>Export vector to PostGIS (PostgreSQL) database table</source>
-        <translation>ベクタをPostGIS(PostgreSQL)データベーステーブルにエキスポートする</translation>
+        <translation>ベクタをPostGIS(PostgreSQL)データベーステーブルにエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
         <source>Export vector to SVG</source>
-        <translation>ベクタをSVGにエキスポートする</translation>
+        <translation>ベクタをSVGにエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
@@ -62394,17 +62394,17 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
         <source>Export vector to VTK-ASCII</source>
-        <translation>ベクタをVTK-ASCIIでエキスポートする</translation>
+        <translation>ベクタをVTK-ASCIIでエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
         <source>Export vector to various formats (OGR library)</source>
-        <translation>ベクタを様々な形式（OGR library)でエキスポートする</translation>
+        <translation>ベクタを様々な形式（OGR library)でエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
         <source>Exports attribute tables into various format</source>
-        <translation>属性テーブルを様々な形式でエキスポートする</translation>
+        <translation>属性テーブルを様々な形式でエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
