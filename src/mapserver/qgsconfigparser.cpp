@@ -148,7 +148,7 @@ void QgsConfigParser::appendLayerBoundingBoxes( QDomElement& layerElem,
   }
 
   QgsRectangle r( layerExtent );
-  if ( version == "1.3.0" && layerCRS.axisInverted() )
+  if ( version != "1.1.1" && layerCRS.axisInverted() )
   {
     r.invert();
   }
