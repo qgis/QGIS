@@ -6269,7 +6269,7 @@ Ctl(Cmd)15度増加.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1682"/>
         <source>Run Feature Action</source>
-        <translation>地物操作の実行</translation>
+        <translation>地物アクションの実行</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1706"/>
@@ -6950,7 +6950,7 @@ Shift+クリックで非表示
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1679"/>
         <source>Feature Action</source>
-        <translation>地物操作</translation>
+        <translation>地物アクション</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1691"/>
