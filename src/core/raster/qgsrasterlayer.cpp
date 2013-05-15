@@ -1513,6 +1513,11 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
   }
 
   // Check timestamp
+  // This was probably introduced to reload completely raster if data changed and
+  // reset completly symbology to reflect new data type etc. It creates however
+  // problems, because user defined symbology is complete lost if data file time
+  // changed (the content may be the same). See also 6900.
+#if 0
   QDomNode stampNode = layer_node.namedItem( "timestamp" );
   if ( !stampNode.isNull() )
   {
@@ -1527,6 +1532,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
       if ( !mValid ) return false;
     }
   }
+#endif
 
   // Load user no data value
   QDomElement noDataElement = layer_node.firstChildElement( "noData" );
