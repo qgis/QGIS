@@ -260,14 +260,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**  [ data provider interface ] Set the data provider */
     void setDataProvider( const QString & provider );
 
-    /** \brief Accessor for drawing style */
-    DrawingStyle drawingStyle() { return mDrawingStyle; }
-
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType() { return mRasterType; }
 
+    /** \brief Accessor for drawing style */
+    //DrawingStyle drawingStyle() { return mDrawingStyle; }
+
     /** \brief Mutator for drawing style */
-    void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; setRendererForDrawingStyle( theDrawingStyle ); }
+    //void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; setRendererForDrawingStyle( theDrawingStyle ); }
 
     /**Set raster renderer. Takes ownership of the renderer object*/
     void setRenderer( QgsRasterRenderer* theRenderer );
@@ -439,7 +439,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** Pointer to data provider */
     QgsRasterDataProvider* mDataProvider;
 
-    DrawingStyle mDrawingStyle;
+    //DrawingStyle mDrawingStyle;
 
     /** [ data provider interface ]The error message associated with the last error */
     QString mError;

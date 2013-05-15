@@ -32,6 +32,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmaptopixel.h"
+#include "qgsmultibandcolorrenderer.h"
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
 #include "qgsproject.h"
@@ -1206,7 +1207,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
     {
       QTextStream myOutputStream( &myOutputFile );
       myOutputStream << "# " << tr( "QGIS Generated Transparent Pixel Value Export File" ) << "\n";
-      if ( /*rbtnThreeBand->isChecked() &&*/ QgsRasterLayer::MultiBandColor == mRasterLayer->drawingStyle() )
+      if ( rasterIsMultiBandColor() )
       {
         myOutputStream << "#\n#\n# " << tr( "Red" ) << "\t" << tr( "Green" ) << "\t" << tr( "Blue" ) << "\t" << tr( "Percent Transparent" );
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
@@ -1219,17 +1220,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
       }
       else
       {
-        if ( QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
-             QgsRasterLayer::PalettedSingleBandGray != mRasterLayer->drawingStyle() &&
-             QgsRasterLayer::PalettedSingleBandPseudoColor != mRasterLayer->drawingStyle() &&
-             QgsRasterLayer::PalettedMultiBandColor != mRasterLayer->drawingStyle() )
-        {
-          myOutputStream << "#\n#\n# " << tr( "Gray" ) << "\t" << tr( "Percent Transparent" );
-        }
-        else
-        {
-          myOutputStream << "#\n#\n# " << tr( "Indexed Value" ) << "\t" << tr( "Percent Transparent" );
-        }
+        myOutputStream << "#\n#\n# " << tr( "Value" ) << "\t" << tr( "Percent Transparent" );
 
         for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
         {
@@ -1331,7 +1322,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
   {
     QTextStream myInputStream( &myInputFile );
     QString myInputLine;
-    if ( /*rbtnThreeBand->isChecked() &&*/ QgsRasterLayer::MultiBandColor == mRasterLayer->drawingStyle() )
+    if ( rasterIsMultiBandColor() )
     {
       for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
       {
@@ -1714,3 +1705,9 @@ void QgsRasterLayerProperties::on_mResetColorRenderingBtn_clicked()
   mColorizeCheck->setChecked( false );
   sliderColorizeStrength->setValue( 100 );
 }
+
+bool QgsRasterLayerProperties::rasterIsMultiBandColor()
+{
+  return mRasterLayer && dynamic_cast<QgsMultiBandColorRenderer*>( mRasterLayer->renderer() ) != 0;
+}
+

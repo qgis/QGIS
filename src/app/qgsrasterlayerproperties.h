@@ -155,6 +155,8 @@ class QgsRasterLayerProperties : public QgsOptionsDialogBase, private Ui::QgsRas
 
     QgsRasterRendererWidget* mRendererWidget;
 
+    bool rasterIsMultiBandColor();
+
     void setupTransparencyTable( int nBands );
 
     /** \brief Clear the current transparency table and populate the table with the correct types for current drawing mode and data type*/
