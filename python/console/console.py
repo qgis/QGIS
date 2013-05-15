@@ -21,6 +21,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4 import pyqtconfig
 from qgis.utils import iface
 from console_sci import ShellScintilla
 from console_output import ShellOutputScintilla
@@ -466,7 +467,11 @@ class PythonConsoleWidget(QWidget):
         self.layoutFind.setContentsMargins(0, 0, 0, 0)
         self.lineEditFind = QgsFilterLineEdit()
         placeHolderTxt = QCoreApplication.translate("PythonConsole", "Enter text to find...")
-        self.lineEditFind.setPlaceholderText(placeHolderTxt)
+          
+        if pyqtconfig.Configuration().qt_version >= 0x40700:
+          self.lineEditFind.setPlaceholderText(placeHolderTxt)
+        else:
+          self.lineEditFind.setToolTip(placeHolderTxt)
         self.findNextButton = QToolButton()
         self.findNextButton.setEnabled(False)
         toolTipfindNext = QCoreApplication.translate("PythonConsole", "Find Next")
