@@ -234,7 +234,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -264,8 +264,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>792</width>
-                <height>774</height>
+                <width>785</width>
+                <height>755</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -468,11 +468,11 @@
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="_5">
-                  <property name="margin">
-                   <number>11</number>
-                  </property>
                   <property name="verticalSpacing">
                    <number>6</number>
+                  </property>
+                  <property name="margin">
+                   <number>11</number>
                   </property>
                   <item row="0" column="4">
                    <widget class="QLabel" name="textLabel1_2_2_2">
@@ -706,8 +706,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>84</width>
-                <height>16</height>
+                <width>785</width>
+                <height>755</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -755,41 +755,19 @@
             </widget>
            </item>
            <item>
-            <widget class="QScrollArea" name="scrollArea_4">
+            <widget class="QFrame" name="labelingFrame">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
              </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_4">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>84</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_19">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QFrame" name="labelingFrame">
-                 <property name="frameShape">
-                  <enum>QFrame::NoFrame</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
             </widget>
            </item>
           </layout>
@@ -822,8 +800,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>133</width>
-                <height>37</height>
+                <width>125</width>
+                <height>36</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -899,7 +877,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>84</width>
+                <width>85</width>
                 <height>16</height>
                </rect>
               </property>
@@ -954,8 +932,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>473</width>
-                <height>186</height>
+                <width>563</width>
+                <height>199</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1128,7 +1106,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>84</width>
+                <width>85</width>
                 <height>16</height>
                </rect>
               </property>
@@ -1189,8 +1167,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>134</width>
-                <height>155</height>
+                <width>189</width>
+                <height>154</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1304,7 +1282,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>84</width>
+                <width>85</width>
                 <height>16</height>
                </rect>
               </property>
@@ -1365,8 +1343,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>186</width>
-                <height>249</height>
+                <width>195</width>
+                <height>267</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">

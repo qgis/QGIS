@@ -36,6 +36,7 @@
 #include <QDomElement>
 #include <QIcon>
 #include <QPainter>
+#include <QSettings>
 
 QString QgsSymbolLayerV2Utils::encodeColor( QColor color )
 {
@@ -2825,22 +2826,25 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
     return QFileInfo( name ).canonicalFilePath();
 
   // or it might be an url...
-  QUrl url( name );
-  if ( url.isValid() && !url.scheme().isEmpty() )
+  if ( name.contains( "://" ) )
   {
-    if ( url.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
+    QUrl url( name );
+    if ( url.isValid() && !url.scheme().isEmpty() )
     {
-      // it's a url to a local file
-      name = url.toLocalFile();
-      if ( QFile( name ).exists() )
+      if ( url.scheme().compare( "file", Qt::CaseInsensitive ) == 0 )
       {
-        return QFileInfo( name ).canonicalFilePath();
+        // it's a url to a local file
+        name = url.toLocalFile();
+        if ( QFile( name ).exists() )
+        {
+          return QFileInfo( name ).canonicalFilePath();
+        }
       }
-    }
-    else
-    {
-      // it's a url pointing to a online resource
-      return name;
+      else
+      {
+        // it's a url pointing to a online resource
+        return name;
+      }
     }
   }
 
@@ -2849,11 +2853,17 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
   QStringList svgPaths = QgsApplication::svgPaths();
   for ( int i = 0; i < svgPaths.size(); i++ )
   {
-    QgsDebugMsg( "SvgPath: " + svgPaths[i] );
+    QString svgPath = svgPaths[i];
+    if ( svgPath.endsWith( QString( "/" ) ) )
+    {
+      svgPath.chop( 1 );
+    }
+
+    QgsDebugMsg( "SvgPath: " + svgPath );
     QFileInfo myInfo( name );
     QString myFileName = myInfo.fileName(); // foo.svg
     QString myLowestDir = myInfo.dir().dirName();
-    QString myLocalPath = svgPaths[i] + "/" + myLowestDir + "/" + myFileName;
+    QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : "/" + myLowestDir ) + "/" + myFileName;
 
     QgsDebugMsg( "Alternative svg path: " + myLocalPath );
     if ( QFile( myLocalPath ).exists() )

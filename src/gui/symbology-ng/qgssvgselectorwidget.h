@@ -19,10 +19,16 @@
 
 #include "ui_widget_svgselector.h"
 
+#include "qgisgui.h"
+
 #include <QAbstractListModel>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QLayout>
 #include <QStandardItemModel>
 #include <QWidget>
 
+class QCheckBox;
 class QLayout;
 class QLineEdit;
 class QListView;
@@ -67,14 +73,17 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     static QgsSvgSelectorWidget* create( QWidget* parent = 0 ) { return new QgsSvgSelectorWidget( parent ); }
 
     QString currentSvgPath() const;
+    QString currentSvgPathToName() const;
 
     QTreeView* groupsTreeView() { return mGroupsTreeView; }
     QListView* imagesListView() { return mImagesListView; }
     QLineEdit* filePathLineEdit() { return mFileLineEdit; }
     QPushButton* filePathButton() { return mFilePushButton; }
+    QCheckBox* relativePathCheckbox() { return mRelativePathChkBx; }
     QLayout* selectorLayout() { return this->layout(); }
 
   public slots:
+    /** Accepts absolute and relative paths */
     void setSvgPath( const QString& svgPath );
 
   signals:
@@ -89,11 +98,35 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     void updateCurrentSvgPath( const QString& svgPath );
 
     void on_mFilePushButton_clicked();
-    void on_mFileLineEdit_textEdited( const QString& text );
-    void on_mFileLineEdit_editingFinished();
+    void updateLineEditFeedback( bool ok, QString tip = QString( "" ) );
+    void on_mFileLineEdit_textChanged( const QString& text );
 
   private:
-    QString mCurrentSvgPath;
+    QString mCurrentSvgPath; // always stored as absolute path
+};
+
+class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
+{
+    Q_OBJECT
+  public:
+    QgsSvgSelectorDialog( QWidget* parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags,
+                          QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
+                          Qt::Orientation orientation = Qt::Horizontal );
+    ~QgsSvgSelectorDialog();
+
+    //! Returns the central layout. Widgets added to it must have this dialog as parent
+    QVBoxLayout* layout() { return mLayout; }
+
+    //! Returns the button box
+    QDialogButtonBox* buttonBox() { return mButtonBox; }
+
+    //! Returns pointer to the embedded SVG selector widget
+    QgsSvgSelectorWidget* svgSelector() { return mSvgSelector; }
+
+  protected:
+    QVBoxLayout* mLayout;
+    QDialogButtonBox* mButtonBox;
+    QgsSvgSelectorWidget* mSvgSelector;
 };
 
 #endif // QGSSVGSELECTORWIDGET_H

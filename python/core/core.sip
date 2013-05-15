@@ -19,6 +19,7 @@
 %Include qgscoordinatetransform.sip
 %Include qgscredentials.sip
 %Include qgscrscache.sip
+%Include qgsdatadefined.sip
 %Include qgsdataitem.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip

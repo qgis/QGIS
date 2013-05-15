@@ -248,6 +248,11 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
   }
 
   // maybe it's a url...
+  if ( !path.contains( "://" ) ) // otherwise short, relative SVG paths might be considered URLs
+  {
+    return QByteArray();
+  }
+
   QUrl svgUrl( path );
   if ( !svgUrl.isValid() )
   {

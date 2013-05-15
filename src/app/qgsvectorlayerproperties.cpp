@@ -108,7 +108,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     layout = new QVBoxLayout( labelingFrame );
     layout->setMargin( 0 );
     labelingDialog = new QgsLabelingGui( QgisApp::instance()->palLabeling(), layer, QgisApp::instance()->mapCanvas(), labelingFrame );
-    labelingDialog->layout()->setMargin( 0 );
+    labelingDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
     layout->addWidget( labelingDialog );
     labelingFrame->setLayout( layout );
 

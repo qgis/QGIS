@@ -296,17 +296,26 @@
         <file>themes/default/mActionZoomOut.png</file>
         <file>themes/default/mActionZoomToLayer.png</file>
         <file>themes/default/mActionZoomToSelected.png</file>
+        <file>themes/default/mIconAutoPlacementSettings.svg</file>
         <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
         <file>themes/default/mIconConnect.png</file>
         <file>themes/default/mIconCritical.png</file>
+        <file>themes/default/mIconDataDefine.svg</file>
+        <file>themes/default/mIconDataDefineError.svg</file>
+        <file>themes/default/mIconDataDefineOn.svg</file>
+        <file>themes/default/mIconDataDefineExpression.svg</file>
+        <file>themes/default/mIconDataDefineExpressionError.svg</file>
+        <file>themes/default/mIconDataDefineExpressionOn.svg</file>
         <file>themes/default/mIconDbSchema.png</file>
         <file>themes/default/mIconDelete.png</file>
         <file>themes/default/mIconDeselected.svg</file>
         <file>themes/default/mIconEditable.png</file>
         <file>themes/default/mIconEditableEdits.png</file>
         <file>themes/default/mIconExpand.png</file>
+        <file>themes/default/mIconExpression.svg</file>
+        <file>themes/default/mIconExpressionEditorOpen.svg</file>
         <file>themes/default/mIconExpressionFilter.svg</file>
         <file>themes/default/mIconExpressionPreview.svg</file>
         <file>themes/default/mIconExpressionSelect.svg</file>
@@ -314,6 +323,8 @@
         <file>themes/default/mIconFirst.png</file>
         <file>themes/default/mIconGeometryLayer.png</file>
         <file>themes/default/mIconInfo.png</file>
+        <file>themes/default/mIconLabelQuadrantCenter.svg</file>
+        <file>themes/default/mIconLabelQuadrantOffset.svg</file>
         <file>themes/default/mIconLast.png</file>
         <file>themes/default/mIconLayer.png</file>
         <file>themes/default/mIconLineLayer.png</file>
@@ -377,6 +388,7 @@
         <file>themes/default/propertyicons/attributes.png</file>
         <file>themes/default/propertyicons/colormap.png</file>
         <file>themes/default/propertyicons/CRS.png</file>
+        <file>themes/default/propertyicons/datadefined.svg</file>
         <file>themes/default/propertyicons/diagram.png</file>
         <file>themes/default/propertyicons/digitising.png</file>
         <file>themes/default/propertyicons/display.svg</file>
@@ -384,8 +396,13 @@
         <file>themes/default/propertyicons/general.png</file>
         <file>themes/default/propertyicons/histogram.png</file>
         <file>themes/default/propertyicons/join.png</file>
+        <file>themes/default/propertyicons/labelbackground.svg</file>
+        <file>themes/default/propertyicons/labelbuffer.svg</file>
+        <file>themes/default/propertyicons/labelformatting.svg</file>
         <file>themes/default/propertyicons/labels.png</file>
         <file>themes/default/propertyicons/labels.svg</file>
+        <file>themes/default/propertyicons/labelshadow.svg</file>
+        <file>themes/default/propertyicons/labeltext.svg</file>
         <file>themes/default/propertyicons/locale.png</file>
         <file>themes/default/propertyicons/map_tools.png</file>
         <file>themes/default/propertyicons/metadata.png</file>
@@ -394,6 +411,7 @@
         <file>themes/default/propertyicons/overlay.png</file>
         <file>themes/default/propertyicons/pyramids.png</file>
         <file>themes/default/propertyicons/rendering.png</file>
+        <file>themes/default/propertyicons/render.svg</file>
         <file>themes/default/propertyicons/symbology.png</file>
         <file>themes/default/propertyicons/transparency.png</file>
         <file>themes/default/qgis.xpm</file>

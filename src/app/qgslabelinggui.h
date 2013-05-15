@@ -25,7 +25,6 @@
 class QgsVectorLayer;
 class QgsMapCanvas;
 class QgsCharacterSelectorDialog;
-class QgsSvgSelectorWidget;
 
 #include "qgspallabeling.h"
 
@@ -52,8 +51,7 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void updateUi();
     void updatePreview();
     void scrollPreview();
-    void updateOptions();
-    void updateQuadrant();
+    void updatePlacementWidgets();
     void updateSvgWidgets( const QString& svgPath );
 
     void on_mPreviewSizeSlider_valueChanged( int i );
@@ -68,12 +66,13 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void on_mFontMinPixelSpinBox_valueChanged( int px );
     void on_mFontMaxPixelSpinBox_valueChanged( int px );
     void on_mBufferUnitComboBox_currentIndexChanged( int index );
-    void on_mXCoordinateComboBox_currentIndexChanged( const QString & text );
-    void on_mYCoordinateComboBox_currentIndexChanged( const QString & text );
+    void on_mCoordXDDBtn_dataDefinedActivated( bool active );
+    void on_mCoordYDDBtn_dataDefinedActivated( bool active );
 
     void on_mShapeTypeCmbBx_currentIndexChanged( int index );
     void on_mShapeRotationCmbBx_currentIndexChanged( int index );
     void on_mShapeSVGParamsBtn_clicked();
+    void on_mShapeSVGSelectorBtn_clicked();
 
     void on_mPreviewTextEdit_textChanged( const QString & text );
     void on_mPreviewTextBtn_clicked();
@@ -85,14 +84,14 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void blockFontChangeSignals( bool blk );
     void setPreviewBackground( QColor color );
     void updateFontViaStyle( const QString & fontstyle );
+    void syncDefinedCheckboxFrame( QgsDataDefinedButton* ddBtn, QCheckBox* chkBx, QFrame* f );
     void populateFontCapitalsComboBox();
     void populateFontStyleComboBox();
     void populatePlacementMethods();
     void populateFieldNames();
-    void populateDataDefinedCombos( QgsPalLayerSettings& s );
-    /**Sets data defined property attribute to map (if selected in combo box)*/
-    void setDataDefinedProperty( const QComboBox* c, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
-    void setCurrentComboValue( QComboBox* c, const QgsPalLayerSettings& s, QgsPalLayerSettings::DataDefinedProperties p );
+    void populateDataDefinedButtons( QgsPalLayerSettings& s );
+    /**Sets data defined property attribute to map */
+    void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
     void updateFont( QFont font );
 
   private:
@@ -101,20 +100,27 @@ class QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     QgsMapCanvas* mMapCanvas;
     QFontDatabase mFontDB;
     QgsCharacterSelectorDialog* mCharDlg;
-    QgsSvgSelectorWidget* mSvgSelector;
+
+    QButtonGroup* mQuadrantBtnGrp;
+    QButtonGroup* mDirectSymbBtnGrp;
+    QButtonGroup* mUpsidedownBtnGrp;
 
     // background reference font
     QFont mRefFont;
     int mPreviewSize;
 
-    int mXQuadOffset;
-    int mYQuadOffset;
     int mMinPixelLimit;
 
     bool mLoadSvgParams;
 
     void disableDataDefinedAlignment();
     void enableDataDefinedAlignment();
+
+  private slots:
+    void optionsStackedWidget_CurrentChanged( int indx );
+    void showBackgroundRadius( bool show );
+    void showBackgroundPenStyle( bool show );
+    void on_mShapeSVGPathLineEdit_textChanged( const QString& text );
 };
 
 #endif
