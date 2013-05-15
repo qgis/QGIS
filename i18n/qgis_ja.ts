@@ -769,7 +769,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="68"/>
         <source>Save to new shapefile</source>
-        <translation>新しいshapeファイルに保存する</translation>
+        <translation>新しいシェープファイルに保存する</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="140"/>
@@ -797,7 +797,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="75"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="152"/>
         <source>Output point shapefile</source>
-        <translation>ポイント出力shapefile</translation>
+        <translation>ポイント出力シェープファイル</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
@@ -844,7 +844,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="78"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="315"/>
         <source>Output shapefile</source>
-        <translation>出力Shapefile</translation>
+        <translation>出力シェープファイル</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="262"/>
@@ -886,7 +886,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="161"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
-        <translation>出力Shapefile</translation>
+        <translation>出力シェープファイル</translation>
     </message>
     <message>
         <source>Join Attributes</source>
@@ -1261,7 +1261,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>出力shapefileを指定してください</translation>
+        <translation>出力シェープファイルを指定してください</translation>
     </message>
     <message>
         <source>Export to new projection</source>
@@ -1334,7 +1334,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output Shapefile:</source>
-        <translation type="obsolete">出力Shapefile:</translation>
+        <translation type="obsolete">出力シェープファイル:</translation>
     </message>
     <message>
         <source>Line intersections</source>
@@ -1480,7 +1480,7 @@ p, li { white-space: pre-wrap; }
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation>以下の出力ポイントshapefileが作成されました:
+        <translation>以下の出力ポイントシェープファイルが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか?</translation>
     </message>
@@ -1558,7 +1558,7 @@ Following field names are longer than 10 characters:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation>以下の出力shapefileが作成されました:
+        <translation>以下の出力シェープファイルが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか?</translation>
     </message>
@@ -1631,7 +1631,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>No input shapefile specified</source>
-        <translation>入力shapefileが指定されていません</translation>
+        <translation>入力シェープファイルが指定されていません</translation>
     </message>
     <message>
         <source>Cannot define projection for PostGIS data...yet!</source>
@@ -1654,7 +1654,7 @@ This may cause unexpected results.</source>
     <message>
         <source>Created output shapefiles in folder:
 %1</source>
-        <translation>以下のフォルダに出力shapefileが作成されました
+        <translation>以下のフォルダに出力シェープファイルが作成されました
 %1</translation>
     </message>
     <message>
@@ -1691,7 +1691,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>There are no shapefiles with the given geometry type. Please select an available geometry type.</source>
-        <translation>指定されたジオメトリタイプのshapefileがありません.利用可能なジオメトリタイプを選択して下さい.</translation>
+        <translation>指定されたジオメトリタイプのシェープファイルがありません.利用可能なジオメトリタイプを選択して下さい.</translation>
     </message>
     <message>
         <source>Sum Line Lengths In Polyons</source>
@@ -1764,7 +1764,7 @@ This may cause unexpected results.</source>
     <message>
         <source>Created output shapefile:
 %1</source>
-        <translation>出力shapefileを作成しました
+        <translation>出力シェープファイルを作成しました
 %1</translation>
     </message>
     <message>
@@ -1918,7 +1918,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation>出力shapefileローディング中のエラー
+        <translation>出力シェープファイルローディング中のエラー
 %1</translation>
     </message>
     <message>
@@ -1944,25 +1944,25 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Error deleting shapefile</source>
-        <translation>shapeファイル削除エラー</translation>
+        <translation>シェープファイル削除エラー</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation>shapeファイルを削除できません
+        <translation>シェープファイルを削除できません
 %1</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation>結合するshapeファイルがあるディレクトリを選択して下さい</translation>
+        <translation>結合するシェープファイルがあるディレクトリを選択して下さい</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
-        <translation>shapeファイルがありません</translation>
+        <translation>シェープファイルがありません</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation>このディレクトリにはshapeファイルが存在しません.他のディレクトリを選択して下さい.</translation>
+        <translation>このディレクトリにはシェープファイルが存在しません.他のディレクトリを選択して下さい.</translation>
     </message>
     <message>
         <source>Delete error</source>
@@ -1983,7 +1983,7 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="14"/>
         <source>Merge shapefiles</source>
-        <translation>shapeファイルの結合</translation>
+        <translation>シェープファイルの結合</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
@@ -3034,7 +3034,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Build a shapefile as a raster tileindex</source>
-        <translation>ラスタタイルインデックスとしてshapefileを作成する</translation>
+        <translation>ラスタタイルインデックスとしてシェープファイルを作成する</translation>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
@@ -3982,7 +3982,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>&amp;Output directory for contour lines (shapefile)</source>
-        <translation>等高線(shapefile)の出力ディレクトリ(&amp;O)</translation>
+        <translation>等高線(シェープファイル)の出力ディレクトリ(&amp;O)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="38"/>
@@ -4560,7 +4560,7 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="39"/>
         <source>&amp;Output file for polygons (shapefile)</source>
-        <translation>ポリゴン(shapefile)出力ファイル(&amp;O)</translation>
+        <translation>ポリゴン(シェープファイル)出力ファイル(&amp;O)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="52"/>
@@ -4703,7 +4703,7 @@ Imagine,ArcGIS,GDALの直接利用に適しています.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
         <source>&amp;Input file (shapefile)</source>
-        <translation>入力ファイル(shapefile)(&amp;I)</translation>
+        <translation>入力ファイル(シェープファイル)(&amp;I)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="38"/>
@@ -5069,7 +5069,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="39"/>
         <source>Output shapefile</source>
-        <translation>出力shapefile</translation>
+        <translation>出力シェープファイル</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="49"/>
@@ -5112,7 +5112,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>出力shapefileを指定してください</translation>
+        <translation>出力シェープファイルを指定してください</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
@@ -5128,7 +5128,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation>Shapefileへ出力</translation>
+        <translation>シェープファイルへ出力</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
@@ -5184,7 +5184,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation>点をshapefileへ出力する</translation>
+        <translation>点をシェープファイルへ出力する</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
@@ -5220,7 +5220,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation>ポリゴンのshapefile出力</translation>
+        <translation>ポリゴンのシェープファイル出力</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
@@ -5228,11 +5228,11 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation>既存のshapefileを削除できません.</translation>
+        <translation>既存のシェープファイルを削除できません.</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation>不完全なshapefileを削除できません.</translation>
+        <translation>不完全なシェープファイルを削除できません.</translation>
     </message>
     <message>
         <source>At least two features must have same attribute value!
@@ -5252,7 +5252,7 @@ Please choose another field...</source>
 %2
 
 Would you like to add the new layer to the TOC?</source>
-        <translation>以下の出力shapefileが作成されました:
+        <translation>以下の出力シェープファイルが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか
 %2
@@ -5264,7 +5264,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation>出力shapefile書き込み中にエラー発生.</translation>
+        <translation>出力シェープファイル書き込み中にエラー発生.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!
@@ -5278,14 +5278,14 @@ Please choose larger tolerance...</source>
 
 Would you like to add the new layer to the TOC?</source>
         <translatorcomment>TOCはどう翻訳するか不明</translatorcomment>
-        <translation type="obsolete">以下の出力shapefileが作成されました:
+        <translation type="obsolete">以下の出力シェープファイルが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか?</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation>出力shapefileローディング中のエラー
+        <translation>出力シェープファイルローディング中のエラー
 %1</translation>
     </message>
 </context>
@@ -5313,7 +5313,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>出力shapefileを指定してください</translation>
+        <translation>出力シェープファイルを指定してください</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
@@ -5377,7 +5377,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation>既存のshapefileを削除できません.</translation>
+        <translation>既存のシェープファイルを削除できません.</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -5443,14 +5443,14 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <source>Created output shapefile:
 %1
 %2%3</source>
-        <translation>出力shapefileを作成しました
+        <translation>出力シェープファイルを作成しました
 %1
 %2%3</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation>出力shapefileローディング中のエラー
+        <translation>出力シェープファイルローディング中のエラー
 %1</translation>
     </message>
     <message>
@@ -6731,7 +6731,7 @@ Shift+クリックで非表示
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1129"/>
         <source>New Shapefile Layer...</source>
-        <translation>新しいShapeファイルレイヤ...</translation>
+        <translation>新しいシェープファイルレイヤ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1132"/>
@@ -8718,7 +8718,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="34"/>
         <source>Shapefile to PostgreSQL/PostGIS Import Tool</source>
-        <translation>ShapeファイルをPostgreSQL/PostGISへインポートするツール</translation>
+        <translation>シェープファイルをPostgreSQL/PostGISへインポートするツール</translation>
     </message>
     <message>
         <source>WFS plugin</source>
@@ -9883,7 +9883,7 @@ Error(%2): %3</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1069"/>
         <source>ESRI Shapefile</source>
-        <translation>ESRI　Shapefile</translation>
+        <translation>ESRI Shapefile</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1076"/>
@@ -12221,7 +12221,7 @@ Errors: %3
     </message>
     <message>
         <source>New Shapefile Layer...</source>
-        <translation type="obsolete">新しいShapeファイルレイヤ...</translation>
+        <translation type="obsolete">新しいシェープファイルレイヤ...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+N</source>
@@ -12230,7 +12230,7 @@ Errors: %3
     </message>
     <message>
         <source>Create a New Shapefile layer</source>
-        <translation type="obsolete">新しいShapeファイルレイヤを作る</translation>
+        <translation type="obsolete">新しいシェープファイルレイヤを作る</translation>
     </message>
     <message>
         <source>New SpatiaLite Layer ...</source>
@@ -17170,7 +17170,7 @@ Database:%2</source>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="193"/>
         <source>New Shapefile</source>
-        <translation>新しいShapefile</translation>
+        <translation>新しいシェープファイル</translation>
     </message>
     <message>
         <location filename="../src/browser/qgsbrowserbase.ui" line="196"/>
@@ -37254,7 +37254,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="52"/>
         <source>ESRI Shapefile</source>
-        <translation>ESRI　Shapefile</translation>
+        <translation>ESRI Shapefile</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsnewvectorlayerdialog.cpp" line="241"/>
@@ -38569,7 +38569,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1308"/>
         <source>Shapefiles without attribute are considered read-only.</source>
-        <translation>属性の無いShapefileはread-onlyとみなされます.</translation>
+        <translation>属性の無いシェープファイルはread-onlyとみなされます.</translation>
     </message>
 </context>
 <context>
@@ -51476,14 +51476,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Shapefiles (*.shp);;All files (*)</source>
-        <translation type="obsolete">Shapeファイル (*.shp);; 全ファイル (*)</translation>
+        <translation type="obsolete">シェープファイル (*.shp);; 全ファイル (*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="262"/>
         <source>The following Shapefile(s) could not be loaded:
 
 </source>
-        <translation>次の Shapefile がロードできません:
+        <translation>次のシェープファイルがロードできません:
 
 </translation>
     </message>
@@ -51495,7 +51495,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="271"/>
         <source>REASON: One or both of the Shapefile files (*.dbf, *.shx) missing</source>
-        <translation>理由: Shapefile (*.dbf, *.shx) が見つかりません</translation>
+        <translation>理由: シェープファイルの構成ファイル(*.dbf, *.shx)が見つかりません</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="348"/>
@@ -51555,7 +51555,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="361"/>
         <source>[SRID] - Reference ID for the shapefiles to be imported</source>
-        <translation>[SRID] - インポートする Shapefile の参照 ID</translation>
+        <translation>[SRID] - インポートするシェープファイルの参照 ID</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="362"/>
@@ -51575,7 +51575,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="367"/>
         <source>[Import] - import the current shapefiles in the list</source>
-        <translation>[インポート] - 一覧中の現在の Shapefile をインポート</translation>
+        <translation>[インポート] - 一覧中の現在のシェープファイルをインポート</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="368"/>
@@ -51625,7 +51625,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="518"/>
         <source>You need to add shapefiles to the list first</source>
-        <translation>先に Shapefile を一覧に追加してください</translation>
+        <translation>先にシェープファイルを一覧に追加してください</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="523"/>
@@ -51695,7 +51695,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="833"/>
         <source>%1 of %2 shapefiles could not be imported.</source>
-        <translation>%2 中 %1 の Shapefile がインポートできませんでした。</translation>
+        <translation>%2 中 %1 のシェープファイルがインポートできませんでした。</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="402"/>
@@ -51916,7 +51916,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="120"/>
         <source>Import options and shapefile list</source>
-        <translation>インポートオプション / Shapefile 一覧</translation>
+        <translation>インポートオプション / シェープファイル一覧</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="63"/>
@@ -53141,7 +53141,7 @@ There was a problem with your symbol database.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="46"/>
         <source>Export triangulation to shapefile after interpolation</source>
-        <translation>補完後に三角網をshapefileにエクスポートする</translation>
+        <translation>補完後に三角網をシェープファイルにエクスポートする</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="59"/>
@@ -59064,7 +59064,7 @@ about SEXTANTE</source>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>出力shapefileを指定してください</translation>
+        <translation>出力シェープファイルを指定してください</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -59080,7 +59080,7 @@ about SEXTANTE</source>
 %2
 
 Would you like to add the new layer to the TOC?</source>
-        <translation>以下の出力shapefileが作成されました:
+        <translation>以下の出力シェープファイルが作成されました:
 %1
 これを新しいレイヤとしてTOCに追加しますか
 %2
@@ -59089,7 +59089,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation>出力shapefileローディング中のエラー
+        <translation>出力シェープファイルローディング中のエラー
 %1</translation>
     </message>
     <message>
@@ -60223,7 +60223,7 @@ Run topology check again.</source>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="76"/>
         <source>Converts DXF files in Shapefile format</source>
-        <translation>DXFファイルをShapefile形式に変換する</translation>
+        <translation>DXFファイルをシェープファイル形式に変換する</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="83"/>
@@ -60321,7 +60321,7 @@ For support send a mail to scala@itc.cnr.it
         <translation>フィールドの解説:
 * 入力 DXF ファイルは変換する DXFファイルのパスです
 * 出力Shp ファイルには作成するshapeの名前です
-* Shp出力ファイルタイプは出力するshapeファイルのタイプを指定して下さい
+* Shp出力ファイルタイプは出力するシェープファイルのタイプを指定して下さい
 * エキスポートテキストチェックボックス: ここがチェックされているとその他にshpポイントレイヤが作成されます。そのレイヤのdbfはdxfファイルの&quot;TEXT&quot;フィールドとそのテキスト文字列で構成されます
 
 ---
@@ -61300,7 +61300,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation>複数のshapeファイルを１つに結合する</translation>
+        <translation>複数のシェープファイルを１つに結合する</translation>
     </message>
     <message>
         <source>fTools Information</source>
@@ -61457,7 +61457,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
         <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
-        <translation>ポリゴン（位相構造が無い）を切断します（Shapefileのような位相構造が無い形式からインポートされたもの）境界は2個以上のポリゴンに共有される点で分割されます.それらのセグメントの角度は異なります</translation>
+        <translation>ポリゴン（位相構造が無い）を切断します（シェープファイルのような位相構造が無い形式からインポートされたもの）境界は2個以上のポリゴンに共有される点で分割されます.それらのセグメントの角度は異なります</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
@@ -62389,7 +62389,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
         <source>Export vector to Shapefile</source>
-        <translation>ベクタをShapefileに出力する</translation>
+        <translation>ベクタをシェープファイルに出力する</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
