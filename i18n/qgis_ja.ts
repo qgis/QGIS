@@ -40819,7 +40819,7 @@ SQL:%1
     <message>
         <location filename="../src/ui/qgsoraclenewconnectionbase.ui" line="57"/>
         <source>Use estimated table metadata</source>
-        <translation>メタデータの推定されたテーブルを利用する</translation>
+        <translation>概算されたテーブルメタデータを利用する</translation>
     </message>
 </context>
 <context>
@@ -42053,7 +42053,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="250"/>
         <source>Use estimated table statistics for the layer metadata.</source>
-        <translation>レイヤメタデータの推定されたテーブル統計値を利用する.</translation>
+        <translation>レイヤメタデータに概算されたテーブル統計値を利用する.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="253"/>
@@ -42079,7 +42079,7 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="264"/>
         <source>Use estimated table metadata</source>
-        <translation>メタデータの推定されたテーブルを利用する</translation>
+        <translation>概算されたテーブルメタデータを利用する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="287"/>
