@@ -345,7 +345,7 @@
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="14"/>
         <source>Import vector layer</source>
-        <translation>ベクタレイヤーのインポート</translation>
+        <translation>ベクタレイヤのインポート</translation>
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="29"/>
@@ -811,7 +811,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="64"/>
         <source>Input vector layer</source>
-        <translation>ベクタレイヤーの入力</translation>
+        <translation>ベクタレイヤの入力</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="60"/>
@@ -2446,7 +2446,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <name>DlgImportVector</name>
     <message>
         <source>Import vector layer</source>
-        <translation type="obsolete">ベクタレイヤーのインポート</translation>
+        <translation type="obsolete">ベクタレイヤのインポート</translation>
     </message>
     <message>
         <source>Schema:</source>
@@ -5152,7 +5152,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation>ベクタレイヤーの入力</translation>
+        <translation>ベクタレイヤの入力</translation>
     </message>
     <message>
         <source>Layer CRS</source>
@@ -6322,7 +6322,7 @@ Acts on all editable layers</source>
         <translation>ラベルを固定／固定解除
 ラベルをクリックまたはドラッグで固定
 Shiftで固定解除; Ctrl(Cmd) 状態の切り替え
-すべての編集可能なレイヤーに適用されます</translation>
+すべての編集可能なレイヤに適用されます</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1793"/>
@@ -6350,12 +6350,12 @@ Shiftで固定解除; Ctrl(Cmd) 状態の切り替え
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1829"/>
         <source>Full Dataset Cumulative Cut Stretch</source>
-        <translation>レイヤー全体のヒストグラムの累積的カットと引き伸ばし</translation>
+        <translation>レイヤ全体のヒストグラムの累積的カットと引き伸ばし</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1832"/>
         <source>Cumulative cut stretch using full dataset extent, default limits and estimated values.</source>
-        <translation>レイヤー全体のヒストグラムの累積的カットと引き伸ばしを行う, デフォルトでは予測値を元にする.</translation>
+        <translation>レイヤ全体のヒストグラムの累積的カットと引き伸ばしを行う, デフォルトでは予測値を元にする.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1844"/>
@@ -6371,7 +6371,7 @@ Acts on currently active editable layer</source>
         <translation>ラベルを表示／非表示
 要素をクリックまたはドラッグで表示
 Shift+クリックで非表示
-すべての編集可能なレイヤーに適用されます</translation>
+すべての編集可能なレイヤに適用されます</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1862"/>
@@ -10112,7 +10112,7 @@ Only %1 of %2 features written.</source>
         <location filename="../src/app/qgisapp.cpp" line="5237"/>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="42"/>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation>要素を選択するには、凡例からベクタレイヤーを選択してください</translation>
+        <translation>要素を選択するには、凡例からベクタレイヤを選択してください</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS</source>
@@ -11081,7 +11081,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2895"/>
         <source>Unable determine number of geometry columns of layer %1.%2: 
 %3</source>
-        <translation>レイヤー%2(owner=%1)のジオメトリカラム数を決定できません
+        <translation>レイヤ%2(owner=%1)のジオメトリカラム数を決定できません
 %3</translation>
     </message>
     <message>
@@ -11109,7 +11109,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3261"/>
         <source>Unable to save layer style. It&apos;s not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin</source>
-        <translation>レイヤースタイルを保存出来ません. データベース上にテーブルを保存出来ません. テーブルのパーミッションに問題があります（user=%1）. データベースの管理者に問い合わせてください</translation>
+        <translation>レイヤスタイルを保存出来ません. データベース上にテーブルを保存出来ません. テーブルのパーミッションに問題があります（user=%1）. データベースの管理者に問い合わせてください</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3309"/>
@@ -11129,7 +11129,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3360"/>
         <source>Unable to save layer style. It&apos;s not possible to insert a new record into the style table. Maybe this is due to table permissions (user=%1). Please contact your database administrator.</source>
-        <translation>レイヤースタイルを保存出来ません. スタイルテーブルに新規レコードを追加できません. テーブルのパーミッションに問題があります（user=%1）. データベースの管理者に問い合わせてください. </translation>
+        <translation>レイヤスタイルを保存出来ません. スタイルテーブルに新規レコードを追加できません. テーブルのパーミッションに問題があります（user=%1）. データベースの管理者に問い合わせてください. </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3405"/>
@@ -11444,7 +11444,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/plugins/topology/topol.cpp" line="35"/>
         <source>A Plugin for finding topological errors in vector layers</source>
-        <translation>ベクタレイヤーのトポロジーエラーを抽出するプラグイン</translation>
+        <translation>ベクタレイヤのトポロジーエラーを抽出するプラグイン</translation>
     </message>
     <message>
         <location filename="../src/plugins/topology/topolError.cpp" line="24"/>
@@ -11584,7 +11584,7 @@ Database error: %2</source>
     <message>
         <location filename="../src/providers/postgres/qgspostgresfeatureiterator.cpp" line="299"/>
         <source>Trying to fetch geometry on a layer without geometry.</source>
-        <translation>ジオメトリを持たないレイヤーからジオメトリのフェッチを試みます.</translation>
+        <translation>ジオメトリを持たないレイヤからジオメトリのフェッチを試みます.</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="186"/>
@@ -14407,7 +14407,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4199"/>
         <source>Please select a vector layer first</source>
-        <translation>まずベクタレイヤーを選択してください</translation>
+        <translation>まずベクタレイヤを選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4208"/>
@@ -14600,7 +14600,7 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5535"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation>%1レイヤーの変更を保存しますか？</translation>
+        <translation>%1レイヤの変更を保存しますか？</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5564"/>
@@ -14644,7 +14644,7 @@ Error: %1</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6819"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
-        <translation>未保存のエディットモードレイヤーがあります これらは保存されません！</translation>
+        <translation>未保存のエディットモードレイヤがあります これらは保存されません！</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6844"/>
@@ -14688,7 +14688,7 @@ Error: %1</source>
         <location filename="../src/app/qgisapp.cpp" line="8280"/>
         <location filename="../src/app/qgisapp.cpp" line="8455"/>
         <source>Error adding valid layer to map canvas</source>
-        <translation>正常なレイヤーをマップキャンバスに追加時にエラー</translation>
+        <translation>正常なレイヤをマップキャンバスに追加時にエラー</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="8281"/>
@@ -30893,7 +30893,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="148"/>
         <source>Edit Grass Vector layer</source>
-        <translation>GRASSベクタレイヤーを編集</translation>
+        <translation>GRASSベクタレイヤを編集</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="151"/>
@@ -36231,7 +36231,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="211"/>
         <source>Only look in the geometry_columns metadata table</source>
-        <translation>ジオメトリカラムメタデータテーブルにあるテーブルのみ参照する</translation>
+        <translation>geometry_columnsメタデータテーブルにあるテーブルのみ参照する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmssqlnewconnectionbase.ui" line="221"/>
@@ -40763,7 +40763,7 @@ SQL:%1
     </message>
     <message>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
-        <translation type="obsolete">ジオメトリカラムテーブルが無い空間テーブルの公開スキーマ検索を制限します</translation>
+        <translation type="obsolete">geometry_columnsテーブルが無い空間テーブルの公開スキーマ検索を制限します</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When searching for spatial tables restrict the search to tables that are owner by the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -42072,7 +42072,7 @@ Extended error information:
 &lt;p&gt;このオプションを有効にすると以下の急速テーブルメタデータ操作が実行されます:&lt;/p&gt;
 &lt;p&gt;1) PostgreSQLのテーブル解析機能を利用してテーブルの行数計算が行われます.&lt;/p&gt;
 &lt;p&gt;2) テーブルの領域はいつもPostGISの機能で得られた推定値で決められます。これはレイヤにフィルタが適用された場合も同様です.&lt;/p&gt;
-&lt;p&gt;3) テーブルのジオメトリタイプが不明でジオメトリカラムから単独の情報を取得できない場合はテーブルの先頭のnullでない100行のジオメトリ情報を参照してメタデータを決めます.&lt;/p&gt;
+&lt;p&gt;3) テーブルのジオメトリタイプが不明でgeometry_columnsテーブルから単独の情報を取得できない場合はテーブルの先頭のnullでない100行のジオメトリ情報を参照してメタデータを決めます.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</translation>
     </message>
@@ -42140,12 +42140,12 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="209"/>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
-        <translation>ジオメトリカラムテーブルが無い空間テーブルの公開スキーマ検索を制限します</translation>
+        <translation>geometry_columnsテーブルに無い空間テーブルの公開スキーマ検索を制限します</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="212"/>
         <source>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</source>
-        <translation>ジオメトリカラムが無い空間情報テーブルを検索する時にパブリックスキーマにあるテーブルの検索を制限します（いくつかのデータベースではこの処理に大量に時間がかかるからです）</translation>
+        <translation>geometry_columnsテーブルに無い空間情報テーブルを検索する時にパブリックスキーマにあるテーブルの検索を制限します（いくつかのデータベースではこの処理に大量に時間がかかるからです）</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="215"/>
@@ -46679,7 +46679,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="217"/>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
-        <translation>高解像度ラスタレイヤーではQGISでの動作が遅くなる可能性があります.</translation>
+        <translation>高解像度ラスタレイヤではQGISでの動作が遅くなる可能性があります.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="218"/>
@@ -46861,7 +46861,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
-        <translation type="obsolete">QGISレイヤースタイルファイル(*.qml)</translation>
+        <translation type="obsolete">QGISレイヤスタイルファイル(*.qml)</translation>
     </message>
     <message>
         <source>QGIS</source>
@@ -46915,7 +46915,7 @@ Click on help button to get valid creation options for this format.</source>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1627"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1663"/>
         <source>QGIS Layer Style File</source>
-        <translation>QGISレイヤースタイルファイル</translation>
+        <translation>QGISレイヤスタイルファイル</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1649"/>
@@ -51500,7 +51500,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="348"/>
         <source>General Interface Help:</source>
-        <translation>一般的インターフェイスヘルプ:</translation>
+        <translation>一般的インターフェースヘルプ:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="349"/>
@@ -53862,7 +53862,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="14"/>
         <source>Gradient color ramp</source>
-        <translation>グレイジェントカラーランプ</translation>
+        <translation>グラデーションカラーランプ</translation>
     </message>
     <message>
         <source>Change</source>
@@ -54468,7 +54468,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>QGIS Layer Style File (*.qml)</source>
-        <translation type="obsolete">QGISレイヤースタイルファイル(*.qml)</translation>
+        <translation type="obsolete">QGISレイヤスタイルファイル(*.qml)</translation>
     </message>
     <message>
         <source>id</source>
