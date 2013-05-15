@@ -373,6 +373,7 @@
    <addaction name="mActionDeselectAll"/>
    <addaction name="mActionSelectByExpression"/>
    <addaction name="mActionOpenTable"/>
+   <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionMapTips"/>
    <addaction name="mActionNewBookmark"/>
    <addaction name="mActionShowBookmarks"/>
@@ -2072,6 +2073,18 @@ Acts on currently active editable layer</string>
   <action name="mActionNeedSupport">
    <property name="text">
     <string>Need Support?</string>
+   </property>
+  </action>
+  <action name="mActionOpenFieldCalc">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCalculateField.png</normaloff>:/images/themes/default/mActionCalculateField.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open Field Calculator</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Field Calculator</string>
    </property>
   </action>
  </widget>

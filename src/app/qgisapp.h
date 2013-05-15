@@ -301,6 +301,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /** @note added in 1.9 */
     QAction *actionPasteLayerStyle() { return mActionPasteStyle; }
     QAction *actionOpenTable() { return mActionOpenTable; }
+    QAction *actionOpenFieldCalculator() { return mActionOpenFieldCalc; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     /** @note added in 1.9 */
     QAction *actionSaveActiveLayerEdits() { return mActionSaveLayerEdits; }
@@ -447,6 +448,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! show the attribute table for the currently selected layer
     void attributeTable();
+
+    void fieldCalculator();
 
     //! mark project dirty
     void markDirty();

@@ -129,6 +129,7 @@
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
+#include "qgsfieldcalculator.h"
 #include "qgshtmlannotationitem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
@@ -981,6 +982,7 @@ void QgisApp::createActions()
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
+  connect( mActionOpenFieldCalc, SIGNAL( triggered() ), this, SLOT( fieldCalculator() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
   connect( mActionSaveLayerEdits, SIGNAL( triggered() ), this, SLOT( saveActiveLayerEdits() ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
@@ -1738,6 +1740,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( "/mActionDeselectAll.png" ) );
   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( "/mIconExpressionSelect.svg" ) );
   mActionOpenTable->setIcon( QgsApplication::getThemeIcon( "/mActionOpenTable.png" ) );
+  mActionOpenFieldCalc->setIcon( QgsApplication::getThemeIcon( "/mActionCalculateField.png" ) );
   mActionMeasure->setIcon( QgsApplication::getThemeIcon( "/mActionMeasure.png" ) );
   mActionMeasureArea->setIcon( QgsApplication::getThemeIcon( "/mActionMeasureArea.png" ) );
   mActionMeasureAngle->setIcon( QgsApplication::getThemeIcon( "/mActionMeasureAngle.png" ) );
@@ -4242,6 +4245,26 @@ void QgisApp::labeling()
   delete dlg;
 
   activateDeactivateLayerRelatedActions( layer );
+}
+
+void QgisApp::fieldCalculator()
+{
+    if ( mMapCanvas && mMapCanvas->isDrawing() )
+    {
+      return;
+    }
+
+    QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+    if ( !myLayer )
+    {
+      return;
+    }
+
+    QgsFieldCalculator calc( myLayer );
+    if ( calc.exec() )
+    {
+        mMapCanvas->refresh();
+    }
 }
 
 void QgisApp::attributeTable()
@@ -7828,6 +7851,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectRadius->setEnabled( false );
     mActionIdentify->setEnabled( QSettings().value( "/Map/identifyMode", 0 ).toInt() != 0 );
     mActionOpenTable->setEnabled( false );
+    mActionOpenFieldCalc->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
     mActionSaveLayerEdits->setEnabled( false );
@@ -8057,6 +8081,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         }
       }
 
+      bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+      bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
+      bool canAddAttributes = dprovider->capabilities() & QgsVectorDataProvider::AddAttributes;
+      bool canDeleteAttributes = dprovider->capabilities() & QgsVectorDataProvider::DeleteAttributes;
+      bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
+
+      mActionOpenFieldCalc->setEnabled(( canChangeAttributes || canAddAttributes ) && vlayer->isEditable() );
+
       return;
     }
     else
@@ -8065,6 +8097,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionUndo->setEnabled( false );
       mActionRedo->setEnabled( false );
     }
+
+
 
     mActionLayerSubsetString->setEnabled( false );
   }//end vector layer block
@@ -8100,6 +8134,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionSelectRadius->setEnabled( false );
     mActionZoomActualSize->setEnabled( true );
     mActionOpenTable->setEnabled( false );
+    mActionOpenFieldCalc->setEnabled( false );
     mActionToggleEditing->setEnabled( false );
     mActionToggleEditing->setChecked( false );
     mActionSaveLayerEdits->setEnabled( false );
