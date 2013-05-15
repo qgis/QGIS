@@ -51,12 +51,12 @@ class ModelerScene(QtGui.QGraphicsScene):
         for item in self.algItems:
             pos.append(item.pos())
         return pos
-    
+
     def getOutputPositions(self):
         pos = []
         for alg in self.outputItems:
             outputPos = {}
-            for key,value in alg.iteritems():                
+            for key,value in alg.iteritems():
                 if value is not None:
                     outputPos[key] = value.pos()
                 else:
@@ -125,7 +125,7 @@ class ModelerScene(QtGui.QGraphicsScene):
             item.setPos(model.algPos[iAlg])
             self.algItems.append(item)
             iAlg+=1
-                   
+
         #and then the arrows
         iAlg=0
         for alg in model.algs:
@@ -143,27 +143,27 @@ class ModelerScene(QtGui.QGraphicsScene):
                 arrow = ModelerArrowItem(self.algItems[depend], -1, self.algItems[iAlg], -1)
                 self.addItem(arrow)
             iAlg+=1
-            
-        #and finally the outputs                        
+
+        #and finally the outputs
         for iAlg, alg in enumerate(model.algs):
-            outputs = model.algOutputs[iAlg]  
-            outputItems = {}                      
+            outputs = model.algOutputs[iAlg]
+            outputItems = {}
             for idx, key in enumerate(outputs.keys()):
-                out = outputs[key]                
-                if out is not None:   
+                out = outputs[key]
+                if out is not None:
                     item = ModelerGraphicItem(out, idx, model)
                     item.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
                     item.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
                     self.addItem(item)
-                    pos = model.outputPos[iAlg][key]                     
+                    pos = model.outputPos[iAlg][key]
                     if pos is None:
-                        pos = self.algItems[iAlg].pos() + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH,0) + self.algItems[iAlg].getLinkPointForOutput(idx)                                            
+                        pos = self.algItems[iAlg].pos() + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH,0) + self.algItems[iAlg].getLinkPointForOutput(idx)
                     item.setPos(pos)
-                    outputItems[key] = item                                 
+                    outputItems[key] = item
                     arrow = ModelerArrowItem(self.algItems[iAlg], idx, item, -1)
                     self.addItem(arrow)
                 else:
-                    outputItems[key] = None                
+                    outputItems[key] = None
             self.outputItems.append(outputItems)
 
 

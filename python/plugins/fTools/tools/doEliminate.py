@@ -167,7 +167,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                     mergeWithFid = None
                     mergeWithGeom = None
                     max = 0
-                    
+
                     selFeat = QgsFeature()
                     while fit.nextFeature(selFeat):
                             selGeom = selFeat.geometry()

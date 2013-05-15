@@ -49,7 +49,7 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         elif isinstance(element, basestring): #output name
             icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/output.png")
             self.pixmap = icon.pixmap(20, 20, state=QtGui.QIcon.On)
-            self.text = element           
+            self.text = element
         else:
             state=QtGui.QIcon.On
             if self.elementIndex in self.model.deactivated:
@@ -60,57 +60,57 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
         self.setZValue(1000)
-        
+
         if not isinstance(element, basestring):
             icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/edit.png")
-            pt = QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2 - FlatButtonGraphicItem.WIDTH / 2, ModelerGraphicItem.BOX_HEIGHT / 2 - FlatButtonGraphicItem.HEIGHT / 2 + 1) 
+            pt = QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2 - FlatButtonGraphicItem.WIDTH / 2, ModelerGraphicItem.BOX_HEIGHT / 2 - FlatButtonGraphicItem.HEIGHT / 2 + 1)
             self.editButton = FlatButtonGraphicItem(icon, pt, self.editElement)
             self.editButton.setParentItem(self)
             icon = QtGui.QIcon(os.path.dirname(__file__) + "/../images/delete.png")
-            pt = QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2 - FlatButtonGraphicItem.WIDTH / 2, -ModelerGraphicItem.BOX_HEIGHT / 2 + FlatButtonGraphicItem.HEIGHT / 2 + 1) 
+            pt = QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2 - FlatButtonGraphicItem.WIDTH / 2, -ModelerGraphicItem.BOX_HEIGHT / 2 + FlatButtonGraphicItem.HEIGHT / 2 + 1)
             self.deleteButton = FlatButtonGraphicItem(icon, pt, self.removeElement)
             self.deleteButton.setParentItem(self)
-        
-        if isinstance(element, GeoAlgorithm):   
-            if element.parameters:                                                     
+
+        if isinstance(element, GeoAlgorithm):
+            if element.parameters:
                 pt = self.getLinkPointForParameter(-1)
-                x = self.getXPositionForFoldButton() 
+                x = self.getXPositionForFoldButton()
                 pt = QtCore.QPointF(x, pt.y() + 3)
                 self.inButton = FoldButtonGraphicItem(pt, self.foldInput)
                 self.inButton.setParentItem(self)
             if element.outputs:
                 pt = self.getLinkPointForOutput(-1)
-                x = self.getXPositionForFoldButton() 
-                pt = QtCore.QPointF(x, pt.y() + 3) 
+                x = self.getXPositionForFoldButton()
+                pt = QtCore.QPointF(x, pt.y() + 3)
                 self.outButton = FoldButtonGraphicItem(pt, self.foldOutput)
                 self.outButton.setParentItem(self)
-        
+
 
     def foldInput(self, folded):
         self.inputFolded = folded
-        self.prepareGeometryChange() 
-        if self.element.outputs: 
+        self.prepareGeometryChange()
+        if self.element.outputs:
             pt = self.getLinkPointForOutput(-1)
-            x = self.getXPositionForFoldButton() 
+            x = self.getXPositionForFoldButton()
             pt = QtCore.QPointF(x, pt.y())
             self.outButton.position = pt
         self.update()
-        
+
     def foldOutput(self, folded):
-        self.outputFolded = folded   
-        self.prepareGeometryChange()     
-        self.update()        
-    
+        self.outputFolded = folded
+        self.prepareGeometryChange()
+        self.update()
+
     def addArrow(self, arrow):
         self.arrows.append(arrow)
 
     def boundingRect(self):
         font = QtGui.QFont("Verdana", 8)
-        fm = QtGui.QFontMetricsF(font)   
+        fm = QtGui.QFontMetricsF(font)
         numParams = 0 if self.inputFolded else len(self.element.parameters)
-        numOutputs = 0 if self.outputFolded else len(self.element.outputs) 
-        numElements = numParams + numOutputs + 3                  
-        h = (fm.height() * 1.2) * numElements 
+        numOutputs = 0 if self.outputFolded else len(self.element.outputs)
+        numElements = numParams + numOutputs + 3
+        h = (fm.height() * 1.2) * numElements
         rect = QtCore.QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2,
                              ModelerGraphicItem.BOX_WIDTH + 2, ModelerGraphicItem.BOX_HEIGHT + h)
         return rect
@@ -200,37 +200,37 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             painter.setPen(QtGui.QPen(QtCore.Qt.blue))
         if isinstance(self.element, GeoAlgorithm):
             if self.elementIndex in self.model.deactivated:
-                painter.setPen(QtGui.QPen(QtCore.Qt.lightGray))            
+                painter.setPen(QtGui.QPen(QtCore.Qt.lightGray))
         fm = QtGui.QFontMetricsF(font)
         text = self.getAdjustedText(self.text)
         h = fm.height()
         pt = QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + 25, h/2.0)
         painter.drawText(pt, text)
         painter.setPen(QtGui.QPen(QtCore.Qt.black))
-        if isinstance(self.element, GeoAlgorithm):                    
+        if isinstance(self.element, GeoAlgorithm):
             h = (fm.height() * 1.2)
-            h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 
+            h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
             pt = QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + 25, h)
             painter.drawText(pt, "In")
             i = 1
             if not self.inputFolded:
                 for param in self.element.parameters:
-                    text = self.getAdjustedText(param.description)                
+                    text = self.getAdjustedText(param.description)
                     h = (fm.height() * 1.2) * (i + 1)
-                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 
+                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
                     pt = QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + 33, h)
                     painter.drawText(pt, text)
-                    i += 1                        
+                    i += 1
             h = (fm.height() * 1.2) * (i + 1)
-            h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 
+            h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
             pt = QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + 25, h)
             painter.drawText(pt, "Out")
             i += 1
             if not self.outputFolded:
                 for out in self.element.outputs:
-                    text = self.getAdjustedText(out.description)                
+                    text = self.getAdjustedText(out.description)
                     h = (fm.height() * 1.2) * (i + 1)
-                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 
+                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
                     pt = QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + 33, h)
                     painter.drawText(pt, text)
                     i += 1
@@ -243,28 +243,28 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
             paramIndex = -1
             offsetX = 17
         font = QtGui.QFont("Verdana", 8)
-        fm = QtGui.QFontMetricsF(font)  
-        if isinstance(self.element, GeoAlgorithm): 
+        fm = QtGui.QFontMetricsF(font)
+        if isinstance(self.element, GeoAlgorithm):
             h = (fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 2
             h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
         else:
             h = 0
         return QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH)/2 + offsetX, h)
-        
-        
+
+
     def getXPositionForFoldButton(self):
         return 0
-     
-    def getLinkPointForOutput(self, outputIndex):              
-        if isinstance(self.element, GeoAlgorithm):            
+
+    def getLinkPointForOutput(self, outputIndex):
+        if isinstance(self.element, GeoAlgorithm):
             numParams = 0 if self.inputFolded else len(self.element.parameters)
-            outputIndex = outputIndex if not self.outputFolded else -1             
-            text = self.getAdjustedText(self.element.outputs[outputIndex].description)            
+            outputIndex = outputIndex if not self.outputFolded else -1
+            text = self.getAdjustedText(self.element.outputs[outputIndex].description)
             font = QtGui.QFont("Verdana", 8)
-            fm = QtGui.QFontMetricsF(font)                     
+            fm = QtGui.QFontMetricsF(font)
             w = fm.width(QtCore.QString(text))
             h = (fm.height() * 1.2) * (outputIndex + 3 + numParams) - fm.height() / 2.0
-            y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0  + 2                       
+            y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0  + 2
             x = -(ModelerGraphicItem.BOX_WIDTH)/2 + 33 + w + 5 if not self.outputFolded else 10
             return  QtCore.QPointF(x, y)
         else:
@@ -279,9 +279,9 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
 
     def polygon(self):
         font = QtGui.QFont("Verdana", 8)
-        fm = QtGui.QFontMetricsF(font)   
-        numElements = len(self.element.parameters) + len(self.element.outputs) + 3                  
-        h = (fm.height() * 1.2) * numElements 
+        fm = QtGui.QFontMetricsF(font)
+        numElements = len(self.element.parameters) + len(self.element.outputs) + 3
+        h = (fm.height() * 1.2) * numElements
         pol = QtGui.QPolygonF([
                     QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, -(ModelerGraphicItem.BOX_HEIGHT + 2)/2),
                     QtCore.QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2)/2, (ModelerGraphicItem.BOX_HEIGHT + 2)/2 + h),
@@ -291,62 +291,61 @@ class ModelerGraphicItem(QtGui.QGraphicsItem):
         return pol
 
 class FlatButtonGraphicItem(QtGui.QGraphicsItem):
-    
+
     WIDTH = 16
-    HEIGHT = 16 
-    
+    HEIGHT = 16
+
     def __init__(self, icon, position, action):
         super(FlatButtonGraphicItem, self).__init__(None, None)
-        self.setAcceptHoverEvents(True) 
+        self.setAcceptHoverEvents(True)
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, False)
         self.pixmap = icon.pixmap(self.WIDTH, self.HEIGHT, state=QtGui.QIcon.On)
         self.position = position
-        self.isIn = False   
-        self.action = action     
+        self.isIn = False
+        self.action = action
 
     def mousePressEvent(self, event):
         self.action()
-        
+
     def paint(self, painter, option, widget=None):
         pt = QtCore.QPointF(-self.WIDTH / 2, -self.HEIGHT / 2) + self.position
-        rect = QtCore.QRectF(pt.x(), pt.y(), self.WIDTH, self.HEIGHT)            
+        rect = QtCore.QRectF(pt.x(), pt.y(), self.WIDTH, self.HEIGHT)
         if self.isIn:
             painter.setPen(QtGui.QPen(QtCore.Qt.transparent, 1))
-            painter.setBrush(QtGui.QBrush(QtCore.Qt.lightGray, QtCore.Qt.SolidPattern))            
+            painter.setBrush(QtGui.QBrush(QtCore.Qt.lightGray, QtCore.Qt.SolidPattern))
         else:
-            painter.setPen(QtGui.QPen(QtCore.Qt.transparent, 1))            
+            painter.setPen(QtGui.QPen(QtCore.Qt.transparent, 1))
             painter.setBrush(QtGui.QBrush(QtCore.Qt.white, QtCore.Qt.SolidPattern))
-        painter.drawRect(rect)     
+        painter.drawRect(rect)
         painter.drawPixmap(pt.x(), pt.y(), self.pixmap)
-        
+
     def boundingRect(self):
         rect = QtCore.QRectF(self.position.x() - self.WIDTH / 2, self.position.y() - self.HEIGHT / 2, self.WIDTH, self.HEIGHT)
-        return rect      
-    
+        return rect
+
     def hoverEnterEvent(self, event):
-        self.isIn = True  
+        self.isIn = True
         self.update()
-        
+
     def hoverLeaveEvent(self, event):
-        self.isIn = False          
+        self.isIn = False
         self.update()
-        
+
 class FoldButtonGraphicItem(FlatButtonGraphicItem):
 
     WIDTH = 11
     HEIGHT = 11
-    
-    icons = { True : QtGui.QIcon(os.path.dirname(__file__) + "/../images/plus.png"), 
+
+    icons = { True : QtGui.QIcon(os.path.dirname(__file__) + "/../images/plus.png"),
              False : QtGui.QIcon(os.path.dirname(__file__) + "/../images/minus.png")}
-    
+
     def __init__(self, position, action):
         self.folded = True
         icon = self.icons[True]
-        super(FoldButtonGraphicItem, self).__init__(icon, position, action)             
+        super(FoldButtonGraphicItem, self).__init__(icon, position, action)
 
     def mousePressEvent(self, event):
         self.folded = not self.folded
         icon = self.icons[self.folded]
         self.pixmap = icon.pixmap(self.WIDTH, self.HEIGHT, state=QtGui.QIcon.On)
         self.action(self.folded)
-    

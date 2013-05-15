@@ -1768,14 +1768,14 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       QDomElement e = featureBlendModeNode.toElement();
       setFeatureBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) e.text().toInt() ) );
     }
-    
+
     // get and set the layer transparency if it exists
     QDomNode layerTransparencyNode = node.namedItem( "layerTransparency" );
     if ( !layerTransparencyNode.isNull() )
     {
       QDomElement e = layerTransparencyNode.toElement();
       setLayerTransparency( e.text().toInt() );
-    }    
+    }
 
     // use scale dependent visibility flag
     QDomElement e = node.toElement();

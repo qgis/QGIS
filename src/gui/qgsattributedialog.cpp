@@ -179,7 +179,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       if ( !myWidget )
         continue;
 
-      QLabel * mypLabel = new QLabel( mypInnerFrame );
+      QLabel *mypLabel = new QLabel( mypInnerFrame );
       mypInnerLayout->addWidget( mypLabel, index, 0 );
       if ( myFieldType == QVariant::Int )
       {

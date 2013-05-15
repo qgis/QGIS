@@ -329,7 +329,7 @@ int main( int argc, char * argv[] )
         continue;
       }
 
-      if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0  )
+      if ( request.compare( "GetCapabilities", Qt::CaseInsensitive ) == 0 )
       {
         QDomDocument capabilitiesDocument;
         try

@@ -91,14 +91,14 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
 
   // Feature blend mode
   mFeatureBlendComboBox->setBlendMode( mLayer->featureBlendMode() );
-  
+
   // Layer transparency
   mLayerTransparencySlider->setValue( mLayer->layerTransparency() );
   mLayerTransparencySpnBx->setValue( mLayer->layerTransparency() );
 
   // connect layer transparency slider and spin box
   connect( mLayerTransparencySlider, SIGNAL( valueChanged( int ) ), mLayerTransparencySpnBx, SLOT( setValue( int ) ) );
-  connect( mLayerTransparencySpnBx, SIGNAL( valueChanged( int ) ), mLayerTransparencySlider, SLOT( setValue( int ) ) );    
+  connect( mLayerTransparencySpnBx, SIGNAL( valueChanged( int ) ), mLayerTransparencySlider, SLOT( setValue( int ) ) );
 
   QPixmap pix;
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
@@ -187,7 +187,7 @@ void QgsRendererV2PropertiesDialog::apply()
   // set the blend modes for the layer
   mLayer->setBlendMode( mBlendModeComboBox->blendMode() );
   mLayer->setFeatureBlendMode( mFeatureBlendComboBox->blendMode() );
-  
+
   // set transparency for the layer
   mLayer->setLayerTransparency( mLayerTransparencySlider->value() );
 }
