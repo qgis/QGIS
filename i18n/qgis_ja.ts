@@ -31963,7 +31963,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="410"/>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="550"/>
         <source>(Derived)</source>
-        <translation>（継承している属性）</translation>
+        <translation>(派生した属性)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresultsdialog.cpp" line="422"/>
