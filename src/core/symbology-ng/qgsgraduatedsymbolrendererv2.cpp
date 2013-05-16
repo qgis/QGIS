@@ -1076,10 +1076,18 @@ QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems()
     lst << qMakePair( classAttribute(), ( QgsSymbolV2* )0 );
   }
 
-  QgsRangeList::const_iterator rangeIt = mRanges.constBegin();
-  for ( ; rangeIt != mRanges.constEnd(); ++rangeIt )
+  foreach ( const QgsRendererRangeV2& range, mRanges )
   {
-    lst << qMakePair( rangeIt->label(), rangeIt->symbol() );
+    QgsSymbolV2* symbol;
+    if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )
+    {
+      symbol = range.symbol();
+    }
+    else
+    {
+      symbol = mTempSymbols[range.symbol()];
+    }
+    lst << qMakePair( range.label(), symbol );
   }
   return lst;
 }
