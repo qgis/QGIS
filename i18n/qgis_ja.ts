@@ -6239,7 +6239,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
         <location filename="../src/ui/qgisapp.ui" line="2084"/>
         <location filename="../src/ui/qgisapp.ui" line="2087"/>
         <source>Open Field Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>フィールド計算機を開く</translation>
     </message>
     <message>
         <source>Save Edits</source>
@@ -8287,7 +8287,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Object Inspector</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクトインスペクタ</translation>
     </message>
     <message>
         <source>Find text</source>
@@ -8351,7 +8351,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>The file &lt;b&gt;%1&lt;/b&gt; could not be saved. Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイル &lt;b&gt;%1&lt;/b&gt; を保存できませんでした.エラー: %2</translation>
     </message>
     <message>
         <source>Failed to save %1: %2</source>
@@ -10992,22 +10992,22 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2359"/>
         <source>function help for %1 missing</source>
-        <translation type="unfinished"></translation>
+        <translation>%1の関数ヘルプはありません</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2368"/>
         <source>Operators</source>
-        <translation type="unfinished">演算子</translation>
+        <translation>演算子</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2370"/>
         <source>Fields and Values</source>
-        <translation type="unfinished">フィールドと値</translation>
+        <translation>フィールドと値</translation>
     </message>
     <message>
         <location filename="../src/core/qgsexpression.cpp" line="2380"/>
         <source>Missing group %1</source>
-        <translation type="unfinished"></translation>
+        <translation>グループ%1がありません</translation>
     </message>
     <message>
         <source>Column &apos;%1&apos;&apos; not found</source>
@@ -19958,12 +19958,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="366"/>
         <source>Select font color</source>
-        <translation type="unfinished">フォント色の選択</translation>
+        <translation>フォント色の選択</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="757"/>
         <source>Label font changed</source>
-        <translation type="unfinished">ラベルフォントが変更されました</translation>
+        <translation>ラベルフォントが変更されました</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="912"/>
@@ -20205,7 +20205,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="457"/>
         <source>Blend mode</source>
-        <translation type="unfinished"></translation>
+        <translation>混合モード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="469"/>
@@ -20245,7 +20245,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="631"/>
         <source>Font color...</source>
-        <translation type="unfinished">フォント色...</translation>
+        <translation>フォント色...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="644"/>
@@ -22009,7 +22009,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgscontexthelp.cpp" line="75"/>
         <source>&lt;h3&gt;Oops! QGIS can&apos;t find help for this form.&lt;/h3&gt;The help file for %1 was not found for your language&lt;br&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="unfinished">&lt;h3&gt;Oops! QGIS はこのフォームのヘルプを見つけられません.&lt;/h3&gt;あなたの言語ではヘルプファイル%1が見つかりません&lt;br&gt;もしあなたが作成したいならQGIS開発チームに連絡をください</translation>
+        <translation>&lt;h3&gt;Oops! QGIS はこのフォームのヘルプを見つけられません.&lt;/h3&gt;あなたの言語ではヘルプファイル%1が見つかりません&lt;br&gt;もしあなたが作成したいならQGIS開発チームに連絡をください</translation>
     </message>
 </context>
 <context>
@@ -46717,7 +46717,7 @@ Click on help button to get valid creation options for this format.</source>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1223"/>
         <source>Value</source>
-        <translation type="unfinished">値</translation>
+        <translation>値</translation>
     </message>
     <message>
         <source>Color</source>
@@ -48871,22 +48871,22 @@ standard deviation ×</source>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="20"/>
         <source>Layer rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤレンダリング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="53"/>
         <source>Layer transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ透過性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="63"/>
         <source>Feature blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation>地物混合モード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="70"/>
         <source>Layer blending mode</source>
-        <translation type="unfinished"></translation>
+        <translation>レイヤ混合モード</translation>
     </message>
     <message>
         <source>Blending mode</source>
@@ -58846,7 +58846,7 @@ SQL Anywhereエラーコード %2
     <message>
         <location filename="../python/console/console_settings.ui" line="235"/>
         <source>Enable Object Inspector (switching between tabs may be slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>オブジェクトインスペクタを有効にする(タブの間を切り替えています 多分遅いです)</translation>
     </message>
     <message>
         <location filename="../python/console/console_settings.ui" line="416"/>
