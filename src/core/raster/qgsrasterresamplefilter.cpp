@@ -131,7 +131,7 @@ void QgsRasterResampleFilter::setZoomedOutResampler( QgsRasterResampler* r )
 QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsg( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ) );
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput ) return outputBlock;
 
@@ -140,7 +140,6 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   if ( mZoomedInResampler || mZoomedOutResampler )
   {
     QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
-    // Do not oversample if data source does not have fixed resolution (WMS)
     if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
     {
       double xRes = extent.width() / width;
@@ -158,13 +157,18 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
     }
   }
 
-  //set oversampling back to 1.0 if no resampler for zoomed in / zoomed out (nearest neighbour)
-  if (( oversampling < 1.0 && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
-  {
-    oversampling = 1.0;
-  }
-
   QgsDebugMsg( QString( "oversampling %1" ).arg( oversampling ) );
+
+  int bandNumber = 1;
+
+  // Do no oversampling if no resampler for zoomed in / zoomed out (nearest neighbour)
+  // We do mZoomedInResampler if oversampling == 1 (otherwise for example reprojected
+  // zoom in rasters are never resampled because projector limits resolution.
+  if (( (oversampling < 1.0 || qgsDoubleNear( oversampling, 1.0) ) && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
+  {
+    QgsDebugMsg( "No oversampling." );
+    return mInput->block( bandNumber, extent, width, height );
+  }
 
   //effective oversampling factors are different to global one because of rounding
   double oversamplingX = (( double )width * oversampling ) / width;
@@ -175,22 +179,12 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   int resWidth = width * oversamplingX;
   int resHeight = height * oversamplingY;
 
-  // At moment we know that we read rendered image
-  int bandNumber = 1;
-  //void *rasterData = mInput->block( bandNumber, extent, resWidth, resHeight );
   QgsRasterBlock *inputBlock = mInput->block( bandNumber, extent, resWidth, resHeight );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( "No raster data!" );
     delete inputBlock;
     return outputBlock;
-  }
-
-  if ( qgsDoubleNear( oversamplingX, 1.0 ) || qgsDoubleNear( oversamplingY, 1.0 ) )
-  {
-    QgsDebugMsg( "No oversampling." );
-    delete outputBlock;
-    return inputBlock;
   }
 
   if ( !outputBlock->reset( QGis::ARGB32_Premultiplied, width, height ) )
@@ -204,7 +198,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
 
   QImage dstImg = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
 
-  if ( mZoomedInResampler && oversamplingX < 1.0 )
+  if ( mZoomedInResampler && (oversamplingX < 1.0 || qgsDoubleNear( oversampling, 1.0) ) )
   {
     QgsDebugMsg( "zoomed in resampling" );
     mZoomedInResampler->resample( img, dstImg );
