@@ -159,10 +159,10 @@ is invalid if it does not have capture groups.  As an example this can be used a
 unintuitive) means of loading data with fixed width fields.  For example the 
 expression
 <pre>
-^(.{5})(.{10})(.{20})(.{20}).*
+^(.{5})(.{10})(.{20})(.{20})
 </pre>
 <p>will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 45 characters long will be discarded.
+Lines less than 55 characters long will be discarded.
 </p>
 
 
@@ -210,10 +210,10 @@ are interpreted.
 
 <h4><a name="example">Example of a text file with X,Y point coordinates</a></h4> 
 <pre>
-X;Y;ELEV<br />
--300120;7689960;13<br />
--654360;7562040;52<br />
-1640;7512840;3<br />
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
 </pre>
 <p>This file:</p>
 <ul>
@@ -224,12 +224,12 @@ X;Y;ELEV<br />
 </ul>
 <h4><a name="wkt_example">Example of a text file with WKT geometries</a></h4>
 <pre>
-id|wkt<br />
-1|POINT(172.0702250 -43.6031036)<br />
-2|POINT(172.0702250 -43.6031036)<br />
-3|POINT(172.1543206 -43.5731302)<br />
-4|POINT(171.9282585 -43.5493308)<br />
-5|POINT(171.8827359 -43.5875983)<br />
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
 </pre>
 <p>This file:</p>
 <ul>
@@ -243,20 +243,20 @@ id|wkt<br />
 The pattern is:
 </p>
 <pre>
-from PyQt4.QtCore import QUrl, QString<br />
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry<br />
-<br />
-# Define the data source<br />
-filename="test.csv"<br />
-uri=QUrl.fromLocalFile(filename)<br />
-uri.addQueryItem("type","csv")<br />
-uri.addQueryItem("delimiter","|")<br />
-uri.addQueryItem("wktField","wkt")<br />
-# ... other delimited text parameters<br />
-layer=QgsVectorLayer(QString(uri.toEncoded()),"Test CSV layer","delimitedtext")<br />
-# Add the layer to the map<br />
-if layer.isValid():<br />
-    QgsMapLayerRegistry.instance().addMapLayer( layer )<br />
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename="test.csv"
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem("type","csv")
+uri.addQueryItem("delimiter","|")
+uri.addQueryItem("wktField","wkt")
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),"Test CSV layer","delimitedtext")
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
 </pre>
 <p>This could be used to load the second example file above.</p>
 <p>The configuration of the delimited text layer is defined by adding query items to the uri.
