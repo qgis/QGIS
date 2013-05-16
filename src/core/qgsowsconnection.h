@@ -21,9 +21,8 @@
 
 #ifndef QGSOWSCONNECTION_H
 #define QGSOWSCONNECTION_H
+
 #include "qgsdatasourceuri.h"
-//#include "qgisgui.h"
-//#include "qgscontexthelp.h"
 
 #include <QStringList>
 #include <QPushButton>

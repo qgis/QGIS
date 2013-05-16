@@ -243,7 +243,7 @@ class CORE_EXPORT QgsExpression
         /** The group the function belongs to. */
         QString group() { return mGroup; }
         /** The help text for the function. */
-        QString helptext() { return mHelpText; }
+        QString helptext() { return mHelpText.isEmpty() ? QgsExpression::helptext( mName ) : mHelpText; }
 
         virtual QVariant func( const QVariantList& values, QgsFeature* f, QgsExpression* parent ) = 0;
 
@@ -586,6 +586,9 @@ class CORE_EXPORT QgsExpression
     /** entry function for the visitor pattern */
     void acceptVisitor( Visitor& v ) const;
 
+    static QString helptext( QString name );
+    static QString group( QString group );
+
   protected:
     // internally used to create an empty expression
     QgsExpression() : mRootNode( NULL ), mRowNumber( 0 ) {}
@@ -605,6 +608,10 @@ class CORE_EXPORT QgsExpression
     QgsDistanceArea mCalc;
 
     friend class QgsOgcUtils;
+
+    static void initFunctionHelp();
+    static QHash<QString, QString> gFunctionHelpTexts;
+    static QHash<QString, QString> gGroups;
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );

@@ -632,9 +632,9 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
     showWMSPrintingWarning();
   }
 
-  if ( containsBlendModes() )
+  if ( containsAdvancedEffects() )
   {
-    showBlendModePrintingWarning();
+    showAdvancedEffectsWarning();
   }
 
   // If we are not printing as raster, temporarily disable advanced effects
@@ -828,9 +828,9 @@ void QgsComposer::on_mActionPrint_triggered()
     showWMSPrintingWarning();
   }
 
-  if ( containsBlendModes() )
+  if ( containsAdvancedEffects() )
   {
-    showBlendModePrintingWarning();
+    showAdvancedEffectsWarning();
   }
 
   // If we are not printing as raster, temporarily disable advanced effects
@@ -2056,9 +2056,9 @@ bool QgsComposer::containsWMSLayer() const
   return false;
 }
 
-bool QgsComposer::containsBlendModes() const
+bool QgsComposer::containsAdvancedEffects() const
 {
-  // Check if composer contains any blend modes
+  // Check if composer contains any blend modes or flattened layers for transparency
   QMap<QgsComposerItem*, QWidget*>::const_iterator item_it = mItemWidgetMap.constBegin();
   QgsComposerItem* currentItem = 0;
   QgsComposerMap* currentMap = 0;
@@ -2071,11 +2071,11 @@ bool QgsComposer::containsBlendModes() const
     {
       return true;
     }
-    // If item is a composer map, check if it contains any blended layers
+    // If item is a composer map, check if it contains any advanced effects
     currentMap = dynamic_cast<QgsComposerMap *>( currentItem );
     if ( currentMap )
     {
-      if ( currentMap->containsBlendModes() )
+      if ( currentMap->containsAdvancedEffects() )
       {
         return true;
       }
@@ -2083,6 +2083,14 @@ bool QgsComposer::containsBlendModes() const
       {
         // map contains an overview, check its blend mode
         if ( currentMap->overviewBlendMode() != QPainter::CompositionMode_SourceOver )
+        {
+          return true;
+        }
+      }
+      if ( currentMap->gridEnabled() )
+      {
+        // map contains an grid, check its blend mode
+        if ( currentMap->gridBlendMode() != QPainter::CompositionMode_SourceOver )
         {
           return true;
         }
@@ -2111,13 +2119,13 @@ void QgsComposer::showWMSPrintingWarning()
   }
 }
 
-void QgsComposer::showBlendModePrintingWarning()
+void QgsComposer::showAdvancedEffectsWarning()
 {
   if ( ! mComposition->printAsRaster() )
   {
     QgsMessageViewer* m = new QgsMessageViewer( this, QgisGui::ModalDialogFlags, false );
-    m->setWindowTitle( tr( "Project contains blend modes" ) );
-    m->setMessage( tr( "Blend modes are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
+    m->setWindowTitle( tr( "Project contains composition effects" ) );
+    m->setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
     m->setCheckBoxText( tr( "Print as raster" ) );
     m->setCheckBoxState( Qt::Checked );
     m->setCheckBoxVisible( true );

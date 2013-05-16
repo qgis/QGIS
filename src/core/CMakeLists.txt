@@ -56,6 +56,7 @@ SET(QGIS_CORE_SRCS
   qgscentralpointpositionmanager.cpp
   qgsclipper.cpp
   qgscontexthelp.cpp
+  qgscontexthelp_texts.cpp
   qgscoordinatetransform.cpp
   qgscrscache.cpp
   qgsdatasourceuri.cpp
@@ -65,6 +66,7 @@ SET(QGIS_CORE_SRCS
   qgsdistancearea.cpp
   qgserror.cpp
   qgsexpression.cpp
+  qgsexpression_texts.cpp
   qgsfeature.cpp
   qgsfeatureiterator.cpp
   qgsfeaturerequest.cpp

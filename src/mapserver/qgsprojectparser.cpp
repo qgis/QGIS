@@ -131,7 +131,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
   addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers, version, fullProjectSettings );
 
   parentElement.appendChild( layerParentElem );
-  combineExtentAndCrsOfGroupChildren( layerParentElem, doc );
+  combineExtentAndCrsOfGroupChildren( layerParentElem, doc, true );
 }
 
 void QgsProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
@@ -696,7 +696,7 @@ QString QgsProjectParser::editTypeString( QgsVectorLayer::EditType type )
   }
 }
 
-void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc ) const
+void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc, bool considerMapExtent ) const
 {
   QgsRectangle combinedBBox;
   QSet<QString> combinedCRSSet;
@@ -744,6 +744,14 @@ void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupEle
   appendCRSElementsToLayer( groupElem, doc, combinedCRSSet.toList() );
 
   const QgsCoordinateReferenceSystem& groupCRS = projectCRS();
+  if ( considerMapExtent )
+  {
+    QgsRectangle mapRect = mapRectangle();
+    if ( !mapRect.isEmpty() )
+    {
+      combinedBBox = mapRect;
+    }
+  }
   appendLayerBoundingBoxes( groupElem, doc, combinedBBox, groupCRS );
 }
 
@@ -954,9 +962,43 @@ int QgsProjectParser::layersAndStyles( QStringList& layers, QStringList& styles 
 
 QDomDocument QgsProjectParser::getStyle( const QString& styleName, const QString& layerName ) const
 {
-  Q_UNUSED( styleName );
-  Q_UNUSED( layerName );
-  return QDomDocument();
+  QDomDocument myDocument = QDomDocument();
+
+  QDomNode header = myDocument.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" );
+  myDocument.appendChild( header );
+
+  // Create the root element
+  QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "StyledLayerDescriptor" );
+  root.setAttribute( "version", "1.1.0" );
+  root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" );
+  root.setAttribute( "xmlns:ogc", "http://www.opengis.net/ogc" );
+  root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
+  root.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  root.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+  myDocument.appendChild( root );
+
+  QList<QgsMapLayer*> layerList = mapLayerFromStyle( layerName, styleName );
+  if ( layerList.size() < 1 )
+  {
+    throw QgsMapServiceException( "Error", QString( "The layer for the TypeName '%1' is not found" ).arg( layerName ) );
+  }
+
+  QgsMapLayer* currentLayer = layerList.at( 0 );
+  QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+  if ( !layer )
+  {
+    throw QgsMapServiceException( "Error", QString( "Could not get style because:\n%1" ).arg( "Non-vector layers not supported yet" ) );
+  }
+  // Create the NamedLayer element
+  QDomElement namedLayerNode = myDocument.createElement( "NamedLayer" );
+  root.appendChild( namedLayerNode );
+
+  QString errorMsg;
+  if ( !layer->writeSld( namedLayerNode, myDocument, errorMsg ) )
+  {
+    throw QgsMapServiceException( "Error", QString( "Could not get style because:\n%1" ).arg( errorMsg ) );
+  }
+  return myDocument;
 }
 
 QgsMapRenderer::OutputUnits QgsProjectParser::outputUnits() const

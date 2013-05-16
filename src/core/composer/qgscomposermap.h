@@ -183,8 +183,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**True if composer map renders a WMS layer*/
     bool containsWMSLayer() const;
 
-    /**True if composer map contains layers with blend modes*/
-    bool containsBlendModes() const;
+    /**True if composer map contains layers with blend modes or flattened layers for vectors */
+    bool containsAdvancedEffects() const;
 
     /** stores state in Dom node
      * @param elem is Dom element corresponding to 'Composer' tag
@@ -245,6 +245,13 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     @note this function was added in version 1.4*/
     void setGridAnnotationFont( const QFont& f ) { mGridAnnotationFont = f; }
     QFont gridAnnotationFont() const { return mGridAnnotationFont; }
+
+    /**Sets font color for grid annotations
+        @note: this function was added in version 2.0*/
+    void setAnnotationFontColor( const QColor& c ) {mGridAnnotationFontColor = c;}
+    /**Get font color for grid annotations
+        @note: this function was added in version 2.0*/
+    QColor annotationFontColor() const {return mGridAnnotationFontColor;}
 
     /**Sets coordinate precision for grid annotations
     @note this function was added in version 1.4*/
@@ -327,6 +334,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void setGridLineSymbol( QgsLineSymbolV2* symbol );
     QgsLineSymbolV2* gridLineSymbol() { return mGridLineSymbol; }
+
+    /** Returns the grid's blending mode */
+    QPainter::CompositionMode gridBlendMode() const {return mGridBlendMode;}
+    /** Sets the grid's blending mode*/
+    void setGridBlendMode( QPainter::CompositionMode blendMode );
 
     /**Sets mId to a number not yet used in the composition. mId is kept if it is not in use.
         Usually, this function is called before adding the composer map to the composition*/
@@ -417,10 +429,14 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mGridOffsetY;
     /**Font for grid line annotation*/
     QFont mGridAnnotationFont;
+    /**Font color for grid line annotation*/
+    QColor mGridAnnotationFontColor;
     /**Digits after the dot*/
     int mGridAnnotationPrecision;
     /**True if coordinate values should be drawn*/
     bool mShowGridAnnotation;
+    /**Blend mode for grid*/
+    QPainter::CompositionMode mGridBlendMode;
 
     /**Annotation position for left map side (inside / outside / not shown)*/
     GridAnnotationPosition mLeftGridAnnotationPosition;

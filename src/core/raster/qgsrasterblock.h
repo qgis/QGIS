@@ -443,6 +443,11 @@ inline void QgsRasterBlock::writeValue( void *data, QGis::DataType type, size_t 
 
 inline double QgsRasterBlock::value( size_t index ) const
 {
+  if ( !mData )
+  {
+    QgsDebugMsg( "Data block not allocated" );
+    return std::numeric_limits<double>::quiet_NaN();
+  }
   return readValue( mData, mDataType, index );
 }
 

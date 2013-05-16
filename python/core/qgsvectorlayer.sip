@@ -755,7 +755,25 @@ class QgsVectorLayer : QgsMapLayer
     @note this method was added in version 1.1
     */
     QgsVectorOverlay* findOverlayByType( const QString& typeName );
-
+    
+    /* Set the blending mode used for rendering each feature
+     * @note added in 2.0
+     */
+    void setFeatureBlendMode( const QPainter::CompositionMode blendMode );
+    /* Returns the current blending mode for features
+     * @note added in 2.0
+     */
+    const QPainter::CompositionMode featureBlendMode() const;
+    
+    /* Set the transparency for the vector layer
+     * @note added in 2.0
+     */
+    void setLayerTransparency( const int layerTransparency );
+    /* Returns the current transparency for the vector layer
+     * @note added in 2.0
+     */
+    const int layerTransparency() const;    
+                
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     QgsVectorLayerEditBuffer* editBuffer();
 

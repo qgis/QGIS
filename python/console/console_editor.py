@@ -186,6 +186,7 @@ class Editor(QsciScintilla):
         threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2).toInt()[0]
         radioButtonSource = self.settings.value("pythonConsole/autoCompleteSourceEditor", 'fromAPI').toString()
         autoCompEnabled = self.settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool()
+
         self.setAutoCompletionThreshold(threshold)
         if autoCompEnabled:
             if radioButtonSource == 'fromDoc':
@@ -265,7 +266,6 @@ class Editor(QsciScintilla):
         iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
         iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.png")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
-        #iconNewEditor = QgsApplication.getThemeIcon("console/iconTabEditorConsole.png")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")
         iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.png")
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
@@ -273,12 +273,6 @@ class Editor(QsciScintilla):
         iconSyntaxCk = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
         hideEditorAction = menu.addAction("Hide Editor",
                                      self.hideEditor)
-#         menu.addSeparator()
-#         newTabAction = menu.addAction(iconNewEditor,
-#                                     "New Tab",
-#                                     self.parent.newTab, 'Ctrl+T')
-#         closeTabAction = menu.addAction("Close Tab",
-#                                     self.parent.close, 'Ctrl+W')
         menu.addSeparator()
         syntaxCheck = menu.addAction(iconSyntaxCk, "Check Syntax",
                                      self.syntaxCheck, 'Ctrl+4')
@@ -332,11 +326,8 @@ class Editor(QsciScintilla):
         runSelected.setEnabled(False)
         copyAction.setEnabled(False)
         selectAllAction.setEnabled(False)
-#         closeTabAction.setEnabled(False)
         undoAction.setEnabled(False)
         redoAction.setEnabled(False)
-#         if self.parent.tw.count() > 1:
-#             closeTabAction.setEnabled(True)
         if self.hasSelectedText():
             runSelected.setEnabled(True)
             copyAction.setEnabled(True)
@@ -621,7 +612,7 @@ class Editor(QsciScintilla):
     def focusInEvent(self, e):
         pathfile = self.parent.path
         if pathfile:
-            if not os.path.exists(pathfile):
+            if not QFileInfo(pathfile).exists():
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      'The file <b>"%1"</b> has been deleted or is not accessible') \
                                                      .arg(unicode(pathfile))
@@ -671,7 +662,7 @@ class EditorTab(QWidget):
         self.newEditor = Editor(self)
         if filename:
             self.path = filename
-            if os.path.exists(filename):
+            if QFileInfo(filename).exists():
                 self.loadFile(filename, False)
 
         # Creates layout for message bar
@@ -693,6 +684,7 @@ class EditorTab(QWidget):
         self.setEventFilter(self.keyFilter)
 
     def loadFile(self, filename, modified):
+        self.newEditor.lastModified = QFileInfo(filename).lastModified()
         fn = open(unicode(filename), "rb")
         txt = fn.read()
         fn.close()
@@ -702,7 +694,6 @@ class EditorTab(QWidget):
             self.newEditor.setReadOnly(self.readOnly)
         QApplication.restoreOverrideCursor()
         self.newEditor.setModified(modified)
-        self.newEditor.lastModified = QFileInfo(filename).lastModified()
         self.newEditor.recolor()
 
     def save(self, fileName=None):
@@ -725,7 +716,7 @@ class EditorTab(QWidget):
             self.pc.callWidgetMessageBarEditor(msgText, 0, True)
         # Rename the original file, if it exists
         path = unicode(self.path)
-        overwrite = os.path.exists(path)
+        overwrite = QFileInfo(path).exists()
         if overwrite:
             try:
                 permis = os.stat(path).st_mode
@@ -735,7 +726,7 @@ class EditorTab(QWidget):
                 raise
 
             temp_path = path + "~"
-            if os.path.exists(temp_path):
+            if QFileInfo(temp_path).exists():
                 os.remove(temp_path)
             os.rename(path, temp_path)
         # Save the new contents
@@ -869,7 +860,9 @@ class EditorTabWidget(QTabWidget):
         self.connect(self.newTabButton, SIGNAL('clicked()'), self.newTabEditor)
 
     def _currentWidgetChanged(self, tab):
-        self.listObject(tab)
+        if self.settings.value("pythonConsole/enableObjectInsp",
+                               False).toBool():
+            self.listObject(tab)
         self.changeLastDirPath(tab)
         self.enableSaveIfModified(tab)
 
@@ -1023,7 +1016,7 @@ class EditorTabWidget(QTabWidget):
     def restoreTabs(self):
         for script in self.restoreTabList:
             pathFile = unicode(script.toString())
-            if os.path.exists(pathFile):
+            if QFileInfo(pathFile).exists():
                 tabName = pathFile.split('/')[-1]
                 self.newTabEditor(tabName, pathFile)
             else:
@@ -1074,11 +1067,11 @@ class EditorTabWidget(QTabWidget):
                 try:
                     reload(pyclbr)
                     dictObject = {}
-                    superClassName = []
                     readModule = pyclbr.readmodule(module)
                     readModuleFunction = pyclbr.readmodule_ex(module)
                     for name, class_data in sorted(readModule.items(), key=lambda x:x[1].lineno):
                         if os.path.normpath(str(class_data.file)) == os.path.normpath(str(tabWidget.path)):
+                            superClassName = []
                             for superClass in class_data.super:
                                 if superClass == 'object':
                                     continue
@@ -1088,7 +1081,7 @@ class EditorTabWidget(QTabWidget):
                                     superClassName.append(superClass.name)
                             classItem = QTreeWidgetItem()
                             if superClassName:
-                                for i in superClassName: super = i
+                                super = ', '.join([i for i in superClassName])
                                 classItem.setText(0, name + ' [' + super + ']')
                                 classItem.setToolTip(0, name + ' [' + super + ']')
                             else:
@@ -1128,15 +1121,27 @@ class EditorTabWidget(QTabWidget):
                     iconWarning = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
                     msgItem.setIcon(0, iconWarning)
                     self.parent.listClassMethod.addTopLevelItem(msgItem)
-                    #s = traceback.format_exc()
-                    #print '## Error: '
-                    #sys.stderr.write(s)
-                    #pass
+#                     s = traceback.format_exc()
+#                     print '## Error: '
+#                     sys.stderr.write(s)
+#                     pass
 
     def refreshSettingsEditor(self):
         countTab = self.count()
         for i in range(countTab):
             self.widget(i).newEditor.settingsEditor()
+
+        objInspectorEnabled = self.settings.value("pythonConsole/enableObjectInsp",
+                                                  False).toBool()
+        listObj = self.parent.objectListButton
+        listObj.setChecked(objInspectorEnabled)
+        listObj.setEnabled(objInspectorEnabled)
+        if objInspectorEnabled:
+            cW = self.currentWidget()
+            if cW:
+                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+                self.listObject(cW)
+                QApplication.restoreOverrideCursor()
 
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)

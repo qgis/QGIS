@@ -74,11 +74,21 @@ QgsRasterBlock * QgsRasterNuller::block( int bandNo, QgsRectangle  const & exten
   QgsDebugMsg( "Entered" );
   if ( !mInput )
   {
-    QgsRasterBlock *outputBlock = new QgsRasterBlock();
-    return outputBlock;
+    return new QgsRasterBlock();
   }
 
   QgsRasterBlock *inputBlock = mInput->block( bandNo, extent, width, height );
+  if ( !inputBlock )
+  {
+    return new QgsRasterBlock();
+  }
+
+  // We don't support nuller for color types
+  if ( QgsRasterBlock::typeIsColor( inputBlock->dataType() ) )
+  {
+    return inputBlock;
+  }
+
   QgsRasterBlock *outputBlock = 0;
 
   if ( mHasOutputNoData.value( bandNo - 1 ) || inputBlock->hasNoDataValue() )

@@ -372,6 +372,7 @@ class QgisAppInterface : public QgisInterface
     /** @note added in 1.9 */
     virtual QAction *actionPasteLayerStyle();
     virtual QAction *actionOpenTable();
+    virtual QAction *actionOpenFieldCalculator();
     virtual QAction *actionToggleEditing();
     /** @note added in 1.9 */
     virtual QAction *actionSaveActiveLayerEdits();

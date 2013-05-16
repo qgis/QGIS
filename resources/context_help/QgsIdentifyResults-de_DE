@@ -2,6 +2,6 @@
 <p> 
 Der Ergebnisdialog zeigt alle Objekte an, die innerhalb der Suchtoleranz identifiziert wurden.  Um die Ergebnisse zu sehen, klappen Sie die Objektinformation eines jeden Objekts auf.</p> 
 <p> 
-Der Suchradius kann unter <label>Einstellungen > Optionen > Kartenwerkzeuge</label>, Abfragewerkzeug in Prozent der Kartenbreite eingestellt werden. In diesem Abschnitt k&ouml;nnen Sie au&szlig;erdem den Abfragemodus auf <label>Aktuellen Layer</label>, <label>Von oben nach unten, beim Ersten halten</label> und <label>Von oben nach unten</label> einstellen.<br>
-Sie k&ouml;nnen auch <label>Objektformular &ouml;ffnen, wenn ein einzelnes Objekt abgefragt wird</label> abhaken.<br>
-Die abfragbare Layer k&ouml;nnen in Dialog Projekteigenschaften unter <label>Einstellungen > Projekteinstellungen > Abfragbare Layer</label> gew&auml;hlt werden.  Dort werden die Layernamen, ihr Typ (Vektor, Raster, etc.) und die Abfragbarkeit aufgef&uuml;hrt.
+Der Suchradius kann unter <label>Einstellungen > Optionen > Kartenwerkzeuge</label>, Abfragewerkzeug in Prozent der Kartenbreite eingestellt werden. In diesem Abschnitt können Sie außerdem den Abfragemodus auf <label>Aktuellen Layer</label>, <label>Von oben nach unten, beim Ersten halten</label> und <label>Von oben nach unten</label> einstellen.<br>
+Sie können auch <label>Objektformular öffnen, wenn ein einzelnes Objekt abgefragt wird</label> abhaken.<br>
+Die abfragbare Layer können in Dialog Projekteigenschaften unter <label>Einstellungen > Projekteinstellungen > Abfragbare Layer</label> gewählt werden.  Dort werden die Layernamen, ihr Typ (Vektor, Raster, etc.) und die Abfragbarkeit aufgeführt.</p>

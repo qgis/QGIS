@@ -427,6 +427,7 @@ class QgisInterface : QObject
     /** @note added in 1.9 */
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
+    virtual QAction *actionOpenFieldCalculator() = 0;
     virtual QAction *actionToggleEditing() = 0;
     /** @note added in 1.9 */
     virtual QAction *actionSaveActiveLayerEdits() = 0;

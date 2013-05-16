@@ -1,7 +1,7 @@
-<h3>SpatiaLite-Tabelle(n) hinzuf&uuml;gen</h3>
+<h3>SpatiaLite-Tabelle(n) hinzufügen</h3>
 
 Um eine neue Verbindung zu erstellen, klicken Sie auf den Knopf 
 <label>Neu</label> und benutzen die Dateiauswahl, um auf Ihre 
-SpatiaLite-Datenbank, die die Erweiterung <i>.sqlite</i> tr&auml;gt, zu weisen.<p>
+SpatiaLite-Datenbank, die die Erweiterung <i>.sqlite</i> trägt, zu weisen.<p>
 Die Verbindungen, die Sie festlegen, werden zur weiteren Benutzung gespeichert 
 und in der Liste zur Auswahl angeboten.

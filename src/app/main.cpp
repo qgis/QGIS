@@ -47,6 +47,7 @@
 #include <fcntl.h> /*  _O_BINARY */
 #include <windows.h>
 #include <dbghelp.h>
+#include <time.h>
 #ifdef MSVC
 #undef _fmode
 int _fmode = _O_BINARY;

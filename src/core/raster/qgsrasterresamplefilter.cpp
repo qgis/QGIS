@@ -149,6 +149,13 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
       oversampling = ( pixelRatio > mMaxOversampling ) ? mMaxOversampling : pixelRatio;
       QgsDebugMsg( QString( "xRes = %1 providerXRes = %2 pixelRatio = %3 oversampling = %4" ).arg( xRes ).arg( providerXRes ).arg( pixelRatio ).arg( oversampling ) );
     }
+    else
+    {
+      // We don't know exact data source resolution (WMS) so we expect that
+      // server data have higher resolution (which is not always true) and use
+      // mMaxOversampling
+      oversampling = mMaxOversampling;
+    }
   }
 
   //set oversampling back to 1.0 if no resampler for zoomed in / zoomed out (nearest neighbour)

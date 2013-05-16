@@ -1,8 +1,8 @@
-<h3>SQL-Anywhere-Tabellen einfügen</h3>
-Dieser Dialog erlaubt Ihnen SQL-Anywhere-Layer (Tabellen mit Geometrie) in die QGIS-Karte einzufügen.
+<h3>SQL-Anywhere-Tabellen einfÃ¼gen</h3>
+Dieser Dialog erlaubt Ihnen SQL-Anywhere-Layer (Tabellen mit Geometrie) in die QGIS-Karte einzufÃ¼gen.
 <p>
 <a href="#connect">Verbindungen</a><br/>
-<a href="#add">Layer einfügen</a><br/>
+<a href="#add">Layer einfÃ¼gen</a><br/>
 <a href="#filter">Layer filtern</a><br/>
 <a href="#search">Suchoptionen</a><br/>
 
@@ -10,27 +10,27 @@ Dieser Dialog erlaubt Ihnen SQL-Anywhere-Layer (Tabellen mit Geometrie) in die Q
 <h4>Verbindungen</h4>
 </a>
 <ul>
-<li>Wählen Sie eine Verbindung aus der Liste und klicken Sie <label>Verbinden</label>.
+<li>WÃ¤hlen Sie eine Verbindung aus der Liste und klicken Sie <label>Verbinden</label>.
 <li>Wenn es keine Verbindungen gibt, verwenden Sie den Knopf <label>Neu</label>, um eine anzulegen.
-<li>Um die gewählte Verbindung zu ändern oder zu löschen, wählen Sie jeweils den Knopf <label>Bearbeiten</label> oder <label>Löschen</label>.
+<li>Um die gewÃ¤hlte Verbindung zu Ã¤ndern oder zu lÃ¶schen, wÃ¤hlen Sie jeweils den Knopf <label>Bearbeiten</label> oder <label>LÃ¶schen</label>.
 </ul>
 <a name="add">
-<h4>Layer einfügen</h4>
+<h4>Layer einfÃ¼gen</h4>
 </a>
-Um einen Layer einzufügen:
+Um einen Layer einzufÃ¼gen:
 <ol>
-<li>Wählen Sie die gewünschte Verbindung aus der Liste
-<li>Mit einem Klick auf <label>Verbinden</label> wird die Layerliste mit den Layern aus der Datenbank gefüllt.  Die Optionen, die die Listenzusammenstellung beeinflussen, sind in der Hilfe zum Dialog "Neue Verbindung" beschrieben.
-<li>Suchen Sie sich den Layer heraus, denn Sie hinzufügen möchten und klicken Sie ihn zur Auswahl an.
-<li>Sie können zusätzliche Layer durch Festhalten von Strg beim Klicken auswählen.
-<li>Klicken Sie auf <label>Hinzufügen</label>, um den/die Layer zur Karte hinzuzufügen.
+<li>WÃ¤hlen Sie die gewÃ¼nschte Verbindung aus der Liste
+<li>Mit einem Klick auf <label>Verbinden</label> wird die Layerliste mit den Layern aus der Datenbank gefÃ¼llt.  Die Optionen, die die Listenzusammenstellung beeinflussen, sind in der Hilfe zum Dialog "Neue Verbindung" beschrieben.
+<li>Suchen Sie sich den Layer heraus, denn Sie hinzufÃ¼gen mÃ¶chten und klicken Sie ihn zur Auswahl an.
+<li>Sie kÃ¶nnen zusÃ¤tzliche Layer durch Festhalten von Strg beim Klicken auswÃ¤hlen.
+<li>Klicken Sie auf <label>HinzufÃ¼gen</label>, um den/die Layer zur Karte hinzuzufÃ¼gen.
 </ol>
 <a name="filter">
 <h4>Layer filtern</h4>
 </a>
-Um einen Layer vor der Einfügung in die Karte zu filtern, klicken Sie entweder doppelt auf seinen Namen oder wählen Sie ihn aus und klicken auf den Knopf <label>Abfrage erstellen</label>.  Dies öffnet die Abfrageerstellung, die Ihnen die Erstellung einer SQL-Abfrage ermöglicht, um die Datensätze zu filtern.
+Um einen Layer vor der EinfÃ¼gung in die Karte zu filtern, klicken Sie entweder doppelt auf seinen Namen oder wÃ¤hlen Sie ihn aus und klicken auf den Knopf <label>Abfrage erstellen</label>.  Dies Ã¶ffnet die Abfrageerstellung, die Ihnen die Erstellung einer SQL-Abfrage ermÃ¶glicht, um die DatensÃ¤tze zu filtern.
 
 <a name="search">
 <h4>Suchoptionen</h4>
 </a>
-Ein Häkchen in <label>Suchoptionen</label> aktiviert zusätzliche Optionen zur Suche nach Spaltentypen und eröffnet zwei Suchmodi: <label>Platzhalter</label> oder <label>RegAusdr</label>.
+Ein HÃ¤kchen in <label>Suchoptionen</label> aktiviert zusÃ¤tzliche Optionen zur Suche nach Spaltentypen und erÃ¶ffnet zwei Suchmodi: <label>Platzhalter</label> oder <label>RegAusdr</label>.

@@ -18,17 +18,36 @@
 
 #ifndef QGSHELPVIEWER_H
 #define QGSHELPVIEWER_H
-# include "ui_qgshelpviewerbase.h"
+
+#include <QDialog>
+#include <QThread>
+
+#include "ui_qgshelpviewerbase.h"
+
 class QString;
-struct sqlite3;
+class QFile;
+
+class QgsReaderThread : public QThread
+{
+    Q_OBJECT
+  public:
+    QgsReaderThread();
+
+    virtual void run();
+
+  signals:
+    void helpRead( QString help );
+};
+
+
 class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
 {
     Q_OBJECT
   public:
-    QgsHelpViewer( const QString &contextId = QString::null, QWidget *parent = 0, Qt::WFlags = 0 );
+    QgsHelpViewer( QWidget *parent = 0, Qt::WFlags = 0 );
     ~QgsHelpViewer();
   public slots:
-    void setContext( const QString &contextId );
+    void showHelp( QString );
     void fileExit();
   protected:
     void moveEvent( QMoveEvent *event );
@@ -36,9 +55,6 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
   private:
     void restorePosition();
     void saveWindowLocation();
-    void loadContext( const QString &contextId );
-    void loadContextFromSqlite( const QString &contextId );
-    int connectDb( const QString &helpDbPath );
-    sqlite3 *db;
+    QgsReaderThread *mThread;
 };
 #endif // QGSHELPVIEWER_H

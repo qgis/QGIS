@@ -26,57 +26,37 @@
 #include "qgslogger.h"
 
 
-// Note: QGSCONTEXTHELP_REUSE must be defined (or not) in qgscontexthelp.h.
-// The flag determines if an existing viewer process should be reused or
-// terminated and restarted in order to make the viewer be the top window.
-
-QgsContextHelp *QgsContextHelp::gContextHelp = NULL;  // Singleton instance
+QgsContextHelp *QgsContextHelp::gContextHelp = 0;  // Singleton instance
 
 void QgsContextHelp::run( QString context )
 {
-  if ( gContextHelp == NULL )
+  if ( !gContextHelp )
   {
     // Create singleton instance if it does not exist
-    gContextHelp = new QgsContextHelp( context );
+    gContextHelp = new QgsContextHelp();
   }
-  else
-  {
-    gContextHelp->showContext( context );
-  }
+
+  gContextHelp->showContext( context );
 }
 
-QgsContextHelp::QgsContextHelp( QString context )
+QgsContextHelp::QgsContextHelp()
 {
-  mProcess = start( context );
-#ifdef QGSCONTEXTHELP_REUSE
-  // Create socket to communicate with process
-  mSocket = new QTcpSocket( this );
-  connect( mProcess, SIGNAL( readyReadStandardOutput() ), SLOT( readPort() ) );
-#else
-  // Placeholder for new process if terminating and restarting
-  mNextProcess = NULL;
-#endif
+  mProcess = start();
 }
 
 QgsContextHelp::~QgsContextHelp()
 {
-#ifdef QGSCONTEXTHELP_REUSE
-  delete mSocket;
-#else
-  // Should be NULL here unless previous process termination failed
-  delete mNextProcess;
-#endif
   delete mProcess;
 }
 
-QProcess *QgsContextHelp::start( QString context )
+QProcess *QgsContextHelp::start()
 {
   // Get the path to the help viewer
   QString helpPath = QgsApplication::helpAppPath();
   QgsDebugMsg( QString( "Help path is %1" ).arg( helpPath ) );
 
   QProcess *process = new QProcess;
-  process->start( helpPath, QStringList( context ) );
+  process->start( helpPath );
 
   // Delete this object if the process terminates
   connect( process, SIGNAL( finished( int, QProcess::ExitStatus ) ), SLOT( processExited() ) );
@@ -87,51 +67,25 @@ QProcess *QgsContextHelp::start( QString context )
   return process;
 }
 
-void QgsContextHelp::readPort()
-{
-#ifdef QGSCONTEXTHELP_REUSE
-  // Get port and connect socket to process
-  QString p = mProcess->readAllStandardOutput();
-  quint16 port = p.toUShort();
-  mSocket->connectToHost( "localhost", port );
-  disconnect( mProcess, SIGNAL( readyReadStandardOutput() ), this, SLOT( readPort() ) );
-#endif
-}
-
 void QgsContextHelp::showContext( QString context )
 {
-  // Refresh help process with new context
-#ifdef QGSCONTEXTHELP_REUSE
-  // Send context to process
-  QTextStream os( mSocket );
-  os << context << "\n";
-  QgsDebugMsg( QString( "Sending help process context %1" ).arg( context ) );
-#else
-  // Should be NULL here unless previous process termination failed
-  // (if it did fail, we abandon the process and delete the object reference)
-  delete mNextProcess;
-  // Start new help viewer process (asynchronous)
-  mNextProcess = start( context );
-  // Terminate existing help viewer process (asynchronous)
-  mProcess->terminate();
-#endif
+  init();
+
+  QString helpContents = gContextHelpTexts.value( context,
+                         tr( "<h3>Oops! QGIS can't find help for this form.</h3>"
+                             "The help file for %1 was not found for your language<br>"
+                             "If you would like to create it, contact the QGIS development team"
+                           ).arg( context ) );
+
+  QString myStyle = QgsApplication::reportStyleSheet();
+  helpContents = "<head><style>" + myStyle + "</style></head><body>" + helpContents + "</body>\nEOH\n";
+
+  mProcess->write( helpContents.toUtf8() );
 }
 
 void QgsContextHelp::processExited()
 {
-#ifndef QGSCONTEXTHELP_REUSE
-  if ( mNextProcess )
-  {
-    // New process becomes current process when prior process terminates
-    delete mProcess;
-    mProcess = mNextProcess;
-    mNextProcess = NULL;
-  }
-  else
-#endif
-  {
-    // Delete this object if the process terminates
-    delete gContextHelp;
-    gContextHelp = NULL;
-  }
+  // Delete this object if the process terminates
+  delete gContextHelp;
+  gContextHelp = NULL;
 }

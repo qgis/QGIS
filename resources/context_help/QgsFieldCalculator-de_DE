@@ -23,8 +23,8 @@ Der Feldrechner erlaubt Ihnen Felder mit Ausdrücken zu setzen.
 <tr><td>NOT <tt>a</tt></td><td>invertierter Wahrheitswert von <tt>a</tt></td></tr>
 <tr><td><tt>a</tt> IS NULL</td><td><tt>a</tt> hat keinen Wert</td></tr>
 <tr><td><tt>a</tt> IS NOT NULL</td><td><tt>a</tt> hat einen Wert</td></tr>
-<tr><td><tt>a</tt> IN ( wert[, wert] )</td><td><tt>a</tt> ist unter den aufgef&uuml;hrten Werten</td></tr>
-<tr><td><tt>a</tt> NOT IN ( wert[, wert] )</td><td><tt>a</tt> ist nicht unter den aufgef&uuml;hrten Werten</td></tr>
+<tr><td><tt>a</tt> IN ( wert[, wert] )</td><td><tt>a</tt> ist unter den aufgeführten Werten</td></tr>
+<tr><td><tt>a</tt> NOT IN ( wert[, wert] )</td><td><tt>a</tt> ist nicht unter den aufgeführten Werten</td></tr>
 <tr><td><tt>a</tt> = <tt>b</tt></td><td><tt>a</tt> und <tt>b</tt> sind gleich.</td><tr>
 <tr>
   <td>
@@ -34,12 +34,12 @@ Der Feldrechner erlaubt Ihnen Felder mit Ausdrücken zu setzen.
   <td><tt>a</tt> und <tt>b</tt> sind nicht gleich</td>
 </tr>
 <tr><td><tt>a</tt> &lt;= <tt>b</tt></td><td><tt>a</tt> ist kleiner oder gleich <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> &gt;= <tt>b</tt></td><td><tt>a</tt> ist gr&ouml;&szlig;er oder gleich <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> &gt; <tt>b</tt></td><td><tt>a</tt> ist gr&ouml;&szlig;er als <tt>b</tt></td></tr>
+<tr><td><tt>a</tt> &gt;= <tt>b</tt></td><td><tt>a</tt> ist größer oder gleich <tt>b</tt></td></tr>
+<tr><td><tt>a</tt> &gt; <tt>b</tt></td><td><tt>a</tt> ist größer als <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> &lt; <tt>b</tt></td><td><tt>a</tt> ist kleiner als <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> ~ <tt>b</tt></td></td><td><tt>a</tt> entspricht dem regul&auml;ren Ausdruck <tt>b</tt></td></tr>
+<tr><td><tt>a</tt> ~ <tt>b</tt></td></td><td><tt>a</tt> entspricht dem regulären Ausdruck <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> LIKE <tt>b</tt></td><td><tt>a</tt> entspricht <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> ILIKE <tt>b</tt></td><td><tt>a</tt> entspricht <tt>b</tt> (ohne Ber&uuml;cksichtigung der Gro&szlig;-/Kleinschreibung)</td></tr>
+<tr><td><tt>a</tt> ILIKE <tt>b</tt></td><td><tt>a</tt> entspricht <tt>b</tt> (ohne Berücksichtigung der Groß-/Kleinschreibung)</td></tr>
 <tr><td>sqrt(<tt>a</tt>)</td><td>Wurzel aus <tt>a</tt></td></tr>
 <tr><td>sin(<tt>a</tt>)</td><td>Sinus von <tt>a</tt></td></tr>
 <tr><td>cos(<tt>a</tt>)</td><td>Cosinus von <tt>b</tt></td></tr>
@@ -51,17 +51,17 @@ Der Feldrechner erlaubt Ihnen Felder mit Ausdrücken zu setzen.
 <tr><td>to real(<tt>a</tt>)</td><td>Zeichenkette <tt>a</tt> in Realzahl umwandeln</td></tr>
 <tr><td>to string(<tt>a</tt>)</td><td>Zahl <tt>a</tt> in Zeichenkette umwandeln</td></tr>
 <tr><td>lower(<tt>a</tt>)</td><td>Zeichenkette <tt>a</tt> in Kleinbuchstaben umwandeln</td></tr>
-<tr><td>upper(<tt>a</tt>)</td><td>Zeichenkette <tt>a</tt> in Gro&szlig;buchstaben umwandeln</td></tr>
-<tr><td>length(<tt>a</tt>)</td><td>L&auml;nge der Zeichenkette <tt>a</tt></td></tr>
+<tr><td>upper(<tt>a</tt>)</td><td>Zeichenkette <tt>a</tt> in Großbuchstaben umwandeln</td></tr>
+<tr><td>length(<tt>a</tt>)</td><td>Länge der Zeichenkette <tt>a</tt></td></tr>
 <tr><td>atan2(y,x)</td><td>Arcustangens von y/x mit Vorzeichen der beiden Argumenten, um den Quadranten des Ergebnisses zu bestimmen.</td></tr>
 <tr><td>replace(<tt>a</tt>,<i>streiche</i>,<i>setze</i>)</td><td>In der Zeichenkette <tt>a</tt> <i>streiche</i> durch <i>setze</i> ersetzen.</td></td>
-<tr><td>regexp_replace(<tt>a</tt>,<i>streiche</i>,<i>setze</i>)</td><td>In der Zeichenkette <tt>a</tt> den regul&auml;ren Ausdruck <i>streiche</i> durch <i>setze</i> ersetzen.</td></td>
-<tr><td>substr(<tt>a</tt>,<i>von</i>,<i>l&auml;nge</i>)</td><td><i>l&uuml;nge</i> Zeichen der Zeichenkette <tt>a</tt> ab Stelle <i>von</i> (Das erste Zeichen hat den Index 1)</td></td>
+<tr><td>regexp_replace(<tt>a</tt>,<i>streiche</i>,<i>setze</i>)</td><td>In der Zeichenkette <tt>a</tt> den regulären Ausdruck <i>streiche</i> durch <i>setze</i> ersetzen.</td></td>
+<tr><td>substr(<tt>a</tt>,<i>von</i>,<i>länge</i>)</td><td><i>lünge</i> Zeichen der Zeichenkette <tt>a</tt> ab Stelle <i>von</i> (Das erste Zeichen hat den Index 1)</td></td>
 <tr><td><tt>a</tt> || <tt>b</tt></td><td>Zeichenkette <tt>a</tt> and <tt>b</tt> zusammenziehen</td></tr>
 <tr><td>$rownum</td><td>Aktuelle Zeilennummer</td></tr>
-<tr><td>$area</td><td>Fl&auml;che des Polygons</td></tr>
+<tr><td>$area</td><td>Fläche des Polygons</td></tr>
 <tr><td>$perimeter</td><td>Umfang des Polygons</td></tr>
-<tr><td>$length</td><td>L&auml;nge der Linien</td></tr>
+<tr><td>$length</td><td>Länge der Linien</td></tr>
 <tr><td>$id</td><td>Objektkennung</td></tr>
 <tr><td>$x</td><td>X-Koordinate eines Punkts</td></tr>
 <tr><td>$y</td><td>Y-Koordinate eines Punkts</td></tr>

@@ -17,6 +17,7 @@
 
 #include "qgsmslayerbuilder.h"
 #include "qgsrasterlayer.h"
+#include "qgsrasterrendererregistry.h"
 
 #include <QDir>
 #include <QFileInfo>
@@ -92,7 +93,8 @@ void QgsMSLayerBuilder::clearRasterSymbology( QgsRasterLayer* rl ) const
   {
     if ( rl->rasterType() == QgsRasterLayer::GrayOrUndefined )
     {
-      rl->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
+      //rl->setDrawingStyle( QgsRasterLayer::SingleBandPseudoColor );
+      rl->setRenderer( QgsRasterRendererRegistry::instance()->defaultRendererForDrawingStyle( QgsRasterLayer::SingleBandPseudoColor, rl->dataProvider() ) );
     }
   }
 }

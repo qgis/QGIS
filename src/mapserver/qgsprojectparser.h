@@ -186,7 +186,8 @@ class QgsProjectParser: public QgsConfigParser
 
     static void addLayerProjectSettings( QDomElement& layerElem, QDomDocument& doc, QgsMapLayer* currentLayer );
 
-    void combineExtentAndCrsOfGroupChildren( QDomElement& groupElement, QDomDocument& doc ) const;
+    /**@param considerMapExtent Take user-defined map extent instead of data-calculated extent if present in project file*/
+    void combineExtentAndCrsOfGroupChildren( QDomElement& groupElement, QDomDocument& doc, bool considerMapExtent = false ) const;
 
     /**Returns dom element of composer (identified by composer title) or a null element in case of error*/
     QDomElement composerByName( const QString& composerName ) const;
