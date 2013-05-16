@@ -635,10 +635,9 @@ QgsLegendSymbolList QgsCategorizedSymbolRendererV2::legendSymbolItems()
     lst << qMakePair( classAttribute(), ( QgsSymbolV2* )0 );
   }
 
-  QgsCategoryList::const_iterator catIt = mCategories.constBegin();
-  for ( ; catIt != mCategories.constEnd(); ++catIt )
+  foreach ( const QgsRendererCategoryV2& cat, mCategories )
   {
-    lst << qMakePair( catIt->label(), catIt->symbol() );
+    lst << qMakePair( cat.label(), cat.symbol() );
   }
   return lst;
 }
