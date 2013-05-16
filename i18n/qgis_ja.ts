@@ -60770,10 +60770,12 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation type="unfinished">&lt;h3&gt;ベクタレイヤオープンダイアログ&lt;/h3&gt;
+        <translation>&lt;h3&gt;ベクタレイヤの追加ダイアログ&lt;/h3&gt;
 
-ベクタレイヤオープンダイアログはQGISのマップビューにベクタデータを追加するために利用. ベクタデータとは点、または線、ポリゴン（閉じたエリア）によって記述された空間データです.&lt;/p&gt;
-
+ベクタレイヤの追加ダイアログはQGISのマップビューにベクタデータを追加するために利用します. ベクタデータとは点、または線、ポリゴン（閉じたエリア）といったジオメトリを用いて記述された空間データです.&lt;/p&gt;
+QGISは多くのベクタデータ形式をサポートします. OGRデータプロバイダによってESRI ShapefileやMapInfo MIF(ネイティブ形式)といった形式がサポートされています.&lt;/p&gt;
+QGISはPostgreSQLデータベースのPostGISレイヤやSpatiaLiteレイヤをサポートします. さらなるデータタイプ(例えば, デリミティッドテキスト)は追加的なデータプロバイダプラグインによって提供されます. OGRがサポートするベクタ形式の一覧はユーザガイドのAppendix A.1にあります.&lt;/p&gt;
+ベクタデータについての詳しい説明はchapter 5 &apos;Working with Vector Data&apos;を参照して下さい.
 </translation>
     </message>
     <message>
@@ -60815,8 +60817,8 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished">&lt;h3&gt;PostGISテーブルの追加&lt;/h3&gt;
-このダイアログではPostGISレイヤ(ジオメトリカラムを含んだテーブル)をQGISのマップキャンバスに追加することができます。
+        <translation>&lt;h3&gt;PostGISテーブルの追加&lt;/h3&gt;
+このダイアログではPostGISレイヤ(ジオメトリカラムを含んだテーブル)をQGISのマップキャンバスに追加することができます.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;接続&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#add&quot;&gt;レイヤの追加&lt;/a&gt;&lt;br/&gt;
@@ -60827,7 +60829,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 &lt;h4&gt;接続&lt;/h4&gt;
 &lt;/a&gt;
 &lt;ul&gt;
-&lt;li&gt;ドロップダウンボックスから使用する接続先を選択してクリックして下さい &lt;label&gt;接続&lt;/label&gt;.
+&lt;li&gt;ドロップダウンボックスから使用する接続先を選択して&lt;label&gt;接続&lt;/label&gt;をクリックして下さい.
 &lt;li&gt;接続先が無い場合は接続先を作るために&lt;label&gt;新規&lt;/label&gt;ボタンをクリックして下さい.
 &lt;li&gt;接続先の内容を編集する場合は&lt;label&gt;編集&lt;/label&gt;ボタンをクリックして下さい.
 &lt;/ul&gt;
@@ -60837,7 +60839,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 レイヤを追加するには:
 &lt;ol&gt;
 &lt;li&gt;ドロップダウンボックスから接続先を選択します.
-&lt;li&gt;&lt;label&gt;接続&lt;/label&gt;をクリックします .
+&lt;li&gt;&lt;label&gt;接続&lt;/label&gt;をクリックします.
 &lt;li&gt;リストから追加したいレイヤを探して、選択するためにクリックします.
 &lt;li&gt;その他のレイヤも選択したい場合はCtrlキーを押したままクリックすると複数レイヤの選択ができます.
 &lt;li&gt;&lt;label&gt;追加&lt;/label&gt;をクリックすると地図にレイヤが追加されます.
@@ -60845,13 +60847,12 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 &lt;a name=&quot;filter&quot;&gt;
 &lt;h4&gt;レイヤのフィルタリング&lt;/h4&gt;
 &lt;/a&gt;
-地図に追加する前にレイヤの内容をフィルタしたい場合は最初にその名前をクリックして下さい.そうするとクエリビルダが開きます.この画面でレコードをフィルタリングするSQL文を作成することができます.
-
+地図に追加する前にレイヤの内容をフィルタしたい場合はその名前をダブルクリックするか, 選択してから&lt;label&gt;フィルタ設定&lt;/label&gt;ボタンをクリックします.そうするとクエリビルダが開きます.このダイアログでレコードをフィルタリングするSQL文を作成することができます.
 
 &lt;a name=&quot;search&quot;&gt;
 &lt;h4&gt;検索オプション&lt;/h4&gt;
 &lt;/a&gt;
-&lt;label&gt;検索オプション&lt;/label&gt;を動かすと２個の異なった検索モードが利用できます: &lt;label&gt;ワイルドカード&lt;/label&gt; または&lt;label&gt;正規表現&lt;/label&gt;が使えます.
+&lt;label&gt;検索オプション&lt;/label&gt;には異なるカラムタイプの検索や2つの検索モード(&lt;label&gt;ワイルドカード&lt;/label&gt; または&lt;label&gt;正規表現&lt;/label&gt;)を利用するオプションがあります.
 </translation>
     </message>
     <message>
@@ -60889,25 +60890,39 @@ This dialog allows you to define the settings for a connection to a PostgreSQL d
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;PostGISの新しい接続を作ります&lt;/h3&gt;
-PostGISの新しい接続を作るためにはデータベースサーバのホスト名,ポート,ユーザ名/パスワード（データベース接続のための）を知る必要があります.
-&lt;h4&gt;必要なパラメータ&lt;/h4&gt;
+        <translation>&lt;h3&gt;PostgreSQL(PostGIS)の新しい接続を作成します&lt;/h3&gt;
+このダイアログではPostgreSQL(PostGIS)データベースへの接続の設定を定義できます.
+&lt;p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;label&gt;名前&lt;/label&gt; - この接続の名前
-&lt;li&gt;&lt;label&gt;ホスト&lt;/label&gt; - データベースサーバのホスト名 (例. madison.qgis.org)
-&lt;li&gt;&lt;label&gt;データベース&lt;/label&gt; - 接続するデータベースの名前
-&lt;li&gt;&lt;label&gt;ポート&lt;/label&gt; - PostgreSQLが接続待ちをしているポート番号. デフォルトは5432. もし不明な場合はデータベースの管理者に問い合わせしてください.
-&lt;li&gt;&lt;label&gt;ユーザ名&lt;/label&gt; - あなたのデータベースのユーザー名
-&lt;li&gt;&lt;label&gt;パスワード&lt;/label&gt; - あなたのデータベースのパスワード
+&lt;li&gt; &lt;label&gt;名称&lt;/label&gt; 接続設定を識別する名前.
+
+&lt;li&gt; &lt;label&gt;サービス&lt;/label&gt; &lt;a href=&quot;http://www.postgresql.org/docs/current/static/libpq-pgservice.html&quot;&gt;接続サービスファイル&lt;/a&gt;にリストにあるサービスの名前.
+
+&lt;li&gt; &lt;label&gt;ホスト&lt;/label&gt; データベースサーバをホストしているコンピュータの名前かIPアドレス (ローカル接続では空欄のままに).
+
+&lt;li&gt; &lt;label&gt;ポート&lt;/label&gt; データベースサーバが用いるIPポート (ローカル接続やデフォルトポート5432の場合は空欄のままに).
+
+&lt;li&gt; &lt;label&gt;データベース&lt;/label&gt; データベースの名前 (デフォルトデータベースの場合は空欄のままに).
+
+&lt;li&gt; &lt;label&gt;SSLモード&lt;/label&gt; 接続の&lt;a href=&quot;http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS&quot;&gt;SSLモード&lt;/a&gt;.
+
+&lt;li&gt; &lt;label&gt;ユーザ名&lt;/label&gt; データベースのユーザ名.
+&lt;li&gt; &lt;label&gt;パスワード&lt;/label&gt; データベースのパスワード.
+
+&lt;li&gt; &lt;label&gt;ユーザ名の保存&lt;/label&gt; 接続設定のデータベースユーザ名を保存する場合はチェックします.
+&lt;li&gt; &lt;label&gt;パスワード保存&lt;/label&gt; 接続設定のデータベースパスワードを保存する場合はチェックします. &lt;font color=&quot;red&quot;&gt;パスワードは&lt;strong&gt;クリアテキスト&lt;/strong&gt;でシステムの設定情報とプロジェクトファイルに保存されます!&lt;/font&gt;
+
+&lt;!--
+&lt;li&gt; &lt;label&gt;Only look in the geometry_columns table&lt;/label&gt; Indicates that only &quot;listed&quot; geometry columns should be used - opposed to scanning all tables for geometry columns.
+--&gt;
+
+&lt;li&gt; &lt;label&gt;レイヤレジストリのみ参照する&lt;/label&gt; レイヤレジストリ(geometry_columns, geography_columns, topology.layer)に見つかったテーブルのみ表示します.
+&lt;li&gt; &lt;label&gt;制限のないカラムのタイプ(GEOMETRY)を解決しない&lt;/label&gt;
+&lt;li&gt; &lt;label&gt;&apos;public&apos;スキーマのみ参照する&lt;/label&gt; &apos;public&apos;スキーマのテーブルのみ参照します. チェックしない場合はすべてのアクセス可能なテーブルを参照します.
+&lt;li&gt; &lt;label&gt;ジオメトリを持たないテーブルもリストする&lt;/label&gt; ジオメトリを持たないテーブルもデフォルトでリストに表示するようにします.
+&lt;li&gt; &lt;label&gt;概算されたテーブルメタデータを利用する&lt;/label&gt; レイヤを初期化する時にデータベーステーブルに保存されたジオメトリの特性を確認するためには様々なクエリを必要とします. このオプションがチェックされている場合, そうしたクエリはテーブル全体ではなく行のサンプルだけ検査しテーブルの統計を利用します. これによって大きなデータセットの操作が顕著に高速化されますが, レイヤは間違った特性を返すかもしれません (例えば, フィルタされたレイヤの&lt;font color=&quot;red&quot;&gt;地物数&lt;/font&gt;は正確に決められないでしょう).
+
 &lt;/ul&gt;
-&lt;h4&gt;オプション&lt;/h4&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;label&gt;パスワード保存&lt;/label&gt; - パスワードを保存すると毎回パスワードの入力を行わないでよくなります. パスワードはクリアテキストでQGISの設定情報に保存されます.
-&lt;li&gt;&lt;label&gt;ジオメトリカラムのみ参照す&lt;/label&gt; - 通常QGISはデータベースのそれぞれのテーブルがジオメトリカラムを持つかどうか調べます.もしジオメトリカラムを持つ場合はレイヤのリストに追加します. このボックスをチェックするとQGISはgeometry_columnsテーブルにエントリが存在する&quot;登録された&quot;レイヤのみをリストします.
-&lt;li&gt;&lt;label&gt;&apos;public&apos;スキーマのみ参照する&lt;/label&gt; - このオプションはレイヤの検索対象をパブリックスキーマのみに制限します.
-&lt;/ol&gt;
-&lt;h4&gt;接続のテストを行う&lt;/h4&gt;
-&lt;label&gt;接続テスト&lt;/label&gt;ボタンをクリックすると指定したパラメータでデータベースへの接続処理を起動します. この機能は接続情報を保存する前にチェックする良い方法です.
 </translation>
     </message>
     <message>
@@ -60915,7 +60930,7 @@ PostGISの新しい接続を作るためにはデータベースサーバのホ�
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;GPSプラグイン&lt;/h3&gt;
+        <translation>&lt;h3&gt;GPSプラグイン&lt;/h3&gt;
 
 </translation>
     </message>
@@ -60933,14 +60948,14 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="unfinished">&lt;h3&gt;新しくベクタレイヤを作る&lt;/h3&gt;
+        <translation>&lt;h3&gt;新しくベクタレイヤを作る&lt;/h3&gt;
 新しいベクタレイヤを作成して編集するためには&lt;label&gt;レイヤ&lt;/label&gt;メニューの&lt;label&gt;新規ベクタレイヤ&lt;/label&gt;を選択して下さい. &lt;br/&gt;
-このダイアログではShapefileのレイヤを作成できます.
+このダイアログではシェープファイルのレイヤを作成できます.
 &lt;h4&gt;タイプ&lt;/h4&gt;
 レイヤのタイプを&lt;label&gt;ポイント&lt;/label&gt;, &lt;label&gt;ライン&lt;/label&gt;または&lt;label&gt;ポリゴン&lt;/label&gt;から選択して下さい.&lt;br/&gt;
-必要な場合は&lt;label&gt;CRSの指定&lt;/label&gt;ボタンをクリックするとレイヤの座標参照システムを変えることができます.
+&lt;label&gt;CRSの指定&lt;/label&gt;ボタンをクリックするとレイヤの座標参照システムを変えることができます.
 &lt;h4&gt;新しい属性&lt;/h4&gt;
-属性の名前と型を指定した後に&lt;label&gt;属性リストに追加する&lt;/label&gt;ボタンをクリックすると必要な属性を追加できます. 実数値、整数値、テキストデータのみが属性としてサポートされています.&lt;br/&gt;
+属性の名前と型を指定した後に&lt;label&gt;属性リストに追加する&lt;/label&gt;ボタンをクリックすると属性を追加できます. 実数値、整数値、テキストデータのみが属性としてサポートされています.&lt;br/&gt;
 新しい属性カラムの幅と精度も定義できます.
 &lt;h4&gt;属性リスト&lt;/h4&gt;
 このセクションでは属性のリストが表示されます. リスト項目の１つを削除するためには削除したい行をクリックした後に&lt;label&gt;選択属性を削除する&lt;/label&gt;をクリックして下さい.
@@ -61087,41 +61102,44 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="unfinished">&lt;h3&gt;ベクタレイヤプロパティ&lt;/h3&gt;
-このダイアログではベクタレイヤに対する設定とプロパティを利用できます。ここには７個のタブがあります:
+        <translation>&lt;h3&gt;ベクタレイヤプロパティ&lt;/h3&gt;
+このダイアログではベクタレイヤの設定とプロパティを変更できます。ここには7個のタブがあります:
 &lt;p&gt;
 &lt;a href=&quot;#symbology&quot;&gt;シンボロジ&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#labels&quot;&gt;ラベル&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#attributes&quot;&gt;属性&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#attributes&quot;&gt;フィールド&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#general&quot;&gt;一般情報&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#metadata&quot;&gt;メタデータ&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#actions&quot;&gt;アクション&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#diagram&quot;&gt;グラフのオーバーレイ&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#diagram&quot;&gt;ダイアグラム&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;symbology&quot;&gt;
 &lt;h4&gt;シンボロジ&lt;/h4&gt;
 &lt;/a&gt;
-レイヤに対するシンボロジを変更する場合、作業したいレイヤの凡例エントリをダブルクリックすると&lt;label&gt;レイヤプロパティ&lt;/label&gt;ダイアログが表示されます.&lt;p&gt;
+レイヤのシンボロジを変更する場合、作業したいレイヤの凡例エントリをダブルクリックすると&lt;label&gt;レイヤプロパティ&lt;/label&gt;ダイアログが表示されます.&lt;p&gt;
 このダイアログではベクタレイヤのスタイルを指定できます.選択されたレンダリングオプションによって地物群を分類することもできます.
 
 &lt;h5&gt;凡例タイプ&lt;/h5&gt;
 QGISはベクタ地物表示を制御するための多くのシンボロジレンダラをサポートしています。現在は以下のレンダラが利用可能です:
 &lt;ul&gt;
 &lt;li&gt;&lt;label&gt;共通シンボル&lt;/label&gt; - 単一のスタイルをレイヤの全てのオブジェクトに適用します.
-&lt;li&gt;&lt;label&gt;目盛り付きシンボル&lt;/label&gt; - レイヤのオブジェクトは指定フィールドの値を分類した値にしたがって異なる描画方法で表示されます.
-&lt;li&gt;&lt;label&gt;連続色&lt;/label&gt; - レイヤ内のオブジェクトは指定フィールドの数値の値によって連続した色の階調内で分類された色を使って描画されます.
-&lt;li&gt;&lt;label&gt;固有値&lt;/label&gt; - レイヤ内のオブジェクトは指定フィールドの値を使って、それぞれの値別に定義された描画方法を利用して表示されます.
+&lt;li&gt;&lt;label&gt;分類された(カテゴリ)&lt;/label&gt; - レイヤ内のオブジェクトは指定フィールドの値を使って、それぞれの値毎に定義された描画方法を利用して表示されます.
+&lt;li&gt;&lt;label&gt;段階に分けられた(グラデーション)&lt;/label&gt; - レイヤ内のオブジェクトは指定フィールドの数値の値によって分類された連続した色の階調を使って描画されます.
+&lt;li&gt;&lt;label&gt;ルールに基づいた&lt;/label&gt;
+&lt;li&gt;&lt;label&gt;点の移動&lt;/label&gt;
 &lt;/ul&gt;
 
+&lt;!--
 &lt;h5&gt;新シンボロジー&lt;/h5&gt;
 レイヤの描画に新しいシンボロジーを利用したい場合は&lt;label&gt;新シンボロジー&lt;/label&gt; ボタンをクリックしてください.
+--&gt;
 
 &lt;h5&gt;ベクタ透過性&lt;/h5&gt;
 QGISではそれぞれのベクタレイヤに透過性を指定することができます. これは&lt;label&gt;透過性&lt;/label&gt;スライダを動かして指定できます. この機能は多くのベクタレイヤを重ね合わせ表示する場合にとても便利です.
 
 &lt;h5&gt;スタイルの保存&lt;/h5&gt;
-レイヤの描画スタイルを定義した場合レイヤスタイルを別ファイルとして保存できます（*.qmlで終わるファイル名で).&lt;label&gt;スタイル保存...&lt;/label&gt;ボタンをクリックするとこの機能を実行できます.言うまでもなく&lt;label&gt;スタイルロード...&lt;/label&gt; ボタンで保存したレイヤスタイルファイルをロードできます.&lt;br/&gt;
-もしあなたがあるレイヤがロードされる時はいつも特定のスタイルを利用したい場合は&lt;label&gt;既定値として保存&lt;/label&gt;ボタンをクリックするとスタイルを既定値にできます. さらにあなたが変更したスタイルに満足できなかった場合は&lt;label&gt;既定のスタイルに戻す&lt;/label&gt;ボタンを使うと既定のスタイルに戻すことができます.
+レイヤの描画スタイルを定義したらレイヤスタイルを個別のファイルとして保存できます（*.qmlで終わるファイル名で).&lt;label&gt;スタイルを保存&lt;/label&gt;ボタンをクリックするとこの機能を実行できます.&lt;!--言うまでもなく--&gt;&lt;label&gt;スタイルを読み込み...&lt;/label&gt; ボタンで保存したレイヤスタイルファイルをロードできます.&lt;br/&gt;
+もしあなたが設定中のレイヤがロードされる時はいつも現在のスタイルを利用したい場合は&lt;label&gt;既定スタイルとして保存&lt;/label&gt;ボタンをクリックします. さらにあなたが変更したスタイルに満足できなかった場合は&lt;label&gt;既定のスタイルに戻す&lt;/label&gt;ボタンを使うと既定のスタイルに戻すことができます.
 
 &lt;a name=&quot;labels&quot;&gt;
 &lt;h4&gt;ラベル&lt;/h4&gt;
@@ -61131,7 +61149,7 @@ QGISではそれぞれのベクタレイヤに透過性を指定することが�
 &lt;h5&gt;基本ラベルオプション&lt;/h5&gt;
 ラベルに表示するフィールドを選択して下さい.&lt;p&gt;
 フォントと色を設定するためには&lt;label&gt;フォント&lt;/label&gt; と &lt;label&gt;色&lt;/label&gt;ボタンを選択して下さい. さらにテキストラベルの角度と配置方法を設定することができます.&lt;p&gt;
-もしラベルが複数行にわたる文字列の場合&lt;label&gt;複数行のラベルですか?&lt;/label&gt;をチェックしてください. QGISは本物の改行コードをラベルフィールド中でチェックして、それにしたがってラインブレークを挿入します.本物の改行コードはシングルキャラクタの&amp;#92;nです(バックスラッシュ&amp;#92;と文字nのような2個の分割されたキャラクタではありません).
+もしラベルが複数行にわたる文字列の場合&lt;label&gt;複数行のラベルですか?&lt;/label&gt;をチェックしてください(ラベル(廃止予定)の場合). QGISは改行コードをラベルフィールド中でチェックして、それにしたがってラインブレークを挿入します.改行コードはシングルキャラクタの\nです(バックスラッシュ\と文字nのような2個の分割されたキャラクタではありません).
 
 &lt;h5&gt;配置&lt;/h5&gt;
 ラベルの配置を変更する場合 &lt;label&gt;配置&lt;/label&gt;グループにあるラジオボタンを選択して下さい.
@@ -61144,21 +61162,21 @@ QGISではそれぞれのベクタレイヤに透過性を指定することが�
 &lt;ol&gt;
 &lt;li&gt;&lt;label&gt;バッファラベル&lt;/label&gt;チェックボックスをクリックしてバッファリングを有効にします.
 &lt;li&gt;バッファを行うサイズをスピンボックスを使って指定します.
-&lt;li&gt;&lt;label&gt;色&lt;/label&gt;をクリックして色を選択します.カラーセレクタで利用したい色を選びます.必要ならばバッファの透過度を指定することもできます.
+&lt;li&gt;&lt;label&gt;色&lt;/label&gt;をクリックして色を選択します.カラーセレクタで利用したい色を選びます.好みに合わせてバッファの透過度を指定することもできます.
 &lt;li&gt;&lt;label&gt;適用&lt;/label&gt;をクリックすると変更状況を地図で見ることができます.
 &lt;/ol&gt;
-注　もしそのほうがよければバッファのサイズを地図上の単位で指定することも可能です.
+注　バッファのサイズを地図上の単位で指定することも可能です.
 
 &lt;h5&gt;データで定義された配置,プロパティ,バッファ,位置&lt;/h5&gt;
-&lt;label&gt;ラベル&lt;/label&gt;タブの残りのエントリーはラベルの見かけをレイヤの属性値を使って制御します. &lt;label&gt;データで定義された&lt;/label&gt;で始まるエントリはラベルのためのすべてのパラメータをレイヤのフィールドの値を利用します.
+&lt;label&gt;ラベル&lt;/label&gt;タブの残りのエントリーはラベルの見かけをレイヤの属性値を使って制御します. &lt;label&gt;データで定義された&lt;/label&gt;で始まるエントリはラベルのためのすべてのパラメータにレイヤのフィールドの値を利用します.
 
 
 &lt;a name=&quot;attributes&quot;&gt;
-&lt;h4&gt;属性&lt;/h4&gt;
+&lt;h4&gt;フィールド&lt;/h4&gt;
 &lt;/a&gt;
-&lt;label&gt;属性&lt;/label&gt;タブでは選択されたデータセットの属性を操作できます. &lt;label&gt;新規カラム&lt;/label&gt; と &lt;label&gt;カラム削除&lt;/label&gt;ボタンはデータセットが編集モードの時に利用できます. バージョン1.6以上のGDALがインストールされている場合OGRライブラリは新規カラムの追加をサポートしますが削除はできません.さもなければPostGISレイヤのカラムのみが編集可能です.&lt;p&gt;
+&lt;label&gt;フィールド&lt;/label&gt;タブでは選択されたデータセットのフィールドを操作できます. &lt;label&gt;新規カラム&lt;/label&gt; と &lt;label&gt;カラム削除&lt;/label&gt;ボタンはデータセットが編集モードの時に利用できます. バージョン1.6以上のGDALがインストールされている場合OGRライブラリは新規カラムの追加をサポートしますが削除はできません.さもなければPostGISレイヤのカラムのみが編集可能です.&lt;p&gt;
 &lt;label&gt;編集モード切替&lt;/label&gt;ボタンは編集モードを切り替えます.&lt;p&gt;
-属性タブには編集ウィジェットカラムがあります. このカラムは指定された属性テーブルカラムに追加することを許される値の定義または値の範囲の定義を行います. If you click on the &lt;label&gt;ウィジェットの編集&lt;/label&gt; ボタンをクリックするとダイアログが開き異なるウィジェットを定義できます. このようなウィジェットがあります:&lt;br/&gt;
+フィールドタブには編集ウィジェットカラムがあります. このカラムは指定された属性テーブルカラムに追加することを許される値の定義または値の範囲の定義を行います. &lt;label&gt;ウィジェットの編集&lt;/label&gt; ボタンをクリックするとダイアログが開き異なるウィジェットを定義できます. このようなウィジェットがあります:&lt;br/&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;label&gt;行編集&lt;/label&gt;シンプルテキストを入力可能な編集フィールド  (または数値フィールドの入力数値を制限する).
 &lt;li&gt;&lt;label&gt;分類&lt;/label&gt; プロパティダイアログシンボロジータブで凡例タイプとして&lt;label&gt;ユニーク値&lt;/label&gt;を選択した場合は分類された値のコンボボックスを表示します.
@@ -61171,6 +61189,12 @@ QGISではそれぞれのベクタレイヤに透過性を指定することが�
 &lt;li&gt;&lt;label&gt;非表示&lt;/label&gt; 非表示属性カラムはユーザーに見えません.
 &lt;li&gt;&lt;label&gt;チェックボックス&lt;/label&gt; チェックボックスが表示されます. 値は属性が入力されたチェックボックスの状態を表します.
 &lt;li&gt;&lt;label&gt;テキスト編集&lt;/label&gt;マルチラインのテキストが編集できるテキスト編集フィールドが表示されます.
+&lt;li&gt;&lt;label&gt;カレンダー&lt;/label&gt;
+&lt;li&gt;&lt;label&gt;値のリレーション&lt;/label&gt;
+&lt;li&gt;&lt;label&gt;UUIDジェネレータ&lt;/label&gt;
+&lt;li&gt;&lt;label&gt;写真&lt;/label&gt;
+&lt;li&gt;&lt;label&gt;ウェブビュー&lt;/label&gt;
+&lt;li&gt;&lt;label&gt;色&lt;/label&gt;
 &lt;/ul&gt;
 
 &lt;a name=&quot;general&quot;&gt;
@@ -61185,24 +61209,40 @@ QGISではそれぞれのベクタレイヤに透過性を指定することが�
 &lt;a name=&quot;metadata&quot;&gt;
 &lt;h4&gt;メタデータ&lt;/h4&gt;
 &lt;/a&gt;
-The &lt;label&gt;メタデータ&lt;/label&gt;タブではレイヤについての型と場所、地物の数,地物の型,編集可能な項目の情報が表示されます. レイヤの空間参照系セクションでは提供されている投影法の情報がタブに表示されます. この機能はレイヤ情報を取得するすばやい方法です.
+&lt;label&gt;メタデータ&lt;/label&gt;タブではレイヤについての型と場所、地物の数,地物の型,編集可能な項目の情報が表示されます. レイヤの空間参照系セクションでは提供されている投影法の情報がタブに表示されます. この機能はレイヤ情報を取得するすばやい方法です.
 
 &lt;a name=&quot;actions&quot;&gt;
 &lt;h4&gt;アクション&lt;/h4&gt;
 &lt;/a&gt;
-QGISでは地物の属性にもとずいたアクションを提供できます.この機能ではいろいろなアクションを使えます、たとえば地物の属性の値を引数として実行するプログラムやパラメータをwebレポーティングに発信するような機能です.  &lt;br/&gt;
-アクションは外部アプリケーションをしばしば起動したい時かベクタレイヤのうちのいくつかの情報をwebページベースで閲覧したい場合便利です.　例は属性の値を利用して検索を実行しています.&lt;p&gt;
+QGISでは地物の属性にもとづいたアクションを提供できます.この機能ではいろいろなアクションを使えます.たとえば地物の属性の値を引数としてプログラムを実行したりパラメータをwebレポーティングに送信したりするような機能です.&lt;br/&gt;
+アクションは外部アプリケーションを頻繁に起動したい場合やベクタレイヤのうちのいくつかの情報をwebページベースで閲覧したい場合に便利です.&lt;p&gt;
+
+アクションの新しい実装は式の評価にQGISの式エンジンを使っています.それぞれの式は実行時に評価され結果に置き換えられます.&lt;p&gt;
+式は&lt;code&gt;[%&lt;/code&gt;と&lt;code&gt;%]&lt;/code&gt;に囲まれなければなりません.それを自動的に行うためにGUIにはいくつかのボタンがあります.
+&lt;label&gt;式の挿入...&lt;/label&gt;ボタンは&lt;label&gt;式ビルダー&lt;/label&gt;を起動します.それを使えば式を簡単に書くことができます.&lt;label&gt;フィールドを挿入&lt;/label&gt;ボタンは&lt;code&gt;[% &quot;fieldname&quot; %]&lt;/code&gt;といったプレースホルダーをアクションに挿入します.ここでfieldnameはドロップダウンリストで選択されたフィールドの名前です.&lt;p&gt;
+
 さらに詳しい情報はユーザーガイドを参照して下さい.
 
 &lt;h5&gt;アクションの利用&lt;/h5&gt;
-アクションは&lt;label&gt;地物情報表示&lt;/label&gt; ダイアログから起動できます.
+アクションは&lt;label&gt;地物情報表示&lt;/label&gt;ダイアログから起動できます.ツールバーの&lt;label&gt;地物アクションの実行&lt;/label&gt;ツールでも起動できます.
+
+アクションでは&lt;label&gt;式ビルダ&lt;/label&gt;で利用できるデフォルトセットに加えて少しですがカスタム式が利用できます.&lt;br/&gt;
+&lt;label&gt;地物情報表示&lt;/label&gt;ダイアログからアクションを実行中の場合は, カスタム式&lt;code&gt;$currfield&lt;/code&gt;はダイアログで選択されたフィールドの値に置き換えられます.
+&lt;label&gt;地物アクションの実行&lt;/label&gt;ツールを使う場合, 次のようなカスタム式が利用可能です(この場合$currfieldは使えません):
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;$clickx&lt;/code&gt; キャンバスでクリックした位置のx座標を返します&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$clicky&lt;/code&gt; キャンバスでクリックした位置のy座標を返します&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;$layerid&lt;/code&gt; 凡例で選択されているレイヤのIDを返します&lt;/li&gt;
+&lt;/ul&gt;
+
+注: &lt;label&gt;地物アクションの実行&lt;/label&gt;ツールはマッチしているすべての地物についてアクションを実行しますが,&lt;label&gt;地物情報表示&lt;/label&gt;ではアクションを実行する地物を選択できます.&lt;p&gt;
 
 &lt;a name=&quot;diagram&quot;&gt;
-&lt;h4&gt;グラフのオーバーレイ&lt;/h4&gt;
+&lt;h4&gt;ダイアグラム&lt;/h4&gt;
 &lt;/a&gt;
-グラフのオーバーレイタブではベクタレイヤにグラフをオーバーレイ表示できます. この機能を有効にする時は &lt;label&gt;プラグインマネージャ&lt;/label&gt;を開いて&lt;label&gt;グラフのオーバーレイ&lt;/label&gt;プラグインを選択して下さい. そうするとベクタ&lt;label&gt;レイヤプロパティ&lt;/label&gt;ダイアログにグラフの設定を入力する新しいタブができます.&lt;p&gt;
+ダイアグラムタブではベクタレイヤにグラフをオーバーレイ表示できます. この機能を有効にする時は &lt;label&gt;プラグインマネージャ&lt;/label&gt;を開いて&lt;label&gt;グラフのオーバーレイ&lt;/label&gt;プラグインを選択して下さい. そうするとベクタ&lt;label&gt;レイヤプロパティ&lt;/label&gt;ダイアログにグラフの設定を入力する新しいタブができます.&lt;p&gt;
 現在のグラフ機能では円グラフと棒グラフと分類された属性値に従ったグラフの大きさの線形スケーリングがサポートされています.
-
 
 </translation>
     </message>
@@ -61353,7 +61393,7 @@ On this tab you can search for WMS servers. It is possible to enter a search-str
 To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
-        <translation type="unfinished">&lt;h3&gt;WMSの新しい接続を作る&lt;/h3&gt;
+        <translation>&lt;h3&gt;WMSの新しい接続を作る&lt;/h3&gt;
 WMSレイヤは簡単に追加できます, URLさえ知っていればWMSサーバへのアクセスは可能です.あなたは便利なサーバへの接続を作れます,サーバはデータ送信の方法としてHTTPを利用します.&lt;p&gt;
 QGISは現在 WMS1.1,　1.1.1, 1.3サーバのWMSクライアントとして機能できます.
 &lt;p&gt;
@@ -61396,7 +61436,7 @@ WMSサーバからデータをダウンロードしている間WMSプラグイ�
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="708"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;データベースコネクション&lt;/h3&gt;
+        <translation>&lt;h3&gt;データベースコネクション&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -61439,7 +61479,43 @@ To filter a layer before adding it to the map, either double click on its name o
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;SQL Anywhereテーブルの追加&lt;/h3&gt;
+このダイアログではSQL Anywhereレイヤ(ジオメトリカラムを含んだテーブル)をQGISマップキャンバスに追加することができます.
+&lt;p&gt;
+&lt;a href=&quot;#connect&quot;&gt;接続&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#add&quot;&gt;レイヤの追加&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#filter&quot;&gt;レイヤのフィルタリング&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#search&quot;&gt;検索オプション&lt;/a&gt;&lt;br/&gt;
+
+&lt;a href=&quot;#connect&quot;&gt;
+&lt;h4&gt;接続&lt;/h4&gt;
+&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;ドロップダウンボックスから使用する接続先を選択して&lt;label&gt;接続&lt;/label&gt;ボタンをクリックして下さい.
+&lt;li&gt;接続先がない場合は接続先を作成するために&lt;label&gt;新規&lt;/label&gt;ボタンを使います.
+&lt;li&gt;選択された接続先の内容を変更する場合は&lt;label&gt;編集&lt;/label&gt;ボタンを, 削除する場合は&lt;label&gt;削除&lt;/label&gt;ボタンをクリックします.
+&lt;/ul&gt;
+&lt;a name=&quot;add&quot;&gt;
+&lt;h4&gt;レイヤの追加&lt;/h4&gt;
+&lt;/a&gt;
+レイヤを追加するには:
+&lt;ol&gt;
+&lt;li&gt;ドロップダウンボックスから接続先を選択します.
+&lt;li&gt;&lt;label&gt;接続&lt;/label&gt;をクリックします, データベースからレイヤのリストを取り込みます. どのようにこのリストが取り込まれるかに影響するオプションは新規接続ダイアログボックスのヘルプで説明されています.
+&lt;li&gt;リストから追加したいレイヤを探してクリックして選択します.
+&lt;li&gt;加えてレイヤを選択したい場合はCtrlキーを押したままクリックします.
+&lt;li&gt;&lt;label&gt;追加&lt;/label&gt;をクリックすると地図にレイヤが追加されます.
+&lt;/ol&gt;
+&lt;a name=&quot;filter&quot;&gt;
+&lt;h4&gt;レイヤのフィルタリング&lt;/h4&gt;
+&lt;/a&gt;
+地図に追加する前にレイヤの内容をフィルタしたい場合はその名前をダブルクリックするか, 選択してから&lt;label&gt;フィルタ設定&lt;/label&gt;ボタンをクリックします.そうするとクエリビルダが開きます.このダイアログでレコードをフィルタリングするSQL文を作成することができます.
+
+&lt;a name=&quot;search&quot;&gt;
+&lt;h4&gt;検索オプション&lt;/h4&gt;
+&lt;/a&gt;
+&lt;label&gt;検索オプション&lt;/label&gt;には異なるカラムタイプの検索や2つの検索モード(&lt;label&gt;ワイルドカード&lt;/label&gt; または&lt;label&gt;正規表現&lt;/label&gt;)を利用するオプションがあります.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="748"/>
@@ -61447,7 +61523,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="unfinished">&lt;h3&gt;SpatiaLiteテーブルの追加&lt;/h3&gt;
+        <translation>&lt;h3&gt;SpatiaLiteテーブルの追加&lt;/h3&gt;
 新しい接続を定義するためには &lt;label&gt;新規&lt;/label&gt;ボタンをクリックしてファイルブラウザで&lt;i&gt;.sqlite&lt;/i&gt;という拡張子を持つファイルのSpatiaLiteデータベースを指定して下さい.&lt;p&gt;
 あなたが定義した接続は以後ドロップダウンメニューで選択することができるようにするために記憶されます.
 </translation>
@@ -61564,12 +61640,12 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;著作権ラベルプラグイン&lt;/h3&gt;
+        <translation>&lt;h3&gt;著作権ラベルプラグイン&lt;/h3&gt;
 著作権ラベルを情報とともに描画します.&lt;br/&gt;
 著作権ラベル以外にも任意のテキストを地図に追加することができます.
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;設定方法&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#text&quot;&gt;テキスト成形&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#text&quot;&gt;テキスト整形&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;howto&quot;&gt;
 &lt;h4&gt;設定方法&lt;/h4&gt;
@@ -61578,14 +61654,14 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;li&gt;プラグインがロードされていることを確認して下さい.
 &lt;li&gt;メニューの &lt;label&gt;プラグイン &gt; 地図整飾 &gt; 著作権ラベル&lt;/label&gt;をクリックするか ツールバーの &lt;label&gt;著作権ラベル&lt;/label&gt; ボタンをクリックして下さい.
 &lt;li&gt;地図上に表示したいテキストを入力して下さい. ここでHTMLを利用できます.
-&lt;li&gt;ラベルを配置する場所を &lt;label&gt;右下&lt;/label&gt; ドロップダウンボックスから選択して下さい.
+&lt;li&gt;ラベルを配置する場所を &lt;label&gt;配置&lt;/label&gt; ドロップダウンボックスから選択して下さい.
 &lt;li&gt;&lt;label&gt;著作権ラベルを有効にするチェックボックス&lt;/label&gt;がチェックされていることを確認して下さい.
 &lt;li&gt;&lt;label&gt;OK&lt;/label&gt;をクリックして下さい.
 &lt;/ol&gt;
 &lt;a name=&quot;text&quot;&gt;
-&lt;h4&gt; テキスト成形 &lt;/h4&gt;
+&lt;h4&gt; テキスト整形 &lt;/h4&gt;
 &lt;/a&gt;
-このプラグインは基本的なHTMLマークアップタグをテキストの成形に利用できます. たとえば以下のとおりです:
+このプラグインは基本的なHTMLマークアップタグをテキストの整形に利用できます. たとえば以下のとおりです:
 
 &lt;ul&gt;
 &lt;li&gt;&amp;lt;B&amp;gt;&lt;b&gt; 強調テキスト &lt;/b&gt;&amp;lt;/B&amp;gt;
@@ -61704,20 +61780,20 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;スケールバープラグイン&lt;/h3&gt;
+        <translation>&lt;h3&gt;スケールバープラグイン&lt;/h3&gt;
 地図にスケールバーを描画します.
 &lt;p&gt;
-バーのラベルと同じようにスタイルと配置位置を制御することができます. 
+バーのラベルと同じようにスタイルと配置を制御することができます.
 QGISでは地図フレームと同じ単位でのみ縮尺を表示できます.それゆえメートル単位のレイヤの場合はフィート単位のスケールバーを作ることができません. 同じように角度を利用している場合スケールバーの距離をメートル単位で表示することはできません.&lt;/p&gt;
 &lt;p&gt;
 スケールバーの追加:
 &lt;ol&gt;
-&lt;li&gt;&lt;label&gt;位置&lt;/label&gt;ドロップダウンリストから表示位置を選択して下さい.&lt;/li&gt;
+&lt;li&gt;&lt;label&gt;配置&lt;/label&gt;ドロップダウンリストから表示位置を選択して下さい.&lt;/li&gt;
 &lt;li&gt;&lt;label&gt;スケールバースタイル&lt;/label&gt;リストからスタイルを選択して下さい.&lt;/li&gt;
 &lt;li&gt;&lt;label&gt;バーの色&lt;/label&gt;を利用してスケールバーの色を選択するか、デフォルトの黒色を利用して下さい.&lt;/li&gt;
 &lt;li&gt;&lt;label&gt;バーのサイズ&lt;/label&gt;を利用してバーとラベルのサイズを指定して下さい. &lt;/li&gt;
 &lt;li&gt;&lt;label&gt;縮尺バーを使用&lt;/label&gt;チェックボックスがチェックされていることを確認して下さい.&lt;/li&gt;
-&lt;li&gt;オプションでキャンバスの大きさが変わった時に自動的に数値を丸める場合&lt;label&gt;リサイズ時に自動的に数値を丸める&lt;/label&gt;をチェックして下さい.&lt;/li&gt;
+&lt;li&gt;オプションでキャンバスの大きさが変わった時に自動的に数値を丸める場合&lt;label&gt;リサイズ時に自動的に四捨五入&lt;/label&gt;をチェックして下さい.&lt;/li&gt;
 &lt;li&gt;&lt;label&gt;OK&lt;/label&gt;をクリックして下さい.&lt;/li&gt;
 &lt;/ol&gt;
 </translation>
@@ -61726,7 +61802,7 @@ QGISでは地図フレームと同じ単位でのみ縮尺を表示できます.
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="913"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;新OGRデータベース接続ダイアログ&lt;/h3&gt;
+        <translation>&lt;h3&gt;新OGRデータベース接続ダイアログ&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -61738,8 +61814,8 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation type="unfinished">&lt;h3&gt;計測ツール&lt;/h3&gt;
-長さと面積を測る2種類の計測ツールがあります. これらを使うと地図キャンバス上で距離と面積を計測できます.現状でこのツールは結果をメートル単位のみで提供します.マウス右ボタンのシングルクリックで計測を終了します.マウス右ボタンの２回クリックで新規の計測を開始します.
+        <translation>&lt;h3&gt;計測ツール&lt;/h3&gt;
+長さと面積を測る2種類の計測ツールがあります. これらを使うと地図キャンバス上で距離と面積を計測できます. 現状でこのツールは結果をメートル単位のみで提供します.マウス右ボタンのシングルクリックで計測を終了します.マウス右ボタンの2回クリックで改めて計測を開始します.
 &lt;h4&gt;距離計測&lt;/h4&gt;
 距離を計測するためにはツールを選択した後で計測したい経路にそってクリックしてください. それぞれのセグメントの長さが表示され、さらに経路の長さの合計値が表示されます.
 &lt;h4&gt;面積計測&lt;/h4&gt;
@@ -61787,10 +61863,10 @@ To measure areas, select the tool and click to create the area. The total area i
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation type="unfinished">&lt;h3&gt; 北向き矢印プラグイン&lt;/h3&gt;
+        <translation>&lt;h3&gt; 北向き矢印プラグイン&lt;/h3&gt;
 地図上に北向き矢印を表示します.
 &lt;p&gt;
-現時点では１種類のスタイルだけが利用可能です. QGISが自動的に設定する矢印の角度を調整することが可能です. もしQGISが決定した方向を選択した場合は最適な矢印の方向を示すようにします. 矢印を配置する場所については地図キャンバスの4隅を指定する4個のオプションがあります.</translation>
+現時点では１種類のスタイルだけが利用可能です. 矢印の角度を調整したりQGISに自動的に方向を決定させたりすることが可能です. もしQGISに方向を決定させるように選択した場合は矢印がどの方向を向くべきか推測されます. 矢印を配置する場所については地図キャンバスの4隅に対応する4個の選択肢があります.</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="957"/>
@@ -61866,7 +61942,24 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;ベクタレイヤに名前をつけて保存する...&lt;/h3&gt;
+
+&lt;p&gt;このダイアログではGDAL/OGRを用いてベクタデータを様々な形式で保存することができます.
+
+&lt;ul&gt;
+&lt;li&gt;&lt;label&gt;形式&lt;/label&gt;リストから出力する形式(OGRによって提供される形式)を選択します.
+&lt;li&gt;&lt;label&gt;名前をつけて保存&lt;/label&gt;に出力先となるファイル名を入力します. &lt;label&gt;ブラウズ&lt;/label&gt;ボタンを使って選択することもできます.
+&lt;li&gt;&lt;label&gt;エンコーディング&lt;/label&gt;リストではどの文字コードでデータを保存するか定義できます.
+&lt;li&gt;&lt;label&gt;CRS&lt;/label&gt;では保存しようとしているデータが再投影されるCRSを選択できます.
+
+&lt;li&gt;OGRはそれがサポートする様々な形式のための様々なオプションを用意しています.
+データソース生成オプションを設定するには&lt;label&gt;データソース&lt;/label&gt;フィールドを用いて下さい. レイヤ生成オプションを設定するには&lt;label&gt;レイヤ&lt;/label&gt;フィールドを用いて下さい. 1行につき1つのオプションを入力します.
+ 例えば, &lt;code&gt;SPATIALITE=yes&lt;/code&gt;を&lt;label&gt;データソース&lt;/label&gt;に入力するとSQLiteドライバを用いてspatialiteデータベースを作成できます.
+ &lt;code&gt;GEOMETRY=AS_XY&lt;/code&gt;を&lt;label&gt;レイヤ&lt;/label&gt;に入力するとCSV(カンマ区切りファイル)ドライバはポイントジオメトリのX, Y要素をエクスポートします.
+&lt;/ul&gt;
+
+サポートされている形式の一覧と利用可能なオプションは&lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt;を参照して下さい.
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1025"/>
@@ -61882,17 +61975,16 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="unfinished">&lt;h3&gt;プリントコンポーザ&lt;/h3&gt;
+        <translation>&lt;h3&gt;プリントコンポーザ&lt;/h3&gt;
 
 &lt;p&gt;
-プリントコンポーザを利用すると印刷用のページの上でアイテムをアレンジすることができます.アイテムには地図キャンバスやスケールバー、凡例 arbituary images等が利用可能です.
+プリントコンポーザを利用するとページの上にアイテムをアレンジして印刷することができます.アイテムにはマップキャンバスやスケールバー, 凡例, 任意の画像等が利用可能です.
 &lt;/p&gt;
 
 &lt;p&gt;
-ページ上にどの種類のアイテムを配置するかはコンポーザウィンドウの上部にあるアイコンをクリックすると決まります、それからアイテムをクリックしてから描画してページ上に配置できます. マップキャンバスやスケールバーの大きさはページ上でクリックした後にドラッグすると設定できます.他のアイテムは固定の大きさです、しかし後で大きさを変更できます.アイテムをハイライトさせて左側のペーンに表示されたフィールドの値を調整するとそれらのアイテムの大きさを変更できます.
+ページ上にどの種類のアイテムを配置するか選択するにはコンポーザウィンドウの上部にあるアイコンをクリックして下さい. アイテムをクリックしてページ上に描画すると配置できます. マップキャンバスやスケールバーの大きさはページ上でクリックした後にドラッグすると設定できます.他のアイテムは固定の大きさですが, アイテムをハイライトさせて左側のパネルに表示されたフィールドの値を調整するとそれらのアイテムの大きさを変更できます.
 
 &lt;/p&gt;
-
 </translation>
     </message>
     <message>
@@ -62057,7 +62149,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1106"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="unfinished">&lt;h3&gt;スタイルマネージャ&lt;/h3&gt;
+        <translation>&lt;h3&gt;スタイルマネージャ&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -62283,7 +62375,37 @@ SQL Anywhere database.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;新しいSQL Anywhere接続を作成します&lt;/h3&gt;
+このダイアログではSQL Anywhereデータベースへの接続の設定を定義できます.
+
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;名前&lt;/label&gt; 接続設定を識別する名前.
+
+&lt;li&gt; &lt;label&gt;ホスト&lt;/label&gt; データベースサーバをホストしているコンピュータの名前かIPアドレス (ローカル接続では空欄のままに).
+
+&lt;li&gt; &lt;label&gt;ポート&lt;/label&gt; データベースサーバが用いるIPポート (ローカル接続やデフォルトポート2638の場合は空欄のままに).
+
+&lt;li&gt; &lt;label&gt;サーバー&lt;/label&gt; データベースサーバの名前 (ホストのデフォルトサーバの場合は空欄のままに).
+
+&lt;li&gt; &lt;label&gt;データベース&lt;/label&gt; データベースの名前 (サーバのデフォルトデータベースの場合は空欄のままに).
+
+&lt;li&gt; &lt;label&gt;接続パラメータ&lt;/label&gt; 接続文字列に追加する付加的パラメータ. これはセミコロンで区切られたリストです. 有効な接続パラメータのリストと説明についてはSQL Anywhereのドキュメントを見て下さい.
+
+&lt;li&gt; &lt;label&gt;ユーザ名&lt;/label&gt; データベースのユーザ名.
+&lt;li&gt; &lt;label&gt;パスワード&lt;/label&gt; データベースのパスワード.
+
+&lt;li&gt; &lt;label&gt;ユーザ名の保存&lt;/label&gt; 接続設定のデータベースユーザ名を保存する場合はチェックします.
+
+&lt;li&gt; &lt;label&gt;パスワード保存&lt;/label&gt; 接続設定のデータベースパスワードを保存する場合はチェックします. &lt;em&gt;パスワードは&lt;strong&gt;クリアテキスト&lt;/strong&gt;でシステムの設定情報に保存されます!&lt;/em&gt;
+
+&lt;li&gt; &lt;label&gt;シンプルな暗号化&lt;/label&gt; シンプルな暗号化を用いてデータベースへの接続を安全にします.
+
+&lt;li&gt; &lt;label&gt;テーブルメタデータの推定&lt;/label&gt; レイヤを初期化する時にデータベーステーブルに保存されたジオメトリの特性を確認するためには様々なクエリを必要とします. このオプションがチェックされている場合, そうしたクエリはテーブル全体ではなく行のサンプルだけ検査します. これによって著しくレイヤの初期化が高速化されますが, いくつかの異なるタイプを有するレイヤは間違った特性になるかもしれません.
+
+&lt;li&gt; &lt;label&gt;他のユーザのテーブルを検索する&lt;/label&gt; データベースに保存されているすべてのレイヤからレイヤリストを取り入れるかどうか指定します. チェックしない場合(デフォルト), 接続したユーザが所有するテーブルに保存されているレイヤだけが表示されます.
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="1231"/>
@@ -62346,7 +62468,43 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;新しいOracle接続を作成します&lt;/h3&gt;
+このダイアログではOracleデータベースへの接続の設定を定義できます.
+&lt;p&gt;
+&lt;ul&gt;
+&lt;li&gt; &lt;label&gt;名称&lt;/label&gt; 接続設定を識別する名前.
+
+&lt;li&gt; &lt;label&gt;データベース&lt;/label&gt; OracleインスタンスのSIDかSERVICE_NAME.
+
+&lt;li&gt; &lt;label&gt;ホスト&lt;/label&gt; データベースサーバをホストしているコンピュータの名前かIPアドレス.
+
+&lt;li&gt; &lt;label&gt;ポート&lt;/label&gt; データベースサーバが用いるIPポート
+
+&lt;li&gt; &lt;label&gt;ユーザ名&lt;/label&gt; データベースのユーザ名.
+&lt;li&gt; &lt;label&gt;パスワード&lt;/label&gt; データベースのパスワード.
+
+&lt;li&gt; &lt;label&gt;ユーザ名の保存&lt;/label&gt; 接続設定のデータベースユーザ名を保存する場合はチェックします.
+
+&lt;li&gt; &lt;label&gt;パスワード保存&lt;/label&gt; 接続設定のデータベースパスワードを保存する場合はチェックします. &lt;font color=&quot;red&quot;&gt;パスワードは&lt;strong&gt;クリアテキスト&lt;/strong&gt;でシステムの設定情報とプロジェクトファイルに保存されます!&lt;/font&gt;
+
+&lt;li&gt; &lt;label&gt;メタデータテーブルのみ参照する&lt;/label&gt; all_sdo_geom_metadataビューにあるテーブルのみリストします. これによって空間テーブルの初期表示を高速化できます.
+
+&lt;li&gt; &lt;label&gt;ユーザのテーブルのみ参照する&lt;/label&gt; 空間テーブルの検索をユーザが所有するテーブルに制限します.
+
+&lt;li&gt; &lt;label&gt;ジオメトリを持たないテーブルもリストする&lt;/label&gt; ジオメトリを持たないテーブルもデフォルトでリストするようにします.
+
+&lt;li&gt; &lt;label&gt;概算されたテーブルメタデータを利用する&lt;/label&gt; 
+ レイヤがセットアップされる時にはOracleテーブルの様々なメタデータが要求されます.
+ これにはテーブルの行数やジオメトリタイプ, ジオメトリカラムのデータの空間領域といった情報が含まれます.
+ もしテーブルがたくさんの行を持つ場合, メタデータが判明するのに時間がかかります.
+ このオプションを有効にすると次のようにして迅速にテーブルメタデータが処理されます:
+ 行数はall_tables.num_rowsから決定されます.
+ レイヤフィルタが適用されていたとしてもテーブルの領域はSDO_TUNE.EXTENTS_OF関数を用いて決定されます.
+ テーブルのジオメトリはテーブルの始めのnullではない100行のジオメトリから決定されます.
+
+&lt;li&gt; &lt;label&gt;存在するジオメトリタイプのみ&lt;/label&gt; 存在するジオメトリタイプのみリストします. 他のものはリストしません.
+&lt;/ul&gt;
+</translation>
     </message>
 </context>
 <context>
