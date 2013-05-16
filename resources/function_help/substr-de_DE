@@ -2,13 +2,13 @@
 Liefert einen Teil einer Zeichenkette
 
 <p><h4>Syntax</h4>
-     substr(<i>zeichenkette,startpos,länge</i>)</p>
+     substr(<i>zeichenkette,startpos,l&auml;nge</i>)</p>
 
 <p><h4>Argumente</h4>
 <!-- List args for functions here-->
-<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die vollständige Zeichenkette.<br>
+<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die vollst&auml;ndige Zeichenkette.<br>
 <i>  startpos</i> &rarr; ist eine Zahl.  Die Startposition des Teils.<br>
-<i>  länge</i> &rarr; ist eine Zahl.  Die Länge des Teils.<br></p>
+<i>  l&auml;nge</i> &rarr; ist eine Zahl.  Die L&auml;nge des Teils.<br></p>
 
 <p><h4>Beispiel</h4>
 <!-- Show example of function.-->

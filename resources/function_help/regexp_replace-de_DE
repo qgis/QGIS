@@ -1,13 +1,13 @@
 <h3>Funktion regexp_replace()</h3>
-Liefert eine Zeichenkette in der der angegebene reguläre Ausdruck ersetzt wurde.
+Liefert eine Zeichenkette in der der angegebene regul&auml;re Ausdruck ersetzt wurde.
 
 <p><h4>Syntax</h4>
      regexp_replace(<i>a</i>, <i>streiche</i>, <i>setze</i>)
 
 <p><h4>Argumente</h4>
 <!-- List args for functions here-->
-<i>a</i> &rarr; ist string.  Die ursprüngliche Zeichenkette.<br>
-<i>streiche</i> &rarr; ist string.  Die zu ersetzende reguläre Ausdruck.<br>
+<i>a</i> &rarr; ist string.  Die urspr&uuml;ngliche Zeichenkette.<br>
+<i>streiche</i> &rarr; ist string.  Die zu ersetzende regul&auml;re Ausdruck.<br>
 <i>setze</i> &rarr; ist string.  Die Zeichenkette durch die <i>streiche</i> ersetzt werden soll<br></p>
 
 <p><h4>Beispiel</h4>

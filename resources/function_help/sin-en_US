@@ -6,7 +6,7 @@ Returns sinus of an angle.
      sin(<i>real</i>)</p>
 
 <p><h4>Arguments</h4>
-<i>real</i> -> angle in radians.</p>
+<i>real</i> &rarr; angle in radians.</p>
 
 <p><h4>Example</h4>
-     sin(1.571) -> 0.999999682931835</p>
+     sin(1.571) &rarr; 0.999999682931835</p>

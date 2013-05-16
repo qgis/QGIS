@@ -1,7 +1,7 @@
 <h3>Calculatrice de champs</h3>
-La calculatrice de champs vous permet de mettre à jour des champs grâce à des expressions.
+La calculatrice de champs vous permet de mettre Ã  jour des champs grÃ¢ce Ã  des expressions.
 
-<h4>Opérations supportées</h4>
+<h4>OpÃ©rations supportÃ©es</h4>
 
 <table border=1>
 <tr>
@@ -25,28 +25,28 @@ La calculatrice de champs vous permet de mettre à jour des champs grâce à des ex
 <tr><td>asin(<tt>a</tt>)</td><td>arcsinus de <tt>a</tt></td></tr>
 <tr><td>acos(<tt>a</tt>)</td><td>arccosinus de <tt>a</tt></td></tr>
 <tr><td>atan(<tt>a</tt>)</td><td>arctangente de <tt>a</tt></td></tr>
-<tr><td>to int(<tt>a</tt>)</td><td>convertit une chaîne de caractère <tt>a</tt> en un chiffre entier (int)</td></tr>
-<tr><td>to real (<tt>a</tt>)</td><td>convertit une chaîne de caractère <tt>a</tt> en un chiffre réel (flottant)</td></tr>
-<tr><td>to string (<tt>a</tt>)</td><td>convertit un chiffre <tt>a</tt> en une chaîne de caractère</td></tr>
-<tr><td>lower(<tt>a</tt>)</td><td>convertit une chaîne de caractère <tt>a</tt> en minuscule</td></tr>
-<tr><td>upper(<tt>a</tt>)</td><td>convertit une chaîne de caractère <tt>a</tt> en majuscule</td></tr>
-<tr><td>lenght(<tt>a</tt>)</td><td>longueur d'un chaîne de caractère <tt>a</tt></td></tr>
-<tr><td>atan2(y,x)</td><td>arctangente de y/x en utilisant les 2 arguments pour déterminer le cadre de résultat</td></tr>
-<tr><td>replace(<tt>a</tt>,<i>vieux</i>,<i>neuf</i>)</td><td>remplace <i>vieux</i> par <i>neuf</i> dans la chaîne de caractère <tt>a</tt></td></td>
+<tr><td>to int(<tt>a</tt>)</td><td>convertit une chaÃ®ne de caractÃ¨re <tt>a</tt> en un chiffre entier (int)</td></tr>
+<tr><td>to real (<tt>a</tt>)</td><td>convertit une chaÃ®ne de caractÃ¨re <tt>a</tt> en un chiffre rÃ©el (flottant)</td></tr>
+<tr><td>to string (<tt>a</tt>)</td><td>convertit un chiffre <tt>a</tt> en une chaÃ®ne de caractÃ¨re</td></tr>
+<tr><td>lower(<tt>a</tt>)</td><td>convertit une chaÃ®ne de caractÃ¨re <tt>a</tt> en minuscule</td></tr>
+<tr><td>upper(<tt>a</tt>)</td><td>convertit une chaÃ®ne de caractÃ¨re <tt>a</tt> en majuscule</td></tr>
+<tr><td>lenght(<tt>a</tt>)</td><td>longueur d'un chaÃ®ne de caractÃ¨re <tt>a</tt></td></tr>
+<tr><td>atan2(y,x)</td><td>arctangente de y/x en utilisant les 2 arguments pour dÃ©terminer le cadre de rÃ©sultat</td></tr>
+<tr><td>replace(<tt>a</tt>,<i>vieux</i>,<i>neuf</i>)</td><td>remplace <i>vieux</i> par <i>neuf</i> dans la chaÃ®ne de caractÃ¨re <tt>a</tt></td></td>
 <tr><td>substr(<tt>a<S/tt>,from,len)</td><td>len characters of string <tt>a</tt> starting from from (first character index is 1)</td></td>
-<tr><td><tt>a</tt> || <tt>b</tt></td><td>concaténer (colle) les chaînes de caractères <tt>a</tt> et <tt>b</tt></td></tr>
-<tr><td>$rownum</td><td>numéro de ligne courante</td></tr>
+<tr><td><tt>a</tt> || <tt>b</tt></td><td>concatÃ©ner (colle) les chaÃ®nes de caractÃ¨res <tt>a</tt> et <tt>b</tt></td></tr>
+<tr><td>$rownum</td><td>numÃ©ro de ligne courante</td></tr>
 <tr><td>$area</td><td>surface d'un polygone</td></tr>
-<tr><td>$perimeter</td><td>périmètre d'un polygone</td></tr>
+<tr><td>$perimeter</td><td>pÃ©rimÃ¨tre d'un polygone</td></tr>
 <tr><td>$length</td><td>longueur d'une ligne</td></tr>
-<tr><td>$id</td><td>id de l'entité</td></tr>
-<tr><td>$x</td><td>coordonnée en X du point</td></tr>
-<tr><td>$y</td><td>coordonnée en Y du point</td></tr>
+<tr><td>$id</td><td>id de l'entitÃ©</td></tr>
+<tr><td>$x</td><td>coordonnÃ©e en X du point</td></tr>
+<tr><td>$y</td><td>coordonnÃ©e en Y du point</td></tr>
 <tr><td><tt>a</tt> ^ <tt>b</tt></td><td><tt>a</tt> puissance <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> * <tt>b</tt></td><td><tt>a</tt> multiplié par <tt>b</tt></td></tr>
-<tr><td><tt>a</tt> / <tt>b</tt></td><td><tt>a</tt> dividisé par <tt>b</tt></td></tr>
+<tr><td><tt>a</tt> * <tt>b</tt></td><td><tt>a</tt> multipliÃ© par <tt>b</tt></td></tr>
+<tr><td><tt>a</tt> / <tt>b</tt></td><td><tt>a</tt> dividisÃ© par <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> + <tt>b</tt></td><td><tt>a</tt> plus <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> - <tt>b</tt></td><td><tt>a</tt> moins <tt>b</tt></td></tr>
 <tr><td>+<tt>a</tt></td><td>positif</td></tr>
-<tr><td>-<tt>a</tt></td><td>valeur négative de <tt>a</tt></td></tr>
+<tr><td>-<tt>a</tt></td><td>valeur nÃ©gative de <tt>a</tt></td></tr>
 </table>

@@ -96,13 +96,14 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
   QgsDebugMsg( "Sending getmap response..." );
   if ( img )
   {
-    bool png8Bit = ( mFormat.compare( "image/png; mode=8bit", Qt::CaseInsensitive ) == 0 );
-    bool png1Bit = ( mFormat.compare( "image/png; mode=1bit", Qt::CaseInsensitive ) == 0 );
+    bool png16Bit = ( mFormatString.compare( "image/png; mode=16bit", Qt::CaseInsensitive ) == 0 );
+    bool png8Bit = ( mFormatString.compare( "image/png; mode=8bit", Qt::CaseInsensitive ) == 0 );
+    bool png1Bit = ( mFormatString.compare( "image/png; mode=1bit", Qt::CaseInsensitive ) == 0 );
     bool isBase64 = mFormatString.endsWith( ";base64", Qt::CaseInsensitive );
-    if ( mFormat != "PNG" && mFormat != "JPG" && !png8Bit && !png1Bit )
+    if ( mFormat != "PNG" && mFormat != "JPG" && !png16Bit && !png8Bit && !png1Bit )
     {
       QgsDebugMsg( "service exception - incorrect image format requested..." );
-      sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormat + "' is not supported in the GetMap request" ) );
+      sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormatString + "' is not supported in the GetMap request" ) );
       return;
     }
 
@@ -117,6 +118,11 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
       medianCut( colorTable, 256, *img );
       QImage palettedImg = img->convertToFormat( QImage::Format_Indexed8, colorTable, Qt::ColorOnly | Qt::ThresholdDither |
                            Qt::ThresholdAlphaDither | Qt::NoOpaqueDetection );
+      palettedImg.save( &buffer, "PNG", -1 );
+    }
+    else if ( png16Bit )
+    {
+      QImage palettedImg = img->convertToFormat( QImage::Format_ARGB4444_Premultiplied );
       palettedImg.save( &buffer, "PNG", -1 );
     }
     else if ( png1Bit )
@@ -571,17 +577,17 @@ void QgsHttpRequestHandler::imageColors( QHash<QRgb, int>& colors, const QImage&
   int width = image.width();
   int height = image.height();
 
-  QRgb currentColor;
+  const QRgb* currentScanLine = 0;
   QHash<QRgb, int>::iterator colorIt;
   for ( int i = 0; i < height; ++i )
   {
+    currentScanLine = ( const QRgb* )( image.scanLine( i ) );
     for ( int j = 0; j < width; ++j )
     {
-      currentColor = image.pixel( j, i );
-      colorIt = colors.find( currentColor );
+      colorIt = colors.find( currentScanLine[j] );
       if ( colorIt == colors.end() )
       {
-        colors.insert( currentColor, 1 );
+        colors.insert( currentScanLine[j], 1 );
       }
       else
       {

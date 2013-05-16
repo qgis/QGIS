@@ -30,8 +30,7 @@ class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidge
     Q_OBJECT
   public:
     explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
-
-  signals:
+    void addFavouriteDirectory( QString favDir );
 
   public slots:
     void addLayerAtIndex( const QModelIndex& index );
@@ -54,15 +53,11 @@ class QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidge
     void toggleFastScan();
 
   protected:
-    void addFavouriteDirectory( QString favDir );
-
     void refreshModel( const QModelIndex& index );
 
     void showEvent( QShowEvent * event );
 
     void addLayer( QgsLayerItem *layerItem );
-
-    // removed dataItem(), call mModel->dataItem directly (to avoid passing index from the wrong model)
 
     QgsBrowserTreeView* mBrowserView;
     QgsBrowserModel* mModel;

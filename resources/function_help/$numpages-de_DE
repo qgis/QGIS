@@ -1,0 +1,12 @@
+<h3>Funktion $numpages</h3>
+Gibt die Gesamtseitenzahl einer Druckzusammenstellung aus.
+
+<h4>Syntax</h4>
+<pre>$numpages</pre>
+
+<h4>Argumente</h4>
+Keine
+
+<h4>Beispiel</h4>
+<pre>$numpages &rarr; 42</pre>
+

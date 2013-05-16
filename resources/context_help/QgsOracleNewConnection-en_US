@@ -33,4 +33,7 @@ determined from all_tables.num_rows. Table extents are always determined with
 the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied. The table
 geometry is determined from the first 100 non-null geometry rows in the table.
 
+<li> <label>Only existing geometry types</label> Only list the existing
+geometry types and don't offer to add others.
+
 </ul>

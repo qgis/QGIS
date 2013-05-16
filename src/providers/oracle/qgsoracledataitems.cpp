@@ -53,33 +53,26 @@ void QgsOracleConnectionItem::stop()
 
 void QgsOracleConnectionItem::refresh()
 {
-  QgsDebugMsg( "Entering." );
-
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   stop();
 
   foreach ( QgsDataItem *child, mChildren )
   {
-    QgsDebugMsg( QString( "Deleting child: %1" ).arg( child->name() ) );
     deleteChildItem( child );
   }
 
   foreach ( QgsDataItem *item, createChildren() )
   {
-    QgsDebugMsg( QString( "Adding child %1" ).arg( item->name() ) );
     addChildItem( item, true );
   }
 
   QApplication::restoreOverrideCursor();
-
-  QgsDebugMsg( "Leaving." );
 }
 
 QVector<QgsDataItem*> QgsOracleConnectionItem::createChildren()
 {
   QgsDebugMsg( "Entered" );
-  QgsDataSourceURI uri = QgsOracleConn::connUri( mName );
 
   mOwnerMap.clear();
 
@@ -87,12 +80,22 @@ QVector<QgsDataItem*> QgsOracleConnectionItem::createChildren()
 
   if ( !mColumnTypeThread )
   {
-    mColumnTypeThread = new QgsOracleColumnTypeThread( mName, true /* useEstimatedMetadata */ );
+    mColumnTypeThread = new QgsOracleColumnTypeThread( mName,
+        /* useEstimatedMetadata */ true,
+        QgsOracleConn::allowGeometrylessTables( mName ) );
 
     connect( mColumnTypeThread, SIGNAL( setLayerType( QgsOracleLayerProperty ) ),
              this, SLOT( setLayerType( QgsOracleLayerProperty ) ) );
     connect( mColumnTypeThread, SIGNAL( started() ), this, SLOT( threadStarted() ) );
     connect( mColumnTypeThread, SIGNAL( finished() ), this, SLOT( threadFinished() ) );
+
+    if ( QgsOracleRootItem::sMainWindow )
+    {
+      connect( mColumnTypeThread, SIGNAL( progress( int, int ) ),
+               QgsOracleRootItem::sMainWindow, SLOT( showProgress( int, int ) ) );
+      connect( mColumnTypeThread, SIGNAL( progressMessage( QString ) ),
+               QgsOracleRootItem::sMainWindow, SLOT( showStatusMessage( QString ) ) );
+    }
   }
 
   if ( mColumnTypeThread )
@@ -116,15 +119,7 @@ void QgsOracleConnectionItem::threadFinished()
 void QgsOracleConnectionItem::setLayerType( QgsOracleLayerProperty layerProperty )
 {
   QgsDebugMsg( layerProperty.toString() );
-
   QgsOracleOwnerItem *ownerItem = mOwnerMap.value( layerProperty.ownerName, 0 );
-  if ( !ownerItem )
-  {
-    ownerItem = new QgsOracleOwnerItem( this, layerProperty.ownerName, mPath + "/" + layerProperty.ownerName );
-    QgsDebugMsg( "add owner item: " + layerProperty.ownerName );
-    addChildItem( ownerItem, true );
-    mOwnerMap[ layerProperty.ownerName ] = ownerItem;
-  }
 
   for ( int i = 0 ; i < layerProperty.size(); i++ )
   {
@@ -135,11 +130,17 @@ void QgsOracleConnectionItem::setLayerType( QgsOracleLayerProperty layerProperty
       continue;
     }
 
+    if ( !ownerItem )
+    {
+      ownerItem = new QgsOracleOwnerItem( this, layerProperty.ownerName, mPath + "/" + layerProperty.ownerName );
+      QgsDebugMsg( "add owner item: " + layerProperty.ownerName );
+      addChildItem( ownerItem, true );
+      mOwnerMap[ layerProperty.ownerName ] = ownerItem;
+    }
+
     QgsDebugMsg( "ADD LAYER" );
     ownerItem->addLayer( layerProperty.at( i ) );
   }
-
-  QgsDebugMsg( "Leaving" );
 }
 
 bool QgsOracleConnectionItem::equal( const QgsDataItem *other )
@@ -318,8 +319,8 @@ void QgsOracleLayerItem::deleteLayer()
 QString QgsOracleLayerItem::createUri()
 {
   Q_ASSERT( mLayerProperty.size() == 1 );
-
   QgsOracleConnectionItem *connItem = qobject_cast<QgsOracleConnectionItem *>( parent() ? parent()->parent() : 0 );
+
   if ( !connItem )
   {
     QgsDebugMsg( "connection item not found." );
@@ -451,4 +452,11 @@ void QgsOracleRootItem::newConnection()
   {
     refresh();
   }
+}
+
+QMainWindow *QgsOracleRootItem::sMainWindow = 0;
+
+QGISEXTERN void registerGui( QMainWindow *mainWindow )
+{
+  QgsOracleRootItem::sMainWindow = mainWindow;
 }

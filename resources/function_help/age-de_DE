@@ -1,8 +1,8 @@
 <h3>Funktion age()</h3>
-Gibt den Unterschied zwischen zwei Daten zurück.
+Gibt den Unterschied zwischen zwei Daten zur&uuml;ck.
 <br><br>
-Der Unterschied wird als <code>Intervall</code> zurückgegeben
-und muß mit folgenden Funktionen weiterverarbeitet werde, um
+Der Unterschied wird als <code>Intervall</code> zur&uuml;ckgegeben
+und mu&szlig; mit folgenden Funktionen weiterverarbeitet werde, um
 sinnvolle Informationen zu erhalten:
 ><code>year</code>
 <li><code>month</code>

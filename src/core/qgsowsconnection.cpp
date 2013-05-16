@@ -19,31 +19,14 @@
  *                                                                         *
  ***************************************************************************/
 
-//#include "../providers/wms/qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
-//#include "qgisapp.h" //for getThemeIcon
-//#include "qgscontexthelp.h"
-//#include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
-//#include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
-//#include "qgsmanageconnectionsdialog.h"
-//#include "qgsmessageviewer.h"
-//#include "qgsnewhttpconnection.h"
-//#include "qgsnumericsortlistviewitem.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsowsconnection.h"
-//#include "qgsnetworkaccessmanager.h"
 
-//#include <QButtonGroup>
-//#include <QFileDialog>
-//#include <QRadioButton>
-//#include <QDomDocument>
-//#include <QHeaderView>
-//#include <QImageReader>
 #include <QInputDialog>
-//#include <QMap>
 #include <QMessageBox>
 #include <QPicture>
 #include <QSettings>

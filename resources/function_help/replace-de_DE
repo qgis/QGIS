@@ -6,7 +6,7 @@ Liefert eine Zeichenkette in der die angegebene Zeichenkette ersetzt ist.
 
 <p><h4>Argumente</h4>
 <!-- List args for functions here-->
-<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die ursprüngliche Zeichenkette.<br>
+<i>  zeichenkette</i> &rarr; ist eine Zeichenkette.  Die urspr&uuml;ngliche Zeichenkette.<br>
 <i>  vorher</i> &rarr; ist eine Zeichenkette.  Die zu ersetzende Zeichenkette.<br>
 <i>  nacher</i> &rarr; ist eine Zeichenkette.  Die Zeichenkette durch die <i>vorher</i> ersetzen soll<br></p>
 

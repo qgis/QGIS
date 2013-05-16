@@ -102,6 +102,8 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
     }
 
     it.close();
+
+    emit finished();
   }
 }
 

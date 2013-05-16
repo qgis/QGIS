@@ -309,14 +309,14 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! True if a composer map contains a WMS layer
     bool containsWMSLayer() const;
 
-    //! True if a composer contains blend modes
-    bool containsBlendModes() const;
+    //! True if a composer contains advanced effects, such as blend modes
+    bool containsAdvancedEffects() const;
 
     //! Displays a warning because of possible min/max size in WMS
     void showWMSPrintingWarning();
 
     //! Displays a warning because of incompatibility between blend modes and QPrinter
-    void showBlendModePrintingWarning();
+    void showAdvancedEffectsWarning();
 
     //! Changes elements that are not suitable for this project
     void cleanupAfterTemplateRead();

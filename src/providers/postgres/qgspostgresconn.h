@@ -46,14 +46,63 @@ enum QgsPostgresGeometryColumnType
 struct QgsPostgresLayerProperty
 {
   // Postgres/PostGIS layer properties
-  QString                       type;
+  QList<QGis::WkbType>          types;
   QString                       schemaName;
   QString                       tableName;
   QString                       geometryColName;
   QgsPostgresGeometryColumnType geometryColType;
   QStringList                   pkCols;
-  QString                       srid;
+  QList<int>                    srids;
   QString                       sql;
+
+  int size() { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
+
+  QgsPostgresLayerProperty at( int i )
+  {
+    QgsPostgresLayerProperty property;
+
+    Q_ASSERT( i >= 0 && i < size() );
+
+    property.types << types[ i ];
+    property.srids << srids[ i ];
+    property.schemaName      = schemaName;
+    property.tableName       = tableName;
+    property.geometryColName = geometryColName;
+    property.geometryColType = geometryColType;
+    property.pkCols          = pkCols;
+    property.sql             = sql;
+
+    return property;
+  }
+
+#if QGISDEBUG
+  QString toString()
+  {
+    QString typeString;
+    foreach ( QGis::WkbType type, types )
+    {
+      if ( !typeString.isEmpty() )
+        typeString += "|";
+      typeString += QString::number( type );
+    }
+    QString sridString;
+    foreach ( int srid, srids )
+    {
+      if ( !sridString.isEmpty() )
+        sridString += "|";
+      sridString += QString::number( srid );
+    }
+
+    return QString( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7" )
+           .arg( schemaName )
+           .arg( tableName )
+           .arg( geometryColName )
+           .arg( typeString )
+           .arg( sridString )
+           .arg( pkCols.join( "|" ) )
+           .arg( sql );
+  }
+#endif
 };
 
 class QgsPostgresResult

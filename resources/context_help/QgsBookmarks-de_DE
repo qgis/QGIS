@@ -1,11 +1,11 @@
-<h3>R&auml;umliche Lesezeichen</h3>
-Mit r&auml;umliche Lesezeichen kann man sich geographische Positionen merken, um sp&auml;ter dorthin zur&uuml;ckzukehren. 
+<h3>Räumliche Lesezeichen</h3>
+Mit räumliche Lesezeichen kann man sich geographische Positionen merken, um später dorthin zurückzukehren. 
 
 <p>
 <a href="#creating">Ein Lesezeichen anlegen</a><br/>
 <a href="#working">Mit Lesezeichen arbeiten</a><br/>
 <a href="#zooming">Zu einem Lesezeichen zoomen</a><br/>
-<a href="#deleting">Ein Lesezeichen l&ouml;schen</a><br/>
+<a href="#deleting">Ein Lesezeichen löschen</a><br/>
 
 <a name="creating">
 <h4>Ein Lesezeichen anlegen</h4>
@@ -15,22 +15,22 @@ Um ein Lesezeichen anzulegen:
 <li>Zum interessanten Punkt zoomen,
 <li>auf <label>Neues Lesezeichen</label> klicken oder Strg-B eingeben,
 <li>einen beschreibenden Lesezeichennamen eingeben (bis zu 255 Zeichen),
-<li>auf <label>OK</label> klicken, um das Lesezeichen hinzuzuf&uuml;gen oder <label>Abbrechen</label> um den Vorgang abzubrechen. 
+<li>auf <label>OK</label> klicken, um das Lesezeichen hinzuzufügen oder <label>Abbrechen</label> um den Vorgang abzubrechen. 
 </ol>
-Beachten Sie, dass Sie mehrere Lesezeichen gleichen Namens anlegen k&ouml;nnen.
+Beachten Sie, dass Sie mehrere Lesezeichen gleichen Namens anlegen können.
 
 <a name="working">
 <h4>Mit Lesezeichen arbeiten</h4>
 </a>
-Um Ihre Lesezeichen zu bearbeiten, klicken Sie auf <label>Lesezeichen anzeigen</label> oder w&auml;hlen Sie <label>Lesezeichen anzeigen</label> aus dem <label>Ansicht</label>-Men&uuml;. Aus dem Dialog k&ouml;nnen Sie zum Lesezeichen zoomen oder Lesezeichen l&ouml;schen.   Sie k&ouml;nnen den Lesezeichennamen oder dessen Koordinaten jedoch nicht &auml;ndern.
+Um Ihre Lesezeichen zu bearbeiten, klicken Sie auf <label>Lesezeichen anzeigen</label> oder wählen Sie <label>Lesezeichen anzeigen</label> aus dem <label>Ansicht</label>-Menü. Aus dem Dialog können Sie zum Lesezeichen zoomen oder Lesezeichen löschen.   Sie können den Lesezeichennamen oder dessen Koordinaten jedoch nicht ändern.
 
 <a name="zooming">
 <h5>Zu einem Lesezeichen zoomen</h5>
 </a>
-W&auml;hlen Sie das gew&uuml;nschte Lesezeichen aus dem Dialog durch Anklicken und dann auf den <label>Zoom nach</label>.
-<p>Sie k&ouml;nnen auch durch Doppelklick auf das Lesezeichen zoomen.
+Wählen Sie das gewünschte Lesezeichen aus dem Dialog durch Anklicken und dann auf den <label>Zoom nach</label>.
+<p>Sie können auch durch Doppelklick auf das Lesezeichen zoomen.
 
 <a name="deleting">
-<h5>Ein Lesezeichen l&ouml;schen</h5>
+<h5>Ein Lesezeichen löschen</h5>
 </a>
-Um ein Lesezeichen im Dialog zu l&ouml;schen, klicken Sie auf <label>L&ouml;schen</label>.  Best&auml;tigen Sie Ihre Wahl mit <label>OK</label> oder brechen Sie den Vorgang mit <label>Abbrechen</label> ab.
+Um ein Lesezeichen im Dialog zu löschen, klicken Sie auf <label>Löschen</label>.  Bestätigen Sie Ihre Wahl mit <label>OK</label> oder brechen Sie den Vorgang mit <label>Abbrechen</label> ab.

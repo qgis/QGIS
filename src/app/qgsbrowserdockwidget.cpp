@@ -92,8 +92,8 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
   public:
 
     QgsBrowserTreeFilterProxyModel( QObject *parent )
-        : QSortFilterProxyModel( parent ), mModel( 0 ),
-        mFilter( "" ), mPatternSyntax( QRegExp::Wildcard )
+        : QSortFilterProxyModel( parent ), mModel( 0 )
+        , mFilter( "" ), mPatternSyntax( QRegExp::Wildcard )
     {
       setDynamicSortFilter( true );
     }
@@ -266,9 +266,11 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
 void QgsBrowserDockWidget::showEvent( QShowEvent * e )
 {
   // delayed initialization of the model
-  if ( mModel == NULL )
+  if ( !mModel )
   {
     mModel = new QgsBrowserModel( mBrowserView );
+
+    connect( QgisApp::instance(), SIGNAL( newProject() ), mModel, SLOT( updateProjectHome() ) );
 
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
@@ -286,10 +288,6 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
       if ( item && item->type() == QgsDataItem::Favourites )
         mBrowserView->expand( index );
     }
-
-    connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), mModel, SLOT( reload() ) );
-    connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), mModel, SLOT( reload() ) );
-    connect( QgisApp::instance(), SIGNAL( newProject() ), mModel, SLOT( reload() ) );
   }
 
   QDockWidget::showEvent( e );
@@ -380,34 +378,12 @@ void QgsBrowserDockWidget::addFavouriteDirectory()
 
 void QgsBrowserDockWidget::addFavouriteDirectory( QString favDir )
 {
-  QSettings settings;
-  QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
-  favDirs.append( favDir );
-  settings.setValue( "/browser/favourites", favDirs );
-
-  // reload the browser model so that the newly added favourite directory is shown
-  mModel->reload();
+  mModel->addFavouriteDirectory( favDir );
 }
 
 void QgsBrowserDockWidget::removeFavourite()
 {
-  QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
-  QgsDataItem* item = mModel->dataItem( index );
-
-  if ( !item )
-    return;
-  if ( item->type() != QgsDataItem::Directory )
-    return;
-
-  QString favDir  = item->path();
-
-  QSettings settings;
-  QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
-  favDirs.removeAll( favDir );
-  settings.setValue( "/browser/favourites", favDirs );
-
-  // reload the browser model so that the favourite directory is not shown anymore
-  mModel->reload();
+  mModel->removeFavourite( mProxyModel->mapToSource( mBrowserView->currentIndex() ) );
 }
 
 void QgsBrowserDockWidget::refresh()

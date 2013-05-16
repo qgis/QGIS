@@ -175,12 +175,13 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         settings.setValue("pythonConsole/autoCompleteEnabledEditor", QVariant(self.autoCompleteEnabledEditor.isChecked()))
         settings.setValue("pythonConsole/autoCompleteEnabled", QVariant(self.autoCompleteEnabled.isChecked()))
+        settings.setValue("pythonConsole/enableObjectInsp", QVariant(self.enableObjectInspector.isChecked()))
 
     def restoreSettings(self):
         settings = QSettings()
         self.spinBox.setValue(settings.value("pythonConsole/fontsize", 10).toInt()[0])
         self.spinBoxEditor.setValue(settings.value("pythonConsole/fontsizeEditor", 10).toInt()[0])
-        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI").toBool())
+        self.preloadAPI.setChecked(settings.value("pythonConsole/preloadAPI", True).toBool())
         itemTable = settings.value("pythonConsole/userAPI").toStringList()
         for i in range(len(itemTable)):
             self.tableWidget.insertRow(i)
@@ -196,6 +197,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
         self.autoCompleteEnabledEditor.setChecked(settings.value("pythonConsole/autoCompleteEnabledEditor", True).toBool())
         self.autoCompleteEnabled.setChecked(settings.value("pythonConsole/autoCompleteEnabled", True).toBool())
+        self.enableObjectInspector.setChecked(settings.value("pythonConsole/enableObjectInsp", False).toBool())
 
         if settings.value("pythonConsole/autoCompleteSource") == 'fromDoc':
             self.autoCompFromDoc.setChecked(True)

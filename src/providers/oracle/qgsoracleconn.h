@@ -99,7 +99,6 @@ struct QgsOracleLayerProperty
 class QgsOracleConn : public QThread
 {
     Q_OBJECT;
-
   public:
     static QgsOracleConn *connectDb( QgsDataSourceURI uri );
     void disconnect();
@@ -112,13 +111,13 @@ class QgsOracleConn : public QThread
      */
     static QString quotedValue( QVariant value );
 
-    //! Get the list of usable to check
+    //! Get the list of supported layers
     bool supportedLayers( QVector<QgsOracleLayerProperty> &layers,
                           bool geometryTablesOnly,
                           bool userTablesOnly = true,
                           bool allowGeometrylessTables = false );
 
-    void retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata );
+    void retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes );
 
     /** Gets information about the spatial tables */
     bool tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
@@ -151,6 +150,7 @@ class QgsOracleConn : public QThread
     static bool geometryColumnsOnly( QString theConnName );
     static bool allowGeometrylessTables( QString theConnName );
     static bool estimatedMetadata( QString theConnName );
+    static bool onlyExistingTypes( QString theConnName );
     static void deleteConnection( QString theConnName );
     static QString databaseName( QString database, QString host, QString port );
 

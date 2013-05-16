@@ -118,7 +118,7 @@ bool QgsHueSaturationFilter::setInput( QgsRasterInterface* input )
 QgsRasterBlock * QgsHueSaturationFilter::block( int bandNo, QgsRectangle  const & extent, int width, int height )
 {
   Q_UNUSED( bandNo );
-  QgsDebugMsg( "Entered hue/saturation filter block" );
+  QgsDebugMsg( QString( "width = %1 height = %2 extent = %3" ).arg( width ).arg( height ).arg( extent.toString() ) );
 
   QgsRasterBlock *outputBlock = new QgsRasterBlock();
   if ( !mInput )

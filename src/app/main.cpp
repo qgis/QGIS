@@ -47,6 +47,7 @@
 #include <fcntl.h> /*  _O_BINARY */
 #include <windows.h>
 #include <dbghelp.h>
+#include <time.h>
 #ifdef MSVC
 #undef _fmode
 int _fmode = _O_BINARY;
@@ -293,6 +294,9 @@ int main( int argc, char *argv[] )
 #ifdef Q_OS_WIN
   SetUnhandledExceptionFilter( qgisCrashDump );
 #endif
+
+  // initialize random number seed
+  srand( time( NULL ) );
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behaviour' flag setup

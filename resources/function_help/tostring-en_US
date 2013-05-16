@@ -6,8 +6,8 @@ Converts a number to string.
 
 <p><h4>Arguments</h4>
 <!-- List args for functions here-->
-<i>number</i> -> is integer or real.  The number to convert to string.</p>
+<i>number</i> &rarr; is integer or real.  The number to convert to string.</p>
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     tostring(123) -> '123'</p>
+     tostring(123) &rarr; '123'</p>

@@ -6,7 +6,7 @@ Returns arcussinus of a value in radians.
      asin(<i>real</i>)</p>
 
 <p><h4>Arguments</h4>
-<i>real</i> -> sin of an angle.</p>
+<i>real</i> &rarr; sin of an angle.</p>
 
 <p><h4>Example</h4>
-     asin(1.0) -> 1.5707963267949</p>
+     asin(1.0) &rarr; 1.5707963267949</p>

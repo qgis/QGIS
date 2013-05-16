@@ -63,6 +63,8 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
   public:
     QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent = 0 );
 
+    ~QgsFieldsProperties();
+
     /**Adds an attribute to the table (but does not commit it yet)
     @param field the field to add
     @return false in case of a name conflict, true in case of success */

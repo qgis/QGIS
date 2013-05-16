@@ -107,6 +107,7 @@ void TestQgsComposerMap::grid()
   mComposerMap->setGridIntervalY( 2000 );
   mComposerMap->setShowGridAnnotation( true );
   mComposerMap->setGridPenWidth( 0.5 );
+  mComposerMap->setGridPenColor( QColor( 0, 255, 0 ) );
   mComposerMap->setGridAnnotationPrecision( 0 );
   mComposerMap->setGridAnnotationPosition( QgsComposerMap::Disabled, QgsComposerMap::Left );
   mComposerMap->setGridAnnotationPosition( QgsComposerMap::OutsideMapFrame, QgsComposerMap::Right );
@@ -114,6 +115,8 @@ void TestQgsComposerMap::grid()
   mComposerMap->setGridAnnotationPosition( QgsComposerMap::OutsideMapFrame, QgsComposerMap::Bottom );
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Right );
   mComposerMap->setGridAnnotationDirection( QgsComposerMap::Horizontal, QgsComposerMap::Bottom );
+  mComposerMap->setAnnotationFontColor( QColor( 255, 0, 0, 150 ) );
+  mComposerMap->setGridBlendMode( QPainter::CompositionMode_Overlay );
   QgsCompositionChecker checker( "Composer map grid", mComposition, QString( QString( TEST_DATA_DIR ) + QDir::separator() +
                                  "control_images" + QDir::separator() + "expected_composermap" + QDir::separator() + "composermap_landsat_grid.png" ) );
   bool testResult = checker.testComposition();
@@ -200,6 +203,10 @@ void TestQgsComposerMap::uniqueId()
 
 void TestQgsComposerMap::zebraStyle()
 {
+  mComposerMap->setGridPenColor( QColor( 0, 0, 0 ) );
+  mComposerMap->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
+  mComposerMap->setGridBlendMode( QPainter::CompositionMode_SourceOver );
+
   mComposerMap->setGridFrameStyle( QgsComposerMap::Zebra );
   mComposerMap->setGridEnabled( true );
 

@@ -8,7 +8,7 @@ aus einem <code>Intervall</code>
 
 <h4>Argumente</h4>
 <code>date</code> - ist date oder datetime. Das Datum aus dem der Monat bestimmt werden soll.<br>
-<code>Interval</code> - ist Interval. Das Intervall dessen Monatsanzahl zurückgegeben werden soll.
+<code>Interval</code> - ist Interval. Das Intervall dessen Monatsanzahl zur&uuml;ckgegeben werden soll.
 
 <h4>Beispiel</h4>
 <!-- Show example of function.-->

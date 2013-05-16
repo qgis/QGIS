@@ -191,6 +191,7 @@ QgsRasterBlock * QgsPalettedRasterRenderer::block( int bandNo, QgsRectangle  con
     if ( inputBlock->isNoData( i ) )
     {
       outputData[i] = myDefaultColor;
+      continue;
     }
     int val = ( int ) inputBlock->value( i );
     if ( !hasTransparency )

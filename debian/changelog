@@ -14,8 +14,9 @@ qgis (1.9.0) UNRELEASED; urgency=low
   * remove js files and add libjs-jquery/libjs-underscore dependency
   * add spatialite qt sql driver
   * include topology plugin
+  * drop context_help, function_help and qgis_help.db files
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 27 Mar 2013 11:03:31 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 16 May 2013 09:13:35 +0200
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

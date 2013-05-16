@@ -1,0 +1,13 @@
+<h3>Funktion totime()</h3>
+Wandelt eine Zeichenkette in einen Qt-Zeittyp um.
+
+<h4>Syntax</h4>
+<code>totime('zeichenkette')</code><br>
+
+<h4>Argumente</h4>
+<code>zeichenkette</code> - eine Zeichenkette im Qt-Zeitformat.
+<br>
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>totime('12:30:01') &rarr; 12:30:01</code><br>

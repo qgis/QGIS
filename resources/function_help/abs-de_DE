@@ -1,0 +1,11 @@
+<h3>Funktion abs()</h3>
+Gibt den Betrag einer Zahl zur&uuml;ck.<br>
+
+<h4>Syntax</h4>
+abs(<i>wert</i>)<br>
+
+<h4>Argumente</h4>
+<code>wert</code> - ein Zahl.<br>
+
+<h4>Beispiel</h4>
+<code>abs(-2) &rarr; 2</code><br>

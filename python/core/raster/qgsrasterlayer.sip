@@ -113,7 +113,7 @@ class QgsRasterLayer : QgsMapLayer
     void setDataProvider( const QString & provider );
 
     /** \brief Accessor for drawing style */
-    DrawingStyle drawingStyle();
+    //DrawingStyle drawingStyle();
 
     /** \brief Accessor that returns the width of the (unclipped) raster  */
     int width();
@@ -125,7 +125,7 @@ class QgsRasterLayer : QgsMapLayer
     LayerType rasterType();
 
     /** \brief Mutator for drawing style */
-    void setDrawingStyle( const DrawingStyle &  theDrawingStyle );
+    //void setDrawingStyle( const DrawingStyle &  theDrawingStyle );
 
     /**Set raster renderer. Takes ownership of the renderer object*/
     void setRenderer( QgsRasterRenderer* theRenderer /Transfer/ );

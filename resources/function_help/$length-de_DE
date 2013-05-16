@@ -1,5 +1,5 @@
 <h3>Funktion $length</h3>
-Liefert die Länge der aktuellen Geometrie.
+Liefert die L&auml;nge der aktuellen Geometrie.
 
 <h4>Syntax</h4>
 <pre>$length</pre>

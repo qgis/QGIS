@@ -7,9 +7,9 @@ eines <code>Intervalls</code>
 <code>week(Interval)</code><br>
 
 <h4>Argumente</h4>
-<code>date</code> - ist date oder datetime. Das Datum dessen Woche zurückgegeben werden soll.
+<code>date</code> - ist date oder datetime. Das Datum dessen Woche zur&uuml;ckgegeben werden soll.
 <br>
-<code>Interval</code> - ist Interval. Das Intervall dessen Länge in Wochen zurückgegeben werden soll.
+<code>Interval</code> - ist Interval. Das Intervall dessen L&auml;nge in Wochen zur&uuml;ckgegeben werden soll.
 
 <h4>Beispiel</h4>
 <!-- Show example of function.-->

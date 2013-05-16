@@ -43,7 +43,7 @@ Check the <label>Display labels</label> check box to enable labeling.
 <h5>Basic Label options</h5>
 Choose the field to label with.<p>
 Select the use the <label>Font</label> and  <label>Color</label> buttons to set the font and color. You can also change the angle and the placement of the text-label.<p>
-If have labels extending over several lines, check <label>Multiline labels?</label>. QGIS will check for a true line return in your label field and insert the line breaks accordingly. A true line return is a single character \n, (not two separate characters, like a backlash \ followed by the character n).
+If have labels extending over several lines, check <label>Multiline labels?</label>. QGIS will check for a true line return in your label field and insert the line breaks accordingly. A true line return is a single character \n, (not two separate characters, like a backslash \ followed by the character n).
 
 <h5>Placement</h5>
 Change the label placement by selecting one of the radio buttons in the <label>Placement</label> group.

@@ -6,7 +6,7 @@ Returns square root of a value
      sqrt(<i>real</i>)</p>
 
 <p><h4>Arguments</h4>
-<i>real</i> -> number.</p>
+<i>real</i> &rarr; number.</p>
 
 <p><h4>Example</h4>
-     sqrt(9) -> 3</p>
+     sqrt(9) &rarr; 3</p>

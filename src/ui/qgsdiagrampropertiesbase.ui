@@ -428,7 +428,7 @@
                       <item>
                        <widget class="QLineEdit" name="mValueLineEdit">
                         <property name="toolTip">
-                         <string>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the choosen &quot;Size unit&quot;.
+                         <string>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the chosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</string>
                         </property>
                        </widget>

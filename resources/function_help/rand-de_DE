@@ -1,0 +1,15 @@
+<h3>Funktion rand()</h3>
+Liefert eine Zufallszahl zwischen den Argumenten zur&uuml;ck (inklusiv).
+<br>
+Dies Funktion hat zwei Argumente.
+<h4>Syntax</h4>
+<code>rand(min, max)</code><br>
+
+<h4>Argumente</h4>
+<code>min</code> - eine ganze Zahl, die die kleinste Zufallszahl angibt.<br>
+<code>max</code> - eine ganze Zahl, die die gr&ouml;&szlig;te Zufallszahl angibt.<br>
+<br>
+
+<h4>Beispiel</h4>
+<!-- Show example of function.-->
+<code>rand(1, 10) &rarr; 8</code><br>

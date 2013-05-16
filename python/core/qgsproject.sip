@@ -90,13 +90,10 @@ class QgsProject : QObject
        - Registers maplayers
 
        @note it's presumed that the caller has already reset the map canvas, map registry, and legend
-
-       @exception
-
      */
     //@{
     bool read( const QFileInfo & file );
-    bool read( );
+    bool read();
     //@}
 
 
@@ -126,7 +123,7 @@ class QgsProject : QObject
      */
     //@{
     bool write( const QFileInfo & file );
-    bool write( );
+    bool write();
     //@}
 
 
@@ -252,7 +249,8 @@ class QgsProject : QObject
 
     /**Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
-      @note: added in version 1.8*/
+      @note: added in version 1.8
+     */
     /*
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
@@ -276,6 +274,11 @@ class QgsProject : QObject
         @note added in version 1.9*/
     bool topologicalEditing() const;
 
+    /** Return project's home path
+        @return home path of project (or QString::null if not set)
+        @note added in version 2.0 */
+    QString homePath() const;
+
   protected:
 
     /** Set error message from read/write operation
@@ -290,7 +293,6 @@ class QgsProject : QObject
     // bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
   signals:
-
     //! emitted when project is being read
     void readProject( const QDomDocument & );
 
@@ -298,24 +300,27 @@ class QgsProject : QObject
     void writeProject( QDomDocument & );
 
     /**
-     * Emitted, after the basic initialisation of a layer from the project 
+     * Emitted, after the basic initialisation of a layer from the project
      * file is done. You can use this signal to read additional information
      * from the project file.
      *
      * @param mapLayer  The map layer which is being initialized
      * @param layerNode The layer node from the project file
      */
-    void readMapLayer( QgsMapLayer* mapLayer, const QDomElement& layerNode );
+    void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
 
     /**
      * Emitted, when a layer is being saved. You can use this method to save
      * additional information to the layer.
      *
      * @param mapLayer  The map layer which is being initialized
-     * @param layerNode The layer node from the project file
+     * @param layerElem The layer element from the project file
      * @param doc The document
      */
-    void writeMapLayer( QgsMapLayer* mapLayer, QDomElement& layerElem,  QDomDocument& doc );
+    void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
+
+    //! emitted when the project file has been written and closed
+    void projectSaved();
 
     //! emitted when an old project file is read.
     void oldProjectVersionWarning( QString );
@@ -324,6 +329,8 @@ class QgsProject : QObject
     // @param i current layer
     // @param n number of layers
     void layerLoaded( int i, int n );
+
+    void loadingLayer( QString );
 
     void snapSettingsChanged();
 
