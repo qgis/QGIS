@@ -1,4 +1,4 @@
-﻿<h3>SQL Anywhereテーブルの追加</h3>
+<h3>SQL Anywhereテーブルの追加</h3>
 このダイアログではSQL Anywhereレイヤ(ジオメトリカラムを含んだテーブル)をQGISマップキャンバスに追加することができます.
 <p>
 <a href="#connect">接続</a><br/>
