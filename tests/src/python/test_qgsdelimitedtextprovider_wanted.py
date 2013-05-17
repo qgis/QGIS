@@ -1232,7 +1232,7 @@ def test_028_substring_test():
 
 def test_029_file_watcher():
     wanted={}
-    wanted['uri']=u'file://file?geomType=none&type=csv'
+    wanted['uri']=u'file://file?geomType=none&type=csv&watchFile=yes'
     wanted['data']={
         3L: {
             'id': u'2',

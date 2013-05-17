@@ -138,7 +138,7 @@ void QgsRasterProjector::calc()
   delete[] pHelperBottom;
   pHelperBottom = 0;
 
-  // Get max source resolution if possible
+  // Get max source resolution and extent if possible
   mMaxSrcXRes = 0;
   mMaxSrcYRes = 0;
   if ( mInput )
@@ -148,6 +148,11 @@ void QgsRasterProjector::calc()
     {
       mMaxSrcXRes = provider->extent().width() / provider->xSize();
       mMaxSrcYRes = provider->extent().height() / provider->ySize();
+    }
+    // Get source extent
+    if ( mExtent.isEmpty() )
+    {
+      mExtent = provider->extent();
     }
   }
 
@@ -254,35 +259,38 @@ void QgsRasterProjector::calcSrcExtent()
   // Expand a bit to avoid possible approx coords falling out because of representation error?
 
   // If mMaxSrcXRes, mMaxSrcYRes are defined (fixed src resolution)
-  // align extent to src resolution to avoid jumping reprojected pixels
-  // because of shifting resampled grid
+  // align extent to src resolution to avoid jumping of reprojected pixels
+  // when shifting resampled grid.
   // Important especially if we are over mMaxSrcXRes, mMaxSrcYRes limits
+  // Note however, that preceeding filters (like resampler) may read data
+  // on different resolution.
 
   QgsDebugMsg( "mSrcExtent = " + mSrcExtent.toString() );
-
-  if ( mMaxSrcXRes > 0 )
+  QgsDebugMsg( "mExtent = " + mExtent.toString() );
+  if ( !mExtent.isEmpty() )
   {
-    // with floor/ceil it should work correctly also for mSrcExtent.xMinimum() < mExtent.xMinimum()
-    double col = floor(( mSrcExtent.xMinimum() - mExtent.xMinimum() ) / mMaxSrcXRes );
-    double x = mExtent.xMinimum() + col * mMaxSrcXRes;
-    mSrcExtent.setXMinimum( x );
+    if ( mMaxSrcXRes > 0 )
+    {
+      // with floor/ceil it should work correctly also for mSrcExtent.xMinimum() < mExtent.xMinimum()
+      double col = floor(( mSrcExtent.xMinimum() - mExtent.xMinimum() ) / mMaxSrcXRes );
+      double x = mExtent.xMinimum() + col * mMaxSrcXRes;
+      mSrcExtent.setXMinimum( x );
 
-    col = ceil(( mSrcExtent.xMaximum() - mExtent.xMinimum() ) / mMaxSrcXRes );
-    x = mExtent.xMinimum() + col * mMaxSrcXRes;
-    mSrcExtent.setXMaximum( x );
+      col = ceil(( mSrcExtent.xMaximum() - mExtent.xMinimum() ) / mMaxSrcXRes );
+      x = mExtent.xMinimum() + col * mMaxSrcXRes;
+      mSrcExtent.setXMaximum( x );
+    }
+    if ( mMaxSrcYRes > 0 )
+    {
+      double row = floor(( mExtent.yMaximum() - mSrcExtent.yMaximum() ) / mMaxSrcYRes );
+      double y = mExtent.yMaximum() - row * mMaxSrcYRes;
+      mSrcExtent.setYMaximum( y );
+
+      row = ceil(( mExtent.yMaximum() - mSrcExtent.yMinimum() ) / mMaxSrcYRes );
+      y = mExtent.yMaximum() - row * mMaxSrcYRes;
+      mSrcExtent.setYMinimum( y );
+    }
   }
-  if ( mMaxSrcYRes > 0 )
-  {
-    double row = floor(( mExtent.yMaximum() - mSrcExtent.yMaximum() ) / mMaxSrcYRes );
-    double y = mExtent.yMaximum() - row * mMaxSrcYRes;
-    mSrcExtent.setYMaximum( y );
-
-    row = ceil(( mExtent.yMaximum() - mSrcExtent.yMinimum() ) / mMaxSrcYRes );
-    y = mExtent.yMaximum() - row * mMaxSrcYRes;
-    mSrcExtent.setYMinimum( y );
-  }
-
-
   QgsDebugMsg( "mSrcExtent = " + mSrcExtent.toString() );
 }
 
@@ -427,8 +435,13 @@ void QgsRasterProjector::nextHelper()
 void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
 {
   if ( mApproximate )
+  {
     approximateSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
-  else preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
+  }
+  else
+  {
+    preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
+  }
 }
 
 void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
@@ -588,7 +601,7 @@ void QgsRasterProjector::calcCP( int theRow, int theCol )
   {
     Q_UNUSED( e );
     // Caught an error in transform
-    mCPLegalMatrix[theRow][theCol] = true;
+    mCPLegalMatrix[theRow][theCol] = false;
   }
 }
 
@@ -725,7 +738,6 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     return new QgsRasterBlock();
   }
 
-  //void * inputData = mInput->block( bandNo, srcExtent(), srcCols(), srcRows() );
   QgsRasterBlock *inputBlock = mInput->block( bandNo, srcExtent(), srcCols(), srcRows() );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
@@ -769,7 +781,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
     for ( int j = 0; j < width; ++j )
     {
       srcRowCol( i, j, &srcRow, &srcCol );
-      size_t srcIndex = srcRow * mSrcCols + srcCol;
+      size_t srcIndex = ( size_t )srcRow * mSrcCols + srcCol;
       QgsDebugMsgLevel( QString( "row = %1 col = %2 srcRow = %3 srcCol = %4" ).arg( i ).arg( j ).arg( srcRow ).arg( srcCol ), 5 );
 
       // isNoData() may be slow so we check doNoData first
@@ -779,17 +791,17 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
         continue ;
       }
 
-      size_t destIndex = i * width + j;
+      size_t destIndex = ( size_t )i * width + j;
       char *srcBits = inputBlock->bits( srcIndex );
       char *destBits = outputBlock->bits( destIndex );
       if ( !srcBits )
       {
-        QgsDebugMsg( "Cannot get input block data." );
+        QgsDebugMsg( QString( "Cannot get input block data: row = %1 col = %2" ).arg( i ).arg( j ) );
         continue;
       }
       if ( !destBits )
       {
-        QgsDebugMsg( "Cannot set output block data." );
+        QgsDebugMsg( QString( "Cannot set output block data: srcRow = %1 srcCol = %2" ).arg( srcRow ).arg( srcCol ) );
         continue;
       }
       memcpy( destBits, srcBits, pixelSize );

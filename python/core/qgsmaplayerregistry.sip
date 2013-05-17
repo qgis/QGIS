@@ -26,7 +26,7 @@ class QgsMapLayerRegistry : QObject
     QList<QgsMapLayer *> mapLayersByName( QString layerName );
 
     //! Retrieve the mapLayers collection (mainly intended for use by projection)
-    QMap<QString, QgsMapLayer*> & mapLayers();
+    const QMap<QString, QgsMapLayer*> & mapLayers();
 
     /**
      * @brief

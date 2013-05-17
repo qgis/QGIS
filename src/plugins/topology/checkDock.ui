@@ -6,44 +6,65 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>436</width>
-    <height>439</height>
+    <width>307</width>
+    <height>280</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Topology Checker</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QGridLayout" name="gridLayout">
+   <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QPushButton" name="mValidateAllButton">
-          <property name="text">
-           <string>Validate All</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="mValidateExtentButton">
-          <property name="text">
-           <string>Validate Extent</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QTableView" name="mErrorTableView"/>
       </item>
+     </layout>
+    </item>
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <widget class="QPushButton" name="mToggleRubberbands">
+       <widget class="QPushButton" name="mConfigureButton">
         <property name="text">
-         <string>Toggle Error Markers</string>
+         <string>Configure</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="2" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QPushButton" name="mValidateAllButton">
+        <property name="text">
+         <string>Validate All</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QTableView" name="mErrorTableView"/>
+       <widget class="QPushButton" name="mValidateExtentButton">
+        <property name="text">
+         <string>Validate Extent</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="3" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QCheckBox" name="mToggleRubberband">
+        <property name="toolTip">
+         <string>Show topology errors</string>
+        </property>
+        <property name="text">
+         <string>Show errors</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="mComment">
@@ -52,32 +73,25 @@
         </property>
        </widget>
       </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+     </layout>
+    </item>
+    <item row="4" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QComboBox" name="mFixBox">
         <item>
-         <widget class="QPushButton" name="mConfigureButton">
-          <property name="text">
-           <string>Configure</string>
-          </property>
-         </widget>
+         <property name="text">
+          <string>Select automatic fix</string>
+         </property>
         </item>
-        <item>
-         <widget class="QComboBox" name="mFixBox">
-          <item>
-           <property name="text">
-            <string>Select automatic fix</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="mFixButton">
-          <property name="text">
-           <string>Fix!</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="mFixButton">
+        <property name="text">
+         <string>Fix!</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

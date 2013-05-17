@@ -384,7 +384,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
  *
  *   Determines whether the provider generates a spatial index.  The default is no.
  *
- * -useWatcher=(yes|no)
+ * -watchFile=(yes|no)
  *
  *   Defines whether the file will be monitored for changes. The default is
  *   to monitor for changes.
