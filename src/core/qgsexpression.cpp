@@ -1231,7 +1231,7 @@ QVariant fcnRampColor( const QVariantList &values, QgsFeature *, QgsExpression *
   }
   double value = getDoubleValue( values.at( 1 ), parent );
   QColor color = mRamp->color( value );
-  return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
+  return QgsSymbolLayerV2Utils::encodeColor( color );
 }
 
 static QVariant fcnColorHsl( const QVariantList &values, QgsFeature *, QgsExpression *parent )
