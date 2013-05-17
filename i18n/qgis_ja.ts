@@ -35264,12 +35264,12 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="330"/>
         <source>Area</source>
-        <translation>領域</translation>
+        <translation>面積</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="333"/>
         <source>Perimeter</source>
-        <translation>周囲</translation>
+        <translation>周長</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="433"/>
@@ -35284,7 +35284,7 @@ not displayed</source>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="264"/>
         <source>feature id</source>
-        <translation>地物id</translation>
+        <translation>地物ID</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmaptoolidentify.cpp" line="107"/>
