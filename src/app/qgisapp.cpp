@@ -624,8 +624,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
     if ( !myPaths.isEmpty() )
     {
-        QStringList myPathList = myPaths.split( "|" );
-        QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
+      QStringList myPathList = myPaths.split( "|" );
+      QgsPluginRegistry::instance()->restoreSessionPlugins( myPathList );
     }
   }
 
@@ -981,7 +981,7 @@ void QgisApp::createActions()
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
   connect( mActionAddWcsLayer, SIGNAL( triggered() ), this, SLOT( addWcsLayer() ) );
   connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
-  connect( mActionAddDelimitedText, SIGNAL( triggered()), this, SLOT(addDelimitedTextLayer()));
+  connect( mActionAddDelimitedText, SIGNAL( triggered() ), this, SLOT( addDelimitedTextLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionOpenFieldCalc, SIGNAL( triggered() ), this, SLOT( fieldCalculator() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
@@ -2934,7 +2934,11 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
     else
     {
       QgsMessageLog::logMessage( tr( "%1 is an invalid layer - not loaded" ).arg( layerPath ) );
-      QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( layerPath ) );
+      QLabel* msgLabel = new QLabel( tr( "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info." ).arg( layerPath ), messageBar() );
+      msgLabel->setWordWrap( true );
+      connect( msgLabel, SIGNAL( linkActivated( QString ) ), mLogDock, SLOT( show() ) );
+      messageBar()->pushWidget( msgLabel,
+                                QgsMessageBar::WARNING );
       delete layer;
     }
     //qWarning("incrementing iterator");
@@ -4275,22 +4279,22 @@ void QgisApp::labeling()
 
 void QgisApp::fieldCalculator()
 {
-    if ( mMapCanvas && mMapCanvas->isDrawing() )
-    {
-      return;
-    }
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
 
-    QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
-    if ( !myLayer )
-    {
-      return;
-    }
+  QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  if ( !myLayer )
+  {
+    return;
+  }
 
-    QgsFieldCalculator calc( myLayer );
-    if ( calc.exec() )
-    {
-        mMapCanvas->refresh();
-    }
+  QgsFieldCalculator calc( myLayer );
+  if ( calc.exec() )
+  {
+    mMapCanvas->refresh();
+  }
 }
 
 void QgisApp::attributeTable()
