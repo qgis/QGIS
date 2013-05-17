@@ -142,6 +142,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   // set the primary key
   if ( !determinePrimaryKey() )
   {
+    QgsMessageLog::logMessage( tr( "PostgreSQL layer has no primary key." ), tr( "PostGIS" ) );
     mValid = false;
     disconnectDb();
     return;
@@ -200,6 +201,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     }
     break;
     case pktUnknown:
+      QgsMessageLog::logMessage( tr( "PostgreSQL layer has unknown primary key type." ), tr( "PostGIS" ) );
       mValid = false;
       break;
   }
