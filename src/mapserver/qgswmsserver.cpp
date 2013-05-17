@@ -1138,10 +1138,10 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
 int QgsWMSServer::readLayersAndStyles( QStringList& layersList, QStringList& stylesList ) const
 {
   //get layer and style lists from the parameters trying LAYERS and LAYER as well as STYLE and STYLES for GetLegendGraphic compatibility
-  layersList = mParameterMap.value( "LAYER" ).split( "," );
-  layersList = layersList + mParameterMap.value( "LAYERS" ).split( "," );
-  stylesList = mParameterMap.value( "STYLE" ).split( "," );
-  stylesList = stylesList + mParameterMap.value( "STYLES" ).split( "," );
+  layersList = mParameterMap.value( "LAYER" ).split( ",", QString::SkipEmptyParts );
+  layersList = layersList + mParameterMap.value( "LAYERS" ).split( ",", QString::SkipEmptyParts );
+  stylesList = mParameterMap.value( "STYLE" ).split( ",", QString::SkipEmptyParts );
+  stylesList = stylesList + mParameterMap.value( "STYLES" ).split( ",", QString::SkipEmptyParts );
 
   return 0;
 }
