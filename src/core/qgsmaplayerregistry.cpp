@@ -169,7 +169,7 @@ void QgsMapLayerRegistry::reloadAllLayers()
   }
 }
 
-QMap<QString, QgsMapLayer*> & QgsMapLayerRegistry::mapLayers()
+const QMap<QString, QgsMapLayer*>& QgsMapLayerRegistry::mapLayers()
 {
   return mMapLayers;
 }

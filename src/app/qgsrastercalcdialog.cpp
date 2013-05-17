@@ -104,7 +104,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
 
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
-  QMap<QString, QgsMapLayer*>& layers = QgsMapLayerRegistry::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer*>& layers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::const_iterator layerIt = layers.constBegin();
 
   bool firstLayer = true;
