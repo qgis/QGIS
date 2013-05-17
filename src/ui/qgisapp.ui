@@ -160,6 +160,7 @@
     <addaction name="mActionAddLayerSeparator"/>
     <addaction name="mActionAddWcsLayer"/>
     <addaction name="mActionAddWfsLayer"/>
+    <addaction name="mActionAddDelimitedText"/>
     <addaction name="separator"/>
     <addaction name="mActionCopyStyle"/>
     <addaction name="mActionPasteStyle"/>
@@ -287,6 +288,7 @@
    <addaction name="mActionAddWmsLayer"/>
    <addaction name="mActionAddWcsLayer"/>
    <addaction name="mActionAddWfsLayer"/>
+   <addaction name="mActionAddDelimitedText"/>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionRemoveLayer"/>
   </widget>
@@ -2085,6 +2087,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Open Field Calculator</string>
+   </property>
+  </action>
+  <action name="mActionAddDelimitedText">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddDelimitedTextLayer.png</normaloff>:/images/themes/default/mActionAddDelimitedTextLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Delimited Text Layer...</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Delimited Text Layer</string>
    </property>
   </action>
  </widget>

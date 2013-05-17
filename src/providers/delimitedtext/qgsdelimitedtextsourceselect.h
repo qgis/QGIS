@@ -19,6 +19,7 @@
 #include "qgscontexthelp.h"
 #include "qgisgui.h"
 
+class QButtonGroup;
 class QgisInterface;
 class QgsDelimitedTextFile;
 
@@ -53,6 +54,8 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     int mBadRowCount;
     QString mPluginKey;
     QString mLastFileType;
+    QButtonGroup *bgFileFormat;
+    QButtonGroup *bgGeomType;
 
   private slots:
     void on_buttonBox_accepted();
