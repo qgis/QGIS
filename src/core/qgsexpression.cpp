@@ -1202,7 +1202,7 @@ static QVariant fcnColorRgb( const QVariantList &values, QgsFeature *, QgsExpres
     color = QColor( 0, 0, 0 );
   }
 
-  return color.name();
+  return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
 static QVariant fncColorRgba( const QVariantList &values, QgsFeature *, QgsExpression *parent )
@@ -1231,7 +1231,7 @@ QVariant fcnRampColor( const QVariantList &values, QgsFeature *, QgsExpression *
   }
   double value = getDoubleValue( values.at( 1 ), parent );
   QColor color = mRamp->color( value );
-  return color.name();
+  return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
 static QVariant fcnColorHsl( const QVariantList &values, QgsFeature *, QgsExpression *parent )
@@ -1251,7 +1251,7 @@ static QVariant fcnColorHsl( const QVariantList &values, QgsFeature *, QgsExpres
     color = QColor( 0, 0, 0 );
   }
 
-  return color.name();
+  return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
 static QVariant fncColorHsla( const QVariantList &values, QgsFeature *, QgsExpression *parent )
@@ -1291,7 +1291,7 @@ static QVariant fcnColorHsv( const QVariantList &values, QgsFeature *, QgsExpres
     color = QColor( 0, 0, 0 );
   }
 
-  return color.name();
+  return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
 static QVariant fncColorHsva( const QVariantList &values, QgsFeature *, QgsExpression *parent )
@@ -1333,7 +1333,7 @@ static QVariant fcnColorCmyk( const QVariantList &values, QgsFeature *, QgsExpre
     color = QColor( 0, 0, 0 );
   }
 
-  return color.name();
+  return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
 static QVariant fncColorCmyka( const QVariantList &values, QgsFeature *, QgsExpression *parent )
