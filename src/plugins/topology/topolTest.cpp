@@ -77,11 +77,11 @@ topolTest::topolTest( QgisInterface* qgsIface )
   mTopologyRuleMap[QObject::tr( "must not have gaps" )].useSpatialIndex = false;
   mTopologyRuleMap[QObject::tr( "must not have gaps" )].layer1SupportedTypes << QGis::Polygon;
 
-  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].f = &topolTest::checkMultipart;
-  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].useSecondLayer = false;
-  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].useTolerance = false;
-  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].useSpatialIndex = false;
-  mTopologyRuleMap[QObject::tr( "Must not have multi-part geometries" )].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
+  mTopologyRuleMap[QObject::tr( "must not have multi-part geometries" )].f = &topolTest::checkMultipart;
+  mTopologyRuleMap[QObject::tr( "must not have multi-part geometries" )].useSecondLayer = false;
+  mTopologyRuleMap[QObject::tr( "must not have multi-part geometries" )].useTolerance = false;
+  mTopologyRuleMap[QObject::tr( "must not have multi-part geometries" )].useSpatialIndex = false;
+  mTopologyRuleMap[QObject::tr( "must not have multi-part geometries" )].layer1SupportedTypes << QGis::Point << QGis::Polygon << QGis::Line;
 
   // two layer tests
   mTopologyRuleMap[QObject::tr( "must not overlap with" )].f = &topolTest::checkOverlapWithLayer;
