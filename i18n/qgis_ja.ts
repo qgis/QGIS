@@ -39913,12 +39913,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="714"/>
         <source>Create new project from default project</source>
-        <translation>規定のプロジェクトから新プロジェクトを作成する</translation>
+        <translation>既定のプロジェクトから新プロジェクトを作成する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="739"/>
         <source>Set current project as default</source>
-        <translation>現在のプロジェクトを規定のプロジェクトとして指定する</translation>
+        <translation>現在のプロジェクトを既定のプロジェクトとして指定する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="746"/>
@@ -40130,7 +40130,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2733"/>
         <source>Insert default scales</source>
-        <translation>規定の縮尺をいれる</translation>
+        <translation>既定の縮尺をいれる</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2760"/>
@@ -45059,7 +45059,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="109"/>
         <source>Identify layers</source>
-        <translation>レイヤ情報</translation>
+        <translation>情報検索レイヤ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="121"/>
@@ -60335,7 +60335,7 @@ On this tab you can choose on which layers the identify tool will work.
 
 &lt;a href=&quot;#general&quot;&gt;一般情報タブ&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#crs&quot;&gt;座標参照系(CRS) タブ&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#layers&quot;&gt;情報検索タブ&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#layers&quot;&gt;情報検索レイヤタブ&lt;/a&gt;&lt;br/&gt;
 
 &lt;a name=&quot;general&quot;&gt;
 &lt;h4&gt;一般情報タブ&lt;/h4&gt;
@@ -60347,11 +60347,12 @@ On this tab you can choose on which layers the identify tool will work.
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;保存パス&lt;/label&gt;&lt;/td&gt;&lt;td&gt;ファイルの保存を絶対パスで記録するか相対パスで記録するかの指定.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;レイヤ単位&lt;/label&gt;&lt;/td&gt;&lt;td&gt;プロジェクト内のレイヤで利用する単位を選択して下さい.&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;label&gt;精度&lt;/label&gt;&lt;/td&gt;&lt;td&gt;ステータスバーに表示する座標の精度を手動で設定します. マウスがマップキャンバスの上を動く度にステータスバーに表示されている座標が指定された精度で更新されます. デフォルトで自動的に設定される精度は地図の単位に基づいています.&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;&lt;label&gt;デジタイズ&lt;/label&gt;&lt;/td&gt;&lt;td&gt;The option &lt;label&gt;トポロジカル編集を有効にする&lt;/label&gt;オプションは境界線を共有するポリゴンモザイクの編集やメインテナンスを可能にします. 共通境界線を構成する頂点の編集結果は両方の境界線を更新します.&lt;p&gt;
+&lt;tr&gt;&lt;td&gt;&lt;label&gt;デジタイズ&lt;/label&gt;&lt;/td&gt;&lt;td&gt; &lt;label&gt;トポロジカル編集を有効にする&lt;/label&gt;オプションは境界線を共有するポリゴンモザイクの編集やメインテナンスを可能にします. 共通境界線を構成する頂点の編集結果は両方の境界線を更新します.&lt;p&gt;
 &lt;label&gt;新ポリゴンの交差を禁止する&lt;/label&gt;を選択すると共通境界線の頂点をデジタイズすることを回避します. ダイアログウィンドウでは新しいポリゴンが調整されるレイヤをチェックして指定します. 新しいポリゴンを描いた時に既存のポリゴンとオーバーラップする場合は自動的に削除されます. &lt;p&gt;
 &lt;label&gt;スナップオプション&lt;/label&gt; ではスナップ許容値をピクセルまたは地図単位で指定します.またスナップモードとして: &lt;label&gt;頂点&lt;/label&gt;, &lt;label&gt;線分&lt;/label&gt;, &lt;label&gt;頂点と線分&lt;/label&gt; を各レイヤ別に指定することができます.&lt;/td&gt;&lt;/tr&gt;
 
 &lt;/table&gt;
+注: &lt;label&gt;デジタイズ&lt;/label&gt;は新しいバージョンのQGISではスナップオプションダイアログに移動しました.
 &lt;a name=&quot;crs&quot;&gt;
 &lt;h4&gt;座標参照系(CRS) タブ&lt;/h4&gt;
 &lt;/a&gt;
@@ -60359,14 +60360,14 @@ On this tab you can choose on which layers the identify tool will work.
 &lt;p&gt;
 &apos;オンザフライ&apos; CRS 変換を利用する場合は&lt;label&gt;&apos;オンザフライ&apos; CRS変換を有効にする&lt;/label&gt;チェックボックスをクリックして下さい. それからプロジェクト（マップキャンバス）の投影法を地理座標系または投影座標系のリストの中から選択して下さい.
 &lt;p&gt;
-座標参照系は名前,EPSGコードまたはQGIS IDを利用して&lt;label&gt;Find&lt;/label&gt; ボタンをクリックすると検索できます.
+座標参照系は名前,EPSGコードまたはQGIS IDを入力すると検索できます.
 &lt;p&gt;
 最近利用した座標参照系のリストが下部に表示されるので素早く使うことができます.
 
 &lt;a name=&quot;layers&quot;&gt;
-&lt;h4&gt;情報検索タブ&lt;/h4&gt;
+&lt;h4&gt;情報検索レイヤタブ&lt;/h4&gt;
 &lt;/a&gt;
-このタブで情報検索ツールが動作するレイヤを選択できます.
+このタブで情報検索(地物情報表示)ツールが動作するレイヤを選択できます.
 </translation>
     </message>
     <message>
@@ -61282,7 +61283,7 @@ Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 &lt;h4&gt;タイプ&lt;/h4&gt;
 作成したいレイヤのタイプを選択して下さい. 
 &lt;h4&gt;EPSG SRID&lt;/h4&gt;
-空間参照ID(SRID)を特定するためにEPSG番号を入力して下さい. デフォルトではWGS84のSRIDが入力されています. Click on &lt;label&gt;SRID検索&lt;/label&gt;ボタンをクリックするとあなたが必要とする座標参照システムに変換することができます. 指定SRIDはあなたのSpatialiteデータベースのspatial_ref_sysに含まれている必要があります. SRIDの検索には名前またはIDの部分マッチが利用できます.
+空間参照ID(SRID)を特定するためにEPSG番号を入力して下さい. デフォルトではWGS84のSRIDが入力されています. &lt;label&gt;SRID検索&lt;/label&gt;ボタンをクリックするとあなたが必要とする座標参照システムに変換することができます. 指定SRIDはあなたのSpatialiteデータベースのspatial_ref_sysに含まれている必要があります. SRIDの検索には名前またはIDの部分マッチが利用できます.
 &lt;h4&gt;自動インクリメント主キーを作成する&lt;/h4&gt;
 このチェックボックスをチェックすると新しいレイヤに主キーを追加します.このキーフィールドはオートインクリメントになります,つまりこのレイヤに地物を追加する時に主キーの値を入力する必要が無いことを意味します .
 &lt;h4&gt;新しい属性&lt;/h4&gt;
@@ -62070,32 +62071,31 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 &lt;/a&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-&lt;label&gt;プラグイン&lt;/label&gt;タブにはすべてのローカルにインストールされているPythonプラグインをリストがある他にリモートリポジトリにあるプラグインのリストもあります.それぞれのプラグインはどちらにも所属できます:
+&lt;label&gt;プラグイン&lt;/label&gt;タブにはローカルにインストールされているすべてのPythonプラグインとリモートリポジトリにあるプラグインのリストがあります.それぞれのプラグインは次のような状態を持ちます:
 &lt;dl&gt;
-&lt;dt&gt;未インストール&lt;/dt&gt;&lt;dd&gt;これはプラグインがリポジトリに存在するけどインストールされていないことを示します. これをインストールするためにはリストでプラグインをクリックして選択した後に&lt;label&gt;プラグインをインストール&lt;/label&gt; ボタンをクリックしてください.&lt;/dd&gt;
-&lt;dt&gt;最新&lt;/dt&gt;&lt;dd&gt;このラベルはリポジトリ内のプラグイン最新で利用可能であることを示します.&lt;/dd&gt;
-&lt;dt&gt;インストール済み&lt;/dt&gt;&lt;dd&gt;この表示はプラグインがすでにインストールされていることを示します. もしどこかのリポジトリからインストール可能な場合は&lt;label&gt;プラグインを再インストール&lt;/label&gt;ボタンが有効になります. もしインストール可能なバージョンがインストールされているバージョンより古い場合は &lt;label&gt;プラグインをダウングレード&lt;/label&gt;ボタンが代わりに表示されます.&lt;/dd&gt;
-&lt;dt&gt;更新可能&lt;/dt&gt;&lt;dd&gt;この表示は該当プラグインがインストールされているけれどもリポジトリには更新されたバージョンがあることを示しています. 
-この場合 &lt;label&gt;プラグインをアップグレード&lt;/label&gt; ボタンが有効になります.&lt;/dd&gt;
-&lt;dt&gt;無効&lt;/dt&gt;&lt;dd&gt;この表示はプラグインがインストールされているけれども無効なのか壊れていることを示します.理由はプラグインの記述に説明があるはずです.&lt;/dd&gt;
+&lt;dt&gt;未インストール&lt;/dt&gt;&lt;dd&gt;これはプラグインがリポジトリに存在するがインストールされていないことを示します. これをインストールするためにはリストでプラグインをクリックして選択した後に&lt;label&gt;プラグインをインストール&lt;/label&gt; ボタンをクリックしてください.&lt;/dd&gt;
+&lt;dt&gt;最新&lt;/dt&gt;&lt;dd&gt;これはリポジトリ内のプラグインが新しく利用可能になったことを示します.&lt;/dd&gt;
+&lt;dt&gt;インストール済み&lt;/dt&gt;&lt;dd&gt;この表示はプラグインがすでにインストールされていることを示します. もしリポジトリからインストール可能な場合は&lt;label&gt;プラグインを再インストール&lt;/label&gt;ボタンが有効になります. もしインストール可能なバージョンがインストールされているバージョンより古い場合は &lt;label&gt;プラグインをダウングレード&lt;/label&gt;ボタンが代わりに表示されます.&lt;/dd&gt;
+&lt;dt&gt;更新可能&lt;/dt&gt;&lt;dd&gt;この表示は該当プラグインがインストールされているがリポジトリには更新されたバージョンがあることを示しています. この場合 &lt;label&gt;プラグインをアップグレード&lt;/label&gt; ボタンが有効になります.&lt;/dd&gt;
+&lt;dt&gt;無効&lt;/dt&gt;&lt;dd&gt;この表示はプラグインがインストールされているが無効か壊れていることを示します.その理由はプラグインの記述欄に説明されています.&lt;/dd&gt;
 &lt;/dl&gt;
 &lt;/p&gt;
 
 プラグインをインストールするためにはリストで選択した後に&lt;label&gt;プラグインをインストール&lt;/label&gt;ボタンをクリックして下さい. 指定されたプラグインは独自のディレクトリにインストールされます:
 &lt;table border=1&gt;
 &lt;tr&gt;&lt;th&gt;OS&lt;/th&gt;&lt;th&gt;システムプラグイン&lt;/th&gt;&lt;th&gt;ユーザーによってインストールされたプラグイン&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Linux またはその他UNIX&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Linux またはその他UNIX&lt;/td&gt;&lt;td&gt;./share/qgis/python/plugins&lt;/td&gt;&lt;td rowspan=2&gt;$HOME/.qgis2/python/plugins&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;Mac OS X&lt;/td&gt;&lt;td&gt;./Contents/MacOS/share/qgis/python/plugins&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGISがインストールされているディレクトリ)&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%&amp;#92;.qgis&amp;#92;python&amp;#92;plugins&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;Windows&lt;/td&gt;&lt;td&gt;(QGISがインストールされているディレクトリ)\python\plugins&lt;/td&gt;&lt;td&gt;%USERPROFILE%\.qgis2\python\plugins&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 &lt;br/&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-インストールが成功するとコンソールに&quot;The plugin is ready to use&quot;というメッセージが表示されます. 
+インストールが成功するとプラグインはインストールされましたというメッセージが表示されます. 
 &lt;/p&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
-インストールが失敗した場合失敗した理由が警告ダイアログに表示されます. 多くの場合はネットワーク接続のエラーの問題かpythonモジュールの不足がエラーの原因です. 前者の場合はしばらく待って再度トライして下さい,後者の場合はそのプラグインを利用するために不足しているモジュールをあなたのオペレーティングシステムに事前にインストールする必要があります.Linuxの場合ほとんどの必要なモジュールはパッケージマネージャを使って利用できます.Windowsでのインストール方法はモジュールのホームページを参照して下さい.インターネットアクセスにproxyを利用している場合&lt;label&gt;編集&lt;/label&gt;&lt;label&gt;オプション&lt;/label&gt; (Gnome, OSXの場合) または &lt;label&gt;設定&lt;/label&gt; &lt;label&gt;オプション&lt;/label&gt; (KDE, Windowsの場合) にある &lt;label&gt;プロキシー&lt;/label&gt;タブで設定を行わなければなりません.
+インストールが失敗した場合失敗した理由が警告ダイアログに表示されます. 多くの場合はネットワーク接続のエラーの問題かpythonモジュールの不足がエラーの原因です. 前者の場合はしばらく待って再度トライして下さい,後者の場合はそのプラグインを利用するために不足しているモジュールをあなたのオペレーティングシステムに事前にインストールする必要があります.Linuxの場合ほとんどの必要なモジュールはパッケージマネージャを使って利用できます.Windowsでのインストール方法はモジュールのホームページを参照して下さい.インターネットアクセスにproxyを利用している場合&lt;label&gt;編集&lt;/label&gt;&lt;label&gt;オプション&lt;/label&gt; (Gnome, OSXの場合) または &lt;label&gt;設定&lt;/label&gt; &lt;label&gt;オプション&lt;/label&gt; (KDE, Windowsの場合) にある &lt;label&gt;ネットワーク&lt;/label&gt;タブで設定を行わなければなりません.
 &lt;/p&gt;
 
 &lt;p align=&apos;justify&apos;&gt;
@@ -62108,10 +62108,8 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 &lt;h4&gt;リポジトリタブ&lt;/h4&gt;
 &lt;/a&gt;
 &lt;p align=&apos;justify&apos;&gt;
-2番目のタブ&lt;label&gt;リポジトリ&lt;/label&gt;にはプラグインインストーラで利用可能なリポジトリのリストが表示されます . デフォルトではQGISの公式リポジトリのみが有効です.ここでは様々なユーザー提供のリポジトリを追加できます.そこにはQGIS本家に集められたリポジトリと外部のリポジトリを含みます.&lt;label&gt;サードパーティーのリポジトリを追加&lt;/label&gt;ボタンをクリックするとリポジトリの追加を行えます. 追加されたリポジトリにはたくさんに有用なプラグインがあります.それらのプラグインはQGIS開発チームによってメンテナンスされているものではありません.それらはについてはQGIS開発チームからの助言は得られません. またリポジトリのリストを手作業で管理することができます.追加,削除、編集を各エントリに対して行うことができます. &lt;label&gt;編集...&lt;/label&gt;ボタンをクリックして一時的に個々のリポジトリの利用を停止することができます.
+2番目のタブ&lt;label&gt;リポジトリ&lt;/label&gt;にはプラグインインストーラで利用可能なリポジトリのリストが表示されます . デフォルトではQGISの公式リポジトリのみが有効です.ここでは様々なユーザー提供のリポジトリを追加できます. QGIS Contributed リポジトリや外部のリポジトリを含みます.&lt;label&gt;サードパーティーのリポジトリを追加&lt;/label&gt;ボタンをクリックするとリポジトリの追加を行えます. 追加されたリポジトリにはたくさんに有用なプラグインがあります.それらのプラグインはQGIS開発チームによってメンテナンスされているものではありません.それらはについてはQGIS開発チームからの助言は得られません. またリポジトリのリストを手作業で管理することができます.追加,削除、編集を各エントリに対して行うことができます. &lt;label&gt;編集...&lt;/label&gt;ボタンをクリックして一時的に個々のリポジトリの利用を停止することができます.
 &lt;/p&gt;
-
-
 
 
 &lt;a name=&quot;optab&quot;&gt;
@@ -62127,22 +62125,18 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 &lt;i&gt;新しいプラグインを探しています...&lt;/i&gt; というメッセージがQGIS起動中にステータスバーに表示され続けている場合は終了時にプログラムがクラッシュします.この場合チェックボックスを無効にして下さい.
 &lt;/p&gt;
 
-
 さらにプラグインインストーラで表示するプラグインのタイプを指定することができます. 
 &lt;i&gt;許可されたプラグイン&lt;/i&gt;, で指定することができます:
 &lt;ul&gt;
 &lt;li&gt; 公式リポジトリのプラグインのみ表示する&lt;/li&gt;
-&lt;li&gt; 期限切れマークがついていない全てのプラグインを表示する&lt;/li&gt;
-&lt;li&gt;期限切れマークがついているプラグインも含めて全てのプラグインを表示する&lt;/li&gt;
+&lt;li&gt; 実験的とマークされていない全てのプラグインを表示する&lt;/li&gt;
+&lt;li&gt; 実験的とマークされているプラグインも含めて全てのプラグインを表示する&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;br/&gt;
 &lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
-注: 実験的なプラグインは通常非安定版として利用します. これらのプラグインは開発の初期段階で、&apos;不完全&apos;または&apos;検証中&apos;のツールです.QGIS開発チームではこれらのツールをテストの目的以外でインストールすることを推奨しません.
+注: 実験的なプラグインは通常非安定版です. これらのプラグインは開発の初期段階にあって&apos;不完全&apos;または&apos;構想の検証中&apos;のツールです.QGIS開発チームではこれらのツールをテストの目的以外でインストールすることを推奨しません.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
-
-
 </translation>
     </message>
     <message>
@@ -62318,7 +62312,7 @@ QGISでは多くの方法でレンダリングプロセスをコントロール�
 &lt;label&gt;デジタイジング&lt;/label&gt;タブでは入力ラインの太さと色を設定できます.
 &lt;h5&gt;スナッピング&lt;/h5&gt;
 ここではプロジェクト全体でのスナッピング許容値を定義できます. &lt;p&gt;
-&lt;label&gt;頂点&lt;/label&gt;, &lt;label&gt;セグメント&lt;/label&gt;または &lt;label&gt;頂点とセグメント&lt;/label&gt;の中からデフォルトを選べます. また頂点編集で利用するスナッピングの規定値や検索半径を定義できます. 許容値は地図上の単位かピクセル数で定義できます.ピクセルを選択するとズーム操作によって許容値が変わらないという利点があります . &lt;p&gt;
+&lt;label&gt;頂点&lt;/label&gt;, &lt;label&gt;セグメント&lt;/label&gt;または &lt;label&gt;頂点とセグメント&lt;/label&gt;の中からデフォルトを選べます. また頂点編集で利用するスナッピングの既定値や検索半径を定義できます. 許容値は地図上の単位かピクセル数で定義できます.ピクセルを選択するとズーム操作によって許容値が変わらないという利点があります . &lt;p&gt;
 レイヤ別のスナッピング許容値は &lt;label&gt;設定&lt;/label&gt; (または &lt;label&gt;ファイル&lt;/label&gt;) &lt;label&gt;プロジェクトプロパティ...&lt;/label&gt;を選択すると定義できます.  &lt;label&gt;一般情報&lt;/label&gt; タブの, セクション &lt;label&gt;デジタイジング&lt;/label&gt;で&lt;label&gt;スナッピングオプション...&lt;/label&gt;をクリックするとレイヤ単位のスナッピングモードの有効化と許容値の調整を行うことができます.
 &lt;h5&gt;頂点マーク&lt;/h5&gt;
 マーカースタイルを &lt;label&gt;半透明の円&lt;/label&gt;, &lt;label&gt;十字&lt;/label&gt; or &lt;label&gt;無し&lt;/label&gt;から選択できます、またサイズを指定できます; また選択されている地物のみのマーカーを設定することもできます.
