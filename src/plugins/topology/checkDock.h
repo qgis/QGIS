@@ -76,7 +76,7 @@ class checkDock : public QDockWidget, public Ui::checkDock
     /**
      * toggles the visibility of rubber band error markers
      */
-    void toggleErrorMarkers();
+    void toggleErrorMarker();
     /**
      * Handles error selection
      * @param index clicked index in the table
