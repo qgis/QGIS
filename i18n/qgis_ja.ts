@@ -5900,7 +5900,8 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="54"/>
         <source>P&amp;roject</source>
-        <translation>プロジェクト(&amp;ｒ)</translation>
+        <translatorcomment>アクセラレータキーをjに変更しました(rはラスタと重複)</translatorcomment>
+        <translation>プロジェクト(&amp;j)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="58"/>
@@ -25014,12 +25015,12 @@ Leave empty to automatically apply the maximum value.</source>
     <message>
         <location filename="../src/app/qgsdisplayangle.cpp" line="52"/>
         <source>%1 radians</source>
-        <translation>%1ラディアン</translation>
+        <translation>%1ラジアン</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdisplayangle.cpp" line="58"/>
         <source>%1 gon</source>
-        <translation>%1 gon</translation>
+        <translation>%1グラード</translation>
     </message>
 </context>
 <context>
@@ -38946,7 +38947,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="105"/>
         <source>Top down, stop at first</source>
-        <translation>トップダウン　最初に停止</translation>
+        <translation>トップダウン 最初の結果のみ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="106"/>
@@ -39367,7 +39368,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1509"/>
         <source>Ignore shapefile encoding declaration</source>
-        <translation>シェイプファイルのエンコーディングを無視する</translation>
+        <translation>シェイプファイルのエンコーディング宣言を無視する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1512"/>
@@ -39541,7 +39542,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1519"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
-        <translation>拡張モードの時ダブルクリックしてPostGISレイヤを追加して選択する</translation>
+        <translation>ダブルクリックでPostGISレイヤを追加する.拡張選択モードを使用する</translation>
     </message>
     <message>
         <source>Add new layers to selected group</source>
@@ -39565,7 +39566,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1120"/>
         <source>Path(s) to search for additional C++ plugins libraries</source>
-        <translation>追加C++プラグインライブラリを探すパス</translation>
+        <translation>追加のC++プラグインライブラリを探すパス</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="121"/>
@@ -39592,7 +39593,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="288"/>
         <source>Style &lt;i&gt;(QGIS restart required)&lt;/i&gt;</source>
-        <translation>Style &lt;i&gt;(QGIS 再起動が必要です)&lt;/i&gt;</translation>
+        <translation>スタイル &lt;i&gt;(QGIS 再起動が必要です)&lt;/i&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="387"/>
@@ -39640,7 +39641,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1441"/>
         <source>Scan for contents of compressed files (.zip) in browser dock</source>
-        <translation>ブラウザドック内の圧縮ファイル(zio)にあるコンテンツをスキャンする</translation>
+        <translation>ブラウザドック内の圧縮ファイル(zip)にあるコンテンツをスキャンする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="169"/>
@@ -39680,7 +39681,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1173"/>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
-        <translation>パスとは Scalable Vector Graphic (SVG) シンボルを探す場所です</translation>
+        <translation>Scalable Vector Graphic (SVG) シンボルを探すパス</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1684"/>
@@ -39729,17 +39730,17 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2552"/>
         <source>Radians</source>
-        <translation>ラディアン</translation>
+        <translation>ラジアン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2583"/>
         <source>Gon</source>
-        <translation>Gon</translation>
+        <translation>グラード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2559"/>
         <source>Decimal places</source>
-        <translation>少数位</translation>
+        <translation>小数位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="2569"/>
@@ -39950,12 +39951,12 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="571"/>
         <source>Bold group box titles</source>
-        <translation>グループボックスタイトルを太字にする</translation>
+        <translation>グループボックスのタイトルを太字にする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="591"/>
         <source>QGIS-styled group boxes</source>
-        <translation>QGIS-スタイルのグループボックス</translation>
+        <translation>QGISスタイルのグループボックス</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="602"/>
@@ -40082,7 +40083,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1019"/>
         <source>Current environment variables (read-only - bold indicates modified at startup)</source>
-        <translation>現状の環境変数(リードオンリィ - 開始時に変更されたものは太字強調)</translation>
+        <translation>現状の環境変数(リードオンリー - 開始時に変更されたものは太字強調)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1081"/>
@@ -40112,7 +40113,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1526"/>
         <source>Add Oracle layers with double click and select in extended mode</source>
-        <translation>ダブルクリックしてOracleレイヤを追加して拡張モードで選択する</translation>
+        <translation>ダブルクリックでOracleレイヤを追加する.拡張選択モードを使用する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1594"/>
@@ -40222,7 +40223,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3120"/>
         <source>Open snapping options in a dock window (QGIS restart required)</source>
-        <translation>ドックウィンドウ内のすなっぴん具オプションを開く(QGIS再起動が必要)</translation>
+        <translation>ドックウィンドウ内でスナップオプションを開く(QGIS再起動が必要)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3209"/>
@@ -45361,7 +45362,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="51"/>
         <source>Recently used coordinate reference systems</source>
-        <translation>最近利用した座標参照システム</translation>
+        <translation>最近使用した座標参照システム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="96"/>
@@ -60207,7 +60208,7 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="183"/>
         <source>Radians</source>
-        <translation>ラディアン</translation>
+        <translation>ラジアン</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="195"/>
@@ -60454,7 +60455,7 @@ On this tab you can choose on which layers the identify tool will work.
 &lt;p&gt;
 座標参照系は名前,EPSGコードまたはQGIS IDを入力すると検索できます.
 &lt;p&gt;
-最近利用した座標参照系のリストが下部に表示されるので素早く使うことができます.
+最近使用した座標参照系のリストが下部に表示されるので素早く使うことができます.
 
 &lt;a name=&quot;layers&quot;&gt;
 &lt;h4&gt;情報検索レイヤタブ&lt;/h4&gt;
@@ -62395,7 +62396,7 @@ QGISでは多くの方法でレンダリングプロセスをコントロール�
 &lt;a name=&quot;over&quot;&gt;
 &lt;h4&gt;オーバーレイ&lt;/h4&gt;
 &lt;/a&gt;
-ラベルの配置アルゴリズムを定義できます.  &lt;label&gt;中央点 (fastest)&lt;/label&gt;, &lt;label&gt;チェイン (fast)&lt;/label&gt;, &lt;label&gt;ポップミュージックタブチェイン (slow)&lt;/label&gt;, &lt;label&gt;ポップミュージックタブ (slow)&lt;/label&gt; and &lt;label&gt;ポップミュージックチェイン (very slow)&lt;/label&gt;の中から選択して下さい.
+ラベルの配置アルゴリズムを定義できます.  &lt;label&gt;中央点 (fastest)&lt;/label&gt;, &lt;label&gt;チェイン (fast)&lt;/label&gt;, &lt;label&gt;ポップミュージックタブチェイン (遅い)&lt;/label&gt;, &lt;label&gt;ポップミュージックタブ (遅い)&lt;/label&gt; and &lt;label&gt;ポップミュージックチェイン (とても遅い)&lt;/label&gt;の中から選択して下さい.
 
 &lt;a name=&quot;digit&quot;&gt;
 &lt;h4&gt;デジタイジング&lt;/h4&gt;
