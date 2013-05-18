@@ -21,9 +21,9 @@ class QgsQtLocationConnection: QgsGPSConnection
     // void positionUpdated( const QGeoPositionInfo &info );
 
     /**Called when the number of satellites in view is updated.*/
-    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );
+    // void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );
 
     /**Called when the number of satellites in use is updated.*/
-    void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );
+    // void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );
 };
 %End
