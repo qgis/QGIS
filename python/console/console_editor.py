@@ -344,21 +344,32 @@ class Editor(QsciScintilla):
             pasteAction.setEnabled(True)
         action = menu.exec_(self.mapToGlobal(e.pos()))
 
-    def findText(self, direction=False):
+    def findText(self, forward):
+        lineFrom, indexFrom, lineTo, indexTo = self.getSelection()
         line, index = self.getCursorPosition()
         text = self.parent.pc.lineEditFind.text()
-        msgText = False
+        re = False
+        wrap = self.parent.pc.wrapAround.isChecked()
+        cs = self.parent.pc.caseSensitive.isChecked()
+        wo = self.parent.pc.wholeWord.isChecked()
+        notFound = False
         if not text.isEmpty():
-            if direction:
-                if not self.findFirst(text, 1, 0, line, index, forward=False):
-                    msgText = True
-            else:
-                if not self.findFirst(text, 1, 0, line, index):
-                    msgText = True
-            if msgText:
+            if not forward:
+                line = lineFrom
+                index = indexFrom
+            ## findFirst(QString(), re bool, cs bool, wo bool, wrap, bool, forward=True)
+            ## re = Regular Expression, cs = Case Sensitive, wo = Whole Word, wrap = Wrap Around
+            if not self.findFirst(text, re, cs, wo, wrap, forward, line, index):
+                notFound = True
+            if notFound:
+                styleError = 'QLineEdit {background-color: #d65253; \
+                                        color: #ffffff;}'
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      '<b>"%1"</b> was not found.').arg(text)
                 self.parent.pc.callWidgetMessageBarEditor(msgText, 0, True)
+            else:
+                styleError = ''
+            self.parent.pc.lineEditFind.setStyleSheet(styleError)
 
     def objectListEditor(self):
         listObj = self.parent.pc.listClassMethod
