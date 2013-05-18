@@ -114,6 +114,10 @@ class QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
     QMap<int, QPushButton*> mButtonMap;
     QMap<int, QString> mDateFormat;
     QMap<int, QSize> mWidgetSize;
+    // Holds all the first column items (header: id) of the table.
+    // The index in the list is the fieldIdx, and therefore acts as a mapping
+    // between fieldIdx and QTableWidgetItem->row()
+    QList<QTableWidgetItem*> mIndexedWidgets;
 
     enum attrColumns
     {
