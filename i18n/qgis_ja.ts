@@ -15696,7 +15696,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="339"/>
         <source>Get feature id</source>
-        <translation>地物idの取得</translation>
+        <translation>地物IDの取得</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="340"/>
@@ -16598,7 +16598,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/gui/attributetable/qgsattributetablemodel.cpp" line="435"/>
         <source>feature id</source>
-        <translation>地物id</translation>
+        <translation>地物ID</translation>
     </message>
 </context>
 <context>
@@ -50146,7 +50146,7 @@ enhancement</source>
     <message>
         <location filename="../src/ui/qgssinglebandgrayrendererwidgetbase.ui" line="63"/>
         <source>Color gradient</source>
-        <translation>色諧調</translation>
+        <translation>色階調</translation>
     </message>
 </context>
 <context>
