@@ -6838,7 +6838,7 @@ Shift+クリックで非表示
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Toggles the editing state of the current layer</source>
-        <translation>カレントレイヤの編集モードを変更する</translation>
+        <translation>カレントレイヤの編集モードを切り替える</translation>
     </message>
     <message>
         <source>Save edits</source>
@@ -14595,7 +14595,7 @@ Error: %1</source>
         <location filename="../src/app/qgisapp.cpp" line="5030"/>
         <location filename="../src/app/qgisapp.cpp" line="5089"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
-        <translation>地物結合は編集モードのレイヤでのみ利用できます。結合を利用するためにはレイヤ-&gt;編集切り替えを実行してください</translation>
+        <translation>地物結合は編集モードのレイヤでのみ利用できます。結合を利用するためにはレイヤ-&gt;編集モード切り替えを実行してください</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5038"/>
@@ -16341,7 +16341,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="37"/>
         <source>Toggle editing mode (Ctrl+E)</source>
-        <translation>編集モードの変更(Ctrl+E)</translation>
+        <translation>編集モード切替(Ctrl+E)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="56"/>
@@ -16443,7 +16443,7 @@ SVG サーチパス:	%7
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="578"/>
         <source>Show Features Visible On Map</source>
-        <translation>歌詞地物を地図上に表示</translation>
+        <translation>地図に見える地物を表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="583"/>
@@ -26058,7 +26058,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="43"/>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="135"/>
         <source>Click to toggle table editing</source>
-        <translation>クリックするとテーブル編集切り替え</translation>
+        <translation>クリックするとテーブル編集モード切り替え</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldspropertiesbase.ui" line="132"/>
@@ -35177,7 +35177,7 @@ not displayed</source>
     <message>
         <location filename="../src/app/qgsmaptooledit.cpp" line="137"/>
         <source>Use &apos;Toggle Editing&apos; to make it editable</source>
-        <translation>編集するためには&apos;編集モード変更&apos;をクリックしてください</translation>
+        <translation>編集するためには&apos;編集モード切替&apos;をクリックしてください</translation>
     </message>
 </context>
 <context>
@@ -61444,7 +61444,61 @@ The results can be written to a new attribute column or it can be used to update
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
         <translation>&lt;h3&gt;属性テーブル&lt;/h3&gt;
-属性テーブルダイアログでは選択したレイヤの行とカラムを表示します.このダイアログで属性の表示、編集、検索を行えます.
+属性テーブルは選択されたレイヤの地物の属性を表示します. テーブルの各行はいくつかのカラムに示される属性を持つ1つの地物を表しています. テーブル内の地物は検索や選択、移動あるいは編集することができます. 
+デフォルトでは属性テーブルは独立したウィンドウです. あなたがそれを開いてもダイアログが見えない場合は、多分QGISのメインウィンドウの下に隠されているでしょう.
+あなたはそれをドックウィンドウにすることもできます. ドックウィンドウにするには&lt;label&gt;設定 &gt; オプション&lt;/label&gt;ダイアログのデータソースタブで&lt;label&gt;ドックウィンドウで属性テーブルを開く&lt;/label&gt;にチェックします.&lt;p&gt;
+レイヤの総地物数とフィルタ後の地物数、選択されている地物数はウィンドウのタイトルバーに表示されます.&lt;p&gt;
+
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;選択&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;並べ替え&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;フィルタ&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;編集&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;フィールド計算機&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;選択&lt;/h4&gt;
+&lt;/a&gt;
+行を選択するには行の左側の行番号をクリックします. マウスボタンを押したままにして選択の終端まで動かせば後続の行を選択することができます. 連続していない複数の行を選択するには&lt;label&gt;Ctrl&lt;/label&gt;キーを押したままにします.&lt;br&gt;
+連続している行を選択するには&lt;label&gt;Shift&lt;/label&gt;キーを押しながら行の左側の行ヘッダーをクリックします. 現在のカーソル位置とクリックされた行の間のすべての行が選択されます.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;並べ替え&lt;/h4&gt;
+&lt;/a&gt;
+各列は、その列ヘッダをクリックすることで並べ替えることができます. 小さな三角はソート順序を示します. 下向き三角は上から下に降順(大きい順)となっていることを意味し、上向き三角は上から下に昇順(小さい順)になっていることを意味します.&lt;br&gt;
+現在のソートカラムに関わらず選択されている行を常に上部に表示するには&lt;label&gt;選択部分を先頭に移動する&lt;/label&gt;ボタンをアクティブにします.
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;フィルタ&lt;/h4&gt;
+&lt;/a&gt;
+データの部分に素早く移動するには左下のフィルタボタンを使用することができます. 次のオプションが利用可能です.
+&lt;h5&gt;全ての地物を表示する&lt;/h5&gt;
+レイヤの全ての地物を表示する.
+&lt;h5&gt;選択した地物を表示する&lt;/h5&gt;
+現在選択されている全ての地物を表示する.
+&lt;h5&gt;地図に見える地物を表示&lt;/h5&gt;
+現在の可視領域とスケールベースの可視性を考慮に入れて、現在マップキャンバスに表示されている全ての地物を表示する. 
+&lt;h5&gt;編集及び新しい地物の表示&lt;/h5&gt;
+編集された地物と新規作成された地物のみ表示します.
+このモードではコミット(保存)されていない変更を有する地物が表示されます.したがってこれはコミット(保存)する前に変更を見直すのによいフィルタです. 削除された地物はこのモードで表示されないことに注意して下さい.
+&lt;h5&gt;カラムフィルタ&lt;/h5&gt;
+属性によってフィルタすることができる単純なフィルタです. 属性がテキストを含む場合、部分文字列を検索します.したがって&lt;b&gt;man&lt;/b&gt;を検索すれば&lt;b&gt;woman&lt;/b&gt;を含んでいるレコードも表示します.
+フィルタ文字列を変更した後に&lt;label&gt;Enter&lt;/label&gt;キーを押すか&lt;label&gt;適用&lt;/label&gt;ボタンをクリックして下さい. &lt;label&gt;大文字小文字を区別する&lt;/label&gt;チェックボックスをチェックすると検索文字列が&lt;b&gt;night&lt;/b&gt;の時に&lt;b&gt;Night&lt;/b&gt;はフィルタされて表示されません.
+&lt;h5&gt;応用フィルタ&lt;/h5&gt;
+より複雑な検索のために、このモードは強力な式ビルダを提供します. それはSQLのWHERE節に類似しています. 構文の詳細については式ビルダーのビルトイン・ヘルプを参照してください.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;編集&lt;/h4&gt;
+&lt;/a&gt;
+属性値を編集するにはまず始めにレイヤを編集モードに切り替えなければなりません. 編集モードに切り替えるには&lt;label&gt;編集モード切替&lt;/label&gt;(鉛筆)ボタンを押すか&lt;label&gt;Ctrl + E&lt;/label&gt;を押して下さい.
+その後、編集したい値をダブルクリックするか、それにカーソルを置いて&lt;label&gt;Space&lt;/label&gt;キーを押します. &lt;label&gt;ベクタレイヤプロパティ &gt; フィールド&lt;/label&gt;でフィールド編集に使われるウィジェットをカスタマイズできます.
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;フィールド計算機&lt;/h4&gt;
+&lt;/a&gt;
+属性テーブルの&lt;label&gt;フィールド計算機&lt;/label&gt;ボタンでは既存の属性値や定義されている関数を用いて計算を実行することができます. 例えばジオメトリの長さや面積を計算できます.
+結果は新しい属性カラムに書くことができますし、既存のカラムの値を更新することもできます.&lt;br&gt;
+&lt;label&gt;フィールド計算機&lt;/label&gt;アイコンをクリックしてダイアログを開くにはベクタレイヤは編集モードである必要があります.
 </translation>
     </message>
     <message>
@@ -61849,9 +61903,9 @@ Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Set
 各地物の左に表示されている&lt;label&gt;+&lt;/label&gt;記号をクリックすると地物情報を展開して見ることができます.
 &lt;/p&gt;
 &lt;p&gt;
-検索半径を設定するには&lt;label&gt;設定&lt;/label&gt;&lt;label&gt;オプション&lt;/label&gt;ダイアログの&lt;label&gt;マップツールズ&lt;/label&gt;タブの地物情報表示セクションで地図の幅に対する割合を指定します.このセクションでは地物情報表示モードを&lt;label&gt;カレントレイヤ&lt;/label&gt;, &lt;label&gt;トップダウン 最初の結果のみ&lt;/label&gt;, &lt;label&gt;トップダウン&lt;/label&gt;から選択することもできます.&lt;br&gt;
+検索半径を設定するには&lt;label&gt;設定 &gt; オプション&lt;/label&gt;ダイアログの&lt;label&gt;マップツールズ&lt;/label&gt;タブの地物情報表示セクションで地図の幅に対する割合を指定します.このセクションでは地物情報表示モードを&lt;label&gt;カレントレイヤ&lt;/label&gt;, &lt;label&gt;トップダウン 最初の結果のみ&lt;/label&gt;, &lt;label&gt;トップダウン&lt;/label&gt;から選択することもできます.&lt;br&gt;
 &lt;label&gt;単一の地物が確認された場合地物フォームを開きます&lt;/label&gt;オプションも設定できます.&lt;br&gt;
-地物情報表示ツールが利用可能なレイヤは&lt;label&gt;設定&lt;/label&gt;&lt;label&gt;プロジェクトプロパティ&lt;/label&gt;ダイアログの&lt;label&gt;情報検索レイヤ&lt;/label&gt;タブで設定できます.
+地物情報表示ツールが利用可能なレイヤは&lt;label&gt;設定 &gt; プロジェクトプロパティ&lt;/label&gt;ダイアログの&lt;label&gt;情報検索レイヤ&lt;/label&gt;タブで設定できます.
 &lt;/p&gt;
 </translation>
     </message>
