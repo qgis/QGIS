@@ -36,7 +36,7 @@
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="96"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="160"/>
         <source>Coordinate Capture</source>
-        <translation>座標入力</translation>
+        <translation>座標キャプチャ</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="98"/>
@@ -47,7 +47,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="101"/>
         <source>&amp;Coordinate Capture</source>
-        <translation>座標入力(&amp;C)</translation>
+        <translation>座標キャプチャ(&amp;C)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="116"/>
@@ -57,12 +57,14 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS (lat,lon or east,north)</source>
-        <translation>選択されたCRSの座標(緯度,経度または東,北)</translation>
+        <translatorcomment>経度,緯度の順は実際の表示順に合わせました</translatorcomment>
+        <translation>選択されたCRSの座標(経度,緯度または東,北)</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system (lat,lon or east,north)</source>
-        <translation>マップキャンバスが参照する座標系の座標(緯度,経度または東,北)</translation>
+        <translatorcomment>経度,緯度の順は実際の表示順に合わせました</translatorcomment>
+        <translation>マップキャンバスが参照する座標系の座標(経度,緯度または東,北)</translation>
     </message>
     <message>
         <source>Coordinate in your selected CRS</source>
@@ -85,12 +87,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
         <source>Start capture</source>
-        <translation>入力開始</translation>
+        <translation>キャプチャ開始</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="142"/>
         <source>Click to enable coordinate capture</source>
-        <translation>クリックすると座標入力を有効にする</translation>
+        <translation>クリックすると座標キャプチャを有効にする</translation>
     </message>
 </context>
 <context>
@@ -8618,12 +8620,12 @@ qgis.utils.ifaceオブジェクト（QgisInterfaceクラスのインスタンス
         <location filename="../src/core/qgsdistancearea.cpp" line="442"/>
         <location filename="../src/core/qgsdistancearea.cpp" line="476"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate line length.</source>
-        <translation>座標入力システムで点座標変換中にエラーを発生しました。ラインの長さを計算できません。</translation>
+        <translation>座標システムで点座標変換中にエラーを発生しました。ラインの長さを計算できません。</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="594"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area.</source>
-        <translation>座標入力システムで点座標変換中にエラーを発生しました。ポリゴンの面積を計算できません。</translation>
+        <translation>座標システムで点座標変換中にエラーを発生しました。ポリゴンの面積を計算できません。</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="158"/>
@@ -8774,7 +8776,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="565"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter.</source>
-        <translation>座標入力システムで点座標変換中にエラーを発生しました。ポリゴンの面積または周囲の長さを計算できません.</translation>
+        <translation>座標システムで点座標変換中にエラーを発生しました。ポリゴンの面積または周囲の長さを計算できません.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/core/qgsdistancearea.cpp" line="849"/>
@@ -9269,7 +9271,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="51"/>
         <source>Coordinate Capture</source>
-        <translation>座標入力</translation>
+        <translation>座標キャプチャ</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="52"/>
@@ -12702,7 +12704,8 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1513"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
-        <translation>現在の地図座標(緯度,経度　または東北)</translation>
+        <translatorcomment>経度,緯度の順は実際の表示順に合わせました</translatorcomment>
+        <translation>現在の地図座標(経度,緯度または東北)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2178"/>
@@ -62402,7 +62405,7 @@ QGISでは多くの方法でレンダリングプロセスをコントロール�
 &lt;h5&gt;スナッピング&lt;/h5&gt;
 ここではプロジェクト全体でのスナッピング許容値を定義できます. &lt;p&gt;
 &lt;label&gt;頂点&lt;/label&gt;, &lt;label&gt;セグメント&lt;/label&gt;または &lt;label&gt;頂点とセグメント&lt;/label&gt;の中からデフォルトを選べます. また頂点編集で利用するスナッピングの既定値や検索半径を定義できます. 許容値は地図上の単位かピクセル数で定義できます.ピクセルを選択するとズーム操作によって許容値が変わらないという利点があります . &lt;p&gt;
-レイヤ別のスナッピング許容値は &lt;label&gt;設定&lt;/label&gt; (または &lt;label&gt;ファイル&lt;/label&gt;) &lt;label&gt;プロジェクトプロパティ...&lt;/label&gt;を選択すると定義できます.  &lt;label&gt;一般情報&lt;/label&gt; タブの, セクション &lt;label&gt;デジタイジング&lt;/label&gt;で&lt;label&gt;スナッピングオプション...&lt;/label&gt;をクリックするとレイヤ単位のスナッピングモードの有効化と許容値の調整を行うことができます.
+レイヤ別のスナッピング許容値は &lt;label&gt;設定&lt;/label&gt; &lt;!--(または &lt;label&gt;ファイル&lt;/label&gt;)--&gt; &lt;label&gt;プロジェクトプロパティ...&lt;/label&gt;を選択すると定義できます.  &lt;label&gt;一般情報&lt;/label&gt; タブの, セクション &lt;label&gt;デジタイジング&lt;/label&gt;で&lt;label&gt;スナップオプション...&lt;/label&gt;をクリックするとレイヤ単位のスナッピングモードの有効化と許容値の調整を行うことができます.
 &lt;h5&gt;頂点マーク&lt;/h5&gt;
 マーカースタイルを &lt;label&gt;半透明の円&lt;/label&gt;, &lt;label&gt;十字&lt;/label&gt; or &lt;label&gt;無し&lt;/label&gt;から選択できます、またサイズを指定できます; また選択されている地物のみのマーカーを設定することもできます.
 &lt;h5&gt;属性値の入力&lt;/h5&gt;
@@ -62421,7 +62424,6 @@ QGISはもはや最初にロードされたレイヤの空間参照系を地図�
 &lt;h4&gt;ネットワークとプロキシ&lt;/h4&gt;
 &lt;/a&gt;
 &lt;label&gt;ウェッブアクセスにプロキシを利用する&lt;/label&gt;をクリックするとホスト、ポート、ユーザー、パスワードを指定できます .
-
 </translation>
     </message>
     <message>
