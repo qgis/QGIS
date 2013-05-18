@@ -5900,8 +5900,8 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="54"/>
         <source>P&amp;roject</source>
-        <translatorcomment>アクセラレータキーをjに変更しました(rはラスタと重複)</translatorcomment>
-        <translation>プロジェクト(&amp;j)</translation>
+        <translatorcomment>アクセラレータキーをJに変更しました(rはラスタと重複)</translatorcomment>
+        <translation>プロジェクト(&amp;J)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="58"/>
@@ -5926,7 +5926,7 @@ GEOS空間演算エラー:1個またはそれ以上の数の地物のジオメ�
     <message>
         <location filename="../src/ui/qgisapp.ui" line="232"/>
         <source>Vect&amp;or</source>
-        <translation>ベクタ(&amp;o)</translation>
+        <translation>ベクタ(&amp;O)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="236"/>
@@ -7144,7 +7144,7 @@ Shift+クリックで非表示
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1499"/>
         <source>About</source>
-        <translation>アバウト</translation>
+        <translation>QGISについて</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1511"/>
@@ -12794,7 +12794,7 @@ Errors: %3
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3014"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
-        <translation>MSSQLセレクトダイアログをプロバイダから取得できません.</translation>
+        <translation>MSSQL選択ダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4560"/>
@@ -14299,7 +14299,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2876"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
-        <translation>PostgreSQLセレクトダイアログをプロバイダから取得できません.</translation>
+        <translation>PostgreSQL選択ダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2936"/>
@@ -14314,7 +14314,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2968"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
-        <translation>SpatiaLiteセレクトダイアログをプロバイダから取得できません.</translation>
+        <translation>SpatiaLite選択ダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2988"/>
@@ -14349,7 +14349,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3063"/>
         <source>Cannot get WMS select dialog from provider.</source>
-        <translation>WMSセレクトダイアログをプロバイダから取得できません.</translation>
+        <translation>WMS選択ダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3084"/>
@@ -14369,7 +14369,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3111"/>
         <source>Cannot get WFS select dialog from provider.</source>
-        <translation>WFSセレクトダイアログをプロバイダから取得できません.</translation>
+        <translation>WFS選択ダイアログをプロバイダから取得できません.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3298"/>
@@ -17760,7 +17760,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/compass/qgscompassplugin.cpp" line="105"/>
         <source>&amp;About</source>
-        <translation>アバウト(&amp;A)</translation>
+        <translation>コンパスプラグインについて(&amp;A)</translation>
     </message>
 </context>
 <context>
@@ -22344,7 +22344,7 @@ and current file is [%3]</source>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="417"/>
         <source>Source</source>
-        <translation>変換元データ</translation>
+        <translation>ソース</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscptcitycolorrampv2dialogbase.ui" line="460"/>
@@ -38862,7 +38862,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="150"/>
         <source>Source</source>
-        <translation>変換元データ</translation>
+        <translation>ソース</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="166"/>
@@ -39373,7 +39373,7 @@ Always network: always load from network and do not check if the cache has a val
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1512"/>
         <source>Disable OGR on-the-fly conversion from declared encoding to UTF-8</source>
-        <translation>既定のエンコーディングからUTF-8へのOGRオンザイフライ変換を無効にする</translation>
+        <translation>宣言されているエンコーディングからUTF-8へのOGRオンザイフライ変換を無効にする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="3461"/>
@@ -41896,7 +41896,7 @@ Error: %2</source>
     <message>
         <location filename="../src/ui/qgspastetransformationsbase.ui" line="59"/>
         <source>Source</source>
-        <translation>変換元データ</translation>
+        <translation>変換元</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspastetransformationsbase.ui" line="78"/>
@@ -58255,7 +58255,7 @@ Tried URL: %1</source>
     <name>SEXTANTE</name>
     <message>
         <source>Analysis</source>
-        <translation>解析手法</translation>
+        <translation>解析手法(&amp;A)</translation>
     </message>
     <message>
         <source>&amp;SEXTANTE toolbox</source>
