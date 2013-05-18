@@ -795,7 +795,7 @@ bool QgsProject::read()
   std::auto_ptr< QDomDocument > doc =
     std::auto_ptr < QDomDocument > ( new QDomDocument( "qgis" ) );
 
-  if ( !imp_->file.open( QIODevice::ReadOnly ) )
+  if ( !imp_->file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
     imp_->file.close();
 
