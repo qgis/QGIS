@@ -68,7 +68,7 @@ It is safer to use an explicit coding if the QGIS project needs to be portable.
     <li>Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
     affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
     single delimiter.  Quoted fields are never discarded.</li>
-    <li>Decimal point is comma: if selected then commas are used as the decimal point in real numbers.  For
+    <li>Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
     example <tt>-51,354</tt> is equivalent to -51.354.
     </li>
 </ul>

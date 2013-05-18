@@ -2989,7 +2989,7 @@ void QgisApp::addDelimitedTextLayer()
   QDialog *dts = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( "delimitedtext", this ) );
   if ( !dts )
   {
-    QMessageBox::warning( this, tr( "DelimitedText" ), tr( "Cannot get Delimited Text select dialog from provider." ) );
+    QMessageBox::warning( this, tr( "Delimited Text" ), tr( "Cannot get Delimited Text select dialog from provider." ) );
     return;
   }
   connect( dts, SIGNAL( addVectorLayer( QString, QString, QString ) ),
