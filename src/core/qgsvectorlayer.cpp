@@ -2477,6 +2477,9 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
 {
   bool deleted = false;
 
+  // Remove multiple occurences of same attribute
+  attrs = attrs.toSet().toList();
+
   qSort( attrs.begin(), attrs.end(), qGreater<int>() );
 
   foreach ( int attr, attrs )
