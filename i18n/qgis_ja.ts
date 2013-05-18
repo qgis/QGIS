@@ -17140,12 +17140,12 @@ Database:%2</source>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="47"/>
         <source>&amp;Delete</source>
-        <translation>&amp;D削除</translation>
+        <translation>削除(&amp;D)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="48"/>
         <source>&amp;Zoom to</source>
-        <translation>&amp;Zズーム</translation>
+        <translation>ズーム(&amp;Z)</translation>
     </message>
     <message>
         <source>Are you sure you want to delete the %1 bookmark?</source>
@@ -60498,11 +60498,11 @@ These values are written to the map file in the appropriate spots to set things 
   &lt;dt&gt;&lt;label&gt;Footer&lt;/label&gt;&lt;/dt&gt;
   &lt;dd&gt;Full path to the MapServer footer file to be used with the map file.&lt;/dd&gt;
 </source>
-        <translation>&lt;h3&gt;QGISプロジェクトを MapServerのMap Fileとしてエキスポートする&lt;/h3&gt;
+        <translation>&lt;h3&gt;QGISプロジェクトを MapServerのMapファイルとしてエクスポートする&lt;/h3&gt;
 &lt;p&gt;
-このツールを使うと保存されているQGISのプロジェクトファイルをエキスポートしてMapServerのMapファイルを作成することができます.この処理は&lt;b&gt;マップファイル&lt;/b&gt;と&lt;b&gt;QGISプロジェクトファイル&lt;/b&gt;のみの入力で実行できます.
+このツールを使うと保存されているQGISのプロジェクトファイルをエクスポートしてMapServerのMapファイルを作成することができます.この処理は&lt;b&gt;マップファイル&lt;/b&gt;と&lt;b&gt;QGISプロジェクトファイル&lt;/b&gt;のみの入力で実行できます.
 &lt;/p&gt;
-&lt;label&gt;カレントプロジェクトを利用する&lt;/label&gt;チェックボックスをチェックするかまたはエキスポートしたいQGISプロジェクトファイル(.qgs)のフルパスを入力して下さい. QGISプロジェクトファイルを探すためには右側の参照ボタンを使えます.
+&lt;label&gt;カレントプロジェクトを利用する&lt;/label&gt;チェックボックスをチェックするかまたはエクスポートしたいQGISプロジェクトファイル(.qgs)のフルパスを入力して下さい. QGISプロジェクトファイルを探すためには右側の参照ボタンを使えます.
 
 &lt;h4&gt;Mapファイル&lt;/h4&gt;
 
@@ -61849,7 +61849,9 @@ Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Set
 各地物の左に表示されている&lt;label&gt;+&lt;/label&gt;記号をクリックすると地物情報を展開して見ることができます.
 &lt;/p&gt;
 &lt;p&gt;
-検索半径は&lt;label&gt;設定 &gt; オプション&lt;/label&gt;ダイアログで設定できます.
+検索半径を設定するには&lt;label&gt;設定&lt;/label&gt;&lt;label&gt;オプション&lt;/label&gt;ダイアログの&lt;label&gt;マップツールズ&lt;/label&gt;タブの地物情報表示セクションで地図の幅に対する割合を指定します.このセクションでは地物情報表示モードを&lt;label&gt;カレントレイヤ&lt;/label&gt;, &lt;label&gt;トップダウン 最初の結果のみ&lt;/label&gt;, &lt;label&gt;トップダウン&lt;/label&gt;から選択することもできます.&lt;br&gt;
+&lt;label&gt;単一の地物が確認された場合地物フォームを開きます&lt;/label&gt;オプションも設定できます.&lt;br&gt;
+地物情報表示ツールが利用可能なレイヤは&lt;label&gt;設定&lt;/label&gt;&lt;label&gt;プロジェクトプロパティ&lt;/label&gt;ダイアログの&lt;label&gt;情報検索レイヤ&lt;/label&gt;タブで設定できます.
 &lt;/p&gt;
 </translation>
     </message>
