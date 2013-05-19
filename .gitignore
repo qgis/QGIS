@@ -52,3 +52,5 @@ i18n/*.qm
 scripts/qgisstyle
 .kdev4/
 qgis.kdev4
+src/core/qgscontexthelp_texts.cpp
+src/core/qgsexpression_texts.cpp
